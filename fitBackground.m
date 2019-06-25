@@ -1,16 +1,29 @@
 % fitBackground - Background fitting function of DeerAnalysis
-% handles.background
-% 0  fractal, n variable,  exp(-k*t^(n/3))
-% 1  n-dimensional, n fixed, exp(-k*t^(n/3))
-% 2  three-dimensional, exp(-k*t)
-% 3  polynomial
-% 4  user-defined function in handles.bckg_fct or numerical background in handles.bckg_data
-% 5  homogeneous background
 %
-% texp      full time range
-% t_fit     time range for background fit
-% data_fit  time-domain data over t_fit
-
+% Usage:
+%   Fits the FitData with corresponding FitTimeAxis to a certain background
+%   model. The background is  then extrapolated to the input TimeAxis.
+%
+%   fitBackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam)
+%   
+%   BckgModel   'fractal'       stretched exponential 
+%                               B(t) = exp(-k*t^(d/3))
+%   
+%               'exponential'   exponential function
+%                               B(t) = exp(-k*t)
+%   
+%               'polynomial'    N-th order polynomial function 
+%                               B(t) = sum_i^N  c_i*t^i 
+%                               To give as parameter:
+%                               ModelParam = N;
+%   
+%               'polyexp'       exponential function fitted as log
+%                               log(B(t)) = -k*t
+%
+%    If not specified, BckgModel will be set to 'exponential'.
+% 
+% Luis Fabregas 2019, DeerAnalysis 
+%
 function [Background,FitResults]=fitBackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam)
 
 if nargin<3
@@ -57,23 +70,7 @@ switch BckgModel
     %Compute polynomial background
     Background = exp(polyval(PolynomialFit,abs(TimeAxis)));
     FitResults.polynomial = PolynomialFit;
-    
-  case 4
-    bckg0=exp(polyval(handles.polynomial,abs(FitTimeAxis)));
-    LinearLogFit=[1 0.8];
-    fminResults=fminsearch(@rms_ubckg,LinearLogFit,[],FitData,bckg0);
-    bckg1=exp(polyval(handles.polynomial,abs(TimeAxis)));
-    Background=fminResults(2)*exp(fminResults(1)*log(bckg1));
-    density=fminResults(1)/handles.calib_density;
-    handles.bckg_dens=density;
-    
-  case 5
-    fminResults(1)=handles.man_k;
-    fminResults(2)=1;
-    Background=decaynD(fminResults,TimeAxis,handles.hom_dim);
-    Background=(1-handles.man_depth)*Background;
-    % bckg=(1-handles.man_depth)*exp(-dens*targ);
-    density=handles.man_k;
+
 end
 
 %Ensure data is real
