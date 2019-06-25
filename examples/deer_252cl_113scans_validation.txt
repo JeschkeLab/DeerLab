@@ -1,0 +1,18 @@
+Tikhonov validation for file deer_252cl_113scans
+
+Selected data set:
+
+Density calibrated: 0.454 uncalibrated: 0.070
+Background start:736 ns
+Mod. depth: 0.346
+Dimension: 3.00
+r.m.s.d.: 0.011074
+Constraints: ( 2.16,  4.07) nm
+
+All data sets:
+
+Background start range: (736.000,736.000) ns
+Density range: ( 0.454, 0.454)
+Mod. depth range: ( 0.346, 0.346)
+Dimension range: ( 3.00, 3.00)
+Best r.m.s.d.: 0.011074

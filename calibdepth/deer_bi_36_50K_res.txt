@@ -1,0 +1,33 @@
+>>> DEER analysis of data set: deer_bi_36_50K <<<
+- Tikhonov regularization with L curve computation -
+
+### Description of data set ###
+Source file:
+D:\DeerAnalysis_2016\calibdepth\deer_bi_36_50K.DTA
+Constant-time DEER. 504 complex data points
+
+### Pre-processing ###
+Time shift: 122 ns
+Cutoff at : 3896 ns
+Phase correction: -12.6°
+Homogeneous 3 dimensional background correction
+Starting at : 974 ns
+r.m.s. error of baseline fit:  0.027767
+Background density:  0.692
+
+Modulation depth:  0.494
+
+### Distance distribution ###
+Number of spins: 2.28
+r.m.s. error of fit:  0.011023
+Range of interest from  1.50 to  7.50 nm
+Mean distance  <r>  3.78 nm
+Std. dev. sigma(r)  0.18 nm
+3rd moment          0.02 nm
+
+Full range from  1.25 to  7.50 nm
+Mean distance  <r>  3.78 nm
+Std. dev. sigma(r)  0.18 nm
+3rd moment          0.02 nm
+
+Regularization parameter: 20.4509

@@ -1,0 +1,18 @@
+Tikhonov validation for file sample_V_DEERNet_input
+
+Selected data set:
+
+Density calibrated: 0.201 uncalibrated: 0.031
+Background start:596 ns
+Mod. depth: 0.317
+Dimension: 3.00
+r.m.s.d.: 0.007241
+Constraints: ( 1.39,  4.33) nm
+
+All data sets:
+
+Background start range: (296.000,896.000) ns
+Density range: ( 0.201, 0.201)
+Mod. depth range: ( 0.317, 0.317)
+Dimension range: ( 3.00, 3.00)
+Best r.m.s.d.: 0.007241

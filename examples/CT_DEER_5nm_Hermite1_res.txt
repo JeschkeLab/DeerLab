@@ -1,0 +1,24 @@
+DEER analysis of data set CT_DEER_5nm by Hermite1
+
+### Description of data set ###
+Source file:
+C:\Programme\DeerAnalysisPackage\examples\CT_DEER_5nm.DTA
+Constant-time DEER. 755 complex data points
+
+### Pre-processing ###
+Time shift: 128 ns
+Cutoff at : 6032 ns
+Phase correction:  -9.7°
+Background fitting starts at : 1508 ns
+Homogeneous background. Dimension: 3.000 Density: 0.2677 r.m.s.: 0.3980
+
+### Distance distribution ###
+r.m.s. error of fit: 7.5145
+Range of interest from  1.75 to  8.00 nm
+Mean distance  <r>  4.91 nm
+Std. dev. sigma(r)  0.37 nm
+3rd moment          0.09 nm
+Full range from  1.50 to 40.00 nm
+Mean distance  <r>  4.91 nm
+Std. dev. sigma(r)  0.37 nm
+3rd moment          0.09 nm

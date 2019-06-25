@@ -1,0 +1,25 @@
+DEER analysis of data set deer_bi_28_50K
+
+- Approximate Pake transformation -
+### Description of data set ###
+Source file:
+C:\MATLAB6p5\DeerAnalysis2006\calibdepth\deer_bi_28_50K.DTA
+Constant-time DEER. 505 complex data points
+
+### Pre-processing ###
+Time shift: 128 ns
+Cutoff at : 4032 ns
+Phase correction:  -8.4°
+Homogeneous 3 dimensional background correction
+Distance-domain smoothing filter width:  0.20 nm
+
+### Distance distribution ###
+r.m.s. error of fit: 0.0008
+Range of interest from  1.50 to  8.00 nm
+Mean distance  <r>  2.76 nm
+Std. dev. sigma(r)  0.00 nm
+3rd moment         -3.45 nm
+Full range from  1.50 to 40.00 nm
+Mean distance  <r>  2.76 nm
+Std. dev. sigma(r)  0.00 nm
+3rd moment         -3.44 nm

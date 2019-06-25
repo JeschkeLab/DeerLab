@@ -1,0 +1,21 @@
+DEER analysis of data set DEER_double_label by Tikh_r
+
+### Description of data set ###
+Source file:
+C:\Programme\DeerAnalysisPackage\examples\DEER_double_label.DTA
+Constant-time DEER. 255 complex data points
+
+### Pre-processing ###
+Time shift: 128 ns
+Cutoff at : 2032 ns
+Phase correction:  12.1°
+Background fitting starts at : 376 ns
+Homogeneous background. Dimension: 2.000 Density: 0.5676 r.m.s.: 0.3360
+Regularization parameter: 15557.935
+
+### Distance distribution ###
+r.m.s. error of fit: 3.1109
+Range of interest from  1.80 to  8.00 nm
+Mean distance  <r>  3.32 nm
+Std. dev. sigma(r)  0.95 nm
+3rd moment          1.02 nm

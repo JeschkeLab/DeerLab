@@ -1,0 +1,24 @@
+DEER analysis of data set DEER_single_label by Hermite4
+
+### Description of data set ###
+Source file:
+C:\Programme\DeerAnalysisPackage\examples\DEER_single_label.DTA
+Constant-time DEER. 255 complex data points
+
+### Pre-processing ###
+Time shift: 136 ns
+Cutoff at : 2032 ns
+Phase correction:  -5.1°
+Background fitting starts at : 544 ns
+Homogeneous background. Dimension: 2.000 Density: 0.7732 r.m.s.: 0.1254
+
+### Distance distribution ###
+r.m.s. error of fit: 0.9957
+Range of interest from  1.75 to  8.00 nm
+Mean distance  <r>  2.88 nm
+Std. dev. sigma(r)  1.40 nm
+3rd moment          1.51 nm
+Full range from  1.50 to 40.00 nm
+Mean distance  <r>  2.60 nm
+Std. dev. sigma(r)  1.31 nm
+3rd moment          2.23 nm

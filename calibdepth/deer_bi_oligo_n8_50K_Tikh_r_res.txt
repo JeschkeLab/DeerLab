@@ -1,0 +1,21 @@
+DEER analysis of data set deer_bi_oligo_n8_50K by Tikh_r
+
+### Description of data set ###
+Source file:
+C:\Programme\DeerAnalysisPackage\calibdepth\deer_bi_oligo_n8_50K.DTA
+Constant-time DEER. 380 complex data points
+
+### Pre-processing ###
+Time shift: 128 ns
+Cutoff at : 3032 ns
+Phase correction: -14.1°
+Background fitting starts at : 760 ns
+Homogeneous background. Dimension: 3.000 Density: 0.1238 r.m.s.: 0.0482
+Regularization parameter: 1
+
+### Distance distribution ###
+r.m.s. error of fit: 0.1055
+Range of interest from  1.50 to  8.00 nm
+Mean distance  <r>  1.95 nm
+Std. dev. sigma(r)  0.22 nm
+3rd moment          0.01 nm

@@ -1,0 +1,13 @@
+DEER analysis of data set CT_deer_broad by Tikh_r
+
+### Description of data set ###
+Source file:
+C:\Programme\DeerAnalysisPackage\examples\CT_deer_broad.DTA
+Constant-time DEER. 317 complex data points
+
+### Pre-processing ###
+Time shift: 128 ns
+Cutoff at : 2528 ns
+Phase correction:  -1.3°
+Background fitting starts at : 328 ns
+Homogeneous background. Dimension: 3.000 Density: 0.0455 r.m.s.: 0.2904

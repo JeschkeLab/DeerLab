@@ -1,0 +1,15 @@
+>>> DEER analysis of list of data sets series <<<
+
+- Tikhonov regularization -
+
+
+### Pre-processing ###
+Time shift: 128 ns
+Cutoff at : 2528 ns
+Homogeneous 3 dimensional background correction
+Starting at : 304 ns
+
+### Global distance distribution ###
+Mean distance  <r>  3.95 nm, with std. dev.  0.06 nm
+Std. dev. sigma(r)  0.91 nm, with std. dev.  0.07 nm
+3rd moment         -0.47 nm, with std. dev.  0.18 nm

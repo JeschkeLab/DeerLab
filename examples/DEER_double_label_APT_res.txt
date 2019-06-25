@@ -1,0 +1,25 @@
+DEER analysis of data set DEER_double_label by APT
+
+### Description of data set ###
+Source file:
+C:\Programme\DeerAnalysisPackage\examples\DEER_double_label.DTA
+Constant-time DEER. 255 complex data points
+
+### Pre-processing ###
+Time shift: 128 ns
+Cutoff at : 2032 ns
+Phase correction:  12.1°
+Background fitting starts at : 376 ns
+Homogeneous background. Dimension: 2.000 Density: 0.5676 r.m.s.: 0.3360
+Distance-domain smoothing filter width:  0.05 nm
+
+### Distance distribution ###
+r.m.s. error of fit: 3.1096
+Range of interest from  1.75 to  8.00 nm
+Mean distance  <r>  3.31 nm
+Std. dev. sigma(r)  1.02 nm
+3rd moment          0.53 nm
+Full range from  1.50 to 40.00 nm
+Mean distance  <r>  2.93 nm
+Std. dev. sigma(r)  1.15 nm
+3rd moment          0.86 nm

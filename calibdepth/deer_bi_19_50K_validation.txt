@@ -1,0 +1,16 @@
+Tikhonov validation for file deer_bi_19_50K
+
+Selected data set:
+
+Density calibrated: 0.389 uncalibrated: 0.060
+Mod. depth: 0.526
+Dimension: 3.00
+r.m.s.d.: 0.006720
+Constraints: ( 1.86,  2.61) nm
+
+All data sets:
+
+Density range: ( 0.389, 0.389)
+Mod. depth range: ( 0.210, 0.842)
+Dimension range: ( 3.00, 3.00)
+Best r.m.s.d.: 0.006720

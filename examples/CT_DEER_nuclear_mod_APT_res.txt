@@ -1,0 +1,25 @@
+DEER analysis of data set CT_DEER_nuclear_mod by APT
+
+### Description of data set ###
+Source file:
+C:\Programme\DeerAnalysisPackage\examples\CT_DEER_nuclear_mod.DTA
+Constant-time DEER. 205 complex data points
+
+### Pre-processing ###
+Time shift: 128 ns
+Cutoff at : 1632 ns
+Phase correction:  22.5°
+Background fitting starts at : 224 ns
+Homogeneous background. Dimension: 3.000 Density: 0.0880 r.m.s.: 0.1407
+Distance-domain smoothing filter width:  0.05 nm
+
+### Distance distribution ###
+r.m.s. error of fit: 0.1207
+Range of interest from  1.75 to  8.00 nm
+Mean distance  <r>  3.35 nm
+Std. dev. sigma(r)  0.81 nm
+3rd moment         -0.06 nm
+Full range from  1.50 to 40.00 nm
+Mean distance  <r>  2.95 nm
+Std. dev. sigma(r)  1.03 nm
+3rd moment          0.02 nm
