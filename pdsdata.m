@@ -16,6 +16,7 @@ classdef pdsdata
     DipEvoFcn
     ClusterSignal
     ModDepth
+    Background
   end
 %==========================================================================  
 
@@ -45,13 +46,14 @@ classdef pdsdata
     %Fit background
     Data2fit = obj.ClusterSignal(Cutoff:end);
     FitTimeAxis = obj.TimeAxis(Cutoff:end);
-    Background = fitBackground(Data2fit,obj.TimeAxis,FitTimeAxis,'exponential');
+    obj.Background = fitBackground(Data2fit,obj.TimeAxis,FitTimeAxis,'exponential');
     %Correct for background by division
-    obj.FormFactor = obj.ClusterSignal./Background;
+    obj.FormFactor = obj.ClusterSignal./obj.Background;
+    obj.FormFactor = obj.FormFactor/obj.FormFactor(1);
     %Calculate modulation depth
-    obj.ModDepth = 1 - Background(1);
+    obj.ModDepth = 1 - obj.Background(1);
     %Get dipolar evoution function
-    DipolarEvolution = obj.FormFactor - obj.ModDepth;
+    DipolarEvolution = obj.FormFactor - (1 - obj.ModDepth);
     DipolarEvolution = DipolarEvolution./DipolarEvolution(1);
     obj.DipEvoFcn = DipolarEvolution;
   end
