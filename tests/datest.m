@@ -51,7 +51,7 @@ else
   FileMask = [TestName '*_*.m'];
 end
 
-FileList = dir(FileMask);
+FileList = dir(fullfile(DeerAnalysisPath,'tests',FileMask));
 
 if numel(FileList)==0
   error('No test functions matching the pattern %s',FileMask);
