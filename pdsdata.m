@@ -1,36 +1,70 @@
 classdef pdsdata
-  
+
+%==========================================================================
   properties
     TimeAxis
-    RawData
-    FormFactor
-    DipEvoFctn
-    ModDepth
+    ExpData
   end
-  
+%==========================================================================
+
+%==========================================================================
   properties (SetAccess = private)
     TimeStep
     Length
     TimeUnits
+    FormFactor
+    DipEvoFcn
+    ClusterSignal
+    ModDepth
   end
-  
+%==========================================================================  
+
+%==========================================================================
   methods
     
-%     function TimeStep = get.TimeStep(obj)
-%       TimeStep = obj.TimeAxis(end)/obj.Length;
-%     end
+    %----------------------------------------------------------------------
+    function obj = set.ExpData(obj,ExpData)
+      obj = getLength(obj,ExpData);
+      obj.ExpData = ExpData;
+      checklengths(obj)
+    end
+    %----------------------------------------------------------------------
     
+    %----------------------------------------------------------------------
     function obj = set.TimeAxis(obj,TimeAxis)
+      obj = getLength(obj,TimeAxis);
       obj.TimeAxis = TimeAxis;
       obj = updateTimeStep(obj);
     end
+  %----------------------------------------------------------------------
+
+  %----------------------------------------------------------------------
+  function obj = prepareFormFactor(obj,Cutoff)
+    %Normalize cluster signal
+    obj.ClusterSignal = obj.ExpData./obj.ExpData(1);
+    %Fit background
+    Data2fit = obj.ClusterSignal(Cutoff:end);
+    FitTimeAxis = obj.TimeAxis(Cutoff:end);
+    Background = fitBackground(Data2fit,obj.TimeAxis,FitTimeAxis,'exponential');
+    %Correct for background by division
+    obj.FormFactor = obj.ClusterSignal./Background;
+    %Calculate modulation depth
+    obj.ModDepth = 1 - Background(1);
+    %Get dipolar evoution function
+    DipolarEvolution = obj.FormFactor - obj.ModDepth;
+    DipolarEvolution = DipolarEvolution./DipolarEvolution(1);
+    obj.DipEvoFcn = DipolarEvolution;
   end
+  %----------------------------------------------------------------------
   
+  end
+%==========================================================================
+
+%==========================================================================
   methods(Access = private)
     
+    %----------------------------------------------------------------------
     function obj = updateTimeStep(obj)
-      %Get number of points in time axis
-      obj.Length = length(obj.TimeAxis);
       %Check that units are in ns
       if obj.TimeAxis(end)<50
         %If in us then rescale
@@ -40,6 +74,26 @@ classdef pdsdata
       %Get time step and round to 1ns resolution
       obj.TimeStep = round(obj.TimeAxis(end)/obj.Length,0);
     end
+    %----------------------------------------------------------------------
+    
+    %----------------------------------------------------------------------
+    function obj = getLength(obj,array)
+      obj.Length = length(array);
+    end
+    %----------------------------------------------------------------------
+    
+    %----------------------------------------------------------------------
+    %Check for equal data and time axis length
+    function checklengths(obj)
+      if ~(isempty(obj.ExpData) && isempty(obj.TimeAxis))
+        if length(obj.TimeAxis) ~=  length(obj.ExpData)
+          error('RawData and TimeAxis arrays are not equally long.')
+        end
+      end
+    end
+    %----------------------------------------------------------------------
+    
   end
-  
+%==========================================================================
+
 end
