@@ -1,4 +1,4 @@
-function [bckg,handback]=fit_bckg(handles,texp,t_fit,data_fit)
+function [bckg,handback]=fitbckg(handles,texp,t_fit,data_fit)
 %
 % Fits background decay according to the model selected by
 % handles.background
