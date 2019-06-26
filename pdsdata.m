@@ -24,6 +24,7 @@ classdef pdsdata
     Background
     ZeroTime
     Phase
+    FitStart
   end
 %==========================================================================
   
@@ -91,16 +92,18 @@ methods
       if isempty(obj.TimeAxis)
         error('TimeAxis property is empty.')
       end
-      Cutoff = 70;
       %Normalize cluster signal
       obj.ClusterFcn = obj.ExpData/obj.ExpData(1);
       [obj.ClusterFcn,obj.Phase] = correctPhase(obj.ClusterFcn);
       [obj.ClusterFcn,obj.TimeAxis,obj.ZeroTime] = correctZeroTime(obj.ClusterFcn,obj.TimeAxis);
        
       %Fit background
-      Data2fit = obj.ClusterFcn(Cutoff:end);
-      FitTimeAxis = obj.TimeAxis(Cutoff:end);
-      obj.Background = fitBackground(Data2fit,obj.TimeAxis,FitTimeAxis,'exponential');
+      [FitStartTime,FitStartPos] = getBackgroundStart(obj.ClusterFcn ,obj.TimeAxis);
+      obj.FitStart = FitStartTime;
+      Data2fit = obj.ClusterFcn(FitStartPos:end);
+      FitTimeAxis = obj.TimeAxis(FitStartPos:end);
+
+      obj.Background = fitBackground(Data2fit,obj.TimeAxis,FitTimeAxis,'exponential',[],true);
       
       %Correct for background by division
       obj.FormFactor = obj.ClusterFcn./obj.Background;
