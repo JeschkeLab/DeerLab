@@ -1,13 +1,18 @@
 classdef pdsdata
   
-  %==========================================================================
+%==========================================================================
+% Public Properties
+%==========================================================================
   properties
     TimeAxis
     ExpData
   end
-  %==========================================================================
+%==========================================================================
   
-  %==========================================================================
+  
+%==========================================================================
+% Private Properties
+%==========================================================================
   properties (SetAccess = private)
     TimeStep
     Length
@@ -20,10 +25,13 @@ classdef pdsdata
     ZeroTime
     Phase
   end
-  %==========================================================================
+%==========================================================================
   
-  %==========================================================================
-  methods
+  
+%==========================================================================
+% Public methods
+%==========================================================================  
+methods
     
     %----------------------------------------------------------------------
     function obj = pdsdata(varargin)
@@ -52,23 +60,43 @@ classdef pdsdata
     %----------------------------------------------------------------------
     function obj = set.TimeAxis(obj,TimeAxis)
       obj = getLength(obj,TimeAxis);
+      [obj,TimeAxis] = updateTimeStep(obj,TimeAxis);
       obj.TimeAxis = TimeAxis;
-      obj = updateTimeStep(obj);
     end
     %----------------------------------------------------------------------
   
-  
+    %----------------------------------------------------------------------
+    function obj = set.ModDepth(obj,ModDepth)
+      if ModDepth<0 || ModDepth>1
+        error('Modulation depth is out of boundaries.')
+      end
+      obj.ModDepth = ModDepth;
+    end
+    %----------------------------------------------------------------------
+    
+    %----------------------------------------------------------------------
+    function obj = set.Length(obj,Length)
+      if Length==0
+        error('Input array is empty.')
+      end
+      obj.Length = Length;
+    end
+    %----------------------------------------------------------------------
 
     %----------------------------------------------------------------------
     function obj = prepareFormFactor(obj)
-
+      if isempty(obj.ExpData)
+        error('ExpData property is empty.')
+      end
+      if isempty(obj.TimeAxis)
+        error('TimeAxis property is empty.')
+      end
       Cutoff = 70;
       %Normalize cluster signal
       obj.ClusterFcn = obj.ExpData/obj.ExpData(1);
       [obj.ClusterFcn,obj.Phase] = correctPhase(obj.ClusterFcn);
-      [obj.TimeAxis,obj.ZeroTime] = correctZeroTime(obj.ClusterFcn,obj.TimeAxis);
+      [obj.ClusterFcn,obj.TimeAxis,obj.ZeroTime] = correctZeroTime(obj.ClusterFcn,obj.TimeAxis);
        
-
       %Fit background
       Data2fit = obj.ClusterFcn(Cutoff:end);
       FitTimeAxis = obj.TimeAxis(Cutoff:end);
@@ -95,21 +123,23 @@ classdef pdsdata
     %----------------------------------------------------------------------
   
   end
-  %==========================================================================
+%==========================================================================
   
-  %==========================================================================
+%==========================================================================
+% Private methods
+%==========================================================================
   methods(Access = private)
     
     %----------------------------------------------------------------------
-    function obj = updateTimeStep(obj)
+    function [obj,TimeAxis] = updateTimeStep(obj,TimeAxis)
       %Check that units are in ns
-      if obj.TimeAxis(end)<50
+      if TimeAxis(end)<50
         %If in us then rescale
-        obj.TimeAxis = obj.TimeAxis/1000;
+        TimeAxis = TimeAxis*1000;
       end
       obj.TimeUnits = 'ns';
       %Get time step and round to 1ns resolution
-      obj.TimeStep = round(obj.TimeAxis(end)/obj.Length,0);
+      obj.TimeStep = round(TimeAxis(end)/obj.Length,0);
     end
     %----------------------------------------------------------------------
     
@@ -118,7 +148,7 @@ classdef pdsdata
       obj.Length = length(array);
     end
     %----------------------------------------------------------------------
-    
+
     %----------------------------------------------------------------------
     %Check for equal data and time axis length
     function checklengths(obj)
@@ -139,8 +169,8 @@ classdef pdsdata
     end
     %----------------------------------------------------------------------
     
-    
   end
-  %==========================================================================
+%==========================================================================
   
 end
+
