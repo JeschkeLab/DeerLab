@@ -13,7 +13,7 @@ else
 end
 
 % If phse is not provided, then fit it
-if nargin>1
+if nargin==1 || nargin==3
   SignalEnd = PrimaryData(length(PrimaryData));
   phi0 = atan2(imag(SignalEnd),real(SignalEnd));
   FittedPhase = phi0;
@@ -24,10 +24,16 @@ if nargin>1
     FittedPhase(2) = 0;
   end
   FittedPhase = fminsearch(@RMSD_PhaseOffset,FittedPhase,[],Signal(FitStart:end));
-  if isempty(Phase)
+  if nargin<2
     Phase=FittedPhase(1);
+  else
+    if isempty(Phase)
+      Phase=FittedPhase(1);
+    end
   end
-  if sum(real(Signal*exp(1i*Phase)))<0, Phase=Phase+pi; end
+  if sum(real(Signal*exp(1i*Phase)))<0
+    Phase=Phase+pi;
+  end
 end
 
 if FittedImaginaryOffset
