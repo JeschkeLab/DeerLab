@@ -17,6 +17,8 @@ classdef pdsdata
     ClusterFcn
     ModDepth
     Background
+    ZeroTime
+    Phase
   end
   %==========================================================================
   
@@ -39,6 +41,9 @@ classdef pdsdata
     %----------------------------------------------------------------------
     function obj = set.ExpData(obj,ExpData)
       obj = getLength(obj,ExpData);
+      if iscolumn(ExpData)
+        ExpData = ExpData';
+      end
       obj.ExpData = ExpData;
       checklengths(obj)
     end
@@ -51,13 +56,19 @@ classdef pdsdata
       obj = updateTimeStep(obj);
     end
     %----------------------------------------------------------------------
-    
+  
+  
+
     %----------------------------------------------------------------------
-    function obj = prepareFormFactor(obj,Cutoff)
+    function obj = prepareFormFactor(obj)
+
       Cutoff = 70;
       %Normalize cluster signal
       obj.ClusterFcn = obj.ExpData/obj.ExpData(1);
-      
+      [obj.ClusterFcn,obj.Phase] = correctPhase(obj.ClusterFcn);
+      [obj.TimeAxis,obj.ZeroTime] = correctZeroTime(obj.ClusterFcn,obj.TimeAxis);
+       
+
       %Fit background
       Data2fit = obj.ClusterFcn(Cutoff:end);
       FitTimeAxis = obj.TimeAxis(Cutoff:end);
@@ -77,14 +88,12 @@ classdef pdsdata
     end
     %----------------------------------------------------------------------
     
-    %----------------------------------------------------------------------
-    function obj = plot(obj)
-      obj = getLength(obj,TimeAxis);
-      obj.TimeAxis = TimeAxis;
-      obj = updateTimeStep(obj);
+ %----------------------------------------------------------------------
+    function plot(obj)
+        plot(obj.TimeAxis,obj.ClusterFcn)
     end
     %----------------------------------------------------------------------
-    
+  
   end
   %==========================================================================
   
