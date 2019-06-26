@@ -1,6 +1,6 @@
-function [correctedTimeAxis,ZeroTime] = correctZeroTime(Signal,TimeAxis,ZeroTime)
+function [correctedSignal,correctedTimeAxis,ZeroTime] = correctZeroTime(Signal,TimeAxis,ZeroTime)
 
-%
+%Generate finely-grained interpolated signal and time axis
 FineTimeAxis = min(TimeAxis):1:max(TimeAxis);
 FineSignal=interp1(TimeAxis,real(Signal),FineTimeAxis,'spline',real(Signal(1)));
 % get zero time, if not provided
@@ -55,24 +55,15 @@ else
     [~,ZeroTimePos] = min(abs(FineTimeAxis-ZeroTime));
 end
 
-% correctedSignal = FineSignal(ZeroTimePos:end);
-% % 
-% renorm = 1;
-% % get smoothed estimate of maximum
-% if ZeroTimePos > 10
-%     xax = 1:2*ZeroTimePos;
-%     [p,~] = polyfit(xax,FineSignal(1:2*ZeroTimePos),11);
-%     smoothed = polyval(p,xax);
-%     renorm = smoothed(ZeroTimePos);
-%     Signal = Signal/smoothed(ZeroTimePos);
-% %     expdat = expdat/smoothed(nmp);
-% %     smoothed = smoothed/smoothed(nmp);
-% %     figure(13); clf;
-% %     plot(expdat,'k');
-% %     hold on;
-% %     plot([nmp,nmp],[0,1],'b');
-% %     plot(1:2*nmp,smoothed,'r');
-% end
+% Get a smoothed estimate of the zero-position
+if ZeroTimePos > 10
+  SmoothingAxis = 1:min(2*ZeroTimePos,length(FineSignal));
+  [p,~] = polyfit(SmoothingAxis,FineSignal(SmoothingAxis),11);
+  SmoothZeroTimeRegion = polyval(p,SmoothingAxis);
+  correctedSignal = Signal/SmoothZeroTimeRegion(ZeroTimePos);
+else
+  correctedSignal = Signal;
+end
 
 % Correct time axis
 correctedTimeAxis = TimeAxis - ZeroTime*ones(size(TimeAxis));
