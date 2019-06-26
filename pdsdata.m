@@ -1,27 +1,40 @@
 classdef pdsdata
-
-%==========================================================================
+  
+  %==========================================================================
   properties
     TimeAxis
     ExpData
   end
-%==========================================================================
-
-%==========================================================================
+  %==========================================================================
+  
+  %==========================================================================
   properties (SetAccess = private)
     TimeStep
     Length
     TimeUnits
     FormFactor
     DipEvoFcn
-    ClusterSignal
+    ClusterFcn
     ModDepth
     Background
   end
-%==========================================================================  
-
-%==========================================================================
+  %==========================================================================
+  
+  %==========================================================================
   methods
+    
+    %----------------------------------------------------------------------
+    function obj = pdsdata(varargin)
+      if nargin>0
+        if mod(nargin,2)
+          error('Wrong number of arguments')
+        end
+        for i=1:2:length(varargin)
+          obj = setProperty(obj,varargin{i},varargin{i+1});
+        end
+      end
+    end
+    %----------------------------------------------------------------------
     
     %----------------------------------------------------------------------
     function obj = set.ExpData(obj,ExpData)
@@ -37,32 +50,45 @@ classdef pdsdata
       obj.TimeAxis = TimeAxis;
       obj = updateTimeStep(obj);
     end
-  %----------------------------------------------------------------------
-
-  %----------------------------------------------------------------------
-  function obj = prepareFormFactor(obj,Cutoff)
-    %Normalize cluster signal
-    obj.ClusterSignal = obj.ExpData./obj.ExpData(1);
-    %Fit background
-    Data2fit = obj.ClusterSignal(Cutoff:end);
-    FitTimeAxis = obj.TimeAxis(Cutoff:end);
-    obj.Background = fitBackground(Data2fit,obj.TimeAxis,FitTimeAxis,'exponential');
-    %Correct for background by division
-    obj.FormFactor = obj.ClusterSignal./obj.Background;
-    obj.FormFactor = obj.FormFactor/obj.FormFactor(1);
-    %Calculate modulation depth
-    obj.ModDepth = 1 - obj.Background(1);
-    %Get dipolar evoution function
-    DipolarEvolution = obj.FormFactor - (1 - obj.ModDepth);
-    DipolarEvolution = DipolarEvolution./DipolarEvolution(1);
-    obj.DipEvoFcn = DipolarEvolution;
+    %----------------------------------------------------------------------
+    
+    %----------------------------------------------------------------------
+    function obj = prepareFormFactor(obj,Cutoff)
+      Cutoff = 70;
+      %Normalize cluster signal
+      obj.ClusterFcn = obj.ExpData/obj.ExpData(1);
+      
+      %Fit background
+      Data2fit = obj.ClusterFcn(Cutoff:end);
+      FitTimeAxis = obj.TimeAxis(Cutoff:end);
+      obj.Background = fitBackground(Data2fit,obj.TimeAxis,FitTimeAxis,'exponential');
+      
+      %Correct for background by division
+      obj.FormFactor = obj.ClusterFcn./obj.Background;
+      obj.FormFactor = obj.FormFactor/obj.FormFactor(1);
+      
+      %Calculate modulation depth
+      obj.ModDepth = 1 - obj.Background(1);
+      
+      %Get dipolar evoution function
+      DipolarEvolution = obj.FormFactor - (1 - obj.ModDepth);
+      DipolarEvolution = DipolarEvolution./DipolarEvolution(1);
+      obj.DipEvoFcn = DipolarEvolution;
+    end
+    %----------------------------------------------------------------------
+    
+    %----------------------------------------------------------------------
+    function obj = plot(obj)
+      obj = getLength(obj,TimeAxis);
+      obj.TimeAxis = TimeAxis;
+      obj = updateTimeStep(obj);
+    end
+    %----------------------------------------------------------------------
+    
   end
-  %----------------------------------------------------------------------
+  %==========================================================================
   
-  end
-%==========================================================================
-
-%==========================================================================
+  %==========================================================================
   methods(Access = private)
     
     %----------------------------------------------------------------------
@@ -95,7 +121,17 @@ classdef pdsdata
     end
     %----------------------------------------------------------------------
     
+    %----------------------------------------------------------------------
+    function obj = setProperty(obj,Property,Value)
+      if ~isa(Property,'char') && ~isa(Property,'string')
+        error('Invalid first data argument')
+      end
+      eval(sprintf('obj.%s = Value;',Property));
+    end
+    %----------------------------------------------------------------------
+    
+    
   end
-%==========================================================================
-
+  %==========================================================================
+  
 end

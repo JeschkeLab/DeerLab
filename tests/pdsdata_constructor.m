@@ -5,12 +5,11 @@ function [err,data] = test(opt,olddata)
 %======================================================
 
 %Parameters
-Offset = 1;
+Offset = 2;
 ModulationDepth = 0.35;
 DecayRate = 0.0005;
 Length = 200;
 TimeStep = 16;
-Cutoff = 70;
 
 TimeAxis = linspace(0,Length*TimeStep,Length);
 %Construct some dipolar evolution function from Fresnel integral
@@ -26,32 +25,29 @@ clustersignal = FormFactor.*bckg;
 % dipevo = dipevo./dipevo(1);
 
 %Cosntruct the class to be tested
-classStructure = pdsdata();
-%Introduce the data
-classStructure.TimeAxis = TimeAxis;
-classStructure.ExpData = clustersignal;
+myClass = pdsdata('TimeAxis',TimeAxis,'ExpData',clustersignal);
 %And let the class prepare the time traces
-classStructure = prepareFormFactor(classStructure,Cutoff);
+myClass = prepareFormFactor(myClass);
 
 
 clustersignal = clustersignal./clustersignal(1);
 FormFactor = FormFactor./FormFactor(1);
 
 %Check for errors
-err(1) = classStructure.Length~=Length;
-err(2) = classStructure.TimeStep~=TimeStep;
-err(3) = any(abs(classStructure.FormFactor - olddata.FormFactor)>1e-10);
-err(4) = any(abs(classStructure.DipEvoFcn - olddata.DipEvoFcn)>1e-10);
-err(5) = any(abs(classStructure.ClusterSignal - olddata.ClusterSignal)>1e-10);
-err(6) = abs(classStructure.ModDepth - olddata.ModDepth)/ModulationDepth>0.05;
+err(1) = myClass.Length~=Length;
+err(2) = myClass.TimeStep~=TimeStep;
+err(3) = any(abs(myClass.FormFactor - olddata.FormFactor)>1e-10);
+err(4) = any(abs(myClass.DipEvoFcn - olddata.DipEvoFcn)>1e-10);
+err(5) = any(abs(myClass.ClusterFcn - olddata.ClusterSignal)>1e-10);
+err(6) = abs(myClass.ModDepth - olddata.ModDepth)/ModulationDepth>0.05;
 
 err = any(err);
 
 if ~err
-  data.FormFactor = classStructure.FormFactor;
-  data.DipEvoFcn = classStructure.DipEvoFcn;
-  data.ClusterSignal = classStructure.ClusterSignal;
-  data.ModDepth = classStructure.ModDepth;
+  data.FormFactor = myClass.FormFactor;
+  data.DipEvoFcn = myClass.DipEvoFcn;
+  data.ClusterSignal = myClass.ClusterFcn;
+  data.ModDepth = myClass.ModDepth;
 else
   data = [];
 end
