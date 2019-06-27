@@ -63,6 +63,7 @@ methods
       obj = getLength(obj,TimeAxis);
       [obj,TimeAxis] = updateTimeStep(obj,TimeAxis);
       obj.TimeAxis = TimeAxis;
+      checklengths(obj)
     end
     %----------------------------------------------------------------------
   
@@ -86,6 +87,12 @@ methods
 
     %----------------------------------------------------------------------
     function obj = prepareFormFactor(obj)
+    % Perfmorm basic pre-processing of PDS primary data: phase correction,
+    % zero-time correction, background fitting, and construction of the
+    % form factor and dipolar evolution function. 
+    % Can be called as: 
+    %        ObjName = ObjName.prepareFormFactor()
+    %        ObjName = prepareFormFactor(ObjName)
       if isempty(obj.ExpData)
         error('ExpData property is empty.')
       end
@@ -153,11 +160,12 @@ methods
     %----------------------------------------------------------------------
 
     %----------------------------------------------------------------------
-    %Check for equal data and time axis length
+    %Checks consistency of data arrays length when updating public
+    %properties
     function checklengths(obj)
-      if ~(isempty(obj.ExpData) && isempty(obj.TimeAxis))
+      if ~(isempty(obj.ExpData) || isempty(obj.TimeAxis))
         if length(obj.TimeAxis) ~=  length(obj.ExpData)
-          error('RawData and TimeAxis arrays are not equally long.')
+          error('ExpData and TimeAxis arrays are not equally long.')
         end
       end
     end
