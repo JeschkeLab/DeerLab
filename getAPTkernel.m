@@ -1,4 +1,4 @@
-function [base,tnorm,ny,t,crosstalk]=getAPTkernel(numdat)
+function [Base,NormalizationFactor,FreqAxis,TimeAxis,crosstalk]=getAPTkernel(TimeDimension,TimeStep)
 % Computes kernel for approximate Pake transformation
 %
 % numdat    number of data points in time domain
@@ -14,32 +14,41 @@ function [base,tnorm,ny,t,crosstalk]=getAPTkernel(numdat)
 % (c) G. Jeschke, 2001,2019
 %
 
-t=linspace(0,(numdat-1)*0.008,numdat); % time axis, increment 8 ns
-dny=1/(2*max(t)); % eqn [23] of Ref. (1)
-numny=floor(numdat/2)-2; % length of dipolar frequency axis
-ny=linspace(1,numny,numny);
-ny=dny*(ny+1/4*ones(1,numny)); % still eqn [23]
-tnorm=zeros(1,numny); % initialize vector of normalization constants
-base=zeros(numny,numdat); % initialize kernel array
-for k=1:numny % loop over dipolar frequency values
-   wdd=2*pi*ny(k); % angular frequency
-   if mod(k,10) == 0
-   end
-   for x=0:0.001:1 % loop over theta values
-      ww=wdd*(3*x^2-1); % current dipolar frequency
-      base(k,:)=base(k,:) + cos(ww*t); % add data trace to kernel
-   end
+if nargin<2 || isempty(TimeStep)
+  TimeStep = 0.008;
 end
-for k=1:numny % normalize kernel traces to value at time origin
-   base(k,:)=base(k,:)/base(k,1);
-   tnorm(k)=sum(base(k,:).*base(k,:).*t); % compute normalization constant, eqn [19]
-end
-[m,~]=size(base); % size of kernel
+
+TimeAxis = linspace(0,(TimeDimension-1)*TimeStep,TimeDimension);
+FreqElement = 1/(2*max(TimeAxis));
+FreqDimension = floor(TimeDimension/2)-2;
+FreqAxis = linspace(1,FreqDimension,FreqDimension);
+FreqAxis = FreqElement*(FreqAxis+1/4*ones(1,FreqDimension));
+
+NormalizationFactor=zeros(1,FreqDimension); % initialize vector of normalization constant
+
+wdd=2*pi*FreqAxis'; % angular frequency
+%Allocate products for speed
+wddt = wdd*TimeAxis;
+kappa = sqrt(6*wddt/pi);
+%Compute Fresnel integrals of 0th order
+C = fresnelC(kappa);
+S = fresnelS(kappa);
+
+%Compute dipolar kernel
+Base = sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
+Base(:,1) = 1; 
+
+%Normalize with respect to dipolar evolution time
+for k=1:FreqDimension % normalize kernel traces to value at time origin
+  Base(k,:) = Base(k,:)./Base(k,1);
+  NormalizationFactor(k) = sum(Base(k,:).*Base(k,:).*TimeAxis); % compute normalization constant, eqn [19]
+end;
+
+[m,n]=size(Base); % size of kernel
 crosstalk=zeros(m,m); % initialize crosstalk matrix
 for k=1:m % compute crosstalk matrix, eqn [20]
-    for l=1:m
-        mu=base(k,:);
-        crosstalk(k,l)= sum(mu.*base(l,:).*t)/tnorm(k);
-    end
-end
-condition=cond(crosstalk); % condition number of crosstalk matrix, currently unused
+  for l=1:m
+    mu=Base(k,:);
+    crosstalk(k,l)= sum(mu.*Base(l,:).*TimeAxis)/NormalizationFactor(k);
+  end;
+end;
