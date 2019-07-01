@@ -1,10 +1,11 @@
 function [FitStartTime,FitStartPos]=getBackgroundStart(Signal,TimeAxis,EndCutoffPos,BckgModel,ModelParam)
 
-if nargin<5
+if nargin<5 || isempty(BckgModel)
   BckgModel = 'exponential';
   ModelParam = [];
 end
-if nargin<4
+
+if nargin<4 || isempty(EndCutoffPos)
   EndCutoffPos = length(TimeAxis);
 end
 
@@ -60,10 +61,10 @@ for FitStartPos=StartPosMin:StartPosMax
   FreqDistribution=zeros(1,FreqDimension); % initialize distribution
   for k=1:FreqDimension % sum in eqn [21]
     FreqDistribution(k)=FreqDistribution(k)+sum(Kernel(k,:).*FormFactor.*APT_TimeAxis)/NormConstant(k);
-  end;
+  end
   APTdistribution = Crosstalk\FreqDistribution'; % crosstalk correction, eqn [22]
   Merit(FitStartPos - StartPosMin + 1) = sum(abs(APTdistribution(1:3)));
-end;
+end
 
 [~,OptStartPos] = min(Merit);
 FitStartPos = OptStartPos + StartPosMin - 1;

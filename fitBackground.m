@@ -24,7 +24,7 @@
 % 
 % Luis Fabregas 2019, DeerAnalysis 
 %
-function [Background,FitResults]=fitBackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam,Averaging)
+function [Background,FitResults]=fitBackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam)
 
 if nargin<3
   error('Not enough input arguments.')
@@ -41,32 +41,6 @@ end
 %Start with a linear fit of log-data
 PolynomialFit=polyfit(FitTimeAxis,log(FitData),1); 
 LinearLogFit=[-PolynomialFit(1) 1];
-
-if Averaging
-Prediction = polyval(PolynomialFit,FitTimeAxis);
-clear RMSD
-for j=1:75
-AverFitFitData = log(FitData);
-NAverages = j;
-for i=1:NAverages
-AverFitFitData = movmean(AverFitFitData,7);
-end
-RMSD(j) = 1/2*norm(Prediction - AverFitFitData)^2;
-end
-[~,NAveragesOpt]  = min(RMSD);
-
-AverFitFitData = FitData;
-% NAveragesOpt
-for i=1:NAveragesOpt
-AverFitFitData = movmean(AverFitFitData,7);
-end
-FitData = AverFitFitData;
-
-%Start with a linear fit of log-data
-PolynomialFit=polyfit(FitTimeAxis,log(FitData),1); 
-LinearLogFit=[-PolynomialFit(1) 1];
-end
-
 
 switch BckgModel
   
@@ -113,7 +87,7 @@ function RMSD = minimizeStretchExp(StretchedExpParam,TimeAxis,Obervation)
 if StretchedExpParam(1)<0
   RMSD=1.0e10;
   return;
-end;
+end
 Prediction = StretchedExpParam(2)*exp(-abs(StretchedExpParam(1)*TimeAxis).^(StretchedExpParam(3)/3));
 RMSD = 1/2*norm(Prediction - Obervation)^2;
 return
