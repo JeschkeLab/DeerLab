@@ -31,7 +31,7 @@ clustersignal = FormFactor.*bckg;
 %Cosntruct the class to be tested
 myClass = pdsdata('TimeAxis',TimeAxis,'ExpData',clustersignal);
 %And let the class prepare the time traces
-myClass = prepareFormFactor(myClass);
+myClass = prepare(myClass);
 
 clustersignal = clustersignal./clustersignal(1);
 FormFactor = FormFactor./FormFactor(1);

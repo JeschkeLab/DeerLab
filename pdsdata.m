@@ -6,17 +6,6 @@ classdef pdsdata
   properties
     TimeAxis
     ExpData
-  end
-%==========================================================================
-  
-  
-%==========================================================================
-% Private Properties
-%==========================================================================
-  properties (SetAccess = private)
-    TimeStep
-    Length
-    TimeUnits
     FormFactor
     DipEvoFcn
     ClusterFcn
@@ -28,6 +17,20 @@ classdef pdsdata
   end
 %==========================================================================
   
+  
+%==========================================================================
+% Private Properties
+%==========================================================================
+  properties (SetAccess = private)
+    TimeStep
+    Length
+    TimeUnits
+  end
+%==========================================================================
+ 
+properties (Hidden)
+    ID 
+end
   
 %==========================================================================
 % Public methods
@@ -44,6 +47,8 @@ methods
           obj = setProperty(obj,varargin{i},varargin{i+1});
         end
       end
+      ID =  java.util.UUID.randomUUID;
+      obj.ID = ID.toString;
     end
     %----------------------------------------------------------------------
     
@@ -61,6 +66,9 @@ methods
     %----------------------------------------------------------------------
     function obj = set.TimeAxis(obj,TimeAxis)
       obj = getLength(obj,TimeAxis);
+      if iscolumn(TimeAxis)
+        TimeAxis = TimeAxis';
+      end
       [obj,TimeAxis] = updateTimeStep(obj,TimeAxis);
       obj.TimeAxis = TimeAxis;
       checklengths(obj)
@@ -86,49 +94,38 @@ methods
     %----------------------------------------------------------------------
 
     %----------------------------------------------------------------------
-    function obj = prepareFormFactor(obj)
-    % Perfmorm basic pre-processing of PDS primary data: phase correction,
-    % zero-time correction, background fitting, and construction of the
-    % form factor and dipolar evolution function. 
-    % Can be called as: 
-    %        ObjName = ObjName.prepareFormFactor()
-    %        ObjName = prepareFormFactor(ObjName)
-      if isempty(obj.ExpData)
-        error('ExpData property is empty.')
-      end
-      if isempty(obj.TimeAxis)
-        error('TimeAxis property is empty.')
-      end
-      %Normalize cluster signal
-      obj.ClusterFcn = obj.ExpData/obj.ExpData(1);
-      [obj.ClusterFcn,obj.Phase] = correctPhase(obj.ClusterFcn);
-      [obj.ClusterFcn,obj.TimeAxis,obj.ZeroTime] = correctZeroTime(obj.ClusterFcn,obj.TimeAxis);
-       
-      %Fit background
-      [FitStartTime,FitStartPos] = getBackgroundStart(obj.ClusterFcn ,obj.TimeAxis);
-      obj.FitStart = FitStartTime;
-      Data2fit = obj.ClusterFcn(FitStartPos:end);
-      FitTimeAxis = obj.TimeAxis(FitStartPos:end);
-
-      obj.Background = fitBackground(Data2fit,obj.TimeAxis,FitTimeAxis,'exponential',[],true);
-      
-      %Correct for background by division
-      obj.FormFactor = obj.ClusterFcn./obj.Background;
-      obj.FormFactor = obj.FormFactor/obj.FormFactor(1);
-      
-      %Calculate modulation depth
-      obj.ModDepth = 1 - obj.Background(1);
-      
-      %Get dipolar evoution function
-      DipolarEvolution = obj.FormFactor - (1 - obj.ModDepth);
-      DipolarEvolution = DipolarEvolution./DipolarEvolution(1);
-      obj.DipEvoFcn = DipolarEvolution;
+    function obj = prepare(obj,opts)
+        if nargin<2 || isempty(opts)
+           opts = daopts; 
+        end
+         obj  = prepareSignal(obj,opts);
     end
     %----------------------------------------------------------------------
     
- %----------------------------------------------------------------------
-    function plot(obj)
-        plot(obj.TimeAxis,obj.ClusterFcn)
+    %----------------------------------------------------------------------
+    function plotPreProcessing(obj)
+      if ~isempty(obj.ClusterFcn)
+        Figure = findobj('Tag',sprintf('ID: %s',obj.ID));
+        if isempty(Figure)
+          Figure = figure('Tag',sprintf('ID: %s',obj.ID),'WindowStyle','normal',...
+                          'Name','Pre-processed PDS Signal');
+        else
+          figure(Figure);
+          clf(Figure);
+        end
+        hold on
+        plot(obj.TimeAxis,obj.ClusterFcn,'k','LineWidth',2)
+        plot(obj.TimeAxis,obj.Background,'r','LineWidth',2)
+        plot([0 0],[min(obj.ClusterFcn) max(obj.ClusterFcn)],'c--','LineWidth',2)
+        plot([1 1]*obj.FitStart,[min(obj.ClusterFcn) max(obj.ClusterFcn)],'g--','LineWidth',2)
+        axis tight
+        box on, grid on
+        xlabel('Time [ns]')
+        ylabel('Amplitude')
+        legend('Cluster Data','Background','Zero Time','FitStart')
+      else
+        error('Data has not been prepared.')
+      end
     end
     %----------------------------------------------------------------------
   
