@@ -3,22 +3,22 @@ function Kernel = getKernel(dimension,TimeStep,rmin,rmax,Background)
 
 if ~exist('options','var') || isempty(options)
     options = struct();
-end;
+end
 
 if ~exist('dt','var') || isempty(TimeStep)
     TimeStep = 0.008;
-end;
+end
 
 %Numerical dipolar frequency at 1 nm for g=ge
 ny0 = 52.04; 
 
 if ~exist('rmin','var') || isempty(rmin)
     rmin = (4*TimeStep*ny0/0.85)^(1/3); 
-end;
+end
 
 if ~exist('rmax','var') || isempty(rmax)
     rmax = 6*(dimension*TimeStep/2)^(1/3);
-end;
+end
 
 %Numerical angular dipolar frequency at 1 nm for g=ge
 w0 = 2*pi*ny0; 

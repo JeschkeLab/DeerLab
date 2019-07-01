@@ -1,4 +1,4 @@
-function [Base,NormalizationFactor,FreqAxis,TimeAxis,crosstalk]=getAPTkernel(TimeDimension,TimeStep)
+function [Base,NormalizationFactor,FreqAxis,TimeAxis,Crosstalk]=getAPTkernel(TimeDimension,TimeStep)
 % Computes kernel for approximate Pake transformation
 %
 % numdat    number of data points in time domain
@@ -42,13 +42,13 @@ Base(:,1) = 1;
 for k=1:FreqDimension % normalize kernel traces to value at time origin
   Base(k,:) = Base(k,:)./Base(k,1);
   NormalizationFactor(k) = sum(Base(k,:).*Base(k,:).*TimeAxis); % compute normalization constant, eqn [19]
-end;
+end
 
-[m,n]=size(Base); % size of kernel
-crosstalk=zeros(m,m); % initialize crosstalk matrix
-for k=1:m % compute crosstalk matrix, eqn [20]
-  for l=1:m
-    mu=Base(k,:);
-    crosstalk(k,l)= sum(mu.*Base(l,:).*TimeAxis)/NormalizationFactor(k);
-  end;
-end;
+[FreqDimension,~] = size(Base); % size of kernel
+Crosstalk = zeros(FreqDimension,FreqDimension); % initialize crosstalk matrix
+for k=1:FreqDimension % compute crosstalk matrix, eqn [20]
+  for l=1:FreqDimension
+    mu = Base(k,:);
+    Crosstalk(k,l) = sum(mu.*Base(l,:).*TimeAxis)/NormalizationFactor(k);
+  end
+end

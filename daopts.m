@@ -9,6 +9,7 @@ classdef daopts
         PhaseCorrection = 'auto';
         Phase = [];
         ZeroTime = [];
+        DistDomainSmoothing = [];
     end
     
     properties (SetAccess = private)
@@ -107,6 +108,16 @@ classdef daopts
                 end
                 obj.Phase = value;
             end
+        end
+        
+        function obj = set.DistDomainSmoothing(obj,value)
+            if ~isa(value,'numeric')
+                error('daopts:incorrectType','''%s'' is not a valid input of the DistDomainSmoothing property.',value)
+            end
+            if value<0
+                error('Negative values for the DistDomainSmoothing property are not permited.')
+            end
+            obj.DistDomainSmoothing = value;
         end
         
     end
