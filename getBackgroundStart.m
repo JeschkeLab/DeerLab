@@ -12,10 +12,11 @@ end
 %Get zero-time position
 [~,ZeroTimePosition] = min(abs(TimeAxis));
 TimeAxis = TimeAxis(ZeroTimePosition:EndCutoffPos);
+TimeStep = TimeAxis(2) - TimeAxis(1);
 Signal = real(Signal((ZeroTimePosition:EndCutoffPos)));
 Length = length(TimeAxis);
 
-[Kernel,NormConstant,~,APT_TimeAxis,Crosstalk] = getAPTkernel(Length);
+[Kernel,NormConstant,~,APT_TimeAxis,Crosstalk] = getAPTkernel(Length,);
 
 % imagflag=get(handles.imaginary,'Value');
 % dcmplx=imagflag*handles.cmplx; % Complex data?
@@ -37,11 +38,11 @@ Length = length(TimeAxis);
 StartPosMin = round(0.1*Length);
 if StartPosMin<1
   StartPosMin=1;
-end;
+end
 StartPosMax = round(0.6*Length);
 if StartPosMax<5
   StartPosMax=5;
-end;
+end
 
 Merit = zeros(1,StartPosMax-StartPosMin);
 
