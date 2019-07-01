@@ -1,11 +1,15 @@
 function [correctedSignal,correctedTimeAxis,ZeroTime] = correctZeroTime(Signal,TimeAxis,ZeroTime)
 
+if nargin<3
+    ZeroTime = [];
+end
+
 %Generate finely-grained interpolated signal and time axis
 FineTimeAxis = min(TimeAxis):1:max(TimeAxis);
 FineSignal=interp1(TimeAxis,real(Signal),FineTimeAxis,'spline',real(Signal(1)));
 % get zero time, if not provided
 FineSignal=real(FineSignal);
-if nargin<3
+if isempty(ZeroTime)
     % Determine maximum
     [~,maxPos]=max(FineSignal);
     ZeroTimePos=1;

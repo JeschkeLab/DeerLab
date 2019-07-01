@@ -4,6 +4,9 @@ if nargin<3
   FittedImaginaryOffset = false;
 end
 
+if nargin==1 || nargin==3
+    Phase = [];
+end
 DirectDimension = size(PrimaryData,1);
 
 if DirectDimension>1
@@ -13,7 +16,7 @@ else
 end
 
 % If phse is not provided, then fit it
-if nargin==1 || nargin==3
+if isempty(Phase)
   SignalEnd = PrimaryData(length(PrimaryData));
   phi0 = atan2(imag(SignalEnd),real(SignalEnd));
   FittedPhase = phi0;
