@@ -5,6 +5,7 @@ classdef distdistr
       DistanceAxis
       ExpSignal
       TimeAxis
+      RegParam
    end
    
    properties (SetAccess = private)
@@ -15,6 +16,7 @@ classdef distdistr
    
    properties (Hidden)
       ID 
+      SignalID
    end
     
    methods
@@ -54,7 +56,7 @@ classdef distdistr
             Distribution = Distribution/sum(Distribution);
             obj.Distribution = Distribution;
         end
-        
+                
     function plot(obj,CompDistAxis,CompDistribution)
       if ~isempty(obj.Distribution)
         Figure = findobj('Tag',sprintf('ID: %s',obj.ID));
@@ -94,7 +96,22 @@ classdef distdistr
         obj.FitSignal = Kernel*obj.Distribution;
     end
     
-    
+    function match = findSignal(obj) 
+        baseVariables = evalin('base' , 'whos');
+        match = [];
+        for i = 1:length(baseVariables)
+            if (strcmpi(baseVariables(i).class , 'pdsdata')) % compare classnames
+                variable = evalin('base',baseVariables(i).name);
+                querySignalID = getfield(variable,'ID');
+                if obj.SignalID == querySignalID
+                    match = variable;
+                end
+            end
+        end
+        if isempty(match)
+           error('Corresponding pdsdata class object not found or deleted.') 
+        end
+    end
     
    end
    
