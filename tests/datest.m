@@ -46,9 +46,11 @@ if Opt.Display && displayTimings
 end
 
 if any(TestName=='_')
-  FileMask = [TestName '*.m'];
+    FileMask = [TestName '*.m'];
+elseif strcmp(TestName,'all')
+    FileMask = '*_*.m';
 else
-  FileMask = [TestName '*_*.m'];
+    FileMask = [TestName '*_*.m'];
 end
 
 %Look for test in the \tests directory of DeerAnalysis
