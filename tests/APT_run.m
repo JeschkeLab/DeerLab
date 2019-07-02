@@ -16,20 +16,28 @@ DistanceAxis = linspace(rmin,rmax,Dimension);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution'/sum(Distribution);
 Background = exp(-0.05*TimeAxis);
-Kernel = getAPTkernel(Dimension,TimeStep);
+Kernel = getKernel(Dimension,TimeStep/1000);
 
 DipEvoFcn = Kernel*Distribution;
-ExpData = (DipEvoFcn + 10).*Background;
+DipEvoFcn = DipEvoFcn';
+ExpData = (DipEvoFcn + 1).*Background;
 
 Signal = pdsdata('TimeAxis',TimeAxis,'ExpData',ExpData);
 Signal = prepare(Signal);
 
-Opts = daopts('DistDomainSmoothing',0.05);
+Opts = daopts('DistDomainSmoothing',0.25);
 
 outDist = APT(Signal,Opts);
-outDist.plotDistr;
-err = any(abs(outDist.Distribution - Distribution)>1e-2);
 
+Distribution = Distribution/sum(Distribution);
+err(1) = any(abs(outDist.Distribution - Distribution)>1e-1);
+err(2) = ~strcmp(outDist.Method,'APT');
+
+err = any(err);
 data = [];
+
+if opt.Display
+outDist.plot(DistanceAxis,Distribution)
+end
 
 end
