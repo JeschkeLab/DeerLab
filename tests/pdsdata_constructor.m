@@ -29,7 +29,7 @@ clustersignal = FormFactor.*bckg;
 % dipevo = dipevo./dipevo(1);
 
 %Cosntruct the class to be tested
-myClass = pdsdata('TimeAxis',TimeAxis,'ExpData',clustersignal);
+myClass = DAsignal('TimeAxis',TimeAxis,'ExpData',clustersignal);
 %And let the class prepare the time traces
 myClass = prepare(myClass);
 

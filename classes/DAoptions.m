@@ -1,4 +1,4 @@
-classdef daopts
+classdef DAoptions
     
     properties
         BackgroundModel = 'exponential'
@@ -22,7 +22,7 @@ classdef daopts
     
     methods
         
-        function obj = daopts(varargin)
+        function obj = DAoptions(varargin)
             if nargin>0
                 if mod(nargin,2)
                     error('Wrong number of arguments')

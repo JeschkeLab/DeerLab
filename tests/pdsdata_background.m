@@ -11,7 +11,7 @@ DecayRate = 0.0005;
 TimeStep = 16;
 Length = 200;
 
-TimeAxis = linspace(16,Length*TimeStep,Length);
+TimeAxis = linspace(16,Length*TimeStep,Length);     
 %Construct some dipolar evolution function from Fresnel integral
 dipevo = 1 - 2*fresnels(TimeAxis*2*pi*1/(15^3));
 dipevo = dipevo(5:end);
@@ -29,7 +29,7 @@ clustersignal = FormFactor.*bckg;
 % dipevo = dipevo./dipevo(1);
 
 %Cosntruct the class to be tested
-myClass = pdsdata('TimeAxis',TimeAxis,'ExpData',clustersignal);
+myClass = DAsignal('TimeAxis',TimeAxis,'ExpData',clustersignal);
 %And let the class prepare the time traces
 myClass = prepare(myClass);
 

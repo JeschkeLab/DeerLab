@@ -4,7 +4,7 @@ function [err,data] = test(opt,olddata)
 % Grain up function test
 %======================================================
 
-FreqAxis = 5:100;
+FreqAxis = 5:0.5:100;
 nonUniformAxis = FreqAxis.^(1/3);
 uniformAxis = linspace(min(nonUniformAxis),max(nonUniformAxis),length(nonUniformAxis));
 

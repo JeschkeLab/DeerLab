@@ -10,7 +10,6 @@ TimeStep = 0.008;
 rmin = (4*TimeStep*52.04/0.85)^(1/3);
 rmax = 6*(Dimension*TimeStep/2)^(1/3);
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-Length = length(TimeAxis);
 
 DistanceAxis = linspace(rmin,rmax,Dimension);
 Distribution = gaussian(DistanceAxis,3,0.5);
@@ -22,9 +21,9 @@ DipEvoFcn = Kernel*Distribution;
 DipEvoFcn = DipEvoFcn';
 ExpData = (DipEvoFcn + 10).*Background;
 
-options = daopts('BackgroundModel','polyexp');
+options = DAoptions('BackgroundModel','polyexp');
 
-Signal = pdsdata('TimeAxis',TimeAxis,'ExpData',ExpData);
+Signal = DAsignal('TimeAxis',TimeAxis,'ExpData',ExpData);
 Signal = Signal.prepare(options);
 
 err = any(abs(Signal.DipEvoFcn - DipEvoFcn)>1e-2);

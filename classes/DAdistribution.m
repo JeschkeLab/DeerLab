@@ -1,9 +1,9 @@
-classdef distdistr
+classdef DAdistribution
     
    properties 
       Distribution
       DistanceAxis
-      ExpSignal
+      Signal
       TimeAxis
       RegParam
    end
@@ -14,13 +14,18 @@ classdef distdistr
       Length
    end
    
+   properties (Access = private)
+       Distribution_
+       FitSignal_
+   end
+   
    properties (Hidden)
       ID 
       SignalID
    end
     
    methods
-        function obj = distdistr(varargin)
+        function obj = DAdistribution(varargin)
             %Check if user given inputs
             if nargin>0
                 %Only pairwise inputs accepted
@@ -37,12 +42,16 @@ classdef distdistr
             obj.ID = JavaID.toString;
         end 
         
+        function Length = get.Length(obj)
+            Length = length(obj.Distribution);
+        end
+        
         function obj = set.Distribution(obj,Distribution)
             %Get function call stack
             CallStack = dbstack;
             %Look for function calling the class functions
             i = 1;
-            while ~isempty(strfind(CallStack(i).name,'distdistr'))
+            while ~isempty(strfind(CallStack(i).name,'DAdistribution'))
             i  = i + 1;
             end
             %Store which function/method constructed the distribution
@@ -51,12 +60,11 @@ classdef distdistr
             if ~iscolumn(Distribution)
                Distribution = Distribution'; 
             end
-            obj.Length = length(Distribution);
-            %Force integral normalization
-            Distribution = Distribution/sum(Distribution);
+            Distribution = normalize(Distribution);
             obj.Distribution = Distribution;
+        
         end
-                
+        
     function plot(obj,CompDistAxis,CompDistribution)
       if ~isempty(obj.Distribution)
         Figure = findobj('Tag',sprintf('ID: %s',obj.ID));
@@ -69,18 +77,22 @@ classdef distdistr
         end
         %Plot distribution
         subplot(121)
-        plot(obj.DistanceAxis,obj.Distribution,'r','LineWidth',2)
+        legendTag = {};
         %If requested plot against input distribution
         if nargin>1
-        hold on
-        plot(CompDistAxis,CompDistribution,'k','LineWidth',2)
+            hold on
+            plot(CompDistAxis,CompDistribution,'k','LineWidth',2)
+            legendTag{1} = 'Model';
         end
+        plot(obj.DistanceAxis,obj.Distribution,'r','LineWidth',2)
         axis tight, box on, grid on
-        xlabel('Distance [nm]'),ylabel('P(r)')
+        xlabel('Distance [nm]'),ylabel('P(r) [nm^{-1}]')
+        legendTag{end+1} = 'Fit';
+        legend(legendTag)
         %Plot 
         subplot(122)
         hold on
-        plot(obj.TimeAxis,obj.ExpSignal,'k','LineWidth',2)
+        plot(obj.TimeAxis,obj.Signal,'k','LineWidth',2)
         plot(obj.TimeAxis,obj.FitSignal,'r','LineWidth',2)
         axis tight, box on, grid on
         xlabel('Time [ns]'),ylabel('Amplitude')
@@ -90,10 +102,16 @@ classdef distdistr
       end
     end
 
-    function obj = getFitSignal(obj)
-        TimeStep = obj.TimeAxis(2) - obj.TimeAxis(1);
-        Kernel = getKernel(obj.Length,TimeStep);
-        obj.FitSignal = Kernel*obj.Distribution;
+    function Distribution = normalize(Distribution)
+        Distribution = Distribution/sum(Distribution);
+    end
+    
+    function FitSignal = get.FitSignal(obj)
+        TimeStep = round(obj.TimeAxis(2) - obj.TimeAxis(1));
+        rmin = min(obj.DistanceAxis);
+        rmax = max(obj.DistanceAxis);
+        Kernel = getKernel(obj.Length,TimeStep,rmin,rmax);
+        FitSignal = Kernel*obj.Distribution;
     end
     
     function match = findSignal(obj) 
@@ -124,6 +142,9 @@ classdef distdistr
             end
             eval(sprintf('obj.%s = Value;',Property));
         end
+        
+
+        
     end
     
 end

@@ -1,4 +1,4 @@
-classdef pdsdata
+classdef DAsignal
   
 %==========================================================================
 % Public Properties
@@ -38,7 +38,7 @@ end
 methods
     
     %----------------------------------------------------------------------
-    function obj = pdsdata(varargin)
+    function obj = DAsignal(varargin)
       if nargin>0
         if mod(nargin,2)
           error('Wrong number of arguments')
@@ -96,7 +96,7 @@ methods
     %----------------------------------------------------------------------
     function obj = prepare(obj,opts)
         if nargin<2 || isempty(opts)
-           opts = daopts; 
+           opts = DAoptions; 
         end
          obj  = prepareSignal(obj,opts);
     end
