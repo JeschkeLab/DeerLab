@@ -13,11 +13,18 @@ Length = 200;
 
 TimeAxis = linspace(16,Length*TimeStep,Length);
 %Construct some dipolar evolution function from Fresnel integral
-dipevo = 1 - 2*fresnels(TimeAxis*2*pi*1/(15^3));
-dipevo = dipevo(5:end);
-TimeAxis = TimeAxis(5:end);
+rmin = (4*TimeStep/1000*52.04/0.85)^(1/3);
+rmax = 6*(Length*TimeStep/1000/2)^(1/3);
+TimeAxis = linspace(0,TimeStep*Length,Length);
 Length = length(TimeAxis);
 
+DistanceAxis = linspace(rmin,rmax,Length);
+Distribution = gaussian(DistanceAxis,3,0.5);
+Distribution = Distribution/sum(Distribution);
+Kernel = getKernel(Length,TimeStep,rmin,rmax);
+
+dipevo = Kernel*Distribution;
+dipevo = dipevo';
 %Construct background
 bckg = exp(-DecayRate*TimeAxis);
 %Account modulation depth for the offset=1
@@ -45,5 +52,22 @@ err(5) = any(abs(myClass.ClusterFcn - clustersignal)>1e-2);
 
 err = any(err);
 data = [];
+
+if opt.Display
+figure(8),clf
+subplot(131),hold on
+plot(TimeAxis,FormFactor)
+plot(TimeAxis,myClass.FormFactor)
+
+subplot(132),hold on
+plot(TimeAxis,dipevo)
+plot(TimeAxis,myClass.DipEvoFcn)
+
+subplot(133),hold on
+plot(TimeAxis,clustersignal)
+plot(TimeAxis,myClass.ClusterFcn)
+end
+    
+
 
 end
