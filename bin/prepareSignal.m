@@ -3,12 +3,12 @@ function data = prepareSignal(data,opts)
 % zero-time correction, background fitting, and construction of the
 % form factor and dipolar evolution function.
 
-if ~isa(data,'pdsdata')
-  error('First argument must a valid pdsdata class')
+if ~isa(data,'DAsignal')
+  error('First argument must a valid DAsignal class object')
 end
 if nargin>1
-  if ~isa(opts,'daopts')
-    error('First argument must a valid daopts class')
+  if ~isa(opts,'DAoptions')
+    error('First argument must a valid DAoptions class object')
   end
 end
 if isempty(data.ExpData)

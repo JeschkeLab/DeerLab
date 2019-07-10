@@ -7,5 +7,7 @@ if nargin<3
 end
 %Calculate Gaussian function
 y = 1/sqrt(2*pi)*1/sigma*exp(-((x - x0)/sigma).^2);
-
+if ~iscolumn(y)
+   y = y'; 
+end
 end

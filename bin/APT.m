@@ -1,11 +1,11 @@
 function [APTDistr] = APT(Signal,Opts)
 
-if ~isa(Signal,'pdsdata')
-  error('First argument must a valid pdsdata class')
+if ~isa(Signal,'DAsignal')
+  error('First argument must a valid DAsignal class object.')
 end
 if nargin>1
-  if ~isa(Opts,'daopts')
-    error('First argument must a valid daopts class')
+  if ~isa(Opts,'DAoptions')
+    error('First argument must a valid DAoptions class object.')
   end
 end
 if isempty(Signal.DipEvoFcn)
@@ -61,12 +61,10 @@ UniformDistanceAxis = linspace(min(MappedDistances),max(MappedDistances),length(
 APTDistribution = uniformGrain(MappedDistances,FilteredAPTdistribution,UniformDistanceAxis);
 
 %Construct distance distribution class output
-APTDistr = distdistr('Distribution',APTDistribution,...
-                     'DistanceAxis',UniformDistanceAxis,...
-                     'ExpSignal',Signal.DipEvoFcn,...
-                     'TimeAxis',Signal.TimeAxis,...
-                     'SignalID',Signal.ID);
-%Get fitted signal
-APTDistr = APTDistr.getFitSignal;
-
+APTDistr = DAdistribution('DistanceAxis',UniformDistanceAxis,...
+                          'Distribution',APTDistribution,...
+                          'Signal',Signal.DipEvoFcn,...
+                          'TimeAxis',Signal.TimeAxis,...
+                          'SignalID',Signal.ID);
+end
 
