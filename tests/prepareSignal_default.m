@@ -13,9 +13,9 @@ TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 
 DistanceAxis = linspace(rmin,rmax,Dimension);
 Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution'/sum(Distribution);
+Distribution = Distribution/sum(Distribution);
 Background = exp(-0.05*TimeAxis);
-Kernel = getKernel(Dimension,TimeStep/1000);
+Kernel = getKernel(Dimension,TimeStep*1000);
 
 DipEvoFcn = Kernel*Distribution;
 DipEvoFcn = DipEvoFcn';

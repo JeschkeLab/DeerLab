@@ -1,16 +1,14 @@
 function Kernel = getKernel(dimension,TimeStep,rmin,rmax,Background)
 
 
-if ~exist('options','var') || isempty(options)
-    options = struct();
-end
-
-if ~exist('dt','var') || isempty(TimeStep)
-    TimeStep = 0.008;
+if ~exist('TimeStep','var') || isempty(TimeStep)
+    TimeStep = 8;
 end
 
 %Numerical dipolar frequency at 1 nm for g=ge
 ny0 = 52.04; 
+%Convert time step to miliseconds
+TimeStep = round(TimeStep)/1000;
 
 if ~exist('rmin','var') || isempty(rmin)
     rmin = (4*TimeStep*ny0/0.85)^(1/3); 

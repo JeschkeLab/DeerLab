@@ -7,14 +7,14 @@ function [err,data] = test(opt,olddata)
 err = false;
 
 try
-daopts('BackgroundModel','exponential');
+DAoptions('BackgroundModel','exponential');
 err(1) = false;
 catch
 err(1) = true;    
 end
 
 try
-daopts('BackgroundModel','wronginput');
+DAoptions('BackgroundModel','wronginput');
 err(2) = true;
 catch
 err(2) = false;

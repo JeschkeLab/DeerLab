@@ -11,7 +11,7 @@ rmax = 6*(Dimension*TimeStep/2)^(1/3);
 TimeAxis = linspace(0,TimeStep,Dimension);
 DistanceAxis = linspace(rmin,rmax,Dimension);
 Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution'/sum(Distribution);
+Distribution = Distribution/sum(Distribution);
 Background = exp(-150*TimeAxis);
 Kernel = getKernel(Dimension,TimeStep);
 
