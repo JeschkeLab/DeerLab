@@ -1,15 +1,21 @@
 classdef DAoptions
     
     properties
-        BackgroundModel = 'exponential'
+        BackgroundModel = 'exponential';
+        Background = [];
         ModelParam = [];
-        FitStartSearch = 'auto'
+        FitStartSearch = 'auto';
         FitStartPos = [];
         EndCutoffPos = [];
         PhaseCorrection = 'auto';
         Phase = [];
         ZeroTime = [];
         DistDomainSmoothing = [];
+        RegParam = [];
+        RegPenalty = 'tikhonov';
+        nonNegLSQsolver = 'fnnls';
+        nonNegLSQsolTol = 1e-9;
+        RegMatrixOrder = 2;
     end
     
     properties (SetAccess = private)
@@ -35,12 +41,37 @@ classdef DAoptions
             obj.ID = JavaID.toString;
         end
         
+        function obj = set.Background(obj,array)
+            if ~iscolumn(array)
+               array = array'; 
+            end
+            obj.Background = array;
+        end
+        
         function obj = set.BackgroundModel(obj,string)
             allowedInput = {'exponential','polynomial','polyexp','fractal'};
             if any(strcmp(allowedInput,string)) && ~isa(string,'numerical')
                 obj.BackgroundModel = string;
             else
                 error('daopts:incorrectType','''%s'' is not a valid input of the BackgroundModel property.',string)
+            end
+        end
+        
+        function obj = set.RegPenalty(obj,string)
+            allowedInput = {'tikhonov','tv','huber','custom'};
+            if any(strcmp(allowedInput,string)) && ~isa(string,'numerical')
+                obj.RegPenalty = string;
+            else
+                error('daopts:incorrectType','''%s'' is not a valid input of the RegPenalty property.',string)
+            end
+        end
+        
+        function obj = set.nonNegLSQsolver(obj,string)
+            allowedInput = {'fnnls','lsqnonneg','bppnnls'};
+            if any(strcmp(allowedInput,string)) && ~isa(string,'numerical')
+                obj.nonNegLSQsolver = string;
+            else
+                error('daopts:incorrectType','''%s'' is not a valid input of the nonNegLSQsolver property.',string)
             end
         end
         

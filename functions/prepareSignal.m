@@ -24,6 +24,7 @@ data.ClusterFcn = data.ExpData/data.ExpData(1);
 [data.ClusterFcn,data.TimeAxis,data.ZeroTime] = correctZeroTime(data.ClusterFcn,data.TimeAxis,opts.ZeroTime);
 
 %Fit background
+if isempty(opts.Background)
 if strcmp(opts.FitStartSearch,'auto')
     [FitStartTime,FitStartPos] = getBackgroundStart(data.ClusterFcn ,data.TimeAxis,opts.EndCutoffPos,opts.BackgroundModel,opts.ModelParam);
 else
@@ -35,7 +36,9 @@ Data2fit = data.ClusterFcn(FitStartPos:end);
 FitTimeAxis = data.TimeAxis(FitStartPos:end);
 
 data.Background = fitBackground(Data2fit,data.TimeAxis,FitTimeAxis,opts.BackgroundModel,opts.ModelParam);
-
+else
+   data.Background =  opts.Background;
+end
 %Correct for background by division
 data.FormFactor = data.ClusterFcn./data.Background;
 data.FormFactor = data.FormFactor/data.FormFactor(1);

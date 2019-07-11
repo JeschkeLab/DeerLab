@@ -5,7 +5,7 @@ if ~isa(Signal,'DAsignal')
 end
 if nargin>1
   if ~isa(Opts,'DAoptions')
-    error('First argument must a valid DAoptions class object.')
+    error('Second argument must a valid DAoptions class object.')
   end
 end
 if isempty(Signal.DipEvoFcn)
