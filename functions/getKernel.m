@@ -1,4 +1,4 @@
-function Kernel = getKernel(dimension,TimeStep,rmin,rmax,Background)
+function [Kernel,DistanceAxis] = getKernel(dimension,TimeStep,rmin,rmax,Background)
 
 OldPrecision = digits(30); 
 
@@ -41,8 +41,11 @@ Kernel(:,1) = 1;
 
 %If given, build the background into the kernel
 if nargin>4 && ~isempty(Background)
-Kernel = Kernel + (1/Background(1) - 1);
-Kernel = Kernel.*repmat(Background,dimension,1);
+    if iscolumn(Background)
+        Background = Background';
+    end
+    Kernel = Kernel + (1/Background(1) - 1);
+    Kernel = Kernel.*repmat(Background,dimension,1);
 end
 
 %Transpose

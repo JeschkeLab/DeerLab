@@ -6,6 +6,7 @@ classdef DAdistribution
       Signal
       TimeAxis
       RegParam
+      Background
    end
    
    properties (SetAccess = private)
@@ -110,7 +111,7 @@ classdef DAdistribution
         TimeStep = round(obj.TimeAxis(2) - obj.TimeAxis(1));
         rmin = min(obj.DistanceAxis);
         rmax = max(obj.DistanceAxis);
-        Kernel = getKernel(obj.Length,TimeStep,rmin,rmax);
+        Kernel = getKernel(obj.Length,TimeStep,rmin,rmax,obj.Background);
         FitSignal = Kernel*obj.Distribution;
     end
     
