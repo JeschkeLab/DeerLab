@@ -1,28 +1,19 @@
-function [APTDistr] = APT(Signal,Opts)
+function [APTDistr] = APT(DipEvoFcn,TimeStep,Opts)
 
-if ~isa(Signal,'DAsignal')
-  error('First argument must a valid DAsignal class object.')
-end
-if nargin>1
+if nargin>2
   if ~isa(Opts,'DAoptions')
     error('Second argument must a valid DAoptions class object.')
   end
 end
-if isempty(Signal.DipEvoFcn)
-  error('Signal has not been prepared.')
-end
-if isempty(Signal.TimeAxis)
-  error('TimeAxis property is empty.')
-end
 
 %Get APT kernel data
-[Kernel,NormConstant,APT_FrequencyAxis,APT_TimeAxis,Crosstalk] = getAPTkernel(Signal.Length,Signal.TimeStep/1000);
+[Kernel,NormConstant,APT_FrequencyAxis,APT_TimeAxis,Crosstalk] = getAPTkernel(length(Signal),TimeStep/1000);
 
 %Compute frequency distribution
 [FreqDimension,~] = size(Kernel);
 FreqDistribution = zeros(1,FreqDimension);
 for k=1:FreqDimension
-    FreqDistribution(k) = FreqDistribution(k)+sum(Kernel(k,:).*Signal.DipEvoFcn.*APT_TimeAxis)/NormConstant(k);
+    FreqDistribution(k) = FreqDistribution(k)+sum(Kernel(k,:).*DipEvoFcn.*APT_TimeAxis)/NormConstant(k);
 end
 
 %Perform crosstalk correction
@@ -57,14 +48,9 @@ end
 FilteredAPTdistribution = FilteredAPTdistribution/max(FilteredAPTdistribution); 
 
 %Interpolate to uniform distance axis
-UniformDistanceAxis = linspace(min(MappedDistances),max(MappedDistances),length(Signal.TimeAxis));                 
+UniformDistanceAxis = linspace(min(MappedDistances),max(MappedDistances),length(Signal));                 
 APTDistribution = uniformGrain(MappedDistances,FilteredAPTdistribution,UniformDistanceAxis);
 
-%Construct distance distribution class output
-APTDistr = DAdistribution('DistanceAxis',UniformDistanceAxis,...
-                          'Distribution',APTDistribution,...
-                          'Signal',Signal.DipEvoFcn,...
-                          'TimeAxis',Signal.TimeAxis,...
-                          'SignalID',Signal.ID);
+
 end
 
