@@ -11,9 +11,8 @@ classdef DAoptions
         Phase = [];
         ZeroTime = [];
         DistDomainSmoothing = [];
-        RegParam = [];
-        RegPenalty = 'tikhonov';
-        nonNegLSQsolver = 'fnnls';
+        RegParam = [];        
+        Solver = 'fnnls';
         nonNegLSQsolTol = 1e-9;
         RegMatrixOrder = 2;
     end
@@ -57,19 +56,10 @@ classdef DAoptions
             end
         end
         
-        function obj = set.RegPenalty(obj,string)
-            allowedInput = {'tikhonov','tv','huber','custom'};
+        function obj = set.Solver(obj,string)
+            allowedInput = {'fnnls','lsqnonneg','bppnnls','fmincon','cvx'};
             if any(strcmp(allowedInput,string)) && ~isa(string,'numerical')
-                obj.RegPenalty = string;
-            else
-                error('daopts:incorrectType','''%s'' is not a valid input of the RegPenalty property.',string)
-            end
-        end
-        
-        function obj = set.nonNegLSQsolver(obj,string)
-            allowedInput = {'fnnls','lsqnonneg','bppnnls'};
-            if any(strcmp(allowedInput,string)) && ~isa(string,'numerical')
-                obj.nonNegLSQsolver = string;
+                obj.Solver = string;
             else
                 error('daopts:incorrectType','''%s'' is not a valid input of the nonNegLSQsolver property.',string)
             end
@@ -151,6 +141,17 @@ classdef DAoptions
             obj.DistDomainSmoothing = value;
         end
         
+        function checkSolverCompatibility(obj,Method)
+            switch Method
+                case 'tikhonov'
+                    allowedInput = {'fnnls','fmincon','cvx','lsqnonneg','bppnnls'};
+                case {'tv','huber'}
+                    allowedInput = {'cvx','fmincon'};
+            end
+            if ~any(strcmp(allowedInput,obj.Solver))
+                error('daopts:incorrectType','The ''%s'' solver is not compatible with the ''%s'' method.',obj.Solver,Method)
+            end
+        end
     end
     
     methods(Access = private)

@@ -30,13 +30,13 @@ options = DAoptions('RegParam',0.13);
 Kernel = getKernel(Dimension,TimeStep*1000,[],[],Background);
 
 
-options = DAoptions('RegParam',0.13,'nonNegLSQsolver','fnnls');
-TikhResult1 = regularize(Signal.ClusterFcn,Kernel,options);
-options.nonNegLSQsolver = 'bppnnls';
-TikhResult2 = regularize(Signal.ClusterFcn,Kernel,options);
-options.nonNegLSQsolver = 'lsqnonneg';
+options = DAoptions('RegParam',0.13,'Solver','fnnls');
+TikhResult1 = regularize(Signal.ClusterFcn,Kernel,'tikhonov',options);
+options.Solver = 'bppnnls';
+TikhResult2 = regularize(Signal.ClusterFcn,Kernel,'tikhonov',options);
+options.Solver = 'lsqnonneg';
 options.nonNegLSQsolTol = 1e-15;
-TikhResult3 = regularize(Signal.ClusterFcn,Kernel,options);
+TikhResult3 = regularize(Signal.ClusterFcn,Kernel,'tikhonov',options);
 
 err(1) = any(abs(TikhResult1 - Distribution)>2e-6);
 err(2) = any(abs(TikhResult2 - Distribution)>2e-6);
