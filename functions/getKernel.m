@@ -1,5 +1,6 @@
 function Kernel = getKernel(dimension,TimeStep,rmin,rmax,Background)
 
+OldPrecision = digits(30); 
 
 if ~exist('TimeStep','var') || isempty(TimeStep)
     TimeStep = 8;
@@ -24,7 +25,7 @@ w0 = 2*pi*ny0;
 TimeAxis = linspace(0,(dimension-1)*TimeStep,dimension);
 DistanceAxis=linspace(rmin,rmax,dimension);
 %Get vector of dipolar frequencies
-wdd=w0./DistanceAxis.^3; 
+wdd=w0./(DistanceAxis.^3); 
 wdd = wdd';
 %Allocate products for speed
 wddt = wdd*TimeAxis;
@@ -35,11 +36,8 @@ S = fresnelS(kappa);
 
 %Compute dipolar kernel
 Kernel = sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
-%Replace NaN value at time zero
+%Replace undefined Fresnel NaN value at time zero
 Kernel(:,1) = 1; 
-
-%Normalize with respect to dipolar evolution time
-Kernel = Kernel./Kernel(:,1);
 
 %If given, build the background into the kernel
 if nargin>4 && ~isempty(Background)
@@ -49,5 +47,8 @@ end
 
 %Transpose
 Kernel = Kernel';
+
+%Return to old precision settings
+digits(OldPrecision);
 
 return
