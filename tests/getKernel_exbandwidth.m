@@ -11,7 +11,9 @@ DistanceAxis = time2distAxis(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
 Background = exp(-0.05*TimeAxis);
-Kernel = getKernel(TimeAxis,DistanceAxis);
+ExcitationBandwidth = 10; %MHz
+
+Kernel = getKernel(TimeAxis,DistanceAxis,[],'ExcitationBandwidth',ExcitationBandwidth);
 
 Trace  = Kernel*Distribution;
 Trace = (Trace + 2).*Background';
@@ -19,7 +21,7 @@ Trace = (Trace + 2).*Background';
 Background = Background/Trace(1);
 Trace = Trace/Trace(1);
 
-KernelB = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','full');
+KernelB = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','full','ExcitationBandwidth',ExcitationBandwidth);
 
 TraceB  = KernelB*Distribution;
 
