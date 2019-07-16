@@ -3,11 +3,13 @@ function [Kernel] = getKernel(TimeAxis,DistanceAxis,Background,varargin)
 %--------------------------------------------------------------------------
 %Input parsing
 %--------------------------------------------------------------------------
+%Check if user requested some options via name-value input
+[KernelBType,ExcitationBandwidth] = parseOptional({'KernelBType','ExcitationBandwidth'},varargin);
+%Validate the input variables
 if nargin<3 || isempty(Background)
    Background = ones(1,length(TimeAxis));  
 end
 validKernelBTypes = ["none","full","sqrt"];
-[KernelBType,ExcitationBandwidth] = parseOptional({'KernelBType','ExcitationBandwidth'},varargin);
 if isempty(KernelBType)
     KernelBType = 'sqrt';
 end
@@ -53,7 +55,6 @@ end
 w0 = 2*pi*ny0;
 %Get vector of dipolar frequencies
 wdd=w0./(DistanceAxis.^3);
-wdd = wdd;
 
 %If given, account for limited excitation bandwidth
 if ~isempty(ExcitationBandwidth)

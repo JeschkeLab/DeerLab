@@ -1,13 +1,14 @@
-function [APTDistr] = APT(DipEvoFcn,TimeStep,Opts)
+function [APTDistribution] = APT(DipEvoFcn,APTkernel,DistDomainSmoothing)
 
-if nargin>2
-  if ~isa(Opts,'DAoptions')
-    error('Second argument must a valid DAoptions class object.')
-  end
+if ~isa(APTkernel,'aptkernel')
+    error('The input APTkernel must be a a valid aptkernel class object.')
+end
+if iscolumn(DipEvoFcn)
+   DipEvoFcn = DipEvoFcn'; 
 end
 
 %Get APT kernel data
-[Kernel,NormConstant,APT_FrequencyAxis,APT_TimeAxis,Crosstalk] = getAPTkernel(length(Signal),TimeStep/1000);
+[Kernel,NormConstant,APT_FrequencyAxis,APT_TimeAxis,Crosstalk] = dismountAPTkernel(APTkernel);
 
 %Compute frequency distribution
 [FreqDimension,~] = size(Kernel);
@@ -34,7 +35,7 @@ APTdistribution = APTdistribution';
 %Perform distance-domain smoothing filtering
 FilteredAPTdistribution = zeros(length(APTdistribution),1);
 for k = 1:length(APTdistribution)
-    DDSfilter = (MappedDistances - MappedDistances(k)*ones(1,length(MappedDistances)))/Opts.DistDomainSmoothing;
+    DDSfilter = (MappedDistances - MappedDistances(k)*ones(1,length(MappedDistances)))/DistDomainSmoothing;
     DDSfilter = exp(-DDSfilter.*DDSfilter);
     DDSfilter = DDSfilter';
     FilteredAPTdistribution(k) = sum(DDSfilter.*APTdistribution)/sum(DDSfilter);
@@ -45,12 +46,15 @@ for k=1:length(APTdistribution)
     FilteredAPTdistribution(k) = FilteredAPTdistribution(k)/(MappedDistances(k))^4;
 end
 %Renormalize
-FilteredAPTdistribution = FilteredAPTdistribution/max(FilteredAPTdistribution); 
+FilteredAPTdistribution = FilteredAPTdistribution/max(FilteredAPTdistribution);
 
 %Interpolate to uniform distance axis
-UniformDistanceAxis = linspace(min(MappedDistances),max(MappedDistances),length(Signal));                 
+UniformDistanceAxis = linspace(min(MappedDistances),max(MappedDistances),length(DipEvoFcn));
 APTDistribution = uniformGrain(MappedDistances,FilteredAPTdistribution,UniformDistanceAxis);
 
 
+APTDistribution = apt('DistanceAxis',UniformDistanceAxis,...
+                      'Distribution',APTDistribution,...
+                      'DistDomainSmoothing',DistDomainSmoothing);
 end
 
