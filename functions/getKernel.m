@@ -74,13 +74,13 @@ Kernel = sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
 Kernel(:,1) = 1;
 
 %Build the background into the kernel
+Kernel = Kernel + (1/Background(1) - 1);
 switch KernelBType
     case 'none'
         Background = ones(Dimension,1);
     case 'sqrt'
         Background = sqrt(Background);
 end
-Kernel = Kernel + (1/Background(1) - 1);
 Kernel = Kernel.*repmat(Background,Dimension,1);
 
 
