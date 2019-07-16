@@ -20,7 +20,7 @@ Length = length(TimeAxis);
 DistanceAxis = linspace(rmin,rmax,Length);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
-Kernel = getKernel(Length,TimeStep,rmin,rmax);
+Kernel = getKernel(TimeAxis,DistanceAxis);
 
 dipevo = Kernel*Distribution;
 dipevo = dipevo';
@@ -34,7 +34,7 @@ clustersignal = FormFactor.*bckg;
 
 
 %Cosntruct the class to be tested
-myClass = DAsignal('TimeAxis',TimeAxis,'ExpData',clustersignal);
+myClass = dataset('TimeAxis',TimeAxis,'ExpData',clustersignal);
 %And let the class prepare the time traces
 myClass = prepare(myClass);
 

@@ -6,6 +6,11 @@ end
 if iscolumn(DipEvoFcn)
    DipEvoFcn = DipEvoFcn'; 
 end
+if nargin<2 || isempty(DistDomainSmoothing)
+    DistDomainSmoothing = 0.05;
+else
+    validateattributes(DistDomainSmoothing,{'numeric'},{'scalar','nonnegative'})
+end
 
 %Get APT kernel data
 [Kernel,NormConstant,APT_FrequencyAxis,APT_TimeAxis,Crosstalk] = dismountAPTkernel(APTkernel);
