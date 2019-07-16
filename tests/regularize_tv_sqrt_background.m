@@ -6,30 +6,32 @@ function [err,data] = test(opt,olddata)
 
 Dimension = 200;
 TimeStep = 0.008;
-rmin = (4*TimeStep*52.04/0.85)^(1/3);
-rmax = 6*(Dimension*TimeStep/2)^(1/3);
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = linspace(rmin,rmax,Dimension);
+DistanceAxis = time2distAxis(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
 
-Kernel = getKernel(Dimension,TimeStep*1000);
-Background = exp(-0.5*TimeAxis);
-
+Kernel = getKernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
+Background = exp(-0.15*TimeAxis)';
+ClusterFcn = (DipEvoFcn + 5).*Background;
+Background = Background/ClusterFcn(1);
+ClusterFcn = ClusterFcn/ClusterFcn(1);
+ClusterFcn = ClusterFcn./sqrt(Background);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-options = DAoptions('RegParam',0.13,'Solver','cvx','RegMatrixOrder',2);
-Result1 = regularize(DipEvoFcn,Kernel,'tikhonov',options);
-err(1) = any(abs(Result1 - Distribution)>1e-3);
-err = any(err);
+RegParam = 0.005;
+KernelB = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
+Result = regularize(ClusterFcn,KernelB,'tv',RegParam,'Solver','fmincon');
+
+err = any(abs(Result - Distribution)>1e-2);
 data = [];
 
 if opt.Display
  	figure(8),clf
     hold on
     plot(DistanceAxis,Distribution,'k') 
-    plot(DistanceAxis,Result1,'r')
+    plot(DistanceAxis,TikhResult1,'r')
 end
 
 end

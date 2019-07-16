@@ -6,30 +6,29 @@ function [err,data] = test(opt,olddata)
 
 Dimension = 200;
 TimeStep = 0.008;
-rmin = (4*TimeStep*52.04/0.85)^(1/3);
-rmax = 6*(Dimension*TimeStep/2)^(1/3);
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = linspace(rmin,rmax,Dimension);
-Distribution = gaussian(DistanceAxis,3,0.15);
+DistanceAxis = time2distAxis(TimeAxis);
+Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
 
-Kernel = getKernel(Dimension,TimeStep*1000);
-Background = exp(-0.5*TimeAxis);
-
+Kernel = getKernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
+
 %Set optimal regularization parameter (found numerically lambda=0.13)
-options = DAoptions('RegParam',0.005,'Solver','fmincon','RegMatrixOrder',3);
-TVResult1 = regularize(DipEvoFcn,Kernel,'tv',options);
-err(1) = any(abs(TVResult1 - Distribution)>1e-2);
-err = any(err);
+RegParam = 0.02;
+RegMatrix = getRegMatrix(Dimension,3);
+RegFunctional = @(Dist)(1/2*norm(Kernel*Dist - DipEvoFcn)^2 + RegParam^2*max(RegMatrix*Dist)^2);
+Result = regularize(DipEvoFcn,Kernel,RegFunctional,RegParam,'Solver','fmincon');
+
+err = any(abs(Result - Distribution)>1e-1);
 data = [];
 
 if opt.Display
  	figure(8),clf
     hold on
     plot(DistanceAxis,Distribution,'k') 
-    plot(DistanceAxis,TVResult1,'r')
+    plot(DistanceAxis,Result,'r')
 end
 
 end
