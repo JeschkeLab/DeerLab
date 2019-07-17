@@ -7,7 +7,7 @@ function [err,data] = test(opt,olddata)
 Dimension = 200;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2distAxis(TimeAxis);
+DistanceAxis = time2dist(TimeAxis);
 
 Kernel = getKernel(TimeAxis,DistanceAxis);
 L = getRegMatrix(Dimension,2);

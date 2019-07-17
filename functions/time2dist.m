@@ -1,4 +1,4 @@
-function [DistanceAxis,rmin,rmax] = time2distAxis(TimeAxis)
+function [DistanceAxis,rmin,rmax] = time2dist(TimeAxis)
 
 validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing','nonnegative'})
 

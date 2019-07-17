@@ -9,7 +9,7 @@ load(fullfile('comparison','oldDAkernel500'));
 N = 500;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*N,N);
-DistAxis = time2distAxis(TimeAxis);
+DistAxis = time2dist(TimeAxis);
 kernelOut = getKernel(TimeAxis,DistAxis);
 
 err = any(abs(kernelOut - kernel)>1e-2);

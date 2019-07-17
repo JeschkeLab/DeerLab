@@ -7,7 +7,7 @@ function [err,data] = test(opt,olddata)
 Dimension = 80;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2distAxis(TimeAxis);
+DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
 

@@ -231,10 +231,6 @@ for i=1:nPoints %Loop over all regularization parameter values
                     PseudoInverse{j,i} = (Kernel'*Kernel + RegParamRange(i)^2*2*HuberParameter(j)/norm(RegMatrix*Distribution{j,i})*(RegMatrix')*RegMatrix)\Kernel';
                 end
                 
-                figure(999),clf
-                subplot(121),plot(Distribution{i}),title(sprintf('\\lambda = %.4f \\eta = %d',RegParamRange(i),HuberParameter(j)))
-                subplot(122),plot(PseudoInverse{i}*Signal),drawnow
-                
                 Penalty(j,i) = norm(RegMatrix*Distribution{j,i});
                 Residual(j,i) = 1/sqrt(2)*norm(Kernel*Distribution{j,i} - Signal);
                 InfluenceMatrix{j,i} = Kernel*PseudoInverse{j,i};
