@@ -16,7 +16,8 @@ TimeStep = TimeAxis(2) - TimeAxis(1);
 Signal = real(Signal((ZeroTimePosition:EndCutoffPos)));
 Length = length(TimeAxis);
 
-[Kernel,NormConstant,~,APT_TimeAxis,Crosstalk] = getAPTkernel(Length,TimeStep);
+KernelAPT = getAPTkernel(TimeAxis);
+[Kernel,NormConstant,~,APT_TimeAxis,Crosstalk] = dismountAPTkernel(KernelAPT);
 
 % imagflag=get(handles.imaginary,'Value');
 % dcmplx=imagflag*handles.cmplx; % Complex data?

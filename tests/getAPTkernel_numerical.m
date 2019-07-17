@@ -8,8 +8,9 @@ load(fullfile('comparison','oldAPTkernel512'));
 
 N = 512;
 TimeStep = 0.008;
-
-[Base,NormFactor,FreqAxis,TimeAxis,CrossTalk] = getAPTkernel(N,TimeStep);
+TimeAxis = linspace(0,TimeStep*(N-1),N);
+Kernel = getAPTkernel(TimeAxis);
+[Base,NormFactor,FreqAxis,TimeAxis,CrossTalk] = dismountAPTkernel(Kernel);
 
 err(1) = any(any(abs(Base - base)>1e-3));
 err(2) = any(abs(NormFactor - tnorm)>1e-1);
