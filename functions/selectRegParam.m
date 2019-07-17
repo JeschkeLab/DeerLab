@@ -27,8 +27,8 @@ else
         SelectionMethod = allowedMethodInputs;
     else
         validatestring(SelectionMethod,allowedMethodInputs);
+        SelectionMethod = {SelectionMethod};
     end
-    SelectionMethod = {SelectionMethod};
 end
 
 %--------------------------------------------------------------------------
