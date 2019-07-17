@@ -15,10 +15,10 @@ Kernel = getKernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 0.13;
+RegParam = 0.1;
 TikhResult1 = regularize(DipEvoFcn,Kernel,'tikhonov',RegParam,'Solver','fnnls');
 TikhResult2 = regularize(DipEvoFcn,Kernel,'tikhonov',RegParam,'Solver','bppnnls');
-TikhResult3 = regularize(DipEvoFcn,Kernel,'tikhonov',RegParam,'Solver','lsqnonneg','nonNegLSQsolTol',1e-15);
+TikhResult3 = regularize(DipEvoFcn,Kernel,'tikhonov',RegParam,'Solver','lsqnonneg','nonNegLSQsolTol',1e-25);
 
 err(1) = any(abs(TikhResult1 - Distribution)>1e-6);
 err(2) = any(abs(TikhResult2 - Distribution)>1e-6);

@@ -14,7 +14,7 @@ if isempty(KernelBType)
     KernelBType = 'sqrt';
 end
 if ~isempty(ExcitationBandwidth)
-    validateattributes(ExcitationBandwidth,{'numeric'},{'scalar','nonnegative'})
+    validateattributes(ExcitationBandwidth,{'numeric'},{'scalar','nonnegative'},'getKernel','ExcitationBandwidth')
 end
 if ~isempty(Background)
 validateattributes(Background,{'numeric'},{},'getKernel','Background')
@@ -28,8 +28,8 @@ end
 if iscolumn(Background)
    Background = Background'; 
 end
-validateattributes(DistanceAxis,{'numeric'},{'nonempty','increasing','nonnegative'},'DistanceAxis')
-validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing','nonnegative'},'TimeAxis')
+validateattributes(DistanceAxis,{'numeric'},{'nonempty','increasing','nonnegative'},'getKernel','DistanceAxis')
+validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing','nonnegative'},'getKernel','TimeAxis')
 validatestring(KernelBType,validKernelBTypes);
 checklengths(TimeAxis,Background);
 %--------------------------------------------------------------------------
