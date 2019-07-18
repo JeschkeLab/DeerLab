@@ -8,8 +8,9 @@ switch Method
             variable cvx_distribution(Dimension)
             minimize( 1/2*square_pos(norm(Kernel*cvx_distribution - Signal,'fro')) + 1/2*square_pos(norm(RegParam*L*cvx_distribution,'fro')))
             if NonNegConst
-            subject to
-                cvx_distribution >= 0;
+                subject to
+                    cvx_distribution >= 0;
+                    sum(cvx_distribution) == 1;
             end
         cvx_end
     case 'tv'
@@ -22,10 +23,11 @@ switch Method
                 %Ignore preallocation warning to ensure 'cvx convex expression' class
                 VectorialNorm(i) =  norm([Auxiliary(i) 1e-12]);
             end
-            minimize( 1/2*square_pos(norm(Kernel*cvx_distribution - Signal,'fro')) + RegParam^2*sum(VectorialNorm) )
+            minimize( 1/2*square_pos(norm(Kernel*cvx_distribution - Signal,'fro')) + 1/2*RegParam^2*sum(VectorialNorm) )
             if NonNegConst
                 subject to
-                cvx_distribution >= 0;
+                    cvx_distribution >= 0;
+                    sum(cvx_distribution) == 1;
             end
         cvx_end
 end
