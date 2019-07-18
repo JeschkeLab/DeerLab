@@ -38,10 +38,27 @@ else
     allowedInput = {'fnnls','lsqnonneg','bppnnls','fmincon','cvx'};
     validatestring(Solver,allowedInput);
 end
+
+if isempty(MaxIter)
+    MaxIter = 20000000;
+else
+    validateattributes(MaxIter,{'numeric'},{'scalar','nonempty'},mfilename,'MaxIter')
+end
+
+
+if isempty(MaxFunEvals)
+    MaxFunEvals = 2000000;
+else
+    validateattributes(MaxFunEvals,{'numeric'},{'scalar','nonempty'},mfilename,'MaxFunEvals')
+end
+
 if isempty(NonNegConstrained)
     NonNegConstrained = true;
 else
     validateattributes(NonNegConstrained,{'logical'},{'nonempty'},'regularize','NonNegConstrained')
+end
+if ~iscolumn(Signal)
+    Signal = Signal';
 end
 validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},'regularize','RegParam')
 validateattributes(Signal,{'numeric'},{'nonempty'},'regularize','Signal')
@@ -98,7 +115,7 @@ switch Solver
             RegFunctional = getRegFunctional(RegType,Signal,RegMatrix,Kernel,RegParam);
         end
         fminconOptions = optimset('GradObj',GradObj,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
-        Distribution =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
+        Distribution =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unitIntConstraint,fminconOptions);
         
     case 'cvx'
         %Constrained Tikhonov/Total variation/Huber regularization
