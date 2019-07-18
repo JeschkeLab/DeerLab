@@ -8,11 +8,11 @@ Dimension = 100;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
-Distribution = gaussian(DistanceAxis,3,0.5);
+Distribution = gaussian(DistanceAxis,3,0.2);
 Distribution = Distribution/sum(Distribution);
 
 Kernel = getKernel(TimeAxis,DistanceAxis);
-RegMatrix =  getRegMatrix(Dimension,2);
+RegMatrix =  getRegMatrix(Dimension,3);
 DipEvoFcn = Kernel*Distribution;
 rng(2);
 Noise = rand(Dimension,1);
@@ -22,11 +22,11 @@ NoiseLevel = std(Noise);
 Signal = DipEvoFcn+Noise;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 50;
-Result = OBIR(Signal,Kernel,'tikhonov',RegMatrix,RegParam,NoiseLevel);
+RegParam = 0.8;
+Result = OBIR(Signal,Kernel,'tv',RegMatrix,RegParam,NoiseLevel,'DivergenceStop',true);
 
 OVL = 1 - metrics(Result,Distribution,'overlap');
-err = any(OVL < 0.9);
+err = any(OVL < 0.8);
 maxerr = OVL;
 data = [];
 
@@ -35,7 +35,7 @@ if opt.Display
     hold on
     plot(DistanceAxis,Distribution,'k') 
     plot(DistanceAxis,Result,'b')
-    Result = regularize(Signal,Kernel,'tikhonov',RegParam);
+    Result = regularize(Signal,Kernel,'tv',RegParam);
     plot(DistanceAxis,Result,'r')
 
 end
