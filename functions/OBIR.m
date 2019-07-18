@@ -55,18 +55,19 @@ while Iteration <= 200
     InitialGuess = zeros(Dimension,1);
     NonNegConst = zeros(Dimension,1);
     RegFunctional = getRegFunctional(Method,Signal,RegMatrix,Kernel,RegParam);
-    BregmanDist = @(Distribution)dot(Distribution,Subgradient);
-    OBIRFunctional = @(Distribution) (RegFunctional(Distribution) + BregmanDist(Distribution));
-    fminconOptions = optimset('GradObj','off','MaxFunEvals',200000,'Display','off','MaxIter',200000);
-    Distribution =  fmincon(OBIRFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
-    
-    %Update subgradient at current solution
+%     BregmanDist =    @(Distribution)dot(Distribution,Subgradient);
+%     OBIRFunctional = @(Distribution) (RegFunctional(Distribution) + BregmanDist(Distribution));
+    fminconOptions = optimset('GradObj','on','MaxFunEvals',200000,'Display','off','MaxIter',200000,'TolX',1e-20);
+%        Distribution =  fmincon(OBIRFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
+       Distribution =  fmincon(@(Distribution)OBIRFunctional(Distribution,RegFunctional,Subgradient,Kernel),InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
+
+       %Update subgradient at current solution
     Subgradient = Subgradient + Kernel'*(Kernel*Distribution - Signal);
     
     Distribution = Distribution/sum(Distribution);
         ResidualDeviation(Iteration) = std(Kernel*Distribution - Signal);
-        figure(4124),clf,subplot(1,2,1),plot(Distribution/sum(Distribution),'k')
-        subplot(122),plot(1:Iteration,ResidualDeviation,'ko--');hold on,plot(1:Iteration+1,ones(Iteration+1,1)*NoiseLevelAim,'r--');
+%         figure(4124),clf,subplot(1,2,1),plot(Distribution/sum(Distribution),'k')
+%         subplot(122),plot(1:Iteration,ResidualDeviation,'ko--');hold on,plot(1:Iteration+1,ones(Iteration+1,1)*NoiseLevelAim,'r--');
         xlabel('Iteration'),ylabel('Residual Std. Dev.'),ylims = ylim; ylim([0.95*ylims(1) ylims(2)]),drawnow,
     
     %--------------------------------------------------------------------------
@@ -96,5 +97,15 @@ while Iteration <= 200
     end
     
 end
+
+end
+
+
+function [Functional,Gradient] = OBIRFunctional(Distribution,RegFunctional,Subgradient,Kernel)
+        [FunctionalPart,GradientPart] =  RegFunctional(Distribution);
+        
+        Functional = FunctionalPart + dot(Distribution,Subgradient);
+        Gradient = GradientPart + Subgradient;
+
 
 end
