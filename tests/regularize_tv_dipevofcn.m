@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %=======================================
 % Check TV regularization
@@ -17,7 +17,9 @@ DipEvoFcn = Kernel*Distribution;
 RegParam = 0.005;
 TVResult1 = regularize(DipEvoFcn,Kernel,'tv',RegParam,'RegMatrixOrder',3,'Solver','fmincon');
 
-err(1) = any(abs(TVResult1 - Distribution)>1e-2);
+error = abs(TVResult1 - Distribution);
+err(1) = any(error>1e-2);
+maxerr = max(error);
 err = any(err);
 data = [];
 

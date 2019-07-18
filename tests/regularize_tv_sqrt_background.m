@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %=======================================
 % Check Tikhonov regularization
@@ -25,6 +25,8 @@ KernelB = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
 Result = regularize(ClusterFcn,KernelB,'tv',RegParam,'Solver','fmincon');
 
 err = any(abs(Result - Distribution)>1e-2);
+maxerr = max(abs(Result - Distribution));
+
 data = [];
 
 if opt.Display

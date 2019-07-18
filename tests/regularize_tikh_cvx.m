@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %=======================================
 % Check Tikhonov regularization
@@ -18,6 +18,7 @@ DipEvoFcn = Kernel*Distribution;
 RegParam = 0.13;
 Result = regularize(DipEvoFcn,Kernel,'tikhonov',RegParam,'Solver','cvx');
 err(1) = any(abs(Result - Distribution)>1e-3);
+maxerr = max(abs(Result - Distribution));
 err = any(err);
 data = [];
 

@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %=======================================
 % Check Tikhonov regularization
@@ -28,6 +28,9 @@ TikhResult3 = regularize(ClusterFcn,KernelB,'tikhonov',RegParam,'Solver','lsqnon
 err(1) = any(abs(TikhResult1 - Distribution)>2e-6);
 err(2) = any(abs(TikhResult2 - Distribution)>2e-6);
 err(3) = any(abs(TikhResult3 - Distribution)>1e-3);
+
+maxerr = max(abs(TikhResult1 - Distribution));
+
 err = any(err);
 data = [];
 

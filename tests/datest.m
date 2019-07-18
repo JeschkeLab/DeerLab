@@ -39,6 +39,7 @@ Opt.Display = any(params=='d');
 Opt.Regenerate = any(params=='r');
 Opt.Verbosity = Opt.Display;
 
+displayErrors = any(params=='p');
 displayTimings = any(params=='t');
 
 if Opt.Display && displayTimings
@@ -109,10 +110,11 @@ for iTest = 1:numel(TestFileNames)
   % Run test, catch any errors
   tic
   try
-    [err,data] = feval(thisTest,Opt,olddata);
-    if Opt.Display
-      if iTest<numel(TestFileNames), pause; end
-    end
+      if displayErrors
+          [err,data,maxerr(iTest)] = feval(thisTest,Opt,olddata);
+      else
+          [err,data] = feval(thisTest,Opt,olddata);
+      end
     % if test returns empty err, then treat it as not tested
     if isempty(err)
       err = 3; % not tested
@@ -137,6 +139,7 @@ for iTest = 1:numel(TestFileNames)
   end
   
   testResults(iTest).err = double(err);
+    testResults(iTest).err = double(err);
   testResults(iTest).name = thisTest;
   testResults(iTest).errorData = errorInfo;
   
@@ -153,14 +156,23 @@ for iTest = 1:numel(TestFileNames)
   else
     timeStr = [];
   end
+  
+  if displayErrors
+    maxerrStr = sprintf('%0.2e ',maxerr(iTest));
+  else
+    maxerrStr = [];
+  end
 
-  str = sprintf('%-36s  %-12s%-8s%s\n%s',...
-       testResults(iTest).name,typeStr,outcomeStr,timeStr,errorStr);
+  str = sprintf('%-36s  %-12s%-8s%s%s\n%s',...
+       testResults(iTest).name,typeStr,outcomeStr,maxerrStr,timeStr,errorStr);
   str(str=='\') = '/';
   
   testResults(iTest).msg = str;
   
   fprintf(fid,str);
+    if Opt.Display
+      if iTest<numel(TestFileNames), pause; end
+    end
 end
 
 allErrors = [testResults.err];

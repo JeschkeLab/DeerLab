@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %=======================================
 % Check Tikhonov regularization
@@ -15,9 +15,11 @@ Kernel = getKernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 0.13;
+RegParam = 40;
 Result = regularize(DipEvoFcn,Kernel,'tikhonov',RegParam,'Solver','fmincon');
+
 err(1) = any(abs(Result - Distribution)>1e-2);
+maxerr = max(abs(Result - Distribution));
 err = any(err);
 data = [];
 

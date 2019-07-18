@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %=======================================
 % Check Tikhonov regularization
@@ -22,6 +22,8 @@ RegFunctional = @(Dist)(1/2*norm(Kernel*Dist - DipEvoFcn)^2 + RegParam^2*max(Reg
 Result = regularize(DipEvoFcn,Kernel,RegFunctional,RegParam,'Solver','fmincon');
 
 err = any(abs(Result - Distribution)>1e-1);
+maxerr = max(abs(Result - Distribution));
+
 data = [];
 
 if opt.Display
