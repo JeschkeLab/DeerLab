@@ -4,7 +4,7 @@ if nargin<3
     error('Not enough input arguments.')
 end
 
-if nargin<4
+if nargin<4 || isempty(BckgModel)
     BckgModel = 'exponential';
 elseif isa(BckgModel,'fittype')
     CustomFitModel = BckgModel;
