@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %======================================================
 % Exponential background fit
@@ -24,7 +24,11 @@ fit = fitBackground(data2fit,t,tfit,'exponential');
 fit2 = fitBackground(data2fit2,t,tfit,'exponential');
 fit3 = fitBackground(data2fit3,t,tfit,'exponential');
 
-err = any(abs(fit - bckg)>1e-5) || any(abs(fit2 - bckg2)>1e-5) || any(abs(fit3 - bckg3)>1e-5);
+err(1) = any(abs(fit - bckg)>1e-5);
+err(2) = any(abs(fit2 - bckg2)>1e-5);
+err(3) = any(abs(fit3 - bckg3)>1e-5);
+err = any(err);
+maxerr = max(abs(fit - bckg));
 data = [];
 
 if opt.Display

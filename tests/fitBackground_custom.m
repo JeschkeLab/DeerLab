@@ -20,9 +20,11 @@ data2fit3 = bckg3(20:end);
 
 tfit = t(20:end);
 
-fit = fitBackground(data2fit,t,tfit,'polyexp');
-fit2 = fitBackground(data2fit2,t,tfit,'polyexp');
-fit3 = fitBackground(data2fit3,t,tfit,'polyexp');
+FitModel = fittype('a*exp(-b*t)','independent',{'t'},'coefficients',{'a','b'});
+
+fit = fitBackground(data2fit,t,tfit,FitModel);
+fit2 = fitBackground(data2fit2,t,tfit,FitModel);
+fit3 = fitBackground(data2fit3,t,tfit,FitModel);
 
 err(1) = any(abs(fit - bckg)>1e-5);
 err(2) = any(abs(fit2 - bckg2)>1e-5);
