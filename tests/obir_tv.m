@@ -23,7 +23,7 @@ Signal = DipEvoFcn+Noise;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.8;
-Result = OBIR(Signal,Kernel,'tv',RegMatrix,RegParam,NoiseLevel,'DivergenceStop',true);
+Result = obir(Signal,Kernel,'tv',RegMatrix,RegParam,NoiseLevel,'DivergenceStop',true);
 
 OVL = 1 - metrics(Result,Distribution,'overlap');
 err = any(OVL < 0.8);

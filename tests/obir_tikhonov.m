@@ -23,7 +23,7 @@ Signal = DipEvoFcn+Noise;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 50;
-Result = OBIR(Signal,Kernel,'tikhonov',RegMatrix,RegParam,NoiseLevel);
+Result = obir(Signal,Kernel,'tikhonov',RegMatrix,RegParam,NoiseLevel);
 
 OVL = 1 - metrics(Result,Distribution,'overlap');
 err = any(OVL < 0.9);

@@ -3,6 +3,9 @@ function Distribution = regularize(Signal,Kernel,RegMatrix,RegType,RegParam,vara
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
 %--------------------------------------------------------------------------
+if nargin<5
+    error('Not enough input arguments.')
+end
 if nargin<4 || isempty(RegType)
     RegType = 'tikhonov';
 elseif isa(RegType,'function_handle')

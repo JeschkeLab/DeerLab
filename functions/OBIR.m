@@ -1,4 +1,4 @@
-function [Distribution,ConvergenceCurve] = OBIR(Signal,Kernel,RegType,RegMatrix,RegParam,NoiseLevelAim,varargin)
+function [Distribution,ConvergenceCurve] = obir(Signal,Kernel,RegType,RegMatrix,RegParam,NoiseLevelAim,varargin)
 %--------------------------------------------------------------------------
 % OSHER'S BREGMAN ITERATED REGULARIZATION (OBIR) METHOD
 %--------------------------------------------------------------------------
