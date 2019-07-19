@@ -51,10 +51,11 @@ signal = supressGhostDistances(FormFactor3,lambda,3);
 
 
 Kernel = getKernel(TimeAxis,DistanceAxis);
+RegMatrix = getRegMatrix(Dimension,2);
 RegParam = 4;
-Dist2 = regularize(Dip2,Kernel,'tikhonov',RegParam,'Solver','fnnls');
-Dist3 = regularize(Dip3,Kernel,'tikhonov',RegParam,'Solver','fnnls');
-DistrTest = regularize(signal,Kernel,'tikhonov',RegParam,'Solver','fnnls');
+Dist2 = regularize(Dip2,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+Dist3 = regularize(Dip3,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+DistrTest = regularize(signal,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 
 err(1) = any(abs(DistrTest - Dist3)>1e-6);
 err(2) = any(abs(DistrTest - Dist2)>1e-2);

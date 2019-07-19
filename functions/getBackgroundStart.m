@@ -1,71 +1,101 @@
-function [FitStartTime,FitStartPos]=getBackgroundStart(Signal,TimeAxis,EndCutoffPos,BckgModel,ModelParam)
+function [FitStartTime,FitStartPos] = getBackgroundStart(Signal,TimeAxis,EndCutoffPos,BckgModel,ModelParam,varargin)
 
-if nargin<5 || isempty(BckgModel)
-  BckgModel = 'exponential';
-  ModelParam = [];
+
+%--------------------------------------------------------------------------
+% Parse & Validate Required Input
+%--------------------------------------------------------------------------
+if nargin<3
+    error('Not enough input arguments.')
 end
 
-if nargin<4 || isempty(EndCutoffPos)
-  EndCutoffPos = length(TimeAxis);
+if nargin<3 || isempty(EndCutoffPos)
+    EndCutoffPos = length(TimeAxis);
+else
+    validateattributes(EndCutoffPos,{'numeric'},{'scalar','nonempty'},mfilename,'EndCutoffPos')
 end
 
+if nargin<4 || isempty(BckgModel)
+    BckgModel = 'exponential';
+end
+
+if iscolumn(TimeAxis)
+    TimeAxis = TimeAxis';
+end
+if iscolumn(Signal)
+    Signal = Signal';
+end
+validateattributes(Signal,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
+validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mfilename,'TimeAxis')
+
+
+
+%--------------------------------------------------------------------------
+% Parse & Validate Optional Input
+%--------------------------------------------------------------------------
+%Check if user requested some options via name-value input
+[RelSearchStart,RelSearchEnd] = parseOptional({'RelSearchStart','RelSearchEnd'},varargin);
+
+if isempty(RelSearchStart)
+    RelSearchStart = 0.1;
+else
+    
+end
+
+if isempty(RelSearchEnd)
+    RelSearchEnd = 0.6;
+else
+    
+end
+
+%--------------------------------------------------------------------------
+% Adaptive background correction start search
+%--------------------------------------------------------------------------
 %Get zero-time position
 [~,ZeroTimePosition] = min(abs(TimeAxis));
 TimeAxis = TimeAxis(ZeroTimePosition:EndCutoffPos);
-TimeStep = TimeAxis(2) - TimeAxis(1);
 Signal = real(Signal((ZeroTimePosition:EndCutoffPos)));
 Length = length(TimeAxis);
 
 KernelAPT = getAPTkernel(TimeAxis);
 [Kernel,NormConstant,~,APT_TimeAxis,Crosstalk] = dismountAPTkernel(KernelAPT);
 
-% imagflag=get(handles.imaginary,'Value');
-% dcmplx=imagflag*handles.cmplx; % Complex data?
-%
-% % reference deconvolution for variable-time DEER, normalization for
-% % constant-time DEER
-% if handles.ctvt,
-%     z=handles.A_vexp;
-%     ref=Signal(1,:);
-%     sc=max(real(ref));
-%     sig=Signal(2,:);
-%     Signal=real(sig)./real(ref)+1i*imag(ref)/sc;
-% else
-% 	Signal=Signal/max(real(Signal));
-% end;
-
-% Adaptive background correction
-%Search for background fit start between 10% and 60% of the signal
-StartPosMin = round(0.1*Length);
+%Search for background fit start
+StartPosMin = round(RelSearchStart*Length);
 if StartPosMin<1
-  StartPosMin=1;
+    StartPosMin=1;
 end
-StartPosMax = round(0.6*Length);
+StartPosMax = round(RelSearchEnd*Length);
 if StartPosMax<5
-  StartPosMax=5;
+    StartPosMax=5;
 end
 
+%Preallocate Merit variable
 Merit = zeros(1,StartPosMax-StartPosMin);
 
-for FitStartPos=StartPosMin:StartPosMax
-  
-  FitTimeAxis=TimeAxis(FitStartPos:length(TimeAxis)); % time window of baseline region
-  FitData=Signal(FitStartPos:length(Signal)); % experimental data in this window
-  
-  % Background fit
-  Background=fitBackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam);
-  
-  FormFactor=Signal-Background; % subtract background
-  FormFactor=FormFactor./Background; % divide by background, eqn [13]
-  
-  FormFactor = FormFactor/max(FormFactor); % normalize
-  [FreqDimension,~] = size(Kernel); % size of kernel
-  FreqDistribution=zeros(1,FreqDimension); % initialize distribution
-  for k=1:FreqDimension % sum in eqn [21]
-    FreqDistribution(k)=FreqDistribution(k)+sum(Kernel(k,:).*FormFactor.*APT_TimeAxis)/NormConstant(k);
-  end
-  APTdistribution = Crosstalk\FreqDistribution'; % crosstalk correction, eqn [22]
-  Merit(FitStartPos - StartPosMin + 1) = sum(abs(APTdistribution(1:3)));
+for FitStartPos = StartPosMin:StartPosMax
+    
+    %Define data to be fitted according to current background start
+    FitTimeAxis = TimeAxis(FitStartPos:length(TimeAxis));
+    FitData = Signal(FitStartPos:length(Signal));
+    
+    %Fit the background with current start
+    Background = fitBackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam);
+    
+    %Correct the background from the from factor
+    FormFactor = Signal - Background;
+    FormFactor = FormFactor./Background;
+    FormFactor = FormFactor/max(FormFactor);
+    
+    %Perform APT on background-corrected signal
+    [FreqDimension,~] = size(Kernel);
+    FreqDistribution=zeros(1,FreqDimension);
+    for k=1:FreqDimension % sum in eqn [21]
+        FreqDistribution(k)=FreqDistribution(k)+sum(Kernel(k,:).*FormFactor.*APT_TimeAxis)/NormConstant(k);
+    end
+    APTdistribution = Crosstalk\FreqDistribution';
+    
+    %Get merit value for this background start value
+    Merit(FitStartPos - StartPosMin + 1) = sum(abs(APTdistribution(1:3)));
 end
 
 [~,OptStartPos] = min(Merit);
