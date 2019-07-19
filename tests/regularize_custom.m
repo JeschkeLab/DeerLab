@@ -19,7 +19,7 @@ DipEvoFcn = Kernel*Distribution;
 RegParam = 0.02;
 RegMatrix = getRegMatrix(Dimension,3);
 RegFunctional = @(Dist)(1/2*norm(Kernel*Dist - DipEvoFcn)^2 + RegParam^2*max(RegMatrix*Dist)^2);
-Result = regularize(DipEvoFcn,Kernel,RegFunctional,RegParam,'Solver','fmincon');
+Result = regularize(DipEvoFcn,Kernel,RegMatrix,RegFunctional,RegParam,'Solver','fmincon');
 
 err = any(abs(Result - Distribution)>1e-1);
 maxerr = max(abs(Result - Distribution));

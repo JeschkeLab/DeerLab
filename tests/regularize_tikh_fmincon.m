@@ -16,7 +16,8 @@ DipEvoFcn = Kernel*Distribution;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 40;
-Result = regularize(DipEvoFcn,Kernel,'tikhonov',RegParam,'Solver','fmincon');
+RegMatrix = getRegMatrix(Dimension,2);
+Result = regularize(DipEvoFcn,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fmincon');
 
 err(1) = any(abs(Result - Distribution)>1e-2);
 maxerr = max(abs(Result - Distribution));

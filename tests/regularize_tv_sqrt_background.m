@@ -21,8 +21,9 @@ ClusterFcn = ClusterFcn./sqrt(Background);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.005;
+RegMatrix = getRegMatrix(Dimension,3);
 KernelB = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
-Result = regularize(ClusterFcn,KernelB,'tv',RegParam,'Solver','fmincon');
+Result = regularize(ClusterFcn,KernelB,RegMatrix,'tv',RegParam,'Solver','fmincon');
 
 err = any(abs(Result - Distribution)>1e-2);
 maxerr = max(abs(Result - Distribution));

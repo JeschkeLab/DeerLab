@@ -35,7 +35,7 @@ if opt.Display
     hold on
     plot(DistanceAxis,Distribution,'k') 
     plot(DistanceAxis,Result,'b')
-    Result = regularize(Signal,Kernel,'tikhonov',RegParam);
+    Result = regularize(Signal,Kernel,RegMatrix,'tikhonov',RegParam);
     plot(DistanceAxis,Result,'r')
 
 end

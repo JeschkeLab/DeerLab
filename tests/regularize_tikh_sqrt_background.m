@@ -22,9 +22,10 @@ ClusterFcn = ClusterFcn./sqrt(Background);
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.13;
 KernelB = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
-TikhResult1 = regularize(ClusterFcn,KernelB,'tikhonov',RegParam,'Solver','fnnls');
-TikhResult2 = regularize(ClusterFcn,KernelB,'tikhonov',RegParam,'Solver','bppnnls');
-TikhResult3 = regularize(ClusterFcn,KernelB,'tikhonov',RegParam,'Solver','lsqnonneg','nonNegLSQsolTol',1e-29);
+RegMatrix = getRegMatrix(Dimension,2);
+TikhResult1 = regularize(ClusterFcn,KernelB,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+TikhResult2 = regularize(ClusterFcn,KernelB,RegMatrix,'tikhonov',RegParam,'Solver','bppnnls');
+TikhResult3 = regularize(ClusterFcn,KernelB,RegMatrix,'tikhonov',RegParam,'Solver','lsqnonneg','nonNegLSQsolTol',1e-29);
 
 err(1) = any(abs(TikhResult1 - Distribution)>1e-6);
 err(2) = any(abs(TikhResult2 - Distribution)>1e-6);

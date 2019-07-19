@@ -1,9 +1,9 @@
-function Distribution = regularize(Signal,Kernel,RegType,RegParam,varargin)
+function Distribution = regularize(Signal,Kernel,RegMatrix,RegType,RegParam,varargin)
 
 %--------------------------------------------------------------------------
-%Input parsing & validation
+% Parse & Validate Required Input
 %--------------------------------------------------------------------------
-if nargin<3 || isempty(RegType)
+if nargin<4 || isempty(RegType)
     RegType = 'tikhonov';
 elseif isa(RegType,'function_handle')
     RegFunctional = RegType;
@@ -13,19 +13,23 @@ else
     allowedInput = {'tikhonov','tv','huber'};
     validatestring(RegType,allowedInput);
 end
+
 if strcmp(RegType,'custom')
     GradObj = 'off';
 else
     GradObj = 'on';
 end
-%Check if user requested some options via name-value input
-[RegMatrixOrder,nonNegLSQsolTol,Solver,NonNegConstrained,MaxFunEvals,MaxIter] = parseOptional({'RegMatrixOrder','nonNegLSQsolTol','Solver','NonNegConstrained','MaxFunEvals','MaxIter'},varargin);
+validateattributes(RegMatrix,{'numeric'},{'nonempty','2d'},mfilename,'RegMatrix')
+validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
+validateattributes(Signal,{'numeric'},{'nonempty'},mfilename,'Signal')
+checklengths(Signal,Kernel);
 
-if isempty(RegMatrixOrder)
-    RegMatrixOrder = 2;
-else
-    validateattributes(RegMatrixOrder,{'numeric'},{'nonempty','nonnegative'},'regularize','RegMatrixOrder')
-end
+%--------------------------------------------------------------------------
+% Parse & Validate Optional Input
+%--------------------------------------------------------------------------
+%Check if user requested some options via name-value input
+[nonNegLSQsolTol,Solver,NonNegConstrained,MaxFunEvals,MaxIter] = parseOptional({'nonNegLSQsolTol','Solver','NonNegConstrained','MaxFunEvals','MaxIter'},varargin);
+
 if isempty(nonNegLSQsolTol)
     nonNegLSQsolTol = 1e-9;
 else
@@ -60,9 +64,7 @@ end
 if ~iscolumn(Signal)
     Signal = Signal';
 end
-validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},'regularize','RegParam')
-validateattributes(Signal,{'numeric'},{'nonempty'},'regularize','Signal')
-checklengths(Signal,Kernel);
+
 checkSolverCompatibility(Solver,RegType);
 %--------------------------------------------------------------------------
 
@@ -70,9 +72,7 @@ checkSolverCompatibility(Solver,RegType);
 %Regularization processing
 %--------------------------------------------------------------------------
 
-%Get regularization matrix
 Dimension = length(Signal);
-RegMatrix = getRegMatrix(Dimension,RegMatrixOrder);
 
 %If unconstrained Tikh regularization is requested then solve analytically
 if ~NonNegConstrained && strcmp(RegType,'tikhonov')

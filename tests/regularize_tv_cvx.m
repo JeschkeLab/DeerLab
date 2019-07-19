@@ -15,7 +15,8 @@ DipEvoFcn = Kernel*Distribution;
 
 %Set optimal regularization parameter (found numerically lambda=0.005)
 RegParam = 0.005;
-TVResult1 = regularize(DipEvoFcn,Kernel,'tv',RegParam,'RegMatrixOrder',3,'Solver','cvx');
+RegMatrix = getRegMatrix(Dimension,3);
+TVResult1 = regularize(DipEvoFcn,Kernel,RegMatrix,'tv',RegParam,'Solver','cvx');
 
 error = abs(TVResult1 - Distribution);
 err(1) = any(error>1e-2);
