@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %======================================================
 % Test data preparation function
@@ -18,13 +18,15 @@ DipEvoFcn = Kernel*Distribution;
 DistDomainSmoothing = 0.2;
 %Test APT using a 1GHz excitation bandwidth
 APTKernel = getAPTkernel(TimeAxis,'ExcitationBandwidth',1000);
-outDist = APT(DipEvoFcn,APTKernel,DistDomainSmoothing);
+[APTDistribution,DistanceAxis] = APT(DipEvoFcn,APTKernel,DistDomainSmoothing);
 
-err = any(abs(outDist.Distribution - Distribution)>1e-1);
+error = abs(APTDistribution - Distribution);
+err = any(error>1e-1);
 data = [];
+maxerr = max(error);
 
 if opt.Display
-outDist.plot(DistanceAxis,Distribution)
+plot(DistanceAxis,APTDistribution)
 end
 
 end

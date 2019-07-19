@@ -1,16 +1,26 @@
-function [APTDistribution] = APT(DipEvoFcn,APTkernel,DistDomainSmoothing)
+function [Distribution,UniformDistanceAxis] = APT(DipEvoFcn,APTkernel,DistDomainSmoothing)
 
+%--------------------------------------------------------------------------
+% Parse & Validate Required Input
+%--------------------------------------------------------------------------
 if ~isa(APTkernel,'aptkernel')
     error('The input APTkernel must be a a valid aptkernel class object.')
 end
+
 if iscolumn(DipEvoFcn)
    DipEvoFcn = DipEvoFcn'; 
 end
+validateattributes(DipEvoFcn,{'numeric'},{'2d','nonempty'})
+
 if nargin<2 || isempty(DistDomainSmoothing)
     DistDomainSmoothing = 0.05;
 else
     validateattributes(DistDomainSmoothing,{'numeric'},{'scalar','nonnegative'})
 end
+
+%--------------------------------------------------------------------------
+% APT algorithm
+%--------------------------------------------------------------------------
 
 %Get APT kernel data
 [Kernel,NormConstant,APT_FrequencyAxis,APT_TimeAxis,Crosstalk] = dismountAPTkernel(APTkernel);
@@ -55,11 +65,13 @@ FilteredAPTdistribution = FilteredAPTdistribution/max(FilteredAPTdistribution);
 
 %Interpolate to uniform distance axis
 UniformDistanceAxis = linspace(min(MappedDistances),max(MappedDistances),length(DipEvoFcn));
-APTDistribution = uniformGrain(MappedDistances,FilteredAPTdistribution,UniformDistanceAxis);
+Distribution = uniformGrain(MappedDistances,FilteredAPTdistribution,UniformDistanceAxis);
 
+%Normalize to unity integral
+Distribution = Distribution/sum(Distribution);
 
-APTDistribution = apt('DistanceAxis',UniformDistanceAxis,...
-                      'Distribution',APTDistribution,...
-                      'DistDomainSmoothing',DistDomainSmoothing);
+%Make the distribution a column
+Distribution = Distribution';
+
 end
 
