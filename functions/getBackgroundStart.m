@@ -4,7 +4,7 @@ function [FitStartTime,FitStartPos] = getBackgroundStart(Signal,TimeAxis,EndCuto
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
 %--------------------------------------------------------------------------
-if nargin<3
+if nargin<2
     error('Not enough input arguments.')
 end
 
@@ -14,8 +14,9 @@ else
     validateattributes(EndCutoffPos,{'numeric'},{'scalar','nonempty'},mfilename,'EndCutoffPos')
 end
 
-if nargin<4 || isempty(BckgModel)
+if nargin<3 || nargin<4 || isempty(BckgModel)
     BckgModel = 'exponential';
+    ModelParam = [];
 end
 
 if iscolumn(TimeAxis)
