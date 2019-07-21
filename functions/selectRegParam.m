@@ -129,7 +129,6 @@ for i=1:nPoints %Loop over all regularization parameter values
             
             %Compute approximate optimal Huber Parameter for current value of regularization parameter
             if i>1
-                try
                     %(Skip the first value since it requires previous unconstrained distributions)
                     Solveroptions = optimoptions(@fsolve,'Display','off','Algorithm','trust-region-reflective');
                     HuberParameter = fsolve(@(HuberParameter) Kernel'*(Kernel*PseudoInverse{i-1}*Signal - Signal) + ...
@@ -137,11 +136,10 @@ for i=1:nPoints %Loop over all regularization parameter values
                         ,1.35,Solveroptions);
                     % Ensure that Huber parameter does not get negative (can lead to crashes later on)
                     HuberParameter = abs(HuberParameter);
-                catch
-                    
-                end
+                    HuberParameterSet(i) = HuberParameter;
+            else
+               HuberParameter = 1.35; 
             end
-            HuberParameterSet(i) = HuberParameter;
             %Unconstrained distributions required for construction of correct pseudoinverse
             Distribution{i} = zeros(DipolarDimension,1);
             try
