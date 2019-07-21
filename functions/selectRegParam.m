@@ -1,4 +1,4 @@
-function [OptRegParam,Functionals,Lcurve] = selectRegParam(RegParamRange,Signal,Kernel,RegMatrix,SelectionMethod,varargin)
+function [OptRegParam,Functionals,Lcurve,OptHuberParam] = selectRegParam(RegParamRange,Signal,Kernel,RegMatrix,SelectionMethod,varargin)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -71,14 +71,14 @@ end
 % Preparations
 %--------------------------------------------------------------------------
 DipolarDimension = length(Signal);
-HuberParameter = 1.35;
 
 %Update number of points just to make sure
 nPoints = length(RegParamRange);
 %Initialize arrays
 Residual = zeros(1,nPoints);
 Penalty = zeros(1,nPoints);
-Functional  =zeros(1,nPoints);
+Functional  = zeros(1,nPoints);
+HuberParameterSet = zeros(1,nPoints);
 %Initialize cells
 PseudoInverse = cell(1,nPoints);
 Distribution = cell(1,nPoints);
@@ -141,6 +141,7 @@ for i=1:nPoints %Loop over all regularization parameter values
                     
                 end
             end
+            HuberParameterSet(i) = HuberParameter;
             %Unconstrained distributions required for construction of correct pseudoinverse
             Distribution{i} = zeros(DipolarDimension,1);
             try
@@ -291,6 +292,7 @@ Penalty = reshape(Penalty,1,[]);
 nPoints = length(Distribution);
 Functionals = cell(length(SelectionMethod));
 OptRegParam = zeros(length(SelectionMethod),1);
+OptHuberParam = zeros(length(SelectionMethod),1);
 
 %--------------------------------------------------------------------------
 % Selection methods for optimal regularization parameter
@@ -406,6 +408,7 @@ for MethodIndex = 1:length(SelectionMethod)
     [~,Index] = min(Functional);
     %Store the optimal regularization parameter
     OptRegParam(MethodIndex) = RegParamRange(Index);
+    OptHuberParam(MethodIndex) = HuberParameterSet(Index);
     if nargout>1
         Functionals{MethodIndex} =  Functional;
     end
