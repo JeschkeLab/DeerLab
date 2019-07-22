@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %======================================================
 % Check kernel is constructed properly
@@ -13,6 +13,7 @@ DistAxis = time2dist(TimeAxis);
 kernelOut = getKernel(TimeAxis,DistAxis);
 
 err = any(abs(kernelOut - kernel)>1e-2);
+maxerr = max(max(abs(kernelOut - kernel)));
 data = [];
 
 end

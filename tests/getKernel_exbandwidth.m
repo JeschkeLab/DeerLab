@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %======================================================
 % Check kernel is constructed properly
@@ -26,6 +26,7 @@ KernelB = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','full','Excit
 TraceB  = KernelB*Distribution;
 
 err = any(abs(TraceB - Trace)>1e-10);
+maxerr = max(abs(TraceB - Trace));
 data = [];
 
 end

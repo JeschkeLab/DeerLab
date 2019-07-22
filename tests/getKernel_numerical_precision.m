@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %Diagonal of the kernel computed by Mathematica
 AnalyticalKernel = [1.0000000000,0.989724398140451,0.962515792044324,...
@@ -43,6 +43,7 @@ NumericalKernel = diag(getKernel(TimeAxis,DistanceAxis));
 
 %Check the precision
 err = any(abs(NumericalKernel' - AnalyticalKernel)>1e-14);
+maxerr = max(abs(NumericalKernel' - AnalyticalKernel));
 data = [];
 
 if opt.Display

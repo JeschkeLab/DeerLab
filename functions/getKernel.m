@@ -4,7 +4,7 @@ function [Kernel] = getKernel(TimeAxis,DistanceAxis,Background,varargin)
 %Input parsing
 %--------------------------------------------------------------------------
 %Check if user requested some options via name-value input
-[KernelBType,ExcitationBandwidth] = parseOptional({'KernelBType','ExcitationBandwidth'},varargin);
+[KernelBType,ExcitationBandwidth,OvertoneCoeffs] = parseOptional({'KernelBType','ExcitationBandwidth','OvertoneCoeffs'},varargin);
 %Validate the input variables
 if nargin<3 || isempty(Background)
    Background = ones(1,length(TimeAxis));  
@@ -12,6 +12,11 @@ end
 validKernelBTypes = ["none","full","sqrt"];
 if isempty(KernelBType)
     KernelBType = 'sqrt';
+end
+if isempty(OvertoneCoeffs)
+   OvertoneCoeffs = 1; 
+else 
+    validateattributes(OvertoneCoeffs,{'numeric'},{'nonnegative'},mfilename,'OvertoneCoeffs')
 end
 if ~isempty(ExcitationBandwidth)
     validateattributes(ExcitationBandwidth,{'numeric'},{'scalar','nonnegative'},'getKernel','ExcitationBandwidth')
@@ -32,7 +37,6 @@ validateattributes(DistanceAxis,{'numeric'},{'nonempty','increasing','nonnegativ
 validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing','nonnegative'},'getKernel','TimeAxis')
 validatestring(KernelBType,validKernelBTypes);
 checklengths(TimeAxis,Background);
-%--------------------------------------------------------------------------
 
 %--------------------------------------------------------------------------
 %Kernel construction
@@ -54,22 +58,24 @@ end
 %Numerical angular dipolar frequency at 1 nm for g=ge
 w0 = 2*pi*ny0;
 %Get vector of dipolar frequencies
-wdd=w0./(DistanceAxis.^3);
+wdd = w0./(DistanceAxis.^3);
 
 %If given, account for limited excitation bandwidth
 if ~isempty(ExcitationBandwidth)
     wdd = exp(-wdd.^2/ExcitationBandwidth^2).*wdd;
 end
 
+Kernel = zeros(length(wdd));
+%Compute dipolar kernel
+for i=1:length(OvertoneCoeffs)
 %Allocate products for speed
-wddt = wdd.*TimeAxis;
+wddt = i*wdd.*TimeAxis;
 kappa = sqrt(6*wddt/pi);
 %Compute Fresnel integrals of 0th order
 C = fresnelC(kappa);
 S = fresnelS(kappa);
-
-%Compute dipolar kernel
-Kernel = sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
+Kernel = Kernel + OvertoneCoeffs(i)*sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
+end
 %Replace undefined Fresnel NaN value at time zero
 Kernel(:,1) = 1;
 
@@ -82,7 +88,6 @@ switch KernelBType
         Background = sqrt(Background);
 end
 Kernel = Kernel.*repmat(Background,Dimension,1);
-
 
 %Transpose
 Kernel = Kernel';
