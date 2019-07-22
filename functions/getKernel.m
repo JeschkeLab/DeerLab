@@ -4,7 +4,7 @@ function [Kernel] = getKernel(TimeAxis,DistanceAxis,Background,varargin)
 %Input parsing
 %--------------------------------------------------------------------------
 %Check if user requested some options via name-value input
-[KernelBType,ExcitationBandwidth,OvertoneCoeffs] = parseOptional({'KernelBType','ExcitationBandwidth','OvertoneCoeffs'},varargin);
+[KernelBType,ExcitationBandwidth,OvertoneCoeffs,gValue] = parseOptional({'KernelBType','ExcitationBandwidth','OvertoneCoeffs','gValue'},varargin);
 %Validate the input variables
 if nargin<3 || isempty(Background)
    Background = ones(1,length(TimeAxis));  
@@ -33,6 +33,12 @@ end
 if iscolumn(Background)
    Background = Background'; 
 end
+if isempty(gValue)
+    %Set g-value of isotropic nitroxide radical (old DA default)
+    gValue = 2.004602204236924;
+else
+    validateattributes(gValue,{'numeric'},{'scalar','nonnegative'},mfilename,'gValue')
+end
 validateattributes(DistanceAxis,{'numeric'},{'nonempty','increasing','nonnegative'},'getKernel','DistanceAxis')
 validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing','nonnegative'},'getKernel','TimeAxis')
 validatestring(KernelBType,validKernelBTypes);
@@ -47,8 +53,8 @@ OldPrecision = digits(15);
 Dimension = length(TimeAxis);
 TimeStep = mean(diff(TimeAxis));
 
-%Numerical dipolar frequency at 1 nm for g=ge
-ny0 = 52.04;
+%Numerical dipolar frequency at 1 nm for given g-value
+ny0 = 51.92052556862238*gValue/2;
 %Convert time step to miliseconds if given in nanosecond
 if TimeStep>1
     TimeStep = round(TimeStep)/1000;
