@@ -17,6 +17,10 @@ else
     validatestring(RegType,allowedInput);
 end
 
+if ~isreal(Signal)
+   Signal = real(Signal); 
+end
+
 if strcmp(RegType,'custom')
     GradObj = 'off';
 else
