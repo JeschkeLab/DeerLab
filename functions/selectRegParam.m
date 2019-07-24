@@ -6,6 +6,9 @@ function [OptRegParam,Functionals,Lcurve,OptHuberParam] = selectRegParam(RegPara
 if ~iscolumn(Signal)
     Signal = Signal';
 end
+if ~isreal(Signal)
+    Signal = real(Signal);
+end
 validateattributes(Signal,{'numeric'},{'nonempty'},mfilename,'Signal')
 validateattributes(RegParamRange,{'numeric'},{'nonempty','nonnegative'},mfilename,'RegParamRange')
 validateattributes(Kernel,{'numeric'},{'nonempty'},mfilename,'Kernel')
