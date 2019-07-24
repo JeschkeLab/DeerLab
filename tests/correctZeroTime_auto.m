@@ -14,8 +14,8 @@ inputZeroTime = abs(min(originalTimeAxis));
 
 
 err(1) = any(abs(correctedTimeAxis - originalTimeAxis)>1e-10);
-err(2) = any(abs(correctedSignal - originalData)>1e-10);
-err(3) = abs(outputZeroTime - inputZeroTime)>1e-10;
+err(2) = any(abs(correctedSignal' - originalData)>1e-10);
+err(3) = abs(outputZeroTime' - inputZeroTime)>1e-10;
 
 err = any(err);
 data = [];

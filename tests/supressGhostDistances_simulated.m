@@ -41,14 +41,15 @@ FormFactor2 = 1-lambda + lambda*P;
 
 correctedFormFactor3 = FormFactor3.^(1/2);
 
+
 Dip3 = (correctedFormFactor3-(1-lambda))/lambda;
 Dip2 = (FormFactor2-(1-lambda))/lambda;
 
 Dip2 = Dip2/Dip2(1);
 Dip3 = Dip3/Dip3(1);
 
-signal = supressGhostDistances(FormFactor3,lambda,3);
-
+signal = supressGhostDistances(FormFactor3,3);
+signal = (signal - (1-lambda))/lambda - 1;
 
 Kernel = getKernel(TimeAxis,DistanceAxis);
 RegMatrix = getRegMatrix(Dimension,2);
