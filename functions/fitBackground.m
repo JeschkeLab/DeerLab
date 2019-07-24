@@ -17,10 +17,16 @@ else
     validatestring(BckgModel,allowedInput);
 end
 if iscolumn(TimeAxis)
-    TimeAxis = TimeAxis';
+    TimeAxis = TimeAxis';    
 end
 if iscolumn(FitData)
     FitData = FitData';
+    DataIsColumn = true;
+else
+    DataIsColumn = false;
+end
+if iscolumn(FitTimeAxis)
+    FitTimeAxis = FitTimeAxis';
 end
 validateattributes(FitData,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
 validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mfilename,'TimeAxis')
@@ -71,7 +77,9 @@ end
 
 %Ensure data is real
 Background=real(Background);
-
+if DataIsColumn
+   Background = Background'; 
+end
 return
 
 %Cost function for fractal stretched exponential fit
