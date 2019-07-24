@@ -7,31 +7,31 @@ function [Kernel] = getKernel(TimeAxis,DistanceAxis,Background,varargin)
 [KernelBType,ExcitationBandwidth,OvertoneCoeffs,gValue] = parseOptional({'KernelBType','ExcitationBandwidth','OvertoneCoeffs','gValue'},varargin);
 %Validate the input variables
 if nargin<3 || isempty(Background)
-   Background = ones(1,length(TimeAxis));  
+    Background = ones(1,length(TimeAxis));
 end
 validKernelBTypes = ["none","full","sqrt"];
 if isempty(KernelBType)
     KernelBType = 'sqrt';
 end
 if isempty(OvertoneCoeffs)
-   OvertoneCoeffs = 1; 
-else 
+    OvertoneCoeffs = 1;
+else
     validateattributes(OvertoneCoeffs,{'numeric'},{'nonnegative'},mfilename,'OvertoneCoeffs')
 end
 if ~isempty(ExcitationBandwidth)
     validateattributes(ExcitationBandwidth,{'numeric'},{'scalar','nonnegative'},'getKernel','ExcitationBandwidth')
 end
 if ~isempty(Background)
-validateattributes(Background,{'numeric'},{},'getKernel','Background')
+    validateattributes(Background,{'numeric'},{},'getKernel','Background')
 end
 if iscolumn(TimeAxis)
-   TimeAxis = TimeAxis'; 
+    TimeAxis = TimeAxis';
 end
 if ~iscolumn(DistanceAxis)
-   DistanceAxis = DistanceAxis'; 
+    DistanceAxis = DistanceAxis';
 end
 if iscolumn(Background)
-   Background = Background'; 
+    Background = Background';
 end
 if isempty(gValue)
     %Set g-value of isotropic nitroxide radical (old DA default)
@@ -74,19 +74,22 @@ end
 Kernel = zeros(length(wdd));
 %Compute dipolar kernel
 for i=1:length(OvertoneCoeffs)
-%Allocate products for speed
-wddt = i*wdd.*TimeAxis;
-kappa = sqrt(6*wddt/pi);
-%Compute Fresnel integrals of 0th order
-C = fresnelC(kappa);
-S = fresnelS(kappa);
-Kernel = Kernel + OvertoneCoeffs(i)*sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
+    %Allocate products for speed
+    wddt = i*wdd.*TimeAxis;
+    kappa = sqrt(6*wddt/pi);
+    %Compute Fresnel integrals of 0th order
+    C = fresnelC(kappa);
+    S = fresnelS(kappa);
+    Kernel = Kernel + OvertoneCoeffs(i)*sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
 end
 %Replace undefined Fresnel NaN value at time zero
 Kernel(:,1) = 1;
 
 %Build the background into the kernel
-Kernel = Kernel + (1/Background(1) - 1);
+if ~all(Background == 1)
+    ModDepth = 1/Background(1) - 1;
+    Kernel = ModDepth*Kernel + 1;
+end
 switch KernelBType
     case 'none'
         Background = ones(Dimension,1);

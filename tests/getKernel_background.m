@@ -10,13 +10,12 @@ TimeAxis = linspace(0,Dimension*TimeStep,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
-Background = exp(-0.05*TimeAxis);
+Background = exp(-0.5*TimeAxis);
 Kernel = getKernel(TimeAxis,DistanceAxis);
 
 Trace  = Kernel*Distribution;
 Trace = (Trace + 2).*Background';
-
-Background = Background/Trace(1);
+Background = Background*(1-1/Trace(1));
 Trace = Trace/Trace(1);
 
 KernelB = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','full');
@@ -26,5 +25,11 @@ TraceB  = KernelB*Distribution;
 err = any(abs(TraceB - Trace)>1e-10);
 maxerr = max(abs(TraceB - Trace));
 data = [];
+
+if opt.Display
+   figure(3)
+   plot(TimeAxis,TraceB,'r',TimeAxis,Background,'r--',TimeAxis,Trace,'b')
+    
+end
 
 end

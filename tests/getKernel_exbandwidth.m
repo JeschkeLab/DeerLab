@@ -18,7 +18,7 @@ Kernel = getKernel(TimeAxis,DistanceAxis,[],'ExcitationBandwidth',ExcitationBand
 Trace  = Kernel*Distribution;
 Trace = (Trace + 2).*Background';
 
-Background = Background/Trace(1);
+Background = Background*(1-1/Trace(1));
 Trace = Trace/Trace(1);
 
 KernelB = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','full','ExcitationBandwidth',ExcitationBandwidth);
