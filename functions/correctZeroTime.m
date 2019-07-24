@@ -1,8 +1,19 @@
 function [correctedSignal,correctedTimeAxis,ZeroTime] = correctZeroTime(Signal,TimeAxis,ZeroTime)
 
-if nargin<3
-    ZeroTime = [];
+if nargin<2 
+   error('Not enough input arguments.') 
 end
+
+if nargin<3 || isempty(ZeroTime)
+    ZeroTime = [];
+else
+    validateattributes(ZeroTime,{'numeric'},{'scalar','nonnegative'},mfilename,'ZeroTime')
+end
+if ~iscolumn(Signal)
+    Signal = Signal';
+end
+validateattributes(Signal,{'numeric'},{'2d'},mfilename,'Signal')
+validateattributes(TimeAxis,{'numeric'},{'nonnegative','nonempty'},mfilename,'TimeAxis')
 
 %Generate finely-grained interpolated signal and time axis
 FineTimeAxis = min(TimeAxis):1:max(TimeAxis);
@@ -13,7 +24,7 @@ if isempty(ZeroTime)
     % Determine maximum
     [~,maxPos]=max(FineSignal);
     ZeroTimePos=1;
-     %If maximum is not the first point in signal, then do moment-analysis
+    %If maximum is not the first point in signal, then do moment-analysis
     if maxPos>1 && maxPos<length(FineSignal)
         %
         % Procedure schematic:
@@ -31,11 +42,11 @@ if isempty(ZeroTime)
         %Determine the maximum allowed distance for search
         NewPos = maxPos - 1;
         MaxEndDistance = length(FineSignal) - maxPos;
-        NewPosDistance = NewPos; 
+        NewPosDistance = NewPos;
         if MaxEndDistance<NewPosDistance
-          SmallestDistance=MaxEndDistance;
+            SmallestDistance=MaxEndDistance;
         else
-          SmallestDistance=NewPosDistance;
+            SmallestDistance=NewPosDistance;
         end
         MaxAllowedDistance = floor(NewPosDistance/2);
         BestIntegral = 1e20;
@@ -49,8 +60,8 @@ if isempty(ZeroTime)
             end
             %If integral is lower than prior best, then update new candidate
             if abs(Integral) < BestIntegral
-              BestIntegral = abs(Integral);
-              ZeroTimePos = TrialPos; 
+                BestIntegral = abs(Integral);
+                ZeroTimePos = TrialPos;
             end
         end
     end
@@ -61,12 +72,12 @@ end
 
 % Get a smoothed estimate of the zero-position
 if ZeroTimePos > 10
-  SmoothingAxis = 1:min(2*ZeroTimePos,length(FineSignal));
-  [p,~] = polyfit(SmoothingAxis,FineSignal(SmoothingAxis),11);
-  SmoothZeroTimeRegion = polyval(p,SmoothingAxis);
-  correctedSignal = Signal/SmoothZeroTimeRegion(ZeroTimePos);
+    SmoothingAxis = 1:min(2*ZeroTimePos,length(FineSignal));
+    [p,~] = polyfit(SmoothingAxis,FineSignal(SmoothingAxis),11);
+    SmoothZeroTimeRegion = polyval(p,SmoothingAxis);
+    correctedSignal = Signal/SmoothZeroTimeRegion(ZeroTimePos);
 else
-  correctedSignal = Signal;
+    correctedSignal = Signal;
 end
 
 % Correct time axis
