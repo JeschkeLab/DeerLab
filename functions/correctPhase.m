@@ -12,7 +12,7 @@ end
 if iscolumn(PrimaryData)
    PrimaryData = PrimaryData'; 
 end
-validateattributes(PrimaryData,{'numeric'},mfilename,'PrimaryData')
+validateattributes(PrimaryData,{'numeric'},{},mfilename,'PrimaryData')
 
 if nargin==1 || nargin==3
     Phase = [];
