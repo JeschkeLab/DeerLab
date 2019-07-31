@@ -20,9 +20,9 @@ data2fit3 = bckg3(20:end);
 
 tfit = t(20:end);
 
-fit = fitBackground(data2fit,t,tfit,'polyexp');
-fit2 = fitBackground(data2fit2,t,tfit,'polyexp');
-fit3 = fitBackground(data2fit3,t,tfit,'polyexp');
+fit = fitbackground(data2fit,t,tfit,'polyexp');
+fit2 = fitbackground(data2fit2,t,tfit,'polyexp');
+fit3 = fitbackground(data2fit3,t,tfit,'polyexp');
 
 err(1) = any(abs(fit - bckg)>1e-5);
 err(2) = any(abs(fit2 - bckg2)>1e-5);

@@ -11,8 +11,8 @@ DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.2);
 Distribution = Distribution/sum(Distribution);
 
-Kernel = getKernel(TimeAxis,DistanceAxis);
-RegMatrix =  getRegMatrix(Dimension,3);
+Kernel = dipolarkernel(TimeAxis,DistanceAxis);
+RegMatrix =  regoperator(Dimension,3);
 DipEvoFcn = Kernel*Distribution;
 rng(2);
 Noise = rand(Dimension,1);

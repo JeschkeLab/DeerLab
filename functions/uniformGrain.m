@@ -1,4 +1,4 @@
-function output=uniformGrain(nonUniformGrain,data,uniformGrain),
+function output = uniformgrain(nonUniformGrain,data,uniformgrain)
 %
 % Computes a new vector defined on a non-uniform grain from the input 
 % vector data to a new vector defined on a uniform grain defined by the
@@ -10,22 +10,22 @@ function output=uniformGrain(nonUniformGrain,data,uniformGrain),
 % Standard resolution 2000 points
 
 
-Grain = uniformGrain(2)-uniformGrain(1);
+Grain = uniformgrain(2)-uniformgrain(1);
 minGrain = min(nonUniformGrain);
-if minGrain < min(uniformGrain)
-    minGrain = min(uniformGrain); 
+if minGrain < min(uniformgrain)
+    minGrain = min(uniformgrain); 
 end
 maxGrain = max(nonUniformGrain);
-if maxGrain > max(uniformGrain)
-    maxGrain=max(uniformGrain); 
+if maxGrain > max(uniformgrain)
+    maxGrain=max(uniformgrain); 
 end
 
 minPoint = round(minGrain/Grain);
 maxPoint = round(maxGrain/Grain);
 rax = linspace(minPoint*Grain, maxPoint*Grain, maxPoint - minPoint + 1);
 InterpData = interp1(nonUniformGrain, data, rax, 'pchip', 0);
-output = 0*uniformGrain;
-rbas = round(min(uniformGrain)/Grain);
+output = 0*uniformgrain;
+rbas = round(min(uniformgrain)/Grain);
 output(minPoint - rbas + 1:maxPoint - rbas + 1) = InterpData;
 
 

@@ -1,4 +1,4 @@
-function [InterpSignal,InterpTimeAxis] = changeGrain(Signal,TimeAxis,NewTimeGrain)
+function [InterpSignal,InterpTimeAxis] = changegrain(Signal,TimeAxis,NewTimeGrain)
 
 max_points = 2048; % maximum number of data points
 DefaultTimeGrain = 4; % minimum time increment, should coincide with handles.time_grain in DeerAnalysis.m

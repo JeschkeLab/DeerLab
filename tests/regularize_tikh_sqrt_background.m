@@ -11,24 +11,24 @@ DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
 
-Kernel = getKernel(TimeAxis,DistanceAxis);
+Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 Background = exp(-0.15*TimeAxis)';
 ClusterFcn = (DipEvoFcn + 5).*Background;
-Background = Background/ClusterFcn(1);
+Background = Background*(1-1/ClusterFcn(1));
 ClusterFcn = ClusterFcn/ClusterFcn(1);
 ClusterFcn = ClusterFcn./sqrt(Background);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.13;
-KernelB = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
-RegMatrix = getRegMatrix(Dimension,2);
+KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
+RegMatrix = regoperator(Dimension,2);
 TikhResult1 = regularize(ClusterFcn,KernelB,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 TikhResult2 = regularize(ClusterFcn,KernelB,RegMatrix,'tikhonov',RegParam,'Solver','bppnnls');
 TikhResult3 = regularize(ClusterFcn,KernelB,RegMatrix,'tikhonov',RegParam,'Solver','lsqnonneg','nonNegLSQsolTol',1e-29);
 
-err(1) = any(abs(TikhResult1 - Distribution)>1e-6);
-err(2) = any(abs(TikhResult2 - Distribution)>1e-6);
+err(1) = any(abs(TikhResult1 - Distribution)>1e-5);
+err(2) = any(abs(TikhResult2 - Distribution)>1e-5);
 err(3) = any(abs(TikhResult3 - Distribution)>1e-2);
 
 maxerr = max(abs(TikhResult1 - Distribution));

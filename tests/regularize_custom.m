@@ -11,13 +11,13 @@ DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
 
-Kernel = getKernel(TimeAxis,DistanceAxis);
+Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.02;
-RegMatrix = getRegMatrix(Dimension,3);
+RegMatrix = regoperator(Dimension,3);
 RegFunctional = @(Dist)(1/2*norm(Kernel*Dist - DipEvoFcn)^2 + RegParam^2*max(RegMatrix*Dist)^2);
 Result = regularize(DipEvoFcn,Kernel,RegMatrix,RegFunctional,RegParam,'Solver','fmincon');
 

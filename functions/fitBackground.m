@@ -1,4 +1,4 @@
-function [Background,FitResults] = fitBackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam)
+function [Background,FitResults] = fitbackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam)
 
 if nargin<3
     error('Not enough input arguments.')

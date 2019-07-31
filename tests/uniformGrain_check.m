@@ -11,7 +11,7 @@ uniformAxis = linspace(min(nonUniformAxis),max(nonUniformAxis),length(nonUniform
 nonUniformGaussian = gaussian(nonUniformAxis,3,0.25)';
 uniformGaussian = gaussian(uniformAxis,3,0.25)';
 
-[uniformGaussianOut] = uniformGrain(nonUniformAxis,nonUniformGaussian,uniformAxis);
+[uniformGaussianOut] = uniformgrain(nonUniformAxis,nonUniformGaussian,uniformAxis);
 
 
 err(1) = any(abs(uniformGaussianOut - uniformGaussian)>1e-1);

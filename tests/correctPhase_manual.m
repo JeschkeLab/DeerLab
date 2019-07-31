@@ -9,7 +9,7 @@ inputPhase = pi/4;
 
 phasedData = originalData.*exp(-1i*inputPhase);
 
-[correctedData,outputPhase] = correctPhase(phasedData,inputPhase);
+[correctedData,outputPhase] = correctphase(phasedData,inputPhase);
 
 
 err(1) = any(abs(imag(correctedData) - imag(originalData))>1e-10);

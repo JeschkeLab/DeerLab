@@ -10,12 +10,12 @@ DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
 
-Kernel = getKernel(TimeAxis,DistanceAxis);
+Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 %Set optimal regularization parameter (found numerically lambda=0.005)
 RegParam = 0.005;
-RegMatrix = getRegMatrix(Dimension,3);
+RegMatrix = regoperator(Dimension,3);
 TVResult1 = regularize(DipEvoFcn,Kernel,RegMatrix,'tv',RegParam,'Solver','cvx');
 
 error = abs(TVResult1 - Distribution);

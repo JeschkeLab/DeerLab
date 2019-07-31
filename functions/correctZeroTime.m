@@ -1,4 +1,4 @@
-function [correctedSignal,correctedTimeAxis,ZeroTime] = correctZeroTime(Signal,TimeAxis,ZeroTime)
+function [correctedSignal,correctedTimeAxis,ZeroTime] = correctzerotime(Signal,TimeAxis,ZeroTime)
 
 if nargin<2 
    error('Not enough input arguments.') 

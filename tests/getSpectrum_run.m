@@ -5,8 +5,8 @@ TimeAxis = linspace(0,1/mean(2*10)*100,100);
 
 Signal = exp(-TimeAxis).*cos(2*pi*5*TimeAxis);
 Spectrum = abs(fftshift(fft(Signal,2*length(Signal))));
-Output = getSpectrum(TimeAxis,Signal);
-[FrequencyAxis,~] = getSpectrum(TimeAxis,Signal,'Type','abs');
+Output = fftspec(TimeAxis,Signal);
+[FrequencyAxis,~] = fftspec(TimeAxis,Signal,'Type','abs');
 
 error = abs(Spectrum - Output);
 err = any(error>1e-10);

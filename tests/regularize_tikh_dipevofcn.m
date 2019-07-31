@@ -11,12 +11,12 @@ DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
 
-Kernel = getKernel(TimeAxis,DistanceAxis);
+Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.1;
-RegMatrix = getRegMatrix(Dimension,2);
+RegMatrix = regoperator(Dimension,2);
 TikhResult1 = regularize(DipEvoFcn,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 TikhResult2 = regularize(DipEvoFcn,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','bppnnls');
 TikhResult3 = regularize(DipEvoFcn,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','lsqnonneg','nonNegLSQsolTol',1e-25);

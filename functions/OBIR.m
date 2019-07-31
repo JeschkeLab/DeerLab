@@ -50,7 +50,7 @@ end
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
 %Check if user requested some options via name-value input
-[MaxOuterIter,MaxFunEvals,MaxIter,DivergenceStop] = parseOptional({'MaxOuterIter','MaxFunEvals','MaxIter','DivergenceStop'},varargin);
+[MaxOuterIter,MaxFunEvals,MaxIter,DivergenceStop] = parseoptional({'MaxOuterIter','MaxFunEvals','MaxIter','DivergenceStop'},varargin);
 
 if isempty(MaxOuterIter)
     MaxOuterIter = 200;
@@ -102,12 +102,12 @@ while Iteration <= MaxOuterIter
     CheckDistribution = Distribution;
     
     %Define current minimization problem
-    RegFunctional = getRegFunctional(RegType,Signal,RegMatrix,Kernel,RegParam);
+    RegFunctional = regfunctional(RegType,Signal,RegMatrix,Kernel,RegParam);
     fminconFunctional = @(Distribution)OBIRFunctional(Distribution,RegFunctional,Subgradient);
     fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
     
     %Run minimzation
-    Distribution =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unitIntConstraint,fminconOptions);
+    Distribution =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
     
     %Store current convergence curve point
     ConvergenceCurve(Iteration) = std(Kernel*Distribution - Signal);

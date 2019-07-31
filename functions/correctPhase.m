@@ -1,4 +1,4 @@
-function [correctedSignal,Phase,ImagOffset] = correctPhase(PrimaryData,Phase,FittedImaginaryOffset)
+function [correctedSignal,Phase,ImagOffset] = correctphase(PrimaryData,Phase,FittedImaginaryOffset)
 
 %--------------------------------------------------------------------------
 %Input parsing
@@ -6,7 +6,7 @@ function [correctedSignal,Phase,ImagOffset] = correctPhase(PrimaryData,Phase,Fit
 if nargin<3
     FittedImaginaryOffset = false;
 else
-    validateattributes(FittedImaginaryOffset,{'numeric'},{'scalar'},mfilename,'FittedImaginaryOffset')
+    validateattributes(FittedImaginaryOffset,{'logical'},{'nonempty'},mfilename,'FittedImaginaryOffset')
 end
 
 if iscolumn(PrimaryData)

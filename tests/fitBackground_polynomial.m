@@ -20,9 +20,9 @@ polyOrder = 1;
 polyOrder2 = 2;
 polyOrder3 = 3;
 
-fit = fitBackground(data2fit,t,tfit,'polynomial',polyOrder);
-fit2 = fitBackground(data2fit2,t,tfit,'polynomial',polyOrder2);
-fit3 = fitBackground(data2fit3,t,tfit,'polynomial',polyOrder3);
+fit = fitbackground(data2fit,t,tfit,'polynomial',polyOrder);
+fit2 = fitbackground(data2fit2,t,tfit,'polynomial',polyOrder2);
+fit3 = fitbackground(data2fit3,t,tfit,'polynomial',polyOrder3);
 
 
 err(1) = any(abs(fit - bckg)>1e-5);

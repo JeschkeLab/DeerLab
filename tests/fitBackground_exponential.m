@@ -20,9 +20,9 @@ data2fit3 = bckg3(20:end);
 
 tfit = t(20:end);
 
-fit = fitBackground(data2fit,t,tfit,'exponential');
-fit2 = fitBackground(data2fit2,t,tfit,'exponential');
-fit3 = fitBackground(data2fit3,t,tfit,'exponential');
+fit = fitbackground(data2fit,t,tfit,'exponential');
+fit2 = fitbackground(data2fit2,t,tfit,'exponential');
+fit3 = fitbackground(data2fit3,t,tfit,'exponential');
 
 err(1) = any(abs(fit - bckg)>1e-5);
 err(2) = any(abs(fit2 - bckg2)>1e-5);

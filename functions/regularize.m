@@ -35,7 +35,7 @@ checklengths(Signal,Kernel);
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
 %Check if user requested some options via name-value input
-[nonNegLSQsolTol,Solver,NonNegConstrained,MaxFunEvals,MaxIter] = parseOptional({'nonNegLSQsolTol','Solver','NonNegConstrained','MaxFunEvals','MaxIter'},varargin);
+[nonNegLSQsolTol,Solver,NonNegConstrained,MaxFunEvals,MaxIter] = parseoptional({'nonNegLSQsolTol','Solver','NonNegConstrained','MaxFunEvals','MaxIter'},varargin);
 
 if isempty(nonNegLSQsolTol)
     nonNegLSQsolTol = 1e-9;
@@ -80,6 +80,7 @@ checkSolverCompatibility(Solver,RegType);
 %--------------------------------------------------------------------------
 
 Dimension = length(Signal);
+InitialGuess = zeros(Dimension,1);
 
 %If unconstrained Tikh regularization is requested then solve analytically
 if ~NonNegConstrained && strcmp(RegType,'tikhonov')
@@ -102,7 +103,7 @@ switch Solver
     case 'fnnls'
         %Constrained Tikhonov regularization
         Q = (Kernel'*Kernel) + RegParam^2*(RegMatrix'*RegMatrix);
-        Distribution = fnnls(Q,Kernel'*Signal,[],nonNegLSQsolTol);
+        Distribution = fnnls(Q,Kernel'*Signal,InitialGuess,nonNegLSQsolTol);
         
     case 'bppnnls'
         %Constrained Tikhonov regularization
@@ -112,17 +113,16 @@ switch Solver
         
     case 'fmincon'
         %Constrained Tikhonov/Total variation/Huber regularization
-        InitialGuess = zeros(Dimension,1);
         if NonNegConstrained
             NonNegConst = zeros(Dimension,1);
         else
             NonNegConst = [];
         end
         if ~strcmp(RegType,'custom')
-            RegFunctional = getRegFunctional(RegType,Signal,RegMatrix,Kernel,RegParam);
+            RegFunctional = regfunctional(RegType,Signal,RegMatrix,Kernel,RegParam);
         end
         fminconOptions = optimset('GradObj',GradObj,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
-        Distribution =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unitIntConstraint,fminconOptions);
+        Distribution =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
         
     case 'cvx'
         %Constrained Tikhonov/Total variation/Huber regularization

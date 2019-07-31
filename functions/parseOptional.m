@@ -1,4 +1,4 @@
-function varargout = parseOptional(Properties,varargin)
+function varargout = parseoptional(Properties,varargin)
 if length(Properties)==1 && ~iscell(Properties)
     Properties = {Properties};
 end

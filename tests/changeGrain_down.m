@@ -13,7 +13,7 @@ grainDownData = 2 - log10(GrainDown);
 
 
 
-[grainedOutput,grainedTimeAxis] = changeGrain(originalData,Grain',TimeStepDown);
+[grainedOutput,grainedTimeAxis] = changegrain(originalData,Grain',TimeStepDown);
 
 
 err(1) = any(abs(grainedOutput - grainDownData)>1e-2);

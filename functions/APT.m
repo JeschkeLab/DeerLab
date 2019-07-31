@@ -1,10 +1,10 @@
-function [Distribution,UniformDistanceAxis] = APT(DipEvoFcn,APTkernel,DistDomainSmoothing)
+function [Distribution,UniformDistanceAxis] = apt(DipEvoFcn,APTkernel,DistDomainSmoothing)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
 %--------------------------------------------------------------------------
-if ~isa(APTkernel,'aptkernel')
-    error('The input APTkernel must be a a valid aptkernel class object.')
+if ~isa(APTkernel,'struct')
+    error('The input APTkernel must be a a valid structure.')
 end
 
 if iscolumn(DipEvoFcn)
@@ -23,7 +23,11 @@ end
 %--------------------------------------------------------------------------
 
 %Get APT kernel data
-[Kernel,NormConstant,APT_FrequencyAxis,APT_TimeAxis,Crosstalk] = dismountAPTkernel(APTkernel);
+Kernel = APTkernel.Base;
+NormConstant = APTkernel.NormalizationFactor;
+APT_FrequencyAxis = APTkernel.FreqAxis;
+APT_TimeAxis = APTkernel.TimeAxis;
+Crosstalk = APTkernel.Crosstalk;
 
 %Compute frequency distribution
 [FreqDimension,~] = size(Kernel);
@@ -65,7 +69,7 @@ FilteredAPTdistribution = FilteredAPTdistribution/max(FilteredAPTdistribution);
 
 %Interpolate to uniform distance axis
 UniformDistanceAxis = linspace(min(MappedDistances),max(MappedDistances),length(DipEvoFcn));
-Distribution = uniformGrain(MappedDistances,FilteredAPTdistribution,UniformDistanceAxis);
+Distribution = uniformgrain(MappedDistances,FilteredAPTdistribution,UniformDistanceAxis);
 
 %Normalize to unity integral
 Distribution = Distribution/sum(Distribution);

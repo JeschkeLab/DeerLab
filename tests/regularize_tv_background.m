@@ -11,17 +11,17 @@ DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
 
-Kernel = getKernel(TimeAxis,DistanceAxis);
+Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 Background = exp(-0.15*TimeAxis)';
 ClusterFcn = (DipEvoFcn + 5).*Background;
-Background = Background/ClusterFcn(1);
+Background = Background*(1-1/ClusterFcn(1));
 ClusterFcn = ClusterFcn/ClusterFcn(1);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.005;
-RegMatrix = getRegMatrix(Dimension,3);
-KernelB = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','full');
+RegMatrix = regoperator(Dimension,3);
+KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','full');
 Result = regularize(ClusterFcn,KernelB,RegMatrix,'tv',RegParam,'Solver','fmincon');
 
 error = abs(Result - Distribution);
