@@ -20,7 +20,7 @@ OptParam = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,{'aic','gcv','lr'}
 
 %Accept testif all values are the same (should be as there is no noise)
 err(1) = any(diff(OptParam) > 1e-2);
-err(2) = any(abs(OptParam - 0.001995262314969));
+err(2) = any(abs(OptParam - 0.002));
 err = any(err);
 data = [];
 
