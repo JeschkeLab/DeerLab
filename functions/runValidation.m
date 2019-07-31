@@ -1,20 +1,35 @@
-function runValidation(ExpSignal,Parameters)
+function runvalidation(ExpSignal,Parameters,varargin)
 
-varparam = prepareValidation(Parameters);
+[Callback] = parseoptional({'Callback'},varargin);
+
+if ~isempty(Callback)
+    if ~isa(Callback,'function_handle')
+        error('''Callback'' option must be a valid function handle.')
+    end
+end
+
+varparam = prepareValidation(Parameters,'randperm',true);
 varnames = {Parameters.name};
 options = daoptions();
-for i=1:size(varparam,1)
-    %add hock for a gui function handle
+
+nParam = size(varparam,1);
+
+Distributions = zeros(nParam,length(ExpSignal));
+
+for i=1:nParam
     
-   %have as options possibility to scramble the rows of varparam 
-    %Set the current settings
     for j = 1:length(varnames) 
     options = setoptions(options,varnames{j},varparam{i,j});
     end
     %Run signal preparation
     ProcessedSignal = prepareSignal(ExpSignal,options);
     %Get the distribution
-    Distribution(i,:) = getDistribution(ProcessedSignal,options);
+    Distributions(i,:) = getDistribution(ProcessedSignal,options);
+    
+    %Hook for GUI callbacks
+    if ~isempty(Callback)
+        Callback(i,Distributions);
+    end
 end
 
 end
