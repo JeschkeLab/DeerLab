@@ -3,7 +3,7 @@ if length(Properties)==1 && ~iscell(Properties)
     Properties = {Properties};
 end
 
-
+Properties = lower(Properties);
 
 varargout = cell(length(Properties),1);
 
@@ -12,7 +12,7 @@ if ~isempty(varargin{1})
         varargin = varargin{1};
     end
     for i = 1:2:length(varargin(:))
-        currentProperty = varargin{i};
+        currentProperty = lower(varargin{i});
         if isa(currentProperty,'char')
             if any(strcmp(currentProperty,Properties))
             argoutidx = strcmp(currentProperty,Properties);
