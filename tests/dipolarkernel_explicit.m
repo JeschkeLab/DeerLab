@@ -10,7 +10,7 @@ N = 500;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*N,N);
 DistAxis = time2dist(TimeAxis);
-kernelOut = dipolarkernel(TimeAxis,DistAxis);
+kernelOut = dipolarkernel(TimeAxis,DistAxis,[],'KernelCalcMethod','explicit');
 
 err = any(abs(kernelOut - kernel)>1e-3);
 maxerr = max(max(abs(kernelOut - kernel)));

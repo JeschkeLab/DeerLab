@@ -10,23 +10,13 @@ TimeAxis = linspace(0,Dimension*TimeStep,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
-Background = exp(-0.05*TimeAxis);
-ExcitationBandwidth = 10; %MHz
+ExcitationBandwidth = 0.05; %MHz
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis,[],'ExcitationBandwidth',ExcitationBandwidth);
+Kernel = dipolarkernel(TimeAxis,DistanceAxis,[],'KernelBType','full','ExcitationBandwidth',ExcitationBandwidth);
 
 Trace  = Kernel*Distribution;
-Trace = (Trace + 2).*Background';
 
-Background = Background*(1-1/Trace(1));
-Trace = Trace/Trace(1);
-
-KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','full','ExcitationBandwidth',ExcitationBandwidth);
-
-TraceB  = KernelB*Distribution;
-
-err = any(abs(TraceB - Trace)>1e-10);
-maxerr = max(abs(TraceB - Trace));
+err = any(abs(Trace - 0*Trace)>1e-5);
+maxerr = max(abs(Trace -  0*Trace));
 data = [];
-
 end

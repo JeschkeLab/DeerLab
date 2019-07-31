@@ -4,16 +4,15 @@ function [err,data,maxerr] = test(opt,olddata)
 % Check kernel is constructed properly
 %======================================================
 
-load(fullfile('comparison','oldDAkernel500'));
-
-N = 500;
+N = 200;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*N,N);
 DistAxis = time2dist(TimeAxis);
-kernelOut = dipolarkernel(TimeAxis,DistAxis);
+kernelF = dipolarkernel(TimeAxis,DistAxis,[],'KernelCalcMethod','fresnel');
+kernelE = dipolarkernel(TimeAxis,DistAxis,[],'KernelCalcMethod','explicit');
 
-err = any(abs(kernelOut - kernel)>1e-3);
-maxerr = max(max(abs(kernelOut - kernel)));
+err = any(abs(kernelF - kernelE)>1e-2);
+maxerr = max(max(abs(kernelF - kernelE)));
 data = [];
 
 end
