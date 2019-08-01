@@ -5,19 +5,16 @@ Dimension = 200;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
-InputParam = [3 0.5];
-Distribution = gaussian(DistanceAxis,InputParam(1),InputParam(2));
-Distribution = Distribution/(1/sqrt(2*pi)*1/InputParam(2));
+InputParam = [3 0.4 4.5 0.3 0.6];
+Distribution = tworice(DistanceAxis,InputParam);
 Distribution = Distribution/sum(Distribution);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-InitialGuess = [2 0.1];
-[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@onerice,InitialGuess,'Constrained',true);
-err(1) = any(abs(FitDistribution - Distribution)>1e-5);
-err(2) = any(abs(FitParam - InputParam)>1e-3);
-err = any(err);
+InitialGuess = [2 0.1 1 0.6 0.2];
+[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@tworice,InitialGuess,'Constrained',true);
+err = any(abs(FitDistribution - Distribution)>1e-5);
 
 maxerr = max(abs(FitDistribution - Distribution));
 data = [];
@@ -27,7 +24,7 @@ if opt.Display
    subplot(121)
    hold on
    plot(TimeAxis,DipEvoFcn,'b')
-   plot(TimeAxis,KernelB*FitDistribution,'r')
+   plot(TimeAxis,Kernel*FitDistribution,'r')
    subplot(122)
    hold on
    plot(DistanceAxis,Distribution,'b')

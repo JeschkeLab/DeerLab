@@ -6,8 +6,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 InputParam = [3 0.5];
-Distribution = gaussian(DistanceAxis,InputParam(1),InputParam(2));
-Distribution = Distribution/(1/sqrt(2*pi)*1/InputParam(2));
+Distribution = onerice(DistanceAxis,InputParam);
 Distribution = Distribution/sum(Distribution);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
@@ -27,7 +26,7 @@ if opt.Display
    subplot(121)
    hold on
    plot(TimeAxis,DipEvoFcn,'b')
-   plot(TimeAxis,KernelB*FitDistribution,'r')
+   plot(TimeAxis,Kernel*FitDistribution,'r')
    subplot(122)
    hold on
    plot(DistanceAxis,Distribution,'b')
