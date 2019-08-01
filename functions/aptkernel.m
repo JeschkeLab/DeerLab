@@ -35,7 +35,7 @@ Base(:,1) = 1;
 
 %If given, account for limited excitation bandwidth
 if ~isempty(ExcitationBandwidth)
-    Base = exp(-wdd'.^2/ExcitationBandwidth^2).*Base;
+    Base = exp(-wdd'.^2/ExcitationBandwidth^2)'.*Base;
 end
 
 %Normalize with respect to dipolar evolution time
