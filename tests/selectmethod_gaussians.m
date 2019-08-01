@@ -17,7 +17,7 @@ DipEvoFcn = Kernel*Distribution;
 
 Models = {@onegaussian,@twogaussian,@threegaussian};
 
-[optimum,metric] = selectmodel(Models,DipEvoFcn,DistanceAxis,Kernel);
+[optimum,metric] = selectmodel(Models,DipEvoFcn,DistanceAxis,Kernel,'Algorithm','active-set');
 
 err = optimum~=2;
 data = [];

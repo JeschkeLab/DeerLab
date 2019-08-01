@@ -10,6 +10,9 @@ varargout = cell(length(Properties),1);
 if ~isempty(varargin{1})
     if length(varargin)==1
         varargin = varargin{1};
+        if cellfun(@length,varargin) > 1
+            varargin = varargin{1};
+        end
     end
     for i = 1:2:length(varargin(:))
         currentProperty = lower(varargin{i});

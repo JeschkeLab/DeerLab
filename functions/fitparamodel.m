@@ -23,7 +23,7 @@ if isempty(Algorithm)
    Algorithm = 'interior-point';
 else
     validInputs = {'interior-point','trust-region-reflective','active-set','sqp'};
-    validatestring(Algorithm,validInputs)
+    validatestring(Algorithm,validInputs);
 end
 
 if isempty(TolFun)
