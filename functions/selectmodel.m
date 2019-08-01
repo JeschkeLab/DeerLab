@@ -1,4 +1,4 @@
-function [optimum,aicc] = selectmodel(Models,Signal,DistanceAxis,Kernel)
+function [optimum,aicc,bic] = selectmodel(Models,Signal,DistanceAxis,Kernel)
 
 N = length(Signal);
 
@@ -10,6 +10,7 @@ for i=1:length(Models)
     [FitDistribution] = fitparamodel(Signal,Kernel,DistanceAxis,currentModel,[]);
     K = Info.nParam + 1;
     aicc(i) = N*log(sum(Kernel*FitDistribution - Signal).^2/N) + 2*K + (2*K*(K+1))/(N - K - 1);
+    bic(i) = N*log(sum(Kernel*FitDistribution - Signal).^2/N) + K*log(N);
     
 end
 
