@@ -13,7 +13,7 @@ Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 [FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@threerice,[],'Constrained',true);
-err = any(abs(FitDistribution - Distribution)>1e-5);
+err = any(abs(FitDistribution - Distribution)>1e-2);
 
 maxerr = max(abs(FitDistribution - Distribution));
 data = [];

@@ -14,9 +14,8 @@ Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 InitialGuess = [2 0.1];
-[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@onerice,InitialGuess,'Constrained',true);
+[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@onegaussian,InitialGuess,'Constrained',false);
 err(1) = any(abs(FitDistribution - Distribution)>1e-5);
-err(2) = any(abs(FitParam - InputParam)>1e-3);
 err = any(err);
 
 maxerr = max(abs(FitDistribution - Distribution));
@@ -27,7 +26,7 @@ if opt.Display
    subplot(121)
    hold on
    plot(TimeAxis,DipEvoFcn,'b')
-   plot(TimeAxis,KernelB*FitDistribution,'r')
+   plot(TimeAxis,Kernel*FitDistribution,'r')
    subplot(122)
    hold on
    plot(DistanceAxis,Distribution,'b')
