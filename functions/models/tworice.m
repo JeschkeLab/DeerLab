@@ -15,7 +15,7 @@ nParam = 5;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Rice/Rician distribution';
+    info.Model  = 'Two Rice/Rician distributions';
     info.Equation  = ['A*r/',char(963),'1²*exp((r-',char(957),'1)²/(2',char(963),'1²))*Bessel(r*',char(957),'1/',char(963),'1²)'...
                        '+ (1-A)*r/',char(963),'2²*exp((r-',char(957),'2)²/(2',char(963),'2²))*Bessel(r*',char(957),'2/',char(963),'2²)' ];
     info.nParam  = nParam;
