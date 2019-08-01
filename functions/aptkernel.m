@@ -21,11 +21,6 @@ NormalizationFactor=zeros(1,FreqDimension); % initialize vector of normalization
 %Numerical angular dipolar frequency
 wdd=2*pi*FreqAxis';
 
-%If given, account for limited excitation bandwidth
-if ~isempty(ExcitationBandwidth)
-    wdd = exp(-wdd.^2/ExcitationBandwidth^2).*wdd;
-end
-
 %Allocate products for speed
 wddt = wdd.*TimeAxis;
 kappa = sqrt(6*wddt/pi);
@@ -37,6 +32,11 @@ S = fresnelS(kappa);
 %Compute dipolar kernel
 Base = sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
 Base(:,1) = 1; 
+
+%If given, account for limited excitation bandwidth
+if ~isempty(ExcitationBandwidth)
+    Base = exp(-wdd'.^2/ExcitationBandwidth^2).*Base;
+end
 
 %Normalize with respect to dipolar evolution time
 for k=1:FreqDimension % normalize kernel traces to value at time origin
