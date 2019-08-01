@@ -26,20 +26,20 @@ else
     validatestring(Algorithm,validInputs)
 end
 
-if isempty(MaxFunEvals)
-   MaxFunEvals = 'interior-point';
+if isempty(TolFun)
+   TolFun = 1e-10;
 else
     validateattributes(TolFun,{'numeric'},{'scalar','nonnegative'})
 end
 
 if isempty(MaxFunEvals)
-   MaxFunEvals = 'interior-point';
+   MaxFunEvals = 3000;
 else
     validateattributes(MaxFunEvals,{'numeric'},{'scalar','nonnegative'})
 end
 
 if isempty(MaxIter)
-   MaxIter = 'interior-point';
+   MaxIter = 3000;
 else
     validateattributes(MaxIter,{'numeric'},{'scalar','nonnegative'})
 end
