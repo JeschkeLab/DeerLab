@@ -13,7 +13,7 @@ DipEvoFcn = Kernel*Distribution;
 
 Models = {@onerice,@tworice,@threerice,@onegaussian,@twogaussian,@threegaussian};
 
-[optimum,metric] = selectmodel(Models,DipEvoFcn,DistanceAxis,Kernel);
+[optimum,aicc,bic] = selectmodel(Models,DipEvoFcn,DistanceAxis,Kernel);
 
 err = optimum~=2;
 data = [];
@@ -30,8 +30,11 @@ grid on,box on
 xlabel('Distance [nm]')
 ylabel('P(r)')
 subplot(122)
-plot(metric,'b-o','LineWidth',1.5)
+hold on
+plot(aicc,'b-o','LineWidth',1.5)
+plot(bic,'r-o','LineWidth',1.5)
+legend('AICc','BIC')
 grid on,box on,axis tight
-ylabel('AICc')
+ylabel('Metric')
 set(gca,'xtick',1:length(Models),'xticklabel',tags)
 xtickangle(45)
