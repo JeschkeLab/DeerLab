@@ -10,7 +10,7 @@ varargout = cell(length(Properties),1);
 if ~isempty(varargin{1})
     if length(varargin)==1
         varargin = varargin{1};
-        if ~any(cellfun(@length,varargin)>1) && ~any(cellfun(@(x)isa(x,'cell'),varargin))
+        if all(cellfun(@length,varargin)>1) && all(cellfun(@(x)isa(x,'cell'),varargin))
             varargin = varargin{1};
         end
     end
