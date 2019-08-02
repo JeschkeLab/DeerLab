@@ -59,7 +59,11 @@ finalModel = @mixedFunction;
             output = mixedInfo;
             return
         else
-            distr = mixedModel(varargin{1},varargin{2});
+            r = varargin{1};
+            if ~iscolumn(r)
+               r = r.'; 
+            end
+            distr = mixedModel(r,varargin{2});
             output = distr;
         end
         
