@@ -91,7 +91,7 @@ switch Solver
     
     case 'analyticaluTikhonov'
         %Analytical solution of unconstrained Tikhonov problem
-        PseudoInverse = (Kernel'*Kernel) + RegParam^2*(RegMatrix'*RegMatrix)\Kernel';
+        PseudoInverse = ((Kernel.'*Kernel) + RegParam^2*(RegMatrix.'*RegMatrix))\(Kernel.');
         Distribution = PseudoInverse*Signal;
         
     case 'lsqnonneg'
