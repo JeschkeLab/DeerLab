@@ -17,13 +17,20 @@ else
 end
 
 %Get optional parameters
-[Constrained,Algorithm,MaxIter,MaxFunEvals,TolFun] = parseoptional({'Constrained','Algorithm','MaxIter','MaxFunEvals','TolFun'},varargin);
+[Constrained,Algorithm,MaxIter,MaxFunEvals,TolFun,CostModel] = parseoptional({'Constrained','Algorithm','MaxIter','MaxFunEvals','TolFun','CostModel'},varargin);
 
 if isempty(Algorithm)
    Algorithm = 'interior-point';
 else
     validInputs = {'interior-point','trust-region-reflective','active-set','sqp'};
     validatestring(Algorithm,validInputs);
+end
+
+if isempty(CostModel)
+   CostModel = 'mse';
+else
+    validInputs = {'mse','chi'};
+    validatestring(CostModel,validInputs);
 end
 
 if isempty(TolFun)
@@ -62,7 +69,15 @@ end
 %========================================================
 
 %Define the cost functional
-ModelCost = @(Parameters) (1/2*norm(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
+switch CostModel
+    case 'mse'
+        ModelCost = @(Parameters) (1/2*norm(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
+    case 'chi'
+        N = length(Signal);
+        nParam = length(StartParameters);
+        NoiseLevel = noiselevel(Signal);
+        ModelCost = @(Parameters) ( 1/(N - nParam)/(NoiseLevel^2)*sum(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
+end
 
 %Fit the parametric model...
 if Constrained
