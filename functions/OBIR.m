@@ -27,7 +27,11 @@ function [Distribution,ConvergenceCurve] = obir(Signal,Kernel,RegType,RegMatrix,
 if ~iscolumn(Signal)
     Signal = Signal';
 end
+if isempty(NoiseLevelAim)
+    NoiseLevelAim = noiselevel(Signal);
+else
 validateattributes(NoiseLevelAim,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'NoiseLevelAim')
+end
 validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 validateattributes(Signal,{'numeric'},{'nonempty'},mfilename,'Signal')
 validateattributes(Kernel,{'numeric'},{'nonempty'},mfilename,'Kernel')
