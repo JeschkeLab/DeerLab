@@ -11,6 +11,7 @@ nModels = length(models);
 %Account for weight parameters between the models
 mixedInfo.nParam = nModels-1;
 mixedInfo.Model = 'Mixed model';
+mixedInfo.Equation = 'custom';
 for j=1:mixedInfo.nParam
     mixedInfo.parameters(j).name = sprintf('Relative amplitude of model #%i',j);
     mixedInfo.parameters(j).range = [0 1];
@@ -26,7 +27,6 @@ for i=1:length(models)
     info = currentModel();
     paramsplit(i+1) =  paramsplit(i) + info.nParam;
     mixedInfo.models{i} =  info.Model;
-    mixedInfo.equations{i} =  info.Equation;
     for j=1:info.nParam
         mixedInfo.parameters(length(mixedInfo.parameters)+1).name = sprintf('%s of model #%i',info.parameters(j).name,i);
         mixedInfo.parameters(length(mixedInfo.parameters)).range = info.parameters(j).range;

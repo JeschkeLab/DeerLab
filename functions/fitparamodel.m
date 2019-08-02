@@ -50,6 +50,14 @@ else
     validateattributes(Constrained,{'logical'},{'scalar'},mfilename,'Constrained')
 end
 
+if ~iscolumn(Signal)
+   Signal = Signal.'; 
+end
+
+if ~iscolumn(DistanceAxis)
+   DistanceAxis = DistanceAxis.'; 
+end
+
 % Execution
 %========================================================
 
