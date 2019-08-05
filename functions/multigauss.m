@@ -1,4 +1,4 @@
-function [FitDistribution,FitParam,optimum,aicc] = multigauss(Signal,Kernel,DistanceAxis,maxGaussians,varargin)
+function [FitDistribution,FitParam,optimum,metrics] = multigauss(Signal,Kernel,DistanceAxis,maxGaussians,varargin)
 
 %Validate user input (first three inputs are validated in lower-level functions)
 if nargin<4
@@ -17,7 +17,8 @@ for i=2:maxGaussians
 end
 
 %Run optimization to see which multigauss model is the best 
-[optimum,aicc] = selectmodel(multiGaussModel,Signal,DistanceAxis,Kernel);
+[optimum,aicc,bic] = selectmodel(multiGaussModel,Signal,DistanceAxis,Kernel);
+metrics = {aicc,bic};
 
 %Fit the data to the optimal multigauss parametric model
 [FitDistribution,FitParam] = fitparamodel(Signal,Kernel,DistanceAxis,multiGaussModel{optimum},[],varargin);
