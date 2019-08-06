@@ -2,6 +2,9 @@ function [optimum,aicc,bic] = selectmodel(Models,Signal,DistanceAxis,Kernel,vara
 if ~iscolumn(DistanceAxis)
     DistanceAxis = DistanceAxis.';
 end
+if length(varargin)==1
+   varargin = varargin{1}; 
+end
 N = length(Signal);
 aicc = zeros(length(Models),1);
 for i=1:length(Models)

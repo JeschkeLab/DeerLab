@@ -1,7 +1,7 @@
 function checkSolverCompatibility(Solver,Method)
 switch Method
     case 'tikhonov'
-        allowedInput = {'fnnls','fmincon','cvx','lsqnonneg','bppnnls'};
+        allowedInput = {'fnnls','fmincon','cvx','lsqnonneg','bppnnls','lsqnonlin'};
     case {'tv','huber'}
         allowedInput = {'cvx','fmincon'};
     case 'custom'
