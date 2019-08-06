@@ -18,7 +18,7 @@ else
 end
 
 if ~isreal(Signal)
-   Signal = real(Signal); 
+    Signal = real(Signal);
 end
 
 if strcmp(RegType,'custom')
@@ -46,7 +46,7 @@ if isempty(Solver)
     Solver = 'fmincon';
 else
     validateattributes(Solver,{'char'},{'nonempty'})
-    allowedInput = {'fnnls','lsqnonneg','bppnnls','fmincon','cvx'};
+    allowedInput = {'fnnls','lsqnonneg','bppnnls','fmincon','cvx','lsqnonlin'};
     validatestring(Solver,allowedInput);
 end
 
@@ -99,7 +99,18 @@ switch Solver
         solverOpts = optimset('Display','off','TolX',nonNegLSQsolTol);
         Q = (Kernel'*Kernel) + RegParam^2*(RegMatrix'*RegMatrix);
         Distribution = lsqnonneg(Q,Kernel'*Signal,solverOpts);
-        
+    case 'lsqnonlin'
+        RegFunctional = @(x) [Kernel*x - Signal  [RegParam*RegMatrix*x;0;0]];
+        NonNegConst = zeros(Dimension,1);
+        solverOpts=optimoptions(@lsqnonlin,'Display','off',...
+            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+            'TolFun',nonNegLSQsolTol,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+        [Distribution,~,~,exitflag] = lsqnonlin(RegFunctional,InitialGuess,NonNegConst,[],solverOpts);
+        if exitflag == 0
+            %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+            solverOpts=optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
+            Distribution = lsqnonlin(RegFunctional,Distribution,NonNegConst,[],solverOpts);
+        end
     case 'fnnls'
         %Constrained Tikhonov regularization
         Q = (Kernel'*Kernel) + RegParam^2*(RegMatrix'*RegMatrix);
@@ -121,9 +132,14 @@ switch Solver
         if ~strcmp(RegType,'custom')
             RegFunctional = regfunctional(RegType,Signal,RegMatrix,Kernel,RegParam);
         end
-        fminconOptions = optimset('GradObj',GradObj,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
-        Distribution =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
-        
+        fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',true,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
+        [Distribution,~,exitflag] =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
+        %Check how optimization exited...
+        if exitflag == 0
+            %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+            fminconOptions = optimoptions(fminconOptions,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
+            Distribution  = fmincon(ModelCost,Distribution,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
+        end
     case 'cvx'
         %Constrained Tikhonov/Total variation/Huber regularization
         Distribution = cvxregsolver(RegType,Signal,RegMatrix,Kernel,RegParam,NonNegConstrained);
