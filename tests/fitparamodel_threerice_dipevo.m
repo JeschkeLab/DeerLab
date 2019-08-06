@@ -12,7 +12,7 @@ Distribution = Distribution/sum(Distribution);
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@threerice,[],'Constrained',true);
+[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@threerice,[],'solver','fmincon');
 err = any(abs(FitDistribution - Distribution)>1e-2);
 
 maxerr = max(abs(FitDistribution - Distribution));

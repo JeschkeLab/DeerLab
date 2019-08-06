@@ -14,7 +14,7 @@ Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 InitialGuess = [2 0.1];
-[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@onegaussian,InitialGuess,'Constrained',false);
+[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@onegaussian,InitialGuess,'solver','fminsearch');
 err(1) = any(abs(FitDistribution - Distribution)>1e-5);
 err = any(err);
 

@@ -17,52 +17,56 @@ else
 end
 
 %Get optional parameters
-[Constrained,Algorithm,MaxIter,MaxFunEvals,TolFun,CostModel] = parseoptional({'Constrained','Algorithm','MaxIter','MaxFunEvals','TolFun','CostModel'},varargin);
-
-if isempty(Algorithm)
-   Algorithm = 'interior-point';
-else
-    validInputs = {'interior-point','trust-region-reflective','active-set','sqp'};
-    validatestring(Algorithm,validInputs);
-end
+[Solver,Algorithm,MaxIter,MaxFunEvals,TolFun,CostModel] = parseoptional({'Solver','Algorithm','MaxIter','MaxFunEvals','TolFun','CostModel'},varargin);
 
 if isempty(CostModel)
-   CostModel = 'mse';
+    CostModel = 'lsq';
 else
-    validInputs = {'mse','chi'};
+    validInputs = {'lsq','chisquare'};
     validatestring(CostModel,validInputs);
 end
 
 if isempty(TolFun)
-   TolFun = 1e-10;
+    TolFun = 1e-10;
 else
     validateattributes(TolFun,{'numeric'},{'scalar','nonnegative'})
 end
 
 if isempty(MaxFunEvals)
-   MaxFunEvals = 3000;
+    MaxFunEvals = 5000;
 else
     validateattributes(MaxFunEvals,{'numeric'},{'scalar','nonnegative'})
 end
 
 if isempty(MaxIter)
-   MaxIter = 3000;
+    MaxIter = 3000;
 else
     validateattributes(MaxIter,{'numeric'},{'scalar','nonnegative'})
 end
 
-if isempty(Constrained)
-    Constrained = true;
+if isempty(Solver)
+    Solver = 'lsqnonlin';
 else
-    validateattributes(Constrained,{'logical'},{'scalar'},mfilename,'Constrained')
+    validateattributes(Solver,{'char'},{'nonempty'},mfilename,'Solver')
+end
+
+if isempty(Algorithm)
+    if strcmp(Solver,'lsqnonlin')
+        Algorithm = 'trust-region-reflective';
+    else
+        Algorithm = 'interior-point';
+    end
+else
+    validInputs = {'levenberg-marquardt','interior-point','trust-region-reflective','active-set','sqp'};
+    validatestring(Algorithm,validInputs);
 end
 
 if ~iscolumn(Signal)
-   Signal = Signal.'; 
+    Signal = Signal.';
 end
 
 if ~iscolumn(DistanceAxis)
-   DistanceAxis = DistanceAxis.'; 
+    DistanceAxis = DistanceAxis.';
 end
 
 % Execution
@@ -70,33 +74,55 @@ end
 
 %Define the cost functional
 switch CostModel
-    case 'mse'
-        ModelCost = @(Parameters) (1/2*norm(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
-    case 'chi'
+    case 'lsq'
+        ModelCost = @(Parameters) (norm(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
+    case 'chisquare'
         N = length(Signal);
         nParam = length(StartParameters);
         NoiseLevel = noiselevel(Signal);
-        ModelCost = @(Parameters) ( 1/(N - nParam)/(NoiseLevel^2)*sum(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
+        ModelCost = @(Parameters) (1/(N - nParam)/(NoiseLevel^2)*sum(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
 end
 
+Ranges =  [Info.parameters(:).range];
+LowerBounds = Ranges(1:2:end-1);
+UpperBounds = Ranges(2:2:end);
+
 %Fit the parametric model...
-if Constrained
-    %...under constraints for the parameter values range
-    solverOpts=optimoptions(@fmincon,'Algorithm',Algorithm,'Display','off',...
-                            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
-                            'TolFun',TolFun,'TolCon',1e-10,...
-                            'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-    Ranges =  [Info.parameters(:).range];
-    LowerBounds = Ranges(1:2:end-1);
-    UpperBounds = Ranges(2:2:end);
-    FitParameters  = fmincon(ModelCost,StartParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
-else
-    %...unconstrained with all possible values
-    solverOpts=optimset('Algorithm',Algorithm,'Display','off',...
-                            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
-                            'TolFun',TolFun,'TolCon',1e-10,...
-                            'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-    FitParameters  = fminsearch(ModelCost,StartParameters,solverOpts);
+switch Solver
+    case 'fmincon'
+        %...under constraints for the parameter values range
+        solverOpts=optimoptions(@fmincon,'Algorithm',Algorithm,'Display','off',...
+            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+            'TolFun',TolFun,'TolCon',1e-10,...
+            'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+        [FitParameters,~,exitflag]  = fmincon(ModelCost,StartParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
+        %Check how optimization exited...
+        if exitflag == 0
+            %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+            solverOpts=optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
+            [FitParameters]  = fmincon(ModelCost,FitParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
+        end
+        
+    case 'lsqnonlin'
+        
+        solverOpts=optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display','off',...
+            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+            'TolFun',TolFun,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+        ModelCost = @(Parameters) (sqrt(0.5)*(Kernel*Model(DistanceAxis,Parameters) - Signal));
+        [FitParameters,~,~,exitflag]  = lsqnonlin(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
+        if exitflag == 0
+            %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+            solverOpts=optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
+            [FitParameters]  = lsqnonlin(ModelCost,FitParameters,LowerBounds,UpperBounds,solverOpts);
+        end
+        
+    case 'fminsearch'
+        %...unconstrained with all possible values
+        solverOpts=optimset('Algorithm',Algorithm,'Display','off',...
+            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+            'TolFun',TolFun,'TolCon',1e-10,...
+            'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+        FitParameters  = fminsearch(ModelCost,StartParameters,solverOpts);
 end
 
 %Compute fitted distance distribution
