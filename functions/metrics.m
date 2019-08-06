@@ -1,6 +1,6 @@
 function metric = metrics(pointA,pointB,metricName) 
 if nargin<3
-   metricName = []; 
+   metricName = 'all'; 
 end
 
   switch metricName
@@ -37,7 +37,7 @@ end
       case 'tv'
           metric =  1/2*norm(pointA - pointB,1);
       otherwise
-          metric.Overlap = 1 - sum(min(pointA,pointB));
+          metric.Overlap = sum(min(pointA/sum(pointA),pointB/sum(pointB)));
           metric.Determination = sum((pointA - pointB).^2)/sum((pointA - mean(pointA)).^2);
           metric.Chebyshev = max(abs(pointA - pointB));
           metric.BrayCurtis = norm(pointA - pointB,1)/norm(pointA + pointB,1);
