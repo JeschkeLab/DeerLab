@@ -1,4 +1,8 @@
-function [optimum,aicc,bic] = selectmodel(Models,Signal,DistanceAxis,Kernel,varargin)
+function [optima,aicc,bic] = selectmodel(Models,Signal,DistanceAxis,Kernel,Methods,varargin)
+
+if ~iscell(Methods)
+   Methods = {Methods}; 
+end
 if ~iscolumn(DistanceAxis)
     DistanceAxis = DistanceAxis.';
 end
@@ -17,5 +21,14 @@ for i=1:length(Models)
     
 end
 
-[~,optimum] = min(aicc);
-
+optima = zeros(length(Methods),1);
+for i=1:length(Methods)
+    currentMethod = Methods{i};
+    switch currentMethod
+        case 'aicc'
+            [~,optimum] = min(aicc);
+        case 'bic'
+            [~,optimum] = min(bic);
+    end
+    optima(i) = optimum;
+end

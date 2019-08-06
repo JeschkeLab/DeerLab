@@ -17,7 +17,7 @@ for i=2:maxGaussians
 end
 
 %Run optimization to see which multigauss model is the best 
-[optimum,aicc,bic] = selectmodel(multiGaussModel,Signal,DistanceAxis,Kernel,varargin);
+[optimum,aicc,bic] = selectmodel(multiGaussModel,Signal,DistanceAxis,Kernel,'aicc',varargin);
 metrics = {aicc,bic};
 
 %Fit the data to the optimal multigauss parametric model
