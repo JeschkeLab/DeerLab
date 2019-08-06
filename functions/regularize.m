@@ -22,9 +22,9 @@ if ~isreal(Signal)
 end
 
 if strcmp(RegType,'custom')
-    GradObj = 'off';
+    GradObj = false;
 else
-    GradObj = 'on';
+    GradObj = true;
 end
 validateattributes(RegMatrix,{'numeric'},{'nonempty','2d'},mfilename,'RegMatrix')
 validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
@@ -132,7 +132,7 @@ switch Solver
         if ~strcmp(RegType,'custom')
             RegFunctional = regfunctional(RegType,Signal,RegMatrix,Kernel,RegParam);
         end
-        fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',true,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
+        fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',GradObj,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
         [Distribution,~,exitflag] =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
         %Check how optimization exited...
         if exitflag == 0
