@@ -1,4 +1,4 @@
-function y = gaussfcn(x,x0,sigma)
+function y = gaussian(x,x0,sigma)
 if nargin<2
     error('Not enought input arguments.')
 end

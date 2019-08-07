@@ -8,7 +8,7 @@ Dimension = 200;
 TimeStep = 0.008;
 TimeAxis = linspace(0,Dimension*TimeStep,Dimension);
 DistanceAxis = time2dist(TimeAxis);
-Distribution = gaussfcn(DistanceAxis,3,0.5);
+Distribution = gaussian(DistanceAxis,3,0.5);
 Distribution = Distribution/sum(Distribution);
 ExcitationBandwidth = 0.05; %MHz
 

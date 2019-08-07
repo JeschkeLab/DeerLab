@@ -6,7 +6,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 InputParam = [2 0.5 3 0.5 0.4];
-Distribution = InputParam(5)*gaussfcn(DistanceAxis,InputParam(1),InputParam(2)) + (1 - InputParam(5))*gaussfcn(DistanceAxis,InputParam(3),InputParam(4));
+Distribution = InputParam(5)*gaussian(DistanceAxis,InputParam(1),InputParam(2)) + (1 - InputParam(5))*gaussian(DistanceAxis,InputParam(3),InputParam(4));
 Distribution = Distribution/(1/sqrt(2*pi)*1/InputParam(2));
 Distribution = Distribution/sum(Distribution);
 

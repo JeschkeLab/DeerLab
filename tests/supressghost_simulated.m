@@ -9,11 +9,11 @@ Dimension = 100;
 TimeAxis = linspace(0.006,3,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 
-Distribution = gaussfcn(DistanceAxis,3,0.5);
+Distribution = gaussian(DistanceAxis,3,0.5);
 DistrAB = Distribution/sum(Distribution)';
-Distribution = gaussfcn(DistanceAxis,4,0.5);
+Distribution = gaussian(DistanceAxis,4,0.5);
 DistrAC = Distribution/sum(Distribution)';
-Distribution = gaussfcn(DistanceAxis,5,0.5);
+Distribution = gaussian(DistanceAxis,5,0.5);
 DistrBC = Distribution/sum(Distribution)';
 Distribution = DistrAB + DistrBC + DistrAC;
 Distribution = Distribution/sum(Distribution)';
