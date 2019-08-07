@@ -86,7 +86,6 @@ HuberParameterSet = zeros(1,nPoints);
 PseudoInverse = cell(1,nPoints);
 Distribution = cell(1,nPoints);
 InfluenceMatrix = cell(1,nPoints);
-Percentile = 80:2.5:95;
 
 %--------------------------------------------------------------------------
 % Pseudo-Inverses and Distributions
@@ -234,36 +233,6 @@ for i=1:nPoints %Loop over all regularization parameter values
                 end
                 
                 Penalty(j,i) = norm(RegMatrix*Distribution{j,i});
-                Residual(j,i) = 1/sqrt(2)*norm(Kernel*Distribution{j,i} - Signal);
-                InfluenceMatrix{j,i} = Kernel*PseudoInverse{j,i};
-            end
-            
-            %--------------------------------------------------------------------------
-            % Inverse Huber Berhu (L1-L2) Penalty
-            %--------------------------------------------------------------------------
-        case 'berhu'
-            HuberParameter = options.HuberParameter;
-            for j=1:length(HuberParameter)
-                PseudoInverse{j,i} = (Kernel'*Kernel + RegParamRange(i)^2*(RegMatrix')*RegMatrix)\Kernel';
-                Distribution{j,i}  = PseudoInverse{j,i}*Signal; %unconstrained Tikhonov solution
-                HuberParameter = prctile(edgeIndicator(DistributionTemp,RegMatrix,'fire'),Percentile);
-                Auxiliary = RegMatrix*Distribution{j,i};
-                Temp = (RegMatrix)'*diag(1./sqrt(1e-24 + (Auxiliary.^2)))*(RegMatrix);
-                BerhuGradient = zeros(length(Auxiliary)+options.Derivative,1);
-                for k=1:length(Auxiliary)
-                    if abs(Auxiliary(k)) > HuberParameter(j)
-                        BerhuGradient(k) = Auxiliary(k)/HuberParameter(j);
-                    else
-                        BerhuGradient(k) =  Temp(k);
-                    end
-                end
-                PseudoInverse{j,i} = (Kernel'*Kernel + RegParamRange(i)^2*BerhuGradient)\Kernel';
-                if options.unconstrainedProblem
-                    Distribution{j,i}  = PseudoInverse{j,i}*Signal;
-                else
-                    Distribution{j,i} = fnnls(Kernel'*Kernel + RegParamRange(i)^2*BerhuGradient,Kernel'*Signal);
-                end
-                Penalty(j,i) = norm(Kernel*Distribution{j,i} - Signal);
                 Residual(j,i) = 1/sqrt(2)*norm(Kernel*Distribution{j,i} - Signal);
                 InfluenceMatrix{j,i} = Kernel*PseudoInverse{j,i};
             end
