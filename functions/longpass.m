@@ -25,7 +25,7 @@ PassBandFreq = PassBandFreq*1e6;
 SamplingFreq = SamplingFreq*1e6;
 
 %Apply low-pass filter
-FilteredSignal = lowpass(Signal,PassBandFreq,SamplingFreq);
-
+[FilteredSignal] = winlowpass(Signal,PassBandFreq,SamplingFreq);
+FilteredSignal = FilteredSignal/FilteredSignal(1);
 
 end

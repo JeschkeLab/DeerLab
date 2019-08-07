@@ -18,7 +18,7 @@ EseemFreq = 52.04/(rESEEM^3);
 ESEEM = 0.5*(2 + exp(-7*TimeAxis).*cos(2*pi*EseemFreq*TimeAxis));
 Signal = DipEvoFcn.*ESEEM';
 
-Filtered = longpass(TimeAxis,Signal,2);
+Filtered = longpass(TimeAxis,Signal,1.55);
 
 L = regoperator(Dimension,2);
 RegParam = regparamrange(Kernel,L);
@@ -35,6 +35,8 @@ if opt.Display
     figure(9),clf
     subplot(122),hold on
     plot(DistanceAxis,Distribution)
+    plot(DistanceAxis,Result)
+    Result = regularize(Signal,Kernel,L,'tikhonov',RegParam2,'Solver','fnnls');
     plot(DistanceAxis,Result)
     subplot(121),hold on
     plot(TimeAxis,DipEvoFcn)

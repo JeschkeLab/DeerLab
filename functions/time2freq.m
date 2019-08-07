@@ -1,7 +1,7 @@
 function FrequencyAxis = time2freq(TimeAxis,FreqPoints)
 
 if nargin<2 
-    FreqPoints = length(Signal);
+    FreqPoints = length(TimeAxis);
 end
 
 TimeStep = mean(diff(TimeAxis));
