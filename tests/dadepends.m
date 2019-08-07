@@ -17,8 +17,9 @@ fprintf(fid,'DeerAnalysis location: %s\n',DeerAnalysisPath);
 fprintf(fid,'=======================================================================\n');
 
 %Run through ./tests/
-files = dir(fullfile('.',FileMask));
+files = dir(fullfile(DeerAnalysisPath,'tests',FileMask));
 filenames = {files.name};
+filenames = {filenames{3:end}};
 fprintf(fid,'-----------------------------------------------------------------------\n');
 fprintf(fid,'Path: /tests/                                                          \n');
 fprintf(fid,'-----------------------------------------------------------------------\n');
@@ -26,9 +27,10 @@ fprintf(fid,'Filename                              Dependencies                 
 
 for i=1:length(filenames)
     
-    output = dependencies.toolboxDependencyAnalysis({filenames{i}});
+    [~,output] = matlab.codetools.requiredFilesAndProducts({fullfile(DeerAnalysisPath,'tests',filenames{i})});
     
     if ~isempty(output)
+        output = {output.Name};
         string = output{1};
         for j=2:length(output)
             string = [string ', ' output{j}];
@@ -39,9 +41,9 @@ for i=1:length(filenames)
 end
 
 %Run through ./functions/
-files = dir(fullfile('../functions',FileMask));
+files = dir(fullfile(DeerAnalysisPath,'functions',FileMask));
 filenames = {files.name};
-
+filenames = {filenames{3:end}};
 fprintf(fid,'-----------------------------------------------------------------------\n');
 fprintf(fid,'Path: /functions/                                                          \n');
 fprintf(fid,'-----------------------------------------------------------------------\n');
@@ -49,9 +51,10 @@ fprintf(fid,'Filename                              Dependencies                 
 
 for i=1:length(filenames)
     
-    output = dependencies.toolboxDependencyAnalysis({fullfile('../functions/',filenames{i})});
+    [~,output] = matlab.codetools.requiredFilesAndProducts({fullfile(DeerAnalysisPath,'/functions/',filenames{i})});
     
     if ~isempty(output)
+        output = {output.Name};
         string = output{1};
         for j=2:length(output)
             string = [string ', ' output{j}];
@@ -59,7 +62,7 @@ for i=1:length(filenames)
         
         fprintf(fid,'%-36s  %s \n',filenames{i},string);
     end
-        
+    
 end
 
 
