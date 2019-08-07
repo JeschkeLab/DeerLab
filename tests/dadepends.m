@@ -5,8 +5,11 @@ if isempty(DeerAnalysisPath)
     error('DeerAnalysis is not on the Matlab path!');
 end
 
-FileMask = [FileMask '*'];
-
+if nargin==0
+    FileMask = '*';
+else
+    FileMask = [FileMask '*'];
+end
 fid = 1;
 fprintf(fid,'=======================================================================\n');
 fprintf(fid,'DeerAnalysis Toolbox Dependency Analysis           %s\n(Matlab %s)\n',datestr(now),version);
