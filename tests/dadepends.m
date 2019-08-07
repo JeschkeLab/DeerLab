@@ -19,7 +19,11 @@ fprintf(fid,'===================================================================
 %Run through ./tests/
 files = dir(fullfile(DeerAnalysisPath,'tests',FileMask));
 filenames = {files.name};
-filenames = {filenames{3:end}};
+if ~isempty(filenames)
+    if strcmp(filenames{1},'.')
+        filenames = {filenames{3:end}};
+    end
+end
 fprintf(fid,'-----------------------------------------------------------------------\n');
 fprintf(fid,'Path: /tests/                                                          \n');
 fprintf(fid,'-----------------------------------------------------------------------\n');
@@ -43,7 +47,11 @@ end
 %Run through ./functions/
 files = dir(fullfile(DeerAnalysisPath,'functions',FileMask));
 filenames = {files.name};
-filenames = {filenames{3:end}};
+if ~isempty(filenames)
+    if strcmp(filenames{1},'.')
+        filenames = {filenames{3:end}};
+    end
+end
 fprintf(fid,'-----------------------------------------------------------------------\n');
 fprintf(fid,'Path: /functions/                                                          \n');
 fprintf(fid,'-----------------------------------------------------------------------\n');
