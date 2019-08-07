@@ -12,7 +12,7 @@ Length = 200;
 TimeStep = 16;
 TimeAxis = linspace(TimeStep,Length*TimeStep,Length) - TimeStep;
 %Construct some dipolar evolution function from Fresnel integral
-dipevo = 1-2*fresnels(TimeAxis*2*pi*1/(15^3));
+dipevo = 1-2*fresnelS(TimeAxis*2*pi*1/(15^3));
 %Construct background
 bckg = exp(-DecayRate*TimeAxis);
 %Account modulation depth for the offset=1
