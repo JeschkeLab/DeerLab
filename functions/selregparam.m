@@ -385,15 +385,22 @@ for MethodIndex = 1:length(SelectionMethod)
 end
 
 if Refine
-    FineRegParamRange = linspace(0.05*OptRegParam(1),5*OptRegParam(1),60);
+    RefineLength = 20;
     varargin{end+1} = 'Refine';
     varargin{end+1} =  false;
+    OptIndex = 20;
+    while any(OptIndex == RefineLength) || any(OptIndex == 1)
+        tic
+    FineRegParamRange = linspace(0.75*OptRegParam(1),1.25*OptRegParam(1),RefineLength);
     [RefinedOptRegParam,RefinedFunctionals] = selregparam(FineRegParamRange,Signal,Kernel,RegMatrix,SelectionMethod,varargin);
     for i=1:length(Functionals)
         Functionals{i} = [Functionals{i} RefinedFunctionals{i}];
     end
     RegParamRange = [RegParamRange FineRegParamRange];
+    OptIndex = find(FineRegParamRange == RefinedOptRegParam(1));
     OptRegParam  = RefinedOptRegParam;
+    toc
+    end
 end
 
 
