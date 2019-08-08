@@ -29,7 +29,7 @@ err(1) = any(abs(fit - bckg)>1e-5);
 err(2) = any(abs(fit2 - bckg2)>1e-5);
 err(3) =  any(abs(fit3 - bckg3)>1e-5);
 err = any(err);
-maxerr = max(fit - bckg);
+maxerr = max(abs(fit - bckg));
 data = [];
 
 if opt.Display
@@ -40,6 +40,7 @@ if opt.Display
   plot(t,bckg2,t,fit2)
   subplot(133)
   plot(t,bckg3,t,fit3)
+  legend('truth','fit')
 end
 
 end

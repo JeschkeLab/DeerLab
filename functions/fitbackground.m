@@ -6,11 +6,11 @@ end
 
 if nargin<4 || isempty(BckgModel)
     BckgModel = 'exponential';
-elseif isa(BckgModel,'fittype')
+elseif isa(BckgModel,'function_handle')
     CustomFitModel = BckgModel;
     BckgModel = 'custom';
-elseif ~isa(BckgModel,'fittype') && ~isa(BckgModel,'char')
-    error('BckgModel must be a valid ''fittype'' or ''char'' class variable.')
+elseif ~isa(BckgModel,'function_handle') && ~isa(BckgModel,'char')
+    error('BckgModel must be a valid ''function_handle'' or ''char'' class variable.')
 else
     validateattributes(BckgModel,{'char'},{'nonempty'},mfilename,'BckgModel')
     allowedInput = {'fractal','exponential','polyexp','polynomial'};
@@ -31,16 +31,19 @@ end
 validateattributes(FitData,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
 validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mfilename,'TimeAxis')
 
+%Set options for fminsearch solver
+solveropts = optimset('DIsplay','off','MaxIter',5000,'MaxFunEval',10000,'TolFun',1e-15,'TolX',1e-15);
 
 %Start with a linear fit of log-data
-PolynomialFit=polyfit(FitTimeAxis,log(FitData),1);
-LinearLogFit=[-PolynomialFit(1) 1];
+CostFcn = @(param)(1/2*norm(polynomial(FitTimeAxis,param) - log(FitData))^2);
+PolynomialFit = fminsearch(CostFcn,[0 0],solveropts);
+LinearLogFit=[-PolynomialFit(2) 1];
 
 switch BckgModel
     
     case 'fractal'
         %Use linear log-fit as initial gues
-        LinearLogFit = [-PolynomialFit(1) 1 3];
+        LinearLogFit = [-PolynomialFit(2) 1 3];
         %Fit amplitude, decay rate and fractal dimension of stretched exp.
         fminResults = fminsearch(@minimizeStretchExp,LinearLogFit,[],FitTimeAxis,FitData);
         %Limit resolution to fourth digit to avoid precission errors
@@ -52,27 +55,30 @@ switch BckgModel
         
     case 'exponential'
         %Compute exponential background from linear log-fit
-        Background = exp(polyval(PolynomialFit,abs(TimeAxis)));
+        Background = exp(polynomial(abs(TimeAxis),PolynomialFit));
         FitResults.DecayRate = LinearLogFit(1);
         
     case 'polynomial'
         %Fit polynomial function
-        PolynomialFit = polyfit(FitTimeAxis,FitData,ModelParam);
+        CostFcn = @(param)(1/2*norm(polynomial(FitTimeAxis,param) - FitData)^2);
+        PolynomialFit = fminsearch(CostFcn,zeros(ModelParam+1,1),solveropts);
         %Compute polynomial background
-        Background = polyval(PolynomialFit,abs(TimeAxis));
+        Background = polynomial(abs(TimeAxis),PolynomialFit);
         FitResults.polynomial = PolynomialFit;
         
     case 'polyexp'
         %Fit polynomial function to log-data
-        PolynomialFit = polyfit(FitTimeAxis,log(FitData),1);
+        CostFcn = @(param)(1/2*norm(polynomial(FitTimeAxis,param) - log(FitData))^2);
+        PolynomialFit = fminsearch(CostFcn,[0 0],solveropts);
         %Compute polynomial background
-        Background = exp(polyval(PolynomialFit,abs(TimeAxis)));
+        Background = exp(polynomial(abs(TimeAxis),PolynomialFit));
         FitResults.polynomial = PolynomialFit;
     case 'custom'
+        CostFcn = @(param)(1/2*norm(CustomFitModel(FitTimeAxis,param) - FitData)^2);
         %Fit using the user-provided model
-        FitObject = fit(FitTimeAxis',FitData',CustomFitModel);
+        FittedParam = fminsearch(CostFcn,zeros(ModelParam,1),solveropts);
         %Compute fitted background
-        Background = feval(FitObject,TimeAxis)';
+        Background = CustomFitModel(abs(TimeAxis),FittedParam);
 end
 
 %Ensure data is real
@@ -92,3 +98,10 @@ Prediction = StretchedExpParam(2)*exp(-abs(StretchedExpParam(1)*TimeAxis).^(Stre
 RMSD = 1/2*norm(Prediction - Obervation)^2;
 return
 
+%Polynomial function (substitute for polyval)
+function y = polynomial(x,param)
+y = 0;
+for i = length(param):-1:1
+    y = y + param(i)*x.^(i-1);
+end
+return

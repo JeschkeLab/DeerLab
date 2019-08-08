@@ -28,7 +28,7 @@ err(1) = any(abs(fit - bckg)>1e-5);
 err(2) = any(abs(fit2 - bckg2)>1e-5);
 err(3) =  any(abs(fit3 - bckg3)>1e-5);
 err = any(err);
-maxerr = max(fit - bckg);
+maxerr = max(abs(fit3 - bckg3));
 data = [];
 
 if opt.Display
