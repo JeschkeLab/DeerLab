@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %=======================================
 % Check regparamrange.m
@@ -16,14 +16,20 @@ RegMatrix = regoperator(Dimension,2);
 DipEvoFcn = Kernel*Distribution;
 
 RegParamSet = regparamrange(Kernel,RegMatrix);
-OptParam = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,{'aic','gcv','lr'});
-
+[OptParam,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,{'aic','gcv','lr'});
 %Accept testif all values are the same (should be as there is no noise)
 err(1) = any(diff(OptParam) > 1e-2);
 err(2) = any(abs(OptParam - 0.002) > 1e-4);
 err = any(err);
 data = [];
+maxerr = max(abs(OptParam - 0.002));
 
+if opt.Display
+   figure(8),clf
+   hold on
+   plot(RegParams,Functionals{1}/max(Functionals{1}),'.')
+   plot(RegParams,Functionals{2}/max(Functionals{2}),'.')
+end
 
 
 end

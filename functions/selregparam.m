@@ -1,4 +1,4 @@
-function [OptRegParam,Functionals,Lcurve,OptHuberParam] = selregparam(RegParamRange,Signal,Kernel,RegMatrix,SelectionMethod,varargin)
+function [OptRegParam,Functionals,RegParamRange,OptHuberParam] = selregparam(RegParamRange,Signal,Kernel,RegMatrix,SelectionMethod,varargin)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -38,7 +38,7 @@ end
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
 %Check if user requested some options via name-value input
-[nonNegLSQsolTol,NonNegConstrained,RegType,NoiseLevel] = parseoptional({'nonNegLSQsolTol','NonNegConstrained','RegType','NoiseLevel'},varargin);
+[nonNegLSQsolTol,NonNegConstrained,RegType,NoiseLevel,Refine] = parseoptional({'nonNegLSQsolTol','NonNegConstrained','RegType','NoiseLevel','Refine'},varargin);
 
 warning('off','all')
 
@@ -101,13 +101,19 @@ for i=1:nPoints %Loop over all regularization parameter values
         case 'tv'
             
             %Unconstrained distributions required for construction of correct pseudoinverse
-            Distribution{i} = zeros(DipolarDimension,1);
-            %Define options for fsolve
-            Solveroptions = optimoptions(@fsolve,'Display','off','Algorithm','trust-region-reflective');
-            Distribution{i} = fsolve(@(Distribution) Kernel'*(Kernel*Distribution - Signal) + ...
-                RegParamRange(i)^2*(RegMatrix)'*((RegMatrix*Distribution)./sqrt((RegMatrix*Distribution).^2 + 1e-24)) ...
-                ,Distribution{i},Solveroptions);
-            
+            Gradient = @(Distribution) Kernel'*(Kernel*Distribution - Signal) + ...
+                RegParamRange(i)^2*(RegMatrix)'*((RegMatrix*Distribution)./sqrt((RegMatrix*Distribution).^2 + 1e-24));
+            Solveroptions=optimoptions(@lsqnonlin,'Display','off',...
+                'MaxIter',8000,'MaxFunEvals',8000,...
+                'TolFun',1e-20);
+            if i>1
+                InitialGuess = Distribution{i-1};
+            else
+                InitialGuess = zeros(DipolarDimension,1);
+            end
+            [Distribution{i},~,~,exitflag] = lsqnonlin(Gradient,InitialGuess,[],[],Solveroptions);
+%             [Distribution{i},~,exitflag(i)] = fsolve(Gradient,InitialGuess,Solveroptions);
+        
             %Compute pseudoinverse by analytical expression (only defined for unconstrained distribution)
             localTVPseudoInverse = RegMatrix'*((RegMatrix./sqrt((RegMatrix*Distribution{i}).^2 + 1e-24)));
             PseudoInverse{i} = (Kernel'*Kernel + RegParamRange(i)^2*localTVPseudoInverse)\Kernel';
@@ -115,11 +121,11 @@ for i=1:nPoints %Loop over all regularization parameter values
             %If constrained solution is requested
             if NonNegConstrained
                 %Now that we have the pseudoinverse, the constrained distribution can be computed quickly
-                Distribution{i} = fnnls(Kernel'*Kernel + RegParamRange(i)^2*localTVPseudoInverse,Kernel'*Signal,[],nonNegLSQsolTol);
+                Distribution{i} = fnnls(Kernel'*Kernel + RegParamRange(i)^2*localTVPseudoInverse,Kernel'*Signal,zeros(DipolarDimension,1),nonNegLSQsolTol);
             end
             
             %Get last variables required for the selection functionals
-            Penalty(i) = norm(RegMatrix*Distribution{i});
+            Penalty(i) = sum(sqrt((RegMatrix*Distribution{i}).^2 + 1e-24));
             %Residual defined this way so that later Residual(i)^2 equals 1/2*norm(...)^2
             Residual(i) = 1/sqrt(2)*norm(Kernel*Distribution{i} - Signal);
             InfluenceMatrix{i} = Kernel*PseudoInverse{i};
@@ -131,16 +137,16 @@ for i=1:nPoints %Loop over all regularization parameter values
             
             %Compute approximate optimal Huber Parameter for current value of regularization parameter
             if i>1
-                    %(Skip the first value since it requires previous unconstrained distributions)
-                    Solveroptions = optimoptions(@fsolve,'Display','off','Algorithm','trust-region-reflective');
-                    HuberParameter = fsolve(@(HuberParameter) Kernel'*(Kernel*PseudoInverse{i-1}*Signal - Signal) + ...
-                        RegParamRange(i-1)^2/HuberParameter^2*(RegMatrix')*((RegMatrix*PseudoInverse{i-1}*Signal)./sqrt((RegMatrix*PseudoInverse{i-1}*Signal/HuberParameter).^2 + 1)) ...
-                        ,1.35,Solveroptions);
-                    % Ensure that Huber parameter does not get negative (can lead to crashes later on)
-                    HuberParameter = abs(HuberParameter);
-                    HuberParameterSet(i) = HuberParameter;
+                %(Skip the first value since it requires previous unconstrained distributions)
+                Solveroptions = optimoptions(@fsolve,'Display','off','Algorithm','trust-region-reflective');
+                HuberParameter = fsolve(@(HuberParameter) Kernel'*(Kernel*PseudoInverse{i-1}*Signal - Signal) + ...
+                    RegParamRange(i-1)^2/HuberParameter^2*(RegMatrix')*((RegMatrix*PseudoInverse{i-1}*Signal)./sqrt((RegMatrix*PseudoInverse{i-1}*Signal/HuberParameter).^2 + 1)) ...
+                    ,1.35,Solveroptions);
+                % Ensure that Huber parameter does not get negative (can lead to crashes later on)
+                HuberParameter = abs(HuberParameter);
+                HuberParameterSet(i) = HuberParameter;
             else
-               HuberParameter = 1.35; 
+                HuberParameter = 1.35;
             end
             %Unconstrained distributions required for construction of correct pseudoinverse
             Distribution{i} = zeros(DipolarDimension,1);
@@ -254,13 +260,8 @@ for i=1:nPoints %Loop over all regularization parameter values
 end
 
 %In case variables are in matrix form reshape them to vectors
-Distribution = reshape(Distribution,1,[]);
-PseudoInverse = reshape(PseudoInverse,1,[]);
-Residual = reshape(Residual,1,[]);
-InfluenceMatrix = reshape(InfluenceMatrix,1,[]);
-Penalty = reshape(Penalty,1,[]);
 nPoints = length(Distribution);
-Functionals = cell(length(SelectionMethod));
+Functionals = cell(length(SelectionMethod),1);
 OptRegParam = zeros(length(SelectionMethod),1);
 OptHuberParam = zeros(length(SelectionMethod),1);
 
@@ -379,11 +380,22 @@ for MethodIndex = 1:length(SelectionMethod)
     %Store the optimal regularization parameter
     OptRegParam(MethodIndex) = RegParamRange(Index);
     OptHuberParam(MethodIndex) = HuberParameterSet(Index);
-    if nargout>1
-        Functionals{MethodIndex} =  Functional;
-    end
+    Functionals{MethodIndex} =  Functional;
     
 end
+
+if Refine
+    FineRegParamRange = linspace(0.05*OptRegParam(1),5*OptRegParam(1),60);
+    varargin{end+1} = 'Refine';
+    varargin{end+1} =  false;
+    [RefinedOptRegParam,RefinedFunctionals] = selregparam(FineRegParamRange,Signal,Kernel,RegMatrix,SelectionMethod,varargin);
+    for i=1:length(Functionals)
+        Functionals{i} = [Functionals{i} RefinedFunctionals{i}];
+    end
+    RegParamRange = [RegParamRange FineRegParamRange];
+    OptRegParam  = RefinedOptRegParam;
+end
+
 
 %If requested get the L-curve parameters and return them
 if nargout>2
@@ -391,7 +403,6 @@ if nargout>2
     Rho = log(Residual);
     Lcurve = [Eta Rho];
 end
-
 
 end
 
