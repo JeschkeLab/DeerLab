@@ -48,6 +48,22 @@ else
     
 end
 
+
+%--------------------------------------------------------------------------
+%Memoization
+%--------------------------------------------------------------------------
+
+persistent cachedData
+if isempty(cachedData)
+    cachedData =  java.util.Hashtable;
+end
+hashKey = datahash({Signal,TimeAxis,EndCutoffPos,BckgModel,ModelParam,varargin});
+if cachedData.containsKey(hashKey)
+    Output = cachedData.get(hashKey);
+    [FitStartTime,FitStartPos] = java2mat(Output);
+    return
+end
+
 %--------------------------------------------------------------------------
 % Adaptive background correction start search
 %--------------------------------------------------------------------------
@@ -107,3 +123,7 @@ end
 [~,OptStartPos] = min(Merit);
 FitStartPos = OptStartPos + StartPosMin - 1;
 FitStartTime = TimeAxis(FitStartPos);
+
+%Store output result in the cache
+Output = {FitStartTime,FitStartPos};
+cachedData = addcache(cachedData,hashKey,Output);
