@@ -69,6 +69,23 @@ if ~iscolumn(DistanceAxis)
     DistanceAxis = DistanceAxis.';
 end
 
+%--------------------------------------------------------------------------
+%Memoization
+%--------------------------------------------------------------------------
+
+persistent cachedData
+if isempty(cachedData)
+    cachedData =  java.util.Hashtable;
+end
+hashKey = datahash({Signal,Kernel,DistanceAxis,Model,StartParameters,varargin});
+if cachedData.containsKey(hashKey)
+    Output = cachedData.get(hashKey);
+    [Distribution,FitParameters] = java2mat(Output);
+    FitParameters = FitParameters';
+    return
+end
+
+
 % Execution
 %========================================================
 
@@ -127,6 +144,11 @@ end
 
 %Compute fitted distance distribution
 Distribution = Model(DistanceAxis,FitParameters);
+
+
+%Store output result in the cache
+Output = {Distribution,FitParameters};
+cachedData = addcache(cachedData,hashKey,Output);
 
 return
 
