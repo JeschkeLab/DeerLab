@@ -1,7 +1,11 @@
-function [Background,FitResults] = fitbackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam)
+function [Background,FitParam] = fitbackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam)
 
 if nargin<3
     error('Not enough input arguments.')
+end
+
+if nargin<5
+    ModelParam = [];
 end
 
 if nargin<4 || isempty(BckgModel)
@@ -17,7 +21,7 @@ else
     validatestring(BckgModel,allowedInput);
 end
 if iscolumn(TimeAxis)
-    TimeAxis = TimeAxis';    
+    TimeAxis = TimeAxis';
 end
 if iscolumn(FitData)
     FitData = FitData';
@@ -30,6 +34,24 @@ if iscolumn(FitTimeAxis)
 end
 validateattributes(FitData,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
 validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mfilename,'TimeAxis')
+
+%--------------------------------------------------------------------------
+%Memoization
+%--------------------------------------------------------------------------
+
+persistent cachedData
+if isempty(cachedData)
+    cachedData =  java.util.Hashtable;
+end
+hashKey = datahash({FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam});
+if cachedData.containsKey(hashKey)
+    Output = cachedData.get(hashKey);
+    [Background,FitParam] = java2mat(Output);
+    return
+end
+
+%--------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 
 %Set options for fminsearch solver
 solveropts = optimset('DIsplay','off','MaxIter',5000,'MaxFunEval',10000,'TolFun',1e-15,'TolX',1e-15);
@@ -50,13 +72,12 @@ switch BckgModel
         fminResults = round(fminResults,4);
         %Compute stretched exponential background
         Background = fminResults(2)*exp(-abs(fminResults(1)*TimeAxis).^(fminResults(3)/3));
-        FitResults.DecayRate = fminResults(1);
-        FitResults.FractalDimension = fminResults(3);
+        FitParam = fminResults([1,3]);
         
     case 'exponential'
         %Compute exponential background from linear log-fit
         Background = exp(polynomial(abs(TimeAxis),PolynomialFit));
-        FitResults.DecayRate = LinearLogFit(1);
+        FitParam = LinearLogFit(1);
         
     case 'polynomial'
         %Fit polynomial function
@@ -64,7 +85,7 @@ switch BckgModel
         PolynomialFit = fminsearch(CostFcn,zeros(ModelParam+1,1),solveropts);
         %Compute polynomial background
         Background = polynomial(abs(TimeAxis),PolynomialFit);
-        FitResults.polynomial = PolynomialFit;
+        FitParam = PolynomialFit;
         
     case 'polyexp'
         %Fit polynomial function to log-data
@@ -72,21 +93,24 @@ switch BckgModel
         PolynomialFit = fminsearch(CostFcn,[0 0],solveropts);
         %Compute polynomial background
         Background = exp(polynomial(abs(TimeAxis),PolynomialFit));
-        FitResults.polynomial = PolynomialFit;
+        FitParam = PolynomialFit;
     case 'custom'
         CostFcn = @(param)(1/2*norm(CustomFitModel(FitTimeAxis,param) - FitData)^2);
         %Fit using the user-provided model
-        FittedParam = fminsearch(CostFcn,zeros(ModelParam,1),solveropts);
+        FitParam = fminsearch(CostFcn,zeros(ModelParam,1),solveropts);
         %Compute fitted background
-        Background = CustomFitModel(abs(TimeAxis),FittedParam);
+        Background = CustomFitModel(abs(TimeAxis),FitParam);
 end
 
 %Ensure data is real
 Background=real(Background);
 if DataIsColumn
-   Background = Background'; 
+    Background = Background';
 end
-return
+
+%Store output result in the cache
+Output = {Background,FitParam};
+cachedData = addcache(cachedData,hashKey,Output);
 
 %Cost function for fractal stretched exponential fit
 function RMSD = minimizeStretchExp(StretchedExpParam,TimeAxis,Obervation)
@@ -96,7 +120,7 @@ if StretchedExpParam(1)<0
 end
 Prediction = StretchedExpParam(2)*exp(-abs(StretchedExpParam(1)*TimeAxis).^(StretchedExpParam(3)/3));
 RMSD = 1/2*norm(Prediction - Obervation)^2;
-return
+end
 
 %Polynomial function (substitute for polyval)
 function y = polynomial(x,param)
@@ -104,4 +128,7 @@ y = 0;
 for i = length(param):-1:1
     y = y + param(i)*x.^(i-1);
 end
-return
+end
+
+
+end

@@ -10,7 +10,7 @@ if cache.size > cachelimiter
     keys = cache.keySet;
     keys = cell(keys.toArray);
     %... and remove the oldest cache entry 
-    cache.remove(keys{end})
+    cache.remove(keys{end});
 end
 
 %Then add the new cache entry
