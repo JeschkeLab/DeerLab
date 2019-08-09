@@ -10,6 +10,27 @@ if iscolumn(TimeAxis)
 end
 validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing','nonnegative'},'TimeAxis')
 
+%--------------------------------------------------------------------------
+%Memoization
+%--------------------------------------------------------------------------
+
+persistent cachedData
+if isempty(cachedData)
+    cachedData =  java.util.Hashtable;
+end
+hashKey = datahash({TimeAxis,varargin});
+if cachedData.containsKey(hashKey)
+    Output = cachedData.get(hashKey);
+    [APTkernel] = java2mat(Output);
+    APTkernel.NormalizationFactor = APTkernel.NormalizationFactor.';
+    APTkernel.FreqAxis = APTkernel.FreqAxis.';
+    APTkernel.TimeAxis = APTkernel.TimeAxis.';
+    return
+end
+
+%--------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
 FreqElement = 1/(2*max(TimeAxis));
 TimeDimension = length(TimeAxis);
 FreqDimension = floor(TimeDimension/2)-2;
@@ -59,4 +80,9 @@ APTkernel = struct('Base',Base,...
                       'FreqAxis',FreqAxis,...
                       'TimeAxis',TimeAxis,...
                       'Crosstalk',Crosstalk);
-                  
+
+%Store output result in the cache
+cachedData = addcache(cachedData,hashKey,APTkernel);
+
+
+end          

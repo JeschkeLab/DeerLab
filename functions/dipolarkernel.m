@@ -76,7 +76,8 @@ if isempty(cachedData)
 end
 hashKey = datahash({TimeAxis,DistanceAxis,Background,varargin});
 if cachedData.containsKey(hashKey)
-    Kernel = cachedData.get(hashKey);
+    Output = cachedData.get(hashKey);
+    Kernel = java2mat(Output);
     return
 end
 

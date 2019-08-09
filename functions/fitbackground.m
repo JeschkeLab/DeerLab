@@ -47,6 +47,7 @@ hashKey = datahash({FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
     [Background,FitParam] = java2mat(Output);
+    Background = Background';
     return
 end
 

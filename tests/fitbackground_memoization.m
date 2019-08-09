@@ -28,8 +28,8 @@ post2 = toc;
 
 err(1) = any(abs(prefit - postfit)>1e-15);
 err(2) = any(abs(prefit2 - postfit2)>1e-15);
-err(3) = post1 > pre1/10;
-err(4) = post2 > pre2/10;
+err(3) = post1 > pre1/4;
+err(4) = post2 > pre2/4;
 
 err = any(err);
 maxerr = max(abs(prefit - postfit));
