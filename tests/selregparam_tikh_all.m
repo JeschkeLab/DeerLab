@@ -4,7 +4,7 @@ function [err,data] = test(opt,olddata)
 % Check regparamrange.m
 %=======================================
 
-Dimension = 80;
+Dimension = 100;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
