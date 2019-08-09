@@ -359,7 +359,8 @@ if Refine
 end
 
 %Store output result in the cache
-cachedData.put(hashKey,{OptRegParam,Functionals,RegParamRange,OptHuberParam});
+Output = {OptRegParam,Functionals,RegParamRange,OptHuberParam};
+cachedData = addcache(cachedData,hashKey,Output);
   
 
 end

@@ -158,6 +158,6 @@ end
 Kernel = Kernel.*Background;
 
 %Store output result in the cache
-cachedData.put(hashKey,Kernel);
+cachedData = addcache(cachedData,hashKey,Kernel);
 
 return
