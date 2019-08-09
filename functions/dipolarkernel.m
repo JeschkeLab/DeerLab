@@ -67,6 +67,20 @@ validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing','nonnegative'},
 checklengths(TimeAxis,Background);
 
 %--------------------------------------------------------------------------
+%Memoization
+%--------------------------------------------------------------------------
+
+persistent cachedData
+if isempty(cachedData)
+    cachedData =  java.util.Hashtable;
+end
+hashKey = datahash({TimeAxis,DistanceAxis,Background,varargin});
+if cachedData.containsKey(hashKey)
+    Kernel = cachedData.get(hashKey);
+    return
+end
+
+%--------------------------------------------------------------------------
 %Kernel construction
 %--------------------------------------------------------------------------
 
@@ -142,5 +156,8 @@ switch KernelBType
         Background = sqrt(Background);
 end
 Kernel = Kernel.*Background;
+
+%Store output result in the cache
+cachedData.put(hashKey,Kernel);
 
 return
