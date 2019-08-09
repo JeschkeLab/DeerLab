@@ -87,6 +87,7 @@ PseudoInverse = cell(1,nPoints);
 Distribution = cell(1,nPoints);
 InfluenceMatrix = cell(1,nPoints);
 
+%Preallocate common matrix multiplication
 KtK = Kernel.'*Kernel;
 
 %--------------------------------------------------------------------------
@@ -98,9 +99,24 @@ for i=1:nPoints %Loop over all regularization parameter values
     switch RegType
         
         %--------------------------------------------------------------------------
-        % Total variation (L1) Penalty
+        % Tikhonov (L2) Penalty
         %--------------------------------------------------------------------------
+        case 'tikhonov'
+            PseudoInverse{i} = (KtK + RegParamRange(i)^2*(RegMatrix')*RegMatrix)\Kernel';
+            if NonNegConstrained
+                Distribution{i} = fnnls(KtK + RegParamRange(i)^2*(RegMatrix')*RegMatrix,Kernel'*Signal,zeros(DipolarDimension,1),nonNegLSQsolTol); %non-negative Tikhonov solution
+            else
+                Distribution{i}  = PseudoInverse{i}*Signal; %unconstrained Tikhonov solution
+            end
+            Penalty(i) = 1/sqrt(2)*norm(RegMatrix*Distribution{i});
+            Residual(i) = 1/sqrt(2)*norm(Kernel*Distribution{i} - Signal);
+            InfluenceMatrix{i} = Kernel*PseudoInverse{i};
+            
+            %--------------------------------------------------------------------------
+            % Total variation (L1) Penalty
+            %--------------------------------------------------------------------------
         case 'tv'
+            %Start using unconst. Tikh solution for speeding up convergence of recursive iterations
             localPseudoinv = (KtK + RegParamRange(i)^2*(RegMatrix')*RegMatrix)\Kernel';
             localDistribution = localPseudoinv*Signal;
             for j=1:100
@@ -148,30 +164,26 @@ for i=1:nPoints %Loop over all regularization parameter values
                 HuberParameter = 1.35;
             end
             %Unconstrained distributions required for construction of correct pseudoinverse
-            Distribution{i} = zeros(DipolarDimension,1);
-            try
-                %Define options for fsolve
-                Solveroptions = optimoptions(@fsolve,'Display','off','Algorithm','trust-region-reflective');
-                Distribution{i} = fsolve(@(Distribution) Kernel'*(Kernel*Distribution - Signal) + ...
-                    RegParamRange(i)^2/(HuberParameter^2)*(RegMatrix')*((RegMatrix*Distribution)./sqrt((RegMatrix*(Distribution)/HuberParameter).^2 + 1)) ...
-                    ,Distribution{i},Solveroptions);
-                
-                % Compute pseudoinverse by analytical expression (only defined for unconstrained distribution)
-                HuberTerm = 1/(HuberParameter^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*Distribution{i}/HuberParameter).^2 + 1)));
-                PseudoInverse{i} = (KtK + RegParamRange(i)^2*HuberTerm)\Kernel';
-                
-                % If constrained solution is requested
-                if NonNegConstrained
-                    %Now that we have the pseudoinverse, the constrained distribution can be computed quickly
-                    Distribution{i} = fnnls(KtK + RegParamRange(i)^2*HuberTerm,Kernel'*Signal);
+            localPseudoinv = (KtK + RegParamRange(i)^2*(RegMatrix')*RegMatrix)\Kernel';
+            localDistribution = localPseudoinv*Signal;
+            for j=1:100
+                prev = localDistribution;
+                %Compute pseudoinverse and unconst. distribution recursively
+                HuberTerm = 1/(HuberParameter^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParameter).^2 + 1)));
+                localHuberPseudoinv = (KtK + RegParamRange(i)^2*HuberTerm)\Kernel';
+                localDistribution = localHuberPseudoinv*Signal;
+                change = norm(localDistribution - prev);
+                if round(change,5) ==0
+                    break;
                 end
-            catch
-                % Worst-case scenario when fsolve crashes, use this bad method to get at least something
-                fprintf('Huber Selection: Failed \n')
-                PseudoInverseTemp = (KtK + RegParamRange(i)^2*(RegMatrix')*RegMatrix)\Kernel';
-                DistributionTemp  = PseudoInverseTemp*Signal;
-                HuberTerm = ((RegMatrix/HuberParameter)'*diag(1./sqrt((RegMatrix*DistributionTemp/HuberParameter).^2 + 1))*(RegMatrix/HuberParameter));
-                PseudoInverse{i} = (KtK + RegParamRange(i)^2*HuberTerm)\Kernel';
+            end
+            HuberTerm = 1/(HuberParameter^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParameter).^2 + 1)));
+            PseudoInverse{i} = (KtK + RegParamRange(i)^2*HuberTerm)\Kernel';
+            Distribution{i} = localDistribution;
+            
+            % If constrained solution is requested
+            if NonNegConstrained
+                %Now that we have the pseudoinverse, the constrained distribution can be computed quickly
                 Distribution{i} = fnnls(KtK + RegParamRange(i)^2*HuberTerm,Kernel'*Signal);
             end
             
@@ -179,20 +191,6 @@ for i=1:nPoints %Loop over all regularization parameter values
             Penalty(i) = sum(sqrt((RegMatrix*Distribution{i}/HuberParameter).^2 + 1 ) - 1);
             Residual(i) = 1/sqrt(2)*norm(Kernel*Distribution{i} - Signal);
             InfluenceMatrix{i} = Kernel*(PseudoInverse{i});
-            
-            %--------------------------------------------------------------------------
-            % Tikhonov (L2) Penalty
-            %--------------------------------------------------------------------------
-        case 'tikhonov'
-            PseudoInverse{i} = (KtK + RegParamRange(i)^2*(RegMatrix')*RegMatrix)\Kernel';
-            if NonNegConstrained
-                Distribution{i} = fnnls(KtK + RegParamRange(i)^2*(RegMatrix')*RegMatrix,Kernel'*Signal,zeros(DipolarDimension,1),nonNegLSQsolTol); %non-negative Tikhonov solution
-            else
-                Distribution{i}  = PseudoInverse{i}*Signal; %unconstrained Tikhonov solution
-            end
-            Penalty(i) = 1/sqrt(2)*norm(RegMatrix*Distribution{i});
-            Residual(i) = 1/sqrt(2)*norm(Kernel*Distribution{i} - Signal);
-            InfluenceMatrix{i} = Kernel*PseudoInverse{i};
     end
 end
 
@@ -321,6 +319,7 @@ for MethodIndex = 1:length(SelectionMethod)
     
 end
 
+%If requested refine the grid search in a more precise search
 if Refine
     RefineLength = 10;
     varargin{end+1} = 'Refine';
@@ -342,14 +341,6 @@ if Refine
         OptIndex = find(FineRegParamRange == RefinedOptRegParam(1));
         OptRegParam  = RefinedOptRegParam;
     end
-end
-
-
-%If requested get the L-curve parameters and return them
-if nargout>2
-    Eta = log(Penalty);
-    Rho = log(Residual);
-    Lcurve = [Eta Rho];
 end
 
 end
