@@ -35,7 +35,7 @@ checklengths(Signal,Kernel);
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
 %Check if user requested some options via name-value input
-[nonNegLSQsolTol,Solver,NonNegConstrained,MaxFunEvals,MaxIter] = parseoptional({'nonNegLSQsolTol','Solver','NonNegConstrained','MaxFunEvals','MaxIter'},varargin);
+[nonNegLSQsolTol,Solver,NonNegConstrained,MaxFunEvals,MaxIter,HuberParam] = parseoptional({'nonNegLSQsolTol','Solver','NonNegConstrained','MaxFunEvals','MaxIter','HuberParam'},varargin);
 
 if isempty(nonNegLSQsolTol)
     nonNegLSQsolTol = 1e-9;
@@ -56,6 +56,11 @@ else
     validateattributes(MaxIter,{'numeric'},{'scalar','nonempty'},mfilename,'MaxIter')
 end
 
+if isempty(HuberParam)
+    HuberParam = 1.35;
+else
+    validateattributes(HuberParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'MaxFunEvals')
+end
 
 if isempty(MaxFunEvals)
     MaxFunEvals = 2000000;
@@ -122,6 +127,21 @@ if ~strcmp(Solver,'fmincon')
             end
             TVterm = RegMatrix.'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));
             Q = (Kernel.'*Kernel + RegParam^2*TVterm);
+        case 'huber'
+            localDistribution = InitialGuess;
+            for j=1:500
+                prev = localDistribution;
+                %Compute pseudoinverse and unconst. distribution recursively
+                HuberTerm = 1/(HuberParam^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParam).^2 + 1)));
+                localHuberPseudoinv = (Kernel.'*Kernel + RegParam^2*HuberTerm)\Kernel.';
+                localDistribution = localHuberPseudoinv*Signal;
+                change = norm(localDistribution - prev);
+                if round(change,5) ==0
+                    break;
+                end
+            end
+            HuberTerm = 1/(HuberParam^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParam).^2 + 1)));
+            Q = (Kernel.'*Kernel + RegParam^2*HuberTerm);
     end
 end
 
@@ -166,7 +186,7 @@ switch Solver
             NonNegConst = [];
         end
         if ~strcmp(RegType,'custom')
-            RegFunctional = regfunctional(RegType,Signal,RegMatrix,Kernel,RegParam);
+            RegFunctional = regfunctional(RegType,Signal,RegMatrix,Kernel,RegParam,HuberParam);
         end
         fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',GradObj,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
         [Distribution,~,exitflag] =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
