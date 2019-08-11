@@ -69,10 +69,9 @@ else
     validateattributes(NonNegConstrained,{'logical'},{'nonempty'},'regularize','NonNegConstrained')
 end
 if ~iscolumn(Signal)
-    Signal = Signal';
+    Signal = Signal.';
 end
 
-checkSolverCompatibility(Solver,RegType);
 %--------------------------------------------------------------------------
 
 %--------------------------------------------------------------------------
@@ -82,25 +81,48 @@ checkSolverCompatibility(Solver,RegType);
 Dimension = length(Signal);
 InitialGuess = zeros(Dimension,1);
 
-%If unconstrained Tikh regularization is requested then solve analytically
-if ~NonNegConstrained && strcmp(RegType,'tikhonov')
-    Solver = 'analyticaluTikhonov';
+%If unconstrained regularization is requested then solve analytically
+if ~NonNegConstrained && ~strcmp(Solver,'fmincon')
+    Solver = 'analyticalSolution';
+end
+
+%If using LSQ-based solvers then precompute the KtK and KtS input arguments
+if ~strcmp(Solver,'fmincon')
+    KtS = Kernel.'*Signal;
+    switch RegType
+        case 'tikhonov'
+            %Constrained Tikhonov regularization
+            Q = (Kernel.'*Kernel) + RegParam^2*(RegMatrix.'*RegMatrix);
+        case 'tv'
+            localDistribution = InitialGuess;
+            for j=1:500
+                prev = localDistribution;
+                %Compute pseudoinverse and unconst. distribution recursively
+                TVterm = RegMatrix'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));
+                localTVPseudoinv = (Kernel.'*Kernel + RegParam^2*TVterm)\Kernel.';
+                localDistribution = localTVPseudoinv*Signal;
+                change = norm(localDistribution - prev);
+                if round(change,5) ==0
+                    break;
+                end
+            end
+            TVterm = RegMatrix.'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));
+            Q = (Kernel.'*Kernel + RegParam^2*TVterm);
+    end
 end
 
 switch Solver
     
-    case 'analyticaluTikhonov'
-        %Analytical solution of unconstrained Tikhonov problem
-        PseudoInverse = ((Kernel.'*Kernel) + RegParam^2*(RegMatrix.'*RegMatrix))\(Kernel.');
+    case 'analyticalSolution'
+        PseudoInverse = Q\Kernel.';
         Distribution = PseudoInverse*Signal;
         
     case 'lsqnonneg'
-        %Constrained Tikhonov regularization
         solverOpts = optimset('Display','off','TolX',nonNegLSQsolTol);
-        Q = (Kernel'*Kernel) + RegParam^2*(RegMatrix'*RegMatrix);
-        Distribution = lsqnonneg(Q,Kernel'*Signal,solverOpts);
+        Distribution = lsqnonneg(Q,KtS,solverOpts);
+        
     case 'lsqnonlin'
-        RegFunctional = @(x) [Kernel*x - Signal  [RegParam*RegMatrix*x;0;0]];
+        RegFunctional = @(x) [Kernel*x - Signal  [RegParam*RegMatrix*x;zeros(size(RegMatrix,2) - size(RegMatrix,1),1)]];
         NonNegConst = zeros(Dimension,1);
         solverOpts=optimoptions(@lsqnonlin,'Display','off',...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
@@ -108,18 +130,18 @@ switch Solver
         [Distribution,~,~,exitflag] = lsqnonlin(RegFunctional,InitialGuess,NonNegConst,[],solverOpts);
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-            solverOpts=optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
+            solverOpts = optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
             Distribution = lsqnonlin(RegFunctional,Distribution,NonNegConst,[],solverOpts);
         end
-    case 'fnnls'
-        %Constrained Tikhonov regularization
-        Q = (Kernel'*Kernel) + RegParam^2*(RegMatrix'*RegMatrix);
-        Distribution = fnnls(Q,Kernel'*Signal,InitialGuess,nonNegLSQsolTol);
         
+    case 'fnnls'
+        Distribution = fnnls(Q,KtS,InitialGuess,nonNegLSQsolTol);
+        %In some cases, fnnls may return negatives if tolerance is to high
+        if any(Distribution < 0)
+            %... in those cases continue from current solution
+            Distribution = fnnls(Q,KtS,Distribution,1e-20);
+        end
     case 'bppnnls'
-        %Constrained Tikhonov regularization
-        Q = (Kernel'*Kernel) + RegParam^2*(RegMatrix'*RegMatrix);
-        KtS = Kernel'*Signal;
         Distribution = nnls_bpp(Q,KtS,Q\KtS);
         
     case 'fmincon'
