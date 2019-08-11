@@ -73,6 +73,20 @@ if ~iscolumn(Signal)
 end
 
 %--------------------------------------------------------------------------
+%Memoization
+%--------------------------------------------------------------------------
+
+persistent cachedData
+if isempty(cachedData)
+    cachedData =  java.util.Hashtable;
+end
+
+hashKey = datahash({Signal,Kernel,RegMatrix,RegType,RegParam,varargin});
+if cachedData.containsKey(hashKey)
+    Output = cachedData.get(hashKey);
+    [Distribution] = java2mat(Output);
+    return
+end
 
 %--------------------------------------------------------------------------
 %Regularization processing
@@ -169,5 +183,9 @@ end
 
 %Normalize distribution integral
 Distribution = Distribution/sum(Distribution);
+
+%Store output result in the cache
+cachedData = addcache(cachedData,hashKey,Distribution);
+
 %--------------------------------------------------------------------------
 end
