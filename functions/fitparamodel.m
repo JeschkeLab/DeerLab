@@ -77,7 +77,7 @@ persistent cachedData
 if isempty(cachedData)
     cachedData =  java.util.Hashtable;
 end
-hashKey = datahash({Signal,Kernel,DistanceAxis,Model,StartParameters,varargin});
+hashKey = datahash({Signal,Kernel,DistanceAxis,func2str(Model),StartParameters,varargin});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
     [Distribution,FitParameters] = java2mat(Output);
