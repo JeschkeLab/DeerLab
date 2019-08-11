@@ -89,6 +89,7 @@ for iTest = 1:numel(TestFileNames)
   end
 
   thisTest = TestFileNames{iTest}(1:end-2);
+
   
   % Load, or regenerate, comparison data
   olddata = [];
@@ -106,6 +107,11 @@ for iTest = 1:numel(TestFileNames)
       end
     end
   end
+  
+  %Clear data in the cache before testing
+  Pos = strfind(thisTest,'_');
+  functionName = thisTest(1:Pos(1)-1);
+  clear(functionName)
   
   % Run test, catch any errors
   tic
@@ -139,7 +145,7 @@ for iTest = 1:numel(TestFileNames)
   end
   
   testResults(iTest).err = double(err);
-    testResults(iTest).err = double(err);
+  testResults(iTest).err = double(err);
   testResults(iTest).name = thisTest;
   testResults(iTest).errorData = errorInfo;
   
