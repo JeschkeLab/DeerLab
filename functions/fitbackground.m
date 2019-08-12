@@ -41,7 +41,7 @@ validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','nonnegative','increasi
 
 persistent cachedData
 if isempty(cachedData)
-    cachedData =  java.util.Hashtable;
+    cachedData =  java.util.LinkedHashMap;
 end
 hashKey = datahash({FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam});
 if cachedData.containsKey(hashKey)

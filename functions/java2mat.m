@@ -8,7 +8,7 @@ for i=1:length(out)
     if isa(out{i},'numeric') && isvector(out{i}) && ~iscolumn(out{i}) && size()
         out{i} = out{i}.';
     end
-    if isa(out{i},'java.util.Hashtable')
+    if isa(out{i},'java.util.LinkedHashMap')
         table = out{i};
         fieldnames = table.keySet;
         fieldnames = cell(fieldnames.toArray);

@@ -11,7 +11,7 @@ for i=1:length(input)
     if isstruct(input{i})
         MatlabStruct = input{i};
         fields = fieldnames(MatlabStruct);
-        JavaStructure =  java.util.Hashtable;
+        JavaStructure =  java.util.LinkedHashMap;
         for j=1:length(fields)
             JavaStructure.put(fields{j},getfield(MatlabStruct,fields{j}));
         end
@@ -19,13 +19,13 @@ for i=1:length(input)
     end
 end
 %Check if current cache exceeds the number of cached states
-if cache.size > cachelimiter
+if cache.size >= cachelimiter
     
     %If so, get the hash table keys...
     keys = cache.keySet;
     keys = cell(keys.toArray);
     %... and remove the oldest cache entry 
-    cache.remove(keys{end});
+    cache.remove(keys{1});
 end
 
 %Then add the new cache entry

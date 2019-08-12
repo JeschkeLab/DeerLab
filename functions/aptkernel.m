@@ -16,7 +16,7 @@ validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing','nonnegative'},
 
 persistent cachedData
 if isempty(cachedData)
-    cachedData =  java.util.Hashtable;
+    cachedData =  java.util.LinkedHashMap;
 end
 hashKey = datahash({TimeAxis,varargin});
 if cachedData.containsKey(hashKey)

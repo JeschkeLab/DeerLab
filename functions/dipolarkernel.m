@@ -72,7 +72,7 @@ checklengths(TimeAxis,Background);
 
 persistent cachedData
 if isempty(cachedData)
-    cachedData =  java.util.Hashtable;
+    cachedData =  java.util.LinkedHashMap;
 end
 hashKey = datahash({TimeAxis,DistanceAxis,Background,varargin});
 if cachedData.containsKey(hashKey)

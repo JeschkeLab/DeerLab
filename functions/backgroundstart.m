@@ -55,7 +55,7 @@ end
 
 persistent cachedData
 if isempty(cachedData)
-    cachedData =  java.util.Hashtable;
+    cachedData =  java.util.LinkedHashMap;
 end
 hashKey = datahash({Signal,TimeAxis,EndCutoffPos,BckgModel,ModelParam,varargin});
 if cachedData.containsKey(hashKey)

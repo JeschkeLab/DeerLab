@@ -83,7 +83,7 @@ end
 
 persistent cachedData
 if isempty(cachedData)
-    cachedData =  java.util.Hashtable;
+    cachedData =  java.util.LinkedHashMap;
 end
 
 hashKey = datahash({Signal,Kernel,RegMatrix,RegType,RegParam,varargin});
