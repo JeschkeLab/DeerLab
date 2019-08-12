@@ -19,7 +19,11 @@ persistent cachedData
 if isempty(cachedData)
     cachedData =  java.util.LinkedHashMap;
 end
-hashKey = datahash({Models,Signal,DistanceAxis,Kernel,Methods,varargin});
+Modelsstring = [];
+for i=1:length(Models)
+   Modelsstring = [Modelsstring func2str(Models{i})]; 
+end 
+    hashKey = datahash({Modelsstring,Signal,DistanceAxis,Kernel,Methods,varargin});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
     [optima,functionals] = java2mat(Output);
