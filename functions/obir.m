@@ -1,4 +1,4 @@
-function [Distribution,ConvergenceCurve] = obir(Signal,Kernel,RegType,RegMatrix,RegParam,NoiseLevelAim,varargin)
+function [Distribution,ConvergenceCurve] = obir(Signal,Kernel,RegType,RegMatrix,RegParam,varargin)
 %--------------------------------------------------------------------------
 % OSHER'S BREGMAN ITERATED REGULARIZATION (OBIR) METHOD
 %--------------------------------------------------------------------------
@@ -27,10 +27,53 @@ function [Distribution,ConvergenceCurve] = obir(Signal,Kernel,RegType,RegMatrix,
 if ~iscolumn(Signal)
     Signal = Signal';
 end
+
+%Get optional parameters
+[NoiseLevelAim,Solver,MaxIter,TolFun,MaxFunEvals,DivergenceStop,MaxOuterIter,HuberParam] = parseoptional({'NoiseLevelAim','Solver','MaxIter','TolFun','MaxFunEvals','DivergenceStop','MaxOuterIter','HuberParam'},varargin);
+
+
+if isempty(TolFun)
+    TolFun = 1e-10;
+else
+    validateattributes(TolFun,{'numeric'},{'scalar','nonnegative'},mfilename,'TolFun')
+end
+
+if isempty(MaxOuterIter)
+    MaxOuterIter = 5000;
+else
+    validateattributes(MaxOuterIter,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxOuterIter')
+end
+
+if isempty(HuberParam)
+    HuberParam = 1.35;
+else
+    validateattributes(HuberParam,{'numeric'},{'scalar','nonnegative'},mfilename,'HuberParam')
+end
+
+if isempty(MaxFunEvals)
+    MaxFunEvals = 500000;
+else
+    validateattributes(MaxFunEvals,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxFunEvals')
+end
+
+if isempty(MaxIter)
+    MaxIter = 500000;
+else
+    validateattributes(MaxIter,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxIter')
+end
+
+if isempty(Solver)
+    Solver = 'fnnls';
+else
+    validateattributes(Solver,{'char'},{'nonempty'},mfilename,'Solver')
+    validInputs = {'fnnls','fmincon'};
+    validatestring(Solver,validInputs);
+end
+
 if isempty(NoiseLevelAim)
     NoiseLevelAim = noiselevel(Signal);
 else
-validateattributes(NoiseLevelAim,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'NoiseLevelAim')
+    validateattributes(NoiseLevelAim,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'NoiseLevelAim')
 end
 validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 validateattributes(Signal,{'numeric'},{'nonempty'},mfilename,'Signal')
@@ -50,11 +93,10 @@ else
 end
 
 
+
 %--------------------------------------------------------------------------
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
-%Check if user requested some options via name-value input
-[MaxOuterIter,MaxFunEvals,MaxIter,DivergenceStop] = parseoptional({'MaxOuterIter','MaxFunEvals','MaxIter','DivergenceStop'},varargin);
 
 if isempty(MaxOuterIter)
     MaxOuterIter = 200;
@@ -105,17 +147,64 @@ while Iteration <= MaxOuterIter
     %Store privous iteration distribution
     CheckDistribution = Distribution;
     
-    %Define current minimization problem
-    RegFunctional = regfunctional(RegType,Signal,RegMatrix,Kernel,RegParam);
-    fminconFunctional = @(Distribution)OBIRFunctional(Distribution,RegFunctional,Subgradient);
-    fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
-    
-    %Run minimzation
-    Distribution =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
-    
+    switch Solver
+        case 'fmincon'
+            %Define current minimization problem
+            RegFunctional = regfunctional(RegType,Signal,RegMatrix,Kernel,RegParam,HuberParam);
+            fminconFunctional = @(Distribution)OBIRFunctional(Distribution,RegFunctional,Subgradient);
+            fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
+            %Run minimzation
+            Distribution =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
+        case 'fnnls'
+            
+            %If using LSQ-based solvers then precompute the KtK and KtS input arguments
+            if ~strcmp(Solver,'fmincon')
+                KtS = Kernel.'*Signal - Subgradient;
+                switch RegType
+                    case 'tikhonov'
+                        %Constrained Tikhonov regularization
+                        Q = (Kernel.'*Kernel) + RegParam^2*(RegMatrix.'*RegMatrix);
+                    case 'tv'
+                        localDistribution = InitialGuess;
+                        for j=1:500
+                            prev = localDistribution;
+                            %Compute pseudoinverse and unconst. distribution recursively
+                            TVterm = RegMatrix'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));
+                            localTVPseudoinv = (Kernel.'*Kernel + RegParam^2*TVterm)\Kernel.';
+                            localDistribution = localTVPseudoinv*Signal;
+                            change = norm(localDistribution - prev);
+                            if round(change,5) ==0
+                                break;
+                            end
+                        end
+                        TVterm = RegMatrix.'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));
+                        Q = (Kernel.'*Kernel + RegParam^2*TVterm);
+                    case 'huber'
+                        localDistribution = InitialGuess;
+                        for j=1:500
+                            prev = localDistribution;
+                            %Compute pseudoinverse and unconst. distribution recursively
+                            HuberTerm = 1/(HuberParam^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParam).^2 + 1)));
+                            localHuberPseudoinv = (Kernel.'*Kernel + RegParam^2*HuberTerm)\Kernel.';
+                            localDistribution = localHuberPseudoinv*Signal;
+                            change = norm(localDistribution - prev);
+                            if round(change,5) ==0
+                                break;
+                            end
+                        end
+                        HuberTerm = 1/(HuberParam^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParam).^2 + 1)));
+                        Q = (Kernel.'*Kernel + RegParam^2*HuberTerm);
+                end
+            end
+            Distribution = fnnls(Q,KtS,InitialGuess,TolFun);
+            %In some cases, fnnls may return negatives if tolerance is to high
+            if any(Distribution < 0)
+                %... in those cases continue from current solution
+                Distribution = fnnls(Q,KtS,Distribution,1e-20);
+            end
+    end
     %Store current convergence curve point
     ConvergenceCurve(Iteration) = std(Kernel*Distribution - Signal);
-    
     %Update subgradient at current solution
     Subgradient = Subgradient + Kernel'*(Kernel*Distribution - Signal);
     

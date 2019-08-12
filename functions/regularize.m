@@ -43,7 +43,7 @@ else
     validateattributes(nonNegLSQsolTol,{'numeric'},{'scalar','nonempty','nonnegative'},'regularize','nonNegLSQsolTol')
 end
 if isempty(Solver)
-    Solver = 'fmincon';
+    Solver = 'fnnls';
 else
     validateattributes(Solver,{'char'},{'nonempty'})
     allowedInput = {'fnnls','lsqnonneg','bppnnls','fmincon','cvx','lsqnonlin'};
