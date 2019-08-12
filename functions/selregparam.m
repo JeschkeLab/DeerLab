@@ -181,7 +181,7 @@ for i=1:nPoints %Loop over all regularization parameter values
             %Unconstrained distributions required for construction of correct pseudoinverse
             localPseudoinv = (KtK + RegParamRange(i)^2*(RegMatrix')*RegMatrix)\Kernel';
             localDistribution = localPseudoinv*Signal;
-            for j=1:100
+            for j=1:500
                 prev = localDistribution;
                 %Compute pseudoinverse and unconst. distribution recursively
                 HuberTerm = 1/(HuberParameter^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParameter).^2 + 1)));
