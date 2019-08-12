@@ -134,7 +134,7 @@ for i=1:nPoints %Loop over all regularization parameter values
             %Start using unconst. Tikh solution for speeding up convergence of recursive iterations
             localPseudoinv = (KtK + RegParamRange(i)^2*(RegMatrix')*RegMatrix)\Kernel';
             localDistribution = localPseudoinv*Signal;
-            for j=1:100
+            for j=1:500
                 prev = localDistribution;
                 %Compute pseudoinverse and unconst. distribution recursively
                 localTVPseudoInverse = RegMatrix'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));

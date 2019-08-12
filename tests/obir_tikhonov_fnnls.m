@@ -20,9 +20,19 @@ Signal = DipEvoFcn+Noise;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 200;
-Result = obir(Signal,Kernel,'tikhonov',RegMatrix,RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fnnls');
+
+if opt.Display
+    figure(8),clf
+    axhandle = plot(DistanceAxis,NaN*Distribution);
+else
+    axhandle = [];
+end
+
+Result = obir(Signal,Kernel,'tikhonov',RegMatrix,RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Axishandle',axhandle);
 
 RegResult = regularize(Signal,Kernel,RegMatrix,'tikhonov',RegParam);
+
+
 
 err = norm(Result - Distribution) > norm(RegResult - Distribution);
 maxerr = norm(Result - Distribution);

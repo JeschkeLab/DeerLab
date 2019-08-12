@@ -29,7 +29,7 @@ if ~iscolumn(Signal)
 end
 
 %Get optional parameters
-[NoiseLevelAim,Solver,MaxIter,TolFun,MaxFunEvals,DivergenceStop,MaxOuterIter,HuberParam] = parseoptional({'NoiseLevelAim','Solver','MaxIter','TolFun','MaxFunEvals','DivergenceStop','MaxOuterIter','HuberParam'},varargin);
+[NoiseLevelAim,Solver,MaxIter,TolFun,MaxFunEvals,DivergenceStop,MaxOuterIter,HuberParam,AxisHandle] = parseoptional({'NoiseLevelAim','Solver','MaxIter','TolFun','MaxFunEvals','DivergenceStop','MaxOuterIter','HuberParam','AxisHandle'},varargin);
 
 
 if isempty(TolFun)
@@ -91,7 +91,6 @@ else
     allowedInput = {'tikhonov','tv','huber'};
     validatestring(RegType,allowedInput);
 end
-
 
 
 %--------------------------------------------------------------------------
@@ -158,43 +157,41 @@ while Iteration <= MaxOuterIter
         case 'fnnls'
             
             %If using LSQ-based solvers then precompute the KtK and KtS input arguments
-            if ~strcmp(Solver,'fmincon')
-                KtS = Kernel.'*Signal - Subgradient;
-                switch RegType
-                    case 'tikhonov'
-                        %Constrained Tikhonov regularization
-                        Q = (Kernel.'*Kernel) + RegParam^2*(RegMatrix.'*RegMatrix);
-                    case 'tv'
-                        localDistribution = InitialGuess;
-                        for j=1:500
-                            prev = localDistribution;
-                            %Compute pseudoinverse and unconst. distribution recursively
-                            TVterm = RegMatrix'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));
-                            localTVPseudoinv = (Kernel.'*Kernel + RegParam^2*TVterm)\Kernel.';
-                            localDistribution = localTVPseudoinv*Signal;
-                            change = norm(localDistribution - prev);
-                            if round(change,5) ==0
-                                break;
-                            end
+            KtS = Kernel.'*Signal - Subgradient;
+            switch RegType
+                case 'tikhonov'
+                    %Constrained Tikhonov regularization
+                    Q = (Kernel.'*Kernel) + RegParam^2*(RegMatrix.'*RegMatrix);
+                case 'tv'
+                    localDistribution = InitialGuess;
+                    for j=1:500
+                        prev = localDistribution;
+                        %Compute pseudoinverse and unconst. distribution recursively
+                        TVterm = RegMatrix'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));
+                        localTVPseudoinv = (Kernel.'*Kernel + RegParam^2*TVterm)\Kernel.';
+                        localDistribution = localTVPseudoinv*Signal;
+                        change = norm(localDistribution - prev);
+                        if round(change,5) ==0
+                            break;
                         end
-                        TVterm = RegMatrix.'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));
-                        Q = (Kernel.'*Kernel + RegParam^2*TVterm);
-                    case 'huber'
-                        localDistribution = InitialGuess;
-                        for j=1:500
-                            prev = localDistribution;
-                            %Compute pseudoinverse and unconst. distribution recursively
-                            HuberTerm = 1/(HuberParam^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParam).^2 + 1)));
-                            localHuberPseudoinv = (Kernel.'*Kernel + RegParam^2*HuberTerm)\Kernel.';
-                            localDistribution = localHuberPseudoinv*Signal;
-                            change = norm(localDistribution - prev);
-                            if round(change,5) ==0
-                                break;
-                            end
-                        end
+                    end
+                    TVterm = RegMatrix.'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));
+                    Q = (Kernel.'*Kernel + RegParam^2*TVterm);
+                case 'huber'
+                    localDistribution = InitialGuess;
+                    for j=1:500
+                        prev = localDistribution;
+                        %Compute pseudoinverse and unconst. distribution recursively
                         HuberTerm = 1/(HuberParam^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParam).^2 + 1)));
-                        Q = (Kernel.'*Kernel + RegParam^2*HuberTerm);
-                end
+                        localHuberPseudoinv = (Kernel.'*Kernel + RegParam^2*HuberTerm)\Kernel.';
+                        localDistribution = localHuberPseudoinv*Signal;
+                        change = norm(localDistribution - prev);
+                        if round(change,5) ==0
+                            break;
+                        end
+                    end
+                    HuberTerm = 1/(HuberParam^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParam).^2 + 1)));
+                    Q = (Kernel.'*Kernel + RegParam^2*HuberTerm);
             end
             Distribution = fnnls(Q,KtS,InitialGuess,TolFun);
             %In some cases, fnnls may return negatives if tolerance is to high
@@ -205,6 +202,12 @@ while Iteration <= MaxOuterIter
     end
     %Store current convergence curve point
     ConvergenceCurve(Iteration) = std(Kernel*Distribution - Signal);
+    
+    %If hook to axes is given, then plot the current Distribution
+    if ~isempty(AxisHandle)
+        set(AxisHandle,'YData',Distribution)
+        drawnow
+    end
     %Update subgradient at current solution
     Subgradient = Subgradient + Kernel'*(Kernel*Distribution - Signal);
     

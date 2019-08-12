@@ -21,7 +21,15 @@ Signal = DipEvoFcn+Noise;
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParamSet = regparamrange(Kernel,RegMatrix);
 [OptParam,~,~,OptHuber] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,'gcv','RegType','huber');
-Result = obir(Signal,Kernel,'huber',RegMatrix,OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Huberparam',OptHuber);
+
+if opt.Display
+    figure(8),clf
+    axhandle = plot(DistanceAxis,NaN*Distribution);
+else
+    axhandle = [];
+end
+
+Result = obir(Signal,Kernel,'huber',RegMatrix,OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Huberparam',OptHuber,'axishandle',axhandle);
 
 RegResult = regularize(Signal,Kernel,RegMatrix,'huber',OptParam);
 
