@@ -88,7 +88,7 @@ end
 %--------------------------------------------------------------------------
 % Preparations
 %--------------------------------------------------------------------------
-DipolarDimension = length(Signal);
+DipolarDimension = length(RegMatrix);
 
 %Update number of points just to make sure
 nPoints = length(RegParamRange);

@@ -29,7 +29,7 @@ end
 validateattributes(RegMatrix,{'numeric'},{'nonempty','2d'},mfilename,'RegMatrix')
 validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 validateattributes(Signal,{'numeric'},{'nonempty'},mfilename,'Signal')
-checklengths(Signal,Kernel);
+% checklengths(Signal,Kernel);
 
 %--------------------------------------------------------------------------
 % Parse & Validate Optional Input
@@ -97,7 +97,7 @@ end
 %Regularization processing
 %--------------------------------------------------------------------------
 
-Dimension = length(Signal);
+Dimension = length(RegMatrix);
 InitialGuess = zeros(Dimension,1);
 
 %If unconstrained regularization is requested then solve analytically
