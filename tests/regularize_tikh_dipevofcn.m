@@ -23,7 +23,7 @@ TikhResult3 = regularize(DipEvoFcn,Kernel,RegMatrix,'tikhonov',RegParam,'Solver'
 
 err(1) = any(abs(TikhResult1 - Distribution)>1e-6);
 err(2) = any(abs(TikhResult2 - Distribution)>1e-6);
-err(3) = any(abs(TikhResult3 - Distribution)>1e-5);
+err(3) = any(abs(TikhResult3 - Distribution)>1.5e-5);
 
 maxerr = max(abs(TikhResult1 - Distribution));
 
