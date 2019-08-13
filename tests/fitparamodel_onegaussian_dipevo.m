@@ -14,7 +14,7 @@ Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 InitialGuess = [2 0.1];
-[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@onegaussian,InitialGuess);
+[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@onegaussian,InitialGuess,'Solver','fmincon');
 err(1) = any(abs(FitDistribution - Distribution)>1e-5);
 err(2) = any(abs(FitParam - InputParam)>1e-3);
 err = any(err);

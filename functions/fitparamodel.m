@@ -1,7 +1,8 @@
 function [Distribution,FitParameters] = fitparamodel(Signal,Kernel,DistanceAxis,Model,StartParameters,varargin)
 
+%--------------------------------------------------------------------------
 % Input Parsening & Validation
-%========================================================
+%--------------------------------------------------------------------------
 
 %Get information about the parametric model
 Info = Model();
@@ -60,14 +61,35 @@ else
     validInputs = {'levenberg-marquardt','interior-point','trust-region-reflective','active-set','sqp'};
     validatestring(Algorithm,validInputs);
 end
-
-if ~iscolumn(Signal)
-    Signal = Signal.';
-end
-
 if ~iscolumn(DistanceAxis)
     DistanceAxis = DistanceAxis.';
 end
+if ~iscell(Signal)
+    Signal = {Signal};
+end
+if ~iscell(Kernel)
+    Kernel = {Kernel};
+end
+if length(Kernel)~=length(Signal)
+    error('The number of kernels and signals must be equal.')
+end
+if length(Signal)>1 && strcmp(Solver,'lsqnonlin')
+    Solver = 'fmincon';
+    Algorithm = 'interior-point';
+end
+for i=1:length(Signal)
+    if ~iscolumn(Signal{i})
+        Signal{i} = Signal{i}.';
+    end
+    if ~isreal(Signal{i})
+        Signal{i} = real(Signal{i});
+    end
+    if length(Signal{i})~=size(Kernel{i},1)
+        error('Kernel and signal arguments must fulfill size(Kernel,1)==length(Signal).')
+    end
+    validateattributes(Signal{i},{'numeric'},{'nonempty'},mfilename,'Signal')
+end
+
 
 %--------------------------------------------------------------------------
 %Memoization
@@ -85,21 +107,25 @@ if cachedData.containsKey(hashKey)
     return
 end
 
-
+%--------------------------------------------------------------------------
 % Execution
-%========================================================
+%--------------------------------------------------------------------------
 
-%Define the cost functional
+%Define the cost functional of a single signal
 switch CostModel
     case 'lsq'
-        ModelCost = @(Parameters) (norm(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
+        ModelCost = @(Parameters,Kernel,Signal) (norm(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
     case 'chisquare'
-        N = length(Signal);
         nParam = length(StartParameters);
-        NoiseLevel = noiselevel(Signal);
-        ModelCost = @(Parameters) (1/(N - nParam)/(NoiseLevel^2)*sum(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
+        ModelCost = @(Parameters,Kernel,Signal) (1/(length(Signal) - nParam)/(noiselevel(Signal)^2)*sum(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
 end
 
+%Get weights of different signals for global fitting
+Weights = globalweights(Signal);
+%Create a new handle which evaluates the model cost function for every signal
+CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y)ModelCost(Parameters,x,y),Kernel,Signal)));
+
+%Prepare upper/lower bounds on parameter search
 Ranges =  [Info.parameters(:).range];
 LowerBounds = Ranges(1:2:end-1);
 UpperBounds = Ranges(2:2:end);
@@ -112,12 +138,12 @@ switch Solver
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'TolCon',1e-10,...
             'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        [FitParameters,~,exitflag]  = fmincon(ModelCost,StartParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
+        [FitParameters,~,exitflag]  = fmincon(CostFcn,StartParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
         %Check how optimization exited...
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
             solverOpts=optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
-            [FitParameters]  = fmincon(ModelCost,FitParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
+            [FitParameters]  = fmincon(CostFcn,FitParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
         end
         
     case 'lsqnonlin'
@@ -125,7 +151,7 @@ switch Solver
         solverOpts=optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display','off',...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        ModelCost = @(Parameters) (sqrt(0.5)*(Kernel*Model(DistanceAxis,Parameters) - Signal));
+        ModelCost = @(Parameters) (sqrt(0.5)*(Kernel{1}*Model(DistanceAxis,Parameters) - Signal{1}));
         [FitParameters,~,~,exitflag]  = lsqnonlin(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
@@ -139,12 +165,11 @@ switch Solver
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'TolCon',1e-10,...
             'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        FitParameters  = fminsearch(ModelCost,StartParameters,solverOpts);
+        FitParameters  = fminsearch(CostFcn,StartParameters,solverOpts);
 end
 
 %Compute fitted distance distribution
 Distribution = Model(DistanceAxis,FitParameters);
-
 
 %Store output result in the cache
 Output = {Distribution,FitParameters};
