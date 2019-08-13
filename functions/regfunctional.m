@@ -10,11 +10,8 @@ if nargin<6 || isempty(HuberParameter)
    HuberParameter = 1.35; 
 end
 
-N = cellfun('length',Signal);
-NoiseLevel = cellfun(@noiselevel,Signal);
-weights = sum(N.*NoiseLevel)./(N.*NoiseLevel);
-weights = weights/sum(weights);
-
+%Get weights of different signals for global fitting
+weights = globalweights(Signal);
 
 switch Method
     case 'tv'
