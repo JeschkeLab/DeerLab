@@ -111,7 +111,7 @@ KtK = Kernel.'*Kernel;
 
 for i=1:nPoints %Loop over all regularization parameter values
     
-    switch RegType
+    switch lower(RegType)
         
         %--------------------------------------------------------------------------
         % Tikhonov (L2) Penalty
@@ -222,7 +222,7 @@ OptHuberParam = zeros(length(SelectionMethod),1);
 %If multiple selection methods are requested then process them sequentially
 for MethodIndex = 1:length(SelectionMethod)
     
-    switch SelectionMethod{MethodIndex}
+    switch lower(SelectionMethod{MethodIndex})
         
         case 'lr' %L-curve Minimum-Radius method (LR)
             Eta = log(Penalty);
