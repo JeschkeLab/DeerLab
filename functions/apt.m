@@ -87,7 +87,7 @@ UniformDistanceAxis = linspace(min(MappedDistances),max(MappedDistances),length(
 Distribution = uniformgrain(MappedDistances,FilteredAPTdistribution,UniformDistanceAxis);
 
 %Normalize to unity integral
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(UniformDistanceAxis));
 
 %Make the distribution a column
 Distribution = Distribution';

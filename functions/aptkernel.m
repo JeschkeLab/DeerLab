@@ -37,10 +37,10 @@ FreqDimension = floor(TimeDimension/2)-2;
 FreqAxis = linspace(1,FreqDimension,FreqDimension);
 FreqAxis = FreqElement*(FreqAxis+1/4*ones(1,FreqDimension));
 
-NormalizationFactor=zeros(1,FreqDimension); % initialize vector of normalization constant
+NormalizationFactor = zeros(1,FreqDimension); % initialize vector of normalization constant
 
 %Numerical angular dipolar frequency
-wdd=2*pi*FreqAxis';
+wdd = 2*pi*FreqAxis';
 
 %Allocate products for speed
 wddt = wdd.*TimeAxis;
@@ -58,6 +58,8 @@ Base(:,1) = 1;
 if ~isempty(ExcitationBandwidth)
     Base = exp(-wdd'.^2/ExcitationBandwidth^2)'.*Base;
 end
+
+Base = Base*mean(diff(FreqAxis));
 
 %Normalize with respect to dipolar evolution time
 for k=1:FreqDimension % normalize kernel traces to value at time origin

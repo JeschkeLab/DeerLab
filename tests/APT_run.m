@@ -5,28 +5,32 @@ function [err,data,maxerr] = test(opt,olddata)
 %======================================================
 
 %Parameters
-Dimension = 150;
+Dimension = 200;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-DistDomainSmoothing = 0.2;
+DistDomainSmoothing = 0.1;
 %Test apt using a 1GHz excitation bandwidth
 aptKernel = aptkernel(TimeAxis,'ExcitationBandwidth',1000);
-[aptDistribution,DistanceAxis] = apt(DipEvoFcn,aptKernel,DistDomainSmoothing);
+[aptDistribution,aptDistanceAxis] = apt(DipEvoFcn,aptKernel,DistDomainSmoothing);
 
 error = abs(aptDistribution - Distribution);
-err = any(error>1e-1);
+err = any(error>9e-1);
 data = [];
 maxerr = max(error);
 
 if opt.Display
-plot(DistanceAxis,aptDistribution)
+    figure(8),clf
+    hold on
+    plot(DistanceAxis,Distribution)
+    plot(aptDistanceAxis,aptDistribution)
+    
 end
 
 end
