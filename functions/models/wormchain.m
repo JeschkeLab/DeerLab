@@ -50,7 +50,7 @@ elseif nargin == 2
         + 1./(kappa*(1 - rcrit)).^(3/2).*exp(-(2 - 1/2)^2./(kappa*(1 - rcrit))).*(4.*((2 - 1/2)./sqrt(kappa*(1-rcrit))).^2-2));
     
     %Normalize integral
-    Distribution = Distribution/sum(Distribution);
+    Distribution = Distribution/sum(Distribution)/mean(diff(r));
     output = Distribution;
     
 else

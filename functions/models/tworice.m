@@ -17,7 +17,7 @@ if nargin==0
     %If no inputs given, return info about the parametric model
     info.Model  = 'Two Rice/Rician distributions';
     info.Equation  = ['A*r/',char(963),'1²*exp((r-',char(957),'1)²/(2',char(963),'1²))*Bessel(r*',char(957),'1/',char(963),'1²)'...
-                       '+ (1-A)*r/',char(963),'2²*exp((r-',char(957),'2)²/(2',char(963),'2²))*Bessel(r*',char(957),'2/',char(963),'2²)' ];
+        '+ (1-A)*r/',char(963),'2²*exp((r-',char(957),'2)²/(2',char(963),'2²))*Bessel(r*',char(957),'2/',char(963),'2²)' ];
     info.nParam  = nParam;
     info.parameters(1).name = ['Mean distance ',char(957),'1 1st Rician'];
     info.parameters(1).range = [1 10];
@@ -50,7 +50,7 @@ elseif nargin == 2
     %If user passes them, check that the number of parameters matches the model
     if length(param)~=nParam
         error('The number of input parameters does not match the number of model parameters.')
-    end    
+    end
     
     nu=param(1);
     sqscale=param(2).^2;
@@ -66,7 +66,7 @@ elseif nargin == 2
     %the first kind
     Rician2 = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale).*besseli_(0,r.*nu./sqscale);
     %The Rice distribution is zero for negative values.
-    Rician2(Rician2<0)=0;    
+    Rician2(Rician2<0)=0;
     
     %Construct distance distribution
     Distribution = param(5)*Rician1 + max(1-param(5),0)*Rician2;
@@ -75,7 +75,7 @@ elseif nargin == 2
         Distribution = Distribution';
     end
     if ~all(Distribution==0)
-        Distribution = Distribution/sum(Distribution);
+        Distribution = Distribution/sum(Distribution)/mean(diff(r));
     end
     output = Distribution;
 else

@@ -9,7 +9,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
@@ -17,13 +17,13 @@ DipEvoFcn = Kernel*Distribution;
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.1;
 RegMatrix = regoperator(Dimension,2);
-TikhResult1 = regularize(DipEvoFcn,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
-TikhResult2 = regularize(DipEvoFcn,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','bppnnls');
-TikhResult3 = regularize(DipEvoFcn,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','lsqnonneg','nonNegLSQsolTol',1e-25);
+TikhResult1 = regularize(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+TikhResult2 = regularize(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','bppnnls');
+TikhResult3 = regularize(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','lsqnonneg','nonNegLSQsolTol',1e-25);
 
-err(1) = any(abs(TikhResult1 - Distribution)>1e-6);
-err(2) = any(abs(TikhResult2 - Distribution)>1e-6);
-err(3) = any(abs(TikhResult3 - Distribution)>1.5e-5);
+err(1) = any(abs(TikhResult1 - Distribution)>1e-4);
+err(2) = any(abs(TikhResult2 - Distribution)>1e-4);
+err(3) = any(abs(TikhResult3 - Distribution)>1e-4);
 
 maxerr = max(abs(TikhResult1 - Distribution));
 

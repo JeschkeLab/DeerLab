@@ -9,17 +9,17 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 Noise = whitenoise(Dimension,0.02);
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 1;
+RegParam = 0.1;
 RegMatrix = regoperator(Dimension,3);
-Resultfnnls = regularize(DipEvoFcn+Noise,Kernel,RegMatrix,'tv',RegParam,'Solver','fnnls');
+Resultfnnls = regularize(DipEvoFcn+Noise,DistanceAxis,Kernel,RegMatrix,'tv',RegParam,'Solver','fnnls');
 
-err = any(abs(Resultfnnls - Distribution)>2e-3);
+err = any(abs(Resultfnnls - Distribution)>9e-2);
 
 maxerr = max(abs(Resultfnnls - Distribution));
 

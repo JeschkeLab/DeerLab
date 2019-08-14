@@ -44,7 +44,7 @@ elseif nargin == 2
     Distribution = normFact*ShellSurf.*Gaussian;
     
     %Normalize integral
-    Distribution = Distribution/sum(Distribution);
+    Distribution = Distribution/sum(Distribution)/mean(diff(r));
     output = Distribution;
     
 else

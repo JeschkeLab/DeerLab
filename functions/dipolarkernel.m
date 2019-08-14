@@ -63,7 +63,10 @@ else
 end
 
 validateattributes(DistanceAxis,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'DistanceAxis')
-validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'TimeAxis')
+if numel(unique(round(diff(DistanceAxis),12)))~=1
+    error('Distance axis must be a monotonically increasing vector.')
+end
+validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing'},mfilename,'TimeAxis')
 checklengths(TimeAxis,Background);
 
 %--------------------------------------------------------------------------
@@ -97,10 +100,15 @@ if TimeStep>1
     TimeAxis = round(TimeAxis)/1000;
 end
 
+TimeAxis = abs(TimeAxis);
+
 %Numerical angular dipolar frequency at 1 nm for g=ge
 w0 = 2*pi*ny0;
 %Get vector of dipolar frequencies
 wdd = w0./(DistanceAxis.^3);
+
+[~,BckgStart] = min(TimeAxis);
+
 
 Kernel = zeros(length(TimeAxis),length(wdd));
 for OvertoneIdx=1:length(OvertoneCoeffs)
@@ -120,6 +128,7 @@ for OvertoneIdx=1:length(OvertoneCoeffs)
                 % normalize dipolar time evolution trace
                 Kernel(:,DistanceIndex) = Kernel(:,DistanceIndex) + OvertoneCoeffs(OvertoneIdx)*KernelTrace;
             end
+            
         case  'fresnel'
             % Method using Fresnel integrals (fast)
             %----------------------------------------------------------
@@ -132,22 +141,24 @@ for OvertoneIdx=1:length(OvertoneCoeffs)
             S = fresnelS(kappa);
             Kernel = Kernel + OvertoneCoeffs(OvertoneIdx)*sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
             %Replace undefined Fresnel NaN value at time zero
-            Kernel(1,:) = 1;
+            Kernel(BckgStart,:) = 1;
     end
 end
 
-%Normalize kernel
-Kernel = Kernel./Kernel(1,:);
+Kernel = Kernel./Kernel(BckgStart,:);
+
 
 %If given, account for limited excitation bandwidth
 if ~isempty(ExcitationBandwidth)
     Kernel = exp(-wdd'.^2/ExcitationBandwidth^2).*Kernel;
 end
 
+
+
 % Build the background into the kernel
 %----------------------------------------------------------
 if ~all(Background == 1)
-    ModDepth = 1/Background(1) - 1;
+    ModDepth = 1/Background(BckgStart) - 1;
     Kernel = ModDepth*Kernel + 1;
 end
 switch KernelBType
@@ -157,6 +168,10 @@ switch KernelBType
         Background = sqrt(Background);
 end
 Kernel = Kernel.*Background;
+
+%Normalize kernel
+dr = mean(diff(DistanceAxis));
+Kernel = Kernel*dr;
 
 %Store output result in the cache
 cachedData = addcache(cachedData,hashKey,Kernel);

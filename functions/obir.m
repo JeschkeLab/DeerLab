@@ -1,4 +1,4 @@
-function [Distribution,ConvergenceCurve] = obir(Signal,Kernel,RegType,RegMatrix,RegParam,varargin)
+function [Distribution,ConvergenceCurve] = obir(Signal,DistanceAxis,Kernel,RegType,RegMatrix,RegParam,varargin)
 %--------------------------------------------------------------------------
 % OSHER'S BREGMAN ITERATED REGULARIZATION (OBIR) METHOD
 %--------------------------------------------------------------------------
@@ -153,7 +153,7 @@ while Iteration <= MaxOuterIter
             fminconFunctional = @(Distribution)OBIRFunctional(Distribution,RegFunctional,Subgradient);
             fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
             %Run minimzation
-            Distribution =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
+            Distribution =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         case 'fnnls'
             
             %If using LSQ-based solvers then precompute the KtK and KtS input arguments
@@ -211,6 +211,8 @@ while Iteration <= MaxOuterIter
     %Update subgradient at current solution
     Subgradient = Subgradient + Kernel'*(Kernel*Distribution - Signal);
     
+    
+    
     %--------------------------------------------------------------------------
     %Iteration Control
     %--------------------------------------------------------------------------
@@ -238,6 +240,9 @@ while Iteration <= MaxOuterIter
     end
     
 end
+
+%Normalize distribution integral
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 end
 

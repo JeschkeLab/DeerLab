@@ -57,7 +57,7 @@ elseif nargin == 2
         Distribution = Distribution';
     end
     %Normalize
-    Distribution = Distribution/sum(Distribution);
+    Distribution = Distribution/sum(Distribution)/mean(diff(r));
     output = Distribution;
 else
     %Else, the user has given wrong number of inputs

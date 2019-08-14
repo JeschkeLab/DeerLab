@@ -8,7 +8,7 @@ DistanceAxis = time2dist(TimeAxis);
 InputParam = [4 0.2 4 1 3 0.4 0.4 0.4];
 Distribution = threegaussian(DistanceAxis,InputParam);
 Distribution = Distribution/(1/sqrt(2*pi)*1/InputParam(2));
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;

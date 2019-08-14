@@ -10,7 +10,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
@@ -21,8 +21,8 @@ RegMatrix = regoperator(Dimension,2);
 range = regparamrange(Kernel,RegMatrix);
 RegParam = selregparam(range,Signal,Kernel,RegMatrix,'aicc');
 
-TikhResult1 = regularize(Signal,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
-err(1) = any(abs(TikhResult1 - Distribution)>2e-3);
+TikhResult1 = regularize(Signal,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+err(1) = any(abs(TikhResult1 - Distribution)>5e-2);
 maxerr = max(abs(TikhResult1 - Distribution));
 
 err = any(err);

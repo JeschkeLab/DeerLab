@@ -8,7 +8,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
@@ -23,10 +23,10 @@ Filtered = longpass(TimeAxis,Signal,1.55);
 L = regoperator(Dimension,2);
 RegParam = regparamrange(Kernel,L);
 RegParam2 = selregparam(RegParam,Filtered,Kernel,L,'gml');
-Result = regularize(Filtered,Kernel,L,'tikhonov',RegParam2,'Solver','fnnls');
+Result = regularize(Filtered,DistanceAxis,Kernel,L,'tikhonov',RegParam2,'Solver','fnnls');
 
 error = abs(Result - Distribution);
-err(1) = any(error>1e-2);
+err(1) = any(error>3e-1);
 maxerr = max(error);
 err = any(err);
 data = [];
@@ -36,7 +36,7 @@ if opt.Display
     subplot(122),hold on
     plot(DistanceAxis,Distribution)
     plot(DistanceAxis,Result)
-    Result = regularize(Signal,Kernel,L,'tikhonov',RegParam2,'Solver','fnnls');
+    Result = regularize(Signal,DistanceAxis,Kernel,L,'tikhonov',RegParam2,'Solver','fnnls');
     plot(DistanceAxis,Result)
     subplot(121),hold on
     plot(TimeAxis,DipEvoFcn)

@@ -9,7 +9,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,Dimension*TimeStep,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 Background = exp(-0.5*TimeAxis);
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 
@@ -19,7 +19,6 @@ Background = Background*(1-1/Trace(1));
 Trace = Trace/Trace(1);
 
 KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','full');
-
 TraceB  = KernelB*Distribution;
 
 err = any(abs(TraceB - Trace)>1e-10);
@@ -29,7 +28,7 @@ data = [];
 if opt.Display
    figure(3)
    plot(TimeAxis,TraceB,'r',TimeAxis,Background,'r--',TimeAxis,Trace,'b')
-    
+   legend('truth','B','K*P')
 end
 
 end

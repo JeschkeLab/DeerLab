@@ -9,7 +9,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
@@ -23,9 +23,9 @@ ClusterFcn = ClusterFcn./sqrt(Background);
 RegParam = 0.005;
 RegMatrix = regoperator(Dimension,3);
 KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
-Result = regularize(ClusterFcn,KernelB,RegMatrix,'tv',RegParam,'Solver','fmincon');
+Result = regularize(ClusterFcn,DistanceAxis,KernelB,RegMatrix,'tv',RegParam,'Solver','fnnls');
 
-err = any(abs(Result - Distribution)>1e-2);
+err = any(abs(Result - Distribution)>1.5e-2);
 maxerr = max(abs(Result - Distribution));
 
 data = [];

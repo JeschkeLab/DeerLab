@@ -11,8 +11,9 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*N,N);
 DistAxis = time2dist(TimeAxis);
 kernelOut = dipolarkernel(TimeAxis,DistAxis);
+kernelOut = kernelOut/mean(diff(DistAxis));
 
-err = any(abs(kernelOut - kernel)>1e-3);
+err = any(abs(kernelOut - kernel)>7e-3);
 maxerr = max(max(abs(kernelOut - kernel)));
 data = [];
 

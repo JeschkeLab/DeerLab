@@ -39,7 +39,11 @@ AnalyticalKernel = [1.0000000000,0.989724398140451,0.962515792044324,...
 %Generate kernel numerically      
 TimeAxis = linspace(0,8*(length(AnalyticalKernel)-1),length(AnalyticalKernel));
 DistanceAxis = linspace(2.5,6,length(TimeAxis));
-NumericalKernel = diag(dipolarkernel(TimeAxis,DistanceAxis));
+
+K = dipolarkernel(TimeAxis,DistanceAxis);
+K = K/mean(diff(DistanceAxis));
+
+NumericalKernel = diag(K);
 
 %Check the precision
 err = any(abs(NumericalKernel' - AnalyticalKernel)>1e-14);

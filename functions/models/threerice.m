@@ -100,7 +100,7 @@ elseif nargin == 2
         Distribution = Distribution';
     end
     if ~all(Distribution==0)
-        Distribution = Distribution/sum(Distribution);
+        Distribution = Distribution/sum(Distribution)/mean(diff(r));
     end
     output = Distribution;
 else

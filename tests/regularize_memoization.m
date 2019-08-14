@@ -17,14 +17,14 @@ DipEvoFcn = Kernel*Distribution;
 RegParam = 100;
 
 tic
-preDist = regularize(DipEvoFcn,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+preDist = regularize(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 precached = toc;
 
 tic
-postDist = regularize(DipEvoFcn,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+postDist = regularize(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 postcached = toc;
 
-err(1) = postcached>=precached/10;
+err(1) = postcached>=precached/4;
 error = abs(preDist - postDist);
 err(2) = any(any(error>1e-18));
 err = any(err);

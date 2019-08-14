@@ -8,7 +8,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
@@ -16,10 +16,10 @@ DipEvoFcn = Kernel*Distribution;
 %Set optimal regularization parameter (found numerically lambda=0.005)
 RegParam = 0.005;
 RegMatrix = regoperator(Dimension,3);
-TVResult1 = regularize(DipEvoFcn,Kernel,RegMatrix,'tv',RegParam,'Solver','fmincon');
+TVResult1 = regularize(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tv',RegParam,'Solver','fmincon');
 
 error = abs(TVResult1 - Distribution);
-err(1) = any(error>1e-2);
+err(1) = any(error>5e-2);
 maxerr = max(error);
 err = any(err);
 data = [];

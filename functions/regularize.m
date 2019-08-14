@@ -1,4 +1,4 @@
-function Distribution = regularize(Signal,Kernel,RegMatrix,RegType,RegParam,varargin)
+function Distribution = regularize(Signal,DistanceAxis,Kernel,RegMatrix,RegType,RegParam,varargin)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -24,6 +24,10 @@ else
 end
 validateattributes(RegMatrix,{'numeric'},{'nonempty','2d'},mfilename,'RegMatrix')
 validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
+validateattributes(DistanceAxis,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'DistanceAxis')
+if numel(unique(round(diff(DistanceAxis),12)))~=1
+    error('Distance axis must be a monotonically increasing vector.')
+end
 
 %--------------------------------------------------------------------------
 % Parse & Validate Optional Input
@@ -111,6 +115,7 @@ end
 
 Dimension = length(RegMatrix);
 InitialGuess = zeros(Dimension,1);
+dr = mean(diff(DistanceAxis));
 
 %If unconstrained regularization is requested then solve analytically
 if ~NonNegConstrained && ~strcmp(Solver,'fmincon')
@@ -154,18 +159,19 @@ switch Solver
         if ~strcmp(RegType,'custom')
             RegFunctional = regfunctional(RegType,Signal,RegMatrix,Kernel,RegParam,HuberParam);
         end
+        constraint = @(x)unityconstraint(x,dr);
         fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',GradObj,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
-        [Distribution,~,exitflag] =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
+        [Distribution,~,exitflag] =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],constraint,fminconOptions);
         %Check how optimization exited...
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
             fminconOptions = optimoptions(fminconOptions,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
-            Distribution  = fmincon(ModelCost,Distribution,[],[],[],[],NonNegConst,[],@unityconstraint,fminconOptions);
+            Distribution  = fmincon(ModelCost,Distribution,[],[],[],[],NonNegConst,[],constraint,fminconOptions);
         end
 end
 
 %Normalize distribution integral
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/dr;
 
 %Store output result in the cache
 cachedData = addcache(cachedData,hashKey,Distribution);

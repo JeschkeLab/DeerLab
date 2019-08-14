@@ -9,7 +9,7 @@ TimeAxis1 = linspace(0,TimeStep*Ntime1,Ntime1);
 DistanceAxis = linspace(rmin,rmax,Ndist);
 
 Distribution = gaussian(DistanceAxis,2,0.3) + gaussian(DistanceAxis,4,0.3);
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel1 = dipolarkernel(TimeAxis1,DistanceAxis);
 Signal1 = Kernel1*Distribution;

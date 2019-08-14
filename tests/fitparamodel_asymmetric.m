@@ -12,7 +12,7 @@ DistanceAxis = linspace(rmin,rmax,Ndist);
 InputParam = [3 0.5];
 Distribution = gaussian(DistanceAxis,InputParam(1),InputParam(2));
 Distribution = Distribution/(1/sqrt(2*pi)*1/InputParam(2));
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;

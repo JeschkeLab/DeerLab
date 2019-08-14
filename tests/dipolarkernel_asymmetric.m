@@ -13,7 +13,8 @@ TimeAxis = linspace(0,TimeStep*Ntime,Ntime);
 DistAxis = linspace(rmin,rmax,Ndist);
 kernelF = dipolarkernel(TimeAxis,DistAxis,[],'KernelCalcMethod','fresnel');
 kernelE = dipolarkernel(TimeAxis,DistAxis,[],'KernelCalcMethod','explicit');
-
+kernelF = kernelF/mean(diff(DistAxis));
+kernelE = kernelE/mean(diff(DistAxis));
 err(1) = any(any(abs(kernelF - kernelE)>1e-2));
 err(2) = any(size(kernelF) ~= [Ntime Ndist]);
 err = any(err);

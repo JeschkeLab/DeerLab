@@ -9,14 +9,13 @@ InputParam = [3 0.3 5 0.3 5.5 0.5 0.3 0.2];
 Distribution = InputParam(7)*gaussian(DistanceAxis,InputParam(1),InputParam(2))/(1/sqrt(2*pi)*1/InputParam(2)) ...
     + InputParam(8)*gaussian(DistanceAxis,InputParam(3),InputParam(4))/(1/sqrt(2*pi)*1/InputParam(4)) ...
     + (1 - InputParam(7) -InputParam(8))*gaussian(DistanceAxis,InputParam(5),InputParam(6))/(1/sqrt(2*pi)*1/InputParam(6));
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-InitialGuess = [3 0.5 5.4 0.52 5.4 0.2 0. 0.1];
-[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@threegaussian,InitialGuess,'solver','fmincon');
-err(1) = any(abs(FitDistribution - Distribution)>1e-2);
+[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@threegaussian,[],'solver','lsqnonlin');
+err(1) = any(abs(FitDistribution - Distribution)>1e-1);
 err = any(err);
 
 maxerr = max(abs(FitDistribution - Distribution));

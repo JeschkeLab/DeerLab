@@ -1,4 +1,4 @@
-function [nonlinearInequality,nonlinearEquality] = unityconstraint(x)
+function [nonlinearInequality,nonlinearEquality] = unityconstraint(x,dr)
 %-------------------------------------------
 % Non-linear conditions for fmincon solver
 %-------------------------------------------
@@ -13,6 +13,6 @@ function [nonlinearInequality,nonlinearEquality] = unityconstraint(x)
 nonlinearInequality = 0;
 
 %Enforce unity integral of fitted distance distributions
-nonlinearEquality = sum(x) - 1;
+nonlinearEquality = sum(x)*dr - 1;
 
 end

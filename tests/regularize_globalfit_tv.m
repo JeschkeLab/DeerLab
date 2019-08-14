@@ -38,10 +38,10 @@ regparam = 10;
 Signals = {Signal1,Signal2,Signal3};
 Kernels = {Kernel1,Kernel2,Kernel3};
 
-Result = regularize(Signals,Kernels,L,'tv',regparam,'Solver','fnnls');
-Dist1 = regularize(Signal1,Kernel1,L,'tv',regparam,'Solver','fnnls');
-Dist2 = regularize(Signal2,Kernel2,L,'tv',regparam,'Solver','fnnls');
-Dist3 = regularize(Signal3,Kernel3,L,'tv',regparam,'Solver','fnnls');
+Result = regularize(Signals,DistanceAxis,Kernels,L,'tv',regparam,'Solver','fnnls');
+Dist1 = regularize(Signal1,DistanceAxis,Kernel1,L,'tv',regparam,'Solver','fnnls');
+Dist2 = regularize(Signal2,DistanceAxis,Kernel2,L,'tv',regparam,'Solver','fnnls');
+Dist3 = regularize(Signal3,DistanceAxis,Kernel3,L,'tv',regparam,'Solver','fnnls');
 
 normResult = norm(Distribution - Result);
 norm1 = norm(Distribution - Dist1);

@@ -117,7 +117,7 @@ switch CostModel
         ModelCost = @(Parameters,Kernel,Signal) (norm(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
     case 'chisquare'
         nParam = length(StartParameters);
-        ModelCost = @(Parameters,Kernel,Signal) (1/(length(Signal) - nParam)/(noiselevel(Signal)^2)*sum(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
+        ModelCost = @(Parameters,Kernel,Signal) (1/(length(Signal) - nParam)/(noiselevel(Signal)^2)*sum((Kernel*Model(DistanceAxis,Parameters) - Signal).^2));
 end
 
 %Get weights of different signals for global fitting

@@ -12,7 +12,7 @@ normFact = 3/(2*pi*SquareDist)^(3/2); % normalization prefactor
 ShellSurf = 4*pi*DistanceAxis.^2; % spherical shell surface
 Gaussian = exp(-3*DistanceAxis.^2/(2*SquareDist));
 Distribution = normFact*ShellSurf.*Gaussian;
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 Distribution = Distribution.';
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);

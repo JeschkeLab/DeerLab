@@ -36,7 +36,7 @@ elseif nargin == 2
     if ~iscolumn(Distribution)
         Distribution = Distribution';
     end
-    Distribution = Distribution/sum(Distribution);
+    Distribution = Distribution/sum(Distribution)/mean(diff(r));
     output = Distribution;
 else
     

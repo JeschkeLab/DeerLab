@@ -9,7 +9,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 Distribution = 0.5*gaussian(DistanceAxis,2,0.3) + 0.5*gaussian(DistanceAxis,3.5,0.3);
-Distribution = Distribution/sum(Distribution);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 RegMatrix =  regoperator(Dimension,2);
@@ -18,12 +18,18 @@ NoiseLevel = 0.05;
 Noise = whitenoise(Dimension,NoiseLevel);
 Signal = DipEvoFcn+Noise;
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParamSet = regparamrange(Kernel,RegMatrix);
-[OptParam] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,'gcv','RegType','tv');
-Result = obir(Signal,Kernel,'tv',RegMatrix,OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls');
+if opt.Display
+    figure(8),clf
+    axhandle = plot(DistanceAxis,NaN*Distribution);
+else
+    axhandle = [];
+end
 
-RegResult = regularize(Signal,Kernel,RegMatrix,'tv',OptParam);
+%Set optimal regularization parameter (found numerically lambda=0.13)
+OptParam = 0.021;
+Result = obir(Signal,DistanceAxis,Kernel,'tv',RegMatrix,OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','axishandle',axhandle);
+
+RegResult = regularize(Signal,DistanceAxis,Kernel,RegMatrix,'tv',OptParam);
 
 err = norm(Result - Distribution) > norm(RegResult - Distribution);
 maxerr = norm(Result - Distribution);
