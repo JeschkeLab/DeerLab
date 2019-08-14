@@ -25,7 +25,7 @@ tic
 post  = toc;
 
 err(1) = any(postoptimum~=preoptimum);
-err(2) = post > pre/4;
+err(2) = post > pre/3;
 data = [];
 maxerr = [];
 
