@@ -1,8 +1,5 @@
 function [err,data,maxerr] = test(opt,olddata)
 
-%=======================================
-% Check TV regularization
-%=======================================
 Dimension = 100;
 TimeAxis = linspace(-0.5,5,Dimension);
 DistanceAxis = time2dist(TimeAxis);
@@ -11,7 +8,7 @@ Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-Filtered = longpass(TimeAxis,DipEvoFcn);
+Filtered = longpass(TimeAxis,DipEvoFcn,2);
 
 L = regoperator(Dimension,2);
 RegParam = regparamrange(Kernel,L);
