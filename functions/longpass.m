@@ -8,8 +8,9 @@ else
 validateattributes(PassBandDist,{'numeric'},{'nonempty','scalar','nonnegative'},mfilename,'PassBandDist')
 end
 
-validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'TimeAxis')
+validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing'},mfilename,'TimeAxis')
 validateattributes(Signal,{'numeric'},{'nonempty'},mfilename,'Signal')
+TimeAxis = abs(TimeAxis);
 
 if iscolumn(Signal)
     Signal = Signal';
@@ -17,7 +18,7 @@ end
 
 %Get frequencies in MHz
 PassBandFreq = 52.04/(PassBandDist^3);
-TimeStep = mean(diff(TimeAxis));
+TimeStep = mean(abs(diff(TimeAxis)));
 SamplingFreq = 1/TimeStep;
 
 %Get frequencies in Hz
@@ -26,6 +27,5 @@ SamplingFreq = SamplingFreq*1e6;
 
 %Apply low-pass filter
 [FilteredSignal] = winlowpass(Signal,PassBandFreq,SamplingFreq);
-FilteredSignal = FilteredSignal/FilteredSignal(1);
 
 end

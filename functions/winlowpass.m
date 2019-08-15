@@ -58,9 +58,11 @@ FIRtransferFcn = IIRtransferFcn.*Window;
 %Apply FIR low-pass filter to the input signal
 [Signal,DelayedSignal] = filter(FIRtransferFcn,1,Signal);
 
+%Calculate FIR filter group delay
+Delay = (FilterOrder-1)/2;
+
 %Correct for FIR filter delay
 Signal = [Signal DelayedSignal'];
-[~,pos] = max(Signal);
-Signal = Signal(pos:pos+N-1);
+Signal = Signal(Delay+1:Delay+N);
 
 end
