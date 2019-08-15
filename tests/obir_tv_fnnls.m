@@ -26,7 +26,7 @@ else
 end
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-OptParam = 0.021;
+OptParam = 0.1;
 Result = obir(Signal,DistanceAxis,Kernel,'tv',RegMatrix,OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','axishandle',axhandle);
 
 RegResult = regularize(Signal,DistanceAxis,Kernel,RegMatrix,'tv',OptParam);

@@ -22,7 +22,7 @@ range = regparamrange(Kernel,RegMatrix);
 [RegParam] = selregparam(range,Signal,Kernel,RegMatrix,'aic','RegType','huber');
 
 TikhResult1 = regularize(Signal,DistanceAxis,Kernel,RegMatrix,'huber',RegParam,'Solver','fnnls');
-err(1) = any(abs(TikhResult1 - Distribution)>5e-2);
+err(1) = any(abs(TikhResult1 - Distribution)>7e-2);
 maxerr = max(abs(TikhResult1 - Distribution));
 
 err = any(err);
