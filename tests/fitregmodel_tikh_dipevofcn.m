@@ -19,7 +19,7 @@ RegParam = 0.1;
 RegMatrix = regoperator(Dimension,2);
 TikhResult1 = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 TikhResult2 = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','bppnnls');
-TikhResult3 = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','lsqnonneg','nonNegLSQsolTol',1e-25);
+TikhResult3 = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','lsqnonneg','TolFun',1e-25);
 
 err(1) = any(abs(TikhResult1 - Distribution)>1e-4);
 err(2) = any(abs(TikhResult2 - Distribution)>1e-4);

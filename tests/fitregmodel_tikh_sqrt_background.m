@@ -25,7 +25,7 @@ KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
 RegMatrix = regoperator(Dimension,2);
 TikhResult1 = fitregmodel(ClusterFcn,DistanceAxis,KernelB,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 TikhResult2 = fitregmodel(ClusterFcn,DistanceAxis,KernelB,RegMatrix,'tikhonov',RegParam,'Solver','bppnnls');
-TikhResult3 = fitregmodel(ClusterFcn,DistanceAxis,KernelB,RegMatrix,'tikhonov',RegParam,'Solver','lsqnonneg','nonNegLSQsolTol',1e-29);
+TikhResult3 = fitregmodel(ClusterFcn,DistanceAxis,KernelB,RegMatrix,'tikhonov',RegParam,'Solver','lsqnonneg','TolFun',1e-29);
 
 err(1) = any(abs(TikhResult1 - Distribution)>3e-3);
 err(2) = any(abs(TikhResult2 - Distribution)>3e-3);
