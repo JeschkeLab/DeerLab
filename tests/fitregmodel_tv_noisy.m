@@ -5,6 +5,7 @@ function [err,data,maxerr] = test(opt,olddata)
 %=======================================
 
 Dimension = 200;
+NoiseLevel = 0.01;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
@@ -13,25 +14,25 @@ Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
-Background = exp(-0.15*TimeAxis)';
-ClusterFcn = (DipEvoFcn + 5).*Background;
-Background = Background*(1-1/ClusterFcn(1));
-ClusterFcn = ClusterFcn/ClusterFcn(1);
-ClusterFcn = ClusterFcn./sqrt(Background);
+Noise = whitenoise(Dimension,NoiseLevel);
+Signal = DipEvoFcn + Noise;
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 0.005;
-RegMatrix = regoperator(Dimension,3);
-KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
-Result = regularize(ClusterFcn,DistanceAxis,KernelB,RegMatrix,'tv',RegParam,'Solver','fnnls');
+RegMatrix = regoperator(Dimension,2);
+RegParam = 0.001259;
+TikhResult1 = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,'tv',RegParam,'Solver','fmincon');
+err(1) = any(abs(TikhResult1 - Distribution)>1e-1);
+maxerr = max(abs(TikhResult1 - Distribution));
 
-err = any(abs(Result - Distribution)>1.5e-2);
-maxerr = max(abs(Result - Distribution));
-
+err = any(err);
 data = [];
 
 if opt.Display
  	figure(8),clf
+    subplot(121)
+    hold on
+    plot(TimeAxis,Signal)
+    plot(TimeAxis,Kernel*TikhResult1)
+    subplot(122)
     hold on
     plot(DistanceAxis,Distribution,'k') 
     plot(DistanceAxis,TikhResult1,'r')

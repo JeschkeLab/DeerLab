@@ -1,11 +1,11 @@
 function [err,data,maxerr] = test(opt,olddata)
 
-%=======================================
-% Check Tikhonov regularization
-%=======================================
+clear regularize
 
-Dimension = 200;
-NoiseLevel = 0.01;
+%=======================================
+% Check TV regularization
+%=======================================
+Dimension = 80;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
@@ -14,30 +14,23 @@ Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
-Noise = whitenoise(Dimension,NoiseLevel);
-Signal = DipEvoFcn + Noise;
 
+%Set optimal regularization parameter (found numerically lambda=0.005)
+RegParam = 0.001;
 RegMatrix = regoperator(Dimension,2);
-range = regparamrange(Kernel,RegMatrix);
-RegParam = selregparam(range,Signal,Kernel,RegMatrix,'aicc');
+Result = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'huber',RegParam,'Solver','fnnls','HuberParam',1.35);
 
-TikhResult1 = regularize(Signal,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
-err(1) = any(abs(TikhResult1 - Distribution)>6e-2);
-maxerr = max(abs(TikhResult1 - Distribution));
-
+error = abs(Result - Distribution);
+err(1) = any(error>1e-2);
+maxerr = max(error);
 err = any(err);
 data = [];
 
 if opt.Display
  	figure(8),clf
-    subplot(121)
-    hold on
-    plot(TimeAxis,Signal)
-    plot(TimeAxis,Kernel*TikhResult1)
-    subplot(122)
     hold on
     plot(DistanceAxis,Distribution,'k') 
-    plot(DistanceAxis,TikhResult1,'r')
+    plot(DistanceAxis,Result,'r')
 end
 
 end

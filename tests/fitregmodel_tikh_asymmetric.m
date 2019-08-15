@@ -19,7 +19,7 @@ RegMatrix = regoperator(Ndist,2);
 RegParamRange = regparamrange(Kernel,RegMatrix);
 RegParam = selregparam(RegParamRange,DipEvoFcn,Kernel,RegMatrix,'aic');
 
-TikhResult = regularize(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+TikhResult = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 
 
 err(1) = any(abs(TikhResult - Distribution)>3e-3);

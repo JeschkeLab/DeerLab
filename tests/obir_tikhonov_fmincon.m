@@ -30,7 +30,7 @@ end
 RegParam = 40;
 Result = obir(Signal,DistanceAxis,Kernel,'tikhonov',RegMatrix,RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fmincon','axishandle',axhandle);
 
-RegResult = regularize(Signal,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam);
+RegResult = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam);
 
 err = norm(Result - Distribution) > norm(RegResult - Distribution);
 maxerr = norm(Result - Distribution);

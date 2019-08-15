@@ -1,11 +1,10 @@
 function [err,data,maxerr] = test(opt,olddata)
 
-clear regularize
+%=======================================
+% Check Tikhonov regularization
+%=======================================
 
-%=======================================
-% Check TV regularization
-%=======================================
-Dimension = 80;
+Dimension = 200;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
@@ -14,16 +13,20 @@ Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
+Background = exp(-0.15*TimeAxis)';
+ClusterFcn = (DipEvoFcn + 5).*Background;
+Background = Background*(1-1/ClusterFcn(1));
+ClusterFcn = ClusterFcn/ClusterFcn(1);
 
-%Set optimal regularization parameter (found numerically lambda=0.005)
-RegParam = 0.001;
-RegMatrix = regoperator(Dimension,2);
-Result = regularize(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'huber',RegParam,'Solver','fmincon','HuberParam',1.35);
+%Set optimal regularization parameter (found numerically lambda=0.13)
+RegParam = 0.0005;
+RegMatrix = regoperator(Dimension,3);
+KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','full');
+Result = fitregmodel(ClusterFcn,DistanceAxis,KernelB,RegMatrix,'tv',RegParam,'Solver','fnnls');
 
 error = abs(Result - Distribution);
-err(1) = any(error>6e-2);
+err(1) = any(error > 1.5e-2);
 maxerr = max(error);
-err = any(err);
 data = [];
 
 if opt.Display

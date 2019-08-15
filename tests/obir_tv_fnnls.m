@@ -29,7 +29,7 @@ end
 OptParam = 0.1;
 Result = obir(Signal,DistanceAxis,Kernel,'tv',RegMatrix,OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','axishandle',axhandle);
 
-RegResult = regularize(Signal,DistanceAxis,Kernel,RegMatrix,'tv',OptParam);
+RegResult = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,'tv',OptParam);
 
 err = norm(Result - Distribution) > norm(RegResult - Distribution);
 maxerr = norm(Result - Distribution);

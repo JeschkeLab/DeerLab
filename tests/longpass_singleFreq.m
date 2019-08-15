@@ -23,7 +23,7 @@ Filtered = Filtered/max(Filtered);
 L = regoperator(Dimension,2);
 RegParam = regparamrange(Kernel,L);
 RegParam2 = selregparam(RegParam,Filtered,Kernel,L,'gml');
-Result = regularize(Filtered,DistanceAxis,Kernel,L,'tikhonov',RegParam2,'Solver','fnnls');
+Result = fitregmodel(Filtered,DistanceAxis,Kernel,L,'tikhonov',RegParam2,'Solver','fnnls');
 
 error = abs(Result - Distribution);
 err(1) = any(error>3e-1);
@@ -36,7 +36,7 @@ if opt.Display
     subplot(122),hold on
     plot(DistanceAxis,Distribution)
     plot(DistanceAxis,Result)
-    Result = regularize(Signal,DistanceAxis,Kernel,L,'tikhonov',RegParam2,'Solver','fnnls');
+    Result = fitregmodel(Signal,DistanceAxis,Kernel,L,'tikhonov',RegParam2,'Solver','fnnls');
     plot(DistanceAxis,Result)
     subplot(121),hold on
     plot(TimeAxis,DipEvoFcn)

@@ -5,6 +5,7 @@ function [err,data,maxerr] = test(opt,olddata)
 %=======================================
 
 Dimension = 200;
+NoiseLevel = 0.01;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
@@ -13,24 +14,30 @@ Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
+Noise = whitenoise(Dimension,NoiseLevel);
+Signal = DipEvoFcn + Noise;
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 1e-3;
-RegMatrix = regoperator(Dimension,3);
-TikhResult1 = regularize(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tv',RegParam,'Solver','fnnls');
+RegMatrix = regoperator(Dimension,2);
+range = regparamrange(Kernel,RegMatrix);
+RegParam = selregparam(range,Signal,Kernel,RegMatrix,'aicc');
 
-err = any(abs(TikhResult1 - Distribution)>2e-2);
-
+TikhResult1 = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+err(1) = any(abs(TikhResult1 - Distribution)>6e-2);
 maxerr = max(abs(TikhResult1 - Distribution));
 
+err = any(err);
 data = [];
 
 if opt.Display
  	figure(8),clf
+    subplot(121)
+    hold on
+    plot(TimeAxis,Signal)
+    plot(TimeAxis,Kernel*TikhResult1)
+    subplot(122)
     hold on
     plot(DistanceAxis,Distribution,'k') 
     plot(DistanceAxis,TikhResult1,'r')
-    axis tight
 end
 
 end

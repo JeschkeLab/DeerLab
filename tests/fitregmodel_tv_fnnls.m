@@ -13,23 +13,23 @@ Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
-Noise = whitenoise(Dimension,0.02);
+
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 0.1;
+RegParam = 1e-3;
 RegMatrix = regoperator(Dimension,3);
-Resultfnnls = regularize(DipEvoFcn+Noise,DistanceAxis,Kernel,RegMatrix,'tv',RegParam,'Solver','fnnls');
+TikhResult1 = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tv',RegParam,'Solver','fnnls');
 
-err = any(abs(Resultfnnls - Distribution)>9e-2);
+err = any(abs(TikhResult1 - Distribution)>2e-2);
 
-maxerr = max(abs(Resultfnnls - Distribution));
+maxerr = max(abs(TikhResult1 - Distribution));
 
 data = [];
 
 if opt.Display
  	figure(8),clf
     hold on
-    plot(DistanceAxis,Distribution,'k')
-    plot(DistanceAxis,Resultfnnls,'b') 
+    plot(DistanceAxis,Distribution,'k') 
+    plot(DistanceAxis,TikhResult1,'r')
     axis tight
 end
 

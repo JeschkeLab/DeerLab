@@ -13,27 +13,24 @@ Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
-Background = exp(-0.15*TimeAxis)';
-ClusterFcn = (DipEvoFcn + 5).*Background;
-Background = Background*(1-1/ClusterFcn(1));
-ClusterFcn = ClusterFcn/ClusterFcn(1);
-
+Noise = whitenoise(Dimension,0.02);
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 0.0005;
+RegParam = 0.1;
 RegMatrix = regoperator(Dimension,3);
-KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','full');
-Result = regularize(ClusterFcn,DistanceAxis,KernelB,RegMatrix,'tv',RegParam,'Solver','fnnls');
+Resultfnnls = fitregmodel(DipEvoFcn+Noise,DistanceAxis,Kernel,RegMatrix,'tv',RegParam,'Solver','fnnls');
 
-error = abs(Result - Distribution);
-err(1) = any(error > 1.5e-2);
-maxerr = max(error);
+err = any(abs(Resultfnnls - Distribution)>9e-2);
+
+maxerr = max(abs(Resultfnnls - Distribution));
+
 data = [];
 
 if opt.Display
  	figure(8),clf
     hold on
-    plot(DistanceAxis,Distribution,'k') 
-    plot(DistanceAxis,Result,'r')
+    plot(DistanceAxis,Distribution,'k')
+    plot(DistanceAxis,Resultfnnls,'b') 
+    axis tight
 end
 
 end

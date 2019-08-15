@@ -31,7 +31,7 @@ end
 
 Result = obir(Signal,DistanceAxis,Kernel,'huber',RegMatrix,OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Huberparam',OptHuber,'axishandle',axhandle);
 
-RegResult = regularize(Signal,DistanceAxis,Kernel,RegMatrix,'huber',OptParam);
+RegResult = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,'huber',OptParam);
 
 err = norm(Result - Distribution) > norm(RegResult - Distribution);
 maxerr = norm(Result - Distribution);

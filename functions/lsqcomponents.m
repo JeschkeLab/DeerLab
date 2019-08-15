@@ -28,7 +28,7 @@ for i=1:nSignals
 end
 
 %Compute then the LSQ components needed by NNLS optimizers
-switch RegType
+switch lower(RegType)
     
     case 'tikhonov'
         Q = GramMatrix + RegParam^2*(RegMatrix.'*RegMatrix);

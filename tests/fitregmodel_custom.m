@@ -14,14 +14,16 @@ Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 40;
-RegMatrix = regoperator(Dimension,2);
-Result = regularize(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fmincon');
 
-err(1) = any(abs(Result - Distribution)>5e-1);
+%Set optimal regularization parameter (found numerically lambda=0.13)
+RegParam = 0.02;
+RegMatrix = regoperator(Dimension,3);
+RegFunctional = @(Dist)(1/2*norm(Kernel*Dist - DipEvoFcn)^2 + RegParam^2*max(RegMatrix*Dist)^2);
+Result = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,RegFunctional,RegParam,'Solver','fmincon');
+
+err = any(abs(Result - Distribution)>1e-1);
 maxerr = max(abs(Result - Distribution));
-err = any(err);
+
 data = [];
 
 if opt.Display

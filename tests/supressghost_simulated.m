@@ -58,9 +58,9 @@ Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 % Kernel = Kernel/mean(diff(DistanceAxis));
 RegMatrix = regoperator(Dimension,2);
 RegParam = 4;
-Dist2 = regularize(Dip2,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
-Dist3 = regularize(Dip3,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
-DistrTest = regularize(signal,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+Dist2 = fitregmodel(Dip2,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+Dist3 = fitregmodel(Dip3,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+DistrTest = fitregmodel(signal,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 
 err(1) = any(abs(DistrTest - Dist3)>3e-1);
 err(2) = any(abs(DistrTest - Dist2)>3e-1);

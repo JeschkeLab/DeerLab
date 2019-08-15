@@ -13,7 +13,7 @@ end
 %Get weights of different signals for global fitting
 weights = globalweights(Signal);
 
-switch Method
+switch lower(Method)
     case 'tv'
         functionHandle = @(Distribution)TVfunctional(Signal,Distribution,RegMatrix,Kernel,RegularizationParameter,weights);
     case 'tikhonov'

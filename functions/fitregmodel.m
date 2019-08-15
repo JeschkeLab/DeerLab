@@ -1,4 +1,4 @@
-function Distribution = regularize(Signal,DistanceAxis,Kernel,RegMatrix,RegType,RegParam,varargin)
+function Distribution = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,RegType,RegParam,varargin)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -44,7 +44,7 @@ if isempty(Solver)
     Solver = 'fnnls';
 else
     validateattributes(Solver,{'char'},{'nonempty'})
-    allowedInput = {'fnnls','lsqnonneg','bppnnls','fmincon'};
+    allowedInput = {'analytical','fnnls','lsqnonneg','bppnnls','fmincon'};
     validatestring(Solver,allowedInput);
 end
 
@@ -119,7 +119,7 @@ dr = mean(diff(DistanceAxis));
 
 %If unconstrained regularization is requested then solve analytically
 if ~NonNegConstrained && ~strcmp(Solver,'fmincon')
-    Solver = 'analyticalSolution';
+    Solver = 'analytical';
 end
 
 %If using LSQ-based solvers then precompute the KtK and KtS input arguments
@@ -127,9 +127,9 @@ if ~strcmp(Solver,'fmincon')
     [Q,KtS,weights] =  lsqcomponents(Signal,Kernel,RegMatrix,RegParam,RegType,HuberParam);
 end
 
-switch Solver
+switch lower(Solver)
     
-    case 'analyticalSolution'
+    case 'analytical'
         Distribution = zeros(Dimension,1);
         for i=1:length(Signal)
         PseudoInverse = Q\Kernel{i}.';
