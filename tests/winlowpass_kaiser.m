@@ -9,8 +9,10 @@ signal = exp(-5e7*t).*(cos(2*pi*nu1*t));
 sampl = 1/2*(1/dt);
 % ws  = 4e8;
 wp = 0.01e9;
+ws =  0.04e9;
 
-filteredSignal = winlowpass(signal,wp,sampl);
+
+filteredSignal = winlowpass(signal,ws,wp,sampl);
 
 spec = abs(fftshift(fft(signal,2*N)));
 filteredspec = abs(fftshift(fft(filteredSignal,2*N)));

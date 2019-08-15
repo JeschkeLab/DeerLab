@@ -12,6 +12,10 @@ if PassBand>SamplingRate
    error('Input pass band frequency cannot exceed the sampling rate.') 
 end
 
+if StopBand<PassBand
+    error('Stopband frequency must be larger than the passband frequency')
+end
+
 N = length(Signal);
 
 %Normalize frequencies
