@@ -8,7 +8,8 @@ end
 if iscolumn(TimeAxis)
    TimeAxis = TimeAxis'; 
 end
-validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing','nonnegative'},'TimeAxis')
+validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing'},'TimeAxis')
+TimeAxis = abs(TimeAxis);
 
 %--------------------------------------------------------------------------
 %Memoization
@@ -52,18 +53,17 @@ S = fresnelS(kappa);
 
 %Compute dipolar kernel
 Base = sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
-Base(:,1) = 1; 
+Base(isnan(Base)) = 1; 
 
 %If given, account for limited excitation bandwidth
 if ~isempty(ExcitationBandwidth)
     Base = exp(-wdd'.^2/ExcitationBandwidth^2)'.*Base;
 end
 
-Base = Base*mean(diff(FreqAxis));
+Base = Base*mean(abs(diff(FreqAxis)));
 
 %Normalize with respect to dipolar evolution time
 for k=1:FreqDimension % normalize kernel traces to value at time origin
-  Base(k,:) = Base(k,:)./Base(k,1);
   NormalizationFactor(k) = sum(Base(k,:).*Base(k,:).*TimeAxis); % compute normalization constant, eqn [19]
 end
 

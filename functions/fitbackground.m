@@ -33,7 +33,8 @@ if iscolumn(FitTimeAxis)
     FitTimeAxis = FitTimeAxis';
 end
 validateattributes(FitData,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
-validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mfilename,'TimeAxis')
+validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','increasing'},mfilename,'TimeAxis')
+TimeAxis = abs(TimeAxis);
 
 %--------------------------------------------------------------------------
 %Memoization

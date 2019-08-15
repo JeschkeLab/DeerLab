@@ -16,4 +16,15 @@ err = any(abs(kernelOut - kernel)>7e-3);
 maxerr = max(max(abs(kernelOut - kernel)));
 data = [];
 
+
+if opt.Display
+    figure(8),clf
+    subplot(121)
+    imagesc(kernelOut)
+    subplot(122)
+    hold on
+%     plot(TimeAxis,kernel(:,5))
+    plot(TimeAxis,kernelOut(:,5))
+end
+
 end

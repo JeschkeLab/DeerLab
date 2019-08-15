@@ -119,7 +119,7 @@ for OvertoneIdx=1:length(OvertoneCoeffs)
             %----------------------------------------------------------
             %Pre-allocate cosine of powder angles
             costheta = linspace(0,1,Knots);
-            %Sweep through all distances 
+            %Sweep through all distances
             for DistanceIndex = 1:length(DistanceAxis)
                 KernelTrace = 0;
                 for theta = 1:Knots % average over cos(theta) angle (powder average)
@@ -141,19 +141,18 @@ for OvertoneIdx=1:length(OvertoneCoeffs)
             S = fresnelS(kappa);
             Kernel = Kernel + OvertoneCoeffs(OvertoneIdx)*sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
             %Replace undefined Fresnel NaN value at time zero
-            Kernel(BckgStart,:) = 1;
+            Kernel(isnan(Kernel)) = 1;
     end
 end
-
-Kernel = Kernel./Kernel(BckgStart,:);
-
 
 %If given, account for limited excitation bandwidth
 if ~isempty(ExcitationBandwidth)
     Kernel = exp(-wdd'.^2/ExcitationBandwidth^2).*Kernel;
 end
 
-
+if strcmp(KernelCalcMethod,'explicit')
+    Kernel = Kernel./Kernel(BckgStart,:);
+end
 
 % Build the background into the kernel
 %----------------------------------------------------------

@@ -11,10 +11,11 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*(N-1),N);
 Kernel = aptkernel(TimeAxis);
 
-
-Base = Kernel.Base;
-NormFactor = Kernel.NormalizationFactor;
 FreqAxis = Kernel.FreqAxis;
+Base = Kernel.Base;
+Base = Base/mean(abs(diff(FreqAxis)));
+NormFactor = Kernel.NormalizationFactor;
+NormFactor = NormFactor/(mean(abs(diff(FreqAxis))))^2;
 TimeAxis = Kernel.TimeAxis;
 CrossTalk = Kernel.Crosstalk;
 
