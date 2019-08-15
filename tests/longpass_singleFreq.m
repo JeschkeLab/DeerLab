@@ -18,8 +18,8 @@ EseemFreq = 52.04/(rESEEM^3);
 ESEEM = 0.5*(2 + exp(-7*TimeAxis).*cos(2*pi*EseemFreq*TimeAxis));
 Signal = DipEvoFcn.*ESEEM';
 
-Filtered = longpass(TimeAxis,Signal,2);
-Filtered = Filtered/max(Filtered);
+Filtered = longpass(TimeAxis,Signal,1.5);
+
 L = regoperator(Dimension,2);
 RegParam = regparamrange(Kernel,L);
 RegParam2 = selregparam(RegParam,Filtered,Kernel,L,'gml');

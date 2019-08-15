@@ -12,7 +12,8 @@ wp = 0.01e9;
 ws =  0.04e9;
 
 
-filteredSignal = winlowpass(signal,ws,wp,sampl);
+filteredSignal = winlowpass(signal,ws,wp,sampl,'ForwardBackward',true);
+filteredSignal = winlowpass(signal,ws,wp,sampl,'ForwardBackward',false);
 
 spec = abs(fftshift(fft(signal,2*N)));
 filteredspec = abs(fftshift(fft(filteredSignal,2*N)));
