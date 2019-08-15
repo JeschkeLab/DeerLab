@@ -1,5 +1,54 @@
-function [Kernel] = dipolarkernel(TimeAxis,DistanceAxis,Background,varargin)
+% 
+% DIPOLARKERNEL Computes the dipolar interaction kernel for the linear
+%              transformation from distance-domain to time-domain
+%
+%       K = DIPOLARKERNEL(T,R) Computes the NxM point kernel for the 
+%       trasnformation to the dipolar evolution function from the N-point 
+%       time axis T and M-point distance axis R.
+%
+%       K = DIPOLARKERNEL(T,R,B) Computes the kernel for the transformation
+%       to the form factor function with a N-point background B multiplied.
+%
+%       K = DIPOLARKERNEL(T,R,[],'Property1',Value1,...) Computes the kernel 
+%       for the transformation to the dipolar evolution function with the
+%       input background B with additional optional arguments.
+%
+%       K = DIPOLARKERNEL(T,R,B,'Property1',Value1,...) Computes the kernel
+%       for the transformation to the form factor function with a N-point
+%       background B multiplied and additional optional arguments.
+%
+% Optional arguments can be specified by parameter/value pairs. The allowed
+% properties to be passed as options can be set in any order. 
+%
+%   'KernelBType'   The way the background B is introduced into the kernel: 
+%                      'full' - as passed without change
+%                      'sqrt' - the sqrt of the background taken 
+%                      'none' - background is not included in the kernel
+%
+%   'ExcitationBandwidth'   Excitation bandwith of the pulses in MHz to be
+%                         used for limited bandwith excitation
+%
+%   'OvertoneCoeffs'    1D-Array of coefficients for correction of overtones
+%                       in RIDME signals
+%
+%   'gValue'    g-value of the spin centers
+%
+%   'KernelCalcMethod'  The way the kernel is computed numerically:
+%                       'fresnel' - uses Fresnel integrals for the kernel
+%                       'explicit' - powder average computed explicitly
+%
+%   'Knots' Number knots for the grid of powder orientations to be used
+%           in explicit kernel calculations    
+%
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+% 
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
 
+
+function [Kernel] = dipolarkernel(TimeAxis,DistanceAxis,Background,varargin)
 %--------------------------------------------------------------------------
 %Input parsing
 %--------------------------------------------------------------------------

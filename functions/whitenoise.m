@@ -1,10 +1,39 @@
+%
+% WHITENOISE Generate gaussian-distributed noise with uniform power
+%            spectrum distribution
+%
+%   X = WHITENOISE(N,LEVEL)
+%   Generates a N-point vector X of Gaussian distributed random noise. The
+%   standard deviation of the noise is determined by the LEVEL input
+%   argument.
+%
+%   X = WHITENOISE(N,LEVEL,SEED)
+%   A different random number generator seed (default = 2) can
+%   be passed as the SEED argument.
+%
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
 function ampnoise = whitenoise(N,level,seed)
 
+%Validate input
 if nargin<3
     seed  = 2;
 end
+validateattributes(N,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed'
+validateattributes(level,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed'
+validateattributes(seed,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed'
+
+%Fix the random number generator
 rng(seed);
+%Generate Gaussian noise
 noise = randn(N,1);
+%Increase amplitude of the noise vector until standard deviation matches
+%the requested noise level
 ampnoise = 0;
 amp = 0;
 while std(ampnoise)<level
