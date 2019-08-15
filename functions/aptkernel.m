@@ -1,3 +1,23 @@
+% 
+% APTKERNEL Computes the dipolar interaction kernel and elements required 
+%           for the approximate Pake transformation (APT).  
+%
+%       K = APTKERNEL(T) 
+%       Computes a structure K containing the (N/2-2)xN point kernel,
+%       the (N/2-2) point array of normalization factors, N/2-2) point
+%       frequency axis and the (N/2-2)x(N/2-2) crosstalk matrix corresponding
+%       to the N-point time axis T.
+%
+%       K = APTKERNEL(T,'ExitationBandwidth',W)
+%       The excitation bandwidth of the experiment can be passed as an
+%       option to account for it in the kernel.
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+% 
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
 function APTkernel = aptkernel(TimeAxis,varargin)
 
 %Check if user requested some options via name-value input
