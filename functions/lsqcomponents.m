@@ -1,4 +1,4 @@
-function [Q,KtS,weights] = lsqcomponents(Signal,Kernel,RegMatrix,RegParam,RegType,HuberParam)
+function [Q,KtS,weights] = lsqcomponents(Signal,Kernel,RegMatrix,RegParam,RegType,HuberParam,weights)
 
 %Ensure that signals and kernel are in a cell array
 if ~iscell(Signal)
@@ -11,7 +11,10 @@ end
 if nargin<6 || isempty(HuberParam)
    HuberParam = 1.35; 
 end
-
+%If Huber parameter not given, just use the default
+if nargin<7 
+    weights = [];
+end
 %Prepare
 nSignals = length(Signal);
 distDim = length(RegMatrix);
@@ -19,8 +22,9 @@ KtS = zeros(distDim,1);
 GramMatrix = zeros(distDim,distDim);
 
 %Get weights of different signals for global fitting
+if isempty(weights)
 weights = globalweights(Signal);
-
+end
 %Compute the terms depending on different signals
 for i=1:nSignals
     KtS = KtS + weights(i)*Kernel{i}.'*Signal{i};

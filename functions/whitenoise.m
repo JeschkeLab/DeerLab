@@ -24,9 +24,9 @@ function ampnoise = whitenoise(N,level,seed)
 if nargin<3
     seed  = 2;
 end
-validateattributes(N,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed'
-validateattributes(level,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed'
-validateattributes(seed,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed'
+validateattributes(N,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed')
+validateattributes(level,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed')
+validateattributes(seed,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed')
 
 %Fix the random number generator
 rng(seed);

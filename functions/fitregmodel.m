@@ -14,6 +14,11 @@
 %          'tv'       -   Total variation regularization
 %          'huber'    -   pseudo-Huber regularization
 %
+%   P = FITREGMODEL({S1,S2,...},R,{K1,K2,...},L,'type',ALPHA)
+%   Passing multiple signals/kernels enables global fitting of the
+%   regularization model to a single distribution. The global fit weights
+%   are automatically computed according to their contribution to ill-posedness.
+%
 %   K = FITREGMODEL(...,'Property',Values)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
@@ -28,6 +33,9 @@
 %   'NonNegConstrained' - Enable/disable non-negativity constraint (true/false)
 %
 %   'HuberParam' - Huber parameter used in the 'huber' model (default = 1.35).
+%
+%   'GlobalWeights' - Array of weighting coefficients for the individual signals in
+%                     global fitting regularization.
 %
 %   'TolFun' - Optimizer function tolerance
 %
@@ -77,7 +85,7 @@ end
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
 %Check if user requested some options via name-value input
-[TolFun,Solver,NonNegConstrained,MaxFunEvals,MaxIter,HuberParam] = parseoptional({'TolFun','Solver','NonNegConstrained','MaxFunEvals','MaxIter','HuberParam'},varargin);
+[TolFun,Solver,NonNegConstrained,MaxFunEvals,MaxIter,HuberParam,GlobalWeights] = parseoptional({'TolFun','Solver','NonNegConstrained','MaxFunEvals','MaxIter','HuberParam','GlobalWeights'},varargin);
 
 if isempty(TolFun)
     TolFun = 1e-9;
@@ -120,6 +128,15 @@ if ~iscell(Signal)
 end
 if ~iscell(Kernel)
     Kernel = {Kernel};
+end
+if ~isempty(GlobalWeights)
+    validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
+    if length(GlobalWeights) ~= length(Signal)
+        error('The same number of global fit weights as signals must be passed.')
+    end
+    if sum(GlobalWeights)~=1
+        error('The sum of the global fit weights must equal 1.')
+    end
 end
 if length(Kernel)~=length(Signal)
     error('The number of kernels and signals must be equal.')
@@ -168,9 +185,10 @@ end
 
 %If using LSQ-based solvers then precompute the KtK and KtS input arguments
 if ~strcmp(Solver,'fmincon')
-    [Q,KtS,weights] =  lsqcomponents(Signal,Kernel,RegMatrix,RegParam,RegType,HuberParam);
+    [Q,KtS,weights] =  lsqcomponents(Signal,Kernel,RegMatrix,RegParam,RegType,HuberParam,GlobalWeights);
 end
 
+%Solve the regularization functional minimization problem
 switch lower(Solver)
     
     case 'analytical'
