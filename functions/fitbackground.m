@@ -1,21 +1,21 @@
 %
 % FITBACKGROUND Fit the background function in a signal
 %
-%   [B,PARAM] = FITBACKGROUND(DATA,T,TFIT,'MODEL')
-%   Fits the the paramters PARAM of the N-point background function B. This
-%   is done by fitting the M-point DATA on a M-point axis TFIT using a
-%   model given by the string MODEL. The background is then extrapolated to
+%   [B,param] = FITBACKGROUND(S,t,tfit,'model')
+%   Fits the the paramters (param) of the N-point background function (B). This
+%   is done by fitting the M-point data (S) on a M-point axis (tfit) using a
+%   model given by the string ('model'). The background is then extrapolated to
 %   the N-point axis T.
 %
-%   [B,PARAM] = FITBACKGROUND(DATA,T,TFIT,'polynomial',ORDER)
-%   For polynomial function fitting, the order of the polynomial can be
+%   [B,param] = FITBACKGROUND(S,t,tfit,'polynomial',order)
+%   For polynomial function fitting, the (order) of the polynomial can be
 %   passed as an additional input argument.
 %
-%   [B,PARAM] = FITBACKGROUND(DATA,T,TFIT,@MODEL)
+%   [B,param] = FITBACKGROUND(S,t,tfit,@model)
 %   User-defined models can be fittid by passing a function handle instead
 %   of a model name. 
 %
-% The pre-defined models in FITBACKGROUND defined by the MODEL string
+% The pre-defined models in FITBACKGROUND defined by the 'model' string
 % argument are the following:
 %
 %       'exponential' - exponential function where the decay rate if fitted
@@ -28,10 +28,10 @@
 %
 %       'polynomial' - polynomial function of order as given as an input
 %
-% To pass user-defined models, the MODEL argument must be a function handle
+% To pass user-defined models, the @model argument must be a function handle
 % to a function accepting two input arguments as follows
-%       function myModel(AXIS,PARAM), ..., end
-% where PARAM is an array containing the parameter of the model. Some of
+%       function myModel(t,param), ..., end
+% where (param) is an array containing the parameter of the model. Some of
 % these models include the strexp(), sumstrexp(), prodstrexp() models
 % distibuted in DeerAnalysis2.
 %

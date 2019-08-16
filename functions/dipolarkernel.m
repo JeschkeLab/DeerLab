@@ -2,11 +2,11 @@
 % DIPOLARKERNEL Computes the dipolar interaction kernel for the linear
 %              transformation from distance-domain to time-domain
 %
-%       K = DIPOLARKERNEL(T,R) Computes the NxM point kernel for the 
+%       K = DIPOLARKERNEL(t,r) Computes the NxM point kernel for the 
 %       trasnformation to the dipolar evolution function from the N-point 
-%       time axis T and M-point distance axis R.
+%       time axis (t) and M-point distance axis (r).
 %
-%       K = DIPOLARKERNEL(T,R,B) Computes the kernel for the transformation
+%       K = DIPOLARKERNEL(t,r,B) Computes the kernel for the transformation
 %       to the form factor function with a N-point background B multiplied.
 %
 %       K = DIPOLARKERNEL(T,R,[],'Property1',Value1,...) Computes the kernel 

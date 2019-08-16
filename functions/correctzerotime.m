@@ -1,17 +1,19 @@
 %
 % CORRECTZEROTIME Zero-time correction of dipolar spectroscopy signals
 %
-%   CT = CORRECTZEROTIME(S,T)
-%   Determines the zero time of a dipolar evolution function and corrects
-%   the time axis T in ns/us for it. If input signal is in ns/us it will be
-%   returned in ns/us.
+%   ct = CORRECTZEROTIME(S,t)
+%   Determines the zero time of a dipolar signal (S) and corrects
+%   the time axis (t) in ns/us for it. If input signal (S) is in ns/us 
+%   it will be returned in ns/us.
 %
-%   CT = CORRECTZEROTIME(S,M,T0)
-%   Corrects the time axis for a given zero-time T0  in ns/us ;
+%   ct = CORRECTZEROTIME(S,t,zt)
+%   Corrects the time axis (t) for a given zero-time (zt) in ns/us ;
 %
-%   [CT,ZT,ZTPOS] = CORRECTZEROTIME(S,T)
-%   Returns the corrected time axis CT, the zero-time ZT in ns/us and the 
-%   zero-time array index ZTPOS. 
+%   [ct,zt,pos] = CORRECTZEROTIME(S,t)
+%   Returns the corrected time axis (zt), the zero-time (zt) in ns/us and the 
+%   zero-time array index (pos). 
+%
+% Adapted from Gunnar Jeschke, DeerAnalysis 2018
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 %
