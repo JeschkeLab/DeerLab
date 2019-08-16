@@ -13,7 +13,7 @@ Filtered = longpass(TimeAxis,DipEvoFcn,2);
 L = regoperator(Dimension,2);
 RegParam = regparamrange(Kernel,L);
 RegParam2 = selregparam(RegParam,Filtered,Kernel,L,'aic');
-Result = fitregmodel(Filtered,DistanceAxis,Kernel,L,'tikhonov',RegParam2,'Solver','fnnls');
+Result = fitregmodel(Filtered,Kernel,DistanceAxis,L,'tikhonov',RegParam2,'Solver','fnnls');
 
 error = abs(Result - Distribution);
 err(1) = any(error>3e-1);

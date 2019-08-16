@@ -28,8 +28,8 @@ else
     axhandle = [];
 end
 
-Result = obir(Signal,DistanceAxis,Kernel,'tikhonov',RegMatrix,RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Axishandle',axhandle);
-RegResult = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam);
+Result = obir(Signal,Kernel,DistanceAxis,'tikhonov',RegMatrix,RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Axishandle',axhandle);
+RegResult = fitregmodel(Signal,Kernel,DistanceAxis,RegMatrix,'tikhonov',RegParam);
 
 err = norm(Result - Distribution) > norm(RegResult - Distribution);
 maxerr = norm(Result - Distribution);

@@ -29,9 +29,9 @@ else
     axhandle = [];
 end
 
-Result = obir(Signal,DistanceAxis,Kernel,'huber',RegMatrix,OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Huberparam',OptHuber,'axishandle',axhandle);
+Result = obir(Signal,Kernel,DistanceAxis,'huber',RegMatrix,OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Huberparam',OptHuber,'axishandle',axhandle);
 
-RegResult = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,'huber',OptParam);
+RegResult = fitregmodel(Signal,Kernel,DistanceAxis,RegMatrix,'huber',OptParam);
 
 err = norm(Result - Distribution) > norm(RegResult - Distribution);
 maxerr = norm(Result - Distribution);

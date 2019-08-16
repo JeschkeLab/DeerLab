@@ -21,7 +21,7 @@ RegMatrix = regoperator(Dimension,2);
 range = regparamrange(Kernel,RegMatrix);
 RegParam = selregparam(range,Signal,Kernel,RegMatrix,'aicc');
 
-TikhResult1 = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+TikhResult1 = fitregmodel(Signal,Kernel,DistanceAxis,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 err(1) = any(abs(TikhResult1 - Distribution)>6e-2);
 maxerr = max(abs(TikhResult1 - Distribution));
 

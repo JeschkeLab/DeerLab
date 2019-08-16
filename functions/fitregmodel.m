@@ -2,11 +2,11 @@
 % FITREGMODEL Fits a distance distribution to one (or several) signals
 %            by optimization of a regularization functional model.
 %
-%   P = FITREGMODEL(S,R,K,L,'type',ALPHA)
-%   Regularization of the N-point signal S to a M-point distance
-%   distribution P given a M-point distance axis R and NxM point kernel
-%   K. The (M-2)xM point regularization matrix L and regularization
-%   parameter ALPHA control the regularization properties.
+%   P = FITREGMODEL(S,K,r,L,'type',alpha)
+%   Regularization of the N-point signal (S) to a M-point distance
+%   distribution (P) given a M-point distance axis (r) and NxM point kernel
+%   (K). The (M-2)xM point regularization matrix (L) and regularization
+%   parameter (alpha) control the regularization properties.
 %
 %   The type of regularization employed in FITREGMODEL is set by the 'type'
 %   input argument. The regularization models implemented in FITREGMODEL are:
@@ -14,7 +14,7 @@
 %          'tv'       -   Total variation regularization
 %          'huber'    -   pseudo-Huber regularization
 %
-%   P = FITREGMODEL({S1,S2,...},R,{K1,K2,...},L,'type',ALPHA)
+%   P = FITREGMODEL({S1,S2,...},{K1,K2,...},r,L,'type',alpha)
 %   Passing multiple signals/kernels enables global fitting of the
 %   regularization model to a single distribution. The global fit weights
 %   are automatically computed according to their contribution to ill-posedness.
@@ -50,7 +50,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function Distribution = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,RegType,RegParam,varargin)
+function Distribution = fitregmodel(Signal,Kernel,DistanceAxis,RegMatrix,RegType,RegParam,varargin)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input

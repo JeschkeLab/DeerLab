@@ -38,10 +38,10 @@ regparam = 10;
 Signals = {Signal1,Signal2,Signal3};
 Kernels = {Kernel1,Kernel2,Kernel3};
 
-Result = fitregmodel(Signals,DistanceAxis,Kernels,L,'tv',regparam,'Solver','fnnls');
-Dist1 = fitregmodel(Signal1,DistanceAxis,Kernel1,L,'tv',regparam,'Solver','fnnls');
-Dist2 = fitregmodel(Signal2,DistanceAxis,Kernel2,L,'tv',regparam,'Solver','fnnls');
-Dist3 = fitregmodel(Signal3,DistanceAxis,Kernel3,L,'tv',regparam,'Solver','fnnls');
+Result = fitregmodel(Signals,Kernels,DistanceAxis,L,'tv',regparam,'Solver','fnnls');
+Dist1 = fitregmodel(Signal1,Kernel1,DistanceAxis,L,'tv',regparam,'Solver','fnnls');
+Dist2 = fitregmodel(Signal2,Kernel2,DistanceAxis,L,'tv',regparam,'Solver','fnnls');
+Dist3 = fitregmodel(Signal3,Kernel3,DistanceAxis,L,'tv',regparam,'Solver','fnnls');
 
 normResult = norm(Distribution - Result);
 norm1 = norm(Distribution - Dist1);

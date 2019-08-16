@@ -19,7 +19,7 @@ Signal = DipEvoFcn + Noise;
 
 RegMatrix = regoperator(Dimension,2);
 RegParam = 0.001259;
-TikhResult1 = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,'tv',RegParam,'Solver','fmincon');
+TikhResult1 = fitregmodel(Signal,Kernel,DistanceAxis,RegMatrix,'tv',RegParam,'Solver','fmincon');
 err(1) = any(abs(TikhResult1 - Distribution)>1e-1);
 maxerr = max(abs(TikhResult1 - Distribution));
 

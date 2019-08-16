@@ -38,10 +38,10 @@ regparam = 2;
 Signals = {Signal1,Signal2,Signal3};
 Kernels = {Kernel1,Kernel2,Kernel3};
 
-Result = fitregmodel(Signals,DistanceAxis,Kernels,L,'tikhonov',regparam,'Solver','fnnls');
-Dist1 = fitregmodel(Signal1,DistanceAxis,Kernel1,L,'tikhonov',regparam,'Solver','fnnls');
-Dist2 = fitregmodel(Signal2,DistanceAxis,Kernel2,L,'tikhonov',regparam,'Solver','fnnls');
-Dist3 = fitregmodel(Signal3,DistanceAxis,Kernel3,L,'tikhonov',regparam,'Solver','fnnls');
+Result = fitregmodel(Signals,Kernels,DistanceAxis,L,'tikhonov',regparam,'Solver','fnnls');
+Dist1 = fitregmodel(Signal1,Kernel1,DistanceAxis,L,'tikhonov',regparam,'Solver','fnnls');
+Dist2 = fitregmodel(Signal2,Kernel2,DistanceAxis,L,'tikhonov',regparam,'Solver','fnnls');
+Dist3 = fitregmodel(Signal3,Kernel3,DistanceAxis,L,'tikhonov',regparam,'Solver','fnnls');
 
 normResult = norm(Distribution - Result);
 norm1 = norm(Distribution - Dist1);

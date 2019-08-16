@@ -22,7 +22,7 @@ ClusterFcn = ClusterFcn/ClusterFcn(1);
 RegParam = 0.0005;
 RegMatrix = regoperator(Dimension,3);
 KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','full');
-Result = fitregmodel(ClusterFcn,DistanceAxis,KernelB,RegMatrix,'tv',RegParam,'Solver','fnnls');
+Result = fitregmodel(ClusterFcn,KernelB,DistanceAxis,RegMatrix,'tv',RegParam,'Solver','fnnls');
 
 error = abs(Result - Distribution);
 err(1) = any(error > 1.5e-2);

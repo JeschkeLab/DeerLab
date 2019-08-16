@@ -16,7 +16,7 @@ DipEvoFcn = Kernel*Distribution;
 %Set optimal regularization parameter (found numerically lambda=0.005)
 RegParam = 0.005;
 RegMatrix = regoperator(Dimension,3);
-TVResult1 = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tv',RegParam,'Solver','fmincon');
+TVResult1 = fitregmodel(DipEvoFcn,Kernel,DistanceAxis,RegMatrix,'tv',RegParam,'Solver','fmincon');
 
 error = abs(TVResult1 - Distribution);
 err(1) = any(error>5e-2);

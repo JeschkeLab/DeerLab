@@ -9,7 +9,7 @@ V = V + whitenoise(300,0.02);
 V = V/max(V);
 L = regoperator(300,2);
 alpha = 2;
-Pfit = fitregmodel(V,r,K,L,'tikhonov',alpha);
+Pfit = fitregmodel(V,K,r,L,'tikhonov',alpha);
 
 error = abs(Pfit - P);
 err = any(error>7e-2);

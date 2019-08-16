@@ -38,7 +38,7 @@ regparam = 2;
 Signals = {Signal1,Signal2,Signal3};
 Kernels = {Kernel1,Kernel2,Kernel3};
 
-Result = fitregmodel(Signals,DistanceAxis,Kernels,L,'tikhonov',regparam,'Solver','fnnls','GlobalWeights',[0.4 0.5 0.1]);
+Result = fitregmodel(Signals,Kernels,DistanceAxis,L,'tikhonov',regparam,'Solver','fnnls','GlobalWeights',[0.4 0.5 0.1]);
 
 err = any(isnan(Result));
 err = any(err);

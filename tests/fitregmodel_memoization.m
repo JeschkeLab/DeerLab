@@ -17,11 +17,11 @@ DipEvoFcn = Kernel*Distribution;
 RegParam = 100;
 
 tic
-preDist = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+preDist = fitregmodel(DipEvoFcn,Kernel,DistanceAxis,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 precached = toc;
 
 tic
-postDist = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+postDist = fitregmodel(DipEvoFcn,Kernel,DistanceAxis,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 postcached = toc;
 
 err(1) = postcached>=precached/4;

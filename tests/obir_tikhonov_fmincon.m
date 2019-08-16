@@ -28,9 +28,9 @@ end
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 40;
-Result = obir(Signal,DistanceAxis,Kernel,'tikhonov',RegMatrix,RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fmincon','axishandle',axhandle);
+Result = obir(Signal,Kernel,DistanceAxis,'tikhonov',RegMatrix,RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fmincon','axishandle',axhandle);
 
-RegResult = fitregmodel(Signal,DistanceAxis,Kernel,RegMatrix,'tikhonov',RegParam);
+RegResult = fitregmodel(Signal,Kernel,DistanceAxis,RegMatrix,'tikhonov',RegParam);
 
 err = norm(Result - Distribution) > norm(RegResult - Distribution);
 maxerr = norm(Result - Distribution);

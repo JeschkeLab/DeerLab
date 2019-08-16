@@ -17,7 +17,7 @@ Noise = whitenoise(Dimension,0.02);
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.1;
 RegMatrix = regoperator(Dimension,3);
-Resultfnnls = fitregmodel(DipEvoFcn+Noise,DistanceAxis,Kernel,RegMatrix,'tv',RegParam,'Solver','fnnls');
+Resultfnnls = fitregmodel(DipEvoFcn+Noise,Kernel,DistanceAxis,RegMatrix,'tv',RegParam,'Solver','fnnls');
 
 err = any(abs(Resultfnnls - Distribution)>9e-2);
 

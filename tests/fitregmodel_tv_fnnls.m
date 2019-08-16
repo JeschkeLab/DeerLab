@@ -17,7 +17,7 @@ DipEvoFcn = Kernel*Distribution;
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 1e-3;
 RegMatrix = regoperator(Dimension,3);
-TikhResult1 = fitregmodel(DipEvoFcn,DistanceAxis,Kernel,RegMatrix,'tv',RegParam,'Solver','fnnls');
+TikhResult1 = fitregmodel(DipEvoFcn,Kernel,DistanceAxis,RegMatrix,'tv',RegParam,'Solver','fnnls');
 
 err = any(abs(TikhResult1 - Distribution)>2e-2);
 
