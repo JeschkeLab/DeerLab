@@ -1,5 +1,9 @@
 function [err,data,maxerr] = test(opt,olddata)
 
+currentpath = pwd;
+cd(fileparts(mfilename('fullpath')))
+cd ../functions/private
+
 
 cachedData =  java.util.LinkedHashMap;
 
@@ -23,6 +27,6 @@ err = any(err);
 data = [];
 maxerr = [];
 
-
+cd(currentpath)
 
 end
