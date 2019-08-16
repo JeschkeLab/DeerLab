@@ -36,16 +36,13 @@ maxerr = max(abs(fit3 - bckg3));
 data = [];
 
 if opt.Display
-  figure,clf
+  figure(8),clf
   subplot(131)
   plot(t,bckg,t,fit)
-  title(sprintf('k = %.3f (0.5) d = %.3f (3)',results.DecayRate,results.FractalDimension))
   subplot(132)
   plot(t,bckg2,t,fit2)
-  title(sprintf('k = %.3f (1) d = %.3f (2)',results2.DecayRate,results2.FractalDimension))
   subplot(133)
   plot(t,bckg3,t,fit3)
-  title(sprintf('k = %.3f (1.5) d = %.3f (4)',results3.DecayRate,results3.FractalDimension))
 end
 
 end

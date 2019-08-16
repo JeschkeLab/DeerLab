@@ -23,16 +23,16 @@ data2fit3 = bckg3(1:end);
 
 tfit = t(1:end);
 
-[fit,results] = fitbackground(data2fit,t,tfit,'fractal');
-[fit2,results2] = fitbackground(data2fit2,t,tfit,'fractal');
-[fit3,results3] = fitbackground(data2fit3,t,tfit,'fractal');
+[fit,results] = fitbackground(data2fit,t,tfit,@strexp);
+[fit2,results2] = fitbackground(data2fit2,t,tfit,@strexp);
+[fit3,results3] = fitbackground(data2fit3,t,tfit,@strexp);
 
 
-err(1) = any(abs(fit - bckg)>1e-5);
-err(2) = any(abs(fit2 - bckg2)>1e-5);
-err(3) = any(abs(fit3 - bckg3)>1e-5);
+err(1) = any(abs(fit' - bckg)>1e-5);
+err(2) = any(abs(fit2' - bckg2)>1e-5);
+err(3) = any(abs(fit3' - bckg3)>1e-5);
 err = any(err);
-maxerr = max(abs(fit3 - bckg3));
+maxerr = max(abs(fit3' - bckg3));
 data = [];
 
 if opt.Display

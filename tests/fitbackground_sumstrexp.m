@@ -8,11 +8,14 @@ t = linspace(0,5,100);
 d = 3;
 
 k = 0.5;
-bckg = exp(-(k*t).^(d/3));
+k2 = 0.2;
+bckg = 0.4*exp(-(k*t).^(d/3)) + 0.6*exp(-(k2*t).^(d/3));
 k = 1;
-bckg2 = exp(-(k*t).^(d/3));
+k2 = 0.6;
+bckg2 = 0.4*exp(-(k*t).^(d/3)) + 0.6*exp(-(k2*t).^(d/3));
 k = 1.5;
-bckg3 = exp(-(k*t).^(d/3));
+k2 = 2;
+bckg3 = 0.4*exp(-(k*t).^(d/3)) + 0.6*exp(-(k2*t).^(d/3));
 
 data2fit = bckg(20:end);
 data2fit2 = bckg2(20:end);
@@ -20,17 +23,15 @@ data2fit3 = bckg3(20:end);
 
 tfit = t(20:end);
 
-FitModel = @(t,param) param(1)*exp(-param(2)*t);
+fit = fitbackground(data2fit,t,tfit,@sumstrexp);
+fit2 = fitbackground(data2fit2,t,tfit,@sumstrexp);
+fit3 = fitbackground(data2fit3,t,tfit,@sumstrexp);
 
-fit = fitbackground(data2fit,t,tfit,FitModel,2);
-fit2 = fitbackground(data2fit2,t,tfit,FitModel,2);
-fit3 = fitbackground(data2fit3,t,tfit,FitModel,2);
-
-err(1) = any(abs(fit - bckg)>1e-5);
-err(2) = any(abs(fit2 - bckg2)>1e-5);
-err(3) =  any(abs(fit3 - bckg3)>1e-5);
+err(1) = any(abs(fit' - bckg)>1e-3);
+err(2) = any(abs(fit2' - bckg2)>1e-3);
+err(3) =  any(abs(fit3' - bckg3)>1e-3);
 err = any(err);
-maxerr = max(fit - bckg);
+maxerr = max(fit' - bckg);
 data = [];
 
 if opt.Display
