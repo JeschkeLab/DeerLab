@@ -10,12 +10,11 @@ originalData = originalData/max(originalData);
 TimeAxis = originalTimeAxis + abs(min(originalTimeAxis));
 inputZeroTime = abs(min(originalTimeAxis));
 
-[correctedSignal,correctedTimeAxis,outputZeroTime] = correctzerotime(originalData,TimeAxis);
+[correctedTimeAxis,outputZeroTime] = correctzerotime(originalData,TimeAxis);
 
 
 err(1) = any(abs(correctedTimeAxis - originalTimeAxis)>1e-10);
-err(2) = any(abs(correctedSignal' - originalData)>1e-10);
-err(3) = abs(outputZeroTime' - inputZeroTime)>1e-10;
+err(2) = abs(outputZeroTime' - inputZeroTime)>1e-10;
 
 err = any(err);
 data = [];
