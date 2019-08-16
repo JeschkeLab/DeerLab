@@ -1,7 +1,29 @@
-function [correctedSignal,correctedTimeAxis,ZeroTime] = correctzerotime(Signal,TimeAxis,ZeroTime)
+%
+% CORRECTZEROTIME Zero-time correction of dipolar spectroscopy signals
+%
+%   CT = CORRECTZEROTIME(S,T)
+%   Determines the zero time of a dipolar evolution function and corrects
+%   the time axis T in ns/us for it. If input signal is in ns/us it will be
+%   returned in ns/us.
+%
+%   CT = CORRECTZEROTIME(S,M,T0)
+%   Corrects the time axis for a given zero-time T0  in ns/us ;
+%
+%   [CT,ZT,ZTPOS] = CORRECTZEROTIME(S,T)
+%   Returns the corrected time axis CT, the zero-time ZT in ns/us and the 
+%   zero-time array index ZTPOS. 
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
 
-if nargin<2 
-   error('Not enough input arguments.') 
+
+function [correctedTimeAxis,ZeroTime,ZeroTimePos] = correctzerotime(Signal,TimeAxis,ZeroTime)
+
+if nargin<2
+    error('Not enough input arguments.')
 end
 
 if nargin<3 || isempty(ZeroTime)
@@ -14,6 +36,12 @@ if ~iscolumn(Signal)
 end
 validateattributes(Signal,{'numeric'},{'2d'},mfilename,'Signal')
 validateattributes(TimeAxis,{'numeric'},{'nonnegative','nonempty'},mfilename,'TimeAxis')
+if mean(abs(diff(TimeAxis))) < 1
+    isnanosecond = true;
+    TimeAxis = TimeAxis*1000;
+else
+    isnanosecond = false;
+end
 
 %Generate finely-grained interpolated signal and time axis
 FineTimeAxis = min(TimeAxis):1:max(TimeAxis);
@@ -65,21 +93,19 @@ if isempty(ZeroTime)
             end
         end
     end
-    ZeroTime=FineTimeAxis(ZeroTimePos);
+    ZeroTime = FineTimeAxis(ZeroTimePos);
 else
     [~,ZeroTimePos] = min(abs(FineTimeAxis-ZeroTime));
 end
 
-% Get a smoothed estimate of the zero-position
-if ZeroTimePos > 10
-    SmoothingAxis = 1:min(2*ZeroTimePos,length(FineSignal));
-    [p,~] = polyfit(SmoothingAxis,FineSignal(SmoothingAxis),11);
-    SmoothZeroTimeRegion = polyval(p,SmoothingAxis);
-    correctedSignal = Signal/SmoothZeroTimeRegion(ZeroTimePos);
-else
-    correctedSignal = Signal;
+% Correct time axis
+correctedTimeAxis = TimeAxis - ZeroTime;
+
+if isnanosecond
+    ZeroTime = ZeroTime/1000;
+    correctedTimeAxis = correctedTimeAxis/1000;
 end
 
-% Correct time axis
-correctedTimeAxis = TimeAxis - ZeroTime*ones(size(TimeAxis));
+
+end
 
