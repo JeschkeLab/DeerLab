@@ -1,3 +1,60 @@
+% 
+% FITPARAMODEL Fits a distance distribution to one (or several) signals
+%              by fitting of a parametric model.
+%
+%   P = FITPARAMODEL(S,K,R,L,@MODEL)
+%   Fitting of the N-point signal S to a M-point distance distribution 
+%   P given a M-point distance axis R and NxM point kernel K. The fitted
+%   distribution corresponds to a parametric model calculated by the passed
+%   function handle MODEL.
+%
+%   P = FITPARAMODEL(S,K,R,L,@MODEL)
+%   Fitting of the N-point signal S to a M-point distance distribution 
+%   P given a M-point distance axis R and NxM point kernel K. The fitted
+%   distribution corresponds to a parametric model calculated by the passed
+%   function handle MODEL.
+%
+%
+%   P = FITPARAMODEL({S1,S2,...},{K1,K2,...},R,'MODEL')
+%   Passing multiple signals/kernels enables global fitting of the
+%   to a single parametric model distance distribution. The global fit weights
+%   are automatically computed according to their contribution to ill-posedness.
+%
+%   K = FITPARAMODEL(...,'Property',Values)
+%   Additional (optional) arguments can be passed as property-value pairs.
+%
+% The properties to be passed as options can be set in any order. 
+%
+%   'Solver' - Solver to be used to solve the minimization problems
+%                      'lsqnonlin' - Non-linear constrained least-squares 
+%                      'fmincon' - Non-linear constrained minimization
+%                      'fminsearch' - Unconstrained minimization
+%
+%   'CostModel' - Type of fitting cost functional to use. 
+%                      'lsq' - Least-squares fitting
+%                      'chisquared' - Chi-squared fitting (as in GLADD or DD) 
+%
+%   'GlobalWeights' - Array of weighting coefficients for the individual signals in
+%                     global fitting regularization.
+%
+%   'Algorithm' - Algorithm to be used by the solvers (see fmincon or
+%                 lsqnonlin documentation)
+%
+%   'TolFun' - Optimizer function tolerance
+%
+%   'MaxIter' - Maximum number of optimizer iterations
+%
+%   'MaxFunEvals' - Maximum number of optimizer function evaluations   
+%
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+% 
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
+
+
 function [Distribution,FitParameters] = fitparamodel(Signal,Kernel,DistanceAxis,Model,StartParameters,varargin)
 
 %--------------------------------------------------------------------------
@@ -18,7 +75,7 @@ else
 end
 
 %Get optional parameters
-[Solver,Algorithm,MaxIter,MaxFunEvals,TolFun,CostModel] = parseoptional({'Solver','Algorithm','MaxIter','MaxFunEvals','TolFun','CostModel'},varargin);
+[Solver,Algorithm,MaxIter,MaxFunEvals,TolFun,CostModel,GlobalWeights] = parseoptional({'Solver','Algorithm','MaxIter','MaxFunEvals','TolFun','CostModel','GlobalWeights'},varargin);
 
 if isempty(CostModel)
     CostModel = 'lsq';
@@ -64,6 +121,9 @@ end
 if ~iscolumn(DistanceAxis)
     DistanceAxis = DistanceAxis.';
 end
+if numel(unique(round(diff(DistanceAxis),12)))~=1
+    error('Distance axis must be a monotonically increasing vector.')
+end
 if ~iscell(Signal)
     Signal = {Signal};
 end
@@ -72,6 +132,15 @@ if ~iscell(Kernel)
 end
 if length(Kernel)~=length(Signal)
     error('The number of kernels and signals must be equal.')
+end
+if ~isempty(GlobalWeights)
+    validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
+    if length(GlobalWeights) ~= length(Signal)
+        error('The same number of global fit weights as signals must be passed.')
+    end
+    if sum(GlobalWeights)~=1
+        error('The sum of the global fit weights must equal 1.')
+    end
 end
 if length(Signal)>1 && strcmp(Solver,'lsqnonlin')
     Solver = 'fmincon';
@@ -121,7 +190,11 @@ switch CostModel
 end
 
 %Get weights of different signals for global fitting
-Weights = globalweights(Signal);
+if isempty(GlobalWeights)
+    Weights = globalweights(Signal);
+else
+    Weights = GlobalWeights;
+end
 %Create a new handle which evaluates the model cost function for every signal
 CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y)ModelCost(Parameters,x,y),Kernel,Signal)));
 
