@@ -1,4 +1,33 @@
-function functionHandle = regfunctional(Method,Signal,RegMatrix,Kernel,RegularizationParameter,HuberParameter)
+%
+% REGFUNCTIONAL Regularization functional constructor
+%
+%   fhandle = REGFUNCTIONAL('type',S,L,K,alpha)
+%   Returns the cost model functional of a regularization model. The function
+%   requires the signal (S), dipolar kernel (K), regularization matrix (L)
+%   and regularization parameter (alpha). The type of regularization
+%   functional is determined by the 'type' string argument.
+%
+%   fhandle = REGFUNCTIONAL('type',S,L,K,alpha,eta)
+%   The Huber parameter can be specified by passing as the (eta) argument.
+%
+%   fhandle = REGFUNCTIONAL('type',{S1,S2,...},L,{K1,K2,...},alpha)
+%   Passing multiple signals/kernels constructs minimization functional
+%   as required for global fit of the regularization functionals. The global fit
+%   weights are automatically computed according to their contribution
+%   to ill-posedness. The calculated weights (w) can be requested as an
+%   additional output argument.
+%
+%   fhandle = REGFUNCTIONAL('type',S,L,K,alpha,eta,w)
+%   The global fit weights (w) can be manually passed to avoid computing them
+%   automatically.
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
+function functionHandle = regfunctional(Method,Signal,RegMatrix,Kernel,RegularizationParameter,HuberParameter,weights)
 
 if ~iscell(Signal)
     Signal = {Signal};
@@ -11,7 +40,9 @@ if nargin<6 || isempty(HuberParameter)
 end
 
 %Get weights of different signals for global fitting
+if isempty(weights)
 weights = globalweights(Signal);
+end
 
 switch lower(Method)
     case 'tv'

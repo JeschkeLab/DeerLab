@@ -1,3 +1,20 @@
+%
+% UNIFORMGRAIN Conversion from non-uniform grain to uniform grain
+%
+%   uD = UNIFORMGRAIN(nug,nuD,ug)
+%   Computes a new data vector (uD) defined on a non-uniform grain (nug) 
+%   from the input vector data  (nuD) to a new vector defined on a uniform
+%   grain defined by the input (ug). 
+%
+% Adapted from Gunnar Jeschke by Luis Fabregas.
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
+
 function output = uniformgrain(nonUniformGrain,data,uniformgrain)
 %
 % Computes a new vector defined on a non-uniform grain from the input 

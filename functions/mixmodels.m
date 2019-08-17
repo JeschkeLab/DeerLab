@@ -1,3 +1,23 @@
+%
+% MIXMODELS Combine parametric models into one
+%
+%   newmodel = MIXMODELS({@model1,@model2,...,@modelN})
+%   Combines the parametric model function handles (@model1,...,@modelN)
+%   into a new parametric model function handle (newmodel). The models
+%   must be passed as a cell array of function handles.
+%
+%   The parametric model function must be of the type as the models distributed
+%   in DeerAnalysis2. The returned function handle can be used for
+%   parametric model fitting as the other models.
+%
+%   Example: twogaussians = MIXMODELS({@onegaussian,@onegaussian})
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
 function finalModel = mixmodels(models)
 
 if ~isa(models,'cell') || any(~cellfun(@(models)isa(models,'function_handle'),models))

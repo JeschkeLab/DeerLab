@@ -1,3 +1,18 @@
+%
+% SUPRESSGHOST Ghost distance suppression in multi-spin systems
+%
+%   cS = SUPRESSGHOST(S,n)
+%   Suppresses multi-spin contributions to the signal (S) by means of the
+%   power scaling approximation. The scaling is determined by the number of
+%   radicals (n) in the system. The function returns the power scaled
+%   signal (cS) without further normalization.
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
 function Signal = supressghost(Signal,NRadicals)
 
 if nargin<3

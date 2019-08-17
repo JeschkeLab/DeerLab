@@ -1,18 +1,18 @@
 %
 % LONGPASS Filter short distances by means of a lowpass FIR filter
 %
-%   X = LONGPASS(T,S)
-%   Applies a lowpass filter to the signal S with a N-point time axis T to 
+%   X = LONGPASS(t,S)
+%   Applies a lowpass filter to the signal (S) with a N-point time axis (t) to 
 %   suppress any distances below 1.5nm. 
 %
-%   X = LONGPASS(T,S,Rpass)
-%   Applies a lowpass filter to the signal S with a N-point time axis T to 
-%   suppress any distances below a given pass distance Rpass in nm. 
+%   X = LONGPASS(T,S,rpass)
+%   Applies a lowpass filter to the signal (S) with a N-point time axis (t) to 
+%   suppress any distances below a given pass distance (rpass) in nm. 
 %
-%   X = LONGPASS(T,S,Rpass,W)
-%   Applies a lowpass filter to the signal S with a N-point time axis T to 
-%   suppress any distances below a given pass distance Rpass in nm. The
-%   steepness of the transition band in distance domain can be passed as W.
+%   X = LONGPASS(T,S,rpass,st)
+%   Applies a lowpass filter to the signal (S) with a N-point time axis (t) to 
+%   suppress any distances below a given pass distance (rpass) in nm. The
+%   steepness of the transition band in distance domain can be passed as (st).
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 %

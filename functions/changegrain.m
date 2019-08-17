@@ -1,3 +1,22 @@
+%
+% CHANGEGRAIN Conversion from non-uniform grain to uniform grain
+%
+%   [Snew,tnew] = CHANGEGRAIN(S,t)
+%   Interpolates the input signal (S) on a time axis (t) to a time grain 
+%   of 4ns. The resulting signal (Snew) and time axis (tnew) are returned 
+%   as arguments. 
+%
+%   [Snew,tnew] = CHANGEGRAIN(S,t,dtnew)
+%   The ouput time grain can be specified by the (dtnew) argument.
+%
+% Adapted from Gunnar Jeschke by Luis Fabregas.
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
 function [InterpSignal,InterpTimeAxis] = changegrain(Signal,TimeAxis,NewTimeGrain)
 
 max_points = 2048; % maximum number of data points

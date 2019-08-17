@@ -1,29 +1,53 @@
-function [Distribution,ConvergenceCurve] = obir(Signal,Kernel,DistanceAxis,RegType,RegMatrix,RegParam,varargin)
-%--------------------------------------------------------------------------
-% OSHER'S BREGMAN ITERATED REGULARIZATION (OBIR) METHOD
-%--------------------------------------------------------------------------
-% Regularization of DEER data by Bregman iterations [1] equiped with different
-% penalty functionals of choice [2]. Bregman iterations allow the recovery of
-% noiseless signal from the residuals of the previous iteration. The
-% optimal solution is determined to be found when the residual standard
-% deviation is equal or less than the noise standard deviation. Therefore
-% the level of noise given as an input is determinant for the succesfull
-% performance of the method. Nontheless, when the noise level can be well
-% approximated, this method will yield better results than any other
-% non-Bregman-iterated method even with optimal regularization parameter
-% choice [3].
 %
-% Literature:
-% [1] L.M. Bregman, USSR Computational Mathematics and Mathematical Physics (1967) 7, 3, 200-217
-% [2] Charest et al, 2006 40th Annual Conference on Information Sciences and Systems
-% [3] Yin et al, SIAM Journal on Imaging Sciences (2008) 1, 143-168
-%--------------------------------------------------------------------------
-% (C) 2019, Luis Fabregas, DeerAnalysis
-%--------------------------------------------------------------------------
+% OBIR Osher's Bregman-iterated regularization method
+%
+%   P = OBIR(S,K,r,'type',L,alpha)
+%   OBIR of the N-point signal (S) to a M-point distance
+%   distribution (P) given a M-point distance axis (r) and NxM point kernel
+%   (K). The (M-2)xM point regularization matrix (L) and regularization
+%   parameter (alpha) control the regularization properties.
+%
+%   The type of regularization employed in OBIR is set by the 'type'
+%   input argument. The regularization models implemented in OBIR are:
+%          'tikhonov' -   Tikhonov regularization
+%          'tv'       -   Total variation regularization
+%          'huber'    -   pseudo-Huber regularization
+%
+%   P = OBIR(...,'Property',Value)
+%   Additional (optional) arguments can be passed as property-value pairs.
+% 
+%  The property-value pairs to be passed as options can be set in any order.
+%       'NoiseLevelAim' - Level (standard deviation) of noise at which 
+%                         Bregman iterations are to stop.
+%
+%       'DivergenceStop'- True/false forces Bregman iterations to stop if
+%                         the evolution of the fit's standard deviation 
+%                         starts to diverge. 
+%
+%       'MaxOuterIter' - Maximal number of Bregman iterations.
+%
+%       'Solver' - Minimization solver (default = 'fnnls')
+%                      'fmincon' - Non linear constrained minimization
+%                      'fnnls' - Fast non-negative least-squares
+%
+%       'TolFun' - Optimizer function tolerance
+%
+%       'MaxIter' - Maximum number of optimizer iterations
+%
+%       'MaxFunEvals' - Maximum number of optimizer function evaluations   
+%
+%       'AxisHandle' - Function handle to plot the state of the distance
+%                      distribution at each iteration     
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
 
-%--------------------------------------------------------------------------
-% Parse & Validate Required Input
-%--------------------------------------------------------------------------
+
+function [Distribution,ConvergenceCurve] = obir(Signal,Kernel,DistanceAxis,RegType,RegMatrix,RegParam,varargin)
+
 if ~iscolumn(Signal)
     Signal = Signal';
 end
@@ -156,43 +180,8 @@ while Iteration <= MaxOuterIter
             Distribution =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         case 'fnnls'
             
-            %If using LSQ-based solvers then precompute the KtK and KtS input arguments
-            KtS = Kernel.'*Signal - Subgradient;
-            switch RegType
-                case 'tikhonov'
-                    %Constrained Tikhonov regularization
-                    Q = (Kernel.'*Kernel) + RegParam^2*(RegMatrix.'*RegMatrix);
-                case 'tv'
-                    localDistribution = InitialGuess;
-                    for j=1:500
-                        prev = localDistribution;
-                        %Compute pseudoinverse and unconst. distribution recursively
-                        TVterm = RegMatrix'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));
-                        localTVPseudoinv = (Kernel.'*Kernel + RegParam^2*TVterm)\Kernel.';
-                        localDistribution = localTVPseudoinv*Signal;
-                        change = norm(localDistribution - prev);
-                        if round(change,5) ==0
-                            break;
-                        end
-                    end
-                    TVterm = RegMatrix.'*((RegMatrix./sqrt((RegMatrix*localDistribution).^2 + 1e-24)));
-                    Q = (Kernel.'*Kernel + RegParam^2*TVterm);
-                case 'huber'
-                    localDistribution = InitialGuess;
-                    for j=1:500
-                        prev = localDistribution;
-                        %Compute pseudoinverse and unconst. distribution recursively
-                        HuberTerm = 1/(HuberParam^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParam).^2 + 1)));
-                        localHuberPseudoinv = (Kernel.'*Kernel + RegParam^2*HuberTerm)\Kernel.';
-                        localDistribution = localHuberPseudoinv*Signal;
-                        change = norm(localDistribution - prev);
-                        if round(change,5) ==0
-                            break;
-                        end
-                    end
-                    HuberTerm = 1/(HuberParam^2)*((RegMatrix)'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParam).^2 + 1)));
-                    Q = (Kernel.'*Kernel + RegParam^2*HuberTerm);
-            end
+            [Q,KtS] = lsqcomponents(Signal,Kernel,RegMatrix,RegParam,RegType,HuberParam);
+            KtS = KtS - Subgradient;
             Distribution = fnnls(Q,KtS,InitialGuess,TolFun);
             %In some cases, fnnls may return negatives if tolerance is to high
             if any(Distribution < 0)

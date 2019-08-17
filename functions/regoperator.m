@@ -1,16 +1,23 @@
+% REGOPERATOR Compute discrete derivative regularization operators 
+% 
+%   L = REGOPERATOR(n,d)
+%   Computes the discrete approximation L to the derivative operator 
+%   of order d on a regular grid with n points, i.e. L is (n-d)-by-n. 
+% 
+%   [L,W] = REGOPERATOR(n,d)
+%   If requested, also computes W, an orthonormal basis for the null 
+%   space of L. 
+%
+% Adapted from Christian Hansen
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
 function [RegMatrix,OrthNormBase] = regoperator(Dimension,Order) 
-%GET_L Compute discrete derivative operators. 
-% 
-% [L,W] = regoperator(n,d) 
-% 
-% Computes the discrete approximation L to the derivative operator 
-% of order d on a regular grid with n points, i.e. L is (n-d)-by-n. 
-% 
-% L is stored as a sparse matrix. 
-% 
-% Also computes W, an orthonormal basis for the null space of L. 
- 
-% Per Christian Hansen, IMM, 02/05/98. 
+
  
 % Initialization. 
 if Order<0

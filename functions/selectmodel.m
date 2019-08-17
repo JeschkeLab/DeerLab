@@ -1,3 +1,32 @@
+%
+% SELECTMODEL Optimal parametric model selection
+%
+%   opt = SELECTMODEL({@model1,...,@modelN},S,r,K,{'aic',...})
+%   Evaluates the fits of the parametric models (model1,...,modelN) to a
+%   signal (S) according to the dipolar kernel (K) and distance axis (r).
+%   The models must be passed as a cell array of function handles. Each fit
+%   is then evaluated according to the model selection criterions 
+%   ('aic','aicc','bic') specified in the last input argument M-point cell array. 
+%   Function returns a M-point array containing the optimal models
+%   according to each selection method.
+%
+%   [opt,f] = SELECTMODEL(...)
+%   Returns the method selector functionals for the different methods.
+%
+%   alphas = SELECTMODEL(...,'Property',Value)
+%   Additional (optional) arguments can be passed as property-value pairs.
+%
+%   See "help fitparamodel" for a detailed list of the property-value pairs
+%   accepted by the function.
+%
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
+
 function [optima,functionals] = selectmodel(Models,Signal,DistanceAxis,Kernel,Methods,varargin)
 
 %Input validation

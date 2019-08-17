@@ -1,11 +1,11 @@
 %
 % NOISELEVEL Estimate the noise level (standard deviation)
 %
-%   STD = NOISELEVEL(S)
+%   level = NOISELEVEL(S)
 %   Returns the standard deviation estimation of the noise in the signal S.
 %   The estimation is done from the last quarter of the signal. 
 %
-%   STD = NOISELEVEL(S,M)
+%   level = NOISELEVEL(S,M)
 %   Returns the standard deviation estimation of the noise in the signal S.
 %   The estimation is done from the last M-points of the N-point signal. 
 %

@@ -2,14 +2,14 @@
 % WHITENOISE Generate gaussian-distributed noise with uniform power
 %            spectrum distribution
 %
-%   X = WHITENOISE(N,LEVEL)
-%   Generates a N-point vector X of Gaussian distributed random noise. The
-%   standard deviation of the noise is determined by the LEVEL input
+%   x = WHITENOISE(N,level)
+%   Generates a N-point vector (x) of Gaussian distributed random noise. The
+%   standard deviation of the noise is determined by the (level) input
 %   argument.
 %
-%   X = WHITENOISE(N,LEVEL,SEED)
+%   x = WHITENOISE(N,level,seed)
 %   A different random number generator seed (default = 2) can
-%   be passed as the SEED argument.
+%   be passed as the (seed) argument.
 %
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2

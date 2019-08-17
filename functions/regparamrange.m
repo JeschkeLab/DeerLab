@@ -1,3 +1,31 @@
+%
+% REGPARAMRANGE Regularization parameter range estimator
+%
+%   alphas = REGPARAMRANGE(K,L)
+%   Estimates an array of regularization parameter candidates (alphas) from
+%   the generalized singular value decomposition (GSVD) of the dipolar
+%   kernel (K) and regularization operator (L).
+%
+%   alphas = REGPARAMRANGE(...,'Property',Value)
+%   Additional (optional) arguments can be passed as property-value pairs.
+%
+% The property-value pairs to be passed as options can be set in any order. 
+%
+%   'NoiseDeviation' - Estimation of the noise standard deviation of the
+%                      signal fro scaling of the singular values (default=0).
+%
+%   'logResolution' - Logarithmic scale resolution of the array of alpha
+%                     candidates(default=0.1).
+%   
+% Adapted from Stefan Stoll
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
+
 function alpha = regparamrange(Kernel,RegMatrix,varargin)
 
 %Check if user requested some options via name-value input

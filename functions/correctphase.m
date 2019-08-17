@@ -1,3 +1,33 @@
+%
+% CORRECTPHASE Phase correction of complex-valued data
+%
+%   S = CORRECTPHASE(C)
+%   Performs a phase optimization on the complex-valued data (C) by
+%   minimization of the imaginary component of the data. The phase
+%   corrected data (S) is returned normalized.
+%
+%   S = CORRECTPHASE(C,p)
+%   A phase can be passed manually for the correction by passing a second
+%   argument (p).
+%
+%   S = CORRECTPHASE(C,p,true/false)
+%   A third boolean argument can be passed to enable/diasable the fitting 
+%   of a possible offset on the imaginary component of the data. Defaults
+%   to false.
+%
+%   [S,p,io] = CORRECTPHASE(C)
+%   Additional output arguments can be requested to return the optimal
+%   phase (p) and imaginary offset (io) employed for the correction.
+%
+%
+% Adapted from Gunnar Jeschke, DeerAnalysis 2018
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
 function [correctedSignal,Phase,ImagOffset] = correctphase(PrimaryData,Phase,FittedImaginaryOffset)
 
 %--------------------------------------------------------------------------
@@ -27,7 +57,7 @@ else
     Signal=PrimaryData;
 end
 
-% If phse is not provided, then fit it
+% If phase is not provided, then fit it
 if isempty(Phase)
     SignalEnd = PrimaryData(length(PrimaryData));
     phi0 = atan2(imag(SignalEnd),real(SignalEnd));

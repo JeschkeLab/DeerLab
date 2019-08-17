@@ -1,3 +1,27 @@
+%
+% MULTIGAUSS Multigauss fitting of a distance distribution
+%
+%   P = MULTIGAUSS(S,K,r,Ngauss)
+%   Fits the dipolar signal (S) to a distance distribution (P)using a
+%   multi-gauss parametric model according to the dipolar kernel (K) and
+%   distance axis (r). The function chooses the optimal number of Gaussian
+%   distributions up to a maximum number given by (Ngauss) by means of the 
+%   corrected Aikaike information criterion (AICC).
+%
+%   P = MULTIGAUSS(...,'Property',Value)
+%   Specify the distance-domain smoothing parameter (DDS) by passing as a 
+%   scalar value. 
+%   
+%   See "help fitparamodel" for a detailed list of the property-value pairs
+%   accepted by the function.
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
+
 function [FitDistribution,FitParam,optimum,metrics] = multigauss(Signal,Kernel,DistanceAxis,maxGaussians,varargin)
 
 %Validate user input (first three inputs are validated in lower-level functions)
