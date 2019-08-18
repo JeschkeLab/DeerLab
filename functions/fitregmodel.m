@@ -66,7 +66,7 @@ elseif isa(RegType,'function_handle')
 else
     validateattributes(RegType,{'char'},{'nonempty'})
     allowedInput = {'tikhonov','tv','huber'};
-    validatestring(RegType,allowedInput);
+    RegType = validatestring(RegType,allowedInput);
 end
 
 if strcmp(RegType,'custom')
@@ -97,7 +97,7 @@ if isempty(Solver)
 else
     validateattributes(Solver,{'char'},{'nonempty'})
     allowedInput = {'analytical','fnnls','lsqnonneg','bppnnls','fmincon'};
-    validatestring(Solver,allowedInput);
+    Solver = validatestring(Solver,allowedInput);
 end
 
 if isempty(MaxIter)

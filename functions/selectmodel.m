@@ -39,7 +39,25 @@ end
 if length(varargin)==1
    varargin = varargin{1}; 
 end
-
+allowedMethodInputs = {'aic','aicc','bic'};
+if iscell(Methods)
+    for i=1:length(Methods)
+        if strcmp(Methods{i},'all')
+            Methods = allowedMethodInputs;
+            break;
+        end
+        validateattributes(Methods{i},{'char'},{'nonempty'})
+        Methods{i} = validatestring(Methods{i},allowedMethodInputs);
+    end
+else
+    validateattributes(Methods,{'char'},{'nonempty'})
+    if strcmp(Methods,'all')
+        Methods = allowedMethodInputs;
+    else
+        Methods = validatestring(Methods,allowedMethodInputs);
+        Methods = {Methods};
+    end
+end
 %--------------------------------------------------------------------------
 %Memoization
 %--------------------------------------------------------------------------

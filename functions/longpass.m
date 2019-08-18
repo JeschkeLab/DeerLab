@@ -5,11 +5,11 @@
 %   Applies a lowpass filter to the signal (S) with a N-point time axis (t) to 
 %   suppress any distances below 1.5nm. 
 %
-%   X = LONGPASS(T,S,rpass)
+%   X = LONGPASS(t,S,rpass)
 %   Applies a lowpass filter to the signal (S) with a N-point time axis (t) to 
 %   suppress any distances below a given pass distance (rpass) in nm. 
 %
-%   X = LONGPASS(T,S,rpass,st)
+%   X = LONGPASS(t,S,rpass,st)
 %   Applies a lowpass filter to the signal (S) with a N-point time axis (t) to 
 %   suppress any distances below a given pass distance (rpass) in nm. The
 %   steepness of the transition band in distance domain can be passed as (st).

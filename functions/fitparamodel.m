@@ -74,7 +74,7 @@ if isempty(CostModel)
     CostModel = 'lsq';
 else
     validInputs = {'lsq','chisquare'};
-    validatestring(CostModel,validInputs);
+    CostModel = validatestring(CostModel,validInputs);
 end
 
 if isempty(TolFun)
@@ -109,7 +109,7 @@ if isempty(Algorithm)
     end
 else
     validInputs = {'levenberg-marquardt','interior-point','trust-region-reflective','active-set','sqp'};
-    validatestring(Algorithm,validInputs);
+    Algorithm = validatestring(Algorithm,validInputs);
 end
 if ~iscolumn(DistanceAxis)
     DistanceAxis = DistanceAxis.';

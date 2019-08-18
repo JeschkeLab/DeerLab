@@ -22,14 +22,14 @@ if iscell(SelectionMethod)
             break;
         end
         validateattributes(SelectionMethod{i},{'char'},{'nonempty'})
-        validatestring(SelectionMethod{i},allowedMethodInputs);
+        SelectionMethod{i} = validatestring(SelectionMethod{i},allowedMethodInputs);
     end
 else
     validateattributes(SelectionMethod,{'char'},{'nonempty'})
     if strcmp(SelectionMethod,'all')
         SelectionMethod = allowedMethodInputs;
     else
-        validatestring(SelectionMethod,allowedMethodInputs);
+        SelectionMethod = validatestring(SelectionMethod,allowedMethodInputs);
         SelectionMethod = {SelectionMethod};
     end
 end
@@ -54,7 +54,7 @@ if isempty(RegType)
 else
     validateattributes(RegType,{'char'},{'nonempty'})
     allowedInput = {'tikhonov','tv','huber','hubercirc','berhu'};
-    validatestring(RegType,allowedInput);
+    RegType = validatestring(RegType,allowedInput);
 end
 %Validate NoiseLevel input
 if isempty(NoiseLevel)

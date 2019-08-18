@@ -91,7 +91,7 @@ if isempty(Solver)
 else
     validateattributes(Solver,{'char'},{'nonempty'},mfilename,'Solver')
     validInputs = {'fnnls','fmincon'};
-    validatestring(Solver,validInputs);
+    Solver = validatestring(Solver,validInputs);
 end
 
 if isempty(NoiseLevelAim)
@@ -113,7 +113,7 @@ elseif isa(RegType,'function_handle')
 else
     validateattributes(RegType,{'char'},{'nonempty'},mfilename,'RegType')
     allowedInput = {'tikhonov','tv','huber'};
-    validatestring(RegType,allowedInput);
+    RegType = validatestring(RegType,allowedInput);
 end
 
 
