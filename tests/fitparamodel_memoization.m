@@ -32,8 +32,8 @@ data = [];
 
 if opt.Display
    figure(1),clf,hold on
-   plot(TimeAxis,DipEvoFcn,'b')
-   plot(TimeAxis,Kernel*FitDistribution,'r')
+   plot(DistanceAxis,preFitDistribution,'b')
+   plot(DistanceAxis,postFitDistribution,'r')
 end
 
 end

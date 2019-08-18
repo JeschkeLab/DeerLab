@@ -32,7 +32,10 @@ data = [];
 maxerr = max(error);
 
 if opt.Display
-plot(DistanceAxis,aptDistribution)
+figure(8),clf
+hold on
+plot(DistanceAxis,postDistribution)
+plot(DistanceAxis,postDistribution)
 end
 
 end

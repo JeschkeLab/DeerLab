@@ -34,7 +34,7 @@ if opt.Display
  	figure(8),clf
     hold on
     plot(DistanceAxis,Distribution,'k') 
-    plot(DistanceAxis,TikhResult1,'r')
+    plot(DistanceAxis,Result,'r')
 end
 
 end

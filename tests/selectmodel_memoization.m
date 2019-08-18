@@ -30,10 +30,5 @@ data = [];
 maxerr = [];
 
 
-if opt.Display
-figure(8),clf
-plot(metric)
-end
-
 end
 
