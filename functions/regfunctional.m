@@ -29,6 +29,9 @@
 
 function functionHandle = regfunctional(Method,Signal,RegMatrix,Kernel,RegularizationParameter,HuberParameter,weights)
 
+if nargin<7 
+   weights = []; 
+end
 if ~iscell(Signal)
     Signal = {Signal};
 end
