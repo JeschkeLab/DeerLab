@@ -14,8 +14,6 @@ F = (1-lambda) + lambda*S;
 V = F.*B;
 B = (1-lambda).*B;
 Bfit = fitbackground(V,t,t,'exponential');
-plot(t,V)
-
 
 error = abs(B - Bfit);
 err = any(error>1e-2);

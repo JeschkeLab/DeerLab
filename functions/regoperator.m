@@ -1,3 +1,4 @@
+%
 % REGOPERATOR Compute discrete derivative regularization operators 
 % 
 %   L = REGOPERATOR(n,d)

@@ -49,7 +49,7 @@ if nargin<3
 end
 
 if nargin<5
-    ModelParam = [];
+    ModelParam = 1;
 end
 
 if nargin<4 || isempty(BckgModel)
