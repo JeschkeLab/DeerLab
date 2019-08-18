@@ -14,7 +14,7 @@ TimeAxis = linspace(TimeStep,Length*TimeStep,Length) - TimeStep;
 %Construct some dipolar evolution function from Fresnel integral
 dipevo = 1-2*fresnelS(TimeAxis*2*pi*1/(15^3));
 %Construct background
-bckg = exp(-DecayRate*TimeAxis);
+bckg = 1 - 0.0002*TimeAxis;
 %Account modulation depth for the offset=1
 adaptedmodulationDepth = ModulationDepth*(1+Offset);
 FormFactor = (1 - adaptedmodulationDepth) + adaptedmodulationDepth*dipevo;
@@ -22,10 +22,10 @@ FormFactor = FormFactor + Offset;
 Signal = FormFactor.*bckg;
 
 
-FitStartTime = backgroundstart(Signal,TimeAxis,'exponential','RelSearchStart',0.05,'RelSearchEnd',0.8);
+[FitStartTime,pos] = backgroundstart(Signal,TimeAxis,'polynomial','ModelParam',1);
 
 %Check for errors
-err = abs(FitStartTime - 320)>0;
+err = abs(FitStartTime - 368)>0;
 data = [];
 
 end

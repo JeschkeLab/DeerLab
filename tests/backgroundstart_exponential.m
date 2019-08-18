@@ -22,7 +22,7 @@ FormFactor = FormFactor + Offset;
 Signal = FormFactor.*bckg;
 
 
-FitStartTime = backgroundstart(Signal,TimeAxis,'exponential','RelSearchStart',0.05,'RelSearchEnd',0.8);
+FitStartTime = backgroundstart(Signal,TimeAxis,'exponential');
 
 %Check for errors
 err = abs(FitStartTime - 320)>0;
