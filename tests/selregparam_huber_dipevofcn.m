@@ -16,11 +16,10 @@ RegMatrix = regoperator(Dimension,2);
 DipEvoFcn = Kernel*Distribution;
 
 RegParamSet = regparamrange(Kernel,RegMatrix);
-[OptParam,~,~,OptHuber] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,{'aic','gcv'},'RegType','huber');
+[OptParam,~,~] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,'huber',{'aic','gcv'});
 
 %Accept testif all values are the same (should be as there is no noise)
 err = any(any(OptParam - OptParam' > 1e-2));
-err = any(any(OptHuber - OptHuber' > 1e-2));
 data = [];
 
 

@@ -17,7 +17,7 @@ Noise = 0.05*Noise/max(Noise);
 
 RegParamSet = regparamrange(Kernel,RegMatrix);
 goal = 0.01;
-[~,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn + Noise,Kernel,RegMatrix,{'aic','gcv'},'RegType','tikhonov','Refine',true);
+[~,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn + Noise,Kernel,RegMatrix,'tikhonov',{'aic','gcv'},'Refine',true);
 
 err = length(RegParams) == length(RegParamSet);
 data = [];

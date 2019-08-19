@@ -17,11 +17,11 @@ DipEvoFcn = Kernel*Distribution;
 RegParamSet = regparamrange(Kernel,RegMatrix);
 
 tic
-[preOptParam,Functionals,RegParamRange,OptHuberParam] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,{'aic','gcv','lr'});
+[preOptParam,Functionals,RegParamRange] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,'tikhonov',{'aic','gcv','lr'});
 precached = toc;
 
 tic
-[postOptParam,Functionals,RegParamRange,OptHuberParam] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,{'aic','gcv','lr'});
+[postOptParam,Functionals,RegParamRange] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,'tikhonov',{'aic','gcv','lr'});
 postcached = toc;
 
 err(1) = postcached>=precached/10;

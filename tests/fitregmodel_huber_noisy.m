@@ -19,7 +19,7 @@ Signal = DipEvoFcn + Noise;
 
 RegMatrix = regoperator(Dimension,2);
 range = regparamrange(Kernel,RegMatrix);
-[RegParam] = selregparam(range,Signal,Kernel,RegMatrix,'aic','RegType','huber');
+[RegParam] = selregparam(range,Signal,Kernel,RegMatrix,'huber','aic');
 
 TikhResult1 = fitregmodel(Signal,Kernel,DistanceAxis,RegMatrix,'huber',RegParam,'Solver','fnnls');
 err(1) = any(abs(TikhResult1 - Distribution)>7e-2);

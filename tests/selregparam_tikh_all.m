@@ -16,7 +16,7 @@ RegMatrix = regoperator(Dimension,2);
 DipEvoFcn = Kernel*Distribution;
 
 RegParamSet = regparamrange(Kernel,RegMatrix);
-OptParam2 = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,'all','NonNegConstrained',false,'NoiseLevel',0.05);
+OptParam2 = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,'tikhonov','all','NonNegConstrained',false,'NoiseLevel',0.05);
 
 %Accept testif all values are the same (should be as there is no noise)
 err = length(OptParam2)~=15;

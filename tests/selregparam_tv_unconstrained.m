@@ -16,7 +16,7 @@ RegMatrix = regoperator(Dimension,2);
 DipEvoFcn = Kernel*Distribution;
 
 RegParamSet = regparamrange(Kernel,RegMatrix);
-[OptParam,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,{'aic','gcv'},'RegType','tv','NonNegConstrained',false);
+[OptParam,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,'tv',{'aic','gcv'},'NonNegConstrained',false);
 
 %Accept testif all values are the same (should be as there is no noise)
 err = any(any(OptParam - OptParam' > 1e-2));
@@ -25,8 +25,8 @@ data = [];
 if opt.Display
    figure(8),clf
    hold on
-   plot(RegParams,Functionals{1})
-   plot(RegParams,Functionals{2})
+   plot(RegParamSet,Functionals{1})
+   plot(RegParamSet,Functionals{2})
 end
 
 

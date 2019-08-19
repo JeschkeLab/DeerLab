@@ -11,7 +11,7 @@
 %   [Q,KtS] = LSQCOMPONENTS(S,K,L,alpha,'type',eta)
 %   The Huber parameter can be specified by passing as the (eta) argument.
 %
-%   [Q,KtS,w] = LSQCOMPONENTS({S1,S2,...},{K1,K2,...},r,L,'type',alpha)
+%   [Q,KtS,w] = LSQCOMPONENTS({S1,S2,...},{K1,K2,...},L,alpha,'type',eta)
 %   Passing multiple signals/kernels constructs the LSQ components (Q) and (KtS)
 %   as required for global fit of the regularization functionals. The global fit
 %   weights are automatically computed according to their contribution

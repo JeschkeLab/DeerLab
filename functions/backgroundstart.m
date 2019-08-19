@@ -21,6 +21,8 @@
 %
 %   'ModelParam' - Parameters for the background models
 %
+%   For further property-value pair options see "help fitbackground"
+%
 % Adapted from Gunnar Jeschke
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
