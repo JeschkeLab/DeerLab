@@ -40,6 +40,8 @@
 %   'Knots' Number knots for the grid of powder orientations to be used
 %           in explicit kernel calculations    
 %
+%   'ModDepth' Modulation depth, if not specified it is determined from the
+%              background fit
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 % 
@@ -53,7 +55,7 @@ function [Kernel] = dipolarkernel(TimeAxis,DistanceAxis,Background,varargin)
 %Input parsing
 %--------------------------------------------------------------------------
 %Check if user requested some options via name-value input
-[KernelBType,ExcitationBandwidth,OvertoneCoeffs,gValue,KernelCalcMethod,Knots] = parseoptional({'KernelBType','ExcitationBandwidth','OvertoneCoeffs','gValue','KernelCalcMethod','Knots'},varargin);
+[KernelBType,ExcitationBandwidth,OvertoneCoeffs,gValue,KernelCalcMethod,Knots,ModDepth] = parseoptional({'KernelBType','ExcitationBandwidth','OvertoneCoeffs','gValue','KernelCalcMethod','Knots','ModDepth'},varargin);
 %Validate the input variables
 if nargin<3 || isempty(Background)
     Background = ones(1,length(TimeAxis));
@@ -206,7 +208,11 @@ end
 % Build the background into the kernel
 %----------------------------------------------------------
 if ~all(Background == 1)
-    ModDepth = 1/Background(BckgStart) - 1;
+    if isempty(ModDepth)
+        ModDepth = 1/Background(BckgStart) - 1;
+    else
+       Background = Background/max(Background); 
+    end
     Kernel = ModDepth*Kernel + 1;
 end
 switch KernelBType
