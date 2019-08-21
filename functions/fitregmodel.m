@@ -28,7 +28,7 @@
 %                      'fnnls' - Fast non-negative least-squares
 %                      'lsqnonneg' - Non-negative least-squares 
 %                      'fmincon' - Non-linear constrained minimization
-%                      'bnnlps'
+%                      'bppnnls' -  Block principal pivoting non-negative least-squares solver
 %
 %   'NonNegConstrained' - Enable/disable non-negativity constraint (true/false)
 %
