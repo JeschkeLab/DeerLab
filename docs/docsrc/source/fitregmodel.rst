@@ -1,0 +1,173 @@
+.. highlight:: matlab
+
+*********************
+:mod:`fitregmodel`
+*********************
+Fits a distance distribution to one (or several) signals by optimization of a regularization functional model.
+
+.. mat:function:: P = fitregmodel(S,K,r,L,'type',alpha,...)
+
+    :param S: Input signal (N-array)
+    :param K: Dipolar kernel (NxM-array)
+    :param r: Background function vector (N-array)
+    :param L: Regularization operator ((M-order))xM-array)
+    :param type: Regularization type (string)
+    :param alpha: Regularization parameter (scalar)
+
+    :returns: - **P** - Distance Distribution (M-array)
+
+Theory
+=========================================
+
+To solve the ill-posed problem
+
+.. math:: \mathbf{K}\mathbf{P} = \mathbf{S}
+
+the typical approach is to replace the original problem by a least-squares minimization problem. However, the solution to this problem is still highly sensitive to perturbation. In order to stabilize the solution, a penalty term :math:`\Gamma[\mathbf{L}\mathbf{P}]` is added. Therefore, the general form of a regularization method is given by
+
+.. math:: \arg\min_{\mathbf{P}\geq 0}\left\{ \frac{1}{2}\Vert \mathbf{K}\mathbf{P} - \mathbf{S} \Vert_2^2 + \alpha^2 \Gamma[\mathbf{L}\mathbf{P}]\right\},
+
+where :math:`\alpha` is the regularization parameter which controls the balance between the regularization penalty and the least-squares agreement of the data. Depending on the choice of :math:`\Gamma[\mathbf{L}\mathbf{P}]` the regularization penalty will react different to changes in :math:`\mathbf{P}`.
+
+============ =========================================================
+   Penalty               :math:`\Gamma[\mathbf{L}\mathbf{P}]`
+============ =========================================================
+Tikhonov     :math:`\Vert \mathbf{L}\mathbf{P} \Vert_2^2`
+TV           :math:`\sum \sqrt{(\mathbf{L}\mathbf{P})^2 + \beta^2 }`
+pseudo-Huber :math:`\sum \sqrt{(\mathbf{L}\mathbf{P}/\eta)^2 + 1 }-1`
+============ =========================================================
+
+Global fitting
+""""""""""""""""""
+If several signals :math:`S_1,S_2,...S_N` corresponding to the same distance distribution are available, they may be fitted to that single distance distribution simultaneously. This procedure has been often referred to as global fitting, which aims to solve the following regularization problem
+
+.. math:: \arg\min_{\mathbf{P}\geq 0}\left\{ \sum_i^N w_i\frac{1}{2}\Vert \mathbf{K}_i\mathbf{P} - \mathbf{S}_i \Vert_2^2 + \alpha^2 \Gamma[\mathbf{L}\mathbf{P}]\right\},
+
+where :math:`w_i` are to so-called global-fit weights. They distribute the influence each signal has on the quality of the least-squares fitting. In DeerAnalysis2 these weights are computed according to the contribution of each signal to the ill-posedness of the inverse problem.
+
+.. math:: w_i = \frac{\sum_j^N M_j\sigma_j}{N_i\sigma_i}, \sum_i^N w_i = 1
+
+where :math:`M_i` is the length and :math:`\sigma_i` the noise level of the signal :math:`S_i`.
+
+
+
+
+Usage
+=========================================
+
+.. code-block:: matlab
+
+    P = fitregmodel(S,K,r,L,'type',alpha)
+
+Fits a regularized distance distribution ``P``  from the input signal ``S`` according to the regularization model specified by the ``'type'`` argument. The available regularization models are
+
+    *   ``'tikhonov'`` - Tikhonov regularization
+    *   ``'tv'`` - Total variation regularization
+    *   ``'huber'`` - Pseudo-Huber regularization
+
+See the functions documentation for constructing and computing the dipolar kernel (:ref:`dipolarkernel`), regularization operator (:ref:`regoperator`) and regularization parameter (:ref:`selregparam`).
+
+.. code-block:: matlab
+
+    P = fitregmodel({S1,S2,S3},{K1,K2,S3},r,L,'type',alpha)
+
+Passing multiple signals/kernels enables global fitting of the regularization model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes N1,N2,... and a cell array of Kernel matrices with sizes N1xM,N2xM,... must be passed as well.
+
+.. note:: The output distance distribution is already normalized by to unity integral and by the distance axis resolution
+
+    .. math:: \mathbf{P}' = \frac{\mathbf{P}}{\sum\mathbf{P}\Delta\mathbf{r}}
+
+Optional Arguments
+=========================================
+Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+
+.. code-block:: matlab
+
+    P = fitregmodel(args,'Property1',Value1,'Property2',Value2,...)
+
+.. centered:: **Property Names & Descriptions**
+
+NonNegConstrained
+    Specifies whether the distance distribution ``P`` is to be computed under the non-negativity constraint. If the constraint is lifted, the distance distribution is computed according to the analytical solution of the inverse problem and does not require any numerical solver.
+
+    *Default:* ``true``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+       P = fitregmodel(args,'NonNegConstrained',false)
+
+HuberParam
+    Value of the superparameter used in the pseudo-Huber regularization.
+
+    *Default:* ``1.35``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        P = fitregmodel(args,'HuberParam',2.5)
+
+GlobalWeights
+    Array of weighting coefficients for the individual signals in global fitting regularization. If not specified, the global fit weights are automatically computed according to their contribution to ill-posedness. The weights must be normalized such that the sum over all weights equals one. The same number of weights as number of input signals is required.
+
+    *Default:* [*empty*]
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        P = fitregmodel({S1,S2,S3},{K1,K2,K3},r,L,'tikhonov',a,'GlobalWeights',[0.1 0.6 0.3]])
+
+Solver
+    Numerical solver employed for the minimization of the regularization functional models.
+
+        *   ``'fnnls'`` - Fast non-negative least squares solver
+        *   ``'bppnnls'`` - Block principal pivoting non-negative least-squares solver
+        *   ``'lsqnonneg'`` - Non-negative least-squares solver
+        *   ``fmincon`` - Constrained non-linear minimization solver
+
+    *Default:* ``'fnnls'``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        P = fitregmodel(args,'Solver','fmincon')
+
+TolFun
+    Optimizer function tolerance. The solver stops once the regularization functional evaluation reaches a value lower than this tolerance. Lower values increase the precision of the result, albeit at the cost of longer computation times.
+
+    *Default:* ``1e-9``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        P = fitregmodel(args,'TolFun','1e-20')
+
+MaxIter
+    Maximum number of iterations of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
+
+    *Default:* ``2e7``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        P = fitregmodel(args,'MaxIter','1e10')
+
+MaxFunEval
+    Maximum number of function evaluation of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
+
+    *Default:* ``2e7``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        P = fitregmodel(args,'MaxFunEval','1e10')
+
+References
+=========================================
