@@ -36,7 +36,7 @@ elseif nargin == 2
     sqscale=param(2).^2;
     %Compute rician/rice distribution using the zeroth order modified Bessel function of
     %the first kind
-    Distribution = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale).*besseli_(0,r.*nu./sqscale);
+    Distribution = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale).*besseli(0,r.*nu./sqscale);
     %The Rice distribution is zero for negative values.
     Distribution(Distribution<0)=0;
     
