@@ -55,16 +55,16 @@ html_theme_options = {
 html_theme_path = ["../.."]
 html_logo = "demo/static/logo-wordmark-light.svg"
 html_show_sourcelink = True
-htmlhelp_basename = slug
-latex_documents = [
-  ('index', '{0}.tex'.format(slug), project, author, 'manual'),
-]
-man_pages = [
-    ('index', slug, project, [author], 1)
-]
-texinfo_documents = [
-  ('index', slug, project, author, slug, project, 'Miscellaneous'),
-]
+#htmlhelp_basename = slug
+#latex_documents = [
+#  ('index', '{0}.tex'.format(slug), project, author, 'manual'),
+#]
+#man_pages = [
+#    ('index', slug, project, [author], 1)
+#]
+#texinfo_documents = [
+#  ('index', slug, project, author, slug, project, 'Miscellaneous'),
+#
 
 # Extensions to theme docs
 def setup(app):

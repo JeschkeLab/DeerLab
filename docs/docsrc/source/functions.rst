@@ -8,3 +8,4 @@ DeerAnalysis Functions
     ./noiselevel
     ./regoperator
     ./fitregmodel
+    ./selregparam
