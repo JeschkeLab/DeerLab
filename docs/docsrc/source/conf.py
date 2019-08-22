@@ -1,15 +1,4 @@
 # Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
 #import os
 #import sys
 #sys.path.insert(0, os.path.abspath('./venv/Lib/site-packages/sphinxcontrib_matlabdomain-0.8.0.dist-info'))
@@ -21,21 +10,19 @@ import os
 import re
 
 sys.path.append(os.path.abspath('..'))
-sys.path.append(os.path.abspath('./demo/'))
 
+#Import RTD theme
 from sphinx.locale import _
-
 from sphinx_rtd_theme import __version__
 
-
-project = u'Read the Docs Sphinx Theme'
-slug = re.sub(r'\W+', '-', project.lower())
-version = __version__
-release = __version__
-author = u'Dave Snider, Read the Docs, Inc. & contributors'
-copyright = author
+#Project details
+project = 'DeerAnalysis2'
+copyright = '2019, Luis Fabregas Ibanez'
+author = 'Fabregas Ibanez'
 language = 'en'
+release = '2019'
 
+#Add sphinx extensions
 extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.autodoc',
@@ -44,31 +31,23 @@ extensions = [
     'sphinxcontrib.httpdomain',
     'sphinx.ext.imgmath',
 ]
-#extensions = [
-#    'sphinx.ext.intersphinx',
-#    'sphinx.ext.autodoc',
-#   # 'sphinx.ext.mathjax',
-#    'sphinx.ext.viewcode',
-#    'sphinxcontrib.httpdomain',
-#   # 'sphinxcontrib.katex',
-#    'sphinx.ext.imgmath'
-#]
+
+#Render Latex math equations as svg instead of rendering with JavaScript
+imgmath_image_format = 'svg'
+imgmath_dvisvgm = 'dvisvgm'
 
 
-
+#Setup template stuff
 templates_path = ['_templates']
 source_suffix = '.rst'
 exclude_patterns = []
-
 master_doc = 'index'
 suppress_warnings = ['image.nonlocal_uri']
 pygments_style = 'default'
-
 intersphinx_mapping = {
     'rtd': ('https://docs.readthedocs.io/en/latest/', None),
     'sphinx': ('http://www.sphinx-doc.org/en/stable/', None),
 }
-
 html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
     'logo_only': True
@@ -76,21 +55,16 @@ html_theme_options = {
 html_theme_path = ["../.."]
 html_logo = "demo/static/logo-wordmark-light.svg"
 html_show_sourcelink = True
-
 htmlhelp_basename = slug
-
 latex_documents = [
   ('index', '{0}.tex'.format(slug), project, author, 'manual'),
 ]
-
 man_pages = [
     ('index', slug, project, [author], 1)
 ]
-
 texinfo_documents = [
   ('index', slug, project, author, slug, project, 'Miscellaneous'),
 ]
-
 
 # Extensions to theme docs
 def setup(app):
@@ -118,26 +92,6 @@ def setup(app):
             ),
         ]
     )
-project = 'DeerAnalysis2'
-copyright = '2019, Luis Fabregas Ibanez'
-author = 'Fabregas Ibanez'
-
-# The full version, including alpha/beta/rc tags
-release = '2019'
-
-
-# -- General configuration ---------------------------------------------------
-
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
-
-import sphinx_rtd_theme
-
-
-# Add any paths that contain templates here, relative to this directory.
-templates_path = [
-    '_templates']
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -161,8 +115,7 @@ primary_domain = 'mat'
 html_logo = '../source/logo.png'
 
 
-
-# BEGIN MONKEY-PATCH
+#Design pygments patch for MATLAB true code highlighting
 from pygments.style import Style
 from pygments.token import Text, Other, Comment, Whitespace
 from pygments.style import Style
@@ -179,8 +132,6 @@ class MyFancyStyle(Style):
         Name.Class:             '#000',
         String:                 '#CC00FF'
     }
-
-
 def pygments_monkeypatch_style(mod_name, cls):
     import sys
     import pygments.styles
@@ -191,11 +142,6 @@ def pygments_monkeypatch_style(mod_name, cls):
     sys.modules["pygments.styles." + mod_name] = mod
     from pygments.styles import STYLE_MAP
     STYLE_MAP[mod_name] = mod_name + "::" + cls_name
-
-
 pygments_monkeypatch_style("my_fancy_style", MyFancyStyle)
 pygments_style = "my_fancy_style"
-# END MONKEY-PATCH
-
-imgmath_image_format = 'svg'
-imgmath_dvisvgm = 'dvisvgm'
+# END MATLAB-PATCH
