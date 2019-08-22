@@ -9,3 +9,4 @@ DeerAnalysis API
     ./regoperator
     ./fitregmodel
     ./selregparam
+    ./suppressghost
