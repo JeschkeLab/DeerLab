@@ -100,15 +100,8 @@ exclude_patterns = []
 
 
 # -- Options for HTML output -------------------------------------------------
-
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
 html_theme = "sphinx_rtd_theme"
 html_theme_path = ["_themes", ]
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 highlight_language = 'matlab'
 primary_domain = 'mat'
@@ -144,4 +137,4 @@ def pygments_monkeypatch_style(mod_name, cls):
     STYLE_MAP[mod_name] = mod_name + "::" + cls_name
 pygments_monkeypatch_style("my_fancy_style", MyFancyStyle)
 pygments_style = "my_fancy_style"
-# END MATLAB-PATCH
+
