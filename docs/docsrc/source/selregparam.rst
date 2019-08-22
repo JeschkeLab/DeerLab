@@ -5,9 +5,9 @@
 *********************
 Optimal selection of the regularization parameter according to different model selection criteria.
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[alpha,F,alphas] = selregparam(alphas,S,K,L,'type','method')`
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+:mod:`[alpha,F,alphas] = selregparam(alphas,S,K,L,'type','method',...)`
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Parameters
     *   **alphas** - Candidate regularization parameters (array)
     *   **S** - Input signal (N-array)

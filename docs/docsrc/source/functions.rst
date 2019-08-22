@@ -1,4 +1,4 @@
-DeerAnalysis Functions
+DeerAnalysis API
 ======================
 
 .. toctree::

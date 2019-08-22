@@ -5,16 +5,18 @@
 *********************
 Fits a distance distribution to one (or several) signals by optimization of a regularization functional model.
 
-.. mat:function:: P = fitregmodel(S,K,r,L,'type',alpha,...)
-
-    :param S: Input signal (N-array)
-    :param K: Dipolar kernel (NxM-array)
-    :param r: Background function vector (N-array)
-    :param L: Regularization operator ((M-order))xM-array)
-    :param type: Regularization type (string)
-    :param alpha: Regularization parameter (scalar)
-
-    :returns: - **P** - Distance Distribution (M-array)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+:mod:`P = fitregmodel(S,K,r,L,'type',alpha,...)`
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Parameters
+    *   **S** - Input signal (N-array)
+    *   **K** -  Dipolar kernel (NxM-array)
+    *   **r** -  Distance Axis (N-array)
+    *   **L** - Regularization operator ((M-order))xM-array)
+    *   **type** - Regularization type (string)
+    *   **alpha** - Regularization parameter (scalar)
+Returns
+    *  **P** - Distance Distribution (M-array)
 
 Theory
 =========================================

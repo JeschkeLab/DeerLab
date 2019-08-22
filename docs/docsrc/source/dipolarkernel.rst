@@ -7,13 +7,15 @@
 
 Computes the dipolar interaction kernel for the linear transformation from distance-domain to time-domain.
 
-.. function:: K = dipolarkernel(t,r,B)
-
-    :param t: Time axis vector (N-array)
-    :param r: Distance axis vector (M-array)
-    :param B: Background function vector (N-array)
-
-    :returns: - **K** - Dipolar kernel (NxM-matrix)
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+:mod:`K = dipolarkernel(t,r,B,...)`
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Parameters
+    *   **t** - Time axis vector (N-array)
+    *   **r** -  Distance axis vector (M-array)
+    *   **B** -  ackground function vector (N-array)
+Returns
+    *  **K** - Dipolar kernel (NxM-matrix)
 
 Theory
 =========================================

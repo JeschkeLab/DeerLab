@@ -7,11 +7,14 @@
 
 Estimate the noise level (standard deviation) on a signal.
 
-.. function:: Level = noiselevel(S,M)
-
-    :param S: Signal vector (N-array)
-    :param M: Number of points (scalar)
-    :returns: - Noise level (scalar)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+:mod:`Level = noiselevel(S,M)`
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Parameters
+    *   **S** - Signal vector (N-array)
+    *   **M** -  Number of points (scalar)
+Returns
+    *  Noise level (scalar)
 
 Usage
 =========================================
