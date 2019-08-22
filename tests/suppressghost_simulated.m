@@ -50,7 +50,7 @@ Dip2 = (FormFactor2-(1-lambda))/lambda;
 Dip2 = Dip2/Dip2(1);
 Dip3 = Dip3/Dip3(1);
 
-signal = supressghost(FormFactor3,3);
+signal = suppressghost(FormFactor3,3);
 signal = signal/signal(1);
 signal = (signal - lambda)/(1-lambda) ;
 signal= signal/signal(1);
