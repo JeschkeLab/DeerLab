@@ -1,4 +1,5 @@
 .. highlight:: matlab
+.. _noiselevel:
 
 *********************
 :mod:`noiselevel`
