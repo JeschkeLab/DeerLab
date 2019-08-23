@@ -12,3 +12,7 @@ DeerAnalysis API
     ./suppressghost
     ./time2dist
     ./time2freq
+    ./whitenoise
+    ./winlowpass
+    ./aptkernel
+    ./apt
