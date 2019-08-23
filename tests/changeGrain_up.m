@@ -1,5 +1,10 @@
 function [err,data] = test(opt,olddata)
 
+currentpath = pwd;
+cd(fileparts(mfilename('fullpath')))
+cd ../functions/private
+
+
 %======================================================
 % Grain up function test
 %======================================================
@@ -21,5 +26,8 @@ err(2) = any(abs(grainedTimeAxis - GrainUp)>1e-10);
 
 err = any(err);
 data = [];
+
+cd(currentpath)
+
 
 end

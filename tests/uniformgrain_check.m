@@ -1,4 +1,7 @@
 function [err,data] = test(opt,olddata)
+currentpath = pwd;
+cd(fileparts(mfilename('fullpath')))
+cd ../functions/private
 
 %======================================================
 % Grain up function test
@@ -24,5 +27,8 @@ if opt.Display
    plot(uniformAxis,uniformGaussian) 
    plot(uniformAxis,uniformGaussianOut) 
 end
+
+cd(currentpath)
+
 
 end
