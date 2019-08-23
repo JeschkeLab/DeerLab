@@ -16,3 +16,7 @@ DeerAnalysis API
     ./winlowpass
     ./aptkernel
     ./apt
+    ./backgroundstart
+    ./correctphase
+    ./correctzerotime
+    ./dipolarsignal

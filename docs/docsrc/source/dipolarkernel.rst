@@ -13,7 +13,7 @@ Computes the dipolar interaction kernel for the linear transformation from dista
 Parameters
     *   **t** - Time axis vector (N-array)
     *   **r** -  Distance axis vector (M-array)
-    *   **B** -  ackground function vector (N-array)
+    *   **B** -  Background function vector (N-array)
 Returns
     *  **K** - Dipolar kernel (NxM-matrix)
 
