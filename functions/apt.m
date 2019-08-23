@@ -10,6 +10,9 @@
 %   Specify the distance-domain smoothing parameter (DDS) by passing as a 
 %   scalar value.
 %
+%   [P,r] = APT(S,K,DDS)
+%   The output distance axis can be requested as a second argument
+%
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 %
@@ -31,7 +34,7 @@ if iscolumn(Signal)
 end
 validateattributes(Signal,{'numeric'},{'2d','nonempty'})
 
-if nargin<2 || isempty(DistDomainSmoothing)
+if nargin<3 || isempty(DistDomainSmoothing)
     DistDomainSmoothing = 0.05;
 else
     validateattributes(DistDomainSmoothing,{'numeric'},{'scalar','nonnegative'})
