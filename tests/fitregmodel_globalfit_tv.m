@@ -8,9 +8,8 @@ TimeAxis1 = linspace(0,TimeStep*Ntime1,Ntime1);
 [~,rmin,rmax] = time2dist(TimeAxis1);
 DistanceAxis = linspace(rmin,rmax,Ndist);
 
-Distribution = gaussian(DistanceAxis,2,0.3) + gaussian(DistanceAxis,4,0.3);
-Distribution = Distribution/sum(Distribution);
-
+Distribution = onegaussian(DistanceAxis,[2,0.3]) + onegaussian(DistanceAxis,[4,0.3]);
+Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 Kernel1 = dipolarkernel(TimeAxis1,DistanceAxis);
 Signal1 = Kernel1*Distribution;
 noise = whitenoise(length(Signal1),0.03);
@@ -31,9 +30,9 @@ noise = whitenoise(length(Signal3),0.1);
 Signal3 = Signal3 + noise;
 
 
-L = regoperator(Ndist,3);
+L = regoperator(Ndist,2);
 %Set optimal regularization parameter (found numerically lambda=0.13)
-regparam = 10;
+regparam = 1;
 
 Signals = {Signal1,Signal2,Signal3};
 Kernels = {Kernel1,Kernel2,Kernel3};

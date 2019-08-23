@@ -1,5 +1,11 @@
 function [err,data] = test(opt,olddata)
 
+
+currentpath = pwd;
+cd(fileparts(mfilename('fullpath')))
+cd ../functions/private
+
+
 AnalyticalFresnelS = [0.4382591473903547,0.3434156783636995,0.4963129989686961,...
             0.4205157484121662,0.4991913819171168,0.4469607612369303,...
             0.4997047894534464,0.4602142143930145,0.4998610456296845,...
@@ -79,4 +85,5 @@ err(2) = any(abs(NumericalFresnelC - AnalyticalFresnelC)>1e-8);
 err = any(err);
  data = [];
  
+ cd(currentpath)
 end
