@@ -1,5 +1,5 @@
 %
-% BACKGROUNDSTART Compute discrete derivative regularization operators 
+% BACKGROUNDSTART Computes the optimal point for the background fitting start
 % 
 %   [t0,pos] = BACKGROUNDSTART(S,t,'model')
 %   Returns the optimal start time (t0) and corresponding array index (pos)

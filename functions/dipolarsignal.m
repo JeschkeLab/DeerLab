@@ -46,7 +46,7 @@ if isempty(Overtones)
     Overtones = 1;
 end
 if isempty(Offset)
-    Offset = 0;
+    Offset = -6;
 end
 validateattributes(NoiseLevel,{'numeric'},{'scalar','nonnegative'},mfilename,'NoiseLevel')
 validateattributes(ModDepth,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'ModDepth')
@@ -84,7 +84,7 @@ FormFactor = (1-ModDepth) + ModDepth*DipEvoFcn;
 FormFactor = FormFactor.*Background;
 
 %Add noise and intensity offset
-FormFactor = FormFactor + Noise + Offset;
+FormFactor = (FormFactor + Noise)*Offset;
 
 
 end
