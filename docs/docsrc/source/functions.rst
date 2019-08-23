@@ -10,3 +10,5 @@ DeerAnalysis API
     ./fitregmodel
     ./selregparam
     ./suppressghost
+    ./time2dist
+    ./time2freq

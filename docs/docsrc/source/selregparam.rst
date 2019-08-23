@@ -41,6 +41,11 @@ If multiple selection methods are passed as a cell array of strings, the functio
 
 .. code-block:: matlab
 
+    [alpha,F,alphas] = selregparam(alphas,S,K,L,'type','all')`
+
+Alternatively, the argument ``'all'`` can be passed, which will compute the optimal regularization parameter based on all the selection methods implemented in the function.
+.. code-block:: matlab
+
   alpha = selregparam(alphas,{S1,S2,..,SM},{K1,K2,..,KM},r,L,'type','method')
 
 Passing multiple signals/kernels enables selection of the regularization parameter for global fitting of the regularization model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes N1,N2,... and a cell array of Kernel matrices with sizes N1xM,N2xM,... must be passed as well.
