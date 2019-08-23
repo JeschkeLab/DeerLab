@@ -52,6 +52,7 @@ elseif nargin == 2
     end    
     
     %If necessary inputs given, compute the model distance distribution
+    t = abs(t);
     Background = exp(-(param(1)*t).^(param(2)/3));
     if ~iscolumn(Background)
         Background = Background';

@@ -63,6 +63,7 @@ elseif nargin == 2
     end
     
     %If necessary inputs given, compute the model distance distribution
+    t = abs(t);
     StretchedExp1 = exp(-(param(1)*t).^(param(2)/3));
     StretchedExp2 = exp(-(param(3)*t).^(param(4)/3));
     Background = StretchedExp1.*StretchedExp2;
