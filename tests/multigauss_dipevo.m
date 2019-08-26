@@ -13,7 +13,7 @@ Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-[FitDistribution,FitParam] = multigauss(DipEvoFcn,Kernel,DistanceAxis,5);
+[FitDistribution,FitParam] = multigauss(DipEvoFcn,Kernel,DistanceAxis,5,'aicc');
 err = any(abs(FitDistribution - Distribution)>1e-5);
 
 

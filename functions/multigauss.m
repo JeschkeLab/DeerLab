@@ -8,6 +8,11 @@
 %   distributions up to a maximum number given by (Ngauss) by means of the 
 %   corrected Aikaike information criterion (AICC).
 %
+%   [P,param,opt,metrics] = MULTIGAUSS(...)
+%   If requested alongside the distribution (P), the optimal fit model 
+%   parameters (param), the optimal number of gaussians (opt) and
+%   evaluated selection metrics (metrics) are returned.
+%
 %   P = MULTIGAUSS(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs. 
 %   
@@ -21,7 +26,11 @@
 % the Free Software Foundation.
 
 
-function [FitDistribution,FitParam,optimum,metrics] = multigauss(Signal,Kernel,DistanceAxis,maxGaussians,varargin)
+function [FitDistribution,FitParam,optimum,metrics] = multigauss(Signal,Kernel,DistanceAxis,maxGaussians,method,varargin)
+
+if nargin<5 
+    method = 'aicc';
+end
 
 %Validate user input (first three inputs are validated in lower-level functions)
 if nargin<4
@@ -40,7 +49,7 @@ for i=2:maxGaussians
 end
 
 %Run optimization to see which multigauss model is the best 
-[optimum,metrics] = selectmodel(multiGaussModel,Signal,DistanceAxis,Kernel,'aicc',varargin);
+[optimum,metrics] = selectmodel(multiGaussModel,Signal,DistanceAxis,Kernel,method,varargin);
 
 %Fit the data to the optimal multigauss parametric model
 [FitDistribution,FitParam] = fitparamodel(Signal,Kernel,DistanceAxis,multiGaussModel{optimum},[],varargin);
