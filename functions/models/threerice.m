@@ -1,15 +1,37 @@
 function output = threerice(r,param)
+%
+% THREERICE Sum of three rician distributions parametric model
+%
+%   info = THREERICE
+%   Returns an (info) structure containing the specifics of the model.
+%
+%   P = THREERICE(r,param)
+%   Computes the N-point model (P) from the N-point distance axis (r) according to 
+%   the paramteres array (param). The required parameters can also be found 
+%   in the (info) structure.
+%
+% PARAMETERS
+% name      symbol default lower bound upper bound
+% --------------------------------------------------------------------------
+% param(1)  <nu1>    2.5     1.0        10         mean distance
+% param(2)  sigma1   0.4     0.1        5          standard deviation
+% param(3)  <nu2>    4.0     1.0        10         mean distance
+% param(4)  sigma2   0.4     0.1        5          standard deviation
+% param(5)  <nu3>    5.0     1.0        10         mean distance
+% param(6)  sigma3   0.4     0.1        5          standard deviation
+% param(7)  p1       0.3     0          1          fraction of pairs at 1st distance
+% param(8)  p2       0.3     0          1          fraction of pairs at 2nd distance
+% --------------------------------------------------------------------------
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
 
 % PARAMETERS
 % name    symbol default lower bound upper bound
-% par(1)  <nu1>    2.5     1.0        10         mean distance
-% par(2)  sigma1   0.4     0.1        5          standard deviation
-% par(3)  <nu2>    4.0     1.0        10         mean distance
-% par(4)  sigma2   0.4     0.1        5          standard deviation
-% par(5)  <nu3>    5.0     1.0        10         mean distance
-% par(6)  sigma3   0.4     0.1        5          standard deviation
-% par(7)  p1       0.5     0          1          fraction of pairs at 1st distance
-% par(8)  p 2      0.5     0          1          fraction of pairs at 2nd distance
 
 
 nParam = 8;
@@ -34,7 +56,7 @@ if nargin==0
     
     info.parameters(3).name = ['Mean distance ',char(957),'2 2nd Rician'];
     info.parameters(3).range = [1 10];
-    info.parameters(3).default = 3.5;
+    info.parameters(3).default = 4.0;
     info.parameters(3).units = 'nm';
     
     info.parameters(4).name = ['Standard deviation ',char(963),'2 2nd Rician'];
@@ -54,11 +76,11 @@ if nargin==0
     
     info.parameters(7).name = 'Relative amplitude A1 1st Rician';
     info.parameters(7).range = [0 1];
-    info.parameters(7).default = 0.5;
+    info.parameters(7).default = 0.3;
     
     info.parameters(8).name = 'Relative amplitude A2 2nd Rician';
     info.parameters(8).range = [0 1];
-    info.parameters(8).default = 0.5;
+    info.parameters(8).default = 0.3;
     
     output = info;
     

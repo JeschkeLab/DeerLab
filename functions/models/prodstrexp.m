@@ -1,13 +1,13 @@
 %
 % PRODSTREXP Product of two stretched exponentials background model
 %
-%   INFO = PRODSTREXP
-%   Returns an INFO structure containing the specifics of the model.
+%   info = SUMSTREXP
+%   Returns an (info) structure containing the specifics of the model.
 %
-%   X = PRODSTREXP(T,PARAM)
-%   Comptues the N-point model from the N-point time axis T according to
-%   the paramteres array PARAM. The required parameters can also be found
-%   in the INFO structure.
+%   B = SUMSTREXP(t,param)
+%   Computes the N-point model (B) from the N-point time axis (t) according to 
+%   the paramteres array (param). The required parameters can also be found 
+%   in the (info) structure.
 %
 % PARAMETERS
 % name    symbol default lower bound upper bound
@@ -15,7 +15,7 @@
 % PARAM(1)  k1     3.5      0            200        1st strexp decay rate
 % PARAM(2)  d1      3       0            6          1st strexp fractal dimension
 % PARAM(3)  k2     3.5      0            200        2nd strexp decay rate
-% PARAM(4)  d3      3       0            6          2nd strexp fractal dimension
+% PARAM(4)  d2      3       0            6          2nd strexp fractal dimension
 % --------------------------------------------------------------------------
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2

@@ -1,13 +1,13 @@
 %
 % STREXP Stretched exponential background model
 %
-%   INFO = STREXP
-%   Returns an INFO structure containing the specifics of the model.
+%   info = STREXP
+%   Returns an (info) structure containing the specifics of the model.
 %
-%   X = STREXP(T,PARAM)
-%   Comptues the N-point model from the N-point time axis T according to 
-%   the paramteres array PARAM. The required parameters can also be found 
-%   in the INFO structure.
+%   B = STREXP(t,param)
+%   Computes the N-point model (B) from the N-point time axis (t) according to 
+%   the paramteres array (param). The required parameters can also be found 
+%   in the (info) structure.
 %
 % PARAMETERS
 % name    symbol default lower bound upper bound

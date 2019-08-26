@@ -36,7 +36,7 @@
 %
 %       'MaxFunEvals' - Maximum number of optimizer function evaluations   
 %
-%       'AxisHandle' - Function handle to plot the state of the distance
+%       'AxisHandle' - Axis handle to plot the state of the distance
 %                      distribution at each iteration     
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2

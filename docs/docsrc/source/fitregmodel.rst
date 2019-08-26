@@ -147,7 +147,7 @@ TolFun
 
     .. code-block:: matlab
 
-        P = fitregmodel(args,'TolFun','1e-20')
+        P = fitregmodel(args,'TolFun',1e-20)
 
 MaxIter
     Maximum number of iterations of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
@@ -158,7 +158,7 @@ MaxIter
 
     .. code-block:: matlab
 
-        P = fitregmodel(args,'MaxIter','1e10')
+        P = fitregmodel(args,'MaxIter',1e10)
 
 MaxFunEval
     Maximum number of function evaluation of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
@@ -169,7 +169,7 @@ MaxFunEval
 
     .. code-block:: matlab
 
-        P = fitregmodel(args,'MaxFunEval','1e10')
+        P = fitregmodel(args,'MaxFunEval',1e10)
 
 References
 =========================================
