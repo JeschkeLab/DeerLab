@@ -9,7 +9,7 @@
 Multi-Gauss fitting of a distance distribution
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`P = multigauss(S,K,r,Ngauss,...)`
+:mod:`[P,param,Nopt,metrics] = multigauss(S,K,r,Ngauss,...)`
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Parameters
     *   **S** - Input signal (N-array)
@@ -18,6 +18,10 @@ Parameters
     *   **Ngauss** - Maximum number of Gaussians (scalar)
 Returns
     *  **P** - Distance Distribution (M-array)
+    *  **param** - Fitted model parameters (array)
+    *  **Nopt** - Optimal number of Gaussian (scalar)
+    *  **metrics** - Evaluated model selection functionals (cell array)
+
 Usage
 =========================================
 
@@ -27,6 +31,11 @@ Usage
 
 Fits the dipolar signal ``S`` to a distance distribution ``P`` using a multi-gauss parametric model according to the dipolar kernel ``K`` and distance axis ``r``. The function chooses the optimal number of Gaussian distributions up to a maximum number given by ``Ngauss`` by means of the corrected Aikaike information criterion (AICC).
 
+.. code-block:: matlab
+
+    [P,param,Nopt,metrics] = multigauss(args)
+
+If requested alongside the distribution ``P``, the optimal fit model parameters ``param``, the optimal number of gaussians ``Nopt`` and evaluated selection metrics ``metrics`` are returned.
 
 Optional Arguments
 =========================================

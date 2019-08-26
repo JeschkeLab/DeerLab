@@ -14,6 +14,8 @@ Contents
 .. toctree::
     :maxdepth: 1
 
+    ./theory
+    ./examples
     ./functions
 
 

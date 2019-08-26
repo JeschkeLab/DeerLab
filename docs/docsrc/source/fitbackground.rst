@@ -48,4 +48,4 @@ For polynomial function fitting, the polynomial order can be specified as an add
 
     [B,param] = fitbackground(S,t,tfit,@model)
 
-User-defined models can be fittid by passing a function handle instead of a model name. To pass user-defined models, the @model argument must be a function handle to a function accepting two input arguments as follows ``function myModel(t,param), ..., end`` where ``param`` is an array containing the parameter of the model. Example models include the ``@strexp``, ``@sumstrexp``, ``@prodstrexp`` models distibuted in DeerAnalysis2.
+User-defined models can be fitted by passing a function handle instead of a model name. To pass user-defined models, the @model argument must be a function handle to a function accepting two input arguments as follows ``function myModel(t,param), ..., end`` where ``param`` is an array containing the parameter of the model. Example models include the :ref:`strexp`, :ref:`sumstrexp`, :ref:`prodstrexp` models distibuted in DeerAnalysis2.

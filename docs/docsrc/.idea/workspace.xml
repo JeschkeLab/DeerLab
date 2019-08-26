@@ -2,14 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7b96f00a-da8c-478c-ad08-f49f2f492335" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/dipolarkernel.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/dipolarkernel.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/fitbackground.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/fitbackground.rst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/source/fitregmodel.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/fitregmodel.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/functions.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/functions.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../functions/models/strexp.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../functions/models/strexp.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../functions/models/sumstrexp.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../functions/models/sumstrexp.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../functions/multigauss.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../functions/multigauss.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../functions/obir.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../functions/obir.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/index.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/multigauss.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/multigauss.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/regoperator.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/regoperator.rst" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,6 +37,11 @@
         <option name="myModuleName" value="doc" />
       </console-settings>
     </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\LUFA\Documents\lufa\projects\DeerAnalysis\DeerAnalysis\docs\docsrc\source\theory" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">

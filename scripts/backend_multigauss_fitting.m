@@ -1,43 +1,54 @@
+%========================================================
+% DeerAnalyis2
+% Example: Multi-Gauss fitting
+% Fit and an unknown number of Gaussian distributions to 
+% a noisy signal
+%========================================================
 
-Dimension = 300;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
-InputParam = [4 0.2 4 1 3 0.4 0.4 0.4];
-Distribution = threegaussian(DistanceAxis,InputParam);
-Distribution = Distribution/(1/sqrt(2*pi)*1/InputParam(2));
-Distribution = Distribution/sum(Distribution);
-Noise = rand(Dimension,1);
-Noise = Noise - mean(Noise);
-Noise = 0.0*Noise/max(Noise);
+clear
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution + Noise;
+%Parameters
+%-------------------------
+N = 300;
+dt = 0.008;
+param0 = [3 0.3 4 0.3 0.5];
+NGauss = 6;
 
-[FitDistribution,FitParam,optimum,metrics] = multigauss(DipEvoFcn,Kernel,DistanceAxis,8);
+%Preparation
+%-------------------------
+t = linspace(0,dt*N,N);
+r = time2dist(t);
+P = twogaussian(r,param0);
+K = dipolarkernel(t,r);
 
+%Generate dipolar signal with noise
+S = dipolarsignal(t,r,P,'NoiseLevel',0.05);
+
+%Run multi-Gauss fitting
+%-------------------------
+[Pfit,param,Nopt,metrics] = multigauss(S,K,r,NGauss,'aicc');
+
+fprintf('The optimal number of Gaussians is: %i \n',Nopt)
+
+%Plot results
+%-------------------------
 figure(8),clf
-subplot(131)
-plot(TimeAxis,DipEvoFcn,'k','LineWidth',1.5)
-hold on
-plot(TimeAxis,Kernel*FitDistribution,'r','LineWidth',1.5)
-grid on,box on
+
+subplot(131),hold on
+plot(t,S,'k','LineWidth',1)
+plot(t,K*Pfit,'b','LineWidth',1.5)
+grid on,box on,legend('Truth','Fit')
+xlabel('Time [\mus]'),ylabel('S(t)')
+
+subplot(132),hold on
+plot(r,P,'k','LineWidth',1.5)
+plot(r,Pfit,'b','LineWidth',1.5)
+grid on, box on, axis tight 
 legend('Truth','Fit')
-xlabel('Time [\mus]')
-ylabel('D(r)')
-subplot(132)
-plot(DistanceAxis,Distribution,'k','LineWidth',1.5)
-hold on
-plot(DistanceAxis,FitDistribution,'r','LineWidth',1.5)
-grid on,box on
-legend('Truth','Fit')
-xlabel('Distance [nm]')
-ylabel('P(r)')
-subplot(133)
-hold on
-plot(metrics{1},'b-o','LineWidth',1.5)
-plot(metrics{2},'r-o','LineWidth',1.5)
-legend('AICc','BIC')
+xlabel('Distance [nm]'), ylabel('P(r)')
+
+subplot(133),hold on
+plot(metrics,'b-o','LineWidth',1.5)
 grid on,box on,axis tight
-ylabel('Metric')
-xlabel('N-Gaussian model')
+legend('AICc')
+ylabel('Model Selection Metric'), xlabel('N-Gaussian model')
