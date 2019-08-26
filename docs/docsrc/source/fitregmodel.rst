@@ -5,16 +5,18 @@
 *********************
 Fits a distance distribution to one (or several) signals by optimization of a regularization functional model.
 
-.. mat:function:: P = fitregmodel(S,K,r,L,'type',alpha,...)
-
-    :param S: Input signal (N-array)
-    :param K: Dipolar kernel (NxM-array)
-    :param r: Background function vector (N-array)
-    :param L: Regularization operator ((M-order))xM-array)
-    :param type: Regularization type (string)
-    :param alpha: Regularization parameter (scalar)
-
-    :returns: - **P** - Distance Distribution (M-array)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+:mod:`P = fitregmodel(S,K,r,L,'type',alpha,...)`
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Parameters
+    *   **S** - Input signal (N-array)
+    *   **K** -  Dipolar kernel (NxM-array)
+    *   **r** -  Distance Axis (N-array)
+    *   **L** - Regularization operator ((M-order))xM-array)
+    *   **type** - Regularization type (string)
+    *   **alpha** - Regularization parameter (scalar)
+Returns
+    *  **P** - Distance Distribution (M-array)
 
 Theory
 =========================================
@@ -145,7 +147,7 @@ TolFun
 
     .. code-block:: matlab
 
-        P = fitregmodel(args,'TolFun','1e-20')
+        P = fitregmodel(args,'TolFun',1e-20)
 
 MaxIter
     Maximum number of iterations of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
@@ -156,7 +158,7 @@ MaxIter
 
     .. code-block:: matlab
 
-        P = fitregmodel(args,'MaxIter','1e10')
+        P = fitregmodel(args,'MaxIter',1e10)
 
 MaxFunEval
     Maximum number of function evaluation of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
@@ -167,7 +169,7 @@ MaxFunEval
 
     .. code-block:: matlab
 
-        P = fitregmodel(args,'MaxFunEval','1e10')
+        P = fitregmodel(args,'MaxFunEval',1e10)
 
 References
 =========================================

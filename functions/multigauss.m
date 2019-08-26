@@ -9,8 +9,7 @@
 %   corrected Aikaike information criterion (AICC).
 %
 %   P = MULTIGAUSS(...,'Property',Value)
-%   Specify the distance-domain smoothing parameter (DDS) by passing as a 
-%   scalar value. 
+%   Additional (optional) arguments can be passed as property-value pairs. 
 %   
 %   See "help fitparamodel" for a detailed list of the property-value pairs
 %   accepted by the function.

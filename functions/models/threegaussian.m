@@ -1,15 +1,33 @@
 function output = threegaussian(r,param)
-
+%
+% THREEGAUSSIAN Sum of three Gaussian distributions parametric model
+%
+%   info = THREEGAUSSIAN
+%   Returns an (info) structure containing the specifics of the model.
+%
+%   P = THREEGAUSSIAN(r,param)
+%   Computes the N-point model (P) from the N-point distance axis (r) according to 
+%   the paramteres array (param). The required parameters can also be found 
+%   in the (info) structure.
+%
 % PARAMETERS
-% name    symbol default lower bound upper bound
-% par(1)  <r1>   2.5     1.5         20         1st mean distance
-% par(2)  s(r1)  0.5     0.05        5          std. dev. of 1st distance
-% par(3)  <r2>   3.5     1.5         20         2nd mean distance
-% par(4)  s(r2)  0.5     0.05        5          std. dev. of 2nd distance
-% par(5)  <r3>   5.0     1.5         20         3rd mean distance
-% par(6)  s(r3)  0.5     0.05        5          std. dev. of 3rd distance
-% par(7)  p1     0.5     0           1          fraction of pairs at 1st distance
-% par(8)  p2     0.3     0           1          fraction of pairs at 2nd distance
+% name      symbol default lower bound upper bound
+% --------------------------------------------------------------------------
+% param(1)  <r1>   2.5     1.5         20         1st mean distance
+% param(2)  s(r1)  0.5     0.05        5          std. dev. of 1st distance
+% param(3)  <r2>   3.5     1.5         20         2nd mean distance
+% param(4)  s(r2)  0.5     0.05        5          std. dev. of 2nd distance
+% param(5)  <r3>   5.0     1.5         20         3rd mean distance
+% param(6)  s(r3)  0.5     0.05        5          std. dev. of 3rd distance
+% param(7)  p1     0.3     0           1          fraction of pairs at 1st distance
+% param(8)  p2     0.3     0           1          fraction of pairs at 2nd distance
+% --------------------------------------------------------------------------
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
 
 nParam = 8;
 
@@ -50,11 +68,11 @@ if nargin==0
     
     info.parameters(7).name = 'Relative amplitude A1 1st Gaussian';
     info.parameters(7).range = [0 1];
-    info.parameters(7).default = 0.5;
+    info.parameters(7).default = 0.3;
     
     info.parameters(8).name = 'Relative amplitude A2 2nd Gaussian';
     info.parameters(8).range = [0 1];
-    info.parameters(8).default = 0.5;
+    info.parameters(8).default = 0.3;
        
     output = info;
     

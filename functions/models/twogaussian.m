@@ -1,14 +1,30 @@
 function output = twogaussian(r,param)
-
+%
+% TWOGAUSSIAN Sum of two Gaussian distributions parametric model
+%
+%   info = TWOGAUSSIAN
+%   Returns an (info) structure containing the specifics of the model.
+%
+%   P = TWOGAUSSIAN(r,param)
+%   Computes the N-point model (P) from the N-point distance axis (r) according to 
+%   the paramteres array (param). The required parameters can also be found 
+%   in the (info) structure.
+%
 % PARAMETERS
-% name    symbol default lower bound upper bound
-% par(1)  <r1>   2.5     1.5         20         1st mean distance
-% par(2)  s(r1)  0.5     0.05        5          std. dev. of 1st distance
-% par(3)  <r2>   3.5     1.5         20         2nd mean distance
-% par(4)  s(r2)  0.5     0.05        5          std. dev. of 2nd distance
-% par(5)  p1     0.5     0           1          fraction of pairs at 1st distance
-% par(6)  kmin   1.00    0           Inf        <r2>/<r1> minimum ratio
-% par(7)  kmax   2.00    0           Inf        <r2>/<r1> maximum ratio
+% name      symbol default lower bound upper bound
+% --------------------------------------------------------------------------
+% param(1)  <r1>   2.5     1.5         20         1st mean distance
+% param(2)  s(r1)  0.5     0.05        5          std. dev. of 1st distance
+% param(3)  <r2>   3.5     1.5         20         2nd mean distance
+% param(4)  s(r2)  0.5     0.05        5          std. dev. of 2nd distance
+% param(5)  A      0.5     0           1          fraction of pairs at 1st distance
+% --------------------------------------------------------------------------
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
 
 nParam = 5;
 

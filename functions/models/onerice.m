@@ -1,17 +1,34 @@
 function output = onerice(r,param)
-
+%
+% ONERICE Rician distribution parametric model
+%
+%   info = ONERICE
+%   Returns an (info) structure containing the specifics of the model.
+%
+%   P = ONERICE(r,param)
+%   Computes the N-point model (P) from the N-point distance axis (r) according to 
+%   the paramteres array (param). The required parameters can also be found 
+%   in the (info) structure.
+%
 % PARAMETERS
-% name    symbol default lower bound upper bound
-% par(1)  <nu>    3.5     1.0         10          mean distance
-% par(2)  sigma   0.7     0.1          5          standard deviation
-
+% name     symbol default lower bound upper bound
+% --------------------------------------------------------------------------
+% param(1)  <nu>    3.5     1.0         10          mean distance
+% param(2)  sigma   0.7     0.1          5          standard deviation
+% --------------------------------------------------------------------------
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
 
 nParam = 2;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
     info.Model  = 'Single Rice/Rician distribution';
-    info.Equation  = ['x/',char(963),'²*exp((r-',char(957),')²/(2',char(963),'²))*Bessel(r*',char(957),'/',char(963),'²)'];
+    info.Equation  = ['r/',char(963),'²*exp((r² + ',char(957),'²)/(2',char(963),'²))*Bessel(r*',char(957),'/',char(963),'²)'];
     info.nParam  = nParam;
     info.parameters(1).name = ['Mean distance ',char(957)];
     info.parameters(1).range = [1 10];

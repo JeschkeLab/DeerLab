@@ -1,14 +1,30 @@
 function output = randcoil(r,param)
-
-% Random-coil model for an unfolded peptide/protein, end-to-end distance
-% distribution is approximated by a Gaussian coil with proper mean
-% distance, which is good for sufficiently large N
-% N. C. Fitzkee, G. D. Rose, PNAS 2004, 101(34), 12497-12502
+%
+% RANDCOIL Random-coil model for an unfolded peptide/protein
+%
+%   info = RANDCOIL
+%   Returns an (info) structure containing the specifics of the model.
+%
+%   P = RANDCOIL(r,param)
+%   Computes the N-point model (P) from the N-point distance axis (r) according to 
+%   the paramteres array (param). The required parameters can also be found 
+%   in the (info) structure. The end-to-end distance distribution is approximated 
+%   by a Gaussian coil with proper mean distance, which is good for
+%   sufficiently large N.
+%   See: N. C. Fitzkee, G. D. Rose, PNAS 2004, 101(34), 12497-12502
 %
 % PARAMETERS
-% name    symbol default lower bound upper bound
-% par(1)  N      50      2              1000    number of residues between labels, including labeled residues
-% par(2)  nu     0.602   0.33           1       scaling exponent
+% name      symbol default lower bound upper bound
+% --------------------------------------------------------------------------
+% param(1)  N      50      2              1000    number of residues between labels, including labeled residues
+% param(2)  nu     0.602   0.33           1       scaling exponent
+% --------------------------------------------------------------------------
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
 
 R0=0.198; % 1.98 Å per residue
 nParam = 2;

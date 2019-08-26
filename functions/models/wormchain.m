@@ -1,10 +1,27 @@
 function output = wormchain(r,param)
 %
-% Worm-like chain model near the rigid limit
-% name    symbol default lower bound upper bound
-% par(1)  L      3.7     1.5         10             length of the worm-like chain
-% par(2)  Lp     10      2           100            persistence length
+% WORMCHAIN Worm-like chain model near the rigid limit
 %
+%   info = WORMCHAIN
+%   Returns an (info) structure containing the specifics of the model.
+%
+%   P = WORMCHAIN(r,param)
+%   Computes the N-point model (P) from the N-point distance axis (r) according to 
+%   the paramteres array (param). The required parameters can also be found 
+%   in the (info) structure.
+%
+% PARAMETERS
+% name      symbol default lower bound upper bound
+% --------------------------------------------------------------------------
+% param(1)  L      3.7     1.5         10             length of the worm-like chain
+% param(2)  Lp     10      2           100            persistence length
+% --------------------------------------------------------------------------
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
 
 nParam = 2;
 

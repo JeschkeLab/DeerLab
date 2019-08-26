@@ -7,13 +7,15 @@
 
 Computes the discrete approximation to the derivative regularization operators.
 
-.. function:: [L,W] = regoperator(N,d)
-
-    :param N: Distance domain size (scalar)
-    :param d: Derivative order (scalar)
-    :returns:
-        - **L** - Regularization operator matrix ((N-d)xN matrix)
-        - **W** - orthonormal basis for the null space of L (Nxd matrix)
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+:mod:`[L,W] = regoperator(N,order)`
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Parameters
+    *   **N** -  Distance domain size (scalar)
+    *   **order** - Derivative order (scalar)
+Returns
+    *   **L** - Regularization operator matrix ((N-d)xN matrix)
+    *   **W** - orthonormal basis for the null space of L (Nxd matrix)
 
 Theory
 =========================================

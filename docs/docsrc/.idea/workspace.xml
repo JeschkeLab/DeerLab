@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7b96f00a-da8c-478c-ad08-f49f2f492335" name="Default Changelist" comment="" />
+    <list default="true" id="7b96f00a-da8c-478c-ad08-f49f2f492335" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/fitregmodel.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/fitregmodel.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/functions.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/functions.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../functions/models/strexp.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../functions/models/strexp.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../functions/models/sumstrexp.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../functions/models/sumstrexp.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../functions/multigauss.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../functions/multigauss.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../functions/obir.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../functions/obir.m" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,10 +24,12 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="ProjectId" id="1Pf9pMtDUOkNDvDZnP3DjfDgh3s" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -103,10 +114,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="PERFORM_UPDATE_IN_BACKGROUND" value="false" />
+    <option name="PERFORM_COMMIT_IN_BACKGROUND" value="false" />
+    <option name="PERFORM_EDIT_IN_BACKGROUND" value="false" />
+    <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="false" />
+    <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="false" />
   </component>
 </project>

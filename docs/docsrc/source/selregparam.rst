@@ -5,9 +5,9 @@
 *********************
 Optimal selection of the regularization parameter according to different model selection criteria.
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[alpha,F,alphas] = selregparam(alphas,S,K,L,'type','method')`
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+:mod:`[alpha,F,alphas] = selregparam(alphas,S,K,L,'type','method',...)`
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Parameters
     *   **alphas** - Candidate regularization parameters (array)
     *   **S** - Input signal (N-array)
@@ -25,7 +25,7 @@ Usage
 
 .. code-block:: matlab
 
-    [alpha] = selregparam(alphas,S,K,L,'type','method')`
+    [alpha] = selregparam(alphas,S,K,L,'type','method')
 
 Returns the optimal regularization parameter ``alpha`` from a range of regularization parameter candidates ``alphas``. The parameter for the regularization type given by ``'type'`` is computed based on the input signal ``S``, the dipolar kernel ``K`` and the regularization operator ``L``. The method employed for the selection of the regularization parameter can be specified as the ``'method'`` input argument. The available regularization models specified by ``'type'`` are
 
@@ -35,9 +35,15 @@ Returns the optimal regularization parameter ``alpha`` from a range of regulariz
 
 .. code-block:: matlab
 
-    [alpha,F,alphas] = selregparam(alphas,S,K,L,'type',{'method1','method2','method3',...})`
+    [alpha,F,alphas] = selregparam(alphas,S,K,L,'type',{'method1','method2','method3',...})
 
 If multiple selection methods are passed as a cell array of strings, the function returns ``alpha`` as an array of optimal regularization parameters corresponding to the input methods. The selection models functionals ``F`` are also returned as a cell array of arrays containing the evaluated functionals of the requested models. The order of the output parameters corresponds to the order of the model strings in the input.
+
+.. code-block:: matlab
+
+    [alpha,F,alphas] = selregparam(alphas,S,K,L,'type','all')
+
+Alternatively, the argument ``'all'`` can be passed, which will compute the optimal regularization parameter based on all the selection methods implemented in the function.
 
 .. code-block:: matlab
 
@@ -144,6 +150,3 @@ NoiseLevel
     .. code-block:: matlab
 
         P = selregparam(args,'mcl','NoiseLevel',0.05)
-
-References
-=========================================
