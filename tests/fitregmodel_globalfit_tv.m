@@ -1,5 +1,7 @@
 function [err,data,maxerr] = test(opt,olddata)
 
+warning('off','all')
+
 Ntime1 = 100;
 Ndist = 200;
 

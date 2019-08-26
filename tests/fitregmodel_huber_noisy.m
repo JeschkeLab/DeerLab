@@ -9,8 +9,7 @@ NoiseLevel = 0.01;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
-Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
+Distribution = onegaussian(DistanceAxis,[3,0.5]);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;

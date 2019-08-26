@@ -2,13 +2,71 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7b96f00a-da8c-478c-ad08-f49f2f492335" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/dipolarkernel.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/dipolarkernel.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/fitbackground.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/fitbackground.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/fitregmodel.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/fitregmodel.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/index.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/multigauss.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/multigauss.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/regoperator.rst" beforeDir="false" afterPath="$PROJECT_DIR$/source/regoperator.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../functions/dipolarsignal.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../functions/dipolarsignal.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../functions/gaussian.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/APT_run.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/APT_run.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/apt_memoization.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/apt_memoization.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/apt_negative_time.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/apt_negative_time.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/dipolarkernel_background.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/dipolarkernel_background.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/dipolarkernel_exbandwidth.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/dipolarkernel_exbandwidth.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_asymmetric.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_asymmetric.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_globalfit_twogaussian.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_globalfit_twogaussian.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_memoization.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_memoization.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_onegaussian_background.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_onegaussian_background.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_onegaussian_dipevo.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_onegaussian_dipevo.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_onegaussian_unconst.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_onegaussian_unconst.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_solver_fmincon.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_solver_fmincon.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_solver_fmincon_chi.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_solver_fmincon_chi.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_solver_lsqnonlin.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_solver_lsqnonlin.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_threegaussian_bckg.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_threegaussian_bckg.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_threegaussian_dipevo.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_threegaussian_dipevo.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_twogaussian_background.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_twogaussian_background.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitparamodel_twogaussian_dipevo.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitparamodel_twogaussian_dipevo.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_custom.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_custom.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_globalfit_huber.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_globalfit_huber.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_globalfit_manualweights.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_globalfit_manualweights.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_globalfit_tikh.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_globalfit_tikh.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_globalfit_tv.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_globalfit_tv.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_huber_dipevofcn.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_huber_dipevofcn.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_huber_fnnls.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_huber_fnnls.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_huber_noisy.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_huber_noisy.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_memoization.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_memoization.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_asymmetric.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_asymmetric.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_background.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_background.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_dipevofcn.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_dipevofcn.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_fmincon.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_fmincon.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_noisy.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_noisy.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_sqrt_background.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_sqrt_background.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_unconstrained.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tikh_unconstrained.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tv_background.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tv_background.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tv_dipevofcn.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tv_dipevofcn.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tv_fnnls.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tv_fnnls.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tv_fnnls_noisy.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tv_fnnls_noisy.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tv_noisy.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tv_noisy.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/fitregmodel_tv_sqrt_background.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/fitregmodel_tv_sqrt_background.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/longpass_negative_times.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/longpass_negative_times.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/longpass_singleFreq.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/longpass_singleFreq.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/obir_huber_fnnls.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/obir_huber_fnnls.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/obir_tikhonov_fmincon.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/obir_tikhonov_fmincon.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/obir_tikhonov_fnnls.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/obir_tikhonov_fnnls.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/obir_tv_fnnls.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/obir_tv_fnnls.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selectmodel_gaussians.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selectmodel_gaussians.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selectmodel_memoization.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selectmodel_memoization.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_asymmetric.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_asymmetric.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_globalfit_huber.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_globalfit_huber.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_globalfit_tikh.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_globalfit_tikh.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_globalfit_tv.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_globalfit_tv.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_huber_dipevofcn.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_huber_dipevofcn.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_huber_unconstrained.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_huber_unconstrained.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_memoization.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_memoization.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_refine.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_refine.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_tikh_all.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_tikh_all.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_tikh_dipevofcn.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_tikh_dipevofcn.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_tikh_unconstrained.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_tikh_unconstrained.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_tv_dipevofcn.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_tv_dipevofcn.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/selregparam_tv_unconstrained.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/selregparam_tv_unconstrained.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/suppressghost_simulated.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/suppressghost_simulated.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests/uniformGrain_check.m" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests/uniformGrain_check.m" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

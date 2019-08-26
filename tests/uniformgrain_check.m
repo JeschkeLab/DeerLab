@@ -11,8 +11,8 @@ FreqAxis = 5:0.5:100;
 nonUniformAxis = FreqAxis.^(1/3);
 uniformAxis = linspace(min(nonUniformAxis),max(nonUniformAxis),length(nonUniformAxis));
 
-nonUniformGaussian = gaussian(nonUniformAxis,3,0.25)';
-uniformGaussian = gaussian(uniformAxis,3,0.25)';
+nonUniformGaussian = onegaussian(nonUniformAxis,[3,0.25])';
+uniformGaussian = onegaussian(uniformAxis,[3,0.25])';
 
 [uniformGaussianOut] = uniformgrain(nonUniformAxis,nonUniformGaussian,uniformAxis);
 

@@ -7,9 +7,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Ntime,Ntime);
 [~,rmin,rmax] = time2dist(TimeAxis);
 DistanceAxis = linspace(rmin,rmax,Ndist);
-
-Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
+Distribution = onegaussian(DistanceAxis,[3,0.5]);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;

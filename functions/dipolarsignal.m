@@ -46,7 +46,7 @@ if isempty(Overtones)
     Overtones = 1;
 end
 if isempty(Offset)
-    Offset = -6;
+    Offset = 1;
 end
 validateattributes(NoiseLevel,{'numeric'},{'scalar','nonnegative'},mfilename,'NoiseLevel')
 validateattributes(ModDepth,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'ModDepth')

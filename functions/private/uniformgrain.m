@@ -44,6 +44,7 @@ InterpData = interp1(nonUniformGrain, data, rax, 'pchip', 0);
 output = 0*uniformgrain;
 rbas = round(min(uniformgrain)/Grain);
 output(minPoint - rbas + 1:maxPoint - rbas + 1) = InterpData;
+output = output/sum(output)/mean(diff(uniformgrain));
 
 
 

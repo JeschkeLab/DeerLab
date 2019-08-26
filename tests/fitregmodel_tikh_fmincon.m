@@ -8,14 +8,13 @@ Dimension = 200;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
-Distribution = gaussian(DistanceAxis,3,0.5);
-Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
+Distribution = onegaussian(DistanceAxis,[3,0.5]);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 40;
+RegParam = 5;
 RegMatrix = regoperator(Dimension,2);
 Result = fitregmodel(DipEvoFcn,Kernel,DistanceAxis,RegMatrix,'tikhonov',RegParam,'Solver','fmincon');
 

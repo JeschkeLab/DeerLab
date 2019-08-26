@@ -7,7 +7,7 @@ Dimension = 100;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
-Distribution = gaussian(DistanceAxis,3,0.5);
+Distribution = onegaussian(DistanceAxis,[3,0.5]);
 Distribution = Distribution/sum(Distribution);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
