@@ -22,13 +22,13 @@ Usage
 
     K = aptkernel(t)
 
-Computes a structure ``K`` containing the (N/2-2)xN point kernel, the (N/2-2) point array of normalization factors, N/2-2) point frequency axis and the (N/2-2)x(N/2-2) crosstalk matrix corresponding to the N-point time axis ``t``. The output structure ``K`` contains the following fields:
+Computes a structure ``K`` containing the following fields:
 
-*   ``Base``
-*   ``NormalizationFactor``
-*   ``FreqAxis``
-*   ``TimeAxis``
-*   ``Crosstalk``
+*   ``Base``: (N/2-2)xN point kernel
+*   ``NormalizationFactor``: (N/2-2) point array of normalization factors
+*   ``FreqAxis``: (N/2-2) point frequency axis
+*   ``TimeAxis``: N-point time axis
+*   ``Crosstalk``: (N/2-2)x(N/2-2) crosstalk matrix
 
 This structure can be then be passed directly to the :ref:`apt` function for computing the APT.
 
@@ -36,22 +36,20 @@ This structure can be then be passed directly to the :ref:`apt` function for com
 
 Optional Arguments
 =========================================
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
 
 .. code-block:: matlab
 
-    P = winlowpass(args,'Property1',Value1,'Property2',Value2,...)
+    K = aptkernel(t,'Property1',Value1,'Property2',Value2,...)
 
-.. centered:: **Property Names & Descriptions**
+ExcitationBandwidth
+    The excitation bandwidth in MHz of the experiment.
 
-ExitationBandwidth
-    The excitation bandwidth in MHz of the experiment can be passed as an option to account for it in the kernel.
-
-    *Default:* [*empty*]
+    *Default:* empty, corresponding to infinite excitation bandwidth
 
     *Example:*
 
     .. code-block:: matlab
 
-       P = selregparam(args,'ExitationBandwidth',100)
+       K = aptkernel(t,'ExcitationBandwidth',100)   % 100 MHz excitation bandwidth
 

@@ -8,7 +8,7 @@
 %       frequency axis and the (N/2-2)x(N/2-2) crosstalk matrix corresponding
 %       to the N-point time axis (t).
 %
-%       K = APTKERNEL(T,'ExitationBandwidth',w)
+%       K = APTKERNEL(T,'ExcitationBandwidth',w)
 %       The excitation bandwidth (w) of the experiment can be passed as an
 %       option to account for it in the kernel.
 %

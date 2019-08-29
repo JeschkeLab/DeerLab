@@ -13,7 +13,7 @@ Computes the optimal point for starting the background fit
 Parameters
     *   **S** - Signal (N-array)
     *   **t** - Time axis (N-array)
-    *   **model** - Backgorund model (string)
+    *   **model** - Background model (string)
 Returns
     *   **t0** - Optimal fitting start time (scalar)
     *   **pos** - Optimal fitting start index (scalar)

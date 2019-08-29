@@ -5,7 +5,7 @@
 :mod:`dipolarkernel`
 *********************
 
-Computes the dipolar interaction kernel for the linear transformation from distance-domain to time-domain.
+Computes the dipolar interaction kernel for the linear transformation ``S=K*P`` from a distance-domain distribution ``P`` to a time-domain signal ``S``.
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 :mod:`K = dipolarkernel(t,r,B,...)`
@@ -28,11 +28,8 @@ The function can be called as follows
 
 Computes ``K`` for the transformation to the dipolar evolution function from the time axis ``t`` and distance axis ``r``. The output kernel will not contain the background function.
 
-.. Important:: Since  the dipolar kernel is normalized by
-    :math:`\Delta r`
-    , in order to obtain the correct time-domain signal, the distance distributions must be properly normalized by
-    :math:`\Delta r`
-    as well.
+.. Important::
+   Since the dipolar kernel is normalized by `\Delta r`, in order to obtain the correct time-domain signal with ``S=K*P``, the distance distribution must be properly normalized by `\Delta r` as well.
 
 .. code-block:: matlab
 
@@ -71,7 +68,7 @@ KernelBType
         K = dipolarkernel(args,'KernelBType','full') %Use background without changes
 
 ExcitationBandwidth
-    Excitation bandwith of the pulses in **MHz**. If specified, its value is used in the compensation of limited excitation bandwidth of the experimental pulses. If not specified infinite excitation bandwidth is assumed. The compensation for a given excitation bandwidth :math:`\Delta\omega` is taken into account by the approximation [3]_
+    Excitation bandwith of the pulses in **MHz**. If specified, its value is used in the compensation of limited excitation bandwidth of the experimental pulses. If not specified infinite excitation bandwidth is assumed. The compensation for a given excitation bandwidth :math:`\Delta\omega` is taken into account by the approximation [1]_
 
     .. math:: K(t,r,\Delta\omega)  = exp\left(-\frac{\omega_{dd}^2}{\Delta\omega^2}\right)K(t,r)
 
@@ -140,6 +137,4 @@ Knots
 References
 =========================================
 
-.. [1] Gunnar Jeschke, eMagRes, 2016, Vol 5: 1459–1476.
-.. [2] Fábregas Ibáñez and Jeschke, to be published
-.. [3] Banham et al., JMR 191, 2008, 202-218
+.. [1] Banham et al., JMR 191, 2008, 202-218

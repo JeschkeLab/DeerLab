@@ -98,6 +98,9 @@ def setup(app):
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+# Default role
+default_role = 'math'  # with this, :math:`\psi` can be written simply as `\psi`
+
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = "sphinx_rtd_theme"

@@ -211,17 +211,16 @@ if ~all(Background == 1)
     if isempty(ModDepth)
         ModDepth = 1/Background(BckgStart) - 1;
     else
-       Background = Background/max(Background); 
+        Background = Background/max(Background); 
     end
-    Kernel = ModDepth*Kernel + 1;
+    switch KernelBType
+        case 'none'
+            Background = ones(Dimension,1);
+        case 'sqrt'
+            Background = sqrt(Background);
+    end
+    Kernel = (ModDepth*Kernel + 1).*Background;
 end
-switch KernelBType
-    case 'none'
-        Background = ones(Dimension,1);
-    case 'sqrt'
-        Background = sqrt(Background);
-end
-Kernel = Kernel.*Background;
 
 %Normalize kernel
 dr = mean(diff(DistanceAxis));
