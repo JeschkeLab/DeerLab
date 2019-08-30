@@ -1,5 +1,0 @@
-Generic|net_set_any_peaks|20180325|https://dl.dropboxusercontent.com/s/919iyt4fmqnepqp/net_set_any_peaks.zip
-Broad peaks|net_set_broad_peaks|20180325|https://dl.dropboxusercontent.com/s/0w5rrn5xcnefn05/net_set_broad_peaks.zip
-Narrow peaks|net_set_sharp_peaks|20180325|https://dl.dropboxusercontent.com/s/kfmicqqbazwkxgj/net_set_sharp_peaks.zip
-Exchange resilient|net_set_with_exch|20180325|https://dl.dropboxusercontent.com/s/e5h3jx45jbe3omc/net_set_with_exch.zip
-
