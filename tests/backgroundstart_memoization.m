@@ -9,8 +9,8 @@ Offset = 2;
 ModulationDepth = 0.35;
 DecayRate = 0.0005;
 Length = 200;
-TimeStep = 16;
-TimeAxis = linspace(TimeStep,Length*TimeStep,Length) - TimeStep;
+TimeStep = 16/1000;
+TimeAxis = linspace(0,Length*TimeStep,Length);
 %Construct some dipolar evolution function from Fresnel integral
 
 r = time2dist(TimeAxis);

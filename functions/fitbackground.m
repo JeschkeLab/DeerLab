@@ -1,30 +1,27 @@
 %
 % FITBACKGROUND Fit the background function in a signal
 %
-%   [B,lambda,param] = FITBACKGROUND(S,t,tstart,@model)
-%   User-defined models can be fittid by passing a function handle instead
-%   of a model name.
+%   [B,lambda,param] = FITBACKGROUND(S,t,@model)
+%   Fits the background (B) and the modulation depth (lambda) to a
+%   time-domain signal (S) and time-axis (t) based on a given time-domain
+%   parametric model (@model). The fitted parameters of the model are
+%   returned as a last output argument.
 %
-% The pre-defined models in FITBACKGROUND defined by the 'model' string
-% argument are the following:
+%   [B,lambda,param] = FITBACKGROUND(S,t,@model,tstart)
+%   The time at which the background starts to be fitted can be passed as a
+%   an additional argument. 
+%   
+%   [B,lambda,param] = FITBACKGROUND(S,t,@model,[tstart tend])
+%   The start and end times of the fitting can be specified by passing a
+%   two-element array as the argument. If tend is not specified, the end of
+%   the signal is selected as the default.
 %
-%       'exponential' - exponential function where the decay rate if fitted
+%   [B,lambda,param] = FITBACKGROUND(...,'Property',Value)
+%   Additional (optional) arguments can be passed as property-value pairs.
 %
-%       'polyexp' -  exponetial function by fitting the a linear function
-%                    to the log of the signal
+% The properties to be passed as options can be set in any order.
 %
-%       'fractal' - stretched exponential by fitting the decay rate and
-%                   fractal dimension on the log of the signal
-%
-%       'polynomial' - polynomial function of order as given as an input
-%
-% To pass user-defined models, the @model argument must be a function handle
-% to a function accepting two input arguments as follows
-%       function myModel(t,param), ..., end
-% where (param) is an array containing the parameter of the model. Some of
-% these models include the td_strexp(), sumtd_strexp(), prodtd_strexp() models
-% distibuted in DeerAnalysis2.
-%
+%   'LogFit' - Specifies whether to fit the log of the signal (default: false)
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 %

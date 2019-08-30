@@ -8,44 +8,66 @@
 
 Fit the background function in a signal
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[B,param] = fitbackground(S,t,tfit,'model',p)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+.. code-block:: matlab
+
+    B = fitbackground(S,t,@model)
+    [B,lambda] = fitbackground(S,t,@model)
+    [B,lambda,param] = fitbackground(S,t,@model)
+    [B,lambda,param] = fitbackground(S,t,@model,tstart)
+    [B,lambda,param] = fitbackground(S,t,@model,[tstart tend])
+    [B,lambda,param] = fitbackground(S,t,@model,[tstart tend],options)
+
 Parameters
     *   **S** - Data to fit (M-array)
     *   **t** - Time axis (N-array)
     *   **tfit** - Time axis to fit (M-array)
-    *   **model** - Background model (string)
-    *   **p** - Additional model parameters (array)
+    *   **model** - Background model (function handle)
+    *   **tstart** - Time at which fit starts (scalar)
+    *   **tstart** - Time at which fit end (scalar)
 
 Returns
     *   **B** - Spectrum (M-array)
+    *   **lambda** - Modulation depth (scalar)
     *   **param** - Fitted parameter values (array)
 Usage
 =========================================
 
 .. code-block:: matlab
 
-    [B,param] = fitbackground(S,t,tfit,'model')
+   [B,lambda,param] = fitbackground(S,t,@model)
 
-Fits the the paramters ``param`` of the N-point background function ``B``. This is done by fitting the M-point data ``S`` on a M-point axis ``tfit`` using a model given by the string ``'model'``. The background is then extrapolated to the N-point axis ``t``. The pre-defined models in fitbackground defined by the 'model' string argument are the following:
-
-* ``'exponential'`` - exponential function where the decay rate if fitted
-
-* ``'polyexp'`` -  exponetial function by fitting the a linear function to the log of the signal
-
-* ``'fractal'`` - stretched exponential by fitting the decay rate and fractal dimension on the log of the signal
-
-* ``'polynomial'`` - polynomial function of order as given as an input
+Fits the background ``B`` and the modulation depth ``lambda`` to a time-domain signal ``S`` and time-axis ``t`` based on a given time-domain parametric model ``@model``. The fitted parameters of the model are returned as a last output argument.
 
 .. code-block:: matlab
 
-    [B,param] = fitbackground(S,t,tfit,'polynomial',p)
+    [B,lambda,param] = fitbackground(S,t,@model,tstart)
 
-For polynomial function fitting, the polynomial order can be specified as an additional input argument ``p``.
+The time at which the background starts to be fitted can be passed as an additional argument ``tstart``.
 
 .. code-block:: matlab
 
-    [B,param] = fitbackground(S,t,tfit,@model)
+    [B,lambda,param] = fitbackground(S,t,@model,[tstart tend])
 
-User-defined models can be fitted by passing a function handle instead of a model name. To pass user-defined models, the @model argument must be a function handle to a function accepting two input arguments as follows ``function myModel(t,param), ..., end`` where ``param`` is an array containing the parameter of the model. Example models include the :ref:`strexp`, :ref:`sumstrexp`, :ref:`prodstrexp` models distibuted in DeerAnalysis2.
+The start and end times of the fitting can be specified by passing a two-element array ``[tstart, tend]`` as the argument. If tend is not specified, the end of the signal is selected as the default.
+
+
+Optional Arguments
+=========================================
+Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+
+.. code-block:: matlab
+
+    B = fitbackground(args,'Property1',Value1,'Property2',Value2,...)
+
+.. centered:: **Property Names & Descriptions**
+
+LogFit
+    Specifies the whether the logarithm of the signal is to be fitted.
+
+    *Default:* ``false``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        B = fitbackground(S,t,@td_exp,tstart,'LogFit',true) %Fit the logarithm of the exponential
