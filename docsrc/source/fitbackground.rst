@@ -2,11 +2,16 @@
 .. _fitbackground:
 
 
-***********************
+**********************
 :mod:`fitbackground`
-***********************
+**********************
 
 Fit the background function in a signal
+
+Syntax
+=========================================
+
+---------
 
 .. code-block:: matlab
 
@@ -18,19 +23,23 @@ Fit the background function in a signal
     [B,lambda,param] = fitbackground(S,t,@model,[tstart tend],options)
 
 Parameters
-    *   **S** - Data to fit (M-array)
-    *   **t** - Time axis (N-array)
-    *   **tfit** - Time axis to fit (M-array)
-    *   **model** - Background model (function handle)
-    *   **tstart** - Time at which fit starts (scalar)
-    *   **tstart** - Time at which fit end (scalar)
+    *   ``S`` - Data to fit (M-array)
+    *   ``t`` - Time axis (N-array)
+    *   ``tfit`` - Time axis to fit (M-array)
+    *   ``model`` - Background model (function handle)
+    *   ``tstart`` - Time at which fit starts (scalar)
+    *   ``tstart`` - Time at which fit end (scalar)
 
 Returns
-    *   **B** - Spectrum (M-array)
-    *   **lambda** - Modulation depth (scalar)
-    *   **param** - Fitted parameter values (array)
-Usage
+    *   ``B`` - Spectrum (M-array)
+    *   ``lambda`` - Modulation depth (scalar)
+    *   ``param`` - Fitted parameter values (array)
+
+
+Description
 =========================================
+
+---------
 
 .. code-block:: matlab
 
@@ -53,13 +62,16 @@ The start and end times of the fitting can be specified by passing a two-element
 
 Optional Arguments
 =========================================
+
+---------
+
 Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
 
 .. code-block:: matlab
 
     B = fitbackground(args,'Property1',Value1,'Property2',Value2,...)
 
-.. centered:: **Property Names & Descriptions**
+**Property Names & Descriptions**
 
 LogFit
     Specifies the whether the logarithm of the signal is to be fitted.
