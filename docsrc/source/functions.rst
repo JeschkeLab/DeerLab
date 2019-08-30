@@ -22,6 +22,7 @@ API Documentation
     ./noiselevel
     ./obir
     ./overtones
+    ./paramodel
     ./regoperator
     ./regparamrange
     ./selectmodel

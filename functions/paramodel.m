@@ -21,7 +21,8 @@
 % the Free Software Foundation.
 
 
-function model = paramodel(handle,param0)
+function model = paramodel(handle,param0,lower,upper)
+
 
 %Check which king of input is being use
 if length(param0)==1
@@ -30,6 +31,18 @@ if length(param0)==1
 else
     nParam = length(param0);
 end
+
+if nargin<3
+    lower = inf(nParam,1);
+end
+if nargin<4
+    upper = inf(upper,1);
+end
+
+if any(length(param0)~=length(upper) & length(param0)~=length(lower))
+   error('The Inital guess and upper/lower boundaries must have equal length); ') 
+end
+
 model = @myparametricmodel;
 
 %Define the raw structure of the DeerAnalysis parametric model functions
@@ -42,7 +55,7 @@ model = @myparametricmodel;
             info.nParam  = nParam;
             for i=1:nParam
                 info.parameters(i).name = ' ';
-                info.parameters(i).range = [-Inf Inf];
+                info.parameters(i).range = [lower(i) upper(i)];
                 info.parameters(i).default = param0(i);
                 info.parameters(i).units = ' ';
             end

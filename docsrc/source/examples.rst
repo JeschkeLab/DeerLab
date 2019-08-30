@@ -8,3 +8,4 @@ Examples
 
     ./example_multigauss
     ./example_selectmodel
+    ./example_timedomainfitting
