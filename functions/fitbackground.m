@@ -82,7 +82,7 @@ persistent cachedData
 if isempty(cachedData)
     cachedData =  java.util.LinkedHashMap;
 end
-hashKey = datahash({Data,TimeAxis,BckgModel,FitDelimiter});
+hashKey = datahash({Data,TimeAxis,BckgModel(),FitDelimiter});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
     [Background,ModDepth,FitParam] = java2mat(Output);
