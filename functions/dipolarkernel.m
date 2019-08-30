@@ -50,17 +50,24 @@
 % the Free Software Foundation.
 
 
-function [Kernel] = dipolarkernel(TimeAxis,DistanceAxis,Background,varargin)
+function [Kernel] = dipolarkernel(TimeAxis,DistanceAxis,Background,ModDepth,varargin)
+
 %--------------------------------------------------------------------------
 %Input parsing
 %--------------------------------------------------------------------------
-%Check if user requested some options via name-value input
-[KernelBType,ExcitationBandwidth,OvertoneCoeffs,gValue,KernelCalcMethod,Knots,ModDepth] = parseoptional({'KernelBType','ExcitationBandwidth','OvertoneCoeffs','gValue','KernelCalcMethod','Knots','ModDepth'},varargin);
-%Validate the input variables
+
 if nargin<3 || isempty(Background)
     Background = ones(1,length(TimeAxis));
 end
-
+if isa(Background,'char')
+    varargin{end+1} = Background;
+    varargin{end+1} = ModDepth;
+    ModDepth = [];
+    Background = ones(1,length(TimeAxis));
+end
+%Check if user requested some options via name-value input
+[KernelBType,ExcitationBandwidth,OvertoneCoeffs,gValue,KernelCalcMethod,Knots] = parseoptional({'KernelBType','ExcitationBandwidth','OvertoneCoeffs','gValue','KernelCalcMethod','Knots'},varargin);
+%Validate the input variables
 validKernelBTypes = ["none","full","sqrt"];
 if isempty(KernelBType)
     KernelBType = 'full';
@@ -208,18 +215,13 @@ end
 % Build the background into the kernel
 %----------------------------------------------------------
 if ~all(Background == 1)
-    if isempty(ModDepth)
-        ModDepth = 1/Background(BckgStart) - 1;
-    else
-        Background = Background/max(Background); 
-    end
     switch KernelBType
         case 'none'
             Background = ones(Dimension,1);
         case 'sqrt'
             Background = sqrt(Background);
     end
-    Kernel = (ModDepth*Kernel + 1).*Background;
+    Kernel = ((1-ModDepth) + ModDepth*Kernel).*Background;
 end
 
 %Normalize kernel

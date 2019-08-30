@@ -25,9 +25,13 @@ FreqAxis = 52.04./(DistanceAxis.^3)';
 wddt = 2*pi*FreqAxis.*TimeAxis;
 kappa = sqrt(6*wddt/pi);
 %Compute Fresnel integrals of 0th order
+
+currentpath = pwd;
+cd(fileparts(mfilename('fullpath')))
+cd ../functions/private
 C = fresnelC(kappa);
 S = fresnelS(kappa);
-
+cd(currentpath)
 omegaAB = sum(sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S).*DistrAB);
 omegaBC = sum(sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S).*DistrBC);
 omegaAC = sum(sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S).*DistrAC);

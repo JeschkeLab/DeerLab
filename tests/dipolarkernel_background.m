@@ -15,10 +15,10 @@ Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 
 Trace  = Kernel*Distribution;
 Trace = (Trace + 2).*Background';
-Background = Background*(1-1/Trace(1));
+ModDepth = 1/Trace(1);
 Trace = Trace/Trace(1);
 
-KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','full');
+KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,ModDepth);
 TraceB  = KernelB*Distribution;
 
 err = any(abs(TraceB - Trace)>1e-10);

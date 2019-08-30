@@ -33,7 +33,7 @@ if nargin==0
     info.nParam  = nParam;
     info.parameters(1).name = 'Decay rate k';
     info.parameters(1).range = [0 200];
-    info.parameters(1).default = 3.5;
+    info.parameters(1).default = 0.35;
     info.parameters(1).units = 'us^-1';
     
     output = info;

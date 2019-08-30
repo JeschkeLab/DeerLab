@@ -44,7 +44,7 @@ Tmix = 50; %us
 T1 = 88; %us
 coefficients = overtones(5,Tmix,T1);
 
-NumericalKernel = dipolarkernel(TimeAxis,DistanceAxis,[],'OvertoneCoeffs',coefficients);
+NumericalKernel = dipolarkernel(TimeAxis,DistanceAxis,'OvertoneCoeffs',coefficients);
 NumericalKernel = NumericalKernel/mean(diff(DistanceAxis));
 NumericalKernel = diag(NumericalKernel)';
 

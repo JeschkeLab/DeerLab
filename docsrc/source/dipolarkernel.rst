@@ -5,26 +5,37 @@
 :mod:`dipolarkernel`
 *********************
 
-Computes the dipolar interaction kernel for the linear transformation ``S=K*P`` from a distance-domain distribution ``P`` to a time-domain signal ``S``.
+Computes the dipolar interaction kernel `\mathbf{K}` for the linear transformation `\mathbf{S}=\mathbf{K}\mathbf{P}` from a distance-domain distribution `\mathbf{P}` to a time-domain signal `\mathbf{S}`.
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`K = dipolarkernel(t,r,B,...)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **t** - Time axis vector (N-array)
-    *   **r** -  Distance axis vector (M-array)
-    *   **B** -  Background function vector (N-array)
-Returns
-    *  **K** - Dipolar kernel (NxM-matrix)
-
-Usage
+Syntax
 =========================================
-The function can be called as follows
+
+---------
+
+.. code-block:: matlab
+
+    K = dipolarkernel(t,r)
+    K = dipolarkernel(t,r,B,lambda)
+    K = dipolarkernel(t,r,Name,Value)
+    K = dipolarkernel(t,r,B,lambda,Name,Value)
+
+
+Parameters
+    *   ``t`` - Time axis vector (N-array)
+    *   ``r`` -  Distance axis vector (M-array)
+    *   ``B`` -  Background function vector (N-array)
+    *   ``lambda`` - Modulation depth (scalar)
+Returns
+    *  ``K`` - Dipolar kernel (NxM-matrix)
+
+Description
+=========================================
+
+---------
 
 .. code-block:: matlab
 
    K = dipolarkernel(t,r)
-   K = dipolarkernel(t,r,[])
 
 Computes ``K`` for the transformation to the dipolar evolution function from the time axis ``t`` and distance axis ``r``. The output kernel will not contain the background function.
 
@@ -33,20 +44,24 @@ Computes ``K`` for the transformation to the dipolar evolution function from the
 
 .. code-block:: matlab
 
-    K = dipolarkernel(t,r,B)
+    K = dipolarkernel(t,r,B,alpha)
 
-If the background function ``B`` is specified, then it is included into the kernel function. Therefore, linear transformation of distance distributions using this kernel will yield the form factor with the background function.
+If the background ``B`` and modulation depth ``alpha`` are specified, then the background is included into the kernel function. Therefore, linear transformation of distance distributions using this kernel will yield the form factor with the background function.
 
 .. Important:: If the dipolar kernel includes the background function, the form factor should not be background corrected.
 
 
 Optional Arguments
 =========================================
+
+---------
+
 Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
 
 .. code-block:: matlab
 
-    K = dipolarkernel(args,'Property1',Value1,'Property2',Value2,...)
+    K = dipolarkernel(r,t,'Property1',Value1,'Property2',Value2,...)
+    K = dipolarkernel(r,t,B,alpha,'Property1',Value1,'Property2',Value2,...)
 
 .. centered:: **Property Names & Descriptions**
 

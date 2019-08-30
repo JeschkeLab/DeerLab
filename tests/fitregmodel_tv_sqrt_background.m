@@ -14,14 +14,14 @@ Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 Background = exp(-0.15*TimeAxis)';
 ClusterFcn = (DipEvoFcn + 5).*Background;
-Background = Background*(1-1/ClusterFcn(1));
+ModDepth = 1/ClusterFcn(1);
 ClusterFcn = ClusterFcn/ClusterFcn(1);
 ClusterFcn = ClusterFcn./sqrt(Background);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.005;
 RegMatrix = regoperator(Dimension,3);
-KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
+KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,ModDepth,'KernelBType','sqrt');
 Result = fitregmodel(ClusterFcn,KernelB,DistanceAxis,RegMatrix,'tv',RegParam,'Solver','fnnls');
 
 err = any(abs(Result - Distribution)>1.5e-2);

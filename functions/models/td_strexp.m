@@ -12,7 +12,7 @@
 % PARAMETERS
 % name    symbol default lower bound upper bound
 % ------------------------------------------------------------------
-% PARAM(1)  k     3.5      0            200        decay rate
+% PARAM(1)  k     0.25      0            200        decay rate
 % PARAM(2)  d      3       0            6          fractal dimension
 % ------------------------------------------------------------------
 %
@@ -34,7 +34,7 @@ if nargin==0
     info.nParam  = nParam;
     info.parameters(1).name = 'Decay rate k';
     info.parameters(1).range = [0 200];
-    info.parameters(1).default = 3.5;
+    info.parameters(1).default = 0.25;
     info.parameters(1).units = 'us^-1';
     
     info.parameters(2).name = 'Fractal dimension d';

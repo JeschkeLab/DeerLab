@@ -2,18 +2,19 @@
 % FITPARAMODEL Fits a distance distribution to one (or several) signals
 %              by fitting of a parametric model.
 %
-%   P = FITPARAMODEL(S,K,r,@model)
+%   [P,param] = FITPARAMODEL(S,K,r,@model)
 %   Fitting of the N-point signal (S) to a M-point distance distribution 
 %   (P) given a M-point distance axis R and NxM point kernel (K). The fitted
 %   distribution corresponds to a parametric model calculated by the passed
-%   function handle (@model).
+%   function handle (@model). The fitted parameters (param) are returned as a
+%   second output argument.
 %
 %   P = FITPARAMODEL({S1,S2,...},{K1,K2,...},r,'MODEL')
 %   Passing multiple signals/kernels enables global fitting of the
 %   to a single parametric model distance distribution. The global fit weights
 %   are automatically computed according to their contribution to ill-posedness.
 %
-%   K = FITPARAMODEL(...,'Property',Values)
+%   P = FITPARAMODEL(...,'Property',Values)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 % The properties to be passed as options can be set in any order. 

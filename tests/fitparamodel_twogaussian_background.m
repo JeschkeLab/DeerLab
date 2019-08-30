@@ -12,11 +12,12 @@ Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 Background = exp(-0.15*TimeAxis)';
 ClusterFcn = (DipEvoFcn + 5).*Background;
-Background = Background*(1-1/ClusterFcn(1));
+ModDepth = 1/ClusterFcn(1);
 ClusterFcn = ClusterFcn/ClusterFcn(1);
 ClusterFcn = ClusterFcn./sqrt(Background);
 
-KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
+
+KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,ModDepth,'KernelBType','sqrt');
 
 InitialGuess = [2 0.1 5 0.1 0.1];
 [FitDistribution] = fitparamodel(ClusterFcn,KernelB,DistanceAxis,@rd_twogaussian,InitialGuess);
