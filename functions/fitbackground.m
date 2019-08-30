@@ -32,7 +32,7 @@
 function [Background,ModDepth,FitParam] = fitbackground(Data,TimeAxis,BckgModel,FitDelimiter,varargin)
 
 
-[LogFit] = parseoptional({'LogFit'},varargin);
+[LogFit,InitialGuess] = parseoptional({'LogFit','InitialGuess'},varargin);
 
 
 if nargin<3
@@ -120,16 +120,21 @@ else
 end
 
 %Initiallize StartParameters (1st element is modulation depth)
-StartParameters(1) = 0.5;
 LowerBounds(1) = 0;
 UpperBounds(1) = 1;
 
 %Get information about the time-domain parametric model
 Info = BckgModel();
-StartParameters(2:1 + Info.nParam) =  [Info.parameters(:).default];
 Ranges =  [Info.parameters(:).range];
 LowerBounds(2:1 + Info.nParam) = Ranges(1:2:end-1);
 UpperBounds(2:1 + Info.nParam) = Ranges(2:2:end);
+if ~isempty(InitialGuess)
+    StartParameters = InitialGuess;
+else
+    StartParameters(1) = 0.5;
+    StartParameters(2:1 + Info.nParam) =  [Info.parameters(:).default];
+end
+
 FitParam = lsqnonlin(CostFcn,StartParameters,LowerBounds,UpperBounds,solveropts);
 
 %Get the fitted modulation depth

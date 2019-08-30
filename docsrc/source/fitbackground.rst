@@ -71,7 +71,16 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     B = fitbackground(args,'Property1',Value1,'Property2',Value2,...)
 
-**Property Names & Descriptions**
+InitialGuess
+    User-given estimation of the fit parameters, passed as an array. If not specified, the parametric model defaults are employed.
+
+    *Default:* [*empty*]
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        B = fitbackground(S,t,@td_exp,tstart,'InitialGuess',[0.75 3]) %Fit the logarithm of the exponential
 
 LogFit
     Specifies the whether the logarithm of the signal is to be fitted.
