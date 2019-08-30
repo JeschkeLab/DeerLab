@@ -8,7 +8,7 @@ Dimension = 100;
 TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
-Distribution = twogaussian(DistanceAxis,[2,0.3,3.5,0.3,0.5]);
+Distribution = rd_twogaussian(DistanceAxis,[2,0.3,3.5,0.3,0.5]);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 RegMatrix =  regoperator(Dimension,2);

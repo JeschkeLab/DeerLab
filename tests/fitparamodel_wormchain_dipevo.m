@@ -38,7 +38,7 @@ Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@wormchain,[],'Solver','lsqnonlin');
+[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@rd_wormchain,[],'Solver','lsqnonlin');
 err(1) = any(abs(FitDistribution - Distribution)>5e-3);
 err(2) = any(abs(FitParam - InputParam)>1e-2);
 err = any(err);

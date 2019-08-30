@@ -1,4 +1,4 @@
-function output = threerice(r,param)
+function output = rd_threerice(r,param)
 %
 % THREERICE Sum of three rician distributions parametric model
 %

@@ -18,7 +18,7 @@ Distribution = Distribution.';
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@randcoil);
+[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@rd_randcoil);
 err = any(abs(FitDistribution - Distribution)>1e-10);
 
 maxerr = max(abs(FitDistribution - Distribution));

@@ -7,17 +7,17 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 InputParam = [3 0.5];
-Distribution = onegaussian(DistanceAxis,[3,0.5]);
+Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 InitialGuess = [2 0.1];
 tic
-[preFitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@onegaussian,InitialGuess);
+[preFitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@rd_onegaussian,InitialGuess);
 pre = toc;
 tic
-[postFitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@onegaussian,InitialGuess);
+[postFitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@rd_onegaussian,InitialGuess);
 post = toc;
 
 

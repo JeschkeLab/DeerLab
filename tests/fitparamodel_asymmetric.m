@@ -9,13 +9,13 @@ TimeAxis = linspace(0,TimeStep*Ntime,Ntime);
 [~,rmin,rmax] = time2dist(TimeAxis);
 DistanceAxis = linspace(rmin,rmax,Ndist);
 InputParam = [3,0.5];
-Distribution = onegaussian(DistanceAxis,[3,0.5]);
+Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 InitialGuess = [2 0.1];
-[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@onegaussian,InitialGuess);
+[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@rd_onegaussian,InitialGuess);
 err(1) = any(abs(FitDistribution - Distribution)>1e-5);
 err(2) = any(abs(FitParam - InputParam)>1e-3);
 err(3)  = length(FitDistribution) < length(DipEvoFcn);

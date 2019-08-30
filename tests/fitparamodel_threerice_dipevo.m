@@ -6,13 +6,13 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 InputParam = [2 0.4 3.5 0.3 5 0.3 0.3 0.3];
-Distribution = threerice(DistanceAxis,InputParam);
+Distribution = rd_threerice(DistanceAxis,InputParam);
 Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@threerice,0.75*InputParam,'solver','lsqnonlin');
+[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@rd_threerice,0.75*InputParam,'solver','lsqnonlin');
 err = any(abs(FitDistribution - Distribution)>1e-2);
 
 maxerr = max(abs(FitDistribution - Distribution));

@@ -23,9 +23,9 @@ data2fit3 = bckg3(20:end);
 
 tfit = t(20:end);
 
-fit = fitbackground(data2fit,t,tfit,@sumstrexp);
-fit2 = fitbackground(data2fit2,t,tfit,@sumstrexp);
-fit3 = fitbackground(data2fit3,t,tfit,@sumstrexp);
+fit = fitbackground(data2fit,t,tfit,@td_sumstrexp);
+fit2 = fitbackground(data2fit2,t,tfit,@td_sumstrexp);
+fit3 = fitbackground(data2fit3,t,tfit,@td_sumstrexp);
 
 err(1) = any(abs(fit' - bckg)>1e-3);
 err(2) = any(abs(fit2' - bckg2)>1e-3);

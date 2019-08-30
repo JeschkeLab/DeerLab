@@ -12,14 +12,14 @@ N = 300;
 dt = 0.008;
 param0 = [3 0.3 5 0.3 0.5];
 NGauss = 6;
-Models = {@onerice,@tworice,@threerice,...
-          @onegaussian,@twogaussian,@threegaussian};
+Models = {@rd_onerice,@rd_tworice,@rd_threerice,...
+          @rd_onegaussian,@rd_twogaussian,@rd_threegaussian};
 
 %Preparation
 %-------------------------
 t = linspace(0,dt*N,N);
 r = time2dist(t);
-P = twogaussian(r,param0);
+P = rd_twogaussian(r,param0);
 K = dipolarkernel(t,r);
 %Generate dipolar signal with noise
 S = dipolarsignal(t,r,P,'NoiseLevel',0.1);

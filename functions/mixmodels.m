@@ -10,7 +10,7 @@
 %   in DeerAnalysis2. The returned function handle can be used for
 %   parametric model fitting as the other models.
 %
-%   Example: twogaussians = MIXMODELS({@onegaussian,@onegaussian})
+%   Example: rd_twogaussians = MIXMODELS({@rd_onegaussian,@rd_onegaussian})
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 %

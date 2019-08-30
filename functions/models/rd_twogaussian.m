@@ -1,4 +1,4 @@
-function output = twogaussian(r,param)
+function output = rd_twogaussian(r,param)
 %
 % TWOGAUSSIAN Sum of two Gaussian distributions parametric model
 %

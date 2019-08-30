@@ -1,4 +1,4 @@
-function output = randcoil(r,param)
+function output = rd_randcoil(r,param)
 %
 % RANDCOIL Random-coil model for an unfolded peptide/protein
 %

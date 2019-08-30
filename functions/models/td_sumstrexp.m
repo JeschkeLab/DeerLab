@@ -1,5 +1,5 @@
 %
-% PRODSTREXP Product of two stretched exponentials background model
+% SUMSTREXP Sum of two stretched exponentials background model
 %
 %   info = SUMSTREXP
 %   Returns an (info) structure containing the specifics of the model.
@@ -16,6 +16,7 @@
 % PARAM(2)  d1      3       0            6          1st strexp fractal dimension
 % PARAM(3)  k2     3.5      0            200        2nd strexp decay rate
 % PARAM(4)  d2      3       0            6          2nd strexp fractal dimension
+% PARAM(5)  A1      0.5     0            1          Relative amplitude
 % --------------------------------------------------------------------------
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
@@ -24,14 +25,14 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function output = prodstrexp(t,param)
+function output = td_sumstrexp(t,param)
 
-nParam = 4;
+nParam = 5;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Product of two stretched exponentials';
-    info.Equation  = 'exp(-(k1*t)^(d1/3))*exp(-(k2*t)^(d2/3))';
+    info.Model  = 'Sum of two stretched exponentials';
+    info.Equation  = 'A1*exp(-(k1*t)^(d1/3)) + (1-A1)*exp(-(k2*t)^(d2/3))';
     info.nParam  = nParam;
     info.parameters(1).name = 'Decay rate k1 of 1st stretched exponential';
     info.parameters(1).range = [0 200];
@@ -53,6 +54,11 @@ if nargin==0
     info.parameters(4).default = 3;
     info.parameters(4).units = ' ';
     
+    info.parameters(5).name = 'Relative amplitude of 1st stretched exponential';
+    info.parameters(5).range = [0 1];
+    info.parameters(5).default = 0.5;
+    info.parameters(5).units = ' ';
+    
     output = info;
     
 elseif nargin == 2
@@ -66,7 +72,7 @@ elseif nargin == 2
     t = abs(t);
     StretchedExp1 = exp(-(param(1)*t).^(param(2)/3));
     StretchedExp2 = exp(-(param(3)*t).^(param(4)/3));
-    Background = StretchedExp1.*StretchedExp2;
+    Background = param(5)*StretchedExp1 + (1-param(5))*StretchedExp2;
     if ~iscolumn(Background)
         Background = Background';
     end

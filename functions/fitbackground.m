@@ -32,7 +32,7 @@
 % to a function accepting two input arguments as follows
 %       function myModel(t,param), ..., end
 % where (param) is an array containing the parameter of the model. Some of
-% these models include the strexp(), sumstrexp(), prodstrexp() models
+% these models include the td_strexp(), sumtd_strexp(), prodtd_strexp() models
 % distibuted in DeerAnalysis2.
 %
 %

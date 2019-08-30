@@ -6,14 +6,14 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 InputParam = [3 0.4 4.5 0.3 0.6];
-Distribution = tworice(DistanceAxis,InputParam);
+Distribution = rd_tworice(DistanceAxis,InputParam);
 Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
 InitialGuess = [2 0.1 1 0.6 0.2];
-[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@tworice,InitialGuess,'solver','fmincon');
+[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@rd_tworice,InitialGuess,'solver','fmincon');
 err = any(abs(FitDistribution - Distribution)>1e-5);
 
 maxerr = max(abs(FitDistribution - Distribution));

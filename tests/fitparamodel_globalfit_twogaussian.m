@@ -8,7 +8,7 @@ TimeAxis1 = linspace(0,TimeStep*Ntime1,Ntime1);
 [~,rmin,rmax] = time2dist(TimeAxis1);
 DistanceAxis = linspace(rmin,rmax,Ndist);
 
-Distribution = twogaussian(DistanceAxis,[2,0.3,4,0.3,0.5]);
+Distribution = rd_twogaussian(DistanceAxis,[2,0.3,4,0.3,0.5]);
 
 Kernel1 = dipolarkernel(TimeAxis1,DistanceAxis);
 Signal1 = Kernel1*Distribution;
@@ -39,11 +39,11 @@ Kernels = {Kernel1,Kernel2,Kernel3};
 
 
 InitialGuess = [2 0.1 5 0.1 0.5];
-[Result] = fitparamodel(Signals,Kernels,DistanceAxis,@twogaussian,[]);
+[Result] = fitparamodel(Signals,Kernels,DistanceAxis,@rd_twogaussian,[]);
 
-[Dist1] = fitparamodel(Signal1,Kernel1,DistanceAxis,@twogaussian,[]);
-[Dist2] = fitparamodel(Signal2,Kernel2,DistanceAxis,@twogaussian,[]);
-[Dist3] = fitparamodel(Signal3,Kernel3,DistanceAxis,@twogaussian,[]);
+[Dist1] = fitparamodel(Signal1,Kernel1,DistanceAxis,@rd_twogaussian,[]);
+[Dist2] = fitparamodel(Signal2,Kernel2,DistanceAxis,@rd_twogaussian,[]);
+[Dist3] = fitparamodel(Signal3,Kernel3,DistanceAxis,@rd_twogaussian,[]);
 
 normResult = norm(Distribution - Result);
 norm1 = norm(Distribution - Dist1);

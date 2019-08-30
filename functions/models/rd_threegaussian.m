@@ -1,4 +1,4 @@
-function output = threegaussian(r,param)
+function output = rd_threegaussian(r,param)
 %
 % THREEGAUSSIAN Sum of three Gaussian distributions parametric model
 %

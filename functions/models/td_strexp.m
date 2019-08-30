@@ -1,7 +1,7 @@
 %
-% STREXP Stretched exponential background model
+% TD_STREXP Stretched exponential background model
 %
-%   info = STREXP
+%   info = TD_STREXP
 %   Returns an (info) structure containing the specifics of the model.
 %
 %   B = STREXP(t,param)
@@ -23,7 +23,7 @@
 % the Free Software Foundation.
 
 
-function output = strexp(t,param)
+function output = td_strexp(t,param)
 
 nParam = 2;
 

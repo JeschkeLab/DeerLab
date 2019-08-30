@@ -23,9 +23,9 @@ data2fit3 = bckg3(20:end);
 
 tfit = t(20:end);
 
-fit = fitbackground(data2fit,t,tfit,@prodstrexp);
-fit2 = fitbackground(data2fit2,t,tfit,@prodstrexp);
-fit3 = fitbackground(data2fit3,t,tfit,@prodstrexp);
+fit = fitbackground(data2fit,t,tfit,@td_prodstrexp);
+fit2 = fitbackground(data2fit2,t,tfit,@td_prodstrexp);
+fit3 = fitbackground(data2fit3,t,tfit,@td_prodstrexp);
 
 err(1) = any(abs(fit' - bckg)>1e-3);
 err(2) = any(abs(fit2' - bckg2)>1e-3);

@@ -6,7 +6,7 @@ function [err,data] = test(opt,olddata)
 
 t = linspace(-2,5,500);
 r = time2dist(t);
-P = onegaussian(r,[4,0.2]);
+P = rd_onegaussian(r,[4,0.2]);
 S = dipolarkernel(t,r)*P;
 zt = abs(min(t));
 

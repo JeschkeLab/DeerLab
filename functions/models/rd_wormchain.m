@@ -1,4 +1,4 @@
-function output = wormchain(r,param)
+function output = rd_wormchain(r,param)
 %
 % WORMCHAIN Worm-like chain model near the rigid limit
 %

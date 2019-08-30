@@ -7,13 +7,13 @@ TimeStep = 0.016;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 InputParam = [3 0.2 5.5 0.3 0.5];
-Distribution = tworice(DistanceAxis,InputParam);
+Distribution = rd_tworice(DistanceAxis,InputParam);
 Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-Models = {@onerice,@tworice,@threerice};
+Models = {@rd_onerice,@rd_tworice,@rd_threerice};
 
 [optimum,metric] = selectmodel(Models,DipEvoFcn,DistanceAxis,Kernel,'aicc');
 

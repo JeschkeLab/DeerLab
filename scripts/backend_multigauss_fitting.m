@@ -18,7 +18,7 @@ NGauss = 6;
 %-------------------------
 t = linspace(0,dt*N,N);
 r = time2dist(t);
-P = twogaussian(r,param0);
+P = rd_twogaussian(r,param0);
 K = dipolarkernel(t,r);
 
 %Generate dipolar signal with noise

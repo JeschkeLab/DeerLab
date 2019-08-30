@@ -7,7 +7,7 @@ TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 InputParam1 = [3 0.5];
 InputParam2 = [4 0.5];
-mixedModel = mixmodels({@onegaussian,@onegaussian});
+mixedModel = mixmodels({@rd_onegaussian,@rd_onegaussian});
 mixedmodelParameters = [0.3 InputParam1 InputParam2];
 MixedDistribution = mixedModel(DistanceAxis,mixedmodelParameters);
 

@@ -3,7 +3,7 @@ function [err,data,maxerr] = test(opt,olddata)
 Dimension = 100;
 TimeAxis = linspace(-0.5,5,Dimension);
 DistanceAxis = time2dist(TimeAxis);
-Distribution = twogaussian(DistanceAxis,[4,0.3,6.5,0.3,0.5]);
+Distribution = rd_twogaussian(DistanceAxis,[4,0.3,6.5,0.3,0.5]);
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 

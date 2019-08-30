@@ -5,7 +5,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 InputParam = [3 0.5];
-Distribution = onegaussian(DistanceAxis,[3,0.5]);
+Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
@@ -18,7 +18,7 @@ ClusterFcn = ClusterFcn./sqrt(Background);
 KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,'KernelBType','sqrt');
 
 InitialGuess = [2 0.1];
-[FitDistribution,FitParam] = fitparamodel(ClusterFcn,KernelB,DistanceAxis,@onegaussian,InitialGuess);
+[FitDistribution,FitParam] = fitparamodel(ClusterFcn,KernelB,DistanceAxis,@rd_onegaussian,InitialGuess);
 err(1) = any(abs(FitDistribution - Distribution)>1e-5);
 err(2) = any(abs(FitParam - InputParam)>1e-3);
 err = any(err);

@@ -8,7 +8,7 @@ TimeAxis = linspace(0,TimeStep*Ntime,Ntime);
 [~,rmin,rmax] = time2dist(TimeAxis);
 DistanceAxis = linspace(rmin,rmax,Ndist);
 
-Distribution = onegaussian(DistanceAxis,[3,0.5]);
+Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
 Distribution = Distribution/sum(Distribution);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
@@ -28,7 +28,7 @@ TimeAxis = linspace(0,TimeStep*Ntime,Ntime);
 [~,rmin,rmax] = time2dist(TimeAxis);
 DistanceAxis = linspace(rmin,rmax,Ndist);
 
-Distribution = onegaussian(DistanceAxis,[3,0.5]);
+Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
 Distribution = Distribution/sum(Distribution);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);

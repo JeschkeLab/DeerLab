@@ -42,10 +42,10 @@ validateattributes(maxGaussians,{'numeric'},{'scalar','nonnegative','nonempty'},
 multiGaussModel = cell(maxGaussians,1);
 
 %Start with one gaussian parametric model
-multiGaussModel{1} = @onegaussian;
+multiGaussModel{1} = @rd_onegaussian;
 for i=2:maxGaussians
     %And iteratively combine with additional single gaussian parametric models
-   multiGaussModel{i} =  mixmodels({multiGaussModel{i-1},@onegaussian});
+   multiGaussModel{i} =  mixmodels({multiGaussModel{i-1},@rd_onegaussian});
 end
 
 %Run optimization to see which multigauss model is the best 

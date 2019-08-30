@@ -8,12 +8,12 @@ TimeStep = 0.016;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 InputParam = [3 0.3 5 0.3 0.5];
-Distribution = twogaussian(DistanceAxis,InputParam);
+Distribution = rd_twogaussian(DistanceAxis,InputParam);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);
 DipEvoFcn = Kernel*Distribution;
 
-Models = {@onegaussian,@twogaussian,@threegaussian,@onerice,@tworice};
+Models = {@rd_onegaussian,@rd_twogaussian,@rd_threegaussian,@rd_onerice,@rd_tworice};
 
 tic
 [preoptimum] = selectmodel(Models,DipEvoFcn,DistanceAxis,Kernel,'aicc');

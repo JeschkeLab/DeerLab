@@ -5,7 +5,7 @@ TimeStep = 0.008;
 TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
 DistanceAxis = time2dist(TimeAxis);
 InputParam = [3 0.5];
-Distribution = onegaussian(DistanceAxis,InputParam);
+Distribution = rd_onegaussian(DistanceAxis,InputParam);
 Distribution = Distribution/sum(Distribution);
 
 Kernel = dipolarkernel(TimeAxis,DistanceAxis);

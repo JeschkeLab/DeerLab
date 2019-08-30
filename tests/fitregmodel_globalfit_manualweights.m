@@ -8,7 +8,7 @@ TimeAxis1 = linspace(0,TimeStep*Ntime1,Ntime1);
 [~,rmin,rmax] = time2dist(TimeAxis1);
 DistanceAxis = linspace(rmin,rmax,Ndist);
 
-Distribution = twogaussian(DistanceAxis,[2,0.3,4,0.3,0.5]);
+Distribution = rd_twogaussian(DistanceAxis,[2,0.3,4,0.3,0.5]);
 
 Kernel1 = dipolarkernel(TimeAxis1,DistanceAxis);
 Signal1 = Kernel1*Distribution;

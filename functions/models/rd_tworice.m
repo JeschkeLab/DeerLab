@@ -1,4 +1,4 @@
-function output = tworice(r,param)
+function output = rd_tworice(r,param)
 %
 % TWORICE Sum of two rician distributions parametric model
 %
