@@ -63,7 +63,7 @@ end
 
 validKernelBTypes = ["none","full","sqrt"];
 if isempty(KernelBType)
-    KernelBType = 'sqrt';
+    KernelBType = 'full';
 else
     validateattributes(KernelBType,{'char'},{},mfilename,'KernelBType')
     KernelBType = validatestring(KernelBType,validKernelBTypes);
