@@ -3,37 +3,34 @@ function [err,data,maxerr] = test(opt,olddata)
 %======================================================
 % Polynomial background fit
 %======================================================
+clear fitbackground
+t = linspace(0,3,100);
+bckg = polyval([-1 1],t);
+bckg2 = polyval([-1 -1 1],t);
+bckg3 = polyval([-1 -1 -1 1],t);
 
-t = linspace(0,5,100);
-d = 3;
-k = 0.5;
-bckg = polyval([1 1],t);
-bckg2 = polyval([2 1 1],t);
-bckg3 = polyval([3 0 -1 1],t);
+data2fit = bckg(1:end);
+data2fit2 = bckg2(1:end);
+data2fit3 = bckg3(1:end);
+tstart = t(1);
 
-data2fit = bckg(20:end);
-data2fit2 = bckg2(20:end);
-data2fit3 = bckg3(20:end);
-tfit = t(20:end);
+[fit,lambda1] = fitbackground(data2fit,t,@td_poly1,tstart);
+[fit2,lambda2] = fitbackground(data2fit2,t,@td_poly2,tstart);
+[fit3,lambda3] = fitbackground(data2fit3,t,@td_poly3,tstart);
 
-polyOrder = 1;
-polyOrder2 = 2;
-polyOrder3 = 3;
+fit = fit*(1-lambda1);
+fit2 = fit2*(1-lambda2);
+fit3 = fit3*(1-lambda3);
 
-fit = fitbackground(data2fit,t,tfit,'polynomial',polyOrder);
-fit2 = fitbackground(data2fit2,t,tfit,'polynomial',polyOrder2);
-fit3 = fitbackground(data2fit3,t,tfit,'polynomial',polyOrder3);
-
-
-err(1) = any(abs(fit - bckg)>1e-5);
-err(2) = any(abs(fit2 - bckg2)>1e-5);
-err(3) =  any(abs(fit3 - bckg3)>1e-5);
+err(1) = any(abs(fit - bckg)>1e-8);
+err(2) = any(abs(fit2 - bckg2)>1e-8);
+err(3) =  any(abs(fit3 - bckg3)>1e-8);
 err = any(err);
 maxerr = max(abs(fit - bckg));
 data = [];
 
 if opt.Display
-  figure,clf
+  figure(8),clf
   subplot(131)
   plot(t,bckg,t,fit)
   subplot(132)

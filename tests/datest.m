@@ -163,12 +163,15 @@ for iTest = 1:numel(TestFileNames)
     timeStr = [];
   end
   
-  if displayErrors
-    maxerrStr = sprintf('%0.2e ',maxerr(iTest));
-  else
-    maxerrStr = [];
+  try
+      if displayErrors
+          maxerrStr = sprintf('%0.2e ',maxerr(iTest));
+      else
+          maxerrStr = [];
+      end
+  catch
+      maxerrStr = [];
   end
-
   str = sprintf('%-36s  %-12s%-8s%s%s\n%s',...
        testResults(iTest).name,typeStr,outcomeStr,maxerrStr,timeStr,errorStr);
   str(str=='\') = '/';

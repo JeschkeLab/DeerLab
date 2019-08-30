@@ -13,7 +13,9 @@ B = exp(-k*(abs(t)))';
 F = (1-lambda) + lambda*S;
 V = F.*B;
 B = (1-lambda).*B;
-Bfit = fitbackground(V,t,t,'exponential');
+tstart = backgroundstart(V,t,@td_exp);
+[Bfit,lambdafit] = fitbackground(V,t,@td_exp,tstart);
+Bfit = (1-lambdafit).*Bfit;
 
 error = abs(B - Bfit);
 err = any(error>1e-2);

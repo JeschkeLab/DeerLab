@@ -1,19 +1,9 @@
 %
 % FITBACKGROUND Fit the background function in a signal
 %
-%   [B,param] = FITBACKGROUND(S,t,tfit,'model')
-%   Fits the the paramters (param) of the N-point background function (B). This
-%   is done by fitting the M-point data (S) on a M-point axis (tfit) using a
-%   model given by the string ('model'). The background is then extrapolated to
-%   the N-point axis T.
-%
-%   [B,param] = FITBACKGROUND(S,t,tfit,'polynomial',order)
-%   For polynomial function fitting, the (order) of the polynomial can be
-%   passed as an additional input argument.
-%
-%   [B,param] = FITBACKGROUND(S,t,tfit,@model)
+%   [B,lambda,param] = FITBACKGROUND(S,t,tstart,@model)
 %   User-defined models can be fittid by passing a function handle instead
-%   of a model name. 
+%   of a model name.
 %
 % The pre-defined models in FITBACKGROUND defined by the 'model' string
 % argument are the following:
@@ -42,43 +32,50 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [Background,FitParam] = fitbackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam)
+function [Background,ModDepth,FitParam] = fitbackground(Data,TimeAxis,BckgModel,FitDelimiter,varargin)
+
+
+[LogFit] = parseoptional({'LogFit'},varargin);
+
 
 if nargin<3
     error('Not enough input arguments.')
 end
 
-if nargin<5
-    ModelParam = 1;
+if nargin<4
+    FitDelimiter = minmax(TimeAxis);
+elseif length(FitDelimiter) == 1
+    FitDelimiter(2) = max(TimeAxis);
+elseif length(FitDelimiter) > 2
+    error('The 4th argument cannot exceed two elements.')
 end
 
-if nargin<4 || isempty(BckgModel)
-    BckgModel = 'exponential';
-elseif isa(BckgModel,'function_handle')
-    CustomFitModel = BckgModel;
-    BckgModel = 'custom';
-elseif ~isa(BckgModel,'function_handle') && ~isa(BckgModel,'char')
-    error('BckgModel must be a valid ''function_handle'' or ''char'' class variable.')
-else
-    validateattributes(BckgModel,{'char'},{'nonempty'},mfilename,'BckgModel')
-    allowedInput = {'fractal','exponential','polyexp','polynomial'};
-    BckgModel = validatestring(BckgModel,allowedInput);
+if FitDelimiter(2)<FitDelimiter(1)
+    error('The fit start time cannot exceed the fit end time.')
 end
-if iscolumn(TimeAxis)
-    TimeAxis = TimeAxis';
+
+if ~isa(BckgModel,'function_handle')
+   error('The background model must be a valid function handle.') 
 end
-if iscolumn(FitData)
-    FitData = FitData';
+
+if ~iscolumn(TimeAxis)
+    TimeAxis = TimeAxis.';
+end
+
+if isempty(LogFit)
+   LogFit = false; 
+end
+
+if iscolumn(Data)
     DataIsColumn = true;
 else
+    Data = Data.';
     DataIsColumn = false;
 end
-if iscolumn(FitTimeAxis)
-    FitTimeAxis = FitTimeAxis';
-end
-validateattributes(FitData,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
+
+validateattributes(FitDelimiter,{'numeric'},{'2d','nonempty'},mfilename,'FitDelimiter')
+validateattributes(Data,{'numeric'},{'2d','nonempty'},mfilename,'Data')
 validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','increasing'},mfilename,'TimeAxis')
-TimeAxis = abs(TimeAxis);
 
 %--------------------------------------------------------------------------
 %Memoization
@@ -88,10 +85,11 @@ persistent cachedData
 if isempty(cachedData)
     cachedData =  java.util.LinkedHashMap;
 end
-hashKey = datahash({FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam});
+hashKey = datahash({Data,TimeAxis,BckgModel,FitDelimiter});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
-    [Background,FitParam] = java2mat(Output);
+    [Background,ModDepth,FitParam] = java2mat(Output);
+    %Java does not recognize columns
     Background = Background';
     return
 end
@@ -99,90 +97,58 @@ end
 %--------------------------------------------------------------------------
 %--------------------------------------------------------------------------
 
-%Set options for fminsearch solver
-solveropts = optimset('DIsplay','off','MaxIter',5000,'MaxFunEval',10000,'TolFun',1e-15,'TolX',1e-15);
+%Find the position to limit fit
+FitStartTime = FitDelimiter(1);
+FitEndTime = FitDelimiter(2);
+[~,FitStartPos] = min(abs(TimeAxis - FitStartTime)); 
+[~,FitEndPos] = min(abs(TimeAxis - FitEndTime));
 
-%Start with a linear fit of log-data
-CostFcn = @(param)(1/2*norm(polynomial(FitTimeAxis,param) - log(FitData))^2);
-PolynomialFit = fminsearch(CostFcn,[0 0],solveropts);
-LinearLogFit=[-PolynomialFit(2) 1];
+%Limit the time axis and the data to fit
+FitTimeAxis = TimeAxis(FitStartPos:FitEndPos);
+FitData = Data(FitStartPos:FitEndPos);
 
-switch BckgModel
-    
-    case 'fractal'
-        %Use linear log-fit as initial gues
-        LinearLogFit = [-PolynomialFit(2) 1 3];
-        %Fit amplitude, decay rate and fractal dimension of stretched exp.
-        fminResults = fminsearch(@minimizeStretchExp,LinearLogFit,[],FitTimeAxis,FitData);
-        %Limit resolution to fourth digit to avoid precission errors
-        fminResults = round(fminResults,4);
-        %Compute stretched exponential background
-        Background = fminResults(2)*exp(-abs(fminResults(1)*TimeAxis).^(fminResults(3)/3));
-        FitParam = fminResults([1,3]);
-        
-    case 'exponential'
-        %Compute exponential background from linear log-fit
-        Background = exp(polynomial(abs(TimeAxis),PolynomialFit));
-        FitParam = LinearLogFit(1);
-        
-    case 'polynomial'
-        %Fit polynomial function
-        CostFcn = @(param)(1/2*norm(polynomial(FitTimeAxis,param) - FitData)^2);
-        PolynomialFit = fminsearch(CostFcn,zeros(ModelParam+1,1),solveropts);
-        %Compute polynomial background
-        Background = polynomial(abs(TimeAxis),PolynomialFit);
-        FitParam = PolynomialFit;
-        
-    case 'polyexp'
-        %Fit polynomial function to log-data
-        CostFcn = @(param)(1/2*norm(polynomial(FitTimeAxis,param) - log(FitData))^2);
-        PolynomialFit = fminsearch(CostFcn,[0 0],solveropts);
-        %Compute polynomial background
-        Background = exp(polynomial(abs(TimeAxis),PolynomialFit));
-        FitParam = PolynomialFit;
-    case 'custom'
-        solveropts=optimoptions(@lsqnonlin,'Algorithm','trust-region-reflective','Display','off',...
-            'MaxIter',8000,'MaxFunEvals',8000,...
-            'TolFun',1e-10,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        CostFcn = @(param) (sqrt(0.5)*(CustomFitModel(FitTimeAxis,param) - FitData'));
-        %Get information about the parametric model
-        Info = CustomFitModel();
-        StartParameters =  [Info.parameters(:).default];
-        Ranges =  [Info.parameters(:).range];
-        LowerBounds = Ranges(1:2:end-1);
-        UpperBounds = Ranges(2:2:end);
-        FitParam = lsqnonlin(CostFcn,StartParameters,LowerBounds,UpperBounds,solveropts);
-        %Compute fitted background
-        Background = CustomFitModel(abs(TimeAxis),FitParam);
+%Use absolute time scale to ensure proper fitting of negative-time data
+FitTimeAxis = abs(FitTimeAxis);
+
+%Prepare minimization problem solver
+solveropts = optimoptions(@lsqnonlin,'Algorithm','trust-region-reflective','Display','off',...
+    'MaxIter',8000,'MaxFunEvals',8000,...
+    'TolFun',1e-10,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+
+%Construct cost functional for minimization
+if LogFit
+    CostFcn = @(param)(sqrt(1/2)*(log((1 - param(1) + eps)*BckgModel(FitTimeAxis,param(2:end))) - log(FitData)));
+else
+    CostFcn = @(param)(sqrt(1/2)*((1 - param(1))*BckgModel(FitTimeAxis,param(2:end)) - FitData));
 end
 
+%Initiallize StartParameters (1st element is modulation depth)
+StartParameters(1) = 0.5;
+LowerBounds(1) = 0;
+UpperBounds(1) = 1;
+
+%Get information about the time-domain parametric model
+Info = BckgModel();
+StartParameters(2:1 + Info.nParam) =  [Info.parameters(:).default];
+Ranges =  [Info.parameters(:).range];
+LowerBounds(2:1 + Info.nParam) = Ranges(1:2:end-1);
+UpperBounds(2:1 + Info.nParam) = Ranges(2:2:end);
+FitParam = lsqnonlin(CostFcn,StartParameters,LowerBounds,UpperBounds,solveropts);
+
+%Get the fitted modulation depth
+ModDepth = FitParam(1);
+
+%Extrapolate fitted background to whole time axis
+Background = BckgModel(abs(TimeAxis),FitParam(2:end));
+
 %Ensure data is real
-Background=real(Background);
-if DataIsColumn
+Background = real(Background);
+if ~DataIsColumn
     Background = Background';
 end
 
 %Store output result in the cache
-Output = {Background,FitParam};
+Output = {Background,ModDepth,FitParam};
 cachedData = addcache(cachedData,hashKey,Output);
-
-%Cost function for fractal stretched exponential fit
-    function RMSD = minimizeStretchExp(StretchedExpParam,TimeAxis,Obervation)
-        if StretchedExpParam(1)<0
-            RMSD=1.0e10;
-            return;
-        end
-        Prediction = StretchedExpParam(2)*exp(-abs(StretchedExpParam(1)*TimeAxis).^(StretchedExpParam(3)/3));
-        RMSD = 1/2*norm(Prediction - Obervation)^2;
-    end
-
-%Polynomial function (substitute for polyval)
-    function y = polynomial(x,param)
-        y = 0;
-        for i = length(param):-1:1
-            y = y + param(i)*x.^(i-1);
-        end
-    end
-
 
 end

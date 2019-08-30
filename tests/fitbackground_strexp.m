@@ -5,7 +5,6 @@ function [err,data,maxerr] = test(opt,olddata)
 %======================================================
 
 t = linspace(0,5,100);
-d = 3;
 
 k = 0.5;
 d = 3;
@@ -23,16 +22,16 @@ data2fit3 = bckg3(1:end);
 
 tfit = t(1:end);
 
-[fit,results] = fitbackground(data2fit,t,tfit,@td_strexp);
-[fit2,results2] = fitbackground(data2fit2,t,tfit,@td_strexp);
-[fit3,results3] = fitbackground(data2fit3,t,tfit,@td_strexp);
+[fit,results] = fitbackground(data2fit,t,@td_strexp);
+[fit2,results2] = fitbackground(data2fit2,t,@td_strexp);
+[fit3,results3] = fitbackground(data2fit3,t,@td_strexp);
 
 
-err(1) = any(abs(fit' - bckg)>1e-5);
-err(2) = any(abs(fit2' - bckg2)>1e-5);
-err(3) = any(abs(fit3' - bckg3)>1e-5);
+err(1) = any(abs(fit - bckg)>1e-5);
+err(2) = any(abs(fit2 - bckg2)>1e-5);
+err(3) = any(abs(fit3 - bckg3)>1e-5);
 err = any(err);
-maxerr = max(abs(fit3' - bckg3));
+maxerr = max(abs(fit3 - bckg3));
 data = [];
 
 if opt.Display

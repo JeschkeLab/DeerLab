@@ -9,21 +9,21 @@ t = linspace(0,5,1000);
 d = 3;
 k = 0.5;
 bckg = exp(-(k*t).^(d/3));
-data2fit = bckg(20:end);
+data2fit = bckg(1:end);
 
-tfit = t(20:end);
+tstart = t(20);
 
 tic
-prefit = fitbackground(data2fit,t,tfit,'exponential');
+prefit = fitbackground(data2fit,t,@td_exp,tstart);
 pre1 = toc;
 tic
-prefit2 = fitbackground(data2fit,t,tfit,'polyexp');
+prefit2 = fitbackground(data2fit,t,@td_strexp,tstart);
 pre2 = toc;
 tic
-postfit = fitbackground(data2fit,t,tfit,'exponential');
+postfit = fitbackground(data2fit,t,@td_exp,tstart);
 post1 = toc;
 tic
-postfit2 = fitbackground(data2fit,t,tfit,'polyexp');
+postfit2 = fitbackground(data2fit,t,@td_strexp,tstart);
 post2 = toc;
 
 err(1) = any(abs(prefit - postfit)>1e-15);

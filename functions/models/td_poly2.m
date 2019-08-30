@@ -1,10 +1,10 @@
 %
-% TD_STREXP Stretched exponential background model
+% TD_POLY2 Polynomial 2nd-order background model 
 %
-%   info = TD_STREXP
+%   info = TD_POLY2
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   B = TD_STREXP(t,param)
+%   B = TD_POLY2(t,param)
 %   Computes the N-point model (B) from the N-point time axis (t) according to 
 %   the paramteres array (param). The required parameters can also be found 
 %   in the (info) structure.
@@ -12,8 +12,9 @@
 % PARAMETERS
 % name    symbol default lower bound upper bound
 % ------------------------------------------------------------------
-% PARAM(1)  k     3.5      0            200        decay rate
-% PARAM(2)  d      3       0            6          fractal dimension
+% PARAM(1)  p0     1        0            200        Intercept
+% PARAM(2)  p1     -1     -200           200        1st order weight
+% PARAM(3)  p2     -1     -200           200        2nd order weight
 % ------------------------------------------------------------------
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
@@ -23,24 +24,29 @@
 % the Free Software Foundation.
 
 
-function output = td_strexp(t,param)
+function output = td_poly2(t,param)
 
-nParam = 2;
+nParam = 3;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Stretched exponential';
-    info.Equation  = ['exp(-(kt)^(d/3))'];
+    info.Model  = 'Polynomial 2nd Order';
+    info.Equation  = ['p0 + p1*t + p2*t^2'];
     info.nParam  = nParam;
-    info.parameters(1).name = 'Decay rate k';
+    info.parameters(1).name = 'Intercept p0';
     info.parameters(1).range = [0 200];
-    info.parameters(1).default = 3.5;
-    info.parameters(1).units = 'us^-1';
+    info.parameters(1).default = 1;
+    info.parameters(1).units = ' ';
+
+    info.parameters(2).name = '1st order weight p1';
+    info.parameters(2).range = [-200 200];
+    info.parameters(2).default = -1;
+    info.parameters(2).units = 'us^-1';
     
-    info.parameters(2).name = 'Fractal dimension d';
-    info.parameters(2).range = [0 6];
-    info.parameters(2).default = 3;
-    info.parameters(2).units = ' ';
+    info.parameters(3).name = '2nd order weight p2';
+    info.parameters(3).range = [-200 200];
+    info.parameters(3).default = -1;
+    info.parameters(3).units = 'us^-2';
     
     output = info;
     
@@ -53,7 +59,7 @@ elseif nargin == 2
     
     %If necessary inputs given, compute the model distance distribution
     t = abs(t);
-    Background = exp(-(param(1)*t).^(param(2)/3));
+    Background = polyval(fliplr(param),t);
     if ~iscolumn(Background)
         Background = Background';
     end

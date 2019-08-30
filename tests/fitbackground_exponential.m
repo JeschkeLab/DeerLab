@@ -14,15 +14,15 @@ bckg2 = exp(-(k*t).^(d/3));
 k = 1.5;
 bckg3 = exp(-(k*t).^(d/3));
 
-data2fit = bckg(20:end);
-data2fit2 = bckg2(20:end);
-data2fit3 = bckg3(20:end);
+data2fit = bckg(1:end);
+data2fit2 = bckg2(1:end);
+data2fit3 = bckg3(1:end);
 
-tfit = t(20:end);
+tstart = t(20);
 
-fit = fitbackground(data2fit,t,tfit,'exponential');
-fit2 = fitbackground(data2fit2,t,tfit,'exponential');
-fit3 = fitbackground(data2fit3,t,tfit,'exponential');
+fit = fitbackground(data2fit,t,@td_exp,tstart);
+fit2 = fitbackground(data2fit2,t,@td_exp,tstart);
+fit3 = fitbackground(data2fit3,t,@td_exp,tstart);
 
 err(1) = any(abs(fit - bckg)>1e-5);
 err(2) = any(abs(fit2 - bckg2)>1e-5);

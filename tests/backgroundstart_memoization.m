@@ -12,7 +12,6 @@ Length = 200;
 TimeStep = 16;
 TimeAxis = linspace(TimeStep,Length*TimeStep,Length) - TimeStep;
 %Construct some dipolar evolution function from Fresnel integral
-% dipevo = 1-2*fresnelS(TimeAxis*2*pi*1/(15^3));
 
 r = time2dist(TimeAxis);
 dipevo = dipolarkernel(TimeAxis,r)*rd_onegaussian(r,[3,0.5]);
@@ -25,10 +24,10 @@ FormFactor = FormFactor + Offset;
 Signal = FormFactor.*bckg;
 
 tic
-preFitStartTime = backgroundstart(Signal,TimeAxis);
+preFitStartTime = backgroundstart(Signal,TimeAxis,@td_exp);
 pre = toc;
 tic
-postFitStartTime = backgroundstart(Signal,TimeAxis);
+postFitStartTime = backgroundstart(Signal,TimeAxis,@td_exp);
 post = toc;
 
 

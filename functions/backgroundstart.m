@@ -41,10 +41,8 @@ if nargin<2
     error('Not enough input arguments.')
 end
 
-
-
-if nargin<3 || isempty(BckgModel)
-    BckgModel = 'exponential';
+if ~isa(BckgModel,'function_handle')
+   error('The background model must be a valid function handle.') 
 end
 
 if iscolumn(TimeAxis)
@@ -54,7 +52,7 @@ if iscolumn(Signal)
     Signal = Signal';
 end
 validateattributes(Signal,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
-validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mfilename,'TimeAxis')
+validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','increasing'},mfilename,'TimeAxis')
 
 
 
@@ -62,7 +60,7 @@ validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','nonnegative','increasi
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
 %Check if user requested some options via name-value input
-[RelSearchStart,RelSearchEnd,EndCutoffPos,ModelParam] = parseoptional({'RelSearchStart','RelSearchEnd','EndCutoffPos','ModelParam'},varargin);
+[RelSearchStart,RelSearchEnd,EndCutoffPos] = parseoptional({'RelSearchStart','RelSearchEnd','EndCutoffPos'},varargin);
 
 if isempty(RelSearchStart)
     RelSearchStart = 0.1;
@@ -125,15 +123,15 @@ Merit = zeros(1,StartPosMax-StartPosMin);
 for FitStartPos = StartPosMin:StartPosMax
     
     %Define data to be fitted according to current background start
-    FitTimeAxis = TimeAxis(FitStartPos:length(TimeAxis));
-    FitData = Signal(FitStartPos:length(Signal));
+    FitStart = TimeAxis(FitStartPos);
     
     %Fit the background with current start
-    Background = fitbackground(FitData,TimeAxis,FitTimeAxis,BckgModel,ModelParam);
-    
+    Signal = Signal/max(Signal);
+    [Background,ModDepth] = fitbackground(Signal,TimeAxis,BckgModel,FitStart);
+
     %Correct the background from the from factor
-    FormFactor = Signal - Background;
-    FormFactor = FormFactor./Background;
+    FormFactor = Signal - (1-ModDepth)*Background;
+    FormFactor = FormFactor./(ModDepth*Background);
     FormFactor = FormFactor/max(FormFactor);
     
     %Perform APT on background-corrected signal

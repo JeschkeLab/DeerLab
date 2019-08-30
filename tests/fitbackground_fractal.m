@@ -21,11 +21,9 @@ data2fit = bckg(1:end);
 data2fit2 = bckg2(1:end);
 data2fit3 = bckg3(1:end);
 
-tfit = t(1:end);
-
-[fit,results] = fitbackground(data2fit,t,tfit,'fractal');
-[fit2,results2] = fitbackground(data2fit2,t,tfit,'fractal');
-[fit3,results3] = fitbackground(data2fit3,t,tfit,'fractal');
+[fit,results] = fitbackground(data2fit,t,@td_strexp);
+[fit2,results2] = fitbackground(data2fit2,t,@td_strexp);
+[fit3,results3] = fitbackground(data2fit3,t,@td_strexp);
 
 
 err(1) = any(abs(fit - bckg)>1e-5);
