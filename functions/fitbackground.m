@@ -86,8 +86,8 @@ if cachedData.containsKey(hashKey)
     [B,ModDepth,FitParam] = java2mat(Output);
     %Java does not recognize columns
     B = B(:);
-    if DataIsColumn
-        Baclground = B.';
+    if DataIsColumn && ~iscolumn(B)
+        B = B.';
     end
     return
 end

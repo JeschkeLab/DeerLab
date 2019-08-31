@@ -5,12 +5,11 @@ function [err,data,maxerr] = test(opt,olddata)
 %======================================================
 clear fitbackground
 
-t = linspace(0,5,1000);
+t = linspace(0,5,1000)';
 d = 3;
 k = 0.5;
 bckg = exp(-(k*t).^(d/3));
 data2fit = bckg(1:end);
-
 tstart = t(20);
 
 tic
