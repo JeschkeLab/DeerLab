@@ -71,7 +71,7 @@ N = length(Distribution);
 Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
 
 %Get the kernel
-Kernel = dipolarkernel(TimeAxis,DistanceAxis,[],'OvertoneCoeffs',Overtones);
+Kernel = dipolarkernel(TimeAxis,DistanceAxis,[],[],'OvertoneCoeffs',Overtones);
 
 %Calculate dipolar evolution function
 DipEvoFcn = Kernel*Distribution;

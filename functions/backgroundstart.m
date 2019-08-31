@@ -1,10 +1,10 @@
 %
 % BACKGROUNDSTART Computes the optimal point for the background fitting start
 % 
-%   [t0,pos] = BACKGROUNDSTART(S,t,'model')
+%   [t0,pos] = BACKGROUNDSTART(V,t,@model)
 %   Returns the optimal start time (t0) and corresponding array index (pos)
-%   at which to start fitting the background function corresponding to the
-%   model given by 'model';
+%   at which to start fitting a background model (@model) to the
+%   data (V).
 % 
 %   [t0,pos] = BACKGROUNDSTART(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.

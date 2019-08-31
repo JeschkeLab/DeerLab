@@ -18,31 +18,39 @@
 % the Free Software Foundation.
 
 function [RegMatrix,OrthNormBase] = regoperator(Dimension,Order) 
-
  
-% Initialization. 
+if nargin~=2
+    error('regoperator requires 2 input arguments: the dimension and the order.');
+end
+
+% Check arguments.
+if numel(Dimension)~=1
+    error('The dimension must be a scalar.');
+end
 if Order<0
-    error ('Order d must be nonnegative')
+    error('The order must be nonnegative.');
 end 
  
-% Zero'th derivative. 
+% No derivative. 
 if Order==0
     RegMatrix = speye(Dimension);
     OrthNormBase = zeros(Dimension,0); 
     return 
-end 
+end
  
-% Compute L. 
+% Compute L.
 c = [-1,1,zeros(1,Order-1)]; 
 nd = Dimension-Order; 
-for i=2:Order, c = [0,c(1:Order)] - [c(1:Order),0]; end 
+for i = 2:Order
+    c = [0,c(1:Order)] - [c(1:Order),0];
+end
 RegMatrix = sparse(nd,Dimension); 
-for i=1:Order+1 
-  RegMatrix = RegMatrix + sparse(1:nd,[1:nd]+i-1,c(i)*ones(1,nd),nd,Dimension); 
+for i = 1:Order+1 
+  RegMatrix = RegMatrix + sparse(1:nd,(1:nd)+i-1,c(i)*ones(1,nd),nd,Dimension); 
 end 
  
 % If required, compute the null vectors W via modified Gram-Schmidt. 
-if (nargout==2) 
+if nargout==2
   OrthNormBase = zeros(Dimension,Order); 
   OrthNormBase(:,1) = ones(Dimension,1); 
   for i=2:Order, OrthNormBase(:,i) = OrthNormBase(:,i-1).*[1:Dimension]'; end 

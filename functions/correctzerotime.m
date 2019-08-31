@@ -1,16 +1,17 @@
 %
 % CORRECTZEROTIME Zero-time correction of dipolar spectroscopy signals
 %
-%   ct = CORRECTZEROTIME(S,t)
-%   Determines the zero time of a dipolar signal (S) and corrects
-%   the time axis (t) in ns/us for it. If input signal (S) is in ns/us 
-%   it will be returned in ns/us.
+%   tc = CORRECTZEROTIME(V,t)
+%   Determines the zero time of a dipolar signal (V) and corrects
+%   the time axis (t) for it, returning a corrected time axis (tc).
+%   If t is in ns/us, tc will be be in ns/us as well.
 %
-%   ct = CORRECTZEROTIME(S,t,zt)
-%   Corrects the time axis (t) for a given zero-time (zt) in ns/us ;
+%   tc = CORRECTZEROTIME(V,t,zt)
+%   Corrects the time axis (t) for a given zero-time (zt), returning the
+%   corrected time axis.
 %
-%   [ct,zt,pos] = CORRECTZEROTIME(S,t)
-%   Returns the corrected time axis (zt), the zero-time (zt) in ns/us and the 
+%   [tc,zt,pos] = CORRECTZEROTIME(V,t)
+%   Returns the corrected time axis (tc), the zero-time (zt) in ns/us and the 
 %   zero-time array index (pos). 
 %
 % Adapted from Gunnar Jeschke, DeerAnalysis 2018
@@ -20,7 +21,6 @@
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
-
 
 function [correctedTimeAxis,ZeroTime,ZeroTimePos] = correctzerotime(Signal,TimeAxis,ZeroTime)
 
@@ -34,15 +34,15 @@ else
     validateattributes(ZeroTime,{'numeric'},{'scalar','nonnegative'},mfilename,'ZeroTime')
 end
 if ~iscolumn(Signal)
-    Signal = Signal';
+    Signal = Signal.';
 end
 validateattributes(Signal,{'numeric'},{'2d'},mfilename,'Signal')
 validateattributes(TimeAxis,{'numeric'},{'nonnegative','nonempty'},mfilename,'TimeAxis')
-if mean(abs(diff(TimeAxis))) < 1
-    isnanosecond = true;
-    TimeAxis = TimeAxis*1000;
-else
-    isnanosecond = false;
+
+usesMicrosecondUnits = mean(abs(diff(TimeAxis))) < 1;
+
+if usesMicrosecondUnits
+    TimeAxis = TimeAxis*1000; % convert us -> ns
 end
 
 %Generate finely-grained interpolated signal and time axis
@@ -74,9 +74,9 @@ if isempty(ZeroTime)
         MaxEndDistance = length(FineSignal) - maxPos;
         NewPosDistance = NewPos;
         if MaxEndDistance<NewPosDistance
-            SmallestDistance=MaxEndDistance;
+            SmallestDistance = MaxEndDistance;
         else
-            SmallestDistance=NewPosDistance;
+            SmallestDistance = NewPosDistance;
         end
         MaxAllowedDistance = floor(NewPosDistance/2);
         BestIntegral = 1e20;
@@ -103,11 +103,9 @@ end
 % Correct time axis
 correctedTimeAxis = TimeAxis - ZeroTime;
 
-if isnanosecond
-    ZeroTime = ZeroTime/1000;
-    correctedTimeAxis = correctedTimeAxis/1000;
+if usesMicrosecondUnits
+    ZeroTime = ZeroTime/1000; % convert ns -> us
+    correctedTimeAxis = correctedTimeAxis/1000;  % convert ns -> us
 end
 
-
 end
-

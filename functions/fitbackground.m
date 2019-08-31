@@ -1,17 +1,17 @@
 %
 % FITBACKGROUND Fit the background function in a signal
 %
-%   [B,lambda,param] = FITBACKGROUND(S,t,@model)
+%   [B,lambda,param] = FITBACKGROUND(V,t,@model)
 %   Fits the background (B) and the modulation depth (lambda) to a
-%   time-domain signal (S) and time-axis (t) based on a given time-domain
+%   time-domain signal (V) and time-axis (t) based on a given time-domain
 %   parametric model (@model). The fitted parameters of the model are
 %   returned as a last output argument.
 %
-%   [B,lambda,param] = FITBACKGROUND(S,t,@model,tstart)
+%   [B,lambda,param] = FITBACKGROUND(V,t,@model,tstart)
 %   The time at which the background starts to be fitted can be passed as a
 %   an additional argument. 
 %   
-%   [B,lambda,param] = FITBACKGROUND(S,t,@model,[tstart tend])
+%   [B,lambda,param] = FITBACKGROUND(V,t,@model,[tstart tend])
 %   The start and end times of the fitting can be specified by passing a
 %   two-element array as the argument. If tend is not specified, the end of
 %   the signal is selected as the default.
@@ -63,11 +63,9 @@ if isempty(LogFit)
    LogFit = false; 
 end
 
-if iscolumn(Data)
-    DataIsColumn = true;
-else
+DataIsColumn = iscolumn(Data);
+if ~DataIsColumn
     Data = Data.';
-    DataIsColumn = false;
 end
 
 validateattributes(FitDelimiter,{'numeric'},{'2d','nonempty'},mfilename,'FitDelimiter')
@@ -87,7 +85,10 @@ if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
     [Background,ModDepth,FitParam] = java2mat(Output);
     %Java does not recognize columns
-    Background = Background';
+    Background = Background(:);
+    if DataIsColumn
+        Baclground = Background.';
+    end
     return
 end
 

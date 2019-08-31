@@ -152,20 +152,19 @@ TimeStep = mean(diff(TimeAxis));
 %Numerical dipolar frequency at 1 nm for given g-value
 ny0 = 51.92052556862238*gValue/2;
 
-%Convert time step to miliseconds if given in nanosecond
-if TimeStep>1
+%Convert time step to microseconds if given in nanoseconds
+usesNanoseconds = TimeStep>1;
+if usesNanoseconds
     TimeStep = round(TimeStep)/1000;
     TimeAxis = round(TimeAxis)/1000;
 end
-
-TimeAxis = abs(TimeAxis);
 
 %Numerical angular dipolar frequency at 1 nm for g=ge
 w0 = 2*pi*ny0;
 %Get vector of dipolar frequencies
 wdd = w0./(DistanceAxis.^3);
 
-[~,BckgStart] = min(TimeAxis);
+[~,BckgStart] = min(abs(TimeAxis));
 
 
 Kernel = zeros(length(TimeAxis),length(wdd));
