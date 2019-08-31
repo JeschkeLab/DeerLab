@@ -13,7 +13,7 @@
 %
 %   'ModDepth' - Modulation depth of the form factor
 %
-%   'Background' - Array containing a background function
+%   'B' - Array containing a background function
 %
 %   'NoiseLevel' - Level (standard deviation) of gaussian noise to add 
 %
@@ -28,16 +28,16 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [FormFactor,DipEvoFcn] = dipolarsignal(TimeAxis,DistanceAxis,Distribution,varargin)
+function [FormFactor,DipEvoFcn] = dipolarsignal(t,r,Distribution,varargin)
 
 %Parse optional input arguments
-[ModDepth,Background,NoiseLevel,Offset,Overtones] = parseoptional({'ModDepth','Background','NoiseLevel','Offset','Overtones'},varargin);
+[ModDepth,B,NoiseLevel,Offset,Overtones] = parseoptional({'ModDepth','B','NoiseLevel','Offset','Overtones'},varargin);
 %Validate inputs
 if isempty(ModDepth)
     ModDepth = 1;
 end
-if isempty(Background)
-    Background = ones(length(TimeAxis),1);
+if isempty(B)
+    B = ones(length(t),1);
 end
 if isempty(NoiseLevel)
     NoiseLevel = 0;
@@ -50,17 +50,17 @@ if isempty(Offset)
 end
 validateattributes(NoiseLevel,{'numeric'},{'scalar','nonnegative'},mfilename,'NoiseLevel')
 validateattributes(ModDepth,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'ModDepth')
-validateattributes(TimeAxis,{'numeric'},{'increasing','nonempty'},mfilename,'TimeAxis')
-validateattributes(DistanceAxis,{'numeric'},{'increasing','nonempty','nonnegative'},mfilename,'DistanceAxis')
-validateattributes(Background,{'numeric'},{'2d'},mfilename,'Background')
-validateattributes(Distribution,{'numeric'},{'2d','nonempty'},mfilename,'Background')
+validateattributes(t,{'numeric'},{'increasing','nonempty'},mfilename,'t')
+validateattributes(r,{'numeric'},{'increasing','nonempty','nonnegative'},mfilename,'r')
+validateattributes(B,{'numeric'},{'2d'},mfilename,'B')
+validateattributes(Distribution,{'numeric'},{'2d','nonempty'},mfilename,'B')
 validateattributes(Offset,{'numeric'},{'scalar','nonnegative'},mfilename,'Offset')
-validateattributes(Overtones,{'numeric'},{'2d','nonnegative'},mfilename,'Background')
+validateattributes(Overtones,{'numeric'},{'2d','nonnegative'},mfilename,'B')
 
 if ModDepth>1 || ModDepth<0
     error('Modulation depth must be in the range of 0 to 1.')
 end
-if numel(unique(round(diff(DistanceAxis),12)))~=1
+if numel(unique(round(diff(r),12)))~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
 
@@ -68,20 +68,20 @@ end
 N = length(Distribution);
 
 %Normalize the distance distribution if not normalized
-Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
+Distribution = Distribution/sum(Distribution)/mean(diff(r));
 
 %Get the kernel
-Kernel = dipolarkernel(TimeAxis,DistanceAxis,[],[],'OvertoneCoeffs',Overtones);
+K = dipolarkernel(t,r,[],[],'OvertoneCoeffs',Overtones);
 
 %Calculate dipolar evolution function
-DipEvoFcn = Kernel*Distribution;
+DipEvoFcn = K*Distribution;
 
 %Generate Gaussian noise
 Noise = whitenoise(N,NoiseLevel);
 
 %Calculate form factor with backbround
 FormFactor = (1-ModDepth) + ModDepth*DipEvoFcn;
-FormFactor = FormFactor.*Background;
+FormFactor = FormFactor.*B;
 
 %Add noise and intensity offset
 FormFactor = (FormFactor + Noise)*Offset;

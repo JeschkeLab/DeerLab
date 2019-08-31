@@ -20,7 +20,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [Distribution,UniformDistanceAxis] = apt(Signal,APTkernel,DistDomainSmoothing)
+function [Distribution,Uniformr] = apt(S,APTkernel,DistDomainSmoothing)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -29,10 +29,10 @@ if ~isa(APTkernel,'struct')
     error('The input APTkernel must be a a valid structure.')
 end
 
-if iscolumn(Signal)
-   Signal = Signal'; 
+if iscolumn(S)
+   S = S'; 
 end
-validateattributes(Signal,{'numeric'},{'2d','nonempty'})
+validateattributes(S,{'numeric'},{'2d','nonempty'})
 
 if nargin<3 || isempty(DistDomainSmoothing)
     DistDomainSmoothing = 0.05;
@@ -48,10 +48,10 @@ persistent cachedData
 if isempty(cachedData)
     cachedData =  java.util.LinkedHashMap;
 end
-hashKey = datahash({Signal,APTkernel,DistDomainSmoothing});
+hashKey = datahash({S,APTkernel,DistDomainSmoothing});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
-    [Distribution,UniformDistanceAxis] = java2mat(Output);
+    [Distribution,Uniformr] = java2mat(Output);
     return
 end
 
@@ -60,17 +60,17 @@ end
 %--------------------------------------------------------------------------
 
 %Get APT kernel data
-Kernel = APTkernel.Base;
+K = APTkernel.Base;
 NormConstant = APTkernel.NormalizationFactor;
 APT_FrequencyAxis = APTkernel.FreqAxis;
-APT_TimeAxis = APTkernel.TimeAxis;
+APT_t = APTkernel.t;
 Crosstalk = APTkernel.Crosstalk;
 
 %Compute frequency distribution
-[FreqDimension,~] = size(Kernel);
+[FreqDimension,~] = size(K);
 FreqDistribution = zeros(1,FreqDimension);
 for k=1:FreqDimension
-    FreqDistribution(k) = FreqDistribution(k)+sum(Kernel(k,:).*Signal.*APT_TimeAxis)/NormConstant(k);
+    FreqDistribution(k) = FreqDistribution(k)+sum(K(k,:).*S.*APT_t)/NormConstant(k);
 end
 
 %Perform crosstalk correction
@@ -105,17 +105,17 @@ end
 FilteredAPTdistribution = FilteredAPTdistribution/max(FilteredAPTdistribution);
 
 %Interpolate to uniform distance axis
-UniformDistanceAxis = linspace(min(MappedDistances),max(MappedDistances),length(Signal));
-Distribution = uniformgrain(MappedDistances,FilteredAPTdistribution,UniformDistanceAxis);
+Uniformr = linspace(min(MappedDistances),max(MappedDistances),length(S));
+Distribution = uniformgrain(MappedDistances,FilteredAPTdistribution,Uniformr);
 
 %Normalize to unity integral
-Distribution = Distribution/sum(Distribution)/mean(diff(UniformDistanceAxis));
+Distribution = Distribution/sum(Distribution)/mean(diff(Uniformr));
 
 %Make the distribution a column
 Distribution = Distribution';
 
 %Store output result in the cache
-Output = {Distribution,UniformDistanceAxis};
+Output = {Distribution,Uniformr};
 cachedData = addcache(cachedData,hashKey,Output);
 
 

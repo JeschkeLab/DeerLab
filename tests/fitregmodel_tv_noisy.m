@@ -6,19 +6,19 @@ function [err,data,maxerr] = test(opt,olddata)
 
 Dimension = 200;
 NoiseLevel = 0.01;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
-Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
+dt = 0.008;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
+Distribution = rd_onegaussian(r,[3,0.5]);
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution;
+K = dipolarkernel(t,r);
+DipEvoFcn = K*Distribution;
 Noise = whitenoise(Dimension,NoiseLevel);
-Signal = DipEvoFcn + Noise;
+S = DipEvoFcn + Noise;
 
 RegMatrix = regoperator(Dimension,2);
 RegParam = 0.001259;
-TikhResult1 = fitregmodel(Signal,Kernel,DistanceAxis,RegMatrix,'tv',RegParam,'Solver','fmincon');
+TikhResult1 = fitregmodel(S,K,r,RegMatrix,'tv',RegParam,'Solver','fmincon');
 err(1) = any(abs(TikhResult1 - Distribution)>1e-1);
 maxerr = max(abs(TikhResult1 - Distribution));
 
@@ -29,12 +29,12 @@ if opt.Display
  	figure(8),clf
     subplot(121)
     hold on
-    plot(TimeAxis,Signal)
-    plot(TimeAxis,Kernel*TikhResult1)
+    plot(t,S)
+    plot(t,K*TikhResult1)
     subplot(122)
     hold on
-    plot(DistanceAxis,Distribution,'k') 
-    plot(DistanceAxis,TikhResult1,'r')
+    plot(r,Distribution,'k') 
+    plot(r,TikhResult1,'r')
 end
 
 end

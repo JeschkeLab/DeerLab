@@ -26,7 +26,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function varargout = fftspec(TimeAxis,Signal,varargin)
+function varargout = fftspec(t,S,varargin)
 
 if nargin<2
     error('Not enough inputs.');
@@ -40,14 +40,14 @@ else
     validatestring(Type,allowedInput);
 end
 if isempty(ZeroFilling)
-    ZeroFilling = 2*length(Signal);
+    ZeroFilling = 2*length(S);
 else
     validateattributes(ZeroFilling,{'numeric'},{'scalar','nonnegative'},mfilename,'ZeroFilling')
 end
-validateattributes(Signal,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
-validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mfilename,'TimeAxis')
+validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
+validateattributes(t,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mfilename,'t')
 
-Spectrum = fftshift(fft(Signal,ZeroFilling));
+Spectrum = fftshift(fft(S,ZeroFilling));
 
 switch Type
     case 'abs'
@@ -60,7 +60,7 @@ end
 
 
 if nargout>1
-    FreqAxis = time2freq(TimeAxis,ZeroFilling);
+    FreqAxis = time2freq(t,ZeroFilling);
     varargout{1} = FreqAxis;
     varargout{2} = Spectrum;
 else

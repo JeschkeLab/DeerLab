@@ -2,17 +2,17 @@ function [err,data,maxerr] = test(opt,oldata)
 
 
 Dimension = 300;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
+dt = 0.008;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
 InputParam = [2 0.4 3.5 0.3 5 0.3 0.3 0.3];
-Distribution = rd_threerice(DistanceAxis,InputParam);
-Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
+Distribution = rd_threerice(r,InputParam);
+Distribution = Distribution/sum(Distribution)/mean(diff(r));
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution;
+K = dipolarkernel(t,r);
+DipEvoFcn = K*Distribution;
 
-[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@rd_threerice,0.75*InputParam,'solver','lsqnonlin');
+[FitDistribution] = fitparamodel(DipEvoFcn,K,r,@rd_threerice,0.75*InputParam,'solver','lsqnonlin');
 err = any(abs(FitDistribution - Distribution)>1e-2);
 
 maxerr = max(abs(FitDistribution - Distribution));
@@ -22,12 +22,12 @@ if opt.Display
    figure(1),clf
    subplot(121)
    hold on
-   plot(TimeAxis,DipEvoFcn,'b')
-   plot(TimeAxis,Kernel*FitDistribution,'r')
+   plot(t,DipEvoFcn,'b')
+   plot(t,K*FitDistribution,'r')
    subplot(122)
    hold on
-   plot(DistanceAxis,Distribution,'b')
-   plot(DistanceAxis,FitDistribution,'r')
+   plot(r,Distribution,'b')
+   plot(r,FitDistribution,'r')
 end
 
 end

@@ -7,10 +7,10 @@ function [err,data,maxerr] = test(opt,olddata)
 load(fullfile('comparison','oldDAkernel500'));
 
 N = 500;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*N,N);
-DistAxis = time2dist(TimeAxis);
-kernelOut = dipolarkernel(TimeAxis,DistAxis);
+dt = 0.008;
+t = linspace(0,dt*N,N);
+DistAxis = time2dist(t);
+kernelOut = dipolarkernel(t,DistAxis);
 kernelOut = kernelOut/mean(diff(DistAxis));
 
 err = any(abs(kernelOut - kernel)>7e-3);

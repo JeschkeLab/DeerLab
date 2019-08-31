@@ -12,10 +12,10 @@ wp = 0.01e9;
 ws =  0.04e9;
 
 
-filteredSignal = winlowpass(signal,ws,wp,sampl);
+filteredS = winlowpass(signal,ws,wp,sampl);
 
 spec = abs(fftshift(fft(signal,2*N)));
-filteredspec = abs(fftshift(fft(filteredSignal,2*N)));
+filteredspec = abs(fftshift(fft(filteredS,2*N)));
 
 attenuation = mag2db(max(filteredspec)/max(spec));
 
@@ -28,7 +28,7 @@ figure(1),clf
 subplot(121)
 hold on
 plot(t,signal)
-plot(t,filteredSignal)
+plot(t,filteredS)
 
 nu = time2freq(t,2*N);
 

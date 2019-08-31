@@ -5,24 +5,24 @@ function [err,data,maxerr] = test(opt,olddata)
 %=======================================
 
 Dimension = 200;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
-Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
+dt = 0.008;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
+Distribution = rd_onegaussian(r,[3,0.5]);
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution;
-Background = exp(-0.15*TimeAxis)';
-ClusterFcn = (DipEvoFcn + 5).*Background;
+K = dipolarkernel(t,r);
+DipEvoFcn = K*Distribution;
+B = exp(-0.15*t)';
+ClusterFcn = (DipEvoFcn + 5).*B;
 ModDepth = 1/ClusterFcn(1);
 ClusterFcn = ClusterFcn/ClusterFcn(1);
-ClusterFcn = ClusterFcn./sqrt(Background);
+ClusterFcn = ClusterFcn./sqrt(B);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.005;
 RegMatrix = regoperator(Dimension,3);
-KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,ModDepth,'KernelBType','sqrt');
-Result = fitregmodel(ClusterFcn,KernelB,DistanceAxis,RegMatrix,'tv',RegParam,'Solver','fnnls');
+KB = dipolarkernel(t,r,B,ModDepth,'KBType','sqrt');
+Result = fitregmodel(ClusterFcn,KB,r,RegMatrix,'tv',RegParam,'Solver','fnnls');
 
 err = any(abs(Result - Distribution)>1.5e-2);
 maxerr = max(abs(Result - Distribution));
@@ -32,8 +32,8 @@ data = [];
 if opt.Display
  	figure(8),clf
     hold on
-    plot(DistanceAxis,Distribution,'k') 
-    plot(DistanceAxis,Result,'r')
+    plot(r,Distribution,'k') 
+    plot(r,Result,'r')
 end
 
 end

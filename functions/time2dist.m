@@ -17,23 +17,23 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [DistanceAxis,rmin,rmax] = time2dist(TimeAxis,M)
+function [r,rmin,rmax] = time2dist(t,M)
 
-validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing'})
+validateattributes(t,{'numeric'},{'nonempty','increasing'})
 
 if nargin<2 || isempty(M)
-    M = length(TimeAxis);
+    M = length(t);
 else
    validateattributes(M,{'numeric'},{'scalar','nonnegative'}) 
 end
 
-TimeAxis = abs(TimeAxis);
-TimeStep = mean(abs(diff(TimeAxis)));
-tmax = max(TimeAxis);
+t = abs(t);
+dt = mean(abs(diff(t)));
+tmax = max(t);
 ny0 = 52.04;
-rmin = (4*TimeStep*ny0/0.85)^(1/3);
+rmin = (4*dt*ny0/0.85)^(1/3);
 rmax = 6*(tmax/2)^(1/3);
 
-DistanceAxis = linspace(rmin,rmax,M);
+r = linspace(rmin,rmax,M);
 
 end

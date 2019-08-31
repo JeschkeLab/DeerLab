@@ -26,7 +26,7 @@
 % the Free Software Foundation.
 
 
-function alpha = regparamrange(Kernel,RegMatrix,varargin)
+function alpha = regparamrange(K,RegMatrix,varargin)
 
 %Check if user requested some options via name-value input
 [NoiseDeviation,logResolution] = parseoptional({'NoiseDeviation','logResolution'},varargin);
@@ -41,7 +41,7 @@ end
 if issparse(RegMatrix)
    RegMatrix = full(RegMatrix); 
 end
-validateattributes(Kernel,{'numeric'},{'nonempty'})
+validateattributes(K,{'numeric'},{'nonempty'})
 validateattributes(RegMatrix,{'numeric'},{'nonempty'})
 validateattributes(logResolution,{'numeric'},{'scalar'})
 validateattributes(NoiseDeviation,{'numeric'},{'scalar'})
@@ -55,7 +55,7 @@ minmax_ratio = minmax_ratio*2^(NoiseDeviation/0.0025);
 
 % Get generalized singular values of K and L
 %-------------------------------------------------------------
-singularValues = gsvd(Kernel,RegMatrix,0);
+singularValues = gsvd(K,RegMatrix,0);
 DerivativeOrder = size(RegMatrix,2) - size(RegMatrix,1); % get order of derivative (=number of inf in singval)
 singularValues = singularValues(1:end - DerivativeOrder); % remove inf 
 

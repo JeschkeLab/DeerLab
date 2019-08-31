@@ -5,17 +5,17 @@ function [err,data] = test(opt,olddata)
 %=======================================
 
 Dimension = 100;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
-Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
+dt = 0.008;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
+Distribution = rd_onegaussian(r,[3,0.5]);
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
+K = dipolarkernel(t,r);
 RegMatrix = regoperator(Dimension,2);
-DipEvoFcn = Kernel*Distribution;
+DipEvoFcn = K*Distribution;
 
-RegParamSet = regparamrange(Kernel,RegMatrix);
-[OptParam,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,'huber',{'aic','gcv'},'NonNegConstrained',false);
+RegParamSet = regparamrange(K,RegMatrix);
+[OptParam,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn,K,RegMatrix,'huber',{'aic','gcv'},'NonNegConstrained',false);
 
 %Accept testif all values are the same (should be as there is no noise)
 err = any(any(OptParam - OptParam' > 1e-2));

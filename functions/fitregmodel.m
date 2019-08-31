@@ -50,7 +50,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function Distribution = fitregmodel(Signal,Kernel,DistanceAxis,RegMatrix,RegType,RegParam,varargin)
+function Distribution = fitregmodel(S,K,r,RegMatrix,RegType,RegParam,varargin)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -76,8 +76,8 @@ else
 end
 validateattributes(RegMatrix,{'numeric'},{'nonempty','2d'},mfilename,'RegMatrix')
 validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
-validateattributes(DistanceAxis,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'DistanceAxis')
-if numel(unique(round(diff(DistanceAxis),12)))~=1
+validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r')
+if numel(unique(round(diff(r),12)))~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
 
@@ -123,35 +123,35 @@ if isempty(NonNegConstrained)
 else
     validateattributes(NonNegConstrained,{'logical'},{'nonempty'},'regularize','NonNegConstrained')
 end
-if ~iscell(Signal)
-    Signal = {Signal};
+if ~iscell(S)
+    S = {S};
 end
-if ~iscell(Kernel)
-    Kernel = {Kernel};
+if ~iscell(K)
+    K = {K};
 end
 if ~isempty(GlobalWeights)
     validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
-    if length(GlobalWeights) ~= length(Signal)
+    if length(GlobalWeights) ~= length(S)
         error('The same number of global fit weights as signals must be passed.')
     end
     if sum(GlobalWeights)~=1
         error('The sum of the global fit weights must equal 1.')
     end
 end
-if length(Kernel)~=length(Signal)
+if length(K)~=length(S)
     error('The number of kernels and signals must be equal.')
 end
-for i=1:length(Signal)
-    if ~iscolumn(Signal{i})
-        Signal{i} = Signal{i}.';
+for i=1:length(S)
+    if ~iscolumn(S{i})
+        S{i} = S{i}.';
     end
-    if ~isreal(Signal{i})
-        Signal{i} = real(Signal{i});
+    if ~isreal(S{i})
+        S{i} = real(S{i});
     end
-    if length(Signal{i})~=size(Kernel{i},1)
-        error('Kernel and signal arguments must fulfill size(Kernel,1)==length(Signal).')
+    if length(S{i})~=size(K{i},1)
+        error('K and signal arguments must fulfill size(K,1)==length(S).')
     end
-    validateattributes(Signal{i},{'numeric'},{'nonempty'},mfilename,'Signal')
+    validateattributes(S{i},{'numeric'},{'nonempty'},mfilename,'S')
 end
 
 %--------------------------------------------------------------------------
@@ -163,7 +163,7 @@ if isempty(cachedData)
     cachedData =  java.util.LinkedHashMap;
 end
 
-hashKey = datahash({Signal,Kernel,RegMatrix,RegType,RegParam,varargin});
+hashKey = datahash({S,K,RegMatrix,RegType,RegParam,varargin});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
     [Distribution] = java2mat(Output);
@@ -176,7 +176,7 @@ end
 
 Dimension = length(RegMatrix);
 InitialGuess = zeros(Dimension,1);
-dr = mean(diff(DistanceAxis));
+dr = mean(diff(r));
 
 %If unconstrained regularization is requested then solve analytically
 if ~NonNegConstrained && ~strcmp(Solver,'fmincon')
@@ -185,7 +185,7 @@ end
 
 %If using LSQ-based solvers then precompute the KtK and KtS input arguments
 if ~strcmp(Solver,'fmincon')
-    [Q,KtS,weights] =  lsqcomponents(Signal,Kernel,RegMatrix,RegParam,RegType,HuberParam,GlobalWeights);
+    [Q,KtS,weights] =  lsqcomponents(S,K,RegMatrix,RegParam,RegType,HuberParam,GlobalWeights);
 end
 
 %Solve the regularization functional minimization problem
@@ -193,9 +193,9 @@ switch lower(Solver)
     
     case 'analytical'
         Distribution = zeros(Dimension,1);
-        for i=1:length(Signal)
-        PseudoInverse = Q\Kernel{i}.';
-        Distribution = Distribution + weights(i)*PseudoInverse*Signal{i};
+        for i=1:length(S)
+        PseudoInverse = Q\K{i}.';
+        Distribution = Distribution + weights(i)*PseudoInverse*S{i};
         end
     case 'lsqnonneg'
         solverOpts = optimset('Display','off','TolX',TolFun);
@@ -219,7 +219,7 @@ switch lower(Solver)
             NonNegConst = [];
         end
         if ~strcmp(RegType,'custom')
-            RegFunctional = regfunctional(RegType,Signal,RegMatrix,Kernel,RegParam,HuberParam);
+            RegFunctional = regfunctional(RegType,S,RegMatrix,K,RegParam,HuberParam);
         end
         constraint = @(x)unityconstraint(x,dr);
         fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',GradObj,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);

@@ -5,11 +5,11 @@ function [err,data,maxerr] = test(opt,olddata)
 %======================================================
 
 N = 200;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*N,N);
-DistAxis = time2dist(TimeAxis);
-kernelF = dipolarkernel(TimeAxis,DistAxis,'KernelCalcMethod','fresnel');
-kernelE = dipolarkernel(TimeAxis,DistAxis,'KernelCalcMethod','explicit');
+dt = 0.008;
+t = linspace(0,dt*N,N);
+DistAxis = time2dist(t);
+kernelF = dipolarkernel(t,DistAxis,'KCalcMethod','fresnel');
+kernelE = dipolarkernel(t,DistAxis,'KCalcMethod','explicit');
 
 err = any(abs(kernelF - kernelE)>1e-2);
 maxerr = max(max(abs(kernelF - kernelE)));

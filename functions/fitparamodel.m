@@ -49,7 +49,7 @@
 
 
 
-function [Distribution,FitParameters] = fitparamodel(Signal,Kernel,DistanceAxis,Model,StartParameters,varargin)
+function [Distribution,FitParameters] = fitparamodel(S,K,r,Model,StartParameters,varargin)
 
 %--------------------------------------------------------------------------
 % Input Parsening & Validation
@@ -112,45 +112,45 @@ else
     validInputs = {'levenberg-marquardt','interior-point','trust-region-reflective','active-set','sqp'};
     Algorithm = validatestring(Algorithm,validInputs);
 end
-if ~iscolumn(DistanceAxis)
-    DistanceAxis = DistanceAxis.';
+if ~iscolumn(r)
+    r = r.';
 end
-if numel(unique(round(diff(DistanceAxis),12)))~=1
+if numel(unique(round(diff(r),12)))~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
-if ~iscell(Signal)
-    Signal = {Signal};
+if ~iscell(S)
+    S = {S};
 end
-if ~iscell(Kernel)
-    Kernel = {Kernel};
+if ~iscell(K)
+    K = {K};
 end
-if length(Kernel)~=length(Signal)
+if length(K)~=length(S)
     error('The number of kernels and signals must be equal.')
 end
 if ~isempty(GlobalWeights)
     validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
-    if length(GlobalWeights) ~= length(Signal)
+    if length(GlobalWeights) ~= length(S)
         error('The same number of global fit weights as signals must be passed.')
     end
     if sum(GlobalWeights)~=1
         error('The sum of the global fit weights must equal 1.')
     end
 end
-if length(Signal)>1 && strcmp(Solver,'lsqnonlin')
+if length(S)>1 && strcmp(Solver,'lsqnonlin')
     Solver = 'fmincon';
     Algorithm = 'interior-point';
 end
-for i=1:length(Signal)
-    if ~iscolumn(Signal{i})
-        Signal{i} = Signal{i}.';
+for i=1:length(S)
+    if ~iscolumn(S{i})
+        S{i} = S{i}.';
     end
-    if ~isreal(Signal{i})
-        Signal{i} = real(Signal{i});
+    if ~isreal(S{i})
+        S{i} = real(S{i});
     end
-    if length(Signal{i})~=size(Kernel{i},1)
-        error('Kernel and signal arguments must fulfill size(Kernel,1)==length(Signal).')
+    if length(S{i})~=size(K{i},1)
+        error('K and signal arguments must fulfill size(K,1)==length(S).')
     end
-    validateattributes(Signal{i},{'numeric'},{'nonempty'},mfilename,'Signal')
+    validateattributes(S{i},{'numeric'},{'nonempty'},mfilename,'S')
 end
 
 
@@ -162,7 +162,7 @@ persistent cachedData
 if isempty(cachedData)
     cachedData =  java.util.LinkedHashMap;
 end
-hashKey = datahash({Signal,Kernel,DistanceAxis,func2str(Model),StartParameters,varargin});
+hashKey = datahash({S,K,r,func2str(Model),StartParameters,varargin});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
     [Distribution,FitParameters] = java2mat(Output);
@@ -177,20 +177,20 @@ end
 %Define the cost functional of a single signal
 switch CostModel
     case 'lsq'
-        ModelCost = @(Parameters,Kernel,Signal) (norm(Kernel*Model(DistanceAxis,Parameters) - Signal)^2);
+        ModelCost = @(Parameters,K,S) (norm(K*Model(r,Parameters) - S)^2);
     case 'chisquare'
         nParam = length(StartParameters);
-        ModelCost = @(Parameters,Kernel,Signal) (1/(length(Signal) - nParam)/(noiselevel(Signal)^2)*sum((Kernel*Model(DistanceAxis,Parameters) - Signal).^2));
+        ModelCost = @(Parameters,K,S) (1/(length(S) - nParam)/(noiselevel(S)^2)*sum((K*Model(r,Parameters) - S).^2));
 end
 
 %Get weights of different signals for global fitting
 if isempty(GlobalWeights)
-    Weights = globalweights(Signal);
+    Weights = globalweights(S);
 else
     Weights = GlobalWeights;
 end
 %Create a new handle which evaluates the model cost function for every signal
-CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y)ModelCost(Parameters,x,y),Kernel,Signal)));
+CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y)ModelCost(Parameters,x,y),K,S)));
 
 %Prepare upper/lower bounds on parameter search
 Ranges =  [Info.parameters(:).range];
@@ -218,7 +218,7 @@ switch Solver
         solverOpts=optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display','off',...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        ModelCost = @(Parameters) (sqrt(0.5)*(Kernel{1}*Model(DistanceAxis,Parameters) - Signal{1}));
+        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*Model(r,Parameters) - S{1}));
         [FitParameters,~,~,exitflag]  = lsqnonlin(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
@@ -236,7 +236,7 @@ switch Solver
 end
 
 %Compute fitted distance distribution
-Distribution = Model(DistanceAxis,FitParameters);
+Distribution = Model(r,FitParameters);
 
 %Store output result in the cache
 Output = {Distribution,FitParameters};

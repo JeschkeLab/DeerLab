@@ -4,22 +4,22 @@ function [err,data,maxerr] = test(opt,olddata)
 %gaussian model as given as the input signal
 
 Dimension = 500;
-TimeStep = 0.016;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
+dt = 0.016;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
 InputParam = [3 0.3 5 0.3 0.5];
-Distribution = rd_twogaussian(DistanceAxis,InputParam);
+Distribution = rd_twogaussian(r,InputParam);
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution;
+K = dipolarkernel(t,r);
+DipEvoFcn = K*Distribution;
 
 Models = {@rd_onegaussian,@rd_twogaussian,@rd_threegaussian,@rd_onerice,@rd_tworice};
 
 tic
-[preoptimum] = selectmodel(Models,DipEvoFcn,DistanceAxis,Kernel,'aicc');
+[preoptimum] = selectmodel(Models,DipEvoFcn,r,K,'aicc');
 pre  = toc;
 tic
-[postoptimum] = selectmodel(Models,DipEvoFcn,DistanceAxis,Kernel,'aicc');
+[postoptimum] = selectmodel(Models,DipEvoFcn,r,K,'aicc');
 post  = toc;
 
 err(1) = any(postoptimum~=preoptimum);

@@ -13,10 +13,10 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function weights = globalweights(Signal)
+function weights = globalweights(S)
 
-N = cellfun('length',Signal);
-NoiseLevel = cellfun(@noiselevel,Signal);
+N = cellfun('length',S);
+NoiseLevel = cellfun(@noiselevel,S);
 weights = sum(N.*NoiseLevel)./(N.*NoiseLevel);
 weights = weights/sum(weights);
 

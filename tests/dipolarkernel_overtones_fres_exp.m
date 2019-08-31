@@ -6,16 +6,16 @@ function [err,data,maxerr] = test(opt,olddata)
 %======================================================
 
 N = 100;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*N,N);
-DistAxis = time2dist(TimeAxis);
+dt = 0.008;
+t = linspace(0,dt*N,N);
+DistAxis = time2dist(t);
 Tmix = 50; %us
 T1 = 88; %us
 
 coefficients = overtones(3,Tmix,T1);
 
-kernelF = dipolarkernel(TimeAxis,DistAxis,'KernelCalcMethod','fresnel','OvertoneCoeffs',coefficients);
-kernelE = dipolarkernel(TimeAxis,DistAxis,'KernelCalcMethod','explicit','OvertoneCoeffs',coefficients);
+kernelF = dipolarkernel(t,DistAxis,'KCalcMethod','fresnel','OvertoneCoeffs',coefficients);
+kernelE = dipolarkernel(t,DistAxis,'KCalcMethod','explicit','OvertoneCoeffs',coefficients);
 kernelF = kernelF/mean(diff(DistAxis));
 kernelE = kernelE/mean(diff(DistAxis));
 

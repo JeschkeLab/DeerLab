@@ -29,7 +29,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [Background,ModDepth,FitParam] = fitbackground(Data,TimeAxis,BckgModel,FitDelimiter,varargin)
+function [B,ModDepth,FitParam] = fitbackground(Data,t,BckgModel,FitDelimiter,varargin)
 
 
 [LogFit,InitialGuess] = parseoptional({'LogFit','InitialGuess'},varargin);
@@ -40,9 +40,9 @@ if nargin<3
 end
 
 if nargin<4
-    FitDelimiter = minmax(TimeAxis);
+    FitDelimiter = minmax(t);
 elseif length(FitDelimiter) == 1
-    FitDelimiter(2) = max(TimeAxis);
+    FitDelimiter(2) = max(t);
 elseif length(FitDelimiter) > 2
     error('The 4th argument cannot exceed two elements.')
 end
@@ -55,8 +55,8 @@ if ~isa(BckgModel,'function_handle')
    error('The background model must be a valid function handle.') 
 end
 
-if ~iscolumn(TimeAxis)
-    TimeAxis = TimeAxis.';
+if ~iscolumn(t)
+    t = t.';
 end
 
 if isempty(LogFit)
@@ -70,7 +70,7 @@ end
 
 validateattributes(FitDelimiter,{'numeric'},{'2d','nonempty'},mfilename,'FitDelimiter')
 validateattributes(Data,{'numeric'},{'2d','nonempty'},mfilename,'Data')
-validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','increasing'},mfilename,'TimeAxis')
+validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
 
 %--------------------------------------------------------------------------
 %Memoization
@@ -80,14 +80,14 @@ persistent cachedData
 if isempty(cachedData)
     cachedData =  java.util.LinkedHashMap;
 end
-hashKey = datahash({Data,TimeAxis,BckgModel(),FitDelimiter});
+hashKey = datahash({Data,t,BckgModel(),FitDelimiter});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
-    [Background,ModDepth,FitParam] = java2mat(Output);
+    [B,ModDepth,FitParam] = java2mat(Output);
     %Java does not recognize columns
-    Background = Background(:);
+    B = B(:);
     if DataIsColumn
-        Baclground = Background.';
+        Baclground = B.';
     end
     return
 end
@@ -98,15 +98,15 @@ end
 %Find the position to limit fit
 FitStartTime = FitDelimiter(1);
 FitEndTime = FitDelimiter(2);
-[~,FitStartPos] = min(abs(TimeAxis - FitStartTime)); 
-[~,FitEndPos] = min(abs(TimeAxis - FitEndTime));
+[~,FitStartPos] = min(abs(t - FitStartTime)); 
+[~,FitEndPos] = min(abs(t - FitEndTime));
 
 %Limit the time axis and the data to fit
-FitTimeAxis = TimeAxis(FitStartPos:FitEndPos);
+Fitt = t(FitStartPos:FitEndPos);
 FitData = Data(FitStartPos:FitEndPos);
 
 %Use absolute time scale to ensure proper fitting of negative-time data
-FitTimeAxis = abs(FitTimeAxis);
+Fitt = abs(Fitt);
 
 %Prepare minimization problem solver
 solveropts = optimoptions(@lsqnonlin,'Algorithm','trust-region-reflective','Display','off',...
@@ -115,9 +115,9 @@ solveropts = optimoptions(@lsqnonlin,'Algorithm','trust-region-reflective','Disp
 
 %Construct cost functional for minimization
 if LogFit
-    CostFcn = @(param)(sqrt(1/2)*(log((1 - param(1) + eps)*BckgModel(FitTimeAxis,param(2:end))) - log(FitData)));
+    CostFcn = @(param)(sqrt(1/2)*(log((1 - param(1) + eps)*BckgModel(Fitt,param(2:end))) - log(FitData)));
 else
-    CostFcn = @(param)(sqrt(1/2)*((1 - param(1))*BckgModel(FitTimeAxis,param(2:end)) - FitData));
+    CostFcn = @(param)(sqrt(1/2)*((1 - param(1))*BckgModel(Fitt,param(2:end)) - FitData));
 end
 
 %Initiallize StartParameters (1st element is modulation depth)
@@ -142,16 +142,16 @@ FitParam = lsqnonlin(CostFcn,StartParameters,LowerBounds,UpperBounds,solveropts)
 ModDepth = FitParam(1);
 
 %Extrapolate fitted background to whole time axis
-Background = BckgModel(abs(TimeAxis),FitParam(2:end));
+B = BckgModel(abs(t),FitParam(2:end));
 
 %Ensure data is real
-Background = real(Background);
+B = real(B);
 if ~DataIsColumn
-    Background = Background';
+    B = B';
 end
 
 %Store output result in the cache
-Output = {Background,ModDepth,FitParam};
+Output = {B,ModDepth,FitParam};
 cachedData = addcache(cachedData,hashKey,Output);
 
 end

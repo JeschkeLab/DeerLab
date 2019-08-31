@@ -5,14 +5,14 @@ function [err,data] = test(opt,olddata)
 %=======================================
 
 Dimension = 200;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
+dt = 0.008;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
+K = dipolarkernel(t,r);
 L = regoperator(Dimension,2);
 logRes = 0.1;
-alpha = regparamrange(Kernel,L,'logResolution',logRes);
+alpha = regparamrange(K,L,'logResolution',logRes);
 
 err = (length(alpha)~=85);
 data = [];

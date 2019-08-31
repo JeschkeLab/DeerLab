@@ -1,23 +1,23 @@
 function [err,data,maxerr] = test(opt,olddata)
 Dimension = 200;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
-Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
+dt = 0.008;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
+Distribution = rd_onegaussian(r,[3,0.5]);
 Distribution = Distribution/sum(Distribution);
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
+K = dipolarkernel(t,r);
 RegMatrix = regoperator(Dimension,2);
-DipEvoFcn = Kernel*Distribution;
+DipEvoFcn = K*Distribution;
 
 
 Noise = rand(Dimension,1);
 Noise = Noise - mean(Noise);
 Noise = 0.05*Noise/max(Noise);
 
-RegParamSet = regparamrange(Kernel,RegMatrix);
+RegParamSet = regparamrange(K,RegMatrix);
 goal = 0.01;
-[~,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn + Noise,Kernel,RegMatrix,'tikhonov',{'aic','gcv'},'Refine',true);
+[~,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn + Noise,K,RegMatrix,'tikhonov',{'aic','gcv'},'Refine',true);
 
 err = length(RegParams) == length(RegParamSet);
 data = [];

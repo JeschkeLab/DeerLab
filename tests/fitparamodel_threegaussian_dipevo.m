@@ -2,16 +2,16 @@ function [err,data,maxerr] = test(opt,oldata)
 
 
 Dimension = 200;
-TimeStep = 0.016;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
+dt = 0.016;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
 InputParam = [3 0.3 5 0.3 5.5 0.5 0.3 0.2];
-Distribution = rd_threegaussian(DistanceAxis,InputParam);
+Distribution = rd_threegaussian(r,InputParam);
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution;
+K = dipolarkernel(t,r);
+DipEvoFcn = K*Distribution;
 
-[FitDistribution] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@rd_threegaussian,[],'solver','lsqnonlin');
+[FitDistribution] = fitparamodel(DipEvoFcn,K,r,@rd_threegaussian,[],'solver','lsqnonlin');
 err(1) = any(abs(FitDistribution - Distribution)>1e-1);
 err = any(err);
 
@@ -22,12 +22,12 @@ if opt.Display
    figure(1),clf
    subplot(121)
    hold on
-   plot(TimeAxis,DipEvoFcn,'b')
-   plot(TimeAxis,Kernel*FitDistribution,'r')
+   plot(t,DipEvoFcn,'b')
+   plot(t,K*FitDistribution,'r')
    subplot(122)
    hold on
-   plot(DistanceAxis,Distribution,'b')
-   plot(DistanceAxis,FitDistribution,'r')
+   plot(r,Distribution,'b')
+   plot(r,FitDistribution,'r')
    
 end
 

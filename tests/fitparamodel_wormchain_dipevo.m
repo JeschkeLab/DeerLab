@@ -2,15 +2,15 @@ function [err,data,maxerr] = test(opt,oldata)
 
 
 Dimension = 500;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
+dt = 0.008;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
 InputParam = [4 4.5];
 L=InputParam(1);
 Lp=InputParam(2);
 kappa=Lp/L;
-rn = DistanceAxis/L;
-Distribution=zeros(size(DistanceAxis));
+rn = r/L;
+Distribution=zeros(size(r));
 %How Gunnar calculated the model
 terms=2;
 for pp=1:length(rn)
@@ -33,12 +33,12 @@ for pp=1:length(rn)
 end
 
 Distribution = Distribution.';
-Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
+Distribution = Distribution/sum(Distribution)/mean(diff(r));
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution;
+K = dipolarkernel(t,r);
+DipEvoFcn = K*Distribution;
 
-[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,Kernel,DistanceAxis,@rd_wormchain,[],'Solver','lsqnonlin');
+[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,K,r,@rd_wormchain,[],'Solver','lsqnonlin');
 err(1) = any(abs(FitDistribution - Distribution)>5e-3);
 err(2) = any(abs(FitParam - InputParam)>1e-2);
 err = any(err);
@@ -49,11 +49,11 @@ data = [];
 if opt.Display
    figure(1),clf,
    subplot(121),hold on
-   plot(TimeAxis,DipEvoFcn,'b')
-   plot(TimeAxis,Kernel*FitDistribution,'r')
+   plot(t,DipEvoFcn,'b')
+   plot(t,K*FitDistribution,'r')
    subplot(122),hold on
-   plot(DistanceAxis,Distribution,'b')
-   plot(DistanceAxis,FitDistribution,'r')
+   plot(r,Distribution,'b')
+   plot(r,FitDistribution,'r')
 end
 
 end

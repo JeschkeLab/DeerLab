@@ -2,18 +2,18 @@ function [err,data,maxerr] = test(opt,oldata)
 
 
 Dimension = 200;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
+dt = 0.008;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
 InputParam = [4 0.2 4 1 3 0.4 0.4 0.4];
-Distribution = rd_threegaussian(DistanceAxis,InputParam);
+Distribution = rd_threegaussian(r,InputParam);
 Distribution = Distribution/(1/sqrt(2*pi)*1/InputParam(2));
-Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
+Distribution = Distribution/sum(Distribution)/mean(diff(r));
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution;
+K = dipolarkernel(t,r);
+DipEvoFcn = K*Distribution;
 
-[FitDistribution,FitParam] = multigauss(DipEvoFcn,Kernel,DistanceAxis,5,'aicc');
+[FitDistribution,FitParam] = multigauss(DipEvoFcn,K,r,5,'aicc');
 err = any(abs(FitDistribution - Distribution)>1e-5);
 
 
@@ -24,12 +24,12 @@ if opt.Display
    figure(1),clf
    subplot(121)
    hold on
-   plot(TimeAxis,DipEvoFcn,'b')
-   plot(TimeAxis,Kernel*FitDistribution,'r')
+   plot(t,DipEvoFcn,'b')
+   plot(t,K*FitDistribution,'r')
    subplot(122)
    hold on
-   plot(DistanceAxis,Distribution,'b')
-   plot(DistanceAxis,FitDistribution,'r')
+   plot(r,Distribution,'b')
+   plot(r,FitDistribution,'r')
 end
 
 end

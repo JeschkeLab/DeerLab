@@ -1,12 +1,12 @@
 function [err,data,maxerr] = test(opt,olddata)
 
 FreqAxis = linspace(-10,10,200);
-TimeAxis = linspace(0,1/mean(2*10)*100,100);
+t = linspace(0,1/mean(2*10)*100,100);
 
-Signal = exp(-TimeAxis).*cos(2*pi*5*TimeAxis);
-Spectrum = abs(fftshift(fft(Signal,2*length(Signal))));
-Output = fftspec(TimeAxis,Signal);
-[FrequencyAxis,~] = fftspec(TimeAxis,Signal,'Type','abs');
+S = exp(-t).*cos(2*pi*5*t);
+Spectrum = abs(fftshift(fft(S,2*length(S))));
+Output = fftspec(t,S);
+[FrequencyAxis,~] = fftspec(t,S,'Type','abs');
 
 error = abs(Spectrum - Output);
 err = any(error>1e-10);
@@ -16,7 +16,7 @@ data = [];
 if opt.Display
   figure,clf
   subplot(121)
-  plot(TimeAxis,Signal)
+  plot(t,S)
   subplot(122)
   hold on
   plot(FreqAxis,Spectrum)

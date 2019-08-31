@@ -4,7 +4,7 @@ function [err,data,maxerr] = test(opt,olddata)
 %integrals equals the analytical kernel obtained by powder averaging
 % is passes, Fresnel implementation is ok and the precision is as good as
 % the Fresnel integrals can get.
-TheoryKernel = [1.,-0.04445104927166716,-0.07755044305537568,0.07851607683975404,...
+TheoryK = [1.,-0.04445104927166716,-0.07755044305537568,0.07851607683975404,...
                 0.036788014103474,-0.03400124912476483,-0.0472090401611318,...
                 -0.04387503453950212,0.07709889223945138,0.0561564006520221,...
                 0.02132186965158808,-0.01126891772078065,-0.02348189268499024,...
@@ -38,17 +38,17 @@ TheoryKernel = [1.,-0.04445104927166716,-0.07755044305537568,0.07851607683975404
                 -0.03622317709490192,-0.03653909898564833,-0.03681179912146447,...
                 -0.03653539936295003,-0.03526277251146228,-0.03291081161251739,...
                 -0.0298450543907915];
-TimeAxis = 0:6/100:6;
-DistanceAxis = 2:4/100:6;
+t = 0:6/100:6;
+r = 2:4/100:6;
 Tmix = 50; %us
 T1 = 88; %us
 coefficients = overtones(5,Tmix,T1);
 
-NumericalKernel = dipolarkernel(TimeAxis,DistanceAxis,'OvertoneCoeffs',coefficients);
-NumericalKernel = NumericalKernel/mean(diff(DistanceAxis));
-NumericalKernel = diag(NumericalKernel)';
+NumericalK = dipolarkernel(t,r,'OvertoneCoeffs',coefficients);
+NumericalK = NumericalK/mean(diff(r));
+NumericalK = diag(NumericalK)';
 
-error = abs(NumericalKernel - TheoryKernel);
+error = abs(NumericalK - TheoryK);
 err = any(error>1e-13);
 maxerr = max(error);
 

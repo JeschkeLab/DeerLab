@@ -5,21 +5,21 @@ function [err,data,maxerr] = test(opt,olddata)
 %======================================================
 
 Dimension = 200;
-TimeStep = 0.008;
-TimeAxis = linspace(0,Dimension*TimeStep,Dimension);
-DistanceAxis = time2dist(TimeAxis);
-Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
-Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
-Background = exp(-0.5*TimeAxis);
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
+dt = 0.008;
+t = linspace(0,Dimension*dt,Dimension);
+r = time2dist(t);
+Distribution = rd_onegaussian(r,[3,0.5]);
+Distribution = Distribution/sum(Distribution)/mean(diff(r));
+B = exp(-0.5*t);
+K = dipolarkernel(t,r);
 
-Trace  = Kernel*Distribution;
-Trace = (Trace + 2).*Background';
+Trace  = K*Distribution;
+Trace = (Trace + 2).*B';
 ModDepth = 1/Trace(1);
 Trace = Trace/Trace(1);
 
-KernelB = dipolarkernel(TimeAxis,DistanceAxis,Background,ModDepth);
-TraceB  = KernelB*Distribution;
+KB = dipolarkernel(t,r,B,ModDepth);
+TraceB  = KB*Distribution;
 
 err = any(abs(TraceB - Trace)>1e-10);
 maxerr = max(abs(TraceB - Trace));
@@ -27,7 +27,7 @@ data = [];
 
 if opt.Display
    figure(3)
-   plot(TimeAxis,TraceB,'r',TimeAxis,Background,'r--',TimeAxis,Trace,'b')
+   plot(t,TraceB,'r',t,B,'r--',t,Trace,'b')
    legend('truth','B','K*P')
 end
 

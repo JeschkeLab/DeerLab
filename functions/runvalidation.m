@@ -1,4 +1,4 @@
-function runvalidation(ExpSignal,Parameters,varargin)
+function runvalidation(ExpS,Parameters,varargin)
 
 [Callback] = parseoptional({'Callback'},varargin);
 
@@ -14,7 +14,7 @@ options = daoptions();
 
 nParam = size(varparam,1);
 
-Distributions = zeros(nParam,length(ExpSignal));
+Distributions = zeros(nParam,length(ExpS));
 
 for i=1:nParam
     
@@ -22,9 +22,9 @@ for i=1:nParam
     options = setoptions(options,varnames{j},varparam{i,j});
     end
     %Run signal preparation
-    ProcessedSignal = prepareSignal(ExpSignal,options);
+    ProcessedS = prepareS(ExpS,options);
     %Get the distribution
-    Distributions(i,:) = getDistribution(ProcessedSignal,options);
+    Distributions(i,:) = getDistribution(ProcessedS,options);
     
     %Hook for GUI callbacks
     if ~isempty(Callback)

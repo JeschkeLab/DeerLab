@@ -5,16 +5,16 @@ function [err,data,maxerr] = test(opt,olddata)
 %======================================================
 
 Dimension = 200;
-TimeStep = 0.008;
-TimeAxis = linspace(0,Dimension*TimeStep,Dimension);
-DistanceAxis = time2dist(TimeAxis);
-Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
+dt = 0.008;
+t = linspace(0,Dimension*dt,Dimension);
+r = time2dist(t);
+Distribution = rd_onegaussian(r,[3,0.5]);
 Distribution = Distribution/sum(Distribution);
 ExcitationBandwidth = 0.05; %MHz
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis,'KernelBType','full','ExcitationBandwidth',ExcitationBandwidth);
+K = dipolarkernel(t,r,'KBType','full','ExcitationBandwidth',ExcitationBandwidth);
 
-Trace  = Kernel*Distribution;
+Trace  = K*Distribution;
 
 err = any(abs(Trace - 0*Trace)>1e-5);
 maxerr = max(abs(Trace -  0*Trace));

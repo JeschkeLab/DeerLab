@@ -4,16 +4,16 @@ function [err,data] = test(opt,olddata)
 % Zero-time correction function
 %======================================================
 
-originalTimeAxis = -5:1:80;
-originalData = 1000 - (originalTimeAxis.^2);
+originalt = -5:1:80;
+originalData = 1000 - (originalt.^2);
 originalData = originalData/max(originalData);
-TimeAxis = originalTimeAxis + abs(min(originalTimeAxis));
-inputZeroTime = abs(min(originalTimeAxis));
+t = originalt + abs(min(originalt));
+inputZeroTime = abs(min(originalt));
 
-[correctedTimeAxis,outputZeroTime] = correctzerotime(originalData,TimeAxis,inputZeroTime);
+[correctedt,outputZeroTime] = correctzerotime(originalData,t,inputZeroTime);
 
 
-err(1) = any(abs(correctedTimeAxis - originalTimeAxis)>1e-10);
+err(1) = any(abs(correctedt - originalt)>1e-10);
 err(2) = abs(outputZeroTime' - inputZeroTime)>1e-10;
 
 err = any(err);

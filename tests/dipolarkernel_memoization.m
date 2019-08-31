@@ -8,15 +8,15 @@ t = linspace(0,6,Dimension);
 r = time2dist(t);
 
 tic
-preKernel = dipolarkernel(t,r);
+preK = dipolarkernel(t,r);
 precached = toc;
 
 tic
-postKernel = dipolarkernel(t,r);
+postK = dipolarkernel(t,r);
 postcached = toc;
 
 err(1) = postcached>=precached/10;
-error = abs(postKernel - preKernel);
+error = abs(postK - preK);
 err(2) = any(any(error>1e-18));
 data = [];
 err = any(err);

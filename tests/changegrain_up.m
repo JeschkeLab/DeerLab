@@ -9,20 +9,20 @@ cd ../functions/private
 % Grain up function test
 %======================================================
 
-TimeStep = 2;
-Grain = TimeStep:TimeStep:100;
+dt = 2;
+Grain = dt:dt:100;
 originalData = 2 - log10(Grain);
-TimeStepUp = 8;
-GrainUp = TimeStepUp:TimeStepUp:100;
+dtUp = 8;
+GrainUp = dtUp:dtUp:100;
 grainUpData = 2 - log10(GrainUp);
 
 
 
-[grainedOutput,grainedTimeAxis] = changegrain(originalData,Grain',TimeStepUp);
+[grainedOutput,grainedt] = changegrain(originalData,Grain',dtUp);
 
 
 err(1) = any(abs(grainedOutput - grainUpData)>1e-10);
-err(2) = any(abs(grainedTimeAxis - GrainUp)>1e-10);
+err(2) = any(abs(grainedt - GrainUp)>1e-10);
 
 err = any(err);
 data = [];

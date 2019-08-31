@@ -17,7 +17,7 @@ K = dipolarkernel(t,r);
 P = rd_twogaussian(r,[6 0.3 4 0.3 0.3]);
 B = td_exp(t,[0.05]);
 %Generate signal
-V = dipolarsignal(t,r,P,'ModDepth',0.3,'Background',B,'Noiselevel',0.01);
+V = dipolarsignal(t,r,P,'ModDepth',0.3,'B',B,'Noiselevel',0.01);
 
 trueparam = [0.3 0.05 6 0.3 4 0.3 0.3];
 

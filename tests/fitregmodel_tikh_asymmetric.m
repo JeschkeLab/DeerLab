@@ -3,26 +3,26 @@ function [err,data,maxerr] = test(opt,olddata)
 Ntime = 100;
 Ndist = 200;
 
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Ntime,Ntime);
-[~,rmin,rmax] = time2dist(TimeAxis);
-DistanceAxis = linspace(rmin,rmax,Ndist);
-Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
+dt = 0.008;
+t = linspace(0,dt*Ntime,Ntime);
+[~,rmin,rmax] = time2dist(t);
+r = linspace(rmin,rmax,Ndist);
+Distribution = rd_onegaussian(r,[3,0.5]);
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution;
+K = dipolarkernel(t,r);
+DipEvoFcn = K*Distribution;
 RegMatrix = regoperator(Ndist,2);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParamRange = regparamrange(Kernel,RegMatrix);
-RegParam = selregparam(RegParamRange,DipEvoFcn,Kernel,RegMatrix,'tikhonov','aic');
+RegParamRange = regparamrange(K,RegMatrix);
+RegParam = selregparam(RegParamRange,DipEvoFcn,K,RegMatrix,'tikhonov','aic');
 
-TikhResult = fitregmodel(DipEvoFcn,Kernel,DistanceAxis,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+TikhResult = fitregmodel(DipEvoFcn,K,r,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 
 
 err(1) = any(abs(TikhResult - Distribution)>3e-3);
 err(2) = length(TikhResult) ~= Ndist;
-err(3) = length(Kernel*TikhResult) ~= Ntime;
+err(3) = length(K*TikhResult) ~= Ntime;
 err  = any(err);
 
 maxerr = max(abs(TikhResult - Distribution));
@@ -34,8 +34,8 @@ data = [];
 if opt.Display
  	figure(8),clf
     hold on
-    plot(DistanceAxis,Distribution,'k') 
-    plot(DistanceAxis,TikhResult,'r')
+    plot(r,Distribution,'k') 
+    plot(r,TikhResult,'r')
 end
 
 end

@@ -9,25 +9,25 @@ Offset = 2;
 ModulationDepth = 0.35;
 DecayRate = 0.0005;
 Length = 200;
-TimeStep = 16/1000;
-TimeAxis = linspace(0,Length*TimeStep,Length);
+dt = 16/1000;
+t = linspace(0,Length*dt,Length);
 %Construct some dipolar evolution function from Fresnel integral
 
-r = time2dist(TimeAxis);
-dipevo = dipolarkernel(TimeAxis,r)*rd_onegaussian(r,[3,0.5]);
+r = time2dist(t);
+dipevo = dipolarkernel(t,r)*rd_onegaussian(r,[3,0.5]);
 %Construct background
-bckg = exp(-DecayRate*TimeAxis);
+bckg = exp(-DecayRate*t);
 %Account modulation depth for the offset=1
 adaptedmodulationDepth = ModulationDepth*(1+Offset);
 FormFactor = (1 - adaptedmodulationDepth) + adaptedmodulationDepth*dipevo;
 FormFactor = FormFactor + Offset;
-Signal = FormFactor.*bckg;
+S = FormFactor.*bckg;
 
 tic
-preFitStartTime = backgroundstart(Signal,TimeAxis,@td_exp);
+preFitStartTime = backgroundstart(S,t,@td_exp);
 pre = toc;
 tic
-postFitStartTime = backgroundstart(Signal,TimeAxis,@td_exp);
+postFitStartTime = backgroundstart(S,t,@td_exp);
 post = toc;
 
 

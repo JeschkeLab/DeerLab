@@ -46,10 +46,10 @@
 % the Free Software Foundation.
 
 
-function [Distribution,ConvergenceCurve] = obir(Signal,Kernel,DistanceAxis,RegType,RegMatrix,RegParam,varargin)
+function [Distribution,ConvergenceCurve] = obir(S,K,r,RegType,RegMatrix,RegParam,varargin)
 
-if ~iscolumn(Signal)
-    Signal = Signal';
+if ~iscolumn(S)
+    S = S';
 end
 
 %Get optional parameters
@@ -95,15 +95,15 @@ else
 end
 
 if isempty(NoiseLevelAim)
-    NoiseLevelAim = noiselevel(Signal);
+    NoiseLevelAim = noiselevel(S);
 else
     validateattributes(NoiseLevelAim,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'NoiseLevelAim')
 end
 validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
-validateattributes(Signal,{'numeric'},{'nonempty'},mfilename,'Signal')
-validateattributes(Kernel,{'numeric'},{'nonempty'},mfilename,'Kernel')
+validateattributes(S,{'numeric'},{'nonempty'},mfilename,'S')
+validateattributes(K,{'numeric'},{'nonempty'},mfilename,'K')
 validateattributes(RegMatrix,{'numeric'},{'nonempty'},mfilename,'RegMatrix')
-checklengths(Signal,Kernel);
+checklengths(S,K);
 
 if nargin<3 || isempty(RegType)
     RegType = 'tikhonov';
@@ -151,7 +151,7 @@ end
 %--------------------------------------------------------------------------
 
 %Initialize
-SizeDistribution = length(Signal);
+SizeDistribution = length(S);
 Subgradient = zeros(SizeDistribution,1);
 Counter = 1;
 Iteration = 1;
@@ -161,7 +161,7 @@ Distribution = zeros(SizeDistribution,1);
 % Osher's Bregman Iterations Algorithm
 %--------------------------------------------------------------------------
 
-Dimension = length(Signal);
+Dimension = length(S);
 InitialGuess = zeros(Dimension,1);
 NonNegConst = zeros(Dimension,1);
 
@@ -173,14 +173,14 @@ while Iteration <= MaxOuterIter
     switch Solver
         case 'fmincon'
             %Define current minimization problem
-            RegFunctional = regfunctional(RegType,Signal,RegMatrix,Kernel,RegParam,HuberParam);
+            RegFunctional = regfunctional(RegType,S,RegMatrix,K,RegParam,HuberParam);
             fminconFunctional = @(Distribution)OBIRFunctional(Distribution,RegFunctional,Subgradient);
             fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
             %Run minimzation
             Distribution =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         case 'fnnls'
             
-            [Q,KtS] = lsqcomponents(Signal,Kernel,RegMatrix,RegParam,RegType,HuberParam);
+            [Q,KtS] = lsqcomponents(S,K,RegMatrix,RegParam,RegType,HuberParam);
             KtS = KtS - Subgradient;
             Distribution = fnnls(Q,KtS,InitialGuess,TolFun);
             %In some cases, fnnls may return negatives if tolerance is to high
@@ -190,7 +190,7 @@ while Iteration <= MaxOuterIter
             end
     end
     %Store current convergence curve point
-    ConvergenceCurve(Iteration) = std(Kernel*Distribution - Signal);
+    ConvergenceCurve(Iteration) = std(K*Distribution - S);
     
     %If hook to axes is given, then plot the current Distribution
     if ~isempty(AxisHandle)
@@ -198,7 +198,7 @@ while Iteration <= MaxOuterIter
         drawnow
     end
     %Update subgradient at current solution
-    Subgradient = Subgradient + Kernel'*(Kernel*Distribution - Signal);
+    Subgradient = Subgradient + K'*(K*Distribution - S);
     
     
     
@@ -207,7 +207,7 @@ while Iteration <= MaxOuterIter
     %--------------------------------------------------------------------------
     if Iteration == 1
         %If at first iteration, thae residual deviation is already below the noise deviation then impose oversmoothing and remain at first iteration
-        if NoiseLevelAim  > std(Kernel*Distribution - Signal)
+        if NoiseLevelAim  > std(K*Distribution - S)
             RegParam = RegParam*2^Counter;
             Counter = Counter + 1;
         else
@@ -216,13 +216,13 @@ while Iteration <= MaxOuterIter
         end
     else
         %For the rest of the Bregman iterations control the condition and stop when fulfilled
-        if NoiseLevelAim  > std(Kernel*Distribution - Signal)
+        if NoiseLevelAim  > std(K*Distribution - S)
             break;
         else
             Iteration  = Iteration +1;
         end
         %If residual deviation starts to diverge, stop
-        if DivergenceStop && std(Kernel*CheckDistribution - Signal) < std(Kernel*Distribution - Signal)
+        if DivergenceStop && std(K*CheckDistribution - S) < std(K*Distribution - S)
             Distribution = CheckDistribution;
             break;
         end
@@ -231,7 +231,7 @@ while Iteration <= MaxOuterIter
 end
 
 %Normalize distribution integral
-Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
+Distribution = Distribution/sum(Distribution)/mean(diff(r));
 
 end
 

@@ -22,7 +22,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [correctedTimeAxis,ZeroTime,ZeroTimePos] = correctzerotime(Signal,TimeAxis,ZeroTime)
+function [correctedt,ZeroTime,ZeroTimePos] = correctzerotime(S,t,ZeroTime)
 
 if nargin<2
     error('Not enough input arguments.')
@@ -33,29 +33,29 @@ if nargin<3 || isempty(ZeroTime)
 else
     validateattributes(ZeroTime,{'numeric'},{'scalar','nonnegative'},mfilename,'ZeroTime')
 end
-if ~iscolumn(Signal)
-    Signal = Signal.';
+if ~iscolumn(S)
+    S = S.';
 end
-validateattributes(Signal,{'numeric'},{'2d'},mfilename,'Signal')
-validateattributes(TimeAxis,{'numeric'},{'nonnegative','nonempty'},mfilename,'TimeAxis')
+validateattributes(S,{'numeric'},{'2d'},mfilename,'S')
+validateattributes(t,{'numeric'},{'nonnegative','nonempty'},mfilename,'t')
 
-usesMicrosecondUnits = mean(abs(diff(TimeAxis))) < 1;
+usesMicrosecondUnits = mean(abs(diff(t))) < 1;
 
 if usesMicrosecondUnits
-    TimeAxis = TimeAxis*1000; % convert us -> ns
+    t = t*1000; % convert us -> ns
 end
 
 %Generate finely-grained interpolated signal and time axis
-FineTimeAxis = min(TimeAxis):1:max(TimeAxis);
-FineSignal=interp1(TimeAxis,real(Signal),FineTimeAxis,'spline',real(Signal(1)));
+Finet = min(t):1:max(t);
+FineS=interp1(t,real(S),Finet,'spline',real(S(1)));
 % get zero time, if not provided
-FineSignal=real(FineSignal);
+FineS=real(FineS);
 if isempty(ZeroTime)
     % Determine maximum
-    [~,maxPos]=max(FineSignal);
+    [~,maxPos]=max(FineS);
     ZeroTimePos=1;
     %If maximum is not the first point in signal, then do moment-analysis
-    if maxPos>1 && maxPos<length(FineSignal)
+    if maxPos>1 && maxPos<length(FineS)
         %
         % Procedure schematic:
         %
@@ -71,7 +71,7 @@ if isempty(ZeroTime)
         %
         %Determine the maximum allowed distance for search
         NewPos = maxPos - 1;
-        MaxEndDistance = length(FineSignal) - maxPos;
+        MaxEndDistance = length(FineS) - maxPos;
         NewPosDistance = NewPos;
         if MaxEndDistance<NewPosDistance
             SmallestDistance = MaxEndDistance;
@@ -86,7 +86,7 @@ if isempty(ZeroTime)
             %Query new candidate for zero position and integrate
             Integral = 0;
             for j = -MaxAllowedDistance:MaxAllowedDistance
-                Integral = Integral + FineSignal(TrialPos+j)*j;
+                Integral = Integral + FineS(TrialPos+j)*j;
             end
             %If integral is lower than prior best, then update new candidate
             if abs(Integral) < BestIntegral
@@ -95,17 +95,17 @@ if isempty(ZeroTime)
             end
         end
     end
-    ZeroTime = FineTimeAxis(ZeroTimePos);
+    ZeroTime = Finet(ZeroTimePos);
 else
-    [~,ZeroTimePos] = min(abs(FineTimeAxis-ZeroTime));
+    [~,ZeroTimePos] = min(abs(Finet-ZeroTime));
 end
 
 % Correct time axis
-correctedTimeAxis = TimeAxis - ZeroTime;
+correctedt = t - ZeroTime;
 
 if usesMicrosecondUnits
     ZeroTime = ZeroTime/1000; % convert ns -> us
-    correctedTimeAxis = correctedTimeAxis/1000;  % convert ns -> us
+    correctedt = correctedt/1000;  % convert ns -> us
 end
 
 end

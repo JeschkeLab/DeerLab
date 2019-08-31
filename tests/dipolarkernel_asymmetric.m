@@ -7,12 +7,12 @@ function [err,data,maxerr] = test(opt,olddata)
 Ntime = 100;
 Ndist = 200;
 
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Ntime,Ntime);
-[~,rmin,rmax] = time2dist(TimeAxis);
+dt = 0.008;
+t = linspace(0,dt*Ntime,Ntime);
+[~,rmin,rmax] = time2dist(t);
 DistAxis = linspace(rmin,rmax,Ndist);
-kernelF = dipolarkernel(TimeAxis,DistAxis,'KernelCalcMethod','fresnel');
-kernelE = dipolarkernel(TimeAxis,DistAxis,'KernelCalcMethod','explicit');
+kernelF = dipolarkernel(t,DistAxis,'KCalcMethod','fresnel');
+kernelE = dipolarkernel(t,DistAxis,'KCalcMethod','explicit');
 kernelF = kernelF/mean(diff(DistAxis));
 kernelE = kernelE/mean(diff(DistAxis));
 err(1) = any(any(abs(kernelF - kernelE)>1e-2));

@@ -27,14 +27,14 @@
 % the Free Software Foundation.
 
 
-function [optima,functionals] = selectmodel(Models,Signal,DistanceAxis,Kernel,Methods,varargin)
+function [optima,functionals] = selectmodel(Models,S,r,K,Methods,varargin)
 
 %Input validation
 if ~iscell(Methods)
    Methods = {Methods}; 
 end
-if ~iscolumn(DistanceAxis)
-    DistanceAxis = DistanceAxis.';
+if ~iscolumn(r)
+    r = r.';
 end
 if length(varargin)==1
    varargin = varargin{1}; 
@@ -70,7 +70,7 @@ Modelsstring = [];
 for i=1:length(Models)
    Modelsstring = [Modelsstring func2str(Models{i})]; 
 end 
-    hashKey = datahash({Modelsstring,Signal,DistanceAxis,Kernel,Methods,varargin});
+    hashKey = datahash({Modelsstring,S,r,K,Methods,varargin});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
     [optima,functionals] = java2mat(Output);
@@ -81,7 +81,7 @@ end
 %--------------------------------------------------------------------------
 
 %Pre-allocate vectors
-N = length(Signal);
+N = length(S);
 aicc = zeros(length(Models),1);
 bic = zeros(length(Models),1);
 aic = zeros(length(Models),1);
@@ -89,11 +89,11 @@ aic = zeros(length(Models),1);
 for i=1:length(Models)
     currentModel = Models{i};
     Info = currentModel();
-    [FitDistribution] = fitparamodel(Signal,Kernel,DistanceAxis,currentModel,[],varargin);
+    [FitDistribution] = fitparamodel(S,K,r,currentModel,[],varargin);
     K = Info.nParam + 1;
-    aicc(i) = N*log(sum(Kernel*FitDistribution - Signal).^2/N) + 2*K + (2*K*(K+1))/(N - K - 1);
-    aic(i) = N*log(sum(Kernel*FitDistribution - Signal).^2/N) + 2*K;
-    bic(i) = N*log(sum(Kernel*FitDistribution - Signal).^2/N) + K*log(N);
+    aicc(i) = N*log(sum(K*FitDistribution - S).^2/N) + 2*K + (2*K*(K+1))/(N - K - 1);
+    aic(i) = N*log(sum(K*FitDistribution - S).^2/N) + 2*K;
+    bic(i) = N*log(sum(K*FitDistribution - S).^2/N) + K*log(N);
 end
 
 %Apply the requested selection methods

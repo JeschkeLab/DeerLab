@@ -1,7 +1,7 @@
 function [err,data,maxerr] = test(opt,olddata)
 
 %Diagonal of the kernel computed by Mathematica
-AnalyticalKernel = [1.0000000000,0.989724398140451,0.962515792044324,...
+AnalyticalK = [1.0000000000,0.989724398140451,0.962515792044324,...
                 0.923357314598256,0.876467881653175,0.825234082935656,...
                 0.772254178654206,0.7194382916615353,0.6681283832861617,...
                 0.6192166540804442,0.5732514365483727,0.5305262588065542,...
@@ -37,24 +37,24 @@ AnalyticalKernel = [1.0000000000,0.989724398140451,0.962515792044324,...
                 0.5167769828243905,0.5225172651309626];
 
 %Generate kernel numerically      
-TimeAxis = linspace(0,8*(length(AnalyticalKernel)-1),length(AnalyticalKernel));
-DistanceAxis = linspace(2.5,6,length(TimeAxis));
+t = linspace(0,8*(length(AnalyticalK)-1),length(AnalyticalK));
+r = linspace(2.5,6,length(t));
 
-K = dipolarkernel(TimeAxis,DistanceAxis);
-K = K/mean(diff(DistanceAxis));
+K = dipolarkernel(t,r);
+K = K/mean(diff(r));
 
-NumericalKernel = diag(K);
+NumericalK = diag(K);
 
 %Check the precision
-err = any(abs(NumericalKernel' - AnalyticalKernel)>1e-14);
-maxerr = max(abs(NumericalKernel' - AnalyticalKernel));
+err = any(abs(NumericalK' - AnalyticalK)>1e-14);
+maxerr = max(abs(NumericalK' - AnalyticalK));
 data = [];
 
 if opt.Display
 figure(1213),clf
-plot(AnalyticalKernel)
+plot(AnalyticalK)
 hold on
-plot(NumericalKernel)
+plot(NumericalK)
 end
 
 

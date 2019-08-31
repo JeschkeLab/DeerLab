@@ -31,7 +31,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [FitStartTime,FitStartPos] = backgroundstart(Signal,TimeAxis,BckgModel,varargin)
+function [FitStartTime,FitStartPos] = backgroundstart(S,t,BckgModel,varargin)
 
 
 %--------------------------------------------------------------------------
@@ -45,14 +45,14 @@ if ~isa(BckgModel,'function_handle')
    error('The background model must be a valid function handle.') 
 end
 
-if iscolumn(TimeAxis)
-    TimeAxis = TimeAxis';
+if iscolumn(t)
+    t = t';
 end
-if iscolumn(Signal)
-    Signal = Signal';
+if iscolumn(S)
+    S = S';
 end
-validateattributes(Signal,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
-validateattributes(TimeAxis,{'numeric'},{'2d','nonempty','increasing'},mfilename,'TimeAxis')
+validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
+validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
 
 
 
@@ -70,7 +70,7 @@ if isempty(RelSearchEnd)
     RelSearchEnd = 0.6;
 end
 if  isempty(EndCutoffPos)
-    EndCutoffPos = length(TimeAxis);
+    EndCutoffPos = length(t);
 else
     validateattributes(EndCutoffPos,{'numeric'},{'scalar','nonempty'},mfilename,'EndCutoffPos')
 end
@@ -83,7 +83,7 @@ persistent cachedData
 if isempty(cachedData)
     cachedData =  java.util.LinkedHashMap;
 end
-hashKey = datahash({Signal,TimeAxis,BckgModel,varargin});
+hashKey = datahash({S,t,BckgModel,varargin});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
     [FitStartTime,FitStartPos] = java2mat(Output);
@@ -94,17 +94,17 @@ end
 % Adaptive background correction start search
 %--------------------------------------------------------------------------
 %Get zero-time position
-[~,ZeroTimePosition] = min(abs(TimeAxis));
-TimeAxis = TimeAxis(ZeroTimePosition:EndCutoffPos);
-Signal = real(Signal((ZeroTimePosition:EndCutoffPos)));
-Length = length(TimeAxis);
+[~,ZeroTimePosition] = min(abs(t));
+t = t(ZeroTimePosition:EndCutoffPos);
+S = real(S((ZeroTimePosition:EndCutoffPos)));
+Length = length(t);
 
-APTkernel = aptkernel(TimeAxis);
+APTkernel = aptkernel(t);
 
 %Get APT kernel data
-Kernel = APTkernel.Base;
+K = APTkernel.Base;
 NormConstant = APTkernel.NormalizationFactor;
-APT_TimeAxis = APTkernel.TimeAxis;
+APT_t = APTkernel.t;
 Crosstalk = APTkernel.Crosstalk;
 
 %Search for background fit start
@@ -123,22 +123,22 @@ Merit = zeros(1,StartPosMax-StartPosMin);
 for FitStartPos = StartPosMin:StartPosMax
     
     %Define data to be fitted according to current background start
-    FitStart = TimeAxis(FitStartPos);
+    FitStart = t(FitStartPos);
     
     %Fit the background with current start
-    Signal = Signal/max(Signal);
-    [Background,ModDepth] = fitbackground(Signal,TimeAxis,BckgModel,FitStart);
+    S = S/max(S);
+    [B,ModDepth] = fitbackground(S,t,BckgModel,FitStart);
 
     %Correct the background from the from factor
-    FormFactor = Signal - (1-ModDepth)*Background;
-    FormFactor = FormFactor./(ModDepth*Background);
+    FormFactor = S - (1-ModDepth)*B;
+    FormFactor = FormFactor./(ModDepth*B);
     FormFactor = FormFactor/max(FormFactor);
     
     %Perform APT on background-corrected signal
-    [FreqDimension,~] = size(Kernel);
+    [FreqDimension,~] = size(K);
     FreqDistribution=zeros(1,FreqDimension);
     for k=1:FreqDimension % sum in eqn [21]
-        FreqDistribution(k)=FreqDistribution(k)+sum(Kernel(k,:).*FormFactor.*APT_TimeAxis)/NormConstant(k);
+        FreqDistribution(k)=FreqDistribution(k)+sum(K(k,:).*FormFactor.*APT_t)/NormConstant(k);
     end
     APTdistribution = Crosstalk\FreqDistribution';
     
@@ -148,7 +148,7 @@ end
 
 [~,OptStartPos] = min(Merit);
 FitStartPos = OptStartPos + StartPosMin - 1;
-FitStartTime = TimeAxis(FitStartPos);
+FitStartTime = t(FitStartPos);
 
 %Store output result in the cache
 Output = {FitStartTime,FitStartPos};

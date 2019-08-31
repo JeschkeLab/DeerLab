@@ -1,18 +1,18 @@
 function [err,data,maxerr] = test(opt,olddata)
 
 Dimension = 100;
-TimeAxis = linspace(-0.5,5,Dimension);
-DistanceAxis = time2dist(TimeAxis);
-Distribution = rd_twogaussian(DistanceAxis,[4,0.3,6.5,0.3,0.5]);
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution;
+t = linspace(-0.5,5,Dimension);
+r = time2dist(t);
+Distribution = rd_twogaussian(r,[4,0.3,6.5,0.3,0.5]);
+K = dipolarkernel(t,r);
+DipEvoFcn = K*Distribution;
 
-Filtered = longpass(TimeAxis,DipEvoFcn,2);
+Filtered = longpass(t,DipEvoFcn,2);
 
 L = regoperator(Dimension,2);
-RegParam = regparamrange(Kernel,L);
-RegParam2 = selregparam(RegParam,Filtered,Kernel,L,'tikhonov','aic');
-Result = fitregmodel(Filtered,Kernel,DistanceAxis,L,'tikhonov',RegParam2,'Solver','fnnls');
+RegParam = regparamrange(K,L);
+RegParam2 = selregparam(RegParam,Filtered,K,L,'tikhonov','aic');
+Result = fitregmodel(Filtered,K,r,L,'tikhonov',RegParam2,'Solver','fnnls');
 
 error = abs(Result - Distribution);
 err(1) = any(error>3e-1);
@@ -23,14 +23,14 @@ data = [];
 if opt.Display
     figure(9),clf
     subplot(132),hold on
-    plot(DistanceAxis,Distribution)
-    plot(DistanceAxis,Result)
+    plot(r,Distribution)
+    plot(r,Result)
     subplot(131),hold on
-    plot(TimeAxis,DipEvoFcn)
-    plot(TimeAxis,Filtered)
+    plot(t,DipEvoFcn)
+    plot(t,Filtered)
     subplot(133),hold on
-    plot(abs(fftshift(fft(DipEvoFcn(find(TimeAxis==0):end)))))
-    plot(abs(fftshift(fft(Filtered(find(TimeAxis==0):end)))))   
+    plot(abs(fftshift(fft(DipEvoFcn(find(t==0):end)))))
+    plot(abs(fftshift(fft(Filtered(find(t==0):end)))))   
     axis tight
 end
 

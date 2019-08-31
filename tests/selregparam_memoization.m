@@ -4,24 +4,24 @@ function [err,data,maxerr] = test(opt,data)
 clear selregparam
 
 Dimension = 100;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
-Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
+dt = 0.008;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
+Distribution = rd_onegaussian(r,[3,0.5]);
 Distribution = Distribution/sum(Distribution);
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
+K = dipolarkernel(t,r);
 RegMatrix = regoperator(Dimension,2);
-DipEvoFcn = Kernel*Distribution;
+DipEvoFcn = K*Distribution;
 
-RegParamSet = regparamrange(Kernel,RegMatrix);
+RegParamSet = regparamrange(K,RegMatrix);
 
 tic
-[preOptParam,Functionals,RegParamRange] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,'tikhonov',{'aic','gcv','lr'});
+[preOptParam,Functionals,RegParamRange] = selregparam(RegParamSet,DipEvoFcn,K,RegMatrix,'tikhonov',{'aic','gcv','lr'});
 precached = toc;
 
 tic
-[postOptParam,Functionals,RegParamRange] = selregparam(RegParamSet,DipEvoFcn,Kernel,RegMatrix,'tikhonov',{'aic','gcv','lr'});
+[postOptParam,Functionals,RegParamRange] = selregparam(RegParamSet,DipEvoFcn,K,RegMatrix,'tikhonov',{'aic','gcv','lr'});
 postcached = toc;
 
 err(1) = postcached>=precached/10;

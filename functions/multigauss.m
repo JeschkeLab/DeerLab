@@ -26,7 +26,7 @@
 % the Free Software Foundation.
 
 
-function [FitDistribution,FitParam,optimum,metrics] = multigauss(Signal,Kernel,DistanceAxis,maxGaussians,method,varargin)
+function [FitDistribution,FitParam,optimum,metrics] = multigauss(S,K,r,maxGaussians,method,varargin)
 
 if nargin<5 
     method = 'aicc';
@@ -49,10 +49,10 @@ for i=2:maxGaussians
 end
 
 %Run optimization to see which multigauss model is the best 
-[optimum,metrics] = selectmodel(multiGaussModel,Signal,DistanceAxis,Kernel,method,varargin);
+[optimum,metrics] = selectmodel(multiGaussModel,S,r,K,method,varargin);
 
 %Fit the data to the optimal multigauss parametric model
-[FitDistribution,FitParam] = fitparamodel(Signal,Kernel,DistanceAxis,multiGaussModel{optimum},[],varargin);
+[FitDistribution,FitParam] = fitparamodel(S,K,r,multiGaussModel{optimum},[],varargin);
 
 return
 

@@ -16,15 +16,15 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function Level = noiselevel(Signal,M)
+function Level = noiselevel(S,M)
 
 %Get signal length
-N = length(Signal);
+N = length(S);
 %Extract the piece of signal to estimate
 if nargin<2 || isempty(M)
-    Cutoff = Signal(ceil(4/5*N):N);
+    Cutoff = S(ceil(4/5*N):N);
 else
-    Cutoff = Signal(ceil(N-M):N);   
+    Cutoff = S(ceil(N-M):N);   
 end
 %Estimate the noise level
 Cutoff = Cutoff - mean(Cutoff);

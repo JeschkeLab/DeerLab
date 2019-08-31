@@ -15,13 +15,13 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function FrequencyAxis = time2freq(TimeAxis,FreqPoints)
+function FrequencyAxis = time2freq(t,FreqPoints)
 
 if nargin<2 
-    FreqPoints = length(TimeAxis);
+    FreqPoints = length(t);
 end
 
-TimeStep = mean(diff(TimeAxis));
-FrequencyAxis = linspace(-1/(2*TimeStep),1/(2*TimeStep),FreqPoints);
+dt = mean(diff(t));
+FrequencyAxis = linspace(-1/(2*dt),1/(2*dt),FreqPoints);
 
 end

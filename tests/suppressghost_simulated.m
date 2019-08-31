@@ -6,23 +6,23 @@ function [err,data,maxerr] = test(opt,olddata)
 
 
 Dimension = 100;
-TimeAxis = linspace(0.006,3,Dimension);
-DistanceAxis = time2dist(TimeAxis);
+t = linspace(0.006,3,Dimension);
+r = time2dist(t);
 
-Distribution = rd_onegaussian(DistanceAxis,[3,0.5]);
+Distribution = rd_onegaussian(r,[3,0.5]);
 DistrAB = Distribution/sum(Distribution)';
-Distribution = rd_onegaussian(DistanceAxis,[4,0.5]);
+Distribution = rd_onegaussian(r,[4,0.5]);
 DistrAC = Distribution/sum(Distribution)';
-Distribution = rd_onegaussian(DistanceAxis,[5,0.5]);
+Distribution = rd_onegaussian(r,[5,0.5]);
 DistrBC = Distribution/sum(Distribution)';
 Distribution = DistrAB + DistrBC + DistrAC;
 DistrAB = DistrAB/sum(Distribution)';
 DistrBC = DistrBC/sum(Distribution)';
 DistrAC = DistrAC/sum(Distribution)';
 
-FreqAxis = 52.04./(DistanceAxis.^3)';
+FreqAxis = 52.04./(r.^3)';
 
-wddt = 2*pi*FreqAxis.*TimeAxis;
+wddt = 2*pi*FreqAxis.*t;
 kappa = sqrt(6*wddt/pi);
 %Compute Fresnel integrals of 0th order
 
@@ -58,13 +58,13 @@ signal = suppressghost(FormFactor3,3);
 signal = signal/signal(1);
 signal = (signal - lambda)/(1-lambda) ;
 signal= signal/signal(1);
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-% Kernel = Kernel/mean(diff(DistanceAxis));
+K = dipolarkernel(t,r);
+% K = K/mean(diff(r));
 RegMatrix = regoperator(Dimension,2);
 RegParam = 4;
-Dist2 = fitregmodel(Dip2,Kernel,DistanceAxis,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
-Dist3 = fitregmodel(Dip3,Kernel,DistanceAxis,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
-DistrTest = fitregmodel(signal,Kernel,DistanceAxis,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+Dist2 = fitregmodel(Dip2,K,r,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+Dist3 = fitregmodel(Dip3,K,r,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+DistrTest = fitregmodel(signal,K,r,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 
 err(1) = any(abs(DistrTest - Dist3)>3e-1);
 err(2) = any(abs(DistrTest - Dist2)>3e-1);
@@ -76,8 +76,8 @@ data = [];
 if opt.Display
     figure(8),clf
     hold on
-    plot(DistanceAxis,Dist2,'k')
-    plot(DistanceAxis,DistrTest,'r')
+    plot(r,Dist2,'k')
+    plot(r,DistrTest,'r')
     
 end
 

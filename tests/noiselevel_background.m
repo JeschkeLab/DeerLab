@@ -1,20 +1,20 @@
 function [err,data,maxerr] = test(opt,olddata)
 
 Dimension = 200;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
+dt = 0.008;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
 InputParam = [3 0.5];
-Distribution = rd_onegaussian(DistanceAxis,InputParam);
+Distribution = rd_onegaussian(r,InputParam);
 Distribution = Distribution/sum(Distribution);
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution;
-Background = exp(-1.5*TimeAxis)';
-ClusterFcn = (DipEvoFcn + 5).*Background;
-Background = Background*(1-1/ClusterFcn(1));
+K = dipolarkernel(t,r);
+DipEvoFcn = K*Distribution;
+B = exp(-1.5*t)';
+ClusterFcn = (DipEvoFcn + 5).*B;
+B = B*(1-1/ClusterFcn(1));
 ClusterFcn = ClusterFcn/ClusterFcn(1);
-ClusterFcn = ClusterFcn./sqrt(Background);
+ClusterFcn = ClusterFcn./sqrt(B);
 
 rng(2)
 Noise = rand(Dimension,1);

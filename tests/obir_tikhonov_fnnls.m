@@ -5,33 +5,33 @@ function [err,data,maxerr] = test(opt,olddata)
 %=======================================
 
 Dimension = 100;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
-P1 = rd_onegaussian(DistanceAxis,[2,0.3]);
-P2 = rd_onegaussian(DistanceAxis,[3.5,0.3]);
+dt = 0.008;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
+P1 = rd_onegaussian(r,[2,0.3]);
+P2 = rd_onegaussian(r,[3.5,0.3]);
 Distribution = 0.5*P1 + 0.5*P2;
-Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
+Distribution = Distribution/sum(Distribution)/mean(diff(r));
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
+K = dipolarkernel(t,r);
 RegMatrix =  regoperator(Dimension,2);
-DipEvoFcn = Kernel*Distribution;
+DipEvoFcn = K*Distribution;
 NoiseLevel = 0.05;
 Noise = whitenoise(Dimension,NoiseLevel);
-Signal = DipEvoFcn+Noise;
+S = DipEvoFcn+Noise;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 40;
 
 if opt.Display
     figure(8),clf
-    axhandle = plot(DistanceAxis,NaN*Distribution);
+    axhandle = plot(r,NaN*Distribution);
 else
     axhandle = [];
 end
 
-Result = obir(Signal,Kernel,DistanceAxis,'tikhonov',RegMatrix,RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Axishandle',axhandle);
-RegResult = fitregmodel(Signal,Kernel,DistanceAxis,RegMatrix,'tikhonov',RegParam);
+Result = obir(S,K,r,'tikhonov',RegMatrix,RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Axishandle',axhandle);
+RegResult = fitregmodel(S,K,r,RegMatrix,'tikhonov',RegParam);
 
 err = norm(Result - Distribution) > norm(RegResult - Distribution);
 maxerr = norm(Result - Distribution);
@@ -40,9 +40,9 @@ data = [];
 if opt.Display
  	figure(8),clf
     hold on
-    plot(DistanceAxis,Distribution,'k') 
-    plot(DistanceAxis,Result,'b')
-    plot(DistanceAxis,RegResult,'r')
+    plot(r,Distribution,'k') 
+    plot(r,Result,'b')
+    plot(r,RegResult,'r')
     legend('truth','OBIR','Tikh')
 end
 

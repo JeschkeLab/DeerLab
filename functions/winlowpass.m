@@ -29,7 +29,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [FilteredSignal,FIRtransferFcn] = winlowpass(Signal,StopBand,PassBand,SamplingRate,varargin)
+function [FilteredS,FIRtransferFcn] = winlowpass(S,StopBand,PassBand,SamplingRate,varargin)
 
 %Parse optional input arguments
 [MinimalAttenuation,ForwardBackward] = parseoptional({'MinimalAttenuation','ForwardBackward'},varargin);
@@ -47,10 +47,10 @@ else
     validateattributes(ForwardBackward,{'logical'},{'scalar','nonempty'},mfilename,'ForwardBackward')
 end
 
-validateattributes(Signal,{'numeric'},{'2d','nonempty'},mfilename,'Signal')
-validateattributes(StopBand,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'Signal')
-validateattributes(PassBand,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'Signal')
-validateattributes(SamplingRate,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'Signal')
+validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'S')
+validateattributes(StopBand,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'S')
+validateattributes(PassBand,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'S')
+validateattributes(SamplingRate,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'S')
 
 if PassBand>SamplingRate
     error('Input pass band frequency cannot exceed the sampling rate.')
@@ -60,7 +60,7 @@ if StopBand<PassBand
     error('Stopband frequency must be larger than the passband frequency')
 end
 
-N = length(Signal);
+N = length(S);
 
 %Normalize frequencies
 StopBand = StopBand/SamplingRate;
@@ -97,12 +97,12 @@ if ForwardBackward
 end
 
 %Apply FIR low-pass filter to the input signal
-FilteredSignal = filter(FIRtransferFcn,1,[Signal zeros(length(FIRtransferFcn),1)'] );
+FilteredS = filter(FIRtransferFcn,1,[S zeros(length(FIRtransferFcn),1)'] );
 
 %Calculate FIR filter group delay
 Delay = FilterOrder/2 - 1;
 
 %Correct for FIR filter delay
-FilteredSignal = FilteredSignal(Delay+1:Delay+N);
+FilteredS = FilteredS(Delay+1:Delay+N);
 
 end

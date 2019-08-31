@@ -13,7 +13,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function Signal = supressghost(Signal,NRadicals)
+function S = supressghost(S,NRadicals)
 
 if nargin<3
     NRadicals = 2;
@@ -21,7 +21,7 @@ end
 
 Scaling = 1/(NRadicals - 1);
 
-Signal = Signal.^Scaling;
+S = S.^Scaling;
 
 end
 

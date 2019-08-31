@@ -7,10 +7,10 @@ function [err,data,maxerr] = test(opt,olddata)
 load(fullfile('comparison','oldDAkernel500'));
 
 N = 500;
-TimeStep = 0.008;
-TimeAxis = linspace(0,TimeStep*N,N);
-DistAxis = time2dist(TimeAxis);
-kernelOut = dipolarkernel(TimeAxis,DistAxis,'KernelCalcMethod','explicit');
+dt = 0.008;
+t = linspace(0,dt*N,N);
+DistAxis = time2dist(t);
+kernelOut = dipolarkernel(t,DistAxis,'KCalcMethod','explicit');
 kernelOut = kernelOut/mean(diff(DistAxis));
 err = any(abs(kernelOut - kernel)>7e-3);
 maxerr = max(max(abs(kernelOut - kernel)));
@@ -23,8 +23,8 @@ if opt.Display
     imagesc(kernelOut)
     subplot(122)
     hold on
-%     plot(TimeAxis,kernel(:,5))
-    plot(TimeAxis,kernelOut(:,5))
+%     plot(t,kernel(:,5))
+    plot(t,kernelOut(:,5))
 end
 
 end

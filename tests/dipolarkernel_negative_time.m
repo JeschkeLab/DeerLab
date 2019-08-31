@@ -7,11 +7,11 @@ function [err,data,maxerr] = test(opt,olddata)
 Ntime = 302;
 Ndist = 200;
 
-TimeStep = 0.008;
-TimeAxis = linspace(-TimeStep*Ntime/2,TimeStep*Ntime/2,Ntime);
-[~,rmin,rmax] = time2dist(TimeAxis);
+dt = 0.008;
+t = linspace(-dt*Ntime/2,dt*Ntime/2,Ntime);
+[~,rmin,rmax] = time2dist(t);
 DistAxis = linspace(rmin,rmax,Ndist);
-kernel = dipolarkernel(TimeAxis,DistAxis);
+kernel = dipolarkernel(t,DistAxis);
 kernel = kernel/mean(diff(DistAxis));
 trace = kernel(:,1);
 
@@ -29,7 +29,7 @@ if opt.Display
     imagesc(kernel)
     subplot(122)
     hold on
-    plot(TimeAxis(Ntime/2+1:end),fliplr(negtrace))
-    plot(TimeAxis(Ntime/2+1:end),postrace)
+    plot(t(Ntime/2+1:end),fliplr(negtrace))
+    plot(t(Ntime/2+1:end),postrace)
 end
 end

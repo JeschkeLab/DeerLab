@@ -1,80 +1,80 @@
 clc
 %Load experimental data
-[ExpTimeAxis,ExpSignal] = eprload('CT_DEER_mix_28_36.DSC');
+[Expt,ExpS] = eprload('CT_DEER_mix_28_36.DSC');
 Noise = rand(400,1);
 Noise = Noise - mean(Noise);
 Noise = 0.01*Noise/max(Noise)';
-ExpSignal = ExpSignal/max(ExpSignal);
-ExpSignal = ExpSignal + Noise;
+ExpS = ExpS/max(ExpS);
+ExpS = ExpS + Noise;
 
 %Correct phase and zero-time
-Signal = correctPhase(ExpSignal);
-[Signal,TimeAxis] = correctZeroTime(Signal,ExpTimeAxis);
+S = correctPhase(ExpS);
+[S,t] = correctZeroTime(S,Expt);
 %Convert to us and truncate
-TimeAxis = TimeAxis/1000;
-[~,ZeroTimePos] = min(abs(TimeAxis));
-Signal = Signal(ZeroTimePos:end);
-TimeAxis = TimeAxis(ZeroTimePos:end);
+t = t/1000;
+[~,ZeroTimePos] = min(abs(t));
+S = S(ZeroTimePos:end);
+t = t(ZeroTimePos:end);
 
 %Fit background
 FitStartPos = 20;
-Data2fit = Signal(FitStartPos:end);
-FitTimeAxis = TimeAxis(FitStartPos:end);
-Background = fitBackground(Data2fit,TimeAxis,FitTimeAxis);
+Data2fit = S(FitStartPos:end);
+Fitt = t(FitStartPos:end);
+B = fitB(Data2fit,t,Fitt);
 
 %Ghost distance suppression
-Signal = supressGhostDistances(Signal);
+S = supressGhostDistances(S);
 
 %Perform partial background correction
-Signal2Reg = Signal./sqrt(Background);
+S2Reg = S./sqrt(B);
 
 %Prepare regularization
-DistanceAxis = time2dist(TimeAxis);
-Kernel = getKernel(TimeAxis,DistanceAxis,Background);
-RegMatrix = getRegMatrix(length(Kernel),2);
-RegParamRange = getRegParamRange(Kernel,RegMatrix);
-RegParam = selectRegParam(RegParamRange,Signal2Reg,Kernel,RegMatrix,{'gml'});
+r = time2dist(t);
+K = getK(t,r,B);
+RegMatrix = getRegMatrix(length(K),2);
+RegParamRange = getRegParamRange(K,RegMatrix);
+RegParam = selectRegParam(RegParamRange,S2Reg,K,RegMatrix,{'gml'});
 
 %Run regularization
-Distribution1 = regularize(Signal2Reg,Kernel,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
+Distribution1 = regularize(S2Reg,K,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
 
-Signal2Reg2 = Signal;
+S2Reg2 = S;
 
 %Prepare regularization
-Kernel = getKernel(TimeAxis,DistanceAxis,Background,'KernelBType','full');
-RegParamRange = getRegParamRange(Kernel,RegMatrix);
-RegParam = selectRegParam(RegParamRange,Signal2Reg2,Kernel,RegMatrix,{'gml'});
+K = getK(t,r,B,'KBType','full');
+RegParamRange = getRegParamRange(K,RegMatrix);
+RegParam = selectRegParam(RegParamRange,S2Reg2,K,RegMatrix,{'gml'});
 
-Distribution2 = regularize(Signal2Reg2,Kernel,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
+Distribution2 = regularize(S2Reg2,K,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
 
-ModDepth = 1/Background(1) - 1;
-Signal2Reg3 = Signal./Background;
-Signal2Reg3 = (Signal2Reg3 - (1-ModDepth))/ModDepth - 1;
-% Signal2Reg3 = Signal2Reg3/Signal2Reg3(1);
+ModDepth = 1/B(1) - 1;
+S2Reg3 = S./B;
+S2Reg3 = (S2Reg3 - (1-ModDepth))/ModDepth - 1;
+% S2Reg3 = S2Reg3/S2Reg3(1);
 %Prepare regularization
-Kernel = getKernel(TimeAxis,DistanceAxis);
-RegParamRange = getRegParamRange(Kernel,RegMatrix);
-RegParam = selectRegParam(RegParamRange,Signal2Reg3,Kernel,RegMatrix,{'gml'});
+K = getK(t,r);
+RegParamRange = getRegParamRange(K,RegMatrix);
+RegParam = selectRegParam(RegParamRange,S2Reg3,K,RegMatrix,{'gml'});
 
-Distribution3 = regularize(Signal2Reg3,Kernel,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
+Distribution3 = regularize(S2Reg3,K,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
 
 
 figure(1),clf
 
 subplot(121),hold on
-plot(TimeAxis,Signal2Reg3,'k')
-plot(TimeAxis,Kernel*Distribution1)
-plot(TimeAxis,Kernel*Distribution2)
-plot(TimeAxis,Kernel*Distribution3)
+plot(t,S2Reg3,'k')
+plot(t,K*Distribution1)
+plot(t,K*Distribution2)
+plot(t,K*Distribution3)
 
 xlabel('Time [\mus]')
 ylabel('Intensity [a.u.]')
 legend('Sqrt(B)','B','division')
 
 subplot(122),hold on
-plot(DistanceAxis,Distribution1)
-plot(DistanceAxis,Distribution2)
-plot(DistanceAxis,Distribution3)
+plot(r,Distribution1)
+plot(r,Distribution2)
+plot(r,Distribution3)
 
 xlabel('Distance [nm]')
 ylabel('P(r)')

@@ -3,19 +3,19 @@ function [err,data,maxerr] = test(opt,olddata)
 %Test if selectmethod can identify that the optimal method is a two
 %rice model as given as the input signal
 Dimension = 300;
-TimeStep = 0.016;
-TimeAxis = linspace(0,TimeStep*Dimension,Dimension);
-DistanceAxis = time2dist(TimeAxis);
+dt = 0.016;
+t = linspace(0,dt*Dimension,Dimension);
+r = time2dist(t);
 InputParam = [3 0.2 5.5 0.3 0.5];
-Distribution = rd_tworice(DistanceAxis,InputParam);
-Distribution = Distribution/sum(Distribution)/mean(diff(DistanceAxis));
+Distribution = rd_tworice(r,InputParam);
+Distribution = Distribution/sum(Distribution)/mean(diff(r));
 
-Kernel = dipolarkernel(TimeAxis,DistanceAxis);
-DipEvoFcn = Kernel*Distribution;
+K = dipolarkernel(t,r);
+DipEvoFcn = K*Distribution;
 
 Models = {@rd_onerice,@rd_tworice,@rd_threerice};
 
-[optimum,metric] = selectmodel(Models,DipEvoFcn,DistanceAxis,Kernel,'aicc');
+[optimum,metric] = selectmodel(Models,DipEvoFcn,r,K,'aicc');
 
 err = optimum~=2;
 data = [];
