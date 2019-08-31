@@ -164,6 +164,9 @@ if usesNanoseconds
     t = round(t)/1000;
 end
 
+%Get absolute time axis scale (required for negative times)
+t = abs(t);
+
 %Get vector of dipolar frequencies
 wdd = w0./(r.^3);
 
@@ -208,7 +211,7 @@ if ~isempty(ExcitationBandwidth)
 end
 
 if strcmp(KCalcMethod,'explicit')
-   [~,BckgStart] = min(abs(t));
+   [~,BckgStart] = min(t);
     K = K./K(BckgStart,:);
 end
 
