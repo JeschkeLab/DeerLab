@@ -10,8 +10,6 @@ Converts a function handle to a valid DeerAnalysis parametric model
 Syntax
 =========================================
 
----------
-
 .. code-block:: matlab
 
     mod = paramodel(fcn,n)
@@ -30,8 +28,6 @@ Returns
 
 Description
 =========================================
-
----------
 
 .. code-block:: matlab
 
@@ -54,8 +50,6 @@ Two arrays ``upper`` and ``lower`` containing the bounds on the parameters can b
 
 Example
 =========================================
-
----------
 
 .. code-block:: matlab
 

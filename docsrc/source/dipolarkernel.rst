@@ -10,8 +10,6 @@ Computes the dipolar interaction kernel `\mathbf{K}` for the linear transformati
 Syntax
 =========================================
 
----------
-
 .. code-block:: matlab
 
     K = dipolarkernel(t,r)
@@ -30,8 +28,6 @@ Returns
 
 Description
 =========================================
-
----------
 
 .. code-block:: matlab
 
@@ -54,7 +50,6 @@ If the background ``B`` and modulation depth ``alpha`` are specified, then the b
 Optional Arguments
 =========================================
 
----------
 
 Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
 

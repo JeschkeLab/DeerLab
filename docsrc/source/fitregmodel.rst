@@ -31,7 +31,7 @@ Fits a regularized distance distribution ``P``  from the input signal ``S`` acco
     *   ``'tv'`` - Total variation regularization
     *   ``'huber'`` - Pseudo-Huber regularization
 
-See the functions documentation for constructing and computing the dipolar kernel (:ref:`dipolarkernel`), regularization operator (:ref:`regoperator`) and regularization parameter (:ref:`selregparam`).
+See the functions documentation for constructing and computing the dipolar kernel (:ref:`dipolarkernel`), regularization operator (:ref:`regoperator`) and regularization parameter (:ref:`selregparam`). 
 
 .. code-block:: matlab
 

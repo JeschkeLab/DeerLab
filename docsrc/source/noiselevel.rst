@@ -34,4 +34,4 @@ If parameter ``M`` is specified, the noise level estimation is done from the las
 
 .. image:: ./images/noiselevel1.svg
 
-.. hint:: This function returns the estimation of the noise standard deviation (called noise level in DeerAnalysis2). The value returned by this function is the same type of noise level requested by many other function in DeerAnalysis2.
+.. hint:: This function returns the estimation of the noise standard deviation (called noise level in DeerAnalysis2). This definition of noise level is used throughout DeerAnalysis2.

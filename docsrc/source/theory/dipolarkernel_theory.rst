@@ -15,7 +15,7 @@ where
 :math:`\omega_{dd}(r)`
 is the dipolar modulation frequency,
 :math:`\mu_0`
-the permittivity of vacuum,
+the vacuum permeability,
 :math:`\hbar`
 Planck's quantum of action and
 :math:`\gamma_{A/B}`
@@ -57,4 +57,3 @@ References
 
 .. [1] Gunnar Jeschke, eMagRes, 2016, Vol 5: 1459–1476.
 .. [2] Fábregas Ibáñez and Jeschke, to be published
-.. [3] Banham et al., JMR 191, 2008, 202-218

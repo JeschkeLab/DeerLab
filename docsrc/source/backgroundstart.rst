@@ -8,12 +8,12 @@
 Computes the optimal point for starting the background fit
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[t0,pos] = backgroundstart(S,t,'model',...)`
+:mod:`[t0,pos] = backgroundstart(V,t,model,...)`
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Parameters
-    *   **S** - Signal (N-array)
+    *   **V** - Signal (N-array)
     *   **t** - Time axis (N-array)
-    *   **model** - Background model (string)
+    *   **model** - Background model (function handle)
 Returns
     *   **t0** - Optimal fitting start time (scalar)
     *   **pos** - Optimal fitting start index (scalar)
@@ -23,17 +23,17 @@ Usage
 
 .. code-block:: matlab
 
-    [t0,pos] = backgroundstart(S,t,'model')
+    [t0,pos] = backgroundstart(V,t,model)
 
-Returns the optimal start time ``t0`` and corresponding array index ``pos`` at which to start fitting the background function corresponding to the model given by ``'model'``. The pre-defined background models defined by the ``'model'`` string argument are the following:
+Returns the optimal start time ``t0`` and corresponding array index ``pos`` at which to start fitting the background function corresponding to the model given by ``model``. The pre-defined background models defined by the ``model`` argument are the following:
 
-* ``'exponential'`` - Exponential function where the decay rate if fitted
+* ``@td_exp`` - Exponential function where the decay rate if fitted
 
-* ``'polyexp'`` -  Exponential function by fitting the a linear function to the log of the signal
+* ``@td_strexp`` -  Exponential function by fitting the a linear function to the log of the signal
 
 * ``'fractal'`` - Stretched exponential function by fitting the decay rate and fractal dimension on the log of the signal
 
-*  ``'polynomial'`` - Polynomial function of order as given as an input
+*  ``@td_poly1``, ``@td_poly2``, ``@td_poly3`` - Polynomial functions of various orders
 
 .. image:: ./images/backgroundstart1.svg
 
