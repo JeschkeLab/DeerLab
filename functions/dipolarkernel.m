@@ -2,23 +2,24 @@
 % DIPOLARKERNEL Computes the dipolar interaction kernel for the linear
 %              transformation from distance-domain to time-domain
 %
-%       K = DIPOLARKERNEL(t,r) Computes the NxM point kernel for the 
-%       trasnformation to the dipolar evolution function from the N-point 
-%       time axis (t) and M-point distance axis (r).
+%       K = DIPOLARKERNEL(t,r) 
+%       Computes the NxM point kernel for the trasnformation to the dipolar
+%       evolution function from the N-point  time axis (t) and M-point 
+%       distance axis (r).
 %
-%       K = DIPOLARKERNEL(t,r,B) Computes the kernel for the transformation
-%       to the form factor function with a N-point background B multiplied.
+%       K = DIPOLARKERNEL(t,r,B,lambda) 
+%       Computes the kernel for the transformation to the form factor function
+%       with a N-point background B multiplied with a modulation depth given by (lambda).
 %
-%       K = DIPOLARKERNEL(T,R,[],'Property1',Value1,...) Computes the kernel 
-%       for the transformation to the dipolar evolution function with the
-%       input background B with additional optional arguments.
+%       K = DIPOLARKERNEL(t,r,B) 
+%       Computes the kernel for the transformation to the form factor function
+%       with a N-point background B multiplied.
 %
-%       K = DIPOLARKERNEL(T,R,B,'Property1',Value1,...) Computes the kernel
-%       for the transformation to the form factor function with a N-point
-%       background B multiplied and additional optional arguments.
+%       K = DIPOLARKERNEL(t,r,'Property1',Value1,...) 
+%       K = DIPOLARKERNEL(t,r,B,lambda,'Property1',Value1,...) 
+%       Optional arguments can be specified by parameter/value pairs. 
 %
-% Optional arguments can be specified by parameter/value pairs. The allowed
-% properties to be passed as options can be set in any order. 
+%The allowed properties to be passed as options can be set in any order. 
 %
 %   'KBType'   The way the background B is introduced into the kernel: 
 %                      'full' - as passed without change
@@ -146,9 +147,8 @@ if cachedData.containsKey(hashKey)
 end
 
 %--------------------------------------------------------------------------
-%K construction
+%Kernel construction
 %--------------------------------------------------------------------------
-
 
 Dimension = length(t);
 dt = mean(diff(t));
@@ -160,12 +160,12 @@ w0 = 2*pi*nu0; % Mrad s^-1 nm^3
 %Convert time step to microseconds if given in nanoseconds
 usesNanoseconds = dt>=0.5;
 if usesNanoseconds
-    dt = round(dt)/1000;
-    t = round(t)/1000;
+    dt = round(dt)/1000; % ns->us
+    t = round(t)/1000; % ns->us
 end
 
 %Get absolute time axis scale (required for negative times)
-t = abs(t);
+t = abs(t); %ns
 
 %Get vector of dipolar frequencies
 wdd = w0./(r.^3);
