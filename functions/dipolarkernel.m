@@ -50,20 +50,23 @@
 % the Free Software Foundation.
 
 
-function [Kernel] = dipolarkernel(TimeAxis,DistanceAxis,Background,ModDepth,varargin)
+function K = dipolarkernel(t,r,Background,ModDepth,varargin)
 
 %--------------------------------------------------------------------------
 %Input parsing
 %--------------------------------------------------------------------------
 
 if nargin<3 || isempty(Background)
-    Background = ones(1,length(TimeAxis));
+    Background = ones(1,length(t));
+end
+if nargin<4 || isempty(ModDepth)
+    ModDepth = 1;
 end
 if isa(Background,'char')
     varargin{end+1} = Background;
     varargin{end+1} = ModDepth;
     ModDepth = [];
-    Background = ones(1,length(TimeAxis));
+    Background = ones(1,length(t));
 end
 %Check if user requested some options via name-value input
 [KernelBType,ExcitationBandwidth,OvertoneCoeffs,gValue,KernelCalcMethod,Knots] = parseoptional({'KernelBType','ExcitationBandwidth','OvertoneCoeffs','gValue','KernelCalcMethod','Knots'},varargin);
@@ -102,12 +105,12 @@ else
     validateattributes(Knots,{'numeric'},{'scalar'},mfilename,'Knots')
 end
 
-if ~iscolumn(TimeAxis)
-    TimeAxis = TimeAxis.';
+if ~iscolumn(t)
+    t = t.';
 end
 
-if iscolumn(DistanceAxis)
-    DistanceAxis = DistanceAxis.';
+if iscolumn(r)
+    r = r.';
 end
 if ~iscolumn(Background)
     Background = Background.';
@@ -120,12 +123,12 @@ else
     validateattributes(gValue,{'numeric'},{'scalar','nonnegative'},mfilename,'gValue')
 end
 
-validateattributes(DistanceAxis,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'DistanceAxis')
-if numel(unique(round(diff(DistanceAxis),12)))~=1
+validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'DistanceAxis')
+if numel(unique(round(diff(r),12)))~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
-validateattributes(TimeAxis,{'numeric'},{'nonempty','increasing'},mfilename,'TimeAxis')
-checklengths(TimeAxis,Background);
+validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'TimeAxis')
+checklengths(t,Background);
 
 %--------------------------------------------------------------------------
 %Memoization
@@ -135,10 +138,10 @@ persistent cachedData
 if isempty(cachedData)
     cachedData =  java.util.LinkedHashMap;
 end
-hashKey = datahash({TimeAxis,DistanceAxis,Background,varargin});
+hashKey = datahash({t,r,Background,varargin});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
-    Kernel = java2mat(Output);
+    K = java2mat(Output);
     return
 end
 
@@ -146,29 +149,25 @@ end
 %Kernel construction
 %--------------------------------------------------------------------------
 
-Dimension = length(TimeAxis);
-TimeStep = mean(diff(TimeAxis));
+Dimension = length(t);
+TimeStep = mean(diff(t));
 
-%Numerical dipolar frequency at 1 nm for given g-value
-ny0 = 51.92052556862238*gValue/2;
+%Numerical dipolar frequency at 1 nm for given g-value, in MHz
+nu0 = 51.92052556862238*gValue/2; % MHz nm^3
+w0 = 2*pi*nu0; % Mrad s^-1 nm^3
 
 %Convert time step to microseconds if given in nanoseconds
-usesNanoseconds = TimeStep>1;
+usesNanoseconds = TimeStep>=0.5;
 if usesNanoseconds
     TimeStep = round(TimeStep)/1000;
-    TimeAxis = round(TimeAxis)/1000;
+    t = round(t)/1000;
 end
 
-%Numerical angular dipolar frequency at 1 nm for g=ge
-w0 = 2*pi*ny0;
 %Get vector of dipolar frequencies
-wdd = w0./(DistanceAxis.^3);
+wdd = w0./(r.^3);
 
-[~,BckgStart] = min(abs(TimeAxis));
-
-
-Kernel = zeros(length(TimeAxis),length(wdd));
-for OvertoneIdx=1:length(OvertoneCoeffs)
+K = zeros(length(t),length(wdd));
+for OvertoneIdx = 1:length(OvertoneCoeffs)
     
     switch KernelCalcMethod
         case 'explicit'
@@ -177,13 +176,13 @@ for OvertoneIdx=1:length(OvertoneCoeffs)
             %Pre-allocate cosine of powder angles
             costheta = linspace(0,1,Knots);
             %Sweep through all distances
-            for DistanceIndex = 1:length(DistanceAxis)
+            for DistanceIndex = 1:length(r)
                 KernelTrace = 0;
                 for theta = 1:Knots % average over cos(theta) angle (powder average)
-                    KernelTrace = KernelTrace + cos(OvertoneIdx*wdd(DistanceIndex)*(1-3*costheta(theta)^2)*TimeAxis);
+                    KernelTrace = KernelTrace + cos(OvertoneIdx*wdd(DistanceIndex)*(1-3*costheta(theta)^2)*t);
                 end
                 % normalize dipolar time evolution trace
-                Kernel(:,DistanceIndex) = Kernel(:,DistanceIndex) + OvertoneCoeffs(OvertoneIdx)*KernelTrace;
+                K(:,DistanceIndex) = K(:,DistanceIndex) + OvertoneCoeffs(OvertoneIdx)*KernelTrace;
             end
             
         case  'fresnel'
@@ -191,43 +190,46 @@ for OvertoneIdx=1:length(OvertoneCoeffs)
             %----------------------------------------------------------
             %Compute dipolar kernel
             %Allocate products for speed
-            wddt = OvertoneIdx*wdd.*TimeAxis;
+            wddt = OvertoneIdx*wdd.*t;
             kappa = sqrt(6*wddt/pi);
             %Compute Fresnel integrals of 0th order
             C = fresnelC(kappa);
             S = fresnelS(kappa);
-            Kernel = Kernel + OvertoneCoeffs(OvertoneIdx)*sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
+            K = K + OvertoneCoeffs(OvertoneIdx)*sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
             %Replace undefined Fresnel NaN value at time zero
-            Kernel(isnan(Kernel)) = 1;
+            K(isnan(K)) = 1;
     end
 end
 
 %If given, account for limited excitation bandwidth
 if ~isempty(ExcitationBandwidth)
-    Kernel = exp(-wdd'.^2/ExcitationBandwidth^2).*Kernel;
+    K = exp(-wdd'.^2/ExcitationBandwidth^2).*K;
 end
 
 if strcmp(KernelCalcMethod,'explicit')
-    Kernel = Kernel./Kernel(BckgStart,:);
+   [~,BckgStart] = min(abs(t));
+    K = K./K(BckgStart,:);
 end
 
-% Build the background into the kernel
+% Build modulation depth and background into the kernel
 %----------------------------------------------------------
-if ~all(Background == 1)
-    switch KernelBType
-        case 'none'
-            Background = ones(Dimension,1);
-        case 'sqrt'
-            Background = sqrt(Background);
-    end
-    Kernel = ((1-ModDepth) + ModDepth*Kernel).*Background;
+if ModDepth~=1
+  K = (1-ModDepth) + ModDepth*K;
+end
+switch KernelBType
+    case 'none'
+        % do not include B in K
+    case 'full'
+        K = K.*Background;
+    case 'sqrt'
+        K = K.*sqrt(Background);
 end
 
 %Normalize kernel
-dr = mean(diff(DistanceAxis));
-Kernel = Kernel*dr;
+dr = mean(diff(r));
+K = K*dr;
 
 %Store output result in the cache
-cachedData = addcache(cachedData,hashKey,Kernel);
+cachedData = addcache(cachedData,hashKey,K);
 
 return
