@@ -90,10 +90,10 @@ for i=1:length(Models)
     currentModel = Models{i};
     Info = currentModel();
     [FitDistribution] = fitparamodel(S,K,r,currentModel,[],varargin);
-    K = Info.nParam + 1;
-    aicc(i) = N*log(sum(K*FitDistribution - S).^2/N) + 2*K + (2*K*(K+1))/(N - K - 1);
-    aic(i) = N*log(sum(K*FitDistribution - S).^2/N) + 2*K;
-    bic(i) = N*log(sum(K*FitDistribution - S).^2/N) + K*log(N);
+    Q = Info.nParam + 1;
+    aicc(i) = N*log(sum(K*FitDistribution - S).^2/N) + 2*Q + (2*Q*(Q+1))/(N - Q - 1);
+    aic(i) = N*log(sum(K*FitDistribution - S).^2/N) + 2*Q;
+    bic(i) = N*log(sum(K*FitDistribution - S).^2/N) + Q*log(N);
 end
 
 %Apply the requested selection methods
