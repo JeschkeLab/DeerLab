@@ -22,3 +22,6 @@ Parametric Models
     ./models/td_strexp
     ./models/td_sumstrexp
     ./models/td_prodstrexp
+    ./models/td_poly1
+    ./models/td_poly2
+    ./models/td_poly3
