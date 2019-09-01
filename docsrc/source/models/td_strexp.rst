@@ -3,19 +3,25 @@
 
 
 ***********************
-:mod:`strexp`
+:mod:`td_strexp`
 ***********************
 
 Stretched exponential background parametric model
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`B = strexp(t,param)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+        info = td_strexp()
+        P = td_strexp(r,param)
+
 Parameters
-    *   **t** - Time axis (N-array)
-    *   **param** - Model parameters
+    *   ``t`` - Time axis (N-array)
+    *   ``param`` - Model parameters
 Returns
-    *   **B** - Model background (N-array)
+    *   ``B`` - Model background (N-array)
+    *   ``info`` - Model information (struct)
 
 Model equation: :math:`B(t) = e^{-(kt)^{d/3}}`
 
@@ -26,12 +32,12 @@ param(1)   :math:`k`      3.5      0              200           Decay rate
 param(2)   :math:`d`      3        0              6             Fractal dimension
 ========== ========== ========= ============= ============= ========================
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab
 
-        info = strexp()
+        info = td_strexp()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -42,7 +48,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    B = strexp(t,param)
+    B = td_strexp(t,param)
 
 Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 

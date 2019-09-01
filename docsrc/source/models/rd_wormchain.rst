@@ -1,20 +1,26 @@
 .. highlight:: matlab
-.. _wormchain:
+.. _rd_wormchain:
 
 ***********************
-:mod:`wormchain`
+:mod:`rd_wormchain`
 ***********************
 
 Worm-like chain model near the rigid limit
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`P = wormchain(t,param)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+        info = rd_wormchain()
+        P = rd_wormchain(r,param)
+
 Parameters
-    *   **r** - Distance axis (N-array)
-    *   **param** - Model parameters
+    *   ``t`` - Time axis (N-array)
+    *   ``param`` - Model parameters
 Returns
-    *   **P** - Model distance distribution (N-array)
+    *   ``B`` - Model background (N-array)
+    *   ``info`` - Model information (struct)
 
 ========== =========== ======== ======== ======== ===============================
  Variable   Symbol     Default   Lower   Upper       Description
@@ -23,12 +29,12 @@ param(1)   :math:`L`      3.7     1.5      10       Length of the worm-like chai
 param(2)   :math:`L_p`    10      2        100      Persistence length
 ========== =========== ======== ======== ======== ===============================
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab
 
-        info = wormchain()
+        info = rd_wormchain()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -39,7 +45,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    P = wormchain(r,param)
+    P = rd_wormchain(r,param)
 
 Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 

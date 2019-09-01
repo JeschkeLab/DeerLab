@@ -1,21 +1,27 @@
 .. highlight:: matlab
-.. _twogaussian:
+.. _rd_twogaussian:
 
 
 ***********************
-:mod:`twogaussian`
+:mod:`rd_twogaussian`
 ***********************
 
 Sum of two Gaussian distributions parametric model
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`P = twogaussian(t,param)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+        info = rd_twogaussian()
+        P = rd_twogaussian(r,param)
+
 Parameters
-    *   **r** - Distance axis (N-array)
-    *   **param** - Model parameters
+    *   ``t`` - Time axis (N-array)
+    *   ``param`` - Model parameters
 Returns
-    *   **P** - Model distance distribution (N-array)
+    *   ``B`` - Model background (N-array)
+    *   ``info`` - Model information (struct)
 
 Model equation: :math:`P(r) = A_1\exp\left(-\frac{(r-\left<r_1\right>)^2}{(\sqrt{2}\sigma_1)^2}\right) + (1 - A_1)\exp\left(-\frac{(r-\left<r_2\right>)^2}{(\sqrt{2}\sigma_2)^2}\right)`
 
@@ -29,12 +35,12 @@ param(4)   :math:`\sigma_2`             0.5     0.05       5          2nd Gaussi
 param(5)   :math:`A_1`                  0.5     0          1          1st Gaussian relative amplitude
 ========== ======================== ========= ======== ========= ===================================
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab
 
-        info = twogaussian()
+        info = rd_twogaussian()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -45,7 +51,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    P = twogaussian(r,param)
+    P = rd_twogaussian(r,param)
 
 Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 

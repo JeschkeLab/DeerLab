@@ -1,21 +1,27 @@
 .. highlight:: matlab
-.. _threerice:
+.. _rd_threerice:
 
 
 ***********************
-:mod:`threerice`
+:mod:`rd_threerice`
 ***********************
 
 Sum of three Gaussian distributions parametric model
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`P = threerice(t,param)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+        info = rd_threerice()
+        P = rd_threerice(r,param)
+
 Parameters
-    *   **r** - Distance axis (N-array)
-    *   **param** - Model parameters
+    *   ``t`` - Time axis (N-array)
+    *   ``param`` - Model parameters
 Returns
-    *   **P** - Model distance distribution (N-array)
+    *   ``B`` - Model background (N-array)
+    *   ``info`` - Model information (struct)
 
 Model equation: :math:`P(r) = \frac{r}{\sigma_1^2}\exp\left(-\frac{(r^2+\left<r_1\right>^2)}{2\sigma_1^2}\right)I_0\left(\frac{r\left<r_1\right>}{\sigma_1^2} \right) + A_2\frac{r}{\sigma_2^2}\exp\left(-\frac{(r^2+\left<r_2\right>^2)}{2\sigma_2^2}\right)I_0\left(\frac{r\left<r_2\right>}{\sigma_2^2} \right) + (1-A_1-A_2)\frac{r}{\sigma_3^2}\exp\left(-\frac{(r^2+\left<r_3\right>^2)}{2\sigma_3^2}\right)I_0\left(\frac{r\left<r_3\right>}{\sigma_3^2} \right)`
 
@@ -34,12 +40,12 @@ param(7)   :math:`A_1`                  0.3     0          1          1st Rician
 param(8)   :math:`A_2`                  0.3     0          1          2nd Rician relative amplitude
 ========== ======================== ========= ======== ========= ===================================
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab
 
-        info = threerice()
+        info = rd_threerice()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -50,7 +56,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    P = threerice(r,param)
+    P = rd_threerice(r,param)
 
 Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 

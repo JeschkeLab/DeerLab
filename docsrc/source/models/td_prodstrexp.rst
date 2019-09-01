@@ -1,23 +1,30 @@
 .. highlight:: matlab
-.. _sumstrexp:
+.. _td_prodstrexp:
 
 
 ***********************
-:mod:`sumstrexp`
+:mod:`td_prodstrexp`
 ***********************
 
-Sum of two stretched exponentials background parametric model
+Product of two stretched exponentials background parametric model
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`B = sumstrexp(t,param)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+        info = td_prodstrexp()
+        P = td_prodstrexp(r,param)
+
 Parameters
-    *   **t** - Time axis (N-array)
-    *   **param** - Model parameters
+    *   ``t`` - Time axis (N-array)
+    *   ``param`` - Model parameters
 Returns
-    *   **B** - Model background (N-array)
+    *   ``B`` - Model background (N-array)
+    *   ``info`` - Model information (struct)
 
-Model equation: :math:`B(t) = A_1e^{-(k_1t)^{d_1/3}} + (1-A_1)e^{-(k_2t)^{d_2/3}}`
+
+Model equation: :math:`B(t) = e^{-(k_1t)^{d_1/3}}e^{-(k_2t)^{d_2/3}}`
 
 ========== ============= ========= ============= ============= ==============================
  Variable   Symbol        Default   Lower bound   Upper bound      Description
@@ -26,15 +33,14 @@ param(1)   :math:`k_1`      3.5         0            200         1st strexp deca
 param(2)   :math:`d_1`      3           0            6           1st strexp fractal dimension
 param(3)   :math:`k_2`      3.5         0            200         2nd strexp decay rate
 param(4)   :math:`d_2`      3           0            6           2nd strexp fractal dimension
-param(5)   :math:`A_1`      0.5         0            1           Relative amplitude
 ========== ============= ========= ============= ============= ==============================
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab
 
-        info = sumstrexp()
+        info = td_prodstrexp()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -45,7 +51,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    B = sumstrexp(t,param)
+    B = td_prodstrexp(t,param)
 
 Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 

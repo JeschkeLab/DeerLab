@@ -5,47 +5,38 @@ API Documentation
     :maxdepth: 1
     :caption: Functions
 
-    ./apt
-    ./aptkernel
-    ./backgroundstart
-    ./correctphase
-    ./correctzerotime
-    ./dipolarkernel
-    ./dipolarsignal
-    ./fftspec
-    ./fitbackground
-    ./fitparamodel
-    ./fitregmodel
-    ./longpass
-    ./mixmodels
-    ./multigauss
-    ./noiselevel
-    ./obir
-    ./overtones
-    ./paramodel
-    ./regoperator
-    ./regparamrange
-    ./selectmodel
-    ./selregparam
-    ./suppressghost
-    ./time2dist
-    ./time2freq
-    ./whitenoise
-    ./winlowpass
-
+    ./api/apt
+    ./api/aptkernel
+    ./api/backgroundstart
+    ./api/correctphase
+    ./api/correctzerotime
+    ./api/dipolarkernel
+    ./api/dipolarsignal
+    ./api/fftspec
+    ./api/fitbackground
+    ./api/fitparamodel
+    ./api/fitregmodel
+    ./api/longpass
+    ./api/mixmodels
+    ./api/multigauss
+    ./api/noiselevel
+    ./api/obir
+    ./api/overtones
+    ./api/paramodel
+    ./api/regoperator
+    ./api/regparamrange
+    ./api/selectmodel
+    ./api/selregparam
+    ./api/suppressghost
+    ./api/time2dist
+    ./api/time2freq
+    ./api/whitenoise
+    ./api/winlowpass
 
 .. toctree::
     :maxdepth: 1
-    :caption: Parametric models
+    :caption: Parametric Models
 
-    ./strexp
-    ./sumstrexp
-    ./prodstrexp
-    ./onegaussian
-    ./twogaussian
-    ./threegaussian
-    ./onerice
-    ./tworice
-    ./threerice
-    ./wormchain
-    ./randcoil
+    ./models
+
+
