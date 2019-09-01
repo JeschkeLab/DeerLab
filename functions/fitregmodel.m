@@ -19,7 +19,7 @@
 %   regularization model to a single distribution. The global fit weights
 %   are automatically computed according to their contribution to ill-posedness.
 %
-%   K = FITREGMODEL(...,'Property',Values)
+%   P = FITREGMODEL(...,'Property',Values)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 % The properties to be passed as options can be set in any order. 

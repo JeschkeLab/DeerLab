@@ -23,6 +23,8 @@
 %
 %   'LogFit' - Specifies whether to fit the log of the signal (default: false)
 %
+%   'InitialGuess' - Array of initial values for the fit parameters
+%
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 %
 % This program is free software: you can redistribute it and/or modify
@@ -30,10 +32,6 @@
 % the Free Software Foundation.
 
 function [B,ModDepth,FitParam] = fitbackground(Data,t,BckgModel,FitDelimiter,varargin)
-
-
-[LogFit,InitialGuess] = parseoptional({'LogFit','InitialGuess'},varargin);
-
 
 if nargin<3
     error('Not enough input arguments.')
@@ -59,6 +57,9 @@ if ~iscolumn(t)
     t = t.';
 end
 
+%Parse optiona inputs
+[LogFit,InitialGuess] = parseoptional({'LogFit','InitialGuess'},varargin);
+
 if isempty(LogFit)
    LogFit = false; 
 end
@@ -68,6 +69,7 @@ if ~DataIsColumn
     Data = Data.';
 end
 
+validateattributes(InitialGuess,{'numeric'},{'2d','nonempty'},mfilename,'InitialGuess')
 validateattributes(FitDelimiter,{'numeric'},{'2d','nonempty'},mfilename,'FitDelimiter')
 validateattributes(Data,{'numeric'},{'2d','nonempty'},mfilename,'Data')
 validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')

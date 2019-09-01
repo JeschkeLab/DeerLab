@@ -1,16 +1,16 @@
 %
 % CORRECTPHASE Phase correction of complex-valued data
 %
-%   S = CORRECTPHASE(C)
-%   Performs a phase optimization on the complex-valued data (C) by
+%   S = CORRECTPHASE(c)
+%   Performs a phase optimization on the complex-valued data (c) by
 %   minimization of the imaginary component of the data. The phase
 %   corrected data (S) is returned normalized.
 %
-%   S = CORRECTPHASE(C,p)
+%   S = CORRECTPHASE(c,p)
 %   A phase can be passed manually for the correction by passing a second
 %   argument (p).
 %
-%   S = CORRECTPHASE(C,p,true/false)
+%   S = CORRECTPHASE(c,p,true/false)
 %   A third boolean argument can be passed to enable/diasable the fitting 
 %   of a possible offset on the imaginary component of the data. Defaults
 %   to false.
@@ -112,9 +112,7 @@ function RMSD=RMSD_PhaseOffset(FitParam,ComplexS)
 %
 % rmsd  root mean square deviation of imaginary part from zero
 %
-% G. Jeschke, 2009, Luis Fabregas 2019
-
-
+% G. Jeschke, 2009, Luis Fabregas 2020
 
 if length(FitParam)>1
     if FitParam(2)<0
