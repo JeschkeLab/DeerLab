@@ -9,7 +9,7 @@
 %   If two output arguments are requested, the frequency axis is returned
 %   as well.
 %
-%   ct = FFTSPEC(...,'Property',Value)
+%   [nu,spec] = FFTSPEC(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 % The properties to be passed as options can be set in any order. 
@@ -19,6 +19,7 @@
 %   'ZeroFilling' - Number of elements in the output FFT spectrum 
 %                   (default = 2*length(S)).
 %
+%   'Apodization' - Use apodization window
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 %
@@ -31,7 +32,10 @@ function varargout = fftspec(t,S,varargin)
 if nargin<2
     error('Not enough inputs.');
 end
-[Type,ZeroFilling] = parseoptional({'Type','ZeroFilling'},varargin);
+
+%Parse optional input
+[Type,ZeroFilling,useApodization] = parseoptional({'Type','ZeroFilling','Apodization'},varargin);
+
 if isempty(Type)
     Type = 'abs';
 else
@@ -39,6 +43,11 @@ else
     allowedInput = {'abs','real','imag','complex'};
     validatestring(Type,allowedInput);
 end
+
+if isempty(useApodization)
+   useApodization = true; 
+end
+
 if isempty(ZeroFilling)
     ZeroFilling = 2*length(S);
 else
@@ -47,8 +56,17 @@ end
 validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
 validateattributes(t,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mfilename,'t')
 
+%If requested apply Hamming apodization window
+if useApodization
+arg = linspace(0,pi,length(Signal));
+ApoWindow = 0.54 + 0.46*cos(arg);
+S = S.*ApoWindow;
+end
+
+%Compute fft spectrum
 Spectrum = fftshift(fft(S,ZeroFilling));
 
+%Get the requested component/type of spectrum
 switch Type
     case 'abs'
         Spectrum = abs(Spectrum);
@@ -58,7 +76,7 @@ switch Type
         Spectrum = imag(Spectrum);    
 end
 
-
+%If requested, get frequency axis and switch output order
 if nargout>1
     FreqAxis = time2freq(t,ZeroFilling);
     varargout{1} = FreqAxis;
