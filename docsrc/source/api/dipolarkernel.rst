@@ -35,6 +35,8 @@ Description
 
 Computes ``K`` for the transformation to the dipolar evolution function from the time axis ``t`` and distance axis ``r``. The output kernel will not contain the background function.
 
+.. Note:: The function automatically detects the units of the inputs. The time axis ``t`` can be passed both in `\mu s` and `ns` and the distance axis ``r`` both in `nm` and Angstrom.
+
 .. Important::
    Since the dipolar kernel is normalized by `\Delta r`, in order to obtain the correct time-domain signal with ``S=K*P``, the distance distribution must be properly normalized by `\Delta r` as well.
 

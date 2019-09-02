@@ -4,8 +4,8 @@
 %
 %       K = DIPOLARKERNEL(t,r) 
 %       Computes the NxM point kernel for the trasnformation to the dipolar
-%       evolution function from the N-point  time axis (t) and M-point 
-%       distance axis (r).
+%       evolution function from the N-point  time axis (t) in us or ns and M-point 
+%       distance axis (r) in ns or Angstrom.
 %
 %       K = DIPOLARKERNEL(t,r,B,lambda) 
 %       Computes the kernel for the transformation to the form factor function
