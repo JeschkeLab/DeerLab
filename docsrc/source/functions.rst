@@ -30,6 +30,7 @@ API Documentation
     ./api/suppressghost
     ./api/time2dist
     ./api/time2freq
+    ./api/validate
     ./api/whitenoise
     ./api/winlowpass
 
