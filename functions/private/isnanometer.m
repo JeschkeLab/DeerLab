@@ -8,6 +8,10 @@
 
 function logical = isnanometer(r)
 
+if iscolumn(r)
+    r = r.';
+end
+
 if diff(minmax(r)) < 1
    warning('For the given distance axis (max(r) - min(r)) < 1. Assuming nanometer scale.') 
    logical = true; 
@@ -20,7 +24,7 @@ if mean(r) < 2
    return
 end
 
-logical = 2.99 > log(mean(r));
+logical = log(mean(r)) < 2.99;
 
 
 end

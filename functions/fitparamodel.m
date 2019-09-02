@@ -153,6 +153,10 @@ for i=1:length(S)
     validateattributes(S{i},{'numeric'},{'nonempty'},mfilename,'S')
 end
 
+%Convert distance axis to nanoseconds if givne in Angstrom
+if ~isnanometer(r)
+   r = r/10; 
+end
 
 %--------------------------------------------------------------------------
 %Memoization

@@ -116,6 +116,10 @@ else
     RegType = validatestring(RegType,allowedInput);
 end
 
+%Convert distance axis to nanoseconds if givne in Angstrom
+if ~isnanometer(r)
+   r = r/10; 
+end
 
 %--------------------------------------------------------------------------
 % Parse & Validate Optional Input

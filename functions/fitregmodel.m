@@ -176,6 +176,11 @@ end
 
 Dimension = length(RegMatrix);
 InitialGuess = zeros(Dimension,1);
+
+%Convert distance axis to nanoseconds if givne in Angstrom
+if ~isnanometer(r)
+   r = r/10; 
+end
 dr = mean(diff(r));
 
 %If unconstrained regularization is requested then solve analytically

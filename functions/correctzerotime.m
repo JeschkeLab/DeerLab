@@ -22,7 +22,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [correctedt,ZeroTime,ZeroTimePos] = correctzerotime(S,t,ZeroTime)
+function [tcorr,ZeroTime,ZeroTimePos] = correctzerotime(S,t,ZeroTime)
 
 if nargin<2
     error('Not enough input arguments.')
@@ -39,10 +39,10 @@ end
 validateattributes(S,{'numeric'},{'2d'},mfilename,'S')
 validateattributes(t,{'numeric'},{'nonnegative','nonempty'},mfilename,'t')
 
-usesMicrosecondUnits = mean(abs(diff(t))) < 1;
-
-if usesMicrosecondUnits
-    t = t*1000; % convert us -> ns
+%Convert time step to microseconds if given in nanoseconds
+usesNanoseconds = mean(diff(t))>=0.5;
+if ~usesNanoseconds
+    t = t*1000; % ns->us
 end
 
 %Generate finely-grained interpolated signal and time axis
@@ -101,11 +101,11 @@ else
 end
 
 % Correct time axis
-correctedt = t - ZeroTime;
+tcorr = t - ZeroTime;
 
-if usesMicrosecondUnits
+if ~usesNanoseconds
     ZeroTime = ZeroTime/1000; % convert ns -> us
-    correctedt = correctedt/1000;  % convert ns -> us
+    tcorr = tcorr/1000;  % convert ns -> us
 end
 
 end

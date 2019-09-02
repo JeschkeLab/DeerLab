@@ -74,6 +74,12 @@ validateattributes(FitDelimiter,{'numeric'},{'2d','nonempty'},mfilename,'FitDeli
 validateattributes(Data,{'numeric'},{'2d','nonempty'},mfilename,'Data')
 validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
 
+%Convert time step to microseconds if given in nanoseconds
+usesNanoseconds = mean(diff(t))>=0.5;
+if usesNanoseconds
+    t = t/1000; % ns->us
+end
+
 %--------------------------------------------------------------------------
 %Memoization
 %--------------------------------------------------------------------------

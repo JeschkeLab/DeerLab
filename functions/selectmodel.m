@@ -58,6 +58,12 @@ else
         Methods = {Methods};
     end
 end
+
+%Convert distance axis to nanoseconds if givne in Angstrom
+if ~isnanometer(r)
+   r = r/10; 
+end
+
 %--------------------------------------------------------------------------
 %Memoization
 %--------------------------------------------------------------------------

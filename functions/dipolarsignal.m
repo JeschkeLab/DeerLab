@@ -64,6 +64,18 @@ if numel(unique(round(diff(r),12)))~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
 
+
+%Convert time step to microseconds if given in nanoseconds
+usesNanoseconds = mean(diff(t))>=0.5;
+if usesNanoseconds
+    t = round(t)/1000; % ns->us
+end
+
+%Convert distance axis to nanoseconds if givne in Angstrom
+if ~isnanometer(r)
+   r = r/10; 
+end
+
 %Get length of distribution
 N = length(Distribution);
 
