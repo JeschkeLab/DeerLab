@@ -6,18 +6,25 @@
 *********************
 Fits a distance distribution to one (or several) signals by fitting of a parametric model.
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`P = fitparamodel(S,K,r,@model)`
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **S** - Input signal (N-array)
-    *   **K** -  Dipolar kernel (NxM-array)
-    *   **r** -  Distance Axis (N-array)
-    *   **model** - Parametric model (function handle)
-Returns
-    *  **P** - Distance Distribution (M-array)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+    P = fitparamodel(S,K,r,@model)
+    P = fitparamodel({S1,S2,S3},{K1,K2,S3},r,@model)
+    P = fitparamodel(S,K,r,@model,'Property',Value)
+
+
+Parameters
+    *   ``S`` - Input signal (N-array)
+    *   ``K`` -  Dipolar kernel (NxM-array)
+    *   ``r`` -  Distance Axis (N-array)
+    *   ``model`` - Parametric model (function handle)
+Returns
+    *  ``P`` - Distance Distribution (M-array)
+
+Description
 =========================================
 
 .. code-block:: matlab
@@ -46,7 +53,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     P = fitparamodel(args,'Property1',Value1,'Property2',Value2,...)
 
-.. centered:: **Property Names & Descriptions**
 
 CostModel
     Type of fitting cost functional to use.

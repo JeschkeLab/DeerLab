@@ -7,20 +7,26 @@
 
 Generation of dipolar signal from distance distribution
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[F,D] = dipolarsignal(t,r,P,...)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+    F = dipolarsignal(t,r,P)
+    F = dipolarsignal(t,r,P,'Property',Value)
+
+
 Parameters
-    *   **t** - Time axis (N-array)
-    *   **r** - Distance axis (M-array)
-    *   **P** - Distance distribution (M-array)
+    *   ``t`` - Time axis (N-array)
+    *   ``r`` - Distance axis (M-array)
+    *   ``P`` - Distance distribution (M-array)
 
 Returns
-    *   **F** - Form factor (N-array)
-    *   **D** - Dipolar evolution function (N-array)
+    *   ``F`` - Form factor (N-array)
+    *   ``D`` - Dipolar evolution function (N-array)
 
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab
@@ -37,7 +43,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     F = dipolarsignal(args,'Property1',Value1,'Property2',Value2,...)
 
-.. centered:: **Property Names & Descriptions**
 
 ModDepth
     Modulation depth of the form factor

@@ -58,7 +58,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
     K = dipolarkernel(r,t,'Property1',Value1,'Property2',Value2,...)
     K = dipolarkernel(r,t,B,alpha,'Property1',Value1,'Property2',Value2,...)
 
-.. centered:: **Property Names & Descriptions**
+`` 
 
 KernelBType
     Specifies the way the background funcion ``B`` is introduced into the kernel:
@@ -78,7 +78,7 @@ KernelBType
         K = dipolarkernel(args,'KernelBType','full') %Use background without changes
 
 ExcitationBandwidth
-    Excitation bandwith of the pulses in **MHz**. If specified, its value is used in the compensation of limited excitation bandwidth of the experimental pulses. If not specified infinite excitation bandwidth is assumed. The compensation for a given excitation bandwidth :math:`\Delta\omega` is taken into account by the approximation [1]_
+    Excitation bandwith of the pulses in ``MHz**. If specified, its value is used in the compensation of limited excitation bandwidth of the experimental pulses. If not specified infinite excitation bandwidth is assumed. The compensation for a given excitation bandwidth :math:`\Delta\omega` is taken into account by the approximation [1]_
 
     .. math:: K(t,r,\Delta\omega)  = exp\left(-\frac{\omega_{dd}^2}{\Delta\omega^2}\right)K(t,r)
 

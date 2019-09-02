@@ -8,17 +8,22 @@
 
 Regularization parameter range estimator
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`alphas = regparamrange(K,L,...)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+    alphas = regparamrange(K,L)
+
+
 Parameters
-    *   **K** - Dipolar kernel (NxM-array)
-    *   **L** - Regularization operator ((M-order))xM-array)
+    *   ``K`` - Dipolar kernel (NxM-array)
+    *   ``L`` - Regularization operator ((M-order))xM-array)
 
 Returns
-    *   **alphas** - Regularization parameter candidates (array)
+    *   ``alphas`` - Regularization parameter candidates (array)
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab
@@ -34,8 +39,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 .. code-block:: matlab
 
     alphas = regparamrange(args,'Property1',Value1,'Property2',Value2,...)
-
-.. centered:: **Property Names & Descriptions**
 
 NoiseDeviation
     Estimation of the noise standard deviation of the signal for scaling of the singular values.

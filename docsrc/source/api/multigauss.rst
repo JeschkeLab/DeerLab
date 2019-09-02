@@ -8,21 +8,28 @@
 
 Multi-Gauss fitting of a distance distribution
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[P,param,Nopt,metrics] = multigauss(S,K,r,Ngauss,...)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **S** - Input signal (N-array)
-    *   **K** -  Dipolar kernel (NxM-array)
-    *   **r** -  Distance Axis (N-array)
-    *   **Ngauss** - Maximum number of Gaussians (scalar)
-Returns
-    *  **P** - Distance Distribution (M-array)
-    *  **param** - Fitted model parameters (array)
-    *  **Nopt** - Optimal number of Gaussian (scalar)
-    *  **metrics** - Evaluated model selection functionals (cell array)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+    P = multigauss(S,K,r,Ngauss)
+    [P,param,Nopt,metrics] = multigauss(S,K,r,Ngauss)
+    [P,param,Nopt,metrics] = multigauss(S,K,r,Ngauss,'Property',Value)
+
+
+Parameters
+    *   ``S`` - Input signal (N-array)
+    *   ``K`` -  Dipolar kernel (NxM-array)
+    *   ``r`` -  Distance Axis (N-array)
+    *   ``Ngauss`` - Maximum number of Gaussians (scalar)
+Returns
+    *  ``P`` - Distance Distribution (M-array)
+    *  ``param`` - Fitted model parameters (array)
+    *  ``Nopt`` - Optimal number of Gaussian (scalar)
+    *  ``metrics`` - Evaluated model selection functionals (cell array)
+
+Description
 =========================================
 
 .. code-block:: matlab
@@ -43,8 +50,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 .. code-block:: matlab
 
-    F = dipolarsignal(args,'Property1',Value1,'Property2',Value2,...)
-
-.. centered:: **Property Names & Descriptions**
+    P = multigauss(args,'Property1',Value1,'Property2',Value2,...)
 
 See :ref:`fitparamodel` for a detailed list of the property-value pairs accepted by the function.

@@ -8,16 +8,22 @@
 
 Combine parametric models into one
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`newModel = mixmodels(Models)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+    newmodel = mixmodels(Models)
+
+
+
 Parameters
-    *   **Models** - Input parametric models (cell array of function handles)
+    *   ``Models`` - Input parametric models (cell array of function handles)
 
 Returns
-    *   **newModel** - Generated mixed parameteric model (function handle)
+    *   ``newModel`` - Generated mixed parameteric model (function handle)
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab
@@ -26,8 +32,9 @@ Usage
 
 Combines the parametric model function handles ``@model1``, ``@model2, ...,  ``@modelN`` into a new parametric model function handle ``newmodel``. The models must be passed as a cell array of function handles and the parametric models must be of the type as the models distributed in DeerAnalysis2. The returned function handle can be used for parametric model fitting.
 
-Example:
+Example
+=========================================
 
-    .. code-block:: matlab
+.. code-block:: matlab
 
-        myModel = mixmodels({@onegaussian,@tworice})
+    myModel = mixmodels({@onegaussian,@tworice})

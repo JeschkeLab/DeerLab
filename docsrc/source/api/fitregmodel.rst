@@ -5,20 +5,25 @@
 *********************
 Fits a distance distribution to one (or several) signals by optimization of a regularization functional model.
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`P = fitregmodel(S,K,r,L,'type',alpha,...)`
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **S** - Input signal (N-array)
-    *   **K** -  Dipolar kernel (NxM-array)
-    *   **r** -  Distance Axis (N-array)
-    *   **L** - Regularization operator ((M-order))xM-array)
-    *   **type** - Regularization type (string)
-    *   **alpha** - Regularization parameter (scalar)
-Returns
-    *  **P** - Distance Distribution (M-array)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+    P = fitregmodel(S,K,r,L,'type',alpha)
+    P = fitregmodel(S,K,r,L,'type',alpha,'Property',Value)
+
+Parameters
+    *   ``S`` - Input signal (N-array)
+    *   ``K`` -  Dipolar kernel (NxM-array)
+    *   ``r`` -  Distance Axis (N-array)
+    *   ``L`` - Regularization operator ((M-order))xM-array)
+    *   ``type`` - Regularization type (string)
+    *   ``alpha`` - Regularization parameter (scalar)
+Returns
+    *  ``P`` - Distance Distribution (M-array)
+
+Description
 =========================================
 
 .. code-block:: matlab
@@ -50,8 +55,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 .. code-block:: matlab
 
     P = fitregmodel(args,'Property1',Value1,'Property2',Value2,...)
-
-.. centered:: **Property Names & Descriptions**
 
 NonNegConstrained
     Specifies whether the distance distribution ``P`` is to be computed under the non-negativity constraint. If the constraint is lifted, the distance distribution is computed according to the analytical solution of the inverse problem and does not require any numerical solver.

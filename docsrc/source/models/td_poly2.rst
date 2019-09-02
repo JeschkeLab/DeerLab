@@ -1,5 +1,5 @@
 .. highlight:: matlab
-.. _td_poly1:
+.. _td_poly2:
 
 ***********************
 :mod:`td_poly2`

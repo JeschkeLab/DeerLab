@@ -8,16 +8,21 @@
 
 Fast-Fourier transform spectrum
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`spec = fftspec(t,S)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **t** - Time axis (N-array)
-    *   **S** - Signal (N-array)
-Returns
-    *   **spec** - Spectrum (M-array)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+    spec = fftspec(t,S)
+    [nu,spec] = fftspec(t,S)
+
+Parameters
+    *   ``t`` - Time axis (N-array)
+    *   ``S`` - Signal (N-array)
+Returns
+    *   ``spec`` - Spectrum (M-array)
+
+Description
 =========================================
 
 .. code-block:: matlab
@@ -40,7 +45,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     spec = fftspec(args,'Property1',Value1,'Property2',Value2,...)
 
-.. centered:: **Property Names & Descriptions**
 
 Type
     Type of spectrum to be returned.

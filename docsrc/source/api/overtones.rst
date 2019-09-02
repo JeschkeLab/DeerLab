@@ -8,17 +8,22 @@
 
 Calculates the analytical overtone coefficients of RIDME experiments
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`c = overtones(n,Tm,T1)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **N** - Maximal overtone order (scalar)
-    *   **Tm** - Phase-memory time (scalar)
-    *   **T1** - Longitudinal relaxation time (scalar)
-Returns
-    *   **c** - Overtone coefficients (N-array)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+    c = overtones(n,Tm,T1)
+
+
+Parameters
+    *   ``N`` - Maximal overtone order (scalar)
+    *   ``Tm`` - Phase-memory time (scalar)
+    *   ``T1`` - Longitudinal relaxation time (scalar)
+Returns
+    *   ``c`` - Overtone coefficients (N-array)
+
+Description
 =========================================
 
 .. code-block:: matlab

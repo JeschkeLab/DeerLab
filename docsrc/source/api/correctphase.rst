@@ -8,19 +8,27 @@
 
 Phase correction of complex-valued data
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[S,p,io] = correctphase(C,p,oc)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **C** - Complex-valued signal (N-array)
-    *   **p** - Correction phase (scalar)
-    *   **oc** - Imaginary offset correction (boolean)
-Returns
-    *   **S** - Phase-corrected signal (N-array)
-    *   **p** - Correction phase (scalar)
-    *   **io**  - Imaginary offset (scalar)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+    S = correctphase(C)
+    S = correctphase(C,p)
+    S = correctphase(C,p,oc)
+    [S,p,io] = correctphase(C)
+
+
+Parameters
+    *   ``C`` - Complex-valued signal (N-array)
+    *   ``p`` - Correction phase (scalar)
+    *   ``oc`` - Imaginary offset correction (boolean)
+Returns
+    *   ``S`` - Phase-corrected signal (N-array)
+    *   ``p`` - Correction phase (scalar)
+    *   ``io``  - Imaginary offset (scalar)
+
+Description
 =========================================
 
 .. code-block:: matlab

@@ -7,21 +7,27 @@
 
 Osher's Bregman-iterated regularization method
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`P = obir(S,K,r,'type',L,alpha,...)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+     P = obir(S,K,r,'type',L,alpha)
+     P = obir(S,K,r,'type',L,alpha,'Property',Value)
+
+
 Parameters
-    *   **S** - Input signal (N-array)
-    *   **K** -  Dipolar kernel (NxM-array)
-    *   **r** -  Distance Axis (N-array)
-    *   **type** - Regularization type (string)
-    *   **L** - Regularization operator ((M-order))xM-array)
-    *   **alpha** - Regularization parameter (scalar)
+    *   ``S`` - Input signal (N-array)
+    *   ``K`` -  Dipolar kernel (NxM-array)
+    *   ``r`` -  Distance Axis (N-array)
+    *   ``type`` - Regularization type (string)
+    *   ``L`` - Regularization operator ((M-order))xM-array)
+    *   ``alpha`` - Regularization parameter (scalar)
 Returns
-    *  **P** - Distance Distribution (M-array)
+    *  ``P`` - Distance Distribution (M-array)
 
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab
@@ -45,7 +51,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     P = obir(args,'Property1',Value1,'Property2',Value2,...)
 
-.. centered:: **Property Names & Descriptions**
 
 NoiseLevelAim
     Level (standard deviation) of noise at which Bregman iterations must stop. If not specified the noise is automatically computed using the :ref:`noiselevel` function.

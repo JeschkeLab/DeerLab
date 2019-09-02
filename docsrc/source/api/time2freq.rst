@@ -7,17 +7,22 @@
 
 Conversion from time-axis to frequency-axis
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`nu = time2freq(t,M)`
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+    nu = time2freq(t)
+    nu = time2freq(t,M)
+
 Parameters
-    *   **t** - Signal vector (N-array)
-    *   **M** - Output length (Scalar)
+    *   ``t`` - Signal vector (N-array)
+    *   ``M`` - Output length (Scalar)
 
 Returns
-    *   **nu** - Fequency axis (M-array)
+    *   ``nu`` - Fequency axis (M-array)
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab

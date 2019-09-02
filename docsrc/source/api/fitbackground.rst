@@ -18,7 +18,7 @@ Syntax
     [B,lambda,param] = fitbackground(V,t,@model)
     [B,lambda,param] = fitbackground(V,t,@model,tstart)
     [B,lambda,param] = fitbackground(V,t,@model,[tstart tend])
-    [B,lambda,param] = fitbackground(V,t,@model,[tstart tend],options)
+    [B,lambda,param] = fitbackground(V,t,@model,[tstart tend],'Property',Value)
 
 Parameters
     *   ``V`` - Data to fit (M-array)

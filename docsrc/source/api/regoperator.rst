@@ -7,17 +7,23 @@
 
 Computes the discrete approximation to the derivative regularization operators.
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[L,W] = regoperator(N,order)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **N** -  Distance domain size (scalar)
-    *   **order** - Derivative order (scalar)
-Returns
-    *   **L** - Regularization operator matrix ((N-d)xN matrix)
-    *   **W** - orthonormal basis for the null space of L (Nxd matrix)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+   L = regoperator(N,order)
+   [L,W] = regoperator(N,order)
+
+
+Parameters
+    *   ``N`` -  Distance domain size (scalar)
+    *   ``order`` - Derivative order (scalar)
+Returns
+    *   ``L`` - Regularization operator matrix ((N-d)xN matrix)
+    *   ``W`` - Orthonormal basis for the null space of ``L`` (Nxd matrix)
+
+Description
 =========================================
 The function can be called as follows
 

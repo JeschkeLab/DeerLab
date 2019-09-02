@@ -7,16 +7,21 @@
 
 Estimate the noise level (standard deviation) on a signal.
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`Level = noiselevel(S,M)`
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+   Level = noiselevel(S)
+   Level = noiselevel(S,M)
+
 Parameters
-    *   **S** - Signal vector (N-array)
-    *   **M** -  Number of points (scalar)
+    *   ``S`` - Signal vector (N-array)
+    *   ``M`` -  Number of points considered (scalar)
 Returns
     *  Noise level (scalar)
 
-Usage
+Description
 =========================================
 The function can be called as follows
 

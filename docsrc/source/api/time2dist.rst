@@ -7,17 +7,22 @@
 
 Conversion from time-axis to distance-axis
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`r = time2dist(t)`
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+    r = time2dist(t)
+    [r,rmin,rmax] = time2dist(t)
+
 Parameters
-    *   **t** - Signal vector (N-array)
-    *   **M** - Output length (Scalar)
+    *   ``t`` - Signal vector (N-array)
+    *   ``M`` - Output length (Scalar)
 
 Returns
-    *   **r** - Distance Axis (M-array)
+    *   ``r`` - Distance Axis (M-array)
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab

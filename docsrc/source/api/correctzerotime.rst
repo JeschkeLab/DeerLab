@@ -7,19 +7,26 @@
 
 Zero-time correction of dipolar spectroscopy time axis
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[ct,zt,pos] = correctzerotime(S,t,zt)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **S** - Signal (N-array)
-    *   **t** - Time axis (N-array)
-    *   **zt** - Zero time (scalar)
-Returns
-    *   **ct** - Corrected time axis (N-array)
-    *   **zt** - Zero time (scalar)
-    *   **pos**  - Zero time index (scalar)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+    ct = correctzerotime(S,t)
+    ct = correctzerotime(S,t,zt)
+    [ct,zt,pos] = correctzerotime(S,t,zt)
+
+
+Parameters
+    *   ``S`` - Signal (N-array)
+    *   ``t`` - Time axis (N-array)
+    *   ``zt`` - Zero time (scalar)
+Returns
+    *   ``ct`` - Corrected time axis (N-array)
+    *   ``zt`` - Zero time (scalar)
+    *   ``pos``  - Zero time index (scalar)
+
+Description
 =========================================
 
 .. code-block:: matlab
@@ -32,6 +39,6 @@ Determines the zero time of a dipolar signal ``S`` and corrects the time axis ``
 
     ct = correctzerotime(S,t,zt)
 
-Corrects the time axis (t) for a given zero-time (zt) in ns/us.
+Corrects the time axis ``t`` for a given zero-time ``zt`` in ns/us.
 
 .. image:: ./images/correctzerotime1.svg

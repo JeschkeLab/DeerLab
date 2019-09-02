@@ -7,15 +7,20 @@
 
 Computes the dipolar interaction kernel and elements required for the approximate Pake transformation (APT).
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`K = aptkernel(t,...)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **t** - Time axis (N-array)
-Returns
-    *   **K** - APT kernel elements (struct)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+    K = aptkernel(t)
+    K = aptkernel(t,'Property',Value)
+
+Parameters
+    *   ``t`` - Time axis (N-array)
+Returns
+    *   ``K`` - APT kernel elements (struct)
+
+Description
 =========================================
 
 .. code-block:: matlab

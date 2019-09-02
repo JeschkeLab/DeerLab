@@ -1,20 +1,3 @@
-  selectmodel Optimal parametric model selection
-
-    opt = selectmodel({@model1,...,@modelN},S,r,K,{'aic',...})
-    Evaluates the fits of the parametric models (model1,...,modelN) to a
-    signal (S) according to the dipolar kernel (K) and distance axis (r).
-    The models must be passed as a cell array of function handles. Each fit
-    is then evaluated according to the model selection criterions
-    ('aic','aicc','bic') specified in the last input argument M-point cell array.
-    Function returns a M-point array containing the optimal models
-    according to each selection method.
-
-    [opt,f] = selectmodel(...)
-    Returns the method selector functionals for the different methods.
-
-    See "help fitparamodel" for a detailed list of the property-value pairs
-    accepted by the function.
-
 .. highlight:: matlab
 .. _selectmodel:
 
@@ -25,26 +8,34 @@
 
 Selection of an optimal parametric model
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[opt,f] = selectmodel(Models,S,r,K,{'aic',...})`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **Models** - Input parametric models (cell array of function handles)
-    *   **S** - Input signal (N-array)
-    *   **r** -  Distance Axis (N-array)
-    *   **K** -  Dipolar kernel (NxM-array)
-    *   **method** - Model selection type (string)
-Returns
-    *  **P** - Distance Distribution (M-array)
-
-Usage
+Syntax
 =========================================
 
 .. code-block:: matlab
 
-        opt = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'aic',...})
+    opt = selectmodel(Models,S,r,K,'method')
+    [opt,f] = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'method1',..})
+    [opt,f] = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'aic',..},'Property',Value)
 
-Evaluates the fits of the parametric models ``model1`` , ..., ``modelN`` to a signal ``S`` according to the dipolar kernel ``K`` and distance axis (r). The models must be passed as a cell array of function handles. Each fit is then evaluated according to the model selection criterions specified in the last input argument.
+Parameters
+    *   ``Models`` - Input parametric models (cell array of function handles)
+    *   ``S`` - Input signal (N-array)
+    *   ``r`` -  Distance Axis (N-array)
+    *   ``K`` -  Dipolar kernel (NxM-array)
+    *   ``method`` - Model selection type(s) (string)
+Returns
+    *  ``opt`` - Optimal parametric model index (scalar)
+    *  ``f`` - Evaluated model selection functional (array)
+
+
+Description
+=========================================
+
+.. code-block:: matlab
+
+        opt = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'aic',..})
+
+Evaluates the fits of the parametric models ``model1``,..., ``modelN`` to a signal ``S`` according to the dipolar kernel ``K`` and distance axis (r). The models must be passed as a cell array of function handles. Each fit is then evaluated according to the model selection criterions specified in the last input argument.
 
 *   ``'aic'`` - Akaike information criterion
 *   ``'aicc'`` - Corrected Akaike information criterion
@@ -66,6 +57,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     opt = selectmodel(args,'Property1',Value1,'Property2',Value2,...)
 
-.. centered:: **Property Names & Descriptions**
+
 
 See :ref:`fitparamodel` for a detailed list of the property-value pairs accepted by the function.

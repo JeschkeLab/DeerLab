@@ -7,16 +7,20 @@
 
 Ghost distance suppression in multi-spin systems
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`cS = suppressghost(S,n)`
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **S** - Signal vector (N-array)
-    *   **n** - number of radicals (scalar)
-Returns
-    *   **cS** Corrected signal (N-array)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+   cS = suppressghost(S,n)
+
+Parameters
+    *   ``S`` - Signal vector (N-array)
+    *   ``n`` - number of radicals (scalar)
+Returns
+    *   ``cS`` Corrected signal (N-array)
+
+Description
 =========================================
 
 .. code-block:: matlab

@@ -6,22 +6,31 @@
 *********************
 Optimal selection of the regularization parameter according to different model selection criteria.
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[alpha,F,alphas] = selregparam(alphas,S,K,L,'type','method',...)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **alphas** - Candidate regularization parameters (array)
-    *   **S** - Input signal (N-array)
-    *   **K** -  Dipolar kernel (NxM-array)
-    *   **L** - Regularization operator ((M-order))xM-array)
-    *   **type** - Regularization type (string)
-    *   **method** - Model selection type (string)
-Returns
-    *   **alpha** - Optimal regularization parameter (scalar)
-    *   **F** - Model selection functional for given **alphas** (scalar)
-    *   **alphas** - Evaluated candidate regularization parameters  (array)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+    [alpha] = selregparam(alphas,S,K,L,'type','method')
+    [alpha,F,alphas] = selregparam(alphas,S,K,L,'type','method')
+    alpha = selregparam(alphas,S,K,L,'type','all')
+    alpha = selregparam(alphas,S,K,L,'type',{'method1','method2','methodN'})
+    alpha = selregparam(alphas,{S1,S2,SM},{K1,K2,KM},r,L,'type','method')
+    [alpha] = selregparam(alphas,S,K,L,'type','method','Property',Value)
+
+Parameters
+    *   ``alphas`` - Candidate regularization parameters (array)
+    *   ``S`` - Input signal (N-array)
+    *   ``K`` -  Dipolar kernel (NxM-array)
+    *   ``L`` - Regularization operator ((M-order))xM-array)
+    *   ``type`` - Regularization type (string)
+    *   ``method`` - Model selection type (string)
+Returns
+    *   ``alpha`` - Optimal regularization parameter (scalar)
+    *   ``F`` - Model selection functional for given ``alphas`` (scalar)
+    *   ``alphas`` - Evaluated candidate regularization parameters  (array)
+
+Description
 =========================================
 
 .. code-block:: matlab
@@ -83,7 +92,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     P = selregparam(args,'Property1',Value1,'Property2',Value2,...)
 
-.. centered:: **Property Names & Descriptions**
 
 Refine
     Specifies whether to enforce a second search around the optimal regularization parameter value with a finer grid to approach a better value of the optimum. If the refinement step does not find any minima, refinenment will descent the functional until a minima is reached. The refined search grid is included in the output ``alphas`` argument.

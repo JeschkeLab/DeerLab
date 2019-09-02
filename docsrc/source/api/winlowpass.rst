@@ -7,19 +7,26 @@
 
 Windowed low-pass FIR filter
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[Sout,H] = winlowpass(S,Fstop,Fpass,Fsamp,...)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **S** - Signal (N-array)
-    *   **Fstop** - Stopband frequency (scalar)
-    *   **Fpass** - Passband frequency (scalar)
-    *   **Fsamp** - Sampling frequency (scalar)
-Returns
-    *   **Sout** - Filtered signal (N-array)
-    *   **H** - Filter transfer function parameters (array)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+    Sout = winlowpass(S,Fstop,Fpass,Fsamp)
+    [Sout,H] = winlowpass(S,Fstop,Fpass,Fsamp)
+    [Sout,H] = winlowpass(S,Fstop,Fpass,Fsamp,'Property',Value)
+
+
+Parameters
+    *   ``S`` - Signal (N-array)
+    *   ``Fstop`` - Stopband frequency (scalar)
+    *   ``Fpass`` - Passband frequency (scalar)
+    *   ``Fsamp`` - Sampling frequency (scalar)
+Returns
+    *   ``Sout`` - Filtered signal (N-array)
+    *   ``H`` - Filter transfer function parameters (array)
+
+Description
 =========================================
 
 .. code-block:: matlab
@@ -41,8 +48,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 .. code-block:: matlab
 
     P = winlowpass(args,'Property1',Value1,'Property2',Value2,...)
-
-.. centered:: **Property Names & Descriptions**
 
 MinimalAttenuation
     Minimal attenuation level [dB] of the first sidelobe after the stopband.

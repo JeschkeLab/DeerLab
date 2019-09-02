@@ -7,18 +7,23 @@
 
 Computes the optimal point for starting the background fit
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`[t0,pos] = backgroundstart(V,t,model,...)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Parameters
-    *   **V** - Signal (N-array)
-    *   **t** - Time axis (N-array)
-    *   **model** - Background model (function handle)
-Returns
-    *   **t0** - Optimal fitting start time (scalar)
-    *   **pos** - Optimal fitting start index (scalar)
+Syntax
+=========================================
 
-Usage
+.. code-block:: matlab
+
+    [t0,pos] = backgroundstart(V,t,model)
+    [t0,pos] = backgroundstart(V,t,model,'Property',Value)
+
+Parameters
+    *   ``V`` - Signal (N-array)
+    *   ``t`` - Time axis (N-array)
+    *   ``model`` - Background model (function handle)
+Returns
+    *   ``t0`` - Optimal fitting start time (scalar)
+    *   ``pos`` - Optimal fitting start index (scalar)
+
+Description
 =========================================
 
 .. code-block:: matlab
@@ -27,13 +32,15 @@ Usage
 
 Returns the optimal start time ``t0`` and corresponding array index ``pos`` at which to start fitting the background function corresponding to the model given by ``model``. The pre-defined background models defined by the ``model`` argument are the following:
 
-* ``@td_exp`` - Exponential function where the decay rate if fitted
+* ``@td_exp`` - See :ref:`td_exp` for details.
 
-* ``@td_strexp`` -  Exponential function by fitting the a linear function to the log of the signal
+* ``@td_strexp`` -  See :ref:`td_strexp` for details.
 
-* ``'fractal'`` - Stretched exponential function by fitting the decay rate and fractal dimension on the log of the signal
+* ``@td_prodstrexp`` -  See :ref:`td_prodstrexp` for details.
 
-*  ``@td_poly1``, ``@td_poly2``, ``@td_poly3`` - Polynomial functions of various orders
+* ``@td_sumstrexp`` -  See :ref:`td_sumstrexp` for details.
+
+*  ``@td_poly1``, ``@td_poly2``, ``@td_poly3`` - See :ref:`td_poly1`, :ref:`td_poly2` and :ref:`td_poly3`  for details.
 
 .. image:: ./images/backgroundstart1.svg
 
@@ -44,9 +51,8 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 .. code-block:: matlab
 
-    P = backgroundstart(args,'Property1',Value1,'Property2',Value2,...)
+    [t0,pos]  = backgroundstart(args,'Property1',Value1,'Property2',Value2,...)
 
-.. centered:: **Property Names & Descriptions**
 
 RelSearchStart
     Relative position at which the background start search starts.

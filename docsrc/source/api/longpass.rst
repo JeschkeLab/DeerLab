@@ -8,19 +8,26 @@
 
 Filter short distances by means of a distance-domain lowpass FIR filter (longpass)
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`X = longpass(t,S,rpass,st)`
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+    X = longpass(t,S)
+    X = longpass(t,S,rpass)
+    X = longpass(t,S,rpass,st)
+
+
 Parameters
-    *   **t** - Time axis (N-array)
-    *   **S** - Signal (N-array)
-    *   **rpass** - Passband distance (scalar)
-    *   **st** - Transition band steepness (scalar)
+    *   ``t`` - Time axis (N-array)
+    *   ``S`` - Signal (N-array)
+    *   ``rpass`` - Passband distance (scalar)
+    *   ``st`` - Transition band steepness (scalar)
 
 Returns
-    *   **X** - Filtered signal (N-array)
+    *   ``X`` - Filtered signal (N-array)
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab

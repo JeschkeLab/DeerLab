@@ -7,18 +7,23 @@
 
 Generates Gaussian-distributed noise with uniform power spectrum distribution
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:mod:`x = whitenoise(N,level,seed)`
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+    x = whitenoise(N,level)
+    x = whitenoise(N,level,seed)
+
 Parameters
-    *   **N** - Output length (scalar)
-    *   **level** - Output noise standard deviation (scalar)
-    *   **seed** - Random number generator seed (scalar)
+    *   ``N`` - Output length (scalar)
+    *   ``level`` - Output noise standard deviation (scalar)
+    *   ``seed`` - Random number generator seed (scalar)
 
 Returns
-    *   **x** - Noise vector array (N-array)
+    *   ``x`` - Noise vector array (N-array)
 
-Usage
+Description
 =========================================
 
 .. code-block:: matlab
