@@ -3,7 +3,7 @@
 %
 %   spec = FFTSPEC(t,S)
 %   Computes the magnitude FFT spectrum of the signal (S) on the time axis
-%   (t). 
+%   (t).
 %
 %   [nu,spec] = FFTSPEC(t,S)
 %   If two output arguments are requested, the frequency axis is returned
@@ -12,11 +12,11 @@
 %   [nu,spec] = FFTSPEC(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
-% The properties to be passed as options can be set in any order. 
+% The properties to be passed as options can be set in any order.
 %
 %   'Type' - Type of spectrum to be returned ('real','imag','abs')
 %
-%   'ZeroFilling' - Number of elements in the output FFT spectrum 
+%   'ZeroFilling' - Number of elements in the output FFT spectrum
 %                   (default = 2*length(S)).
 %
 %   'Apodization' - Use apodization window
@@ -45,7 +45,7 @@ else
 end
 
 if isempty(useApodization)
-   useApodization = true; 
+    useApodization = true;
 end
 
 if isempty(ZeroFilling)
@@ -53,14 +53,15 @@ if isempty(ZeroFilling)
 else
     validateattributes(ZeroFilling,{'numeric'},{'scalar','nonnegative'},mfilename,'ZeroFilling')
 end
+validateattributes(useApodization,{'logical'},{'nonempty'},mfilename,'useApodization')
 validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
 validateattributes(t,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mfilename,'t')
 
 %If requested apply Hamming apodization window
 if useApodization
-arg = linspace(0,pi,length(Signal));
-ApoWindow = 0.54 + 0.46*cos(arg);
-S = S.*ApoWindow;
+    arg = linspace(0,pi,length(S));
+    ApoWindow = 0.54 + 0.46*cos(arg);
+    S = S.*ApoWindow;
 end
 
 %Compute fft spectrum
@@ -73,7 +74,7 @@ switch Type
     case 'real'
         Spectrum  = real(Spectrum);
     case 'imag'
-        Spectrum = imag(Spectrum);    
+        Spectrum = imag(Spectrum);
 end
 
 %If requested, get frequency axis and switch output order
