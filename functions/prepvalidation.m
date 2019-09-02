@@ -1,3 +1,28 @@
+%
+% PREPVALIDATION Computes the validation parameter combinations
+% 
+%   varparam = PREPVALIDATION(param)
+%   Returns all the possible permutations of the parameters in the input
+%   structure array (param). All possible combinations are randomly permuted and 
+%   returned as a cell array. The (param) structure must have to following
+%   fields for all of the N parameters:
+%
+%           param(N).name - Name of the parameter variable
+%           param(N).values - Values or strings to be evaluated (array or
+%                             cell array)
+% 
+%   varparam = PREPVALIDATION(param,'Property',Value)
+%   Additional (optional) arguments can be passed as property-value pairs.
+%
+%       'randperm' - Specifies whether to randomly permute the combination
+%                    vectors of validation parameter values (default = true)
+%
+% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License 3.0 as published by
+% the Free Software Foundation.
+
 function varparam = prepvalidation(Parameters,varargin)
 
 %Parse & validate required input

@@ -56,7 +56,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
     [mean,std] = validate(op,param,file,'Property1',Value1,'Property2',Value2)
 
 RandPerm
-    Specifies whether to randomly permute the validation parameters combinations (default = true)
+    Specifies whether to randomly permute the validation parameters combinations.
 
     *Default:* ``true``
 

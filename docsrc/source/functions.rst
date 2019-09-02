@@ -23,6 +23,7 @@ API Documentation
     ./api/obir
     ./api/overtones
     ./api/paramodel
+    ./api/prepvalidation
     ./api/regoperator
     ./api/regparamrange
     ./api/selectmodel
