@@ -69,7 +69,7 @@ if ~DataIsColumn
     Data = Data.';
 end
 
-validateattributes(InitialGuess,{'numeric'},{'2d','nonempty'},mfilename,'InitialGuess')
+validateattributes(InitialGuess,{'numeric'},{'2d'},mfilename,'InitialGuess')
 validateattributes(FitDelimiter,{'numeric'},{'2d','nonempty'},mfilename,'FitDelimiter')
 validateattributes(Data,{'numeric'},{'2d','nonempty'},mfilename,'Data')
 validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
