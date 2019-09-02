@@ -7,37 +7,35 @@
 %       evolution function from the N-point  time axis (t) in us or ns and M-point 
 %       distance axis (r) in ns or Angstrom.
 %
-%       K = DIPOLARKERNEL(t,r,B,lambda) 
+%       K = DIPOLARKERNEL(t,r,lambda) 
 %       Computes the kernel for the transformation to the form factor function
-%       with a N-point background B multiplied with a modulation depth given by (lambda).
+%       with a modulation depth given by (lambda).
 %
-%       K = DIPOLARKERNEL(t,r,B) 
+%       K = DIPOLARKERNEL(t,r,lambda,B) 
 %       Computes the kernel for the transformation to the form factor function
-%       with a N-point background B multiplied.
+%       with a N-point background (B) multiplied.
 %
 %       K = DIPOLARKERNEL(t,r,'Property1',Value1,...) 
-%       K = DIPOLARKERNEL(t,r,B,lambda,'Property1',Value1,...) 
+%       K = DIPOLARKERNEL(t,r,lambda,'Property1',Value1,...) 
+%       K = DIPOLARKERNEL(t,r,lambda,B,'Property1',Value1,...) 
 %       Optional arguments can be specified by parameter/value pairs. 
 %
 %The allowed properties to be passed as options can be set in any order. 
 %
-%   'ExcitationBandwidth'   Excitation bandwith of the pulses in MHz to be
-%                         used for limited bandwith excitation
+%   'ExcitationBandwidth' - Excitation bandwith of the pulses in MHz to be
+%                           used for limited bandwith excitation
 %
-%   'OvertoneCoeffs'    1D-Array of coefficients for correction of overtones
-%                       in RIDME signals
+%   'OvertoneCoeffs' - 1D-Array of coefficients for correction of overtones
+%                      in RIDME signals
 %
-%   'gValue'    g-value of the spin centers
+%   'gValue' - g-value of the spin centers
 %
-%   'KCalcMethod'  The way the kernel is computed numerically:
+%   'KCalcMethod' - The way the kernel is computed numerically:
 %                       'fresnel' - uses Fresnel integrals for the kernel
 %                       'explicit' - powder average computed explicitly
 %
-%   'Knots' Number knots for the grid of powder orientations to be used
-%           in explicit kernel calculations    
-%
-%   'ModDepth' Modulation depth, if not specified it is determined from the
-%              background fit
+%   'Knots' - Number knots for the grid of powder orientations to be used
+%             in explicit kernel calculations    
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 % 
@@ -46,7 +44,7 @@
 % the Free Software Foundation.
 
 
-function K = dipolarkernel(t,r,B,ModDepth,varargin)
+function K = dipolarkernel(t,r,ModDepth,B,varargin)
 
 %--------------------------------------------------------------------------
 %Input parsing
@@ -55,15 +53,22 @@ function K = dipolarkernel(t,r,B,ModDepth,varargin)
 if nargin<3
     B = [];
 end
-if nargin<4 || isempty(ModDepth)
+if nargin<3 || isempty(ModDepth)
     ModDepth = 1;
 end
-if ~isempty(B) && isa(B,'char')
-    varargin{end+1} = B;
-    varargin{end+1} = ModDepth;
+
+%Case ModDepth and B not passed
+if nargin>2 && isa(ModDepth,'char')
+    varargin = [{ModDepth} {B} varargin];
     ModDepth = [];
     B = [];
 end
+%Case ModDepth passed but not B
+if nargin>3 && isa(B,'char')
+    varargin = [{B} varargin];
+    B = [];
+end
+
 %Check if user requested some options via name-value input
 [KBType,ExcitationBandwidth,OvertoneCoeffs,gValue,KCalcMethod,Knots] = parseoptional({'KBType','ExcitationBandwidth','OvertoneCoeffs','gValue','KCalcMethod','Knots'},varargin);
 %Validate the input variables

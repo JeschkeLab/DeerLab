@@ -83,7 +83,7 @@ N = length(Distribution);
 Distribution = Distribution/sum(Distribution)/mean(diff(r));
 
 %Get the kernel
-K = dipolarkernel(t,r,[],[],'OvertoneCoeffs',Overtones);
+K = dipolarkernel(t,r,'OvertoneCoeffs',Overtones);
 
 %Calculate dipolar evolution function
 DipEvoFcn = K*Distribution;

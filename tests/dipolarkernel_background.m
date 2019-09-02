@@ -18,7 +18,7 @@ Trace = (Trace + 2).*B';
 ModDepth = 1/Trace(1);
 Trace = Trace/Trace(1);
 
-KB = dipolarkernel(t,r,B,ModDepth);
+KB = dipolarkernel(t,r,ModDepth,B);
 TraceB  = KB*Distribution;
 
 err = any(abs(TraceB - Trace)>1e-10);

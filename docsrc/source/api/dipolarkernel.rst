@@ -13,16 +13,17 @@ Syntax
 .. code-block:: matlab
 
     K = dipolarkernel(t,r)
-    K = dipolarkernel(t,r,B,lambda)
-    K = dipolarkernel(t,r,Name,Value)
-    K = dipolarkernel(t,r,B,lambda,Name,Value)
+    K = dipolarkernel(t,r,lambda)
+    K = dipolarkernel(t,r,lambda,B)
+    K = dipolarkernel(t,r,'Property',Value)
+    K = dipolarkernel(t,r,lambda,B,'Property',Value)
 
 
 Parameters
     *   ``t`` - Time axis vector (N-array)
     *   ``r`` -  Distance axis vector (M-array)
-    *   ``B`` -  Background function vector (N-array)
     *   ``lambda`` - Modulation depth (scalar)
+    *   ``B`` -  Background function vector (N-array)
 Returns
     *  ``K`` - Dipolar kernel (NxM-matrix)
 
@@ -42,9 +43,9 @@ Computes ``K`` for the transformation to the dipolar evolution function from the
 
 .. code-block:: matlab
 
-    K = dipolarkernel(t,r,B,alpha)
+    K = dipolarkernel(t,r,lambda,B)
 
-If the background ``B`` and modulation depth ``alpha`` are specified, then the background is included into the kernel function. Therefore, linear transformation of distance distributions using this kernel will yield the form factor with the background function.
+If the background ``B`` and modulation depth ``lambda`` are specified, then the background is included into the kernel function. Therefore, linear transformation of distance distributions using this kernel will yield the form factor with the background function.
 
 .. Important:: If the dipolar kernel includes the background function, the form factor should not be background corrected.
 
@@ -58,25 +59,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 .. code-block:: matlab
 
     K = dipolarkernel(r,t,'Property1',Value1,'Property2',Value2,...)
-    K = dipolarkernel(r,t,B,alpha,'Property1',Value1,'Property2',Value2,...)
-
-
-KernelBType
-    Specifies the way the background funcion ``B`` is introduced into the kernel:
-
-    *   ``'full'`` - The input background is introduced unchanged
-
-    *   ``'sqrt'`` - The square-root background is introduced
-
-    *   ``'none'`` - background is not included in the kernel
-
-    *Default:* ``'sqrt'``
-
-    *Example:*
-
-    .. code-block:: matlab
-
-        K = dipolarkernel(args,'KernelBType','full') %Use background without changes
+    K = dipolarkernel(r,t,lambda,B,'Property1',Value1,'Property2',Value2,...)
 
 ExcitationBandwidth
     Excitation bandwith of the pulses in **MHz**. If specified, its value is used in the compensation of limited excitation bandwidth of the experimental pulses. If not specified infinite excitation bandwidth is assumed. The compensation for a given excitation bandwidth :math:`\Delta\omega` is taken into account by the approximation [1]_

@@ -17,7 +17,7 @@ ClusterFcn = ClusterFcn/ClusterFcn(1);
 ClusterFcn = ClusterFcn./sqrt(B);
 
 
-KB = dipolarkernel(t,r,sqrt(B),ModDepth);
+KB = dipolarkernel(t,r,ModDepth,sqrt(B));
 
 InitialGuess = [2 0.1 5 0.1 0.1];
 [FitDistribution] = fitparamodel(ClusterFcn,KB,r,@rd_twogaussian,InitialGuess);
