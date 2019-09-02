@@ -162,6 +162,11 @@ if usesNanoseconds
     t = round(t)/1000; % ns->us
 end
 
+%Convert distance axis to nanoseconds if givne in Angstrom
+if ~isnanometer(r)
+   r = r/10; 
+end
+
 %Get absolute time axis scale (required for negative times)
 t = abs(t); %ns
 
