@@ -12,8 +12,9 @@ Syntax
 
 .. code-block:: matlab
 
-    F = dipolarsignal(t,r,P)
-    F = dipolarsignal(t,r,P,'Property',Value)
+    V = dipolarsignal(t,r,P)
+    [V,S] = dipolarsignal(t,r,P)
+    [V,S] = dipolarsignal(t,r,P,'Property',Value)
 
 
 Parameters
@@ -22,8 +23,8 @@ Parameters
     *   ``P`` - Distance distribution (M-array)
 
 Returns
-    *   ``F`` - Form factor (N-array)
-    *   ``D`` - Dipolar evolution function (N-array)
+    *   ``V`` - Form factor (N-array)
+    *   ``S`` - Dipolar evolution function (N-array)
 
 
 Description
@@ -31,9 +32,9 @@ Description
 
 .. code-block:: matlab
 
-    F = dipolarsignal(t,r,P)
+    V = dipolarsignal(t,r,P)
 
-Generates the noiseless form factor ``F`` on a time axis ``t`` from the distance distribution ``P`` in a distance axis ``r``.
+Generates the noiseless form factor ``V`` on a time axis ``t`` from the distance distribution ``P`` in a distance axis ``r``.
 
 Optional Arguments
 =========================================
@@ -41,7 +42,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 .. code-block:: matlab
 
-    F = dipolarsignal(args,'Property1',Value1,'Property2',Value2,...)
+    V = dipolarsignal(args,'Property1',Value1,'Property2',Value2,...)
 
 
 ModDepth
