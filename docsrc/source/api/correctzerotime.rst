@@ -41,4 +41,4 @@ Determines the zero time of a dipolar signal ``S`` and corrects the time axis ``
 
 Corrects the time axis ``t`` for a given zero-time ``zt`` in ns/us.
 
-.. image:: ./images/correctzerotime1.svg
+.. image:: ../images/correctzerotime1.svg

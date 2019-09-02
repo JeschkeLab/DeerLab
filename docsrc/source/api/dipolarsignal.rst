@@ -116,4 +116,4 @@ Examples
                             'Background',B,...
                             'Offset',1000)
 
-.. image:: ./images/dipolarsignal1.svg
+.. image:: ../images/dipolarsignal1.svg

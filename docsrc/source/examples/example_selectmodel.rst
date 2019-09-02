@@ -70,5 +70,5 @@ Example - Parametric model selection
     set(gca,'xtick',1:length(Models),'xticklabel',tags)
     xtickangle(45)
 
-.. figure:: ./images/example_selectmodel1.svg
+.. figure:: ../images/example_selectmodel1.svg
     :align: center

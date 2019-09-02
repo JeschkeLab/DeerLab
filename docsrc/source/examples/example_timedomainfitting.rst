@@ -85,5 +85,5 @@ Example - Parametric time-domain fitting
 
 
 
-.. figure:: ./images/example_timedomainfitting1.svg
+.. figure:: ../images/example_timedomainfitting1.svg
     :align: center

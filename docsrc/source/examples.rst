@@ -6,6 +6,6 @@ Examples
     :maxdepth: 1
     :caption: API Examples
 
-    ./example_multigauss
-    ./example_selectmodel
-    ./example_timedomainfitting
+    ./examples/example_multigauss
+    ./examples/example_selectmodel
+    ./examples/example_timedomainfitting

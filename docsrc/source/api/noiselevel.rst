@@ -37,6 +37,6 @@ Returns the standard deviation estimation of the noise in the signal ``S``. The 
 
 If parameter ``M`` is specified, the noise level estimation is done from the last ``M`` points of the N-point signal.
 
-.. image:: ./images/noiselevel1.svg
+.. image:: ../images/noiselevel1.svg
 
 .. hint:: This function returns the estimation of the noise standard deviation (called noise level in DeerAnalysis2). This definition of noise level is used throughout DeerAnalysis2.

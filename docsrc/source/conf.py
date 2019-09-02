@@ -25,9 +25,8 @@ release = '2019'
 #Add sphinx extensions
 extensions = [
     'sphinx.ext.intersphinx',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode',
     'sphinxcontrib.matlab',
+    'sphinx.ext.viewcode',
     'sphinxcontrib.httpdomain',
     'sphinx.ext.imgmath',
 ]

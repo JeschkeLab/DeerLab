@@ -63,5 +63,5 @@ Example - Multigauss fitting
     legend('AICc')
     ylabel('Model Selection Metric'), xlabel('N-Gaussian model')
 
-.. figure:: ./images/example_multigauss1.svg
+.. figure:: ../images/example_multigauss1.svg
     :align: center

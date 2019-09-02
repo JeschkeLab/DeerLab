@@ -49,4 +49,4 @@ The phase used for correction can be passed manually as a second argument ``p``.
 
 A third boolean argument ``oc`` can be passed to enable/diasable the fitting of a possible offset on the imaginary component of the data (defaults to ``false``).
 
-.. image:: ./images/correctphase1.svg
+.. image:: ../images/correctphase1.svg

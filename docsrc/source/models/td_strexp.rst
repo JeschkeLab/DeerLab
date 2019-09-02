@@ -1,5 +1,5 @@
 .. highlight:: matlab
-.. _strexp:
+.. _td_strexp:
 
 
 ***********************

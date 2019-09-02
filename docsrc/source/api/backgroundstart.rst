@@ -42,7 +42,7 @@ Returns the optimal start time ``t0`` and corresponding array index ``pos`` at w
 
 *  ``@td_poly1``, ``@td_poly2``, ``@td_poly3`` - See :ref:`td_poly1`, :ref:`td_poly2` and :ref:`td_poly3`  for details.
 
-.. image:: ./images/backgroundstart1.svg
+.. image:: ../images/backgroundstart1.svg
 
 Optional Arguments
 =========================================
