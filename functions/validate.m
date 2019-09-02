@@ -16,7 +16,6 @@
 %   [mean,std] = VALIDATE(p,vp,'Property',Value)
 %   [mean,std] = VALIDATE(p,vp,filename,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
-%
 % The properties to be passed as options can be set in any order.
 %
 %   'AxisHandle' - Axis handle to plot the state of the validation results
