@@ -21,11 +21,6 @@
 %
 %The allowed properties to be passed as options can be set in any order. 
 %
-%   'KBType'   The way the background B is introduced into the kernel: 
-%                      'full' - as passed without change
-%                      'sqrt' - the sqrt of the background taken 
-%                      'none' - background is not included in the kernel
-%
 %   'ExcitationBandwidth'   Excitation bandwith of the pulses in MHz to be
 %                         used for limited bandwith excitation
 %
@@ -57,17 +52,17 @@ function K = dipolarkernel(t,r,B,ModDepth,varargin)
 %Input parsing
 %--------------------------------------------------------------------------
 
-if nargin<3 || isempty(B)
-    B = ones(1,length(t));
+if nargin<3
+    B = [];
 end
 if nargin<4 || isempty(ModDepth)
     ModDepth = 1;
 end
-if isa(B,'char')
+if ~isempty(B) && isa(B,'char')
     varargin{end+1} = B;
     varargin{end+1} = ModDepth;
     ModDepth = [];
-    B = ones(1,length(t));
+    B = [];
 end
 %Check if user requested some options via name-value input
 [KBType,ExcitationBandwidth,OvertoneCoeffs,gValue,KCalcMethod,Knots] = parseoptional({'KBType','ExcitationBandwidth','OvertoneCoeffs','gValue','KCalcMethod','Knots'},varargin);
@@ -98,6 +93,10 @@ end
 
 if ~isempty(B)
     validateattributes(B,{'numeric'},{},mfilename,'B')
+    checklengths(t,B);
+    useBackground = true;
+else 
+    useBackground = false;
 end
 
 if isempty(Knots)
@@ -129,7 +128,6 @@ if numel(unique(round(diff(r),12)))~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
 validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
-checklengths(t,B);
 
 %--------------------------------------------------------------------------
 %Memoization
@@ -220,13 +218,9 @@ end
 if ModDepth~=1
   K = (1-ModDepth) + ModDepth*K;
 end
-switch KBType
-    case 'none'
-        % do not include B in K
-    case 'full'
+
+if useBackground
         K = K.*B;
-    case 'sqrt'
-        K = K.*sqrt(B);
 end
 
 %Normalize kernel

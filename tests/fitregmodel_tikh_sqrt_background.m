@@ -21,7 +21,7 @@ ClusterFcn = ClusterFcn./sqrt(B);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.13;
-KB = dipolarkernel(t,r,B,ModDepth,'KBType','sqrt');
+KB = dipolarkernel(t,r,sqrt(B),ModDepth);
 RegMatrix = regoperator(Dimension,2);
 TikhResult1 = fitregmodel(ClusterFcn,KB,r,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 TikhResult2 = fitregmodel(ClusterFcn,KB,r,RegMatrix,'tikhonov',RegParam,'Solver','bppnnls');
