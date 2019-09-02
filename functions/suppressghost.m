@@ -13,7 +13,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function S = supressghost(S,NRadicals)
+function S = suppressghost(S,NRadicals)
 
 if nargin<3
     NRadicals = 2;
