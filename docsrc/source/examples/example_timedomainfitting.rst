@@ -2,7 +2,7 @@
 .. _example_timedomainfitting:
 
 *****************************************
-Example - Parametric time-domain fitting
+Parametric time-domain fitting
 *****************************************
 
 

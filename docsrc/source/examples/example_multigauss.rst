@@ -2,7 +2,7 @@
 .. _example_multigauss:
 
 *****************************
-Example - Multigauss fitting
+Multigauss fitting
 *****************************
 
 

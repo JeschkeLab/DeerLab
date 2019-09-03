@@ -2,7 +2,7 @@
 .. _example_selectmodel:
 
 *************************************
-Example - Parametric model selection
+Parametric model selection
 *************************************
 
 
