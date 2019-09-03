@@ -1,21 +1,21 @@
 %
 % CORRECTPHASE Phase correction of complex-valued data
 %
-%   S = CORRECTPHASE(c)
-%   Performs a phase optimization on the complex-valued data (c) by
+%   Vc = CORRECTPHASE(V)
+%   Performs a phase optimization on the complex-valued data (V) by
 %   minimization of the imaginary component of the data. The phase
-%   corrected data (S) is returned normalized.
+%   corrected data (Vc) is returned normalized.
 %
-%   S = CORRECTPHASE(c,p)
-%   A phase can be passed manually for the correction by passing a second
-%   argument (p).
+%   Vc = CORRECTPHASE(V,p)
+%   Corrects the phase of data vector V using user-supplied phase (p), in
+%   radians.
 %
-%   S = CORRECTPHASE(c,p,true/false)
+%   Vc = CORRECTPHASE(V,p,true/false)
 %   A third boolean argument can be passed to enable/diasable the fitting 
 %   of a possible offset on the imaginary component of the data. Defaults
 %   to false.
 %
-%   [S,p,io] = CORRECTPHASE(C)
+%   [Vc,p,io] = CORRECTPHASE(V)
 %   Additional output arguments can be requested to return the optimal
 %   phase (p) and imaginary offset (io) employed for the correction.
 %
@@ -28,108 +28,98 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [correctedS,Phase,ImagOffset] = correctphase(PrimaryData,Phase,FittedImaginaryOffset)
+function [Vc,Phase,ImagOffset] = correctphase(V,Phase,fitImagOffset)
 
 %--------------------------------------------------------------------------
 %Input parsing
 %--------------------------------------------------------------------------
-if nargin<3
-    FittedImaginaryOffset = false;
-else
-    validateattributes(FittedImaginaryOffset,{'logical'},{'nonempty'},mfilename,'FittedImaginaryOffset')
+switch nargin
+    case 0
+        help(mfilename);
+        return
+    case 1
+        Phase = [];
+        fitImagOffset = false;
+    case 2
+        fitImagOffset = false;
+    case 3
+    otherwise
+        error('Wrong number of input arguments.');
 end
 
-if iscolumn(PrimaryData)
-   PrimaryData = PrimaryData'; 
+validateattributes(V,{'numeric'},{},mfilename,'PrimaryData')
+if ~isempty(Phase)
+  validateattributes(Phase,{'numeric'},{'scalar','nonnegative'},mfilename,'Phase')
 end
-validateattributes(PrimaryData,{'numeric'},{},mfilename,'PrimaryData')
+validateattributes(fitImagOffset,{'logical'},{'nonempty'},mfilename,'FittedImaginaryOffset')
 
-if nargin==1 || nargin==3
-    Phase = [];
-else
-    validateattributes(Phase,{'numeric'},{'scalar','nonnegative'},mfilename,'Phase')
+if iscolumn(V)
+   V = V.';
 end
-DirectDimension = size(PrimaryData,1);
 
+DirectDimension = size(V,1);
 if DirectDimension>1
-    S=PrimaryData(1,:);
-else
-    S=PrimaryData;
+    V = V(1,:);
 end
 
-% If phase is not provided, then fit it
+% If phase is not provided, then fit it (and imag. offset)
 if isempty(Phase)
-    SEnd = PrimaryData(length(PrimaryData));
-    phi0 = atan2(imag(SEnd),real(SEnd));
-    FittedPhase = phi0;
-    FitStart = round(length(S)/8); % use only last 7/8 of data for phase/offset correction
-    if ~FittedImaginaryOffset
-        FittedPhase = FittedPhase(1);
-    else
-        FittedPhase(2) = 0;
+    phi0 = angle(V(end)); % use phase of last point as starting point for fit
+    pars(1) = phi0;
+    if fitImagOffset
+        pars(2) = 0;
     end
-    FittedPhase = fminsearch(@RMSD_PhaseOffset,FittedPhase,[],S(FitStart:end));
-    if nargin<2
-        Phase=FittedPhase(1);
-    else
-        if isempty(Phase)
-            Phase=FittedPhase(1);
-        end
+    FitStart = round(length(V)/8); % use only last 7/8 of data for phase/offset correction
+    pars = fminsearch(@ImagNorm_PhaseOffset,pars,[],V(FitStart:end));
+    Phase = pars(1);
+    if fitImagOffset
+        ImagOffset = pars(2);
     end
-    if sum(real(S*exp(1i*Phase)))<0
-        Phase=Phase+pi;
+    
+    % Flip phase if necessary to render signal mostly positive
+    if sum(real(V*exp(1i*Phase)))<0
+        Phase = Phase+pi;
     end
-end
-
-if FittedImaginaryOffset
-    ImagOffset = FittedPhase(2);
-else
-    ImagOffset = 0;
 end
 
 %Do phase correction and normalize
 if DirectDimension>1
-    ReferenceS = (PrimaryData(1,:) - 1i*ImagOffset)*exp(1i*Phase);
+    ReferenceS = (V(1,:) - 1i*ImagOffset)*exp(1i*Phase);
     NormFactor = max(real(ReferenceS));
-    sig = (PrimaryData(2,:) - 1i*ImagOffset)*exp(1i*Phase);
-    correctedS = real(sig)./real(ReferenceS) + 1i*imag(ReferenceS)/NormFactor;
+    sig = (V(2,:) - 1i*ImagOffset)*exp(1i*Phase);
+    Vc = real(sig)./real(ReferenceS) + 1i*imag(ReferenceS)/NormFactor;
 else
-    correctedS = (PrimaryData - 1i*ImagOffset)*exp(1i*Phase);
-    NormFactor = 1/max(real(correctedS));
-    correctedS = NormFactor*correctedS;
+    Vc = (V - 1i*ImagOffset)*exp(1i*Phase);
+    Vc = Vc/max(real(Vc));
 end
 
 end
 
-function RMSD=RMSD_PhaseOffset(FitParam,ComplexS)
-% Computes root mean square deviation of the imaginary part of
-% phase-corrected data from zero before phase correction, an offset can be
-% subtracted from the imaginary part
+function ImagNorm = ImagNorm_PhaseOffset(params,V)
+% Computes norm of the imaginary part of phase-corrected data from zero before
+% phase correction, an offset can be subtracted from the imaginary part.
 %
 % FitParam(1)  phase correction phi (rad)
 % FitParam(2)  offset
-% ComplexS    complex data trace
+% V            complex data trace
 %
-% rmsd  root mean square deviation of imaginary part from zero
+% ImagNorm     norm of imaginary part
 %
 % G. Jeschke, 2009, Luis Fabregas 2020
 
-if length(FitParam)>1
-    if FitParam(2)<0
-        RMSD = 1e6;
-        return
-    end
-    %If requested, fit an imaginary offset additionally to phase
-    ComplexS = ComplexS-1i*FitParam(2);
-    ImaginaryComponent = imag(ComplexS*exp(1i*FitParam(1)));
-    RMSD = norm(ImaginaryComponent);
-    
+phase = params(1);
+if numel(params)>1
+    imoffset = params(2); 
 else
-    
-    %Otherwise, just fit the correction phase
-    ImaginaryComponent = imag(ComplexS*exp(1i*FitParam(1)));
-    RMSD = norm(ImaginaryComponent);
-    
+    imoffset = 0;
 end
+
+if imoffset<0
+    ImagNorm = 1e6;
+    return
+end
+
+ImagComponent = imag((V-1i*imoffset)*exp(1i*phase));
+ImagNorm = norm(ImagComponent);
 
 end

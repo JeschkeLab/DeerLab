@@ -13,19 +13,19 @@ Syntax
 
 .. code-block:: matlab
 
-    S = correctphase(C)
-    S = correctphase(C,p)
-    S = correctphase(C,p,oc)
-    [S,p,io] = correctphase(C)
+    Vc = correctphase(V)
+    Vc = correctphase(V,p)
+    Vc = correctphase(V,p,oc)
+    [Vc,p,io] = correctphase(V)
 
 
 Parameters
-    *   ``C`` - Complex-valued signal (N-array)
-    *   ``p`` - Correction phase (scalar)
+    *   ``V`` - Complex-valued signal (N-array)
+    *   ``ph`` - Correction phase (scalar)
     *   ``oc`` - Imaginary offset correction (boolean)
 Returns
-    *   ``S`` - Phase-corrected signal (N-array)
-    *   ``p`` - Correction phase (scalar)
+    *   ``Vc`` - Phase-corrected signal (N-array)
+    *   ``ph`` - Correction phase (scalar)
     *   ``io``  - Imaginary offset (scalar)
 
 Description
@@ -33,20 +33,26 @@ Description
 
 .. code-block:: matlab
 
-     S = correctphase(C)
+     Vc = correctphase(V)
 
-Performs a phase optimization on the complex-valued data ``C`` by minimization of the imaginary component of the data. The phase corrected data ``S`` is returned normalized.
-
-.. code-block:: matlab
-
-     S = correctphase(C,p)
-
-The phase used for correction can be passed manually as a second argument ``p``.
+Performs a phase correction of the complex-valued data ``V`` that minimizes the norm of the imaginary component of the data. The phase-corrected data ``Vc`` is returned normalized.
 
 .. code-block:: matlab
 
-    S = correctphase(C,p,oc)
+     Vc = correctphase(V,ph)
+
+Applied a phase correction with a given phase angle ``ph`` (in radians) to input data vector ``V``.
+
+.. code-block:: matlab
+
+    Vc = correctphase(V,p,oc)
 
 A third boolean argument ``oc`` can be passed to enable/diasable the fitting of a possible offset on the imaginary component of the data (defaults to ``false``).
+
+.. code-block:: matlab
+
+    [Vc,ph,io] = correctphase(V,p,oc)
+
+Returns, in addition to ``Vc``, the fitted or applied phase angle ``ph`` (in radians), and the fitted imaginary offset ``io``.
 
 .. image:: ../images/correctphase1.svg
