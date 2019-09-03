@@ -1,4 +1,4 @@
-%========================================================
+e%========================================================
 % DeerAnalyis2
 % Example: Time-domain parametric model fitting
 % Construct the a time-domain model of the DEER signal 

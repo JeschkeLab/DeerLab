@@ -21,9 +21,9 @@ data2fit = bckg(1:end);
 data2fit2 = bckg2(1:end);
 data2fit3 = bckg3(1:end);
 
-[fit,results] = fitbackground(data2fit,t,@td_strexp);
-[fit2,results2] = fitbackground(data2fit2,t,@td_strexp);
-[fit3,results3] = fitbackground(data2fit3,t,@td_strexp);
+[fit,results] = fitbackground(data2fit,t,@td_strexp,minmax(t));
+[fit2,results2] = fitbackground(data2fit2,t,@td_strexp,minmax(t));
+[fit3,results3] = fitbackground(data2fit3,t,@td_strexp,minmax(t));
 
 
 err(1) = any(abs(fit - bckg)>1e-5);

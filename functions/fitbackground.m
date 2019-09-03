@@ -1,11 +1,12 @@
 %
 % FITBACKGROUND Fit the background function in a signal
 %
-%   [B,lambda,param] = FITBACKGROUND(V,t,@model)
+%   [B,lambda,param,tstart] = FITBACKGROUND(V,t,@model)
 %   Fits the background (B) and the modulation depth (lambda) to a
 %   time-domain signal (V) and time-axis (t) based on a given time-domain
 %   parametric model (@model). The fitted parameters of the model are
-%   returned as a last output argument.
+%   returned as a last output argument. The optimal fitting start time (tstart)
+%   is computed automatically using the backgroundstart() function.
 %
 %   [B,lambda,param] = FITBACKGROUND(V,t,@model,tstart)
 %   The time at which the background starts to be fitted can be passed as a
@@ -31,23 +32,27 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [B,ModDepth,FitParam] = fitbackground(Data,t,BckgModel,FitDelimiter,varargin)
+function [B,ModDepth,FitParam,tstart] = fitbackground(Data,t,BckgModel,FitDelimiter,varargin)
 
 if nargin<3
     error('Not enough input arguments.')
 end
 
 if nargin<4
-    FitDelimiter = minmax(t);
+    tstart = backgroundstart(Data,t,BckgModel);
+    tend = t(end);
+    FitDelimiter = [tstart tend];
 elseif length(FitDelimiter) == 1
-    FitDelimiter(2) = max(t);
+    FitDelimiter(2) = t(end);
 elseif length(FitDelimiter) > 2
-    error('The 4th argument cannot exceed two elements.')
+    error('The 4th argument cannot exceed two elements.')    
 end
 
 if FitDelimiter(2)<FitDelimiter(1)
     error('The fit start time cannot exceed the fit end time.')
 end
+
+tstart = FitDelimiter(1);
 
 if ~isa(BckgModel,'function_handle')
    error('The background model must be a valid function handle.') 

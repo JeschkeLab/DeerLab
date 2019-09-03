@@ -27,8 +27,7 @@ V = dipolarsignal(t,r,P,'ModDepth',trueparam(1),'B',B,'Noiselevel',0.01);
 fcnhandle = @(r,param)myfitting(t,param,r,V);
 
 %Fit the background to assess inital values for background parameters
-[start] = backgroundstart(V,t,@td_exp);
-[~,lambdafit,Bparamfit] = fitbackground(V,t,@td_exp,start);
+[~,lambdafit,Bparamfit] = fitbackground(V,t,@td_exp);
 
 %Convert the function handle to DeerAnalysis parametric model
 mymodel = paramodel(fcnhandle,[lambdafit,Bparamfit],[0 0],[1 10]);
