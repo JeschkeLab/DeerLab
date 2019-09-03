@@ -89,7 +89,7 @@ K = dipolarkernel(t,r,'OvertoneCoeffs',Overtones);
 DipEvoFcn = K*Distribution;
 
 %Generate Gaussian noise
-Noise = whitenoise(N,NoiseLevel);
+Noise = whitegaussnoise(N,NoiseLevel);
 
 %Calculate form factor with backbround
 FormFactor = (1-ModDepth) + ModDepth*DipEvoFcn;

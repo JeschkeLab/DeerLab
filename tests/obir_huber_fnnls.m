@@ -14,7 +14,7 @@ K = dipolarkernel(t,r);
 RegMatrix =  regoperator(Dimension,2);
 DipEvoFcn = K*Distribution;
 NoiseLevel = 0.05;
-Noise = whitenoise(Dimension,NoiseLevel);
+Noise = whitegaussnoise(Dimension,NoiseLevel);
 S = DipEvoFcn+Noise;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)

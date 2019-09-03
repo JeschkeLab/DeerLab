@@ -5,7 +5,7 @@ r = time2dist(t);
 P = rd_onegaussian(r,[4 0.4]);
 K = dipolarkernel(t,r);
 V = K*P;
-V = V + whitenoise(300,0.02);
+V = V + whitegaussnoise(300,0.02);
 V = V/max(V);
 
 

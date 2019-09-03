@@ -13,7 +13,7 @@ Distribution = rd_onegaussian(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
 DipEvoFcn = K*Distribution;
-Noise = whitenoise(Dimension,NoiseLevel);
+Noise = whitegaussnoise(Dimension,NoiseLevel);
 S = DipEvoFcn + Noise;
 
 RegMatrix = regoperator(Dimension,2);

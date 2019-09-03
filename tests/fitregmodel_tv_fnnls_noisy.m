@@ -12,7 +12,7 @@ Distribution = rd_onegaussian(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
 DipEvoFcn = K*Distribution;
-Noise = whitenoise(Dimension,0.02);
+Noise = whitegaussnoise(Dimension,0.02);
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.1;
 RegMatrix = regoperator(Dimension,3);

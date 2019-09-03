@@ -11,7 +11,7 @@ S = K*P;
 validationnoise = 0;
 S = dipolarsignal(t,r,P,'noiselevel',0.05);
 
-S = S + whitenoise(M,validationnoise);
+S = S + whitegaussnoise(M,validationnoise);
 
 order = 2;
 L = regoperator(M,order);

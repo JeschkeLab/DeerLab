@@ -10,21 +10,21 @@ Distribution = rd_twogaussian(r,[2,0.3,3.5,0.3,0.5]);
 
 K1 = dipolarkernel(t1,r);
 S1 = K1*Distribution;
-noise = whitenoise(length(S1),0.03);
+noise = whitegaussnoise(length(S1),0.03);
 S1 = S1 + noise;
 
 Ntime2 = 200;
 t2 = linspace(0,dt*Ntime2,Ntime2);
 K2 = dipolarkernel(t2,r);
 S2 = K2*Distribution;
-noise = whitenoise(length(S2),0.05);
+noise = whitegaussnoise(length(S2),0.05);
 S2 = S2 + noise;
 
 Ntime3 = 300;
 t3 = linspace(0,dt*Ntime3,Ntime3);
 K3 = dipolarkernel(t3,r);
 S3 = K3*Distribution;
-noise = whitenoise(length(S3),0.1);
+noise = whitegaussnoise(length(S3),0.1);
 S3 = S3 + noise;
 
 
