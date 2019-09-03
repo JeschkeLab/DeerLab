@@ -33,10 +33,11 @@ else
 end
 
 if nargin<3
-    lower = inf(nParam,1);
+    lower = zeros(nParam,1) - realmax;
+    upper = zeros(nParam,1) + realmax;
 end
 if nargin<4
-    upper = inf(upper,1);
+    upper = zeros(nParam,1) + realmax;
 end
 
 if any(length(param0)~=length(upper) & length(param0)~=length(lower))
@@ -50,7 +51,7 @@ model = @myparametricmodel;
         
         if nargin==0
             %If no inputs given, return info about the parametric model
-            info.Model  = 'Stretched exponential';
+            info.Model  = 'Automatically converted parametric model';
             info.Equation  = 'custom';
             info.nParam  = nParam;
             for i=1:nParam
