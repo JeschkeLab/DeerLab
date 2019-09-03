@@ -30,7 +30,7 @@
 %
 %   'gValue' - g-value of the spin centers
 %
-%   'KCalcMethod' - The way the kernel is computed numerically:
+%   'Method' - The way the kernel is computed numerically:
 %                       'fresnel' - uses Fresnel integrals for the kernel
 %                       'explicit' - powder average computed explicitly
 %
@@ -44,64 +44,54 @@
 % the Free Software Foundation.
 
 
-function K = dipolarkernel(t,r,ModDepth,B,varargin)
+function K = dipolarkernel(t,r,lambda,B,varargin)
 
+% Input parsing
 %--------------------------------------------------------------------------
-%Input parsing
-%--------------------------------------------------------------------------
+switch nargin
+    case 0
+        help(mfilename);
+        return
+    case {1,2}
+        lambda = [];
+        B = [];
+end
 
-if nargin<3
+% Case ModDepth and B not passed
+if nargin>2 && isa(lambda,'char')
+    varargin = [{lambda} {B} varargin];
+    lambda = [];
     B = [];
 end
-if nargin<3 || isempty(ModDepth)
-    ModDepth = 1;
-end
-
-%Case ModDepth and B not passed
-if nargin>2 && isa(ModDepth,'char')
-    varargin = [{ModDepth} {B} varargin];
-    ModDepth = [];
-    B = [];
-end
-%Case ModDepth passed but not B
+% Case ModDepth passed but not B
 if nargin>3 && isa(B,'char')
     varargin = [{B} varargin];
     B = [];
 end
 
-%Check if user requested some options via name-value input
-[KBType,ExcitationBandwidth,OvertoneCoeffs,gValue,KCalcMethod,Knots] = parseoptional({'KBType','ExcitationBandwidth','OvertoneCoeffs','gValue','KCalcMethod','Knots'},varargin);
-%Validate the input variables
-validKBTypes = ["none","full","sqrt"];
-if isempty(KBType)
-    KBType = 'full';
-else
-    validateattributes(KBType,{'char'},{},mfilename,'KBType')
-    KBType = validatestring(KBType,validKBTypes);
-end
+% Check if user requested some options via name-value input
+[ExcitationBandwidth,OvertoneCoeffs,gValue,Method,Knots] = ...
+    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','gValue','Method','Knots'},varargin);
 
-if isempty(KCalcMethod)
-    KCalcMethod = 'fresnel';
+if isempty(Method)
+    Method = 'fresnel';
 else
-    validateattributes(KCalcMethod,{'char'},{'nonempty'},mfilename,'KCalcMethod')
+    validateattributes(Method,{'char'},{'nonempty'},mfilename,'Method');
 end
 
 if isempty(OvertoneCoeffs)
     OvertoneCoeffs = 1;
 else
-    validateattributes(OvertoneCoeffs,{'numeric'},{'nonnegative'},mfilename,'OvertoneCoeffs')
+    validateattributes(OvertoneCoeffs,{'numeric'},{'nonnegative'},mfilename,'OvertoneCoeffs');
 end
 
 if ~isempty(ExcitationBandwidth)
-    validateattributes(ExcitationBandwidth,{'numeric'},{'scalar','nonnegative'},mfilename,'ExcitationBandwidth')
+    validateattributes(ExcitationBandwidth,{'numeric'},{'scalar','nonnegative'},mfilename,'ExcitationBandwidth');
 end
 
 if ~isempty(B)
     validateattributes(B,{'numeric'},{},mfilename,'B')
     checklengths(t,B);
-    useBackground = true;
-else 
-    useBackground = false;
 end
 
 if isempty(Knots)
@@ -134,8 +124,7 @@ if numel(unique(round(diff(r),12)))~=1
 end
 validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
 
-%--------------------------------------------------------------------------
-%Memoization
+% Memoization
 %--------------------------------------------------------------------------
 
 persistent cachedData
@@ -149,45 +138,43 @@ if cachedData.containsKey(hashKey)
     return
 end
 
-%--------------------------------------------------------------------------
-%Kernel construction
+% Kernel construction
 %--------------------------------------------------------------------------
 
-Dimension = length(t);
 dt = mean(diff(t));
 
-%Numerical dipolar frequency at 1 nm for given g-value, in MHz
+% Numerical dipolar frequency at 1 nm for given g-value, in MHz
 nu0 = 51.92052556862238*gValue/2; % MHz nm^3
 w0 = 2*pi*nu0; % Mrad s^-1 nm^3
 
-%Convert time step to microseconds if given in nanoseconds
+% Convert time step to microseconds if given in nanoseconds
 usesNanoseconds = dt>=0.5;
 if usesNanoseconds
     dt = round(dt)/1000; % ns->us
     t = round(t)/1000; % ns->us
 end
 
-%Convert distance axis to nanoseconds if givne in Angstrom
+% Convert distance axis to nanoseconds if givne in Angstrom
 if ~isnanometer(r)
    r = r/10; 
 end
 
-%Get absolute time axis scale (required for negative times)
+% Get absolute time axis scale (required for negative times)
 t = abs(t); %ns
 
-%Get vector of dipolar frequencies
+% Get vector of dipolar frequencies
 wdd = w0./(r.^3);
 
 K = zeros(length(t),length(wdd));
-for OvertoneIdx = 1:length(OvertoneCoeffs)
+for OvertoneIdx = 1:numel(OvertoneCoeffs)
     
-    switch KCalcMethod
+    switch Method
         case 'explicit'
             % Method using explicit numerical powder average (slow)
             %----------------------------------------------------------
-            %Pre-allocate cosine of powder angles
+            % Pre-allocate cosine of powder angles
             costheta = linspace(0,1,Knots);
-            %Sweep through all distances
+            % Sweep through all distances
             for DistanceIndex = 1:length(r)
                 KTrace = 0;
                 for theta = 1:Knots % average over cos(theta) angle (powder average)
@@ -200,40 +187,40 @@ for OvertoneIdx = 1:length(OvertoneCoeffs)
         case  'fresnel'
             % Method using Fresnel integrals (fast)
             %----------------------------------------------------------
-            %Compute dipolar kernel
-            %Allocate products for speed
+            % Compute dipolar kernel
+            % Allocate products for speed
             wddt = OvertoneIdx*wdd.*t;
             kappa = sqrt(6*wddt/pi);
-            %Compute Fresnel integrals of 0th order
+            % Compute Fresnel integrals of 0th order
             C = fresnelC(kappa);
             S = fresnelS(kappa);
             K = K + OvertoneCoeffs(OvertoneIdx)*sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
-            %Replace undefined Fresnel NaN value at time zero
+            % Replace undefined Fresnel NaN value at time zero
             K(isnan(K)) = 1;
     end
 end
 
-%If given, account for limited excitation bandwidth
+% If given, account for limited excitation bandwidth
 if ~isempty(ExcitationBandwidth)
     K = exp(-wdd'.^2/ExcitationBandwidth^2).*K;
 end
 
-if strcmp(KCalcMethod,'explicit')
+if strcmp(Method,'explicit')
    [~,BckgStart] = min(t);
     K = K./K(BckgStart,:);
 end
 
 % Build modulation depth and background into the kernel
 %----------------------------------------------------------
-if ModDepth~=1
-  K = (1-ModDepth) + ModDepth*K;
+if ~isempty(lambda)
+    K = (1-lambda) + lambda*K;
 end
 
-if useBackground
-        K = K.*B;
+if ~isempty(B)
+    K = K.*B;
 end
 
-%Normalize kernel
+% Normalize kernel
 dr = mean(diff(r));
 K = K*dr;
 

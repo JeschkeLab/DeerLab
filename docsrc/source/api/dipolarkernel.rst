@@ -100,7 +100,7 @@ gValue
 
         K = dipolarkernel(args,'gValue',2.00) %Use experimental g-value
 
-KernelCalcMethod
+Method
     Specifies the way the kernel is computed numerically.
 
 
@@ -114,7 +114,7 @@ KernelCalcMethod
 
     .. code-block:: matlab
 
-        K = dipolarkernel(args,'KernelCalcMethod','explicit')
+        K = dipolarkernel(args,'Method','explicit')
 
 Knots
     If the kernel is computed using the ``explicit`` powder averaging, this options specifies the number knots for the grid of powder orientations used for the powder averaging.
@@ -125,7 +125,7 @@ Knots
 
     .. code-block:: matlab
 
-        K = dipolarkernel(args,'KernelCalcMethod','explicit','Knots',2001)
+        K = dipolarkernel(args,'Method','explicit','Knots',2001)
 
 
 References
