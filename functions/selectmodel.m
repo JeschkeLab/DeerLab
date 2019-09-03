@@ -64,24 +64,6 @@ if ~isnanometer(r)
    r = r/10; 
 end
 
-%--------------------------------------------------------------------------
-%Memoization
-%--------------------------------------------------------------------------
-
-persistent cachedData
-if isempty(cachedData)
-    cachedData =  java.util.LinkedHashMap;
-end
-Modelsstring = [];
-for i=1:length(Models)
-   Modelsstring = [Modelsstring func2str(Models{i})]; 
-end 
-    hashKey = datahash({Modelsstring,S,r,K,Methods,varargin});
-if cachedData.containsKey(hashKey)
-    Output = cachedData.get(hashKey);
-    [optima,functionals] = java2mat(Output);
-    return
-end
 
 %--------------------------------------------------------------------------
 %--------------------------------------------------------------------------
@@ -126,6 +108,3 @@ if length(functionals)==1
    functionals = functionals{1}; 
 end
 
-%Store output result in the cache
-Output = {optima,functionals};
-cachedData = addcache(cachedData,hashKey,Output);

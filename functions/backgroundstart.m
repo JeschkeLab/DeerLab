@@ -80,21 +80,6 @@ else
 end
 
 %--------------------------------------------------------------------------
-%Memoization
-%--------------------------------------------------------------------------
-
-persistent cachedData
-if isempty(cachedData)
-    cachedData =  java.util.LinkedHashMap;
-end
-hashKey = datahash({S,t,BckgModel,varargin});
-if cachedData.containsKey(hashKey)
-    Output = cachedData.get(hashKey);
-    [FitStartTime,FitStartPos] = java2mat(Output);
-    return
-end
-
-%--------------------------------------------------------------------------
 % Adaptive background correction start search
 %--------------------------------------------------------------------------
 %Get zero-time position
@@ -153,7 +138,3 @@ end
 [~,OptStartPos] = min(Merit);
 FitStartPos = OptStartPos + StartPosMin - 1;
 FitStartTime = t(FitStartPos);
-
-%Store output result in the cache
-Output = {FitStartTime,FitStartPos};
-cachedData = addcache(cachedData,hashKey,Output);

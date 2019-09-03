@@ -158,21 +158,6 @@ if ~isnanometer(r)
    r = r/10; 
 end
 
-%--------------------------------------------------------------------------
-%Memoization
-%--------------------------------------------------------------------------
-
-persistent cachedData
-if isempty(cachedData)
-    cachedData =  java.util.LinkedHashMap;
-end
-hashKey = datahash({S,K,r,func2str(Model),StartParameters,varargin});
-if cachedData.containsKey(hashKey)
-    Output = cachedData.get(hashKey);
-    [Distribution,FitParameters] = java2mat(Output);
-    FitParameters = FitParameters';
-    return
-end
 
 %--------------------------------------------------------------------------
 % Execution
@@ -241,10 +226,6 @@ end
 
 %Compute fitted distance distribution
 Distribution = Model(r,FitParameters);
-
-%Store output result in the cache
-Output = {Distribution,FitParameters};
-cachedData = addcache(cachedData,hashKey,Output);
 
 return
 

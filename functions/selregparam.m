@@ -157,21 +157,6 @@ else
     validateattributes(NonNegConstrained,{'logical'},{'nonempty'},mfilename,'NonNegConstrained')
 end
 
-%--------------------------------------------------------------------------
-%Memoization
-%--------------------------------------------------------------------------
-
-persistent cachedData
-if isempty(cachedData)
-    cachedData =  java.util.LinkedHashMap;
-end
-
-hashKey = datahash({RegParamRange,S,K,RegMatrix,SelectionMethod,varargin});
-if cachedData.containsKey(hashKey)
-    Output = cachedData.get(hashKey);
-    [OptRegParam,Functionals,RegParamRange,OptHuberParam] = java2mat(Output);
-    return
-end
 
 %--------------------------------------------------------------------------
 % Preparations
@@ -373,11 +358,6 @@ if Refine
         OptRegParam  = RefinedOptRegParam;
     end
 end
-
-%Store output result in the cache
-Output = {OptRegParam,Functionals,RegParamRange,OptHuberParam};
-cachedData = addcache(cachedData,hashKey,Output);
-
 
 end
 

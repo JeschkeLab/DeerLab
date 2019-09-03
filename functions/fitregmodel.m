@@ -155,22 +155,6 @@ for i=1:length(S)
 end
 
 %--------------------------------------------------------------------------
-%Memoization
-%--------------------------------------------------------------------------
-
-persistent cachedData
-if isempty(cachedData)
-    cachedData =  java.util.LinkedHashMap;
-end
-
-hashKey = datahash({S,K,RegMatrix,RegType,RegParam,varargin});
-if cachedData.containsKey(hashKey)
-    Output = cachedData.get(hashKey);
-    [Distribution] = java2mat(Output);
-    return
-end
-
-%--------------------------------------------------------------------------
 %Regularization processing
 %--------------------------------------------------------------------------
 
@@ -239,9 +223,6 @@ end
 
 %Normalize distribution integral
 Distribution = Distribution/sum(Distribution)/dr;
-
-%Store output result in the cache
-cachedData = addcache(cachedData,hashKey,Distribution);
 
 %--------------------------------------------------------------------------
 end

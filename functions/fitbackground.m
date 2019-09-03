@@ -81,26 +81,6 @@ if usesNanoseconds
 end
 
 %--------------------------------------------------------------------------
-%Memoization
-%--------------------------------------------------------------------------
-
-persistent cachedData
-if isempty(cachedData)
-    cachedData =  java.util.LinkedHashMap;
-end
-hashKey = datahash({Data,t,BckgModel(),FitDelimiter});
-if cachedData.containsKey(hashKey)
-    Output = cachedData.get(hashKey);
-    [B,ModDepth,FitParam] = java2mat(Output);
-    %Java does not recognize columns
-    B = B(:);
-    if DataIsColumn && ~iscolumn(B)
-        B = B.';
-    end
-    return
-end
-
-%--------------------------------------------------------------------------
 %--------------------------------------------------------------------------
 
 %Find the position to limit fit
@@ -160,9 +140,5 @@ B = real(B);
 if ~DataIsColumn
     B = B';
 end
-
-%Store output result in the cache
-Output = {B,ModDepth,FitParam};
-cachedData = addcache(cachedData,hashKey,Output);
 
 end
