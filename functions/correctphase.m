@@ -40,8 +40,10 @@ switch nargin
     case 1
         Phase = [];
         fitImagOffset = false;
+        ImagOffset = 0;
     case 2
         fitImagOffset = false;
+        ImagOffset = 0;
     case 3
     otherwise
         error('Wrong number of input arguments.');
@@ -75,11 +77,14 @@ if isempty(Phase)
     if fitImagOffset
         ImagOffset = pars(2);
     end
-    
     % Flip phase if necessary to render signal mostly positive
     if sum(real(V*exp(1i*Phase)))<0
         Phase = Phase+pi;
     end
+elseif ~isempty(Phase) && fitImagOffset
+    offset = 0;
+    FitStart = round(length(V)/8); % use only last 7/8 of data for phase/offset correction
+    ImagOffset = fminsearch(@(offset)ImagNorm_PhaseOffset([Phase offset],V(FitStart:end)),offset);
 end
 
 %Do phase correction and normalize

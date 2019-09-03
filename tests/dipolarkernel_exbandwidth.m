@@ -12,7 +12,7 @@ Distribution = rd_onegaussian(r,[3,0.5]);
 Distribution = Distribution/sum(Distribution);
 ExcitationBandwidth = 0.05; %MHz
 
-K = dipolarkernel(t,r,'KBType','full','ExcitationBandwidth',ExcitationBandwidth);
+K = dipolarkernel(t,r,'ExcitationBandwidth',ExcitationBandwidth);
 
 Trace  = K*Distribution;
 

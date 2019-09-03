@@ -21,7 +21,7 @@ ClusterFcn = ClusterFcn/ClusterFcn(1);
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.0005;
 RegMatrix = regoperator(Dimension,3);
-KB = dipolarkernel(t,r,ModDepth,B,'KBType','full');
+KB = dipolarkernel(t,r,ModDepth,B);
 Result = fitregmodel(ClusterFcn,KB,r,RegMatrix,'tv',RegParam,'Solver','fnnls');
 
 error = abs(Result - Distribution);

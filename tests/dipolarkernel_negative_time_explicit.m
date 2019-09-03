@@ -11,7 +11,7 @@ dt = 0.008;
 t = linspace(-dt*Ntime/2,dt*Ntime/2,Ntime);
 [~,rmin,rmax] = time2dist(t);
 DistAxis = linspace(rmin,rmax,Ndist);
-kernel = dipolarkernel(t,DistAxis,'KCalcMethod','explicit');
+kernel = dipolarkernel(t,DistAxis,'Method','explicit');
 kernel = kernel/mean(diff(DistAxis));
 trace = kernel(:,1);
 

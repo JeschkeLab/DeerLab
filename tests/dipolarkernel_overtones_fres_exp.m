@@ -14,8 +14,8 @@ T1 = 88; %us
 
 coefficients = overtones(3,Tmix,T1);
 
-kernelF = dipolarkernel(t,DistAxis,'KCalcMethod','fresnel','OvertoneCoeffs',coefficients);
-kernelE = dipolarkernel(t,DistAxis,'KCalcMethod','explicit','OvertoneCoeffs',coefficients);
+kernelF = dipolarkernel(t,DistAxis,'Method','fresnel','OvertoneCoeffs',coefficients);
+kernelE = dipolarkernel(t,DistAxis,'Method','explicit','OvertoneCoeffs',coefficients);
 kernelF = kernelF/mean(diff(DistAxis));
 kernelE = kernelE/mean(diff(DistAxis));
 
