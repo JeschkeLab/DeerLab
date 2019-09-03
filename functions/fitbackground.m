@@ -149,8 +149,11 @@ FitParam = lsqnonlin(CostFcn,StartParameters,LowerBounds,UpperBounds,solveropts)
 %Get the fitted modulation depth
 ModDepth = FitParam(1);
 
+%Remove the modulation depth from the fit parameters
+FitParam = FitParam(2:end);
+
 %Extrapolate fitted background to whole time axis
-B = BckgModel(abs(t),FitParam(2:end));
+B = BckgModel(abs(t),FitParam);
 
 %Ensure data is real
 B = real(B);
