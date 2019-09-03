@@ -11,7 +11,7 @@
 %   radians.
 %
 %   Vc = CORRECTPHASE(V,p,true/false)
-%   A third boolean argument can be passed to enable/diasable the fitting 
+%   A third boolean argument can be passed to enable/diasable the fitting
 %   of a possible offset on the imaginary component of the data. Defaults
 %   to false.
 %
@@ -51,17 +51,12 @@ end
 
 validateattributes(V,{'numeric'},{},mfilename,'PrimaryData')
 if ~isempty(Phase)
-  validateattributes(Phase,{'numeric'},{'scalar','nonnegative'},mfilename,'Phase')
+    validateattributes(Phase,{'numeric'},{'scalar','nonnegative'},mfilename,'Phase')
 end
 validateattributes(fitImagOffset,{'logical'},{'nonempty'},mfilename,'FittedImaginaryOffset')
 
 if iscolumn(V)
-   V = V.';
-end
-
-DirectDimension = size(V,1);
-if DirectDimension>1
-    V = V(1,:);
+    V = V.';
 end
 
 % If phase is not provided, then fit it (and imag. offset)
@@ -88,15 +83,7 @@ elseif ~isempty(Phase) && fitImagOffset
 end
 
 %Do phase correction and normalize
-if DirectDimension>1
-    ReferenceS = (V(1,:) - 1i*ImagOffset)*exp(1i*Phase);
-    NormFactor = max(real(ReferenceS));
-    sig = (V(2,:) - 1i*ImagOffset)*exp(1i*Phase);
-    Vc = real(sig)./real(ReferenceS) + 1i*imag(ReferenceS)/NormFactor;
-else
-    Vc = (V - 1i*ImagOffset)*exp(1i*Phase);
-    Vc = Vc/max(real(Vc));
-end
+Vc = (V - 1i*ImagOffset)*exp(1i*Phase);
 
 end
 
@@ -114,7 +101,7 @@ function ImagNorm = ImagNorm_PhaseOffset(params,V)
 
 phase = params(1);
 if numel(params)>1
-    imoffset = params(2); 
+    imoffset = params(2);
 else
     imoffset = 0;
 end
