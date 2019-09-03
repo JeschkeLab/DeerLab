@@ -48,12 +48,23 @@ intersphinx_mapping = {
     'sphinx': ('http://www.sphinx-doc.org/en/stable/', None),
 }
 html_theme = 'sphinx_rtd_theme'
+html_context = {
+    "display_bitbucket": True, # Integrate Bitbucket
+    "bitbucket_user": "luisfabib", # Username
+    "bitbucket_repo": "deeranalysis2", # Repo name
+    "bitbucket_version": "master", # Version
+    "conf_py_path": "/source/", # Path in the checkout to the docs root
+}
+
 html_theme_options = {
-    'logo_only': True
+    'titles_only': True,
+    'logo_only': True,
+    #'style_nav_header_background': '#2a7bf8'
 }
 html_theme_path = ["../.."]
 html_logo = "demo/static/logo-wordmark-light.svg"
 html_show_sourcelink = True
+html_favicon = 'favicon.ico'
 #htmlhelp_basename = slug
 #latex_documents = [
 #  ('index', '{0}.tex'.format(slug), project, author, 'manual'),
