@@ -63,7 +63,7 @@ Combining regularization & parametric model fitting
 
     subplot(122)
     plot(t,V,'k',t,Vfit,'b','LineWidth',1.5)
-    xlabel('Distance [\mus]')
+    xlabel('Time [\mus]')
     ylabel('V(t)')
     title(sprintf('\\lambda = %.2f/%.2f  k = %.3f/%.3f',...
             parafit(1),trueparam(1),parafit(2),trueparam(2)))
