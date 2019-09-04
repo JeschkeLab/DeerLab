@@ -8,10 +8,10 @@ dt = 0.016;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
 InputParam = [3 0.3 5 0.3 0.5];
-Distribution = rd_twogaussian(r,InputParam);
+P = rd_twogaussian(r,InputParam);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
 Models = {@rd_onegaussian,@rd_twogaussian,@rd_threegaussian};
 

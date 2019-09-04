@@ -50,7 +50,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function Distribution = fitregmodel(S,K,r,RegMatrix,RegType,RegParam,varargin)
+function P = fitregmodel(S,K,r,RegMatrix,RegType,RegParam,varargin)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -181,24 +181,24 @@ end
 switch lower(Solver)
     
     case 'analytical'
-        Distribution = zeros(Dimension,1);
+        P = zeros(Dimension,1);
         for i=1:length(S)
         PseudoInverse = Q\K{i}.';
-        Distribution = Distribution + weights(i)*PseudoInverse*S{i};
+        P = P + weights(i)*PseudoInverse*S{i};
         end
     case 'lsqnonneg'
         solverOpts = optimset('Display','off','TolX',TolFun);
-        Distribution = lsqnonneg(Q,KtS,solverOpts);
+        P = lsqnonneg(Q,KtS,solverOpts);
 
     case 'fnnls'
-        Distribution = fnnls(Q,KtS,InitialGuess,TolFun);
+        P = fnnls(Q,KtS,InitialGuess,TolFun);
         %In some cases, fnnls may return negatives if tolerance is to high
-        if any(Distribution < 0)
+        if any(P < 0)
             %... in those cases continue from current solution
-            Distribution = fnnls(Q,KtS,Distribution,1e-20);
+            P = fnnls(Q,KtS,P,1e-20);
         end
     case 'bppnnls'
-        Distribution = nnls_bpp(Q,KtS,Q\KtS);
+        P = nnls_bpp(Q,KtS,Q\KtS);
         
     case 'fmincon'
         %Constrained Tikhonov/Total variation/Huber regularization
@@ -212,17 +212,17 @@ switch lower(Solver)
         end
         constraint = @(x)unityconstraint(x,dr);
         fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',GradObj,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
-        [Distribution,~,exitflag] =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],constraint,fminconOptions);
+        [P,~,exitflag] =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],constraint,fminconOptions);
         %Check how optimization exited...
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
             fminconOptions = optimoptions(fminconOptions,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
-            Distribution  = fmincon(ModelCost,Distribution,[],[],[],[],NonNegConst,[],constraint,fminconOptions);
+            P  = fmincon(ModelCost,P,[],[],[],[],NonNegConst,[],constraint,fminconOptions);
         end
 end
 
 %Normalize distribution integral
-Distribution = Distribution/sum(Distribution)/dr;
+P = P/sum(P)/dr;
 
 %--------------------------------------------------------------------------
 end

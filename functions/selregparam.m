@@ -172,7 +172,7 @@ Functional  = zeros(1,nPoints);
 HuberParameterSet = zeros(1,nPoints);
 %Initialize cells
 PseudoInverse = cell(1,nPoints);
-Distribution = cell(1,nPoints);
+P = cell(1,nPoints);
 InfluenceMatrix = cell(1,nPoints);
 
 %Preallocate common matrix multiplication
@@ -180,7 +180,7 @@ InfluenceMatrix = cell(1,nPoints);
 
 
 %--------------------------------------------------------------------------
-% Pseudo-Inverses and Distributions
+% Pseudo-Inverses and Ps
 %--------------------------------------------------------------------------
 
 for i=1:nPoints %Loop over all regularization parameter values
@@ -188,22 +188,22 @@ for i=1:nPoints %Loop over all regularization parameter values
     [Q,KtS,weights] = lsqcomponents(S,K,RegMatrix,RegParamRange(i),RegType);
     InitialGuess = zeros(DipolarDimension,1);
     if NonNegConstrained
-        Distribution{i} = fnnls(Q,KtS,InitialGuess,TolFun);
+        P{i} = fnnls(Q,KtS,InitialGuess,TolFun);
     else
-        Distribution{i}  = Q\KtS;
+        P{i}  = Q\KtS;
     end
     for idx=1:length(S)
         Q = lsqcomponents(S{idx},K{idx},RegMatrix,RegParamRange(i),'tikhonov');
         PseudoInverse{idx,i} = Q\K{idx}.';
         switch lower(RegType)
             case 'tikhonov'
-                Penalty(idx,i) = 1/sqrt(2)*norm(RegMatrix*Distribution{i});
+                Penalty(idx,i) = 1/sqrt(2)*norm(RegMatrix*P{i});
             case 'tv'
-                Penalty(idx,i) = sum(sqrt((RegMatrix*Distribution{i}).^2 + 1e-24));
+                Penalty(idx,i) = sum(sqrt((RegMatrix*P{i}).^2 + 1e-24));
             case 'huber'
-                Penalty(idx,i) = sum(sqrt((RegMatrix*Distribution{i}/HuberParameter).^2 + 1 ) - 1);
+                Penalty(idx,i) = sum(sqrt((RegMatrix*P{i}/HuberParameter).^2 + 1 ) - 1);
         end
-        Residual(idx,i) = 1/sqrt(2)*norm(K{idx}*Distribution{i} - S{idx});
+        Residual(idx,i) = 1/sqrt(2)*norm(K{idx}*P{i} - S{idx});
         InfluenceMatrix{idx,i} = K{idx}*PseudoInverse{idx,i};
     end
 end
@@ -244,7 +244,7 @@ for MethodIndex = 1:length(SelectionMethod)
             case 'cv' %Cross validation (CV)
                 for i=1:nPoints
                     InfluenceDiagonal = diag(InfluenceMatrix{SIndex,i});
-                    Functional(i) = Functional(i) + weights(SIndex)*(sum(abs(S{SIndex} - K{SIndex}*(Distribution{i})./(ones(DipolarDimension,1) - InfluenceDiagonal)).^2));
+                    Functional(i) = Functional(i) + weights(SIndex)*(sum(abs(S{SIndex} - K{SIndex}*(P{i})./(ones(DipolarDimension,1) - InfluenceDiagonal)).^2));
                 end
                 
             case 'gcv' %Generalized Cross Validation (GCV)
@@ -290,12 +290,12 @@ for MethodIndex = 1:length(SelectionMethod)
                 
             case 'ee' %Extrapolated Error (EE)
                 for i=1:nPoints
-                    Functional(i) = Functional(i) + weights(SIndex)*(Residual(SIndex,i)^2/norm(K{SIndex}.'*(K{SIndex}*Distribution{i} - S{SIndex})));
+                    Functional(i) = Functional(i) + weights(SIndex)*(Residual(SIndex,i)^2/norm(K{SIndex}.'*(K{SIndex}*P{i} - S{SIndex})));
                 end
                 
             case 'ncp' %Normalized Cumulative Periodogram (NCP)
                 for i=1:nPoints
-                    ResidualPeriodogram = abs(fft(K{SIndex}*Distribution{i} - S{SIndex})).^2;
+                    ResidualPeriodogram = abs(fft(K{SIndex}*P{i} - S{SIndex})).^2;
                     WhiteNoisePowerSpectrum = zeros(length(ResidualPeriodogram),1);
                     ResidualPowerSpectrum = zeros(length(ResidualPeriodogram),1);
                     for j=1:length(ResidualPeriodogram) - 1
@@ -315,7 +315,7 @@ for MethodIndex = 1:length(SelectionMethod)
                     end
                     EigenValues(EigenValues < Treshold) = 0;
                     NonZeroEigenvalues = real(EigenValues(EigenValues~=0));
-                    Functional(i) = Functional(i) + weights(SIndex)*(S{SIndex}'*(S{SIndex} - K{SIndex}*Distribution{i})/nthroot(prod(NonZeroEigenvalues),length(NonZeroEigenvalues)));
+                    Functional(i) = Functional(i) + weights(SIndex)*(S{SIndex}'*(S{SIndex} - K{SIndex}*P{i})/nthroot(prod(NonZeroEigenvalues),length(NonZeroEigenvalues)));
                 end
                 
             case 'mcl' %Mallows' C_L (MCL)

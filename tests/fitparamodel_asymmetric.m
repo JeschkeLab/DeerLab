@@ -9,25 +9,25 @@ t = linspace(0,dt*Ntime,Ntime);
 [~,rmin,rmax] = time2dist(t);
 r = linspace(rmin,rmax,Ndist);
 InputParam = [3,0.5];
-Distribution = rd_onegaussian(r,[3,0.5]);
+P = rd_onegaussian(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
 InitialGuess = [2 0.1];
-[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,K,r,@rd_onegaussian,InitialGuess);
-err(1) = any(abs(FitDistribution - Distribution)>1e-5);
+[FitP,FitParam] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,InitialGuess);
+err(1) = any(abs(FitP - P)>1e-5);
 err(2) = any(abs(FitParam - InputParam)>1e-3);
-err(3)  = length(FitDistribution) < length(DipEvoFcn);
+err(3)  = length(FitP) < length(DipEvoFcn);
 err = any(err);
 
-maxerr = max(abs(FitDistribution - Distribution));
+maxerr = max(abs(FitP - P));
 data = [];
 
 if opt.Display
    figure(1),clf,hold on
    plot(t,DipEvoFcn,'b')
-   plot(t,K*FitDistribution,'r')
+   plot(t,K*FitP,'r')
 end
 
 end

@@ -5,17 +5,17 @@ dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
 InputParam  = [3,0.5];
-Distribution = rd_onegaussian(r,InputParam);
+P = rd_onegaussian(r,InputParam);
 
 K = dipolarkernel(t,r);
-S = K*Distribution;
+S = K*P;
 
 InitialGuess = [2 0.1];
 %nm
-Pfit1 = fitparamodel(S,K,r,@rd_onegaussian,InitialGuess,'Solver','fmincon');
+Pfit1 = fitparamodel(S,@rd_onegaussian,r,K,InitialGuess,'Solver','fmincon');
 %A
 r = r*10;
-Pfit2 = fitparamodel(S,K,r,@rd_onegaussian,InitialGuess,'Solver','fmincon');
+Pfit2 = fitparamodel(S,@rd_onegaussian,r,K,InitialGuess,'Solver','fmincon');
 
 err = any(abs(Pfit1 - Pfit2)>1e-12);
 maxerr = max(abs(Pfit1 - Pfit2));

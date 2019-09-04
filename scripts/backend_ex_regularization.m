@@ -31,23 +31,23 @@ RegParamRange = getRegParamRange(K,RegMatrix);
 RegParam = selectRegParam(RegParamRange,S,K,RegMatrix,{'gml','lr'});
 
 %Run regularization
-Distribution1 = regularize(S,K,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
-Distribution2 = regularize(S,K,RegMatrix,'tikhonov',RegParam(2),'Solver','fnnls');
+P1 = regularize(S,K,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
+P2 = regularize(S,K,RegMatrix,'tikhonov',RegParam(2),'Solver','fnnls');
 
 figure(1),clf
 
 subplot(121),hold on
 plot(t,S,'k')
 plot(t,sqrt(B))
-plot(t,K*Distribution1,'r')
-plot(t,K*Distribution2,'b')
+plot(t,K*P1,'r')
+plot(t,K*P2,'b')
 xlabel('Time [\mus]')
 ylabel('Intensity [a.u.]')
 legend('Exp','Bckg','GML','L-Curve')
 
 subplot(122),hold on
-plot(r,Distribution1,'r')
-plot(r,Distribution2,'b')
+plot(r,P1,'r')
+plot(r,P2,'b')
 xlabel('Distance [nm]')
 ylabel('P(r)')
 legend('GML','L-Curve')

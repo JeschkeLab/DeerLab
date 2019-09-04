@@ -9,16 +9,16 @@ Dimension = 100;
 t = linspace(0.006,3,Dimension);
 r = time2dist(t);
 
-Distribution = rd_onegaussian(r,[3,0.5]);
-DistrAB = Distribution/sum(Distribution)';
-Distribution = rd_onegaussian(r,[4,0.5]);
-DistrAC = Distribution/sum(Distribution)';
-Distribution = rd_onegaussian(r,[5,0.5]);
-DistrBC = Distribution/sum(Distribution)';
-Distribution = DistrAB + DistrBC + DistrAC;
-DistrAB = DistrAB/sum(Distribution)';
-DistrBC = DistrBC/sum(Distribution)';
-DistrAC = DistrAC/sum(Distribution)';
+P = rd_onegaussian(r,[3,0.5]);
+DistrAB = P/sum(P)';
+P = rd_onegaussian(r,[4,0.5]);
+DistrAC = P/sum(P)';
+P = rd_onegaussian(r,[5,0.5]);
+DistrBC = P/sum(P)';
+P = DistrAB + DistrBC + DistrAC;
+DistrAB = DistrAB/sum(P)';
+DistrBC = DistrBC/sum(P)';
+DistrAC = DistrAC/sum(P)';
 
 FreqAxis = 52.04./(r.^3)';
 

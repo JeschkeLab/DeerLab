@@ -8,11 +8,11 @@ t = linspace(0,dt*Ntime,Ntime);
 [~,rmin,rmax] = time2dist(t);
 r = linspace(rmin,rmax,Ndist);
 
-Distribution = rd_onegaussian(r,[3,0.5]);
-Distribution = Distribution/sum(Distribution);
+P = rd_onegaussian(r,[3,0.5]);
+P = P/sum(P);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 RegMatrix = regoperator(Ndist,2);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
@@ -28,11 +28,11 @@ t = linspace(0,dt*Ntime,Ntime);
 [~,rmin,rmax] = time2dist(t);
 r = linspace(rmin,rmax,Ndist);
 
-Distribution = rd_onegaussian(r,[3,0.5]);
-Distribution = Distribution/sum(Distribution);
+P = rd_onegaussian(r,[3,0.5]);
+P = P/sum(P);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 RegMatrix = regoperator(Ndist,2);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)

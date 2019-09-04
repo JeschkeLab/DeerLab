@@ -8,11 +8,11 @@ Dimension = 100;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
-Distribution = rd_twogaussian(r,[2,0.3,3.5,0.3,0.5]);
+P = rd_twogaussian(r,[2,0.3,3.5,0.3,0.5]);
 
 K = dipolarkernel(t,r);
 RegMatrix =  regoperator(Dimension,2);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 NoiseLevel = 0.05;
 Noise = whitegaussnoise(Dimension,NoiseLevel);
 S = DipEvoFcn+Noise;
@@ -23,7 +23,7 @@ OptHuber = 1.35;
 
 if opt.Display
     figure(8),clf
-    axhandle = plot(r,NaN*Distribution);
+    axhandle = plot(r,NaN*P);
 else
     axhandle = [];
 end
@@ -32,14 +32,14 @@ Result = obir(S,K,r,'huber',RegMatrix,OptParam,'DivergenceStop',true,'NoiseLevel
 
 RegResult = fitregmodel(S,K,r,RegMatrix,'huber',OptParam);
 
-err = norm(Result - Distribution) > norm(RegResult - Distribution);
-maxerr = norm(Result - Distribution);
+err = norm(Result - P) > norm(RegResult - P);
+maxerr = norm(Result - P);
 data = [];
 
 if opt.Display
  	figure(8),clf
     hold on
-    plot(r,Distribution,'k') 
+    plot(r,P,'k') 
     plot(r,Result,'b')
     plot(r,RegResult,'r')
     legend('truth','OBIR','Huber')

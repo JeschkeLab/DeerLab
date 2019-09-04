@@ -8,25 +8,25 @@ Dimension = 100;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
-Distribution = rd_onegaussian(r,[3,0.5]);
+P = rd_onegaussian(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegMatrix = regoperator(Dimension,2);
 RegParam = 1;
 Result = fitregmodel(DipEvoFcn,K,r,RegMatrix,'tikhonov',RegParam,'NonNegConstrained',false);
 
-err(1) = any(abs(Result - Distribution)>4e-2);
-maxerr = max(abs(Result - Distribution));
+err(1) = any(abs(Result - P)>4e-2);
+maxerr = max(abs(Result - P));
 err = any(err);
 data = [];
 
 if opt.Display
  	figure(8),clf
     hold on
-    plot(r,Distribution,'k') 
+    plot(r,P,'k') 
     plot(r,Result,'r')
 end
 

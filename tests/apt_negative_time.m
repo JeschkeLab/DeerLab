@@ -9,18 +9,18 @@ Dimension = 200;
 dt = 0.008;
 t = linspace(-0.6,2,Dimension);
 r = time2dist(t);
-Distribution = rd_onegaussian(r,[3,0.5]);
-Distribution = Distribution/sum(Distribution)/mean(diff(r));
+P = rd_onegaussian(r,[3,0.5]);
+P = P/sum(P)/mean(diff(r));
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
 DistDomainSmoothing = 0.05;
 %Test apt using a 1GHz excitation bandwidth
 aptK = aptkernel(t,'ExcitationBandwidth',1000);
-[aptDistribution,aptr] = apt(DipEvoFcn,aptK,DistDomainSmoothing);
+[aptP,aptr] = apt(DipEvoFcn,aptK,DistDomainSmoothing);
 
-error = abs(aptDistribution - Distribution);
+error = abs(aptP - P);
 err = any(error>9e-1);
 data = [];
 maxerr = max(error);
@@ -30,11 +30,11 @@ if opt.Display
     subplot(121)
     hold on
     plot(t,DipEvoFcn)
-    plot(t,dipolarkernel(t,aptr)*aptDistribution)
+    plot(t,dipolarkernel(t,aptr)*aptP)
     subplot(122)
     hold on
-    plot(r,Distribution)
-    plot(aptr,aptDistribution)
+    plot(r,P)
+    plot(aptr,aptP)
     
 end
 

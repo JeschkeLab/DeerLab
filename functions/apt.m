@@ -20,7 +20,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [Distribution,Uniformr] = apt(S,APTkernel,DistDomainSmoothing)
+function [P,Uniformr] = apt(S,APTkernel,DistDomainSmoothing)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -51,7 +51,7 @@ end
 hashKey = datahash({S,APTkernel,DistDomainSmoothing});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
-    [Distribution,Uniformr] = java2mat(Output);
+    [P,Uniformr] = java2mat(Output);
     return
 end
 
@@ -68,13 +68,13 @@ Crosstalk = APTkernel.Crosstalk;
 
 %Compute frequency distribution
 [FreqDimension,~] = size(K);
-FreqDistribution = zeros(1,FreqDimension);
+FreqP = zeros(1,FreqDimension);
 for k=1:FreqDimension
-    FreqDistribution(k) = FreqDistribution(k)+sum(K(k,:).*S.*APT_t)/NormConstant(k);
+    FreqP(k) = FreqP(k)+sum(K(k,:).*S.*APT_t)/NormConstant(k);
 end
 
 %Perform crosstalk correction
-APTdistribution = Crosstalk\FreqDistribution'; % crosstalk correction, eqn [22]
+APTdistribution = Crosstalk\FreqP'; % crosstalk correction, eqn [22]
 
 %Map fequencies to distances
 Freq2Dist = zeros(length(APT_FrequencyAxis),1); % initialize distance axis (mapping of dipolar frequencies to distances)
@@ -106,16 +106,16 @@ FilteredAPTdistribution = FilteredAPTdistribution/max(FilteredAPTdistribution);
 
 %Interpolate to uniform distance axis
 Uniformr = linspace(min(MappedDistances),max(MappedDistances),length(S));
-Distribution = uniformgrain(MappedDistances,FilteredAPTdistribution,Uniformr);
+P = uniformgrain(MappedDistances,FilteredAPTdistribution,Uniformr);
 
 %Normalize to unity integral
-Distribution = Distribution/sum(Distribution)/mean(diff(Uniformr));
+P = P/sum(P)/mean(diff(Uniformr));
 
 %Make the distribution a column
-Distribution = Distribution';
+P = P';
 
 %Store output result in the cache
-Output = {Distribution,Uniformr};
+Output = {P,Uniformr};
 cachedData = addcache(cachedData,hashKey,Output);
 
 

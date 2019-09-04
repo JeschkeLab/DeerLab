@@ -35,22 +35,29 @@ L = regoperator(Ndist,2);
 regparam = 100;
 
 Ss = {S1,S2,S3};
-Ks = {K1,K2,K3};
+
+tmodel = t3;
+info = rd_twogaussian();
+mymodel = @(t,param)K3*rd_twogaussian(r,param);
 
 
 InitialGuess = [2 0.1 5 0.1 0.5];
-[Result] = fitparamodel(Ss,@rd_twogaussian,r,Ks);
+range = [info.parameters(:).range];
+upper = range(2:2:end);
+lower = range(1:2:end-1);
 
-[Dist1] = fitparamodel(S1,@rd_twogaussian,r,K1);
-[Dist2] = fitparamodel(S2,@rd_twogaussian,r,K2);
-[Dist3] = fitparamodel(S3,@rd_twogaussian,r,K3);
+[~,paramglobal] = fitparamodel(Ss,mymodel,tmodel,InitialGuess,'Upper',upper,'lower',lower);
+
+[~,param3] = fitparamodel(S3,mymodel,tmodel,InitialGuess,'Upper',upper,'lower',lower);
+
+Result = rd_twogaussian(r,paramglobal);
+Dist3 = rd_twogaussian(r,param3);
+
 
 normResult = norm(P - Result);
-norm1 = norm(P - Dist1);
-norm2 = norm(P - Dist2);
 norm3 = norm(P - Dist3);
 
-err(1) = any(normResult > [norm2 norm3]);
+err(1) = any(normResult > [norm3]);
 err = any(err);
 data = [];
 maxerr = normResult;
@@ -60,18 +67,16 @@ figure(8),clf
 subplot(121)
 hold on
 plot(t1,S1,'k')
-plot(t2,S2+1,'k')
-plot(t3,S3+2,'k')
 plot(t1,K1*Result,'r')
+plot(t2,S2+1,'k')
 plot(t2,K2*Result + 1,'r')
+plot(t3,S3+2,'k')
 plot(t3,K3*Result + 2,'r')
 subplot(122)
 hold on
 plot(r,P,'k')
 plot(r,Result,'r')
-plot(r,Dist1,'g--')
-plot(r,Dist2,'b--')
-plot(r,Dist3,'r--')
+plot(r,Dist3,'b--')
 end
 
 end

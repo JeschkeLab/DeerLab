@@ -5,11 +5,11 @@ dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
 InputParam = [3 0.5];
-Distribution = rd_onegaussian(r,InputParam);
-Distribution = Distribution/sum(Distribution);
+P = rd_onegaussian(r,InputParam);
+P = P/sum(P);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
 rng(2)
 Noise = rand(Dimension,1);

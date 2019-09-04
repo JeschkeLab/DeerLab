@@ -8,24 +8,24 @@ t1 = linspace(0,dt*Ntime1,Ntime1);
 [~,rmin,rmax] = time2dist(t1);
 r = linspace(rmin,rmax,Ndist);
 
-Distribution = rd_twogaussian(r,[2,0.3,4,0.3,0.5]);
+P = rd_twogaussian(r,[2,0.3,4,0.3,0.5]);
 
 K1 = dipolarkernel(t1,r);
-S1 = K1*Distribution;
+S1 = K1*P;
 noise = whitegaussnoise(length(S1),0.03);
 S1 = S1 + noise;
 
 Ntime2 = 200;
 t2 = linspace(0,dt*Ntime2,Ntime2);
 K2 = dipolarkernel(t2,r);
-S2 = K2*Distribution;
+S2 = K2*P;
 noise = whitegaussnoise(length(S2),0.05);
 S2 = S2 + noise;
 
 Ntime3 = 300;
 t3 = linspace(0,dt*Ntime3,Ntime3);
 K3 = dipolarkernel(t3,r);
-S3 = K3*Distribution;
+S3 = K3*P;
 noise = whitegaussnoise(length(S3),0.1);
 S3 = S3 + noise;
 

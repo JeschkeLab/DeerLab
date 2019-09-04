@@ -1,37 +1,40 @@
-% 
+%
 % FITPARAMODEL Fits a distance distribution to one (or several) signals
 %              by fitting of a parametric model.
 %
-%   [P,param] = FITPARAMODEL(S,K,r,@model)
-%   Fitting of the N-point signal (S) to a M-point distance distribution 
-%   (P) given a M-point distance axis R and NxM point kernel (K). The fitted
-%   distribution corresponds to a parametric model calculated by the passed
-%   function handle (@model). The fitted parameters (param) are returned as a
-%   second output argument.
+%   [fit,param] = FITPARAMODEL(S,@model,t)
+%   [fit,param] = FITPARAMODEL(S,@model,r,K)
+%   Fitting of the N-point signal (S) to a M-point parametric model
+%   (fit) given a M-point distance/time axis (r/t). For distance-domain fitting
+%   the NxM point kernel (K). The fitted model corresponds to a parametric model
+%   calculated by the passed function handle (@model). The fitted parameters (param)
+%   are returned as a second output argument.
 %
-%   [P,param] = FITPARAMODEL(S,K,r,@model,param0)
+%   [fit,param] = FITPARAMODEL(S,@model,t,param0)
+%   [fit,param] = FITPARAMODEL(S,@model,r,K,param0)
 %   The initial guess of the model parameters can be passed as a last
 %   argument (param0). If (@model) is a user-defined function handle, it is
 %   required to pass (param0) as an arugment.
 %
-%   [P,param] = FITPARAMODEL({S1,S2,...},{K1,K2,...},r,@model)
+%   [fit,param] = FITPARAMODEL({S1,S2,...},@model,t,param0)
+%   [fit,param] = FITPARAMODEL({S1,S2,...},@model,r,{K1,K2,...},param0)
 %   Passing multiple signals/kernels enables global fitting of the
 %   to a single parametric model distance distribution. The global fit weights
 %   are automatically computed according to their contribution to ill-posedness.
 %
-%   [P,param] = FITPARAMODEL(...,'Property',Values)
+%   [fit,param] = FITPARAMODEL(...,'Property',Values)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
-% The properties to be passed as options can be set in any order. 
+% The properties to be passed as options can be set in any order.
 %
 %   'Solver' - Solver to be used to solve the minimization problems
-%                      'lsqnonlin' - Non-linear constrained least-squares 
+%                      'lsqnonlin' - Non-linear constrained least-squares
 %                      'fmincon' - Non-linear constrained minimization
 %                      'fminsearch' - Unconstrained minimization
 %
-%   'CostModel' - Type of fitting cost functional to use. 
+%   'CostModel' - Type of fitting cost functional to use.
 %                      'lsq' - Least-squares fitting
-%                      'chisquared' - Chi-squared fitting (as in GLADD or DD) 
+%                      'chisquared' - Chi-squared fitting (as in GLADD or DD)
 %
 %   'GlobalWeights' - Array of weighting coefficients for the individual signals in
 %                     global fitting regularization.
@@ -47,42 +50,82 @@
 %
 %   'MaxIter' - Maximum number of optimizer iterations
 %
-%   'MaxFunEvals' - Maximum number of optimizer function evaluations   
+%   'MaxFunEvals' - Maximum number of optimizer function evaluations
 %
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
-% 
+%
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
 
 
-function [Distribution,FitParameters] = fitparamodel(S,K,r,Model,StartParameters,varargin)
+function [P,FitParameters] = fitparamodel(S,model,ax,K,StartParameters,varargin)
 
 %--------------------------------------------------------------------------
 % Input Parsening & Validation
 %--------------------------------------------------------------------------
 
-if isempty(K)
-    K = eye(length(r)); 
-    normalize = false;
+%Parse the different styles of input
+
+%Input #1 fitparamodel(S,model,t)
+if nargin<4 || isempty(K)
+    Knotpassed = true;
+%Input #2 fitparamodel(S,model,t,'Property',Value)
+elseif nargin>3 && ischar(K) && ~iscell(K)
+    if nargin>4
+        varargin = [{K} {StartParameters} varargin];
+    end
+    StartParameters = [];
+    Knotpassed = true;
+%Input #3 fitparamodel(S,model,t,StartParameters,'Property',Value)
+elseif nargin>3 &&  ~all(size(K)>1) && ~iscell(K)
+    if nargin>4
+        varargin = [{StartParameters} varargin];
+    end
+    StartParameters = K;
+    Knotpassed = true;
+%Input #4 fitparamodel(S,model,r,K,StartParameters,'Property',Value)
 else
-    normalize = true;
+    Knotpassed = false;
+end
+if Knotpassed
+    %Check if global fitting is in use
+    if iscell(S)
+        K = cell(size(S));
+        for i=1:length(S)
+         K{i} = eye(length(S{i}),length(ax));
+        end
+    else
+        K = eye(length(S),length(ax));
+    end
+    isDistanceDomain = false;
+else
+%Input #5 fitparamodel(S,model,r,K,'Property',Value)
+    if nargin>4 && ischar(StartParameters)
+        varargin = [{StartParameters},varargin];
+        StartParameters = [];
+    end
+    isDistanceDomain = true;
+end
+
+if ~isa(model,'function_handle')
+   error('Model must be a valid function handle.') 
 end
 
 %Get information about the parametric model
 try
     %Check whether model is a DeerAnalysis model...
-    Info = Model();
+    Info = model();
 catch
     %... if not, then user is required to pass the inital values
     if isempty(StartParameters) || ischar(StartParameters)
         error('When using a user-defined function, the inital guess parameters are required.')
     end
     %If passed, then transform the function handle to valid parametric model
-    Model = paramodel(Model,StartParameters,[],[],normalize);
-    Info = Model();
+    model = paramodel(model,StartParameters,[],[],isDistanceDomain);
+    Info = model();
 end
 if nargin<5 || isempty(StartParameters)
     %If user does not give parameters, use the defaults of the model
@@ -94,10 +137,11 @@ else
     validateattributes(StartParameters,{'numeric'},{'2d','nonempty'},mfilename,'StartParameters')
 end
 
-%Get optional parameters
+%Parse the optional parameters in the varargin
 [Solver,Algorithm,MaxIter,MaxFunEvals,TolFun,CostModel,GlobalWeights,UpperBounds,LowerBounds] = parseoptional(...
-{'Solver','Algorithm','MaxIter','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower'},varargin);
+    {'Solver','Algorithm','MaxIter','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower'},varargin);
 
+%Validate all inputs
 if isempty(CostModel)
     CostModel = 'lsq';
 else
@@ -139,10 +183,10 @@ else
     validInputs = {'levenberg-marquardt','interior-point','trust-region-reflective','active-set','sqp'};
     Algorithm = validatestring(Algorithm,validInputs);
 end
-if ~iscolumn(r)
-    r = r.';
+if ~iscolumn(ax)
+    ax = ax.';
 end
-if numel(unique(round(diff(r),12)))~=1
+if numel(unique(round(diff(ax),12)))~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
 if ~iscell(S)
@@ -180,9 +224,17 @@ for i=1:length(S)
     validateattributes(S{i},{'numeric'},{'nonempty'},mfilename,'S')
 end
 
-%Convert distance axis to nanoseconds if givne in Angstrom
-if ~isnanometer(r)
-   r = r/10; 
+if isDistanceDomain
+    %Convert distance axis to nanometers if given in Angstrom
+    if ~isnanometer(ax)
+        ax = ax/10;
+    end 
+else
+    % Convert time axis to microseconds if given in nanoseconds
+    usesNanoseconds = mean(diff(ax))>=0.5;
+    if usesNanoseconds
+        ax = round(ax)/1000; % ns->us
+    end
 end
 
 
@@ -193,10 +245,10 @@ end
 %Define the cost functional of a single signal
 switch CostModel
     case 'lsq'
-        ModelCost = @(Parameters,K,S) (norm(K*Model(r,Parameters) - S)^2);
+        ModelCost = @(Parameters,K,S) (norm(K*model(ax,Parameters) - S)^2);
     case 'chisquare'
         nParam = length(StartParameters);
-        ModelCost = @(Parameters,K,S) (1/(length(S) - nParam)/(noiselevel(S)^2)*sum((K*Model(r,Parameters) - S).^2));
+        ModelCost = @(Parameters,K,S) (1/(length(S) - nParam)/(noiselevel(S)^2)*sum((K*model(ax,Parameters) - S).^2));
 end
 
 %Get weights of different signals for global fitting
@@ -211,11 +263,21 @@ CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y)ModelCost(Parameters,x,y),K,
 %Prepare upper/lower bounds on parameter search
 Ranges =  [Info.parameters(:).range];
 if isempty(LowerBounds)
-LowerBounds = Ranges(1:2:end-1);
+    LowerBounds = Ranges(1:2:end-1);
 end
 if isempty(UpperBounds)
-UpperBounds = Ranges(2:2:end);
+    UpperBounds = Ranges(2:2:end);
 end
+if any(UpperBounds==realmax) || any(LowerBounds == -realmax)
+   warning('Some model parameters are unbounded. Use ''Lower'' and ''Upper'' options to pass parameter boundaries')
+end
+if any(length(StartParameters)~=length(UpperBounds) & length(StartParameters)~=length(LowerBounds))
+   error('The Inital guess and upper/lower boundaries must have equal length); ') 
+end
+if any(UpperBounds<LowerBounds)
+   error('Lower bound values cannot be larger than upper bound values.') 
+end
+
 
 %Fit the parametric model...
 switch Solver
@@ -238,7 +300,7 @@ switch Solver
         solverOpts=optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display','off',...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*Model(r,Parameters) - S{1}));
+        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax,Parameters) - S{1}));
         [FitParameters,~,~,exitflag]  = lsqnonlin(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
@@ -256,7 +318,7 @@ switch Solver
 end
 
 %Compute fitted distance distribution
-Distribution = Model(r,FitParameters);
+P = model(ax,FitParameters);
 
 return
 

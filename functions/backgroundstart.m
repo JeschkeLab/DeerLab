@@ -125,11 +125,11 @@ for FitStartPos = StartPosMin:StartPosMax
     
     %Perform APT on background-corrected signal
     [FreqDimension,~] = size(K);
-    FreqDistribution=zeros(1,FreqDimension);
+    FreqP=zeros(1,FreqDimension);
     for k=1:FreqDimension % sum in eqn [21]
-        FreqDistribution(k)=FreqDistribution(k)+sum(K(k,:).*FormFactor.*APT_t)/NormConstant(k);
+        FreqP(k)=FreqP(k)+sum(K(k,:).*FormFactor.*APT_t)/NormConstant(k);
     end
-    APTdistribution = Crosstalk\FreqDistribution';
+    APTdistribution = Crosstalk\FreqP';
     
     %Get merit value for this background start value
     Merit(FitStartPos - StartPosMin + 1) = sum(abs(APTdistribution(1:3)));

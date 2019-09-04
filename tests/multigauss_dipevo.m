@@ -6,18 +6,18 @@ dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
 InputParam = [4 0.2 4 1 3 0.4 0.4 0.4];
-Distribution = rd_threegaussian(r,InputParam);
-Distribution = Distribution/(1/sqrt(2*pi)*1/InputParam(2));
-Distribution = Distribution/sum(Distribution)/mean(diff(r));
+P = rd_threegaussian(r,InputParam);
+P = P/(1/sqrt(2*pi)*1/InputParam(2));
+P = P/sum(P)/mean(diff(r));
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
-[FitDistribution,FitParam] = multigauss(DipEvoFcn,K,r,5,'aicc');
-err = any(abs(FitDistribution - Distribution)>1e-5);
+[FitP,FitParam] = multigauss(DipEvoFcn,K,r,5,'aicc');
+err = any(abs(FitP - P)>1e-5);
 
 
-maxerr = max(abs(FitDistribution - Distribution));
+maxerr = max(abs(FitP - P));
 data = [];
 
 if opt.Display
@@ -25,11 +25,11 @@ if opt.Display
    subplot(121)
    hold on
    plot(t,DipEvoFcn,'b')
-   plot(t,K*FitDistribution,'r')
+   plot(t,K*FitP,'r')
    subplot(122)
    hold on
-   plot(r,Distribution,'b')
-   plot(r,FitDistribution,'r')
+   plot(r,P,'b')
+   plot(r,FitP,'r')
 end
 
 end

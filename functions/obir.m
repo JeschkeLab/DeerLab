@@ -46,7 +46,7 @@
 % the Free Software Foundation.
 
 
-function [Distribution,ConvergenceCurve] = obir(S,K,r,RegType,RegMatrix,RegParam,varargin)
+function [P,ConvergenceCurve] = obir(S,K,r,RegType,RegMatrix,RegParam,varargin)
 
 if ~iscolumn(S)
     S = S';
@@ -155,11 +155,11 @@ end
 %--------------------------------------------------------------------------
 
 %Initialize
-SizeDistribution = length(S);
-Subgradient = zeros(SizeDistribution,1);
+SizeP = length(S);
+Subgradient = zeros(SizeP,1);
 Counter = 1;
 Iteration = 1;
-Distribution = zeros(SizeDistribution,1);
+P = zeros(SizeP,1);
 
 %--------------------------------------------------------------------------
 % Osher's Bregman Iterations Algorithm
@@ -172,37 +172,37 @@ NonNegConst = zeros(Dimension,1);
 while Iteration <= MaxOuterIter
     
     %Store privous iteration distribution
-    CheckDistribution = Distribution;
+    CheckP = P;
     
     switch Solver
         case 'fmincon'
             %Define current minimization problem
             RegFunctional = regfunctional(RegType,S,RegMatrix,K,RegParam,HuberParam);
-            fminconFunctional = @(Distribution)OBIRFunctional(Distribution,RegFunctional,Subgradient);
+            fminconFunctional = @(P)OBIRFunctional(P,RegFunctional,Subgradient);
             fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
             %Run minimzation
-            Distribution =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
+            P =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         case 'fnnls'
             
             [Q,KtS] = lsqcomponents(S,K,RegMatrix,RegParam,RegType,HuberParam);
             KtS = KtS - Subgradient;
-            Distribution = fnnls(Q,KtS,InitialGuess,TolFun);
+            P = fnnls(Q,KtS,InitialGuess,TolFun);
             %In some cases, fnnls may return negatives if tolerance is to high
-            if any(Distribution < 0)
+            if any(P < 0)
                 %... in those cases continue from current solution
-                Distribution = fnnls(Q,KtS,Distribution,1e-20);
+                P = fnnls(Q,KtS,P,1e-20);
             end
     end
     %Store current convergence curve point
-    ConvergenceCurve(Iteration) = std(K*Distribution - S);
+    ConvergenceCurve(Iteration) = std(K*P - S);
     
-    %If hook to axes is given, then plot the current Distribution
+    %If hook to axes is given, then plot the current P
     if ~isempty(AxisHandle)
-        set(AxisHandle,'YData',Distribution)
+        set(AxisHandle,'YData',P)
         drawnow
     end
     %Update subgradient at current solution
-    Subgradient = Subgradient + K'*(K*Distribution - S);
+    Subgradient = Subgradient + K'*(K*P - S);
     
     
     
@@ -211,7 +211,7 @@ while Iteration <= MaxOuterIter
     %--------------------------------------------------------------------------
     if Iteration == 1
         %If at first iteration, thae residual deviation is already below the noise deviation then impose oversmoothing and remain at first iteration
-        if NoiseLevelAim  > std(K*Distribution - S)
+        if NoiseLevelAim  > std(K*P - S)
             RegParam = RegParam*2^Counter;
             Counter = Counter + 1;
         else
@@ -220,14 +220,14 @@ while Iteration <= MaxOuterIter
         end
     else
         %For the rest of the Bregman iterations control the condition and stop when fulfilled
-        if NoiseLevelAim  > std(K*Distribution - S)
+        if NoiseLevelAim  > std(K*P - S)
             break;
         else
             Iteration  = Iteration +1;
         end
         %If residual deviation starts to diverge, stop
-        if DivergenceStop && std(K*CheckDistribution - S) < std(K*Distribution - S)
-            Distribution = CheckDistribution;
+        if DivergenceStop && std(K*CheckP - S) < std(K*P - S)
+            P = CheckP;
             break;
         end
     end
@@ -235,12 +235,12 @@ while Iteration <= MaxOuterIter
 end
 
 %Normalize distribution integral
-Distribution = Distribution/sum(Distribution)/mean(diff(r));
+P = P/sum(P)/mean(diff(r));
 
 end
 
-function [Functional,Gradient] = OBIRFunctional(Distribution,RegFunctional,Subgradient)
-[FunctionalPart,GradientPart] =  RegFunctional(Distribution);
-Functional = FunctionalPart + dot(Distribution,Subgradient);
+function [Functional,Gradient] = OBIRFunctional(P,RegFunctional,Subgradient)
+[FunctionalPart,GradientPart] =  RegFunctional(P);
+Functional = FunctionalPart + dot(P,Subgradient);
 Gradient = GradientPart + Subgradient;
 end

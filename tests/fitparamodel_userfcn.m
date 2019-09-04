@@ -17,19 +17,19 @@ S = K*P;
 InitialGuess = [3.5 0.3];
 fcnhandle = @(r,param)exp(-((r-param(1))/(param(2))).^2);
 
-[FitDistribution,FitParam] = fitparamodel(S,K,r,fcnhandle,InitialGuess);
-err(1) = any(abs(FitDistribution - P)>1e-5);
+[FitP,FitParam] = fitparamodel(S,fcnhandle,r,K,InitialGuess);
+err(1) = any(abs(FitP - P)>1e-5);
 err(2) = any(abs(FitParam - InputParam)>1e-3);
-err(3)  = length(FitDistribution) < length(S);
+err(3)  = length(FitP) < length(S);
 err = any(err);
 
-maxerr = max(abs(FitDistribution - P));
+maxerr = max(abs(FitP - P));
 data = [];
 
 if opt.Display
    figure(1),clf,hold on
    plot(t,P,'b')
-   plot(t,FitDistribution,'r')
+   plot(t,FitP,'r')
 end
 
 end

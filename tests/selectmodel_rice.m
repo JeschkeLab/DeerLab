@@ -7,11 +7,11 @@ dt = 0.016;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
 InputParam = [3 0.2 5.5 0.3 0.5];
-Distribution = rd_tworice(r,InputParam);
-Distribution = Distribution/sum(Distribution)/mean(diff(r));
+P = rd_tworice(r,InputParam);
+P = P/sum(P)/mean(diff(r));
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
 Models = {@rd_onerice,@rd_tworice,@rd_threerice};
 

@@ -36,7 +36,7 @@ RegParamRange = getRegParamRange(K,RegMatrix);
 RegParam = selectRegParam(RegParamRange,S2Reg,K,RegMatrix,{'gml'});
 
 %Run regularization
-Distribution1 = regularize(S2Reg,K,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
+P1 = regularize(S2Reg,K,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
 
 S2Reg2 = S;
 
@@ -45,7 +45,7 @@ K = getK(t,r,B,'KBType','full');
 RegParamRange = getRegParamRange(K,RegMatrix);
 RegParam = selectRegParam(RegParamRange,S2Reg2,K,RegMatrix,{'gml'});
 
-Distribution2 = regularize(S2Reg2,K,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
+P2 = regularize(S2Reg2,K,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
 
 ModDepth = 1/B(1) - 1;
 S2Reg3 = S./B;
@@ -56,25 +56,25 @@ K = getK(t,r);
 RegParamRange = getRegParamRange(K,RegMatrix);
 RegParam = selectRegParam(RegParamRange,S2Reg3,K,RegMatrix,{'gml'});
 
-Distribution3 = regularize(S2Reg3,K,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
+P3 = regularize(S2Reg3,K,RegMatrix,'tikhonov',RegParam(1),'Solver','fnnls');
 
 
 figure(1),clf
 
 subplot(121),hold on
 plot(t,S2Reg3,'k')
-plot(t,K*Distribution1)
-plot(t,K*Distribution2)
-plot(t,K*Distribution3)
+plot(t,K*P1)
+plot(t,K*P2)
+plot(t,K*P3)
 
 xlabel('Time [\mus]')
 ylabel('Intensity [a.u.]')
 legend('Sqrt(B)','B','division')
 
 subplot(122),hold on
-plot(r,Distribution1)
-plot(r,Distribution2)
-plot(r,Distribution3)
+plot(r,P1)
+plot(r,P2)
+plot(r,P3)
 
 xlabel('Distance [nm]')
 ylabel('P(r)')

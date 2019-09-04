@@ -13,7 +13,7 @@ S = K*P;
 mymodel = @(t,param)K*rd_onegaussian(r,param);
 
 InitialGuess = [2 0.1];
-[Sfit,FitParam] = fitparamodel(S,[],t,mymodel,InitialGuess);
+[Sfit,FitParam] = fitparamodel(S,mymodel,t,InitialGuess);
 Pfit = rd_onegaussian(r,FitParam);
 err(1) = any(abs(Pfit - P)>1e-5);
 err(2) = any(abs(FitParam - InputParam)>1e-3);

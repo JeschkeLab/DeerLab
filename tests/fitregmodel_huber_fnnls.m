@@ -9,17 +9,17 @@ Dimension = 80;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
-Distribution = rd_onegaussian(r,[3,0.5]);
+P = rd_onegaussian(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
 %Set optimal regularization parameter (found numerically lambda=0.005)
 RegParam = 0.001;
 RegMatrix = regoperator(Dimension,2);
 Result = fitregmodel(DipEvoFcn,K,r,RegMatrix,'huber',RegParam,'Solver','fnnls','HuberParam',1.35);
 
-error = abs(Result - Distribution);
+error = abs(Result - P);
 err(1) = any(error>1e-2);
 maxerr = max(error);
 err = any(err);
@@ -28,7 +28,7 @@ data = [];
 if opt.Display
  	figure(8),clf
     hold on
-    plot(r,Distribution,'k') 
+    plot(r,P,'k') 
     plot(r,Result,'r')
 end
 

@@ -6,17 +6,17 @@ dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
 InputParam = [2 0.5 3 0.5 0.4];
-Distribution = rd_twogaussian(r,InputParam);
+P = rd_twogaussian(r,InputParam);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
 InitialGuess = [2 0.1 5 0.1 0.5];
-[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,K,r,@rd_twogaussian,InitialGuess);
-err(1) = any(abs(FitDistribution - Distribution)>1e-5);
+[FitP,FitParam] = fitparamodel(DipEvoFcn,@rd_twogaussian,r,K,InitialGuess);
+err(1) = any(abs(FitP - P)>1e-5);
 err = any(err);
 
-maxerr = max(abs(FitDistribution - Distribution));
+maxerr = max(abs(FitP - P));
 data = [];
 
 if opt.Display
@@ -24,11 +24,11 @@ if opt.Display
    subplot(121)
    hold on
    plot(t,DipEvoFcn,'b')
-   plot(t,K*FitDistribution,'r')
+   plot(t,K*FitP,'r')
    subplot(122)
    hold on
-   plot(r,Distribution,'b')
-   plot(r,FitDistribution,'r')
+   plot(r,P,'b')
+   plot(r,FitP,'r')
    
 end
 

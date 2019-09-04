@@ -14,7 +14,7 @@ options = daoptions();
 
 nParam = size(varparam,1);
 
-Distributions = zeros(nParam,length(ExpS));
+Ps = zeros(nParam,length(ExpS));
 
 for i=1:nParam
     
@@ -24,11 +24,11 @@ for i=1:nParam
     %Run signal preparation
     ProcessedS = prepareS(ExpS,options);
     %Get the distribution
-    Distributions(i,:) = getDistribution(ProcessedS,options);
+    Ps(i,:) = getP(ProcessedS,options);
     
     %Hook for GUI callbacks
     if ~isempty(Callback)
-        Callback(i,Distributions);
+        Callback(i,Ps);
     end
 end
 

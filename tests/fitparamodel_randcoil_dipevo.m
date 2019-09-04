@@ -11,27 +11,27 @@ SquareDist = 6*R0*InputParam(1)^InputParam(2)^2; %mean square end-to-end distanc
 normFact = 3/(2*pi*SquareDist)^(3/2); % normalization prefactor
 ShellSurf = 4*pi*r.^2; % spherical shell surface
 Gaussian = exp(-3*r.^2/(2*SquareDist));
-Distribution = normFact*ShellSurf.*Gaussian;
-Distribution = Distribution/sum(Distribution)/mean(diff(r));
-Distribution = Distribution.';
+P = normFact*ShellSurf.*Gaussian;
+P = P/sum(P)/mean(diff(r));
+P = P.';
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
-[FitDistribution] = fitparamodel(DipEvoFcn,K,r,@rd_randcoil);
-err = any(abs(FitDistribution - Distribution)>1e-10);
+[FitP] = fitparamodel(DipEvoFcn,@rd_randcoil,r,K);
+err = any(abs(FitP - P)>1e-10);
 
-maxerr = max(abs(FitDistribution - Distribution));
+maxerr = max(abs(FitP - P));
 data = [];
 
 if opt.Display
    figure(1),clf,
    subplot(121),hold on
    plot(t,DipEvoFcn,'b')
-   plot(t,K*FitDistribution,'r')
+   plot(t,K*FitP,'r')
    subplot(122),hold on
-   plot(r,Distribution,'b')
-   plot(r,FitDistribution,'r')
+   plot(r,P,'b')
+   plot(r,FitP,'r')
 end
 
 end

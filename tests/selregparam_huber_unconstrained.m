@@ -8,11 +8,11 @@ Dimension = 100;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
-Distribution = rd_onegaussian(r,[3,0.5]);
+P = rd_onegaussian(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
 RegMatrix = regoperator(Dimension,2);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
 RegParamSet = regparamrange(K,RegMatrix);
 [OptParam,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn,K,RegMatrix,'huber',{'aic','gcv'},'NonNegConstrained',false);

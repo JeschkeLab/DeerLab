@@ -7,10 +7,10 @@ Dimension = 200;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
-Distribution = rd_onegaussian(r,[3,0.5]);
+P = rd_onegaussian(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
 
 rESEEM = 1.5;
@@ -25,7 +25,7 @@ RegParam = regparamrange(K,L);
 RegParam2 = selregparam(RegParam,Filtered,K,L,'tikhonov','gml');
 Result = fitregmodel(Filtered,K,r,L,'tikhonov',RegParam2,'Solver','fnnls');
 
-error = abs(Result - Distribution);
+error = abs(Result - P);
 err(1) = any(error>3e-1);
 maxerr = max(error);
 err = any(err);
@@ -34,7 +34,7 @@ data = [];
 if opt.Display
     figure(9),clf
     subplot(122),hold on
-    plot(r,Distribution)
+    plot(r,P)
     plot(r,Result)
     Result = fitregmodel(S,K,r,L,'tikhonov',RegParam2,'Solver','fnnls');
     plot(r,Result)

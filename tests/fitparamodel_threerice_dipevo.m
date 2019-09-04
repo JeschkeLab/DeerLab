@@ -6,16 +6,16 @@ dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
 InputParam = [2 0.4 3.5 0.3 5 0.3 0.3 0.3];
-Distribution = rd_threerice(r,InputParam);
-Distribution = Distribution/sum(Distribution)/mean(diff(r));
+P = rd_threerice(r,InputParam);
+P = P/sum(P)/mean(diff(r));
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
-[FitDistribution] = fitparamodel(DipEvoFcn,K,r,@rd_threerice,0.75*InputParam,'solver','lsqnonlin');
-err = any(abs(FitDistribution - Distribution)>1e-2);
+[FitP] = fitparamodel(DipEvoFcn,@rd_threerice,r,K,0.75*InputParam,'solver','lsqnonlin');
+err = any(abs(FitP - P)>1e-2);
 
-maxerr = max(abs(FitDistribution - Distribution));
+maxerr = max(abs(FitP - P));
 data = [];
 
 if opt.Display
@@ -23,11 +23,11 @@ if opt.Display
    subplot(121)
    hold on
    plot(t,DipEvoFcn,'b')
-   plot(t,K*FitDistribution,'r')
+   plot(t,K*FitP,'r')
    subplot(122)
    hold on
-   plot(r,Distribution,'b')
-   plot(r,FitDistribution,'r')
+   plot(r,P,'b')
+   plot(r,FitP,'r')
 end
 
 end

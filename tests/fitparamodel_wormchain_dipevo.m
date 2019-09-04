@@ -10,7 +10,7 @@ L=InputParam(1);
 Lp=InputParam(2);
 kappa=Lp/L;
 rn = r/L;
-Distribution=zeros(size(r));
+P=zeros(size(r));
 %How Gunnar calculated the model
 terms=2;
 for pp=1:length(rn)
@@ -29,31 +29,31 @@ for pp=1:length(rn)
             G=G+fac*1/(kappa*(1-rn(pp)))^(3/2)*exp(-(l-1/2)^2/(kappa*(1-rn(pp))))*h2;
         end
     end
-    Distribution(pp) = G;
+    P(pp) = G;
 end
 
-Distribution = Distribution.';
-Distribution = Distribution/sum(Distribution)/mean(diff(r));
+P = P.';
+P = P/sum(P)/mean(diff(r));
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
-[FitDistribution,FitParam] = fitparamodel(DipEvoFcn,K,r,@rd_wormchain,[],'Solver','lsqnonlin');
-err(1) = any(abs(FitDistribution - Distribution)>5e-3);
+[FitP,FitParam] = fitparamodel(DipEvoFcn,@rd_wormchain,r,K,'Solver','lsqnonlin');
+err(1) = any(abs(FitP - P)>5e-3);
 err(2) = any(abs(FitParam - InputParam)>1e-2);
 err = any(err);
 
-maxerr = max(abs(FitDistribution - Distribution));
+maxerr = max(abs(FitP - P));
 data = [];
 
 if opt.Display
    figure(1),clf,
    subplot(121),hold on
    plot(t,DipEvoFcn,'b')
-   plot(t,K*FitDistribution,'r')
+   plot(t,K*FitP,'r')
    subplot(122),hold on
-   plot(r,Distribution,'b')
-   plot(r,FitDistribution,'r')
+   plot(r,P,'b')
+   plot(r,FitP,'r')
 end
 
 end

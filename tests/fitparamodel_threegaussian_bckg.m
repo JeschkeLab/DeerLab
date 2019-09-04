@@ -6,36 +6,36 @@ dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
 InputParam = [2.5 0.5 4 0.5 3 0.2 0.3 0.4];
-Distribution = rd_threegaussian(r,InputParam);
+P = rd_threegaussian(r,InputParam);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 B = exp(-0.15*t)';
-ClusterFcn = (DipEvoFcn + 5).*B;
-ModDepth = 1/ClusterFcn(1);
-ClusterFcn = ClusterFcn/ClusterFcn(1);
-ClusterFcn = ClusterFcn./sqrt(B);
+V = (DipEvoFcn + 5).*B;
+ModDepth = 1/V(1);
+V = V/V(1);
+V = V./sqrt(B);
 
 
 KB = dipolarkernel(t,r,ModDepth,sqrt(B));
 
 InitialGuess = [2 0.1 5 0.1 1 0.2 0.1 0.5];
-[FitDistribution] = fitparamodel(ClusterFcn,KB,r,@rd_threegaussian,InitialGuess);
-err(1) = any(abs(FitDistribution - Distribution)>1e-4);
+[FitP] = fitparamodel(V,@rd_threegaussian,r,KB,InitialGuess);
+err(1) = any(abs(FitP - P)>1e-4);
 err = any(err);
-maxerr = max(abs(FitDistribution - Distribution));
+maxerr = max(abs(FitP - P));
 data = [];
 
 if opt.Display
    figure(1),clf
    subplot(121)
    hold on
-   plot(t,ClusterFcn,'b')
-   plot(t,KB*FitDistribution,'r')
+   plot(t,V,'b')
+   plot(t,KB*FitP,'r')
    subplot(122)
    hold on
-   plot(r,Distribution,'b')
-   plot(r,FitDistribution,'r')
+   plot(r,P,'b')
+   plot(r,FitP,'r')
    
 end
 

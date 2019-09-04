@@ -4,46 +4,63 @@
 *********************
 :mod:`fitparamodel`
 *********************
-Fits a distance distribution to one (or several) signals by fitting of a parametric model.
+
+Fits a time or distance-domain parametric model to one (or several) signals.
 
 Syntax
 =========================================
 
 .. code-block:: matlab
 
-    P = fitparamodel(S,K,r,@model)
-    P = fitparamodel({S1,S2,S3},{K1,K2,S3},r,@model)
-    P = fitparamodel(S,K,r,@model,'Property',Value)
+    [fit,param] = fitparamodel(S,@model,t)
+    [fit,param] = fitparamodel(S,@model,t,param0)
+    [fit,param] = fitparamodel(S,@model,r,K)
+    [fit,param] = fitparamodel(S,@model,r,K,param0)
+    [fit,param] = fitparamodel({S1,S2,S3},@model,r,{K1,K2,S3},param0)
+    [fit,param] = fitparamodel({S1,S2,S3},@model,t,param0)
+    [fit,param] = fitparamodel(S,@model,t,'Property',Value)
+    [fit,param] = fitparamodel(S,@model,t,param0,'Property',Value)
+    [fit,param] = fitparamodel(S,@model,r,K,'Property',Value)
+    [fit,param] = fitparamodel(S,@model,r,K,param0,'Property',Value)
 
 
 Parameters
     *   ``S`` - Input signal (N-array)
-    *   ``K`` -  Dipolar kernel (NxM-array)
-    *   ``r`` -  Distance Axis (N-array)
     *   ``model`` - Parametric model (function handle)
+    *   ``t`` -  Model time axis (M-array)
+    *   ``r`` -  Model distance axis (M-array)
+    *   ``K`` -  Dipolar kernel (NxM-array)
+    *   ``param0`` -  Model parameter inital guess (array)
 Returns
-    *  ``P`` - Distance Distribution (M-array)
+    *  ``fit`` - Parametric model fit (M-array)
+    *  ``param`` - Fitted model paramters (array)
 
 Description
 =========================================
 
 .. code-block:: matlab
 
-    P = fitparamodel(S,K,r,@model)
+    [fit,param] = fitparamodel(S,@model,t)
+    [fit,param] = fitparamodel(S,@model,t,param0)
 
-Fitting of the N-point signal ``S`` to a M-point distance distribution ``P`` given a M-point distance axis ``r`` and NxM point kernel ``K``. The fitted distribution corresponds to a parametric model calculated by the passed function handle ``@model``.
+Fits the *time*-domain parametric model ``@model`` to the input signal ``S`` on a time axis ``t``. User-defined inital guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
 
-See the documentation for constructing the dipolar kernel (:ref:`dipolarkernel`).
+    [fit,param] = fitparamodel(S,@model,r,K)
+    [fit,param] = fitparamodel(S,@model,r,K,param0)
+
+Fits the *distance*-domain parametric model ``@model`` to the input signal ``S`` on a distance axis ``r``. The dipolar kernel ``K`` is required as in input for distance-domain fitting. User-defined inital guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
 
 .. code-block:: matlab
 
-    P = fitparamodel({S1,S2,S3},{K1,K2,S3},r,@model)
+    P = fitparamodel({S1,S2,S3},@model,r,{K1,K2,S3})
+    P = fitparamodel({S1,S2,S3},@model,r,{K1,K2,S3},param0)
 
 Passing multiple signals/kernels enables global fitting of the parametric model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes N1,N2,... and a cell array of Kernel matrices with sizes N1xM,N2xM,... must be passed as well.
 
-.. note:: The output distance distribution is already normalized by to unity integral and by the distance axis resolution
+    P = fitparamodel({S1,S2,S3},@model,t)
+    P = fitparamodel({S1,S2,S3},@model,t,param0)
 
-    .. math:: \mathbf{P}' = \frac{\mathbf{P}}{\sum\mathbf{P}\Delta\mathbf{r}}
+Similarly, time-domain global fitting can be used when passing a time-domain ``@model`` and the model time axis ``t``.
 
 Optional Arguments
 =========================================
@@ -51,7 +68,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 .. code-block:: matlab
 
-    P = fitparamodel(args,'Property1',Value1,'Property2',Value2,...)
+    fit = fitparamodel(args,'Property1',Value1,'Property2',Value2,...)
 
 
 CostModel
@@ -67,7 +84,29 @@ CostModel
 
     .. code-block:: matlab
 
-       P = fitparamodel(args,'CostModel','chisquared')
+       fit = fitparamodel(args,'CostModel','chisquared')
+
+Upper
+    Array of upper bounds for the model parameters.
+
+    *Default:* unbounded or automatically set
+
+    *Example:*
+
+    .. code-block:: matlab
+
+       fit = fitparamodel(args,'Upper',[1 100])
+
+Lower
+    Array of lower bounds for the model parameters.
+
+    *Default:* unbounded or automatically set
+
+    *Example:*
+
+    .. code-block:: matlab
+
+       fit = fitparamodel(args,'Lower',[0 3])
 
 Solver
     Numerical solver employed for the minimization of the regularization functional models.
@@ -82,7 +121,7 @@ Solver
 
     .. code-block:: matlab
 
-        P = fitparamodel(args,'Solver','fmincon')
+        fit = fitparamodel(args,'Solver','fmincon')
 
 Algorithm
     Algorithm to be used by the solvers (see ``fmincon`` or ``lsqnonlin`` MATLAB documentation)
@@ -93,7 +132,7 @@ Algorithm
 
     .. code-block:: matlab
 
-        P = fitparamodel(args,'Algorithm','trust-region-reflective')
+        fit = fitparamodel(args,'Algorithm','trust-region-reflective')
 
 GlobalWeights
     Array of weighting coefficients for the individual signals in global fitting. If not specified, the global fit weights are automatically computed according to their contribution to ill-posedness. The weights must be normalized such that the sum over all weights equals one. The same number of weights as number of input signals is required.
@@ -104,7 +143,7 @@ GlobalWeights
 
     .. code-block:: matlab
 
-        P = fitparamodel({S1,S2,S3},{K1,K2,K3},r,L,'tikhonov',a,'GlobalWeights',[0.1 0.6 0.3]])
+        fit = fitparamodel({S1,S2,S3},{K1,K2,K3},r,L,'tikhonov',a,'GlobalWeights',[0.1 0.6 0.3]])
 
 TolFun
     Optimizer function tolerance. The solver stops once the regularization functional evaluation reaches a value lower than this tolerance. Lower values increase the precision of the result, albeit at the cost of longer computation times.
@@ -115,7 +154,7 @@ TolFun
 
     .. code-block:: matlab
 
-        P = fitparamodel(args,'TolFun',1e-20)
+        fit = fitparamodel(args,'TolFun',1e-20)
 
 MaxIter
     Maximum number of iterations of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
@@ -126,7 +165,7 @@ MaxIter
 
     .. code-block:: matlab
 
-        P = fitparamodel(args,'MaxIter',1e10)
+        fit = fitparamodel(args,'MaxIter',1e10)
 
 MaxFunEval
     Maximum number of function evaluation of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
@@ -137,4 +176,4 @@ MaxFunEval
 
     .. code-block:: matlab
 
-        P = fitparamodel(args,'MaxFunEval',1e10)
+        fit = fitparamodel(args,'MaxFunEval',1e10)

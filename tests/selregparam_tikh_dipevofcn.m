@@ -8,12 +8,12 @@ Dimension = 80;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
-Distribution = rd_onegaussian(r,[3,0.5]);
-Distribution = Distribution/sum(Distribution);
+P = rd_onegaussian(r,[3,0.5]);
+P = P/sum(P);
 
 K = dipolarkernel(t,r);
 RegMatrix = regoperator(Dimension,2);
-DipEvoFcn = K*Distribution;
+DipEvoFcn = K*P;
 
 RegParamSet = regparamrange(K,RegMatrix);
 [OptParam,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn,K,RegMatrix,'tikhonov',{'aic','gcv','lr'});
