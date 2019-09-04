@@ -1,9 +1,9 @@
 .. highlight:: matlab
 .. _whitegaussnoise:
 
-*********************
+*************************
 :mod:`whitegaussnoise`
-*********************
+*************************
 
 Generates Gaussian-distributed noise with uniform power spectrum distribution
 
