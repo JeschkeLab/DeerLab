@@ -36,7 +36,7 @@ mymodel = paramodel(fcnhandle,[lambdafit,Bparamfit],[0 0],[1 10]);
 I = eye(length(t));
 
 %Launch the fitting of the B-parametric model + Tikhonov regularization
-[~,parafit] = fitparamodel(V,I,t,mymodel);
+[~,parafit] = fitparamodel(V,I,t,fcnhandle,[lambdafit,Bparamfit],'Lower',[0 0],'Upper',[1 10]);
 
 %Obtain the fitted signal and distance distribution
 [Vfit,Pfit] = myfitting(t,parafit,r,V);

@@ -9,12 +9,17 @@
 %   function handle (@model). The fitted parameters (param) are returned as a
 %   second output argument.
 %
-%   P = FITPARAMODEL({S1,S2,...},{K1,K2,...},r,'MODEL')
+%   [P,param] = FITPARAMODEL(S,K,r,@model,param0)
+%   The initial guess of the model parameters can be passed as a last
+%   argument (param0). If (@model) is a user-defined function handle, it is
+%   required to pass (param0) as an arugment.
+%
+%   [P,param] = FITPARAMODEL({S1,S2,...},{K1,K2,...},r,@model)
 %   Passing multiple signals/kernels enables global fitting of the
 %   to a single parametric model distance distribution. The global fit weights
 %   are automatically computed according to their contribution to ill-posedness.
 %
-%   P = FITPARAMODEL(...,'Property',Values)
+%   [P,param] = FITPARAMODEL(...,'Property',Values)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 % The properties to be passed as options can be set in any order. 
@@ -33,6 +38,10 @@
 %
 %   'Algorithm' - Algorithm to be used by the solvers (see fmincon or
 %                 lsqnonlin documentation)
+%
+%   'Lower' - Lower bound on the model parameters
+%
+%   'Upper' - Upper bound on the model parameters
 %
 %   'TolFun' - Optimizer function tolerance
 %
@@ -55,21 +64,39 @@ function [Distribution,FitParameters] = fitparamodel(S,K,r,Model,StartParameters
 % Input Parsening & Validation
 %--------------------------------------------------------------------------
 
-%Get information about the parametric model
-Info = Model();
-if nargin<5 || isempty(StartParameters)
-    %IF user does not give parameters, use the defaults of the model
-    StartParameters =  [Info.parameters(:).default];
+if isempty(K)
+    K = eye(length(r)); 
+    normalize = false;
 else
-    %If user passes them, check that the number of parameters matches the model
-    if length(StartParameters)~=Info.nParam
-        error('The number of input parameters does not match the number of model parameters.')
+    normalize = true;
+end
+
+%Get information about the parametric model
+try
+    %Check whether model is a DeerAnalysis model...
+    Info = Model();
+catch
+    %... if not, then user is required to pass the inital values
+    if isempty(StartParameters) || ischar(StartParameters)
+        error('When using a user-defined function, the inital guess parameters are required.')
     end
+    %If passed, then transform the function handle to valid parametric model
+    Model = paramodel(Model,StartParameters,[],[],normalize);
+    Info = Model();
+end
+if nargin<5 || isempty(StartParameters)
+    %If user does not give parameters, use the defaults of the model
+    StartParameters =  [Info.parameters(:).default];
+elseif nargin > 4 && ischar(StartParameters)
+    varargin = [{StartParameters} varargin];
+    StartParameters = [Info.parameters(:).default];
+else
     validateattributes(StartParameters,{'numeric'},{'2d','nonempty'},mfilename,'StartParameters')
 end
 
 %Get optional parameters
-[Solver,Algorithm,MaxIter,MaxFunEvals,TolFun,CostModel,GlobalWeights] = parseoptional({'Solver','Algorithm','MaxIter','MaxFunEvals','TolFun','CostModel','GlobalWeights'},varargin);
+[Solver,Algorithm,MaxIter,MaxFunEvals,TolFun,CostModel,GlobalWeights,UpperBounds,LowerBounds] = parseoptional(...
+{'Solver','Algorithm','MaxIter','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower'},varargin);
 
 if isempty(CostModel)
     CostModel = 'lsq';
@@ -183,8 +210,12 @@ CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y)ModelCost(Parameters,x,y),K,
 
 %Prepare upper/lower bounds on parameter search
 Ranges =  [Info.parameters(:).range];
+if isempty(LowerBounds)
 LowerBounds = Ranges(1:2:end-1);
+end
+if isempty(UpperBounds)
 UpperBounds = Ranges(2:2:end);
+end
 
 %Fit the parametric model...
 switch Solver

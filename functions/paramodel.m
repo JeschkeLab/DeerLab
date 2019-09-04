@@ -21,9 +21,11 @@
 % the Free Software Foundation.
 
 
-function model = paramodel(handle,param0,lower,upper)
+function model = paramodel(handle,param0,lower,upper,normalize)
 
-
+if nargin<4
+   normalize = false; 
+end
 %Check which king of input is being use
 if length(param0)==1
     nParam = param0;
@@ -32,11 +34,11 @@ else
     nParam = length(param0);
 end
 
-if nargin<3
+if nargin<3 || isempty(lower)
     lower = zeros(nParam,1) - realmax;
     upper = zeros(nParam,1) + realmax;
 end
-if nargin<4
+if nargin<4 || isempty(upper)
     upper = zeros(nParam,1) + realmax;
 end
 
@@ -47,7 +49,7 @@ end
 model = @myparametricmodel;
 
 %Define the raw structure of the DeerAnalysis parametric model functions
-    function Output = myparametricmodel(t,param)
+    function Output = myparametricmodel(ax,param)
         
         if nargin==0
             %If no inputs given, return info about the parametric model
@@ -71,8 +73,11 @@ model = @myparametricmodel;
             end
             
             %If necessary inputs given, compute the model distance distribution
-            t = abs(t);
-            Output = handle(t,param);
+            ax = abs(ax);
+            Output = handle(ax,param);
+            if normalize
+                Output = Output/sum(Output)/mean(diff(ax));
+            end
             if ~iscolumn(Output)
                 Output = Output';
             end
