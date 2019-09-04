@@ -13,6 +13,7 @@ Syntax
 .. code-block:: matlab
 
     V = dipolarsignal(t,r,P)
+    [V,S] = dipolarsignal(t,r)
     [V,S] = dipolarsignal(t,r,P)
     [V,S] = dipolarsignal(t,r,P,'Property',Value)
 
@@ -35,6 +36,12 @@ Description
     V = dipolarsignal(t,r,P)
 
 Generates the noiseless form factor ``V`` on a time axis ``t`` from the distance distribution ``P`` in a distance axis ``r``.
+
+.. code-block:: matlab
+
+    V = dipolarsignal(t,r)
+
+If no distribution ``P`` is provided, then the dipolar signal corresponding to a single distance ``r`` is computed.
 
 Optional Arguments
 =========================================
