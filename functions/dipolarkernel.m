@@ -37,6 +37,11 @@
 %   'Knots' - Number knots for the grid of powder orientations to be used
 %             in explicit kernel calculations    
 %
+%   'FivePulseCoeff' - Two element array [A tshift] containing the relative
+%                      amplitude of the 5-pulse DEER artifact and the time 
+%                      shift at which it appears. If not given, the time shift
+%                      is set by default to half of tmax.
+%
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 % 
 % This program is free software: you can redistribute it and/or modify
@@ -63,6 +68,9 @@ if nargin>2 && isa(lambda,'char')
     lambda = [];
     B = [];
 end
+if nargin < 4 
+   B = []; 
+end
 % Case ModDepth passed but not B
 if nargin>3 && isa(B,'char')
     varargin = [{B} varargin];
@@ -70,8 +78,8 @@ if nargin>3 && isa(B,'char')
 end
 
 % Check if user requested some options via name-value input
-[ExcitationBandwidth,OvertoneCoeffs,gValue,Method,Knots] = ...
-    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','gValue','Method','Knots'},varargin);
+[ExcitationBandwidth,OvertoneCoeffs,gValue,Method,Knots,FivePulseCoeff] = ...
+    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','gValue','Method','Knots','FivePulseCoeff'},varargin);
 
 if isempty(Method)
     Method = 'fresnel';
@@ -159,6 +167,17 @@ if ~isnanometer(r)
    r = r/10; 
 end
 
+if ~isempty(FivePulseCoeff)
+    if length(FivePulseCoeff)>2
+        error('FivePulseCoeff array cannot be longer than two elements.')
+    elseif length(FivePulseCoeff)<2
+        tshift = max(t/2);
+    else
+        tshift = FivePulseCoeff(2);
+    end
+    A5pulse = FivePulseCoeff(1);
+    t5pulse = t - tshift;
+end
 % Get absolute time axis scale (required for negative times)
 t = abs(t); %ns
 
@@ -210,6 +229,13 @@ if strcmp(Method,'explicit')
     K = K./K(BckgStart,:);
 end
 
+if ~isempty(FivePulseCoeff)
+    %Get the dipolar kernel for the shifted time axis
+    Kshifted = dipolarkernel(t5pulse,r);
+    %Normalize it
+    Kshifted = Kshifted/max(max(Kshifted));
+    K = K + A5pulse*Kshifted;
+end
 % Build modulation depth and background into the kernel
 %----------------------------------------------------------
 if ~isempty(lambda)

@@ -26,13 +26,9 @@ function model = paramodel(handle,param0,lower,upper,normalize)
 if nargin<4
    normalize = false; 
 end
-%Check which king of input is being use
-if length(param0)==1
-    nParam = param0;
-    param0 = zeros(nParam,1);
-else
-    nParam = length(param0);
-end
+
+nParam = length(param0);
+
 
 if nargin<3 || isempty(lower)
     lower = zeros(nParam,1) - realmax;
@@ -73,7 +69,7 @@ model = @myparametricmodel;
             end
             
             %If necessary inputs given, compute the model distance distribution
-            ax = abs(ax);
+%             ax = abs(ax);
             Output = handle(ax,param);
             if normalize
                 Output = Output/sum(Output)/mean(diff(ax));
