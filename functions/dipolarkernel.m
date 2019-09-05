@@ -248,7 +248,7 @@ end
 
 % Normalize kernel
 if length(r)~=1
-dr = mean(diff(r));
+    dr = mean(diff(r));
 else
     dr = 1;
 end

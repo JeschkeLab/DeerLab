@@ -61,7 +61,7 @@ ModDepth
 
     .. code-block:: matlab
 
-       F = dipolarsignal(args,'ModDepth',0.4)
+       V = dipolarsignal(args,'ModDepth',0.4)
 
 
 Background
@@ -73,7 +73,7 @@ Background
 
     .. code-block:: matlab
 
-       F = dipolarsignal(args,'Background',srtexp(t,param))
+       V = dipolarsignal(args,'Background',srtexp(t,param))
 
 NoiseLevel
    Gaussian noise level (standard deviation)
@@ -84,7 +84,7 @@ NoiseLevel
 
     .. code-block:: matlab
 
-        F = dipolarsignal(args,'NoiseLevel',0.05)
+        V = dipolarsignal(args,'NoiseLevel',0.05)
 
 Overtones
     Array of RIDME overtone coefficients.
@@ -95,7 +95,7 @@ Overtones
 
     .. code-block:: matlab
 
-        F = dipolarsignal(args,'Overtones',[0.2 0.5 0.3])
+        V = dipolarsignal(args,'Overtones',[0.2 0.5 0.3])
 
 Offset
     Vertical offset to multiply to the output signal
@@ -106,7 +106,19 @@ Offset
 
     .. code-block:: matlab
 
-        F = dipolarsignal(args,'Offset', 1e3)
+        V = dipolarsignal(args,'Offset', 1e3)
+
+FivePulseCoeff
+    Two element array ``[A, tshift]`` containing the relative amplitude of the 5-pulse DEER artefact ``A`` and the time shift ``tshift`` at which it appears. If not given, the time shift ``tshift`` is set by default to half of the time axis ``t`` maximum.
+
+    *Default:* [*empty*]
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        V = dipolarsignal(args,'FivePulseCoeff',0.6) %5-pulse DEER artefact appearing at tau/2
+        V = dipolarsignal(args,'FivePulseCoeff',[0.6 2]) %5-pulse DEER artefact appearing after 2us
 
 
 Examples
