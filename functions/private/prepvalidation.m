@@ -68,5 +68,6 @@ end
 
 %Shuffle the order of parameter combination sets
 if randpermflag
+    rng(2);
     varparam = varparam(randperm(size(varparam,1)),:);
 end

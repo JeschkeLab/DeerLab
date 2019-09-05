@@ -1,5 +1,10 @@
 function [err,data,maxerr] = test(data,opts)
 
+currentpath = pwd;
+cd(fileparts(mfilename('fullpath')))
+cd ../functions/private
+
+
 Parameters.par1 = num2cell(rand(5,100),2);
 Parameters.par2 = num2cell(rand(6,100),2);
 
@@ -10,5 +15,8 @@ err(2) = length(output{1,1})~= 100;
 err = any(err);
 data = [];
 maxerr = [];
+
+cd(currentpath)
+
 
 end
