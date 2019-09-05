@@ -19,6 +19,7 @@ Syntax
     [B,lambda,param,tstart] = fitbackground(V,t,@model)
     [B,lambda,param] = fitbackground(V,t,@model,tstart)
     [B,lambda,param] = fitbackground(V,t,@model,[tstart tend])
+    [B,lambda,param] = fitbackground(V,t,@model,'Property',Value)
     [B,lambda,param] = fitbackground(V,t,@model,[tstart tend],'Property',Value)
 
 Parameters
@@ -66,6 +67,18 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     B = fitbackground(args,'Property1',Value1,'Property2',Value2,...)
 
+ModDepth
+    Fixed the modulation depth to a user-defined value instead of fitting it along the background.
+
+    *Default:* [*empty*] (automatically fitted)
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        B = fitbackground(V,t,@td_exp,tstart,'ModDepth',0.45)
+
+
 InitialGuess
     User-given estimation of the fit parameters, passed as an array. If not specified, the parametric model defaults are employed.
 
@@ -75,7 +88,8 @@ InitialGuess
 
     .. code-block:: matlab
 
-        B = fitbackground(V,t,@td_exp,tstart,'InitialGuess',[0.75 3]) % Fit the logarithm of the exponential
+        B = fitbackground(V,t,@td_exp,tstart,'InitialGuess',[0.75 3])
+
 
 LogFit
     Specifies the whether the logarithm of the signal is to be fitted.
@@ -86,4 +100,4 @@ LogFit
 
     .. code-block:: matlab
 
-        B = fitbackground(V,t,@td_exp,tstart,'LogFit',true) %Fit the logarithm of the exponential
+        B = fitbackground(V,t,@td_exp,tstart,'LogFit',true)
