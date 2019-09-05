@@ -1,20 +1,16 @@
 %
 % VALIDATE Statistical validation of results
 %
-%   [mean,std] = VALIDATE(p,vp)
-%   Validates the parameter (p) according to the validation parameter
-%   defintion in the structure (vp). The validation results are returned in
-%   the form of the mean value (mean) and standard deviation (std) of the
-%   parameter (p). The validation is run based on the code from the
-%   script/function from which VALIDATE() has been called.
-%
-%   [mean,std] = VALIDATE(p,vp,filename)
-%   If the script/function containing the code and parameters to be validated
-%   are contained in an external file, this file name can be specified as a
-%   third argument (filename);
+%   [mean,std,evals] = VALIDATE(fcn,varpar)
+%   Performs a sensibility analysis of the ouput variables returned by the
+%   function (fcn) with respect to the parameter variation given in the
+%   structure (varpar). The mean values and standard deviations (mean) and 
+%   (std) of the output parameters are returned as a cell array.
+%   Additionally, a output third argument (evals) can be requested, a cell 
+%   array, containing the analyzed variables evaluated at each parameter 
+%   combination. 
 %
 %   [mean,std] = VALIDATE(p,vp,'Property',Value)
-%   [mean,std] = VALIDATE(p,vp,filename,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 % The properties to be passed as options can be set in any order.
@@ -35,13 +31,18 @@
 function [meanOut,stdOut,evals] = validate(fcnHandle,Parameters,varargin)
 
 if nargin<2
-   error('Not enough input arguments. At least two input arguments required.') 
+    error('Not enough input arguments. At least two input arguments required.')
 end
-
+if ~isa(fcnHandle,'function_handle')
+    error('The first input must be a valid function handle.')
+end
 %Validate the required input attributes
 validateattributes(Parameters,{'struct'},{'nonempty'},mfilename,'Parameters')
 
 [AxisHandle,RandPerm] = parseoptional({'AxisHandle','RandPerm'},varargin);
+
+validateattributes(Parameters,{'struct'},{'nonempty'},mfilename,'Parameters')
+
 
 validationParam = prepvalidation(Parameters,'RandPerm',RandPerm);
 
@@ -60,7 +61,7 @@ nout = [];
 %Run over all validation parameter permutations
 for i=1:length(validationParam)
     for j=1:length(ParNames)
-       argin.(ParNames{j}) =  validationParam{i,j};
+        argin.(ParNames{j}) =  validationParam{i,j};
     end
     if isempty(nout)
         nout = nargout(fcnHandle);
@@ -115,13 +116,6 @@ if nout==1
     stdOut = stdOut{1}.';
     evals = evals{1};
 end
-
-%Delete the temporal file
-delete('process2validate.m')
-
-
-end
-
 
 
 
