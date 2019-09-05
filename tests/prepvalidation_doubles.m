@@ -1,10 +1,8 @@
 function [err,data,maxerr] = test(data,opts)
 
-Parameters(1).name = 'par1';
-Parameters(1).values = linspace(1,50,10);
+Parameters.par1 = linspace(1,50,10);
 
-Parameters(2).name = 'par2';
-Parameters(2).values = linspace(50,100,10);
+Parameters.par2 = linspace(50,100,10);
 
 output = prepvalidation(Parameters);
 

@@ -4,12 +4,9 @@
 %   varparam = PREPVALIDATION(param)
 %   Returns all the possible permutations of the parameters in the input
 %   structure array (param). All possible combinations are randomly permuted and 
-%   returned as a cell array. The (param) structure must have to following
-%   fields for all of the N parameters:
-%
-%           param(N).name - Name of the parameter variable
-%           param(N).values - Values or strings to be evaluated (array or
-%                             cell array)
+%   returned as a cell array. The (param) structure must have fields
+%   corresponding to the names of the parameters. The fields contain all
+%   the values/strings/logicals which the parameter can adopt.
 % 
 %   varparam = PREPVALIDATION(param,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
@@ -25,9 +22,8 @@
 
 function varparam = prepvalidation(Parameters,varargin)
 
-%Parse & validate required input
-if ~isfield(Parameters,{'name','values'})
-   error('The input structure must contain the ''name'' and ''values'' fields.') 
+if ~isa(Parameters,'struct')
+    error('Input must be a structure.')
 end
 
 %Parse & validate optional input
@@ -39,13 +35,14 @@ else
     validateattributes(randpermflag,{'logical'},{'nonempty'},mfilename,'randperm')
 end
 
-
 %Get number of variables to validate
-nParam = numel(Parameters);
+ParNames = fieldnames(Parameters);
+nParam = numel(ParNames);
 %Get number of trials for each validation parameter
 varTrials = zeros(nParam,1);
 for i=1:nParam
-varTrials(i) = length(Parameters(i).values);
+    FieldValues = Parameters.(ParNames{i});
+    varTrials(i) = length(FieldValues);
 end
 totalTrials = prod(varTrials);
 %Preallocate validation parameters
@@ -57,11 +54,12 @@ for Pindex = 1:totalTrials
     idx = cell2mat(idx);
     %Generate the validation parameter values
     for varIdx = 1:nParam
+        FieldValues = Parameters.(ParNames{varIdx});
         %If user supplies the vector directly then take it from there
-        if iscell(Parameters(varIdx).values)
-            value = Parameters(varIdx).values{idx(varIdx)};
+        if iscell(FieldValues)
+            value = FieldValues{idx(varIdx)};
         else
-            value = Parameters(varIdx).values(idx(varIdx));
+            value = FieldValues(idx(varIdx));
         end
         %Save current sampled value
         varparam{Pindex,varIdx} = value;

@@ -1,10 +1,7 @@
 function [err,data,maxerr] = test(data,opts)
 
-Parameters(1).name = 'par1';
-Parameters(1).values = num2cell(rand(5,100),2);
-
-Parameters(2).name = 'par2';
-Parameters(2).values = num2cell(rand(6,100),2);
+Parameters.par1 = num2cell(rand(5,100),2);
+Parameters.par2 = num2cell(rand(6,100),2);
 
 output = prepvalidation(Parameters);
 

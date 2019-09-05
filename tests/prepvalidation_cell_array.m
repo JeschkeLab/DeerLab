@@ -1,10 +1,7 @@
 function [err,data,maxerr] = test(data,opts)
 
-Parameters(1).name = 'par1';
-Parameters(1).values = {'a','b','c'};
-
-Parameters(2).name = 'par2';
-Parameters(2).values = {'d','e'};
+Parameters.par1 = {'a','b','c'};
+Parameters.par2 = {'d','e'};
 
 output = prepvalidation(Parameters);
 

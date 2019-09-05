@@ -1,10 +1,7 @@
 function [err,data,maxerr] = test(data,opts)
 
-Parameters(1).name = 'par1';
-Parameters(1).values = [1 2 3];
-
-Parameters(2).name = 'par2';
-Parameters(2).values = [1 2 3];
+Parameters.par1 = [1 2 3];
+Parameters.par2 = [1 2 3];
 
 output = prepvalidation(Parameters,'randperm',true);
 
