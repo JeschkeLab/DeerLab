@@ -127,7 +127,7 @@ else
 end
 
 validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r')
-if numel(unique(round(diff(r),12)))~=1 && length(r)~=1
+if numel(unique(round(diff(r),6)))~=1 && length(r)~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
 validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
