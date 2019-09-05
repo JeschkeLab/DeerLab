@@ -25,6 +25,11 @@
 %
 %   'Overtones' - Array of RIDME overtone coefficients
 %
+%   'FivePulseCoeff' - Two element array [A tshift] containing the relative
+%                      amplitude of the 5-pulse DEER artifact and the time 
+%                      shift at which it appears. If not given, the time shift
+%                      is set by default to half of tmax.
+%
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 %
@@ -45,7 +50,7 @@ if ischar(P)
     P = [];
 end
 %Parse optional input arguments
-[ModDepth,B,NoiseLevel,Offset,Overtones] = parseoptional({'ModDepth','B','NoiseLevel','Offset','Overtones'},varargin);
+[ModDepth,B,NoiseLevel,Offset,Overtones,FivePulseCoeff] = parseoptional({'ModDepth','Background','NoiseLevel','Offset','Overtones','FivePulseCoeff'},varargin);
 %Validate inputs
 if isempty(ModDepth)
     ModDepth = 1;
@@ -100,7 +105,7 @@ N = length(t);
 %Normalize the distance distribution if not normalized
 
 %Get the kernel
-K = dipolarkernel(t,r,'OvertoneCoeffs',Overtones);
+K = dipolarkernel(t,r,'OvertoneCoeffs',Overtones,'FivePulseCoeff',FivePulseCoeff);
 
 %Calculate dipolar evolution function
 if ~isempty(P)
