@@ -139,7 +139,7 @@ persistent cachedData
 if isempty(cachedData)
     cachedData =  java.util.LinkedHashMap;
 end
-hashKey = datahash({t,r,B,varargin});
+hashKey = datahash({t,r,lambda,B,varargin});
 if cachedData.containsKey(hashKey)
     Output = cachedData.get(hashKey);
     K = java2mat(Output);
