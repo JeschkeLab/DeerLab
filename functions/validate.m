@@ -32,177 +32,73 @@
 % the Free Software Foundation.
 
 
-function [meanOut,stdOut] = validate(OutParam,Parameters,Filename,varargin)
+function [meanOut,stdOut,evals] = validate(fcnHandle,Parameters,varargin)
 
 if nargin<2
    error('Not enough input arguments. At least two input arguments required.') 
 end
 
 %Validate the required input attributes
-validateattributes(OutParam,{'char'},{'nonempty'},mfilename,'OutParam')
 validateattributes(Parameters,{'struct'},{'nonempty'},mfilename,'Parameters')
 
-%Parse & validate required input
-if ~isfield(Parameters,{'name','values'})
-   error('The input structure must contain the ''name'' and ''values'' fields.') 
-end
-
-%-----------------------------------------------------
-% Input parsening and validation
-%-----------------------------------------------------
-
-%Parse the case filename is given vs. not given
-fileok = false;
-if nargin>2
-    [~,file] = fileparts(Filename);
-    file = [file '.m'];
-    if ~exist(file,'file')
-        varargin = [{Filename} varargin];
-    else
-       fileok = true; 
-    end
-    scriptName = file;
-end
-
-%Parse optional inputs
 [AxisHandle,RandPerm] = parseoptional({'AxisHandle','RandPerm'},varargin);
 
-if isempty(RandPerm)
-    RandPerm = true;
-else
-    validateattributes(RandPerm,{'logical'},{'nonempty'},mfilename,'RandPerm');
-end
-
-%If the script/function file has not been specified, then get the caller
-if ~fileok
-    %Get the call stack
-    callstack = dbstack;
-    filescalled = {callstack.file};
-    %Get the name of the script/functions calling validate()
-    scriptName = filescalled{2};
-end
-
-%If called via Run Section the passed live script cannot be opened
-if contains(scriptName,'LiveEditorEvaluation')
-    error('Validation cannot be called by ''Run Section''.');
-end
-
-%-----------------------------------------------------
-% Preparation
-%-----------------------------------------------------
-
-%Prepare validation parameter permutations
 validationParam = prepvalidation(Parameters,'RandPerm',RandPerm);
-
-%-----------------------------------------------------
-% Code scanning
-%-----------------------------------------------------
-
-%Open script or function
-ID = fopen(scriptName);
-%Prepare containers
-code = {};
-callerisfunction = false;
-%Read through the code
-while true
-    useCode = true;
-    %Read the next line line
-    String = fgets(ID);
-    %If end of the file reached, then stop reading
-    if all(String==(-1)) || contains(String,'validate(')
-        break;
-    end
-    %Check if the caller is a function...
-    if contains(String,'function')
-        %... if so get the names of the arguments being passed there
-        callerisfunction = true;
-        Pstart = findstr(String,'(');
-        Pend = findstr(String,')');
-        fcnInName = strsplit(String(Pstart+1:Pend-1),',');
-        %Get the actual variables passed there
-        for i=1:length(fcnInName)
-            fcnInVar{i} = evalin('caller',fcnInName{i});
-        end
-    end
-    %Check if the code in this line is relevant to validation
-    useCode = iscoderelevant(String);
-    %Check if the current line is defining one of the validation parameters
-    for i=1:length(Parameters)
-        SearchStr = [Parameters(i).name ' ='];
-        SearchStr2 = [Parameters(i).name '='];
-        if contains(String,SearchStr) || contains(String,SearchStr2)
-            useCode = false;
-        end
-    end
-    %If the code in the line is useful, then save it
-    if useCode
-        code{end+1} = String;
-    end
-end
-if ~callerisfunction
-    fcnInName = [];
-    fcnInVar = [];
-end
-
-%-----------------------------------------------------
-% Code-writter
-%-----------------------------------------------------
-
-%Create a temporal file to contain the script as a function
-FID = fopen('process2validate.m','w');
-%Start including the function definition header
-fprintf(FID, ['function ',OutParam,' = process2validate(varargin)\n']);
-%Unpack the varargin inputs
-fprintf(FID,'varargin = varargin{1}; \n');
-%If the caller was a function, make sure the original inputs are passed
-if callerisfunction
-    for j=1:length(fcnInName)
-        fprintf(FID,[fcnInName{j} '= varargin{',num2str(j),'}; \n']);
-    end
-else
-    j = 0;
-end
-%Ensure the validation parameters are extracted as well
-for i=1:length(Parameters)
-    fprintf(FID,[Parameters(i).name '= varargin{',num2str(i+j),'}; \n']);
-end
-%Insert the code from the user
-for i=1:length(code)
-    fprintf(FID,[code{i} '\n']);
-end
-%Close the file
-fclose(FID);
 
 %-----------------------------------------------------
 % Run validation
 %-----------------------------------------------------
 
-%Check how many inputs will be passed
-Noriginalinputs = length(fcnInName);
-Nvarlinputs = size(validationParam,2);
-%If the function requires stable inputs, set them now in the varargin
-if callerisfunction
-    argsin(1:Noriginalinputs) = fcnInVar;
-else
-    argsin = {};
-end
+ParNames = fieldnames(Parameters);
+
 %Prepare the output variable container
-out = [];
+evals = cell(1,length(validationParam));
+for i=1:length(validationParam)
+    evals{i} = [];
+end
+nout = [];
 %Run over all validation parameter permutations
 for i=1:length(validationParam)
-    argsin(Noriginalinputs+1:Noriginalinputs+Nvarlinputs) = validationParam(i,:);
-    %Run the build function
-    out(end+1,:) = process2validate(argsin);
-    %Calculate status of validation statistics
-    meanOut = mean(out,1);
-    stdOut = std(out,[],1);
+    for j=1:length(ParNames)
+       argin.(ParNames{j}) =  validationParam{i,j};
+    end
+    if isempty(nout)
+        nout = nargout(fcnHandle);
+        if nout == -1
+            notEnoughOutputs = true;
+            nout = 1;
+        else
+            notEnoughOutputs = false;
+        end
+        while notEnoughOutputs
+            try
+                nout = nout+1;
+                varargout = cell(1,nout);
+                %Run the build function
+                [varargout{:}] = fcnHandle(argin);
+                notEnoughOutputs = false;
+            catch
+                notEnoughOutputs = true;
+            end
+        end
+    end
+    varargout = cell(1,nout);
+    [varargout{:}] = fcnHandle(argin);
+    for j=1:length(varargout)
+        vareval = evals{j};
+        vareval(end+1,:) = varargout{j};
+        %Calculate status of validation statistics
+        meanOut{j} = mean(vareval,1);
+        stdOut{j} = std(vareval,[],1);
+        evals{j} = vareval;
+    end
     %If user passes optional plotting hook, then prepare the plot
     if ~isempty(AxisHandle)
         cla(AxisHandle)
-        Ax  = 1:length(meanOut);
-        plot(AxisHandle,Ax,meanOut,'k','LineWidth',1)
+        Ax  = 1:length(meanOut{1});
+        plot(AxisHandle,Ax,meanOut{1},'k','LineWidth',1)
         hold(AxisHandle,'on')
-        f = fill(AxisHandle,[Ax fliplr(Ax)] ,[meanOut+stdOut fliplr(meanOut-stdOut)],...
+        f = fill(AxisHandle,[Ax fliplr(Ax)] ,[meanOut{1}+stdOut{1} max(fliplr(meanOut{1}-stdOut{1}),0)],...
             'b','LineStyle','none');
         f.FaceAlpha = 0.5;
         hold(AxisHandle,'off')
@@ -212,8 +108,12 @@ for i=1:length(validationParam)
         title(sprintf('Run %i/%i',i,length(validationParam)))
         drawnow
     end
-    meanOut =meanOut.';
-    stdOut = stdOut.';
+end
+
+if nout==1
+    meanOut = meanOut{1}.';
+    stdOut = stdOut{1}.';
+    evals = evals{1};
 end
 
 %Delete the temporal file

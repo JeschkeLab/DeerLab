@@ -3,14 +3,8 @@ function [err,data,maxerr] = test(opt,olddata)
 t = linspace(0,4,200);
 r = time2dist(t);
 
-
-Parameters(1).name = 'regparam';
-Parameters(1).values = linspace(0.1,1,5);
-
-Parameters(2).name = 'validationnoise';
-Parameters(2).values = linspace(0.01,0.1,2);
-
-
+Parameters.regparam = linspace(0.1,1,5);
+Parameters.validationnoise = linspace(0.01,0.1,2);
 
 if opt.Display
     f = figure(1); clf;AxisHandle = axes(f);
@@ -18,7 +12,7 @@ else
     AxisHandle = [];
 end
 
-[meanOut,stdOut] = validate('Pfit',Parameters,'./data/validationscript_test.m','AxisHandle',AxisHandle);
+[meanOut,stdOut] = validate(@myfitting,Parameters,'AxisHandle',AxisHandle);
 
 err = false;
 data = [];
@@ -36,5 +30,25 @@ if opt.Display
         grid('on')
         box('on')
 end
+
+end
+
+
+function Pfit = myfitting(param)
+M = 200;
+t = linspace(0,4,M);
+r = time2dist(t);
+
+P = rd_onegaussian(r,[4,0.3]);
+K = dipolarkernel(t,r);
+S = K*P;
+S = dipolarsignal(t,r,P,'noiselevel',0.05);
+
+S = S + whitegaussnoise(M, param.validationnoise);
+
+order = 2;
+L = regoperator(M,order);
+regparam = param.regparam;
+Pfit = fitregmodel(S,K,r,L,'tikh',regparam);
 
 end
