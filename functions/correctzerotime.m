@@ -96,12 +96,11 @@ if isempty(ZeroTime)
         end
     end
     ZeroTime = Finet(ZeroTimePos);
-else
-    [~,ZeroTimePos] = min(abs(Finet-ZeroTime));
 end
 
 % Correct time axis
 tcorr = t - ZeroTime;
+[~,ZeroTimePos] = min(abs(tcorr));
 
 if ~usesNanoseconds
     ZeroTime = ZeroTime/1000; % convert ns -> us
