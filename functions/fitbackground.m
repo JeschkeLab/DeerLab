@@ -10,8 +10,8 @@
 %
 %   [B,lambda,param] = FITBACKGROUND(V,t,@model,tstart)
 %   The time at which the background starts to be fitted can be passed as a
-%   an additional argument. 
-%   
+%   an additional argument.
+%
 %   [B,lambda,param] = FITBACKGROUND(V,t,@model,[tstart tend])
 %   The start and end times of the fitting can be specified by passing a
 %   two-element array as the argument. If tend is not specified, the end of
@@ -42,10 +42,16 @@ if nargin<4
     tstart = backgroundstart(Data,t,BckgModel);
     tend = t(end);
     FitDelimiter = [tstart tend];
+elseif ischar(FitDelimiter)
+    varargin = [{FitDelimiter} varargin];
+    tstart = backgroundstart(Data,t,BckgModel);
+    tend = t(end);
+    FitDelimiter = [tstart tend]; 
+    
 elseif length(FitDelimiter) == 1
     FitDelimiter(2) = t(end);
 elseif length(FitDelimiter) > 2
-    error('The 4th argument cannot exceed two elements.')    
+    error('The 4th argument cannot exceed two elements.')
 end
 
 if FitDelimiter(2)<FitDelimiter(1)
@@ -55,7 +61,7 @@ end
 tstart = FitDelimiter(1);
 
 if ~isa(BckgModel,'function_handle')
-   error('The background model must be a valid function handle.') 
+    error('The background model must be a valid function handle.')
 end
 
 if ~iscolumn(t)
@@ -63,26 +69,35 @@ if ~iscolumn(t)
 end
 
 %Parse optiona inputs
-[LogFit,InitialGuess] = parseoptional({'LogFit','InitialGuess'},varargin);
+[LogFit,InitialGuess,ModDepth] = parseoptional({'LogFit','InitialGuess','ModDepth'},varargin);
 
 if isempty(LogFit)
-   LogFit = false; 
+    LogFit = false;
 end
-
+if length(ModDepth)>1
+    error('FixLambda must be a scalar.')
+end
+if ~isempty(ModDepth)
+    if ModDepth>1 || ModDepth<0
+        error('Fixed modulation depth must be in the range 0 to 1.')
+    end
+end
 DataIsColumn = iscolumn(Data);
 if ~DataIsColumn
     Data = Data.';
 end
-
+Data = real(Data);
 validateattributes(InitialGuess,{'numeric'},{'2d'},mfilename,'InitialGuess')
 validateattributes(FitDelimiter,{'numeric'},{'2d','nonempty'},mfilename,'FitDelimiter')
 validateattributes(Data,{'numeric'},{'2d','nonempty'},mfilename,'Data')
 validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
 
+
 %Convert time step to microseconds if given in nanoseconds
 usesNanoseconds = mean(diff(t))>=0.5;
 if usesNanoseconds
     t = t/1000; % ns->us
+    FitDelimiter = FitDelimiter/1000; % ns->us
 end
 
 %--------------------------------------------------------------------------
@@ -91,7 +106,7 @@ end
 %Find the position to limit fit
 FitStartTime = FitDelimiter(1);
 FitEndTime = FitDelimiter(2);
-[~,FitStartPos] = min(abs(t - FitStartTime)); 
+[~,FitStartPos] = min(abs(t - FitStartTime));
 [~,FitEndPos] = min(abs(t - FitEndTime));
 
 %Limit the time axis and the data to fit
@@ -108,34 +123,47 @@ solveropts = optimoptions(@lsqnonlin,'Algorithm','trust-region-reflective','Disp
 
 %Construct cost functional for minimization
 if LogFit
-    CostFcn = @(param)(sqrt(1/2)*(log((1 - param(1) + eps)*BckgModel(Fitt,param(2:end))) - log(FitData)));
+    if isempty(ModDepth)
+        CostFcn = @(param)(sqrt(1/2)*(log((1 - param(1) + eps)*BckgModel(Fitt,param(2:end))) - log(FitData)));
+    else
+        CostFcn = @(param)(sqrt(1/2)*(log((1 - ModDepth + eps)*BckgModel(Fitt,param(1:end))) - log(FitData)));
+    end
 else
-    CostFcn = @(param)(sqrt(1/2)*((1 - param(1))*BckgModel(Fitt,param(2:end)) - FitData));
+    if isempty(ModDepth)
+        CostFcn = @(param)(sqrt(1/2)*((1 - param(1))*BckgModel(Fitt,param(2:end)) - FitData));
+    else
+        CostFcn = @(param)(sqrt(1/2)*((1 - ModDepth)*BckgModel(Fitt,param(1:end)) - FitData));
+    end
 end
 
-%Initiallize StartParameters (1st element is modulation depth)
-LowerBounds(1) = 0;
-UpperBounds(1) = 1;
-
+if isempty(ModDepth)
+    %Initiallize StartParameters (1st element is modulation depth)
+    LowerBounds(1) = 0;
+    UpperBounds(1) = 1;
+end
+pos = 1 - length(ModDepth);
 %Get information about the time-domain parametric model
 Info = BckgModel();
 Ranges =  [Info.parameters(:).range];
-LowerBounds(2:1 + Info.nParam) = Ranges(1:2:end-1);
-UpperBounds(2:1 + Info.nParam) = Ranges(2:2:end);
+LowerBounds(1+pos:pos + Info.nParam) = Ranges(1:2:end-1);
+UpperBounds(1+pos:pos + Info.nParam) = Ranges(2:2:end);
 if ~isempty(InitialGuess)
     StartParameters = InitialGuess;
 else
-    StartParameters(1) = 0.5;
-    StartParameters(2:1 + Info.nParam) =  [Info.parameters(:).default];
+    if isempty(ModDepth)
+        StartParameters(1) = 0.5;
+    end
+    StartParameters(1+pos:pos + Info.nParam) =  [Info.parameters(:).default];
 end
 
 FitParam = lsqnonlin(CostFcn,StartParameters,LowerBounds,UpperBounds,solveropts);
 
-%Get the fitted modulation depth
-ModDepth = FitParam(1);
-
+if isempty(ModDepth)
+    %Get the fitted modulation depth
+    ModDepth = FitParam(1);
+end
 %Remove the modulation depth from the fit parameters
-FitParam = FitParam(2:end);
+FitParam = FitParam(1+pos:end);
 
 %Extrapolate fitted background to whole time axis
 B = BckgModel(abs(t),FitParam);
