@@ -67,7 +67,7 @@ for i=1:length(validationParam)
         nout = nargout(fcnHandle);
         if nout == -1
             notEnoughOutputs = true;
-            nout = 1;
+            nout = 0;
         else
             notEnoughOutputs = false;
         end
@@ -77,9 +77,10 @@ for i=1:length(validationParam)
                 varargout = cell(1,nout);
                 %Run the build function
                 [varargout{:}] = fcnHandle(argin);
-                notEnoughOutputs = false;
-            catch
                 notEnoughOutputs = true;
+            catch 
+                nout = nout-1;
+                notEnoughOutputs = false;
             end
         end
     end
