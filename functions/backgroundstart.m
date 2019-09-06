@@ -34,6 +34,10 @@
 function [FitStartTime,FitStartPos] = backgroundstart(S,t,BckgModel,varargin)
 
 
+%Turn off warnings to avoid ill-conditioned warnings at each iteration
+warning('off','all')
+
+
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
 %--------------------------------------------------------------------------
@@ -138,3 +142,6 @@ end
 [~,OptStartPos] = min(Merit);
 FitStartPos = OptStartPos + StartPosMin - 1;
 FitStartTime = t(FitStartPos);
+
+%Turn warnings back on
+warning('on','all')
