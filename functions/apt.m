@@ -22,6 +22,7 @@
 
 function [P,Uniformr] = apt(S,APTkernel,DistDomainSmoothing)
 
+
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
 %--------------------------------------------------------------------------
@@ -58,6 +59,9 @@ end
 %--------------------------------------------------------------------------
 % APT algorithm
 %--------------------------------------------------------------------------
+
+%Turn off warnings to avoid ill-conditioned warnings 
+warning('off','all')
 
 %Get APT kernel data
 K = APTkernel.Base;
@@ -117,6 +121,9 @@ P = P';
 %Store output result in the cache
 Output = {P,Uniformr};
 cachedData = addcache(cachedData,hashKey,Output);
+
+%Turn warnings back on
+warning('on','all')
 
 
 end

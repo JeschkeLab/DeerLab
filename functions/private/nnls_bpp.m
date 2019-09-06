@@ -19,6 +19,9 @@
 
 function x = nnls_bpp(AtA,AtB,x0)
 
+%Turn off warnings to avoid ill-conditioned warnings 
+warning('off','all')
+
 % Size checks
 %-------------------------------------------------------------------------------
 [n1,n2] = size(AtA);
@@ -97,4 +100,8 @@ while nInfeasible > 0 % iterate until no infeasible variables left
   yGnegative = (y < 0) & ~Fset;
   nInfeasible = sum(xFnegative | yGnegative);
   
+  
+  %Turn off warnings to avoid ill-conditioned warnings
+  warning('on','all')
+
 end

@@ -20,6 +20,7 @@
 
 function APTkernel = aptkernel(t,varargin)
 
+
 %Check if user requested some options via name-value input
 [ExcitationBandwidth] = parseoptional({'ExcitationBandwidth'},varargin);
 if ~isempty(ExcitationBandwidth)
@@ -58,6 +59,10 @@ end
 
 %--------------------------------------------------------------------------
 %------------------------------------------------------------------------
+
+
+%Turn off warnings to avoid ill-conditioned warnings 
+warning('off','all')
 
 FreqElement = 1/(2*max(t));
 TimeDimension = length(t);
@@ -112,6 +117,9 @@ APTkernel = struct('Base',Base,...
 
 %Store output result in the cache
 cachedData = addcache(cachedData,hashKey,APTkernel);
+
+%Turn warnings back on
+warning('on','all')
 
 
 end          

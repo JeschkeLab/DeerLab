@@ -52,6 +52,10 @@
 
 function P = fitregmodel(S,K,r,RegMatrix,RegType,RegParam,varargin)
 
+
+%Turn off warnings to avoid ill-conditioned warnings 
+warning('off','all')
+
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
 %--------------------------------------------------------------------------
@@ -224,5 +228,7 @@ end
 %Normalize distribution integral
 P = P/sum(P)/dr;
 
-%--------------------------------------------------------------------------
+%Turn warnings back on
+warning('on','all')
+
 end

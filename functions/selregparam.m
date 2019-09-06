@@ -58,6 +58,10 @@ function [OptRegParam,Functionals,RegParamRange] = selregparam(RegParamRange,S,K
 % Parse & Validate Required Input
 %--------------------------------------------------------------------------
 
+
+%Turn off warnings to avoid ill-conditioned warnings 
+warning('off','all')
+
 %Check if user requested some options via name-value input
 [TolFun,NonNegConstrained,NoiseLevel,Refine,GlobalWeights,HuberParameter] = parseoptional({'TolFun','NonNegConstrained','NoiseLevel','Refine','GlobalWeights','HuberParameter'},varargin);
 
@@ -358,6 +362,9 @@ if Refine
         OptRegParam  = RefinedOptRegParam;
     end
 end
+
+%Turn warnings back on
+warning('on','all')
 
 end
 
