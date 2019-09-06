@@ -1,5 +1,6 @@
 function [err,data,maxerr] = test(opt,oldata)
 
+warning('off','all')
 
 Ntime = 200;
 Ndist = 200;
@@ -25,6 +26,8 @@ err = any(err);
 
 maxerr = max(abs(FitP - P));
 data = [];
+
+warning('on','all')
 
 if opt.Display
    figure(1),clf,hold on

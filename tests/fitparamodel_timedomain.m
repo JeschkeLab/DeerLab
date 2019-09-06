@@ -1,5 +1,8 @@
 function [err,data,maxerr] = test(opt,oldata)
 
+
+warning('off','all')
+
 Dimension = 200;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
@@ -21,6 +24,8 @@ err = any(err);
 
 maxerr = max(abs(Pfit - P));
 data = [];
+
+warning('on','all')
 
 if opt.Display
    figure(1),clf,hold on
