@@ -22,7 +22,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [tcorr,ZeroTime,ZeroTimePos] = correctzerotime(S,t,ZeroTime)
+function [tcorr,ZeroTime,ZeroTimePos,normFactor] = correctzerotime(S,t,ZeroTime)
 
 if nargin<2
     error('Not enough input arguments.')
@@ -47,13 +47,13 @@ end
 
 %Generate finely-grained interpolated signal and time axis
 Finet = min(t):1:max(t);
-FineS=interp1(t,real(S),Finet,'spline',real(S(1)));
+FineS = interp1(t,real(S),Finet,'spline',real(S(1)));
 % get zero time, if not provided
-FineS=real(FineS);
+FineS = real(FineS);
 if isempty(ZeroTime)
     % Determine maximum
-    [~,maxPos]=max(FineS);
-    ZeroTimePos=1;
+    [~,maxPos] = max(FineS);
+    ZeroTimePos = 1;
     %If maximum is not the first point in signal, then do moment-analysis
     if maxPos>1 && maxPos<length(FineS)
         %
@@ -97,6 +97,9 @@ if isempty(ZeroTime)
     end
     ZeroTime = Finet(ZeroTimePos);
 end
+
+%Get normalization factor
+normFactor = FineS(ZeroTimePos);
 
 % Correct time axis
 tcorr = t - ZeroTime;

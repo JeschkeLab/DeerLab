@@ -41,9 +41,9 @@ Description
 
 .. code-block:: matlab
 
-   [B,lambda,param] = fitbackground(V,t,@model)
+   [B,lambda,param,tstart] = fitbackground(V,t,@model)
 
-Fits the background ``B`` and the modulation depth ``lambda`` to a time-domain signal ``V`` and time-axis ``t`` based on a given time-domain parametric model ``@model``. When not specified, the optimal fitting start time is computed automatically by means of the :ref:`backgroundstart` function. The fitted parameters of the model are returned as a last output argument.
+Fits the background ``B`` and the modulation depth ``lambda`` to a time-domain signal ``V`` and time-axis ``t`` based on a given time-domain parametric model ``@model``. When not specified, the optimal fitting start time ''tstart'' is computed automatically by means of the :ref:`backgroundstart` function and returned as an output. The fitted parameters of the model are returned as a last output argument.
 
 .. code-block:: matlab
 
