@@ -35,7 +35,7 @@
 function [B,ModDepth,FitParam,tstart] = fitbackground(Data,t,BckgModel,FitDelimiter,varargin)
 
 if nargin<3
-    error('Not enough input arguments.')
+    error('Not enough input arguments. At least three are needed: V, t, and background model.');
 end
 
 if nargin<4

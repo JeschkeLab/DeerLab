@@ -12,19 +12,18 @@ Syntax
 
 .. code-block:: matlab
 
-    ct = correctzerotime(S,t)
-    ct = correctzerotime(S,t,zt)
-    [ct,zt,pos,norm] = correctzerotime(S,t,zt)
+    tc = correctzerotime(V,t)
+    tc = correctzerotime(V,t,t0)
+    [tc,t0,pos] = correctzerotime(V,t,t0)
 
 
 Parameters
-    *   ``S`` - Signal (N-array)
+    *   ``V`` - Signal (N-array)
     *   ``t`` - Time axis (N-array)
-    *   ``zt`` - Zero time (scalar)
-    *   ``norm`` - Normalization factor (scalar)
+    *   ``t0`` - Zero time (scalar)
 Returns
-    *   ``ct`` - Corrected time axis (N-array)
-    *   ``zt`` - Zero time (scalar)
+    *   ``tc`` - Corrected time axis (N-array)
+    *   ``t0`` - Zero time (scalar)
     *   ``pos``  - Zero time index (scalar)
 
 Description
@@ -32,14 +31,14 @@ Description
 
 .. code-block:: matlab
 
-        [ct,zt,pos,norm] = correctzerotime(S,t)
+        [tc,t0,pos] = correctzerotime(V,t)
 
-Determines the zero time of a dipolar signal ``S`` and corrects the time axis ``t`` in ns/us for it. If input signal ``S`` is in ns/us the zero time ``zt`` and corrected time axis ``ct`` will be returned in ns/us. The normalization factor ``norm`` corresponds to the corresponding signal intensity at the optimized zero-time and can be used for proper normalization of the signal.
+Determines the zero time of a dipolar signal ``V`` and corrects the time axis ``t`` in ns/us for it. If input signal ``V`` is in ns/us the zero time ``t0`` and corrected time axis ``tc`` will be returned in ns/us.
 
 .. code-block:: matlab
 
-    ct = correctzerotime(S,t,zt)
+    tc = correctzerotime(V,t,t0)
 
-Corrects the time axis ``t`` for a given zero-time ``zt`` in ns/us.
+Corrects the time axis ``t`` for a given zero-time ``t0`` in ns/us.
 
 .. image:: ../images/correctzerotime1.svg

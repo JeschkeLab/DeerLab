@@ -6,12 +6,12 @@
 %   the time axis (t) for it, returning a corrected time axis (tc).
 %   If t is in ns/us, tc will be be in ns/us as well.
 %
-%   tc = CORRECTZEROTIME(V,t,zt)
-%   Corrects the time axis (t) for a given zero-time (zt), returning the
+%   tc = CORRECTZEROTIME(V,t,t0)
+%   Corrects the time axis (t) for a given zero-time (t0), returning the
 %   corrected time axis.
 %
-%   [tc,zt,pos] = CORRECTZEROTIME(V,t)
-%   Returns the corrected time axis (tc), the zero-time (zt) in ns/us and the 
+%   [tc,t0,pos] = CORRECTZEROTIME(V,t)
+%   Returns the corrected time axis (tc), the zero-time (t0) in ns/us and the 
 %   zero-time array index (pos). 
 %
 % Adapted from Gunnar Jeschke, DeerAnalysis 2018
@@ -22,91 +22,84 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [tcorr,ZeroTime,ZeroTimePos,normFactor] = correctzerotime(S,t,ZeroTime)
+function [tcorr,t0,idxt0] = correctzerotime(V,t,t0)
 
 if nargin<2
     error('Not enough input arguments.')
 end
 
-if nargin<3 || isempty(ZeroTime)
-    ZeroTime = [];
+if nargin<3 || isempty(t0)
+    t0 = [];
 else
-    validateattributes(ZeroTime,{'numeric'},{'scalar','nonnegative'},mfilename,'ZeroTime')
+    validateattributes(t0,{'numeric'},{'scalar','nonnegative'},mfilename,'ZeroTime')
 end
-if ~iscolumn(S)
-    S = S.';
+if ~iscolumn(V)
+    V = V.';
 end
-validateattributes(S,{'numeric'},{'2d'},mfilename,'S')
+validateattributes(V,{'numeric'},{'2d'},mfilename,'S')
 validateattributes(t,{'numeric'},{'nonnegative','nonempty'},mfilename,'t')
 
 %Convert time step to microseconds if given in nanoseconds
 usesNanoseconds = mean(diff(t))>=0.5;
 if ~usesNanoseconds
-    t = t*1000; % ns->us
+    t = t*1000; % us->ns
 end
 
 %Generate finely-grained interpolated signal and time axis
-Finet = min(t):1:max(t);
-FineS = interp1(t,real(S),Finet,'spline',real(S(1)));
+resolution = 4;
+tfine = linspace(min(t),max(t),(numel(t)-1)*resolution+1);
+Vfine = interp1(t,real(V),tfine,'spline');
 % get zero time, if not provided
-FineS = real(FineS);
-if isempty(ZeroTime)
+if isempty(t0)
     % Determine maximum
-    [~,maxPos] = max(FineS);
-    ZeroTimePos = 1;
-    %If maximum is not the first point in signal, then do moment-analysis
-    if maxPos>1 && maxPos<length(FineS)
+    [~,maxPos] = max(Vfine);
+    idxt0 = 1;
+    %If maximum is not the first or last point, then do moment analysis
+    if maxPos>1 && maxPos<length(Vfine)
         %
         % Procedure schematic:
         %
-        %   NewPosDistance                 MaxEndDistance
+        %   2*maxDelta                 MaxEndDistance
         %  <------------->     <--------------------------------------->
-        % 1            newPos maxPos                                  end
+        % 1          maxPos-1 maxPos                                  end
         % |--------------|-----|---------------------------------------|
         %         <--|--------------------> 2xMaxAllowedDistance
-        %         TrialPos
+        %           idx
         % <-----------------------> 2xMaxAllowedDistance
         %        Integration
         %
         %
-        %Determine the maximum allowed distance for search
-        NewPos = maxPos - 1;
-        MaxEndDistance = length(FineS) - maxPos;
-        NewPosDistance = NewPos;
-        if MaxEndDistance<NewPosDistance
-            SmallestDistance = MaxEndDistance;
+        % Determine the width of the interval to use for the integral
+        if maxPos<length(Vfine)/2
+          maxDelta = floor((maxPos-1)/2);
         else
-            SmallestDistance = NewPosDistance;
+          maxDelta = floor((length(Vfine)-maxPos)/2);
         end
-        MaxAllowedDistance = floor(NewPosDistance/2);
-        BestIntegral = 1e20;
-        %Look around the maximum for lowest signal integral over MaxAllowedDistance
-        ZeroTimePos = maxPos;
-        for TrialPos = -MaxAllowedDistance+maxPos:MaxAllowedDistance+maxPos
+        offsetrange = -maxDelta:maxDelta;
+        
+        %Look around the maximum for lowest moment integral
+        minIntegral = realmax;
+        idxt0 = maxPos;
+        for idx = maxPos-maxDelta:maxPos+maxDelta
             %Query new candidate for zero position and integrate
-            Integral = 0;
-            for j = -MaxAllowedDistance:MaxAllowedDistance
-                Integral = Integral + FineS(TrialPos+j)*j;
-            end
+            dt = tfine(idx+offsetrange)-tfine(idx);
+            Integral = sum(Vfine(idx+offsetrange).*dt);
             %If integral is lower than prior best, then update new candidate
-            if abs(Integral) < BestIntegral
-                BestIntegral = abs(Integral);
-                ZeroTimePos = TrialPos;
+            if abs(Integral) < minIntegral
+                minIntegral = abs(Integral);
+                idxt0 = idx;
             end
         end
     end
-    ZeroTime = Finet(ZeroTimePos);
+    t0 = tfine(idxt0);
 end
 
-%Get normalization factor
-normFactor = FineS(ZeroTimePos);
-
 % Correct time axis
-tcorr = t - ZeroTime;
-[~,ZeroTimePos] = min(abs(tcorr));
+tcorr = t - t0;
+[~,idxt0] = min(abs(tcorr));
 
 if ~usesNanoseconds
-    ZeroTime = ZeroTime/1000; % convert ns -> us
+    t0 = t0/1000; % convert ns -> us
     tcorr = tcorr/1000;  % convert ns -> us
 end
 

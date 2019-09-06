@@ -14,9 +14,9 @@ Syntax
 .. code-block:: matlab
 
     Vc = correctphase(V)
-    Vc = correctphase(V,p)
-    Vc = correctphase(V,p,oc)
-    [Vc,p,io] = correctphase(V)
+    Vc = correctphase(V,ph)
+    Vc = correctphase(V,ph,oc)
+    [Vc,ph,io] = correctphase(V)
 
 
 Parameters
@@ -45,13 +45,13 @@ Applied a phase correction with a given phase angle ``ph`` (in radians) to input
 
 .. code-block:: matlab
 
-    Vc = correctphase(V,p,oc)
+    Vc = correctphase(V,ph,oc)
 
 A third boolean argument ``oc`` can be passed to enable/diasable the fitting of a possible offset on the imaginary component of the data (defaults to ``false``).
 
 .. code-block:: matlab
 
-    [Vc,ph,io] = correctphase(V,p,oc)
+    [Vc,ph,io] = correctphase(V)
 
 Returns, in addition to ``Vc``, the fitted or applied phase angle ``ph`` (in radians), and the fitted imaginary offset ``io``.
 

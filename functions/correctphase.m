@@ -6,18 +6,18 @@
 %   minimization of the imaginary component of the data. The phase
 %   corrected data (Vc) is returned normalized.
 %
-%   Vc = CORRECTPHASE(V,p)
-%   Corrects the phase of data vector V using user-supplied phase (p), in
+%   Vc = CORRECTPHASE(V,ph)
+%   Corrects the phase of data vector V using user-supplied phase (ph), in
 %   radians.
 %
-%   Vc = CORRECTPHASE(V,p,true/false)
+%   Vc = CORRECTPHASE(V,ph,true/false)
 %   A third boolean argument can be passed to enable/diasable the fitting
 %   of a possible offset on the imaginary component of the data. Defaults
 %   to false.
 %
-%   [Vc,p,io] = CORRECTPHASE(V)
+%   [Vc,ph,io] = CORRECTPHASE(V)
 %   Additional output arguments can be requested to return the optimal
-%   phase (p) and imaginary offset (io) employed for the correction.
+%   phase (ph) and imaginary offset (io) employed for the correction.
 %
 %
 % Adapted from Gunnar Jeschke, DeerAnalysis 2018
@@ -61,7 +61,8 @@ end
 
 % If phase is not provided, then fit it (and imag. offset)
 if isempty(Phase)
-    phi0 = angle(V(end)); % use phase of last point as starting point for fit
+    %phi0 = angle(V(end)); % use phase of last point as starting point for fit
+    phi0 = mean(angle(V)); % use average phase as starting point for fit
     pars(1) = phi0;
     if fitImagOffset
         pars(2) = 0;
