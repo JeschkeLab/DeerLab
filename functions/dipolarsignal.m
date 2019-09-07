@@ -86,7 +86,9 @@ end
 if numel(unique(round(diff(r),12)))~=1 && length(r)~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
-
+if ~iscolumn(P)
+   P = P.'; 
+end
 
 %Convert time step to microseconds if given in nanoseconds
 usesNanoseconds = mean(diff(t))>=0.5;
