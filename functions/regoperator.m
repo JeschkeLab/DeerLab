@@ -24,8 +24,8 @@ if nargin~=2
 end
 
 % Check arguments.
-if numel(Dimension)~=1
-    error('The dimension must be a scalar.');
+if numel(Dimension)>1
+    Dimension = numel(Dimension);
 end
 if Order<0
     error('The order must be nonnegative.');
