@@ -10,6 +10,10 @@
 
 function [V,Offset] = correctoffset(V,t)
 
+if ~isreal(V)
+   error('Input signal cannot be complex.') 
+end
+
 %Validate input
 validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
 validateattributes(V,{'numeric'},{'nonempty'},mfilename,'V')

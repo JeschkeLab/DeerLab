@@ -55,6 +55,9 @@ end
 if iscolumn(S)
     S = S';
 end
+if ~isreal(S)
+    error('Input signal cannot be complex.')
+end
 validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
 validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
 

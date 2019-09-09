@@ -221,6 +221,9 @@ for i=1:length(S)
     if length(S{i})~=size(K{i},1)
         error('K and signal arguments must fulfill size(K,1)==length(S).')
     end
+    if ~isreal(S{i})
+        error('Input signal cannot be complex.')
+    end
     validateattributes(S{i},{'numeric'},{'nonempty'},mfilename,'S')
 end
 

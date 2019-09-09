@@ -15,6 +15,10 @@
 
 function S = suppressghost(S,NRadicals)
 
+if ~isreal(S)
+    error('Input signal cannot be complex.')
+end
+
 if nargin<3
     NRadicals = 2;
 end

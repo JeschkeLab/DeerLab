@@ -38,7 +38,9 @@ validateattributes(S,{'numeric'},{'nonempty'},mfilename,'S')
 if iscolumn(S)
     S = S';
 end
-
+if ~isreal(S)
+    error('Input signal cannot be complex.')
+end
 
 %Get the absolute time axes and timestep
 dt = mean(abs(diff(t)));

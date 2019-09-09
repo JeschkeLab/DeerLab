@@ -104,7 +104,9 @@ validateattributes(S,{'numeric'},{'nonempty'},mfilename,'S')
 validateattributes(K,{'numeric'},{'nonempty'},mfilename,'K')
 validateattributes(RegMatrix,{'numeric'},{'nonempty'},mfilename,'RegMatrix')
 checklengths(S,K);
-
+if ~isreal(S)
+    error('Input signal cannot be complex.')
+end
 if nargin<3 || isempty(RegType)
     RegType = 'tikhonov';
 elseif isa(RegType,'function_handle')
