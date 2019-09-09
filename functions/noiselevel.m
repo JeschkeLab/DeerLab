@@ -3,11 +3,11 @@
 %
 %   level = NOISELEVEL(S)
 %   Returns the standard deviation estimation of the noise in the signal S.
-%   The estimation is done from the last quarter of the signal. 
+%   The estimation is done from the last quarter of the signal.
 %
 %   level = NOISELEVEL(S,M)
 %   Returns the standard deviation estimation of the noise in the signal S.
-%   The estimation is done from the last M-points of the N-point signal. 
+%   The estimation is done from the last M-points of the N-point signal.
 %
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
@@ -18,14 +18,24 @@
 
 function Level = noiselevel(S,M)
 
+validateattributes(S,{'numeric'},{'2d','nonempty'})
 %Get signal length
 N = length(S);
-%Extract the piece of signal to estimate
+
+%Validate input
 if nargin<2 || isempty(M)
-    Cutoff = S(ceil(4/5*N):N);
+    %Extract the piece of signal to estimate
+    M = 1/5*N;
 else
-    Cutoff = S(ceil(N-M):N);   
+    validateattributes(M,{'numeric'},{'scalar','nonempty','nonnegative'})
 end
+if M>N
+    error('Second argument cannot be longer than the length of the signal.')
+end
+
+%Extract the piece of signal to estimate
+Cutoff = S(ceil(N-M):N);
+
 %Estimate the noise level
 Cutoff = Cutoff - mean(Cutoff);
 Level = std(Cutoff);
