@@ -186,7 +186,7 @@ end
 if ~iscolumn(ax)
     ax = ax.';
 end
-if numel(unique(round(diff(ax),12)))~=1
+if numel(unique(round(diff(ax),6)))~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
 if ~iscell(S)

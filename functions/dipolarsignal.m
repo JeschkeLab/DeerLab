@@ -83,7 +83,7 @@ end
 if ModDepth>1 || ModDepth<0
     error('Modulation depth must be in the range of 0 to 1.')
 end
-if numel(unique(round(diff(r),12)))~=1 && length(r)~=1
+if numel(unique(round(diff(r),6)))~=1 && length(r)~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
 if ~iscolumn(P)
