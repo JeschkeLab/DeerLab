@@ -42,3 +42,4 @@ Determines the zero time of a dipolar signal ``V`` and corrects the time axis ``
 Corrects the time axis ``t`` for a given zero-time ``t0`` in ns/us.
 
 .. image:: ../images/correctzerotime1.svg
+    :align: center

@@ -9,6 +9,7 @@ API Documentation
     ./api/aptkernel
     ./api/backgroundstart
     ./api/correctphase
+    ./api/correctoffset
     ./api/correctzerotime
     ./api/dipolarkernel
     ./api/dipolarsignal
