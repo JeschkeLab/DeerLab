@@ -18,7 +18,7 @@ fit1 = fitbackground(data2fit,t,@td_exp,tstart);
 t = t*1000;
 fit2 = fitbackground(data2fit,t,@td_exp,tstart);
 
-err = any(abs(fit1 - fit2)>1e-10);
+err = any(abs(fit1 - fit2)>1e-6);
 err = any(err);
 maxerr = max(abs(fit1 - fit2));
 data = [];

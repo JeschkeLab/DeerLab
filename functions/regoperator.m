@@ -40,6 +40,8 @@ switch d
         L = diff(eye(n),1);
     case 2
         L = diff(eye(n),2);
+    case 3
+        L = diff(eye(n),3);
 end
 
 end

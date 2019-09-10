@@ -56,19 +56,6 @@ if isempty(t0)
     idxt0 = 1;
     %If maximum is not the first or last point, then do moment analysis
     if maxPos>1 && maxPos<length(Vfine)
-        %
-        % Procedure schematic:
-        %
-        %   2*maxDelta                 MaxEndDistance
-        %  <------------->     <--------------------------------------->
-        % 1          maxPos-1 maxPos                                  end
-        % |--------------|-----|---------------------------------------|
-        %         <--|--------------------> 2xMaxAllowedDistance
-        %           idx
-        % <-----------------------> 2xMaxAllowedDistance
-        %        Integration
-        %
-        %
         % Determine the width of the interval to use for the integral
         if maxPos<length(Vfine)/2
           maxDelta = floor((maxPos-1)/2);
