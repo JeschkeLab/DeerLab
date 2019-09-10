@@ -2,11 +2,11 @@
 % FITREGMODEL Fits a distance distribution to one (or several) signals
 %            by optimization of a regularization functional model.
 %
-%   P = FITREGMODEL(S,K,r,L,regtype,alpha)
+%   P = FITREGMODEL(S,K,r,regtype,alpha)
 %   Regularization of the N-point signal (S) to a M-point distance
 %   distribution (P) given a M-point distance axis (r) and NxM point kernel
-%   (K). The (M-2)xM point regularization matrix (L) and regularization
-%   parameter (alpha) control the regularization properties.
+%   (K). The regularization parameter (alpha) controls the regularization 
+%   properties.
 %
 %   The type of regularization employed in FITREGMODEL is set by the regtype
 %   input argument. The regularization models implemented in FITREGMODEL are:
@@ -14,7 +14,7 @@
 %          'tv'       -   Total variation regularization
 %          'huber'    -   pseudo-Huber regularization
 %
-%   P = FITREGMODEL({S1,S2,...},{K1,K2,...},r,L,regtype,alpha)
+%   P = FITREGMODEL({S1,S2,...},{K1,K2,...},r,regtype,alpha)
 %   Passing multiple signals/kernels enables global fitting of the
 %   regularization model to a single distribution. The global fit weights
 %   are automatically computed according to their contribution to ill-posedness.
@@ -37,6 +37,8 @@
 %   'GlobalWeights' - Array of weighting coefficients for the individual signals in
 %                     global fitting regularization.
 %
+%   'RegOrder' - Order of the regularization operator L (default = 2).
+%
 %   'TolFun' - Optimizer function tolerance
 %
 %   'MaxIter' - Maximum number of optimizer iterations
@@ -50,7 +52,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function P = fitregmodel(S,K,r,L,RegType,alpha,varargin)
+function P = fitregmodel(S,K,r,RegType,alpha,varargin)
 
 
 %Turn off warnings to avoid ill-conditioned warnings 
@@ -59,10 +61,10 @@ warning('off','MATLAB:nearlySingularMatrix')
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
 %--------------------------------------------------------------------------
-if nargin<6
+if nargin<5
     error('Not enough input arguments.')
 end
-if nargin<4 || isempty(RegType)
+if nargin<3 || isempty(RegType)
     RegType = 'tikhonov';
 elseif isa(RegType,'function_handle')
     RegFunctional = RegType;
@@ -78,7 +80,6 @@ if strcmp(RegType,'custom')
 else
     GradObj = true;
 end
-validateattributes(L,{'numeric'},{'nonempty','2d'},mfilename,'RegMatrix')
 validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r')
 if numel(unique(round(diff(r),6)))~=1
@@ -89,8 +90,14 @@ end
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
 %Check if user requested some options via name-value input
-[TolFun,Solver,NonNegConstrained,MaxFunEvals,MaxIter,HuberParam,GlobalWeights] = parseoptional({'TolFun','Solver','NonNegConstrained','MaxFunEvals','MaxIter','HuberParam','GlobalWeights'},varargin);
+[TolFun,Solver,NonNegConstrained,MaxFunEvals,MaxIter,HuberParam,GlobalWeights,RegOrder] ...
+    = parseoptional({'TolFun','Solver','NonNegConstrained','MaxFunEvals','MaxIter','HuberParam','GlobalWeights','RegOrder'},varargin);
 
+if isempty(RegOrder)
+    RegOrder = 2;
+else
+    validateattributes(RegOrder,{'numeric'},{'scalar','nonnegative'})
+end
 if isempty(TolFun)
     TolFun = 1e-9;
 else
@@ -162,8 +169,9 @@ end
 %Regularization processing
 %--------------------------------------------------------------------------
 
-Dimension = size(L,2);
-InitialGuess = zeros(Dimension,1);
+nr = size(K{1},2);
+L = regoperator(nr,RegOrder);
+InitialGuess = zeros(nr,1);
 
 %Convert distance axis to nanoseconds if givne in Angstrom
 if ~isnanometer(r)
@@ -185,7 +193,7 @@ end
 switch lower(Solver)
     
     case 'analytical'
-        P = zeros(Dimension,1);
+        P = zeros(nr,1);
         for i=1:length(S)
         PseudoInverse = Q\K{i}.';
         P = P + weights(i)*PseudoInverse*S{i};
@@ -207,7 +215,7 @@ switch lower(Solver)
     case 'fmincon'
         %Constrained Tikhonov/Total variation/Huber regularization
         if NonNegConstrained
-            NonNegConst = zeros(Dimension,1);
+            NonNegConst = zeros(nr,1);
         else
             NonNegConst = [];
         end

@@ -15,8 +15,7 @@ DipEvoFcn = K*P;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 1e-3;
-RegMatrix = regoperator(Dimension,3);
-TikhResult1 = fitregmodel(DipEvoFcn,K,r,RegMatrix,'tv',RegParam,'Solver','fnnls');
+TikhResult1 = fitregmodel(DipEvoFcn,K,r,'tv',RegParam,'Solver','fnnls','RegOrder',3);
 
 err = any(abs(TikhResult1 - P)>2e-2);
 

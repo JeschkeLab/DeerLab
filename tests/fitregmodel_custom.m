@@ -18,7 +18,7 @@ DipEvoFcn = K*P;
 RegParam = 0.02;
 RegMatrix = regoperator(Dimension,3);
 RegFunctional = @(Dist)(1/2*norm(K*Dist - DipEvoFcn)^2 + RegParam^2*max(RegMatrix*Dist)^2);
-Result = fitregmodel(DipEvoFcn,K,r,RegMatrix,RegFunctional,RegParam,'Solver','fmincon');
+Result = fitregmodel(DipEvoFcn,K,r,RegFunctional,RegParam,'Solver','fmincon');
 
 err = any(abs(Result - P)>1e-1);
 maxerr = max(abs(Result - P));

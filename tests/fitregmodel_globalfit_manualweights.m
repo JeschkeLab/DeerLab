@@ -30,14 +30,13 @@ noise = whitegaussnoise(length(S3),0.1);
 S3 = S3 + noise;
 
 
-L = regoperator(Ndist,2);
 %Set optimal regularization parameter (found numerically lambda=0.13)
 regparam = 2;
 
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 
-Result = fitregmodel(Ss,Ks,r,L,'tikhonov',regparam,'Solver','fnnls','GlobalWeights',[0.4 0.5 0.1]);
+Result = fitregmodel(Ss,Ks,r,'tikhonov',regparam,'Solver','fnnls','GlobalWeights',[0.4 0.5 0.1]);
 
 err = any(isnan(Result));
 err = any(err);

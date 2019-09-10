@@ -1,11 +1,11 @@
 %
 % OBIR Osher's Bregman-iterated regularization method
 %
-%   P = OBIR(S,K,r,'type',L,alpha)
+%   P = OBIR(S,K,r,'type',alpha)
 %   OBIR of the N-point signal (S) to a M-point distance
 %   distribution (P) given a M-point distance axis (r) and NxM point kernel
-%   (K). The (M-2)xM point regularization matrix (L) and regularization
-%   parameter (alpha) control the regularization properties.
+%   (K). The regularization parameter (alpha) controls the regularization 
+%   properties.
 %
 %   The type of regularization employed in OBIR is set by the 'type'
 %   input argument. The regularization models implemented in OBIR are:
@@ -17,6 +17,9 @@
 %   Additional (optional) arguments can be passed as property-value pairs.
 % 
 %  The property-value pairs to be passed as options can be set in any order.
+%
+%       'RegOrder' - Order of the regularization operator L (default = 2).
+%
 %       'NoiseLevelAim' - Level (standard deviation) of noise at which 
 %                         Bregman iterations are to stop.
 %
@@ -46,16 +49,21 @@
 % the Free Software Foundation.
 
 
-function [P,ConvergenceCurve] = obir(S,K,r,RegType,RegMatrix,RegParam,varargin)
+function [P,ConvergenceCurve] = obir(S,K,r,RegType,RegParam,varargin)
 
 if ~iscolumn(S)
     S = S';
 end
 
 %Get optional parameters
-[NoiseLevelAim,Solver,MaxIter,TolFun,MaxFunEvals,DivergenceStop,MaxOuterIter,HuberParam,AxisHandle] = parseoptional({'NoiseLevelAim','Solver','MaxIter','TolFun','MaxFunEvals','DivergenceStop','MaxOuterIter','HuberParam','AxisHandle'},varargin);
+[NoiseLevelAim,Solver,MaxIter,TolFun,MaxFunEvals,DivergenceStop,MaxOuterIter,HuberParam,AxisHandle,RegOrder] ...
+    = parseoptional({'NoiseLevelAim','Solver','MaxIter','TolFun','MaxFunEvals','DivergenceStop','MaxOuterIter','HuberParam','AxisHandle','RegOrder'},varargin);
 
-
+if isempty(RegOrder)
+    RegOrder = 2;
+else
+    validateattributes(RegOrder,{'numeric'},{'scalar','nonnegative'})
+end
 if isempty(TolFun)
     TolFun = 1e-10;
 else
@@ -102,7 +110,6 @@ end
 validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 validateattributes(S,{'numeric'},{'nonempty'},mfilename,'S')
 validateattributes(K,{'numeric'},{'nonempty'},mfilename,'K')
-validateattributes(RegMatrix,{'numeric'},{'nonempty'},mfilename,'RegMatrix')
 checklengths(S,K);
 if ~isreal(S)
     error('Input signal cannot be complex.')
@@ -122,6 +129,8 @@ end
 if ~isnanometer(r)
    r = r/10; 
 end
+
+L = regoperator(length(r),RegOrder);
 
 %--------------------------------------------------------------------------
 % Parse & Validate Optional Input
@@ -179,14 +188,14 @@ while Iteration <= MaxOuterIter
     switch Solver
         case 'fmincon'
             %Define current minimization problem
-            RegFunctional = regfunctional(RegType,S,RegMatrix,K,RegParam,HuberParam);
+            RegFunctional = regfunctional(RegType,S,L,K,RegParam,HuberParam);
             fminconFunctional = @(P)OBIRFunctional(P,RegFunctional,Subgradient);
             fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
             %Run minimzation
             P =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         case 'fnnls'
             
-            [Q,KtS] = lsqcomponents(S,K,RegMatrix,RegParam,RegType,HuberParam);
+            [Q,KtS] = lsqcomponents(S,K,L,RegParam,RegType,HuberParam);
             KtS = KtS - Subgradient;
             P = fnnls(Q,KtS,InitialGuess,TolFun);
             %In some cases, fnnls may return negatives if tolerance is to high

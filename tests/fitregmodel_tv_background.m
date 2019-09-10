@@ -20,9 +20,8 @@ V = V/V(1);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.0005;
-RegMatrix = regoperator(Dimension,3);
 KB = dipolarkernel(t,r,ModDepth,B);
-Result = fitregmodel(V,KB,r,RegMatrix,'tv',RegParam,'Solver','fnnls');
+Result = fitregmodel(V,KB,r,'tv',RegParam,'Solver','fnnls','RegOrder',3);
 
 error = abs(Result - P);
 err(1) = any(error > 1.5e-2);

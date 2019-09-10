@@ -7,9 +7,8 @@ K = dipolarkernel(t,r);
 V = K*P;
 V = V + whitegaussnoise(300,0.02);
 V = V/max(V);
-L = regoperator(300,2);
 alpha = 2;
-Pfit = fitregmodel(V,K,r,L,'tikhonov',alpha);
+Pfit = fitregmodel(V,K,r,'tikhonov',alpha);
 
 error = abs(Pfit - P);
 err = any(error>7e-2);

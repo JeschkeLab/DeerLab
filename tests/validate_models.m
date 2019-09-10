@@ -55,10 +55,8 @@ function [Pfit,Bfit] = myfitting(param,t,r,V)
 
 [Bfit,lambdafit] = fitbackground(V,t,param.Bmodel);
 
-order = 2;
 K = dipolarkernel(t,r,lambdafit,Bfit);
-L = regoperator(length(V),order);
 regparam = param.regparam;
-Pfit = fitregmodel(V,K,r,L,'tikh',regparam);
+Pfit = fitregmodel(V,K,r,'tikh',regparam);
 
 end

@@ -20,10 +20,8 @@ S = DipEvoFcn.*ESEEM';
 
 Filtered = longpass(t,S,1.5);
 
-L = regoperator(Dimension,2);
-RegParam = regparamrange(K,L);
-RegParam2 = selregparam(Filtered,K,L,'tikhonov','gml');
-Result = fitregmodel(Filtered,K,r,L,'tikhonov',RegParam2,'Solver','fnnls');
+RegParam2 = selregparam(Filtered,K,'tikhonov','gml');
+Result = fitregmodel(Filtered,K,r,'tikhonov',RegParam2,'Solver','fnnls');
 
 error = abs(Result - P);
 err(1) = any(error>3e-1);
@@ -36,7 +34,7 @@ if opt.Display
     subplot(122),hold on
     plot(r,P)
     plot(r,Result)
-    Result = fitregmodel(S,K,r,L,'tikhonov',RegParam2,'Solver','fnnls');
+    Result = fitregmodel(S,K,r,'tikhonov',RegParam2,'Solver','fnnls');
     plot(r,Result)
     subplot(121),hold on
     plot(t,DipEvoFcn)

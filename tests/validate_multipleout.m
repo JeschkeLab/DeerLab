@@ -59,8 +59,7 @@ V = V + whitegaussnoise(length(V), param.validationnoise);
 
 order = 2;
 K = dipolarkernel(t,r,lambdafit,Bfit);
-L = regoperator(length(V),order);
 regparam = param.regparam;
-Pfit = fitregmodel(V,K,r,L,'tikh',regparam);
+Pfit = fitregmodel(V,K,r,'tikh',regparam);
 
 end

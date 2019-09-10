@@ -46,9 +46,7 @@ S = dipolarsignal(t,r,P,'noiselevel',0.05);
 
 S = S + whitegaussnoise(M, param.validationnoise);
 
-order = 2;
-L = regoperator(M,order);
 regparam = param.regparam;
-Pfit = fitregmodel(S,K,r,L,'tikh',regparam);
+Pfit = fitregmodel(S,K,r,'tikh',regparam);
 
 end

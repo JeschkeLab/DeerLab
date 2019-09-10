@@ -12,10 +12,9 @@ P = rd_onegaussian(r,[3,0.5]);
 P = P/sum(P);
 
 K = dipolarkernel(t,r);
-RegMatrix = regoperator(Dimension,2);
 DipEvoFcn = K*P;
 
-[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,RegMatrix,'tikhonov',{'aic','gcv','lr'});
+[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,'tikhonov',{'aic','gcv','lr'});
 %Accept testif all values are the same (should be as there is no noise)
 err(1) = any(diff(OptParam) > 1e-2);
 err(2) = any(abs(OptParam - 0.002) > 1e-4);

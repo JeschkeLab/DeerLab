@@ -11,13 +11,11 @@ P = rd_onegaussian(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
-RegMatrix = regoperator(Ndist,2);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParamRange = regparamrange(K,RegMatrix);
-RegParam = selregparam(DipEvoFcn,K,RegMatrix,'tikhonov','aic');
+RegParam = selregparam(DipEvoFcn,K,'tikhonov','aic');
 
-TikhResult = fitregmodel(DipEvoFcn,K,r,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+TikhResult = fitregmodel(DipEvoFcn,K,r,'tikhonov',RegParam,'Solver','fnnls');
 
 
 err(1) = any(abs(TikhResult - P)>3e-3);

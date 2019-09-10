@@ -60,11 +60,10 @@ signal = (signal - lambda)/(1-lambda) ;
 signal= signal/signal(1);
 K = dipolarkernel(t,r);
 % K = K/mean(diff(r));
-RegMatrix = regoperator(Dimension,2);
 RegParam = 4;
-Dist2 = fitregmodel(Dip2,K,r,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
-Dist3 = fitregmodel(Dip3,K,r,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
-DistrTest = fitregmodel(signal,K,r,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
+Dist2 = fitregmodel(Dip2,K,r,'tikhonov',RegParam,'Solver','fnnls');
+Dist3 = fitregmodel(Dip3,K,r,'tikhonov',RegParam,'Solver','fnnls');
+DistrTest = fitregmodel(signal,K,r,'tikhonov',RegParam,'Solver','fnnls');
 
 err(1) = any(abs(DistrTest - Dist3)>3e-1);
 err(2) = any(abs(DistrTest - Dist2)>3e-1);

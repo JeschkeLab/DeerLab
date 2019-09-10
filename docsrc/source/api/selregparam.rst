@@ -11,17 +11,16 @@ Syntax
 
 .. code-block:: matlab
 
-    [alpha] = selregparam(S,K,L,'type','method')
-    [alpha,F,alphas] = selregparam(S,K,L,'type','method')
-    alpha = selregparam(S,K,L,'type','all')
-    alpha = selregparam(S,K,L,'type',{'method1','method2','methodN'})
-    alpha = selregparam({S1,S2,SM},{K1,K2,KM},r,L,'type','method')
-    [alpha] = selregparam(S,K,L,'type','method','Property',Value)
+    [alpha] = selregparam(S,K,'type','method')
+    [alpha,F,alphas] = selregparam(S,K,'type','method')
+    alpha = selregparam(S,K,'type','all')
+    alpha = selregparam(S,K,'type',{'method1','method2','methodN'})
+    alpha = selregparam({S1,S2,SM},{K1,K2,KM},r,'type','method')
+    [alpha] = selregparam(S,K,'type','method','Property',Value)
 
 Parameters
     *   ``S`` - Input signal (N-array)
     *   ``K`` -  Dipolar kernel (NxM-array)
-    *   ``L`` - Regularization operator ((M-order))xM-array)
     *   ``type`` - Regularization type (string)
     *   ``method`` - Model selection type (string)
 Returns
@@ -34,7 +33,7 @@ Description
 
 .. code-block:: matlab
 
-    [alpha] = selregparam(alphas,S,K,L,'type','method')
+    [alpha] = selregparam(alphas,S,K,'type','method')
 
 Returns the optimal regularization parameter ``alpha`` from a range of regularization parameter candidates ``alphas``. The parameter for the regularization type given by ``'type'`` is computed based on the input signal ``S``, the dipolar kernel ``K`` and the regularization operator ``L``. The method employed for the selection of the regularization parameter can be specified as the ``'method'`` input argument. The available regularization models specified by ``'type'`` are
 
@@ -44,19 +43,19 @@ Returns the optimal regularization parameter ``alpha`` from a range of regulariz
 
 .. code-block:: matlab
 
-    [alpha,F,alphas] = selregparam(alphas,S,K,L,'type',{'method1','method2','method3',...})
+    [alpha,F,alphas] = selregparam(alphas,S,K,'type',{'method1','method2','method3',...})
 
 If multiple selection methods are passed as a cell array of strings, the function returns ``alpha`` as an array of optimal regularization parameters corresponding to the input methods. The selection models functionals ``F`` are also returned as a cell array of arrays containing the evaluated functionals of the requested models. The order of the output parameters corresponds to the order of the model strings in the input.
 
 .. code-block:: matlab
 
-    [alpha,F,alphas] = selregparam(alphas,S,K,L,'type','all')
+    [alpha,F,alphas] = selregparam(alphas,S,K,'type','all')
 
 Alternatively, the argument ``'all'`` can be passed, which will compute the optimal regularization parameter based on all the selection methods implemented in the function.
 
 .. code-block:: matlab
 
-  alpha = selregparam(alphas,{S1,S2,..,SM},{K1,K2,..,KM},r,L,'type','method')
+  alpha = selregparam(alphas,{S1,S2,..,SM},{K1,K2,..,KM},r,'type','method')
 
 Passing multiple signals/kernels enables selection of the regularization parameter for global fitting of the regularization model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes N1,N2,... and a cell array of Kernel matrices with sizes N1xM,N2xM,... must be passed as well.
 
@@ -89,7 +88,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 .. code-block:: matlab
 
-    P = selregparam(args,'Property1',Value1,'Property2',Value2,...)
+    alpha = selregparam(args,'Property1',Value1,'Property2',Value2,...)
 
 
 Refine
@@ -101,7 +100,7 @@ Refine
 
     .. code-block:: matlab
 
-       P = selregparam(args,'Refine',true)
+       alpha = selregparam(args,'Refine',true)
 
 
 NonNegConstrained
@@ -113,7 +112,7 @@ NonNegConstrained
 
     .. code-block:: matlab
 
-       P = selregparam(args,'NonNegConstrained',false)
+       alpha = selregparam(args,'NonNegConstrained',false)
 
 HuberParam
     Value of the superparameter used in the pseudo-Huber regularization.
@@ -124,7 +123,7 @@ HuberParam
 
     .. code-block:: matlab
 
-        P = selregparam(args,'HuberParam',2.5)
+        alpha = selregparam(args,'HuberParam',2.5)
 
 GlobalWeights
     Array of weighting coefficients for the individual signals in global fitting regularization. If not specified, the global fit weights are automatically computed according to their contribution to ill-posedness. The weights must be normalized such that the sum over all weights equals one. The same number of weights as number of input signals is required.
@@ -135,7 +134,7 @@ GlobalWeights
 
     .. code-block:: matlab
 
-        P = selregparam(alphas,{S1,S2,S3},{K1,K2,K3},r,L,'tikhonov','aic','GlobalWeights',[0.1 0.6 0.3]])
+        alpha = selregparam(alphas,{S1,S2,S3},{K1,K2,K3},r,L,'tikhonov','aic','GlobalWeights',[0.1 0.6 0.3]])
 
 TolFun
     Optimizer function tolerance. The solver stops once the regularization functional evaluation reaches a value lower than this tolerance. Lower values increase the precision of the result, albeit at the cost of longer computation times.
@@ -146,7 +145,18 @@ TolFun
 
     .. code-block:: matlab
 
-        P = selregparam(args,'TolFun','1e-20')
+        alpha = selregparam(args,'TolFun','1e-20')
+
+RegOrder
+    Order of the regularization operator.
+
+    *Default:* ``2``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        alpha = selregparam(args,'RegOrder',3)
 
 NoiseLevel
     Level (standard deviation) of the noise in the input signal(s). If not specified, it is automatically computed via :ref:`noiselevel`. If multiple signals are passed (global fitting), the same number of noise levels must be specified. Required only for the ``'dp'`` and ``'mcl'`` selection methods.
@@ -157,7 +167,7 @@ NoiseLevel
 
     .. code-block:: matlab
 
-        P = selregparam(args,'NoiseLevel',0.05)
+        alpha = selregparam(args,'NoiseLevel',0.05)
 
 Range
     Array of regularization parameter candidates to evaluate.
@@ -168,4 +178,4 @@ Range
 
     .. code-block:: matlab
 
-        P = selregparam(args,'Range',logspace(-3,4,100))
+        alpha = selregparam(args,'Range',logspace(-3,4,100))

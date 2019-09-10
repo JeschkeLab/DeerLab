@@ -44,9 +44,8 @@ K = dipolarkernel(t,r);
 S = K*P;
 S = dipolarsignal(t,r,P,'noiselevel',0.05);
 
-order = 2;
-L = regoperator(M,order);
+
 regparam = param.regparam;
-Pfit = fitregmodel(S,K,r,L,param.type,regparam);
+Pfit = fitregmodel(S,K,r,param.type,regparam);
 
 end

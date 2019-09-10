@@ -69,10 +69,9 @@ function [Vfit,Pfit] = myfitting(t,param,r,V)
     %Construct a kernel with the fitted background
     K = dipolarkernel(t,r,lambda,Bfit);
     %Prepare regularization
-    L = regoperator(length(V),2);
-    alpha = selregparam(V,K,L,'tikh','aic');
+    alpha = selregparam(V,K,'tikh','aic');
     %Regularize the data using the fitted backgorund
-    Pfit = fitregmodel(V,K,r,L,'tikhonov',alpha);
+    Pfit = fitregmodel(V,K,r,'tikhonov',alpha);
     %Get the signal for comparison in time-domain
     Vfit = K*Pfit; 
     plot(t,V,'.',t,Vfit),drawnow

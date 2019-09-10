@@ -28,9 +28,9 @@ else
     axhandle = [];
 end
 
-Result = obir(S,K,r,'huber',RegMatrix,OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Huberparam',OptHuber,'axishandle',axhandle);
+Result = obir(S,K,r,'huber',OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Huberparam',OptHuber,'axishandle',axhandle);
 
-RegResult = fitregmodel(S,K,r,RegMatrix,'huber',OptParam);
+RegResult = fitregmodel(S,K,r,'huber',OptParam);
 
 err = norm(Result - P) > norm(RegResult - P);
 maxerr = norm(Result - P);

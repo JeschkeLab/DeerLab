@@ -28,17 +28,16 @@ noise = whitegaussnoise(length(S3),0.1);
 S3 = S3 + noise;
 
 
-L = regoperator(Ndist,2);
 
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 
 
 RegParamRange = logspace(-3,4,60);
-[OptRegParam,fun] = selregparam(Ss,Ks,L,'tikhonov',{'aic','aicc'},'Range',RegParamRange);
+[OptRegParam,fun] = selregparam(Ss,Ks,'tikhonov',{'aic','aicc'},'Range',RegParamRange);
 
-Result1 = fitregmodel(Ss,Ks,r,L,'tikhonov',OptRegParam(1),'Solver','fnnls');
-Result2 = fitregmodel(Ss,Ks,r,L,'tikhonov',OptRegParam(2),'Solver','fnnls');
+Result1 = fitregmodel(Ss,Ks,r,'tikhonov',OptRegParam(1),'Solver','fnnls');
+Result2 = fitregmodel(Ss,Ks,r,'tikhonov',OptRegParam(2),'Solver','fnnls');
 
 Result = mean([Result1 Result2],2);
 stdDist = std([Result1 Result2],1,2);

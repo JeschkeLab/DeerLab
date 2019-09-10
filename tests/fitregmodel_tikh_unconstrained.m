@@ -14,9 +14,8 @@ K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegMatrix = regoperator(Dimension,2);
 RegParam = 1;
-Result = fitregmodel(DipEvoFcn,K,r,RegMatrix,'tikhonov',RegParam,'NonNegConstrained',false);
+Result = fitregmodel(DipEvoFcn,K,r,'tikhonov',RegParam,'NonNegConstrained',false);
 
 err(1) = any(abs(Result - P)>4e-2);
 maxerr = max(abs(Result - P));

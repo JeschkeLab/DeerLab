@@ -37,10 +37,10 @@ regparam = 2;
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 
-Result = fitregmodel(Ss,Ks,r,L,'tikhonov',regparam,'Solver','fnnls');
-Dist1 = fitregmodel(S1,K1,r,L,'tikhonov',regparam,'Solver','fnnls');
-Dist2 = fitregmodel(S2,K2,r,L,'tikhonov',regparam,'Solver','fnnls');
-Dist3 = fitregmodel(S3,K3,r,L,'tikhonov',regparam,'Solver','fnnls');
+Result = fitregmodel(Ss,Ks,r,'tikhonov',regparam,'Solver','fnnls');
+Dist1 = fitregmodel(S1,K1,r,'tikhonov',regparam,'Solver','fnnls');
+Dist2 = fitregmodel(S2,K2,r,'tikhonov',regparam,'Solver','fnnls');
+Dist3 = fitregmodel(S3,K3,r,'tikhonov',regparam,'Solver','fnnls');
 
 normResult = norm(P - Result);
 norm1 = norm(P - Dist1);

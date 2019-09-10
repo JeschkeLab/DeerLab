@@ -10,14 +10,13 @@ Syntax
 
 .. code-block:: matlab
 
-    P = fitregmodel(S,K,r,L,'type',alpha)
-    P = fitregmodel(S,K,r,L,'type',alpha,'Property',Value)
+    P = fitregmodel(S,K,r,'type',alpha)
+    P = fitregmodel(S,K,r,'type',alpha,'Property',Value)
 
 Parameters
     *   ``S`` - Input signal (N-array)
     *   ``K`` -  Dipolar kernel (NxM-array)
     *   ``r`` -  Distance Axis (N-array)
-    *   ``L`` - Regularization operator ((M-order))xM-array)
     *   ``type`` - Regularization type (string)
     *   ``alpha`` - Regularization parameter (scalar)
 Returns
@@ -28,7 +27,7 @@ Description
 
 .. code-block:: matlab
 
-    P = fitregmodel(S,K,r,L,'type',alpha)
+    P = fitregmodel(S,K,r,'type',alpha)
 
 Fits a regularized distance distribution ``P``  from the input signal ``S`` according to the regularization model specified by the ``'type'`` argument. The available regularization models are
 
@@ -40,7 +39,7 @@ See the functions documentation for constructing and computing the dipolar kerne
 
 .. code-block:: matlab
 
-    P = fitregmodel({S1,S2,S3},{K1,K2,S3},r,L,'type',alpha)
+    P = fitregmodel({S1,S2,S3},{K1,K2,S3},r,'type',alpha)
 
 Passing multiple signals/kernels enables global fitting of the regularization model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes N1,N2,... and a cell array of Kernel matrices with sizes N1xM,N2xM,... must be passed as well.
 
@@ -77,6 +76,18 @@ HuberParam
     .. code-block:: matlab
 
         P = fitregmodel(args,'HuberParam',2.5)
+
+RegOrder
+    Order of the regularization operator.
+
+    *Default:* ``2``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        P = fitregmodel(args,'RegOrder',3)
+
 
 GlobalWeights
     Array of weighting coefficients for the individual signals in global fitting regularization. If not specified, the global fit weights are automatically computed according to their contribution to ill-posedness. The weights must be normalized such that the sum over all weights equals one. The same number of weights as number of input signals is required.

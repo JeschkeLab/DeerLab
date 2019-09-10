@@ -11,11 +11,9 @@ r = time2dist(t);
 P = rd_onegaussian(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
-RegMatrix = regoperator(Dimension,2);
 DipEvoFcn = K*P;
 
-RegParamSet = regparamrange(K,RegMatrix);
-[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,RegMatrix,'huber',{'aic','gcv'},'NonNegConstrained',false);
+[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,'huber',{'aic','gcv'},'NonNegConstrained',false);
 
 %Accept testif all values are the same (should be as there is no noise)
 err = any(any(OptParam - OptParam' > 1e-2));

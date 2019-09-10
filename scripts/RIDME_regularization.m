@@ -30,17 +30,15 @@ V = dipolarsignal(t,r,P,'ModDepth',0.4,'Overtones',OverCoeff,...
 %Correct by division
 Vcorr = V./Bfit;
 %Regularize background-corrected data
-L = regoperator(N,2);
 K = dipolarkernel(t,r,lambdafit,'OvertoneCoeffs',OverCoeff);
-alpha = selregparam(Vcorr,K,L,'tikh','aic');
-Pfit = fitregmodel(Vcorr,K,r,L,'tikh',alpha);
+alpha = selregparam(Vcorr,K,'tikh','aic');
+Pfit = fitregmodel(Vcorr,K,r,'tikh',alpha);
 
 %Fitting (Kernel-based)
 %----------------------------------------------
-L = regoperator(N,2);
 K2 = dipolarkernel(t,r,lambdafit,Bfit,'OvertoneCoeffs',OverCoeff);
-alpha = selregparam(V,K2,L,'tikh','aic');
-Pfit2 = fitregmodel(V,K2,r,L,'tikh',alpha);
+alpha = selregparam(V,K2,'tikh','aic');
+Pfit2 = fitregmodel(V,K2,r,'tikh',alpha);
 
 %Plotting
 %----------------------------------------------

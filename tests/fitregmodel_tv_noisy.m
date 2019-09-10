@@ -16,9 +16,8 @@ DipEvoFcn = K*P;
 Noise = whitegaussnoise(Dimension,NoiseLevel);
 S = DipEvoFcn + Noise;
 
-RegMatrix = regoperator(Dimension,2);
 RegParam = 0.001259;
-TikhResult1 = fitregmodel(S,K,r,RegMatrix,'tv',RegParam,'Solver','fmincon');
+TikhResult1 = fitregmodel(S,K,r,'tv',RegParam,'Solver','fmincon');
 err(1) = any(abs(TikhResult1 - P)>1e-1);
 maxerr = max(abs(TikhResult1 - P));
 

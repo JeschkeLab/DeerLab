@@ -26,10 +26,9 @@ V = correctoffset(V,t);
 [B,lambda] = fitbackground(V,t,@td_strexp);
 % Prepare regularization
 K = dipolarkernel(t,r,lambda,B);
-L = regoperator(r,2);
-alpha = selregparam(V,K,L,'tikhonov','aic');
+alpha = selregparam(V,K,'tikhonov','aic');
 % Run fitting
-Pfit = fitregmodel(V,K,r,L,'tikhonov',alpha);
+Pfit = fitregmodel(V,K,r,'tikhonov',alpha);
 % Transform to time-domain
 Vfit = K*Pfit;
 
@@ -81,8 +80,8 @@ tstart = valpar.tstart;
 K = dipolarkernel(t,r,lambda,B);
 L = regoperator(r,2);
 method = valpar.selmethod;
-alpha = selregparam(V,K,L,'tikhonov',method);
+alpha = selregparam(V,K,'tikhonov',method);
 %Run fitting
-Pfit = fitregmodel(V,K,r,L,'tikhonov',alpha);
+Pfit = fitregmodel(V,K,r,'tikhonov',alpha);
 
 end

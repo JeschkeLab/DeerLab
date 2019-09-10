@@ -24,10 +24,10 @@ S = DipEvoFcn+Noise;
 RegParam = 40;
 
 %nm
-Result1 = obir(S,K,r,'tikhonov',RegMatrix,RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fnnls');
+Result1 = obir(S,K,r,'tikhonov',RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fnnls');
 %A
 r = r*10;
-Result2 = obir(S,K,r,'tikhonov',RegMatrix,RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fnnls');
+Result2 = obir(S,K,r,'tikhonov',RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fnnls');
 
 err = Result1~=Result2;
 data = [];

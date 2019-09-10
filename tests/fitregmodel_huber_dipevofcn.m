@@ -16,8 +16,7 @@ DipEvoFcn = K*P;
 
 %Set optimal regularization parameter (found numerically lambda=0.005)
 RegParam = 0.0001;
-RegMatrix = regoperator(Dimension,2);
-Result = fitregmodel(DipEvoFcn,K,r,RegMatrix,'huber',RegParam,'Solver','fmincon','HuberParam',1.35);
+Result = fitregmodel(DipEvoFcn,K,r,'huber',RegParam,'Solver','fmincon','HuberParam',1.35);
 
 error = abs(Result - P);
 err(1) = any(error>2e-1);

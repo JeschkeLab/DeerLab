@@ -1,15 +1,15 @@
 %
 % SELREGPARAM Selection of optimal regularization parameter
 %
-%   alpha = SELREGPARAM(S,K,L,'type','method')
+%   alpha = SELREGPARAM(S,K,'type','method')
 %   Returns the optimal regularization parameter (alpha) from a range of
 %   regularization parameter candidates (alphas). The parameter for the
 %   regularization type given by ('type') is computed based on the input
-%   signal (S), the dipolar kernel (K) and the regularization operator (L).
+%   signal (S), and the dipolar kernel (K).
 %   The method employed for the selection of the regularization parameter
 %   can be specified as the ('method') input argument.
 %
-%   alpha = SELREGPARAM(S,K,L,'type',{'method1',...,'methodN'})
+%   alpha = SELREGPARAM(S,K,'type',{'method1',...,'methodN'})
 %   If multiple selection methods are passed as a cell array of strings,
 %   the function returns (alpha) as an N-point array of optimal
 %   regularization parameters corresponding to the input methods,
@@ -20,7 +20,7 @@
 %   third output argument (alphas) returns a vector with the alpha candidate
 %   values evaluated in the search.
 %
-%   alpha = SELREGPARAM({S1,S2,...},{K1,K2,...},r,L,'type','method')
+%   alpha = SELREGPARAM({S1,S2,...},{K1,K2,...},r,'type','method')
 %   Passing multiple signals/kernels enables selection of the regularization
 %   parameter for global fitting of the regularization model to a
 %   single distribution. The global fit weights are automatically computed
@@ -32,6 +32,8 @@
 % The properties to be passed as options can be set in any order.
 %
 %   'NonNegConstrained' - True/false to enforce non-negativity (default=true)
+%
+%   'RegOrder' - Order of the regularization operator L (default = 2).
 %
 %   'Refine' - True/false to enforce a second search aroud the optimal value
 %              with a finer grid to achieve a better value of the optimum.
@@ -53,7 +55,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [OptRegParam,Functionals,RegParamRange] = selregparam(S,K,L,RegType,SelectionMethod,varargin)
+function [OptRegParam,Functionals,RegParamRange] = selregparam(S,K,RegType,SelectionMethod,varargin)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -64,7 +66,8 @@ function [OptRegParam,Functionals,RegParamRange] = selregparam(S,K,L,RegType,Sel
 warning('off','MATLAB:nearlySingularMatrix')
 
 %Check if user requested some options via name-value input
-[TolFun,NonNegConstrained,NoiseLevel,Refine,GlobalWeights,HuberParameter,RegParamRange] = parseoptional({'TolFun','NonNegConstrained','NoiseLevel','Refine','GlobalWeights','HuberParameter','Range'},varargin);
+[TolFun,NonNegConstrained,NoiseLevel,Refine,GlobalWeights,HuberParameter,RegParamRange,RegOrder] ...
+    = parseoptional({'TolFun','NonNegConstrained','NoiseLevel','Refine','GlobalWeights','HuberParameter','Range','RegOrder'},varargin);
 
 if ~iscell(S)
     S = {S};
@@ -72,10 +75,10 @@ end
 if ~iscell(K)
     K = {K};
 end
-if isempty(RegParamRange)
-    RegParamRange = regparamrange(K{1},L);
+if isempty(RegOrder)
+    RegOrder = 2;
 else
-    validateattributes(RegParamRange,{'numeric'},{'nonnegative'})
+    validateattributes(RegOrder,{'numeric'},{'scalar','nonnegative'})
 end
 if length(K)~=length(S)
     error('The number of kernels and signals must be equal.')
@@ -102,8 +105,6 @@ for i=1:length(S)
     validateattributes(S{i},{'numeric'},{'nonempty'},mfilename,'S')
     validateattributes(K{i},{'numeric'},{'nonempty'},mfilename,'K')
 end
-validateattributes(RegParamRange,{'numeric'},{'nonempty','nonnegative'},mfilename,'RegParamRange')
-validateattributes(L,{'numeric'},{'nonempty'},mfilename,'RegMatrix')
 %Validate the selection methods input
 allowedMethodInputs = {'lr','lc','dp','cv','gcv','rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl'};
 if iscell(SelectionMethod)
@@ -171,8 +172,15 @@ end
 %--------------------------------------------------------------------------
 % Preparations
 %--------------------------------------------------------------------------
-DipolarDimension = length(L);
-
+nr = size(K{1},2);
+%Get regularization operator
+L = regoperator(nr,RegOrder);
+%Get range of potential alpha values candidates
+if isempty(RegParamRange)
+    RegParamRange = regparamrange(K{1},L);
+else
+    validateattributes(RegParamRange,{'numeric'},{'nonempty','nonnegative'},mfilename,'RegParamRange')
+end
 %Update number of points just to make sure
 nPoints = length(RegParamRange);
 %Initialize arrays
@@ -195,7 +203,7 @@ InfluenceMatrix = cell(1,nPoints);
 for i=1:nPoints %Loop over all regularization parameter values
     
     [Q,KtS,weights] = lsqcomponents(S,K,L,RegParamRange(i),RegType);
-    InitialGuess = zeros(DipolarDimension,1);
+    InitialGuess = zeros(nr,1);
     if NonNegConstrained
         P{i} = fnnls(Q,KtS,InitialGuess,TolFun);
     else
@@ -230,7 +238,7 @@ OptHuberParam = zeros(length(SelectionMethod),1);
 for MethodIndex = 1:length(SelectionMethod)
     Functional = zeros(1,nPoints);
     for SIndex = 1:length(S)
-        DipolarDimension = length(S{SIndex});
+        nr = length(S{SIndex});
         switch lower(SelectionMethod{MethodIndex})
             
             case 'lr' %L-curve Minimum-Radius method (LR)
@@ -247,48 +255,48 @@ for MethodIndex = 1:length(SelectionMethod)
                 
             case 'dp' %Discrepancy principle (DP)
                 SafetyFactor = 1;
-                Index = Residual(SIndex,:)/sqrt(DipolarDimension) <= SafetyFactor*NoiseLevel(SIndex);
+                Index = Residual(SIndex,:)/sqrt(nr) <= SafetyFactor*NoiseLevel(SIndex);
                 Functional(Index) = Functional(Index) - weights(SIndex)*(RegParamRange(Index));
                 
             case 'cv' %Cross validation (CV)
                 for i=1:nPoints
                     InfluenceDiagonal = diag(InfluenceMatrix{SIndex,i});
-                    Functional(i) = Functional(i) + weights(SIndex)*(sum(abs(S{SIndex} - K{SIndex}*(P{i})./(ones(DipolarDimension,1) - InfluenceDiagonal)).^2));
+                    Functional(i) = Functional(i) + weights(SIndex)*(sum(abs(S{SIndex} - K{SIndex}*(P{i})./(ones(nr,1) - InfluenceDiagonal)).^2));
                 end
                 
             case 'gcv' %Generalized Cross Validation (GCV)
                 for i=1:nPoints
-                    Functional(i) = Functional(i) + weights(SIndex)*(Residual(i)^2/((1 - trace(InfluenceMatrix{SIndex,i})/DipolarDimension)^2));
+                    Functional(i) = Functional(i) + weights(SIndex)*(Residual(i)^2/((1 - trace(InfluenceMatrix{SIndex,i})/nr)^2));
                 end
                 
             case 'rgcv' %Robust Generalized Cross Validation (rGCV)
                 TuningParameter = 0.9;
                 for i=1:nPoints
-                    Functional(i) = Functional(i) + weights(SIndex)*(Residual(SIndex,i)^2/((1 - trace(InfluenceMatrix{SIndex,i})/DipolarDimension)^2)*(TuningParameter + (1 - TuningParameter)*trace(InfluenceMatrix{SIndex,i}^2)/DipolarDimension));
+                    Functional(i) = Functional(i) + weights(SIndex)*(Residual(SIndex,i)^2/((1 - trace(InfluenceMatrix{SIndex,i})/nr)^2)*(TuningParameter + (1 - TuningParameter)*trace(InfluenceMatrix{SIndex,i}^2)/nr));
                 end
                 
             case 'srgcv' %Strong Robust Generalized Cross Validation (srGCV)
                 TuningParameter = 0.8;
                 for i=1:nPoints
-                    Functional(i) = Functional(i) + weights(SIndex)*(Residual(SIndex,i)^2/((1 - trace(InfluenceMatrix{SIndex,i})/DipolarDimension)^2)*(TuningParameter + (1 - TuningParameter)*trace(PseudoInverse{SIndex,i}'*PseudoInverse{SIndex,i})/DipolarDimension));
+                    Functional(i) = Functional(i) + weights(SIndex)*(Residual(SIndex,i)^2/((1 - trace(InfluenceMatrix{SIndex,i})/nr)^2)*(TuningParameter + (1 - TuningParameter)*trace(PseudoInverse{SIndex,i}'*PseudoInverse{SIndex,i})/nr));
                 end
                 
             case 'aic' %Akaike information criterion (AIC)
                 Criterion = 2;
                 for i=1:nPoints
-                    Functional(i) = Functional(i) + weights(SIndex)*(DipolarDimension*log(Residual(SIndex,i)^2/DipolarDimension) + Criterion*trace(InfluenceMatrix{SIndex,i}));
+                    Functional(i) = Functional(i) + weights(SIndex)*(nr*log(Residual(SIndex,i)^2/nr) + Criterion*trace(InfluenceMatrix{SIndex,i}));
                 end
                 
             case 'bic' %Bayesian information criterion (BIC)
-                Criterion = log(DipolarDimension);
+                Criterion = log(nr);
                 for i=1:nPoints
-                    Functional(i) = Functional(i) + weights(SIndex)*(DipolarDimension*log(Residual(SIndex,i)^2/DipolarDimension) + Criterion*trace(InfluenceMatrix{SIndex,i}));
+                    Functional(i) = Functional(i) + weights(SIndex)*(nr*log(Residual(SIndex,i)^2/nr) + Criterion*trace(InfluenceMatrix{SIndex,i}));
                 end
                 
             case 'aicc' %Corrected Akaike information criterion (AICC)
                 for i=1:nPoints
-                    Criterion = 2*DipolarDimension/(DipolarDimension-trace(InfluenceMatrix{SIndex,i})-1);
-                    Functional(i) = Functional(i) + weights(SIndex)*(DipolarDimension*log(Residual(SIndex,i)^2/DipolarDimension) + Criterion*trace(InfluenceMatrix{SIndex,i}));
+                    Criterion = 2*nr/(nr-trace(InfluenceMatrix{SIndex,i})-1);
+                    Functional(i) = Functional(i) + weights(SIndex)*(nr*log(Residual(SIndex,i)^2/nr) + Criterion*trace(InfluenceMatrix{SIndex,i}));
                 end
                 
             case 'rm' %Residual method (RM)
@@ -329,7 +337,7 @@ for MethodIndex = 1:length(SelectionMethod)
                 
             case 'mcl' %Mallows' C_L (MCL)
                 for i=1:nPoints
-                    Functional(i) = Residual(i)^2 + 2*NoiseLevel(SIndex)^2*trace(InfluenceMatrix{SIndex,i}) - 2*DipolarDimension*NoiseLevel(SIndex)^2;
+                    Functional(i) = Residual(i)^2 + 2*NoiseLevel(SIndex)^2*trace(InfluenceMatrix{SIndex,i}) - 2*nr*NoiseLevel(SIndex)^2;
                 end
                 
         end
@@ -360,7 +368,7 @@ if Refine
         end
         varargin{end+1} = 'Range';
         varargin{end+1} = FineRegParamRange;
-        [RefinedOptRegParam,RefinedFunctionals] = selregparam(S,K,L,RegType,SelectionMethod,varargin);
+        [RefinedOptRegParam,RefinedFunctionals] = selregparam(S,K,RegType,SelectionMethod,varargin);
         for i=1:length(Functionals)
             Functionals{i} = [Functionals{i} RefinedFunctionals{i}];
         end

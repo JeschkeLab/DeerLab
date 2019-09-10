@@ -15,8 +15,7 @@ DipEvoFcn = K*P;
 Noise = whitegaussnoise(Dimension,0.02);
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.1;
-RegMatrix = regoperator(Dimension,3);
-Resultfnnls = fitregmodel(DipEvoFcn+Noise,K,r,RegMatrix,'tv',RegParam,'Solver','fnnls');
+Resultfnnls = fitregmodel(DipEvoFcn+Noise,K,r,'tv',RegParam,'Solver','fnnls','RegOrder',3);
 
 err = any(abs(Resultfnnls - P)>9e-2);
 

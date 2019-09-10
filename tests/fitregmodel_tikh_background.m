@@ -18,11 +18,10 @@ ModDepth = 1/V(1);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 0.13;
-RegMatrix = regoperator(Dimension,2);
 KB = dipolarkernel(t,r,ModDepth,B);
-TikhResult1 = fitregmodel(V,KB,r,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
-TikhResult2 = fitregmodel(V,KB,r,RegMatrix,'tikhonov',RegParam,'Solver','bppnnls');
-TikhResult3 = fitregmodel(V,KB,r,RegMatrix,'tikhonov',RegParam,'Solver','lsqnonneg','TolFun',1e-15);
+TikhResult1 = fitregmodel(V,KB,r,'tikhonov',RegParam,'Solver','fnnls');
+TikhResult2 = fitregmodel(V,KB,r,'tikhonov',RegParam,'Solver','bppnnls');
+TikhResult3 = fitregmodel(V,KB,r,'tikhonov',RegParam,'Solver','lsqnonneg','TolFun',1e-15);
 
 err(1) = any(abs(TikhResult1 - P)>3e-3);
 err(2) = any(abs(TikhResult2 - P)>3e-3);

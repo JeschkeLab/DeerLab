@@ -29,17 +29,16 @@ noise = whitegaussnoise(length(S3),0.1);
 S3 = S3 + noise;
 
 
-L = regoperator(Ndist,2);
 %Set optimal regularization parameter (found numerically lambda=0.13)
 regparam = 4;
 
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 
-Result = fitregmodel(Ss,Ks,r,L,'huber',regparam,'Solver','fnnls');
-Dist1 = fitregmodel(S1,K1,r,L,'huber',regparam,'Solver','fnnls');
-Dist2 = fitregmodel(S2,K2,r,L,'huber',regparam,'Solver','fnnls');
-Dist3 = fitregmodel(S3,K3,r,L,'huber',regparam,'Solver','fnnls');
+Result = fitregmodel(Ss,Ks,r,'huber',regparam,'Solver','fnnls');
+Dist1 = fitregmodel(S1,K1,r,'huber',regparam,'Solver','fnnls');
+Dist2 = fitregmodel(S2,K2,r,'huber',regparam,'Solver','fnnls');
+Dist3 = fitregmodel(S3,K3,r,'huber',regparam,'Solver','fnnls');
 
 normResult = norm(P - Result);
 norm1 = norm(P - Dist1);

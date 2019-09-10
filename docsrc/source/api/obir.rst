@@ -12,8 +12,8 @@ Syntax
 
 .. code-block:: matlab
 
-     P = obir(S,K,r,'type',L,alpha)
-     P = obir(S,K,r,'type',L,alpha,'Property',Value)
+     P = obir(S,K,r,'type',alpha)
+     P = obir(S,K,r,'type',alpha,'Property',Value)
 
 
 Parameters
@@ -21,7 +21,6 @@ Parameters
     *   ``K`` -  Dipolar kernel (NxM-array)
     *   ``r`` -  Distance Axis (N-array)
     *   ``type`` - Regularization type (string)
-    *   ``L`` - Regularization operator ((M-order))xM-array)
     *   ``alpha`` - Regularization parameter (scalar)
 Returns
     *  ``P`` - Distance Distribution (M-array)
@@ -32,7 +31,7 @@ Description
 
 .. code-block:: matlab
 
-     P = obir(S,K,r,'type',L,alpha)
+     P = obir(S,K,r,'type',alpha)
 
 Fit a distance distribution ``P`` on a distance axis ``r`` to the signal ``S`` according to the kernel ``K``. The (M-2)xM point regularization matrix ``L`` and regularization parameter ``alpha`` control the regularization properties.
 
@@ -63,6 +62,16 @@ NoiseLevelAim
 
        P = obir(args,'NoiseLevelAim',0.05)
 
+RegOrder
+    Order of the regularization operator.
+
+    *Default:* ``2``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        P = obir(args,'RegOrder',3)
 
 DivergenceStop
     Specify whether the Bregman iterations must be stopped if the functional value increases instead of decreasing.
