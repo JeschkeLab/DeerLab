@@ -1,14 +1,14 @@
 % 
-% CORRECTOFFSET Amplitude offset correction
+% CORRECTSCALE Amplitude offset correction
 %
-%       [Vc,V0] = CORRECTOFFSET(V,t) 
+%       [Vc,V0] = CORRECTSCALE(V,t) 
 %       Fits and amplitude offset (V0) to the experimental dipolar signal
 %       (V) on a given time axis (t). The experimental signal is then 
 %       normalized with respect to the fitted offset. The normalized signal
 %       is returned a the main output (Vc).
 %
 
-function [V,V0] = correctoffset(V,t)
+function [V,V0] = correctscale(V,t)
 
 if ~isreal(V)
    error('Input signal cannot be complex.') 

@@ -11,7 +11,7 @@ function [err,data,maxerr] = test(opt,olddata)
         'Offset',TrueOffset,'noiselevel',noiselevel);
 
 
-    [Vc,Offset] = correctoffset(V,t);
+    [Vc,Offset] = correctscale(V,t);
     
     
     err  = abs(Offset - TrueOffset)/TrueOffset>noiselevel;

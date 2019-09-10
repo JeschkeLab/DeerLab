@@ -18,7 +18,7 @@ r = linspace(0.5,7,100); % nm
 V = correctphase(Vraw);
 V = real(V);
 t = correctzerotime(V,traw);
-V = correctoffset(V,t);
+V = correctscale(V,t);
 
 % Processing
 %----------------------------------------------
@@ -26,8 +26,9 @@ V = correctoffset(V,t);
 [B,lambda] = fitbackground(V,t,@td_strexp);
 % Prepare regularization
 KB = dipolarkernel(t,r,lambda,B);
+alpha = selregparam(V,KB,'tikhonov','aic');
 % Run fitting
-Pfit = fitregmodel(V,KB,r,'tikhonov','aic');
+Pfit = fitregmodel(V,KB,r,'tikhonov',alpha);
 % Transform to time-domain
 Vfit = KB*Pfit;
 

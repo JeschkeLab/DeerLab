@@ -1,8 +1,8 @@
 .. highlight:: matlab
-.. _correctoffset:
+.. _correctscale:
 
 ***********************
-:mod:`correctoffset`
+:mod:`correctscale`
 ***********************
 
 Amplitude offset correction of dipolar spectroscopy signals
@@ -12,8 +12,8 @@ Syntax
 
 .. code-block:: matlab
 
-    Vc = correctoffset(V,t)
-    [Vc,V0] = correctoffset(V,t)
+    Vc = correctscale(V,t)
+    [Vc,V0] = correctscale(V,t)
 
 
 Parameters
@@ -28,9 +28,9 @@ Description
 
 .. code-block:: matlab
 
-        [Vc,V0] = correctoffset(V,t)
+        [Vc,V0] = correctscale(V,t)
 
 Determines the amplitude offset ``V0`` of a dipolar signal ``V`` and time axis ``t`` (in ns/us). The output signal ``Vc`` is normalized by the offset via ``Vc = V/V0``.
 
-.. image:: ../images/correctoffset1.svg
+.. image:: ../images/correctscale1.svg
     :align: center

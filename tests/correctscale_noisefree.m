@@ -9,7 +9,7 @@ function [err,data,maxerr] = test(opt,olddata)
     V = dipolarsignal(t,r,P,'Moddepth',0.25,'Background',B,'Offset',TrueOffset);
 
 
-    [Vc,Offset] = correctoffset(V,t);
+    [Vc,Offset] = correctscale(V,t);
     
     
     err  = abs(Offset - TrueOffset)>1e-5;
