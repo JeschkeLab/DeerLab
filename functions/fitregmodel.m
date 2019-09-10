@@ -8,6 +8,13 @@
 %   (K). The regularization parameter (alpha) controls the regularization 
 %   properties.
 %
+%   P = FITREGMODEL(S,K,r,regtype,method)
+%   Instead of passing a numerial value for the regularization parameter
+%   (alpha), the name of a selection method (method) can be passed and 
+%   the regularization parameter will be automatically selected by means
+%   of the selregparam function.
+%
+%
 %   The type of regularization employed in FITREGMODEL is set by the regtype
 %   input argument. The regularization models implemented in FITREGMODEL are:
 %          'tikhonov' -   Tikhonov regularization

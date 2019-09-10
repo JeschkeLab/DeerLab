@@ -11,7 +11,9 @@ Syntax
 .. code-block:: matlab
 
     P = fitregmodel(S,K,r,'type',alpha)
+    P = fitregmodel(S,K,r,'type','method')
     P = fitregmodel(S,K,r,'type',alpha,'Property',Value)
+    P = fitregmodel(S,K,r,'type','method','Property',Value)
 
 Parameters
     *   ``S`` - Input signal (N-array)
@@ -19,6 +21,8 @@ Parameters
     *   ``r`` -  Distance Axis (N-array)
     *   ``type`` - Regularization type (string)
     *   ``alpha`` - Regularization parameter (scalar)
+    *   ``method`` - Regularization parameter selection method (string)
+
 Returns
     *  ``P`` - Distance Distribution (M-array)
 
@@ -35,7 +39,11 @@ Fits a regularized distance distribution ``P``  from the input signal ``S`` acco
     *   ``'tv'`` - Total variation regularization
     *   ``'huber'`` - Pseudo-Huber regularization
 
-See the functions documentation for constructing and computing the dipolar kernel (:ref:`dipolarkernel`), regularization operator (:ref:`regoperator`) and regularization parameter (:ref:`selregparam`). 
+.. code-block:: matlab
+
+    P = fitregmodel(S,K,r,'type','method')
+
+Instead of passing a numerial value for the regularization parameter ``alpha``, the name of a selection method ``method`` can be passed and the regularization parameter will be automatically selected by means of the :ref:`selregparam` function.
 
 .. code-block:: matlab
 
