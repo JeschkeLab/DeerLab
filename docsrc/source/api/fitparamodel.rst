@@ -12,16 +12,16 @@ Syntax
 
 .. code-block:: matlab
 
-    [fit,param] = fitparamodel(S,@model,t)
-    [fit,param] = fitparamodel(S,@model,t,param0)
-    [fit,param] = fitparamodel(S,@model,r,K)
-    [fit,param] = fitparamodel(S,@model,r,K,param0)
-    [fit,param] = fitparamodel({S1,S2,S3},@model,r,{K1,K2,S3},param0)
-    [fit,param] = fitparamodel({S1,S2,S3},@model,t,param0)
-    [fit,param] = fitparamodel(S,@model,t,'Property',Value)
-    [fit,param] = fitparamodel(S,@model,t,param0,'Property',Value)
-    [fit,param] = fitparamodel(S,@model,r,K,'Property',Value)
-    [fit,param] = fitparamodel(S,@model,r,K,param0,'Property',Value)
+    [param,fit] = fitparamodel(S,@model,t)
+    [param,fit] = fitparamodel(S,@model,t,param0)
+    [param,fit] = fitparamodel(S,@model,r,K)
+    [param,fit] = fitparamodel(S,@model,r,K,param0)
+    [param,fit] = fitparamodel({S1,S2,S3},@model,r,{K1,K2,S3},param0)
+    [param,fit] = fitparamodel({S1,S2,S3},@model,t,param0)
+    [param,fit] = fitparamodel(S,@model,t,'Property',Value)
+    [param,fit] = fitparamodel(S,@model,t,param0,'Property',Value)
+    [param,fit] = fitparamodel(S,@model,r,K,'Property',Value)
+    [param,fit] = fitparamodel(S,@model,r,K,param0,'Property',Value)
 
 
 Parameters
@@ -32,21 +32,22 @@ Parameters
     *   ``K`` -  Dipolar kernel (NxM-array)
     *   ``param0`` -  Model parameter inital guess (array)
 Returns
-    *  ``fit`` - Parametric model fit (M-array)
     *  ``param`` - Fitted model paramters (array)
+    *  ``fit`` - Parametric model fit (M-array)
+
 
 Description
 =========================================
 
 .. code-block:: matlab
 
-    [fit,param] = fitparamodel(S,@model,t)
-    [fit,param] = fitparamodel(S,@model,t,param0)
+    [param,fit] = fitparamodel(S,@model,t)
+    [param,fit] = fitparamodel(S,@model,t,param0)
 
 Fits the *time*-domain parametric model ``@model`` to the input signal ``S`` on a time axis ``t``. User-defined inital guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
 
-    [fit,param] = fitparamodel(S,@model,r,K)
-    [fit,param] = fitparamodel(S,@model,r,K,param0)
+    [param,fit] = fitparamodel(S,@model,r,K)
+    [param,fit] = fitparamodel(S,@model,r,K,param0)
 
 Fits the *distance*-domain parametric model ``@model`` to the input signal ``S`` on a distance axis ``r``. The dipolar kernel ``K`` is required as in input for distance-domain fitting. User-defined inital guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
 
