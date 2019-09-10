@@ -50,7 +50,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function P = fitregmodel(S,K,r,RegMatrix,RegType,RegParam,varargin)
+function P = fitregmodel(S,K,r,L,RegType,alpha,varargin)
 
 
 %Turn off warnings to avoid ill-conditioned warnings 
@@ -78,8 +78,8 @@ if strcmp(RegType,'custom')
 else
     GradObj = true;
 end
-validateattributes(RegMatrix,{'numeric'},{'nonempty','2d'},mfilename,'RegMatrix')
-validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
+validateattributes(L,{'numeric'},{'nonempty','2d'},mfilename,'RegMatrix')
+validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r')
 if numel(unique(round(diff(r),6)))~=1
     error('Distance axis must be a monotonically increasing vector.')
@@ -162,7 +162,7 @@ end
 %Regularization processing
 %--------------------------------------------------------------------------
 
-Dimension = length(RegMatrix);
+Dimension = size(L,2);
 InitialGuess = zeros(Dimension,1);
 
 %Convert distance axis to nanoseconds if givne in Angstrom
@@ -178,7 +178,7 @@ end
 
 %If using LSQ-based solvers then precompute the KtK and KtS input arguments
 if ~strcmp(Solver,'fmincon')
-    [Q,KtS,weights] =  lsqcomponents(S,K,RegMatrix,RegParam,RegType,HuberParam,GlobalWeights);
+    [Q,KtS,weights] =  lsqcomponents(S,K,L,alpha,RegType,HuberParam,GlobalWeights);
 end
 
 %Solve the regularization functional minimization problem
@@ -212,7 +212,7 @@ switch lower(Solver)
             NonNegConst = [];
         end
         if ~strcmp(RegType,'custom')
-            RegFunctional = regfunctional(RegType,S,RegMatrix,K,RegParam,HuberParam);
+            RegFunctional = regfunctional(RegType,S,L,K,alpha,HuberParam);
         end
         constraint = @(x)unityconstraint(x,dr);
         fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',GradObj,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);

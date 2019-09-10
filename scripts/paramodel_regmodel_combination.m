@@ -1,7 +1,7 @@
 %================================================================
 % DeerAnalyis2
-% Example: Paramteric mode fitting & Regularization combination
-% Perform simulatenous parametric model fitting of the background 
+% Example: Paramteric mode fitting & regularization combination
+% Perform simultaneous parametric model fitting of the background 
 % and Tikhonov regularization for a one-step analysis of the data
 %================================================================
 
@@ -9,13 +9,13 @@ clear,clc,clf
 
 %Preparation
 %----------------------------------------------
-t = linspace(-1,5,200);
+t = linspace(-0.2,4,150);
 r = time2dist(t);
 P = rd_twogaussian(r,[6 0.3 4 0.3 0.3]);
 trueparam = [0.3 0.15];
 
 %Construct exponential background
-B = td_exp(t,[trueparam(2)]);
+B = td_exp(t,trueparam(2));
 
 %Generate signal
 V = dipolarsignal(t,r,P,'ModDepth',trueparam(1),'Background',B,'Noiselevel',0.01);
@@ -62,8 +62,10 @@ function [Vfit,Pfit] = myfitting(t,param,r,V)
     
     %Fit the modulation depth as first parameter...
     lambda = param(1);
+    k = param(2);
+    
     %... and the decay rate of the background as second parameter
-    Bfit = td_exp(t,param(2));
+    Bfit = td_exp(t,k);
     %Construct a kernel with the fitted background
     K = dipolarkernel(t,r,lambda,Bfit);
     %Prepare regularization
@@ -73,7 +75,5 @@ function [Vfit,Pfit] = myfitting(t,param,r,V)
     Pfit = fitregmodel(V,K,r,L,'tikhonov',alpha);
     %Get the signal for comparison in time-domain
     Vfit = K*Pfit; 
-    plot(t,V,t,Vfit),drawnow
+    plot(t,V,'.',t,Vfit),drawnow
 end
-
-

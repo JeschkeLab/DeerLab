@@ -2,22 +2,23 @@
 % FITPARAMODEL Fits a distance distribution to one (or several) signals
 %              by fitting of a parametric model.
 %
-%   [param,fit] = FITPARAMODEL(S,@model,t)
-%   [param,fit] = FITPARAMODEL(S,@model,r,K)
-%   Fitting of the N-point signal (S) to a M-point parametric model
-%   (fit) given a M-point distance/time axis (r/t). For distance-domain fitting
+%   [param,fit] = FITPARAMODEL(V,@model,t)
+%   [param,fit] = FITPARAMODEL(V,@model,r,K)
+%   Fitting of the N-point signal (V) to a M-point parametric model
+%   (@model) given a M-point distance/time axis (r/t). For distance-domain fitting
 %   the NxM point kernel (K). The fitted model corresponds to a parametric model
 %   calculated by the passed function handle (@model). The fitted parameters (param)
-%   are returned as a second output argument.
+%   are returned as the first output argument, and the fitted model as
+%   the second.
 %
-%   [param,fit] = FITPARAMODEL(S,@model,t,param0)
-%   [param,fit] = FITPARAMODEL(S,@model,r,K,param0)
+%   [param,fit] = FITPARAMODEL(V,@model,t,param0)
+%   [param,fit] = FITPARAMODEL(V,@model,r,K,param0)
 %   The initial guess of the model parameters can be passed as a last
 %   argument (param0). If (@model) is a user-defined function handle, it is
 %   required to pass (param0) as an arugment.
 %
-%   [param,fit] = FITPARAMODEL({S1,S2,...},@model,t,param0)
-%   [param,fit] = FITPARAMODEL({S1,S2,...},@model,r,{K1,K2,...},param0)
+%   [param,fit] = FITPARAMODEL({V1,V2,...},@model,t,param0)
+%   [param,fit] = FITPARAMODEL({V1,V2,...},@model,r,{K1,K2,...},param0)
 %   Passing multiple signals/kernels enables global fitting of the
 %   to a single parametric model distance distribution. The global fit weights
 %   are automatically computed according to their contribution to ill-posedness.
@@ -61,7 +62,7 @@
 
 
 
-function [FitParameters,Fit] = fitparamodel(S,model,ax,K,StartParameters,varargin)
+function [FitParameters,Fit] = fitparamodel(V,model,ax,K,StartParameters,varargin)
 
 %--------------------------------------------------------------------------
 % Input Parsening & Validation
@@ -92,13 +93,13 @@ else
 end
 if Knotpassed
     %Check if global fitting is in use
-    if iscell(S)
-        K = cell(size(S));
-        for i=1:length(S)
-         K{i} = eye(length(S{i}),length(ax));
+    if iscell(V)
+        K = cell(size(V));
+        for i=1:length(V)
+         K{i} = eye(length(V{i}),length(ax));
         end
     else
-        K = eye(length(S),length(ax));
+        K = eye(length(V),length(ax));
     end
     isDistanceDomain = false;
 else
@@ -189,42 +190,42 @@ end
 if numel(unique(round(diff(ax),6)))~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
-if ~iscell(S)
-    S = {S};
+if ~iscell(V)
+    V = {V};
 end
 if ~iscell(K)
     K = {K};
 end
-if length(K)~=length(S)
+if length(K)~=length(V)
     error('The number of kernels and signals must be equal.')
 end
 if ~isempty(GlobalWeights)
     validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
-    if length(GlobalWeights) ~= length(S)
+    if length(GlobalWeights) ~= length(V)
         error('The same number of global fit weights as signals must be passed.')
     end
     if sum(GlobalWeights)~=1
         error('The sum of the global fit weights must equal 1.')
     end
 end
-if length(S)>1 && strcmp(Solver,'lsqnonlin')
+if length(V)>1 && strcmp(Solver,'lsqnonlin')
     Solver = 'fmincon';
     Algorithm = 'interior-point';
 end
-for i=1:length(S)
-    if ~iscolumn(S{i})
-        S{i} = S{i}.';
+for i=1:length(V)
+    if ~iscolumn(V{i})
+        V{i} = V{i}.';
     end
-    if ~isreal(S{i})
-        S{i} = real(S{i});
+    if ~isreal(V{i})
+        V{i} = real(V{i});
     end
-    if length(S{i})~=size(K{i},1)
+    if length(V{i})~=size(K{i},1)
         error('K and signal arguments must fulfill size(K,1)==length(S).')
     end
-    if ~isreal(S{i})
+    if ~isreal(V{i})
         error('Input signal cannot be complex.')
     end
-    validateattributes(S{i},{'numeric'},{'nonempty'},mfilename,'S')
+    validateattributes(V{i},{'numeric'},{'nonempty'},mfilename,'S')
 end
 
 if isDistanceDomain
@@ -256,12 +257,12 @@ end
 
 %Get weights of different signals for global fitting
 if isempty(GlobalWeights)
-    Weights = globalweights(S);
+    Weights = globalweights(V);
 else
     Weights = GlobalWeights;
 end
 %Create a new handle which evaluates the model cost function for every signal
-CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y)ModelCost(Parameters,x,y),K,S)));
+CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y)ModelCost(Parameters,x,y),K,V)));
 
 %Prepare upper/lower bounds on parameter search
 Ranges =  [Info.parameters(:).range];
@@ -305,7 +306,7 @@ switch Solver
         solverOpts=optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display','off',...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax,Parameters) - S{1}));
+        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax,Parameters) - V{1}));
         [FitParameters,~,~,exitflag]  = lsqnonlin(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped

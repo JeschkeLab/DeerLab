@@ -178,7 +178,6 @@ nPoints = length(RegParamRange);
 %Initialize arrays
 Residual = zeros(1,nPoints);
 Penalty = zeros(1,nPoints);
-Functional  = zeros(1,nPoints);
 HuberParameterSet = zeros(1,nPoints);
 %Initialize cells
 PseudoInverse = cell(1,nPoints);

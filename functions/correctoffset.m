@@ -8,7 +8,7 @@
 %       is returned a the main output (Vc).
 %
 
-function [V,Offset] = correctoffset(V,t)
+function [V,V0] = correctoffset(V,t)
 
 if ~isreal(V)
    error('Input signal cannot be complex.') 
@@ -31,10 +31,9 @@ r = time2dist(t);
 Amp0 = max(V);
 
 %Time-domain fitting of Gaussian distribution, exponential background,
-%modulation depth and the offset amplitude
+%modulation depth and the overall amplitude
 K = dipolarkernel(t,r);
-timeGaussian = @(t,param,r,K)param(1)*td_exp(t,param(5)).*((1-param(2)) + param(2)*K*rd_onegaussian(r,param(3:4)));
-fitmodel = @(t,param)timeGaussian(t,param,r,K);
+fitmodel = @(t,param)param(1)*td_exp(t,param(5)).*((1-param(2)) + param(2)*K*rd_onegaussian(r,param(3:4)));
 %Set the initial values for the fitting
 param0 = [Amp0 0.5 3 0.3 0.2];
 %Run the parametric model fitting
@@ -42,10 +41,10 @@ paramfit = fitparamodel(V,fitmodel,t,param0,...
     'Upper',[1e100 1 20 5 100],...
     'Lower',[0 eps 0 0 0]);
 
-%Get the fitted offset amplitude
-Offset = paramfit(1);
+% Get the fitted signal amplitude
+V0 = paramfit(1);
 
-%Normalize the signal by the fitted offset
-V = V/Offset;
+% Normalize the signal by the fitted amplitude
+V = V/V0;
 
 end

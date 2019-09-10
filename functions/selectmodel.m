@@ -92,14 +92,12 @@ for i=1:length(Methods)
     switch currentMethod
         case 'aic'
             functional = aic;
-            [~,optimum] = min(functional);
         case 'aicc'
             functional = aicc;
-            [~,optimum] = min(functional);
         case 'bic'
             functional = bic;
-            [~,optimum] = min(functional);
     end
+    [~,optimum] = min(functional);
     functionals{i} = functional;
     optima(i) = optimum;
 end
