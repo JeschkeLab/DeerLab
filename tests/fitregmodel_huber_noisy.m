@@ -18,7 +18,7 @@ S = DipEvoFcn + Noise;
 
 RegMatrix = regoperator(Dimension,2);
 range = regparamrange(K,RegMatrix);
-[RegParam] = selregparam(range,S,K,RegMatrix,'huber','aic');
+[RegParam] = selregparam(S,K,RegMatrix,'huber','aic');
 
 TikhResult1 = fitregmodel(S,K,r,RegMatrix,'huber',RegParam,'Solver','fnnls');
 err(1) = any(abs(TikhResult1 - P)>7e-2);

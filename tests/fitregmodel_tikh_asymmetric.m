@@ -15,7 +15,7 @@ RegMatrix = regoperator(Ndist,2);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParamRange = regparamrange(K,RegMatrix);
-RegParam = selregparam(RegParamRange,DipEvoFcn,K,RegMatrix,'tikhonov','aic');
+RegParam = selregparam(DipEvoFcn,K,RegMatrix,'tikhonov','aic');
 
 TikhResult = fitregmodel(DipEvoFcn,K,r,RegMatrix,'tikhonov',RegParam,'Solver','fnnls');
 

@@ -15,8 +15,7 @@ K = dipolarkernel(t,r);
 RegMatrix = regoperator(Dimension,2);
 DipEvoFcn = K*P;
 
-RegParamSet = regparamrange(K,RegMatrix);
-OptParam2 = selregparam(RegParamSet,DipEvoFcn,K,RegMatrix,'tikhonov','all','NonNegConstrained',false,'NoiseLevel',0.05);
+OptParam2 = selregparam(DipEvoFcn,K,RegMatrix,'tikhonov','all','NonNegConstrained',false,'NoiseLevel',0.05);
 
 %Accept testif all values are the same (should be as there is no noise)
 err = length(OptParam2)~=15;

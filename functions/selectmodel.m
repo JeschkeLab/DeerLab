@@ -13,7 +13,7 @@
 %   [opt,f] = SELECTMODEL(...)
 %   Returns the method selector functionals for the different methods.
 %
-%   alphas = SELECTMODEL(...,'Property',Value)
+%   opt = SELECTMODEL(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 %   See "help fitparamodel" for a detailed list of the property-value pairs

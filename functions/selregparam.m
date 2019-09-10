@@ -1,7 +1,7 @@
 %
 % SELREGPARAM Selection of optimal regularization parameter
 %
-%   alpha = SELREGPARAM(alphas,S,K,L,'type','method')
+%   alpha = SELREGPARAM(S,K,L,'type','method')
 %   Returns the optimal regularization parameter (alpha) from a range of
 %   regularization parameter candidates (alphas). The parameter for the
 %   regularization type given by ('type') is computed based on the input
@@ -9,7 +9,7 @@
 %   The method employed for the selection of the regularization parameter
 %   can be specified as the ('method') input argument.
 %
-%   alpha = SELREGPARAM(alphas,S,K,L,'type',{'method1',...,'methodN'})
+%   alpha = SELREGPARAM(S,K,L,'type',{'method1',...,'methodN'})
 %   If multiple selection methods are passed as a cell array of strings,
 %   the function returns (alpha) as an N-point array of optimal
 %   regularization parameters corresponding to the input methods,
@@ -20,7 +20,7 @@
 %   third output argument (alphas) returns a vector with the alpha candidate
 %   values evaluated in the search.
 %
-%   alpha = SELREGPARAM(alphas,{S1,S2,...},{K1,K2,...},r,L,'type','method')
+%   alpha = SELREGPARAM({S1,S2,...},{K1,K2,...},r,L,'type','method')
 %   Passing multiple signals/kernels enables selection of the regularization
 %   parameter for global fitting of the regularization model to a
 %   single distribution. The global fit weights are automatically computed
@@ -45,6 +45,7 @@
 %
 %   'NoiseLevel' - Array of noise levels of the input signals.
 %
+%   'Range' - Range of alpha-value candidates to evaluate
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 %
@@ -52,7 +53,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [OptRegParam,Functionals,RegParamRange] = selregparam(RegParamRange,S,K,RegMatrix,RegType,SelectionMethod,varargin)
+function [OptRegParam,Functionals,RegParamRange] = selregparam(S,K,L,RegType,SelectionMethod,varargin)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -63,13 +64,18 @@ function [OptRegParam,Functionals,RegParamRange] = selregparam(RegParamRange,S,K
 warning('off','all')
 
 %Check if user requested some options via name-value input
-[TolFun,NonNegConstrained,NoiseLevel,Refine,GlobalWeights,HuberParameter] = parseoptional({'TolFun','NonNegConstrained','NoiseLevel','Refine','GlobalWeights','HuberParameter'},varargin);
+[TolFun,NonNegConstrained,NoiseLevel,Refine,GlobalWeights,HuberParameter,RegParamRange] = parseoptional({'TolFun','NonNegConstrained','NoiseLevel','Refine','GlobalWeights','HuberParameter','Range'},varargin);
 
 if ~iscell(S)
     S = {S};
 end
 if ~iscell(K)
     K = {K};
+end
+if isempty(RegParamRange)
+    RegParamRange = regparamrange(K{1},L);
+else
+    validateattributes(RegParamRange,{'numeric'},{'nonnegative'})
 end
 if length(K)~=length(S)
     error('The number of kernels and signals must be equal.')
@@ -97,7 +103,7 @@ for i=1:length(S)
     validateattributes(K{i},{'numeric'},{'nonempty'},mfilename,'K')
 end
 validateattributes(RegParamRange,{'numeric'},{'nonempty','nonnegative'},mfilename,'RegParamRange')
-validateattributes(RegMatrix,{'numeric'},{'nonempty'},mfilename,'RegMatrix')
+validateattributes(L,{'numeric'},{'nonempty'},mfilename,'RegMatrix')
 %Validate the selection methods input
 allowedMethodInputs = {'lr','lc','dp','cv','gcv','rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl'};
 if iscell(SelectionMethod)
@@ -165,7 +171,7 @@ end
 %--------------------------------------------------------------------------
 % Preparations
 %--------------------------------------------------------------------------
-DipolarDimension = length(RegMatrix);
+DipolarDimension = length(L);
 
 %Update number of points just to make sure
 nPoints = length(RegParamRange);
@@ -189,7 +195,7 @@ InfluenceMatrix = cell(1,nPoints);
 
 for i=1:nPoints %Loop over all regularization parameter values
     
-    [Q,KtS,weights] = lsqcomponents(S,K,RegMatrix,RegParamRange(i),RegType);
+    [Q,KtS,weights] = lsqcomponents(S,K,L,RegParamRange(i),RegType);
     InitialGuess = zeros(DipolarDimension,1);
     if NonNegConstrained
         P{i} = fnnls(Q,KtS,InitialGuess,TolFun);
@@ -197,15 +203,15 @@ for i=1:nPoints %Loop over all regularization parameter values
         P{i}  = Q\KtS;
     end
     for idx=1:length(S)
-        Q = lsqcomponents(S{idx},K{idx},RegMatrix,RegParamRange(i),'tikhonov');
+        Q = lsqcomponents(S{idx},K{idx},L,RegParamRange(i),'tikhonov');
         PseudoInverse{idx,i} = Q\K{idx}.';
         switch lower(RegType)
             case 'tikhonov'
-                Penalty(idx,i) = 1/sqrt(2)*norm(RegMatrix*P{i});
+                Penalty(idx,i) = 1/sqrt(2)*norm(L*P{i});
             case 'tv'
-                Penalty(idx,i) = sum(sqrt((RegMatrix*P{i}).^2 + 1e-24));
+                Penalty(idx,i) = sum(sqrt((L*P{i}).^2 + 1e-24));
             case 'huber'
-                Penalty(idx,i) = sum(sqrt((RegMatrix*P{i}/HuberParameter).^2 + 1 ) - 1);
+                Penalty(idx,i) = sum(sqrt((L*P{i}/HuberParameter).^2 + 1 ) - 1);
         end
         Residual(idx,i) = 1/sqrt(2)*norm(K{idx}*P{i} - S{idx});
         InfluenceMatrix{idx,i} = K{idx}*PseudoInverse{idx,i};
@@ -353,7 +359,9 @@ if Refine
         else
             FineRegParamRange = linspace(0.5*OptRegParam(1),2*OptRegParam(1),RefineLength);
         end
-        [RefinedOptRegParam,RefinedFunctionals] = selregparam(FineRegParamRange,S,K,RegMatrix,RegType,SelectionMethod,varargin);
+        varargin{end+1} = 'Range';
+        varargin{end+1} = FineRegParamRange;
+        [RefinedOptRegParam,RefinedFunctionals] = selregparam(S,K,L,RegType,SelectionMethod,varargin);
         for i=1:length(Functionals)
             Functionals{i} = [Functionals{i} RefinedFunctionals{i}];
         end

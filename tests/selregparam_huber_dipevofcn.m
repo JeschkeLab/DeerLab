@@ -15,7 +15,7 @@ RegMatrix = regoperator(Dimension,2);
 DipEvoFcn = K*P;
 
 RegParamSet = regparamrange(K,RegMatrix);
-[OptParam,~,~] = selregparam(RegParamSet,DipEvoFcn,K,RegMatrix,'huber',{'aic','gcv'});
+[OptParam,~,~] = selregparam(DipEvoFcn,K,RegMatrix,'huber',{'aic','gcv'});
 
 %Accept testif all values are the same (should be as there is no noise)
 err = any(any(OptParam - OptParam' > 1e-2));

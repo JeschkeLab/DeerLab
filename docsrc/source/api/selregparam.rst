@@ -11,15 +11,14 @@ Syntax
 
 .. code-block:: matlab
 
-    [alpha] = selregparam(alphas,S,K,L,'type','method')
-    [alpha,F,alphas] = selregparam(alphas,S,K,L,'type','method')
-    alpha = selregparam(alphas,S,K,L,'type','all')
-    alpha = selregparam(alphas,S,K,L,'type',{'method1','method2','methodN'})
-    alpha = selregparam(alphas,{S1,S2,SM},{K1,K2,KM},r,L,'type','method')
-    [alpha] = selregparam(alphas,S,K,L,'type','method','Property',Value)
+    [alpha] = selregparam(S,K,L,'type','method')
+    [alpha,F,alphas] = selregparam(S,K,L,'type','method')
+    alpha = selregparam(S,K,L,'type','all')
+    alpha = selregparam(S,K,L,'type',{'method1','method2','methodN'})
+    alpha = selregparam({S1,S2,SM},{K1,K2,KM},r,L,'type','method')
+    [alpha] = selregparam(S,K,L,'type','method','Property',Value)
 
 Parameters
-    *   ``alphas`` - Candidate regularization parameters (array)
     *   ``S`` - Input signal (N-array)
     *   ``K`` -  Dipolar kernel (NxM-array)
     *   ``L`` - Regularization operator ((M-order))xM-array)
@@ -158,4 +157,15 @@ NoiseLevel
 
     .. code-block:: matlab
 
-        P = selregparam(args,'mcl','NoiseLevel',0.05)
+        P = selregparam(args,'NoiseLevel',0.05)
+
+Range
+    Array of regularization parameter candidates to evaluate.
+
+    *Default:* [*empty*] - Computes an optimal range automatically with :ref:`regparamrange`
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        P = selregparam(args,'Range',logspace(-3,4,100))

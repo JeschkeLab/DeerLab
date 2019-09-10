@@ -11,7 +11,7 @@ Filtered = longpass(t,DipEvoFcn,2);
 
 L = regoperator(Dimension,2);
 RegParam = regparamrange(K,L);
-RegParam2 = selregparam(RegParam,Filtered,K,L,'tikhonov','aic');
+RegParam2 = selregparam(Filtered,K,L,'tikhonov','aic');
 Result = fitregmodel(Filtered,K,r,L,'tikhonov',RegParam2,'Solver','fnnls');
 
 error = abs(Result - P);

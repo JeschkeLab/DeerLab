@@ -17,7 +17,7 @@ RegMatrix = regoperator(Ndist,2);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParamRange = regparamrange(K,RegMatrix);
-RegParam1 = selregparam(RegParamRange,DipEvoFcn,K,RegMatrix,'tikhonov','aic');
+RegParam1 = selregparam(DipEvoFcn,K,RegMatrix,'tikhonov','aic');
 
 
 Ntime = 100;
@@ -37,7 +37,7 @@ RegMatrix = regoperator(Ndist,2);
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParamRange = regparamrange(K,RegMatrix);
-RegParam2 = selregparam(RegParamRange,DipEvoFcn,K,RegMatrix,'tikhonov','aic');
+RegParam2 = selregparam(DipEvoFcn,K,RegMatrix,'tikhonov','aic');
 
 %RegParam2 should be larger to compensate for worse condition number 
 err = RegParam2 < RegParam1;

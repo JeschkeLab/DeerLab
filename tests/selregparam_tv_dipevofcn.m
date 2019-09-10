@@ -15,8 +15,7 @@ K = dipolarkernel(t,r);
 RegMatrix = regoperator(Dimension,2);
 DipEvoFcn = K*P;
 
-RegParamSet = regparamrange(K,RegMatrix);
-[OptParam,Functionals,RegParams] = selregparam(RegParamSet,DipEvoFcn,K,RegMatrix,'tv',{'aic','gcv'});
+[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,RegMatrix,'tv',{'aic','gcv'});
 
 %Accept testif all values are the same (should be as there is no noise)
 err = any(any(OptParam - OptParam' > 1e-2));

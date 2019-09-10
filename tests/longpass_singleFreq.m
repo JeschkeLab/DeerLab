@@ -22,7 +22,7 @@ Filtered = longpass(t,S,1.5);
 
 L = regoperator(Dimension,2);
 RegParam = regparamrange(K,L);
-RegParam2 = selregparam(RegParam,Filtered,K,L,'tikhonov','gml');
+RegParam2 = selregparam(Filtered,K,L,'tikhonov','gml');
 Result = fitregmodel(Filtered,K,r,L,'tikhonov',RegParam2,'Solver','fnnls');
 
 error = abs(Result - P);
