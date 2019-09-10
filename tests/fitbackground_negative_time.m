@@ -5,7 +5,9 @@ r = time2dist(t);
 P = rd_onegaussian(r,[4 0.4]);
 K = dipolarkernel(t,r);
 S = K*P;
+rng(2)
 S = S + whitegaussnoise(300,0.02);
+rng('default')
 S = S/max(S);
 lambda = 0.2;
 k = 0.3;

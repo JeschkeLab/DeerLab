@@ -1,5 +1,6 @@
 function [err,data,maxerr] = test(opt,olddata)
 
+rng(2)
 t = linspace(0,4,200);
 r = time2dist(t);
 

@@ -1,5 +1,6 @@
 function [err,data,maxerr] = test(opt,olddata)
 
+rng(2)
 Ntime1 = 100;
 Ndist = 200;
 
@@ -29,8 +30,6 @@ S3 = K3*P;
 noise = whitegaussnoise(length(S3),0.1);
 S3 = S3 + noise;
 
-
-L = regoperator(Ndist,2);
 %Set optimal regularization parameter (found numerically lambda=0.13)
 regparam = 2;
 

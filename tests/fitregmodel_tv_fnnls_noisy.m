@@ -4,6 +4,7 @@ function [err,data,maxerr] = test(opt,olddata)
 % Check Tikhonov regularization
 %=======================================
 
+rng(2)
 Dimension = 200;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);

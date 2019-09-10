@@ -2,7 +2,7 @@ function [err,data,maxerr] = test(opt,olddata)
 
 Ntime1 = 100;
 Ndist = 200;
-
+rng(2)
 dt = 0.008;
 t1 = linspace(0,dt*Ntime1,Ntime1);
 [~,rmin,rmax] = time2dist(t1);
@@ -28,6 +28,7 @@ K3 = dipolarkernel(t3,r);
 S3 = K3*P;
 noise = whitegaussnoise(length(S3),0.1);
 S3 = S3 + noise;
+rng('default')
 
 
 L = regoperator(Ndist,2);
