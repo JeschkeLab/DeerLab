@@ -22,32 +22,34 @@ Processing RIDME with strong background
     N = 200;
     t = linspace(-0.2,8,N);
     r = time2dist(t);
-    P = rd_onegaussian(r,[-10,0.3]);
+    P = rd_onegaussian(r,[4,0.3]);
     B = td_strexp(t,[0.2,5]);
 
-    %RIDME
+    %Generate RIDME signal
     %----------------------------------------------
     Tmix = 50; %Mixing time [us]
-    T1 = 88; %Relaxation time [us]
+    T1 = 88;   %Relaxation time [us]
     OverCoeff = overtones(2,Tmix,T1);
     V = dipolarsignal(t,r,P,'ModDepth',0.4,'Overtones',OverCoeff,...
                             'Background',B,'NoiseLevel',0.02);
-    V = V/max(V);
-
+    %Fit the background
     [Bfit,lambdafit,Bparam] = fitbackground(V,t,@td_strexp);
 
+    %Fitting (background-correction)
+    %----------------------------------------------
+    %Correct by division
     Vcorr = V./Bfit;
-
+    %Regularize background-corrected data
     L = regoperator(N,2);
     K = dipolarkernel(t,r,lambdafit,'OvertoneCoeffs',OverCoeff);
-    alphas = regparamrange(K,L);
-    alpha = selregparam(alphas,Vcorr,K,L,'tikh','aic');
+    alpha = selregparam(Vcorr,K,L,'tikh','aic');
     Pfit = fitregmodel(Vcorr,K,r,L,'tikh',alpha);
 
+    %Fitting (Kernel-based)
+    %----------------------------------------------
     L = regoperator(N,2);
     K2 = dipolarkernel(t,r,lambdafit,Bfit,'OvertoneCoeffs',OverCoeff);
-    alphas = regparamrange(K2,L);
-    alpha = selregparam(alphas,V,K2,L,'tikh','aic');
+    alpha = selregparam(V,K2,L,'tikh','aic');
     Pfit2 = fitregmodel(V,K2,r,L,'tikh',alpha);
 
     %Plotting
@@ -83,6 +85,7 @@ Processing RIDME with strong background
     xlabel('Distance [nm]')
     ylabel('P(r)')
     title('Distance Distributions')
+
 
 
 .. figure:: ../images/example_ridmeregularization.svg

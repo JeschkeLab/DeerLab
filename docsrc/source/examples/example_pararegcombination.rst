@@ -2,52 +2,47 @@
 .. _example_pararegcombination:
 
 ****************************************************
-Combining regularization & parametric model fitting
+Synchronous background and regularization fitting
 ****************************************************
 
 
 .. code-block:: matlab
 
-    %%================================================================
+    %================================================================
     % DeerAnalyis2
     % Example: Paramteric mode fitting & Regularization combination
     % Perform simulatenous parametric model fitting of the background
     % and Tikhonov regularization for a one-step analysis of the data
     %================================================================
 
-    clear,clc
+    clear,clc,clf
 
     %Preparation
     %----------------------------------------------
-    t = linspace(0,5,100);
+    t = linspace(-1,5,200);
     r = time2dist(t);
     P = rd_twogaussian(r,[6 0.3 4 0.3 0.3]);
-    trueparam = [0.3 0.05];
+    trueparam = [0.3 0.15];
 
     %Construct exponential background
     B = td_exp(t,[trueparam(2)]);
 
     %Generate signal
-    V = dipolarsignal(t,r,P,'ModDepth',trueparam(1),'B',B,'Noiselevel',0.01);
+    V = dipolarsignal(t,r,P,'ModDepth',trueparam(1),'Background',B,'Noiselevel',0.01);
 
     %Fitting
     %----------------------------------------------
 
     %Create function handle depending on r and param from the custom model
-    fcnhandle = @(r,param)myfitting(t,param,r,V);
+    fcnhandle = @(t,param)myfitting(t,param,r,V);
 
-    %Fit the background to assess inital values for background parameters
-    [start] = backgroundstart(V,t,@td_exp);
-    [~,lambdafit,Bparamfit] = fitbackground(V,t,@td_exp,start);
-
-    %Convert the function handle to DeerAnalysis parametric model
-    mymodel = paramodel(fcnhandle,[lambdafit,Bparamfit],[0 0],[1 10]);
-
-    %Pass the unity matrix to fit in time-domain
-    I = eye(length(t));
+    %Initial guess
+    param0 = [0.4,0.2];
 
     %Launch the fitting of the B-parametric model + Tikhonov regularization
-    [~,parafit] = fitparamodel(V,I,t,mymodel);
+    [~,parafit] = fitparamodel(V,fcnhandle,t,param0,...
+                               'Lower',[0 0],'Upper',[1 10],...
+                               'TolFun',1e-3);
 
     %Obtain the fitted signal and distance distribution
     [Vfit,Pfit] = myfitting(t,parafit,r,V);
@@ -83,16 +78,13 @@ Combining regularization & parametric model fitting
         K = dipolarkernel(t,r,lambda,Bfit);
         %Prepare regularization
         L = regoperator(length(V),2);
-        alphas = regparamrange(K,L);
-        alpha = selregparam(alphas,V,K,L,'tikh','aic');
+        alpha = selregparam(V,K,L,'tikh','aic');
         %Regularize the data using the fitted backgorund
         Pfit = fitregmodel(V,K,r,L,'tikhonov',alpha);
         %Get the signal for comparison in time-domain
         Vfit = K*Pfit;
-
+        plot(t,V,t,Vfit),drawnow
     end
-
-
 
 
 .. figure:: ../images/example_pararegcombination.svg

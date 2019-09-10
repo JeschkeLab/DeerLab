@@ -2,7 +2,7 @@
 .. _example_timedomainfitting:
 
 *****************************************
-Parametric time-domain fitting
+Parametric time-domain model fitting
 *****************************************
 
 
@@ -22,13 +22,11 @@ Parametric time-domain fitting
     %----------------------------------------------
     t = linspace(0,5,100);
     r = time2dist(t);
-
     K = dipolarkernel(t,r);
     P = rd_twogaussian(r,[6 0.3 4 0.3 0.3]);
     B = td_exp(t,[0.05]);
     %Generate signal
     V = dipolarsignal(t,r,P,'ModDepth',0.3,'Background',B,'Noiselevel',0.01);
-
     trueparam = [0.3 0.05 6 0.3 4 0.3 0.3];
 
     %Parametric model
@@ -44,12 +42,9 @@ Parametric time-domain fitting
     %Convert model function to valid parametric model
     model = paramodel(mysignal,param0,lower,upper);
 
-    %No need for distance-time conversion, pass identity matrix as kernel
-    I = eye(100);
-
     %Fit the parametric model in time-domain
     %----------------------------------------------
-    [fit,param] = fitparamodel(V,I,t,model);
+    [fit,param] = fitparamodel(V,mysignal,t,param0,'Upper',upper,'Lower',lower);
     Pfit = rd_twogaussian(r,param(3:end));
     Pfit = Pfit/sum(Pfit)/mean(diff(r));
 
@@ -82,8 +77,6 @@ Parametric time-domain fitting
     set(gca,'xticklabel',tags)
     xlabel('Model Parameters')
     ylabel('Relative fit error [%]')
-
-
 
 .. figure:: ../images/example_timedomainfitting1.svg
     :align: center

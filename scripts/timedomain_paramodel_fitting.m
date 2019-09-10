@@ -1,4 +1,4 @@
-e%========================================================
+%========================================================
 % DeerAnalyis2
 % Example: Time-domain parametric model fitting
 % Construct the a time-domain model of the DEER signal 
@@ -12,13 +12,11 @@ clear,clc
 %----------------------------------------------
 t = linspace(0,5,100);
 r = time2dist(t);
-
 K = dipolarkernel(t,r);
 P = rd_twogaussian(r,[6 0.3 4 0.3 0.3]);
 B = td_exp(t,[0.05]);
 %Generate signal
-V = dipolarsignal(t,r,P,'ModDepth',0.3,'B',B,'Noiselevel',0.01);
-
+V = dipolarsignal(t,r,P,'ModDepth',0.3,'Background',B,'Noiselevel',0.01);
 trueparam = [0.3 0.05 6 0.3 4 0.3 0.3];
 
 %Parametric model
@@ -34,12 +32,9 @@ param0 = [0.5 0.35 3.5 0.4 6 0.2 0.4];
 %Convert model function to valid parametric model
 model = paramodel(mysignal,param0,lower,upper);
 
-%No need for distance-time conversion, pass identity matrix as kernel
-I = eye(100);
-
 %Fit the parametric model in time-domain
 %----------------------------------------------
-[fit,param] = fitparamodel(V,I,t,model);
+[fit,param] = fitparamodel(V,mysignal,t,param0,'Upper',upper,'Lower',lower);
 Pfit = rd_twogaussian(r,param(3:end));
 Pfit = Pfit/sum(Pfit)/mean(diff(r));
 
