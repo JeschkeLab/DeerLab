@@ -28,8 +28,8 @@ if numel(n)>1
     error('The first input must be either a positive integer (n) or a vector (r).');
   end
 end
-if numel(d)~=1 || ~any(d==[0 1 2])
-    error('The order d (2nd input argument) must be 0, 1, or 2.');
+if numel(d)~=1 || ~any(d==[0 1 2 3])
+    error('The order d (2nd input argument) must be 0, 1, 2, or 3.');
 end
 
 % Compute L

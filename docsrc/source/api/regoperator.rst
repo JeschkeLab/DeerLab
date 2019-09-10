@@ -18,7 +18,7 @@ Syntax
 
 Parameters
     *   ``N`` -  Distance domain size (scalar)
-    *   ``d`` - Derivative order (0, 1, or 2)
+    *   ``d`` - Derivative order (0, 1, 2 or 3)
     *   ``r`` - Distance axis (N array)
 Returns
     *   ``L`` - Regularization operator matrix ((N-d)xN matrix)
