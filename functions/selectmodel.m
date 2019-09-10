@@ -10,8 +10,10 @@
 %   Function returns a M-point array containing the optimal models
 %   according to each selection method.
 %
-%   [opt,f] = SELECTMODEL(...)
-%   Returns the method selector functionals for the different methods.
+%   [opt,f,params] = SELECTMODEL(...)
+%   Returns a cell array the method selector functionals (f) for the
+%   different methods and a cell array (params) with the fitted parameters
+%   for each of the evaluated models.
 %
 %   opt = SELECTMODEL(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
@@ -27,7 +29,7 @@
 % the Free Software Foundation.
 
 
-function [optima,functionals] = selectmodel(Models,S,r,K,Methods,varargin)
+function [optima,functionals,fitparams] = selectmodel(Models,S,r,K,Methods,varargin)
 
 %Input validation
 if ~iscell(Methods)
@@ -77,11 +79,12 @@ aic = zeros(length(Models),1);
 for i=1:length(Models)
     currentModel = Models{i};
     Info = currentModel();
-    [~,FitP] = fitparamodel(S,currentModel,r,K,varargin);
+    [paramfit,FitP] = fitparamodel(S,currentModel,r,K,varargin);
     Q = Info.nParam + 1;
     aicc(i) = N*log(sum(K*FitP - S).^2/N) + 2*Q + (2*Q*(Q+1))/(N - Q - 1);
     aic(i) = N*log(sum(K*FitP - S).^2/N) + 2*Q;
     bic(i) = N*log(sum(K*FitP - S).^2/N) + Q*log(N);
+    fitparams{i} = paramfit;
 end
 
 %Apply the requested selection methods

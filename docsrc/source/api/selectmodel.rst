@@ -15,6 +15,7 @@ Syntax
 
     opt = selectmodel(Models,S,r,K,'method')
     [opt,f] = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'method1',..})
+    [opt,f,param] = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'method1',..})
     [opt,f] = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'aic',..},'Property',Value)
 
 Parameters
@@ -25,7 +26,9 @@ Parameters
     *   ``method`` - Model selection type(s) (string)
 Returns
     *  ``opt`` - Optimal parametric model index (scalar)
-    *  ``f`` - Evaluated model selection functional (array)
+    *  ``f`` - Evaluated model selection functional (cell array)
+    *  ``param`` - Fitted parameters for each evaluated model (cell array)
+
 
 
 Description
@@ -45,9 +48,9 @@ Evaluates the fits of the parametric models ``model1``,..., ``modelN`` to a sign
 
 .. code-block:: matlab
 
-    [opt,f] = selectmodel(args)
+    [opt,f,param] = selectmodel(args)
 
-The model selection functionals for the different methods can be requested as a second output.
+The method selection functionals ``f`` for the different methods and a cell array ``params`` with the fitted parameters for each of the evaluated models.
 
 Optional Arguments
 =========================================
