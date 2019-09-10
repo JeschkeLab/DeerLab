@@ -25,11 +25,11 @@ if numel(n)>1
   if isvector(n)
     n = numel(n);
   else
-    error('First input must be either a positive integer (n) or a vector (r).');
+    error('The first input must be either a positive integer (n) or a vector (r).');
   end
 end
-if numel(d)~=1 || d<0 || mod(d,1)
-    error('The order must be nonnegative.');
+if numel(d)~=1 || ~any(d==[0 1 2])
+    error('The order d (2nd input argument) must be 0, 1, or 2.');
 end
 
 % Compute L
