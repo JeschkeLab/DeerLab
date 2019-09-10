@@ -4,12 +4,9 @@
 %   L = REGOPERATOR(n,d)
 %   Computes the discrete approximation L to the derivative operator 
 %   of order d on a regular grid with n points, i.e. L is (n-d)-by-n. 
-% 
-%   [L,W] = REGOPERATOR(n,d)
-%   If requested, also computes W, an orthonormal basis for the null 
-%   space of L. 
 %
-% Adapted from Christian Hansen
+%   L = REGOPERATOR(r,d)
+%   Computes the same as above, using the number of element in r as n.
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
 %
@@ -17,45 +14,32 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [RegMatrix,OrthNormBase] = regoperator(Dimension,Order) 
- 
+function L = regoperator(n,d)
+
 if nargin~=2
     error('regoperator requires 2 input arguments: the dimension and the order.');
 end
 
 % Check arguments.
-if numel(Dimension)>1
-    Dimension = numel(Dimension);
+if numel(n)>1
+  if isvector(n)
+    n = numel(n);
+  else
+    error('First input must be either a positive integer (n) or a vector (r).');
+  end
 end
-if Order<0
+if numel(d)~=1 || d<0 || mod(d,1)
     error('The order must be nonnegative.');
-end 
- 
-% No derivative. 
-if Order==0
-    RegMatrix = speye(Dimension);
-    OrthNormBase = zeros(Dimension,0); 
-    return 
 end
- 
-% Compute L.
-c = [-1,1,zeros(1,Order-1)]; 
-nd = Dimension-Order; 
-for i = 2:Order
-    c = [0,c(1:Order)] - [c(1:Order),0];
+
+% Compute L
+switch d
+    case 0
+        L = eye(n);
+    case 1
+        L = diff(eye(n),1);
+    case 2
+        L = diff(eye(n),2);
 end
-RegMatrix = sparse(nd,Dimension); 
-for i = 1:Order+1 
-  RegMatrix = RegMatrix + sparse(1:nd,(1:nd)+i-1,c(i)*ones(1,nd),nd,Dimension); 
-end 
- 
-% If required, compute the null vectors W via modified Gram-Schmidt. 
-if nargout==2
-  OrthNormBase = zeros(Dimension,Order); 
-  OrthNormBase(:,1) = ones(Dimension,1); 
-  for i=2:Order, OrthNormBase(:,i) = OrthNormBase(:,i-1).*[1:Dimension]'; end 
-  for k=1:Order 
-     OrthNormBase(:,k) = OrthNormBase(:,k)/norm(OrthNormBase(:,k)); 
-     OrthNormBase(:,k+1:Order) = OrthNormBase(:,k+1:Order) - OrthNormBase(:,k)*(OrthNormBase(:,k)'*OrthNormBase(:,k+1:Order)); 
-  end 
-end 
+
+end
