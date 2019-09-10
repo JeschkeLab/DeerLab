@@ -2,7 +2,7 @@
 % CORRECTSCALE Amplitude offset correction
 %
 %       [Vc,V0] = CORRECTSCALE(V,t) 
-%       Fits and amplitude offset (V0) to the experimental dipolar signal
+%       Fits the amplitude (V0) of the experimental dipolar signal
 %       (V) on a given time axis (t). The experimental signal is then 
 %       normalized with respect to the fitted offset. The normalized signal
 %       is returned a the main output (Vc).
