@@ -132,7 +132,7 @@ class MyFancyStyle(Style):
     default_style = ""
     styles = {
         Comment:                'italic #4B7F4B',
-        Keyword:                '#000',
+        Keyword:                '#0000FF',
         Name:                   '#000',
         Name.Function:          '#000',
         Name.Class:             '#000',
