@@ -88,13 +88,14 @@ else
     %Construct a 4-pulse DEER kernel
     K = dipolarkernel(t,r,param(2));
 end
-%Prepare regularization
-alpha = selregparam(V,K,'tikh','aic');
 %Regularize the data
-Pfit = fitregmodel(V,K,r,'tikhonov',alpha);
+Pfit = fitregmodel(V,K,r,'tikhonov','aic');
 %Get the signal for comparison in time-domain
 Vfit = K*Pfit;
-plot(t,V,t,Vfit),drawnow
+plot(t,V,',',t,Vfit),drawnow
+
 end
+
+
 
 
