@@ -1,19 +1,19 @@
 %
-% MULTIGAUSS Multigauss fitting of a distance distribution
+% FITMULTIGAUSS Multigauss fitting of a distance distribution
 %
-%   P = MULTIGAUSS(S,K,r,Ngauss)
+%   P = FITMULTIGAUSS(S,K,r,Ngauss)
 %   Fits the dipolar signal (S) to a distance distribution (P)using a
 %   multi-gauss parametric model according to the dipolar kernel (K) and
 %   distance axis (r). The function chooses the optimal number of Gaussian
 %   distributions up to a maximum number given by (Ngauss) by means of the 
 %   corrected Aikaike information criterion (AICC).
 %
-%   [P,param,opt,metrics] = MULTIGAUSS(...)
+%   [P,param,opt,metrics] = FITMULTIGAUSS(...)
 %   If requested alongside the distribution (P), the optimal fit model 
 %   parameters (param), the optimal number of gaussians (opt) and
 %   evaluated selection metrics (metrics) are returned.
 %
-%   P = MULTIGAUSS(...,'Property',Value)
+%   P = FITMULTIGAUSS(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs. 
 %   
 %   See "help fitparamodel" for a detailed list of the property-value pairs
@@ -26,7 +26,7 @@
 % the Free Software Foundation.
 
 
-function [FitP,FitParam,optimum,metrics] = multigauss(S,K,r,maxGaussians,method,varargin)
+function [FitP,FitParam,optimum,metrics] = fitmultigauss(S,K,r,maxGaussians,method,varargin)
 
 if nargin<5 
     method = 'aicc';

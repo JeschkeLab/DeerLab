@@ -9,17 +9,17 @@ API Documentation
     ./api/aptkernel
     ./api/backgroundstart
     ./api/correctphase
-    ./api/correctoffset
+    ./api/correctscale
     ./api/correctzerotime
     ./api/dipolarkernel
     ./api/dipolarsignal
     ./api/fftspec
     ./api/fitbackground
+    ./api/fitmultigauss
     ./api/fitparamodel
     ./api/fitregmodel
     ./api/longpass
     ./api/mixmodels
-    ./api/multigauss
     ./api/noiselevel
     ./api/obir
     ./api/overtones

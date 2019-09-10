@@ -13,7 +13,7 @@ P = P/sum(P)/mean(diff(r));
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
-[FitP,FitParam] = multigauss(DipEvoFcn,K,r,5,'aicc');
+[FitP,FitParam] = fitmultigauss(DipEvoFcn,K,r,5,'aicc');
 err = any(abs(FitP - P)>1e-5);
 
 

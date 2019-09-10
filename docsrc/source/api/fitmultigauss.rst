@@ -1,9 +1,9 @@
 .. highlight:: matlab
-.. _multigauss:
+.. _fitmultigauss:
 
 
 ***********************
-:mod:`multigauss`
+:mod:`fitmultigauss`
 ***********************
 
 Multi-Gauss fitting of a distance distribution
@@ -13,9 +13,9 @@ Syntax
 
 .. code-block:: matlab
 
-    P = multigauss(S,K,r,Ngauss)
-    [P,param,Nopt,metrics] = multigauss(S,K,r,Ngauss)
-    [P,param,Nopt,metrics] = multigauss(S,K,r,Ngauss,'Property',Value)
+    P = fitmultigauss(S,K,r,Ngauss)
+    [P,param,Nopt,metrics] = fitmultigauss(S,K,r,Ngauss)
+    [P,param,Nopt,metrics] = fitmultigauss(S,K,r,Ngauss,'Property',Value)
 
 
 Parameters
@@ -34,13 +34,13 @@ Description
 
 .. code-block:: matlab
 
-        P = multigauss(S,K,r,Ngauss)
+        P = fitmultigauss(S,K,r,Ngauss)
 
 Fits the dipolar signal ``S`` to a distance distribution ``P`` using a multi-gauss parametric model according to the dipolar kernel ``K`` and distance axis ``r``. The function chooses the optimal number of Gaussian distributions up to a maximum number given by ``Ngauss`` by means of the corrected Aikaike information criterion (AICC).
 
 .. code-block:: matlab
 
-    [P,param,Nopt,metrics] = multigauss(args)
+    [P,param,Nopt,metrics] = fitmultigauss(args)
 
 If requested alongside the distribution ``P``, the optimal fit model parameters ``param``, the optimal number of gaussians ``Nopt`` and evaluated selection metrics ``metrics`` are returned.
 
@@ -50,6 +50,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 .. code-block:: matlab
 
-    P = multigauss(args,'Property1',Value1,'Property2',Value2,...)
+    P = fitmultigauss(args,'Property1',Value1,'Property2',Value2,...)
 
 See :ref:`fitparamodel` for a detailed list of the property-value pairs accepted by the function.

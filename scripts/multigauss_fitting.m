@@ -26,7 +26,7 @@ S = dipolarsignal(t,r,P,'NoiseLevel',0.05);
 % Run multi-Gauss fitting
 %-------------------------
 NGauss = 6; % maximum number of Gaussians
-[Pfit,param,Nopt,metrics] = multigauss(S,K,r,NGauss,'AICc');
+[Pfit,param,Nopt,metrics] = fitmultigauss(S,K,r,NGauss,'AICc');
 
 fprintf('The optimal number of Gaussians is: %i \n',Nopt)
 
