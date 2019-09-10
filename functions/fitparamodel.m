@@ -281,6 +281,8 @@ if any(UpperBounds<LowerBounds)
    error('Lower bound values cannot be larger than upper bound values.') 
 end
 
+%Disable ill-conditioned matrix warnings
+warning('off','MATLAB:nearlySingularMatrix')
 
 %Fit the parametric model...
 switch Solver
@@ -319,6 +321,9 @@ switch Solver
             'DiffMinChange',1e-8,'DiffMaxChange',0.1);
         FitParameters  = fminsearch(CostFcn,StartParameters,solverOpts);
 end
+
+%Set the warnings back on
+warning('on','MATLAB:nearlySingularMatrix')
 
 %Compute fitted distance distribution
 P = model(ax,FitParameters);

@@ -30,9 +30,6 @@
 
 function [Q,KtS,weights] = lsqcomponents(Signal,Kernel,RegMatrix,RegParam,RegType,HuberParam,weights)
 
-%Turn off warnings to avoid ill-conditioned warnings 
-warning('off','all')
-
 %Ensure that signals and kernel are in a cell array
 if ~iscell(Signal)
     Signal = {Signal};
@@ -112,8 +109,5 @@ switch lower(RegType)
         HuberTerm = 1/(HuberParam^2)*(RegMatrix.'*(RegMatrix./sqrt((RegMatrix*localDistribution/HuberParam).^2 + 1)));
         Q = (GramMatrix + RegParam^2*HuberTerm);
 end
-
-%Turn warnings back on
-warning('on','all')
 
 end

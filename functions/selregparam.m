@@ -61,7 +61,7 @@ function [OptRegParam,Functionals,RegParamRange] = selregparam(S,K,L,RegType,Sel
 
 
 %Turn off warnings to avoid ill-conditioned warnings 
-warning('off','all')
+warning('off','MATLAB:nearlySingularMatrix')
 
 %Check if user requested some options via name-value input
 [TolFun,NonNegConstrained,NoiseLevel,Refine,GlobalWeights,HuberParameter,RegParamRange] = parseoptional({'TolFun','NonNegConstrained','NoiseLevel','Refine','GlobalWeights','HuberParameter','Range'},varargin);
@@ -372,7 +372,7 @@ if Refine
 end
 
 %Turn warnings back on
-warning('on','all')
+warning('on','MATLAB:nearlySingularMatrix')
 
 end
 

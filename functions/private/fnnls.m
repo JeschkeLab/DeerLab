@@ -21,9 +21,6 @@
 
 function [x,w,passive] = fnnls(AtA,Atb,x0,tol)
 
-%Turn off warnings to avoid ill-conditioned warnings at each iteration
-warning('off','all')
-
 % Provide starting vector if not given.
 if (nargin<3) || isempty(x0)
   x0 = zeros(size(AtA,2),1);
@@ -80,5 +77,3 @@ while any(w>tol) && any(~passive)
   w(passive) = -inf;  
 end
 
-%Turn warnings back on
-warning('on','all')

@@ -54,7 +54,7 @@ function P = fitregmodel(S,K,r,RegMatrix,RegType,RegParam,varargin)
 
 
 %Turn off warnings to avoid ill-conditioned warnings 
-warning('off','all')
+warning('off','MATLAB:nearlySingularMatrix')
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -229,6 +229,6 @@ end
 P = P/sum(P)/dr;
 
 %Turn warnings back on
-warning('on','all')
+warning('on','MATLAB:nearlySingularMatrix')
 
 end
