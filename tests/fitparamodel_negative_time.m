@@ -9,7 +9,7 @@ V = V + whitegaussnoise(300,0.02);
 V = V/max(V);
 
 
-Pfit = fitparamodel(V,@rd_onegaussian,r,K);
+[~,Pfit] = fitparamodel(V,@rd_onegaussian,r,K);
 
 error = abs(Pfit - P);
 err = any(error>7e-2);

@@ -12,7 +12,7 @@ P = P/sum(P)/mean(diff(r));
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
-[FitP] = fitparamodel(DipEvoFcn,@rd_threerice,r,K,0.75*InputParam,'solver','lsqnonlin');
+[~,FitP] = fitparamodel(DipEvoFcn,@rd_threerice,r,K,0.75*InputParam,'solver','lsqnonlin');
 err = any(abs(FitP - P)>1e-2);
 
 maxerr = max(abs(FitP - P));

@@ -15,7 +15,7 @@ K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
 InitialGuess = [2 0.1];
-[FitP,FitParam] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,InitialGuess);
+[FitParam,FitP] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,InitialGuess);
 err(1) = any(abs(FitP - P)>1e-5);
 err(2) = any(abs(FitParam - InputParam)>1e-3);
 err(3)  = length(FitP) < length(DipEvoFcn);

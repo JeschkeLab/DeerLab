@@ -39,11 +39,11 @@ Ks = {K1,K2,K3};
 
 
 InitialGuess = [2 0.1 5 0.1 0.5];
-[Result] = fitparamodel(Ss,@rd_twogaussian,r,Ks);
+[~,Result] = fitparamodel(Ss,@rd_twogaussian,r,Ks);
 
-[Dist1] = fitparamodel(S1,@rd_twogaussian,r,K1);
-[Dist2] = fitparamodel(S2,@rd_twogaussian,r,K2);
-[Dist3] = fitparamodel(S3,@rd_twogaussian,r,K3);
+[~,Dist1] = fitparamodel(S1,@rd_twogaussian,r,K1);
+[~,Dist2] = fitparamodel(S2,@rd_twogaussian,r,K2);
+[~,Dist3] = fitparamodel(S3,@rd_twogaussian,r,K3);
 
 normResult = norm(P - Result);
 norm1 = norm(P - Dist1);

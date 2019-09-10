@@ -33,7 +33,7 @@ is5pDEER = false;
 %Create function handle depending on r and param from the custom model
 fcnhandle = @(t,param)my5pDEER(t,param,r,V0,is5pDEER);
 %Launch the fitting of the B-parametric model + Tikhonov regularization
-[~,parafit0] = fitparamodel(V0,fcnhandle,t,param0,'Lower',[0 0],'Upper',[1 1]);
+parafit0 = fitparamodel(V0,fcnhandle,t,param0,'Lower',[0 0],'Upper',[1 1]);
 [Vfit0,Pfit0] = my5pDEER(t,parafit0,r,V0,is5pDEER);
 
 %Fitting 5-pulse DEER 
@@ -42,7 +42,7 @@ is5pDEER = true;
 %Create function handle depending on r and param from the custom model
 fcnhandle = @(t,param)my5pDEER(t,param,r,V,is5pDEER);
 %Launch the fitting of the B-parametric model + Tikhonov regularization
-[~,parafit] = fitparamodel(V,fcnhandle,t,param0,'Lower',[0 0],'Upper',[1 1]);
+parafit = fitparamodel(V,fcnhandle,t,param0,'Lower',[0 0],'Upper',[1 1]);
 %Obtain the fitted signal and distance distribution
 [Vfit,Pfit] = my5pDEER(t,parafit,r,V,is5pDEER);
 

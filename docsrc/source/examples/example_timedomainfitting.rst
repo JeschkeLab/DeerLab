@@ -44,7 +44,7 @@ Parametric time-domain model fitting
 
     %Fit the parametric model in time-domain
     %----------------------------------------------
-    [fit,param] = fitparamodel(V,mysignal,t,param0,'Upper',upper,'Lower',lower);
+    [param,fit] = fitparamodel(V,mysignal,t,param0,'Upper',upper,'Lower',lower);
     Pfit = rd_twogaussian(r,param(3:end));
     Pfit = Pfit/sum(Pfit)/mean(diff(r));
 

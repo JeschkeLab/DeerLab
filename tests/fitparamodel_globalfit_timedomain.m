@@ -46,9 +46,9 @@ range = [info.parameters(:).range];
 upper = range(2:2:end);
 lower = range(1:2:end-1);
 
-[~,paramglobal] = fitparamodel(Ss,mymodel,tmodel,InitialGuess,'Upper',upper,'lower',lower);
+paramglobal = fitparamodel(Ss,mymodel,tmodel,InitialGuess,'Upper',upper,'lower',lower);
 
-[~,param3] = fitparamodel(S3,mymodel,tmodel,InitialGuess,'Upper',upper,'lower',lower);
+param3 = fitparamodel(S3,mymodel,tmodel,InitialGuess,'Upper',upper,'lower',lower);
 
 Result = rd_twogaussian(r,paramglobal);
 Dist3 = rd_twogaussian(r,param3);

@@ -2,27 +2,27 @@
 % FITPARAMODEL Fits a distance distribution to one (or several) signals
 %              by fitting of a parametric model.
 %
-%   [fit,param] = FITPARAMODEL(S,@model,t)
-%   [fit,param] = FITPARAMODEL(S,@model,r,K)
+%   [param,fit] = FITPARAMODEL(S,@model,t)
+%   [param,fit] = FITPARAMODEL(S,@model,r,K)
 %   Fitting of the N-point signal (S) to a M-point parametric model
 %   (fit) given a M-point distance/time axis (r/t). For distance-domain fitting
 %   the NxM point kernel (K). The fitted model corresponds to a parametric model
 %   calculated by the passed function handle (@model). The fitted parameters (param)
 %   are returned as a second output argument.
 %
-%   [fit,param] = FITPARAMODEL(S,@model,t,param0)
-%   [fit,param] = FITPARAMODEL(S,@model,r,K,param0)
+%   [param,fit] = FITPARAMODEL(S,@model,t,param0)
+%   [param,fit] = FITPARAMODEL(S,@model,r,K,param0)
 %   The initial guess of the model parameters can be passed as a last
 %   argument (param0). If (@model) is a user-defined function handle, it is
 %   required to pass (param0) as an arugment.
 %
-%   [fit,param] = FITPARAMODEL({S1,S2,...},@model,t,param0)
-%   [fit,param] = FITPARAMODEL({S1,S2,...},@model,r,{K1,K2,...},param0)
+%   [param,fit] = FITPARAMODEL({S1,S2,...},@model,t,param0)
+%   [param,fit] = FITPARAMODEL({S1,S2,...},@model,r,{K1,K2,...},param0)
 %   Passing multiple signals/kernels enables global fitting of the
 %   to a single parametric model distance distribution. The global fit weights
 %   are automatically computed according to their contribution to ill-posedness.
 %
-%   [fit,param] = FITPARAMODEL(...,'Property',Values)
+%   [param,fit] = FITPARAMODEL(...,'Property',Values)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 % The properties to be passed as options can be set in any order.
@@ -61,7 +61,7 @@
 
 
 
-function [P,FitParameters] = fitparamodel(S,model,ax,K,StartParameters,varargin)
+function [FitParameters,Fit] = fitparamodel(S,model,ax,K,StartParameters,varargin)
 
 %--------------------------------------------------------------------------
 % Input Parsening & Validation
@@ -326,7 +326,7 @@ end
 warning('on','MATLAB:nearlySingularMatrix')
 
 %Compute fitted distance distribution
-P = model(ax,FitParameters);
+Fit = model(ax,FitParameters);
 
 return
 

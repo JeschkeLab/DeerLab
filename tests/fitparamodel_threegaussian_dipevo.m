@@ -11,7 +11,7 @@ P = rd_threegaussian(r,InputParam);
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
-[FitP] = fitparamodel(DipEvoFcn,@rd_threegaussian,r,K,'solver','lsqnonlin');
+[~,FitP] = fitparamodel(DipEvoFcn,@rd_threegaussian,r,K,'solver','lsqnonlin');
 err(1) = any(abs(FitP - P)>1e-1);
 err = any(err);
 

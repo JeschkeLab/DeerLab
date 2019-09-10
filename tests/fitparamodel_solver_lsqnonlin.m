@@ -11,7 +11,7 @@ P = rd_onegaussian(r,[3,0.5]);
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
-[FitP,FitParam] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,'Solver','lsqnonlin');
+[FitParam,FitP] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,'Solver','lsqnonlin');
 err(1) = any(abs(FitP - P)>1e-5);
 err(2) = any(abs(FitParam - InputParam)>1e-3);
 err = any(err);

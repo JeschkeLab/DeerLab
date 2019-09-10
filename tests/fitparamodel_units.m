@@ -12,10 +12,10 @@ S = K*P;
 
 InitialGuess = [2 0.1];
 %nm
-Pfit1 = fitparamodel(S,@rd_onegaussian,r,K,InitialGuess,'Solver','fmincon');
+[~,Pfit1] = fitparamodel(S,@rd_onegaussian,r,K,InitialGuess,'Solver','fmincon');
 %A
 r = r*10;
-Pfit2 = fitparamodel(S,@rd_onegaussian,r,K,InitialGuess,'Solver','fmincon');
+[~,Pfit2] = fitparamodel(S,@rd_onegaussian,r,K,InitialGuess,'Solver','fmincon');
 
 err = any(abs(Pfit1 - Pfit2)>1e-12);
 maxerr = max(abs(Pfit1 - Pfit2));

@@ -20,7 +20,7 @@ V = V./sqrt(B);
 KB = dipolarkernel(t,r,ModDepth,sqrt(B));
 
 InitialGuess = [2 0.1 5 0.1 0.1];
-[FitP] = fitparamodel(V,@rd_twogaussian,r,KB,InitialGuess);
+[~,FitP] = fitparamodel(V,@rd_twogaussian,r,KB,InitialGuess);
 err(1) = any(abs(FitP - P)>1e-5);
 err = any(err);
 maxerr = max(abs(FitP - P));

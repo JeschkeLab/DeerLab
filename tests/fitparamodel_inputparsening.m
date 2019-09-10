@@ -13,11 +13,11 @@ timemodel = @(t,param)K*rd_onegaussian(r,param);
 
 
 InitialGuess = [2 0.1];
-Pfit1 = fitparamodel(S,@rd_onegaussian,r,K,InitialGuess,'Solver','lsqnonlin');
-Bfit1 = fitparamodel(B,@td_strexp,t,InitialGuess,'Solver','lsqnonlin');
-Bfit2 = fitparamodel(B,@td_strexp,t,'Solver','lsqnonlin');
-[~,fitparam] = fitparamodel(S,timemodel,t,InitialGuess,'Solver','lsqnonlin');
-Pfit3 = fitparamodel(S,@rd_onegaussian,r,K,'Solver','lsqnonlin');
+[~,Pfit1] = fitparamodel(S,@rd_onegaussian,r,K,InitialGuess,'Solver','lsqnonlin');
+[~,Bfit1] = fitparamodel(B,@td_strexp,t,InitialGuess,'Solver','lsqnonlin');
+[~,Bfit2] = fitparamodel(B,@td_strexp,t,'Solver','lsqnonlin');
+fitparam = fitparamodel(S,timemodel,t,InitialGuess,'Solver','lsqnonlin');
+[~,Pfit3] = fitparamodel(S,@rd_onegaussian,r,K,'Solver','lsqnonlin');
 
 Pfit2 = rd_onegaussian(r,fitparam);
 

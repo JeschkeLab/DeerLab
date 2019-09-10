@@ -13,7 +13,7 @@ K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
 InitialGuess = [2 0.1 1 0.6 0.2];
-[FitP] = fitparamodel(DipEvoFcn,@rd_tworice,r,K,InitialGuess,'solver','fmincon');
+[~,FitP] = fitparamodel(DipEvoFcn,@rd_tworice,r,K,InitialGuess,'solver','fmincon');
 err = any(abs(FitP - P)>1e-5);
 
 maxerr = max(abs(FitP - P));

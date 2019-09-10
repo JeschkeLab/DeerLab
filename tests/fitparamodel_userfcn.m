@@ -18,7 +18,7 @@ S = K*P;
 InitialGuess = [3.5 0.3];
 fcnhandle = @(r,param)exp(-((r-param(1))/(param(2))).^2);
 
-[FitP,FitParam] = fitparamodel(S,fcnhandle,r,K,InitialGuess);
+[FitParam,FitP] = fitparamodel(S,fcnhandle,r,K,InitialGuess);
 err(1) = any(abs(FitP - P)>1e-5);
 err(2) = any(abs(FitParam - InputParam)>1e-3);
 err(3)  = length(FitP) < length(S);

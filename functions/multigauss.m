@@ -52,7 +52,7 @@ end
 [optimum,metrics] = selectmodel(multiGaussModel,S,r,K,method,varargin);
 
 %Fit the data to the optimal multigauss parametric model
-[FitP,FitParam] = fitparamodel(S,multiGaussModel{optimum},r,K,varargin);
+[FitParam,FitP] = fitparamodel(S,multiGaussModel{optimum},r,K,varargin);
 
 return
 

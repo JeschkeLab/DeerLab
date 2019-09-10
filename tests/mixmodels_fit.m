@@ -14,7 +14,7 @@ MixedP = mixedModel(r,mixedmodelParameters);
 K = dipolarkernel(t,r);
 S = K*MixedP;
 
-Fit = fitparamodel(S,mixedModel,r,K);
+[~,Fit] = fitparamodel(S,mixedModel,r,K);
 
 err = any(abs(MixedP - Fit)>1e-5);
 maxerr = max(abs(MixedP - Fit));

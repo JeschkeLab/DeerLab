@@ -39,7 +39,7 @@ Parametric model selection
     [optIdx,metric] = selectmodel(Models,S,r,K,'aic');
 
     %Fit distance distribution with optimal model
-    Pfit = fitparamodel(S,Models{optIdx}r,K);
+    [paramfit,Pfit] = fitparamodel(S,Models{optIdx}r,K);
 
     %Plot results
     %-------------------------

@@ -38,7 +38,7 @@ P = P/sum(P)/mean(diff(r));
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
-[FitP,FitParam] = fitparamodel(DipEvoFcn,@rd_wormchain,r,K,'Solver','lsqnonlin');
+[FitParam,FitP] = fitparamodel(DipEvoFcn,@rd_wormchain,r,K,'Solver','lsqnonlin');
 err(1) = any(abs(FitP - P)>5e-3);
 err(2) = any(abs(FitParam - InputParam)>1e-2);
 err = any(err);

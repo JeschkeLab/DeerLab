@@ -18,7 +18,7 @@ V = V./sqrt(B);
 KB = dipolarkernel(t,r,ModDepth,sqrt(B));
 
 InitialGuess = [2 0.1];
-[FitP,FitParam] = fitparamodel(V,@rd_onegaussian,r,KB,InitialGuess);
+[FitParam,FitP] = fitparamodel(V,@rd_onegaussian,r,KB,InitialGuess);
 err(1) = any(abs(FitP - P)>1e-5);
 err(2) = any(abs(FitParam - InputParam)>1e-3);
 err = any(err);
