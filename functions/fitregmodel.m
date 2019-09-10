@@ -80,7 +80,11 @@ if strcmp(RegType,'custom')
 else
     GradObj = true;
 end
-validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
+if isa(alpha,'char')
+    alpha = selregparam(S,K,RegType,alpha);
+else
+    validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
+end
 validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r')
 if numel(unique(round(diff(r),6)))~=1
     error('Distance axis must be a monotonically increasing vector.')
