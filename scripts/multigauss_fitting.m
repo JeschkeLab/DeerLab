@@ -7,17 +7,12 @@
 
 clear
 
-% Parameters
+% Generate data
 %-------------------------
-nt = 300;
-dt = 0.008; % us
-param0 = [3 0.3 4 0.3 0.5]; % parameters for two-Gaussian model
-
-% Preparation
-%-------------------------
-t = linspace(0,dt*nt,nt);
-r = time2dist(t);
-P = rd_twogaussian(r,param0);
+t = -0.050:0.010:3; % time axis, us
+r = time2dist(t); % distance axes
+param0 = [3 0.3 4 0.3 0.3]; % parameters for two-Gaussian model
+P = rd_twogaussian(r,param0); % model distance distribution
 K = dipolarkernel(t,r);
 
 % Generate dipolar signal with noise
@@ -25,8 +20,9 @@ S = dipolarsignal(t,r,P,'NoiseLevel',0.05);
 
 % Run multi-Gauss fitting
 %-------------------------
-NGauss = 6; % maximum number of Gaussians
+NGauss = 4; % maximum number of Gaussians
 [Pfit,param,Nopt,metrics] = fitmultigauss(S,K,r,NGauss,'AICc');
+Sfit = K*Pfit;
 
 fprintf('The optimal number of Gaussians is: %i \n',Nopt)
 
@@ -34,20 +30,26 @@ fprintf('The optimal number of Gaussians is: %i \n',Nopt)
 %-------------------------
 figure(8),clf
 
-subplot(131),hold on
-plot(t,S,'k','LineWidth',1)
-plot(t,K*Pfit,'b','LineWidth',1.5)
+subplot(4,2,[1 3 5]),hold on
+plot(t,S,'k.','LineWidth',1)
+plot(t,Sfit,'b','LineWidth',1.5)
 grid on,box on,legend('model','fit')
 xlabel('time (\mus)'),ylabel('S(t)')
+axis tight
 
-subplot(132),hold on
+subplot(4,2,7);
+plot(t,S-Sfit,'k.','LineWidth',1.5);
+grid on, box on, axis tight
+xlabel('time (\mus)'), ylabel('residual');
+
+subplot(2,2,2),hold on
 plot(r,P,'k','LineWidth',1.5)
 plot(r,Pfit,'b','LineWidth',1.5)
 grid on, box on, axis tight 
 legend('model','fit')
 xlabel('distance (nm)'), ylabel('P(r)')
 
-subplot(133),hold on
+subplot(2,2,4),hold on
 plot(metrics,'b-o','LineWidth',1.5)
 grid on,box on,axis tight
 legend('AICc')
