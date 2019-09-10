@@ -8,16 +8,16 @@ clear,clc,clf
 %Preparation
 %----------------------------------------------
 %Load experimental data
-[t,V] = deerload('deer_broad_50K_4us');
-t = t/1000; %ns->us 
+[traw,Vraw] = deerload('deer_broad_50K_4us');
+traw = traw/1000; %ns->us 
 %Use a reduced distance axis length to speed-up processing
 r = linspace(0.5,7,100);
 
 %Pre-processing
 %----------------------------------------------
-V = correctphase(V);
+V = correctphase(Vraw);
 V = real(V);
-t = correctzerotime(V,t);
+t = correctzerotime(V,traw);
 V = correctoffset(V,t);
 
 %Processing
@@ -35,13 +35,19 @@ Vfit = K*Pfit;
 
 %Plotting
 %----------------------------------------------
-subplot(121)
+subplot(131)
+plot(traw,real(Vraw),'k',traw,imag(Vraw),'r','LineWidth',1)
+box on, grid on, axis tight
+xlabel('Time [\mus]')
+ylabel('V(t)')
+legend('Experimental (Re)','Experimental (Im)')
+subplot(132)
 plot(t,V,'k',t,Vfit,'b','LineWidth',1)
 box on, grid on, axis tight
 xlabel('Time [\mus]')
 ylabel('V(t)')
-legend('Experimental','Fit')
-subplot(122)
+legend('Pre-processed','Fit')
+subplot(133)
 plot(r,Pfit,'b','LineWidth',1)
 box on, grid on, axis tight
 xlabel('Distance [nm]')
