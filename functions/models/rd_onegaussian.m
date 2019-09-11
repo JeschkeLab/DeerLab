@@ -14,7 +14,7 @@ function output = rd_onegaussian(r,param)
 % name    symbol default lower bound upper bound
 % --------------------------------------------------------------------------
 % param(1)  <r>    3.5     1.0         20         mean distance
-% param(2)   s     0.5     0.02        5          standard deviation
+% param(2)   s     0.5     0.2        5          standard deviation
 % --------------------------------------------------------------------------
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
@@ -36,7 +36,7 @@ if nargin==0
     info.parameters(1).units = 'nm';
     
     info.parameters(2).name = ['Standard deviation ',char(963)];
-    info.parameters(2).range = [0.02 5];
+    info.parameters(2).range = [0.2 5];
     info.parameters(2).default = 0.5;
     info.parameters(2).units = 'nm';
     

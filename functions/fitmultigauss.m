@@ -31,6 +31,9 @@ function [Pfit,param,optimum,metrics] = fitmultigauss(S,K,r,maxGaussians,method,
 if nargin<5 
     method = 'aicc';
 end
+if ~iscolumn(S)
+    S = S.';
+end
 
 %Validate user input (first three inputs are validated in lower-level functions)
 if nargin<4

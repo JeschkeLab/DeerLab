@@ -29,9 +29,9 @@ Model equation: :math:`P(r) = A_1\exp\left(-\frac{(r-\left<r_1\right>)^2}{(\sqrt
  Variable   Symbol                    Default   Lower    Upper       Description
 ========== ======================== ========= ======== ========= ===================================
 param(1)   :math:`\left<r_1\right>`     2.5     1.0        20         1st Gaussian mean distance
-param(2)   :math:`\sigma_1`             0.5     0.05       5          1st Gaussian standard deviation
+param(2)   :math:`\sigma_1`             0.5     0.2        5          1st Gaussian standard deviation
 param(3)   :math:`\left<r_2\right>`     3.5     1.0        20         2nd Gaussian mean distance
-param(4)   :math:`\sigma_2`             0.5     0.05       5          2nd Gaussian standard deviation
+param(4)   :math:`\sigma_2`             0.5     0.2        5          2nd Gaussian standard deviation
 param(5)   :math:`A_1`                  0.5     0          1          1st Gaussian relative amplitude
 ========== ======================== ========= ======== ========= ===================================
 

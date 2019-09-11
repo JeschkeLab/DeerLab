@@ -29,7 +29,7 @@ Model equation: :math:`P(r) = \exp\left(-\frac{(r-\left<r\right>)^2}{(\sqrt{2}\s
  Variable   Symbol                    Default   Lower bound   Upper bound      Description
 ========== ======================== ========= ============= ============= ========================
 param(1)   :math:`\left<r\right>`     3.5     1.0              20         Mean distance
-param(2)   :math:`\sigma`             0.5     0.02             5          Standard deviation
+param(2)   :math:`\sigma`             0.5     0.2              5          Standard deviation
 ========== ======================== ========= ============= ============= ========================
 
 Description
