@@ -29,31 +29,30 @@ nModels = length(models);
 % Combine the information structures of the models
 %------------------------------------------------------
 %Account for weight parameters between the models
-mixedInfo.nParam = nModels-1;
-mixedInfo.Model = 'Mixed model';
-mixedInfo.Equation = 'custom';
-for j=1:mixedInfo.nParam
+mixedInfo.nparam = nModels-1;
+mixedInfo.model = 'Mixed model';
+for j=1:mixedInfo.nparam
     mixedInfo.parameters(j).name = sprintf('Relative amplitude of model #%i',j);
     mixedInfo.parameters(j).range = [0 1];
-    mixedInfo.parameters(j).default = 1/(mixedInfo.nParam + 1);
+    mixedInfo.parameters(j).default = 1/(mixedInfo.nparam + 1);
     mixedInfo.parameters(j).units = '';
 end
 %Compile necessary parameters for each mode into an array
 paramsplit = zeros(length(models),1);
-paramsplit(1) = mixedInfo.nParam;
+paramsplit(1) = mixedInfo.nparam;
 %Get information strucutre from each model
 for i=1:length(models)
     currentModel = models{i};
     info = currentModel();
-    paramsplit(i+1) =  paramsplit(i) + info.nParam;
-    mixedInfo.models{i} =  info.Model;
-    for j=1:info.nParam
+    paramsplit(i+1) =  paramsplit(i) + info.nparam;
+    mixedInfo.models{i} =  info.model;
+    for j=1:info.nparam
         mixedInfo.parameters(length(mixedInfo.parameters)+1).name = sprintf('%s of model #%i',info.parameters(j).name,i);
         mixedInfo.parameters(length(mixedInfo.parameters)).range = info.parameters(j).range;
         mixedInfo.parameters(length(mixedInfo.parameters)).default = info.parameters(j).default;
         mixedInfo.parameters(length(mixedInfo.parameters)).units = info.parameters(j).units;
     end
-    mixedInfo.nParam =  mixedInfo.nParam + info.nParam;
+    mixedInfo.nparam =  mixedInfo.nparam + info.nparam;
 end
 
 % Merge the parametric model fuctions
