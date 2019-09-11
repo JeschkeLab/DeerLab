@@ -42,9 +42,8 @@ Description
 
 Returns an ``info`` structure containing the specifics of the model:
 
-* ``info.Model`` -  Full name of the parametric model.
-* ``info.Equation`` -  Mathematical equation of the model.
-* ``info.nParam`` -  Total number of adjustable parameters.
+* ``info.model`` -  Full name of the parametric model.
+* ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
 
 .. code-block:: matlab
