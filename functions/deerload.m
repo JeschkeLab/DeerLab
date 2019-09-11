@@ -79,7 +79,7 @@ if length(varargout)>1
     t = varargout{1};
     usesNanoseconds = mean(diff(t))>=0.5;
     if usesNanoseconds
-        t = round(t)/1000; % ns->us
+        t = t/1000; % ns->us
     end
     varargout{1} = t;
 end
