@@ -70,7 +70,7 @@ for i = 1:length(Models)
     
     nParams = numel(paramfit);
     Q = nParams + 1;
-    SSR = sum(S(:)-K*Pfit(:)).^2;
+    SSR = sum((S(:)-K*Pfit(:)).^2);
     AIC(i) =  N*log(SSR/N) + 2*Q;
     AICc(i) = N*log(SSR/N) + 2*Q + 2*Q*(Q+1)/(N-Q-1);
     BIC(i) =  N*log(SSR/N) + Q*log(N);
