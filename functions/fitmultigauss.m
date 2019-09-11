@@ -9,10 +9,12 @@
 %   criterion given in (method) ('AIC', 'BIC', or 'AICc'). The fitted
 %   distribution is returned in P.
 %
-%   [P,param,opt,metrics] = FITMULTIGAUSS(...)
+%   [P,param,opt,metrics,Peval] = FITMULTIGAUSS(...)
 %   If requested alongside the distribution (P), the optimal fit model 
 %   parameters (param), the optimal number of Gaussians (opt) and
-%   evaluated selection metrics (metrics) are returned.
+%   evaluated selection metrics (metrics) are returned. The fitted distance
+%   distributions fitted for ech multigauss model can be requested as a
+%   fifth output argument (Peval).
 %
 %   P = FITMULTIGAUSS(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs. 
@@ -26,7 +28,7 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-function [Pfit,param,nGaussOpt,metrics] = fitmultigauss(S,K,r,maxGaussians,method,varargin)
+function [Pfit,param,nGaussOpt,metrics,Peval] = fitmultigauss(S,K,r,maxGaussians,method,varargin)
 
 % Validate user input (S, K, r, and method are validated in lower-level functions)
 if nargin<4
@@ -56,5 +58,11 @@ end
 param = fitparams{nGaussOpt};
 optModel = multiGaussModels{nGaussOpt};
 Pfit = optModel(r,param);
+
+if nargout>4
+    for i=1:maxGaussians
+        Peval(i,:) = multiGaussModels{i}(r,fitparams{i});
+    end
+end
 
 return

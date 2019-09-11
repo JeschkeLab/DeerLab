@@ -14,8 +14,8 @@ Syntax
 .. code-block:: matlab
 
     P = fitmultigauss(S,K,r,Ngauss)
-    [P,param,Nopt,metrics] = fitmultigauss(S,K,r,Ngauss)
-    [P,param,Nopt,metrics] = fitmultigauss(S,K,r,Ngauss,'Property',Value)
+    [P,param,Nopt,metrics,Peval] = fitmultigauss(S,K,r,Ngauss)
+    [P,param,Nopt,metrics,Peval] = fitmultigauss(S,K,r,Ngauss,'Property',Value)
 
 
 Parameters
@@ -28,7 +28,7 @@ Returns
     *  ``param`` - Fitted model parameters (array)
     *  ``Nopt`` - Optimal number of Gaussian (scalar)
     *  ``metrics`` - Evaluated model selection functionals (cell array)
-
+    *  ``Peval`` - Fitted distance distributions for each multigauss model (NgaussxN matrix)
 Description
 =========================================
 
