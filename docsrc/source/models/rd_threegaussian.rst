@@ -23,17 +23,17 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
-Model equation: :math:`P(r) = A_1\exp\left(-\frac{(r-\left<r_1\right>)^2}{(\sqrt{2}\sigma_1)^2}\right) + A_2\exp\left(-\frac{(r-\left<r_2\right>)^2}{(\sqrt{2}\sigma_2)^2}\right) + (1 - A_1 - A_2)\exp\left(-\frac{(r-\left<r_3\right>)^2}{(\sqrt{2}\sigma_3)^2}\right)`
+Model equation: :math:`P(r) = A_1\exp\left(-\frac{(r-\left<r_1\right>)^2}{w_1^2}\right) + A_2\exp\left(-\frac{(r-\left<r_2\right>)^2}{w_2^2}\right) + (1 - A_1 - A_2)\exp\left(-\frac{(r-\left<r_3\right>)^2}{w_3^2}\right)`
 
 ========== ======================== ========= ======== ========= ===================================
  Variable   Symbol                    Default   Lower    Upper       Description
 ========== ======================== ========= ======== ========= ===================================
 param(1)   :math:`\left<r_1\right>`     3.5     1.0        20         1st Gaussian mean distance
-param(2)   :math:`\sigma_1`             0.5     0.2        5          1st Gaussian standard deviation
+param(2)   :math:`w_1`                  0.5     0.2        5          1st Gaussian FWHM
 param(3)   :math:`\left<r_2\right>`     3.5     1.0        20         2nd Gaussian mean distance
-param(4)   :math:`\sigma_2`             0.5     0.2        5          2nd Gaussian standard deviation
+param(4)   :math:`w_2`                  0.5     0.2        5          2nd Gaussian FWHM
 param(5)   :math:`\left<r_3\right>`     3.5     1.0        20         3rd Gaussian mean distance
-param(6)   :math:`\sigma_3`             0.5     0.2        5          3rd Gaussian standard deviation
+param(6)   :math:`w_3`                  0.5     0.2        5          3rd Gaussian FWHM
 param(7)   :math:`A_1`                  0.3     0          1          1st Gaussian relative amplitude
 param(8)   :math:`A_2`                  0.3     0          1          2nd Gaussian relative amplitude
 ========== ======================== ========= ======== ========= ===================================

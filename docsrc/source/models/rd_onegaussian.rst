@@ -23,13 +23,13 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
-Model equation: :math:`P(r) = \exp\left(-\frac{(r-\left<r\right>)^2}{(\sqrt{2}\sigma)^2}\right)`
+Model equation: :math:`P(r) = \exp\left(-\frac{(r-\left<r\right>)^2}{w^2}\right)`
 
 ========== ======================== ========= ============= ============= ========================
  Variable   Symbol                    Default   Lower bound   Upper bound      Description
 ========== ======================== ========= ============= ============= ========================
 param(1)   :math:`\left<r\right>`     3.5     1.0              20         Mean distance
-param(2)   :math:`\sigma`             0.5     0.2              5          Standard deviation
+param(2)   :math:`w`                  0.5     0.2              5          FWHM
 ========== ======================== ========= ============= ============= ========================
 
 Description

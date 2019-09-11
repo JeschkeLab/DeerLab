@@ -1,10 +1,10 @@
 %
-% ONEGAUSSIAN Gaussian distribution parametric model
+% RD_ONEGAUSSIAN Gaussian distribution parametric model
 %
-%   info = ONEGAUSSIAN
+%   info = RD_ONEGAUSSIAN
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   P = ONEGAUSSIAN(r,param)
+%   P = RD_ONEGAUSSIAN(r,param)
 %   Computes the N-point model (P) from the N-point distance axis (r) according to 
 %   the paramteres array (param). The required parameters can also be found 
 %   in the (info) structure.
@@ -13,7 +13,7 @@
 % name    symbol default lower bound upper bound
 % --------------------------------------------------------------------------
 % param(1)  <r>    3.5     1.0         20         mean distance
-% param(2)   s     0.5     0.2        5          standard deviation
+% param(2)   w     0.5     0.2         5           FWHM
 % --------------------------------------------------------------------------
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
@@ -36,7 +36,7 @@ if nargin==0
     info.parameters(1).default = 3.5;
     info.parameters(1).units = 'nm';
     
-    info.parameters(2).name = ['Standard deviation ',char(963)];
+    info.parameters(2).name = 'FWHM w';
     info.parameters(2).range = [0.2 5];
     info.parameters(2).default = 0.5;
     info.parameters(2).units = 'nm';
