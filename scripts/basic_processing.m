@@ -9,7 +9,6 @@ clear,clc,clf
 %----------------------------------------------
 % Load experimental data
 [traw,Vraw] = deerload('data/deer_broad_50K_4us');
-traw = traw/1000; % ns->us 
 % Use a reduced distance axis length to speed-up processing
 r = linspace(0.5,7,100); % nm
 
