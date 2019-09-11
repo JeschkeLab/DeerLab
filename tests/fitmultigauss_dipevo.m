@@ -14,7 +14,7 @@ K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
 [FitP,FitParam] = fitmultigauss(DipEvoFcn,K,r,5,'aicc');
-err = any(abs(FitP - P)>1e-5);
+err = any(abs(FitP - P)>4e-4);
 
 
 maxerr = max(abs(FitP - P));

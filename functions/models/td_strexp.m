@@ -29,9 +29,9 @@ nParam = 2;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Stretched exponential';
+    info.model  = 'Stretched exponential';
     info.Equation  = ['exp(-(kt)^(d/3))'];
-    info.nParam  = nParam;
+    info.nparam  = nParam;
     info.parameters(1).name = 'Decay rate k';
     info.parameters(1).range = [0 200];
     info.parameters(1).default = 0.25;

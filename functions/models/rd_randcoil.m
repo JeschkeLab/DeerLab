@@ -31,9 +31,9 @@ nParam = 2;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Random-coil model';
+    info.model  = 'Random-coil model';
     info.Equation  = ['3/(2*pi*3/(2*pi*6.r0*N*',char(957),')^(3/2)))^(3/2)*4*pi*r.^2*exp(-3*r.^2/(3/(2*pi*6.r0*N*',char(957),')^(3/2))'];
-    info.nParam  = nParam;
+    info.nparam  = nParam;
     info.parameters(1).name = 'Chain members N';
     info.parameters(1).range = [2 1000];
     info.parameters(1).default = 50;

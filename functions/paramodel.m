@@ -51,7 +51,7 @@ model = @myparametricmodel;
             %If no inputs given, return info about the parametric model
             info.Model  = 'Automatically converted parametric model';
             info.Equation  = 'custom';
-            info.nParam  = nParam;
+            info.nparam  = nParam;
             for i=1:nParam
                 info.parameters(i).name = ' ';
                 info.parameters(i).range = [lower(i) upper(i)];

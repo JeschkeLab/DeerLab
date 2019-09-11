@@ -27,9 +27,9 @@ nParam = 2;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Worm-like chain model near rigid limit';
+    info.model  = 'Worm-like chain model near rigid limit';
     info.Equation  = '';
-    info.nParam  = nParam;
+    info.nparam  = nParam;
     info.parameters(1).name = 'Chain length';
     info.parameters(1).range = [1.5 10];
     info.parameters(1).default = 3.7;

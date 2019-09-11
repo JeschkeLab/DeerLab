@@ -38,11 +38,11 @@ nParam = 8;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Three Rice/Rician distributions';
+    info.model  = 'Three Rice/Rician distributions';
     info.Equation  = ['A1*r/',char(963),'1²*exp((r-',char(957),'1)²/(2',char(963),'1²))*Bessel(r*',char(957),'1/',char(963),'1²)',...
         '+ A2*r/',char(963),'2²*exp((r-',char(957),'2)²/(2',char(963),'2²))*Bessel(r*',char(957),'2/',char(963),'2²)',...
         '+ (1-A1-A2)*r/',char(963),'3²*exp((r-',char(957),'3)²/(2',char(963),'3²))*Bessel(r*',char(957),'3/',char(963),'3²)'];
-    info.nParam  = nParam;
+    info.nparam  = nParam;
     
     info.parameters(1).name = ['Mean distance ',char(957),'1 1st Rician'];
     info.parameters(1).range = [1 10];

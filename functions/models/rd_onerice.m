@@ -27,9 +27,9 @@ nParam = 2;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Single Rice/Rician distribution';
+    info.model  = 'Single Rice/Rician distribution';
     info.Equation  = ['r/',char(963),'²*exp((r² + ',char(957),'²)/(2',char(963),'²))*Bessel(r*',char(957),'/',char(963),'²)'];
-    info.nParam  = nParam;
+    info.nparam  = nParam;
     info.parameters(1).name = ['Mean distance ',char(957)];
     info.parameters(1).range = [1 10];
     info.parameters(1).default = 3.5;

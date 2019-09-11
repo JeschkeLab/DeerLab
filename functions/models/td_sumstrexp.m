@@ -31,9 +31,9 @@ nParam = 5;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Sum of two stretched exponentials';
+    info.model  = 'Sum of two stretched exponentials';
     info.Equation  = 'A1*exp(-(k1*t)^(d1/3)) + (1-A1)*exp(-(k2*t)^(d2/3))';
-    info.nParam  = nParam;
+    info.nparam  = nParam;
     info.parameters(1).name = 'Decay rate k1 of 1st stretched exponential';
     info.parameters(1).range = [0 200];
     info.parameters(1).default = 3.5;

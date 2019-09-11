@@ -28,9 +28,9 @@ nParam = 1;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Exponential';
+    info.model  = 'Exponential';
     info.Equation  = ['exp(-kt)'];
-    info.nParam  = nParam;
+    info.nparam  = nParam;
     info.parameters(1).name = 'Decay rate k';
     info.parameters(1).range = [0 200];
     info.parameters(1).default = 0.35;

@@ -31,10 +31,10 @@ nParam = 5;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Two Rice/Rician distributions';
+    info.model  = 'Two Rice/Rician distributions';
     info.Equation  = ['A*r/',char(963),'1²*exp((r²+',char(957),'1²)/(2',char(963),'1²))*Bessel(r*',char(957),'1/',char(963),'1²)'...
         '+ (1-A)*r/',char(963),'2²*exp((r² + ',char(957),'2²)/(2',char(963),'2²))*Bessel(r*',char(957),'2/',char(963),'2²)' ];
-    info.nParam  = nParam;
+    info.nparam  = nParam;
     info.parameters(1).name = ['Mean distance ',char(957),'1 1st Rician'];
     info.parameters(1).range = [1 10];
     info.parameters(1).default = 2.5;

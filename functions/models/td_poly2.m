@@ -30,9 +30,9 @@ nParam = 3;
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Polynomial 2nd Order';
+    info.model  = 'Polynomial 2nd Order';
     info.Equation  = ['p0 + p1*t + p2*t^2'];
-    info.nParam  = nParam;
+    info.nparam  = nParam;
     info.parameters(1).name = 'Intercept p0';
     info.parameters(1).range = [0 200];
     info.parameters(1).default = 1;
