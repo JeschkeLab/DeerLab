@@ -6,66 +6,68 @@
 % the same time.
 %========================================================
 
-clear,clc
+clear, clc
 
-%Preparation
+% Model parameters
 %----------------------------------------------
-t = linspace(0,5,100);
+r1 = 6; w1 = 0.3; % center and width of first Gaussian, nm
+r2 = 4; w2 = 0.3; % center and width of second Gaussian, nm
+amp1 = 0.3; % amplitude of first Gaussian
+lam = 0.3; % modulation amplitude
+k = 0.3; % beckground decay constant
+sigma = 0.01; % noise level
+
+% Generate signal
+%----------------------------------------------
+t = linspace(0,5,251);
 r = time2dist(t);
 K = dipolarkernel(t,r);
-P = rd_twogaussian(r,[6 0.3 4 0.3 0.3]);
-B = td_exp(t,[0.05]);
-%Generate signal
-V = dipolarsignal(t,r,P,'ModDepth',0.3,'Background',B,'Noiselevel',0.01);
-trueparam = [0.3 0.05 6 0.3 4 0.3 0.3];
+P = rd_twogaussian(r,[r1 w1 r2 w2 amp1]);
+B = td_exp(t,k);
+V = dipolarsignal(t,r,P,'ModDepth',lam,'Background',B,'Noiselevel',sigma);
 
-%Parametric model
+% Define model
 %----------------------------------------------
-%Construct time-domain model function including background
-mysignal = @(t,param) td_exp(t,param(2)).*((1 - param(1)) + param(1)*K*rd_twogaussian(r,param(3:end)));
+% Construct time-domain model function including background
+mymodel = @(t,p) td_exp(t,p(2)).*((1- p(1)) + p(1)*K*rd_twogaussian(r,p(3:end)));
 
-%Define lower/upper bounds and initial guess of parameters
+% Define lower/upper bounds and initial guess of parameters
 upper = [1 200 20 5 20 5 1];
 lower = [0 0 1.0 0.05 1.0 0.05 0];
-param0 = [0.5 0.35 3.5 0.4 6 0.2 0.4];
+param0 = [0.5 0.35 6 0.2 3.5 0.4 0.4];
 
-%Convert model function to valid parametric model
-model = paramodel(mysignal,param0,lower,upper);
+% Convert model function to valid parametric model
+model = paramodel(mymodel,param0,lower,upper);
 
-%Fit the parametric model in time-domain
+% Fit the model to time-domain signal
 %----------------------------------------------
-[param,fit] = fitparamodel(V,mysignal,t,param0,'Upper',upper,'Lower',lower);
+[param,fit] = fitparamodel(V,mymodel,t,param0,'Upper',upper,'Lower',lower);
 Pfit = rd_twogaussian(r,param(3:end));
-Pfit = Pfit/sum(Pfit)/mean(diff(r));
 
-%Plot
+% Plotting
 %----------------------------------------------
 figure(1),clf
-subplot(131)
-plot(t,V,'k',t,fit,'b','LineWidth',1.5)
-xlabel('Time [\mus]')
+
+subplot(2,1,1)
+plot(t,V,'.',t,fit,'LineWidth',1.5)
+xlabel('time (\mus)')
 ylabel('V(t)')
 grid on,axis tight, box on
-legend('Truth','Fit')
+legend('Data','Fit')
 
-subplot(132)
-plot(r,P,'k',r,Pfit,'b','LineWidth',1.5);
-xlabel('Distance [nm]')
+subplot(2,2,3)
+plot(r,P,r,Pfit,'LineWidth',1.5);
+xlabel('distance (nm)')
 ylabel('P(r)')
 grid on,axis tight, box on
-legend('Truth','Fit')
+legend('Model','Fit')
 
-subplot(133)
-%Correct label switch
-temp = param(3:4);
-param(3:4) = param(5:6);
-param(5:6) = temp;
-param(end) = 1 - param(end);
-%Plot
-bar(100*(1 - param./trueparam),'b')
+subplot(2,2,4)
+trueparam = [lam k r1 w1 r2 w2 amp1];
+barh(100*(1 - param./trueparam))
 tags = {'\lambda','k','<r_1>','\sigma_1','<r_2>','\sigma_2','A_1',};
-set(gca,'xticklabel',tags)
-xlabel('Model Parameters')
-ylabel('Relative fit error [%]')
+set(gca,'yticklabel',tags)
+ylabel('Model Parameters')
+xlabel('relative fit error (%)')
 
 
