@@ -49,7 +49,7 @@ if nargin==0
     info.parameters(3).default = 3.5;
     info.parameters(3).units = 'nm';
     
-    info.parameters(4).name = 'FWHM w2 of 2nd Gaussian'];
+    info.parameters(4).name = 'FWHM w2 of 2nd Gaussian';
     info.parameters(4).range = [0.2 5];
     info.parameters(4).default = 0.5;
     info.parameters(4).units = 'nm';

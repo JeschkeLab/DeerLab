@@ -24,7 +24,7 @@ V = dipolarsignal(t,r,P,'ModDepth',trueparam(1),'Background',B,'Noiselevel',0.01
 %----------------------------------------------
 
 %Create function handle depending on r and param from the custom model 
-fcnhandle = @(t,param)myfitting(t,param,r,V);
+fcnhandle = @(t,param) mymodel(t,param,r,V);
 
 %Initial guess
 param0 = [0.4,0.2];
@@ -35,7 +35,7 @@ parafit = fitparamodel(V,fcnhandle,t,param0,...
                            'TolFun',1e-3);
 
 %Obtain the fitted signal and distance distribution
-[Vfit,Pfit] = myfitting(t,parafit,r,V);
+[Vfit,Pfit] = mymodel(t,parafit,r,V);
 
 
 %Plot results
@@ -58,7 +58,7 @@ title(sprintf('\\lambda = %.2f/%.2f  k = %.3f/%.3f',...
 %Definition of the custom model
 %----------------------------------------------
 
-function [Vfit,Pfit] = myfitting(t,param,r,V)
+function [Vfit,Pfit] = mymodel(t,param,r,V)
     
     %Fit the modulation depth as first parameter...
     lambda = param(1);
@@ -67,10 +67,10 @@ function [Vfit,Pfit] = myfitting(t,param,r,V)
     %... and the decay rate of the background as second parameter
     Bfit = td_exp(t,k);
     %Construct a kernel with the fitted background
-    K = dipolarkernel(t,r,lambda,Bfit);
+    KB = dipolarkernel(t,r,lambda,Bfit);
     %Regularize the data using the fitted backgorund
-    Pfit = fitregmodel(V,K,r,'tikhonov','aic');
+    Pfit = fitregmodel(V,KB,r,'tikhonov','aic');
     %Get the signal for comparison in time-domain
-    Vfit = K*Pfit; 
+    Vfit = KB*Pfit; 
     plot(t,V,'.',t,Vfit),drawnow
 end

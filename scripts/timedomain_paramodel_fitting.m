@@ -41,7 +41,7 @@ model = paramodel(mymodel,param0,lower,upper);
 
 % Fit the model to time-domain signal
 %----------------------------------------------
-[param,fit] = fitparamodel(V,mymodel,t,param0,'Upper',upper,'Lower',lower);
+[param,Vfit] = fitparamodel(V,mymodel,t,param0,'Upper',upper,'Lower',lower);
 Pfit = rd_twogaussian(r,param(3:end));
 
 % Plotting
@@ -49,7 +49,7 @@ Pfit = rd_twogaussian(r,param(3:end));
 figure(1),clf
 
 subplot(2,1,1)
-plot(t,V,'.',t,fit,'LineWidth',1.5)
+plot(t,V,'.',t,Vfit,'LineWidth',1.5)
 xlabel('time (\mus)')
 ylabel('V(t)')
 grid on,axis tight, box on
