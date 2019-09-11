@@ -76,10 +76,9 @@ tstart = valpar.tstart;
 %Fit background
 [B,lambda] = fitbackground(V,t,@td_strexp,tstart);
 %Prepare regularization
-K = dipolarkernel(t,r,lambda,B);
-L = regoperator(r,2);
+KB = dipolarkernel(t,r,lambda,B);
 method = valpar.selmethod;
 %Run fitting
-Pfit = fitregmodel(V,K,r,'tikhonov','aic');
+Pfit = fitregmodel(V,KB,r,'tikhonov',method);
 
 end
