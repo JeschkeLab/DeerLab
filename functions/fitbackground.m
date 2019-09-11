@@ -145,15 +145,15 @@ pos = 1 - length(ModDepth);
 %Get information about the time-domain parametric model
 Info = BckgModel();
 Ranges =  [Info.parameters(:).range];
-LowerBounds(1+pos:pos + info.nparam) = Ranges(1:2:end-1);
-UpperBounds(1+pos:pos + info.nparam) = Ranges(2:2:end);
+LowerBounds(1+pos:pos + Info.nparam) = Ranges(1:2:end-1);
+UpperBounds(1+pos:pos + Info.nparam) = Ranges(2:2:end);
 if ~isempty(InitialGuess)
     StartParameters = InitialGuess;
 else
     if isempty(ModDepth)
         StartParameters(1) = 0.5;
     end
-    StartParameters(1+pos:pos + info.nparam) =  [Info.parameters(:).default];
+    StartParameters(1+pos:pos + Info.nparam) =  [Info.parameters(:).default];
 end
 
 FitParam = lsqnonlin(CostFcn,StartParameters,LowerBounds,UpperBounds,solveropts);
