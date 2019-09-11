@@ -1,4 +1,3 @@
-function output = rd_threegaussian(r,param)
 %
 % THREEGAUSSIAN Sum of three Gaussian distributions parametric model
 %
@@ -28,6 +27,8 @@ function output = rd_threegaussian(r,param)
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
+
+function output = rd_threegaussian(r,param)
 
 nParam = 8;
 
@@ -75,28 +76,28 @@ if nargin==0
     info.parameters(8).default = 0.3;
        
     output = info;
-    
-elseif nargin == 2
-    
-    %If user passes them, check that the number of parameters matches the model
-    if length(param)~=nParam
-        error('The number of input parameters does not match the number of model parameters.')
-    end
-    
-    %If necessary inputs given, compute the model distance distribution
-    Gaussian1 = exp(-((r-param(1))/(param(2))).^2);
-    Gaussian2 = exp(-((r-param(3))/(param(4))).^2);
-    Gaussian3 = exp(-((r-param(5))/(param(6))).^2);
-    Distribution = param(7)*Gaussian1 + param(8)*Gaussian2 + max(1 - param(5) - param(8),0)*Gaussian3;
-    if ~iscolumn(Distribution)
-        Distribution = Distribution';
-    end
-    %Normalize
-    Distribution = Distribution/sum(Distribution)/mean(diff(r));
-    output = Distribution;
-else
-    %Else, the user has given wrong number of inputs
+    return
+end
+
+if nargin~=2
     error('Model requires two input arguments.')
 end
+    
+% Check that the number of parameters matches the model
+if length(param)~=nParam
+    error('The number of input parameters does not match the number of model parameters.')
+end
+
+% Compute the model distance distribution
+Gaussian1 = exp(-((r(:)-param(1))/(param(2))).^2);
+Gaussian2 = exp(-((r(:)-param(3))/(param(4))).^2);
+Gaussian3 = exp(-((r(:)-param(5))/(param(6))).^2);
+P = param(7)*Gaussian1 + param(8)*Gaussian2 + max(1 - param(5) - param(8),0)*Gaussian3;
+
+% Normalize
+dr = r(2)-r(1);
+P = P/sum(P)/dr;
+
+output = P;
 
 return

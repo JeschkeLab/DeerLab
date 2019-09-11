@@ -20,7 +20,7 @@ S = dipolarsignal(t,r,P,'NoiseLevel',0.05);
 
 % Run multi-Gauss fitting
 %-------------------------
-NGauss = 4; % maximum number of Gaussians
+NGauss = 5; % maximum number of Gaussians
 [Pfit,param,Nopt,metrics] = fitmultigauss(S,K,r,NGauss,'AICc');
 Sfit = K*Pfit;
 

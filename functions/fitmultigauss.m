@@ -1,16 +1,17 @@
 %
-% FITMULTIGAUSS Multigauss fitting of a distance distribution
+% FITMULTIGAUSS Multi-Gauss fitting of a distance distribution
 %
-%   P = FITMULTIGAUSS(S,K,r,Ngauss)
-%   Fits the dipolar signal (S) to a distance distribution (P)using a
-%   multi-gauss parametric model according to the dipolar kernel (K) and
-%   distance axis (r). The function chooses the optimal number of Gaussian
-%   distributions up to a maximum number given by (Ngauss) by means of the 
-%   corrected Aikaike information criterion (AICC).
+%   P = FITMULTIGAUSS(S,K,r,Ngauss,method)
+%   Fits a multi-Gauss parametric distance distribution model to the dipolar
+%   signal (S), using the dipolar kernel (K) and distance axis (r). The function
+%   compares multi-Gaussian distributions with up to a maximum number of Gaussians
+%   given by (Ngauss) and determines the optimum one using the model selection
+%   criterion given in (method) ('AIC', 'BIC', or 'AICc'). The fitted
+%   distribution is returned in P.
 %
 %   [P,param,opt,metrics] = FITMULTIGAUSS(...)
 %   If requested alongside the distribution (P), the optimal fit model 
-%   parameters (param), the optimal number of gaussians (opt) and
+%   parameters (param), the optimal number of Gaussians (opt) and
 %   evaluated selection metrics (metrics) are returned.
 %
 %   P = FITMULTIGAUSS(...,'Property',Value)
@@ -25,39 +26,33 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
+function [Pfit,param,nGaussOpt,metrics] = fitmultigauss(S,K,r,maxGaussians,method,varargin)
 
-function [Pfit,param,optimum,metrics] = fitmultigauss(S,K,r,maxGaussians,method,varargin)
-
+% Validate user input (S, K, r, and method are validated in lower-level functions)
+if nargin<4
+    error('Not enough input arguments.')
+else
+    validateattributes(maxGaussians,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'maxGaussians')
+end
 if nargin<5 
     method = 'aicc';
 end
-if ~iscolumn(S)
-    S = S.';
+
+% Compile list of multi-Gaussian models
+multiGaussModels = cell(maxGaussians,1);
+multiGaussModels{1} = @rd_onegaussian;
+if maxGaussians>=2, multiGaussModels{2} = @rd_twogaussian; end
+if maxGaussians>=3, multiGaussModels{3} = @rd_threegaussian; end
+for i = 4:maxGaussians
+   multiGaussModels{i} =  mixmodels({multiGaussModels{i-1},@rd_onegaussian});
 end
 
-%Validate user input (first three inputs are validated in lower-level functions)
-if nargin<4
-    error('Not enough input arguments')
-end
-validateattributes(maxGaussians,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'maxGaussians')
+% Run fitting and model selection to see which multi-Gauss model is optimal
+[nGaussOpt,metrics,fitparams] = selectmodel(multiGaussModels,S,r,K,method,varargin);
 
-%Preallocate empty cell array for multigaussian models
-multiGaussModel = cell(maxGaussians,1);
-
-%Start with one gaussian parametric model
-multiGaussModel{1} = @rd_onegaussian;
-for i=2:maxGaussians
-    %And iteratively combine with additional single gaussian parametric models
-   multiGaussModel{i} =  mixmodels({multiGaussModel{i-1},@rd_onegaussian});
-end
-
-%Run optimization to see which multigauss model is the best 
-[optimum,metrics,fitparams] = selectmodel(multiGaussModel,S,r,K,method,varargin);
-
-%Fit the data to the optimal multigauss parametric model
-param = fitparams{optimum};
-optModel = multiGaussModel{optimum};
+% Calculate the distance distribution for the optimal multi-Gauss model
+param = fitparams{nGaussOpt};
+optModel = multiGaussModels{nGaussOpt};
 Pfit = optModel(r,param);
 
 return
-

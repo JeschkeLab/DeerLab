@@ -28,77 +28,66 @@
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-
 function [optima,functionals,fitparams] = selectmodel(Models,S,r,K,Methods,varargin)
 
-%Input validation
+% Input validation
+%-------------------------------------------------------------------------------
+if ~iscell(Models)
+  error('First input must be a cell array of model functions.');
+end
 if ~iscell(Methods)
    Methods = {Methods}; 
-end
-if ~iscolumn(r)
-    r = r.';
 end
 if length(varargin)==1
    varargin = varargin{1}; 
 end
+
 allowedMethodInputs = {'aic','aicc','bic'};
-if iscell(Methods)
-    for i=1:length(Methods)
-        if strcmp(Methods{i},'all')
-            Methods = allowedMethodInputs;
-            break;
-        end
-        validateattributes(Methods{i},{'char'},{'nonempty'})
-        Methods{i} = validatestring(Methods{i},allowedMethodInputs);
-    end
-else
-    validateattributes(Methods,{'char'},{'nonempty'})
-    if strcmp(Methods,'all')
+for i = 1:length(Methods)
+    if strcmp(Methods{i},'all')
         Methods = allowedMethodInputs;
-    else
-        Methods = validatestring(Methods,allowedMethodInputs);
-        Methods = {Methods};
+        break;
     end
+    validateattributes(Methods{i},{'char'},{'nonempty'})
+    Methods{i} = validatestring(Methods{i},allowedMethodInputs);
 end
 
-%Convert distance axis to nanoseconds if givne in Angstrom
+% Convert distance axis to nanometers if given in Angstrom
 if ~isnanometer(r)
-   r = r/10; 
+   r = r/10; % A -> nm
 end
 
-
-%--------------------------------------------------------------------------
-%--------------------------------------------------------------------------
-
-%Pre-allocate vectors
-N = length(S);
-aicc = zeros(length(Models),1);
-bic = zeros(length(Models),1);
-aic = zeros(length(Models),1);
-%Run the different parametric model fits
-for i=1:length(Models)
-    currentModel = Models{i};
-    Info = currentModel();
-    [paramfit,FitP] = fitparamodel(S,currentModel,r,K,varargin);
-    Q = Info.nParam + 1;
-    aicc(i) = N*log(sum(K*FitP - S).^2/N) + 2*Q + (2*Q*(Q+1))/(N - Q - 1);
-    aic(i) = N*log(sum(K*FitP - S).^2/N) + 2*Q;
-    bic(i) = N*log(sum(K*FitP - S).^2/N) + Q*log(N);
+% Run all parametric model fits and evaluate selection metrics
+%-------------------------------------------------------------------------------
+nMethods = length(Methods);
+N = numel(S);
+AICc = zeros(nMethods,1);
+BIC = zeros(nMethods,1);
+AIC = zeros(nMethods,1);
+for i = 1:length(Models)
+    [paramfit,Pfit] = fitparamodel(S,Models{i},r,K,varargin);
     fitparams{i} = paramfit;
+    
+    nParams = numel(paramfit);
+    Q = nParams + 1;
+    SSR = sum(S(:)-K*Pfit(:)).^2;
+    AIC(i) =  N*log(SSR/N) + 2*Q;
+    AICc(i) = N*log(SSR/N) + 2*Q + 2*Q*(Q+1)/(N-Q-1);
+    BIC(i) =  N*log(SSR/N) + Q*log(N);
 end
 
-%Apply the requested selection methods
-optima = zeros(length(Methods),1);
-functionals = cell(length(Methods),1);
-for i=1:length(Methods)
-    currentMethod = Methods{i};
-    switch currentMethod
+% Identify optimal models based on selection criteria
+%-------------------------------------------------------------------------------
+optima = zeros(nMethods,1);
+functionals = cell(nMethods,1);
+for i = 1:nMethods
+    switch Methods{i}
         case 'aic'
-            functional = aic;
+            functional = AIC;
         case 'aicc'
-            functional = aicc;
+            functional = AICc;
         case 'bic'
-            functional = bic;
+            functional = BIC;
     end
     [~,optimum] = min(functional);
     functionals{i} = functional;
@@ -108,4 +97,3 @@ end
 if length(functionals)==1
    functionals = functionals{1}; 
 end
-

@@ -1,4 +1,3 @@
-function output = rd_onegaussian(r,param)
 %
 % ONEGAUSSIAN Gaussian distribution parametric model
 %
@@ -23,6 +22,8 @@ function output = rd_onegaussian(r,param)
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
+function output = rd_onegaussian(r,param)
+
 nParam = 2;
 
 if nargin==0
@@ -41,25 +42,22 @@ if nargin==0
     info.parameters(2).units = 'nm';
     
     output = info;
-    
-elseif nargin == 2
-    
-    %If user passes them, check that the number of parameters matches the model
-    if length(param)~=nParam
-        error('The number of input parameters does not match the number of model parameters.')
-    end    
-    
-    %If necessary inputs given, compute the model distance distribution
-    Distribution = exp(-((r-param(1))/(param(2))).^2);
-    if ~iscolumn(Distribution)
-        Distribution = Distribution';
-    end
-    Distribution = Distribution/sum(Distribution)/mean(diff(r));
-    output = Distribution;
-else
-    
-    %Else, the user has given wrong number of inputs
+    return
+end
+
+if nargin~=2
     error('Model requires two input arguments.')
 end
+
+% Assert that the number of parameters matches the model
+if length(param)~=nParam
+  error('The number of input parameters does not match the number of model parameters.')
+end
+
+% Compute the model distance distribution
+P = exp(-((r(:)-param(1))/param(2)).^2);
+dr = r(2)-r(1);
+P = P/sum(P)/dr;
+output = P;
 
 return
