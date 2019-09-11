@@ -13,7 +13,7 @@
 % name    symbol default lower bound upper bound
 % --------------------------------------------------------------------------
 % param(1)  <r>    3.5     1.0         20         mean distance
-% param(2)   w     0.5     0.2         5           FWHM
+% param(2)   w     0.5     0.2         5          FWHM
 % --------------------------------------------------------------------------
 %
 % Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
@@ -26,11 +26,14 @@ function output = rd_onegaussian(r,param)
 
 nParam = 2;
 
+if nargin~=0 && nargin~=2 
+    error('Model requires two input arguments.')
+end
+
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Single Gaussian distribution';
-    info.Equation  = ['exp(-(r-<r>)²/(',char(963),'*sqrt(2))²)'];
-    info.nParam  = nParam;
+    info.model  = 'Single Gaussian distribution';
+    info.nparam  = nParam;
     info.parameters(1).name = 'Mean distance <r>';
     info.parameters(1).range = [1 20];
     info.parameters(1).default = 3.5;
@@ -45,17 +48,14 @@ if nargin==0
     return
 end
 
-if nargin~=2
-    error('Model requires two input arguments.')
-end
-
 % Assert that the number of parameters matches the model
 if length(param)~=nParam
   error('The number of input parameters does not match the number of model parameters.')
 end
 
 % Compute the model distance distribution
-P = exp(-((r(:)-param(1))/param(2)).^2);
+Lam = (param(2)/sqrt(2*log(2)));
+P = sqrt(2/pi)*1/Lam*exp(-2*((r(:) - param(1))/Lam).^2);
 dr = r(2)-r(1);
 P = P/sum(P)/dr;
 output = P;

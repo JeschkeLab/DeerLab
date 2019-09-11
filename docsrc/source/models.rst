@@ -8,6 +8,8 @@ Parametric Models
     ./models/rd_onegaussian
     ./models/rd_twogaussian
     ./models/rd_threegaussian
+    ./models/rd_fourgaussian
+    ./models/rd_fivegaussian
     ./models/rd_onerice
     ./models/rd_tworice
     ./models/rd_threerice

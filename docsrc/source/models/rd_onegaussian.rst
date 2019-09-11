@@ -23,7 +23,9 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
-Model equation: :math:`P(r) = \exp\left(-\frac{(r-\left<r\right>)^2}{w^2}\right)`
+Model equation: :math:`P(r) = \sqrt{\frac{2}{\pi}}\frac{1}{\Gamma}\exp\left(-\frac{(r-\left<r\right>)^2}{\Gamma^2}\right)`
+
+with :math:`\Gamma = w/\sqrt{2ln(2)}`
 
 ========== ======================== ========= ============= ============= ========================
  Variable   Symbol                    Default   Lower bound   Upper bound      Description
@@ -41,9 +43,8 @@ Description
 
 Returns an ``info`` structure containing the specifics of the model:
 
-* ``info.Model`` -  Full name of the parametric model.
-* ``info.Equation`` -  Mathematical equation of the model.
-* ``info.nParam`` -  Total number of adjustable parameters.
+* ``info.model`` -  Full name of the parametric model.
+* ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
 
 .. code-block:: matlab

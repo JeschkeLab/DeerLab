@@ -23,7 +23,10 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
-Model equation: :math:`P(r) = A_1\exp\left(-\frac{(r-\left<r_1\right>)^2}{w_1^2}\right) + (1 - A_1)\exp\left(-\frac{(r-\left<r_2\right>)^2}{w_2^2}\right)`
+Model equation: :math:`P(r) = A_1\sqrt{\frac{2}{\pi}}\frac{1}{\Gamma_1}\exp\left(-\frac{(r-\left<r_1\right>)^2}{\Gamma_1^2}\right) + (1 - A_1)\sqrt{\frac{2}{\pi}}\frac{1}{\Gamma_2}\exp\left(-\frac{(r-\left<r_2\right>)^2}{\Gamma_2^2}\right)`
+
+with :math:`\Gamma_i = w_i/\sqrt{2ln(2)}`
+
 
 ========== ======================== ========= ======== ========= ===================================
  Variable   Symbol                    Default   Lower    Upper       Description
@@ -44,9 +47,8 @@ Description
 
 Returns an ``info`` structure containing the specifics of the model:
 
-* ``info.Model`` -  Full name of the parametric model.
-* ``info.Equation`` -  Mathematical equation of the model.
-* ``info.nParam`` -  Total number of adjustable parameters.
+* ``info.model`` -  Full name of the parametric model.
+* ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
 
 .. code-block:: matlab

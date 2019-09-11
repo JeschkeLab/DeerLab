@@ -29,11 +29,14 @@ function output = rd_twogaussian(r,param)
 
 nParam = 5;
 
+if nargin~=0 && nargin~=2
+    error('Model requires two input arguments.')
+end
+
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Two-Gaussian distribution';
-    info.Equation  = ['A*exp(-(r-<r1>)²/(',char(963),'1*sqrt(2))²) + (1-A)*exp(-(r-<r2>)²/(',char(963),'2*sqrt(2))²)'];
-    info.nParam  = nParam;
+    info.model  = 'Two-Gaussian distribution';
+    info.nparam  = nParam;
     info.parameters(1).name = 'Mean distance <r1> of 1st Gaussian';
     info.parameters(1).range = [1 20];
     info.parameters(1).default = 2.5;
@@ -49,7 +52,7 @@ if nargin==0
     info.parameters(3).default = 3.5;
     info.parameters(3).units = 'nm';
     
-    info.parameters(4).name = 'FWHM w2 of 2nd Gaussian'];
+    info.parameters(4).name = 'FWHM w2 of 2nd Gaussian';
     info.parameters(4).range = [0.2 5];
     info.parameters(4).default = 0.5;
     info.parameters(4).units = 'nm';
@@ -61,18 +64,16 @@ if nargin==0
     return
 end
 
-if nargin~=2
-    error('Model requires two input arguments.')
-end
-
 % Check that the number of parameters matches the model
 if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
 % Compute the model distance distribution
-Gaussian1 = exp(-((r(:)-param(1))/(param(2))).^2);
-Gaussian2 = exp(-((r(:)-param(3))/(param(4))).^2);
+Lam1 = (param(2)/sqrt(2*log(2)));
+Lam2 = (param(4)/sqrt(2*log(2)));
+Gaussian1 = sqrt(2/pi)*1/Lam1*exp(-2*((r(:) - param(1))/Lam1).^2);
+Gaussian2 = sqrt(2/pi)*1/Lam2*exp(-2*((r(:) - param(3))/Lam2).^2);
 P = param(5)*Gaussian1 + max(1 - param(5),0)*Gaussian2;
 
 % Normalize

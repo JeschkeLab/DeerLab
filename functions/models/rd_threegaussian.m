@@ -32,17 +32,21 @@ function output = rd_threegaussian(r,param)
 
 nParam = 8;
 
+
+if nargin~=0 && nargin~=2
+    error('Model requires two input arguments.')
+end
+
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.Model  = 'Three-Gaussian distribution';
-    info.Equation  = ['A1*exp(-(r-<r1>)²/(',char(963),'1*sqrt(2))²) + A2*exp(-(r-<r2>)²/(',char(963),'2*sqrt(2))²) + (1-A1-A2)*exp(-(r-<r3>)²/(',char(963),'3*sqrt(2))²)'];
-    info.nParam  = nParam;
+    info.model  = 'Three-Gaussian distribution';
+    info.nparam  = nParam;
     info.parameters(1).name = 'Mean distance <r1> of 1st Gaussian';
     info.parameters(1).range = [1 20];
     info.parameters(1).default = 2.5;
     info.parameters(1).units = 'nm';
     
-    info.parameters(2).name = ['FWHM w1 of 1st Gaussian'];
+    info.parameters(2).name = 'FWHM w1 of 1st Gaussian';
     info.parameters(2).range = [0.2 5];
     info.parameters(2).default = 0.5;
     info.parameters(2).units = 'nm';
@@ -62,7 +66,7 @@ if nargin==0
     info.parameters(5).default = 3.5;
     info.parameters(5).units = 'nm';
     
-    info.parameters(6).name = ['FWHM w3 of 3rd Gaussian'];
+    info.parameters(6).name = 'FWHM w3 of 3rd Gaussian';
     info.parameters(6).range = [0.2 5];
     info.parameters(6).default = 0.5;
     info.parameters(6).units = 'nm';
@@ -78,10 +82,6 @@ if nargin==0
     output = info;
     return
 end
-
-if nargin~=2
-    error('Model requires two input arguments.')
-end
     
 % Check that the number of parameters matches the model
 if length(param)~=nParam
@@ -89,9 +89,12 @@ if length(param)~=nParam
 end
 
 % Compute the model distance distribution
-Gaussian1 = exp(-((r(:)-param(1))/(param(2))).^2);
-Gaussian2 = exp(-((r(:)-param(3))/(param(4))).^2);
-Gaussian3 = exp(-((r(:)-param(5))/(param(6))).^2);
+Lam1 = (param(2)/sqrt(2*log(2)));
+Lam2 = (param(4)/sqrt(2*log(2)));
+Lam3 = (param(6)/sqrt(2*log(2)));
+Gaussian1 = sqrt(2/pi)*1/Lam1*exp(-2*((r(:) - param(1))/Lam1).^2);
+Gaussian2 = sqrt(2/pi)*1/Lam2*exp(-2*((r(:) - param(3))/Lam2).^2);
+Gaussian3 = sqrt(2/pi)*1/Lam3*exp(-2*((r(:) - param(5))/Lam3).^2);
 P = param(7)*Gaussian1 + param(8)*Gaussian2 + max(1 - param(7) - param(8),0)*Gaussian3;
 
 % Normalize
