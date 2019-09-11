@@ -1,12 +1,12 @@
 %
-% SUMSTREXP Sum of two stretched exponentials background model
+% TD_SUMSTREXP Sum of two stretched exponentials background model
 %
-%   info = SUMSTREXP
+%   info = TD_SUMSTREXP
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   B = SUMSTREXP(t,param)
-%   Computes the N-point model (B) from the N-point time axis (t) according to 
-%   the paramteres array (param). The required parameters can also be found 
+%   B = TD_SUMSTREXP(t,param)
+%   Computes the N-point model (B) from the N-point time axis (t) according to
+%   the paramteres array (param). The required parameters can also be found
 %   in the (info) structure.
 %
 % PARAMETERS
@@ -29,10 +29,14 @@ function output = td_sumstrexp(t,param)
 
 nParam = 5;
 
+
+if nargin~=0 && nargin~=2
+    error('Model requires two input arguments.')
+end
+
 if nargin==0
     %If no inputs given, return info about the parametric model
     info.model  = 'Sum of two stretched exponentials';
-    info.Equation  = 'A1*exp(-(k1*t)^(d1/3)) + (1-A1)*exp(-(k2*t)^(d2/3))';
     info.nparam  = nParam;
     info.parameters(1).name = 'Decay rate k1 of 1st stretched exponential';
     info.parameters(1).range = [0 200];
@@ -61,26 +65,22 @@ if nargin==0
     
     output = info;
     
-elseif nargin == 2
-    
-    %If user passes them, check that the number of parameters matches the model
-    if length(param)~=nParam
-        error('The number of input parameters does not match the number of model parameters.')
-    end
-    
-    %If necessary inputs given, compute the model distance distribution
-    t = abs(t);
-    StretchedExp1 = exp(-(param(1)*t).^(param(2)/3));
-    StretchedExp2 = exp(-(param(3)*t).^(param(4)/3));
-    Background = param(5)*StretchedExp1 + (1-param(5))*StretchedExp2;
-    if ~iscolumn(Background)
-        Background = Background';
-    end
-    output = Background;
-else
-    
-    %Else, the user has given wrong number of inputs
-    error('Model requires two input arguments.')
 end
+
+%If user passes them, check that the number of parameters matches the model
+if length(param)~=nParam
+    error('The number of input parameters does not match the number of model parameters.')
+end
+
+%If necessary inputs given, compute the model distance distribution
+t = abs(t);
+StretchedExp1 = exp(-(param(1)*t).^(param(2)/3));
+StretchedExp2 = exp(-(param(3)*t).^(param(4)/3));
+Background = param(5)*StretchedExp1 + (1-param(5))*StretchedExp2;
+if ~iscolumn(Background)
+    Background = Background';
+end
+output = Background;
+
 
 return

@@ -5,8 +5,8 @@
 %   Returns an (info) structure containing the specifics of the model.
 %
 %   B = TD_EXP(t,param)
-%   Computes the N-point model (B) from the N-point time axis (t) according to 
-%   the paramteres array (param). The required parameters can also be found 
+%   Computes the N-point model (B) from the N-point time axis (t) according to
+%   the paramteres array (param). The required parameters can also be found
 %   in the (info) structure.
 %
 % PARAMETERS
@@ -26,10 +26,13 @@ function output = td_exp(t,param)
 
 nParam = 1;
 
+if nargin~=0 && nargin~=2
+    error('Model requires two input arguments.')
+end
+
 if nargin==0
     %If no inputs given, return info about the parametric model
     info.model  = 'Exponential';
-    info.Equation  = ['exp(-kt)'];
     info.nparam  = nParam;
     info.parameters(1).name = 'Decay rate k';
     info.parameters(1).range = [0 200];
@@ -38,24 +41,20 @@ if nargin==0
     
     output = info;
     
-elseif nargin == 2
-    
-    %If user passes them, check that the number of parameters matches the model
-    if length(param)~=nParam
-        error('The number of input parameters does not match the number of model parameters.')
-    end    
-    
-    %If necessary inputs given, compute the model distance distribution
-    t = abs(t);
-    Background = exp(-param(1)*t);
-    if ~iscolumn(Background)
-        Background = Background';
-    end
-    output = Background;
-else
-    
-    %Else, the user has given wrong number of inputs
-    error('Model requires two input arguments.')
 end
+
+%If user passes them, check that the number of parameters matches the model
+if length(param)~=nParam
+    error('The number of input parameters does not match the number of model parameters.')
+end
+
+%If necessary inputs given, compute the model distance distribution
+t = abs(t);
+Background = exp(-param(1)*t);
+if ~iscolumn(Background)
+    Background = Background';
+end
+output = Background;
+
 
 return
