@@ -1,11 +1,11 @@
 function output = rd_onerice(r,param)
 %
-% ONERICE Rician distribution parametric model
+% RD_ONERICE Rician distribution parametric model
 %
-%   info = ONERICE
+%   info = RD_ONERICE
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   P = ONERICE(r,param)
+%   P = RD_ONERICE(r,param)
 %   Computes the N-point model (P) from the N-point distance axis (r) according to
 %   the paramteres array (param). The required parameters can also be found
 %   in the (info) structure.
@@ -17,11 +17,10 @@ function output = rd_onerice(r,param)
 % param(2)  sigma   0.7     0.1          5          standard deviation
 % --------------------------------------------------------------------------
 %
-% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
-%
-% This program is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License 3.0 as published by
-% the Free Software Foundation.
+
+% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+
 
 nParam = 2;
 

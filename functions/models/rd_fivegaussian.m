@@ -28,11 +28,10 @@
 % param(14) p4     0.2     0           1          Fraction of pairs at 4th distance
 %--------------------------------------------------------------------------
 %
-% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
-%
-% This program is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License 3.0 as published by
-% the Free Software Foundation.
+
+% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+
 
 function output = rd_fivegaussian(r,param)
 

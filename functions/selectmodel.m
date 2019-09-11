@@ -21,12 +21,10 @@
 %   See "help fitparamodel" for a detailed list of the property-value pairs
 %   accepted by the function.
 %
-%
-% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
-%
-% This program is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License 3.0 as published by
-% the Free Software Foundation.
+
+% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+
 
 function [optima,functionals,fitparams] = selectmodel(Models,S,r,K,Methods,varargin)
 

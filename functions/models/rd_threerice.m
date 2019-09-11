@@ -1,11 +1,11 @@
 function output = rd_threerice(r,param)
 %
-% THREERICE Sum of three rician distributions parametric model
+% RD_THREERICE Sum of three rician distributions parametric model
 %
-%   info = THREERICE
+%   info = RD_THREERICE
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   P = THREERICE(r,param)
+%   P = RD_THREERICE(r,param)
 %   Computes the N-point model (P) from the N-point distance axis (r) according to
 %   the paramteres array (param). The required parameters can also be found
 %   in the (info) structure.
@@ -23,16 +23,9 @@ function output = rd_threerice(r,param)
 % param(8)  p2       0.3     0          1          fraction of pairs at 2nd distance
 % --------------------------------------------------------------------------
 %
-% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
-%
-% This program is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License 3.0 as published by
-% the Free Software Foundation.
 
-
-% PARAMETERS
-% name    symbol default lower bound upper bound
-
+% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 nParam = 8;
 

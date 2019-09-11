@@ -57,6 +57,9 @@
 %      'c':   divide by conversion/sampling time in milliseconds
 %
 
+% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+
 function varargout = deerload(FileName,Scaling)
 
 if (nargout<0) || (nargout>4)

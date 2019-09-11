@@ -49,11 +49,9 @@
 %
 %   'Range' - Range of alpha-value candidates to evaluate
 %
-% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
-%
-% This program is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License 3.0 as published by
-% the Free Software Foundation.
+
+% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 function [OptRegParam,Functionals,RegParamRange] = selregparam(S,K,RegType,SelectionMethod,varargin)
 

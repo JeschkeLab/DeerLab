@@ -7,11 +7,10 @@
 %   relxation time (T1). The function returns a n-element array containing
 %   the coefficients.
 %
-% Copyright(C) 2019  Luis Fabregas, DeerAnalysis2
-%
-% This program is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License 3.0 as published by
-% the Free Software Foundation.
+
+% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+
 
 function OvertoneCoefficients = overtones(Order,MixingTime,T1)
 
