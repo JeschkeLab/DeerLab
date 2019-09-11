@@ -92,7 +92,7 @@ end
 Gaussian1 = exp(-((r(:)-param(1))/(param(2))).^2);
 Gaussian2 = exp(-((r(:)-param(3))/(param(4))).^2);
 Gaussian3 = exp(-((r(:)-param(5))/(param(6))).^2);
-P = param(7)*Gaussian1 + param(8)*Gaussian2 + max(1 - param(5) - param(8),0)*Gaussian3;
+P = param(7)*Gaussian1 + param(8)*Gaussian2 + max(1 - param(7) - param(8),0)*Gaussian3;
 
 % Normalize
 dr = r(2)-r(1);
