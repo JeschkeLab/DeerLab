@@ -18,7 +18,7 @@ RegParam = selregparam(DipEvoFcn,K,'tikhonov','aic');
 TikhResult = fitregmodel(DipEvoFcn,K,r,'tikhonov',RegParam,'Solver','fnnls');
 
 
-err(1) = any(abs(TikhResult - P)>3e-3);
+err(1) = any(abs(TikhResult - P)>3e-2);
 err(2) = length(TikhResult) ~= Ndist;
 err(3) = length(K*TikhResult) ~= Ntime;
 err  = any(err);

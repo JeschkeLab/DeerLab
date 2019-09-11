@@ -20,6 +20,7 @@ DistDomainSmoothing = 0.1;
 aptK = aptkernel(t,'ExcitationBandwidth',1000);
 [aptP,aptr] = apt(DipEvoFcn,aptK,DistDomainSmoothing);
 
+P = rd_onegaussian(aptr,[3,0.5]);
 error = abs(aptP - P);
 err = any(error>9e-1);
 data = [];

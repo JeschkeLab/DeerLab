@@ -26,9 +26,9 @@ TikhResult1 = fitregmodel(V,KB,r,'tikhonov',RegParam,'Solver','fnnls');
 TikhResult2 = fitregmodel(V,KB,r,'tikhonov',RegParam,'Solver','bppnnls');
 TikhResult3 = fitregmodel(V,KB,r,'tikhonov',RegParam,'Solver','lsqnonneg','TolFun',1e-29);
 
-err(1) = any(abs(TikhResult1 - P)>3e-3);
-err(2) = any(abs(TikhResult2 - P)>3e-3);
-err(3) = any(abs(TikhResult3 - P)>3e-3);
+err(1) = any(abs(TikhResult1 - P)>4e-2);
+err(2) = any(abs(TikhResult2 - P)>4e-2);
+err(3) = any(abs(TikhResult3 - P)>4e-2);
 
 maxerr = max(abs(TikhResult1 - P));
 err = any(err);

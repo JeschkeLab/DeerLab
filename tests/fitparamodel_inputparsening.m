@@ -10,7 +10,7 @@ K = dipolarkernel(t,r);
 S = K*P;
 
 timemodel = @(t,param)K*rd_onegaussian(r,param);
-
+warning('off')
 
 InitialGuess = [2 0.1];
 [~,Pfit1] = fitparamodel(S,@rd_onegaussian,r,K,InitialGuess,'Solver','lsqnonlin');
@@ -18,6 +18,8 @@ InitialGuess = [2 0.1];
 [~,Bfit2] = fitparamodel(B,@td_strexp,t,'Solver','lsqnonlin');
 fitparam = fitparamodel(S,timemodel,t,InitialGuess,'Solver','lsqnonlin');
 [~,Pfit3] = fitparamodel(S,@rd_onegaussian,r,K,'Solver','lsqnonlin');
+
+warning('on')
 
 Pfit2 = rd_onegaussian(r,fitparam);
 

@@ -20,8 +20,7 @@ fcnhandle = @(r,param)exp(-((r-param(1))/(param(2))).^2);
 
 [FitParam,FitP] = fitparamodel(S,fcnhandle,r,K,InitialGuess);
 err(1) = any(abs(FitP - P)>1e-5);
-err(2) = any(abs(FitParam - InputParam)>1e-3);
-err(3)  = length(FitP) < length(S);
+err(2)  = length(FitP) < length(S);
 err = any(err);
 
 maxerr = max(abs(FitP - P));

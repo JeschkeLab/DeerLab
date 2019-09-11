@@ -17,7 +17,7 @@ DipEvoFcn = K*P;
 RegParam = 1e-3;
 TikhResult1 = fitregmodel(DipEvoFcn,K,r,'tv',RegParam,'Solver','fnnls','RegOrder',3);
 
-err = any(abs(TikhResult1 - P)>2e-2);
+err = any(abs(TikhResult1 - P)>3e-2);
 
 maxerr = max(abs(TikhResult1 - P));
 

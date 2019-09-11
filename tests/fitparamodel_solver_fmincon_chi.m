@@ -12,7 +12,7 @@ K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
 [~,FitP] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,0.6*InputParam,'Solver','fmincon','costmodel','chisquare');
-err(1) = any(abs(FitP - P)>1e-7);
+err(1) = any(abs(FitP - P)>3e-7);
 err = any(err);
 
 maxerr = max(abs(FitP - P));

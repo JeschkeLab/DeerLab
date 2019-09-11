@@ -1,17 +1,19 @@
 function [err,data,maxerr] = test(opt,olddata)
 
-t = linspace(-5,5,300);
+t = linspace(-3,5,200);
 r = time2dist(t);
 P = rd_onegaussian(r,[4 0.4]);
 K = dipolarkernel(t,r);
 V = K*P;
-V = V + whitegaussnoise(300,0.02);
+rng(2)
+V = V + whitegaussnoise(200,0.01);
+rng('default')
 V = V/max(V);
 alpha = 2;
 Pfit = fitregmodel(V,K,r,'tikhonov',alpha);
 
 error = abs(Pfit - P);
-err = any(error>7e-2);
+err = any(error>5e-1);
 maxerr= max(error);
 data = [];
 

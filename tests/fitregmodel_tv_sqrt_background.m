@@ -23,7 +23,7 @@ RegParam = 0.005;
 KB = dipolarkernel(t,r,ModDepth,sqrt(B));
 Result = fitregmodel(V,KB,r,'tv',RegParam,'Solver','fnnls','RegOrder',3);
 
-err = any(abs(Result - P)>1.5e-2);
+err = any(abs(Result - P)>3e-2);
 maxerr = max(abs(Result - P));
 
 data = [];

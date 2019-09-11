@@ -24,7 +24,7 @@ KB = dipolarkernel(t,r,ModDepth,B);
 Result = fitregmodel(V,KB,r,'tv',RegParam,'Solver','fnnls','RegOrder',3);
 
 error = abs(Result - P);
-err(1) = any(error > 1.5e-2);
+err(1) = any(error > 2e-2);
 maxerr = max(error);
 data = [];
 

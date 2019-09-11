@@ -17,7 +17,7 @@ DipEvoFcn = K*P;
 RegParam = 1;
 Result = fitregmodel(DipEvoFcn,K,r,'tikhonov',RegParam,'NonNegConstrained',false);
 
-err(1) = any(abs(Result - P)>4e-2);
+err(1) = any(abs(Result - P)>4e-1);
 maxerr = max(abs(Result - P));
 err = any(err);
 data = [];

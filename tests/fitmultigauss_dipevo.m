@@ -7,14 +7,13 @@ t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
 InputParam = [4 0.2 4 1 3 0.4 0.4 0.4];
 P = rd_threegaussian(r,InputParam);
-P = P/(1/sqrt(2*pi)*1/InputParam(2));
-P = P/sum(P)/mean(diff(r));
+
 
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
 [FitP,FitParam] = fitmultigauss(DipEvoFcn,K,r,5,'aicc');
-err = any(abs(FitP - P)>4e-4);
+err = any(abs(FitP - P)>6e-4);
 
 
 maxerr = max(abs(FitP - P));
