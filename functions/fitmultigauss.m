@@ -43,7 +43,9 @@ multiGaussModels = cell(maxGaussians,1);
 multiGaussModels{1} = @rd_onegaussian;
 if maxGaussians>=2, multiGaussModels{2} = @rd_twogaussian; end
 if maxGaussians>=3, multiGaussModels{3} = @rd_threegaussian; end
-for i = 4:maxGaussians
+if maxGaussians>=4, multiGaussModels{4} = @rd_fourgaussian; end
+if maxGaussians>=5, multiGaussModels{5} = @rd_fivegaussian; end
+for i = 6:maxGaussians
    multiGaussModels{i} =  mixmodels({multiGaussModels{i-1},@rd_onegaussian});
 end
 
