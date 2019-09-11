@@ -29,10 +29,13 @@ function output = rd_randcoil(r,param)
 R0=0.198; % 1.98 Å per residue
 nParam = 2;
 
+if nargin~=0 && nargin~=2
+    error('Model requires two input arguments.')
+end
+
 if nargin==0
     %If no inputs given, return info about the parametric model
     info.model  = 'Random-coil model';
-    info.Equation  = ['3/(2*pi*3/(2*pi*6.r0*N*',char(957),')^(3/2)))^(3/2)*4*pi*r.^2*exp(-3*r.^2/(3/(2*pi*6.r0*N*',char(957),')^(3/2))'];
     info.nparam  = nParam;
     info.parameters(1).name = 'Chain members N';
     info.parameters(1).range = [2 1000];
@@ -45,8 +48,8 @@ if nargin==0
     info.parameters(2).units = '';
     
     output = info;
-    
-elseif nargin == 2
+    return
+end
     
     %If user passes them, check that the number of parameters matches the model
     if length(param)~=nParam
@@ -62,12 +65,6 @@ elseif nargin == 2
     %Normalize integral
     Distribution = Distribution/sum(Distribution)/mean(diff(r));
     output = Distribution;
-    
-else
-    
-    %Else, the user has given wrong number of inputs
-    error('Model requires two input arguments.')
-end
 
 return
 

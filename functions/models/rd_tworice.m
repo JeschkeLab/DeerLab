@@ -6,8 +6,8 @@ function output = rd_tworice(r,param)
 %   Returns an (info) structure containing the specifics of the model.
 %
 %   P = TWORICE(r,param)
-%   Computes the N-point model (P) from the N-point distance axis (r) according to 
-%   the paramteres array (param). The required parameters can also be found 
+%   Computes the N-point model (P) from the N-point distance axis (r) according to
+%   the paramteres array (param). The required parameters can also be found
 %   in the (info) structure.
 %
 % PARAMETERS
@@ -26,8 +26,11 @@ function output = rd_tworice(r,param)
 % it under the terms of the GNU General Public License 3.0 as published by
 % the Free Software Foundation.
 
-
 nParam = 5;
+
+if nargin~=0 && nargin~=2
+    error('Model requires two input arguments.')
+end
 
 if nargin==0
     %If no inputs given, return info about the parametric model
@@ -60,45 +63,39 @@ if nargin==0
     info.parameters(5).default = 0.5;
     
     output = info;
-    
-elseif nargin == 2
-    
-    %If user passes them, check that the number of parameters matches the model
-    if length(param)~=nParam
-        error('The number of input parameters does not match the number of model parameters.')
-    end
-    
-    nu=param(1);
-    sqscale=param(2).^2;
-    %Compute rician/rice distribution using the zeroth order modified Bessel function of
-    %the first kind
-    Rician1 = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale).*besseli(0,r.*nu./sqscale);
-    %The Rice distribution is zero for negative values.
-    Rician1(Rician1<0)=0;
-    
-    nu=param(3);
-    sqscale=param(4).^2;
-    %Compute rician/rice distribution using the zeroth order modified Bessel function of
-    %the first kind
-    Rician2 = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale).*besseli(0,r.*nu./sqscale);
-    %The Rice distribution is zero for negative values.
-    Rician2(Rician2<0)=0;
-    
-    %Construct distance distribution
-    Distribution = param(5)*Rician1 + max(1-param(5),0)*Rician2;
-    
-    if ~iscolumn(Distribution)
-        Distribution = Distribution';
-    end
-    if ~all(Distribution==0)
-        Distribution = Distribution/sum(Distribution)/mean(diff(r));
-    end
-    output = Distribution;
-else
-    
-    %Else, the user has given wrong number of inputs
-    error('Model requires two input arguments.')
+    return;
 end
 
+%If user passes them, check that the number of parameters matches the model
+if length(param)~=nParam
+    error('The number of input parameters does not match the number of model parameters.')
+end
+
+nu=param(1);
+sqscale=param(2).^2;
+%Compute rician/rice distribution using the zeroth order modified Bessel function of
+%the first kind
+Rician1 = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale).*besseli(0,r.*nu./sqscale);
+%The Rice distribution is zero for negative values.
+Rician1(Rician1<0)=0;
+
+nu=param(3);
+sqscale=param(4).^2;
+%Compute rician/rice distribution using the zeroth order modified Bessel function of
+%the first kind
+Rician2 = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale).*besseli(0,r.*nu./sqscale);
+%The Rice distribution is zero for negative values.
+Rician2(Rician2<0)=0;
+
+%Construct distance distribution
+Distribution = param(5)*Rician1 + max(1-param(5),0)*Rician2;
+
+if ~iscolumn(Distribution)
+    Distribution = Distribution';
+end
+if ~all(Distribution==0)
+    Distribution = Distribution/sum(Distribution)/mean(diff(r));
+end
+output = Distribution;
 
 return

@@ -40,7 +40,7 @@ if nargin==0
     info.parameters(1).units = 'us^-1';
     
     output = info;
-    
+    return
 end
 
 %If user passes them, check that the number of parameters matches the model

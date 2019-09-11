@@ -58,7 +58,7 @@ if nargin==0
     info.parameters(4).units = 'us^-3';
     
     output = info;
-    
+    return
 end
 
 %If user passes them, check that the number of parameters matches the model

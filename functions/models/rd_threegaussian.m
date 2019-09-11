@@ -32,7 +32,6 @@ function output = rd_threegaussian(r,param)
 
 nParam = 8;
 
-
 if nargin~=0 && nargin~=2
     error('Model requires two input arguments.')
 end

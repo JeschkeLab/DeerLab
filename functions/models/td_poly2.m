@@ -28,6 +28,10 @@ function output = td_poly2(t,param)
 
 nParam = 3;
 
+if nargin~=0 && nargin~=2
+    error('Model requires two input arguments.')
+end
+
 if nargin==0
     %If no inputs given, return info about the parametric model
     info.model  = 'Polynomial 2nd Order';
@@ -48,8 +52,9 @@ if nargin==0
     info.parameters(3).units = 'us^-2';
     
     output = info;
-    
-elseif nargin == 2
+    return
+end
+
     
     %If user passes them, check that the number of parameters matches the model
     if length(param)~=nParam
@@ -63,10 +68,5 @@ elseif nargin == 2
         Background = Background';
     end
     output = Background;
-else
-    
-    %Else, the user has given wrong number of inputs
-    error('Model requires two input arguments.')
-end
 
 return

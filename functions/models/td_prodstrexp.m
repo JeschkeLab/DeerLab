@@ -58,7 +58,7 @@ if nargin==0
     info.parameters(4).units = ' ';
     
     output = info;
-    
+    return
 end
 
 
