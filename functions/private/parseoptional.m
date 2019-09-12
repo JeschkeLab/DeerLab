@@ -26,7 +26,7 @@ for i = 1:2:length(varargin(:))
             argoutidx = strcmp(currentProperty,Properties);
             varargout{argoutidx} = varargin{i+1};
         else
-            error('''%s'' is not a valid property name.',currentProperty)
+            warning('DA:parseoptional','''%s'' is not a valid property name.',currentProperty)
         end
     else
         error('The input is not a valid Name-Value pair.')
