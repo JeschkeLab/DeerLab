@@ -80,7 +80,7 @@ if ~isempty(Upper) || ~isempty(Lower)
     for i=1:maxGaussians
         %Get the info about the models
         info = multiGaussModels{i}();
-        boundary = zeros(1,info.nparams);
+        boundary = zeros(1,info.nparam);
         ParamNames = {info.parameters(:).name};
         %Find the parameter indexes for the FWHM and mean distances
         FWHMidx = contains(ParamNames,'FWHM');
