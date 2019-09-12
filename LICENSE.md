@@ -29,4 +29,3 @@ of the API (the contents of functions/), documentation source (docsrc/), and exa
 DeerAnalysis includes code from the following projects, which have their own licenses:
 - [datahash.m](https://www.mathworks.com/matlabcentral/fileexchange/31272-datahash) (Hash-key generator by Jan Simon) [BSD] 
 - [fresnelS.m fresnelC.m](https://www.mathworks.com/matlabcentral/fileexchange/28765-fresnels-and-fresnelc) (Efficient and accurate Fresnel integrals by John D'Errico) [BSD] .
-- [eprload.m](http://easyspin.org/) (Spectrometer output data parser by Stefan Stoll) [MIT] .
