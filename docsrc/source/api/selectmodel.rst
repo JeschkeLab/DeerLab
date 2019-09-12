@@ -14,16 +14,19 @@ Syntax
 .. code-block:: matlab
 
     opt = selectmodel(Models,S,r,K,'method')
-    [opt,f] = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'method1',..})
-    [opt,f,param] = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'method1',..})
-    [opt,f] = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'aic',..},'Property',Value)
+    [opt,f] = selectmodel(Models,S,r,K,'method')
+    [opt,f,param] = selectmodel(Models,S,r,K,'method')
+    [opt,f,param] = selectmodel(Models,S,r,K,'method',param0)
+    [opt,f,param] = selectmodel(Models,S,r,K,'method','Property',Value)
+    [opt,f,param] = selectmodel(Models,S,r,K,'method',param0,'Property',Value)
 
 Parameters
     *   ``Models`` - Input parametric models (cell array of function handles)
     *   ``S`` - Input signal (N-array)
     *   ``r`` -  Distance Axis (N-array)
     *   ``K`` -  Dipolar kernel (NxM-array)
-    *   ``method`` - Model selection type(s) (string)
+    *   ``method`` - Model selection type(s) (string or cell array of strings)
+    *   ``param0`` -  Initial parameter values for each model {Cell array of numerical vectors}
 Returns
     *  ``opt`` - Optimal parametric model index (scalar)
     *  ``f`` - Evaluated model selection functional (cell array)
@@ -48,6 +51,12 @@ Evaluates the fits of the parametric models ``model1``,..., ``modelN`` to a sign
 
 .. code-block:: matlab
 
+        opt = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'aic',..},{par1,..parN})
+
+The initial guess values for the parameters of each model can be passed as a cell array ``{par1,...parN}`` of value vectors.
+
+.. code-block:: matlab
+
     [opt,f,param] = selectmodel(args)
 
 The method selection functionals ``f`` for the different methods and a cell array ``params`` with the fitted parameters for each of the evaluated models.
@@ -58,8 +67,28 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 .. code-block:: matlab
 
-    opt = selectmodel(args,'Property1',Value1,'Property2',Value2,...)
+    opt = selectmodel(args,'Property1',Value1,'Property2',Value2,..)
 
+Upper
+    Cell array containing the upper bound values for the parameters of the evaluated parametric models.
 
+    *Default:* [*empty*] - Uses the model's default upper bound values
 
-See :ref:`fitparamodel` for a detailed list of the property-value pairs accepted by the function.
+    *Example:*
+
+    .. code-block:: matlab
+
+        opt = selectmodel({@rd_onegaussian,@rd_onerice},S,r,K,'aicc','Upper',{[10 1],[10 2]})
+
+Lower
+    Cell array containing the lower bound values for the parameters of the evaluated parametric models.
+
+    *Default:* [*empty*] - Uses the model's default lower bound values
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        opt = selectmodel({@rd_onegaussian,@rd_onerice},S,r,K,'aicc','Lower',{[1 0.1],[10 0.2]})
+
+See :ref:`fitparamodel` for a detailed list of other property-value pairs accepted by the function.
