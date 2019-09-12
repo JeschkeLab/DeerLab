@@ -29,6 +29,7 @@ Returns
     *  ``Nopt`` - Optimal number of Gaussian (scalar)
     *  ``metrics`` - Evaluated model selection functionals (cell array)
     *  ``Peval`` - Fitted distance distributions for each multigauss model (NgaussxN matrix)
+
 Description
 =========================================
 
@@ -52,4 +53,26 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     P = fitmultigauss(args,'Property1',Value1,'Property2',Value2,...)
 
-See :ref:`fitparamodel` for a detailed list of the property-value pairs accepted by the function.
+Upper
+    Array ``[<r>_max FWHM_max]`` containing the upper bound for the FWHM and mean distance of all the Gaussians.
+
+    *Default:* [*empty*] - Uses the model's default upper bound values
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        P = fitmultigauss(arg,'Upper',[10 0.9])
+
+Lower
+    Array ``[<r>_min FWHM_min]`` containing the lower bound for the FWHM and mean distance of all the Gaussians.
+
+    *Default:* [*empty*] - Uses the model's default lower bound values
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        P = fitmultigauss(arg,'Lower',[1 0.1])
+
+See :ref:`fitparamodel` for a detailed list of other property-value pairs accepted by the function.

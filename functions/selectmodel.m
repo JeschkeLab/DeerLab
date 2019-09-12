@@ -62,9 +62,21 @@ if ~iscell(Methods)
     Methods = {Methods};
 end
 
+%Remove the Lower and Upper options from varargin so they are not passed to fitparamodel
+varargin2 = [];
+Idx = find(cellfun(@(x)(ischar(x) && contains(x,'Upper')),varargin));
+varargin2 = [varargin2 varargin(Idx:Idx+1)];
+varargin(Idx:Idx+1) = [];
+Idx = find(cellfun(@(x)(ischar(x) && contains(x,'Lower')),varargin));
+varargin2 = [varargin2 varargin(Idx:Idx+1)];
+varargin(Idx:Idx+1) = [];
+if ~isempty(varargin)
+varargin = varargin{1};
+end
+
 warning('off','DA:parseoptional')
 %Parse the optional parameters in the varargin
-[Upper,Lower] = parseoptional({'Upper','Lower'},varargin);
+[Upper,Lower] = parseoptional({'Upper','Lower'},varargin2);
 warning('on','DA:parseoptional')
 
 if ~isempty(Upper) && ~iscell(Upper)
@@ -81,11 +93,7 @@ UpperBounds = cell(1,length(Models));
 LowerBounds = cell(1,length(Models));
 UpperBounds(1:length(Upper)) = Upper;
 LowerBounds(1:length(Lower)) = Lower;
-%Remove the Lower and Upper options from varargin so they are not passed to fitparamodel
-Idx = find(cellfun(@(x)(ischar(x) && contains(x,'Upper')),varargin));
-varargin(Idx:Idx+1) = [];
-Idx = find(cellfun(@(x)(ischar(x) && contains(x,'Lower')),varargin));
-varargin(Idx:Idx+1) = [];
+
 
 allowedMethodInputs = {'aic','aicc','bic'};
 for i = 1:length(Methods)
