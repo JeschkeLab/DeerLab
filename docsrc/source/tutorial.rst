@@ -8,14 +8,15 @@ It takes only a few lines to generate synthetic datasets:
 
 .. code-block:: matlab
     
+
     t = linspace(0,3,200);          % Set up time axis
-    r = time2dist(t);               % Set up distance axix
+    r = time2dist(t);               % Set up distance axis
     P0 = rd_onegaussian(r,[3 0.2]); % Generate a one-Gaussian model distribution
-    B = td_strexp(t,[0.2 3]);       % Generate stretched-exponential background
-
+    B = td_exp(t,0.2);              % Generate exponential background
+    
     % Generate associated dipolar signal
-    [V,S] = dipolarsignal(t,r,P0,'Background',B,'ModDepth',0.3,'Noiselevel',0.02);
-
+    [V,S] = dipolarsignal(t,r,P0,'Background',B,'ModDepth',0.3,'NoiseLevel',0.02);
+    
     subplot(2,1,1)
     plot(r,P0);
     subplot(2,1,2)
@@ -29,13 +30,14 @@ Also, it takes only a few lines to analyze an experimental dataset. Here is how 
 .. code-block:: matlab
     
     % assuming data are in V and t
-    [B,lam] = fitbackground(V,t,@td_strexp,1.5);   % Fit background
-    K = dipolarkernel(t,r,B,lam);                  % Prepare dipolar kernel
-    L = regoperator(numel(r),2);                   % Prepare 2nd order regularization operator
-    Pfit = fitregmodel(S,K,r,L,'tikhonov',1);      % Run Tikhonov regularization
+    [B,lam] = fitbackground(V,t,@td_exp);        % Fit background
+    K = dipolarkernel(t,r,lam,B);                % Prepare dipolar kernel
+    Pfit = fitregmodel(V,K,r,'tikhonov','aic');  % Run Tikhonov regularization
+    Vfit = K*Pfit;                               % Calculate fitted time-domain signal
     
     subplot(2,1,1)
-    plot(t,V,t,(1-lam)*B,t,F);
+    plot(t,V,'.',t,Vfit,t,(1-lam)*B);
     subplot(2,1,2)
-    plot(r,Pfit,r,P0);
+    plot(r,P0,r,Pfit);
+
 
