@@ -39,7 +39,7 @@ Ss = {S1,S2,S3};
 
 tmodel = t3;
 info = rd_twogaussian();
-mymodel = @(t,param)K3*rd_twogaussian(r,param);
+mymodel = @(t,param)dipolarkernel(t,r)*rd_twogaussian(r,param);
 
 
 InitialGuess = [2 0.1 5 0.1 0.5];
@@ -47,7 +47,7 @@ range = [info.parameters(:).range];
 upper = range(2:2:end);
 lower = range(1:2:end-1);
 
-paramglobal = fitparamodel(Ss,mymodel,tmodel,InitialGuess,'Upper',upper,'lower',lower);
+paramglobal = fitparamodel(Ss,mymodel,{t1,t2,t3},InitialGuess,'Upper',upper,'lower',lower);
 
 param3 = fitparamodel(S3,mymodel,tmodel,InitialGuess,'Upper',upper,'lower',lower);
 

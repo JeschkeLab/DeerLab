@@ -17,7 +17,7 @@
 %   argument (param0). If (@model) is a user-defined function handle, it is
 %   required to pass (param0) as an arugment.
 %
-%   [param,fit] = FITPARAMODEL({V1,V2,...},@model,t,param0)
+%   [param,fit] = FITPARAMODEL({V1,V2,...},@model,{t1,t2,...},param0)
 %   [param,fit] = FITPARAMODEL({V1,V2,...},@model,r,{K1,K2,...},param0)
 %   Passing multiple signals/kernels enables global fitting of the
 %   to a single parametric model distance distribution. The global fit weights
@@ -55,11 +55,8 @@
 %
 %
 
-% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md).
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
-
-
-
 
 function [FitParameters,Fit] = fitparamodel(V,model,ax,K,StartParameters,varargin)
 
@@ -72,21 +69,21 @@ function [FitParameters,Fit] = fitparamodel(V,model,ax,K,StartParameters,varargi
 %Input #1 fitparamodel(S,model,t)
 if nargin<4 || isempty(K)
     Knotpassed = true;
-%Input #2 fitparamodel(S,model,t,'Property',Value)
+    %Input #2 fitparamodel(S,model,t,'Property',Value)
 elseif nargin>3 && ischar(K) && ~iscell(K)
     if nargin>4
         varargin = [{K} {StartParameters} varargin];
     end
     StartParameters = [];
     Knotpassed = true;
-%Input #3 fitparamodel(S,model,t,StartParameters,'Property',Value)
+    %Input #3 fitparamodel(S,model,t,StartParameters,'Property',Value)
 elseif nargin>3 &&  ~all(size(K)>1) && ~iscell(K)
     if nargin>4
         varargin = [{StartParameters} varargin];
     end
     StartParameters = K;
     Knotpassed = true;
-%Input #4 fitparamodel(S,model,r,K,StartParameters,'Property',Value)
+    %Input #4 fitparamodel(S,model,r,K,StartParameters,'Property',Value)
 else
     Knotpassed = false;
 end
@@ -95,14 +92,18 @@ if Knotpassed
     if iscell(V)
         K = cell(size(V));
         for i=1:length(V)
-         K{i} = eye(length(V{i}),length(ax));
+            if iscell(ax)
+                K{i} = eye(length(V{i}),length(ax{i}));
+            else
+                K{i} = eye(length(V{i}),length(ax));
+            end
         end
     else
         K = eye(length(V),length(ax));
     end
     isDistanceDomain = false;
 else
-%Input #5 fitparamodel(S,model,r,K,'Property',Value)
+    %Input #5 fitparamodel(S,model,r,K,'Property',Value)
     if nargin>4 && ischar(StartParameters)
         varargin = [{StartParameters},varargin];
         StartParameters = [];
@@ -110,8 +111,9 @@ else
     isDistanceDomain = true;
 end
 
+%Check that parametric model is passed as function handle
 if ~isa(model,'function_handle')
-   error('Model must be a valid function handle.') 
+    error('Model must be a valid function handle.')
 end
 
 %Get information about the parametric model
@@ -141,32 +143,28 @@ end
 [Solver,Algorithm,MaxIter,MaxFunEvals,TolFun,CostModel,GlobalWeights,UpperBounds,LowerBounds] = parseoptional(...
     {'Solver','Algorithm','MaxIter','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower'},varargin);
 
-%Validate all inputs
+%Validate optional inputs
 if isempty(CostModel)
     CostModel = 'lsq';
 else
     validInputs = {'lsq','chisquare'};
     CostModel = validatestring(CostModel,validInputs);
 end
-
 if isempty(TolFun)
     TolFun = 1e-10;
 else
-    validateattributes(TolFun,{'numeric'},{'scalar','nonnegative'})
+    validateattributes(TolFun,{'numeric'},{'scalar','nonnegative'},mfilename,'TolFun')
 end
-
 if isempty(MaxFunEvals)
     MaxFunEvals = 5000;
 else
-    validateattributes(MaxFunEvals,{'numeric'},{'scalar','nonnegative'})
+    validateattributes(MaxFunEvals,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxFunEvals')
 end
-
 if isempty(MaxIter)
     MaxIter = 3000;
 else
-    validateattributes(MaxIter,{'numeric'},{'scalar','nonnegative'})
+    validateattributes(MaxIter,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxIter')
 end
-
 if isempty(Solver)
     Solver = 'lsqnonlin';
 else
@@ -183,12 +181,7 @@ else
     validInputs = {'levenberg-marquardt','interior-point','trust-region-reflective','active-set','sqp'};
     Algorithm = validatestring(Algorithm,validInputs);
 end
-if ~iscolumn(ax)
-    ax = ax.';
-end
-if numel(unique(round(diff(ax),6)))~=1
-    error('Distance axis must be a monotonically increasing vector.')
-end
+%Validate input signal and kernel
 if ~iscell(V)
     V = {V};
 end
@@ -219,27 +212,44 @@ for i=1:length(V)
         V{i} = real(V{i});
     end
     if length(V{i})~=size(K{i},1)
-        error('K and signal arguments must fulfill size(K,1)==length(S).')
+        error('K and V arguments must fulfill size(K,1)==length(S).')
     end
     if ~isreal(V{i})
         error('Input signal cannot be complex.')
     end
-    validateattributes(V{i},{'numeric'},{'nonempty'},mfilename,'S')
+    validateattributes(V{i},{'numeric'},{'nonempty'},mfilename,'V')
 end
-
-if isDistanceDomain
-    %Convert distance axis to nanometers if given in Angstrom
-    if ~isnanometer(ax)
-        ax = ax/10;
-    end 
-else
-    % Convert time axis to microseconds if given in nanoseconds
-    usesNanoseconds = mean(diff(ax))>=0.5;
-    if usesNanoseconds
-        ax = round(ax)/1000; % ns->us
+%Validate input axis
+if ~iscell(ax)
+    ax = {ax};
+end
+for i=1:length(ax)
+    if ~iscolumn(ax{i})
+        ax{i} = ax{i}.';
     end
+    if numel(unique(round(diff(ax{i}),6)))~=1
+        error('Distance/Time axis must be a monotonically increasing vector.')
+    end
+    %If using distance domain, only one axis must be passed
+    if isDistanceDomain
+        %Convert distance axis to nanometers if given in Angstrom
+        if ~isnanometer(ax{i})
+            ax{i} = ax{i}/10;
+        end
+        
+    else
+        %Is using time-domain,control that same amount of axes as signals are passed
+        if length(V{i})~=length(ax{i})
+            error('V and t arguments must fulfill length(t)==length(S).')
+        end
+        % Convert time axis to microseconds if given in nanoseconds
+        usesNanoseconds = mean(diff(ax{i}))>=0.5;
+        if usesNanoseconds
+            ax{i} = round(ax{i})/1000; % ns->us
+        end
+    end
+    
 end
-
 
 %--------------------------------------------------------------------------
 % Execution
@@ -248,10 +258,10 @@ end
 %Define the cost functional of a single signal
 switch CostModel
     case 'lsq'
-        ModelCost = @(Parameters,K,S) (norm(K*model(ax,Parameters) - S)^2);
+        ModelCost = @(Parameters,K,S,ax) (norm(K*model(ax,Parameters) - S)^2);
     case 'chisquare'
         nParam = length(StartParameters);
-        ModelCost = @(Parameters,K,S) (1/(length(S) - nParam)/(noiselevel(S)^2)*sum((K*model(ax,Parameters) - S).^2));
+        ModelCost = @(Parameters,K,S,ax) (1/(length(S) - nParam)/(noiselevel(S)^2)*sum((K*model(ax,Parameters) - S).^2));
 end
 
 %Get weights of different signals for global fitting
@@ -260,8 +270,13 @@ if isempty(GlobalWeights)
 else
     Weights = GlobalWeights;
 end
+
 %Create a new handle which evaluates the model cost function for every signal
-CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y)ModelCost(Parameters,x,y),K,V)));
+if length(ax)>1
+    CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y,z)ModelCost(Parameters,x,y,z),K,V,ax)));
+else
+    CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y)ModelCost(Parameters,x,y,ax{1}),K,V)));
+end
 
 %Prepare upper/lower bounds on parameter search
 Ranges =  [Info.parameters(:).range];
@@ -272,13 +287,13 @@ if isempty(UpperBounds)
     UpperBounds = Ranges(2:2:end);
 end
 if any(UpperBounds==realmax) || any(LowerBounds == -realmax)
-   warning('Some model parameters are unbounded. Use ''Lower'' and ''Upper'' options to pass parameter boundaries')
+    warning('Some model parameters are unbounded. Use ''Lower'' and ''Upper'' options to pass parameter boundaries')
 end
 if any(length(StartParameters)~=length(UpperBounds) & length(StartParameters)~=length(LowerBounds))
-   error('The Inital guess and upper/lower boundaries must have equal length); ') 
+    error('The Inital guess and upper/lower boundaries must have equal length); ')
 end
 if any(UpperBounds<LowerBounds)
-   error('Lower bound values cannot be larger than upper bound values.') 
+    error('Lower bound values cannot be larger than upper bound values.')
 end
 
 %Disable ill-conditioned matrix warnings
@@ -305,7 +320,7 @@ switch Solver
         solverOpts=optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display','off',...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax,Parameters) - V{1}));
+        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax{1},Parameters) - V{1}));
         [FitParameters,~,~,exitflag]  = lsqnonlin(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
@@ -325,8 +340,15 @@ end
 %Set the warnings back on
 warning('on','MATLAB:nearlySingularMatrix')
 
-%Compute fitted distance distribution
-Fit = model(ax,FitParameters);
+%Compute fitted parametric model
+for i=1:length(ax)
+    Fit{i} = model(ax{i},FitParameters);
+end
+
+if length(Fit) == 1
+    Fit = Fit{1};
+end
+
 
 return
 

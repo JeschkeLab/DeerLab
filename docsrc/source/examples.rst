@@ -15,3 +15,4 @@ Examples
     ./examples/example_selectmodel
     ./examples/example_timedomainfitting
     ./examples/example_pararegcombination
+    ./examples/example_parametricglobalfit

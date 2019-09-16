@@ -17,7 +17,7 @@ Syntax
     [param,fit] = fitparamodel(S,@model,r,K)
     [param,fit] = fitparamodel(S,@model,r,K,param0)
     [param,fit] = fitparamodel({S1,S2,S3},@model,r,{K1,K2,S3},param0)
-    [param,fit] = fitparamodel({S1,S2,S3},@model,t,param0)
+    [param,fit] = fitparamodel({S1,S2,S3},@model,{t1,t2,t3}},param0)
     [param,fit] = fitparamodel(S,@model,t,'Property',Value)
     [param,fit] = fitparamodel(S,@model,t,param0,'Property',Value)
     [param,fit] = fitparamodel(S,@model,r,K,'Property',Value)
@@ -58,10 +58,10 @@ Fits the *distance*-domain parametric model ``@model`` to the input signal ``S``
 
 Passing multiple signals/kernels enables global fitting of the parametric model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes N1,N2,... and a cell array of Kernel matrices with sizes N1xM,N2xM,... must be passed as well.
 
-    P = fitparamodel({S1,S2,S3},@model,t)
-    P = fitparamodel({S1,S2,S3},@model,t,param0)
+    P = fitparamodel({S1,S2,S3},@model,{t1,t2,t3})
+    P = fitparamodel({S1,S2,S3},@model,{t1,t2,t3},param0)
 
-Similarly, time-domain global fitting can be used when passing a time-domain ``@model`` and the model time axis ``t``.
+Similarly, time-domain global fitting can be used when passing a time-domain ``@model`` and the model time axes ``{t1,t2,...}`` of the corresponding signals.
 
 Optional Arguments
 =========================================
