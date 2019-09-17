@@ -61,6 +61,7 @@ html_theme_options = {
     'logo_only': True,
     #'style_nav_header_background': '#2a7bf8'
 }
+html_copy_source = False
 html_theme_path = ["../.."]
 html_logo = "demo/static/logo-wordmark-light.svg"
 html_show_sourcelink = True
