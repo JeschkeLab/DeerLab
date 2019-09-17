@@ -163,7 +163,7 @@ Verbose
 
         *   ``'off'`` - No information displayed
         *   ``'final'`` - Display solver exit message
-        *   ``'iter-detailed'`` - display state of solver at each iteration
+        *   ``'iter-detailed'`` - Display state of solver at each iteration
 
 
     *Default:* ``'off'``
