@@ -157,4 +157,20 @@ MaxFunEval
 
         P = fitregmodel(args,'MaxFunEval',1e10)
 
+Verbose
+
+    Information display options for the solvers:
+
+        *   ``'off'`` - No information displayed
+        *   ``'final'`` - Display solver exit message
+        *   ``'iter-detailed'`` - display state of solver at each iteration
+
+
+    *Default:* ``'off'``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        fit = fitparamodel(args,'Verbose','iter-detailed')
 

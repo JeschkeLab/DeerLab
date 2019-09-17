@@ -52,7 +52,12 @@
 %
 %   'MaxFunEvals' - Maximum number of optimizer function evaluations   
 %
-
+%   'Verbose' - Display options for the solvers:
+%                    'off' - no information displayed  
+%                    'final' - display solver exit message
+%                    'iter-detailed' - display state of solver at each iteration                   iteration
+%                     See MATLAB doc optimoptions for detailed explanation
+%
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
@@ -99,8 +104,14 @@ end
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
 %Check if user requested some options via name-value input
-[TolFun,Solver,NonNegConstrained,MaxFunEvals,MaxIter,HuberParam,GlobalWeights,RegOrder] ...
-    = parseoptional({'TolFun','Solver','NonNegConstrained','MaxFunEvals','MaxIter','HuberParam','GlobalWeights','RegOrder'},varargin);
+[TolFun,Solver,NonNegConstrained,Verbose,MaxFunEvals,MaxIter,HuberParam,GlobalWeights,RegOrder] ...
+    = parseoptional({'TolFun','Solver','NonNegConstrained','Verbose','MaxFunEvals','MaxIter','HuberParam','GlobalWeights','RegOrder'},varargin);
+
+if isempty(Verbose)
+    Verbose = 'off';
+else
+    validateattributes(Verbose,{'char'},{'nonempty'},mfilename,'Verbose')
+end
 
 if isempty(RegOrder)
     RegOrder = 2;
@@ -212,7 +223,7 @@ switch lower(Solver)
         P = lsqnonneg(Q,KtS,solverOpts);
 
     case 'fnnls'
-        P = fnnls(Q,KtS,InitialGuess,TolFun);
+        P = fnnls(Q,KtS,InitialGuess,TolFun,Verbose);
         %In some cases, fnnls may return negatives if tolerance is to high
         if any(P < 0)
             %... in those cases continue from current solution
@@ -232,7 +243,7 @@ switch lower(Solver)
             RegFunctional = regfunctional(RegType,S,L,K,alpha,HuberParam);
         end
         constraint = @(x)unityconstraint(x,dr);
-        fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',GradObj,'MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
+        fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',GradObj,'MaxFunEvals',MaxFunEvals,'Display',Verbose,'MaxIter',MaxIter);
         [P,~,exitflag] =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],constraint,fminconOptions);
         %Check how optimization exited...
         if exitflag == 0

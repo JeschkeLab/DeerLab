@@ -53,6 +53,12 @@
 %
 %   'MaxFunEvals' - Maximum number of optimizer function evaluations
 %
+%   'Verbose' - Display options for the solvers:
+%                 'off' - no information displayed  
+%                 'final' - display solver exit message
+%                 'iter-detailed' - display state of solver at each iteration
+%               See MATLAB doc optimoptions for detailed explanation
+%
 %
 
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md).
@@ -140,8 +146,8 @@ else
 end
 
 %Parse the optional parameters in the varargin
-[Solver,Algorithm,MaxIter,MaxFunEvals,TolFun,CostModel,GlobalWeights,UpperBounds,LowerBounds] = parseoptional(...
-    {'Solver','Algorithm','MaxIter','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower'},varargin);
+[Solver,Algorithm,MaxIter,Verbose,MaxFunEvals,TolFun,CostModel,GlobalWeights,UpperBounds,LowerBounds] = parseoptional(...
+    {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower'},varargin);
 
 %Validate optional inputs
 if isempty(CostModel)
@@ -165,6 +171,12 @@ if isempty(MaxIter)
 else
     validateattributes(MaxIter,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxIter')
 end
+if isempty(Verbose)
+    Verbose = 'off';
+else
+    validateattributes(Verbose,{'char'},{'nonempty'},mfilename,'Verbose')
+end
+
 if isempty(Solver)
     Solver = 'lsqnonlin';
 else
@@ -303,7 +315,7 @@ warning('off','MATLAB:nearlySingularMatrix')
 switch Solver
     case 'fmincon'
         %...under constraints for the parameter values range
-        solverOpts=optimoptions(@fmincon,'Algorithm',Algorithm,'Display','off',...
+        solverOpts=optimoptions(@fmincon,'Algorithm',Algorithm,'Display',Verbose,...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'TolCon',1e-10,...
             'DiffMinChange',1e-8,'DiffMaxChange',0.1);
@@ -317,7 +329,7 @@ switch Solver
         
     case 'lsqnonlin'
         
-        solverOpts=optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display','off',...
+        solverOpts=optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display',Verbose,...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
         ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax{1},Parameters) - V{1}));
@@ -330,7 +342,10 @@ switch Solver
         
     case 'fminsearch'
         %...unconstrained with all possible values
-        solverOpts=optimset('Algorithm',Algorithm,'Display','off',...
+        if strcmp(Verbose,'iter-detailed')
+            Verbose = 'iter';
+        end
+        solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'TolCon',1e-10,...
             'DiffMinChange',1e-8,'DiffMaxChange',0.1);
