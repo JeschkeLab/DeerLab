@@ -54,7 +54,7 @@
 %   'MaxFunEvals' - Maximum number of optimizer function evaluations
 %
 %   'Verbose' - Display options for the solvers:
-%                 'off' - no information displayed  
+%                 'off' - no information displayed
 %                 'final' - display solver exit message
 %                 'iter-detailed' - display state of solver at each iteration
 %               See MATLAB doc optimoptions for detailed explanation
@@ -126,6 +126,20 @@ end
 try
     %Check whether model is a DeerAnalysis model...
     Info = model();
+    if nargin(model)==3
+        passlabel = true;
+    elseif nargin(model) ==2
+        passlabel = false;
+    else
+        error('Model function can only accept two or three input arguments.')
+    end
+    if passlabel
+        model = @(ax,param,idx) model(ax,param,idx);
+    else
+        model = @(ax,param,idx) model(ax,param);
+    end
+    
+    
 catch
     %... if not, then user is required to pass the inital values
     if isempty(StartParameters) || ischar(StartParameters)
@@ -267,13 +281,14 @@ end
 % Execution
 %--------------------------------------------------------------------------
 
+
 %Define the cost functional of a single signal
 switch CostModel
     case 'lsq'
-        ModelCost = @(Parameters,K,S,ax) (norm(K*model(ax,Parameters) - S)^2);
+        ModelCost = @(Parameters,K,S,ax,idx) norm(K*model(ax,Parameters,idx) - S)^2;
     case 'chisquare'
         nParam = length(StartParameters);
-        ModelCost = @(Parameters,K,S,ax) (1/(length(S) - nParam)/(noiselevel(S)^2)*sum((K*model(ax,Parameters) - S).^2));
+        ModelCost = @(Parameters,K,S,ax,idx) 1/(length(S) - nParam)/(noiselevel(S)^2)*sum((K*model(ax,Parameters,idx) - S).^2);
 end
 
 %Get weights of different signals for global fitting
@@ -283,11 +298,13 @@ else
     Weights = GlobalWeights;
 end
 
+Labels = num2cell(1:numel(V));
+
 %Create a new handle which evaluates the model cost function for every signal
 if length(ax)>1
-    CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y,z)ModelCost(Parameters,x,y,z),K,V,ax)));
+    CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y,z,idx)ModelCost(Parameters,x,y,z,idx),K,V,ax,Labels)));
 else
-    CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y)ModelCost(Parameters,x,y,ax{1}),K,V)));
+    CostFcn = @(Parameters) (sum(Weights.*cellfun(@(x,y,idx)ModelCost(Parameters,x,y,ax{1},idx),K,V,Labels)));
 end
 
 %Prepare upper/lower bounds on parameter search
@@ -357,7 +374,7 @@ warning('on','MATLAB:nearlySingularMatrix')
 
 %Compute fitted parametric model
 for i=1:length(ax)
-    Fit{i} = model(ax{i},FitParameters);
+    Fit{i} = model(ax{i},FitParameters,Labels{i});
 end
 
 if length(Fit) == 1

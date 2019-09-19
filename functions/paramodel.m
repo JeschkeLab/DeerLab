@@ -44,7 +44,7 @@ end
 model = @myparametricmodel;
 
 %Define the raw structure of the DeerAnalysis parametric model functions
-    function Output = myparametricmodel(ax,param)
+    function Output = myparametricmodel(ax,param,idx)
         
         if nargin==0
             %If no inputs given, return info about the parametric model
@@ -60,7 +60,7 @@ model = @myparametricmodel;
             
             Output = info;
             
-        elseif nargin == 2
+        elseif nargin >= 2
             
             %If user passes them, check that the number of parameters matches the model
             if length(param)~=nParam
@@ -69,7 +69,11 @@ model = @myparametricmodel;
             
             %If necessary inputs given, compute the model distance distribution
 %             ax = abs(ax);
-            Output = handle(ax,param);
+            if nargin(handle)==3
+                Output = handle(ax,param,idx);
+            else
+                Output = handle(ax,param);
+            end
             if normalize
                 Output = Output/sum(Output)/mean(diff(ax));
             end
