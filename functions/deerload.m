@@ -78,7 +78,7 @@ varargout = cell(1,nargout);
 [varargout{:}] = eprload(FileName,Scaling);
 
 % Convert time axis to microseconds if loaded in nanoseconds
-if length(varargout)>1
+if length(varargout)>1 && ~iscell(varargout{1})
     t = varargout{1};
     usesNanoseconds = mean(diff(t))>=0.5;
     if usesNanoseconds
