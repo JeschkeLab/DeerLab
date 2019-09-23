@@ -11,6 +11,7 @@ set SOURCEDIR = source
 set BUILDDIR = ../docs
 
 if "%1" == "" goto html
+if "%1" == "clean" goto clean
 
 %SPHINXBUILD% >NUL 2>NUL
 if errorlevel 9009 (
@@ -25,12 +26,17 @@ if errorlevel 9009 (
 	exit /b 1
 )
 
-%SPHINXBUILD% [ -d ./chache] -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
+%SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
 goto end
 
+REM Construct HTML code using cached environment if saved
 :html
-rem  %SPHINXBUILD% [ -d ./chache] -M html %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
 sphinx-build -d ./cache -b html ./source ../docs
+
+REM Construct HTML code from scratch
+:clean
+sphinx-build -E -b html ./source ../docs
+
 
 :end
 popd
