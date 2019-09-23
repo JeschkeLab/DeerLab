@@ -46,6 +46,8 @@ Description
 
 Fits the *time*-domain parametric model ``@model`` to the input signal ``S`` on a time axis ``t``. User-defined inital guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
 
+.. code-block:: matlab
+
     [param,fit] = fitparamodel(S,@model,r,K)
     [param,fit] = fitparamodel(S,@model,r,K,param0)
 
@@ -57,6 +59,8 @@ Fits the *distance*-domain parametric model ``@model`` to the input signal ``S``
     P = fitparamodel({S1,S2,S3},@model,r,{K1,K2,S3},param0)
 
 Passing multiple signals/kernels enables global fitting of the parametric model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes N1,N2,... and a cell array of Kernel matrices with sizes N1xM,N2xM,... must be passed as well.
+
+.. code-block:: matlab
 
     P = fitparamodel({S1,S2,S3},@model,{t1,t2,t3})
     P = fitparamodel({S1,S2,S3},@model,{t1,t2,t3},param0)
