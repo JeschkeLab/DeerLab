@@ -4,6 +4,7 @@ Requirements:
 	Pyhton3
 	Sphinx 1.8 (or older)
 	Matlab Sphinx-domain
+	Read-the-Docs Sphinx-theme
 	
 Installation:
 
@@ -20,7 +21,16 @@ Installation:
     
                 python -m pip install sphinx<=1.8.0
 
-2) Install 	Matlab sphinx-domain
+3) Install Read-the-Docs Sphinx theme
+
+    - From python console
+    
+            pip install sphinx_rtd_theme
+    - From DOS console
+    
+            python -m pip install sphinx_rtd_theme
+
+2) Install Matlab sphinx-domain
 
     - From python console
     
@@ -33,7 +43,7 @@ Installation:
 	
     -From python console
     
-        pip install sphinxcontrib-matlabdomain
+        pip install sphinxcontrib-httpdomain
     -From DOS console		
     
         python -m pip install sphinxcontrib-httpdomain
