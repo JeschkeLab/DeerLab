@@ -47,7 +47,7 @@
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function [P,ConvergenceCurve] = obir(S,K,r,RegType,RegParam,varargin)
+function [P,ConvergenceCurve] = obir(S,K,r,RegType,alpha,varargin)
 
 if ~iscolumn(S)
     S = S';
@@ -105,7 +105,12 @@ if isempty(NoiseLevelAim)
 else
     validateattributes(NoiseLevelAim,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'NoiseLevelAim')
 end
-validateattributes(RegParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
+
+if isa(alpha,'char')
+    alpha = selregparam(S,K,r,RegType,alpha);
+else
+    validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
+end
 validateattributes(S,{'numeric'},{'nonempty'},mfilename,'S')
 validateattributes(K,{'numeric'},{'nonempty'},mfilename,'K')
 checklengths(S,K);
@@ -164,7 +169,7 @@ end
 %--------------------------------------------------------------------------
 
 %Initialize
-SizeP = length(S);
+SizeP = length(r);
 Subgradient = zeros(SizeP,1);
 Counter = 1;
 Iteration = 1;
@@ -174,7 +179,7 @@ P = zeros(SizeP,1);
 % Osher's Bregman Iterations Algorithm
 %--------------------------------------------------------------------------
 
-Dimension = length(S);
+Dimension = length(r);
 InitialGuess = zeros(Dimension,1);
 NonNegConst = zeros(Dimension,1);
 
@@ -186,14 +191,14 @@ while Iteration <= MaxOuterIter
     switch Solver
         case 'fmincon'
             %Define current minimization problem
-            RegFunctional = regfunctional(RegType,S,L,K,RegParam,HuberParam);
+            RegFunctional = regfunctional(RegType,S,L,K,alpha,HuberParam);
             fminconFunctional = @(P)OBIRFunctional(P,RegFunctional,Subgradient);
             fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
             %Run minimzation
             P =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         case 'fnnls'
             
-            [Q,KtS] = lsqcomponents(S,r,K,L,RegParam,RegType,HuberParam);
+            [Q,KtS] = lsqcomponents(S,r,K,L,alpha,RegType,HuberParam);
             KtS = KtS - Subgradient;
             P = fnnls(Q,KtS,InitialGuess,TolFun);
             %In some cases, fnnls may return negatives if tolerance is to high
@@ -221,7 +226,7 @@ while Iteration <= MaxOuterIter
     if Iteration == 1
         %If at first iteration, thae residual deviation is already below the noise deviation then impose oversmoothing and remain at first iteration
         if NoiseLevelAim  > std(K*P - S)
-            RegParam = RegParam*2^Counter;
+            alpha = alpha*2^Counter;
             Counter = Counter + 1;
         else
             %Once the residual deviation is above the treshold, then proceed further with the Bregman iterations
