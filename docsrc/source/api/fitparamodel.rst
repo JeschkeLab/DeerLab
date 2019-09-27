@@ -67,6 +67,24 @@ Passing multiple signals/kernels enables global fitting of the parametric model 
 
 Similarly, time-domain global fitting can be used when passing a time-domain ``@model`` and the model time axes ``{t1,t2,...}`` of the corresponding signals.
 
+User-defined parametric models must have the following function definition structure:
+
+.. code-block:: matlab
+
+    Vfit = model(t,param)
+    Pfit = model(r,param)
+	
+where the ``r`` and ``t`` depend on whether the parametric model is a distance or time-domain model, respectively. Additionally the parametric model can accept a third input argument ``idx`` as follows
+
+.. code-block:: matlab
+
+    Vfit = model(t,param,idx)
+    Pfit = model(r,param,idx)
+
+By doing so, ``fitparamodel`` will automatically pass the index ``idx = (1,2,...,N)`` of the input signal cell array  
+``{S1,S2,...,SN}`` being currently processed. This allows for implementation different routines in the parametric model for different signals during global fitting. 
+
+
 Optional Arguments
 =========================================
 Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
