@@ -77,9 +77,12 @@ switch lower(RegType)
             for i=1:nSignals
                 localDistribution = localDistribution + weights(i)*localQ\Kernel{i}.'*Signal{i};
             end
-            change = norm(localDistribution - prev);
+            %Normalize distribution by its integral to stabilize convergence
+            localDistribution = localDistribution/sum(abs(localDistribution));
+            %Monitor largest changes in the distribution
+            change = max(localDistribution - prev);          
             %Stop if result is stable
-            if round(change,5) ==0
+            if change < 1e-4
                 break;
             end
         end
@@ -98,9 +101,12 @@ switch lower(RegType)
             for i=1:nSignals
                 localDistribution = localDistribution + weights(i)*localQ\Kernel{i}.'*Signal{i};
             end
-            change = norm(localDistribution - prev);
+            %Normalize distribution by its integral to stabilize convergence
+            localDistribution = localDistribution/sum(abs(localDistribution));
+            %Monitor largest changes in the distribution
+            change = max(localDistribution - prev);
             %Stop if result is stable
-            if round(change,5) ==0
+            if change < 1e-4
                 break;
             end
         end
