@@ -26,6 +26,8 @@ if nargin<5 || isempty(verbose)
     allowedInput = {'off','final','iter-detailed'};
     verbose = validatestring(verbose,allowedInput);
 end
+unsolvable = false;
+count = 0;
 
 % Provide starting vector if not given.
 if (nargin<3) || isempty(x0)
@@ -67,6 +69,7 @@ while any(w>tol) && any(~passive)
     x_(passive) = Atbt(passive)/AtAt(passive,passive);
     % Inner loop: Iteratively eliminate negative variables from candidate solution.
     while any((x_<=tol) & passive) && (iIteration<maxIterations)
+        
         iIteration = iIteration + 1;
         
         % Calculate maximum feasible step size and do step.
@@ -83,20 +86,30 @@ while any(w>tol) && any(~passive)
     end
     
     % Accept non-negative candidate solution and calculate w.
+    if all(x == x_)
+        count = count + 1;
+    else
+        count = 0;
+    end
+    if count > 5
+        unsolvable = true;
+        break; 
+    end
     x = x_;
+
     w = Atb - AtA*x;
     w(passive) = -inf;
-    
     if strcmp(verbose,'iter-detailed')
         fprintf('%10i%15i%20.4e\n',outIteration,iIteration,max(w))
     end
 end
 
 if strcmp(verbose,'final') || strcmp(verbose,'iter-detailed')
-    if any(~passive)
+    if unsolvable
+        fprintf('Optimization stopped because the solution cannot be further changed. \n')
+    elseif any(~passive)
         fprintf('Optimization stopped because the active set has been completely emptied. \n')
-    end
-    if w>tol
+    elseif w>tol
         fprintf('Optimization stopped because the gradient (w) is inferior than the tolerance value TolFun = %.6e. \n',tol)
     end
 end
