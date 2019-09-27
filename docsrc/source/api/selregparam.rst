@@ -11,16 +11,17 @@ Syntax
 
 .. code-block:: matlab
 
-    [alpha] = selregparam(S,K,'type','method')
-    [alpha,F,alphas] = selregparam(S,K,'type','method')
-    alpha = selregparam(S,K,'type','all')
-    alpha = selregparam(S,K,'type',{'method1','method2','methodN'})
+    [alpha] = selregparam(S,K,r,'type','method')
+    [alpha,F,alphas] = selregparam(S,K,r,'type','method')
+    alpha = selregparam(S,K,r,'type','all')
+    alpha = selregparam(S,K,r,'type',{'method1','method2','methodN'})
     alpha = selregparam({S1,S2,SM},{K1,K2,KM},r,'type','method')
-    [alpha] = selregparam(S,K,'type','method','Property',Value)
+    [alpha] = selregparam(S,K,r,'type','method','Property',Value)
 
 Parameters
     *   ``S`` - Input signal (N-array)
     *   ``K`` -  Dipolar kernel (NxM-array)
+	*   ``r`` -  Distance axis (M-array)
     *   ``type`` - Regularization type (string)
     *   ``method`` - Model selection type (string)
 Returns
@@ -33,7 +34,7 @@ Description
 
 .. code-block:: matlab
 
-    [alpha] = selregparam(alphas,S,K,'type','method')
+    [alpha] = selregparam(S,K,r,'type','method')
 
 Returns the optimal regularization parameter ``alpha`` from a range of regularization parameter candidates ``alphas``. The parameter for the regularization type given by ``'type'`` is computed based on the input signal ``S``, the dipolar kernel ``K`` and the regularization operator ``L``. The method employed for the selection of the regularization parameter can be specified as the ``'method'`` input argument. The available regularization models specified by ``'type'`` are
 
@@ -43,19 +44,19 @@ Returns the optimal regularization parameter ``alpha`` from a range of regulariz
 
 .. code-block:: matlab
 
-    [alpha,F,alphas] = selregparam(alphas,S,K,'type',{'method1','method2','method3',...})
+    [alpha,F,alphas] = selregparam(S,K,r,'type',{'method1','method2','method3',...})
 
 If multiple selection methods are passed as a cell array of strings, the function returns ``alpha`` as an array of optimal regularization parameters corresponding to the input methods. The selection models functionals ``F`` are also returned as a cell array of arrays containing the evaluated functionals of the requested models. The order of the output parameters corresponds to the order of the model strings in the input.
 
 .. code-block:: matlab
 
-    [alpha,F,alphas] = selregparam(alphas,S,K,'type','all')
+    [alpha,F,alphas] = selregparam(S,K,r,'type','all')
 
 Alternatively, the argument ``'all'`` can be passed, which will compute the optimal regularization parameter based on all the selection methods implemented in the function.
 
 .. code-block:: matlab
 
-  alpha = selregparam(alphas,{S1,S2,..,SM},{K1,K2,..,KM},r,'type','method')
+  alpha = selregparam({S1,S2,..,SM},{K1,K2,..,KM},r,'type','method')
 
 Passing multiple signals/kernels enables selection of the regularization parameter for global fitting of the regularization model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes N1,N2,... and a cell array of Kernel matrices with sizes N1xM,N2xM,... must be passed as well.
 

@@ -1,15 +1,15 @@
 %
 % SELREGPARAM Selection of optimal regularization parameter
 %
-%   alpha = SELREGPARAM(S,K,'type','method')
+%   alpha = SELREGPARAM(S,K,r,'type','method')
 %   Returns the optimal regularization parameter (alpha) from a range of
 %   regularization parameter candidates (alphas). The parameter for the
 %   regularization type given by ('type') is computed based on the input
-%   signal (S), and the dipolar kernel (K).
+%   signal (S), and the dipolar kernel (K) on a distance axis (r).
 %   The method employed for the selection of the regularization parameter
 %   can be specified as the ('method') input argument.
 %
-%   alpha = SELREGPARAM(S,K,'type',{'method1',...,'methodN'})
+%   alpha = SELREGPARAM(S,K,r,'type',{'method1',...,'methodN'})
 %   If multiple selection methods are passed as a cell array of strings,
 %   the function returns (alpha) as an N-point array of optimal
 %   regularization parameters corresponding to the input methods,

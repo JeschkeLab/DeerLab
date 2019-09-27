@@ -1,24 +1,24 @@
 %
 % LSQCOMPONENTS Construct input arguments for NNLS solvers
 %
-%   [Q,KtS] = LSQCOMPONENTS(S,K,L,alpha,'type')
+%   [Q,KtS] = LSQCOMPONENTS(S,r,K,L,alpha,'type')
 %   Computes the components required by non-negative least-squares (NNLS)
 %   solvers (Q) and (KtS) for fitting a regularization model. The function
 %   requires the signal (S), dipolar kernel (K), regularization matrix (L)
 %   and regularization parameter (alpha). The type of regularization
 %   functional is determined by the 'type' string argument.
 %
-%   [Q,KtS] = LSQCOMPONENTS(S,K,L,alpha,'type',eta)
+%   [Q,KtS] = LSQCOMPONENTS(S,r,K,L,alpha,'type',eta)
 %   The Huber parameter can be specified by passing as the (eta) argument.
 %
-%   [Q,KtS,w] = LSQCOMPONENTS({S1,S2,...},{K1,K2,...},L,alpha,'type',eta)
+%   [Q,KtS,w] = LSQCOMPONENTS({S1,S2,...},r,{K1,K2,...},L,alpha,'type',eta)
 %   Passing multiple signals/kernels constructs the LSQ components (Q) and (KtS)
 %   as required for global fit of the regularization functionals. The global fit
 %   weights are automatically computed according to their contribution
 %   to ill-posedness. The calculated weights (w) can be requested as an
 %   additional output argument.
 %
-%   [Q,KtS] = LSQCOMPONENTS(S,K,L,alpha,'type',eta,w)
+%   [Q,KtS] = LSQCOMPONENTS(S,r,K,L,alpha,'type',eta,w)
 %   The global fit weights (w) can be manually passed to avoid computing them
 %   automatically.
 %
