@@ -16,9 +16,7 @@ DipEvoFcn = K*P;
 Noise = whitegaussnoise(Dimension,NoiseLevel);
 S = DipEvoFcn + Noise;
 
-RegParam = selregparam(S,K,'tikhonov','aicc');
-
-TikhResult1 = fitregmodel(S,K,r,'tikhonov',RegParam,'Solver','fnnls');
+TikhResult1 = fitregmodel(S,K,r,'tikhonov','aicc','Solver','fnnls');
 err(1) = any(abs(TikhResult1 - P)>6e-2);
 maxerr = max(abs(TikhResult1 - P));
 

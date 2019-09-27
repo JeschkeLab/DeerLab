@@ -36,7 +36,7 @@ Pfit = fitregmodel(Vcorr,K,r,'tikh','aic');
 %Fitting (Kernel-based)
 %----------------------------------------------
 K2 = dipolarkernel(t,r,lambdafit,Bfit,'OvertoneCoeffs',OverCoeff);
-alpha = selregparam(V,K2,'tikh','aic');
+alpha = selregparam(V,K2,r,'tikh','aic');
 Pfit2 = fitregmodel(V,K2,r,'tikh',alpha);
 
 %Plotting

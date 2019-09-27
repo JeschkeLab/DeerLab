@@ -9,17 +9,15 @@ InputParam = [2.5 0.5 4 0.5 3 0.2 0.3 0.4];
 P = rd_threegaussian(r,InputParam);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
 B = exp(-0.15*t)';
-V = (DipEvoFcn + 5).*B;
-ModDepth = 1/V(1);
-V = V/V(1);
-V = V./sqrt(B);
+
+lam = 0.5;
+V = dipolarsignal(t,r,P,'moddepth',lam,'background',B);
 
 
-KB = dipolarkernel(t,r,ModDepth,sqrt(B));
+KB = dipolarkernel(t,r,lam,B);
 
-InitialGuess = [2 0.1 5 0.1 1 0.2 0.1 0.5];
+InitialGuess = [2 0.3 4 0.1 1 0.2 0.1 0.5];
 [~,FitP] = fitparamodel(V,@rd_threegaussian,r,KB,InitialGuess);
 err(1) = any(abs(FitP - P)>3e-4);
 err = any(err);

@@ -18,13 +18,12 @@ EseemFreq = 52.04/(rESEEM^3);
 ESEEM = 0.5*(2 + exp(-7*t).*cos(2*pi*EseemFreq*t));
 S = DipEvoFcn.*ESEEM';
 
-Filtered = longpass(t,S,1.5);
+Filtered = longpass(t,S,1.4);
 
-RegParam2 = selregparam(Filtered,K,'tikhonov','gml');
-Result = fitregmodel(Filtered,K,r,'tikhonov',RegParam2,'Solver','fnnls');
+Result = fitregmodel(Filtered,K,r,'tikhonov','aic','Solver','fnnls');
 
 error = abs(Result - P);
-err(1) = any(error>3e-1);
+err(1) = any(error>4e-1);
 maxerr = max(error);
 err = any(err);
 data = [];
@@ -34,7 +33,7 @@ if opt.Display
     subplot(122),hold on
     plot(r,P)
     plot(r,Result)
-    Result = fitregmodel(S,K,r,'tikhonov',RegParam2,'Solver','fnnls');
+    Result = fitregmodel(S,K,r,'tikhonov','gml','Solver','fnnls');
     plot(r,Result)
     subplot(121),hold on
     plot(t,DipEvoFcn)

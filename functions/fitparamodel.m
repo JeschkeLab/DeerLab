@@ -128,7 +128,7 @@ try
     Info = model();
     if nargin(model)==3
         passlabel = true;
-    elseif nargin(model) ==2
+    elseif nargin(model) == 2
         passlabel = false;
     else
         error('Model function can only accept two or three input arguments.')
@@ -143,7 +143,7 @@ try
 catch
     %... if not, then user is required to pass the inital values
     if isempty(StartParameters) || ischar(StartParameters)
-        error('When using a user-defined function, the inital guess parameters are required.')
+        error('For this model, please provide the required inital guess parameters.')
     end
     %If passed, then transform the function handle to valid parametric model
     model = paramodel(model,StartParameters,[],[],isDistanceDomain);

@@ -9,7 +9,7 @@ clear
 
 % Generate data
 %-------------------------
-t = -0.050:0.010:3; % time axis, us
+t = -0.250:0.010:3; % time axis, us
 r = time2dist(t); % distance axes
 param0 = [3 0.3 4 0.3 0.3]; % parameters for two-Gaussian model
 P = rd_twogaussian(r,param0); % model distance distribution

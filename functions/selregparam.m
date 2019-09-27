@@ -53,7 +53,7 @@
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function [OptRegParam,Functionals,RegParamRange] = selregparam(S,K,RegType,SelectionMethod,varargin)
+function [OptRegParam,Functionals,RegParamRange] = selregparam(S,K,r,RegType,SelectionMethod,varargin)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -200,15 +200,16 @@ InfluenceMatrix = cell(1,nPoints);
 
 for i=1:nPoints %Loop over all regularization parameter values
     
-    [Q,KtS,weights] = lsqcomponents(S,K,L,RegParamRange(i),RegType);
+    [Q,KtS,weights] = lsqcomponents(S,r,K,L,RegParamRange(i),RegType);
     InitialGuess = zeros(nr,1);
     if NonNegConstrained
         P{i} = fnnls(Q,KtS,InitialGuess,TolFun);
     else
         P{i}  = Q\KtS;
     end
+    P{i} = P{i}/sum(P{i})/mean(diff(r));
     for idx=1:length(S)
-        Q = lsqcomponents(S{idx},K{idx},L,RegParamRange(i),'tikhonov');
+        Q = lsqcomponents(S{idx},r,K{idx},L,RegParamRange(i),'tikhonov');
         PseudoInverse{idx,i} = Q\K{idx}.';
         switch lower(RegType)
             case 'tikhonov'
@@ -366,7 +367,7 @@ if Refine
         end
         varargin{end+1} = 'Range';
         varargin{end+1} = FineRegParamRange;
-        [RefinedOptRegParam,RefinedFunctionals] = selregparam(S,K,RegType,SelectionMethod,varargin);
+        [RefinedOptRegParam,RefinedFunctionals] = selregparam(S,K,r,RegType,SelectionMethod,varargin);
         for i=1:length(Functionals)
             Functionals{i} = [Functionals{i} RefinedFunctionals{i}];
         end

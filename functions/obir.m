@@ -193,7 +193,7 @@ while Iteration <= MaxOuterIter
             P =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         case 'fnnls'
             
-            [Q,KtS] = lsqcomponents(S,K,L,RegParam,RegType,HuberParam);
+            [Q,KtS] = lsqcomponents(S,r,K,L,RegParam,RegType,HuberParam);
             KtS = KtS - Subgradient;
             P = fnnls(Q,KtS,InitialGuess,TolFun);
             %In some cases, fnnls may return negatives if tolerance is to high

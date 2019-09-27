@@ -34,7 +34,7 @@ Ks = {K1,K2,K3};
 
 
 RegParamRange = logspace(-3,4,60);
-[OptRegParam,fun] = selregparam(Ss,Ks,'huber',{'aic','aicc'},'Range',RegParamRange);
+[OptRegParam,fun] = selregparam(Ss,Ks,r,'huber',{'aic','aicc'},'Range',RegParamRange);
 
 Result1 = fitregmodel(Ss,Ks,r,'huber',OptRegParam(1),'Solver','fnnls');
 Result2 = fitregmodel(Ss,Ks,r,'huber',OptRegParam(2),'Solver','fnnls');

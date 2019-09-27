@@ -13,7 +13,7 @@ P = rd_onegaussian(r,[3,0.5]);
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
-[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,'huber',{'aic','gcv'},'NonNegConstrained',false);
+[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,r,'huber',{'aic','gcv'},'NonNegConstrained',false);
 
 %Accept testif all values are the same (should be as there is no noise)
 err = any(any(OptParam - OptParam' > 1e-2));

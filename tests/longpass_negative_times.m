@@ -9,9 +9,7 @@ DipEvoFcn = K*P;
 
 Filtered = longpass(t,DipEvoFcn,2);
 
-
-RegParam2 = selregparam(Filtered,K,'tikhonov','aic');
-Result = fitregmodel(Filtered,K,r,'tikhonov',RegParam2,'Solver','fnnls');
+Result = fitregmodel(Filtered,K,r,'tikhonov','aic','Solver','fnnls');
 
 error = abs(Result - P);
 err(1) = any(error>7e-1);

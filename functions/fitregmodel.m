@@ -91,7 +91,7 @@ else
     GradObj = true;
 end
 if isa(alpha,'char')
-    alpha = selregparam(S,K,RegType,alpha);
+    alpha = selregparam(S,K,r,RegType,alpha);
 else
     validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 end
@@ -206,7 +206,7 @@ end
 
 %If using LSQ-based solvers then precompute the KtK and KtS input arguments
 if ~strcmp(Solver,'fmincon')
-    [Q,KtS,weights] =  lsqcomponents(S,K,L,alpha,RegType,HuberParam,GlobalWeights);
+    [Q,KtS,weights] =  lsqcomponents(S,r,K,L,alpha,RegType,HuberParam,GlobalWeights);
 end
 
 %Solve the regularization functional minimization problem

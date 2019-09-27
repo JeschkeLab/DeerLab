@@ -6,6 +6,7 @@ function [err,data,maxerr] = test(opt,olddata)
 
 Dimension = 100;
 dt = 0.008;
+rng(2)
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
 P1 = rd_onegaussian(r,[2,0.3]);
@@ -27,7 +28,7 @@ else
 end
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-OptParam = 0.1;
+OptParam = 0.2;
 Result = obir(S,K,r,'tv',OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','axishandle',axhandle);
 RegResult = fitregmodel(S,K,r,'tv',OptParam);
 

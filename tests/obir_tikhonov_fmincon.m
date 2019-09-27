@@ -6,6 +6,7 @@ function [err,data,maxerr] = test(opt,olddata)
 
 Dimension = 100;
 dt = 0.008;
+rng(2)
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
 P = rd_twogaussian(r,[2,0.3,3.5,0.3,0.5]);
@@ -26,7 +27,7 @@ end
 
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 40;
+RegParam = 2;
 Result = obir(S,K,r,'tikhonov',RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fmincon','axishandle',axhandle);
 
 RegResult = fitregmodel(S,K,r,'tikhonov',RegParam);

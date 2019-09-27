@@ -14,7 +14,7 @@ K = dipolarkernel(t,r);
 RegMatrix = regoperator(Dimension,2);
 DipEvoFcn = K*P;
 
-[OptParam,~,~] = selregparam(DipEvoFcn,K,'huber',{'aic','gcv'});
+[OptParam,~,~] = selregparam(DipEvoFcn,K,r,'huber',{'aic','gcv'});
 
 %Accept testif all values are the same (should be as there is no noise)
 err = any(any(OptParam - OptParam' > 1e-2));

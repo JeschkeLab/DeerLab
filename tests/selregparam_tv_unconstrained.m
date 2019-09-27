@@ -14,7 +14,7 @@ P = P/sum(P);
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
-[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,'tv',{'aic','gcv'},'NonNegConstrained',false);
+[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,r,'tv',{'aic','gcv'},'NonNegConstrained',false);
 
 %Accept testif all values are the same (should be as there is no noise)
 err = any(any(OptParam - OptParam' > 1e-2));

@@ -15,7 +15,7 @@ K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam1 = selregparam(DipEvoFcn,K,'tikhonov','aic');
+RegParam1 = selregparam(DipEvoFcn,K,r,'tikhonov','aic');
 
 
 Ntime = 100;
@@ -33,7 +33,7 @@ K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam2 = selregparam(DipEvoFcn,K,'tikhonov','aic');
+RegParam2 = selregparam(DipEvoFcn,K,r,'tikhonov','aic');
 
 %RegParam2 should be larger to compensate for worse condition number 
 err = RegParam2 < RegParam1;

@@ -2,7 +2,7 @@ function [err,data,maxerr] = test(opt,olddata)
 
 Ntime1 = 100;
 Ndist = 200;
-
+rng(2)
 dt = 0.008;
 t1 = linspace(0,dt*Ntime1,Ntime1);
 [~,rmin,rmax] = time2dist(t1);

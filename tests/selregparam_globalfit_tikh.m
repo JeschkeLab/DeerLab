@@ -3,6 +3,7 @@ function [err,data,maxerr] = test(opt,olddata)
 Ntime1 = 100;
 Ndist = 200;
 dt = 0.008;
+rng(2)
 t1 = linspace(0,dt*Ntime1,Ntime1);
 [~,rmin,rmax] = time2dist(t1);
 r = linspace(rmin,rmax,Ndist);
@@ -34,7 +35,7 @@ Ks = {K1,K2,K3};
 
 
 RegParamRange = logspace(-3,4,60);
-[OptRegParam,fun] = selregparam(Ss,Ks,'tikhonov',{'aic','aicc'},'Range',RegParamRange);
+[OptRegParam,fun] = selregparam(Ss,Ks,r,'tikhonov',{'aic','aicc'},'Range',RegParamRange);
 
 Result1 = fitregmodel(Ss,Ks,r,'tikhonov',OptRegParam(1),'Solver','fnnls');
 Result2 = fitregmodel(Ss,Ks,r,'tikhonov',OptRegParam(2),'Solver','fnnls');
