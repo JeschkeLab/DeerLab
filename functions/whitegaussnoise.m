@@ -25,7 +25,7 @@ noise = randn(N,1);
 ampnoise = 0;
 amp = 0;
 while std(ampnoise)<level
-    amp = amp+0.0001;
+    amp = amp + level/100;
     ampnoise = amp*noise;
 end
 
