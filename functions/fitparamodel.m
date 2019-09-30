@@ -126,19 +126,16 @@ end
 try
     %Check whether model is a DeerAnalysis model...
     Info = model();
-    if nargin(model)==3
-        passlabel = true;
-    elseif nargin(model) == 2
+    if nargin(model) == 2
         passlabel = false;
     else
-        error('Model function can only accept two or three input arguments.')
+        passlabel = true;
     end
     if passlabel
-        model = @(ax,param,idx) model(ax,param,idx);
+    model = @(ax,param,idx) model(ax,param,idx);
     else
-        model = @(ax,param,idx) model(ax,param);
+    model = @(ax,param,idx) model(ax,param);
     end
-    
     
 catch
     %... if not, then user is required to pass the inital values
@@ -349,7 +346,7 @@ switch Solver
         solverOpts=optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display',Verbose,...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax{1},Parameters) - V{1}));
+        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax{1},Parameters,1) - V{1}));
         [FitParameters,~,~,exitflag]  = lsqnonlin(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped

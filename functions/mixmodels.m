@@ -73,10 +73,17 @@ finalModel = @mixedFunction;
 
     %Function to allow request of information structure or model values
     function output = mixedFunction(varargin)
+
         if nargin==0
             output = mixedInfo;
             return
         else
+            if nargin<2
+                error('At least two input argumetns (ax,param) are required.')
+            elseif  nargin>3
+                error('Too many input argumetns given.')
+            end
+        
             r = varargin{1};
             if ~iscolumn(r)
                r = r.'; 
