@@ -167,7 +167,7 @@ for iTest = 1:numel(TestFileNames)
               %get executed lines in profiler
               tmp = p.FunctionTable(pos(i)).ExecutedLines;
               container = ExecutedLines{n};
-              container(end+1:end+length(tmp)) = tmp(:, 1);
+              container(end+1:end+length(tmp(:, 1))) = tmp(:, 1);
               ExecutedLines{n} = container;
           end
       end
@@ -232,19 +232,31 @@ for n = 1:length(Files)
     Path = Files(n).folder;
     RunnableLines = callstats('file_lines',fullfile(Path,FcnName));
     TotalRunnable = TotalRunnable + length(unique(RunnableLines));
-    Covered = length(unique(ExecutedLines{n}));
+    Executed = unique(ExecutedLines{n});
+    Covered = length(Executed);
     TotalCovered = TotalCovered + Covered;
     Runnable = length(unique(RunnableLines));
     Code = fileread(FcnName);
+    if params =='l'
+        Missed = RunnableLines;
+       for k=1:length(Executed)
+           Missed(RunnableLines==Executed(k)) = NaN;
+       end
+       Missed(isnan(Missed)) = [];
+    end
     MissedEnds = length(strfind(Code,'error')) + length(strfind(Code,'return'));
     %account for end statement after return command
-    if Covered ~= 0
-        Covered = Covered + MissedEnds;
+    if Runnable - Covered < MissedEnds
+        Covered = Runnable;
     end
     Coverage = 100*Covered/Runnable;
     %Print to console
     if (~isempty(TestName) && Coverage~=0) || isempty(TestName)
-        fprintf('%-20s%-18s%-3.2f%%\n',FcnName,' ',Coverage)
+        if params =='l'
+            fprintf('%-20s%-18s%-3.2f%% %-6s Lines missing: %s \n',FcnName,' ',Coverage,' ',mat2str(Missed))
+        else
+            fprintf('%-20s%-18s%-3.2f%%\n',FcnName,' ',Coverage)
+        end
     end
 end
 TotalCoverage = TotalCovered/TotalRunnable*100;
