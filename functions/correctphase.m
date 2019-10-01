@@ -30,16 +30,11 @@ function [Vc,Phase,ImagOffset] = correctphase(V,Phase,fitImagOffset)
 %Input parsing
 %--------------------------------------------------------------------------
 switch nargin
-    case 0
-        help(mfilename);
-        return
     case 1
         Phase = [];
         fitImagOffset = false;
-        ImagOffset = 0;
     case 2
         fitImagOffset = false;
-        ImagOffset = 0;
     case 3
     otherwise
         error('Wrong number of input arguments.');
@@ -55,6 +50,8 @@ if iscolumn(V)
     V = V.';
 end
 
+ImagOffset = 0;
+
 % If phase is not provided, then fit it (and imag. offset)
 if isempty(Phase)
     %phi0 = angle(V(end)); % use phase of last point as starting point for fit
@@ -64,7 +61,7 @@ if isempty(Phase)
         pars(2) = 0;
     end
     FitStart = round(length(V)/8); % use only last 7/8 of data for phase/offset correction
-    pars = fminsearch(@ImagNorm_PhaseOffset,pars,[],V(FitStart:end));
+    pars = fminsearch(@imaginarynorm,pars,[],V(FitStart:end));
     Phase = pars(1);
     if fitImagOffset
         ImagOffset = pars(2);
@@ -76,7 +73,7 @@ if isempty(Phase)
 elseif ~isempty(Phase) && fitImagOffset
     offset = 0;
     FitStart = round(length(V)/8); % use only last 7/8 of data for phase/offset correction
-    ImagOffset = fminsearch(@(offset)ImagNorm_PhaseOffset([Phase offset],V(FitStart:end)),offset);
+    ImagOffset = fminsearch(@(offset)imaginarynorm([Phase offset],V(FitStart:end)),offset);
 end
 
 %Do phase correction and normalize
@@ -84,7 +81,7 @@ Vc = (V - 1i*ImagOffset)*exp(1i*Phase);
 
 end
 
-function ImagNorm = ImagNorm_PhaseOffset(params,V)
+function ImagNorm = imaginarynorm(params,V)
 % Computes norm of the imaginary part of phase-corrected data from zero before
 % phase correction, an offset can be subtracted from the imaginary part.
 %

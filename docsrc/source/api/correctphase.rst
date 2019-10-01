@@ -15,6 +15,7 @@ Syntax
 
     Vc = correctphase(V)
     Vc = correctphase(V,ph)
+	Vc = correctphase(V,[],oc)
     Vc = correctphase(V,ph,oc)
     [Vc,ph,io] = correctphase(V)
 
@@ -46,8 +47,9 @@ Applied a phase correction with a given phase angle ``ph`` (in radians) to input
 .. code-block:: matlab
 
     Vc = correctphase(V,ph,oc)
+	Vc = correctphase(V,[],oc)
 
-A third boolean argument ``oc`` can be passed to enable/diasable the fitting of a possible offset on the imaginary component of the data (defaults to ``false``).
+A third boolean argument ``oc`` can be passed to enable/diasable the fitting of a possible offset on the imaginary component of the data (defaults to ``false``). This is compatible with both automatic and manual phase correction.
 
 .. code-block:: matlab
 
