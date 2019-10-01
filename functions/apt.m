@@ -43,21 +43,6 @@ else
 end
 
 %--------------------------------------------------------------------------
-%Memoization
-%--------------------------------------------------------------------------
-
-persistent cachedData
-if isempty(cachedData)
-    cachedData =  java.util.LinkedHashMap;
-end
-hashKey = datahash({S,APTkernel,DistDomainSmoothing});
-if cachedData.containsKey(hashKey)
-    Output = cachedData.get(hashKey);
-    [P,Uniformr] = java2mat(Output);
-    return
-end
-
-%--------------------------------------------------------------------------
 % APT algorithm
 %--------------------------------------------------------------------------
 
@@ -119,13 +104,8 @@ P = P/sum(P)/mean(diff(Uniformr));
 %Make the distribution a column
 P = P';
 
-%Store output result in the cache
-Output = {P,Uniformr};
-cachedData = addcache(cachedData,hashKey,Output);
-
 %Turn warnings back on
 warning('on','all')
-
 
 end
 
