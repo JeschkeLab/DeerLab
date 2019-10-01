@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 % Check whether regoperator returns correct sizes
 %===============================================================================
@@ -11,7 +11,7 @@ L2 = regoperator(n,2);
 sizeok = @(M,sz)all(size(M)==sz);
 ok = sizeok(L0,[n n]) && sizeok(L1,[n-1 n]) && sizeok(L2,[n-2 n]);
 err = ~ok;
-
+maxerr = 0;
 data = [];
 
 end

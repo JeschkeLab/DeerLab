@@ -52,7 +52,6 @@ warning('on','DA:parseoptional')
 if isempty(Upper)
 elseif ~isempty(Upper) && length(Upper)~=2
     error('Upper property must be an array [<r>_max FWHM_max]')
-    
 end
 if ~isempty(Lower) && length(Lower)~=2
     error('Lower property must be an array [<r>_min FWHM_min]')

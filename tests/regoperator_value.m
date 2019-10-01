@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 % Check whether regoperator returns correct matrices
 %===============================================================================
@@ -17,8 +17,12 @@ L2 = regoperator(n,2);
 L2ref = diff(eye(n),2);
 ok(3) = all(L2(:)==L2ref(:));
 
-err = any(~ok);
+L3 = regoperator(n,3);
+L2ref = diff(eye(n),3);
+ok(4) = all(L3(:)==L2ref(:));
 
+err = any(~ok);
+maxerr = 0;
 data = [];
 
 end

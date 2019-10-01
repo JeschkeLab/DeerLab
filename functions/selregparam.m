@@ -207,19 +207,18 @@ for i=1:nPoints %Loop over all regularization parameter values
     else
         P{i}  = Q\KtS;
     end
-    P{i} = P{i}/sum(P{i})/mean(diff(r));
     for idx=1:length(S)
         Q = lsqcomponents(S{idx},r,K{idx},L,RegParamRange(i),'tikhonov');
         PseudoInverse{idx,i} = Q\K{idx}.';
         switch lower(RegType)
             case 'tikhonov'
-                Penalty(idx,i) = 1/sqrt(2)*norm(L*P{i});
+                Penalty(idx,i) = norm(L*P{i});
             case 'tv'
                 Penalty(idx,i) = sum(sqrt((L*P{i}).^2 + 1e-24));
             case 'huber'
                 Penalty(idx,i) = sum(sqrt((L*P{i}/HuberParameter).^2 + 1 ) - 1);
         end
-        Residual(idx,i) = 1/sqrt(2)*norm(K{idx}*P{i} - S{idx});
+        Residual(idx,i) = norm(K{idx}*P{i} - S{idx});
         InfluenceMatrix{idx,i} = K{idx}*PseudoInverse{idx,i};
     end
 end
