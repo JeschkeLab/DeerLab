@@ -246,16 +246,17 @@ for n = 1:length(Files)
     end
     MissedEnds = length(strfind(Code,'error')) + length(strfind(Code,'return'));
     %account for end statement after return command
-    if Runnable - Covered < MissedEnds
+    if Runnable - Covered <= MissedEnds
         Covered = Runnable;
+        Missed = [];
     end
     Coverage = 100*Covered/Runnable;
     %Print to console
     if (~isempty(TestName) && Coverage~=0) || isempty(TestName)
         if params =='l'
-            fprintf('%-20s%-18s%-3.2f%% %-6s Lines missing: %s \n',FcnName,' ',Coverage,' ',mat2str(Missed))
+            fprintf('%-20s%-18s%3.2f%% %18s  %s \n',FcnName,' ',Coverage,'Lines missing:',mat2str(Missed))
         else
-            fprintf('%-20s%-18s%-3.2f%%\n',FcnName,' ',Coverage)
+            fprintf('%-20s%-18s%3.2f%%\n',FcnName,' ',Coverage)
         end
     end
 end

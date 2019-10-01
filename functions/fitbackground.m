@@ -30,7 +30,7 @@
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function [B,ModDepth,FitParam,tstart] = fitbackground(Data,t,BckgModel,FitDelimiter,varargin)
+function [B,ModDepth,FitParam,FitDelimiter] = fitbackground(Data,t,BckgModel,FitDelimiter,varargin)
 
 if nargin<3
     error('Not enough input arguments. At least three are needed: V, t, and background model.');
@@ -121,15 +121,21 @@ solveropts = optimoptions(@lsqnonlin,'Algorithm','trust-region-reflective','Disp
 
 %Construct cost functional for minimization
 if LogFit
+    %Fit in log-space
     if isempty(ModDepth)
+        %Fit modulation depth...
         CostFcn = @(param)(sqrt(1/2)*(log((1 - param(1) + eps)*BckgModel(Fitt,param(2:end))) - log(FitData)));
     else
+        %Use user-given modulation depth...
         CostFcn = @(param)(sqrt(1/2)*(log((1 - ModDepth + eps)*BckgModel(Fitt,param(1:end))) - log(FitData)));
     end
 else
+    %Fit in linear space
     if isempty(ModDepth)
+        %Fit modulation depth...
         CostFcn = @(param)(sqrt(1/2)*((1 - param(1))*BckgModel(Fitt,param(2:end)) - FitData));
     else
+        %Use user-given modulation depth...
         CostFcn = @(param)(sqrt(1/2)*((1 - ModDepth)*BckgModel(Fitt,param(1:end)) - FitData));
     end
 end

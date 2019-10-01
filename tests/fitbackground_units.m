@@ -1,9 +1,5 @@
 function [err,data,maxerr] = test(opt,olddata)
 
-%======================================================
-% Exponential background fit
-%======================================================
-
 t = linspace(0,5,100);
 d = 3;
 

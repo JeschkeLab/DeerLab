@@ -20,7 +20,7 @@
 %       K = DIPOLARKERNEL(t,r,lambda,B,'Property1',Value1,...) 
 %       Optional arguments can be specified by parameter/value pairs. 
 %
-%The allowed properties to be passed as options can be set in any order. 
+% The allowed properties to be passed as options can be set in any order. 
 %
 %   'ExcitationBandwidth' - Excitation bandwith of the pulses in MHz to be
 %                           used for limited bandwith excitation
@@ -53,9 +53,6 @@ function K = dipolarkernel(t,r,lambda,B,varargin)
 % Input parsing
 %--------------------------------------------------------------------------
 switch nargin
-    case 0
-        help(mfilename);
-        return
     case {1,2}
         lambda = [];
         B = [];
