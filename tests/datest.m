@@ -79,6 +79,16 @@ fprintf(fid,'-------------------------------------------------------------------
 
 OutcomeStrings = {'pass','failed','crashed','not tested'};
 
+%get path to DeerAnalysis functions folder
+path = fileparts(which('datest'));
+path = path(1:end-length('\path'));
+
+%list all the API functions, including models and private
+Files1 = dir(fullfile(path,'functions','*.m'));
+Files2 = dir(fullfile(path,'functions','models','*.m'));
+Files = [Files1; Files2];
+ExecutedLines = repmat({[]},length(Files),1);
+
 %==========================================================================
 %Loop over all tests to be run
 %==========================================================================
@@ -114,6 +124,8 @@ for iTest = 1:numel(TestFileNames)
   clear(functionName)
   
   % Run test, catch any errors
+  profile clear
+  profile on
   tic
   try
       if displayErrors
@@ -137,6 +149,29 @@ for iTest = 1:numel(TestFileNames)
     errorStr = ['    ' regexprep(errorStr,'\n','\n    ') char(10)];
   end
   time_used(iTest) = toc;
+  
+  %retrieve profiler summary
+  p = profile('info');
+  %and turn it off
+  profile off
+  
+  %Make list of all profiled function calls
+  ExecutedFcns = [{p.FunctionTable(:).CompleteName}];
+  %Analyze code coverage of each API function
+  for n = 1:length(Files)
+      FcnName = Files(n).name;
+      pos = find(contains(ExecutedFcns,FcnName));
+      if ~isempty(pos)
+          %initialize containers
+          for i=1:length(pos)
+              %get executed lines in profiler
+              tmp = p.FunctionTable(pos(i)).ExecutedLines;
+              container = ExecutedLines{n};
+              container(end+1:end+length(tmp)) = tmp(:, 1);
+              ExecutedLines{n} = container;
+          end
+      end
+  end
   
   isRegressionTest = ~isempty(data);
   saveTestData = isRegressionTest && isempty(olddata);  
@@ -184,6 +219,34 @@ for iTest = 1:numel(TestFileNames)
     end
 end
 
+
+fprintf(fid,'-----------------------------------------------------------------------\n');
+fprintf(fid,'Code Coverage Analysis \n');
+fprintf(fid,'-----------------------------------------------------------------------\n');
+
+TotalCovered = 0;
+TotalRunnable = 0;
+%Analyze code coverage of each API function
+for n = 1:length(Files)
+    FcnName = Files(n).name;
+    Path = Files(n).folder;
+    RunnableLines = callstats('file_lines',fullfile(Path,FcnName));
+    TotalRunnable = TotalRunnable + length(unique(RunnableLines));
+    Covered = length(unique(ExecutedLines{n}));
+    TotalCovered = TotalCovered + Covered;
+    Runnable = length(unique(RunnableLines));
+    %account for end statement after return command
+    if Runnable - Covered ==1
+        Covered = Covered+1;
+    end
+    Coverage = 100*Covered/Runnable;
+    %Print to console
+    if (~isempty(TestName) && Coverage~=0) || isempty(TestName)
+        fprintf('%-20s%-18s%-3.2f%%\n',FcnName,' ',Coverage)
+    end
+end
+TotalCoverage = TotalCovered/TotalRunnable*100;
+
 allErrors = [testResults.err];
 
 % Display timings of slowest tests
@@ -208,6 +271,9 @@ end
 fprintf(fid,'-----------------------------------------------------------------------\n');
 msg = sprintf('%d passes, %d failures, %d crashes\n',sum(allErrors==0),sum(allErrors==1),sum(allErrors==2));
 fprintf(fid,msg);
+if isempty(TestName)
+    fprintf('Total code coverage: %3.2f%%\n',TotalCoverage)
+end
 fprintf(fid,'-----------------------------------------------------------------------\n');
 
 % Return output if desired
