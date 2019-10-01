@@ -23,6 +23,8 @@
 %
 %   'Offset' - Vertical offset to add to the ouput signal
 %
+%   'Phase' - Phase of the signal in radians.
+%
 %   'Overtones' - Array of RIDME overtone coefficients
 %
 %   'FivePulseCoeff' - Two element array [A tshift] containing the relative
@@ -34,7 +36,7 @@
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function [FormFactor,S] = dipolarsignal(t,r,P,varargin)
+function [V,S] = dipolarsignal(t,r,P,varargin)
 
 if nargin<3
     P = [];
@@ -47,7 +49,7 @@ if ischar(P)
     P = [];
 end
 %Parse optional input arguments
-[ModDepth,B,NoiseLevel,Offset,Overtones,FivePulseCoeff] = parseoptional({'ModDepth','Background','NoiseLevel','Offset','Overtones','FivePulseCoeff'},varargin);
+[ModDepth,B,NoiseLevel,Offset,Overtones,FivePulseCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','Offset','Overtones','FivePulseCoeff','Phase'},varargin);
 %Validate inputs
 if isempty(ModDepth)
     ModDepth = 1;
@@ -64,6 +66,9 @@ end
 if isempty(Offset)
     Offset = 1;
 end
+if isempty(Phase)
+    Phase = 0;
+end
 validateattributes(NoiseLevel,{'numeric'},{'scalar','nonnegative'},mfilename,'NoiseLevel')
 validateattributes(ModDepth,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'ModDepth')
 validateattributes(t,{'numeric'},{'increasing','nonempty'},mfilename,'t')
@@ -72,6 +77,7 @@ validateattributes(B,{'numeric'},{'2d'},mfilename,'B')
 validateattributes(P,{'numeric'},{'2d'},mfilename,'P')
 validateattributes(Offset,{'numeric'},{'scalar','nonnegative'},mfilename,'Offset')
 validateattributes(Overtones,{'numeric'},{'2d','nonnegative'},mfilename,'Overtones')
+validateattributes(Phase,{'numeric'},{'2d','nonnegative','scalar'},mfilename,'Phase')
 
 if ~isempty(P) && length(r)~=length(P)
     error('The distance axis and distribution lengths must be equal.')
@@ -101,8 +107,6 @@ end
 %Get length of distribution
 N = length(t);
 
-%Normalize the distance distribution if not normalized
-
 %Get the kernel
 K = dipolarkernel(t,r,'OvertoneCoeffs',Overtones,'FivePulseCoeff',FivePulseCoeff);
 
@@ -118,11 +122,13 @@ end
 Noise = whitegaussnoise(N,NoiseLevel);
 
 %Calculate form factor with backbround
-FormFactor = (1-ModDepth) + ModDepth*S;
-FormFactor = FormFactor.*B;
+V = (1-ModDepth) + ModDepth*S;
+V = V.*B;
 
 %Add noise and intensity offset
-FormFactor = (FormFactor + Noise)*Offset;
+V = (V + Noise)*Offset;
 
+%Mix phase if given
+V = V.*exp(-1i*Phase);
 
 end

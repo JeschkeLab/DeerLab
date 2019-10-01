@@ -107,6 +107,17 @@ Offset
     .. code-block:: matlab
 
         V = dipolarsignal(args,'Offset', 1e3)
+		
+Phase
+    Phase of the complex-valued signal (in radians).
+
+    *Default:* ``0``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        V = dipolarsignal(args,'Phase', pi/2)		
 
 FivePulseCoeff
     Two element array ``[A, tshift]`` containing the relative amplitude of the 5-pulse DEER artefact ``A`` and the time shift ``tshift`` at which it appears. If not given, the time shift ``tshift`` is set by default to half of the time axis ``t`` maximum.
