@@ -32,6 +32,7 @@ goto end
 REM Construct HTML code using cached environment if saved
 :html
 sphinx-build -d ./cache -b html ./source ../docs
+goto end
 
 REM Construct HTML code from scratch
 :clean
