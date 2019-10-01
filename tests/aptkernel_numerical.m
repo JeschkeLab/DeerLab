@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %======================================================
 % Check apt kernel is constructed properly
@@ -25,6 +25,7 @@ err(3) = any(abs(FreqAxis - ny)>1e-3);
 err(4) = any(abs(t - t)>1e-3);
 err(5) = any(any(abs(CrossTalk - crosstalk)>1e-2));
 err = any(err);
+maxerr = max(max(abs(Base - base)));
 data = [];
 
 end

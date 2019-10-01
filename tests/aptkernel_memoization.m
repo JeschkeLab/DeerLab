@@ -1,10 +1,8 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 N = 800;
 dt = 0.008;
 t = linspace(0,dt*(N-1),N);
-
-clear aptkernel
 
 tic 
 preK = aptkernel(t);

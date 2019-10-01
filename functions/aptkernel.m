@@ -120,5 +120,4 @@ cachedData = addcache(cachedData,hashKey,APTkernel);
 %Turn warnings back on
 warning('on','all')
 
-
 end          
