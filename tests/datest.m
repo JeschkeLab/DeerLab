@@ -235,9 +235,11 @@ for n = 1:length(Files)
     Covered = length(unique(ExecutedLines{n}));
     TotalCovered = TotalCovered + Covered;
     Runnable = length(unique(RunnableLines));
+    Code = fileread(FcnName);
+    MissedEnds = length(strfind(Code,'error')) + length(strfind(Code,'return'));
     %account for end statement after return command
-    if Runnable - Covered ==1
-        Covered = Covered+1;
+    if Covered ~= 0
+        Covered = Covered + MissedEnds;
     end
     Coverage = 100*Covered/Runnable;
     %Print to console
