@@ -57,6 +57,7 @@ html_context = {
 }
 
 html_theme_options = {
+	'sticky_navigation': False,
     'titles_only': True,
     'logo_only': True,
     #'style_nav_header_background': '#2a7bf8'
@@ -81,7 +82,7 @@ html_favicon = 'favicon.ico'
 def setup(app):
     from sphinx.domains.python import PyField
     from sphinx.util.docfields import Field
-
+    app.add_css_file('/source/_static/custom.css')
     app.add_object_type(
         'confval',
         'confval',
@@ -103,6 +104,15 @@ def setup(app):
             ),
         ]
     )
+
+# These folders are copied to the documentation's HTML output
+html_static_path = ['_static']
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    'custom.css',
+]	
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
