@@ -25,7 +25,7 @@ validateattributes(V,{'numeric'},{'nonempty'},mfilename,'V')
 % Convert time step to microseconds if given in nanoseconds
 usesNanoseconds = mean(diff(t))>=0.5;
 if usesNanoseconds
-    t = round(t)/1000; % ns->us
+    t = t/1000; % ns->us
 end
 
 %Convert time to distance axis

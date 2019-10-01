@@ -7,15 +7,19 @@ B = td_exp(t,0.3);
 TrueOffset = 1e8;
 V = dipolarsignal(t,r,P,'Moddepth',0.25,'Background',B,'Offset',TrueOffset);
 
-[Vc,Offset] = correctscale(V,t);
+%us
+[Vc1] = correctscale(V,t);
+%ns
+t = t*1000;
+[Vc2] = correctscale(V,t);
 
-err  = abs(Offset - TrueOffset)>1e-5;
+err  = abs(Vc1 - Vc2)>1e-10;
 data = [];
-maxerr = max(abs(Offset - TrueOffset));
+maxerr = max(abs(Vc1 - Vc2));
 
 if opt.Display
     figure(8)
-    plot(t,Vc)   
+    plot(t,Vc)
 end
 
 end

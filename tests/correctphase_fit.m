@@ -11,7 +11,6 @@ phasedData = originalData.*exp(-1i*inputPhase);
 
 [correctedData,outputPhase] = correctphase(phasedData);
 
-
 err(1) = any(abs(imag(correctedData) - imag(originalData))>1e-10);
 err(2) = abs(inputPhase - outputPhase)>1e-5;
 
