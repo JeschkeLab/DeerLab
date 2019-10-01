@@ -192,7 +192,7 @@ while Iteration <= MaxOuterIter
         case 'fmincon'
             %Define current minimization problem
             RegFunctional = regfunctional(RegType,S,L,K,alpha,HuberParam);
-            fminconFunctional = @(P)OBIRFunctional(P,RegFunctional,Subgradient);
+            fminconFunctional = @(P)obirfunctional(P,RegFunctional,Subgradient);
             fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
             %Run minimzation
             P =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
@@ -253,7 +253,7 @@ P = P/sum(P)/mean(diff(r));
 
 end
 
-function [Functional,Gradient] = OBIRFunctional(P,RegFunctional,Subgradient)
+function [Functional,Gradient] = obirfunctional(P,RegFunctional,Subgradient)
 [FunctionalPart,GradientPart] =  RegFunctional(P);
 Functional = FunctionalPart + dot(P,Subgradient);
 Gradient = GradientPart + Subgradient;
