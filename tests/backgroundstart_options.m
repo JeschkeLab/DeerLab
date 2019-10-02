@@ -19,6 +19,11 @@ lambdaoriginal = 0.5;
 FormFactor = (1 - lambdaoriginal) + lambdaoriginal*dipevo;
 S = FormFactor.*bckg;
 
+%Check whether control statements on too smal start/end values work
+backgroundstart(S,t,@td_exp,'RelSearchStart',0.00001,'RelSearchEnd',0.00005);
+%Check other options
+backgroundstart(S,t,@td_exp,'EndCutoffPos',10);
+
 FitStartTime = backgroundstart(S,t,@td_exp,'RelSearchStart',0.05,'RelSearchEnd',0.8);
 [Bfit] = fitbackground(S,t,@td_exp,FitStartTime);
 

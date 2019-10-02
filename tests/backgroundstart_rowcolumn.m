@@ -10,28 +10,25 @@ dt = 0.016;
 t = linspace(0,N*dt,N);
 %Construct some dipolar evolution function 
 r = time2dist(t);
-dipevo = dipolarkernel(t,r)*rd_onegaussian(r,[3,0.5]);
+P = rd_onegaussian(r,[3,0.5]);
 %Construct background
-bckg = exp(-k*t).';
+B = exp(-k*t).';
 lam0 = 0.5;
 %Account modulation depth for the offset=1
-S = (1 - lam0) + lam0*dipevo;
-S = S.*bckg;
+S = dipolarsignal(t,r,P,'background',B,'moddepth',lam0);
 
-%us
-tstart1 = backgroundstart(S,t,@td_exp);
-%ns
-t = t*1000;
-tstart2 = backgroundstart(S,t,@td_exp);
+tstart1 =  backgroundstart(S,t,@td_poly1);
+tstart2 =  backgroundstart(S,t.',@td_poly1);
 
-%Check for errors
-err = abs(tstart1 - tstart2)>1e-10;
-maxerr = max(abs(tstart1 - tstart2));
+tstart3 =  backgroundstart(S,t,@td_poly1);
+tstart4 =  backgroundstart(S.',t,@td_poly1);
+
+
+err(1) = abs(tstart1 - tstart2)>1e-10;
+err(2) = abs(tstart3 - tstart4)>1e-10;
+err = any(err);
 data = [];
+maxerr = abs(tstart1 - tstart2);
 
-if opt.Display
-    figure(8),clf
-    plot(t,bckg,t,Bfit)
-end
 
 end

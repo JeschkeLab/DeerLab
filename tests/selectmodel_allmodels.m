@@ -3,7 +3,7 @@ function [err,data,maxerr] = test(opt,olddata)
 %Test if selectmethod can identify that the optimal method is a two
 %gaussian model as given as the input signal
 
-Dimension = 200;
+Dimension = 100;
 dt = 0.016;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
@@ -15,12 +15,11 @@ DipEvoFcn = K*P;
 
 Models = {@rd_onegaussian,@rd_twogaussian,@rd_threegaussian};
 
-[optimum1,metric] = selectmodel(Models,DipEvoFcn,r,K,'aicc');
-optimum2 = selectmodel(Models,DipEvoFcn,r,K,'aic');
-optimum3 = selectmodel(Models,DipEvoFcn,r,K,'bic');
+[optimum,metric] = selectmodel(Models,DipEvoFcn,r,K,{'aic','aicc','bic'});
+[optimum,metric] = selectmodel(Models,DipEvoFcn,r,K,'all');
 
-err(1) = optimum1~=optimum2;
-err(2) = optimum2~=optimum3;
+err(1) = optimum(1)~=optimum(3);
+err(2) = optimum(1)~=optimum(2);
 err = any(err);
 data = [];
 maxerr = [];

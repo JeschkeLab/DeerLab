@@ -65,9 +65,9 @@ logRegParamMin = log10(max([singularValues(end),singularValues(1)*minmax_ratio])
 logRegParamMax = floor(logRegParamMax/logResolution)*logResolution;
 logRegParamMin = ceil(logRegParamMin/logResolution)*logResolution;
 if logRegParamMax < logRegParamMin
-  temp=logRegParamMax;
-  logRegParamMax=logRegParamMin;
-  logRegParamMin=temp;
+  temp = logRegParamMax;
+  logRegParamMax = logRegParamMin;
+  logRegParamMin = temp;
 end
 lgalpha = logRegParamMax:-logResolution:logRegParamMin;
 alpha = 10.^lgalpha;

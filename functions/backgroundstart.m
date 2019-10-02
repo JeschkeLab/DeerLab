@@ -37,7 +37,7 @@ warning('off','all')
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
 %--------------------------------------------------------------------------
-if nargin<2
+if nargin<3
     error('Not enough input arguments.')
 end
 
@@ -80,6 +80,10 @@ if  isempty(EndCutoffPos)
     EndCutoffPos = length(t);
 else
     validateattributes(EndCutoffPos,{'numeric'},{'scalar','nonempty'},mfilename,'EndCutoffPos')
+end
+
+if RelSearchEnd<RelSearchStart
+   error('RelSearchStart option cannot be larger than RelSearchEnd option.') 
 end
 
 %--------------------------------------------------------------------------
