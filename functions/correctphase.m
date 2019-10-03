@@ -1,30 +1,31 @@
 %
 % CORRECTPHASE Phase correction of complex-valued data
 %
-%   Vc = CORRECTPHASE(V)
+%   Vr = CORRECTPHASE(V)
 %   Performs a phase optimization on the complex-valued data (V) by
-%   minimization of the imaginary component of the data. The phase
-%   corrected data (Vc) is returned normalized.
+%   minimization of the imaginary component of the data. The real-part of 
+%   the phase-corrected data (Vr) is returned.
 %
-%   Vc = CORRECTPHASE(V,ph)
+%   Vr = CORRECTPHASE(V,ph)
 %   Corrects the phase of data vector V using user-supplied phase (ph), in
 %   radians.
 %
-%   Vc = CORRECTPHASE(V,ph,true/false)
+%   Vr = CORRECTPHASE(V,ph,true/false)
 %   A third boolean argument can be passed to enable/diasable the fitting
 %   of a possible offset on the imaginary component of the data. Defaults
 %   to false.
 %
-%   [Vc,ph,io] = CORRECTPHASE(V)
-%   Additional output arguments can be requested to return the optimal
-%   phase (ph) and imaginary offset (io) employed for the correction.
+%   [Vr,Vi,ph,io] = CORRECTPHASE(V)
+%   Additional output arguments can be requested to return the imaginary part
+%   (Vi) of the phase corrected data, the optimized phase (ph) and imaginary
+%   offset (io) employed for the correction.
 %
 
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function [Vc,Phase,ImagOffset] = correctphase(V,Phase,fitImagOffset)
+function [Vreal,Vimag,Phase,ImagOffset] = correctphase(V,Phase,fitImagOffset)
 
 %--------------------------------------------------------------------------
 %Input parsing
@@ -78,7 +79,8 @@ end
 
 %Do phase correction and normalize
 Vc = (V - 1i*ImagOffset)*exp(1i*Phase);
-
+Vreal = real(Vc);
+Vimag = imag(Vc);
 end
 
 function ImagNorm = imaginarynorm(params,V)
