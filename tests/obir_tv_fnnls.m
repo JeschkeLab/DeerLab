@@ -22,7 +22,7 @@ S = DipEvoFcn+Noise;
 
 if opt.Display
     figure(8),clf
-    axhandle = plot(r,NaN*P);
+    axhandle = axes();
 else
     axhandle = [];
 end

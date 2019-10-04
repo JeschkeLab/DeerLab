@@ -25,10 +25,11 @@ RegParam = 40;
 
 if opt.Display
     figure(8),clf
-    axhandle = plot(r,NaN*P);
+    axhandle = axes();
 else
     axhandle = [];
 end
+
 
 Result = obir(S,K,r,'tikhonov',RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Axishandle',axhandle);
 RegResult = fitregmodel(S,K,r,'tikhonov',RegParam);

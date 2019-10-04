@@ -62,34 +62,11 @@ if isempty(RegOrder)
 else
     validateattributes(RegOrder,{'numeric'},{'scalar','nonnegative'})
 end
-if isempty(TolFun)
-    TolFun = 1e-10;
-else
-    validateattributes(TolFun,{'numeric'},{'scalar','nonnegative'},mfilename,'TolFun')
-end
-
-if isempty(MaxOuterIter)
-    MaxOuterIter = 5000;
-else
-    validateattributes(MaxOuterIter,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxOuterIter')
-end
 
 if isempty(HuberParam)
     HuberParam = 1.35;
 else
     validateattributes(HuberParam,{'numeric'},{'scalar','nonnegative'},mfilename,'HuberParam')
-end
-
-if isempty(MaxFunEvals)
-    MaxFunEvals = 500000;
-else
-    validateattributes(MaxFunEvals,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxFunEvals')
-end
-
-if isempty(MaxIter)
-    MaxIter = 500000;
-else
-    validateattributes(MaxIter,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxIter')
 end
 
 if isempty(Solver)
@@ -117,11 +94,9 @@ checklengths(S,K);
 if ~isreal(S)
     error('Input signal cannot be complex.')
 end
+
 if nargin<3 || isempty(RegType)
     RegType = 'tikhonov';
-elseif isa(RegType,'function_handle')
-    RegFunctional = RegType;
-    RegType = 'custom';
 else
     validateattributes(RegType,{'char'},{'nonempty'},mfilename,'RegType')
     allowedInput = {'tikhonov','tv','huber'};
@@ -139,18 +114,23 @@ L = regoperator(length(r),RegOrder);
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
 
+if isempty(TolFun)
+    TolFun = 1e-10;
+else
+    validateattributes(TolFun,{'numeric'},{'scalar','nonnegative'},mfilename,'TolFun')
+end
+
 if isempty(MaxOuterIter)
-    MaxOuterIter = 200;
+    MaxOuterIter = 1000;
 else
     validateattributes(MaxOuterIter,{'numeric'},{'scalar','nonempty'},mfilename,'MaxOuterIter')
 end
 
 if isempty(MaxIter)
-    MaxIter = 200000;
+    MaxIter = 500000;
 else
     validateattributes(MaxIter,{'numeric'},{'scalar','nonempty'},mfilename,'MaxIter')
 end
-
 
 if isempty(MaxFunEvals)
     MaxFunEvals = 200000;
@@ -197,23 +177,16 @@ while Iteration <= MaxOuterIter
             %Run minimzation
             P =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         case 'fnnls'
-            
             [Q,KtS] = lsqcomponents(S,r,K,L,alpha,RegType,HuberParam);
             KtS = KtS - Subgradient;
             P = fnnls(Q,KtS,InitialGuess,TolFun);
-            %In some cases, fnnls may return negatives if tolerance is to high
-            if any(P < 0)
-                %... in those cases continue from current solution
-                P = fnnls(Q,KtS,P,1e-20);
-            end
     end
     %Store current convergence curve point
     ConvergenceCurve(Iteration) = std(K*P - S);
     
     %If hook to axes is given, then plot the current P
     if ~isempty(AxisHandle)
-        set(AxisHandle,'YData',P)
-        drawnow
+        plot(AxisHandle,ConvergenceCurve),drawnow
     end
     %Update subgradient at current solution
     Subgradient = Subgradient + K'*(K*P - S);

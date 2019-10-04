@@ -20,11 +20,10 @@ S = DipEvoFcn+Noise;
 
 if opt.Display
     figure(8),clf
-    axhandle = plot(r,NaN*P);
+    axhandle = axes();
 else
     axhandle = [];
 end
-
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
 RegParam = 2;

@@ -53,6 +53,8 @@ switch lower(Method)
         functionHandle = @(Distribution)TikhonovFunctional(Signal,Distribution,RegMatrix,Kernel,RegularizationParameter,weights);
     case 'huber'
         functionHandle = @(Distribution)HuberFunctional(Signal,Distribution,RegMatrix,Kernel,RegularizationParameter,HuberParameter,weights);
+    otherwise
+        functionHandle = Method;
 end
 
 end

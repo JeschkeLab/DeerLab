@@ -23,7 +23,7 @@ OptHuber = 1.35;
 
 if opt.Display
     figure(8),clf
-    axhandle = plot(r,NaN*P);
+    axhandle = axes();
 else
     axhandle = [];
 end

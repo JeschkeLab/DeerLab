@@ -244,7 +244,8 @@ for n = 1:length(Files)
        end
        Missed(isnan(Missed)) = [];
     end
-    MissedEnds = length(strfind(Code,'error')) + length(strfind(Code,'return'));
+    MissedEnds = length(strfind(Code,'error')) + length(strfind(Code,'return')) ...
+        + length(strfind(Code,'break')) + length(strfind(Code,'fprintf')) + length(strfind(Code,'plot'));
     %account for end statement after return command
     if Runnable - Covered <= MissedEnds
         Covered = Runnable;
