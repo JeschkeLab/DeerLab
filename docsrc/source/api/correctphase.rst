@@ -13,11 +13,11 @@ Syntax
 
 .. code-block:: matlab
 
-    Vc = correctphase(V)
-    Vc = correctphase(V,ph)
-	Vc = correctphase(V,[],oc)
-    Vc = correctphase(V,ph,oc)
-    [Vc,ph,io] = correctphase(V)
+    Vr = correctphase(V)
+    Vr = correctphase(V,ph)
+	Vr = correctphase(V,[],oc)
+    Vr = correctphase(V,ph,oc)
+    [Vr,Vi,ph,io] = correctphase(V)
 
 
 Parameters
@@ -25,7 +25,8 @@ Parameters
     *   ``ph`` - Correction phase (scalar)
     *   ``oc`` - Imaginary offset correction (boolean)
 Returns
-    *   ``Vc`` - Phase-corrected signal (N-array)
+    *   ``Vr`` - Real part of the phase-corrected signal (N-array)
+	*   ``Vi`` - Imaginary part of the phase-corrected signal (N-array)
     *   ``ph`` - Correction phase (scalar)
     *   ``io``  - Imaginary offset (scalar)
 
@@ -34,27 +35,27 @@ Description
 
 .. code-block:: matlab
 
-     Vc = correctphase(V)
+     Vr = correctphase(V)
 
-Performs a phase correction of the complex-valued data ``V`` that minimizes the norm of the imaginary component of the data. The phase-corrected data ``Vc`` is returned normalized.
+Performs a phase correction of the complex-valued data ``V`` that minimizes the norm of the imaginary component of the data. The phase-corrected data ``Vr`` is returned normalized.
 
 .. code-block:: matlab
 
-     Vc = correctphase(V,ph)
+     Vr = correctphase(V,ph)
 
 Applied a phase correction with a given phase angle ``ph`` (in radians) to input data vector ``V``.
 
 .. code-block:: matlab
 
-    Vc = correctphase(V,ph,oc)
-	Vc = correctphase(V,[],oc)
+    Vr = correctphase(V,ph,oc)
+	Vr = correctphase(V,[],oc)
 
 A third boolean argument ``oc`` can be passed to enable/diasable the fitting of a possible offset on the imaginary component of the data (defaults to ``false``). This is compatible with both automatic and manual phase correction.
 
 .. code-block:: matlab
 
-    [Vc,ph,io] = correctphase(V)
+    [Vr,Vi,ph,io] = correctphase(V)
 
-Returns, in addition to ``Vc``, the fitted or applied phase angle ``ph`` (in radians), and the fitted imaginary offset ``io``.
+Returns, in addition to ``Vr``, the imaginary-part of the corrected signal ``Vi``, the fitted or applied phase angle ``ph`` (in radians), and the fitted imaginary offset ``io``.
 
 .. image:: ../images/correctphase1.svg
