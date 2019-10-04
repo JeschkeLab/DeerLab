@@ -18,11 +18,14 @@ Noise = 0.02*Noise/Noise(1);
 
 S = S + Noise;
 
-truelevel = std(Noise);
-approxlevel = noiselevel(S);
+try
+    noiselevel(S,1000);
+    err = true;
+catch
+   err = false; 
+end
 
-err = abs(approxlevel - truelevel)>1e-2;
-maxerr = abs(approxlevel - truelevel);
+maxerr = 0;
 data = [];
 
 

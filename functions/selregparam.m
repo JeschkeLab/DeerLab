@@ -73,11 +73,6 @@ end
 if ~iscell(K)
     K = {K};
 end
-if isempty(RegOrder)
-    RegOrder = 2;
-else
-    validateattributes(RegOrder,{'numeric'},{'scalar','nonnegative'})
-end
 if length(K)~=length(S)
     error('The number of kernels and signals must be equal.')
 end
@@ -95,7 +90,7 @@ for i=1:length(S)
         S{i} = S{i}.';
     end
     if ~isreal(S{i})
-        S{i} = real(S{i});
+        S{i} = error('Input signal(s) cannot be complex.');
     end
     if length(S{i})~=size(K{i},1)
         error('K and signal arguments must fulfill size(K,1)==length(S).')
@@ -128,6 +123,12 @@ end
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
 warning('off','all')
+
+if isempty(RegOrder)
+    RegOrder = 2;
+else
+    validateattributes(RegOrder,{'numeric'},{'scalar','nonnegative'})
+end
 
 %Validate nonNegLSQsolTol input
 if isempty(TolFun)
@@ -323,11 +324,7 @@ for MethodIndex = 1:length(SelectionMethod)
             case 'gml' %Generalized Maximum Likelihood (GML)
                 Treshold = 1e-9;
                 for i=1:nPoints
-                    try %Once crushed beacause of eig(NaN)
-                        EigenValues = eig(eye(size(InfluenceMatrix{SIndex,i})) - InfluenceMatrix{SIndex,i});
-                    catch
-                        EigenValues = 0;
-                    end
+                    EigenValues = eig(eye(size(InfluenceMatrix{SIndex,i})) - InfluenceMatrix{SIndex,i});
                     EigenValues(EigenValues < Treshold) = 0;
                     NonZeroEigenvalues = real(EigenValues(EigenValues~=0));
                     Functional(i) = Functional(i) + weights(SIndex)*(S{SIndex}'*(S{SIndex} - K{SIndex}*P{i})/nthroot(prod(NonZeroEigenvalues),length(NonZeroEigenvalues)));
@@ -353,14 +350,15 @@ end
 %If requested refine the grid search in a more precise search
 if Refine
     RefineLength = 10;
+    FineRegParamRange = RegParamRange;
     varargin{end+1} = 'Refine';
     varargin{end+1} =  false;
-    OptIndex = 10;
-    while any(OptIndex == RefineLength) || any(OptIndex == 1)
-        if OptIndex == RefineLength
-            FineRegParamRange = linspace(0.5*OptRegParam(1),2*OptRegParam(1),RefineLength);
-        elseif OptIndex == 1
+    OptIndex = find(RegParamRange == OptRegParam);
+    while true
+        if OptIndex == length(FineRegParamRange)
             FineRegParamRange = linspace(OptRegParam(1),2*OptRegParam(1),RefineLength);
+        elseif OptIndex == 1
+            FineRegParamRange = linspace(0.5*OptRegParam(1),OptRegParam(1),RefineLength);
         else
             FineRegParamRange = linspace(0.5*OptRegParam(1),2*OptRegParam(1),RefineLength);
         end
@@ -373,6 +371,9 @@ if Refine
         RegParamRange = [RegParamRange FineRegParamRange];
         OptIndex = find(FineRegParamRange == RefinedOptRegParam(1));
         OptRegParam  = RefinedOptRegParam;
+        if ~any(OptIndex == RefineLength) || ~any(OptIndex == 1)
+            break;
+        end
     end
 end
 

@@ -15,7 +15,6 @@ r = linspace(0.5,7,100); % nm
 % Pre-processing
 %----------------------------------------------
 V = correctphase(Vraw);
-V = real(V);
 t = correctzerotime(V,traw);
 V = correctscale(V,t);
 

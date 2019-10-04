@@ -6,7 +6,7 @@ function [err,data] = test(opt,olddata)
 
 metricNames = {'overlap','determination','chebyshev','cosine',...
     'correlation','chi','bregman','mad','msd','rmsd', 'nrmsd',...
-    'hellinger','euclidean', 'bhattacharyya','tv'};
+    'hellinger','euclidean', 'braycurtis','bhattacharyya','tv'};
 
 rng(2)
 trial = rand(20,1);
@@ -16,9 +16,11 @@ truth = trial;
 for i=1:length(metricNames)
 values(i) = metrics(trial,truth,metricNames{i});
 end
+values2 = metrics(trial,truth);
 
 err(1)  = any(values>1e-7);
 err(2)  = any(~isreal(values));
+err(3) = ~isstruct(values2);
 err = any(err);
 
 data = [];

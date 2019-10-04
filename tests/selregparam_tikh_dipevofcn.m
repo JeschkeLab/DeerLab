@@ -4,16 +4,16 @@ function [err,data,maxerr] = test(opt,olddata)
 % Check regparamrange.m
 %=======================================
 
-Dimension = 100;
+N = 100;
 dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
+t = linspace(0,dt*N,N);
 r = time2dist(t);
 P = rd_onegaussian(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
 
-[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,r,'tikhonov',{'aic','gml','gcv'});
+[OptParam,Functionals,RegParams] = selregparam(S,K,r,'tikhonov',{'aic','gml','gcv'});
 %Accept testif all values are the same (should be as there is no noise)
 err(1) = any(diff(OptParam) > 1e-2);
 err = any(err);

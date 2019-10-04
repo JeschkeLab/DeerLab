@@ -64,14 +64,16 @@ end
 
 %Remove the Lower and Upper options from varargin so they are not passed to fitparamodel
 varargin2 = [];
-Idx = find(cellfun(@(x)(ischar(x) && contains(x,'Upper')),varargin));
+Idx = find(cellfun(@(x)(ischar(x) && contains(lower(x),'upper')),varargin));
 varargin2 = [varargin2 varargin(Idx:Idx+1)];
 varargin(Idx:Idx+1) = [];
-Idx = find(cellfun(@(x)(ischar(x) && contains(x,'Lower')),varargin));
+Idx = find(cellfun(@(x)(ischar(x) && contains(lower(x),'lower')),varargin));
 varargin2 = [varargin2 varargin(Idx:Idx+1)];
 varargin(Idx:Idx+1) = [];
 if ~isempty(varargin)
-varargin = varargin{1};
+    if length(varargin)==1 && iscell(varargin{1})
+        varargin = varargin{1};
+    end
 end
 
 warning('off','DA:parseoptional')

@@ -70,7 +70,6 @@ axis tight
 % Validation function
 %----------------------------------------------
 function Pfit = myvalidation(valpar,V,t,r)
-
 tstart = valpar.tstart;
 %Fit background
 [B,lambda] = fitbackground(V,t,@td_strexp,tstart);
@@ -79,5 +78,4 @@ KB = dipolarkernel(t,r,lambda,B);
 method = valpar.selmethod;
 %Run fitting
 Pfit = fitregmodel(V,KB,r,'tikhonov',method);
-
 end

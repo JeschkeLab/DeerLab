@@ -8,23 +8,24 @@ clear,clc,clf
 
 %Preparation
 %----------------------------------------------
-N = 100;
-t = linspace(-0.3,2,N);
+N = 500;
+t = linspace(-0.3,4,N);
 r = time2dist(t);
 lambda = 0.45;
 P = rd_twogaussian(r,[2.5 0.3 4 0.2 0.4]);
-
+load('exampleDistribution1')
+P = Pfit1;
 %Generate 4-pulse DEER signal
-V0 = dipolarsignal(t,r,P,'moddepth',lambda,'noiselevel',0.02);
+V0 = dipolarsignal(t,r,P,'moddepth',lambda,'noiselevel',0.01);
 
 %Generate 5-pulse DEER signal
 tshift = max(t/2); %Time shift of the artefact
 Amp = 0.4; %Relative amplitude of the artefact
-V = dipolarsignal(t,r,P,'moddepth',lambda,'FivePulseCoeff',[Amp tshift],'noiselevel',0.02);
+V = dipolarsignal(t,r,P,'moddepth',lambda,'FivePulseCoeff',[Amp tshift],'noiselevel',0.01);
 
 %Set initial guesses for the relative artefact amplitude and mod. depth
 lambda0 = 0.3;
-amp0 = 0.2;
+amp0 = 0.5;
 param0 = [0.3 amp0];
 
 %Fitting 4-pulse DEER 

@@ -11,10 +11,8 @@ S = K*P;
 Models = {@rd_onegaussian,@rd_twogaussian,@rd_threegaussian};
 
 %nm
-[optimum1,metric1] = selectmodel(Models,S,r,K,'aicc');
-%A
-r = 10*time2dist(t);
-[optimum2,metric2] = selectmodel(Models,S,r,K,'aicc');
+[optimum1,metric1] = selectmodel(Models,S,r,K,'aicc','CostModel','chisquare');
+[optimum2,metric2] = selectmodel(Models,S,r,K,'aicc','CostModel','lsq');
 
 err = optimum1~=optimum2;
 data = [];

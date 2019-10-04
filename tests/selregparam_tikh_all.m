@@ -14,10 +14,12 @@ P = P/sum(P);
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
-OptParam2 = selregparam(DipEvoFcn,K,r,'tikhonov','all','NonNegConstrained',false,'NoiseLevel',0.05);
+OptParam1 = selregparam(DipEvoFcn,K,r,'tikhonov','all','NonNegConstrained',false,'NoiseLevel',0.05);
+OptParam2 = selregparam(DipEvoFcn,K,r,'tikhonov',{'all'},'NonNegConstrained',false,'NoiseLevel',0.05);
 
 %Accept testif all values are the same (should be as there is no noise)
-err = length(OptParam2)~=15;
+err(1) = length(OptParam2)~=15;
+err(2) = length(OptParam1)~=15;
 data = [];
 
 
