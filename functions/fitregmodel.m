@@ -223,11 +223,14 @@ switch lower(Solver)
         P = lsqnonneg(Q,KtS,solverOpts);
 
     case 'fnnls'
-        P = fnnls(Q,KtS,InitialGuess,TolFun,Verbose);
+        [P,~,~,flag] = fnnls(Q,KtS,InitialGuess,TolFun,Verbose);
         %In some cases, fnnls may return negatives if tolerance is to high
-        if any(P < 0)
+        if flag==-1
             %... in those cases continue from current solution
-            P = fnnls(Q,KtS,P,1e-20);
+            [P,~,~,flag] = fnnls(Q,KtS,P,1e-20);
+        end
+        if flag==-2
+            warning('FNNLS cannot solve the problem. Regularization parameter may be too large.')
         end
     case 'bppnnls'
         P = nnls_bpp(Q,KtS,Q\KtS);

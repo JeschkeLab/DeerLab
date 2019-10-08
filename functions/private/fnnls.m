@@ -19,7 +19,7 @@
 % The algorithm FNNLS is based on is from
 %   Lawson and Hanson, "Solving Least Squares Problems", Prentice-Hall, 1974.
 
-function [x,w,passive] = fnnls(AtA,Atb,x0,tol,verbose)
+function [x,w,passive,flag] = fnnls(AtA,Atb,x0,tol,verbose)
 
 if nargin<5 || isempty(verbose)
     verbose = 'off';
@@ -62,7 +62,7 @@ while any(w>tol) && any(~passive)
     [~,t] = max(w);
     passive(t) = true;
     iIteration = 0;
-
+    
     % Solve unconstrained problem for new augmented positive set.
     % This gives a candidate solution with potentially new negative variables.
     x_ = zeros(N,1);
@@ -93,15 +93,23 @@ while any(w>tol) && any(~passive)
     end
     if count > 5
         unsolvable = true;
-        break; 
+        break;
     end
     x = x_;
-
+    
     w = Atb - AtA*x;
     w(passive) = -inf;
     if strcmp(verbose,'iter-detailed')
         fprintf('%10i%15i%20.4e\n',outIteration,iIteration,max(w))
     end
+end
+
+if unsolvable
+    flag = -2;
+elseif any(~passive)
+    flag = 1;
+elseif w>tol
+    flag = -1;
 end
 
 if strcmp(verbose,'final') || strcmp(verbose,'iter-detailed')
