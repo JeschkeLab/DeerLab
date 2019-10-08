@@ -78,7 +78,7 @@ switch lower(RegType)
                 localP = localP + weights(i)*localQ\K{i}.'*S{i};
             end
             %Normalize distribution by its integral to stabilize convergence
-            localP = localP/sum(abs(localP))/0.0099;
+            localP = localP/sum(abs(localP))/mean(diff(r));
             %Monitor largest changes in the distribution
             change = max(localP - prev);    
                         
@@ -103,7 +103,7 @@ switch lower(RegType)
                 localP = localP + weights(i)*localQ\K{i}.'*S{i};
             end
             %Normalize distribution by its integral to stabilize convergence
-            localP = localP/sum(abs(localP));
+            localP = localP/sum(abs(localP))/mean(diff(r));
             %Monitor largest changes in the distribution
             change = max(localP - prev);
             %Stop if result is stable
