@@ -1,8 +1,4 @@
 # Configuration file for the Sphinx documentation builder.
-#import os
-#import sys
-#sys.path.insert(0, os.path.abspath('./venv/Lib/site-packages/sphinxcontrib_matlabdomain-0.8.0.dist-info'))
-
 # -- Project information -----------------------------------------------------
 
 import sys
@@ -11,18 +7,18 @@ import re
 
 sys.path.append(os.path.abspath('..'))
 
-#Import RTD theme
+# Import Read-the-Docs (RTD) theme
 from sphinx.locale import _
 from sphinx_rtd_theme import __version__
 
-#Project details
+# Project details
 project = 'DeerAnalysis2'
 copyright = '2019, Luis Fabregas Ibanez'
 author = 'Fabregas Ibanez'
 language = 'en'
 release = '2019'
 
-#Add sphinx extensions
+# Add sphinx extensions
 extensions = [
     'sphinx.ext.intersphinx',
     'sphinxcontrib.matlab',
@@ -31,12 +27,12 @@ extensions = [
     'sphinx.ext.imgmath',
 ]
 
-#Render Latex math equations as svg instead of rendering with JavaScript
+# Render Latex math equations as svg instead of rendering with JavaScript
 imgmath_image_format = 'svg'
 imgmath_dvisvgm = 'dvisvgm'
 
 
-#Setup template stuff
+# Setup template stuff
 templates_path = ['_templates']
 source_suffix = '.rst'
 exclude_patterns = []
@@ -48,6 +44,9 @@ intersphinx_mapping = {
     'sphinx': ('http://www.sphinx-doc.org/en/stable/', None),
 }
 html_theme = 'sphinx_rtd_theme'
+
+# Integrate version control system
+# -------------------------------------------------------------
 html_context = {
     "display_bitbucket": True, # Integrate Bitbucket
     "bitbucket_user": "luisfabib", # Username
@@ -56,6 +55,9 @@ html_context = {
     "conf_py_path": "/source/", # Path in the checkout to the docs root
 }
 
+
+# Read-the-Docs options configuration
+# -------------------------------------------------------------
 html_theme_options = {
 	'sticky_navigation': False,
     'titles_only': True,
@@ -67,16 +69,6 @@ html_theme_path = ["../.."]
 html_logo = "demo/static/logo-wordmark-light.svg"
 html_show_sourcelink = True
 html_favicon = 'favicon.ico'
-#htmlhelp_basename = slug
-#latex_documents = [
-#  ('index', '{0}.tex'.format(slug), project, author, 'manual'),
-#]
-#man_pages = [
-#    ('index', slug, project, [author], 1)
-#]
-#texinfo_documents = [
-#  ('index', slug, project, author, slug, project, 'Miscellaneous'),
-#
 
 # Extensions to theme docs
 def setup(app):
@@ -108,8 +100,7 @@ def setup(app):
 # These folders are copied to the documentation's HTML output
 html_static_path = ['_static']
 
-# These paths are either relative to html_static_path
-# or fully qualified paths (eg. https://...)
+# Add path to custom CSS file to overwrite some of the default CSS settings
 html_css_files = [
     'custom.css',
 ]	
@@ -132,12 +123,16 @@ primary_domain = 'mat'
 html_logo = '../source/logo.png'
 
 
-#Design pygments patch for MATLAB true code highlighting
+# Design pygments patch for MATLAB true code highlighting
+# --------------------------------------------------------
+
+# Import the pygments python library
 from pygments.style import Style
 from pygments.token import Text, Other, Comment, Whitespace
 from pygments.style import Style
 from pygments.token import Keyword, Name, Comment, String, Error, Number, Operator, Generic
 
+# Define custom style for the MATLAB highlighting
 class MyFancyStyle(Style):
     background_color = "#ECEBEB"
     default_style = ""
@@ -149,6 +144,8 @@ class MyFancyStyle(Style):
         Name.Class:             '#000',
         String:                 '#CC00FF'
     }
+	
+# Create patch for applying the style 	
 def pygments_monkeypatch_style(mod_name, cls):
     import sys
     import pygments.styles

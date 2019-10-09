@@ -28,7 +28,7 @@ pmodel = [ra wa rb wb];
 % Generate set of DEER traces for different ligand concentrations
 for i = 1:nDataSets
     P = rd_twogaussian(r,[pmodel b(i)]);
-    V{i} = dipolarsignal(t,r,P,'ModDepth',1,'noiselevel',0.02);
+    V{i} = dipolarsignal(t,r,P,'ModDepth',1,'noiselevel',0.05);
 end
 K = dipolarkernel(t,r);
 [Ks{1:nDataSets}] = deal(K);
@@ -53,6 +53,11 @@ if mean(diff(bfit))<0
     bfit = tmp;
 end
 
+for i=1:nDataSets
+    Pfit{i} = rd_twogaussian(r,[pfit(nDataSets+1:end) pfit(i)]);
+    Vfit{i} = Ks{i}*Pfit{i};
+end
+
 %Fit the dissociation constant to the fitted molar fractions
 Kbfit = fminsearch(@(Kb)norm(Kb*Ctot*bfit.^2 -(Kb*L+Kb*Ctot+1).*bfit + Kb*L)^2,1);
 KDfit = 1/Kbfit;
@@ -69,13 +74,19 @@ end
 a = 1-b;
 
 %Plots
-subplot(121)
-plot(t,cell2mat(V)+(0:nDataSets-1))
+subplot(221)
+plot(t,cell2mat(V)+(0:nDataSets-1),'k.',t,cell2mat(Vfit)+(0:nDataSets-1),'r','LineWidth',1.5)
 axis tight,grid on
 xlabel('time [\mus]'),ylabel('V_i(t)')
-subplot(122)
-plot(log(L),bfit,'bo',log(L),afit,'ro',log(Lfine),b,'b',log(Lfine),a,'r','LineWidth',1)
+legend('Data','Fit')
+subplot(222)
+plot(t,cell2mat(Pfit)+(0:nDataSets-1),'k','LineWidth',1.5)
+axis tight,grid on
+xlabel('distance [nm]'),ylabel('P_i(r)')
+legend('Fit')
+subplot(2,2,[3 4])
+plot(log(L),bfit,'b.',log(L),afit,'r.',log(Lfine),b,'b',log(Lfine),a,'r','LineWidth',1.5,'MarkerSize',25)
 axis tight,grid on
 xlabel('log(Ligand conc.)'),ylabel('Molar fraction')
 title(sprintf('K_D = %.2f/%.2f',KDfit,KD))
-
+legend('#1 Exp.','#2 Exp.','#1 Fit','#2 Fit')
