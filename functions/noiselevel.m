@@ -32,7 +32,15 @@ if M>N
 end
 
 %Extract the piece of signal to estimate
-Cutoff = S(ceil(N-M):N);
+idx = ceil(N-M):N;
+idx = idx.';
+Cutoff = S(idx);
+
+%Fit a line to remove possible oscillation fragment
+opts = optimset('MaxFunEvals',50000, 'MaxIter',10000);
+lineparam = fminsearch(@(x)norm(x(1) + x(2)*idx  - Cutoff)^2,rand(2,1),opts);
+linearfit = lineparam(1)+ lineparam(2)*idx;
+Cutoff = Cutoff - linearfit;
 
 %Estimate the noise level
 Cutoff = Cutoff - mean(Cutoff);
