@@ -5,7 +5,7 @@ of the API (the contents of functions/), documentation source (docsrc/), and exa
 > Copyright (c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke,
 > and other contributors:
 >
-> https://github.com/luisfabib/DeerAnalysis/contributors
+> https://github.com/luisfabib/DeerAnalysis2/contributors
 >
 > Permission is hereby granted, free of charge, to any person obtaining
 > a copy of this software and associated documentation files (the
