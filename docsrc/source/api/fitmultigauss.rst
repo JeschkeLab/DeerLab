@@ -14,8 +14,8 @@ Syntax
 .. code-block:: matlab
 
     P = fitmultigauss(S,K,r,Ngauss)
-    [P,param,Nopt,metrics,Peval] = fitmultigauss(S,K,r,Ngauss)
-    [P,param,Nopt,metrics,Peval] = fitmultigauss(S,K,r,Ngauss,'Property',Value)
+    P = fitmultigauss(S,K,r,Ngauss,metric)
+    [P,param,Nopt,metrics,Peval] = fitmultigauss(S,K,r,Ngauss,metric,'Property',Value)
 
 
 Parameters
@@ -23,6 +23,7 @@ Parameters
     *   ``K`` -  Dipolar kernel (NxM-array)
     *   ``r`` -  Distance Axis (N-array)
     *   ``Ngauss`` - Maximum number of Gaussians (scalar)
+	*	``metric`` - Metric for model selection (string)
 Returns
     *  ``P`` - Distance Distribution (M-array)
     *  ``param`` - Fitted model parameters (array)
@@ -38,6 +39,16 @@ Description
         P = fitmultigauss(S,K,r,Ngauss)
 
 Fits the dipolar signal ``S`` to a distance distribution ``P`` using a multi-gauss parametric model according to the dipolar kernel ``K`` and distance axis ``r``. The function chooses the optimal number of Gaussian distributions up to a maximum number given by ``Ngauss`` by means of the corrected Aikaike information criterion (AICC).
+
+.. code-block:: matlab
+
+        P = fitmultigauss(S,K,r,Ngauss,metric)
+
+The metric employed for the selection of the optimal multigauss model can be specified as an additional input ``metric``. The accepted inputs are:
+
+	*   ``'aic'`` - Akaike information criterion
+	*   ``'aicc'`` - Corrected Akaike information criterion
+	*   ``'bic'`` - Bayesian information criterion
 
 .. code-block:: matlab
 
