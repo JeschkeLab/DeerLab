@@ -20,7 +20,7 @@
 function out = datest(TestName,params)
 
 % Check whether DeerAnalysis is on the Matlab path
-DeerAnalysisPath = fileparts(which('DeerAnalysis'));
+DeerAnalysisPath = fileparts(which('datest'));
 if isempty(DeerAnalysisPath)
   error('DeerAnalysis is not on the Matlab path!');
 end
@@ -55,7 +55,7 @@ else
 end
 
 %Look for test in the \tests directory of DeerAnalysis
-FileList = dir(fullfile(DeerAnalysisPath,'tests',FileMask));
+FileList = dir(fullfile(DeerAnalysisPath,FileMask));
 
 if numel(FileList)==0
   error('No test functions matching the pattern %s',FileMask);
