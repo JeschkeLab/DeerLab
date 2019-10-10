@@ -1,3 +1,10 @@
+
+<a name="logo"/>
+<div align="center">
+<img src="./docsrc/source/favicon.png" alt="DeerAnalysis Logo" width="180" height="180"></img>
+</a>
+</div>
+
 # DeerAnalysis2
 
 <a href="https://github.com/luisfabib/DeerAnalysis2/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/luisfabib/DeerAnalysis2"></a>
