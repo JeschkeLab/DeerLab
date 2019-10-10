@@ -110,6 +110,8 @@ elseif any(~passive)
     flag = 1;
 elseif w>tol
     flag = -1;
+else
+    flag = 0;
 end
 
 if strcmp(verbose,'final') || strcmp(verbose,'iter-detailed')
