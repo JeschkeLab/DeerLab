@@ -1,7 +1,6 @@
 
 <a name="logo"/>
-<div align="center">
-<img src="./docsrc/source/favicon.png" alt="DeerAnalysis Logo" width="180" height="180"></img>
+<img src="./docsrc/source/favicon.png" alt="DeerAnalysis Logo" width="100" height="100"></img>
 </a>
 </div>
 
