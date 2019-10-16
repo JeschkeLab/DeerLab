@@ -34,8 +34,11 @@ end
 if ~iscolumn(V)
     V = V.';
 end
+if any(t<0)
+   t = t + abs(min(t)); 
+end
 validateattributes(V,{'numeric'},{'2d'},mfilename,'S')
-validateattributes(t,{'numeric'},{'nonnegative','nonempty'},mfilename,'t')
+validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t')
 
 %Convert time step to microseconds if given in nanoseconds
 usesNanoseconds = mean(diff(t))>=0.5;
