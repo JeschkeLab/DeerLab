@@ -11,7 +11,7 @@ P = rd_threegaussian(r,InputParam);
 B = td_exp(t,0.55);
 V = dipolarsignal(t,r,P,'moddepth',0.5,'background',B);
 
-[FitP,fitp] = fitmultigauss(V,t,r,5,'aicc','background',@td_exp);
+[FitP,fitp] = fitmultigauss(V,t,r,5,'aicc','background',@td_exp,'Upper',[6 1 0.9 1],'Lower',[1 0.1 0.2 0.01]);
 err = any(abs(FitP - P)>8e-1);
 
 

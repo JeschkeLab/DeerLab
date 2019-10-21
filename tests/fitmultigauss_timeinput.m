@@ -23,7 +23,7 @@ if opt.Display
    subplot(121)
    hold on
    plot(t,V,'b')
-   K = dipolarkernel(t,r,fitp(end-1),td_exp(t,fitp(end)));
+   K = dipolarkernel(t,r);
    plot(t,K*FitP,'r')
    subplot(122)
    hold on

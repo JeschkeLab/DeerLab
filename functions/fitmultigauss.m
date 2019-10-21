@@ -20,10 +20,10 @@
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 %
-%   'Lower' - Array [<r>_min FWHM_min] containing the lower bound for the 
+%   'Lower' - Array [<r>_min FWHM_min] containing the lower bound for the
 %   FWHM and mean distance of all the Gaussians.
 %
-%   'Upper' -  Array [<r>_max FWHM_max] containing the upper bound values 
+%   'Upper' -  Array [<r>_max FWHM_max] containing the upper bound values
 %   for the FWHM and mean distance of all the Gaussians.
 %
 %   See "help fitparamodel" for a detailed list of other property-value pairs
@@ -45,19 +45,22 @@ if nargin<5
     method = 'aicc';
 end
 if ~all(size(K) > 1)
-   t = K;
-   K = dipolarkernel(t,r);
+    t = K;
+    K = dipolarkernel(t,r);
 end
 warning('off','DA:parseoptional')
 %Parse the optional parameters in the varargin
 [Upper,Lower,BckgModel] = parseoptional({'Upper','Lower','Background'},varargin);
 warning('on','DA:parseoptional')
-if isempty(Upper)
-elseif ~isempty(Upper) && length(Upper)~=2
+if ~isempty(Upper) && isempty(BckgModel) && length(Upper)~=2
     error('Upper property must be an array [<r>_max FWHM_max]')
+elseif ~isempty(Upper) && ~isempty(BckgModel) && length(Upper)<4
+    error('Upper property must be an array [<r>_max FWHM_max lambda_max Bparam_max]')
 end
-if ~isempty(Lower) && length(Lower)~=2
+if ~isempty(Lower) && isempty(BckgModel)  && length(Lower)~=2
     error('Lower property must be an array [<r>_min FWHM_min]')
+elseif ~isempty(Upper) && ~isempty(BckgModel) && length(Lower)<4
+    error('Lower property must be an array [<r>_min FWHM_min lambda_min Bparam_min]')
 end
 if ~isempty(BckgModel) && ~exist('t','var')
     error('Time axis must be provided for a time-domain fit.')
@@ -95,14 +98,23 @@ if ~isempty(Upper) || ~isempty(Lower)
             boundary(FWHMidx) = Upper(2); %FWHM upper bound
             boundary(Distidx) = Upper(1); %Mean distaces upper bound
             boundary(~(Distidx | FWHMidx)) = 1; %Amplitudes upper bound
+            if numel(Upper)>2
+                boundary(numel(boundary)+1) = Upper(3); %Modulation depth upper bound
+                boundary(numel(boundary)+1:numel(boundary) + numel(Upper(4:end))) = Upper(4:end); %Background upper bound
+            end
             UpperBounds{i} = boundary;
         else
             UpperBounds = [];
         end
+        boundary = zeros(1,info.nparam);
         if ~isempty(Lower)
             boundary(FWHMidx) = Lower(2); %FWHM lower bound
             boundary(Distidx) = Lower(1); %Mean distaces lower bound
             boundary(~(Distidx | FWHMidx)) = 0; %Amplitudes lower bound
+            if numel(Lower)>2
+                boundary(numel(boundary)+1) = Lower(3); %Modulation depth lower bound
+                boundary(numel(boundary)+1:numel(boundary) + numel(Lower(4:end))) = Lower(4:end); %Background upper bound
+            end
             LowerBounds{i} = boundary;
         else
             LowerBounds = [];
@@ -116,34 +128,63 @@ end
 
 
 if ~isempty(BckgModel)
+    if isempty(LowerBounds)
+        for i=1:maxGaussians
+            info = multiGaussModels{i}();
+            range = [info.parameters(:).range];
+            Plower = range(1:2:end-1);
+            infoB = BckgModel();
+            range = [infoB.parameters(:).range];
+            Blower = range(1:2:end-1);
+            LowerBounds{i} = [Plower 0 Blower];
+            
+        end
+    end
+    if isempty(UpperBounds)
+        for i=1:maxGaussians
+            info = multiGaussModels{i}();
+            range = [info.parameters(:).range];
+            Pupper = range(2:2:end);
+            infoB = BckgModel();
+            range = [infoB.parameters(:).range];
+            Bupper = range(2:2:end);
+            UpperBounds{i} = [Pupper 0 Bupper];
+        end
+    end
     for i=1:maxGaussians
         DistModel = multiGaussModels{i};
         info = DistModel();
         Nparam = info.nparam;
         Pparam = [info.parameters(:).default];
-        info = BckgModel();
-        Bparam = [info.parameters(:).default];
+        infoB = BckgModel();
+        Bparam = [infoB.parameters(:).default];
+        range = [infoB.parameters(:).range];
+        Blower = range(1:2:end-1);
+        Bupper = range(2:2:end);
         timeMultiGaussModels{i} = @(t,param) (1-param(Nparam+1) + param(Nparam+1)*dipolarkernel(t,r)*DistModel(r,param(1:Nparam)) ).*BckgModel(t,param(Nparam+2:end));
         param0{i} = [Pparam 0.5 Bparam];
-    end   
+    end
 end
 
 % Run fitting and model selection to see which multi-Gauss model is optimal
 if ~isempty(BckgModel)
-[nGaussOpt,metrics,fitparams] = selectmodel(timeMultiGaussModels,S,t,method,param0,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
+    [nGaussOpt,metrics,fitparams] = selectmodel(timeMultiGaussModels,S,t,method,param0,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
 else
-[nGaussOpt,metrics,fitparams] = selectmodel(multiGaussModels,S,r,K,method,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
+    [nGaussOpt,metrics,fitparams] = selectmodel(multiGaussModels,S,r,K,method,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
 end
 
 % Calculate the distance distribution for the optimal multi-Gauss model
 param = fitparams{nGaussOpt};
 optModel = multiGaussModels{nGaussOpt};
-Pfit = optModel(r,param);
+info = optModel();
+Pfit = optModel(r,param(1:info.nparam));
 
 if nargout>4
     Peval = zeros(maxGaussians,numel(r));
     for i=1:maxGaussians
-        Peval(i,:) = multiGaussModels{i}(r,fitparams{i});
+        info = multiGaussModels{i}();
+        p = fitparams{i};
+        Peval(i,:) = multiGaussModels{i}(r,p(1:info.nparam));
     end
 end
 
