@@ -3,11 +3,15 @@ function docs(pagename)
 DApath = fileparts(which('docs'));
 DApath = DApath(1:end-numel('\functions'));
 HTMLfile = fullfile(DApath,'docs\api',[pagename '.html']);
+HTMLfile2 = fullfile(DApath,'docs\models',[pagename '.html']);
 
 %Check whether file exists
 if exist(HTMLfile,'file')
     %Then open the corresponding HMLT file using the MATLAB browser
     web(HTMLfile)
+elseif exist(HTMLfile2,'file')
+    %Then open the corresponding HMLT file using the MATLAB browser
+    web(HTMLfile2)
 else
     %get path to DeerAnalysis functions folder
     path = fileparts(which('datest'));
