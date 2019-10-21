@@ -81,6 +81,11 @@ end
 Vc = (V - 1i*ImagOffset)*exp(1i*Phase);
 Vreal = real(Vc);
 Vimag = imag(Vc);
+
+if ~iscolumn(Vreal)
+    Vreal = Vreal.';
+end
+
 end
 
 function ImagNorm = imaginarynorm(params,V)
