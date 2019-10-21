@@ -36,14 +36,39 @@
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function [optima,functionals,fitparams] = selectmodel(Models,S,r,K,Methods,param0,varargin)
+function [optima,functionals,fitparams] = selectmodel(Models,S,ax,K,Methods,param0,varargin)
 
-if nargin<5
-   error('At least five input arguments required.') 
+if nargin<4
+   error('At least four input arguments required.') 
 end
 
-if nargin<6
+isTimeDomain = false;
+
+%Input: selectmodel(Models,S,r,K,Methods)
+if ~ischar(K) && nargin<6
     param0(1:length(Models)) = {[]};
+%Input: selectmodel(Models,S,t,Methods)
+elseif ischar(K) && nargin<5
+    param0(1:length(Models)) = {[]};
+    Methods = K;
+    K = [];
+    isTimeDomain = true;
+%Input: selectmodel(Models,S,t,Methods,'options',arg)
+elseif ischar(K) && ischar(Methods)   
+    varargin = [{Methods} {param0} varargin];
+    param0 = {};
+    param0(1:length(Models)) = {[]};
+    Methods = K;
+    K = [];
+    isTimeDomain = true;
+%Input: selectmodel(Models,S,t,Methods,param0,'options',arg)
+elseif ischar(K) && ~ischar(Methods)   
+    varargin = [{param0} varargin];
+    param0 = Methods;
+    Methods = K;
+    K = [];
+    isTimeDomain = true;
+%Input: selectmodel(Models,S,r,K,Methods,'options',arg)
 elseif ischar(param0)
     varargin = [{param0} varargin];
     param0 = {};
@@ -108,8 +133,10 @@ for i = 1:length(Methods)
 end
 
 % Convert distance axis to nanometers if given in Angstrom
-if ~isnanometer(r)
-    r = r/10; % A -> nm
+if ~isTimeDomain && ~isnanometer(ax)
+    ax = ax/10; % A -> nm
+elseif isTimeDomain && mean(diff(ax))>=0.5
+    ax = round(ax)/1000; % ns->us
 end
 
 % Run all parametric model fits and evaluate selection metrics
@@ -122,12 +149,20 @@ AIC = zeros(nMethods,1);
 fitparams = cell(nMethods,1);
 for i = 1:length(Models)
     
-    [paramfit,Pfit] = fitparamodel(S,Models{i},r,K,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
+    if isTimeDomain
+        [paramfit,Fit] = fitparamodel(S,Models{i},ax,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
+    else
+        [paramfit,Fit] = fitparamodel(S,Models{i},ax,K,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
+    end
     fitparams{i} = paramfit;
     
     nParams = numel(paramfit);
     Q = nParams + 1;
-    SSR = sum((S(:)-K*Pfit(:)).^2);
+    if isTimeDomain
+        SSR = sum((S(:)-Fit(:)).^2);
+    else
+        SSR = sum((S(:)-K*Fit(:)).^2);
+    end
     AIC(i) =  N*log(SSR/N) + 2*Q;
     AICc(i) = N*log(SSR/N) + 2*Q + 2*Q*(Q+1)/(N-Q-1);
     BIC(i) =  N*log(SSR/N) + Q*log(N);

@@ -44,10 +44,13 @@ end
 if nargin<5
     method = 'aicc';
 end
-
+if ~all(size(K) > 1)
+   t = K;
+   K = dipolarkernel(t,r);
+end
 warning('off','DA:parseoptional')
 %Parse the optional parameters in the varargin
-[Upper,Lower] = parseoptional({'Upper','Lower'},varargin);
+[Upper,Lower,BckgModel] = parseoptional({'Upper','Lower','Background'},varargin);
 warning('on','DA:parseoptional')
 if isempty(Upper)
 elseif ~isempty(Upper) && length(Upper)~=2
@@ -56,12 +59,16 @@ end
 if ~isempty(Lower) && length(Lower)~=2
     error('Lower property must be an array [<r>_min FWHM_min]')
 end
+if ~isempty(BckgModel) && ~exist('t','var')
+    error('Time axis must be provided for a time-domain fit.')
+end
 %Remove the Lower and Upper options from varargin so they are not passed to fitparamodel
-Idx = find(cellfun(@(x)(ischar(x) && contains(x,'Upper')),varargin));
+Idx = find(cellfun(@(x)(ischar(x) && contains(lower(x),'upper')),varargin));
 varargin(Idx:Idx+1) = [];
-Idx = find(cellfun(@(x)(ischar(x) && contains(x,'Lower')),varargin));
+Idx = find(cellfun(@(x)(ischar(x) && contains(lower(x),'lower')),varargin));
 varargin(Idx:Idx+1) = [];
-
+Idx = find(cellfun(@(x)(ischar(x) && contains(lower(x),'background')),varargin));
+varargin(Idx:Idx+1) = [];
 % Compile list of multi-Gaussian models
 multiGaussModels = cell(maxGaussians,1);
 multiGaussModels{1} = @rd_onegaussian;
@@ -108,8 +115,25 @@ else
 end
 
 
+if ~isempty(BckgModel)
+    for i=1:maxGaussians
+        DistModel = multiGaussModels{i};
+        info = DistModel();
+        Nparam = info.nparam;
+        Pparam = [info.parameters(:).default];
+        info = BckgModel();
+        Bparam = [info.parameters(:).default];
+        timeMultiGaussModels{i} = @(t,param) (1-param(Nparam+1) + param(Nparam+1)*dipolarkernel(t,r)*DistModel(r,param(1:Nparam)) ).*BckgModel(t,param(Nparam+2:end));
+        param0{i} = [Pparam 0.5 Bparam];
+    end   
+end
+
 % Run fitting and model selection to see which multi-Gauss model is optimal
+if ~isempty(BckgModel)
+[nGaussOpt,metrics,fitparams] = selectmodel(timeMultiGaussModels,S,t,method,param0,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
+else
 [nGaussOpt,metrics,fitparams] = selectmodel(multiGaussModels,S,r,K,method,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
+end
 
 % Calculate the distance distribution for the optimal multi-Gauss model
 param = fitparams{nGaussOpt};
