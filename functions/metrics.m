@@ -25,7 +25,7 @@ end
       case 'msd'
           metric = mean(abs(pointA - pointB).^2);
       case 'rmsd'
-          metric = sqrt(mean(abs(pointA - pointB)));
+          metric = sqrt(1/numel(pointA)*norm(pointA - pointB)^2);
       case 'nrmsd'
           metric = sqrt(mean(abs(pointA - pointB)))/(max(pointA) - min(pointA));
       case 'hellinger'
