@@ -7,12 +7,21 @@
 %   standard deviation of the noise is determined by the (level) input
 %   argument.
 %
+%   x = WHITEGAUSSNOISE(t,level)
+%   The time axis (t) can be passed as well as an argument instead of the
+%   number of points.
+%
+%
 
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
 function ampnoise = whitegaussnoise(N,level)
+
+if numel(N)>1
+   N = numel(N); 
+end
 
 %Validate input
 validateattributes(N,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed')
