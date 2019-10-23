@@ -12,7 +12,7 @@
 % PARAMETERS
 % name    symbol default lower bound upper bound
 % ------------------------------------------------------------------
-% PARAM(1)  k     3.5      0            200        decay rate
+% PARAM(1)  k    0.35      0            200        decay rate
 % ------------------------------------------------------------------
 %
 
