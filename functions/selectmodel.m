@@ -10,6 +10,10 @@
 %   Function returns a M-point array containing the optimal models
 %   according to each selection method.
 %
+%   opt = SELECTMODEL({@model1,...,@modelN},S,t,{'aic',...})
+%   Evaluates the fits of the time-domain parametric models by specifying
+%   the time axis (t).
+%
 %   opt = SELECTMODEL({@model1,...,@modelN},S,r,K,{'aic',...},{par1,...,parN})
 %   The initial guess values for the parameters of each model can be passed
 %   as a cell array {par1,...parN} of value vectors.

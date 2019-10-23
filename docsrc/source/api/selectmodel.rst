@@ -17,16 +17,22 @@ Syntax
     [opt,f] = selectmodel(Models,S,r,K,'method')
     [opt,f,param] = selectmodel(Models,S,r,K,'method')
     [opt,f,param] = selectmodel(Models,S,r,K,'method',param0)
-    [opt,f,param] = selectmodel(Models,S,r,K,'method','Property',Value)
+    [opt,f,param] = selectmodel(Models,S,t,'method')
+    [opt,f,param] = selectmodel(Models,S,t,'method',param0)
+    [opt,f,param] = selectmodel(Models,S,t,'method','Property',Value)
     [opt,f,param] = selectmodel(Models,S,r,K,'method',param0,'Property',Value)
+    [opt,f,param] = selectmodel(Models,S,t,'method',param0,'Property',Value)
+
 
 Parameters
     *   ``Models`` - Input parametric models (cell array of function handles)
     *   ``S`` - Input signal (N-array)
     *   ``r`` -  Distance Axis (N-array)
     *   ``K`` -  Dipolar kernel (NxM-array)
+    *   ``t`` -  Time Axis (N-array)
+
     *   ``method`` - Model selection type(s) (string or cell array of strings)
-    *   ``param0`` -  Initial parameter values for each model {Cell array of numerical vectors}
+    *   ``param0`` -  Initial parameter values for each model (cell array of numerical vectors)
 Returns
     *  ``opt`` - Optimal parametric model index (scalar)
     *  ``f`` - Evaluated model selection functional (cell array)
@@ -41,17 +47,26 @@ Description
 
         opt = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'aic',..})
 
-Evaluates the fits of the parametric models ``model1``,..., ``modelN`` to a signal ``S`` according to the dipolar kernel ``K`` and distance axis (r). The models must be passed as a cell array of function handles. Each fit is then evaluated according to the model selection criterions specified in the last input argument.
+Evaluates the fits of the parametric models ``model1``,..., ``modelN`` to a signal ``S`` according to the dipolar kernel ``K`` and distance axis ``r``. The models must be passed as a cell array of function handles. Each fit is then evaluated according to the model selection criterions specified in the last input argument.
 
 *   ``'aic'`` - Akaike information criterion
 *   ``'aicc'`` - Corrected Akaike information criterion
 *   ``'bic'`` - Bayesian information criterion
 
- Function returns an array containing the optimal model for each selection method.
+
+Function returns an array containing the optimal model for each selection method.
+
+.. code-block:: matlab
+
+        opt = selectmodel({@model1,@model2,..,@modelN},S,t,{'aic',..})
+
+Evaluates the fits of the  time domain parametric models ``model1``,..., ``modelN`` to a signal ``S`` according to the time axis ``t``.
 
 .. code-block:: matlab
 
         opt = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'aic',..},{par1,..parN})
+        opt = selectmodel({@model1,@model2,..,@modelN},S,t,{'aic',..},{par1,..parN})
+
 
 The initial guess values for the parameters of each model can be passed as a cell array ``{par1,...parN}`` of value vectors.
 

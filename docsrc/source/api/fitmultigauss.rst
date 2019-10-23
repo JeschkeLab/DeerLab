@@ -14,7 +14,9 @@ Syntax
 .. code-block:: matlab
 
     P = fitmultigauss(S,K,r,Ngauss)
+    P = fitmultigauss(S,t,r,Ngauss)
     P = fitmultigauss(S,K,r,Ngauss,metric)
+    P = fitmultigauss(S,t,r,Ngauss,metric,'BackgModel',model)
     [P,param,Nopt,metrics,Peval] = fitmultigauss(S,K,r,Ngauss,metric,'Property',Value)
 
 
@@ -22,8 +24,11 @@ Parameters
     *   ``S`` - Input signal (N-array)
     *   ``K`` -  Dipolar kernel (NxM-array)
     *   ``r`` -  Distance Axis (N-array)
+    *   ``t`` -  Time Axis (N-array)
     *   ``Ngauss`` - Maximum number of Gaussians (scalar)
-	*	``metric`` - Metric for model selection (string)
+    *    ``metric`` - Metric for model selection (string)
+
+
 Returns
     *  ``P`` - Distance Distribution (M-array)
     *  ``param`` - Fitted model parameters (array)
@@ -52,6 +57,18 @@ The metric employed for the selection of the optimal multigauss model can be spe
 
 .. code-block:: matlab
 
+        P = fitmultigauss(S,t,r,Ngauss)
+		
+If the default kernel is to be used, the time-axis can be passed instead of the kernel.
+	
+.. code-block:: matlab
+
+	P = fitmultigauss(S,t,r,Ngauss,metric,'BackgModel',model)
+
+By passing the ``'BackMoodel'`` option, the background function and modulation depth are fitted along the multigauss distribution parameters. 
+
+.. code-block:: matlab
+
     [P,param,Nopt,metrics] = fitmultigauss(args)
 
 If requested alongside the distribution ``P``, the optimal fit model parameters ``param``, the optimal number of gaussians ``Nopt`` and evaluated selection metrics ``metrics`` are returned.
@@ -63,6 +80,17 @@ Optional arguments can be specified by parameter/value pairs. All property names
 .. code-block:: matlab
 
     P = fitmultigauss(args,'Property1',Value1,'Property2',Value2,...)
+
+BckgModel
+    Function handle of the corresponding time-domain background model.
+
+    *Default:* [*empty*] - Background and modulation depth are not fitted
+
+    *Example:*
+
+	.. code-block:: matlab
+
+		P = fitmultigauss(S,t,r,Ngauss,metric,'BackgModel',@td_exp)
 
 Upper
     Array ``[<r>_max FWHM_max]`` containing the upper bound for the FWHM and mean distance of all the Gaussians.

@@ -9,6 +9,10 @@
 %   criterion given in (method) ('AIC', 'BIC', or 'AICc'). The fitted
 %   distribution is returned in P.
 %
+%   P = FITMULTIGAUSS(S,t,r,Ngauss,method)
+%   If a the default kernel is to be used, the time axis (t) can be passed
+%   instead of the kernel.
+%
 %   [P,param,opt,metrics,Peval] = FITMULTIGAUSS(...)
 %   If requested alongside the distribution (P), the optimal fit model
 %   parameters (param), the optimal number of Gaussians (opt) and
@@ -19,12 +23,16 @@
 %   P = FITMULTIGAUSS(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
+%   'BckgModel' - Function handle to the background model to be fitted
+%                 along the multigauss distance distribution model.
+%                 Requires the time-axis to be passed instead of the
+%                 kernel.
 %
 %   'Lower' - Array [<r>_min FWHM_min] containing the lower bound for the
-%   FWHM and mean distance of all the Gaussians.
+%             FWHM and mean distance of all the Gaussians.
 %
 %   'Upper' -  Array [<r>_max FWHM_max] containing the upper bound values
-%   for the FWHM and mean distance of all the Gaussians.
+%              for the FWHM and mean distance of all the Gaussians.
 %
 %   See "help fitparamodel" for a detailed list of other property-value pairs
 %   accepted by the function.
