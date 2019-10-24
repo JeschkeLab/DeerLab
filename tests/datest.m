@@ -297,8 +297,10 @@ end
 fprintf(fid,'-----------------------------------------------------------------------\n');
 msg = sprintf('%d passes, %d failures, %d crashes\n',sum(allErrors==0),sum(allErrors==1),sum(allErrors==2));
 fprintf(fid,msg);
-if isempty(TestName)
-    fprintf('Total code coverage: %3.2f%%\n',TotalCoverage)
+if runCodeCoverageAnalysis
+    if isempty(TestName)
+        fprintf('Total code coverage: %3.2f%%\n',TotalCoverage)
+    end
 end
 fprintf(fid,'-----------------------------------------------------------------------\n');
 
