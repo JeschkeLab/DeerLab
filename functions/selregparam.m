@@ -201,7 +201,7 @@ InfluenceMatrix = cell(1,nPoints);
 
 for i=1:nPoints %Loop over all regularization parameter values
     
-    [Q,KtS,weights] = lsqcomponents(S,r,K,L,RegParamRange(i),RegType);
+    [Q,KtS,weights] = lsqcomponents(S,r,K,L,RegParamRange(i),RegType,HuberParameter,GlobalWeights);
     InitialGuess = zeros(nr,1);
     if NonNegConstrained
         P{i} = fnnls(Q,KtS,InitialGuess,TolFun);
@@ -209,7 +209,7 @@ for i=1:nPoints %Loop over all regularization parameter values
         P{i}  = Q\KtS;
     end
     for idx=1:length(S)
-        Q = lsqcomponents(S{idx},r,K{idx},L,RegParamRange(i),'tikhonov');
+        Q = lsqcomponents(S{idx},r,K{idx},L,RegParamRange(i),'tikhonov',HuberParameter,GlobalWeights);
         PseudoInverse{idx,i} = Q\K{idx}.';
         switch lower(RegType)
             case 'tikhonov'

@@ -85,13 +85,18 @@ else
     RegType = validatestring(RegType,allowedInput);
 end
 
+%Check if user requested some options via name-value input
+[TolFun,Solver,NonNegConstrained,Verbose,MaxFunEvals,MaxIter,HuberParam,GlobalWeights,RegOrder] ...
+    = parseoptional({'TolFun','Solver','NonNegConstrained','Verbose','MaxFunEvals','MaxIter','HuberParam','GlobalWeights','RegOrder'},varargin);
+
+
 if strcmp(RegType,'custom')
     GradObj = false;
 else
     GradObj = true;
 end
 if isa(alpha,'char')
-    alpha = selregparam(S,K,r,RegType,alpha);
+    alpha = selregparam(S,K,r,RegType,alpha,'GlobalWeights',GlobalWeights);
 else
     validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 end
@@ -103,9 +108,6 @@ end
 %--------------------------------------------------------------------------
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
-%Check if user requested some options via name-value input
-[TolFun,Solver,NonNegConstrained,Verbose,MaxFunEvals,MaxIter,HuberParam,GlobalWeights,RegOrder] ...
-    = parseoptional({'TolFun','Solver','NonNegConstrained','Verbose','MaxFunEvals','MaxIter','HuberParam','GlobalWeights','RegOrder'},varargin);
 
 if isempty(Verbose)
     Verbose = 'off';
