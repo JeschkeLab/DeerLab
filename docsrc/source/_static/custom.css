@@ -1,7 +1,9 @@
 
 @import 'theme.css';       /* for the Read the Docs theme */
 
-
+.section {
+     text-align:justify;
+}
 
 .rst-content code.literal{
 	color:#9c1330

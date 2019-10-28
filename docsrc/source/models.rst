@@ -1,9 +1,11 @@
 Parametric Models
 ======================
 
+DeerAnalysis includes the following collection of parametric models. The model names are categorized depending on whether the model is defined in time-domain (model name starts with the prefix ``td_``) or in distance model (model name starts with the prefix ``rd_``). 
+
 .. toctree::
     :maxdepth: 1
-    :caption: Distance-domain (rd)
+    :caption: Distance-domain
 
     ./models/rd_onegaussian
     ./models/rd_twogaussian
@@ -18,7 +20,7 @@ Parametric Models
 
 .. toctree::
     :maxdepth: 1
-    :caption: Time-domain (td)
+    :caption: Time-domain
 
     ./models/td_exp
     ./models/td_strexp

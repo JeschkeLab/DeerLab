@@ -18,17 +18,9 @@
 %
 %   If FileName is a directory, a file browser is
 %   displayed. If FileName is omitted, the current
-%   directory is used as default. eprload returns the
+%   directory is used as default. DEERLOAD returns the
 %   name of the loaded file (including its path) as
 %   fourth parameter FileN.
-%
-%   For DSC/DTA data, x contains the vector or
-%   the vectors specifying the abscissa or abscissae of the
-%   spectral data array, i.e. magnetic field range
-%   for cw EPR, RF range for ENDOR and time delays
-%   for pulse EPR. Units are those specified in
-%   the parameter file. See the fields XPTS, XMIN, XWID
-%   etc. in the Pars structure.
 %
 %   Supported formats are identified via the extension
 %   in 'FileName'. Extensions:
@@ -47,14 +39,6 @@
 %     ESE:                 .d00, .exp
 %
 %     For reading general ASCII formats, use textscan(...)
-%
-%   'Scaling' tells eprload to scale the data (works only for Bruker files):
-%
-%      'n':   divide by number of scans
-%      'P':   divide by square root of microwave power in mW
-%      'G':   divide by receiver gain
-%      'T':   multiply by temperature in kelvin
-%      'c':   divide by conversion/sampling time in milliseconds
 %
 
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 

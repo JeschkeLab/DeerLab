@@ -48,10 +48,10 @@ html_theme = 'sphinx_rtd_theme'
 # Integrate version control system
 # -------------------------------------------------------------
 html_context = {
-    "display_bitbucket": True, # Integrate Bitbucket
-    "bitbucket_user": "luisfabib", # Username
-    "bitbucket_repo": "deeranalysis2", # Repo name
-    "bitbucket_version": "master", # Version
+    "display_github": True, # Integrate GitHub
+    "github_user": "luisfabib", # Username
+    "github_repo": "DeerAnalysis2", # Repo name
+    "github_version": "master", # Version
     "conf_py_path": "/source/", # Path in the checkout to the docs root
 }
 
@@ -59,7 +59,7 @@ html_context = {
 # Read-the-Docs options configuration
 # -------------------------------------------------------------
 html_theme_options = {
-	'sticky_navigation': False,
+    'sticky_navigation': False,
     'titles_only': True,
     'logo_only': True,
     #'style_nav_header_background': '#2a7bf8'

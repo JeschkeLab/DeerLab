@@ -1,4 +1,4 @@
-API Documentation
+Functions
 ======================
 
 .. toctree::
@@ -11,6 +11,7 @@ API Documentation
     ./api/correctphase
     ./api/correctscale
     ./api/correctzerotime
+    ./api/deerload
     ./api/dipolarkernel
     ./api/dipolarsignal
     ./api/fftspec
@@ -35,11 +36,5 @@ API Documentation
     ./api/validate
     ./api/whitenoise
     ./api/winlowpass
-
-.. toctree::
-    :maxdepth: 1
-    :caption: Parametric Models
-
-    ./models
 
 

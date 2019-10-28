@@ -1,6 +1,15 @@
 DeerAnalysis2
 =========================================
 
+.. image:: https://raw.githubusercontent.com/luisfabib/DeerAnalysis2/master/docsrc/source/favicon.png
+    :width: 100px
+
+.. image:: https://img.shields.io/github/issues-raw/luisfabib/DeerAnalysis2?style=flat-square
+.. image:: https://img.shields.io/badge/MATLAB-%3C2019a-brightgreen?style=flat-square
+.. image:: https://img.shields.io/github/downloads/luisfabib/DeerAnalysis2/total?style=flat-square
+.. image:: https://img.shields.io/badge/license-MIT-blue?style=flat-square
+
+
 Overview
 ---------------------------------
 
@@ -11,15 +20,26 @@ It consists of a collection of functions (the API) that provides a series of fun
 To model distance distributions, DeerAnalysis2 supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background models. There are API functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
 
 
-Contents
-==================
-
 .. toctree::
+    :caption: First Steps
     :maxdepth: 1
 
+    ./download
     ./tutorial
+
+.. toctree::
+    :caption: API Documentation
+    :maxdepth: 1
+
     ./functions
+    ./models
     ./examples
+
+
+.. toctree::
+    :caption: Theory
+    :maxdepth: 1
+
     ./theory
 
 
