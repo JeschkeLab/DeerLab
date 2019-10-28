@@ -1,16 +1,16 @@
 %
 % VALIDATE Statistical validation of results
 %
-%   [mean,std,evals] = VALIDATE(fcn,varpar)
+%   [median,iqr,evals] = VALIDATE(fcn,varpar)
 %   Performs a sensibility analysis of the ouput variables returned by the
 %   function (fcn) with respect to the parameter variation given in the
-%   structure (varpar). The mean values and standard deviations (mean) and 
-%   (std) of the output parameters are returned as a cell array.
-%   Additionally, a output third argument (evals) can be requested, a cell 
+%   structure (varpar). The median values and inter-quartile range (median) 
+%   and (iqr) of the output parameters are returned as a cell array.
+%   Additionally, a third output argument (evals) can be requested, a cell 
 %   array, containing the analyzed variables evaluated at each parameter 
 %   combination. 
 %
-%   [mean,std] = VALIDATE(p,vp,'Property',Value)
+%   [median,iqr] = VALIDATE(p,vp,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 % The properties to be passed as options can be set in any order.
@@ -88,8 +88,8 @@ for i=1:length(validationParam)
         vareval = evals{j};
         vareval(end+1,:) = varargout{j};
         %Calculate status of validation statistics
-        meanOut{j} = mean(vareval,1);
-        stdOut{j} = std(vareval,[],1);
+        meanOut{j} = median(vareval,1);
+        stdOut{j} = iqr(vareval,1);
         evals{j} = vareval;
     end
     %If user passes optional plotting hook, then prepare the plot
