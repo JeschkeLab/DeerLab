@@ -82,8 +82,9 @@ Vc = (V - 1i*ImagOffset)*exp(1i*Phase);
 Vreal = real(Vc);
 Vimag = imag(Vc);
 
-if ~iscolumn(Vreal)
+if iscolumn(V) && ~iscolumn(Vreal)
     Vreal = Vreal.';
+    Vimag = Vimag.';
 end
 
 end

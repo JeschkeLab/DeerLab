@@ -329,7 +329,7 @@ warning('off','MATLAB:nearlySingularMatrix')
 switch Solver
     case 'fmincon'
         %...under constraints for the parameter values range
-        solverOpts=optimoptions(@fmincon,'Algorithm',Algorithm,'Display',Verbose,...
+        solverOpts = optimoptions(@fmincon,'Algorithm',Algorithm,'Display',Verbose,...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'TolCon',1e-20,'StepTolerance',1e-20,...
             'DiffMinChange',1e-8,'DiffMaxChange',0.1);
@@ -337,20 +337,19 @@ switch Solver
         %Check how optimization exited...
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-            solverOpts=optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
+            solverOpts=optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,'Display',Verbose);
             [FitParameters]  = fmincon(CostFcn,FitParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
         end
         
     case 'lsqnonlin'
-        
-        solverOpts=optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display',Verbose,...
+        solverOpts = optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display',Verbose,...
             'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
             'TolFun',TolFun,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
         ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax{1},Parameters,1) - V{1}));
         [FitParameters,~,~,exitflag]  = lsqnonlin(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-            solverOpts=optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
+            solverOpts = optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,'Display',Verbose);
             [FitParameters]  = lsqnonlin(ModelCost,FitParameters,LowerBounds,UpperBounds,solverOpts);
         end
         
