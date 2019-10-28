@@ -107,7 +107,7 @@ Offset
     .. code-block:: matlab
 
         V = dipolarsignal(args,'Offset', 1e3)
-		
+
 Phase
     Phase of the complex-valued signal (in radians).
 
@@ -117,10 +117,10 @@ Phase
 
     .. code-block:: matlab
 
-        V = dipolarsignal(args,'Phase', pi/2)		
+        V = dipolarsignal(args,'Phase', pi/2)
 
-FivePulseCoeff
-    Two element array ``[A, tshift]`` containing the relative amplitude of the 5-pulse DEER artefact ``A`` and the time shift ``tshift`` at which it appears. If not given, the time shift ``tshift`` is set by default to half of the time axis ``t`` maximum.
+Interference
+     Relative amplitude and time shift pairs of the dipolar interferences in multipulse-DEER experiments. The background model can be passed as a last argument to include the time-shifted backgrounds. 
 
     *Default:* [*empty*]
 
@@ -128,8 +128,8 @@ FivePulseCoeff
 
     .. code-block:: matlab
 
-        V = dipolarsignal(args,'FivePulseCoeff',0.6) %5-pulse DEER artefact appearing at tau/2
-        V = dipolarsignal(args,'FivePulseCoeff',[0.6 2]) %5-pulse DEER artefact appearing after 2us
+        K = dipolarkernel(args,'Interference',[0.34 max(t)/2])
+        K = dipolarkernel(args,'Interference',{0.34 max(t)/2 @td_strexp})
 
 
 Examples

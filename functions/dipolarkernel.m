@@ -1,26 +1,26 @@
-% 
+%
 % DIPOLARKERNEL Computes the dipolar interaction kernel for the linear
 %              transformation from distance-domain to time-domain
 %
-%       K = DIPOLARKERNEL(t,r) 
+%       K = DIPOLARKERNEL(t,r)
 %       Computes the NxM point kernel for the trasnformation to the dipolar
-%       evolution function from the N-point  time axis (t) in us or ns and M-point 
+%       evolution function from the N-point  time axis (t) in us or ns and M-point
 %       distance axis (r) in ns or Angstrom.
 %
-%       K = DIPOLARKERNEL(t,r,lambda) 
+%       K = DIPOLARKERNEL(t,r,lambda)
 %       Computes the kernel for the transformation to the form factor function
 %       with a modulation depth given by (lambda).
 %
-%       K = DIPOLARKERNEL(t,r,lambda,B) 
+%       K = DIPOLARKERNEL(t,r,lambda,B)
 %       Computes the kernel for the transformation to the form factor function
 %       with a N-point background (B) multiplied.
 %
-%       K = DIPOLARKERNEL(t,r,'Property1',Value1,...) 
-%       K = DIPOLARKERNEL(t,r,lambda,'Property1',Value1,...) 
-%       K = DIPOLARKERNEL(t,r,lambda,B,'Property1',Value1,...) 
-%       Optional arguments can be specified by parameter/value pairs. 
+%       K = DIPOLARKERNEL(t,r,'Property1',Value1,...)
+%       K = DIPOLARKERNEL(t,r,lambda,'Property1',Value1,...)
+%       K = DIPOLARKERNEL(t,r,lambda,B,'Property1',Value1,...)
+%       Optional arguments can be specified by parameter/value pairs.
 %
-% The allowed properties to be passed as options can be set in any order. 
+% The allowed properties to be passed as options can be set in any order.
 %
 %   'ExcitationBandwidth' - Excitation bandwith of the pulses in MHz to be
 %                           used for limited bandwith excitation
@@ -35,15 +35,15 @@
 %                       'explicit' - powder average computed explicitly
 %
 %   'Knots' - Number knots for the grid of powder orientations to be used
-%             in explicit kernel calculations    
+%             in explicit kernel calculations
 %
-%   'FivePulseCoeff' - Two element array [A tshift] containing the relative
-%                      amplitude of the 5-pulse DEER artifact and the time 
-%                      shift at which it appears. If not given, the time shift
-%                      is set by default to half of tmax.
+%   'Interference' - Cell array {A1 t1 A2 t2 ... @td_bckg} containing the relative
+%                    amplitudes and time shifts of the dipolar interferences. 
+%                    The background model can be passed as a last argument to 
+%                    include the time-shifted backgrounds
 %
 
-% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md).
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
@@ -64,8 +64,8 @@ if nargin>2 && isa(lambda,'char')
     lambda = [];
     B = [];
 end
-if nargin < 4 
-   B = []; 
+if nargin < 4
+    B = [];
 end
 % Case ModDepth passed but not B
 if nargin>3 && isa(B,'char')
@@ -74,8 +74,8 @@ if nargin>3 && isa(B,'char')
 end
 
 % Check if user requested some options via name-value input
-[ExcitationBandwidth,OvertoneCoeffs,gValue,Method,Knots,FivePulseCoeff] = ...
-    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','gValue','Method','Knots','FivePulseCoeff'},varargin);
+[ExcitationBandwidth,OvertoneCoeffs,gValue,Method,Knots,InterferenceParam] = ...
+    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','gValue','Method','Knots','Interference'},varargin);
 
 if isempty(Method)
     Method = 'fresnel';
@@ -160,21 +160,32 @@ end
 
 % Convert distance axis to nanoseconds if givne in Angstrom
 if ~isnanometer(r)
-   r = r/10; 
+    r = r/10;
+end
+if length(r)~=1
+    dr = mean(diff(r));
+else
+    dr = 1;
 end
 
-if ~isempty(FivePulseCoeff)
-    if length(FivePulseCoeff)>2
-        error('FivePulseCoeff array cannot be longer than two elements.')
-    elseif length(FivePulseCoeff)<2
-        tshift = max(t/2);
-    else
-        tshift = FivePulseCoeff(2);
+if ~isempty(InterferenceParam)
+    if ~iscell(InterferenceParam)
+        InterferenceParam = num2cell(InterferenceParam);
     end
-    A5pulse = FivePulseCoeff(1);
-    t5pulse = t - tshift;
+    if numel(InterferenceParam)<2
+        error('Interference option must contain at least two elements [amp tau]')
+    end
+    if mod(numel(InterferenceParam),2)~=0 && ~isa(InterferenceParam{end},'function_handle')
+        error('The last element of the Interference option must be valid function handle.')
+    elseif mod(numel(InterferenceParam),2)~=0 && isa(InterferenceParam{end},'function_handle')
+        Bmodel = InterferenceParam{end};
+        InterferenceParam(end) = [];
+    else
+        Bmodel = [];
+    end
 end
 % Get absolute time axis scale (required for negative times)
+traw = t;
 t = abs(t); %ns
 
 % Get vector of dipolar frequencies
@@ -221,33 +232,45 @@ if ~isempty(ExcitationBandwidth)
 end
 
 if strcmp(Method,'explicit')
-   [~,BckgStart] = min(t);
+    [~,BckgStart] = min(t);
     K = K./K(BckgStart,:);
 end
 
-if ~isempty(FivePulseCoeff)
-    %Get the dipolar kernel for the shifted time axis
-    Kshifted = dipolarkernel(t5pulse,r);
-    %Normalize it
-    Kshifted = Kshifted/max(max(Kshifted));
-    K = K + A5pulse*Kshifted;
-end
 % Build modulation depth and background into the kernel
 %----------------------------------------------------------
 if ~isempty(lambda)
     K = (1-lambda) + lambda*K;
 end
-
 if ~isempty(B)
     K = K.*B;
 end
 
-% Normalize kernel
-if length(r)~=1
-    dr = mean(diff(r));
-else
-    dr = 1;
+% Build dipolar interference model
+%----------------------------------------------------------
+Kinter = zeros(length(t),length(wdd));
+if ~isempty(InterferenceParam)
+    %Loop over all interferences
+    for i=1:2:numel(InterferenceParam)
+        %Extract current interference parameters
+        amp = InterferenceParam{i};
+        tau = InterferenceParam{i + 1};
+        %If background model is given then compute the background
+        if ~isempty(Bmodel)
+            %Get background parameters (non-elegant but efficient)
+            [~,~,Bparam] = fitbackground(B,traw,Bmodel,[1 numel(B)]);
+            %Compute time-shifted background
+            Bshifted = Bmodel(abs(traw - tau),Bparam);
+        else
+            Bshifted = ones(size(t));
+        end
+        %Add the scaled dipolar kernel for the current shifted time axis
+        Kinter = Kinter + amp*dipolarkernel(traw - tau,r,lambda,Bshifted)/dr;
+    end
 end
+%Add interference kernels and correct for understimated modulation depth
+K = K + Kinter - Kinter(1,:);
+
+% Normalize kernel
 K = K*dr;
 
 %Store output result in the cache

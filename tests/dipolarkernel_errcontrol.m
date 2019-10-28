@@ -5,7 +5,7 @@ t = linspace(0,3,N);
 r = time2dist(t);
 
 try
-K = dipolarkernel(t,r,'FivePulseCoeff',[0.5 max(t)/2 1]);
+K = dipolarkernel(t,r,'interference',[0.5 max(t)/2 1]);
 err = true;
 catch 
 err = false;    
@@ -13,7 +13,7 @@ end
 
 r2 = r.^2;
 try
-K = dipolarkernel(t,r2,'FivePulseCoeff',[0.5 max(t)/2 1]);
+K = dipolarkernel(t,r2,'interference',[0.5 max(t)/2 1]);
 err = true;
 catch 
 err = false;    

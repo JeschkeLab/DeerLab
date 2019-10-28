@@ -5,8 +5,8 @@ N = 100;
 t = linspace(0,3,N);
 r = time2dist(t);
 
-kernelF = dipolarkernel(t,r,'Method','fresnel','FivePulseCoeff',[0.5 max(t)/2]);
-kernelE = dipolarkernel(t,r,'Method','explicit','FivePulseCoeff',[0.5 max(t)/2]);
+kernelF = dipolarkernel(t,r,'Method','fresnel','interference',[0.5 max(t)/2]);
+kernelE = dipolarkernel(t,r,'Method','explicit','interference',[0.5 max(t)/2]);
 kernelF = kernelF/mean(diff(r));
 kernelE = kernelE/mean(diff(r));
 

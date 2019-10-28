@@ -27,10 +27,10 @@
 %
 %   'Overtones' - Array of RIDME overtone coefficients
 %
-%   'FivePulseCoeff' - Two element array [A tshift] containing the relative
-%                      amplitude of the 5-pulse DEER artifact and the time 
-%                      shift at which it appears. If not given, the time shift
-%                      is set by default to half of tmax.
+%   'Interference' - Cell array {A1 t1 A2 t2 ... @td_bckg} containing the relative
+%                    amplitudes and time shifts of the dipolar interferences. 
+%                    The background model can be passed as a last argument to 
+%                    include the time-shifted backgrounds
 %
 
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
@@ -49,7 +49,7 @@ if ischar(P)
     P = [];
 end
 %Parse optional input arguments
-[ModDepth,B,NoiseLevel,Offset,Overtones,FivePulseCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','Offset','Overtones','FivePulseCoeff','Phase'},varargin);
+[ModDepth,B,NoiseLevel,Offset,Overtones,InterferenceCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','Offset','Overtones','Interference','Phase'},varargin);
 %Validate inputs
 if isempty(ModDepth)
     ModDepth = 1;
@@ -69,6 +69,9 @@ end
 if isempty(Phase)
     Phase = 0;
 end
+if isempty(InterferenceCoeff)
+   InterferenceCoeff = [0 0]; 
+end
 validateattributes(NoiseLevel,{'numeric'},{'scalar','nonnegative'},mfilename,'NoiseLevel')
 validateattributes(ModDepth,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'ModDepth')
 validateattributes(t,{'numeric'},{'increasing','nonempty'},mfilename,'t')
@@ -77,7 +80,7 @@ validateattributes(B,{'numeric'},{'2d'},mfilename,'B')
 validateattributes(P,{'numeric'},{'2d'},mfilename,'P')
 validateattributes(Offset,{'numeric'},{'scalar','nonnegative'},mfilename,'Offset')
 validateattributes(Overtones,{'numeric'},{'2d','nonnegative'},mfilename,'Overtones')
-validateattributes(Phase,{'numeric'},{'2d','nonnegative','scalar'},mfilename,'Phase')
+validateattributes(Phase,{'numeric'},{'2d','scalar'},mfilename,'Phase')
 
 if ~isempty(P) && length(r)~=length(P)
     error('The distance axis and distribution lengths must be equal.')
@@ -108,7 +111,7 @@ end
 N = length(t);
 
 %Get the kernel
-K = dipolarkernel(t,r,'OvertoneCoeffs',Overtones,'FivePulseCoeff',FivePulseCoeff);
+K = dipolarkernel(t,r,'OvertoneCoeffs',Overtones,'interference',InterferenceCoeff);
 
 %Calculate dipolar evolution function
 if ~isempty(P)
