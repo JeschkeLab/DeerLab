@@ -1,4 +1,4 @@
-COMPILATION OF DEERANALYSIS2 DOCUMENTATION
+HOW TO COMPILE DEERANALYSIS2 DOCS
 
 Requirements: 
 	Pyhton3
@@ -41,10 +41,10 @@ Installation:
 	
 3) Install HTTP sphinx-domain
 	
-    -From python console
+    - From python console
     
         pip install sphinxcontrib-httpdomain
-    -From DOS console		
+    - From DOS console		
     
         python -m pip install sphinxcontrib-httpdomain
 		
@@ -54,4 +54,7 @@ Installation:
 		
 5) From /DeerAnalysis/docsrc/ run the batch script
 
-        make html
+        make
+    or
+    
+       make clean

@@ -1,4 +1,4 @@
-DeerAnalysis2
+DeerAnalysis
 =========================================
 
 .. image:: https://raw.githubusercontent.com/luisfabib/DeerAnalysis2/master/docsrc/source/favicon.png

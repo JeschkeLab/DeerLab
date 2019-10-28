@@ -3,7 +3,6 @@ Functions
 
 .. toctree::
     :maxdepth: 1
-    :caption: Functions
 
     ./api/apt
     ./api/aptkernel
