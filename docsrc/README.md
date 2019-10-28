@@ -43,10 +43,10 @@ Installation:
 	
     - From python console
     
-        pip install sphinxcontrib-httpdomain
+            pip install sphinxcontrib-httpdomain
     - From DOS console		
     
-        python -m pip install sphinxcontrib-httpdomain
+            python -m pip install sphinxcontrib-httpdomain
 		
 4) Download and install dvissvgm from
 
