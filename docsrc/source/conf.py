@@ -5,7 +5,7 @@ import sys
 import os
 import re
 
-sys.path.append(os.path.abspath('..'))
+sys.path.append(os.path.abspath('.'))
 
 # Import Read-the-Docs (RTD) theme
 from sphinx.locale import _
@@ -25,6 +25,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinxcontrib.httpdomain',
     'sphinx.ext.imgmath',
+    'button'
 ]
 
 # Render Latex math equations as svg instead of rendering with JavaScript
@@ -103,6 +104,7 @@ html_static_path = ['_static']
 # Add path to custom CSS file to overwrite some of the default CSS settings
 html_css_files = [
     'custom.css',
+    'fancybutton.css'
 ]	
 
 # List of patterns, relative to source directory, that match files and

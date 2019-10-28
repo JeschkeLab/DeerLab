@@ -5,3 +5,4 @@ docs/docsrc/venv/
 docsrc/venv/
 docs/
 docsrc/cache/
+docsrc/source/__pycache__/
