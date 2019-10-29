@@ -12,14 +12,14 @@ DeerAnalysis
 
 Overview
 ---------------------------------
-
 This software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar spectroscopy techniques (DQC, RIDME, SIFTER).
 
+
+       
 -------
 
 .. raw:: html
      :file: ./_static/downloadbutton.html
-
 
        
 -------
