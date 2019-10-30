@@ -88,7 +88,7 @@ switch lower(RegType)
             end
         end
         %Compute the partial pseudinverse from the optimized result
-        TVterm = L.'*((L./sqrt((L*localP).^2 + 1e-24)));
+        TVterm = L.'*((L./sqrt((L*localP).^2 + eps)));
         Q = (GramMatrix + alpha^2*TVterm);
         
     case 'huber'

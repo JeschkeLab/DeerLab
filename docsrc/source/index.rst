@@ -1,8 +1,9 @@
-DeerAnalysis
-=========================================
 
-.. image:: https://raw.githubusercontent.com/luisfabib/DeerAnalysis2/master/docsrc/source/favicon.png
-    :width: 100px
+
+.. image:: logo_dark.png
+    :width: 800px
+    :align: center
+
 
 .. image:: https://img.shields.io/github/issues-raw/luisfabib/DeerAnalysis2?style=flat-square
 .. image:: https://img.shields.io/badge/MATLAB-%3C2019a-brightgreen?style=flat-square
@@ -10,19 +11,21 @@ DeerAnalysis
 .. image:: https://img.shields.io/badge/license-MIT-blue?style=flat-square
 
 
-Overview
----------------------------------
-This software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar spectroscopy techniques (DQC, RIDME, SIFTER).
-
-
        
 -------
 
 .. raw:: html
      :file: ./_static/downloadbutton.html
-
+	
        
 -------
+
+
+
+This software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar spectroscopy techniques (DQC, RIDME, SIFTER).
+
+
+
 
 It consists of a collection of functions (the API) that provides a series of functions that perform single processing or fitting tasks. They can be combined in scripts to generate custom analysis workflows.
 
