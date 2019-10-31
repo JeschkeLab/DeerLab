@@ -257,7 +257,7 @@ if ~isempty(InterferenceParam)
         %If background model is given then compute the background
         if ~isempty(Bmodel)
             %Get background parameters (non-elegant but efficient)
-            [~,~,Bparam] = fitbackground(B,traw,Bmodel,[1 numel(B)]);
+            [~,~,Bparam] = fitbackground(B,traw,Bmodel,[min(t) max(t)]);
             %Compute time-shifted background
             Bshifted = Bmodel(abs(traw - tau),Bparam);
         else
