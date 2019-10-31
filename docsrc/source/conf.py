@@ -12,11 +12,10 @@ from sphinx.locale import _
 from sphinx_rtd_theme import __version__
 
 # Project details
-project = 'DeerAnalysis2'
+project = 'DeerAnalysis'
 copyright = '2019, Luis Fabregas Ibanez'
 author = 'Fabregas Ibanez'
 language = 'en'
-release = '2019'
 
 # Add sphinx extensions
 extensions = [
@@ -49,7 +48,7 @@ html_theme = 'sphinx_rtd_theme'
 # Integrate version control system
 # -------------------------------------------------------------
 html_context = {
-    "display_github": True, # Integrate GitHub
+    "display_github": False, # Integrate GitHub
     "github_user": "luisfabib", # Username
     "github_repo": "DeerAnalysis2", # Repo name
     "github_version": "master", # Version
