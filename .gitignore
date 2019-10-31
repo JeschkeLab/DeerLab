@@ -6,3 +6,5 @@ docsrc/venv/
 docs/
 docsrc/cache/
 docsrc/source/__pycache__/
+docsrc/aws_access_keys.txt
+docsrc/__pycache__/
