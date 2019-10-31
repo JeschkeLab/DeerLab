@@ -49,10 +49,10 @@ if ischar(P)
     P = [];
 end
 %Parse optional input arguments
-[ModDepth,B,NoiseLevel,Offset,Overtones,InterferenceCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','Offset','Overtones','Interference','Phase'},varargin);
+[lambda,B,NoiseLevel,Offset,Overtones,InterferenceCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','Offset','Overtones','Interference','Phase'},varargin);
 %Validate inputs
-if isempty(ModDepth)
-    ModDepth = 1;
+if isempty(lambda)
+    lambda = 1;
 end
 if isempty(B)
     B = ones(length(t),1);
@@ -61,7 +61,7 @@ if isempty(NoiseLevel)
     NoiseLevel = 0;
 end
 if isempty(Overtones)
-    Overtones = 1;
+    Overtones = [];
 end
 if isempty(Offset)
     Offset = 1;
@@ -70,10 +70,10 @@ if isempty(Phase)
     Phase = 0;
 end
 if isempty(InterferenceCoeff)
-   InterferenceCoeff = [0 0]; 
+   InterferenceCoeff = []; 
 end
 validateattributes(NoiseLevel,{'numeric'},{'scalar','nonnegative'},mfilename,'NoiseLevel')
-validateattributes(ModDepth,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'ModDepth')
+validateattributes(lambda,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'ModDepth')
 validateattributes(t,{'numeric'},{'increasing','nonempty'},mfilename,'t')
 validateattributes(r,{'numeric'},{'increasing','nonempty','nonnegative'},mfilename,'r')
 validateattributes(B,{'numeric'},{'2d'},mfilename,'B')
@@ -86,7 +86,7 @@ if ~isempty(P) && length(r)~=length(P)
     error('The distance axis and distribution lengths must be equal.')
 end
 
-if ModDepth>1 || ModDepth<0
+if lambda>1 || lambda<0
     error('Modulation depth must be in the range of 0 to 1.')
 end
 if numel(unique(round(diff(r),6)))~=1 && ~isscalar(r)
@@ -111,22 +111,18 @@ end
 N = length(t);
 
 %Get the kernel
-K = dipolarkernel(t,r,'OvertoneCoeffs',Overtones,'interference',InterferenceCoeff);
+K = dipolarkernel(t,r,lambda,B,'OvertoneCoeffs',Overtones,'interference',InterferenceCoeff);
 
 %Calculate dipolar evolution function
 if ~isempty(P)
     P = P/sum(P)/mean(diff(r));
-    S = K*P;
+    V = K*P;
 else
-    S = K;
+    V = K;
 end
 
 %Generate Gaussian noise
 Noise = whitegaussnoise(N,NoiseLevel);
-
-%Calculate form factor with backbround
-V = (1-ModDepth) + ModDepth*S;
-V = V.*B;
 
 %Add noise and intensity offset
 V = (V + Noise)*Offset;
