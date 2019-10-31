@@ -74,7 +74,7 @@ for key in bucket.objects.all():
 				
 		#Update the file if the local source file is newer than the version in the S3 bucket
 		if modifyDate > key.last_modified:
-			print("Updating", filepath, " in web bucket... ")
+			print("Updating", filepath, "in web bucket... ")
 			if filepath.endswith('.html'):
 				s3.meta.client.upload_file(filepath, 'deeranalysis.org', key.key, ExtraArgs={'ContentType': "text/html"} )
 			else:
