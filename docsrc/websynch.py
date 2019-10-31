@@ -52,7 +52,7 @@ base_dir = "../docs"
 localFiles = getListOfFiles(base_dir)
 
 for key in bucket.objects.all():
-		
+
 		#Get full local path of current file in bucket 
 		filepath = '/'.join([base_dir, key.key])
 		
@@ -62,7 +62,7 @@ for key in bucket.objects.all():
 		#If file has been removed from the local source, remove it from the bucket
 		if not os.path.isfile(filepath):
 			print("Removing ",filepath," from bucket, not found in local source...")
-			s3_client.delete_object(Bucket='deeranalysis.org',Key=key.key)
+			s3_client.delete_object(Bucket='deeranalysis.org',Key = key.key)
 			continue
 		
 		#Get last modified date of local files
@@ -71,20 +71,22 @@ for key in bucket.objects.all():
 		#Localize timestamp of local files to West-Europe timezone
 		euwest = pytz.timezone('Europe/Amsterdam')
 		modifyDate = euwest.localize(modifyDate)
-		
-		filePathList = filepath.split("/") 
-		filename = filePathList[-1] #The last element is a the filename
-		
+				
 		#Update the file if the local source file is newer than the version in the S3 bucket
 		if modifyDate > key.last_modified:
 			print("Updating", filepath, " in web bucket... ")
-			s3_client.upload_file(filepath,'deeranalysis.org',filename)
+			if filepath.endswith('.html'):
+				s3.meta.client.upload_file(filepath, 'deeranalysis.org', key.key, ExtraArgs={'ContentType': "text/html"} )
+			else:
+				s3.meta.client.upload_file(filepath, 'deeranalysis.org', key.key)
 
 #Add the remaining local files which are still not on the we bucket
 for files in localFiles:
-	filename = files.split("/")
-	filename = filename[-1] 
-	print("Adding", filepath, " to web bucket... ")
-	s3_client.upload_file(files,'deeranalysis.org',filename)	
+	key = files.replace("../docs/","")
+	print("Adding", key, "to web bucket... ")
+	if filepath.endswith('.html'):
+		s3.meta.client.upload_file(files,'deeranalysis.org',key,ExtraArgs={'ContentType': "text/html"} )
+	else:
+		s3.meta.client.upload_file(files,'deeranalysis.org',key)
 
 print("Finished: AWS S3 DeerAnalysis.org bucket is up to date.")
