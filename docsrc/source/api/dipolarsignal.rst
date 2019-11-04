@@ -97,6 +97,17 @@ Overtones
 
         V = dipolarsignal(args,'Overtones',[0.2 0.5 0.3])
 
+gValue
+    Specifies the g-value of the electron spin center used to compute the dipolar frequencies from the given distance axis.
+
+    *Default:* ``2.004602204236924``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        K = dipolarkernel(args,'gValue',2.00) %Use experimental g-value
+
 Scale
     Vertical scale to multiply to the output signal
 

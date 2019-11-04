@@ -27,6 +27,9 @@
 %
 %   'Overtones' - Array of RIDME overtone coefficients
 %
+%   'gValue' - Specifies the g-value of the electron spin center used to compute 
+%              the dipolar frequencies from the given distance axis.
+%
 %   'Interference' - Cell array {A1 t1 A2 t2 ... @td_bckg} containing the relative
 %                    amplitudes and time shifts of the dipolar interferences. 
 %                    The background model can be passed as a last argument to 
@@ -49,7 +52,7 @@ if ischar(P)
     P = [];
 end
 %Parse optional input arguments
-[lambda,B,NoiseLevel,Scale,Overtones,InterferenceCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','Scale','Overtones','Interference','Phase'},varargin);
+[lambda,B,NoiseLevel,gValue,Scale,Overtones,InterferenceCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','gValue','Scale','Overtones','Interference','Phase'},varargin);
 %Validate inputs
 if isempty(lambda)
     lambda = 1;
@@ -111,7 +114,7 @@ end
 N = length(t);
 
 %Get the kernel
-K = dipolarkernel(t,r,lambda,B,'OvertoneCoeffs',Overtones,'interference',InterferenceCoeff);
+K = dipolarkernel(t,r,lambda,B,'OvertoneCoeffs',Overtones,'gValue',gValue,'interference',InterferenceCoeff);
 
 %Calculate dipolar evolution function
 if ~isempty(P)
@@ -124,10 +127,15 @@ end
 %Generate Gaussian noise
 Noise = whitegaussnoise(N,NoiseLevel);
 
-%Add noise and intensity offset
-V = (V + Noise)*Scale;
-
 %Mix phase if given
 V = V.*exp(-1i*Phase);
+
+%Add noise and scale amplitue
+V = (V + Noise);
+if ~isreal(V)
+    V = (V + 1i*Noise);
+end
+V = V*Scale;
+
 
 end
