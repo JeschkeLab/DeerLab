@@ -1,5 +1,6 @@
 function [err,data,maxerr] = test(opt,olddata)
 
+rng(2)
 t = linspace(-5,5,300);
 r = time2dist(t);
 P = rd_onegaussian(r,[4 0.4]);

@@ -7,7 +7,7 @@ B = td_exp(t,0.3);
 TrueOffset = 1e8;
 noiselevel = 0.05;
 V = dipolarsignal(t,r,P,'Moddepth',0.25,'Background',B,...
-    'Offset',TrueOffset,'noiselevel',noiselevel);
+    'Scale',TrueOffset,'noiselevel',noiselevel);
 
 [Vc,Offset] = correctscale(V,t);
 

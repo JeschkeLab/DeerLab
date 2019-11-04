@@ -1,18 +1,17 @@
 function [err,data,maxerr] = test(opt,oldata)
 
-
-Dimension = 200;
+rng(2)
+Dimension = 300;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
-InputParam = [2 0.3];
-P = rd_onegaussian(r,[2,0.3]);
+P = rd_onegaussian(r,[3,0.3]);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+DipEvoFcn = dipolarsignal(t,r,P,'noiselevel',0.01);
 
-[~,FitP] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,0.6*InputParam,'Solver','fmincon','costmodel','chisquare');
-err(1) = any(abs(FitP - P)>3e-7);
+[~,FitP] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,'costmodel','chisquare');
+err(1) = any(abs(FitP - P)>3e-2);
 err = any(err);
 
 maxerr = max(abs(FitP - P));
