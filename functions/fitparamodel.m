@@ -70,6 +70,10 @@ function [FitParameters,Fit] = fitparamodel(V,model,ax,K,StartParameters,varargi
 % Input Parsening & Validation
 %--------------------------------------------------------------------------
 
+if ~license('test','optimization_toolbox')
+   error('DeerAnaysis could not find a valid licence for the Optimization Toolbox. Please install the add-on to use fitparamodel.')
+end
+
 %Parse the different styles of input
 
 %Input #1 fitparamodel(S,model,t)

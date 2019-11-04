@@ -64,6 +64,10 @@
 
 function P = fitregmodel(S,K,r,RegType,alpha,varargin)
 
+if ~license('test','optimization_toolbox')
+   error('DeerAnaysis could not find a valid licence for the Optimization Toolbox. Please install the add-on to use fitregmodel.')
+end
+
 
 %Turn off warnings to avoid ill-conditioned warnings 
 warning('off','MATLAB:nearlySingularMatrix')

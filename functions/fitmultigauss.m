@@ -43,6 +43,11 @@
 
 function [Pfit,param,nGaussOpt,metrics,Peval] = fitmultigauss(S,K,r,maxGaussians,method,varargin)
 
+
+if ~license('test','optimization_toolbox')
+   error('DeerAnaysis could not find a valid licence for the Optimization Toolbox. Please install the add-on to use fitmultigauss.')
+end
+
 % Validate user input (S, K, r, and method are validated in lower-level functions)
 if nargin<4
     error('Not enough input arguments.')
