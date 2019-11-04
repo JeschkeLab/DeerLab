@@ -5,12 +5,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ls -a via OPEN SSH Private Key
-        uses: fifsky/ssh-action@master
+      - name: Action in SSH server
+        uses: appleboy/ssh-action@master
         with:
-          command: |
-            cd ~
-            ls -a
           host: ${{ secrets.EULER_HOST }}
-          user: ${{ secrets.EULER_USER }}
-          key: ${{ secrets.EULER_SSH_KEY}}
+          username: ${{ secrets.EULER_USER }}
+          key: ${{ secrets.EULER_KEY}}
+		script: |
+			  ls -al
