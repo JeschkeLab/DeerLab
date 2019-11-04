@@ -12,5 +12,5 @@ jobs:
             cd ~
             ls -a
           host: ${{ secrets.EULER_HOST }}
-          user: root
+          user: ${{ secrets.EULER_USER }}
           key: ${{ secrets.EULER_SSH_KEY}}
