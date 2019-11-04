@@ -1,16 +1,16 @@
-name: CI
-
-on: [push]
-
+name: test
+on: push
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Connect to Euler 
-      run: ssh luisf@euler.ethz.ch  bash ~/bin/euler_build.bash
-    - name: Finish job
-      run: |
-        echo Successfully completed
+      - name: ls -a via OPEN SSH Private Key
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd ~
+            ls -a
+          host: ${{ secrets.EULER_HOST }}
+          user: root
+          key: ${{ secrets.EULER_SSH_KEY}}
