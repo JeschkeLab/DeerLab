@@ -1,6 +1,7 @@
 function dadepends(FileMask)
 
-DeerAnalysisPath = fileparts(which('DeerAnalysis'));
+DeerAnalysisPath = fileparts(which('dadepends'));
+DeerAnalysisPath = DeerAnalysisPath(1:end-numel('\tests'));
 if isempty(DeerAnalysisPath)
     error('DeerAnalysis is not on the Matlab path!');
 end
