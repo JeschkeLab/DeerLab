@@ -3,13 +3,12 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-		- name: multiple command
-		  uses: appleboy/ssh-action@master
-		  with:
-			host: ${{ secrets.EULER_HOST }}
-			username: ${{ secrets.EULER_USER }}
-			key: ${{ secrets.EULER_KEY }}
-			script: |
-			  ls -al
+	- name: multiple command
+	  uses: appleboy/ssh-action@master
+	  with:
+		host: ${{ secrets.EULER_HOST }}
+		username: ${{ secrets.EULER_USER }}
+		key: ${{ secrets.EULER_KEY }}
+		script: |
+		  ls -al
