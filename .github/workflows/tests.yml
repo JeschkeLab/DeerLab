@@ -8,8 +8,8 @@ jobs:
       - name: Action in SSH server
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EULER_HOST }}
-          username: ${{ secrets.EULER_USER }}
-          key: ${{ secrets.EULER_KEY}}
+			host: ${{ secrets.EULER_HOST }}
+			username: ${{ secrets.EULER_USER }}
+			key: ${{ secrets.EULER_KEY}}
 		script: |
-			  ls -al
+			ls -al
