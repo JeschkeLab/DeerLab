@@ -97,8 +97,8 @@ Overtones
 
         V = dipolarsignal(args,'Overtones',[0.2 0.5 0.3])
 
-Offset
-    Vertical offset to multiply to the output signal
+Scale
+    Vertical scale to multiply to the output signal
 
     *Default:* ``1``
 
@@ -106,7 +106,7 @@ Offset
 
     .. code-block:: matlab
 
-        V = dipolarsignal(args,'Offset', 1e3)
+        V = dipolarsignal(args,'Scale', 1e3)
 
 Phase
     Phase of the complex-valued signal (in radians).

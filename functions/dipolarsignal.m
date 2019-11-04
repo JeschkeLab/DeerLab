@@ -21,7 +21,7 @@
 %
 %   'NoiseLevel' - Level (standard deviation) of gaussian noise to add
 %
-%   'Offset' - Vertical offset to add to the ouput signal
+%   'Scale' - Vertical scale to add to the ouput signal
 %
 %   'Phase' - Phase of the signal in radians.
 %
@@ -49,7 +49,7 @@ if ischar(P)
     P = [];
 end
 %Parse optional input arguments
-[lambda,B,NoiseLevel,Offset,Overtones,InterferenceCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','Offset','Overtones','Interference','Phase'},varargin);
+[lambda,B,NoiseLevel,Scale,Overtones,InterferenceCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','Scale','Overtones','Interference','Phase'},varargin);
 %Validate inputs
 if isempty(lambda)
     lambda = 1;
@@ -63,8 +63,8 @@ end
 if isempty(Overtones)
     Overtones = [];
 end
-if isempty(Offset)
-    Offset = 1;
+if isempty(Scale)
+    Scale = 1;
 end
 if isempty(Phase)
     Phase = 0;
@@ -78,7 +78,7 @@ validateattributes(t,{'numeric'},{'increasing','nonempty'},mfilename,'t')
 validateattributes(r,{'numeric'},{'increasing','nonempty','nonnegative'},mfilename,'r')
 validateattributes(B,{'numeric'},{'2d'},mfilename,'B')
 validateattributes(P,{'numeric'},{'2d'},mfilename,'P')
-validateattributes(Offset,{'numeric'},{'scalar','nonnegative'},mfilename,'Offset')
+validateattributes(Scale,{'numeric'},{'scalar','nonnegative'},mfilename,'Offset')
 validateattributes(Overtones,{'numeric'},{'2d','nonnegative'},mfilename,'Overtones')
 validateattributes(Phase,{'numeric'},{'2d','scalar'},mfilename,'Phase')
 
@@ -125,7 +125,7 @@ end
 Noise = whitegaussnoise(N,NoiseLevel);
 
 %Add noise and intensity offset
-V = (V + Noise)*Offset;
+V = (V + Noise)*Scale;
 
 %Mix phase if given
 V = V.*exp(-1i*Phase);
