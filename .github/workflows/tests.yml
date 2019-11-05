@@ -6,6 +6,14 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+    - name: Install Cisco AnnyConnect
+      run: |
+        sudo apt-get update
+        sudo apt-get install lib32z1 lib32ncurses5
+        tar xvf anyconnect-linux64-4.7.03052-predeploy-k9.tar.gz
+        cd vpn
+        sudo ./vpn_install.sh
+        sudo ./dart_install.sh
     - name: multiple command
       uses: appleboy/ssh-action@master
       with:
