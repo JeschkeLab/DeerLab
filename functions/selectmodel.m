@@ -6,8 +6,8 @@
 %   signal (S) according to the dipolar kernel (K) and distance axis (r).
 %   The models must be passed as a cell array of function handles. Each fit
 %   is then evaluated according to the model selection criterions
-%   ('aic','aicc','bic') specified in the last input argument M-point cell array.
-%   Function returns a M-point array containing the optimal models
+%   ('aic','aicc','bic','rmsd') specified in the last input argument M-point
+%   cell array. Function returns a M-point array containing the optimal models
 %   according to each selection method.
 %
 %   opt = SELECTMODEL({@model1,...,@modelN},S,t,{'aic',...})

@@ -52,6 +52,7 @@ Evaluates the fits of the parametric models ``model1``,..., ``modelN`` to a sign
 *   ``'aic'`` - Akaike information criterion
 *   ``'aicc'`` - Corrected Akaike information criterion
 *   ``'bic'`` - Bayesian information criterion
+*   ``'rmsd'`` - Root mean square deviation
 
 
 Function returns an array containing the optimal model for each selection method.
