@@ -1,4 +1,4 @@
-name: remote ssh command
+name: Build Docs
 on: [push]
 jobs:
 
@@ -19,5 +19,9 @@ jobs:
            
     - name: Run Sphinx Builder
       run: |
+           pwd
+           ls
            cd docsrc
-           sphinx-build -d ./cache -b html ./source ../docs
+           pwd
+           ls
+           python sphinx-build -d ./cache -b html ./source ../docs
