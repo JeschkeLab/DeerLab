@@ -1,4 +1,4 @@
-name: Compile docs and update web 
+name: Webpage update
 
 on: 
    push:
