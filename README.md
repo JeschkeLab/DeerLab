@@ -9,7 +9,7 @@
 <img src="https://img.shields.io/badge/MATLAB-%3C2019a-brightgreen?style=flat-square"></img>
 ![GitHub All Releases](https://img.shields.io/github/downloads/luisfabib/DeerAnalysis2/total?style=flat-square)
 <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square"></img>
-
+!![](https://github.com/luisfabib/DeerAnalysis2/workflows/Webpage%20update/badge.svg)
 
 This software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar spectroscopy techniques (DQC, RIDME, SIFTER).
 
