@@ -28,4 +28,5 @@ jobs:
            sphinx-build -b html ./source ../docs
     - name: Connect and update DeerAnalysis AWS S3 Bucket
       run: |
-           websynch.py -k ${{ secrets.S3_ACCESS }} -s ${{ secrets.S3_SECRETACCESS }}
+           cd docsrc
+           python -m websynch.py -k ${{ secrets.S3_ACCESS }} -s ${{ secrets.S3_SECRETACCESS }}
