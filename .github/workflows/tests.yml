@@ -20,8 +20,12 @@ jobs:
            python -m pip install sphinxcontrib-matlabdomain
            python -m pip install sphinxcontrib-httpdomain
            sudo apt install texlive-extra-utils
+           sudo apt-get install texlive-latex-extra
            
     - name: Run Sphinx Builder
       run: |
            cd docsrc
            sphinx-build -b html ./source ../docs
+    - name: Connect and update DeerAnalysis AWS S3 Bucket
+      run: |
+           websynch.py -k ${{ secrets.S3_ACCESS }} -s ${{ secrets.S3_SECRETACCESS }}
