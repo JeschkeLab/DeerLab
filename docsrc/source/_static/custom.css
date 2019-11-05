@@ -13,6 +13,10 @@ a.fancybutton:visited {
   color: white
 }
 
+a, a:visited, a:hover, a:active {
+  color: inherit;
+}
+
 /* override table width restrictions */
 @media screen and (min-width: 767px) {
 
