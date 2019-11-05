@@ -12,16 +12,11 @@ jobs:
       run: |
            python -m pip install sphinx==1.8.0
            python -m pip install sphinx_rtd_theme
-           python -m pip install sphinx_rtd_theme
            python -m pip install sphinxcontrib-matlabdomain
            python -m pip install sphinxcontrib-httpdomain
            sudo apt install texlive-extra-utils
            
     - name: Run Sphinx Builder
       run: |
-           pwd
-           ls
            cd docsrc
-           pwd
-           ls
-           python sphinx-build -d ./cache -b html ./source ../docs
+           sphinx-build -d -b html ./source ../docs
