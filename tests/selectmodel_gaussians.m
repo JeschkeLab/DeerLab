@@ -15,9 +15,10 @@ DipEvoFcn = K*P;
 
 Models = {@rd_onegaussian,@rd_twogaussian,@rd_threegaussian};
 
-[optimum1,metric] = selectmodel(Models,DipEvoFcn,r,K,'aicc');
-optimum2 = selectmodel(Models,DipEvoFcn,r,K,'aic');
-optimum3 = selectmodel(Models,DipEvoFcn,r,K,'bic');
+[optimum1,metric1] = selectmodel(Models,DipEvoFcn,r,K,'aicc');
+[optimum2,metric2] = selectmodel(Models,DipEvoFcn,r,K,'aic');
+[optimum3,metric3] = selectmodel(Models,DipEvoFcn,r,K,'bic');
+[optimum4,metric4] = selectmodel(Models,DipEvoFcn,r,K,'rmsd');
 
 err(1) = optimum1~=optimum2;
 err(2) = optimum2~=optimum3;
@@ -28,7 +29,15 @@ maxerr = [];
 
 if opt.Display
 figure(8),clf
-plot(metric)
+subplot(221)
+plot(metric1)
+subplot(222)
+plot(metric2)
+subplot(223)
+plot(metric3)
+subplot(224)
+plot(metric4)
+
 end
 
 end

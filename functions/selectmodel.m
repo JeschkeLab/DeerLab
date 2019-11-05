@@ -126,7 +126,7 @@ UpperBounds(1:length(Upper)) = Upper;
 LowerBounds(1:length(Lower)) = Lower;
 
 
-allowedMethodInputs = {'aic','aicc','bic'};
+allowedMethodInputs = {'aic','aicc','bic','rmsd'};
 for i = 1:length(Methods)
     if strcmp(Methods{i},'all')
         Methods = allowedMethodInputs;
@@ -170,6 +170,7 @@ for i = 1:length(Models)
     AIC(i) =  N*log(SSR/N) + 2*Q;
     AICc(i) = N*log(SSR/N) + 2*Q + 2*Q*(Q+1)/(N-Q-1);
     BIC(i) =  N*log(SSR/N) + Q*log(N);
+    RMSD(i) = sqrt(1/numel(ax)*SSR);
 end
 
 % Identify optimal models based on selection criteria
@@ -179,11 +180,13 @@ functionals = cell(nMethods,1);
 for i = 1:nMethods
     switch Methods{i}
         case 'aic'
-            functional = AIC;
+            functional = AIC;         
         case 'aicc'
             functional = AICc;
         case 'bic'
             functional = BIC;
+        case 'rmsd'
+            functional = RMSD;   
     end
     [~,optimum] = min(functional);
     functionals{i} = functional;
