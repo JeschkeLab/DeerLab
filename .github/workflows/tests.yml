@@ -26,7 +26,7 @@ jobs:
     - name: Run Sphinx Builder
       run: |
            cd docsrc
-           sphinx-build -b html ./source ../docs
+           sphinx-build -E -b html ./source ../docs
     - name: Connect and update DeerAnalysis AWS S3 Bucket
       run: |
            cd docsrc
