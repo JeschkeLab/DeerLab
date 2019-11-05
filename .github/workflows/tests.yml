@@ -1,17 +1,31 @@
-name: CI
-
+name: Build Docs
 on: [push]
-
 jobs:
+
   build:
-
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Run a multi-line script
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install dependencies
       run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+           python -m pip install --upgrade pip
+           python -m pip install sphinx==1.8.0
+           python -m pip install sphinx_rtd_theme
+           python -m pip install sphinxcontrib-matlabdomain
+           python -m pip install sphinxcontrib-httpdomain
+           sudo apt install texlive-extra-utils
+           sudo apt-get install texlive-latex-extra
+           
+    - name: Run Sphinx Builder
+      run: |
+           cd docsrc
+           sphinx-build -b html ./source ../docs
+    - name: Connect and update DeerAnalysis AWS S3 Bucket
+      run: |
+           websynch.py -k ${{ secrets.S3_ACCESS }} -s ${{ secrets.S3_SECRETACCESS }}

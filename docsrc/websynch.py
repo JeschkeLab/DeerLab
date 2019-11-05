@@ -7,6 +7,13 @@ import boto
 import time
 import pytz
 from time import mktime
+from argparse import ArgumentParser
+
+#Parse options if access keys are being passed as inputs
+parser = ArgumentParser()
+parser.add_argument("-k", "--key",dest="accesskey",default=[],help="AWS Access Key")
+parser.add_argument("-s", "--secretkey",dest="secretkey", default=[],help="AWS Secret Access Key")
+args = parser.parse_args()
 
 def getListOfFiles(dirName):
     #Create a list of file and sub directories 
@@ -25,13 +32,18 @@ def getListOfFiles(dirName):
                 
     return allFiles
 
-#Load and read the secure access keys to connect to the AWS S3 client
-if os.path.isfile(".\aws_access_keys.txt"):
-	print("AWS access keys not found. You may not have rights to request this action.")
-	exit()
+#If access codes have not been passed as inputs then check if file is there
+if not args.accesskey or not args.secretkey:
 
-with open('aws_access_keys.txt', 'r') as file:
-    AccessKeys = [line.rstrip('\n') for line in file]
+	#Load and read the secure access keys to connect to the AWS S3 client
+	if os.path.isfile(".\aws_access_keys.txt"):
+		print("AWS access keys not found. You may not have rights to request this action.")
+		exit()
+
+	with open('aws_access_keys.txt', 'r') as file:
+		AccessKeys = [line.rstrip('\n') for line in file]
+else:
+	 AccessKeys = [args.accesskey, args.secretkey]
 
 # Create an S3 client
 print("Establishing AWS S3 client connection")
