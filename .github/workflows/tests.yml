@@ -6,19 +6,18 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - name: Install Cisco AnnyConnect
+    - name: Prepare Virtual Environment
+      uses: actions/checkout@v1
       run: |
-        sudo apt-get update
-        sudo apt-get install lib32z1 lib32ncurses5
-        tar xvf anyconnect-linux64-4.7.03052-predeploy-k9.tar.gz
-        cd vpn
-        sudo ./vpn_install.sh
-        sudo ./dart_install.sh
-    - name: multiple command
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EULER_HOST }}
-        username: ${{ secrets.EULER_USER }}
-        key: ${{ secrets.EULER_KEY }}
-        script: |
-          ls -al
+           python -m pip install sphinx==1.8.0
+           python -m pip install sphinx_rtd_theme
+           python -m pip install sphinx_rtd_theme
+           python -m pip install sphinxcontrib-matlabdomain
+           python -m pip install sphinxcontrib-httpdomain
+           sudo apt install texlive-extra-utils
+           
+    - name: Run Sphinx Builder
+      uses: actions/checkout@v1
+      run: |
+           cd docsrc
+           sphinx-build -d ./cache -b html ./source ../docs
