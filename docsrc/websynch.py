@@ -3,7 +3,6 @@ import os
 import datetime
 import shutil
 import boto3
-import boto
 import time
 import pytz
 from time import mktime

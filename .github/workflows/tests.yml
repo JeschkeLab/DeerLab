@@ -19,6 +19,7 @@ jobs:
            python -m pip install sphinx_rtd_theme
            python -m pip install sphinxcontrib-matlabdomain
            python -m pip install sphinxcontrib-httpdomain
+           python -m pip install boto3
            sudo apt install texlive-extra-utils
            sudo apt-get install texlive-latex-extra
            
@@ -28,7 +29,5 @@ jobs:
            sphinx-build -b html ./source ../docs
     - name: Connect and update DeerAnalysis AWS S3 Bucket
       run: |
-           pwd
            cd docsrc
-           ls
            python -m websynch -k ${{ secrets.S3_ACCESS }} -s ${{ secrets.S3_SECRETACCESS }}
