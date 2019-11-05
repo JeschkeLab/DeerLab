@@ -24,4 +24,4 @@ jobs:
     - name: Run Sphinx Builder
       run: |
            cd docsrc
-           sphinx-build -d -b html ./source ../docs
+           sphinx-build -b html ./source ../docs
