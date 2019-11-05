@@ -7,7 +7,8 @@ import time
 import pytz
 from time import mktime
 from argparse import ArgumentParser
-
+from pathlib import Path
+ 
 #Parse options if access keys are being passed as inputs
 parser = ArgumentParser()
 parser.add_argument("-k", "--key",dest="accesskey",default=[],help="AWS Access Key")
@@ -30,6 +31,27 @@ def getListOfFiles(dirName):
             allFiles.append(fullPath)
                 
     return allFiles
+
+def metadataType(file):
+		if file.endswith('.html'):
+				metastr =  "text/html"
+		elif file.endswith('.css'):
+				metastr =  "text/css"
+		elif file.endswith('.js'):
+				metastr =  "application/javascript"
+		elif file.endswith('.svg'):
+				metastr =   "image/svg+xml"
+		elif file.endswith('.png'):
+				metastr =  "image/png"
+		elif file.endswith('.gif'):
+				metastr =  "image/gif"
+		elif file.endswith('.jpg'):
+				metastr =  "image/jpg"
+		else: 
+				metastr = ""
+		
+		return metastr
+
 
 #If access codes have not been passed as inputs then check if file is there
 if not args.accesskey or not args.secretkey:
@@ -65,39 +87,33 @@ localFiles = getListOfFiles(base_dir)
 for key in bucket.objects.all():
 
 		#Get full local path of current file in bucket 
-		filepath = '/'.join([base_dir, key.key])
+		file = '/'.join([base_dir, key.key])
 		
 		#Remove bucket file from list of local files
-		if filepath in localFiles: localFiles.remove(filepath)
+		if file in localFiles: localFiles.remove(file)
 		
 		#If file has been removed from the local source, remove it from the bucket
-		if not os.path.isfile(filepath):
-			print("Removing ",filepath," from bucket, not found in local source...")
+		if not os.path.isfile(file):
+			print("Removing ",file," from bucket, not found in local source...")
 			s3_client.delete_object(Bucket='deeranalysis.org',Key = key.key)
 			continue
 		
 		#Get last modified date of local files
-		modifyDate = datetime.datetime.fromtimestamp(os.path.getmtime(filepath))
+		modifyDate = datetime.datetime.fromtimestamp(os.path.getmtime(file))
 		
 		#Localize timestamp of local files to West-Europe timezone
 		euwest = pytz.timezone('Europe/Amsterdam')
 		modifyDate = euwest.localize(modifyDate)
-				
+		
 		#Update the file if the local source file is newer than the version in the S3 bucket
 		if modifyDate > key.last_modified:
-			print("Updating", filepath, "in web bucket... ")
-			if filepath.endswith('.html'):
-				s3.meta.client.upload_file(filepath, 'deeranalysis.org', key.key, ExtraArgs={'ContentType': "text/html"} )
-			else:
-				s3.meta.client.upload_file(filepath, 'deeranalysis.org', key.key)
+			print("Updating", file, "in web bucket... ")
+			s3.meta.client.upload_file(file, 'deeranalysis.org', key.key, ExtraArgs={'ContentType': metadataType(file)} )
 
 #Add the remaining local files which are still not on the we bucket
 for files in localFiles:
 	key = files.replace("../docs/","")
 	print("Adding", key, "to web bucket... ")
-	if filepath.endswith('.html'):
-		s3.meta.client.upload_file(files,'deeranalysis.org',key,ExtraArgs={'ContentType': "text/html"} )
-	else:
-		s3.meta.client.upload_file(files,'deeranalysis.org',key)
+	s3.meta.client.upload_file(file, 'deeranalysis.org', key.key, ExtraArgs={'ContentType': metadataType(file)} )
 
 print("Finished: AWS S3 DeerAnalysis.org bucket is up to date.")
