@@ -1,5 +1,10 @@
-name: Build Docs
-on: [push]
+name: Compile docs and update web 
+
+on: 
+   push:
+      paths:
+      - 'docsrc/**'
+
 jobs:
 
   build:
