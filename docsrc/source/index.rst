@@ -8,8 +8,7 @@ Welcome to...
 
 .. image:: https://img.shields.io/github/issues-raw/luisfabib/DeerAnalysis2?style=flat-square
 .. image:: https://img.shields.io/badge/MATLAB-%3C2019a-brightgreen?style=flat-square
-.. image:: https://img.shields.io/github/downloads/luisfabib/DeerAnalysis2/total?style=flat-square
-.. image:: https://img.shields.io/badge/license-MIT-blue?style=flat-square
+.. image:: https://github.com/luisfabib/DeerAnalysis2/workflows/Webpage%20update/badge.svg?style=flat-square
 
 
        
@@ -17,7 +16,6 @@ Welcome to...
 
 .. raw:: html
      :file: ./_static/downloadbutton.html
-	
        
 -------
 

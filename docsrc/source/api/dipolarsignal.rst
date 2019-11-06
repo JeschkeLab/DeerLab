@@ -5,7 +5,7 @@
 :mod:`dipolarsignal`
 *********************
 
-Generation of dipolar signal from distance distribution
+Generation of dipolar signals from distance distributions
 
 Syntax
 =========================================
@@ -24,7 +24,7 @@ Parameters
     *   ``P`` - Distance distribution (M-array)
 
 Returns
-    *   ``V`` - Form factor (N-array)
+    *   ``V`` - Dipolar signal (N-array)
     *   ``S`` - Dipolar evolution function (N-array)
 
 
@@ -85,6 +85,10 @@ NoiseLevel
     .. code-block:: matlab
 
         V = dipolarsignal(args,'NoiseLevel',0.05)
+
+    .. Important::
+       Each call of ``dipolarsignal`` will return a different noise realization. To set the output to a fixed noise realization, the random number generator must be fixed. In MATLAB this can be accomplished by calling ``rng(k)`` where ``k`` is some integer number.
+
 
 Overtones
     Array of RIDME overtone coefficients.
@@ -153,9 +157,9 @@ Examples
     r = time2dist(t);
     P = onegaussian(r,[4 .3]);
     B = strexp(t,[0.15,3]);
-    F = dipolarsignal(t,r,P,'NoiseLevel', 0.05,...
+    F = dipolarsignal(t,r,P,'NoiseLevel',0.05,...
                             'ModDepth',0.4,...
                             'Background',B,...
-                            'Offset',1000)
+                            'Scale',1000)
 
 .. image:: ../images/dipolarsignal1.svg

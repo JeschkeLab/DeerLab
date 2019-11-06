@@ -12,7 +12,7 @@ Syntax
 .. code-block:: matlab
 
     [alpha] = selregparam(S,K,r,'type','method')
-    [alpha,F,alphas] = selregparam(S,K,r,'type','method')
+    [alpha,selfcn,alphas,res,pen] = selregparam(S,K,r,'type','method')
     alpha = selregparam(S,K,r,'type','all')
     alpha = selregparam(S,K,r,'type',{'method1','method2','methodN'})
     alpha = selregparam({S1,S2,SM},{K1,K2,KM},r,'type','method')
@@ -21,13 +21,15 @@ Syntax
 Parameters
     *   ``S`` - Input signal (N-array)
     *   ``K`` -  Dipolar kernel (NxM-array)
-	*   ``r`` -  Distance axis (M-array)
+    *   ``r`` -  Distance axis (M-array)
     *   ``type`` - Regularization type (string)
     *   ``method`` - Model selection type (string)
 Returns
     *   ``alpha`` - Optimal regularization parameter (scalar)
-    *   ``F`` - Model selection functional for given ``alphas`` (scalar)
+    *   ``selfcn`` - Model selection functional for given ``alphas`` (scalar)
     *   ``alphas`` - Evaluated candidate regularization parameters  (array)
+    *   ``res`` - Evaluated regularization residual term  (array)
+    *   ``pen`` - Evaluated regularization penalty term  (array)
 
 Description
 =========================================
@@ -44,13 +46,19 @@ Returns the optimal regularization parameter ``alpha`` from a range of regulariz
 
 .. code-block:: matlab
 
-    [alpha,F,alphas] = selregparam(S,K,r,'type',{'method1','method2','method3',...})
+    [alpha,selfcn,alphas] = selregparam(S,K,r,'type',{'method1','method2','method3',...})
 
-If multiple selection methods are passed as a cell array of strings, the function returns ``alpha`` as an array of optimal regularization parameters corresponding to the input methods. The selection models functionals ``F`` are also returned as a cell array of arrays containing the evaluated functionals of the requested models. The order of the output parameters corresponds to the order of the model strings in the input.
+If multiple selection methods are passed as a cell array of strings, the function returns ``alpha`` as an array of optimal regularization parameters corresponding to the input methods. The selection models functionals ``selfcn`` are also returned as a cell array of arrays containing the evaluated functionals of the requested models. The order of the output parameters corresponds to the order of the model strings in the input.
 
 .. code-block:: matlab
 
-    [alpha,F,alphas] = selregparam(S,K,r,'type','all')
+    [alpha,selfcn,alphas,res,pen] = selregparam(S,K,r,'type',{'method1','method2','method3',...})
+
+The vector of evaluated residual ``res`` and penalty ``pen`` terms can be requested as additional outputs. They can be used, e.g. to build the L-curve.
+
+.. code-block:: matlab
+
+    [alpha,selfcn,alphas] = selregparam(S,K,r,'type','all')
 
 Alternatively, the argument ``'all'`` can be passed, which will compute the optimal regularization parameter based on all the selection methods implemented in the function.
 
