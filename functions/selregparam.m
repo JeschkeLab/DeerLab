@@ -53,7 +53,7 @@
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function [OptRegParam,Functionals,RegParamRange] = selregparam(S,K,r,RegType,SelectionMethod,varargin)
+function [alphaOpt,Functionals,RegParamRange,Residual,Penalty] = selregparam(S,K,r,RegType,SelectionMethod,varargin)
 
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
@@ -226,7 +226,7 @@ end
 
 %In case variables are in matrix form reshape them to vectors
 Functionals = cell(length(SelectionMethod),1);
-OptRegParam = zeros(length(SelectionMethod),1);
+alphaOpt = zeros(length(SelectionMethod),1);
 OptHuberParam = zeros(length(SelectionMethod),1);
 
 %--------------------------------------------------------------------------
@@ -341,7 +341,7 @@ for MethodIndex = 1:length(SelectionMethod)
     %Get optimal index of the selection functionals
     [~,Index] = min(Functional);
     %Store the optimal regularization parameter
-    OptRegParam(MethodIndex) = RegParamRange(Index);
+    alphaOpt(MethodIndex) = RegParamRange(Index);
     OptHuberParam(MethodIndex) = HuberParameterSet(Index);
     Functionals{MethodIndex} =  Functional;
     
@@ -353,14 +353,14 @@ if Refine
     FineRegParamRange = RegParamRange;
     varargin{end+1} = 'Refine';
     varargin{end+1} =  false;
-    OptIndex = find(RegParamRange == OptRegParam);
+    OptIndex = find(RegParamRange == alphaOpt);
     while true
         if OptIndex == length(FineRegParamRange)
-            FineRegParamRange = linspace(OptRegParam(1),2*OptRegParam(1),RefineLength);
+            FineRegParamRange = linspace(alphaOpt(1),2*alphaOpt(1),RefineLength);
         elseif OptIndex == 1
-            FineRegParamRange = linspace(0.5*OptRegParam(1),OptRegParam(1),RefineLength);
+            FineRegParamRange = linspace(0.5*alphaOpt(1),alphaOpt(1),RefineLength);
         else
-            FineRegParamRange = linspace(0.5*OptRegParam(1),2*OptRegParam(1),RefineLength);
+            FineRegParamRange = linspace(0.5*alphaOpt(1),2*alphaOpt(1),RefineLength);
         end
         varargin{end+1} = 'Range';
         varargin{end+1} = FineRegParamRange;
@@ -370,7 +370,7 @@ if Refine
         end
         RegParamRange = [RegParamRange FineRegParamRange];
         OptIndex = find(FineRegParamRange == RefinedOptRegParam(1));
-        OptRegParam  = RefinedOptRegParam;
+        alphaOpt  = RefinedOptRegParam;
         if ~any(OptIndex == RefineLength) || ~any(OptIndex == 1)
             break;
         end
