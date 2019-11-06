@@ -8,3 +8,4 @@ docsrc/cache/
 docsrc/source/__pycache__/
 docsrc/aws_access_keys.txt
 docsrc/__pycache__/
+build/.ssh/

@@ -114,6 +114,6 @@ for key in bucket.objects.all():
 for files in localFiles:
 	key = files.replace("../docs/","")
 	print("Adding", key, "to web bucket... ")
-	s3.meta.client.upload_file(file, 'deeranalysis.org', key.key, ExtraArgs={'ContentType': metadataType(file)} )
+	s3.meta.client.upload_file(file, 'deeranalysis.org', key, ExtraArgs={'ContentType': metadataType(file)} )
 
 print("Finished: AWS S3 DeerAnalysis.org bucket is up to date.")
