@@ -9,6 +9,7 @@ Examples
     ./examples/example_generatesignals
     ./examples/example_basicprocessing
     ./examples/example_basicvalidation
+    ./examples/example_Lcurve
     ./examples/example_fitting5pulseDEER
     ./examples/example_ridmeregularization
     ./examples/example_multigauss

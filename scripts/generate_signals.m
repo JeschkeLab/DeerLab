@@ -20,9 +20,9 @@ V4pdeer = dipolarsignal(t,r,P,'ModDepth',0.5);
 % Calculate 5-pulse DEER
 %----------------------------------------------
 %Simulate different artefact levels
-V5pdeer1 = dipolarsignal(t,r,P,'ModDepth',0.5,'FivePulseCoeff',0.3);
-V5pdeer2 = dipolarsignal(t,r,P,'ModDepth',0.5,'FivePulseCoeff',0.2);
-V5pdeer3 = dipolarsignal(t,r,P,'ModDepth',0.5,'FivePulseCoeff',0.1);
+V5pdeer1 = dipolarsignal(t,r,P,'ModDepth',0.5,'Interference',[0.3 max(t)/2]);
+V5pdeer2 = dipolarsignal(t,r,P,'ModDepth',0.5,'Interference',[0.2 max(t)/2]);
+V5pdeer3 = dipolarsignal(t,r,P,'ModDepth',0.5,'Interference',[0.1 max(t)/2]);
 
 % Calculate RIDME signal
 %----------------------------------------------
