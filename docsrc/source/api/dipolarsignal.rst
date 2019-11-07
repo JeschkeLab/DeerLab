@@ -13,9 +13,8 @@ Syntax
 .. code-block:: matlab
 
     V = dipolarsignal(t,r,P)
-    [V,S] = dipolarsignal(t,r)
-    [V,S] = dipolarsignal(t,r,P)
-    [V,S] = dipolarsignal(t,r,P,'Property',Value)
+    V = dipolarsignal(t,r)
+    V = dipolarsignal(t,r,P,'Property',Value)
 
 
 Parameters
@@ -25,8 +24,6 @@ Parameters
 
 Returns
     *   ``V`` - Dipolar signal (N-array)
-    *   ``S`` - Dipolar evolution function (N-array)
-
 
 Description
 =========================================

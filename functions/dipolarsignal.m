@@ -1,15 +1,15 @@
 %
 % DIPOLARSIGNAL Generate dipolar signal from distance distribution
 %
-%   [F,D] = DIPOLARSIGNAL(t,r,P)
-%   Calculates the noiseless form factor (F) and dipolar evolution function (D)
-%   on a time axis (t) from the distance distribution (P) in a distance axis (r).
+%   V = DIPOLARSIGNAL(t,r,P)
+%   Calculates the noiseless form factor (V) on a time axis (t) from the 
+%   distance distribution (P) in a distance axis (r).
 %
-%   [F,D] = DIPOLARSIGNAL(t,r)
+%   V = DIPOLARSIGNAL(t,r)
 %   If no distribution is provided, then the dipolar signal corresponding 
 %   to a single distance (r) is computed.
 %
-%   [F,D] = DIPOLARSIGNAL(...,'Property',Value)
+%   V = DIPOLARSIGNAL(...,'Property',Value)
 %   Additional options can be passed as property-value pairs. You can specify
 %   several name and value pair arguments in any order.
 %
@@ -39,7 +39,7 @@
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function [V,S] = dipolarsignal(t,r,P,varargin)
+function [V] = dipolarsignal(t,r,P,varargin)
 
 if nargin<3
     P = [];
