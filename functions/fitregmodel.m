@@ -258,7 +258,7 @@ switch lower(Solver)
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
             fminconOptions = optimoptions(fminconOptions,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
-            P  = fmincon(ModelCost,P,[],[],[],[],NonNegConst,[],constraint,fminconOptions);
+            P  = fmincon(RegFunctional,P,[],[],[],[],NonNegConst,[],constraint,fminconOptions);
         end
 end
 
