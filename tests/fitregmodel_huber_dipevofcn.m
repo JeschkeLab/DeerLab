@@ -15,11 +15,11 @@ K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
 %Set optimal regularization parameter (found numerically lambda=0.005)
-RegParam = 0.0001;
+RegParam = 1;
 Result = fitregmodel(DipEvoFcn,K,r,'huber',RegParam,'Solver','fmincon','HuberParam',1.35);
 
 error = abs(Result - P);
-err(1) = any(error>3e-1);
+err(1) = any(error>2e-1);
 maxerr = max(error);
 err = any(err);
 data = [];

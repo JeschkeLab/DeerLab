@@ -251,14 +251,13 @@ switch lower(Solver)
         if ~strcmp(RegType,'custom')
             RegFunctional = regfunctional(RegType,S,L,K,alpha,HuberParam);
         end
-        constraint = @(x)unityconstraint(x,dr);
         fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',GradObj,'MaxFunEvals',MaxFunEvals,'Display',Verbose,'MaxIter',MaxIter);
-        [P,~,exitflag] =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],constraint,fminconOptions);
+        [P,~,exitflag] =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         %Check how optimization exited...
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
             fminconOptions = optimoptions(fminconOptions,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
-            P  = fmincon(RegFunctional,P,[],[],[],[],NonNegConst,[],constraint,fminconOptions);
+            P  = fmincon(RegFunctional,P,[],[],[],[],NonNegConst,[],[],fminconOptions);
         end
 end
 
