@@ -29,6 +29,7 @@ Functions
     ./api/regparamrange
     ./api/selectmodel
     ./api/selregparam
+    ./api/specunits
     ./api/suppressghost
     ./api/time2dist
     ./api/time2freq

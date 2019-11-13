@@ -11,7 +11,7 @@ K = dipolarkernel(t,r);
 DipEvoFcn = dipolarsignal(t,r,P,'noiselevel',0.01);
 
 [~,FitP] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,'costmodel','chisquare');
-err(1) = any(abs(FitP - P)>3e-2);
+err(1) = any(abs(FitP - P)>8e-2);
 err = any(err);
 
 maxerr = max(abs(FitP - P));

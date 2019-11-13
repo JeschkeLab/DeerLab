@@ -20,7 +20,7 @@ RegMatrix = regoperator(Dimension,3);
 RegFunctional = @(P)(1/2*norm(K*P - DipEvoFcn)^2 + RegParam^2*max(RegMatrix*P)^2);
 Result = fitregmodel(DipEvoFcn,K,r,RegFunctional,RegParam,'Solver','fmincon');
 
-err = any(abs(Result - P)>1e-1);
+err = any(abs(Result - P)>3e-1);
 maxerr = max(abs(Result - P));
 
 data = [];

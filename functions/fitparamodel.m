@@ -270,9 +270,8 @@ for i=1:length(ax)
             error('V and t arguments must fulfill length(t)==length(S).')
         end
         % Convert time axis to microseconds if given in nanoseconds
-        usesNanoseconds = mean(diff(ax{i}))>=0.5;
-        if usesNanoseconds
-            ax{i} = round(ax{i})/1000; % ns->us
+        if isnanosecond(ax{i})
+            ax{i} = round(ax{i},6)/1000; % ns->us
         end
     end
     

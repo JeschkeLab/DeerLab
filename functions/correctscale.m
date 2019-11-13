@@ -23,8 +23,7 @@ validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
 validateattributes(V,{'numeric'},{'nonempty'},mfilename,'V')
 
 % Convert time step to microseconds if given in nanoseconds
-usesNanoseconds = mean(diff(t))>=0.5;
-if usesNanoseconds
+if isnanosecond(t)
     t = t/1000; % ns->us
 end
 

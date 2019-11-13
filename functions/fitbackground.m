@@ -97,8 +97,7 @@ validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
 
 
 %Convert time step to microseconds if given in nanoseconds
-usesNanoseconds = mean(diff(t))>=0.5;
-if usesNanoseconds
+if isnanosecond(t)
     t = t/1000; % ns->us
     FitDelimiter = FitDelimiter/1000; % ns->us
 end

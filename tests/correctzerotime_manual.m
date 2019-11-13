@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %======================================================
 % Zero-time correction function
@@ -16,6 +16,7 @@ inputZeroTime = abs(min(originalt));
 err(1) = any(abs(correctedt - originalt)>1e-10);
 err(2) = abs(outputZeroTime' - inputZeroTime)>1e-10;
 
+maxerr = max(abs(correctedt - originalt));
 err = any(err);
 data = [];
 

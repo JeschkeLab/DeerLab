@@ -41,3 +41,22 @@ Also, it takes only a few lines to analyze an experimental dataset. Here is how 
     plot(r,P0,r,Pfit);
 
 
+.. _physicalunits:
+
+Physical units
+------------------------------
+
+
+All functions in DeerAnalysis are agnostic with respect to the physical units of the different vectors. This means that DeerAnalysis employs numerical heuristics to automatically determine whether a time-domain vector is specified in nanoseconds/microseconds or a distance-domain vector is specified in nanometers/angstroms. 
+
+The heuristics employed for determining the units cover most cases of relevance and are defined as follows:
+
+    *  Time-domain
+
+       .. math:: \left\{\begin{matrix} t_{max}\geq30 \rightarrow ns \\ t_{max}<30 \rightarrow \mu s \end{matrix}\right.
+
+    *  Distance-domain
+
+       .. math:: \left\{\begin{matrix} r_{max}\geq20 \rightarrow A \\ r_{max}<20 \rightarrow nm \end{matrix}\right.
+
+For operation of DeerAnalysis outsides of the ranges set by this heuristics, the API function :ref:`specunits` can be employed. 

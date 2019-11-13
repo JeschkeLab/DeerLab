@@ -41,9 +41,11 @@ validateattributes(V,{'numeric'},{'2d'},mfilename,'S')
 validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t')
 
 %Convert time step to microseconds if given in nanoseconds
-usesNanoseconds = mean(diff(t))>=0.5;
-if ~usesNanoseconds
+if ~isnanosecond(t)
     t = t*1000; % us->ns
+    usesnanosecond = true;
+else
+    usesnanosecond = false;
 end
 
 %Generate finely-grained interpolated signal and time axis
@@ -86,7 +88,7 @@ end
 tcorr = t - t0;
 [~,idxt0] = min(abs(tcorr));
 
-if ~usesNanoseconds
+if usesnanosecond
     t0 = t0/1000; % convert ns -> us
     tcorr = tcorr/1000;  % convert ns -> us
 end

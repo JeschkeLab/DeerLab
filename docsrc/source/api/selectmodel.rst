@@ -30,7 +30,6 @@ Parameters
     *   ``r`` -  Distance Axis (N-array)
     *   ``K`` -  Dipolar kernel (NxM-array)
     *   ``t`` -  Time Axis (N-array)
-
     *   ``method`` - Model selection type(s) (string or cell array of strings)
     *   ``param0`` -  Initial parameter values for each model (cell array of numerical vectors)
 Returns
