@@ -46,11 +46,16 @@ end
 if isempty(useApodization)
     useApodization = true;
 end
-
 if isempty(ZeroFilling)
     ZeroFilling = 2*length(S);
 else
     validateattributes(ZeroFilling,{'numeric'},{'scalar','nonnegative'},mfilename,'ZeroFilling')
+end
+if ~iscolumn(t)
+   t = t.'; 
+end
+if ~iscolumn(S)
+   S = S.'; 
 end
 validateattributes(useApodization,{'logical'},{'nonempty'},mfilename,'useApodization')
 validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
