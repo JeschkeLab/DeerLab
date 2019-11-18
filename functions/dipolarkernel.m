@@ -157,11 +157,12 @@ if isnanosecond(t)
 end
 
 % Convert distance axis to nanoseconds if givne in Angstrom
+rinput = r;
 if ~isnanometer(r)
     r = r/10;
 end
 if length(r)~=1
-    dr = mean(diff(r));
+    dr = mean(diff(rinput));
 else
     dr = 1;
 end

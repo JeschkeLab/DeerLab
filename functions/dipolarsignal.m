@@ -99,32 +99,18 @@ if ~iscolumn(P)
    P = P.'; 
 end
 
-%Convert time step to microseconds if given in nanoseconds
-if isnanosecond(t)
-    t = round(t)/1000; % ns->us
-end
-
-%Convert distance axis to nanoseconds if givne in Angstrom
-if ~isnanometer(r)
-    r = r/10;
-end
-
-%Get length of distribution
-N = length(t);
-
 %Get the kernel
 K = dipolarkernel(t,r,lambda,B,'OvertoneCoeffs',Overtones,'gValue',gValue,'interference',InterferenceCoeff);
 
 %Calculate dipolar evolution function
 if ~isempty(P)
-    P = P/sum(P)/mean(diff(r));
     V = K*P;
 else
     V = K;
 end
 
 %Generate Gaussian noise
-Noise = whitegaussnoise(N,NoiseLevel);
+Noise = whitegaussnoise(t,NoiseLevel);
 
 %Mix phase if given
 V = V.*exp(-1i*Phase);
