@@ -26,7 +26,7 @@
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function [meanOut,stdOut,evals] = validate(fcnHandle,Parameters,varargin)
+function [meanOut,Upper,Lower,evals] = validate(fcnHandle,Parameters,varargin)
 
 if nargin<2
     error('Not enough input arguments. At least two input arguments required.')
@@ -88,8 +88,9 @@ for i=1:length(validationParam)
         vareval = evals{j};
         vareval(end+1,:) = varargout{j};
         %Calculate status of validation statistics
-        meanOut{j} = median(vareval,1);
-        stdOut{j} = iqr(vareval,1);
+        meanOut{j} = median(vareval,1,'omitnan');
+        Lower{j} = prctile(vareval,25,1);
+        Upper{j} = prctile(vareval,75,1);
         evals{j} = vareval;
     end
     %If user passes optional plotting hook, then prepare the plot
@@ -98,7 +99,7 @@ for i=1:length(validationParam)
         Ax  = 1:length(meanOut{1});
         plot(AxisHandle,Ax,meanOut{1},'k','LineWidth',1)
         hold(AxisHandle,'on')
-        f = fill(AxisHandle,[Ax fliplr(Ax)] ,[meanOut{1}+stdOut{1} max(fliplr(meanOut{1}-stdOut{1}),0)],...
+        f = fill(AxisHandle,[Ax fliplr(Ax)] ,[Upper{1} max(fliplr(Lower{1}),0)],...
             'b','LineStyle','none');
         f.FaceAlpha = 0.5;
         hold(AxisHandle,'off')
@@ -112,7 +113,8 @@ end
 
 if nout==1
     meanOut = meanOut{1}.';
-    stdOut = stdOut{1}.';
+    Upper = Upper{1}.';
+    Lower = Lower{1}.';
     evals = evals{1};
 end
 
