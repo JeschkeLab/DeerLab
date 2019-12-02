@@ -14,7 +14,7 @@ jobs:
       run: |
           sudo apt-get update
           sudo apt-get install openconnect lib32ncurses5 lib32tinfo5 lib32z1 libc6-i386 libpkcs11-helper1 openvpn vpnc-scripts net-tools
-          sudo openvpn —mktun —dev tun1
+          sudo openvpn --mktun --dev tun1
           sudo ifconfig tun1 up
           echo ${{ secrets.VPN_PASSWD }} | sudo openconnect --user ${{ secrets.VPN_USER }} --authgroup student-net --passwd-on-stdin sslvpn.ethz.ch/student-net
 
