@@ -7,7 +7,7 @@ S = exp(-t).*cos(2*pi*5*t);
 Spectrum = abs(fftshift(fft(S,2*length(S))));
 [FrequencyAxis,Output] = fftspec(t,S,'Type','abs','Apodization',false);
 
-error = abs(Spectrum - Output);
+error = abs(Spectrum.' - Output);
 err = any(error>1e-10);
 maxerr = max(error);
 data = [];
