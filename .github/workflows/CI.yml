@@ -19,8 +19,8 @@ jobs:
           echo ${{ secrets.VPN_PASSWD }} | sudo openconnect --user ${{ secrets.VPN_USER }} --authgroup student-net --passwd-on-stdin sslvpn.ethz.ch/student-net
 
     - name: Action in SSH server
-        uses: appleboy/ssh-action@master
-        with:
+      uses: appleboy/ssh-action@master
+      with:
           host: ${{ secrets.EULER_HOST }}
           username: ${{ secrets.EULER_USER }}
           key: ${{ secrets.EULER_KEY}}
