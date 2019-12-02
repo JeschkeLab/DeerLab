@@ -259,6 +259,8 @@ if ~isempty(InterferenceParam)
             [~,~,Bparam] = fitbackground(B,traw,Bmodel,[min(t) max(t)]);
             %Compute time-shifted background
             Bshifted = Bmodel(abs(traw - tau),Bparam);
+            %Compoensate for change in modulation depth
+            Bshifted = Bshifted.^amp;
         else
             Bshifted = ones(size(t));
         end
