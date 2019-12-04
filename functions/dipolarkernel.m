@@ -244,32 +244,35 @@ if ~isempty(B)
     K = K.*B;
 end
 
-% Build dipolar interference model
+% Build dipolar superposition model
 %----------------------------------------------------------
 Kinter = zeros(length(t),length(wdd));
 if ~isempty(InterferenceParam)
-    %Loop over all interferences
+    %Loop over all additional signals
     for i=1:2:numel(InterferenceParam)
-        %Extract current interference parameters
+        %Extract current superimposed signal parameters
         amp = InterferenceParam{i};
         tau = InterferenceParam{i + 1};
         %If background model is given then compute the background
         if ~isempty(Bmodel)
             %Get background parameters (non-elegant but efficient)
             [~,~,Bparam] = fitbackground(B,traw,Bmodel,[min(t) max(t)]);
-            %Compute time-shifted background
-            Bshifted = Bmodel(abs(traw - tau),Bparam);
-            %Compoensate for change in modulation depth
-            Bshifted = Bshifted.^amp;
+            %Compute time-shifted and power-scaled background
+            Bshifted = Bmodel(abs(traw - tau),Bparam).^amp;
+            %Compute correction term for background
+            Btau = Bmodel(-tau,Bparam).^amp;
+
         else
+            %If background is not given, then use blanks
             Bshifted = ones(size(t));
+            Btau = 1;
         end
         %Add the scaled dipolar kernel for the current shifted time axis
-        Kinter = Kinter + amp*dipolarkernel(traw - tau,r,lambda,Bshifted)/dr;
+        Kinter = Kinter + amp*dipolarkernel(traw - tau,r,lambda,Bshifted)/dr - amp*dipolarkernel(-tau,r,lambda,Btau)/dr;
     end
 end
-%Add interference kernels and correct for understimated modulation depth
-K = K + Kinter - Kinter(1,:);
+%Add superimposed kernels
+K = K + Kinter;
 
 % Normalize kernel
 K = K*dr;
