@@ -129,6 +129,9 @@ for i = 1:nout
         clear evalmean
         clear set
         subset = validationParam(1:size(data,1),j);
+        if isa(subset{1},'function_handle')
+            subset = cellfun(@func2str,subset,'UniformOutput',false);
+        end
         if ischar(subset{1})
             uni = unique(subset);
         else
