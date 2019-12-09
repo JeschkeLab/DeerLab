@@ -8,8 +8,8 @@ param.c = linspace(0.04,0.3,2);
 
 [~,~,~,mainEffect]  = sensitivan(@(param)myfcn(param,x),param);
 
-err(1) = mainEffect{1}(1)>mainEffect{1}(2);
-err(2) = mainEffect{2}(1)>mainEffect{2}(3);
+err(1) = mainEffect{1}{1}>mainEffect{1}{2};
+err(2) = mainEffect{2}{1}>mainEffect{2}{3};
 
 err = any(err);
 data = [];

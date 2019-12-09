@@ -149,7 +149,7 @@ for i = 1:nout
             map = triu(map,1);
             evalmean(ii) = mean(map(map~=0));
         end
-        mainEffect{i}(j) = abs(evalmean(1) - evalmean(2));
+        mainEffect{i}{j} = abs(diff(evalmean));
     end
 end
 
@@ -189,6 +189,7 @@ for i = 1:nout
                     else
                         idx = find(subset{jj}==unitmp(ii));
                     end
+                    M = data(idx,:).';
                     map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
                     map = triu(map,1);
                     evalmean(ii) = mean(map(map~=0));
