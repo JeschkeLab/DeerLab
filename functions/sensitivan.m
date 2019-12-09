@@ -144,13 +144,12 @@ for i = 1:nout
             else
                 idx = find(subset==uni(ii));
             end
-            evalmean(ii,:) = pdist(data(idx,:),'euclidean');
+            M = data(idx,:).';
+            map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
+            map = triu(map,1);
+            evalmean(ii) = mean(map(map~=0));
         end
-        if size(evalmean,1)<=2
-            mainEffect{i}(j) = abs(mean((evalmean(1,:) - evalmean(2,:))));
-        else
-            mainEffect{i}(j) = abs(mean(((evalmean(1,:) - evalmean(2,:)) + (evalmean(1,:)) - evalmean(3,:)) + (evalmean(2,:) - evalmean(3,:))));
-        end
+        mainEffect{i}(j) = abs(evalmean(1) - evalmean(2));
     end
 end
 
@@ -190,15 +189,12 @@ for i = 1:nout
                     else
                         idx = find(subset{jj}==unitmp(ii));
                     end
-                    evalmean(ii,:) = pdist(data(idx,:),'euclidean');
+                    map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
+                    map = triu(map,1);
+                    evalmean(ii) = mean(map(map~=0));
                 end
-                
                 %Get main effects for upper and lower levels
-                if size(evalmean,1)<=2
-                    main(jj) = abs(mean((evalmean(1,:) - evalmean(2,:))));
-                else
-                    main(jj) = abs(mean(((evalmean(1,:) - evalmean(2,:)) + (evalmean(1,:)) - evalmean(3,:)) + (evalmean(2,:) - evalmean(3,:))));
-                end
+                main(jj) = abs(evalmean(1) - evalmean(2));
                 
             end
             
