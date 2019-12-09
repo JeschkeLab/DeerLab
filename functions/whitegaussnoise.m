@@ -31,7 +31,7 @@ validateattributes(level,{'numeric'},{'scalar','nonnegative','nonempty'},mfilena
 noise = randn(N,1);
 %Increase amplitude of the noise vector until standard deviation matches
 %the requested noise level
-ampnoise = 0;
+ampnoise = 0*noise;
 amp = 0;
 while std(ampnoise)<level
     amp = amp + level/100;
