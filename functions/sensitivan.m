@@ -4,11 +4,11 @@
 %   [median,iqr,evals] = SENSITIVAN(fcn,varpar)
 %   Performs a sensibility analysis of the ouput variables returned by the
 %   function (fcn) with respect to the parameter variation given in the
-%   structure (varpar). The median values and inter-quartile range (median) 
+%   structure (varpar). The median values and inter-quartile range (median)
 %   and (iqr) of the output parameters are returned as a cell array.
-%   Additionally, a third output argument (evals) can be requested, a cell 
-%   array, containing the analyzed variables evaluated at each parameter 
-%   combination. 
+%   Additionally, a third output argument (evals) can be requested, a cell
+%   array, containing the analyzed variables evaluated at each parameter
+%   combination.
 %
 %   [median,iqr] = SENSITIVAN(p,vp,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
@@ -22,11 +22,11 @@
 %   `            parameters combinations (default = true)
 %
 
-% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md).
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function [meanOut,Upper,Lower,mainEffect,evals] = sensitivan(fcnHandle,Parameters,varargin)
+function [meanOut,Upper,Lower,mainEffect,Interaction,evals] = sensitivan(fcnHandle,Parameters,varargin)
 
 if nargin<2
     error('Not enough input arguments. At least two input arguments required.')
@@ -74,7 +74,7 @@ for i=1:length(validationParam)
                 %... this call will return an error
                 [varargout{:}] = fcnHandle(argin);
                 notEnoughOutputs = true;
-            catch 
+            catch
                 nout = nout-1;
                 notEnoughOutputs = false;
             end
@@ -121,7 +121,7 @@ end
 %Factorial experiment design - End
 
 
-%Main effect analysis
+% Factors main effect analysis
 %-----------------------------------------------------
 for i = 1:nout
     data = evals{i};
@@ -155,12 +155,67 @@ for i = 1:nout
 end
 
 
+% Factors interaction analysis
+%-----------------------------------------------------
+for i = 1:nout
+    data = evals{i};
+    for j = 1:size(validationParam,2)
+        for k = 1:size(validationParam,2)
+            clear evalmean
+            clear set
+            clear subset
+            clear uni
+            %Get subsets of the two interacting factors
+            subset{1} = validationParam(1:size(data,1),j);
+            subset{2} = validationParam(1:size(data,1),k);
+            %Get the primary factor main effects for both levels of the
+            %secondary factor
+            for jj=1:length(subset)
+                tmp = subset{jj};
+                if isa(tmp{1},'function_handle')
+                    tmp = cellfun(@func2str,tmp,'UniformOutput',false);
+                end
+                if ischar(tmp{1})
+                    uni{jj} = unique(tmp);
+                else
+                    tmp = cell2mat(tmp);
+                    uni{jj} = unique(tmp);
+                end
+                subset{jj} = tmp;
+                
+                for ii=1:length(uni{jj})
+                    unitmp = uni{jj};
+                    if iscell(subset{jj})
+                        idx =  find(contains(subset{jj},unitmp{ii}));
+                    else
+                        idx = find(subset{jj}==unitmp(ii));
+                    end
+                    evalmean(ii,:) = pdist(data(idx,:),'euclidean');
+                end
+                
+                %Get main effects for upper and lower levels
+                if size(evalmean,1)<=2
+                    main(jj) = abs(mean((evalmean(1,:) - evalmean(2,:))));
+                else
+                    main(jj) = abs(mean(((evalmean(1,:) - evalmean(2,:)) + (evalmean(1,:)) - evalmean(3,:)) + (evalmean(2,:) - evalmean(3,:))));
+                end
+                
+            end
+            
+            %Compute the interaction between the factors
+            Interaction{i}(j,k) = abs(main(1) - main(2));
+            
+        end
+    end
+end
+
 if nout==1
     meanOut = meanOut{1};
     Upper = Upper{1};
     Lower = Lower{1};
     evals = evals{1};
     mainEffect = mainEffect{1};
+    Interaction = Interaction{1};
 end
 
 
