@@ -1,7 +1,7 @@
 %
-% VALIDATE Statistical validation of results
+% SENSITIVAN Statistical validation of results
 %
-%   [median,iqr,evals] = VALIDATE(fcn,varpar)
+%   [median,iqr,evals] = SENSITIVAN(fcn,varpar)
 %   Performs a sensibility analysis of the ouput variables returned by the
 %   function (fcn) with respect to the parameter variation given in the
 %   structure (varpar). The median values and inter-quartile range (median) 
@@ -10,7 +10,7 @@
 %   array, containing the analyzed variables evaluated at each parameter 
 %   combination. 
 %
-%   [median,iqr] = VALIDATE(p,vp,'Property',Value)
+%   [median,iqr] = SENSITIVAN(p,vp,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 % The properties to be passed as options can be set in any order.
@@ -26,7 +26,7 @@
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function [meanOut,Upper,Lower,evals] = validate(fcnHandle,Parameters,varargin)
+function [meanOut,Upper,Lower,mainEffect,evals] = sensitivan(fcnHandle,Parameters,varargin)
 
 if nargin<2
     error('Not enough input arguments. At least two input arguments required.')
@@ -44,24 +44,20 @@ validateattributes(Parameters,{'struct'},{'nonempty'},mfilename,'Parameters')
 
 validationParam = prepvalidation(Parameters,'RandPerm',RandPerm);
 
+% Factorial experiment design
 %-----------------------------------------------------
-% Run validation
-%-----------------------------------------------------
-
 ParNames = fieldnames(Parameters);
 
-%Prepare the output variable container
-evals = cell(1,length(validationParam));
-for i=1:length(validationParam)
-    evals{i} = [];
-end
 nout = [];
-%Run over all validation parameter permutations
+%Factorial experiment design - Start
 for i=1:length(validationParam)
+    %Mount input factors into user-structure
     for j=1:length(ParNames)
         argin.(ParNames{j}) =  validationParam{i,j};
     end
+    %On the first run, determine the number of outputs
     if isempty(nout)
+        %MATLAB's nargout returns always -1 for anonymous function handles
         nout = nargout(fcnHandle);
         if nout == -1
             notEnoughOutputs = true;
@@ -69,11 +65,13 @@ for i=1:length(validationParam)
         else
             notEnoughOutputs = false;
         end
+        %Iteratively increase varargout size
         while notEnoughOutputs
             try
+                %If nout not large enough...
                 nout = nout+1;
                 varargout = cell(1,nout);
-                %Run the build function
+                %... this call will return an error
                 [varargout{:}] = fcnHandle(argin);
                 notEnoughOutputs = true;
             catch 
@@ -81,9 +79,18 @@ for i=1:length(validationParam)
                 notEnoughOutputs = false;
             end
         end
+        %Prepare the output variable container
+        evals = cell(1,nout);
+        for ii=1:nout
+            evals{i} = [];
+        end
     end
     varargout = cell(1,nout);
+    
+    %Run the user function with current factor set
     [varargout{:}] = fcnHandle(argin);
+    
+    %Update statistics
     for j=1:length(varargout)
         vareval = evals{j};
         vareval(end+1,:) = varargout{j};
@@ -93,6 +100,7 @@ for i=1:length(validationParam)
         Upper{j} = prctile(vareval,75,1);
         evals{j} = vareval;
     end
+    
     %If user passes optional plotting hook, then prepare the plot
     if ~isempty(AxisHandle)
         cla(AxisHandle)
@@ -110,12 +118,46 @@ for i=1:length(validationParam)
         drawnow
     end
 end
+%Factorial experiment design - End
+
+
+%Main effect analysis
+%-----------------------------------------------------
+for i = 1:nout
+    data = evals{i};
+    for j = 1:size(validationParam,2)
+        clear evalmean
+        clear set
+        subset = validationParam(1:size(data,1),j);
+        if ischar(subset{1})
+            uni = unique(subset);
+        else
+            subset = cell2mat(subset);
+            uni = unique(subset);
+        end
+        for ii=1:length(uni)
+            if iscell(subset)
+                idx =  find(contains(subset,uni{ii}));
+            else
+                idx = find(subset==uni(ii));
+            end
+            evalmean(ii,:) = pdist(data(idx,:),'euclidean');
+        end
+        if size(evalmean,1)<=2
+            mainEffect{i}(j) = abs(mean((evalmean(1,:) - evalmean(2,:))));
+        else
+            mainEffect{i}(j) = abs(mean(((evalmean(1,:) - evalmean(2,:)) + (evalmean(1,:)) - evalmean(3,:)) + (evalmean(2,:) - evalmean(3,:))));
+        end
+    end
+end
+
 
 if nout==1
-    meanOut = meanOut{1}.';
-    Upper = Upper{1}.';
-    Lower = Lower{1}.';
+    meanOut = meanOut{1};
+    Upper = Upper{1};
+    Lower = Lower{1};
     evals = evals{1};
+    mainEffect = mainEffect{1};
 end
 
 

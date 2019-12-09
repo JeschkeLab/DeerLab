@@ -7,7 +7,7 @@ B = td_exp(t,0.3);
 P = rd_onegaussian(r,[4,0.3]);
 V = dipolarsignal(t,r,P,'noiselevel',0.05,'ModDepth',0.3,'Background',B);
 
-Parameters.regparam = linspace(10,50,5);
+Parameters.regparam = linspace(10,50,2);
 Parameters.validationnoise = linspace(0.01,0.1,2);
 
 if opt.Display
@@ -18,7 +18,7 @@ end
 
 fcnHandle = @(param)myfitting(param,t,r,V);
 
-[meansOut,stdsOut] = validate(fcnHandle,Parameters,'AxisHandle',AxisHandle);
+[meansOut,Upper,Lower]  = sensitivan(fcnHandle,Parameters,'AxisHandle',AxisHandle);
 
 err(1) = ~iscell(meansOut);
 err(2) = length(meansOut)~=2;
@@ -29,20 +29,16 @@ maxerr = 0;
 if opt.Display
     cla
     subplot(121)
-    meanOut = meansOut{1};
-    stdOut = stdsOut{1};
     hold on
-    plot(r,meanOut,'b','LineWidth',1)
-    f = fill([r fliplr(r)] ,[meanOut+stdOut fliplr(meanOut-stdOut)],...
+    plot(r,meansOut{1},'b','LineWidth',1)
+    f = fill([r fliplr(r)] ,[Upper{1} fliplr(Lower{1})],...
         'b','LineStyle','none');
     f.FaceAlpha = 0.5;
-    axis tight, grid on, box on
     subplot(122)
-    meanOut = meansOut{2};
-    stdOut = stdsOut{2};
+    axis tight, grid on, box on
     hold on
-    plot(t,meanOut,'b','LineWidth',1)
-    f = fill([t fliplr(t)] ,[meanOut+stdOut fliplr(meanOut-stdOut)],...
+    plot(t,meansOut{2},'b','LineWidth',1)
+    f = fill([t fliplr(t)] ,[Upper{2}  fliplr(Lower{2})],...
         'b','LineStyle','none');
     f.FaceAlpha = 0.5;
     axis tight, grid on, box on

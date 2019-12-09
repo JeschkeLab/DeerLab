@@ -4,8 +4,8 @@ rng(2)
 t = linspace(0,4,200);
 r = time2dist(t);
 
-Parameters.regparam = linspace(0.1,1,5);
-Parameters.validationnoise = linspace(0.01,0.1,2);
+Parameters.regparam = linspace(0.1,1,3);
+Parameters.type = {'tikh','tv'};
 
 if opt.Display
     f = figure(1); clf;AxisHandle = axes(f);
@@ -13,7 +13,7 @@ else
     AxisHandle = [];
 end
 
-[meanOut,stdOut] = validate(@myfitting,Parameters,'AxisHandle',AxisHandle);
+[Median,Upper,Lower] = sensitivan(@myfitting,Parameters,'AxisHandle',AxisHandle);
 
 err = false;
 data = [];
@@ -22,8 +22,8 @@ maxerr = -3;
 if opt.Display
         cla
         hold on
-        plot(r,meanOut,'b','LineWidth',1)
-        f = fill([r fliplr(r)] ,[meanOut.'+stdOut.' fliplr(meanOut.'-stdOut.')],...
+        plot(r,Median,'b','LineWidth',1)
+        f = fill([r fliplr(r)] ,[Upper.' fliplr(Lower.')],...
             'b','LineStyle','none');
         f.FaceAlpha = 0.5;
         hold('off')
@@ -45,9 +45,8 @@ K = dipolarkernel(t,r);
 S = K*P;
 S = dipolarsignal(t,r,P,'noiselevel',0.05);
 
-S = S + whitegaussnoise(M, param.validationnoise);
 
 regparam = param.regparam;
-Pfit = fitregmodel(S,K,r,'tikh',regparam);
+Pfit = fitregmodel(S,K,r,param.type,regparam);
 
 end
