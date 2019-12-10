@@ -5,7 +5,7 @@ Dimension = 200;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
-InputParam = [2 0.5 3 0.5 0.4];
+InputParam = [3 0.5 4 0.5 0.4];
 P = rd_twogaussian(r,InputParam);
 
 K = dipolarkernel(t,r);
