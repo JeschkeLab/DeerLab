@@ -7,7 +7,7 @@ param.b = linspace(0.02,0.1,2);
 
 [~,~,~,mainEffect]  = sensitivan(@(param)myfcn(param,x),param);
 
-err = mainEffect{1}>mainEffect{2};
+err = mainEffect.a>mainEffect.b;
 err = any(err);
 data = [];
 maxerr = 0;

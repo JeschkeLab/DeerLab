@@ -8,9 +8,9 @@ param.c = linspace(0.04,0.3,3);
 
 [~,~,~,mainEffect]  = sensitivan(@(param)myfcn(param,x),param);
 
-err(1) = mainEffect{1}{1}>mainEffect{1}{2}(1);
-err(2) = mainEffect{2}{1}>mainEffect{2}{3}(1);
-err(3) = numel(mainEffect{1}{3})~=2;
+err(1) = mainEffect{1}.a>mainEffect{1}.b(1);
+err(2) = mainEffect{2}.a>mainEffect{2}.c(1);
+err(3) = numel(mainEffect{1}.c)~=2;
 err = any(err);
 data = [];
 maxerr = 0;

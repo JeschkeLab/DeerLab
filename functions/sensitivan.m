@@ -149,11 +149,14 @@ for i = 1:nout
             map = triu(map,1);
             evalmean(ii) = mean(map(map~=0));
         end
-        mainEffect{i}{j} = abs(diff(evalmean));
+        main{i}{j} = abs(diff(evalmean));
     end
 end
-
-
+for i=1:length(main)
+    for j=1:length(ParNames)
+        mainEffect{i}.(ParNames{j}) =  main{i}{j};
+    end
+end
 % Factors interaction analysis
 %-----------------------------------------------------
 for i = 1:nout
@@ -164,6 +167,7 @@ for i = 1:nout
             clear set
             clear subset
             clear uni
+            clear main
             %Get subsets of the two interacting factors
             subset{1} = validationParam(1:size(data,1),j);
             subset{2} = validationParam(1:size(data,1),k);
