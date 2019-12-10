@@ -30,11 +30,6 @@ noise = whitegaussnoise(length(S3),0.1);
 S3 = S3 + noise;
 rng('default')
 
-
-L = regoperator(Ndist,2);
-%Set optimal regularization parameter (found numerically lambda=0.13)
-regparam = 100;
-
 Ss = {S1,S2,S3};
 
 tmodel = t3;
@@ -51,33 +46,33 @@ paramglobal = fitparamodel(Ss,mymodel,{t1,t2,t3},InitialGuess,'Upper',upper,'low
 
 param3 = fitparamodel(S3,mymodel,tmodel,InitialGuess,'Upper',upper,'lower',lower);
 
-Result = rd_twogaussian(r,paramglobal);
+Pfit = rd_twogaussian(r,paramglobal);
 Dist3 = rd_twogaussian(r,param3);
 
 
-normResult = norm(P - Result);
+normResult = norm(P - Pfit);
 norm3 = norm(P - Dist3);
 
 err(1) = any(normResult > [norm3]);
 err = any(err);
 data = [];
-maxerr = normResult;
+maxerr = max(P - Pfit);
 
 if opt.Display
-figure(8),clf
-subplot(121)
-hold on
-plot(t1,S1,'k')
-plot(t1,K1*Result,'r')
-plot(t2,S2+1,'k')
-plot(t2,K2*Result + 1,'r')
-plot(t3,S3+2,'k')
-plot(t3,K3*Result + 2,'r')
-subplot(122)
-hold on
-plot(r,P,'k')
-plot(r,Result,'r')
-plot(r,Dist3,'b--')
+    figure(8),clf
+    subplot(121)
+    hold on
+    plot(t1,S1,'k')
+    plot(t1,K1*Pfit,'r')
+    plot(t2,S2+1,'k')
+    plot(t2,K2*Pfit + 1,'r')
+    plot(t3,S3+2,'k')
+    plot(t3,K3*Pfit + 2,'r')
+    subplot(122)
+    hold on
+    plot(r,P,'k')
+    plot(r,Pfit,'r')
+    plot(r,Dist3,'b--')
 end
 
 end

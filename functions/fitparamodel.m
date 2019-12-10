@@ -71,7 +71,9 @@ function [FitParameters,Fit] = fitparamodel(V,model,ax,K,StartParameters,varargi
 %--------------------------------------------------------------------------
 
 if ~license('test','optimization_toolbox')
-   error('DeerAnaysis could not find a valid licence for the Optimization Toolbox. Please install the add-on to use fitparamodel.')
+    OptimizationToolboxInstalled = false;
+else
+    OptimizationToolboxInstalled = true;
 end
 
 %Parse the different styles of input
@@ -136,9 +138,9 @@ try
         passlabel = true;
     end
     if passlabel
-    model = @(ax,param,idx) model(ax,param,idx);
+        model = @(ax,param,idx) model(ax,param,idx);
     else
-    model = @(ax,param,idx) model(ax,param);
+        model = @(ax,param,idx) model(ax,param);
     end
     
 catch
@@ -193,9 +195,15 @@ else
 end
 
 if isempty(Solver)
-    Solver = 'lsqnonlin';
+    Solver = 'nlsqbnd';
 else
     validateattributes(Solver,{'char'},{'nonempty'},mfilename,'Solver')
+    if OptimizationToolboxInstalled
+        SolverList = {'fminsearchcon','lsqnonlin','fmincon','fminsearch','nlsqbnd'};
+    else
+        SolverList = {'fminsearchcon','fminsearch','nlsqbnd'};
+    end
+    validatestring(Solver,SolverList);
 end
 
 if isempty(Algorithm)
@@ -227,7 +235,7 @@ if ~isempty(GlobalWeights)
         error('The sum of the global fit weights must equal 1.')
     end
 end
-if length(V)>1 && strcmp(Solver,'lsqnonlin')
+if length(V)>1 && (strcmp(Solver,'lsqnonlin') || strcmp(Solver,'nlsqbnd') )
     Solver = 'fmincon';
     Algorithm = 'interior-point';
 end
@@ -330,6 +338,23 @@ warning('off','MATLAB:nearlySingularMatrix')
 
 %Fit the parametric model...
 switch Solver
+    case 'fminsearchcon'
+        %...under constraints for the parameter values range
+        solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
+            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+            'TolFun',TolFun,'TolCon',1e-20,...
+            'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+        [FitParameters,~,exitflag] = fminsearchcon(CostFcn,StartParameters,LowerBounds,UpperBounds,[],[],[],solverOpts);
+        %Check how optimization exited...
+        if exitflag == 0
+            %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+            solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
+                'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,...
+                'TolFun',TolFun,'TolCon',1e-10,...
+                'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+            [FitParameters] = fminsearchcon(CostFcn,FitParameters,LowerBounds,UpperBounds,[],[],[],solverOpts);
+        end
+        
     case 'fmincon'
         %...under constraints for the parameter values range
         solverOpts = optimoptions(@fmincon,'Algorithm',Algorithm,'Display',Verbose,...
@@ -354,6 +379,23 @@ switch Solver
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
             solverOpts = optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,'Display',Verbose);
             [FitParameters]  = lsqnonlin(ModelCost,FitParameters,LowerBounds,UpperBounds,solverOpts);
+        end
+        
+    case 'nlsqbnd'
+        solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
+            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+            'TolFun',TolFun,'TolCon',1e-20,...
+            'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax{1},Parameters,1) - V{1}));
+        [FitParameters,~,~,exitflag] = nlsqbnd(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
+        FitParameters = FitParameters.';
+        if exitflag == 0
+            %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+            solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
+                'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,...
+                'TolFun',TolFun,'TolCon',1e-20,...
+                'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+            [FitParameters] = nlsqbnd(ModelCost,FitParameters,LowerBounds,UpperBounds,solverOpts);
         end
         
     case 'fminsearch'

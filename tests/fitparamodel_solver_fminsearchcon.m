@@ -1,6 +1,6 @@
 function [err,data,maxerr] = test(opt,oldata)
 
-
+rng(1)
 Dimension = 200;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
@@ -12,8 +12,8 @@ K = dipolarkernel(t,r);
 S = K*P;
 
 param0 = [2 0.1];
-[fitparam,Pfit] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fmincon');
-err(1) = any(abs(Pfit - P)>1e-5);
+[fitparam,Pfit] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fminsearchcon');
+err(1) = any(abs(Pfit - P)>2e-5);
 err(2) = any(abs(fitparam - paramin)>1e-3);
 err = any(err);
 

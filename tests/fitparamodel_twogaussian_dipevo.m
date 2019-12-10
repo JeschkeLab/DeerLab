@@ -1,17 +1,17 @@
 function [err,data,maxerr] = test(opt,oldata)
 
 
-Dimension = 200;
+Dimension = 400;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
-InputParam = [2 0.5 3 0.5 0.4];
+InputParam = [3 0.5 4 0.5 0.4];
 P = rd_twogaussian(r,InputParam);
 
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
-InitialGuess = [2 0.1 5 0.1 0.5];
+InitialGuess = [2 0.5 5 0.3 0.5];
 [FitParam,FitP] = fitparamodel(DipEvoFcn,@rd_twogaussian,r,K,InitialGuess);
 err(1) = any(abs(FitP - P)>1e-5);
 err = any(err);

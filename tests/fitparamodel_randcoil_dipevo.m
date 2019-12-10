@@ -19,7 +19,7 @@ K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
 [~,FitP] = fitparamodel(DipEvoFcn,@rd_randcoil,r,K);
-err = any(abs(FitP - P)>1e-10);
+err = any(abs(FitP - P)>1e-7);
 
 maxerr = max(abs(FitP - P));
 data = [];
