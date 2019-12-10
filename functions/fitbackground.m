@@ -72,7 +72,7 @@ if ~iscolumn(t)
 end
 
 %Parse optiona inputs
-[LogFit,InitialGuess,ModDepth] = parseoptional({'LogFit','InitialGuess','ModDepth'},varargin);
+[LogFit,InitialGuess,ModDepth,Solver] = parseoptional({'LogFit','InitialGuess','ModDepth','Solver'},varargin);
 
 if isempty(LogFit)
     LogFit = false;
@@ -85,6 +85,20 @@ if ~isempty(ModDepth)
         error('Fixed modulation depth must be in the range 0 to 1.')
     end
 end
+
+if isempty(Solver) && ~license('test','optimization_toolbox')
+    Solver = 'nlsqbnd';
+elseif isempty(Solver) && license('test','optimization_toolbox')
+    Solver = 'lsqnonlin';
+else
+    validateattributes(Solver,{'char'},{'nonempty'},mfilename,'Solver')
+    SolverList = {'lsqnonlin','nlsqbnd'};
+    validatestring(Solver,SolverList);
+end
+if strcmp(Solver,'lsqnonlin') && ~license('test','optimization_toolbox')
+    error('The ''lsqnonlin'' solver requires the Optimization Toolbox.')
+end
+
 DataIsColumn = iscolumn(Data);
 if ~DataIsColumn
     Data = Data.';
@@ -117,11 +131,6 @@ FitData = Data(FitStartPos:FitEndPos);
 
 %Use absolute time scale to ensure proper fitting of negative-time data
 Fitt = abs(Fitt);
-
-%Prepare minimization problem solver
-solveropts = optimoptions(@lsqnonlin,'Algorithm','trust-region-reflective','Display','off',...
-    'MaxIter',8000,'MaxFunEvals',8000,...
-    'TolFun',1e-10,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
 
 %Construct cost functional for minimization
 if LogFit
@@ -164,7 +173,25 @@ else
     StartParameters(1+pos:pos + Info.nparam) =  [Info.parameters(:).default];
 end
 
-FitParam = lsqnonlin(CostFcn,StartParameters,LowerBounds,UpperBounds,solveropts);
+%Solve the constrained nonlinear minimization problem
+if strcmp(Solver,'lsqnonlin')
+    %Prepare minimization problem solver
+    solveropts = optimoptions(@lsqnonlin,'Algorithm','trust-region-reflective','Display','off',...
+        'MaxIter',8000,'MaxFunEvals',8000,...
+        'TolFun',1e-10,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+    %Run solver
+    FitParam = lsqnonlin(CostFcn,StartParameters,LowerBounds,UpperBounds,solveropts);
+else
+    %Prepare minimization problem solver
+    solveropts = optimset('Algorithm','trust-region-reflective','Display','off',...
+        'MaxIter',8000,'MaxFunEvals',8000,...
+        'TolFun',1e-20,'TolCon',1e-20,...
+        'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+    %Run solver
+    FitParam = nlsqbnd(CostFcn,StartParameters,LowerBounds,UpperBounds,solveropts);
+    %nlsqbnd returns a column, transpose to adapt to row-style of MATLAB solvers
+    FitParam = FitParam.';
+end
 
 if isempty(ModDepth)
     %Get the fitted modulation depth
