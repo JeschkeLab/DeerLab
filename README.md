@@ -11,15 +11,14 @@
  <img src="https://github.com/luisfabib/DeerAnalysis2/workflows/Webpage%20update/badge.svg?style=flat-square"></img>
 </p>
 
-
+### About
 This DeerAnalysis2 software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar spectroscopy techniques (DQC, RIDME, SIFTER). The main homepage for Julia can be found at www.deeranalysis.org. This is the GitHub repository of the DeerAnalysis2 source code, including instructions for compiling and installing DeerAnalysis.
 
 It consists of a collection of functions (the API) that provides a series of functions that perform single processing or fitting tasks. They can be combined in scripts to generate custom analysis workflows.
 
 To model distance distributions, DeerAnalysis2 supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background models. There are API functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
 
-Requirements
----------------
+### Requirements
 The application programming interface (API) of DeerAnalysis requires the following products:
 
   * MATLAB (oldest version supported R2016b) (see <https://ch.mathworks.com/products/matlab.html>)
@@ -28,9 +27,9 @@ The application programming interface (API) of DeerAnalysis requires the followi
  
   * Optimization Toolbox (see <https://ch.mathworks.com/products/optimization.html>)
 
-Setup
----------------
-In order for MATLAB to access the DeerAnalysis API functions, the path to DeerAnalysis installation folder must be set.
+### Setup
+
+In order for MATLAB to access the DeerAnalysis API functions, the path to the DeerAnalysis installation folder must be set in MATLAB.
 
 **Option 1:** Add DeerAnalysis path via MATLAB's IDE
 
@@ -50,5 +49,17 @@ In order for MATLAB to access the DeerAnalysis API functions, the path to DeerAn
        addpath('mypath/DeerAnalysis/functions/models')
 
 3) Save ``startup.m`` and restart MATLAB.
+
+### License
+
+The DeerAnalysis package is licensed under the MIT License. The "package" consists of the DOE ([functions/](https://github.com/luisfabib/DeerAnalysis2/tree/master/functions)), documentation source ([docsrc/](https://github.com/luisfabib/DeerAnalysis2/tree/master/docsrc)), example scripts ([scripts/](https://github.com/luisfabib/DeerAnalysis2/tree/master/scripts)), test suite ([tests/](https://github.com/luisfabib/DeerAnalysis2/tree/master/tests)) and pipeline settings ([.github/workflows](https://github.com/luisfabib/DeerAnalysis2/tree/master/.github/workflows)). See below for exceptions.
+
+Copyright (c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/luisfabib/DeerAnalysis2/contributors).
+
+DeerAnalysis includes code from the following projects, which have their own licenses:
+- [datahash.m](https://www.mathworks.com/matlabcentral/fileexchange/31272-datahash) (Hash-key generator by Jan Simon) [BSD] 
+- [fresnelS.m, fresnelC.m](https://www.mathworks.com/matlabcentral/fileexchange/28765-fresnels-and-fresnelc) (Efficient and accurate Fresnel integrals by John D'Errico) [BSD]
+- [fminsearchcon.m](https://www.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd-fminsearchcon) (Bound constrained optimization using fminsearch by John D'Errico) [BSD]
+- [nlsqbnd.m](https://www.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd-fminsearchcon) (Non-linear least squares solver with box constraints by Alain Barraud) [BSD]
 
 
