@@ -29,9 +29,11 @@
 % The properties to be passed as options can be set in any order.
 %
 %   'Solver' - Solver to be used to solve the minimization problems
-%                      'lsqnonlin' - Non-linear constrained least-squares
-%                      'fmincon' - Non-linear constrained minimization
-%                      'fminsearch' - Unconstrained minimization
+%           'lsqnonlin' - Non-linear constrained least-squares (toolbox)
+%             'fmincon' - Non-linear constrained minimization (toolbox)
+%             'nlsqbnd' - Non-linear constrained least-squares (free)
+%       'fminsearchbnd' - Non-linear constrained minimization (free)
+%          'fminsearch' - Unconstrained minimization
 %
 %   'CostModel' - Type of fitting cost functional to use.
 %                      'lsq' - Least-squares fitting
@@ -194,8 +196,10 @@ else
     validateattributes(Verbose,{'char'},{'nonempty'},mfilename,'Verbose')
 end
 
-if isempty(Solver)
+if isempty(Solver) && ~license('test','optimization_toolbox')
     Solver = 'nlsqbnd';
+elseif isempty(Solver) && license('test','optimization_toolbox')
+    Solver = 'lsqnonlin';
 else
     validateattributes(Solver,{'char'},{'nonempty'},mfilename,'Solver')
     if OptimizationToolboxInstalled
@@ -388,6 +392,7 @@ switch Solver
             'DiffMinChange',1e-8,'DiffMaxChange',0.1);
         ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax{1},Parameters,1) - V{1}));
         [FitParameters,~,~,exitflag] = nlsqbnd(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
+        %nlsqbnd returns a column, transpose to adapt to row-style of MATLAB solvers
         FitParameters = FitParameters.';
         if exitflag == 0
             %... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped

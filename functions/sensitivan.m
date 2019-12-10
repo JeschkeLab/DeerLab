@@ -1,16 +1,21 @@
 %
-% SENSITIVAN Statistical validation of results
+% SENSITIVAN Sensitivity analysis by factorial design
 %
-%   [median,iqr,evals] = SENSITIVAN(fcn,varpar)
+%   [med,up,lo] = SENSITIVAN(fcn,varpar)
 %   Performs a sensibility analysis of the ouput variables returned by the
 %   function (fcn) with respect to the parameter variation given in the
-%   structure (varpar). The median values and inter-quartile range (median)
-%   and (iqr) of the output parameters are returned as a cell array.
-%   Additionally, a third output argument (evals) can be requested, a cell
-%   array, containing the analyzed variables evaluated at each parameter
-%   combination.
+%   structure (varpar). The median values (med), as well as the lower (lo)
+%   and upper (up) values of the output parameters are returned as a cell array.
 %
-%   [median,iqr] = SENSITIVAN(p,vp,'Property',Value)
+%   [~,~,~,main,inter] = SENSITIVAN(fcn,varpar)
+%   Additionally, the main effects (main) and interaction (inter) between
+%   the factors in varpar are returned.
+%
+%   [~,~,~,~,~,evals] = SENSITIVAN(fcn,varpar)
+%   The last output argument returns a cell array containing all of the
+%   outputs computed for all factor level combinations.
+%
+%   [args] = SENSITIVAN(fcn,varpar,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 % The properties to be passed as options can be set in any order.

@@ -26,6 +26,10 @@
 %
 %   'InitialGuess' - Array of initial values for the fit parameters
 %
+%   'Solver' - Optimization solver used for the fitting
+%             'lsqnonlin' - Non-linear constrained least-squares (toolbox)
+%               'nlsqbnd' - Non-linear constrained least-squares (free)
+%
 
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
