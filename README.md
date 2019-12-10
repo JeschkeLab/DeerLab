@@ -1,13 +1,16 @@
 
-<a name="logo"/>
+<p align="center">
 <img src="./docsrc/source/logo_dark.png" alt="DeerAnalysis Logo" width="700" height="150"></img>
-</a>
+</p>
 </div>
 
-![GitHub issues](https://img.shields.io/github/issues-raw/luisfabib/DeerAnalysis2?style=flat)
-<img src="https://img.shields.io/badge/MATLAB-R2016b--R2019b-brightgreen?style=flat"></img>
-![GitHub All Releases](https://img.shields.io/github/downloads/luisfabib/DeerAnalysis2/total?style=flat)
-![GItHub Actions](https://github.com/luisfabib/DeerAnalysis2/workflows/Webpage%20update/badge.svg?style=flat-square)
+<p align="center">
+ <img src="https://img.shields.io/github/issues-raw/luisfabib/DeerAnalysis2?style=flat"></img>
+ <img src="https://img.shields.io/badge/MATLAB-R2016b--R2019b-brightgreen?style=flat"></img>
+ <img src="https://img.shields.io/github/downloads/luisfabib/DeerAnalysis2/total?style=flat"></img>
+ <img src="https://github.com/luisfabib/DeerAnalysis2/workflows/Webpage%20update/badge.svg?style=flat-square"></img>
+</p>
+
 
 This DeerAnalysis2 software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar spectroscopy techniques (DQC, RIDME, SIFTER). The main homepage for Julia can be found at www.deeranalysis.org. This is the GitHub repository of the DeerAnalysis2 source code, including instructions for compiling and installing DeerAnalysis.
 
@@ -20,7 +23,9 @@ Requirements
 The application programming interface (API) of DeerAnalysis requires the following products:
 
   * MATLAB (oldest version supported R2016b) (see <https://ch.mathworks.com/products/matlab.html>)
-    
+ 
+ Optional functionality may require the following products:
+ 
   * Optimization Toolbox (see <https://ch.mathworks.com/products/optimization.html>)
 
 Setup
