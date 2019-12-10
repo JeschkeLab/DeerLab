@@ -34,6 +34,14 @@ end
 if ~isa(fcnHandle,'function_handle')
     error('The first input must be a valid function handle.')
 end
+
+%Construct workaround for prctile functionality (Statistics Toolbox)
+prctile = @(v,p) interp1(linspace(0.5/length(v), 1-0.5/length(v), length(v))', sort(v), p*0.01, 'spline');
+rowfcn = @(func, matrix) @(row) func(matrix(row, :));
+rowfcn = @(func, matrix) arrayfun(rowfcn(func, matrix), 1:size(matrix,1), 'UniformOutput', false)';
+takeall = @(x) reshape([x{:}], size(x{1},2), size(x,1))';
+applyrowfcn = @(func, matrix) takeall(rowfcn(func, matrix));
+
 %Validate the required input attributes
 validateattributes(Parameters,{'struct'},{'nonempty'},mfilename,'Parameters')
 
@@ -46,11 +54,12 @@ validationParam = prepvalidation(Parameters,'RandPerm',RandPerm);
 
 % Factorial experiment design
 %-----------------------------------------------------
+%Get names of the variables givne by the user
 ParNames = fieldnames(Parameters);
 
 nout = [];
 %Factorial experiment design - Start
-for i=1:length(validationParam)
+for i=1:size(validationParam,1)
     %Mount input factors into user-structure
     for j=1:length(ParNames)
         argin.(ParNames{j}) =  validationParam{i,j};
@@ -90,17 +99,21 @@ for i=1:length(validationParam)
     %Run the user function with current factor set
     [varargout{:}] = fcnHandle(argin);
     
-    %Update statistics
     for j=1:length(varargout)
         vareval = evals{j};
         vareval(end+1,:) = varargout{j};
-        %Calculate status of validation statistics
-        meanOut{j} = median(vareval,1,'omitnan');
-        Lower{j} = prctile(vareval,25,1);
-        Upper{j} = prctile(vareval,75,1);
         evals{j} = vareval;
     end
     
+    if i>1
+        %Update statistics
+        for j=1:length(varargout)
+            vareval = evals{1};
+            %Calculate status of validation statistics
+            meanOut{j} = median(vareval,1,'omitnan');
+            Lower{j} = applyrowfcn(@(M)prctile(M,25),vareval.').';
+            Upper{j} = applyrowfcn(@(M)prctile(M,75),vareval.').';
+        end
     %If user passes optional plotting hook, then prepare the plot
     if ~isempty(AxisHandle)
         cla(AxisHandle)
@@ -116,6 +129,7 @@ for i=1:length(validationParam)
         box(AxisHandle,'on')
         title(sprintf('Run %i/%i',i,length(validationParam)))
         drawnow
+    end
     end
 end
 %Factorial experiment design - End
