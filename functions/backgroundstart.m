@@ -57,11 +57,6 @@ end
 validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
 validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
 
-%Convert time step to microseconds if given in nanoseconds
-if isnanosecond(t)
-    t = t/1000; % ns->us
-end
-
 %--------------------------------------------------------------------------
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------

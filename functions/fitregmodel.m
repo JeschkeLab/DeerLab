@@ -199,10 +199,6 @@ nr = size(K{1},2);
 L = regoperator(nr,RegOrder);
 InitialGuess = zeros(nr,1);
 
-%Convert distance axis to nanoseconds if givne in Angstrom
-if ~isnanometer(r)
-   r = r/10; 
-end
 dr = mean(diff(r));
 
 %If unconstrained regularization is requested then solve analytically

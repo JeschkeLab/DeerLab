@@ -30,10 +30,6 @@ if iscolumn(t)
 end
 validateattributes(t,{'numeric'},{'nonempty','increasing'},'t')
 
-%Convert time step to microseconds if given in nanoseconds
-if isnanosecond(t)
-    t = t/1000; % ns->us
-end
 %Use absolute time scale, required for negative times
 t = abs(t);
 

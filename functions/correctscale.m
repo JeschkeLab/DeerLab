@@ -22,11 +22,6 @@ end
 validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
 validateattributes(V,{'numeric'},{'nonempty'},mfilename,'V')
 
-% Convert time step to microseconds if given in nanoseconds
-if isnanosecond(t)
-    t = t/1000; % ns->us
-end
-
 %Convert time to distance axis
 r = time2dist(t);
 

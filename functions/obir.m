@@ -103,11 +103,6 @@ else
     RegType = validatestring(RegType,allowedInput);
 end
 
-%Convert distance axis to nanoseconds if givne in Angstrom
-if ~isnanometer(r)
-   r = r/10; 
-end
-
 L = regoperator(length(r),RegOrder);
 
 %--------------------------------------------------------------------------

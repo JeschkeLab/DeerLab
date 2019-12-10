@@ -136,13 +136,6 @@ for i = 1:length(Methods)
     Methods{i} = validatestring(Methods{i},allowedMethodInputs);
 end
 
-% Convert distance axis to nanometers if given in Angstrom
-if ~isTimeDomain && ~isnanometer(ax)
-    ax = ax/10; % A -> nm
-elseif isTimeDomain && mean(diff(ax))>=0.5
-    ax = round(ax)/1000; % ns->us
-end
-
 % Run all parametric model fits and evaluate selection metrics
 %-------------------------------------------------------------------------------
 nMethods = length(Methods);

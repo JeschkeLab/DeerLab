@@ -151,16 +151,8 @@ dt = mean(diff(t));
 nu0 = 51.92052556862238*gValue/2; % MHz nm^3
 w0 = 2*pi*nu0; % Mrad s^-1 nm^3
 
-% Convert time step to microseconds if given in nanoseconds
-if isnanosecond(t)
-    t = round(t,12)/1000; % ns->us
-end
-
 % Convert distance axis to nanoseconds if givne in Angstrom
 rinput = r;
-if ~isnanometer(r)
-    r = r/10;
-end
 if length(r)~=1
     dr = mean(diff(rinput));
 else

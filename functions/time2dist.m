@@ -26,11 +26,6 @@ else
    validateattributes(M,{'numeric'},{'scalar','nonnegative'}) 
 end
 
-%Convert time step to microseconds if given in nanoseconds
-if isnanosecond(t)
-    t = round(t)/1000; % ns->us
-end
-
 t = abs(t);
 dt = mean(abs(diff(t)));
 tmax = max(t);

@@ -64,9 +64,6 @@ varargout = cell(1,nargout);
 % Convert time axis to microseconds if loaded in nanoseconds
 if length(varargout)>1 && ~iscell(varargout{1})
     t = varargout{1};
-    if isnanosecond(t)
-        t = t/1000; % ns->us
-    end
     varargout{1} = t;
 end
 

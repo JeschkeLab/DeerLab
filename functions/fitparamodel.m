@@ -270,20 +270,10 @@ for i=1:length(ax)
         error('Distance/Time axis must be a monotonically increasing vector.')
     end
     %If using distance domain, only one axis must be passed
-    if isDistanceDomain
-        %Convert distance axis to nanometers if given in Angstrom
-        if ~isnanometer(ax{i})
-            ax{i} = ax{i}/10;
-        end
-        
-    else
+    if ~isDistanceDomain
         %Is using time-domain,control that same amount of axes as signals are passed
         if length(V{i})~=length(ax{i})
             error('V and t arguments must fulfill length(t)==length(S).')
-        end
-        % Convert time axis to microseconds if given in nanoseconds
-        if isnanosecond(ax{i})
-            ax{i} = round(ax{i},6)/1000; % ns->us
         end
     end
     
