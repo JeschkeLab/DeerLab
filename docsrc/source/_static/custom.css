@@ -20,7 +20,7 @@ a.visited{
 color:#000;
 }
 
-
+ul.metro li.nocolor_class a.tile { background-color: #FFFFFF; border-radius: 50%; width: 110px; height: 110px;}
 /* override table width restrictions */
 @media screen and (min-width: 767px) {
 

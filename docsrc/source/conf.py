@@ -69,12 +69,14 @@ html_theme_path = ["../.."]
 html_logo = "demo/static/logo-wordmark-light.svg"
 html_show_sourcelink = True
 html_favicon = 'favicon.ico'
+html_static_path = ['_static']
 
 # Extensions to theme docs
 def setup(app):
     from sphinx.domains.python import PyField
     from sphinx.util.docfields import Field
     app.add_css_file('/source/_static/custom.css')
+    app.add_stylesheet('/source/_static/theme_override.css')
     app.add_object_type(
         'confval',
         'confval',
@@ -103,7 +105,7 @@ html_static_path = ['_static']
 # Add path to custom CSS file to overwrite some of the default CSS settings
 html_css_files = [
     'custom.css',
-    'fancybutton.css'
+    'theme_override.css'
 ]	
 
 # List of patterns, relative to source directory, that match files and
