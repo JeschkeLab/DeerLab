@@ -29,11 +29,10 @@ Functions
     ./api/regparamrange
     ./api/selectmodel
     ./api/selregparam
-    ./api/specunits
+    ./api/sensitivan
     ./api/suppressghost
     ./api/time2dist
     ./api/time2freq
-    ./api/validate
     ./api/whitenoise
     ./api/winlowpass
 

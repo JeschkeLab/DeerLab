@@ -101,3 +101,14 @@ LogFit
     .. code-block:: matlab
 
         B = fitbackground(V,t,@td_exp,tstart,'LogFit',true)
+
+Solver
+    Specifies the solver used for fitting the background model.
+
+    *Default:* ``'lsqnonlin'`` (Optimization Toolbox installed) or ``'nlsqbnd'`` (Optimization Toolbox not installed)
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        B = fitbackground(V,t,@td_exp,tstart,'Solver','nlsqbnd')

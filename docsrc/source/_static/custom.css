@@ -1,17 +1,25 @@
 
 @import 'theme.css';       /* for the Read the Docs theme */
 
+/*
 .section {
      text-align:justify;
 }
+*/
 
 .rst-content code.literal{
 	color:#9c1330
 }
 
-a.fancybutton:visited {
-  color: white
+a{
+color:#000;
+text-decoration:none;
 }
+
+a.visited{
+color:#000;
+}
+
 
 /* override table width restrictions */
 @media screen and (min-width: 767px) {

@@ -1,14 +1,18 @@
-Welcome to...
+﻿Welcome to...
 =========================================
 
 .. image:: logo_dark.png
     :width: 800px
     :align: center
 
+.. raw:: html
 
-.. image:: https://img.shields.io/github/issues-raw/luisfabib/DeerAnalysis2?style=flat-square
-.. image:: https://img.shields.io/badge/MATLAB-%3C2019a-brightgreen?style=flat-square
-.. image:: https://github.com/luisfabib/DeerAnalysis2/workflows/Webpage%20update/badge.svg?style=flat-square
+	<p align="center">
+	 <img src="https://img.shields.io/github/issues-raw/luisfabib/DeerAnalysis2?style=flat"></img>
+	 <img src="https://img.shields.io/badge/MATLAB-R2016b--R2019b-brightgreen?style=flat"></img>
+	 <img src="https://img.shields.io/github/downloads/luisfabib/DeerAnalysis2/total?style=flat"></img>
+	 <img src="https://github.com/luisfabib/DeerAnalysis2/workflows/Webpage%20update/badge.svg?style=flat-square"></img>
+	</p>
 
 
        

@@ -9,7 +9,10 @@ Requirements
 The application programming interface (API) of DeerAnalysis requires the following products:
 
     *  `MATLAB <https://ch.mathworks.com/products/matlab.html>`_
-    
+
+
+To access additional optional functionality, the following products may be required:
+
     *  `Optimization Toolbox <https://ch.mathworks.com/products/optimization.html>`_
 
 Setup

@@ -134,11 +134,14 @@ Lower
 Solver
     Numerical solver employed for the minimization of the regularization functional models.
 
-        *   ``'lsqnonlin'`` - Non-linear least squares
-        *   ``'fminsearch'`` - Unconstrained minmization
-        *   ``fmincon`` - Constrained non-linear minimization solver
+        *   ``'lsqnonlin'`` - Non-linear least squares (requires Opt. toolbox)
+        *   ``'fminsearch'`` - Unconstrained minmization (free)
+        *   ``'fmincon'`` - Constrained non-linear minimization solver (requires Opt. toolbox)
+        *   ``'fminsearchcon'`` - Constrained non-linear minimization solver (free)
+        *   ``'nlsqbnd'`` - Non-linear least squares (free)
 
-    *Default:* ``'lsqnonlin'``
+    *Default:* ``'lsqnonlin'`` (Optimization Toolbox installed)
+               ``'nlsqbnd'`` (Optimization Toolbox not installed)
 
     *Example:*
 
