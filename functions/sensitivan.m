@@ -113,7 +113,7 @@ for i=1:size(validationParam,1)
     if i>1
         %Update statistics
         for j=1:length(varargout)
-            vareval = evals{1};
+            vareval = evals{j};
             %Calculate status of validation statistics
             meanOut{j} = median(vareval,1,'omitnan');
             Lower{j} = applyrowfcn(@(M)prctile(M,25),vareval.').';
