@@ -40,13 +40,6 @@ if ~isa(fcnHandle,'function_handle')
     error('The first input must be a valid function handle.')
 end
 
-%Construct workaround for prctile functionality (Statistics Toolbox)
-prctile = @(v,p) interp1(linspace(0.5/length(v), 1-0.5/length(v), length(v))', sort(v), p*0.01, 'spline');
-rowfcn = @(func, matrix) @(row) func(matrix(row, :));
-rowfcn = @(func, matrix) arrayfun(rowfcn(func, matrix), 1:size(matrix,1), 'UniformOutput', false)';
-takeall = @(x) reshape([x{:}], size(x{1},2), size(x,1))';
-applyrowfcn = @(func, matrix) takeall(rowfcn(func, matrix));
-
 %Validate the required input attributes
 validateattributes(Parameters,{'struct'},{'nonempty'},mfilename,'Parameters')
 
@@ -79,7 +72,7 @@ for i=1:size(validationParam,1)
         else
             notEnoughOutputs = false;
         end
-        %Iteratively increase varargout size
+        %Iteratively increase varargout size to determine number of outputs
         while notEnoughOutputs
             try
                 %If nout not large enough...
@@ -93,8 +86,12 @@ for i=1:size(validationParam,1)
                 notEnoughOutputs = false;
             end
         end
+        
         %Prepare the output variable container
         evals = cell(1,nout);
+        meanOut = cell(1,nout);
+        Upper = cell(1,nout);
+        Lower = cell(1,nout);
         for ii=1:nout
             evals{i} = [];
         end
@@ -104,50 +101,71 @@ for i=1:size(validationParam,1)
     %Run the user function with current factor set
     [varargout{:}] = fcnHandle(argin);
     
+    %Check that the outputs are strictly numerical
+    anycharoutput = cellfun(@(x)ischar(x),varargout);
+    if anycharoutput
+        error('String output arguments f by the input function handle are not accepted by sensitivan.')
+    end
+    
+    %Since MATLAB does not know the size of the varargout variables...
     for j=1:length(varargout)
+        %... extract them one by one
         vareval = evals{j};
-        vareval(end+1,:) = varargout{j};
+        out = varargout{j};
+        %Format all vectors as columns
+        if isvector(out) && iscolumn(out)
+            out = out.';
+        end
+        %... and store them in a N-dimensional container
+        %The unused singlet dimensions are automatically ignored by MATLAB
+        vareval(end+1,:,:,:,:) = out;
         evals{j} = vareval;
     end
     
+    %Once at least two runs have been completed (required for statistics)
     if i>1
         %Update statistics
         for j=1:length(varargout)
             vareval = evals{j};
-            %Calculate status of validation statistics
-            meanOut{j} = median(vareval,1,'omitnan');
-            Lower{j} = applyrowfcn(@(M)prctile(M,25),vareval.').';
-            Upper{j} = applyrowfcn(@(M)prctile(M,75),vareval.').';
+            %Calculate status of sensitivity analysis statistics
+            meanOut{j} = squeeze(median(vareval,1,'omitnan'));
+            Lower{j} = percentile(vareval,25,1);
+            Upper{j} = percentile(vareval,75,1);
         end
-    %If user passes optional plotting hook, then prepare the plot
-    if ~isempty(AxisHandle)
-        cla(AxisHandle)
-        Ax  = 1:length(meanOut{1});
-        plot(AxisHandle,Ax,meanOut{1},'k','LineWidth',1)
-        hold(AxisHandle,'on')
-        f = fill(AxisHandle,[Ax fliplr(Ax)] ,[Upper{1} max(fliplr(Lower{1}),0)],...
-            'b','LineStyle','none');
-        f.FaceAlpha = 0.5;
-        hold(AxisHandle,'off')
-        axis(AxisHandle,'tight')
-        grid(AxisHandle,'on')
-        box(AxisHandle,'on')
-        title(sprintf('Run %i/%i',i,length(validationParam)))
-        drawnow
+        %If user passes optional plotting hook, then prepare the plot
+        if ~isempty(AxisHandle)
+            cla(AxisHandle)
+            Ax  = 1:length(meanOut{1});
+            plot(AxisHandle,Ax,meanOut{1},'k','LineWidth',1)
+            hold(AxisHandle,'on')
+            f = fill(AxisHandle,[Ax fliplr(Ax)] ,[Upper{1} max(fliplr(Lower{1}),0)],...
+                'b','LineStyle','none');
+            f.FaceAlpha = 0.5;
+            hold(AxisHandle,'off')
+            axis(AxisHandle,'tight')
+            grid(AxisHandle,'on')
+            box(AxisHandle,'on')
+            title(sprintf('Run %i/%i',i,length(validationParam)))
+            drawnow
+        end
     end
-    end
+    %Finished, proceed to next combination of factors
 end
 %Factorial experiment design - End
 
 
 % Factors main effect analysis
 %-----------------------------------------------------
+%Run through all function output variables
 for i = 1:nout
+    %Get all evaluations of that variable
     data = evals{i};
+    %Loop through all factors
     for j = 1:size(validationParam,2)
         clear evalmean
         clear set
         subset = validationParam(1:size(data,1),j);
+        %Depending on data type, find unique factor levels
         if isa(subset{1},'function_handle')
             subset = cellfun(@func2str,subset,'UniformOutput',false);
         end
@@ -157,26 +175,38 @@ for i = 1:nout
             subset = cell2mat(subset);
             uni = unique(subset);
         end
+        %Loop throught the levels of the factor
         for ii=1:length(uni)
+            
+            %Identify the indices of the evaluations using that level
             if iscell(subset)
                 idx =  find(contains(subset,uni{ii}));
             else
                 idx = find(subset==uni(ii));
             end
+            %Get the subset of data for that factor level
             M = data(idx,:).';
+            %Construct a Euclidean distance map (kind of a toolbox-free pdist)
             map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
+            %Make it an upper triangle-matrix...
             map = triu(map,1);
+            %...and get the mean Euclidean distance
             evalmean(ii) = mean(map(map~=0));
         end
+        %The main effect is given by the difference between mean Euclidean
+        %distances at different factor levels
         main{i}{j} = abs(diff(evalmean));
     end
 end
+
+%Format the output into a nice structure with the names given by the user
 for i=1:length(main)
     for j=1:length(ParNames)
         mainEffect{i}.(ParNames{j}) =  main{i}{j};
     end
 end
-% Factors interaction analysis
+
+% Factors interaction analysis (beta)
 %-----------------------------------------------------
 for i = 1:nout
     data = evals{i};
@@ -229,6 +259,7 @@ for i = 1:nout
     end
 end
 
+%If only one output variable has been evaluated, then don't return cell array
 if nout==1
     meanOut = meanOut{1};
     Upper = Upper{1};
@@ -239,7 +270,41 @@ if nout==1
 end
 
 
+end
 
+%Construct free workaround for prctile function (Statistics Toolbox)
+function pct = percentile(M,p,dim)
+
+%Set requested dimension as the first dimension
+dimIdx = 1:ndims(M);
+dimIdx = dimIdx(dimIdx~=dim);
+M = permute(M,[dim dimIdx]);
+
+sizeM = size(M);
+
+%Vectorize all other dimensions
+if numel(sizeM)>2
+    V = reshape(M,[sizeM(1),prod(sizeM(2:end))]);
+else
+    V = M;
+end
+
+%Prepare prctile function to compute throughout first dimension
+prctile = @(v,p) interp1(linspace(0.5/length(v), 1-0.5/length(v), length(v))', sort(v), p*0.01, 'spline');
+colfcn = @(func, matrix) @(col) func(matrix(:,col));
+colfcn = @(func, matrix) arrayfun(colfcn(func, matrix), 1:size(matrix,2), 'UniformOutput', false)';
+takeall = @(x) reshape([x{:}], size(x{1},2), size(x,1))';
+applyrowfcn = @(func, matrix) takeall(colfcn(func, matrix));
+
+%Apply function nest to vectorized matrix
+pct = applyrowfcn(@(M)prctile(M,p),V);
+
+if numel(sizeM)>2
+    %Reshape results back to original size
+    pct = reshape(pct,sizeM(2:end));
+end
+
+end
 
 
 
