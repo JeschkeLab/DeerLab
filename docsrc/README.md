@@ -1,60 +1,60 @@
-HOW TO COMPILE DEERANALYSIS2 DOCS
+## Compiling the documentation
 
-Requirements: 
-	Pyhton3
-	Sphinx 1.8 (or older)
-	Matlab Sphinx-domain
-	Read-the-Docs Sphinx-theme
+The DeerAnalysis documentation/website is written in restructred-text format and built with Sphinx. In order to compile the source files of the documentation, several packages/programs are required. This is a summary of the steps to be taken before being able to compile the documentation.
+
+### Requirements: 
+  * Pyhton3
+  * Sphinx 1.8 (or older)
+  * Matlab Sphinx-domain
+  * Read-the-Docs Sphinx-theme
 	
-Installation:
+### Installation:
 
-0) Install and setup python environment from
+In order to compile the documentation the following steps must be followed:
 
-    https://www.python.org/
+1) Install and setup python environment from https://www.python.org/
 
-1) Install sphinx
+2) Install sphinx
 
-    - From python console
+    * From python console
             
                 pip install sphinx<=1.8.0
-    - From DOS console
+    * From DOS console
     
                 python -m pip install sphinx<=1.8.0
 
 3) Install Read-the-Docs Sphinx theme
 
-    - From python console
+    * From python console
     
             pip install sphinx_rtd_theme
-    - From DOS console
+    * From DOS console
     
             python -m pip install sphinx_rtd_theme
 
-2) Install Matlab sphinx-domain
+4) Install Matlab sphinx-domain
 
-    - From python console
+    * From python console
     
             pip install sphinxcontrib-matlabdomain
-    - From DOS console
+    * From DOS console
     
             python -m pip install sphinxcontrib-matlabdomain
 	
-3) Install HTTP sphinx-domain
-	
-    - From python console
+5) Install HTTP sphinx-domain
+
+    * From python console
     
             pip install sphinxcontrib-httpdomain
-    - From DOS console		
+    * From DOS console		
     
             python -m pip install sphinxcontrib-httpdomain
 		
-4) Download and install dvissvgm from
-
-	https://dvisvgm.de/Downloads/
+6) Download and install dvissvgm from https://dvisvgm.de/Downloads/
 		
-5) From /DeerAnalysis/docsrc/ run the batch script
+7) From /DeerAnalysis/docsrc/ run the batch script
 
-        make
-    or
-    
-       make clean
+	    #To compile using the cached data
+            make    
+	    #To compile from scratch
+            make clean
