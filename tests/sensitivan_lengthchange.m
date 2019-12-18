@@ -3,9 +3,13 @@ function [err,data,maxerr] = test(opt,olddata)
 param.N = [300 250 500];
 
 rng(1)
-[mean]  = sensitivan(@(param)myfcn(param),param);
+try
+    [mean]  = sensitivan(@(param)myfcn(param),param);
+    err = true;
+catch
+    err = false;
+end
 
-err = numel(mean)~=500;
 data = [];
 maxerr = 0;
 

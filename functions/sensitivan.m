@@ -118,20 +118,18 @@ for i=1:size(validationParam,1)
         end
         %Check the consistency of the output variabe size
         if ~isempty(vareval)
+            sizerror = false;
            if isvector(out) && numel(out)~=numel(vareval(1,:))
-               %If vector length different, then interpolate to size of first run
-               newax = linspace(0,1,numel(vareval(1,:)));
-               prevax = linspace(0,1,numel(out));
-               out = interp1(prevax,out,newax,'spline');
+               sizeerror = true;
            elseif ismatrix(out) && any(size(out)~=size(squeeze(vareval(1,:,:,:,:))))
-               %If matrix size different, then interpolate to size of first run
-               newX = linspace(0,1,size(squeeze(vareval(1,:,:,:,:)),2));
-               prevX = linspace(0,1,size(out,2));
-               newY = linspace(0,1,size(squeeze(vareval(1,:,:,:,:)),1));
-               prevY =  linspace(0,1,size(out,1));
-               [newX,newY] = meshgrid(newX,newY);
-               [prevX,prevY] = meshgrid(prevX,prevY);
-               out = interp2(prevX,prevY,out,newX,newY);
+               sizeerror = true;
+           end
+           %If size is inconsistent, launch error with advice
+           if sizerror
+              error(['Inconsistent output variable size. ',...
+                    'One of the outputs of the analyzed function is changing its size in between runs. ',...
+                    'To solve this, fix the axis of the output and interpolate the result. \n%s'],...
+                    '  Ex/ outFix = interp1(varAxis,out,fixAxis,''spline'')') 
            end
         end
         %... and store them in a N-dimensional container

@@ -4,9 +4,13 @@ param.N = [5 5 7];
 param.M = [7 6 2];
 
 rng(1)
-[mean]  = sensitivan(@(param)myfcn(param),param);
+try
+    [mean]  = sensitivan(@(param)myfcn(param),param);
+    err = true;
+catch
+    err = false;
+end
 
-err = any(size(mean)~=[7 7]);
 data = [];
 maxerr = 0;
 
