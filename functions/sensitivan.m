@@ -116,6 +116,24 @@ for i=1:size(validationParam,1)
         if isvector(out) && iscolumn(out)
             out = out.';
         end
+        %Check the consistency of the output variabe size
+        if ~isempty(vareval)
+           if isvector(out) && numel(out)~=numel(vareval(1,:))
+               %If vector length different, then interpolate to size of first run
+               newax = linspace(0,1,numel(vareval(1,:)));
+               prevax = linspace(0,1,numel(out));
+               out = interp1(prevax,out,newax,'spline');
+           elseif ismatrix(out) && any(size(out)~=size(squeeze(vareval(1,:,:,:,:))))
+               %If matrix size different, then interpolate to size of first run
+               newX = linspace(0,1,size(squeeze(vareval(1,:,:,:,:)),2));
+               prevX = linspace(0,1,size(out,2));
+               newY = linspace(0,1,size(squeeze(vareval(1,:,:,:,:)),1));
+               prevY =  linspace(0,1,size(out,1));
+               [newX,newY] = meshgrid(newX,newY);
+               [prevX,prevY] = meshgrid(prevX,prevY);
+               out = interp2(prevX,prevY,out,newX,newY);
+           end
+        end
         %... and store them in a N-dimensional container
         %The unused singlet dimensions are automatically ignored by MATLAB
         vareval(end+1,:,:,:,:) = out;
@@ -129,8 +147,8 @@ for i=1:size(validationParam,1)
             vareval = evals{j};
             %Calculate status of sensitivity analysis statistics
             meanOut{j} = squeeze(median(vareval,1,'omitnan'));
-            Lower{j} = percentile(vareval,25,1);
-            Upper{j} = percentile(vareval,75,1);
+            Lower{j} = percentile(vareval,25,1).';
+            Upper{j} = percentile(vareval,75,1).';
         end
         %If user passes optional plotting hook, then prepare the plot
         if ~isempty(AxisHandle)
