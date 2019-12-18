@@ -1,5 +1,7 @@
 function [err,data,maxerr] = test(opt,olddata)
 
+rng(1)
+
 Ntime1 = 100;
 Ndist = 200;
 dt = 0.008;

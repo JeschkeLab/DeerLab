@@ -37,7 +37,7 @@ AnalyticalK = [1.0000000000,0.989724398140451,0.962515792044324,...
                 0.5167769828243905,0.5225172651309626];
 
 %Generate kernel numerically      
-t = linspace(0,8*(length(AnalyticalK)-1),length(AnalyticalK));
+t = linspace(0,0.008*(length(AnalyticalK)-1),length(AnalyticalK));
 r = linspace(2.5,6,length(t));
 
 K = dipolarkernel(t,r);

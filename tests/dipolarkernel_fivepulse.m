@@ -10,7 +10,7 @@ lam = 0.3;
 K1 = dipolarkernel(t,r,lam,'interference',[0.5 max(t)/2]);
 K2 = dipolarkernel(t,r,lam,B,'interference',{0.5 max(t)/2});
 
-err = any(abs(K1 - K2./B)>1e-10);
+err = any(abs(K1 - K2)>1e-10);
 maxerr = max(max(abs(K1 - K2)));
 data = [];
 
