@@ -74,9 +74,11 @@ if nargin>3 && isa(B,'char')
 end
 
 % Check if user requested some options via name-value input
-[ExcitationBandwidth,OvertoneCoeffs,gValue,Method,Knots,InterferenceParam] = ...
-    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','gValue','Method','Knots','Interference'},varargin);
-
+[ExcitationBandwidth,OvertoneCoeffs,gValue,Method,Knots,InterferenceParam,Cache] = ...
+    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','gValue','Method','Knots','Interference','Cache'},varargin);
+if isempty(Cache)
+    Cache = true;
+end
 if isempty(Method)
     Method = 'fresnel';
 else
@@ -132,11 +134,11 @@ validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
 %--------------------------------------------------------------------------
 
 persistent cachedData
-if isempty(cachedData)
+if isempty(cachedData) && Cache
     cachedData =  java.util.LinkedHashMap;
 end
 hashKey = datahash({t,r,lambda,B,varargin});
-if cachedData.containsKey(hashKey)
+if cachedData.containsKey(hashKey)  && Cache
     Output = cachedData.get(hashKey);
     K = java2mat(Output);
     return
@@ -253,14 +255,17 @@ if ~isempty(InterferenceParam)
             Bshifted = Bmodel(abs(traw - tau),Bparam).^amp;
             %Compute correction term for background
             Btau = Bmodel(-tau,Bparam).^amp;
-
+            %Ensure that the parametric model returns a column
+            if ~iscolumn(Btau)
+                Btau = Btau.';
+            end
         else
             %If background is not given, then use blanks
             Bshifted = ones(size(t));
             Btau = 1;
         end
         %Add the scaled dipolar kernel for the current shifted time axis
-        Kinter = Kinter + amp*dipolarkernel(traw - tau,r,lambda,Bshifted)/dr - amp*dipolarkernel(-tau,r,lambda,Btau)/dr;
+        Kinter = Kinter + amp*dipolarkernel(traw - tau,r,lambda,Bshifted,'Cache',false)/dr - amp*dipolarkernel(-tau,r,lambda,Btau,'Cache',false)/dr;
     end
 end
 %Add superimposed kernels
