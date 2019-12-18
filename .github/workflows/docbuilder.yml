@@ -2,6 +2,8 @@ name: Webpage update
 
 on: 
    push:
+      branches:
+      - master
       paths:
       - 'docsrc/**'
 
