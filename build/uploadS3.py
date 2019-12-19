@@ -5,12 +5,14 @@ import shutil
 import boto3
 import time
 import pytz
+import pathlib
 from time import mktime
 from argparse import ArgumentParser
 from pathlib import Path
  
 #Parse options if access keys are being passed as inputs
 parser = ArgumentParser()
+parser.add_argument("-i", "--keyfile",dest="keyfile",default=[],help="AWS Access Key")
 parser.add_argument("-k", "--key",dest="accesskey",default=[],help="AWS Access Key")
 parser.add_argument("-s", "--secretkey",dest="secretkey", default=[],help="AWS Secret Access Key")
 parser.add_argument("-f", "--file",dest="filename", default=[],help="File to upload")
@@ -41,13 +43,21 @@ def metadataType(file):
 
 #If access codes have not been passed as inputs then check if file is there
 if not args.accesskey or not args.secretkey:
+	
+	if not args.keyfile:
+		keypath = 'aws_access_keys.txt'
+	else:
+		keypath = args.keyfile
+	
+	#Set absolute path to key file
+	#cwd = os.getcwd()
+	#keypath =  os.path.join(cwd,keypath)
 
 	#Load and read the secure access keys to connect to the AWS S3 client
-	if os.path.isfile(".\aws_access_keys.txt"):
+	if not os.path.isfile(keypath):
 		print("AWS access keys not found. You may not have rights to request this action.")
 		exit()
-
-	with open('aws_access_keys.txt', 'r') as file:
+	with open(keypath, 'r') as file:
 		AccessKeys = [line.rstrip('\n') for line in file]
 else:
 	 AccessKeys = [args.accesskey, args.secretkey]

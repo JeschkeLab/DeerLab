@@ -17,8 +17,19 @@ diary on
 datest --time --perform --coverage --badges
 
 %Load the badges JSON endpoints to AWS
-!python uploadS3.py --file "coverage_badge.json" --bucket deershields
-!python uploadS3.py --file "testsuite_badge.json" --bucket deershields
+if ispc
+    !python uploadS3.py --keyfile %USERPROFILE%\.ssh\aws_access_keys.txt --file "coverage_badge.json" --bucket deershields
+    !python uploadS3.py --keyfile %USERPROFILE%\.ssh\aws_access_keys.txt --file "testsuite_badge.json" --bucket deershields
+elseif isunix
+    !python uploadS3.py --keyfile /home/.ssh/aws_access_keys.txt --file "coverage_badge.json" --bucket deershields
+    !python uploadS3.py --keyfile /home/.ssh/aws_access_keys.txt --file "testsuite_badge.json" --bucket deershields
+elseif ismac
+    error('macOS is not supported')
+end
+
+%Remove artifacts once uploaded
+delete coverage_badge.json
+delete testsuite_badge.json
 
 %Stop diary function
 diary off
