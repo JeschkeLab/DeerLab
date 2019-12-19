@@ -39,14 +39,6 @@ end
 
 err = any(err);
 data = [];
-maxerr = 0;
-
-if opt.Display
-    figure(8),clf
-    hold on
-    plot(aptr,P)
-    plot(aptr,aptP)
-    
-end
+maxerr = NaN;
 
 end

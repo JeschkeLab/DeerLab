@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %======================================================
 % Phase correction function
@@ -16,6 +16,7 @@ err(1) = any(abs(imag(correctedData) - imag(originalData))>1e-5);
 err(2) = abs(inputPhase - outputPhase)>1e-5;
 
 err = any(err);
+maxerr = max(abs(inputPhase - outputPhase));
 data = [];
 
 end

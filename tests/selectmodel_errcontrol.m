@@ -61,6 +61,7 @@ catch
 end
 
 err = any(err);
+maxerr = NaN;
 data = [];
 
 end

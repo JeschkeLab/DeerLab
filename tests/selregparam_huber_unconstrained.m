@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %=======================================
 % Check regparamrange.m
@@ -17,6 +17,7 @@ DipEvoFcn = K*P;
 
 %Accept testif all values are the same (should be as there is no noise)
 err = any(any(OptParam - OptParam' > 1e-2));
+maxerr = max(max(OptParam - OptParam'));
 data = [];
 
 if opt.Display

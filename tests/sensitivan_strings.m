@@ -17,7 +17,7 @@ end
 
 err = false;
 data = [];
-maxerr = -3;
+maxerr = NaN;
 
 if opt.Display
         cla

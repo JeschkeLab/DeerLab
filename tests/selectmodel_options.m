@@ -16,7 +16,7 @@ Models = {@rd_onegaussian,@rd_twogaussian,@rd_threegaussian};
 
 err = optimum1~=optimum2;
 data = [];
-maxerr = [];
+maxerr = NaN;
 
 if opt.Display
 figure(8),clf

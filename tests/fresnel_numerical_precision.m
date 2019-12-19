@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 
 currentpath = pwd;
@@ -83,6 +83,7 @@ NumericalFresnelC = fresnelC(1:100);
 err(1) = any(abs(NumericalFresnelS - AnalyticalFresnelS)>1e-8);
 err(2) = any(abs(NumericalFresnelC - AnalyticalFresnelC)>1e-8);
 err = any(err);
+maxerr = max(abs(NumericalFresnelS - AnalyticalFresnelS));
  data = [];
  
  cd(currentpath)

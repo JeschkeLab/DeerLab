@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %=======================================
 % Check regparamrange.m
@@ -20,6 +20,7 @@ OptParam2 = selregparam(DipEvoFcn,K,r,'tikhonov',{'all'},'NonNegConstrained',fal
 %Accept testif all values are the same (should be as there is no noise)
 err(1) = length(OptParam2)~=15;
 err(2) = length(OptParam1)~=15;
+maxerr = NaN;
 data = [];
 
 
