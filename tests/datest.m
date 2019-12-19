@@ -45,7 +45,7 @@ if isempty(params)
 end
 
 %if not input test name is given but only options
-if contains(['-d','-p','-r','-c','-t','-b'],TestName)
+if contains(TestName,'-')
     params = [params TestName];
     TestName = '';
 end
@@ -347,6 +347,7 @@ if makeBadges
     fprintf(fileID,'"color": "%s"\n',color);
     fprintf(fileID,'} \n');
     fclose(fileID);
+    fprintf('Test suite badge created: %s\n',fullfile(pwd,'testsuite_badge.json'))
     
     if runCodeCoverage
         %--------------------
@@ -369,9 +370,13 @@ if makeBadges
         fprintf(fileID,'"color": "%s"\n',color);
         fprintf(fileID,'} \n');
         fclose(fileID);
+        fprintf('Coverage badge created: %s\n',fullfile(pwd,'coverage_badge.json'))
     else
         warning('Coverage analysis was not requested. Coverage badge will no tbe generated.')
     end
+    
+    fprintf(fid,'-----------------------------------------------------------------------\n');
+    
 end
 
 return
