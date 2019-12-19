@@ -64,6 +64,7 @@ validateattributes(t,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mf
 %If requested apply Hamming apodization window
 if useApodization
     arg = linspace(0,pi,length(S));
+    arg = arg.';
     ApoWindow = 0.54 + 0.46*cos(arg);
     S = S.*ApoWindow;
 end
