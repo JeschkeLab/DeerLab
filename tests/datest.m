@@ -15,7 +15,7 @@
 %   Either the command syntax as above or the function syntax, e.g.
 %   datest('asdf','t'), can be used. Any number of options are allowed
 %
-%   Run all tests including timings:   datest('*','t')
+%   Run all tests including timings:   datest -t
 %
 %   All test files must have an underscore _ in their filename.
 
@@ -272,7 +272,7 @@ if runCodeCoverage
         Coverage = 100*Covered/Runnable;
         %Print to console
         if (~isempty(TestName) && Coverage~=0) || isempty(TestName)
-            if params =='l'
+            if params =='c'
                 fprintf('%-20s%-18s%3.2f%% %18s  %s \n',FcnName,' ',Coverage,'Lines missing:',mat2str(Missed))
             else
                 fprintf('%-20s%-18s%3.2f%%\n',FcnName,' ',Coverage)
@@ -336,16 +336,16 @@ if makeBadges
     elseif Nfails~=0
         color = 'orange';
     else
-        color = 'green';
+        color = 'brightgreen';
     end
     %Write JSON endpoint file for shields.io
     fileID = fopen('testsuite_badge.json','w');
-    fprintf(fileID,'{ \n')
-    fprintf(fileID,'"schemaVersion": 1, \n')
-    fprintf(fileID,'"label": "Tests", \n')
+    fprintf(fileID,'{ \n');
+    fprintf(fileID,'"schemaVersion": 1, \n');
+    fprintf(fileID,'"label": "Tests", \n');
     fprintf(fileID,'"message": "%i pass, %i fail, %i crash", \n',sum(allErrors==0),sum(allErrors==1),sum(allErrors==2));
-    fprintf(fileID,'"color": "%s"\n',color)
-    fprintf(fileID,'} \n')
+    fprintf(fileID,'"color": "%s"\n',color);
+    fprintf(fileID,'} \n');
     fclose(fileID);
     
     if runCodeCoverage
@@ -358,16 +358,16 @@ if makeBadges
         elseif TotalCoverage<75
             color = 'orange';
         else
-            color = 'green';
+            color = 'brightgreen';
         end
         %Write JSON endpoint file for shields.io
         fileID = fopen('coverage_badge.json','w');
-        fprintf(fileID,'{ \n')
-        fprintf(fileID,'"schemaVersion": 1, \n')
-        fprintf(fileID,'"label": "Coverage", \n')
+        fprintf(fileID,'{ \n');
+        fprintf(fileID,'"schemaVersion": 1, \n');
+        fprintf(fileID,'"label": "Coverage", \n');
         fprintf(fileID,'"message": "%3.0f%%", \n',TotalCoverage);
-        fprintf(fileID,'"color": "%s"\n',color)
-        fprintf(fileID,'} \n')
+        fprintf(fileID,'"color": "%s"\n',color);
+        fprintf(fileID,'} \n');
         fclose(fileID);
     else
         warning('Coverage analysis was not requested. Coverage badge will no tbe generated.')
