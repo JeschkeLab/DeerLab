@@ -3,6 +3,7 @@ cvx/
 docs/docsrc/build/
 docs/docsrc/venv/
 docsrc/venv/
+docsrc/source/.doctrees
 docs/
 docsrc/cache/
 docsrc/source/__pycache__/
