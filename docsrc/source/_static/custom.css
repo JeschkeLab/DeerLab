@@ -1,4 +1,9 @@
 
+/* !important prevents the common CSS stylesheets from overriding
+   this as on RTD they are loaded after this stylesheet */
+
+
+
 @import 'theme.css';       /* for the Read the Docs theme */
 
 /*
@@ -7,26 +12,90 @@
 }
 */
 
+
+/*Override the design with the box around the code with a small font*/
+code, .rst-content tt, .rst-content code {
+    font-family: consolas !important;
+    font-size: 95% !important;
+    background: rgba(255,255,255,0) !important;
+    border: solid 0px #ffffff !important;
+}
+
 .rst-content code.literal{
 	color:#9c1330
 }
 
+/*Change default fonts used throughout the documentation*/
+body{
+    font-family:"Arial", Helvetica, sans-serif !important;
+}
+
+/*Override the width of the page to cover the whole window*/
+.wy-nav-content {
+    max-width: none !important;
+}
+
+/*Begin CSS formatting of the functions and models sections*/
+.tutorialSectionBox {
+    margin-top: 2em;
+    border: #DE5253 3px solid;
+    border-right: none;
+    border-bottom: none;
+}
+.tutorialSectionBox .sectionTitle h3 {
+    position: relative;
+    top: -0.9em;
+    margin-left: 1em;
+    display: inline;
+    background-color: white;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+.tutorialSectionBox .sectionLogo {
+    position: relative;
+    top: -1.9em;
+    margin-left: 1em;
+    display: inline;
+    background-color: white;
+    float:left;
+    line-height: 50px;
+}
+.analysis {
+    border: #DE5253 1px solid;
+    border-bottom: none;
+}
+.tutorialSectionBox .sectionContent {
+}
+.sectionLogo .avatar {
+    height: 60px;
+    width: 60px;
+    margin: 0px;
+}
+.avatar {
+  vertical-align: middle;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%
+}
+End of CSS formatting of the functions and models sections*/
+
+/*Do not change color of link once visited*/
 a{
 color:#000;
 text-decoration:none;
 }
-
 a.visited{
 color:#000;
 }
 
+
 ul.metro li.nocolor_class a.tile { background-color: #FFFFFF; border-radius: 50%; width: 110px; height: 110px;}
-/* override table width restrictions */
+
+
+/*Override table width restrictions*/
 @media screen and (min-width: 767px) {
 
    .wy-table-responsive table td {
-      /* !important prevents the common CSS stylesheets from overriding
-         this as on RTD they are loaded after this stylesheet */
       white-space: normal !important;
    }
 
