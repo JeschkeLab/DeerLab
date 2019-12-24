@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,IE=9,chrome=1"><meta name="generator" content="MATLAB R2019a"><title>Basic signal processing of experimental 4-pulse DEER data (Regularization)</title><style type="text/css">.rtcContent { padding: 30px; } .S0 { margin: 3px 10px 5px 4px; padding: 0px; line-height: 28.7999992370605px; min-height: 0px; white-space: pre-wrap; color: rgb(213, 80, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 24px; font-weight: normal; text-align: left;  }
+.S1 { margin: 3px 10px 5px 4px; padding: 0px; line-height: 18px; min-height: 0px; white-space: pre-wrap; color: rgb(60, 60, 60); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 15px; font-weight: bold; text-align: left;  }
+.S2 { margin: 10px 10px 5px 4px; padding: 0px; line-height: 18px; min-height: 0px; white-space: pre-wrap; color: rgb(60, 60, 60); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 15px; font-weight: bold; text-align: left;  }
+.S3 { margin: 2px 10px 9px 4px; padding: 0px; line-height: 21px; min-height: 0px; white-space: pre-wrap; color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 14px; font-weight: normal; text-align: left;  }
+.S4 { margin: 3px 10px 5px 4px; padding: 0px; line-height: 20px; min-height: 0px; white-space: pre-wrap; color: rgb(60, 60, 60); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 20px; font-weight: bold; text-align: left;  }
+.CodeBlock { background-color: #F7F7F7; margin: 10px 0 10px 0;}
+.S5 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 1px solid rgb(233, 233, 233); border-bottom: 1px solid rgb(233, 233, 233); border-radius: 4px; padding: 6px 45px 4px 13px; line-height: 17.2339992523193px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 14px;  }
+.S6 { margin: 10px 10px 9px 4px; padding: 0px; line-height: 21px; min-height: 0px; white-space: pre-wrap; color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 14px; font-weight: normal; text-align: left;  }
+.S7 { margin: 10px 0px 20px; padding-left: 0px; font-family: Helvetica, Arial, sans-serif; font-size: 14px;  }
+.S8 { margin-left: 56px; line-height: 21px; min-height: 0px; text-align: left; white-space: pre-wrap;  }
+.S9 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 1px solid rgb(233, 233, 233); border-bottom: 0px none rgb(0, 0, 0); border-radius: 4px 4px 0px 0px; padding: 6px 45px 0px 13px; line-height: 17.2339992523193px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 14px;  }
+.S10 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 0px none rgb(0, 0, 0); border-bottom: 0px none rgb(0, 0, 0); border-radius: 0px; padding: 0px 45px 0px 13px; line-height: 17.2339992523193px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 14px;  }
+.S11 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 0px none rgb(0, 0, 0); border-bottom: 1px solid rgb(233, 233, 233); border-radius: 0px 0px 4px 4px; padding: 0px 45px 4px 13px; line-height: 17.2339992523193px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 14px;  }</style></head><body><div class = rtcContent><h1  class = 'S0'><span>Basic signal processing of experimental 4-pulse DEER data (Regularization)</span></h1><h4  class = 'S1'><span>Author: Luis Fabregas</span></h4><h4  class = 'S2'><span>Reviewed by: (Pending)</span></h4><div  class = 'S3'><span>A very basic example of dipolar data processing using Tikhonov regularization for a simple evaluation of experimental data.</span></div><h2  class = 'S4'><span>Load the data</span></h2><div  class = 'S3'><span>Let's start by extracting the primary data from the spectrometer file using </span><span style=' font-family: monospace;'>deerload. </span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S5'><span style="white-space: pre;"><span>[traw,Vraw] = deerload(</span><span style="color: rgb(160, 32, 240);">'data/deer_broad_50K_4us'</span><span>);</span></span></div></div></div><div  class = 'S6'><span>The function returns the experimental X-axis as </span><span style=' font-family: monospace;'>traw</span><span> and the Y-axis as </span><span style=' font-family: monospace;'>Vraw.</span></div><div  class = 'S3'><span>At this point it is important to check the units of the time-axis vecor </span><span style=' font-family: monospace;'>traw. </span><span>While some commercial spectrometers return the time-axis data in nanoseconds, DeerAnalysis employs microseconds as physical unit.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S5'><span style="white-space: pre;"><span>traw = traw/1000; </span><span style="color: rgb(34, 139, 34);">%ns -&gt; us</span></span></div></div></div><div  class = 'S6'><span>Now we can also define the distance-axis vector </span><span style=' font-family: monospace;'>r</span><span> of our distance distribution. A simple approach is to call the </span><span style=' font-family: monospace;'>time2dist</span><span> function which will create a distance-axis adapted to the time-axis.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S5'><span style="white-space: pre;"><span>r = time2dist(traw);</span></span></div></div></div><h2  class = 'S4'><span>Pre-Processing</span></h2><div  class = 'S3'><span>Before the data can be fitted it (usually) needs to undergo a set of pre-processing steps: </span></div><ol  class = 'S7'><li  class = 'S8'><span>The dipolar signal is usually complex, the first step if to perform a phase correction which will minimize the imaginary component / maximize the real component.</span></li><li  class = 'S8'><span>In common commercial spectrometers, the time-axes are measured in absolute values. This step aims to optimally determine and correct for the zero-time of the time axis.</span></li><li  class = 'S8'><span>The intensity of the signal is fiven in some arbitrary units (usually some kind voltage). All functions in DeerAnalysis require the dipolar signal to be scaled such that </span><span style=' font-family: monospace;'>V(0)=1</span><span>. This last set requires a fit of the scale require to correct the Y-axis of the dipolar signal.</span></li></ol><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S9'><span style="white-space: pre;"><span style="color: rgb(34, 139, 34);">%Optimization &amp; Correction of phase</span></span></div></div><div class="inlineWrapper"><div  class = 'S10'><span style="white-space: pre;"><span>V = correctphase(Vraw);</span></span></div></div><div class="inlineWrapper"><div  class = 'S10'><span style="white-space: pre;"><span style="color: rgb(34, 139, 34);">%Optimization &amp; Correctionof zero-time</span></span></div></div><div class="inlineWrapper"><div  class = 'S10'><span style="white-space: pre;"><span>t = correctzerotime(V,traw);</span></span></div></div><div class="inlineWrapper"><div  class = 'S10'><span style="white-space: pre;"><span style="color: rgb(34, 139, 34);">%Optimization &amp; Correction of Y-axis scale</span></span></div></div><div class="inlineWrapper"><div  class = 'S11'><span style="white-space: pre;"><span>V = correctscale(V,t);</span></span></div></div></div><h2  class = 'S4'><span>Prepare the dipolar kernel</span></h2><div  class = 'S3'><span>Since experimental dipolar signals contain a inter-molecular contribution, i.e. a background, this must be fitted and included into the dipolar kernel before the regularization.</span></div><div  class = 'S3'><span>First we proceed to fit the background function using some time-domain parametric model. In this example we will use a stretched exponential function (</span><span style=' font-family: monospace;'>td_strexp</span><span>). Using the </span><span style=' font-family: monospace;'>fitbackground</span><span> function we obtain the fitted background as well as the fitted modulation depth.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S5'><span style="white-space: pre;"><span>[B,lambda] = fitbackground(V,t,@td_strexp); </span></span></div></div></div><div  class = 'S6'><span>Now we can use these fitted variables to generate the dipolar kernel which describes our signal.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S5'><span style="white-space: pre;"><span>KB = dipolarkernel(t,r,lambda,B);</span></span></div></div></div><h2  class = 'S4'><span>Tikhonov regularization </span></h2><div  class = 'S3'><span>We now have all the elements required to fit our distance distribution via Tikhonov regularization. For basic data analysis with Tikhonov it is recommended to use the Akaike information criterion (AIC) for the </span><span mathmlencoding="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;inline&quot;&gt;&lt;mrow&gt;&lt;mi&gt;α&lt;/mi&gt;&lt;mtext&gt; &lt;/mtext&gt;&lt;/mrow&gt;&lt;/math&gt;" style="vertical-align:-5px"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAkCAYAAAB15jFqAAABzUlEQVRYR+3VT4iNYRTH8c+ULIiNEBZj5c9KslAkYjMrTVJISlFWyr8kiqQkuzGTZJT8LQtKEgsrpSQLbCSlrFCyILIgOnXU7e2Ze+87je4s3lN389zznN8533Oe8/bpgfX1QFMj+l+pN3gbvBNCoBmkCcE4VpBJi3cWtmEAb7AYX3EWLzAfWzAVr3Efv9uhalfpFGzHSTzGYXzETAxjLXZgCS7iZSYXwm1tLNEQPIgzuIs9+NQSaRNu4w5mYw324Rz+jEc0EgmcF/Alq31SCbQC9zAvzwPp7iTRSbP4PV2I61iN0ziBX5VI0ddbWIZviTmIdGUlvLtwCR8wiGeFSK2VXsXeHK5xiU7DUKJ6mBV8LkSKHgf+99iM512ppVO10hj/G1iH8zlMPysB52AUG/PZHCvgrzW9rb06jlOV25FkPKNreV7y6Vh0tdJ+3MQqlAIuxWWszMjxhuO3HnPzbm3R6RjBzgLe+C+20Nac3BiypziQbYh7sbE6Wml6Y9NcwY8UeIUZOIoNOIJ32fsg8jarj4Tarr9/2ZRE42w5DmERHmEBHuR2+o7YWPvTJ9oRrYj32pVN2q9MV9nXcWoqrUOrtm+DtzayOhd6gvcvNAtUJWuaJrwAAAAASUVORK5CYII=" width="14.5" height="18" /></span><span>- selection.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S5'><span style="white-space: pre;"><span>Pfit = fitregmodel(V,KB,r,</span><span style="color: rgb(160, 32, 240);">'tikhonov'</span><span>,</span><span style="color: rgb(160, 32, 240);">'aic'</span><span>);</span></span></div></div></div><div  class = 'S6'><span>With our fitted distance distribution </span><span style=' font-family: monospace;'>Pfit </span><span>we can forward-calculate the fit of the dipolar signal by simply computing</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S5'><span style="white-space: pre;"><span>Vfit = KB*Pfit;</span></span></div></div></div></div>
+<br>
+<!-- 
+##### SOURCE BEGIN #####
+%% Basic signal processing of experimental 4-pulse DEER data (Regularization)
+% Author: Luis Fabregas
+% Reviewed by: (Pending)
+% A very basic example of dipolar data processing using Tikhonov regularization 
+% for a simple evaluation of experimental data.
+%% Load the data
+% Let's start by extracting the primary data from the spectrometer file using 
+% |deerload. |
+
+[traw,Vraw] = deerload('data/deer_broad_50K_4us');
+%% 
+% The function returns the experimental X-axis as |traw| and the Y-axis as |Vraw.|
+%% 
+% At this point it is important to check the units of the time-axis vecor |traw. 
+% |While some commercial spectrometers return the time-axis data in nanoseconds, 
+% DeerAnalysis employs microseconds as physical unit.
+
+traw = traw/1000; %ns -> us
+%% 
+% Now we can also define the distance-axis vector |r| of our distance distribution. 
+% A simple approach is to call the |time2dist| function which will create a distance-axis 
+% adapted to the time-axis.
+
+r = time2dist(traw);
+%% Pre-Processing
+% Before the data can be fitted it (usually) needs to undergo a set of pre-processing 
+% steps: 
+%% 
+% # The dipolar signal is usually complex, the first step if to perform a phase 
+% correction which will minimize the imaginary component / maximize the real component.
+% # In common commercial spectrometers, the time-axes are measured in absolute 
+% values. This step aims to optimally determine and correct for the zero-time 
+% of the time axis.
+% # The intensity of the signal is fiven in some arbitrary units (usually some 
+% kind voltage). All functions in DeerAnalysis require the dipolar signal to be 
+% scaled such that |V(0)=1|. This last set requires a fit of the scale require 
+% to correct the Y-axis of the dipolar signal.
+
+%Optimization & Correction of phase
+V = correctphase(Vraw);
+%Optimization & Correctionof zero-time
+t = correctzerotime(V,traw);
+%Optimization & Correction of Y-axis scale
+V = correctscale(V,t);
+%% Prepare the dipolar kernel
+% Since experimental dipolar signals contain a inter-molecular contribution, 
+% i.e. a background, this must be fitted and included into the dipolar kernel 
+% before the regularization.
+% 
+% First we proceed to fit the background function using some time-domain parametric 
+% model. In this example we will use a stretched exponential function (|td_strexp|). 
+% Using the |fitbackground| function we obtain the fitted background as well as 
+% the fitted modulation depth.
+
+[B,lambda] = fitbackground(V,t,@td_strexp); 
+%% 
+% Now we can use these fitted variables to generate the dipolar kernel which 
+% describes our signal.
+
+KB = dipolarkernel(t,r,lambda,B);
+%% Tikhonov regularization 
+% We now have all the elements required to fit our distance distribution via 
+% Tikhonov regularization. For basic data analysis with Tikhonov it is recommended 
+% to use the Akaike information criterion (AIC) for the $\alpha \;$- selection.
+
+Pfit = fitregmodel(V,KB,r,'tikhonov','aic');
+%% 
+% With our fitted distance distribution |Pfit |we can forward-calculate the 
+% fit of the dipolar signal by simply computing
+
+Vfit = KB*Pfit;
+##### SOURCE END #####
+--></body></html>

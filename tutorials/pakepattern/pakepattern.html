@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,IE=9,chrome=1"><meta name="generator" content="MATLAB R2019a"><title>Computing the Pake pattern of a dipolar signal</title><style type="text/css">.rtcContent { padding: 30px; } .S0 { margin: 3px 10px 5px 4px; padding: 0px; line-height: 28.7999992370605px; min-height: 0px; white-space: pre-wrap; color: rgb(213, 80, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 24px; font-weight: normal; text-align: left;  }
+.S1 { margin: 3px 10px 5px 4px; padding: 0px; line-height: 18px; min-height: 0px; white-space: pre-wrap; color: rgb(60, 60, 60); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 14.9999990463257px; font-weight: bold; text-align: left;  }
+.S2 { margin: 10px 10px 5px 4px; padding: 0px; line-height: 18px; min-height: 0px; white-space: pre-wrap; color: rgb(60, 60, 60); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 14.9999990463257px; font-weight: bold; text-align: left;  }
+.S3 { margin: 2px 10px 9px 4px; padding: 0px; line-height: 21px; min-height: 0px; white-space: pre-wrap; color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 14px; font-weight: normal; text-align: left;  }
+.S4 { margin: 3px 10px 5px 4px; padding: 0px; line-height: 20px; min-height: 0px; white-space: pre-wrap; color: rgb(60, 60, 60); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 20px; font-weight: bold; text-align: left;  }
+.CodeBlock { background-color: #F7F7F7; margin: 10px 0 10px 0;}
+.S5 { border-left: 0.833333313465118px solid rgb(233, 233, 233); border-right: 0.833333313465118px solid rgb(233, 233, 233); border-top: 0.833333313465118px solid rgb(233, 233, 233); border-bottom: 0px none rgb(0, 0, 0); border-radius: 4px 4px 0px 0px; padding: 6px 45px 0px 13px; line-height: 17.2339992523193px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 14px;  }
+.S6 { border-left: 0.833333313465118px solid rgb(233, 233, 233); border-right: 0.833333313465118px solid rgb(233, 233, 233); border-top: 0px none rgb(0, 0, 0); border-bottom: 0px none rgb(0, 0, 0); border-radius: 0px; padding: 0px 45px 0px 13px; line-height: 17.2339992523193px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 14px;  }
+.S7 { border-left: 0.833333313465118px solid rgb(233, 233, 233); border-right: 0.833333313465118px solid rgb(233, 233, 233); border-top: 0px none rgb(0, 0, 0); border-bottom: 0.833333313465118px solid rgb(233, 233, 233); border-radius: 0px 0px 4px 4px; padding: 0px 45px 4px 13px; line-height: 17.2339992523193px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 14px;  }
+.S8 { border-left: 0.833333313465118px solid rgb(233, 233, 233); border-right: 0.833333313465118px solid rgb(233, 233, 233); border-top: 0.833333313465118px solid rgb(233, 233, 233); border-bottom: 0.833333313465118px solid rgb(233, 233, 233); border-radius: 4px; padding: 6px 45px 4px 13px; line-height: 17.2339992523193px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 14px;  }
+.S9 { margin: 10px 10px 9px 4px; padding: 0px; line-height: 21px; min-height: 0px; white-space: pre-wrap; color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 14px; font-weight: normal; text-align: left;  }</style></head><body><div class = rtcContent><h1  class = 'S0'><span>Computing the Pake pattern of a dipolar signal</span></h1><h4  class = 'S1'><span>Author: Luis Fabregas</span></h4><h4  class = 'S2'><span>Reviewed by: (Pending)</span></h4><div  class = 'S3'><span>A very basic example for displaying the frequency-domain Pake pattern of a given dipolar signal.</span></div><h2  class = 'S4'><span>Loading &amp; Pre-processing</span></h2><div  class = 'S3'><span>Let's start by extracting the primary data from the spectrometer file using </span><span style=' font-family: monospace;'>deerload. </span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S5'><span style="white-space: pre;"><span style="color: rgb(34, 139, 34);">%Load experimental data</span></span></div></div><div class="inlineWrapper"><div  class = 'S6'><span style="white-space: pre;"><span>[traw,Vraw] = deerload(</span><span style="color: rgb(160, 32, 240);">'data/experiment_example.DTA'</span><span>);</span></span></div></div><div class="inlineWrapper"><div  class = 'S6'><span style="white-space: pre;"><span>traw = traw/1000; </span><span style="color: rgb(34, 139, 34);">%ns -&gt; us</span></span></div></div><div class="inlineWrapper"><div  class = 'S6'><span style="white-space: pre;"><span style="color: rgb(34, 139, 34);">%Pre-processing</span></span></div></div><div class="inlineWrapper"><div  class = 'S6'><span style="white-space: pre;"><span>V = correctphase(Vraw);</span></span></div></div><div class="inlineWrapper"><div  class = 'S6'><span style="white-space: pre;"><span>t = correctzerotime(V,traw);</span></span></div></div><div class="inlineWrapper"><div  class = 'S7'><span style="white-space: pre;"><span>V = correctscale(V,t);</span></span></div></div></div><h2  class = 'S4'><span>Prepare the signal</span></h2><div  class = 'S3'><span>Since experimental dipolar signals contain the background, this must be fitted removed prior to Fourier transform.</span></div><div  class = 'S3'><span>First we proceed to fit the background function using some time-domain parametric model. In this example we will use a stretched exponential function (</span><span style=' font-family: monospace;'>td_strexp</span><span>). Using the </span><span style=' font-family: monospace;'>fitbackground</span><span> function we obtain the fitted background as well as the fitted modulation depth.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S8'><span style="white-space: pre;"><span>[B,lambda] = fitbackground(V,t,@td_strexp); </span></span></div></div></div><div  class = 'S9'><span>Now we can use these fitted variables to isolate the dipolar evolution function from the primary data. Removal of the background via division leads to a noise increase at later times and thus to an approximation </span><span style=' font-family: monospace;'>Dcorr</span><span> of the real dipolar evolution function.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S8'><span style="white-space: pre;"><span>Dcorr = (V./B - (1 - lambda))/lambda;</span></span></div></div></div><h2  class = 'S4'><span>Generating the Pake pattern</span></h2><div  class = 'S3'><span>Now that the signal has the appropiate structure for Fourier transform it, we can call the </span><span style=' font-family: monospace;'>fftspec</span><span> function to obtained the Pake pattern.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S8'><span style="white-space: pre;"><span>[</span><span class="warning_squiggle_rte warningHighlight">nu</span><span>,</span><span class="warning_squiggle_rte warningHighlight">pake</span><span>] = fftspec(t,Dcorr);</span></span></div></div></div><div  class = 'S9'><span>In order to avoid truncation ripples in the Fourier spectrum and at the same time to compensate for the increase of noise, we recommend the use of apodization using the appropiate option in </span><span style=' font-family: monospace;'>fftspec</span><span>.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S8'><span style="white-space: pre;"><span>[nu,pake] = fftspec(t,Dcorr,</span><span style="color: rgb(160, 32, 240);">'Apodization'</span><span>,true);</span></span></div></div></div><div  class = 'S9'><span>We do not need to worry about the zero-filling since </span><span style=' font-family: monospace;'>fftspec</span><span> takes care of setting it to twice the amount of points in the signal, to preserve all information. Adding more points will artificially increase the resolution of the Pake pattern. The improvement will only be visual as no further information can be gained from additional zero-filling.</span></div></div>
+<br>
+<!-- 
+##### SOURCE BEGIN #####
+%% Computing the Pake pattern of a dipolar signal
+% Author: Luis Fabregas
+% Reviewed by: (Pending)
+% A very basic example for displaying the frequency-domain Pake pattern of a 
+% given dipolar signal.
+%% Loading & Pre-processing
+% Let's start by extracting the primary data from the spectrometer file using 
+% |deerload. |
+
+%Load experimental data
+[traw,Vraw] = deerload('data/experiment_example.DTA');
+traw = traw/1000; %ns -> us
+%Pre-processing
+V = correctphase(Vraw);
+t = correctzerotime(V,traw);
+V = correctscale(V,t);
+%% Prepare the signal
+% Since experimental dipolar signals contain the background, this must be fitted 
+% removed prior to Fourier transform.
+% 
+% First we proceed to fit the background function using some time-domain parametric 
+% model. In this example we will use a stretched exponential function (|td_strexp|). 
+% Using the |fitbackground| function we obtain the fitted background as well as 
+% the fitted modulation depth.
+
+[B,lambda] = fitbackground(V,t,@td_strexp); 
+%% 
+% Now we can use these fitted variables to isolate the dipolar evolution function 
+% from the primary data. Removal of the background via division leads to a noise 
+% increase at later times and thus to an approximation |Dcorr| of the real dipolar 
+% evolution function.
+
+Dcorr = (V./B - (1 - lambda))/lambda;
+%% Generating the Pake pattern
+% Now that the signal has the appropiate structure for Fourier transform it, 
+% we can call the |fftspec| function to obtained the Pake pattern.
+
+[nu,pake] = fftspec(t,Dcorr);
+%% 
+% In order to avoid truncation ripples in the Fourier spectrum and at the same 
+% time to compensate for the increase of noise, we recommend the use of apodization 
+% using the appropiate option in |fftspec|.
+
+[nu,pake] = fftspec(t,Dcorr,'Apodization',true);
+%% 
+% We do not need to worry about the zero-filling since |fftspec| takes care 
+% of setting it to twice the amount of points in the signal, to preserve all information. 
+% Adding more points will artificially increase the resolution of the Pake pattern. 
+% The improvement will only be visual as no further information can be gained 
+% from additional zero-filling.
+##### SOURCE END #####
+--></body></html>
