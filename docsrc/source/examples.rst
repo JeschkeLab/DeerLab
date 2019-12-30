@@ -8,6 +8,9 @@ Examples
 
     ./examples/example_generatesignals
     ./examples/example_basicprocessing
+    ./examples/example_basicprocessing_multigauss
+    ./examples/example_pakepattern
+    ./examples/example_aptsimple
     ./examples/example_basicvalidation
     ./examples/example_Lcurve
     ./examples/example_fitting5pulseDEER
