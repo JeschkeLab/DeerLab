@@ -140,8 +140,7 @@ Solver
         *   ``'fminsearchcon'`` - Constrained non-linear minimization solver (free)
         *   ``'nlsqbnd'`` - Non-linear least squares (free)
 
-    *Default:* ``'lsqnonlin'`` (Optimization Toolbox installed)
-               ``'nlsqbnd'`` (Optimization Toolbox not installed)
+    *Default:* ``'lsqnonlin'`` (Optimization Toolbox installed) or ``'nlsqbnd'`` (Optimization Toolbox not installed)
 
     *Example:*
 
@@ -205,7 +204,6 @@ MaxFunEval
         fit = fitparamodel(args,'MaxFunEval',1e10)
 
 Verbose
-
     Information display options for the solvers:
 
         *   ``'off'`` - No information displayed
