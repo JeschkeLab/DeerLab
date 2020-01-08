@@ -18,6 +18,7 @@ jobs:
       run: |
            sudo apt-get install -y openvpn openconnect
     - name: Establish VPN connection
+      if: success()
       run: |
            # Force returning packets to be routed over public interface and not over the VPN
            sudo ip rule add from $(ip route get 1 | grep -Po '(?<=src )(\S+)') table 128
@@ -29,6 +30,7 @@ jobs:
            # Start connection to ETH VPN
            echo "${{ secrets.VPN_PASSWD }}" | sudo openconnect ${{ secrets.VPN_SERVER }} --user=${{ secrets.VPN_USER }} --background --passwd-on-stdin
     - name: Transfer source files to CI-server
+      if: success()
       run: |
            rm -f -r ./.git
            echo "${{ secrets.GATEWAY_KEY }}" > sshkey
@@ -37,9 +39,11 @@ jobs:
            ssh -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} scp -r /home/lufa/scp_traffic/DeerAnalysis2 ${{ secrets.CISERVER_HOST }}:/home/deeranalysis/
            ssh -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f -r /home/lufa/scp_traffic/DeerAnalysis2"
     - name: Establish connection to CI-Server
+      if: success()
       run: |
            ssh -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} -t ${{ secrets.GATEWAY_HOST }} ssh ${{ secrets.CISERVER_HOST }}
     - name: Run test suite
+      if: success()
       run: |
            #Run test suite
            cd DeerAnalysis2/build
@@ -50,6 +54,7 @@ jobs:
            cd /home/deeranalysis/
            rm -f -r DeerAnalysis2
     - name: Disconnect CI-server
+      if: success()
       run: |
            logout
            #Transfer log file to GitHub VM
@@ -64,6 +69,7 @@ jobs:
            #Ensure the VPN is disconnected by killing openconnect
            sudo pkill openconnect
     - name: Archive test suite & code coverage results
+      if: success()
       uses: actions/upload-artifact@v1
       with:
         name: datestsuite_report
