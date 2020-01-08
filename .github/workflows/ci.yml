@@ -17,7 +17,7 @@ jobs:
     - name: Install dependencies
       run: |
            sudo apt-get install -y openvpn openconnect
-    - name:Prepare VM
+    - name: Prepare VM
       if: success()
       run: |
            rm -f -r ./.git
