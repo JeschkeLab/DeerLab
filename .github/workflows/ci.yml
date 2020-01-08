@@ -44,7 +44,7 @@ jobs:
     - name: Establish connection to CI-Server
       if: success()
       run: |
-           ssh -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} -t ${{ secrets.GATEWAY_HOST }} ssh ${{ secrets.CISERVER_HOST }}
+           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} -t ${{ secrets.GATEWAY_HOST }} ssh ${{ secrets.CISERVER_HOST }}
     - name: Run test suite
       if: success()
       run: |
@@ -52,7 +52,7 @@ jobs:
            cd DeerAnalysis2/build
            matlab -nodesktop -r "datestsuite;exit"
            #Transfer log file to the gateway
-           scp -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ./*_log ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/
+           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ./*_log ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/
            #Delete the source files
            cd /home/deeranalysis/
            rm -f -r DeerAnalysis2
@@ -61,8 +61,8 @@ jobs:
       run: |
            logout
            #Transfer log file to GitHub VM
-           scp -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }}.${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/*_log ~
-           ssh -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/*_log"
+           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }}.${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/*_log ~
+           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/*_log"
            rm -f ~/sshkey
     - name: Disconnect VPN connection
       run: |
