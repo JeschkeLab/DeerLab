@@ -21,8 +21,8 @@ if ispc
     !python uploadS3.py --keyfile %USERPROFILE%\.ssh\aws_access_keys.txt --file "coverage_badge.json" --bucket deershields
     !python uploadS3.py --keyfile %USERPROFILE%\.ssh\aws_access_keys.txt --file "testsuite_badge.json" --bucket deershields
 elseif isunix
-    !python uploadS3.py --keyfile /home/.ssh/aws_access_keys.txt --file "coverage_badge.json" --bucket deershields
-    !python uploadS3.py --keyfile /home/.ssh/aws_access_keys.txt --file "testsuite_badge.json" --bucket deershields
+    !python3 uploadS3.py --keyfile /home/.ssh/aws_access_keys.txt --file "coverage_badge.json" --bucket deershields
+    !python3 uploadS3.py --keyfile /home/.ssh/aws_access_keys.txt --file "testsuite_badge.json" --bucket deershields
 elseif ismac
     error('macOS is not supported')
 end
