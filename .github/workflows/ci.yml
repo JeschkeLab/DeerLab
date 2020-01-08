@@ -17,7 +17,7 @@ jobs:
     - name: Install dependencies
       run: |
            sudo apt-get install -y openvpn openconnect
-    - name:Establish VPN connection
+    - name: Establish VPN connection
       run: |
            # Force returning packets to be routed over public interface and not over the VPN
            sudo ip rule add from $(ip route get 1 | grep -Po '(?<=src )(\S+)') table 128
@@ -64,7 +64,7 @@ jobs:
            #Ensure the VPN is disconnected by killing openconnect
            sudo pkill openconnect
     - name: Archive test suite & code coverage results
-            uses: actions/upload-artifact@v1
-            with:
-              name: datestsuite_report
-              path: ~/*_log
+      uses: actions/upload-artifact@v1
+      with:
+        name: datestsuite_report
+        path: ~/*_log
