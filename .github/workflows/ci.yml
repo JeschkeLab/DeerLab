@@ -27,11 +27,11 @@ jobs:
            sudo openvpn --mktun --dev tun1
            sudo ifconfig tun1 up
            # Start connection to ETH VPN
-           echo ${{ secrets.VPN_PASSWD }} | sudo openconnect ${{ secrets.VPN_SERVER }} --user=${{ secrets.VPN_USER }} --background --passwd-on-stdin
+           echo "${{ secrets.VPN_PASSWD }}" | sudo openconnect ${{ secrets.VPN_SERVER }} --user=${{ secrets.VPN_USER }} --background --passwd-on-stdin
     - name: Transfer source files to CI-server
       run: |
            rm -f -r ./.git
-           echo ${{ secrets.GATEWAY_KEY }} > sshkey
+           echo "${{ secrets.GATEWAY_KEY }}" > sshkey
            sudo chmod 600 ~/sshkey
            scp -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} -r ../DeerAnalysis2 ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/
            ssh -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} scp -r /home/lufa/scp_traffic/DeerAnalysis2 ${{ secrets.CISERVER_HOST }}:/home/deeranalysis/
