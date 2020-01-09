@@ -44,7 +44,7 @@ jobs:
     - name: Establish connection to CI-Server
       if: success()
       run: |
-           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} -t ${{ secrets.GATEWAY_HOST }} ssh ${{ secrets.CISERVER_HOST }}
+           ssh -tt -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} -t ${{ secrets.GATEWAY_HOST }} ssh ${{ secrets.CISERVER_HOST }}
     - name: Run test suite
       if: success()
       run: |
