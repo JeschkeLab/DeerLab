@@ -4,7 +4,7 @@ function [err,data,maxerr] = test(opt,olddata)
 % Check apt kernel is constructed properly
 %======================================================
 
-load(fullfile('comparison','oldaptkernel512'));
+load('oldaptkernel512');
 
 N = 512;
 dt = 0.008;
