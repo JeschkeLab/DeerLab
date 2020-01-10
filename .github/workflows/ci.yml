@@ -60,7 +60,7 @@ jobs:
       if: success()
       run: |
            #Transfer log file to GitHub VM
-           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/*_log ./
+           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/*_log ~/
            ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/*_log"
            rm -f ~/sshkey
     - name: Archive test suite & code coverage results
@@ -68,7 +68,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: datestsuite_report
-        path: ./*_log
+        path: ~/*_log
     - name: Disconnect VPN connection
       run: |
            #Ensure the VPN is disconnected by killing openconnect

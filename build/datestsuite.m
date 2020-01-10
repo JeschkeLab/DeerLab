@@ -28,8 +28,8 @@ elseif ismac
 end
 
 %Remove artifacts once uploaded
-delete coverage_badge.json
-delete testsuite_badge.json
+% delete coverage_badge.json
+% delete testsuite_badge.json
 
 %Stop diary function
 diary off
