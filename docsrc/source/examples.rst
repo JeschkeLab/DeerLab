@@ -15,6 +15,7 @@ Examples
     ./examples/example_visualization_lcurve
     ./examples/example_fitting5pulseDEER
     ./examples/example_ridmeregularization
+    ./examples/example_backgroundtreatment
     ./examples/example_multigauss
     ./examples/example_selectmodel
     ./examples/example_timedomainfitting
