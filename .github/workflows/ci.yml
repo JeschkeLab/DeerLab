@@ -58,7 +58,7 @@ jobs:
       if: success()
       run: |
            #Transfer log file to GitHub VM
-           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }}.${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/*_log ./
+           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/*_log ./
            ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/*_log"
            rm -f ~/sshkey
     - name: Disconnect VPN connection
