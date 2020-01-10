@@ -48,6 +48,8 @@ jobs:
                #Run test suite
                cd DeerAnalysis2/build
                matlab -nodesktop -r "datestsuite;exit"
+               python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "coverage_badge.json" --bucket deershields
+               python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "testsuite_badge.json" --bucket deershields
                #Transfer log file to the gateway
                scp -o StrictHostKeyChecking=no -i ~/.ssh/gateway_key -P ${{ secrets.GATEWAY_PORT }} ./*_log ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/
                #Delete the source files
@@ -61,16 +63,16 @@ jobs:
            scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/*_log ./
            ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/*_log"
            rm -f ~/sshkey
-    - name: Disconnect VPN connection
-      run: |
-           #Remove TUN device
-           sudo ifconfig tun1 down
-           sudo openvpn --rmtun --dev tun1
-           #Ensure the VPN is disconnected by killing openconnect
-           sudo pkill openconnect
     - name: Archive test suite & code coverage results
       if: success()
       uses: actions/upload-artifact@v1
       with:
         name: datestsuite_report
-        path: ~/*_log
+        path: ./*_log
+    - name: Disconnect VPN connection
+      run: |
+           #Ensure the VPN is disconnected by killing openconnect
+           sudo pkill openconnect
+           #Remove TUN device
+           sudo ifconfig tun1 down
+           sudo openvpn --rmtun --dev tun1
