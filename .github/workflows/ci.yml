@@ -65,8 +65,9 @@ jobs:
            rm -f ~/sshkey
     - name: Check whether all tests passed successfully
       if: success()
-      uses: lots0logs/gh-action-conditional-failure@1.0.0
-      with: --file-exists -- **/*.error.log
+      uses: JJ/files-present-action@releases/v1
+      with:
+        files: "*.error.log"
     - name: Disconnect VPN connection
       run: |
            #Ensure the VPN is disconnected by killing openconnect
