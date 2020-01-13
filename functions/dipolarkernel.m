@@ -277,4 +277,8 @@ K = K*dr;
 %Store output result in the cache
 cachedData = addcache(cachedData,hashKey,K);
 
+if isvector(K) && iscolumn(K)
+    K = K.';
+end
+
 return
