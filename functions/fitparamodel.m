@@ -197,7 +197,7 @@ else
 end
 
 if isempty(Solver) && ~license('test','optimization_toolbox')
-    Solver = 'nlsqbnd';
+    Solver = 'fminsearchcon';
 elseif isempty(Solver) && license('test','optimization_toolbox')
     Solver = 'lsqnonlin';
 else
@@ -210,6 +210,10 @@ else
     validatestring(Solver,SolverList);
 end
 
+if ~ispc && strcmp(Solver,'nlsqbnd')
+    error('The ''nlsqbnd'' solver is only available for Windows systems.')
+end
+    
 if isempty(Algorithm)
     if strcmp(Solver,'lsqnonlin')
         Algorithm = 'trust-region-reflective';
