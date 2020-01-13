@@ -306,7 +306,7 @@ else
 end
 
 %Prepare prctile function to compute throughout first dimension
-prctile = @(v,p) interp1(linspace(0.5/length(v), 1-0.5/length(v), length(v))', sort(v), p*0.01, 'spline');
+prctile = @(v,p) interp1(linspace(0.5/length(v), 1-0.5/length(v), length(v))', sort(v), p*0.01, 'pchip');
 colfcn = @(func, matrix) @(col) func(matrix(:,col));
 colfcn = @(func, matrix) arrayfun(colfcn(func, matrix), 1:size(matrix,2), 'UniformOutput', false)';
 takeall = @(x) reshape([x{:}], size(x{1},2), size(x,1))';
