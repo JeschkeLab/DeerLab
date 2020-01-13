@@ -65,9 +65,9 @@ jobs:
            rm -f ~/sshkey
     - name: Check whether all tests passed successfully
       if: success()
-      uses: JJ/files-present-action@releases/v1
-      with:
-        files: "*.error.log"
+      run: |
+           #Check if error log exists, if not then cause an error to make the run fail
+           ! [ -f *_log ] && echo "Test suite passed" || (echo "Test suite failed" && deerfailed)
     - name: Disconnect VPN connection
       run: |
            #Ensure the VPN is disconnected by killing openconnect
