@@ -63,11 +63,10 @@ jobs:
            scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/datestsuite.error ~/ 2>/dev/null
            ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/datestsuite.error" 2>/dev/null
            rm -f ~/sshkey
-    - name: Check whether all tests passed successfully
+    - name: All tests passed successfully
       if: success()
-      uses: JJ/files-present-action@releases/v1
-      with:
-        files: "datestsuite.error"
+      run: |
+           ! [ -f ~/datestsuite.error ] && echo "Test suite passed" || (echo "Test suite failed" && deerfailed)
     - name: Disconnect VPN connection
       if: always()
       run: |
