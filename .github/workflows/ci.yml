@@ -33,7 +33,7 @@ jobs:
            # Start network tunnel (TUN) device
            sudo openvpn --mktun --dev tun1
            sudo ifconfig tun1 up
-           # Start connection to ETH VPN
+           # Launch VPN connection
            echo "${{ secrets.VPN_PASSWD }}" | sudo openconnect ${{ secrets.VPN_SERVER }} --user=${{ secrets.VPN_USER }} --background --passwd-on-stdin
     - name: Transfer source files to CI-server
       if: success()
@@ -51,7 +51,7 @@ jobs:
                python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "coverage_badge.json" --bucket deershields
                python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "testsuite_badge.json" --bucket deershields
                #Transfer log file to the gateway
-               scp -o StrictHostKeyChecking=no -i ~/.ssh/gateway_key -P ${{ secrets.GATEWAY_PORT }} ./*_log ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/
+               scp -o StrictHostKeyChecking=no -i ~/.ssh/gateway_key -P ${{ secrets.GATEWAY_PORT }} ./*.error.log ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/ 2>/dev/null
                #Delete the source files
                cd /home/deeranalysis/
                rm -f -r DeerAnalysis2
@@ -60,15 +60,13 @@ jobs:
       if: success()
       run: |
            #Transfer log file to GitHub VM
-           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/*_log ~/
-           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/*_log"
+           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/*.error.log ~/ 2>/dev/null
+           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/*.error.log" 2>/dev/null
            rm -f ~/sshkey
-    - name: Archive test suite & code coverage results
+    - name: Check whether all tests passed successfully
       if: success()
-      uses: actions/upload-artifact@v1
-      with:
-        name: datestsuite_report
-        path: ~/*_log
+      uses: lots0logs/gh-action-conditional-failure@1.0.0
+      with: --file-exists -- **/*.error.log
     - name: Disconnect VPN connection
       run: |
            #Ensure the VPN is disconnected by killing openconnect

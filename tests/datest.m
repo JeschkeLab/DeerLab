@@ -320,7 +320,8 @@ fprintf(fid,'-------------------------------------------------------------------
 % Return output if desired
 if nargout==1
     out.Results = testResults;
-    out.outcomes = allErrors;
+    out.Outcomes = allErrors;
+    out.Errors = sum(allErrors);
 end
 
 

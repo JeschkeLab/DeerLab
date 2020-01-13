@@ -79,8 +79,7 @@ bucket = s3.Bucket(args.bucketname)
 #Get filename to upload
 localFile = args.filename
 
-print(localFile)
-print("Adding", localFile, "to S3 bucket... ")
+print("Uploading ", localFile, "to S3 bucket... ")
 s3.meta.client.upload_file(localFile, args.bucketname, localFile, ExtraArgs={'ContentType': "application/json"} )
 
-print("Finished: Data transfer successfull.")
+print("Finished: Data transfer successful.")
