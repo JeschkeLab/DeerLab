@@ -51,7 +51,7 @@ jobs:
                python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "coverage_badge.json" --bucket deershields
                python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "testsuite_badge.json" --bucket deershields
                #Transfer log file to the gateway
-               scp -o StrictHostKeyChecking=no -i ~/.ssh/gateway_key -P ${{ secrets.GATEWAY_PORT }} ./*.error.log ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/ 2>/dev/null
+               scp -o StrictHostKeyChecking=no -i ~/.ssh/gateway_key -P ${{ secrets.GATEWAY_PORT }} ./datestsuite.error ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/ 2>/dev/null
                #Delete the source files
                cd /home/deeranalysis/
                rm -f -r DeerAnalysis2
@@ -60,14 +60,14 @@ jobs:
       if: success()
       run: |
            #Transfer log file to GitHub VM
-           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/*.error.log ~/ 2>/dev/null
-           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/*.error.log" 2>/dev/null
+           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/datestsuite.error ~/ 2>/dev/null
+           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/datestsuite.error" 2>/dev/null
            rm -f ~/sshkey
     - name: Check whether all tests passed successfully
       if: success()
       uses: JJ/files-present-action@releases/v1
       with:
-        files: "**/*.error.log"
+        files: "datestsuite.error"
     - name: Disconnect VPN connection
       if: always()
       run: |

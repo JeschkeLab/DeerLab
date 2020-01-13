@@ -8,7 +8,7 @@ addpath('../tests/comparison')
 Out = datest('--time','--perform','--coverage','--badges');
 
 if Out.Errors>0
-    logname = [datestr(now,'yyyymmdd_HHMMSS'),'_datestsuite.error.log'];
+    logname = 'datestsuite.error';
     save(logname)
 end
 
