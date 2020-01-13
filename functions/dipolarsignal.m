@@ -110,7 +110,7 @@ else
 end
 
 %Generate Gaussian noise
-Noise = whitegaussnoise(t,NoiseLevel);
+Noise = whitegaussnoise(numel(t),NoiseLevel);
 
 %Mix phase if given
 V = V.*exp(-1i*Phase);
