@@ -111,11 +111,10 @@ for Npumped = 1:Npumps
         V = V + lambda*dipolarsignal(tevo,r,P);
         
         %Add the dipolar pathway contribution to the background
-        B = B.*exp(-(k*lambda*abs(tevo)).^d);
-        
+        B = B.*exp(-(k*lambda*abs(tevo)).^(d/3));
     end
     
+end
+
     %Apply the background
     V = V.*B;
-    
-end
