@@ -21,7 +21,7 @@ validateattributes(taus,{'numeric'},{'nonempty'},mfilename,'taus')
 validateattributes(prob,{'numeric'},{'nonempty'},mfilename,'prob')
 
 if nargin<7 || isempty(Bparam)
-    Bparam = [0 0];
+    Bparam = [0 1];
 else
     validateattributes(Bparam,{'numeric'},{'nonnegative'},mfilename,'Bparam')
 end
@@ -105,8 +105,6 @@ for Npumped = 1:Npumps
         %Just some formatting of the vectors for the dipolarsignal function
         if mean(diff(tevo))<0
             tevo =  -tevo;
-        elseif mean(diff(tevo))==0
-            tevo = tevo(1);
         end
         
         %Add the dipolar pathway contribution to the signal
