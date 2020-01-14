@@ -37,10 +37,15 @@
 %   'Knots' - Number knots for the grid of powder orientations to be used
 %             in explicit kernel calculations
 %
-%   'Interference' - Cell array {A1 t1 A2 t2 ... @td_bckg} containing the relative
-%                    amplitudes and time shifts of the dipolar interferences. 
-%                    The background model can be passed as a last argument to 
-%                    include the time-shifted backgrounds
+%   'MultiPathway' - Parameters of the dipolar multi-pathway model. Passed as 
+%                    a cell array {etas lambdas Bmodel} containing the following parameters:
+%
+%         etas     - Time-shifts of the individual dipolar pathways. (N-vector)
+%         lambdas  - Amplitudes of the different pathways. The first element
+%                    is the amplitude of the unmodulated component and the remaining
+%                    elements are the amplitudes of the modulated components. (N+1-vector). 
+%         Bmodel   - Background model, must accept the time axis and the pathway 
+%                    amplitude as inputs. (function handle)
 %
 
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md).

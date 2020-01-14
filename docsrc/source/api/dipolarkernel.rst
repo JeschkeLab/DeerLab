@@ -127,8 +127,12 @@ Knots
 
         K = dipolarkernel(args,'Method','explicit','Knots',2001)
 
-Interference
-     Relative amplitude and time shift pairs of the dipolar interferences in multipulse-DEER experiments. The background model can be passed as a last argument to include the time-shifted backgrounds. 
+MultiPathway
+    Parameters of the dipolar multi-pathway model. Passed as a cell array containing the following parameters:
+
+                * ``etas``  - Time-shifts of the individual dipolar pathways. (N-vector)
+                * ``lambdas``  - Amplitudes of the different pathways. The first element is the amplitude of the unmodulated component and the remaining elements are the amplitudes of the modulated components. (N+1-vector). 
+                * ``Bmodel``  - Background model, must accept the time axis and the pathway amplitude as inputs. (function handle)
 
     *Default:* [*empty*]
 
@@ -136,8 +140,10 @@ Interference
 
     .. code-block:: matlab
 
-        K = dipolarkernel(args,'Interference',[0.34 max(t)/2])
-        K = dipolarkernel(args,'Interference',{0.34 max(t)/2 @td_strexp})
+        lambdas = [0.5 0.3 0.2];
+        etas = [0.0 5.4];
+        Bmodel = @(t,lam) td_strexp(t,[kappa*lam d]);
+        K = dipolarkernel(t,r,'MultiPathway',{lambdas etas Bmodel})
 
 
 
