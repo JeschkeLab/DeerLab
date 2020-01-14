@@ -17,7 +17,10 @@ taus = [tau1 tau2];
 ts = {t1 t2};
 
 prob = 0.8;
-V = td_dmpdeer(t,r,P,taus,ts,prob);
+k = 0.3;
+d = 3;
+
+V = td_dmpdeer(t,r,P,taus,ts,prob,[k,d]);
 V = V/max(V);
 t = fliplr(t);
 V = flipud(V);
@@ -31,13 +34,16 @@ lam0 = (1-prob)^2 + prob*(1-prob)*dipolarsignal(tau2-t2,r,P);
 lambdas = [lam0 lam1 lam2];
 etas = [eta1 eta2];
 
-K = dipolarkernel(t,r,'multipathway',{lambdas etas});
+Bmodel = @(t,lam) td_strexp(t,[lam*k,d]);
+
+K = dipolarkernel(t,r,'multipathway',{lambdas etas Bmodel});
 
 err = any(abs(V - K*P)>1e-3);
 maxerr = max(max(abs(V - K*P)));
 data = [];
 
 if opt.Display
+   clf
    plot(t,V,t,K*P) 
 end
 
