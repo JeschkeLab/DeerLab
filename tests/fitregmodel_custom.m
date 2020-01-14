@@ -15,12 +15,10 @@ DipEvoFcn = K*P;
 
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-tic
 RegParam = 0.2;
 RegMatrix = regoperator(Dimension,3);
 RegFunctional = @(P)(1/2*norm(K*P - DipEvoFcn)^2 + RegParam^2*max(RegMatrix*P)^2);
 Result = fitregmodel(DipEvoFcn,K,r,RegFunctional,RegParam,'Solver','fmincon');
-toc
 
 err = any(abs(Result - P)>5e-1);
 maxerr = max(abs(Result - P));
