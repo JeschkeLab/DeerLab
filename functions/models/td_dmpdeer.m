@@ -1,3 +1,37 @@
+%
+% TD_DMPDEER Time-domain dipolar multi-pathway (DMP) model for multi-pulse DEER
+%
+%       V = TD_DMPDEER(t,r,P,taus,ts,p)
+%       Computes the dipolar signal (given a distance distribution (P) on a
+%       distance axis (r)) originating from any multi-pulse DEER
+%       sequence with (etas) and (ts) pulse sequence parameters
+%
+%               Label = 1               Label = 2               Label = N
+%        <----------------------><------------------------>   ...-->    
+%         _         _      _               _      _
+%        | |  tau1 | | t1 |||tau1-t1      | |    |||                 /\
+%        | |<----->| |<-->|||<--><------->| |<-->|||<-----><--...-->/  \
+%        | |       | |    |||       tau2  | | t2 ||| tau2-t2       /    \
+%     ---------------------------------------------------------------------
+%       where taus = [tau1 tau2 ... tauN] and ts = [t1 t2 ... tN]. Each pump 
+%       pulse has a probability (p) to invert the magnetization.       
+%
+%       V = TD_DMPDEER(t,r,P,taus,ts,p,Bpar)
+%       In order to simulate the signal with background, the decay rate (k)
+%       and dimensionality (d) of a stretched expnential function can be
+%       passed as an array (Bpar), where Bpar=[k d].
+%
+%       V = TD_DMPDEER(t,r,P,taus,ts,p,Bpar,lab)
+%       While each pump-pulse gets a label (1,2,...,N) assigned according to the
+%       tau-block it resides in, the labels of the pump pulses can be
+%       specified by means of a last argument (lab). This allows, e.g. to
+%       simulate where the observer pulses have a finite probability to
+%       invert the magnetization and hence to act as pump pulses.
+%
+
+% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md).
+% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+
 function V = td_dmpdeer(t,r,P,taus,ts,prob,Bparam,labels)
 
 if nargin<6
