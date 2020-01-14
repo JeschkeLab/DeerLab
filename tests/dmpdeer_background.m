@@ -22,7 +22,7 @@ V1 = td_dmpdeer(t,r,P,taus,ts,prob);
 prob = [0.8 0.8];
 labels = [1 2];
 
-Bparam = [0.2 3];
+Bparam = [0 3];
 
 V2 = td_dmpdeer(t,r,P,taus,ts,prob,Bparam,labels);
 

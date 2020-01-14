@@ -21,7 +21,7 @@ validateattributes(taus,{'numeric'},{'nonempty'},mfilename,'taus')
 validateattributes(prob,{'numeric'},{'nonempty'},mfilename,'prob')
 
 if nargin<7 || isempty(Bparam)
-    Bparam = [0 1];
+    Bparam = [0 3];
 else
     validateattributes(Bparam,{'numeric'},{'nonnegative'},mfilename,'Bparam')
 end
