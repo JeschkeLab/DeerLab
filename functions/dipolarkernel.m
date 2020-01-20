@@ -133,7 +133,7 @@ validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilena
 if numel(unique(round(diff(r),6)))~=1 && length(r)~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
-validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
+validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t')
 
 % Memoization
 %--------------------------------------------------------------------------

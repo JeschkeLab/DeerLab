@@ -77,7 +77,7 @@ if isempty(InterferenceCoeff)
 end
 validateattributes(NoiseLevel,{'numeric'},{'scalar','nonnegative'},mfilename,'NoiseLevel')
 validateattributes(lambda,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'ModDepth')
-validateattributes(t,{'numeric'},{'increasing','nonempty'},mfilename,'t')
+validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t')
 validateattributes(r,{'numeric'},{'increasing','nonempty','nonnegative'},mfilename,'r')
 validateattributes(B,{'numeric'},{'2d'},mfilename,'B')
 validateattributes(P,{'numeric'},{'2d'},mfilename,'P')
