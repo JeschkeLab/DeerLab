@@ -52,7 +52,7 @@ if ischar(P)
     P = [];
 end
 %Parse optional input arguments
-[lambda,B,NoiseLevel,gValue,Scale,Overtones,InterferenceCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','gValue','Scale','Overtones','Interference','Phase'},varargin);
+[lambda,B,NoiseLevel,gValue,Scale,Overtones,MultiPathwayCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','gValue','Scale','Overtones','MultiPathway','Phase'},varargin);
 %Validate inputs
 if isempty(lambda)
     lambda = 1;
@@ -72,8 +72,8 @@ end
 if isempty(Phase)
     Phase = 0;
 end
-if isempty(InterferenceCoeff)
-   InterferenceCoeff = []; 
+if isempty(MultiPathwayCoeff)
+   MultiPathwayCoeff = []; 
 end
 validateattributes(NoiseLevel,{'numeric'},{'scalar','nonnegative'},mfilename,'NoiseLevel')
 validateattributes(lambda,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'ModDepth')
@@ -100,7 +100,7 @@ if ~iscolumn(P)
 end
 
 %Get the kernel
-K = dipolarkernel(t,r,lambda,B,'OvertoneCoeffs',Overtones,'gValue',gValue,'interference',InterferenceCoeff);
+K = dipolarkernel(t,r,lambda,B,'OvertoneCoeffs',Overtones,'gValue',gValue,'MultiPathway',MultiPathwayCoeff);
 
 %Calculate dipolar evolution function
 if ~isempty(P)
