@@ -32,11 +32,22 @@
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md).
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function V = td_dmpdeer(t,r,P,taus,ts,prob,Bparam,labels)
+function [V,lambdas,combsout] = td_dmpdeer(t,r,P,taus,ts,prob,Bparam,labels)
 
 if nargin<6
    error('Not enough input arguments.') 
 end
+if ~iscell(taus)
+    validateattributes(taus,{'numeric'},{'nonempty'},mfilename,'taus')
+    taus = mat2cell(taus,size(taus));
+else
+    for i=1:length(taus)
+        if ~iscolumn(taus{i})
+            taus{i} = taus{i}.';
+        end
+    end
+end
+
 if ~iscell(ts)
     validateattributes(ts,{'numeric'},{'nonempty'},mfilename,'taus')
     ts = mat2cell(ts,numel(ts),1);
@@ -51,7 +62,6 @@ end
 validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t')
 validateattributes(r,{'numeric'},{'nonnegative','nonempty'},mfilename,'r')
 validateattributes(P,{'numeric'},{'nonnegative','nonempty'},mfilename,'P')
-validateattributes(taus,{'numeric'},{'nonempty'},mfilename,'taus')
 validateattributes(prob,{'numeric'},{'nonempty'},mfilename,'prob')
 
 if nargin<7 || isempty(Bparam)
@@ -71,6 +81,9 @@ if numel(taus)~=numel(ts)
 end
 if numel(prob)>1 && numel(prob)~=numel(ts)
     error('The number inversion probabilities must be equal to the number of taus.')
+end
+if ~iscell(taus)
+    taus = mat2cell(taus);
 end
 if ~iscell(ts)
     ts = mat2cell(ts);
@@ -101,6 +114,8 @@ d = Bparam(2);
 %Probability of not inverting with any pulse
 lam0  = prod(1-prob);
 V = V + lam0;
+lambdas = lam0;
+combsout = {0};
 
 %Loop over number of pump pulses inverting the magnetization
 for Npumped = 1:Npumps
@@ -133,19 +148,16 @@ for Npumped = 1:Npumps
             s = s*(-1)^(1 + labels(comb(j)) - prev);
             prev = labels(comb(j));
             %Accumulate the dipolar evolution time for the pathway
-            tevo = tevo + s*(taus(comb(j)) - ts{comb(j)});
-        end
-        
-        %Just some formatting of the vectors for the dipolarsignal function
-        if mean(diff(tevo))<0
-            tevo =  -tevo;
+            tevo = tevo + 1/2*s*(abs(taus{comb(j)}) - abs(ts{comb(j)}));
         end
         
         %Add the dipolar pathway contribution to the signal
         V = V + lambda*dipolarsignal(tevo,r,P);
-        
+
         %Add the dipolar pathway contribution to the background
         B = B.*exp(-(k*lambda*abs(tevo)).^(d/3));
+        lambdas(end+1) = lambda;
+        combsout(end+1) = {comb};
     end
     
 end
@@ -154,7 +166,7 @@ end
     V = V.*B;
 
     
-    return
+return
     
     
 function output = norepcomb(vals,taken)
