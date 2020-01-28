@@ -1,5 +1,5 @@
 %
-% PREPVALIDATION Computes parameter combinations for sensitivity analysis
+% PREPVALIDATION Computes the validation parameter combinations
 % 
 %   varparam = PREPVALIDATION(param)
 %   Returns all the possible permutations of the parameters in the input
@@ -22,43 +22,50 @@
 function varparam = prepvalidation(Parameters,varargin)
 
 if ~isa(Parameters,'struct')
-    error('First input must be a structure.');
+    error('Input must be a structure.')
 end
 
-% Parse and validate optional input
-randomizeOrdering = parseoptional({'randperm'},varargin);
+%Parse & validate optional input
+[randpermflag] = parseoptional({'randperm'},varargin);
 
-if isempty(randomizeOrdering)
-    randomizeOrdering = true;
+if isempty(randpermflag)
+    randpermflag = true;
 else
-    validateattributes(randomizeOrdering,{'logical'},{'nonempty'},mfilename,'randperm');
+    validateattributes(randpermflag,{'logical'},{'nonempty'},mfilename,'randperm')
 end
 
-% Get parameter names, values, etc
+%Get number of variables to validate
 ParNames = fieldnames(Parameters);
-ParValues = struct2cell(Parameters);
-nParams = numel(ParNames);
-nValues = cellfun(@numel,ParValues);
-nCombinations = prod(nValues);
-
-% Compile list of parameter combinations
-[idx{1:nParams}] = ind2sub(nValues,1:nCombinations);
-idx = cell2mat(idx.');
-
-% Generate the parameter combinations
-varparam = cell(nCombinations,nParams);
-for c = 1:nCombinations
-    for p = 1:nParams
-        FieldValues = ParValues{p};
+nParam = numel(ParNames);
+%Get number of trials for each validation parameter
+varTrials = zeros(nParam,1);
+for i=1:nParam
+    FieldValues = Parameters.(ParNames{i});
+    varTrials(i) = length(FieldValues);
+end
+totalTrials = prod(varTrials);
+%Preallocate validation parameters
+varparam = cell(totalTrials,nParam);
+%Loop over all validation trials
+for Pindex = 1:totalTrials
+    idx=cell(1,numel(varTrials));
+    [idx{:}] = ind2sub(varTrials,Pindex);
+    idx = cell2mat(idx);
+    %Generate the validation parameter values
+    for varIdx = 1:nParam
+        FieldValues = Parameters.(ParNames{varIdx});
+        %If user supplies the vector directly then take it from there
         if iscell(FieldValues)
-            varparam{c,p} = FieldValues{idx(p,c)};
+            value = FieldValues{idx(varIdx)};
         else
-            varparam{c,p} = FieldValues(idx(p,c));
+            value = FieldValues(idx(varIdx));
         end
+        %Save current sampled value
+        varparam{Pindex,varIdx} = value;
     end
 end
 
-% Randomize the order of the list
-if randomizeOrdering
-    varparam = varparam(randperm(nCombinations),:);
+%Shuffle the order of parameter combination sets
+if randpermflag
+    varparam = varparam(randperm(size(varparam,1)),:);
 end
