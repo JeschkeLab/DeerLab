@@ -2533,7 +2533,7 @@ a.wy-text-neutral:hover {
 h1,h2,.rst-content .toctree-wrapper p.caption,h3,h4,h5,h6,legend {
     margin-top: 0;
     font-weight: 700;
-    font-family: "Roboto Slab","ff-tisa-web-pro","Georgia",Arial,sans-serif}
+    font-family: Arial,sans-serif}
 p {
     line-height: 24px;
     margin: 0;
@@ -2667,7 +2667,7 @@ html {
 .wy-menu-vertical {
     width: 300px}
 .wy-menu-vertical header,.wy-menu-vertical p.caption {
-    color: #3a7ca8;
+    color: #5c87d6;
     height: 32px;
     display: inline-block;
     line-height: 32px;
@@ -2769,11 +2769,11 @@ html {
 .wy-menu-vertical a {
     display: inline-block;
     line-height: 18px;
-    padding: .4045em 1.618em;
+    padding: .4045em 2.618em;
     display: block;
     position: relative;
     font-size: 90%;
-    color: #d9d9d9}
+    color: #ffffff}
 .wy-menu-vertical a:hover {
     background-color: #4e4a4a;
     cursor: pointer}
@@ -2791,7 +2791,7 @@ html {
     padding: .809em;
     margin-bottom: .809em;
     z-index: 200;
-    background-color: #2980B9;
+    background-color: #343131;
     text-align: center;
     padding: .809em;
     display: block;
@@ -3255,7 +3255,7 @@ footer span.commit code,footer span.commit .rst-content tt,.rst-content footer s
     margin-bottom: 0}
 .rst-content .sidebar .sidebar-title {
     display: block;
-    font-family: "Roboto Slab","ff-tisa-web-pro","Georgia",Arial,sans-serif;
+    font-family: Arial,sans-serif;
     font-weight: bold;
     background: #e1e4e5;
     padding: 6px 12px;

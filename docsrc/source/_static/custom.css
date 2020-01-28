@@ -15,14 +15,14 @@
 
 /*Override the design with the box around the code with a small font*/
 code, .rst-content tt, .rst-content code {
-    font-family: consolas !important;
-    font-size: 95% !important;
+    font-family: monospace !important;
+    font-size: 100% !important;
     background: rgba(255,255,255,0) !important;
-    border: solid 0px #ffffff !important;
+    border: solid 0px #e1e4e5 !important;
 }
 
 .rst-content code.literal{
-	color:#9c1330
+	color:#3369cc !important;
 }
 
 /*Change default fonts used throughout the documentation*/
