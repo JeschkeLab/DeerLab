@@ -18,3 +18,4 @@ Tutorials
     ./examples/example_timedomainfitting
     ./examples/example_globalfit_regularization
     ./examples/example_globalfit_timedomain
+    ./examples/example_bilevelopt_background
