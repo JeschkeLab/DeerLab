@@ -51,26 +51,32 @@ if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
+%Parse input
+if ~iscolumn(r)
+    r = r.';
+end
+
 %Prepare parameters
 L=param(1);
 Lp=param(2);
 kappa=Lp/L;
 
+
 %Get normalized distance axis
 normDistAxis=r/L;
-Distribution=zeros(size(r));
+P=zeros(size(r));
 crit=kappa*(1 - normDistAxis);
 %Compute ditribution using two terms of the expansion
 rcrit = normDistAxis(crit>0.2);
-Distribution(crit>0.2)=2*kappa/(4*pi)*(pi^2*(-1)^(2)*exp(-kappa*pi^2*(1-rcrit)) ...
+P(crit>0.2)=2*kappa/(4*pi)*(pi^2*(-1)^(2)*exp(-kappa*pi^2*(1-rcrit)) ...
     + pi^2*4*(-1)^(3)*exp(-kappa*pi^2*4*(1-rcrit)));
 rcrit = normDistAxis(crit>0);
-Distribution(crit>0) = kappa/(4*pi*2*sqrt(pi))*(1./(kappa*(1 - rcrit)).^(3/2).*exp(-(1 - 1/2)^2./(kappa*(1 - rcrit))).*(4.*((1 - 1/2)./sqrt(kappa*(1-rcrit))).^2-2) ...
+P(crit>0) = kappa/(4*pi*2*sqrt(pi))*(1./(kappa*(1 - rcrit)).^(3/2).*exp(-(1 - 1/2)^2./(kappa*(1 - rcrit))).*(4.*((1 - 1/2)./sqrt(kappa*(1-rcrit))).^2-2) ...
     + 1./(kappa*(1 - rcrit)).^(3/2).*exp(-(2 - 1/2)^2./(kappa*(1 - rcrit))).*(4.*((2 - 1/2)./sqrt(kappa*(1-rcrit))).^2-2));
 
 %Normalize integral
-Distribution = Distribution/sum(Distribution)/mean(diff(r));
-output = Distribution;
+P = P/sum(P)/mean(diff(r));
+output = P;
 
 
 return
