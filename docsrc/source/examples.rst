@@ -8,6 +8,7 @@ Tutorials
 
     ./examples/example_basicprocessing
     ./examples/example_basicprocessing_multigauss
+    ./examples/example_mixmodels_fitting
     ./examples/example_sensitivan_tikhonov_simple
     ./examples/example_sensitivan_ridmecoeff
     ./examples/example_pakepattern
