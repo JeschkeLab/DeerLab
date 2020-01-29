@@ -22,7 +22,7 @@ code, .rst-content tt, .rst-content code {
 }
 
 .rst-content code.literal{
-	color:#3369cc !important;
+	color:#000000 !important;
 }
 
 /*Change default fonts used throughout the documentation*/

@@ -8,6 +8,9 @@
 
 Sum of four Gaussian distributions parametric model
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -23,7 +26,13 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
-Model equation: :math:`P(r) = A_1\sqrt{\frac{2}{\pi}}\frac{1}{\Gamma_1}\exp\left(-\frac{(r-\left<r_1\right>)^2}{\Gamma_1^2}\right) + A_2\sqrt{\frac{2}{\pi}}\frac{1}{\Gamma_2}\exp\left(-\frac{(r-\left<r_2\right>)^2}{\Gamma_2^2}\right) + A_3\sqrt{\frac{2}{\pi}}\frac{1}{\Gamma_3}\exp\left(-\frac{(r-\left<r_3\right>)^2}{\Gamma_3^2}\right) +  (1 - A_1 - A_2 - A_3)\sqrt{\frac{2}{\pi}}\frac{1}{\Gamma_4}\exp\left(-\frac{(r-\left<r_4\right>)^2}{\Gamma_4^2}\right)`
+
+-----------------------------
+
+Model
+=========================================
+
+:math:`P(r) = A_1\sqrt{\frac{2}{\pi}}\frac{1}{\Gamma_1}\exp\left(-\frac{(r-\left<r_1\right>)^2}{\Gamma_1^2}\right) + A_2\sqrt{\frac{2}{\pi}}\frac{1}{\Gamma_2}\exp\left(-\frac{(r-\left<r_2\right>)^2}{\Gamma_2^2}\right) + A_3\sqrt{\frac{2}{\pi}}\frac{1}{\Gamma_3}\exp\left(-\frac{(r-\left<r_3\right>)^2}{\Gamma_3^2}\right) +  (1 - A_1 - A_2 - A_3)\sqrt{\frac{2}{\pi}}\frac{1}{\Gamma_4}\exp\left(-\frac{(r-\left<r_4\right>)^2}{\Gamma_4^2}\right)`
 
 with :math:`\Gamma_i = w_i/\sqrt{2ln(2)}`
 
@@ -43,6 +52,9 @@ param(10)  :math:`A_2`                  0.25     0          1          2nd Gauss
 param(10)  :math:`A_3`                  0.25     0          1          3rd Gaussian relative amplitude
 ========== ======================== ========= ======== ========= ===================================
 
+-----------------------------
+
+
 Description
 =========================================
 
@@ -55,6 +67,9 @@ Returns an ``info`` structure containing the specifics of the model:
 * ``info.model`` -  Full name of the parametric model.
 * ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
+
+-----------------------------
+
 
 .. code-block:: matlab
 

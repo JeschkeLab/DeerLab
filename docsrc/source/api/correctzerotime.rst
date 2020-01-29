@@ -7,6 +7,10 @@
 
 Zero-time correction of dipolar spectroscopy time axis
 
+
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -18,13 +22,17 @@ Syntax
 
 
 Parameters
-    *   ``V`` - Signal (N-array)
-    *   ``t`` - Time axis (N-array)
+    *   ``V`` - Signal (*N*-element array)
+    *   ``t`` - Time axis (*N*-element array)
     *   ``t0`` - Zero time (scalar)
 Returns
-    *   ``tc`` - Corrected time axis (N-array)
+    *   ``tc`` - Corrected time axis (*N*-element array)
     *   ``t0`` - Zero time (scalar)
     *   ``pos``  - Zero time index (scalar)
+
+
+-----------------------------
+
 
 Description
 =========================================
@@ -35,11 +43,21 @@ Description
 
 Determines the zero time of a dipolar signal ``V`` and corrects the time axis ``t`` in ns/us for it. If input signal ``V`` is in ns/us the zero time ``t0`` and corrected time axis ``tc`` will be returned in ns/us.
 
+
+-----------------------------
+
+
 .. code-block:: matlab
 
     tc = correctzerotime(V,t,t0)
 
 Corrects the time axis ``t`` for a given zero-time ``t0`` in ns/us.
+
+
+-----------------------------
+
+Example
+=====================================
 
 .. image:: ../images/correctzerotime1.svg
     :align: center

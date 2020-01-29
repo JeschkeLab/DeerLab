@@ -7,6 +7,9 @@
 
 Worm-like chain model near the rigid limit
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -22,12 +25,22 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
+
+-----------------------------
+
+Model
+=========================================
+
+
 ========== =========== ======== ======== ======== ===============================
  Variable   Symbol     Default   Lower   Upper       Description
 ========== =========== ======== ======== ======== ===============================
 param(1)   :math:`L`      3.7     1.5      10       Length of the worm-like chain
 param(2)   :math:`L_p`    10      2        100      Persistence length
 ========== =========== ======== ======== ======== ===============================
+
+-----------------------------
+
 
 Description
 =========================================
@@ -41,6 +54,9 @@ Returns an ``info`` structure containing the specifics of the model:
 * ``info.model`` -  Full name of the parametric model.
 * ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
+
+-----------------------------
+
 
 .. code-block:: matlab
 

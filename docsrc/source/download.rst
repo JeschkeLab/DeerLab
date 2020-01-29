@@ -21,11 +21,17 @@ In order for MATLAB to access the DeerAnalysis API functions, the path to DeerAn
 
 Method A) Add DeerAnalysis path via MATLAB's IDE
 	1) On the ``Home`` tab, in the ``Environment`` section, click ``Set Path``. 
+	
+		.. image:: ./images/installation1.png
+		
 	2) Click ``Add with Subfolders...`` and select the ``DeerAnalysis\functions`` directory. 
+	
+		.. image:: ./images/installation2.png
+		
 	3) Click ``Save`` to save the current MATLAB search path and exit via ``Close``.
 
 
-Method B) Adding DeerAnalysis path at startup
+Method B) Add DeerAnalysis path at startup
 	1) Open (or create) the ``startup.m`` file in the default ``\MATLAB`` directory.
 	2) Add the following lines of code:
 

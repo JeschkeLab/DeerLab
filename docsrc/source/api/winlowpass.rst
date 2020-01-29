@@ -7,6 +7,9 @@
 
 Windowed low-pass FIR filter
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -18,13 +21,16 @@ Syntax
 
 
 Parameters
-    *   ``S`` - Signal (N-array)
+    *   ``S`` - Signal (*N*-element array)
     *   ``Fstop`` - Stopband frequency (scalar)
     *   ``Fpass`` - Passband frequency (scalar)
     *   ``Fsamp`` - Sampling frequency (scalar)
 Returns
-    *   ``Sout`` - Filtered signal (N-array)
+    *   ``Sout`` - Filtered signal (*N*-element array)
     *   ``H`` - Filter transfer function parameters (array)
+
+-----------------------------
+
 
 Description
 =========================================
@@ -35,11 +41,17 @@ Description
 
 Filters the N-point signal ``S`` using a Kaiser-windowed lowpass FIR filter with a transition band given by the passband ``Fpass`` and stopband ``Fstop`` frequencies in Hz. The filter is then constructed according to the sampling rate ``Fsamp`` of the signal in Hz.
 
+-----------------------------
+
+
 .. code-block:: matlab
 
     [Sout,H] = winlowpass(S,Fstop,Fpass,Fsamp)
 
 The filter transfer function parameters ``H`` requested as a second ouput argument.
+
+-----------------------------
+
 
 Optional Arguments
 =========================================
@@ -49,25 +61,25 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     P = winlowpass(args,'Property1',Value1,'Property2',Value2,...)
 
-MinimalAttenuation
+- ``'MinimalAttenuation'`` - Minimal sidelobe attenuation
     Minimal attenuation level [dB] of the first sidelobe after the stopband.
 
     *Default:* ``50``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-       P = selregparam(args,'MinimalAttenuation',60)
+			P = selregparam(args,'MinimalAttenuation',60)
 
 
-ForwardBackward
+- ``ForwardBackward'`` - Forward-backward filtering
     Enables/disables forward-backward filtering of the signal for zero-phase filtering.
 
     *Default:* ``true``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-       P = selregparam(args,'ForwardBackward',false)
+			P = selregparam(args,'ForwardBackward',false)

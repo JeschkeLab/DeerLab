@@ -7,6 +7,9 @@
 
 Conversion from time-axis to frequency-axis
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -16,11 +19,14 @@ Syntax
     nu = time2freq(t,M)
 
 Parameters
-    *   ``t`` - Signal vector (N-array)
-    *   ``M`` - Output length (Scalar)
+    *   ``t`` - Signal vector (*N*-element array)
+    *   ``M`` - Output length (scalar)
 
 Returns
-    *   ``nu`` - Fequency axis (M-array)
+    *   ``nu`` - Fequency axis (*M*-element array)
+
+-----------------------------
+
 
 Description
 =========================================
@@ -31,8 +37,16 @@ Description
 
 Computes the N-point frequency axis ``nu`` from the N-point input time axis ``t`` according to the Nyquist criterion.
 
+-----------------------------
+
+
 .. code-block:: matlab
 
     nu = time2freq(t,M)
 
 The length of the output axis can be specified by the parameter ``M``.
+
+
+
+-----------------------------
+

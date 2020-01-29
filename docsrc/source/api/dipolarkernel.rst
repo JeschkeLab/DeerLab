@@ -1,16 +1,17 @@
-.. highlight:: matlab
 .. _dipolarkernel:
 
 *********************
 :mod:`dipolarkernel`
 *********************
 
-Computes the dipolar interaction kernel `\mathbf{K}` for the linear transformation `\mathbf{S}=\mathbf{K}\mathbf{P}` from a distance-domain distribution `\mathbf{P}` to a time-domain signal `\mathbf{S}`.
+Computes the dipolar interaction kernel for the linear transformation from a distance-domain distribution to a time-domain dipolar signal.
+
+-------------------------------
 
 Syntax
 =========================================
 
-.. code-block:: matlab
+::
 
     K = dipolarkernel(t,r)
     K = dipolarkernel(t,r,lambda)
@@ -20,12 +21,14 @@ Syntax
 
 
 Parameters
-    *   ``t`` - Time axis vector (N-array)
-    *   ``r`` -  Distance axis vector (M-array)
+    *   ``t``      - Time axis vector (*N*-element array)
+    *   ``r``      -  Distance axis vector (*M*-element array)
     *   ``lambda`` - Modulation depth (scalar)
-    *   ``B`` -  Background function vector (N-array)
+    *   ``B``      -  Background function vector (*N*-element array)
 Returns
-    *  ``K`` - Dipolar kernel (NxM-matrix)
+    *  ``K`` - Dipolar kernel (*NxM*-element matrix)
+
+-------------------------------
 
 Description
 =========================================
@@ -34,21 +37,40 @@ Description
 
    K = dipolarkernel(t,r)
 
-Computes ``K`` for the transformation to the dipolar evolution function from the time axis ``t`` and distance axis ``r``. The output kernel will not contain the background function.
+Computes ``K`` for the transformation to the dipolar evolution function from the time axis ``t`` and distance axis ``r``. This kernel will describe the transformation from the distance distribution `\mathbf{P}` to the dipolar evolution function `\mathbf{D}`, meaning
 
-.. Note:: The function automatically detects the units of the inputs. The time axis ``t`` can be passed both in `\mu s` and `ns` and the distance axis ``r`` both in `nm` and Angstrom.
 
-.. Important::
-   Since the dipolar kernel is normalized by `\Delta r`, in order to obtain the correct time-domain signal with ``S=K*P``, the distance distribution must be properly normalized by `\Delta r` as well.
+    .. math:: \mathbf{K}\mathbf{P}  = \mathbf{D}
+
+Since the dipolar kernel is normalized by `\Delta r`, in order to obtain the correct time-domain signal via ``S=K*P``, the distance distribution must be properly normalized by `\Delta r` as well. By default, all distribution ``P`` returned by DeerAnalysis are already normalized.
+
+
+-----------------------------
+
+
+.. code-block:: matlab
+
+    K = dipolarkernel(t,r,lambda)
+
+If the modulation depth ``lambda`` is specified, then its information is included into the kernel function. This kernel will describe the transformation from the distance distribution to the form factor `\mathbf{F}` given by
+
+
+    .. math:: \mathbf{K}\mathbf{P}  = \mathbf{F} = (1-\lambda) + \lambda \mathbf{D}
+
+
+-----------------------------
+
 
 .. code-block:: matlab
 
     K = dipolarkernel(t,r,lambda,B)
 
-If the background ``B`` and modulation depth ``lambda`` are specified, then the background is included into the kernel function. Therefore, linear transformation of distance distributions using this kernel will yield the form factor with the background function.
+If the background ``B`` and modulation depth ``lambda`` variables are specified, then the background is included into the kernel function. This kernel will describe the transformation from the distance distribution to the primary signal `\mathbf{V}` given by
 
-.. Important:: If the dipolar kernel includes the background function, the form factor should not be background corrected.
+    .. math:: \mathbf{K}\mathbf{P}  = \mathbf{V} = [(1-\lambda) + \lambda \mathbf{D} ]\mathbf{B}
 
+
+-------------------------------
 
 Optional Arguments
 =========================================
@@ -59,10 +81,11 @@ Optional arguments can be specified by parameter/value pairs. All property names
 .. code-block:: matlab
 
     K = dipolarkernel(r,t,'Property1',Value1,'Property2',Value2,...)
+    K = dipolarkernel(r,t,lambda,'Property1',Value1,'Property2',Value2,...)
     K = dipolarkernel(r,t,lambda,B,'Property1',Value1,'Property2',Value2,...)
 
-ExcitationBandwidth
-    Excitation bandwith of the pulses in **MHz**. If specified, its value is used in the compensation of limited excitation bandwidth of the experimental pulses. If not specified infinite excitation bandwidth is assumed. The compensation for a given excitation bandwidth :math:`\Delta\omega` is taken into account by the approximation [1]_
+- ``'ExcitationBandwidth'`` - Excitation bandwith of the pulses in **MHz**. 
+    If specified, its value is used in the compensation of limited excitation bandwidth of the experimental pulses. If not specified infinite excitation bandwidth is assumed. The compensation for a given excitation bandwidth :math:`\Delta\omega` is taken into account by the approximation
 
     .. math:: K(t,r,\Delta\omega)  = exp\left(-\frac{\omega_{dd}^2}{\Delta\omega^2}\right)K(t,r)
 
@@ -74,7 +97,7 @@ ExcitationBandwidth
 
         K = dipolarkernel(args,'ExcitationBandwidth',50) %Correct for 50 MHz excitation bandwidth
 
-OvertoneCoeffs
+- ``'OvertoneCoeffs'`` - RIDME overtone coefficients
     1D-Array containing the overtone coefficients for RIDME experimens. If passed, the dipolar kernel overtones are calculated based on the passed coefficients. The coefficient values must be normalized. The kernel containing up to the :math:`K^{th}` overtone is constructed as follows
 
     .. math:: K(t,r)  = \int_{0}^{\pi/2}\sum_{k=1}^K P_k\cos\left[(3\cos^2\theta -1)k\frac{\mu_0\hbar\gamma_A\gamma_B}{4\pi r^3}t\right]\sin\theta d\theta
@@ -85,22 +108,22 @@ OvertoneCoeffs
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-        K = dipolarkernel(args,'OvertoneCoeffs',[0.4 0.2 0.4])
+			K = dipolarkernel(args,'OvertoneCoeffs',[0.4 0.2 0.4])
 
-gValue
+- ``'gValue'`` - Electron g-value
     Specifies the g-value of the electron spin center used to compute the dipolar frequencies from the given distance axis.
 
     *Default:* ``2.004602204236924``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-        K = dipolarkernel(args,'gValue',2.00) %Use experimental g-value
+			K = dipolarkernel(args,'gValue',2.00) %Use experimental g-value
 
-Method
+- ``'Method'`` - Numerical Kernel construction method
     Specifies the way the kernel is computed numerically.
 
 
@@ -112,36 +135,17 @@ Method
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-        K = dipolarkernel(args,'Method','explicit')
+			K = dipolarkernel(args,'Method','explicit')
 
-Knots
-    If the kernel is computed using the ``explicit`` powder averaging, this options specifies the number knots for the grid of powder orientations used for the powder averaging.
+- ``'Knots'`` - Number of powder orientations
+    If the kernel is computed using the ``'explicit'`` powder averaging, this options specifies the number knots for the grid of powder orientations used for the powder averaging.
 
     *Default:* ``1001``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-        K = dipolarkernel(args,'Method','explicit','Knots',2001)
-
-Interference
-     Relative amplitude and time shift pairs of the dipolar interferences in multipulse-DEER experiments. The background model can be passed as a last argument to include the time-shifted backgrounds. 
-
-    *Default:* [*empty*]
-
-    *Example:*
-
-    .. code-block:: matlab
-
-        K = dipolarkernel(args,'Interference',[0.34 max(t)/2])
-        K = dipolarkernel(args,'Interference',{0.34 max(t)/2 @td_strexp})
-
-
-
-References
-=========================================
-
-.. [1] Banham et al., JMR 191, 2008, 202-218
+			K = dipolarkernel(args,'Method','explicit','Knots',2001)

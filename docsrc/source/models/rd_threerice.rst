@@ -8,6 +8,9 @@
 
 Sum of three Gaussian distributions parametric model
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -23,7 +26,13 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
-Model equation: :math:`P(r) = \frac{r}{\sigma_1^2}\exp\left(-\frac{(r^2+\left<r_1\right>^2)}{2\sigma_1^2}\right)I_0\left(\frac{r\left<r_1\right>}{\sigma_1^2} \right) + A_2\frac{r}{\sigma_2^2}\exp\left(-\frac{(r^2+\left<r_2\right>^2)}{2\sigma_2^2}\right)I_0\left(\frac{r\left<r_2\right>}{\sigma_2^2} \right) + (1-A_1-A_2)\frac{r}{\sigma_3^2}\exp\left(-\frac{(r^2+\left<r_3\right>^2)}{2\sigma_3^2}\right)I_0\left(\frac{r\left<r_3\right>}{\sigma_3^2} \right)`
+
+-----------------------------
+
+Model
+=========================================
+
+:math:`P(r) = \frac{r}{\sigma_1^2}\exp\left(-\frac{(r^2+\left<r_1\right>^2)}{2\sigma_1^2}\right)I_0\left(\frac{r\left<r_1\right>}{\sigma_1^2} \right) + A_2\frac{r}{\sigma_2^2}\exp\left(-\frac{(r^2+\left<r_2\right>^2)}{2\sigma_2^2}\right)I_0\left(\frac{r\left<r_2\right>}{\sigma_2^2} \right) + (1-A_1-A_2)\frac{r}{\sigma_3^2}\exp\left(-\frac{(r^2+\left<r_3\right>^2)}{2\sigma_3^2}\right)I_0\left(\frac{r\left<r_3\right>}{\sigma_3^2} \right)`
 
 where :math:`I_0(x)` is the modified Bessel function of the first kind with order zero.
 
@@ -40,6 +49,9 @@ param(7)   :math:`A_1`                  0.3     0          1          1st Rician
 param(8)   :math:`A_2`                  0.3     0          1          2nd Rician relative amplitude
 ========== ======================== ========= ======== ========= ===================================
 
+-----------------------------
+
+
 Description
 =========================================
 
@@ -52,6 +64,9 @@ Returns an ``info`` structure containing the specifics of the model:
 * ``info.model`` -  Full name of the parametric model.
 * ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
+
+-----------------------------
+
 
 .. code-block:: matlab
 

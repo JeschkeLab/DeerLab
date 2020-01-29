@@ -7,6 +7,9 @@
 
 Computes the optimal point for starting the background fit
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -16,12 +19,15 @@ Syntax
     [t0,pos] = backgroundstart(V,t,model,'Property',Value)
 
 Parameters
-    *   ``V`` - Signal (N-array)
-    *   ``t`` - Time axis (N-array)
+    *   ``V`` - Signal (*N*-element array)
+    *   ``t`` - Time axis (*N*-element array)
     *   ``model`` - Background model (function handle)
 Returns
     *   ``t0`` - Optimal fitting start time (scalar)
     *   ``pos`` - Optimal fitting start index (scalar)
+
+-----------------------------
+
 
 Description
 =========================================
@@ -44,6 +50,9 @@ Returns the optimal start time ``t0`` and corresponding array index ``pos`` at w
 
 .. image:: ../images/backgroundstart1.svg
 
+-----------------------------
+
+
 Optional Arguments
 =========================================
 
@@ -54,38 +63,38 @@ Optional arguments can be specified by parameter/value pairs. All property names
     [t0,pos]  = backgroundstart(args,'Property1',Value1,'Property2',Value2,...)
 
 
-RelSearchStart
+- ``'RelSearchStart`'' - Relative Search Start
     Relative position at which the background start search starts.
 
     *Default:* ``0.1``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-       P = selregparam(args,'RelSearchStart',0.25)
+			P = backgroundstart(args,'RelSearchStart',0.25)
 
-RelSearchEnd
+- ``'RelSearchEnd`'' - Relative Search End
     Relative position at which the background start search stops.
 
     *Default:* ``0.6``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-       P = selregparam(args,'RelSearchEnd',0.7)
+			P = backgroundstart(args,'RelSearchEnd',0.7)
 
-ModelParam
-    Parameter values for the background model (if required).
+- ``'EndCutOff'`` - Signal cutoff
+    Maximal number of points to evaluate from the signal. Must be an integer value between ``1`` and ``length(V)``. By default the whole signal is evaluated. 
 
-    *Default:* [*empty*]
+    *Default:* ``length(S)``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-       P = selregparam(args,'polynomial','ModelParam',2) %Polynomial 2nd order
+			P = backgroundstart(args,'EndCutOff',80)
 
-For further property-value pair options see :ref:`fitbackground`.
+- For further property-value pair options see :ref:`fitbackground`.
 

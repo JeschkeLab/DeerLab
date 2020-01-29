@@ -3177,8 +3177,8 @@ footer span.commit code,footer span.commit .rst-content tt,.rst-content footer s
     margin: 0 -12px;
     padding: 0 12px}
 .rst-content pre.literal-block,.rst-content div[class^='highlight'] pre,.rst-content .linenodiv pre {
-    font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",Courier,monospace;
-    font-size: 12px;
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-size: 15px;
     line-height: 1.4}
 .rst-content .code-block-caption {
     font-style: italic;
