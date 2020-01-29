@@ -35,5 +35,3 @@ Description
 
 Opens the offline documentation page of, e.g. the ``dipolarkernel`` function in the MATLAB web explorer.
 
-
------------------------------

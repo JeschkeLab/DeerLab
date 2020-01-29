@@ -63,7 +63,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
     [t0,pos]  = backgroundstart(args,'Property1',Value1,'Property2',Value2,...)
 
 
-- ``'RelSearchStart`'' - Relative Search Start
+- ``'RelSearchStart'`` - Relative Search Start
     Relative position at which the background start search starts.
 
     *Default:* ``0.1``
@@ -74,7 +74,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 			P = backgroundstart(args,'RelSearchStart',0.25)
 
-- ``'RelSearchEnd`'' - Relative Search End
+- ``'RelSearchEnd'`` - Relative Search End
     Relative position at which the background start search stops.
 
     *Default:* ``0.6``

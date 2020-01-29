@@ -80,7 +80,7 @@ If the default kernel is to be used, the time-axis can be passed instead of the 
 
 	P = fitmultigauss(S,t,r,Ngauss,metric,'BackgModel',model)
 
-By passing the ``'BackMoodel'`` option, the background function and modulation depth are fitted along the multigauss distribution parameters. 
+By passing the ``'BackModel'`` option, the background function and modulation depth are fitted along the multigauss distribution parameters. 
 
 -----------------------------
 

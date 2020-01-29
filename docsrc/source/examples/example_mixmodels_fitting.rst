@@ -8,7 +8,7 @@ Fitting a mixed distance-domain model
 .. raw:: html
 
 	<br>
-	<p align="center">
+	<p align="center";>
 		<a href="https://deertutorials.s3.eu-central-1.amazonaws.com/mixmodels_fitting/mixmodels_fitting.pdf" title="Download PDF file" target="_blank" download> 
 			<img src="../_static/img/download_pdf_button.png" style="width:10%;height:10%;" alt="pdf">
 		</a>

@@ -57,6 +57,3 @@ These empirical equation approximate the minimal and maximal detectable distance
 
 where :math:`\nu_0` = 52.04 MHz is the dipolar frequency of between two nitroxide electron spins separated by 1 nm.
 
-
------------------------------
-

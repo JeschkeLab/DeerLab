@@ -47,6 +47,3 @@ Computes the N-point frequency axis ``nu`` from the N-point input time axis ``t`
 The length of the output axis can be specified by the parameter ``M``.
 
 
-
------------------------------
-

@@ -70,6 +70,3 @@ The structure ``pars`` contains entries from the parameter file, if present.
 If ``filename`` is a directory, a file browser is displayed. If ``filename`` is omitted, the current directory is used as default. ``deerload`` returns the name of the loaded file (including its path) as fourth parameter ``file``.
 
 
-
------------------------------
-
