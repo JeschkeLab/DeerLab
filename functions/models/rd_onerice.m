@@ -53,9 +53,9 @@ end
 
 nu=param(1);
 sqscale=param(2).^2;
-%Compute rician/rice distribution using the zeroth order modified Bessel function of
-%the first kind
-P = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale).*besseli(0,r.*nu./sqscale,1);
+%Compute rician/rice distribution using the zeroth order modified Bessel function of the first kind
+P = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale + r.*nu./sqscale).*besseli(0,r.*nu./sqscale,1);
+
 %The Rice distribution is zero for negative values.
 P(P<0)=0;
 
