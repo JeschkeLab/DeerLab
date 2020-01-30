@@ -55,17 +55,17 @@ nu=param(1);
 sqscale=param(2).^2;
 %Compute rician/rice distribution using the zeroth order modified Bessel function of
 %the first kind
-Distribution = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale).*besseli(0,r.*nu./sqscale);
+P = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale).*besseli(0,r.*nu./sqscale,1);
 %The Rice distribution is zero for negative values.
-Distribution(Distribution<0)=0;
+P(P<0)=0;
 
-if ~iscolumn(Distribution)
-    Distribution = Distribution';
+if ~iscolumn(P)
+    P = P';
 end
-if ~all(Distribution==0)
-    Distribution = Distribution/sum(Distribution)/mean(diff(r));
+if ~all(P==0)
+    P = P/sum(P)/mean(diff(r));
 end
-output = Distribution;
+output = P;
 
 
 
