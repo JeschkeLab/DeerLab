@@ -86,14 +86,17 @@ P(crit>0 & crit<0.2) = kappa/(4*pi*2*sqrt(pi))*((1./(kappa*(1 - rcrit)).^(3/2).*
     + 1./(kappa*(1 - rcrit)).^(3/2).*exp(-(2 - 1/2)^2./(kappa*(1 - rcrit))).*(4.*((2 - 1/2)./sqrt(kappa*(1-rcrit))).^2-2));
 
 %Compute Gaussian convolution window
-gaussian = exp(-((r - L - min(r)/2)./sigma).^2);
+[~,idx] = max(P);
+gaussian = exp(-((r - r(idx))./sigma).^2);
 
 %Convolution with size retention
 P = conv(gaussian,P,'full');
 
 %Adjust new convoluted axis
 rconv = linspace(min(r),max(r)*2,numel(P));
-rconv = rconv - 1.5 + min(r)/2;
+[~,idxconv] = max(P);
+rconv = rconv  - abs(r(idx) - rconv(idxconv));
+
 %Interpolate down to original axis
 P = interp1(rconv,P,r,'pchip');
 
