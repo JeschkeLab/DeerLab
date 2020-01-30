@@ -67,11 +67,13 @@ normDistAxis=r/L;
 P=zeros(size(r));
 crit=kappa*(1 - normDistAxis);
 %Compute ditribution using two terms of the expansion
+
 rcrit = normDistAxis(crit>0.2);
 P(crit>0.2)=2*kappa/(4*pi)*(pi^2*(-1)^(2)*exp(-kappa*pi^2*(1-rcrit)) ...
     + pi^2*4*(-1)^(3)*exp(-kappa*pi^2*4*(1-rcrit)));
-rcrit = normDistAxis(crit>0);
-P(crit>0) = kappa/(4*pi*2*sqrt(pi))*(1./(kappa*(1 - rcrit)).^(3/2).*exp(-(1 - 1/2)^2./(kappa*(1 - rcrit))).*(4.*((1 - 1/2)./sqrt(kappa*(1-rcrit))).^2-2) ...
+
+rcrit = normDistAxis(crit>0 & crit<0.2);
+P(crit>0 & crit<0.2) = kappa/(4*pi*2*sqrt(pi))*((1./(kappa*(1 - rcrit)).^(3/2).*exp(-(1 - 1/2)^2./(kappa*(1 - rcrit))).*(4.*((1 - 1/2)./sqrt(kappa*(1-rcrit))).^2-2)) ...
     + 1./(kappa*(1 - rcrit)).^(3/2).*exp(-(2 - 1/2)^2./(kappa*(1 - rcrit))).*(4.*((2 - 1/2)./sqrt(kappa*(1-rcrit))).^2-2));
 
 %Normalize integral
