@@ -35,18 +35,25 @@ Model
 
 with :math:`\Gamma_i = w_i/\sqrt{2ln(2)}`
 
-========== ======================== ========= ======== ========= ===================================
- Variable   Symbol                    Default   Lower    Upper       Description
-========== ======================== ========= ======== ========= ===================================
-param(1)   :math:`\left<r_1\right>`     2.5     1.0        20         1st Gaussian mean distance
-param(2)   :math:`w_1`                  0.5     0.2        5          1st Gaussian FWHM
-param(3)   :math:`\left<r_2\right>`     3.5     1.0        20         2nd Gaussian mean distance
-param(4)   :math:`w_2`                  0.5     0.2        5          2nd Gaussian FWHM
-param(5)   :math:`\left<r_3\right>`     5.0     1.0        20         3rd Gaussian mean distance
-param(6)   :math:`w_3`                  0.5     0.2        5          3rd Gaussian FWHM
-param(7)   :math:`A_1`                  0.3     0          1          1st Gaussian relative amplitude
-param(8)   :math:`A_2`                  0.3     0          1          2nd Gaussian relative amplitude
-========== ======================== ========= ======== ========= ===================================
+================ ======================== ========= ======== ========= ===================================
+ Variable         Symbol                    Default   Lower    Upper       Description
+================ ======================== ========= ======== ========= ===================================
+``param(1)``     :math:`\left<r_1\right>`     2.5     1.0        20         1st Gaussian mean distance
+``param(2)``     :math:`w_1`                  0.5     0.2        5          1st Gaussian FWHM
+``param(3)``     :math:`\left<r_2\right>`     3.5     1.0        20         2nd Gaussian mean distance
+``param(4)``     :math:`w_2`                  0.5     0.2        5          2nd Gaussian FWHM
+``param(5)``     :math:`\left<r_3\right>`     5.0     1.0        20         3rd Gaussian mean distance
+``param(6)``     :math:`w_3`                  0.5     0.2        5          3rd Gaussian FWHM
+``param(7)``     :math:`A_1`                  0.3     0          1          1st Gaussian relative amplitude
+``param(8)``   :  math:`A_2`                  0.3     0          1          2nd Gaussian relative amplitude
+================ ======================== ========= ======== ========= ===================================
+
+
+Example using default parameters:
+
+.. image:: ../images/model_rd_threegaussian.png
+   :width: 40%
+
 
 -----------------------------
 

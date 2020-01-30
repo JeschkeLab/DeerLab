@@ -35,12 +35,19 @@ Model
 
 where :math:`I_0(x)` is the modified Bessel function of the first kind with order zero.
 
-========== ======================== ========= ============= ============= ========================
- Variable   Symbol                    Default   Lower bound   Upper bound      Description
-========== ======================== ========= ============= ============= ========================
-param(1)   :math:`\left<r\right>`     3.5     1.0              10         Mean distance
-param(2)   :math:`\sigma`             0.7     0.1              5          Standard deviation
-========== ======================== ========= ============= ============= ========================
+============== ======================== ========= ============= ============= ========================
+ Variable       Symbol                    Default   Lower bound   Upper bound      Description
+============== ======================== ========= ============= ============= ========================
+``param(1)``   :math:`\left<r\right>`     3.5     1.0              10         Mean distance
+``param(2)``   :math:`\sigma`             0.7     0.1              5          Standard deviation
+============== ======================== ========= ============= ============= ========================
+
+
+Example using default parameters:
+
+.. image:: ../images/model_rd_onerice.png
+   :width: 40%
+
 
 -----------------------------
 
