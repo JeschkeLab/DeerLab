@@ -19,6 +19,7 @@ DeerAnalysis includes the following collection of parametric models. The model n
     ./models/rd_tworice
     ./models/rd_threerice
     ./models/rd_wormchain
+    ./models/rd_wormgauss
     ./models/rd_randcoil
 
 .. toctree::
@@ -84,6 +85,8 @@ DeerAnalysis includes the following collection of parametric models. The model n
          &nbsp - &nbsp Trimodal Rician distribution </li>
          <li><a class="reference internal" href="models/rd_wormchain.html#rd_wormchain"><span class="std std-ref" style="font-family: monospace">rd_wormchain</span></a>
          &nbsp - &nbsp Worm-like chain (WLC) distribution </li>
+         <li><a class="reference internal" href="models/rd_wormgauss.html#rd_wormgauss"><span class="std std-ref" style="font-family: monospace">rd_wormgauss</span></a>
+         &nbsp - &nbsp Worm-like chain (WLC) with Gaussian convolution distribution </li>
          <li><a class="reference internal" href="models/rd_randcoil.html#rd_randcoil"><span class="std std-ref" style="font-family: monospace">rd_randcoil</span></a>
          &nbsp - &nbsp Random coil distribution </li>
          </ul>
