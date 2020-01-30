@@ -30,6 +30,12 @@ Returns
 ``param(3)``   :math:`\sigma`  0.2      0.01      2         Gaussian standard deviation
 ============== =============== ======== ======== ======== ===============================
 
+Example using default parameters:
+
+.. image:: ../images/model_rd_wormgauss.png
+   :width: 40%
+
+
 Description
 =========================================
 
