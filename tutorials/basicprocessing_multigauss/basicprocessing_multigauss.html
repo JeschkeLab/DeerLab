@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,IE=9,chrome=1"><meta name="generator" content="MATLAB R2019b"><title>Basic signal processing of experimental 4-pulse DEER data (multi-Gauss)</title><style type="text/css">.rtcContent { padding: 30px; } .S0 { margin: 3px 10px 5px 4px; padding: 0px; line-height: 28.8px; min-height: 0px; white-space: pre-wrap; color: rgb(213, 80, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 24px; font-weight: 400; text-align: left;  }
+.S1 { margin: 3px 10px 5px 4px; padding: 0px; line-height: 18px; min-height: 0px; white-space: pre-wrap; color: rgb(60, 60, 60); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 15px; font-weight: 700; text-align: left;  }
+.S2 { margin: 2px 10px 9px 4px; padding: 0px; line-height: 21px; min-height: 0px; white-space: pre-wrap; color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 14px; font-weight: 400; text-align: left;  }
+.S3 { margin: 3px 10px 5px 4px; padding: 0px; line-height: 20px; min-height: 0px; white-space: pre-wrap; color: rgb(60, 60, 60); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 20px; font-weight: 700; text-align: left;  }
+.CodeBlock { background-color: #F7F7F7; margin: 10px 0 10px 0;}
+.S4 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 1px solid rgb(233, 233, 233); border-bottom: 1px solid rgb(233, 233, 233); border-radius: 4px; padding: 6px 45px 4px 13px; line-height: 16.996px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px;  }
+.S5 { margin: 10px 10px 9px 4px; padding: 0px; line-height: 21px; min-height: 0px; white-space: pre-wrap; color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 14px; font-weight: 400; text-align: left;  }
+.S6 { margin: 10px 0px 20px; padding-left: 0px; font-family: Helvetica, Arial, sans-serif; font-size: 14px;  }
+.S7 { margin-left: 56px; line-height: 21px; min-height: 0px; text-align: left; white-space: pre-wrap;  }
+.S8 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 1px solid rgb(233, 233, 233); border-bottom: 0px none rgb(0, 0, 0); border-radius: 4px 4px 0px 0px; padding: 6px 45px 0px 13px; line-height: 16.996px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px;  }
+.S9 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 0px none rgb(0, 0, 0); border-bottom: 0px none rgb(0, 0, 0); border-radius: 0px; padding: 0px 45px 0px 13px; line-height: 16.996px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px;  }
+.S10 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 0px none rgb(0, 0, 0); border-bottom: 1px solid rgb(233, 233, 233); border-radius: 0px 0px 4px 4px; padding: 0px 45px 4px 13px; line-height: 16.996px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px;  }</style></head><body><div class = rtcContent><h1  class = 'S0'><span>Basic signal processing of experimental 4-pulse DEER data (multi-Gauss)</span></h1><h4  class = 'S1'><span>Author: Luis Fabregas</span></h4><div  class = 'S2'><span>A very basic example of dipolar data processing using multi-Gauss fitting for a simple evaluation of experimental data.</span></div><h2  class = 'S3'><span>Load the data</span></h2><div  class = 'S2'><span>Let's start by extracting the primary data from the spectrometer file using </span><span style=' font-family: monospace;'>deerload. </span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S4'><span style="white-space: pre;"><span>[traw,Vraw] = deerload(</span><span style="color: rgb(160, 32, 240);">'tutorials/data/experiment_example.DTA'</span><span>);</span></span></div></div></div><div  class = 'S5'><span>The function returns the experimental X-axis as </span><span style=' font-family: monospace;'>traw</span><span> and the Y-axis as </span><span style=' font-family: monospace;'>Vraw.</span></div><div  class = 'S2'><span>At this point it is important to check the units of the time-axis vecor </span><span style=' font-family: monospace;'>traw. </span><span>While some commercial spectrometers return the time-axis data in nanoseconds, DeerAnalysis employs microseconds as physical unit.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S4'><span style="white-space: pre;"><span>traw = traw/1000; </span><span style="color: rgb(60, 118, 61);">%ns -&gt; us</span></span></div></div></div><div  class = 'S5'><span>Now we can also define the distance-axis vector </span><span style=' font-family: monospace;'>r</span><span> of our distance distribution. A simple approach is to call the </span><span style=' font-family: monospace;'>time2dist</span><span> function which will create a distance-axis adapted to the time-axis.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S4'><span style="white-space: pre;"><span>r = time2dist(traw);</span></span></div></div></div><h2  class = 'S3'><span>Pre-Processing</span></h2><div  class = 'S2'><span>Before the data can be fitted it (usually) needs to undergo a set of pre-processing steps: </span></div><ol  class = 'S6'><li  class = 'S7'><span>The dipolar signal is usually complex, the first step if to perform a phase correction which will minimize the imaginary component / maximize the real component.</span></li><li  class = 'S7'><span>In common commercial spectrometers, the time-axes are measured in absolute values. This step aims to optimally determine and correct for the zero-time of the time axis.</span></li><li  class = 'S7'><span>The intensity of the signal is fiven in some arbitrary units (usually some kind voltage). All functions in DeerAnalysis require the dipolar signal to be scaled such that </span><span style=' font-family: monospace;'>V(0)=1</span><span>. This last set requires a fit of the scale require to correct the Y-axis of the dipolar signal.</span></li></ol><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S8'><span style="white-space: pre;"><span style="color: rgb(60, 118, 61);">%Optimization &amp; Correction of phase</span></span></div></div><div class="inlineWrapper"><div  class = 'S9'><span style="white-space: pre;"><span>V = correctphase(Vraw);</span></span></div></div><div class="inlineWrapper"><div  class = 'S9'><span style="white-space: pre;"><span style="color: rgb(60, 118, 61);">%Optimization &amp; Correctionof zero-time</span></span></div></div><div class="inlineWrapper"><div  class = 'S9'><span style="white-space: pre;"><span>t = correctzerotime(V,traw);</span></span></div></div><div class="inlineWrapper"><div  class = 'S9'><span style="white-space: pre;"><span style="color: rgb(60, 118, 61);">%Optimization &amp; Correction of Y-axis scale</span></span></div></div><div class="inlineWrapper"><div  class = 'S10'><span style="white-space: pre;"><span>V = correctscale(V,t);</span></span></div></div></div><h2  class = 'S3'><span>Prepare the dipolar kernel</span></h2><div  class = 'S2'><span>Since experimental dipolar signals contain a inter-molecular contribution, i.e. a background, this must be fitted and included into the dipolar kernel before the regularization.</span></div><div  class = 'S2'><span>First we proceed to fit the background function using some time-domain parametric model. In this example we will use a stretched exponential function (</span><span style=' font-family: monospace;'>td_strexp</span><span>). Using the </span><span style=' font-family: monospace;'>fitbackground</span><span> function we obtain the fitted background as well as the fitted modulation depth.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S4'><span style="white-space: pre;"><span>[B,lambda] = fitbackground(V,t,@td_strexp); </span></span></div></div></div><div  class = 'S5'><span>Now we can use these fitted variables to generate the dipolar kernel which describes our signal.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S4'><span style="white-space: pre;"><span>KB = dipolarkernel(t,r,lambda,B);</span></span></div></div></div><h2  class = 'S3'><span>Multi-Gauss fitting</span></h2><div  class = 'S2'><span>We now have all the elements required to fit our distance distribution via multi-Gauss fitting. The additional parameter </span><span style=' font-family: monospace;'>maxGauss</span><span>, will set the largest number of Gaussian basis functions allowed in the multi-Gauss model.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S8'><span style="white-space: pre;"><span>maxGauss = 7;</span></span></div></div><div class="inlineWrapper"><div  class = 'S10'><span style="white-space: pre;"><span>Pfit = fitmultigauss(V,KB,r,maxGauss);</span></span></div></div></div><div  class = 'S5'><span>With our fitted distance distribution </span><span style=' font-family: monospace;'>Pfit</span><span> we can forward-calculate the fit of the dipolar signal by simply computing</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S8'><span style="white-space: pre;"><span>Vfit = KB*Pfit;</span></span></div></div><div class="inlineWrapper"><div  class = 'S10'></div></div></div></div>
+<br>
+<!-- 
+##### SOURCE BEGIN #####
+%% Basic signal processing of experimental 4-pulse DEER data (multi-Gauss)
+% Author: Luis Fabregas
+% A very basic example of dipolar data processing using multi-Gauss fitting 
+% for a simple evaluation of experimental data.
+%% Load the data
+% Let's start by extracting the primary data from the spectrometer file using 
+% |deerload.| 
+
+[traw,Vraw] = deerload('tutorials/data/experiment_example.DTA');
+%% 
+% The function returns the experimental X-axis as |traw| and the Y-axis as |Vraw.|
+%% 
+% At this point it is important to check the units of the time-axis vecor |traw.| 
+% While some commercial spectrometers return the time-axis data in nanoseconds, 
+% DeerAnalysis employs microseconds as physical unit.
+
+traw = traw/1000; %ns -> us
+%% 
+% Now we can also define the distance-axis vector |r| of our distance distribution. 
+% A simple approach is to call the |time2dist| function which will create a distance-axis 
+% adapted to the time-axis.
+
+r = time2dist(traw);
+%% Pre-Processing
+% Before the data can be fitted it (usually) needs to undergo a set of pre-processing 
+% steps: 
+%% 
+% # The dipolar signal is usually complex, the first step if to perform a phase 
+% correction which will minimize the imaginary component / maximize the real component.
+% # In common commercial spectrometers, the time-axes are measured in absolute 
+% values. This step aims to optimally determine and correct for the zero-time 
+% of the time axis.
+% # The intensity of the signal is fiven in some arbitrary units (usually some 
+% kind voltage). All functions in DeerAnalysis require the dipolar signal to be 
+% scaled such that |V(0)=1|. This last set requires a fit of the scale require 
+% to correct the Y-axis of the dipolar signal.
+
+%Optimization & Correction of phase
+V = correctphase(Vraw);
+%Optimization & Correctionof zero-time
+t = correctzerotime(V,traw);
+%Optimization & Correction of Y-axis scale
+V = correctscale(V,t);
+%% Prepare the dipolar kernel
+% Since experimental dipolar signals contain a inter-molecular contribution, 
+% i.e. a background, this must be fitted and included into the dipolar kernel 
+% before the regularization.
+% 
+% First we proceed to fit the background function using some time-domain parametric 
+% model. In this example we will use a stretched exponential function (|td_strexp|). 
+% Using the |fitbackground| function we obtain the fitted background as well as 
+% the fitted modulation depth.
+
+[B,lambda] = fitbackground(V,t,@td_strexp); 
+%% 
+% Now we can use these fitted variables to generate the dipolar kernel which 
+% describes our signal.
+
+KB = dipolarkernel(t,r,lambda,B);
+%% Multi-Gauss fitting
+% We now have all the elements required to fit our distance distribution via 
+% multi-Gauss fitting. The additional parameter |maxGauss|, will set the largest 
+% number of Gaussian basis functions allowed in the multi-Gauss model.
+
+maxGauss = 7;
+Pfit = fitmultigauss(V,KB,r,maxGauss);
+%% 
+% With our fitted distance distribution |Pfit| we can forward-calculate the 
+% fit of the dipolar signal by simply computing
+
+Vfit = KB*Pfit;
+##### SOURCE END #####
+--></body></html>
