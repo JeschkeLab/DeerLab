@@ -11,7 +11,7 @@ output = prepvalidation(Parameters);
 
 err = ~isequal(size(output),[2*3 2]);
 data = [];
-maxerr = [];
+maxerr = NaN;
 
 cd(currentpath)
 

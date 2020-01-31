@@ -24,7 +24,7 @@ if numel(N)>1
 end
 
 %Validate input
-validateattributes(N,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed')
+validateattributes(N,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'N')
 validateattributes(level,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed')
 
 %Generate Gaussian noise

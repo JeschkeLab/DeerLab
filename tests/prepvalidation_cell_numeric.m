@@ -14,7 +14,7 @@ err(1) = ~isequal(size(output),[6*5 2]);
 err(2) = length(output{1,1})~= 100;
 err = any(err);
 data = [];
-maxerr = [];
+maxerr = NaN;
 
 cd(currentpath)
 

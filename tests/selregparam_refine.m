@@ -21,7 +21,7 @@ goal = 0.01;
 
 err = length(RegParams) == length(RegParamSet);
 data = [];
-maxerr = [];
+maxerr = NaN;
 
 if opt.Display
    figure(8),clf

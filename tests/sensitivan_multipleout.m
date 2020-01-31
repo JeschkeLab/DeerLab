@@ -18,10 +18,10 @@ end
 
 fcnHandle = @(param)myfitting(param,t,r,V);
 
-[meansOut,Upper,Lower]  = sensitivan(fcnHandle,Parameters,'AxisHandle',AxisHandle);
+stats  = sensitivan(fcnHandle,Parameters,'AxisHandle',AxisHandle);
 
-err(1) = ~iscell(meansOut);
-err(2) = length(meansOut)~=2;
+err(1) = ~isstruct(stats);
+err(2) = length(stats)~=2;
 err = any(err);
 data = [];
 maxerr = 0;

@@ -8,6 +8,9 @@
 
 Sum of two stretched exponentials background parametric model
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -23,7 +26,13 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
-Model equation: :math:`B(t) = A_1e^{-(k_1t)^{d_1/3}} + (1-A_1)e^{-(k_2t)^{d_2/3}}`
+
+-----------------------------
+
+Model
+=========================================
+
+:math:`B(t) = A_1e^{-(k_1t)^{d_1/3}} + (1-A_1)e^{-(k_2t)^{d_2/3}}`
 
 ========== ============= ========= ============= ============= ==============================
  Variable   Symbol        Default   Lower bound   Upper bound      Description
@@ -34,6 +43,9 @@ param(3)   :math:`k_2`      3.5         0            200         2nd strexp deca
 param(4)   :math:`d_2`      3           0            6           2nd strexp fractal dimension
 param(5)   :math:`A_1`      0.5         0            1           Relative amplitude
 ========== ============= ========= ============= ============= ==============================
+
+-----------------------------
+
 
 Description
 =========================================
@@ -47,6 +59,9 @@ Returns an ``info`` structure containing the specifics of the model:
 * ``info.model`` -  Full name of the parametric model.
 * ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
+
+-----------------------------
+
 
 .. code-block:: matlab
 

@@ -37,10 +37,15 @@
 %   'Knots' - Number knots for the grid of powder orientations to be used
 %             in explicit kernel calculations
 %
-%   'Interference' - Cell array {A1 t1 A2 t2 ... @td_bckg} containing the relative
-%                    amplitudes and time shifts of the dipolar interferences. 
-%                    The background model can be passed as a last argument to 
-%                    include the time-shifted backgrounds
+%   'MultiPathway' - Parameters of the dipolar multi-pathway model. Passed as 
+%                    a cell array {etas lambdas Bmodel} containing the following parameters:
+%
+%         etas     - Time-shifts of the individual dipolar pathways. (N-vector)
+%         lambdas  - Amplitudes of the different pathways. The first element
+%                    is the amplitude of the unmodulated component and the remaining
+%                    elements are the amplitudes of the modulated components. (N+1-vector). 
+%         Bmodel   - Background model, must accept the time axis and the pathway 
+%                    amplitude as inputs. (function handle)
 %
 
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md).
@@ -74,8 +79,8 @@ if nargin>3 && isa(B,'char')
 end
 
 % Check if user requested some options via name-value input
-[ExcitationBandwidth,OvertoneCoeffs,gValue,Method,Knots,InterferenceParam,Cache] = ...
-    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','gValue','Method','Knots','Interference','Cache'},varargin);
+[ExcitationBandwidth,OvertoneCoeffs,gValue,Method,Knots,MultiPathParam,Cache] = ...
+    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','gValue','Method','Knots','MultiPathway','Cache'},varargin);
 if isempty(Cache)
     Cache = true;
 end
@@ -128,7 +133,7 @@ validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilena
 if numel(unique(round(diff(r),6)))~=1 && length(r)~=1
     error('Distance axis must be a monotonically increasing vector.')
 end
-validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
+validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t')
 
 % Memoization
 %--------------------------------------------------------------------------
@@ -161,22 +166,31 @@ else
     dr = 1;
 end
 
-if ~isempty(InterferenceParam)
-    if ~iscell(InterferenceParam)
-        InterferenceParam = num2cell(InterferenceParam);
+%Validation of the dipolar multipathway parameters
+if ~isempty(MultiPathParam)
+    if ~iscell(MultiPathParam)
+        error('Dipolar multi-pathway parameters must be cell-array {lambdas etas Bmodel}')
     end
-    if numel(InterferenceParam)<2
-        error('Interference option must contain at least two elements [amp tau]')
+    if numel(MultiPathParam)<2
+        error('Dipolar multi-pathway parameters must contain at least two elements {lambdas etas}')
     end
-    if mod(numel(InterferenceParam),2)~=0 && ~isa(InterferenceParam{end},'function_handle')
+    pathlam = MultiPathParam{1};
+    patheta = MultiPathParam{2};
+    validateattributes(pathlam,{'numeric'},{'nonnegative','nonempty'},mfilename,'lambdas')
+    validateattributes(patheta,{'numeric'},{'nonempty'},mfilename,'etas')
+    if numel(pathlam)~=(numel(patheta)+1)
+       error('For N eta-values, N+1 lambda-values are required (eta1,eta2,... <-> lambda0,lambda1,lambda2,...)') 
+    end
+    if numel(MultiPathParam)>2 && ~isa(MultiPathParam{3},'function_handle')
         error('The last element of the Interference option must be valid function handle.')
-    elseif mod(numel(InterferenceParam),2)~=0 && isa(InterferenceParam{end},'function_handle')
-        Bmodel = InterferenceParam{end};
-        InterferenceParam(end) = [];
+    elseif numel(MultiPathParam)>2 && isa(MultiPathParam{3},'function_handle')
+        Bmodel = MultiPathParam{end};
+        MultiPathParam(end) = [];
     else
         Bmodel = [];
     end
 end
+
 % Get absolute time axis scale (required for negative times)
 traw = t;
 t = abs(t); %ns
@@ -238,38 +252,34 @@ if ~isempty(B)
     K = K.*B;
 end
 
-% Build dipolar superposition model
+% Build dipolar multi-pathway (DMP) model
 %----------------------------------------------------------
-Kinter = zeros(length(t),length(wdd));
-if ~isempty(InterferenceParam)
-    %Loop over all additional signals
-    for i=1:2:numel(InterferenceParam)
-        %Extract current superimposed signal parameters
-        amp = InterferenceParam{i};
-        tau = InterferenceParam{i + 1};
+if ~isempty(MultiPathParam)
+    K = zeros(length(t),length(wdd));
+    Knorm = zeros(length(t),length(wdd));
+    B = ones(length(t),1);
+    Bnorm = ones(length(t),1);
+    lam0 = pathlam(1);
+    K = K + lam0;
+    Knorm = Knorm + lam0;
+    %Loop over all modulated pathways
+    for i=1:numel(patheta)
         %If background model is given then compute the background
         if ~isempty(Bmodel)
-            %Get background parameters (non-elegant but efficient)
-            [~,~,Bparam] = fitbackground(B,traw,Bmodel,[min(t) max(t)]);
-            %Compute time-shifted and power-scaled background
-            Bshifted = Bmodel(abs(traw - tau),Bparam).^amp;
-            %Compute correction term for background
-            Btau = Bmodel(-tau,Bparam).^amp;
-            %Ensure that the parametric model returns a column
-            if ~iscolumn(Btau)
-                Btau = Btau.';
-            end
-        else
-            %If background is not given, then use blanks
-            Bshifted = ones(size(t));
-            Btau = 1;
+            %Simulate the background according to input model
+            B = B.*Bmodel(traw-patheta(i),pathlam(i+1));
+            Bnorm = Bnorm.*Bmodel(-patheta(i),pathlam(i+1));
         end
-        %Add the scaled dipolar kernel for the current shifted time axis
-        Kinter = Kinter + amp*dipolarkernel(traw - tau,r,lambda,Bshifted,'Cache',false)/dr - amp*dipolarkernel(-tau,r,lambda,Btau,'Cache',false)/dr;
+        %Use a recursive call to dipolarkernel to build the pathway kernels
+        Kpathway = dipolarkernel(traw-patheta(i),r,'Method',Method)/dr;
+        Knormpath = dipolarkernel(-patheta(i),r,'Method',Method)/dr;
+        lampath = pathlam(i+1);
+        K = K + lampath*Kpathway;
+        Knorm = Knorm + lampath*Knormpath;
     end
+    K = 1./(Knorm.*Bnorm).*K.*B;
 end
-%Add superimposed kernels
-K = K + Kinter;
+
 
 % Normalize kernel
 K = K*dr;

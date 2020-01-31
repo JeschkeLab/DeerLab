@@ -3,9 +3,11 @@ cvx/
 docs/docsrc/build/
 docs/docsrc/venv/
 docsrc/venv/
+docsrc/source/.doctrees
 docs/
 docsrc/cache/
 docsrc/source/__pycache__/
 docsrc/aws_access_keys.txt
 docsrc/__pycache__/
 build/.ssh/
+tutorials/**/*.pdf

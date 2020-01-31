@@ -59,11 +59,12 @@ if ~iscolumn(S)
 end
 validateattributes(useApodization,{'logical'},{'nonempty'},mfilename,'useApodization')
 validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
-validateattributes(t,{'numeric'},{'2d','nonempty','nonnegative','increasing'},mfilename,'t')
+validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
 
 %If requested apply Hamming apodization window
 if useApodization
     arg = linspace(0,pi,length(S));
+    arg = arg.';
     ApoWindow = 0.54 + 0.46*cos(arg);
     S = S.*ApoWindow;
 end

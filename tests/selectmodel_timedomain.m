@@ -21,7 +21,7 @@ err(1) = optimum1~=optimum2;
 err(2) = optimum2~=optimum3;
 err = any(err);
 data = [];
-maxerr = [];
+maxerr = NaN;
 
 
 if opt.Display

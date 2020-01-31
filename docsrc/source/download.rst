@@ -1,38 +1,53 @@
-Installation
+Downloads
 ======================
 
-Get the latest version of DeerAnalysis from the `GitHub repository <https://github.com/luisfabib/DeerAnalysis2>`_.
+
+DeerAnalysis is distributed in two different formats:
+
+	- Releases
+		Releases are the official packages of DeerAnalysis containing the essentials for the full-functionality of the program. They contain:
+
+			- All DeerAnaysis functions
+			- A compiled offline version of this webpage and documentation
+			- All tutorial scripts
+
+	- Source code
+		The source code contains all code used in the development of DeerAnalysis, including: 
+
+			- All DeerAnaysis functions
+			- All source files for compiling the webpage and documentation
+			- The full test suite
+			- All tutorial scripts
+			- All build and CI scripts
+			- No built documentation
 
 
-Requirements
----------------
-The application programming interface (API) of DeerAnalysis requires the following products:
-
-    *  `MATLAB <https://ch.mathworks.com/products/matlab.html>`_
+-----------------------
 
 
-To access additional optional functionality, the following products may be required:
+Downloading Releases
+-----------------------
 
-    *  `Optimization Toolbox <https://ch.mathworks.com/products/optimization.html>`_
+All releases (incuding previous versions) are available in the official DeerAnalysis `GitHub repository <https://github.com/luisfabib/DeerAnalysis2>`_. 
 
-Setup
----------------
-In order for MATLAB to access the DeerAnalysis API functions, the path to DeerAnalysis installation folder must be set.
+1) From the main page, select the ``releases`` tab
 
-Method A) Add DeerAnalysis path via MATLAB's IDE
-	1) On the ``Home`` tab, in the ``Environment`` section, click ``Set Path``. 
-	2) Click ``Add with Subfolders...`` and select the ``DeerAnalysis\functions`` directory. 
-	3) Click ``Save`` to save the current MATLAB search path and exit via ``Close``.
+		.. image:: ./images/downloads1.png
 
+2) Select the release you want to download
 
-Method B) Adding DeerAnalysis path at startup
-	1) Open (or create) the ``startup.m`` file in the default ``\MATLAB`` directory.
-	2) Add the following lines of code:
+		.. image:: ./images/downloads2.png
+
+3) Download the ``DeerAnaysis_x.y.zip`` file. Extract the files on your desired location and follow the Installation page instructions.
+
+		.. image:: ./images/downloads3.png
 
 
-	 .. code-block:: matlab
+Downloading the source code
+-----------------------------
 
-		 addpath('mypath/DeerAnalysis/functions')
-		 addpath('mypath/DeerAnalysis/functions/models')
-		 
-	3) Save ``startup.m`` and restart MATLAB.
+The source code is easily available in the official DeerAnalysis `GitHub repository <https://github.com/luisfabib/DeerAnalysis2>`_ either by downloading or cloning the repo. 
+
+1) From the main page, select the ``Clone or download`` tab
+
+		.. image:: ./images/downloads4.png

@@ -16,7 +16,7 @@ P = P/sum(P)/mean(diff(r));
 
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
-NoiseLevel = 0.05;
+NoiseLevel = 0.02;
 Noise = whitegaussnoise(Dimension,NoiseLevel);
 S = DipEvoFcn+Noise;
 
@@ -28,7 +28,7 @@ else
 end
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-OptParam = 0.2;
+OptParam = 0.002;
 Result = obir(S,K,r,'tv',OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','axishandle',axhandle);
 RegResult = fitregmodel(S,K,r,'tv',OptParam);
 

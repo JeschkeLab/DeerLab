@@ -8,6 +8,9 @@
 
 Rician distribution parametric model
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -23,16 +26,31 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
-Model equation: :math:`P(r) = \frac{r}{\sigma^2}\exp\left(-\frac{(r^2+\left<r\right>^2)}{2\sigma^2}\right)I_0\left(\frac{r\left<r\right>}{\sigma^2} \right)`
+-----------------------------
+
+Model
+=========================================
+
+:math:`P(r) = \frac{r}{\sigma^2}\exp\left(-\frac{(r^2+\left<r\right>^2)}{2\sigma^2}\right)I_0\left(\frac{r\left<r\right>}{\sigma^2} \right)`
 
 where :math:`I_0(x)` is the modified Bessel function of the first kind with order zero.
 
-========== ======================== ========= ============= ============= ========================
- Variable   Symbol                    Default   Lower bound   Upper bound      Description
-========== ======================== ========= ============= ============= ========================
-param(1)   :math:`\left<r\right>`     3.5     1.0              10         Mean distance
-param(2)   :math:`\sigma`             0.7     0.1              5          Standard deviation
-========== ======================== ========= ============= ============= ========================
+============== ======================== ========= ============= ============= ========================
+ Variable       Symbol                    Default   Lower bound   Upper bound      Description
+============== ======================== ========= ============= ============= ========================
+``param(1)``   :math:`\left<r\right>`     3.5     1.0              10         Mean distance
+``param(2)``   :math:`\sigma`             0.7     0.1              5          Standard deviation
+============== ======================== ========= ============= ============= ========================
+
+
+Example using default parameters:
+
+.. image:: ../images/model_rd_onerice.png
+   :width: 40%
+
+
+-----------------------------
+
 
 Description
 =========================================
@@ -46,6 +64,9 @@ Returns an ``info`` structure containing the specifics of the model:
 * ``info.model`` -  Full name of the parametric model.
 * ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
+
+-----------------------------
+
 
 .. code-block:: matlab
 

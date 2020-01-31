@@ -7,6 +7,9 @@
 
 Second order polynomial parametric model
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -22,7 +25,13 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
-Model equation: :math:`B(t) = p_0 + p_1t + p_2t^2`
+
+-----------------------------
+
+Model
+=========================================
+
+:math:`B(t) = p_0 + p_1t + p_2t^2`
 
 ========== ============= ========= ============= ============= ==============================
  Variable   Symbol        Default   Lower bound   Upper bound      Description
@@ -31,6 +40,9 @@ param(1)    :math:`p_0`     1          0            200          Intercept
 param(2)    :math:`p_1`     -1         -200         200          1st order weight
 param(3)    :math:`p_2`     -1         -200         200          2nd order weight
 ========== ============= ========= ============= ============= ==============================
+
+-----------------------------
+
 
 Description
 =========================================
@@ -44,6 +56,9 @@ Returns an ``info`` structure containing the specifics of the model:
 * ``info.model`` -  Full name of the parametric model.
 * ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
+
+-----------------------------
+
 
 .. code-block:: matlab
 

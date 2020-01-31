@@ -19,7 +19,7 @@ param0 = [2 0.1];
 [fitparam2,Pfit2] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fmincon');
 
 [fitparam3,Pfit3] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','lsqnonlin');
-[fitparam4,Pfit4] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','nlsqbnd');
+[fitparam4,Pfit4] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fminsearchcon');
 
 err(1) = any(abs(Pfit1 - Pfit2)>1e-5);
 err(2) = any(abs(fitparam1 - fitparam2)>1e-3);
