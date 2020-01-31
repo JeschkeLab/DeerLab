@@ -13,6 +13,9 @@ from pathlib import Path
 parser = ArgumentParser()
 parser.add_argument("-k", "--key",dest="accesskey",default=[],help="AWS Access Key")
 parser.add_argument("-s", "--secretkey",dest="secretkey", default=[],help="AWS Secret Access Key")
+parser.add_argument("-d", "--directory",dest="base_dir",default=[],help="Directory to upload")
+parser.add_argument("-b", "--bucket",dest="bucketname", default=[],help="Name of S3 bucket")
+parser.add_argument("-i", "--keyfile",dest="keyfile",default=[],help="AWS Access Key")
 args = parser.parse_args()
 
 def getListOfFiles(dirName):
@@ -55,13 +58,21 @@ def metadataType(file):
 
 #If access codes have not been passed as inputs then check if file is there
 if not args.accesskey or not args.secretkey:
+	
+	if not args.keyfile:
+		keypath = 'aws_access_keys.txt'
+	else:
+		keypath = args.keyfile
+	
+	#Set absolute path to key file
+	#cwd = os.getcwd()
+	#keypath =  os.path.join(cwd,keypath)
 
 	#Load and read the secure access keys to connect to the AWS S3 client
-	if os.path.isfile(".\aws_access_keys.txt"):
+	if not os.path.isfile(keypath):
 		print("AWS access keys not found. You may not have rights to request this action.")
 		exit()
-
-	with open('aws_access_keys.txt', 'r') as file:
+	with open(keypath, 'r') as file:
 		AccessKeys = [line.rstrip('\n') for line in file]
 else:
 	 AccessKeys = [args.accesskey, args.secretkey]
@@ -78,24 +89,27 @@ s3 = boto3.resource('s3',
 		 aws_access_key_id = AccessKeys[0],
 		 aws_secret_access_key = AccessKeys[1],
 		 region_name='eu-west-1')
-bucket = s3.Bucket('deeranalysis.org')
 
-base_dir = "../docs"
+bucketname = str(args.bucketname)
+bucket = s3.Bucket(bucketname)
+
+base_dir = str(args.base_dir)
 #Get full list of local files
 localFiles = getListOfFiles(base_dir)
+base_dir +=  '/'
 
 for key in bucket.objects.all():
 
 		#Get full local path of current file in bucket 
 		file = '/'.join([base_dir, key.key])
-		
+
 		#Remove bucket file from list of local files
 		if file in localFiles: localFiles.remove(file)
 		
 		#If file has been removed from the local source, remove it from the bucket
 		if not os.path.isfile(file):
 			print("Removing ",file," from bucket, not found in local source...")
-			s3_client.delete_object(Bucket='deeranalysis.org',Key = key.key)
+			s3_client.delete_object(Bucket=bucketname,Key = key.key)
 			continue
 		
 		#Get last modified date of local files
@@ -107,13 +121,14 @@ for key in bucket.objects.all():
 		
 		#Update the file if the local source file is newer than the version in the S3 bucket
 		if modifyDate > key.last_modified:
-			print("Updating", file, "in web bucket... ")
-			s3.meta.client.upload_file(file, 'deeranalysis.org', key.key, ExtraArgs={'ContentType': metadataType(file)} )
+			print("Updating", file, "in ",bucketname," bucket... ")
+			s3.meta.client.upload_file(file, bucketname, key.key, ExtraArgs={'ContentType': metadataType(file)} )
 
 #Add the remaining local files which are still not on the we bucket
 for files in localFiles:
-	key = files.replace("../docs/","")
-	print("Adding", key, "to web bucket... ")
-	s3.meta.client.upload_file(file, 'deeranalysis.org', key, ExtraArgs={'ContentType': metadataType(file)} )
+	file = files;
+	key = files.replace(base_dir,"")
+	print("Adding", key, "to",bucketname,"bucket... ")
+	s3.meta.client.upload_file(file, bucketname, key, ExtraArgs={'ContentType': metadataType(str(key))} )
 
-print("Finished: AWS S3 DeerAnalysis.org bucket is up to date.")
+print("Finished: AWS S3 ",bucketname," bucket is up to date.")
