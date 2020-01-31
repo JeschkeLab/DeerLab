@@ -14,7 +14,7 @@ else
 end
 
 stats = sensitivan(@myfitting,Parameters,'AxisHandle',AxisHandle);
-Median = stats.med;
+Median = stats.median;
 Upper = stats.p75;
 Lower = stats.p25;
 

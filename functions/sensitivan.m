@@ -158,7 +158,7 @@ for iOut = 1:nout
         % Find unique factor levels
         if isa(subset{1},'function_handle')
             subset = cellfun(@func2str,subset,'UniformOutput',false);
-        else
+        elseif ~ischar(subset{1})
             subset = cell2mat(subset);
         end
         uni = unique(subset);
