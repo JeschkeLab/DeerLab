@@ -39,7 +39,11 @@ if nargin<6
 end
 if ~iscell(taus)
     validateattributes(taus,{'numeric'},{'nonempty'},mfilename,'taus')
-    taus = mat2cell(taus,size(taus));
+    tmp = taus;
+    taus = cell(numel(taus),1);
+    for i=1:length(taus)
+        taus{i} = tmp(i);
+    end
 else
     for i=1:length(taus)
         if ~iscolumn(taus{i})
