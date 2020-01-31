@@ -7,6 +7,9 @@
 
 Amplitude scale correction of dipolar spectroscopy signals
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -17,11 +20,14 @@ Syntax
 
 
 Parameters
-    *   ``V`` - Signal (N-array)
-    *   ``t`` - Time axis (N-array)
+    *   ``V`` - Signal (*N*-element array)
+    *   ``t`` - Time axis (*N*-element array)
 Returns
-    *   ``Vc`` - Normalized signal (N-array)
+    *   ``Vc`` - Normalized signal (*N*-element array)
     *   ``V0`` - Fitted amplitude scale (scalar)
+
+-----------------------------
+
 
 Description
 =========================================
@@ -31,6 +37,13 @@ Description
         [Vc,V0] = correctscale(V,t)
 
 Determines the amplitude scale ``V0`` of a dipolar signal ``V`` and time axis ``t`` (in ns/us). The output signal ``Vc`` is normalized by the scale via ``Vc = V/V0``. The amplitude scale is determined by fitting a single-Gaussian distance distribution parametric model with exponential background to the signal.
+
+
+-----------------------------
+
+Example
+=====================================
+
 
 .. image:: ../images/correctscale1.svg
     :align: center

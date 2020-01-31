@@ -17,9 +17,8 @@
 %   'RelSearchEnd' - Relative position at which the backgrund start search
 %                    stops (default=0.6).
 %
-%   'EndCutOff' - Number of points to ignore from the end of the signal
-%
-%   'ModelParam' - Parameters for the background models
+%   'EndCutOff' - Maximal number of points to evaluate from the signal.
+%                 Must be an integer value between 1 and length(V)
 %
 %   For further property-value pair options see "help fitbackground"
 %

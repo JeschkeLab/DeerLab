@@ -7,6 +7,9 @@
 
 Ghost distance suppression in multi-spin systems
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -15,10 +18,13 @@ Syntax
    Vs = suppressghost(V,n)
 
 Parameters
-    *   ``V`` - Signal vector (N-array)
+    *   ``V`` - Signal vector (*N*-element array)
     *   ``n`` - number of radicals (scalar)
 Returns
-    *   ``Vs`` Power-scaled signal (N-array)
+    *   ``Vs`` Power-scaled signal (*N*-element array)
+
+-----------------------------
+
 
 Description
 =========================================
@@ -28,6 +34,9 @@ Description
    Vs = suppressghost(V,n)
 
 Suppresses multi-spin contributions to the signal ``V`` by means of the power scaling approximation [1]_. The scaling is determined by the number of radicals ``n`` in the system. The function returns the power-scaled signal in ``Vs``.
+
+-----------------------------
+
 
 References
 =========================================

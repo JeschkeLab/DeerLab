@@ -5,7 +5,10 @@
 :mod:`aptkernel`
 *********************
 
-Computes the dipolar interaction kernel and elements required for the approximate Pake transformation (APT).
+Computes the dipolar interaction kernel and components required for the approximate Pake transformation (APT).
+
+-----------------------------
+
 
 Syntax
 =========================================
@@ -16,9 +19,13 @@ Syntax
     K = aptkernel(t,'Property',Value)
 
 Parameters
-    *   ``t`` - Time axis (N-array)
+    *   ``t`` - Time axis (*N*-element array)
 Returns
     *   ``K`` - APT kernel elements (struct)
+
+-----------------------------
+
+
 
 Description
 =========================================
@@ -27,15 +34,21 @@ Description
 
     K = aptkernel(t)
 
-Computes a structure ``K`` containing the following fields:
+Generates a structure a APT kernel structure ``K`` containing the following fields:
 
-*   ``Base``: (N/2-2)xN point kernel
-*   ``NormalizationFactor``: (N/2-2) point array of normalization factors
-*   ``FreqAxis``: (N/2-2) point frequency axis
-*   ``TimeAxis``: N-point time axis
-*   ``Crosstalk``: (N/2-2)x(N/2-2) crosstalk matrix
+    *   ``.Base`` - Time/Frequency dipolar kernel (*(N/2-2)xN*-element matrix) 
+    *   ``.NormalizationFactor`` -  Normalization factors (*(N/2-2)*-element array)
+    *   ``.FreqAxis`` - Frequency Axis (*(N/2-2)*-element array)
+    *   ``.TimeAxis`` -  Time Axis (*N*-element array)
+    *   ``.Crosstalk`` -  Crosstalk matrix *(N/2-2)x(N/2-2)*-element matrix)
 
-This structure can be then be passed directly to the :ref:`apt` function for computing the APT.
+This structure can be then be passed directly to the :ref:`apt` function for computing the APT. 
+
+Since the APT is based on a time-domain to frequency-domain transformation, the APT kernel and the dipolar kernel obtained from the :ref:`dipolarkernel` function are not interchangeable.
+
+
+
+-----------------------------
 
 
 
@@ -47,14 +60,15 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     K = aptkernel(t,'Property1',Value1,'Property2',Value2,...)
 
-ExcitationBandwidth
-    The excitation bandwidth in MHz of the experiment.
+
+-``'ExcitationBandwidth'`` - Excitation bandwith of the pulses in **MHz**. 
+    If specified, its value is used in the compensation of limited excitation bandwidth of the experimental pulses. If not specified infinite excitation bandwidth is assumed.
 
     *Default:* empty, corresponding to infinite excitation bandwidth
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-       K = aptkernel(t,'ExcitationBandwidth',100)   % 100 MHz excitation bandwidth
+			K = aptkernel(t,'ExcitationBandwidth',100)   % 100 MHz excitation bandwidth
 

@@ -22,13 +22,16 @@
 %
 % The properties to be passed as options can be set in any order.
 %
+%   'ModDepth' - Fixes the modulation depth to a user-defined value instead 
+%                of fitting it along the background.
+%
 %   'LogFit' - Specifies whether to fit the log of the signal (default: false)
 %
 %   'InitialGuess' - Array of initial values for the fit parameters
 %
 %   'Solver' - Optimization solver used for the fitting
 %             'lsqnonlin' - Non-linear constrained least-squares (toolbox)
-%               'nlsqbnd' - Non-linear constrained least-squares (free)
+%             'nlsqbnd'   - Non-linear constrained least-squares (free)
 %
 
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 

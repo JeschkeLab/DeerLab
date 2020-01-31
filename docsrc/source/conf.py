@@ -62,6 +62,7 @@ html_theme_options = {
     'sticky_navigation': False,
     'titles_only': True,
     'logo_only': True,
+    'navigation_depth':0,
     #'style_nav_header_background': '#2a7bf8'
 }
 html_copy_source = False

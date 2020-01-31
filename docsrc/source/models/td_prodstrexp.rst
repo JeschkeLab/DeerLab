@@ -8,6 +8,9 @@
 
 Product of two stretched exponentials background parametric model
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -24,7 +27,13 @@ Returns
     *   ``info`` - Model information (struct)
 
 
-Model equation: :math:`B(t) = e^{-(k_1t)^{d_1/3}}e^{-(k_2t)^{d_2/3}}`
+
+-----------------------------
+
+Model
+=========================================
+
+:math:`B(t) = e^{-(k_1t)^{d_1/3}}e^{-(k_2t)^{d_2/3}}`
 
 ========== ============= ========= ============= ============= ==============================
  Variable   Symbol        Default   Lower bound   Upper bound      Description
@@ -34,6 +43,9 @@ param(2)   :math:`d_1`      3           0            6           1st strexp frac
 param(3)   :math:`k_2`      3.5         0            200         2nd strexp decay rate
 param(4)   :math:`d_2`      3           0            6           2nd strexp fractal dimension
 ========== ============= ========= ============= ============= ==============================
+
+-----------------------------
+
 
 Description
 =========================================
@@ -47,6 +59,9 @@ Returns an ``info`` structure containing the specifics of the model:
 * ``info.model`` -  Full name of the parametric model.
 * ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
+
+-----------------------------
+
 
 .. code-block:: matlab
 

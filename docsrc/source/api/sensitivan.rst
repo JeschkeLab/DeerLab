@@ -7,26 +7,42 @@
 
 Sensitivity analysis via factorial design
 
+
+------------------------
+
+
 Syntax
 =========================================
 
 .. code-block:: matlab
 
-    med = sensitivan(fcn,fact)
-    [med,up,lo,main,inter,evals] = sensitivan(fcn,fact)
-    [med,up,lo,main,inter,evals] = sensitivan(fcn,fact,'Property',Value)
+    stats = sensitivan(fcn,varpar)
+    [stats,factors] = sensitivan(fcn,varpar)
+    [stats,factors,evals] = sensitivan(fcn,varpar)
+    [stats,factors,evals] = sensitivan(fcn,varpar,'Property',Value)
 
 Parameters
     *   ``fcn`` - Function to validate (function handle)
-    *   ``fact`` - Factors (struct)
+    *   ``varpar`` - Parameter variation structure (struct)
 
 Returns
-    *   ``med`` - Output medians (numerical array or cell array)
-    *   ``up`` - Output upper bound (numerical array or cell array)
-    *   ``lo`` - Output lower bound (numerical array or cell array)
-    *   ``main`` - Factor main effects (struct or cell array)
-    *   ``inter`` - Factor interactions (matrix or cell array)
+    *   ``stats`` - Summary statistics (struct)
+
+         *   ``.median`` - Median of output the variables
+         *   ``.mean`` - Mean of the output variables
+         *   ``.std`` - Standard deviation of the output variables
+         *   ``.p25`` - 25th percentile of the output variables
+         *   ``.p75`` - 75th percentile of the output variables
+
+    *   ``factors`` - Factor analysis results (struct)
+
+         *   ``.main`` - Main effects of the factors
+         *   ``.inter`` - interactions between factors
+
     *   ``evals`` - Evaluated function output arguments (cell array)
+
+
+------------------------
 
 
 Description
@@ -34,48 +50,46 @@ Description
 
 .. code-block:: matlab
 
-    [med,up,lo] = sensitivan(fcn,fact)
+    stats = sensitivan(fcn,varpar)
 
-Performs a sensitivity analysis of the output variables of the function ``fcn`` with respect to the parameter ranges defined in ``fact``. The output argument of ``fcn`` is evaluated for all combinations of the factors. The function to be validated must be a function handle accepting the ``fact`` struct as its first argument and only argument. 
+Performs a sensitivity analysis of the output variables of the function ``fcn`` with respect to the parameter ranges defined in ``varpar``. The output argument of ``fcn`` is evaluated for all level-combinations of the factors. The function to be validated must be a function handle accepting the ``varpar`` struct as its first argument and only argument. 
 
 .. code-block:: matlab
 
-    [med,up,lo] = sensitivan(@(p)myvalfcn(p,varargin),fact)
+    stats = sensitivan(@(p)myvalfcn(p,varargin),varpar)
 
-    function [out1,out2] = myvalfcn(fact,varargin)
-       out1 = process(fact.param1,fact.param2)
-       out2 = process2(fact.param1,fact.param3)
+    function [out1,out2] = myvalfcn(varpar,varargin)
+       out1 = process(varpar.param1,varpar.param2)
+       out2 = process2(varpar.param1,varpar.param3)
     end
 
 
-The median (50th-percentile), upper boundary (75th-percentile) and lower boundary (25th-percentile) of the resulting statistics are returned as the ``median``, ``up`` and ``lo`` outputs. 
+From the evaluation of all level-combinations an ensemble of outputs is obtained on which statistical estimators are used. The summary of these statistics is returned in the ``stats`` structure. This summary contains the mean, median, standard deviation, 75th-percentile and 25th-percentile values for all outputs.
+
+
+------------------------
 
 
 .. code-block:: matlab
 
-    [med,up,lo,main,inter] = sensitivan(fcn,fact)
+    [stats,factors] = sensitivan(fcn,varpar)
 	
 
-For each factor ``fact.param1``, ``fact.param2``,... evaluated in the sensitivity analysis its main effect and interaction with the other factors will be returned as the ``main`` and ``inter`` output variables.
+For each variable/factor ``varpar.param1``, ``varpar.param2``,... evaluated in the sensitivity analysis its main effect and interaction with the other factors will be returned in the ``factors`` output structure.
+
+
+------------------------
 
 
 .. code-block:: matlab
 
-    [med,up,lo] = sensitivan(@(p)myvalfcn(p,varargin),fact)
-    med1 = med{1};
-    med2 = med{2};
-    main1 = main{1};
-    main2 = main{2};
-
-
-If the function ``fcn`` returns multiple output arguments, e.g. ``out1`` and ``out2``, all outputs from ``sensitivan`` will be returned as a cell array. Each cell will contain the results of the statistics on each of the function outputs ``out1`` and ``out2``.
-
-
-.. code-block:: matlab
-
-    [med,up,lo,main,inter,eval] = sensitivan(fcn,fact)
+    [stats,factors,evals] = sensitivan(fcn,varpar)
 
 Additionally, a last output argument ``evals`` can be requested, a cell array, containing the ``fcn`` outputs evaluated at each parameter combination.
+
+
+------------------------
+
 
 Optional Arguments
 =========================================
@@ -84,27 +98,27 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 .. code-block:: matlab
 
-    [median,iqr] = validate(fcn,valpar,'Property1',Value1,'Property2',Value2)
+    [median,iqr] = sensitivan(fcn,valpar,'Property1',Value1,'Property2',Value2)
 
-RandPerm
-    Specifies whether to randomly permute the validation parameters combinations.
+- ``'RandPerm'`` - Randomized level-combination evaluation
+    Specifies whether to randomly permute the sensitivity anaysis parameter combinations.
 
     *Default:* ``true``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-        [median,iqr] = validate(fcn,valpar,'RandPerm',false)
+			[median,iqr] = sensitivan(fcn,varpar,'RandPerm',false)
 
-AxisHandle
-    Axis handle to plot the state of the validation results at each parameter combination.
+- ``'AxisHandle'`` - Plot intermediate results
+    Axis handle to plot the state of the validation results at each level combination.
 
     *Default:* [*empty*]
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-        [median,iqr] = validate(fcn,valpar,'AxisHandle',gca)
+			[median,iqr] = sensitivan(fcn,varpar,'AxisHandle',gca)
 

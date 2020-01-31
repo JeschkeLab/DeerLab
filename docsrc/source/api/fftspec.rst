@@ -8,6 +8,9 @@
 
 Fast-Fourier transform spectrum
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -17,10 +20,13 @@ Syntax
     [nu,spec] = fftspec(t,S)
 
 Parameters
-    *   ``t`` - Time axis (N-array)
-    *   ``S`` - Signal (N-array)
+    *   ``t`` - Time axis (*N*-element array)
+    *   ``S`` - Signal (*N*-element array)
 Returns
-    *   ``spec`` - Spectrum (M-array)
+    *   ``spec`` - Spectrum (*M*-element array)
+
+-----------------------------
+
 
 Description
 =========================================
@@ -31,11 +37,17 @@ Description
 
 Computes the magnitude FFT spectrum of the signal ``S`` on the time axis ``t``.
 
+-----------------------------
+
+
 .. code-block:: matlab
 
     [nu,spec] = fftspec(t,S)
 
 If two output arguments are requested, the frequency axis ``nu`` is returned as well.
+
+-----------------------------
+
 
 Optional Arguments
 =========================================
@@ -46,7 +58,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
     spec = fftspec(args,'Property1',Value1,'Property2',Value2,...)
 
 
-Type
+- ``'Type'`` - Spectrum type
     Type of spectrum to be returned.
 
     *   ``abs`` - Magnitude spectrum
@@ -57,18 +69,18 @@ Type
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-       spec = fftspec(args,'Type','real')
+			spec = fftspec(args,'Type','real')
 
 
-ZeroFilling
-    Number of elements in the output FFT spectrum
+- ``'ZeroFilling'`` - Zero-filling
+    Number of elements in the output FFT spectrum. Must be larger than the size of ``S`` and at least twice that to ensure no loss of information. 
 
     *Default:* ``2*length(S)``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-       spec = fftspec(args,'ZeroFilling',400)
+			spec = fftspec(args,'ZeroFilling',400)
