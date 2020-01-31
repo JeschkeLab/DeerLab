@@ -25,7 +25,7 @@
        
 -------
 
-.. important:: DeerAnalysis2 is currently on its beta pre-release phase. Minor changes and some major changes can be expected in the short-term future until the first stable version is released. 
+.. important:: DeerAnalysis is currently on its pre-release phase. Minor changes and some major changes can be expected in the short-term future until the first stable version is released. 
 
 This software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar spectroscopy techniques (DQC, RIDME, SIFTER).
 
@@ -43,7 +43,7 @@ To model distance distributions, DeerAnalysis2 supports two types of model class
     :maxdepth: 1
 
     ./download
-    ./tutorial
+    ./installation
 
 .. toctree::
     :hidden:

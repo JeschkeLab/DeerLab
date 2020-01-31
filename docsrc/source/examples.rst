@@ -1,6 +1,7 @@
 Tutorials
 ======================
 
+This is a collection of tutorials for the use of the DeerAnalysis API. The tutorials cover topics from the basics of dipolar analysis to more advanced topics. You can download the individual tutorials in various formats by using the buttons located on top of each tutorial. 
 
 .. toctree::
     :maxdepth: 1
@@ -22,8 +23,6 @@ Tutorials
     ./examples/example_globalfit_regularization
     ./examples/example_globalfit_timedomain
     ./examples/example_bilevelopt_background
-
-
 
 
 
@@ -111,4 +110,12 @@ Tutorials
          </ul>
      </div>
    <br>
+   <br>
+   <br>
+
+
+
+Do you want to share your ideas using DeerAnalysis? 
+      If you have an nice example or tutorial on a custom implementation of the DeerAnalysis API and want to share it, you can download the `tutorial template <https://deertutorials.s3.eu-central-1.amazonaws.com/template.mlx>`_ to write your own tutorial. 
+      Submit your tutorial to luis.fabregas@phys.chem.ethz.ch to be reviewed (basically a test of compilation and version compatibility), and it will be published in this page with your name as the author. 
 
