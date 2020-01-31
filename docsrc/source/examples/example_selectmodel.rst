@@ -1,4 +1,4 @@
-n.. highlight:: matlab
+.. highlight:: matlab
 .. _example_modelselection:
 
 **********************************************************************************
