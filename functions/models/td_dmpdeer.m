@@ -110,6 +110,7 @@ end
 %Prepare containers
 V = zeros(numel(t),1);
 B = ones(numel(t),1);
+dt = mean(diff(t));
 
 %Get background parameters
 k = Bparam(1);
@@ -155,8 +156,13 @@ for Npumped = 1:Npumps
             tevo = tevo + 1/2*s*(abs(taus{comb(j)}) - abs(ts{comb(j)}));
         end
         
+        %Normalize by the time-steps of the different pathways
+        if numel(tevo)>1
+            tevo = tevo*abs(dt/mean(diff(tevo))) ;
+        end
+
         %Add the dipolar pathway contribution to the signal
-        V = V + lambda*dipolarsignal(tevo,r,P);
+         V = V + lambda*dipolarsignal(tevo,r,P);
 
         %Add the dipolar pathway contribution to the background
         B = B.*exp(-(k*lambda*abs(tevo)).^(d/3));
