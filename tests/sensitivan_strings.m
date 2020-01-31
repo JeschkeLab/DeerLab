@@ -13,7 +13,10 @@ else
     AxisHandle = [];
 end
 
-[Median,Upper,Lower] = sensitivan(@myfitting,Parameters,'AxisHandle',AxisHandle);
+stats = sensitivan(@myfitting,Parameters,'AxisHandle',AxisHandle);
+Median = stats.med;
+Upper = stats.p75;
+Lower = stats.p25;
 
 err = false;
 data = [];

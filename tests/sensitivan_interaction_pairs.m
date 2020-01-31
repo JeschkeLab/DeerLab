@@ -6,7 +6,8 @@ param.a = linspace(1,4,2);
 param.b = linspace(0.02,0.1,2);
 param.c = linspace(0.04,0.3,2);
 
-[~,~,~,~,Interaction]  = sensitivan(@(param)myfcn(param,x),param);
+[~,fctrs]  = sensitivan(@(param)myfcn(param,x),param);
+Interaction = fctrs.inter;
 
 err(1) = Interaction{1}(1,3)>Interaction{1}(1,2);
 err(2) = Interaction{2}(1,2)>Interaction{2}(1,3);

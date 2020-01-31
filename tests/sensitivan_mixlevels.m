@@ -6,7 +6,8 @@ param.a = linspace(1,4,2);
 param.b = linspace(0.02,0.1,4);
 param.c = linspace(0.04,0.3,3);
 
-[~,~,~,mainEffect]  = sensitivan(@(param)myfcn(param,x),param);
+[~,fctrs]  = sensitivan(@(param)myfcn(param,x),param);
+mainEffect = fctrs.main;
 
 err(1) = mainEffect{1}.a>mainEffect{1}.b(1);
 err(2) = mainEffect{2}.a>mainEffect{2}.c(1);
