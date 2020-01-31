@@ -1,15 +1,16 @@
 function [err,data,maxerr] = test(opt,olddata)
 
-x = linspace(0,50,50);
+n = 20;
+x = linspace(0,1,n);
 
 param.a = linspace(1,4,2);
 param.b = linspace(0.02,0.1,2);
 
-[mean]  = sensitivan(@(param)myfcn(param,x),param);
+stats  = sensitivan(@(param)myfcn(param,x),param);
 
-err(1) = any(size(mean{1})>1);
-err(2) = any(size(mean{2})~=[1 50]);
-err(3) = any(size(mean{3})~=[50 50]);
+err(1) = any(size(stats(1).mean)>1);
+err(2) = any(size(stats(2).mean)~=[n 1]);
+err(3) = any(size(stats(3).mean)~=[n n]);
 
 
 err = any(err);

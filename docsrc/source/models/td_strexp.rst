@@ -8,6 +8,9 @@
 
 Stretched exponential background parametric model
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -23,7 +26,13 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
-Model equation: :math:`B(t) = e^{-(kt)^{d/3}}`
+
+-----------------------------
+
+Model
+=========================================
+
+:math:`B(t) = e^{-(kt)^{d/3}}`
 
 ========== ========== ========= ============= ============= ========================
  Variable   Symbol     Default   Lower bound   Upper bound      Description
@@ -31,6 +40,9 @@ Model equation: :math:`B(t) = e^{-(kt)^{d/3}}`
 param(1)   :math:`k`      3.5      0              200           Decay rate
 param(2)   :math:`d`      3        0              6             Fractal dimension
 ========== ========== ========= ============= ============= ========================
+
+-----------------------------
+
 
 Description
 =========================================
@@ -44,6 +56,9 @@ Returns an ``info`` structure containing the specifics of the model:
 * ``info.model`` -  Full name of the parametric model.
 * ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
+
+-----------------------------
+
 
 .. code-block:: matlab
 

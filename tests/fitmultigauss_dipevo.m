@@ -12,7 +12,7 @@ P = rd_threegaussian(r,InputParam);
 K = dipolarkernel(t,r);
 DipEvoFcn = K*P;
 
-[FitP,FitParam] = fitmultigauss(DipEvoFcn,K,r,5,'aicc');
+[FitP,FitParam] = fitmultigauss(DipEvoFcn,K,r,5,'aicc','TolFun',1e-15);
 err = any(abs(FitP - P)>7e-2);
 
 

@@ -1,4 +1,4 @@
-function [err,data] = test(opt,olddata)
+function [err,data,maxerr] = test(opt,olddata)
 
 %=======================================
 % Check regparamrange.m
@@ -15,6 +15,7 @@ logRes = 0.1;
 alpha = regparamrange(K,sparse(L));
 
 err = (length(alpha)~=85);
+maxerr = length(alpha)-85;
 data = [];
 
 

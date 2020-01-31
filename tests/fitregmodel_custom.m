@@ -4,7 +4,7 @@ function [err,data,maxerr] = test(opt,olddata)
 % Check Tikhonov regularization
 %=======================================
 
-Dimension = 200;
+Dimension = 100;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
 r = time2dist(t);
@@ -15,12 +15,12 @@ DipEvoFcn = K*P;
 
 
 %Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 0.02;
+RegParam = 0.2;
 RegMatrix = regoperator(Dimension,3);
 RegFunctional = @(P)(1/2*norm(K*P - DipEvoFcn)^2 + RegParam^2*max(RegMatrix*P)^2);
 Result = fitregmodel(DipEvoFcn,K,r,RegFunctional,RegParam,'Solver','fmincon');
 
-err = any(abs(Result - P)>3e-1);
+err = any(abs(Result - P)>5e-1);
 maxerr = max(abs(Result - P));
 
 data = [];

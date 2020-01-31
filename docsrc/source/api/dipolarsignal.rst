@@ -7,6 +7,10 @@
 
 Generation of dipolar signals from distance distributions
 
+-----------------------------
+
+
+
 Syntax
 =========================================
 
@@ -18,12 +22,16 @@ Syntax
 
 
 Parameters
-    *   ``t`` - Time axis (N-array)
-    *   ``r`` - Distance axis (M-array)
-    *   ``P`` - Distance distribution (M-array)
+    *   ``t`` - Time axis (*N*-element array)
+    *   ``r`` - Distance axis (*M*-element array)
+    *   ``P`` - Distance distribution (*M*-element array)
 
 Returns
     *   ``V`` - Dipolar signal (N-array)
+
+-----------------------------
+
+
 
 Description
 =========================================
@@ -34,11 +42,19 @@ Description
 
 Generates the noiseless form factor ``V`` on a time axis ``t`` from the distance distribution ``P`` in a distance axis ``r``.
 
+
+-----------------------------
+
+
 .. code-block:: matlab
 
     V = dipolarsignal(t,r)
 
 If no distribution ``P`` is provided, then the dipolar signal corresponding to a single distance ``r`` is computed.
+
+-----------------------------
+
+
 
 Optional Arguments
 =========================================
@@ -49,114 +65,85 @@ Optional arguments can be specified by parameter/value pairs. All property names
     V = dipolarsignal(args,'Property1',Value1,'Property2',Value2,...)
 
 
-ModDepth
-    Modulation depth of the form factor
+- ``'ModDepth'`` Modulation depth
+    Modulation depth of the form factor, must be passed as a scalar value between 0 and 1.
 
     *Default:* ``1``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-       V = dipolarsignal(args,'ModDepth',0.4)
+			V = dipolarsignal(args,'ModDepth',0.4)
 
 
-Background
-    N-Array containing the background function of the form factor.
+- ``'Background'`` - Background function
+    Background function passed as a *N*-element array.
 
     *Default:* [*empty*]]
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-       V = dipolarsignal(args,'Background',srtexp(t,param))
+			V = dipolarsignal(args,'Background',td_srtexp(t,param))
 
-NoiseLevel
-   Gaussian noise level (standard deviation)
+- ``'NoiseLevel'`` - Level of noise on the signal
+    Scalar value containing the desired standard deviation of a Gaussian noise vector 
 
     *Default:* ``0``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-        V = dipolarsignal(args,'NoiseLevel',0.05)
+			V = dipolarsignal(args,'NoiseLevel',0.05)
 
-    .. Important::
-       Each call of ``dipolarsignal`` will return a different noise realization. To set the output to a fixed noise realization, the random number generator must be fixed. In MATLAB this can be accomplished by calling ``rng(k)`` where ``k`` is some integer number.
+		.. Important::
+			Each call of ``dipolarsignal`` will return a different noise realization. To set the output to a fixed noise realization, the random number generator must be fixed. In MATLAB this can be accomplished by calling ``rng(k)`` where ``k`` is some integer number.
 
 
-Overtones
-    Array of RIDME overtone coefficients.
+- ``'Overtones'`` - RIDME overtone coefficients
+    Array of RIDME overtone coefficients. The coefficients must be normalized, i.e. they must sum to unity.
 
     *Default:* [*empty*]
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-        V = dipolarsignal(args,'Overtones',[0.2 0.5 0.3])
+			V = dipolarsignal(args,'Overtones',[0.2 0.5 0.3])
 
-gValue
+- ``'gValue'`` - Electron g-value
     Specifies the g-value of the electron spin center used to compute the dipolar frequencies from the given distance axis.
 
     *Default:* ``2.004602204236924``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-        K = dipolarkernel(args,'gValue',2.00) %Use experimental g-value
+			K = dipolarkernel(args,'gValue',2.00) %Use experimental g-value
 
-Scale
+- ``'Scale'`` - Amplitude scale
     Vertical scale to multiply to the output signal
 
     *Default:* ``1``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-        V = dipolarsignal(args,'Scale', 1e3)
+			V = dipolarsignal(args,'Scale', 1e3)
 
-Phase
-    Phase of the complex-valued signal (in radians).
+- ``'Phase'`` - IQ phase of the signal
+    Scalar-valued phase of the complex-valued signal (in radians).
 
     *Default:* ``0``
 
     *Example:*
 
-    .. code-block:: matlab
+		.. code-block:: matlab
 
-        V = dipolarsignal(args,'Phase', pi/2)
+			V = dipolarsignal(args,'Phase', pi/2)
 
-Interference
-     Relative amplitude and time shift pairs of the dipolar interferences in multipulse-DEER experiments. The background model can be passed as a last argument to include the time-shifted backgrounds. 
-
-    *Default:* [*empty*]
-
-    *Example:*
-
-    .. code-block:: matlab
-
-        K = dipolarkernel(args,'Interference',[0.34 max(t)/2])
-        K = dipolarkernel(args,'Interference',{0.34 max(t)/2 @td_strexp})
-
-
-Examples
-=========================================
-
-.. code-block:: matlab
-
-
-    t = linspace(-2,4,300);
-    r = time2dist(t);
-    P = onegaussian(r,[4 .3]);
-    B = strexp(t,[0.15,3]);
-    F = dipolarsignal(t,r,P,'NoiseLevel',0.05,...
-                            'ModDepth',0.4,...
-                            'Background',B,...
-                            'Scale',1000)
-
-.. image:: ../images/dipolarsignal1.svg

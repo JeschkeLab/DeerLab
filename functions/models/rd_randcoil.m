@@ -24,7 +24,7 @@ function output = rd_randcoil(r,param)
 % This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-R0=0.198; % 1.98 Å per residue
+R0 = 0.198; % 1.98 Å per residue
 nParam = 2;
 
 if nargin~=0 && nargin~=2
@@ -54,7 +54,12 @@ end
         error('The number of input parameters does not match the number of model parameters.')
     end
     
-    SquareDist = 6*R0*param(1)^param(2)^2; %mean square end-to-end distance from radius of gyration
+    %Parse input axis
+    if ~iscolumn(r)
+        r = r.';
+    end
+
+    SquareDist = 6*(R0*param(1)^param(2))^2; %mean square end-to-end distance from radius of gyration
     normFact = 3/(2*pi*SquareDist)^(3/2); % normalization prefactor
     ShellSurf = 4*pi*r.^2; % spherical shell surface
     Gaussian = exp(-3*r.^2/(2*SquareDist));

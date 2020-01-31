@@ -62,6 +62,7 @@ html_theme_options = {
     'sticky_navigation': False,
     'titles_only': True,
     'logo_only': True,
+    'navigation_depth':0,
     #'style_nav_header_background': '#2a7bf8'
 }
 html_copy_source = False
@@ -137,15 +138,15 @@ from pygments.token import Keyword, Name, Comment, String, Error, Number, Operat
 
 # Define custom style for the MATLAB highlighting
 class MyFancyStyle(Style):
-    background_color = "#ECEBEB"
+    background_color = "#f7f7f7"
     default_style = ""
     styles = {
-        Comment:                'italic #4B7F4B',
+        Comment:                'italic #22924a',
         Keyword:                '#0000FF',
         Name:                   '#000',
         Name.Function:          '#000',
         Name.Class:             '#000',
-        String:                 '#CC00FF'
+        String:                 '#a022f0'
     }
 	
 # Create patch for applying the style 	

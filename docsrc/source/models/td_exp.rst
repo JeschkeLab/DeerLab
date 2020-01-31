@@ -7,6 +7,9 @@
 
 Product of two stretched exponentials background parametric model
 
+-----------------------------
+
+
 Syntax
 =========================================
 
@@ -22,13 +25,22 @@ Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
-Model equation: :math:`B(t) = e^{-kt}`
+
+-----------------------------
+
+Model
+=========================================
+
+:math:`B(t) = e^{-kt}`
 
 ========== ============= ========= ============= ============= ==============================
  Variable   Symbol        Default   Lower bound   Upper bound      Description
 ========== ============= ========= ============= ============= ==============================
 param(1)    :math:`k`       0.35         0            200          Decay rate
 ========== ============= ========= ============= ============= ==============================
+
+-----------------------------
+
 
 Description
 =========================================
@@ -42,6 +54,9 @@ Returns an ``info`` structure containing the specifics of the model:
 * ``info.model`` -  Full name of the parametric model.
 * ``info.nparam`` -  Total number of adjustable parameters.
 * ``info.parameters`` - Structure array with information on individual parameters.
+
+-----------------------------
+
 
 .. code-block:: matlab
 

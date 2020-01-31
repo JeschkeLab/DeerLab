@@ -1,27 +1,25 @@
-% datest    Testing engine for DeerAnalysis
+% datest    Test suite engine for DeerAnalysis
 %
 %   Usage:
-%     datest            run all tests
-%     datest adsf       run all tests whose name starts with asdf
-%     datest asdf d     run all tests whose name starts with asdf and
-%                       display results
-%     datest asdf r     evaluate all tests whose name starts with asdf and
-%                       recalculate and store regression data
-%     datest asdf t     evaluate all tests whose name starts with asdf and
-%                       report timings
-%     estest asdf p     evaluate all tests whose name starts with asdf and
-%                       report maximal error in tests
-%     estest asdf l     evaluate all tests whose name starts with asdf and
-%                       report all lines of code not covered by the tests
-%
+%     datest            Run all tests
+%     datest testname   Run all tests whose name starts with testname
+%     
+%   Options:
+%       -d --display     Display graphical results of the tests
+%       -r --regenerate  Recalculate and store regression data
+%       -t --time        Report CPU timings of the tests
+%       -p --perform     Report the maximal error found in the tests
+%       -c --coverage    Run a coverage analysis over the tests
+%       -b --badges      Generate JSON endpoint for badges
+%       
 %   Either the command syntax as above or the function syntax, e.g.
-%   datest('asdf','t'), can be used.
+%   datest('asdf','t'), can be used. Any number of options are allowed
 %
-%   Run all tests including timings:   datest('*','t')
+%   Run all tests including timings:   datest -t
 %
 %   All test files must have an underscore _ in their filename.
 
-function out = datest(TestName,params)
+function out = datest(TestName,varargin)
 
 % Check whether DeerAnalysis is on the Matlab path
 DeerAnalysisPath = fileparts(which('datest'));
@@ -39,17 +37,28 @@ if nargin<2
     params = '';
 end
 
-Opt.Display = any(params=='d');
-Opt.Regenerate = any(params=='r');
+%Accept more than one option as input
+params = cell2mat(varargin);
+
+if isempty(params)
+    params = '';
+end
+
+%if not input test name is given but only options
+if contains(TestName,'-')
+    params = [params TestName];
+    TestName = '';
+end
+%Prepare options structure to be passed to the test functions
+Opt.Display = contains(params,'-d') | contains(params,'--display');
+Opt.Regenerate = contains(params,'-r') | contains(params,'--regen');
 Opt.Verbosity = Opt.Display;
 
-displayErrors = any(params=='p');
-displayTimings = any(params=='t');
-runCodeCoverageAnalysis = any(params=='l');
-
-if Opt.Display && displayTimings
-    error('Cannot plot test results and report timings at the same time.');
-end
+%Get internal options
+displayErrors = contains(params,'-p') | contains(params,'--perform');
+displayTimings = contains(params,'-t') | contains(params,'--time');
+runCodeCoverage = contains(params,'-c') | contains(params,'--coverage');
+makeBadges = contains(params,'-b') | contains(params,'--badge');
 
 if any(TestName=='_')
     FileMask = [TestName '*.m'];
@@ -69,12 +78,9 @@ end
 TestFileNames = sort({FileList.name});
 
 fprintf(fid,'=======================================================================\n');
-fprintf(fid,'DeerAnalysis test set                      %s\n(Matlab %s)\n',datestr(now),version);
+fprintf(fid,'DeerAnalysis Unity Test Suite                 %s\n(Matlab %s)\n',datestr(now),version);
 fprintf(fid,'DeerAnalysis location: %s\n',DeerAnalysisPath);
 fprintf(fid,'=======================================================================\n');
-fprintf(fid,'Display: %d, Regenerate: %d, Verbosity: %d\n',...
-    Opt.Display,Opt.Regenerate, Opt.Verbosity);
-fprintf(fid,'-----------------------------------------------------------------------\n');
 
 % Codes for test outcomes:
 %    0   test passed
@@ -129,18 +135,20 @@ for iTest = 1:numel(TestFileNames)
     clear(functionName)
     
     % Clear and start profiler
-    if runCodeCoverageAnalysis
+    if runCodeCoverage
         profile clear
         profile on
     end
     
     tic
     try
+        warning('off')
         if displayErrors
             [err,data,maxerr(iTest)] = feval(thisTest,Opt,olddata);
         else
             [err,data] = feval(thisTest,Opt,olddata);
         end
+        warning('on')
         % if test returns empty err, then treat it as not tested
         if isempty(err)
             err = 3; % not tested
@@ -159,7 +167,7 @@ for iTest = 1:numel(TestFileNames)
     time_used(iTest) = toc;
     
     %Retrieve profiler summary and turn profiler off
-    if runCodeCoverageAnalysis
+    if runCodeCoverage
         p = profile('info');
         profile off
         
@@ -228,7 +236,7 @@ for iTest = 1:numel(TestFileNames)
 end
 
 %Display results of code coverage analysis
-if runCodeCoverageAnalysis
+if runCodeCoverage
     
     fprintf(fid,'-----------------------------------------------------------------------\n');
     fprintf(fid,'Code Coverage Analysis \n');
@@ -264,7 +272,7 @@ if runCodeCoverageAnalysis
         Coverage = 100*Covered/Runnable;
         %Print to console
         if (~isempty(TestName) && Coverage~=0) || isempty(TestName)
-            if params =='l'
+            if params =='c'
                 fprintf('%-20s%-18s%3.2f%% %18s  %s \n',FcnName,' ',Coverage,'Lines missing:',mat2str(Missed))
             else
                 fprintf('%-20s%-18s%3.2f%%\n',FcnName,' ',Coverage)
@@ -295,9 +303,14 @@ if any(allErrors==1) || any(allErrors==2)
 end
 
 fprintf(fid,'-----------------------------------------------------------------------\n');
-msg = sprintf('%d passes, %d failures, %d crashes\n',sum(allErrors==0),sum(allErrors==1),sum(allErrors==2));
+
+Ncrashed = sum(allErrors==2);
+Npasses = sum(allErrors==0);
+Nfails = sum(allErrors==1);
+
+msg = sprintf('%d passes, %d failures, %d crashes\n',Npasses,Nfails,Ncrashed);
 fprintf(fid,msg);
-if runCodeCoverageAnalysis
+if runCodeCoverage
     if isempty(TestName)
         fprintf('Total code coverage: %3.2f%%\n',TotalCoverage)
     end
@@ -307,7 +320,64 @@ fprintf(fid,'-------------------------------------------------------------------
 % Return output if desired
 if nargout==1
     out.Results = testResults;
-    out.outcomes = allErrors;
+    out.Outcomes = allErrors;
+    out.Errors = sum(allErrors);
+end
+
+
+if makeBadges
+    
+    %--------------------
+    %Test Suite - Badge
+    %--------------------
+    
+    %Determine grade of badge
+    if Ncrashed~=0
+        color = 'red';
+    elseif Nfails~=0
+        color = 'orange';
+    else
+        color = 'brightgreen';
+    end
+    %Write JSON endpoint file for shields.io
+    fileID = fopen('testsuite_badge.json','w');
+    fprintf(fileID,'{ \n');
+    fprintf(fileID,'"schemaVersion": 1, \n');
+    fprintf(fileID,'"label": "Tests", \n');
+    fprintf(fileID,'"message": "%i pass, %i fail, %i crash", \n',sum(allErrors==0),sum(allErrors==1),sum(allErrors==2));
+    fprintf(fileID,'"color": "%s"\n',color);
+    fprintf(fileID,'} \n');
+    fclose(fileID);
+    fprintf('Test suite badge created: %s\n',fullfile(pwd,'testsuite_badge.json'))
+    
+    if runCodeCoverage
+        %--------------------
+        %Code Coverage - Badge
+        %--------------------
+        %Determine grade of badge
+        if TotalCoverage<50
+            color = 'red';
+        elseif TotalCoverage<75
+            color = 'orange';
+        else
+            color = 'brightgreen';
+        end
+        %Write JSON endpoint file for shields.io
+        fileID = fopen('coverage_badge.json','w');
+        fprintf(fileID,'{ \n');
+        fprintf(fileID,'"schemaVersion": 1, \n');
+        fprintf(fileID,'"label": "Coverage", \n');
+        fprintf(fileID,'"message": "%3.0f%%", \n',TotalCoverage);
+        fprintf(fileID,'"color": "%s"\n',color);
+        fprintf(fileID,'} \n');
+        fclose(fileID);
+        fprintf('Coverage badge created: %s\n',fullfile(pwd,'coverage_badge.json'))
+    else
+        warning('Coverage analysis was not requested. Coverage badge will no tbe generated.')
+    end
+    
+    fprintf(fid,'-----------------------------------------------------------------------\n');
+    
 end
 
 return

@@ -25,7 +25,7 @@ err(1) = cachedData.size > 20;
 err(2) = any(cacheis ~= cacheshould);
 err = any(err);
 data = [];
-maxerr = [];
+maxerr = NaN;
 
 cd(currentpath)
 

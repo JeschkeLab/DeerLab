@@ -38,7 +38,7 @@ RegParam2 = selregparam(DipEvoFcn,K,r,'tikhonov','aic');
 %RegParam2 should be larger to compensate for worse condition number 
 err = RegParam2 < RegParam1;
 
-maxerr = [];
+maxerr = NaN;
 data = [];
 
 end

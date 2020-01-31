@@ -20,12 +20,17 @@ for i=1:length(input)
 end
 %Check if current cache exceeds the number of cached states
 if cache.size >= cachelimiter
-    
     %If so, get the hash table keys...
     keys = cache.keySet;
     keys = cell(keys.toArray);
     %... and remove the oldest cache entry 
     cache.remove(keys{1});
+end
+
+%Java cannot distinguish row/column vectors
+for i=1:length(input)
+    %Chache the shape of the vectors as well
+    input{i,2} = size(input{i,1});
 end
 
 %Then add the new cache entry

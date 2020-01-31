@@ -41,6 +41,6 @@ Result = fitregmodel(Ss,Ks,r,'tikhonov',regparam,'Solver','fnnls','GlobalWeights
 err = any(isnan(Result));
 err = any(err);
 data = [];
-maxerr = [];
+maxerr = 0;
 
 end
