@@ -11,3 +11,6 @@ docsrc/aws_access_keys.txt
 docsrc/__pycache__/
 build/.ssh/
 tutorials/**/*.pdf
+tutorials/**/*.m
+tests/_tutorials
+tests/_tutorials/**
