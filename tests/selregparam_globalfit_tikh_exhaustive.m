@@ -1,6 +1,4 @@
 function [err,data,maxerr] = test(opt,olddata)
-
-
 rng(1)
 
 t1 = linspace(0,4,100);
@@ -20,9 +18,9 @@ S3 = dipolarsignal(t3,r,P,'noiselevel',0.02);
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 
-alpha = selregparam(Ss,Ks,r,'tv','aic');
+alpha = selregparam(Ss,Ks,r,'tikh','aic','search','exhaustive');
 
-Pfit = fitregmodel(Ss,Ks,r,'tv',alpha);
+Pfit = fitregmodel(Ss,Ks,r,'tikh',alpha);
 
 err = any(abs(Pfit - P) > 0.5);
 data = [];
