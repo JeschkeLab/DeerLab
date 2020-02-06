@@ -49,6 +49,7 @@
 %
 %    'Range' - Range of alpha-value candidates to evaluate
 %
+%    'Search' - Search method to use ('golden' or 'grid')
 
 %  This file is a part of DeerAnalysis. License is MIT (see LICENSE.md).
 %  Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
@@ -64,7 +65,7 @@ function [alphaOpt,Functionals,alphaRange,Residuals,Penalties] = selregparam(S,K
 warning('off','MATLAB:nearlySingularMatrix')
 
 % Check if user requested some options via name-value input
-[TolFun,NonNegConstrained,NoiseLevel,GlobalWeights,HuberParameter,alphaRange,RegOrder,Search] ...
+[TolFun,NonNegConstrained,NoiseLevel,GlobalWeights,HuberParameter,alphaRange,RegOrder,SearchMethod] ...
     = parseoptional({'TolFun','NonNegConstrained','NoiseLevel','GlobalWeights','HuberParameter','Range','RegOrder','Search'},varargin);
 
 if ~iscell(S)
@@ -73,19 +74,12 @@ end
 if ~iscell(K)
     K = {K};
 end
-if length(K)~=length(S)
+if numel(K)~=numel(S)
     error('The number of kernels and signals must be equal.')
 end
-if ~isempty(GlobalWeights)
-    validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
-    if length(GlobalWeights) ~= length(S)
-        error('The same number of global fit weights as signals must be passed.')
-    end
-    if sum(GlobalWeights)~=1
-        error('The sum of the global fit weights must equal 1.')
-    end
-end
-for i=1:length(S)
+
+% Validate input signals
+for i = 1:length(S)
     if ~iscolumn(S{i})
         S{i} = S{i}.';
     end
@@ -98,6 +92,7 @@ for i=1:length(S)
     validateattributes(S{i},{'numeric'},{'nonempty'},mfilename,'S')
     validateattributes(K{i},{'numeric'},{'nonempty'},mfilename,'K')
 end
+
 % Validate the selection methods input
 allowedMethodInputs = {'lr','lc','cv','gcv','rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl'};
 if iscell(SelectionMethod)
@@ -119,6 +114,17 @@ else
     end
 end
 
+% Validate global weights
+if ~isempty(GlobalWeights)
+    validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
+    if numel(GlobalWeights) ~= numel(S)
+        error('The same number of global fit weights as signals must be passed.')
+    end
+    if abs(sum(GlobalWeights)-1)>1e-10
+        error('The sum of the global fit weights must equal 1.')
+    end
+end
+
 %--------------------------------------------------------------------------
 %  Parse & Validate Optional Input
 %--------------------------------------------------------------------------
@@ -136,6 +142,7 @@ if isempty(TolFun)
 else
     validateattributes(TolFun,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'nonNegLSQsolTol')
 end
+
 % Validate RegType input
 if isempty(RegType)
     RegType = 'tikhonov';
@@ -149,6 +156,7 @@ if isempty(HuberParameter)
 else
     validateattributes(HuberParameter,{'numeric'},{'scalar','nonempty','nonnegative'})
 end
+
 % Validate NoiseLevel input
 if isempty(NoiseLevel)
     for i=1:length(S)
@@ -160,18 +168,20 @@ else
     end
     validateattributes(NoiseLevel,{'numeric'},{'scalar','nonempty','nonnegative'})
 end
+
 % Validate NonNegConstrained input
 if isempty(NonNegConstrained)
     NonNegConstrained = true;
 else
     validateattributes(NonNegConstrained,{'logical'},{'nonempty'},mfilename,'NonNegConstrained')
 end
+
 % Validate Search input
-if isempty(Search)
-    Search = 'golden';
+if isempty(SearchMethod)
+    SearchMethod = 'golden';
 else
-    validateattributes(Search,{'char'},{'nonempty'},mfilename,'Search')
-    Search = validatestring(Search,{'golden','exhaustive'});
+    validateattributes(SearchMethod,{'char'},{'nonempty'},mfilename,'Search')
+    SearchMethod = validatestring(SearchMethod,{'golden','grid'});
 end
 
 %--------------------------------------------------------------------------
@@ -186,92 +196,87 @@ if isempty(alphaRange)
 else
     validateattributes(alphaRange,{'numeric'},{'nonempty','nonnegative'},mfilename,'RegParamRange')
 end
-% Update number of points just to make sure
-nPoints = length(alphaRange);
-% Initialize arrays
-HuberParameterSet = zeros(1,nPoints);
 
 
-
-%--------------------------------------------------------------------------
-%  Golden search algorithm
-%--------------------------------------------------------------------------
-switch  lower(Search)
+%-------------------------------------------------------------------------------
+% Evaluate functional over search range, using specified search method
+%-------------------------------------------------------------------------------
+Functionals = cell(1,numel(SelectionMethod));
+alphaOpt = zeros(1,numel(SelectionMethod));
+switch lower(SearchMethod)
     
     case 'golden'
+        %-----------------------------------------------------------------------
+        %  Golden-section search algorithm
+        %-----------------------------------------------------------------------
         
-        for jj = 1:numel(SelectionMethod)
+        epsilon = 0.1; % termination interval size (logalpha)
+        maxIterations = 10; % maximum number of iterations
+        tau = (sqrt(5)-1)/2;
+        for iMethod = 1:numel(SelectionMethod)
+            
             intervalStart = min(log(alphaRange));
             intervalEnd = max(log(alphaRange));
-            %         intervalStart = -10;
-            %         intervalEnd = 10;
-            epsilon = 0.1;               
-            iter = 10;                      
-            tau = double((sqrt(5)-1)/2);    
-            k = 0;                          
-            logalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);      
+            logalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
             logalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
-            
-            fcnval1 = evalalpha(exp(logalpha1),SelectionMethod(jj));
-            fcnval2 = evalalpha(exp(logalpha2),SelectionMethod(jj));
-            
+            fcnval1 = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
+            fcnval2 = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
             alphasEvaluated = [logalpha1 logalpha2];
             Functional = [fcnval1 fcnval2];
             
-            while abs(intervalEnd-intervalStart) > epsilon && k < iter
-                k = k + 1;
-                if(fcnval1<fcnval2)
+            % Subdivide interval until convergence
+            iIter = 0;
+            while abs(intervalEnd-intervalStart)>epsilon && iIter<maxIterations
+                if fcnval1<fcnval2
                     intervalEnd = logalpha2;
                     logalpha2 = logalpha1;
-                    logalpha1 = intervalStart + (1 - tau)*(intervalEnd - intervalStart);
-                    
-                    fcnval1 = evalalpha(exp(logalpha1),SelectionMethod(jj));
-                    fcnval2 = evalalpha(exp(logalpha2),SelectionMethod(jj));
-                    
+                    logalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
+                    fcnval1 = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
+                    fcnval2 = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
                     alphasEvaluated(end+1) = logalpha1;
                     Functional(end+1) = fcnval1;
                 else
                     intervalStart = logalpha1;
                     logalpha1 = logalpha2;
-                    logalpha2 = intervalStart+tau*(intervalEnd - intervalStart);
-                    
-                    fcnval1 = evalalpha(exp(logalpha1),SelectionMethod(jj));
-                    fcnval2 = evalalpha(exp(logalpha2),SelectionMethod(jj));
-                    
+                    logalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
+                    fcnval1 = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
+                    fcnval2 = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
                     alphasEvaluated(end+1) = logalpha2;
                     Functional(end+1) = fcnval2;
                 end
-                k=k+1;
+                iIter = iIter + 1;
             end
-            Functionals{jj} = Functional;
-            if(fcnval1<fcnval2)
-                alphaOpt(jj) = exp(logalpha1);
+            
+            % Store results
+            Functionals{iMethod} = Functional;
+            if fcnval1<fcnval2
+                alphaOpt(iMethod) = exp(logalpha1);
             else
-                alphaOpt(jj) = exp(logalpha2);
+                alphaOpt(iMethod) = exp(logalpha2);
             end
-            alphaRanges{jj} = alphasEvaluated;
+            alphaRanges{iMethod} = alphasEvaluated;
             
         end
-        a = 1;
-        %--------------------------------------------------------------------------
-        %  Exhaustive search
-        %--------------------------------------------------------------------------
-    case 'exhaustive'
         
-        for ii=1:numel(alphaRange)
+    case 'grid'
+        %-----------------------------------------------------------------------
+        %  Grid search
+        %-----------------------------------------------------------------------
+        
+        for ii = 1:numel(alphaRange)
             Functional(ii,:) = evalalpha(alphaRange(ii),SelectionMethod);
         end
-        for jj = 1:numel(SelectionMethod)        
-        % Get optimal index of the selection functionals
-        [~,Index] = min(Functional(:,jj));
-        % Store the optimal regularization parameter
-        alphaOpt(jj) = alphaRange(Index);
-        Functionals{jj} =  Functional(:,jj);
+        for iMethod = 1:numel(SelectionMethod)
+            % Find index of selection functional minimum
+            [~,Index] = min(Functional(:,iMethod));
+            % Store the corresponding regularization parameter
+            alphaOpt(iMethod) = alphaRange(Index);
+            Functionals{iMethod} = Functional(:,iMethod);
         end
 end
 
 % Turn warnings back on
-warning('on','MATLAB:nearlySingularMatrix')
+warning('on','MATLAB:nearlySingularMatrix');
 
 
 %--------------------------------------------------------------------------
@@ -309,7 +314,7 @@ warning('on','MATLAB:nearlySingularMatrix')
         %--------------------------------------------------------------------------
         
         % If multiple selection methods are requested then process them sequentially
-            Functional = zeros(length(SelectionMethod),1);
+        Functional = zeros(length(SelectionMethod),1);
         for MethodIndex = 1:length(SelectionMethod)
             for SIndex = 1:length(S)
                 nr = length(S{SIndex});

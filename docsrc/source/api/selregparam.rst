@@ -212,3 +212,14 @@ Optional arguments can be specified by parameter/value pairs. All property names
 		.. code-block:: matlab
 
 			alpha = selregparam(args,'Range',logspace(-3,4,100))
+
+- ``'Search'`` - Regularization search method
+    Method to use to locate the optimal regularization parameter, either ``'grid'`` or ``'golden'``. When set to ``'grid'``, the regularization functional is evaluated over a evenly spaced grid in log space over the range given in ``'Range'``, and then the minimum is located on that grid. Whe set to ``'golden'``, the minimum of the regularization functional is obtained using a golden-section search over the regularization parameter interval specified in ``'Range'``.
+
+    *Default:* ``golden``
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			alpha = selregparam(args,'Search','grid')

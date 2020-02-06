@@ -13,7 +13,7 @@ P = rd_onegaussian(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = K*P;
 
-[OptParam,Functionals,RegParams] = selregparam(S,K,r,'tikhonov',{'aic','gml','gcv'},'Search','exhaustive');
+[OptParam,Functionals,RegParams] = selregparam(S,K,r,'tikhonov',{'aic','gml','gcv'},'Search','grid');
 %Accept testif all values are the same (should be as there is no noise)
 err(1) = any(diff(OptParam) > 1e-2);
 err = any(err);
