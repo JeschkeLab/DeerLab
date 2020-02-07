@@ -6,6 +6,7 @@ on:
       - master
       paths:
       - 'docsrc/**'
+      - '.github/**'
 
 jobs:
 
@@ -37,4 +38,4 @@ jobs:
     - name: Connect and update DeerAnalysis AWS S3 Bucket
       run: |
            cd build
-           python -m websynch -k ${{ secrets.S3_ACCESS }} -s ${{ secrets.S3_SECRETACCESS }} -d "../docs" --bucket deeranalysis.org
+           python -m synchS3 -k ${{ secrets.S3_ACCESS }} -s ${{ secrets.S3_SECRETACCESS }} -d "../docs" --bucket deeranalysis.org

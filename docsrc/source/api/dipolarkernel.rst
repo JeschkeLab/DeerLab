@@ -8,6 +8,7 @@ Computes the dipolar interaction kernel for the linear transformation from a dis
 
 -------------------------------
 
+
 Syntax
 =========================================
 
@@ -29,6 +30,7 @@ Returns
     *  ``K`` - Dipolar kernel (*NxM*-element matrix)
 
 -------------------------------
+
 
 Description
 =========================================
@@ -71,6 +73,7 @@ If the background ``B`` and modulation depth ``lambda`` variables are specified,
 
 
 -------------------------------
+
 
 Optional Arguments
 =========================================
@@ -146,12 +149,11 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     *Example:*
 
-<<<<<<< HEAD
     .. code-block:: matlab
 
         K = dipolarkernel(args,'Method','explicit','Knots',2001)
 
-MultiPathway
+- ``'MultiPathway'`` - Dipolar multipathway kernel
     Parameters of the dipolar multi-pathway model. Passed as a cell array containing the following parameters:
 
                 * ``etas``  - Time-shifts of the individual dipolar pathways. (N-vector)
@@ -168,13 +170,3 @@ MultiPathway
         etas = [0.0 5.4];
         Bmodel = @(t,lam) td_strexp(t,[kappa*lam d]);
         K = dipolarkernel(t,r,'MultiPathway',{lambdas etas Bmodel})
-
-
-
-References
-=========================================
-=======
-		.. code-block:: matlab
->>>>>>> tutorials
-
-			K = dipolarkernel(args,'Method','explicit','Knots',2001)
