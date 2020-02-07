@@ -124,12 +124,24 @@ Optional arguments can be specified by parameter/value pairs. All property names
     alpha = selregparam(args,'Property1',Value1,'Property2',Value2,...)
 
 
-- ``'Search'`` - Search algorithm
-    Specifies the type of algorithm used for searchin the optimal regularization parameter. The allowed inputs are: 
+- ``'Range'`` - Regularization parameter search range
+    Array of regularization parameter candidates to evaluate.
+
+    *Default:* [*empty*] - Computes an optimal range automatically with :ref:`regparamrange`
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			alpha = selregparam(args,'Range',logspace(-3,4,100))
 
 
-		*   ``'grid'`` - Grid search over all possible regularization parameter values.
-		*   ``'golden'`` - Golden search algorithm for optimization of the regularization parameter
+- ``'Search'`` - Regularization parameter search algorithm
+    Specifies the type of algorithm used for searching the optimal regularization parameter. The possible settings are: 
+
+
+		*   ``'grid'`` - Systematic search over a grid of regularization parameter values, using the grid specified in ``'Range'``.
+		*   ``'golden'`` - Golden-ratio search algorithm over the interval specified in ``'Range'``.
 
 
     *Default:* ``golden``
@@ -207,24 +219,3 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 			alpha = selregparam(args,'NoiseLevel',0.05)
 
-- ``'Range'`` - Candidate regularization parameter values
-    Array of regularization parameter candidates to evaluate.
-
-    *Default:* [*empty*] - Computes an optimal range automatically with :ref:`regparamrange`
-
-    *Example:*
-
-		.. code-block:: matlab
-
-			alpha = selregparam(args,'Range',logspace(-3,4,100))
-
-- ``'Search'`` - Regularization search method
-    Method to use to locate the optimal regularization parameter, either ``'grid'`` or ``'golden'``. When set to ``'grid'``, the regularization functional is evaluated over a evenly spaced grid in log space over the range given in ``'Range'``, and then the minimum is located on that grid. Whe set to ``'golden'``, the minimum of the regularization functional is obtained using a golden-section search over the regularization parameter interval specified in ``'Range'``.
-
-    *Default:* ``golden``
-
-    *Example:*
-
-		.. code-block:: matlab
-
-			alpha = selregparam(args,'Search','grid')
