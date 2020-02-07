@@ -14,7 +14,7 @@ elseif exist(HTMLfile2,'file')
     web(HTMLfile2)
 else
     %get path to DeerLab functions folder
-    path = fileparts(which('datest'));
+    path = fileparts(which('dltest'));
     path = path(1:end-length('\path'));
     %list all the API functions, including models and private
     Files1 = dir(fullfile(path,'functions','*.m'));

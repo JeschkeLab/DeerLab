@@ -1,8 +1,8 @@
-%  datest    Test suite engine for DeerLab
+%  dltest    Test suite engine for DeerLab
 % 
 %    Usage:
-%      datest            Run all tests
-%      datest testname   Run all tests whose name starts with testname
+%      dltest            Run all tests
+%      dltest testname   Run all tests whose name starts with testname
 %      
 %    Options:
 %        -d --display     Display graphical results of the tests
@@ -14,16 +14,16 @@
 %        -u --tutorials   Run tutorial scripts
 % 
 %    Either the command syntax as above or the function syntax, e.g.
-%    datest('asdf','t'), can be used. Any number of options are allowed
+%    dltest('asdf','t'), can be used. Any number of options are allowed
 % 
-%    Run all tests including timings:   datest -t
+%    Run all tests including timings:   dltest -t
 % 
 %    All test files must have an underscore _ in their filename.
 
-function out = datest(TestName,varargin)
+function out = dltest(TestName,varargin)
 
 %  Check whether DeerLab is on the Matlab path
-DeerLabPath = fileparts(which('datest'));
+DeerLabPath = fileparts(which('dltest'));
 if isempty(DeerLabPath)
     error('DeerLab is not on the Matlab path!');
 end
@@ -93,7 +93,7 @@ fprintf(fid,'===================================================================
 OutcomeStrings = {'pass','failed','crashed','not tested'};
 
 % get path to DeerLab functions folder
-path = fileparts(which('datest'));
+path = fileparts(which('dltest'));
 path = path(1:end-length('\path'));
 
 % list all the API functions, including models and private

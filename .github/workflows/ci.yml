@@ -46,11 +46,11 @@ jobs:
            ssh -tt -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} -t ${{ secrets.GATEWAY_HOST }} ssh ${{ secrets.CISERVER_HOST }} << EOF
                #Run test suite
                cd Deer/build
-               matlab -nodesktop -r "datestsuite;exit"
+               matlab -nodesktop -r "dltestsuite;exit"
                python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "coverage_badge.json" --bucket deershields
                python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "testsuite_badge.json" --bucket deershields
                #Transfer log file to the gateway
-               scp -o StrictHostKeyChecking=no -i ~/.ssh/gateway_key -P ${{ secrets.GATEWAY_PORT }} ./datestsuite.error ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/ || true
+               scp -o StrictHostKeyChecking=no -i ~/.ssh/gateway_key -P ${{ secrets.GATEWAY_PORT }} ./dltestsuite.error ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/ || true
                #Delete the source files
                cd /home/deerlab/
                rm -f -r deerlab
@@ -59,13 +59,13 @@ jobs:
       if: success()
       run: |
            #Transfer log file to GitHub VM
-           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/datestsuite.error ~/ || true
-           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/datestsuite.error" || true
+           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/dltestsuite.error ~/ || true
+           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/dltestsuite.error" || true
            rm -f ~/sshkey
     - name: All tests passed successfully
       if: success()
       run: |
-           ! [ -f ~/datestsuite.error ] && echo "Test suite passed" || (echo "Test suite failed" && deerfailed)
+           ! [ -f ~/dltestsuite.error ] && echo "Test suite passed" || (echo "Test suite failed" && deerfailed)
     - name: Disconnect VPN connection
       if: always()
       run: |
