@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="./docsrc/source/logo_dark.png" alt="DeerLab Logo" width="700" height="150"></img>
+<img src="./docsrc/source/logo_dark.png" alt="DeerLab Logo" width="700" height="200"></img>
 </p>
 </div>
 
@@ -16,9 +16,9 @@
 ### About
 The DeerLab software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar spectroscopy techniques (DQC, RIDME, SIFTER). The main homepage can be found at www.deeranalysis.org. This is the GitHub repository of the DeerLab source code, including instructions for compiling and installing DeerLab.
 
-It consists of a collection of functions (the API) that provides a series of functions that perform single processing or fitting tasks. They can be combined in scripts to generate custom analysis workflows.
+It consists of a collection of functions that perform single processing or fitting tasks. They can be combined in scripts to generate custom analysis workflows.
 
-To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background models. There are API functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
+To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background models. There are functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
 
 ### Requirements
 The application programming interface (API) of DeerLab requires the following products:
@@ -54,7 +54,7 @@ In order for MATLAB to access the DeerLab API functions, the path to the DeerLab
 
 ### License
 
-The DeerLab package is licensed under the MIT License. The "package" consists of the DOE ([functions/](https://github.com/luisfabib/deerlab/tree/master/functions)), documentation source ([docsrc/](https://github.com/luisfabib/deerlab/tree/master/docsrc)), example scripts ([scripts/](https://github.com/luisfabib/deerlab/tree/master/scripts)), test suite ([tests/](https://github.com/luisfabib/deerlab/tree/master/tests)) and pipeline settings ([.github/workflows](https://github.com/luisfabib/deerlab/tree/master/.github/workflows)). See below for exceptions.
+The DeerLab package is licensed under the MIT License. The "package" consists of the DOE ([functions/](https://github.com/luisfabib/deerlab/tree/master/functions)), documentation source ([docsrc/](https://github.com/luisfabib/deerlab/tree/master/docsrc)), tutorial scripts ([tutorials/](https://github.com/luisfabib/deerlab/tree/master/tutorials)), test suite ([tests/](https://github.com/luisfabib/deerlab/tree/master/tests)) and pipeline scripts ([.github/workflows](https://github.com/luisfabib/deerlab/tree/master/.github/workflows)). See below for exceptions.
 
 Copyright (c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/luisfabib/deerlab/contributors).
 
