@@ -124,16 +124,21 @@ Optional arguments can be specified by parameter/value pairs. All property names
     alpha = selregparam(args,'Property1',Value1,'Property2',Value2,...)
 
 
-- ``'Refine'`` - Search refinement
-    Specifies whether to enforce a second search around the optimal regularization parameter value with a finer grid to approach a better value of the optimum. If the refinement step does not find any minima, refinenment will descent the functional until a minima is reached. The refined search grid is included in the output ``alphas`` argument.
+- ``'Search'`` - Search algorithm
+    Specifies the type of algorithm used for searchin the optimal regularization parameter. The allowed inputs are: 
 
-    *Default:* ``false``
+
+		*   ``'grid'`` - Grid search over all possible regularization parameter values.
+		*   ``'golden'`` - Golden search algorithm for optimization of the regularization parameter
+
+
+    *Default:* ``golden``
 
     *Example:*
 
 		.. code-block:: matlab
 
-			alpha = selregparam(args,'Refine',true)
+			alpha = selregparam(args,'Search','grid')
 
 
 - ``'NonNegConstrained'`` - Non-negativity constraint
