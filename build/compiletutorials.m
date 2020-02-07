@@ -45,13 +45,7 @@ if ispc
         fprintf(' complete \n')
     end
     
-    for i=1:numel(htmlnames)
-        fprintf('Deleting: html (file %i of %i)...',i,numel(sourcefiles))
-        delete(htmlfiles{i});
-        fprintf(' complete \n')
-    end
-    
-    for i=1:numel(htmlnames)
+    for i=1:numel(mnames)
         fprintf('Deleting: m (file %i of %i)...',i,numel(sourcefiles))
         delete(mfiles{i});
         fprintf(' complete \n')
