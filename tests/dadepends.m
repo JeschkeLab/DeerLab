@@ -1,9 +1,9 @@
 function dadepends(FileMask)
 
-DeerAnalysisPath = fileparts(which('dadepends'));
-DeerAnalysisPath = DeerAnalysisPath(1:end-numel('\tests'));
-if isempty(DeerAnalysisPath)
-    error('DeerAnalysis is not on the Matlab path!');
+DeerLabPath = fileparts(which('dadepends'));
+DeerLabPath = DeerLabPath(1:end-numel('\tests'));
+if isempty(DeerLabPath)
+    error('DeerLab is not on the Matlab path!');
 end
 
 if nargin==0
@@ -13,12 +13,12 @@ else
 end
 fid = 1;
 fprintf(fid,'=======================================================================\n');
-fprintf(fid,'DeerAnalysis Toolbox Dependency Analysis           %s\n(Matlab %s)\n',datestr(now),version);
-fprintf(fid,'DeerAnalysis location: %s\n',DeerAnalysisPath);
+fprintf(fid,'DeerLab Toolbox Dependency Analysis           %s\n(Matlab %s)\n',datestr(now),version);
+fprintf(fid,'DeerLab location: %s\n',DeerLabPath);
 fprintf(fid,'=======================================================================\n');
 
 %Run through ./tests/
-files = dir(fullfile(DeerAnalysisPath,'tests',FileMask));
+files = dir(fullfile(DeerLabPath,'tests',FileMask));
 filenames = {files.name};
 if ~isempty(filenames)
     if strcmp(filenames{1},'.')
@@ -32,7 +32,7 @@ fprintf(fid,'Filename                              Dependencies                 
 
 for i=1:length(filenames)
     
-    [~,output] = matlab.codetools.requiredFilesAndProducts({fullfile(DeerAnalysisPath,'tests',filenames{i})});
+    [~,output] = matlab.codetools.requiredFilesAndProducts({fullfile(DeerLabPath,'tests',filenames{i})});
     
     if ~isempty(output)
         output = {output.Name};
@@ -46,7 +46,7 @@ for i=1:length(filenames)
 end
 
 %Run through ./functions/
-files = dir(fullfile(DeerAnalysisPath,'functions',FileMask));
+files = dir(fullfile(DeerLabPath,'functions',FileMask));
 filenames = {files.name};
 if ~isempty(filenames)
     if strcmp(filenames{1},'.')
@@ -60,7 +60,7 @@ fprintf(fid,'Filename                              Dependencies                 
 
 for i=1:length(filenames)
     
-    [~,output] = matlab.codetools.requiredFilesAndProducts({fullfile(DeerAnalysisPath,'/functions/',filenames{i})});
+    [~,output] = matlab.codetools.requiredFilesAndProducts({fullfile(DeerLabPath,'/functions/',filenames{i})});
     
     if ~isempty(output)
         output = {output.Name};

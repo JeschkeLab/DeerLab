@@ -12,14 +12,14 @@
 % Adapted from Gunnar Jeschke by Luis Fabregas.
 %
 
-% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
 function [InterpSignal,InterpTimeAxis] = changegrain(Signal,TimeAxis,NewTimeGrain)
 
 max_points = 2048; % maximum number of data points
-DefaultTimeGrain = 4; % minimum time increment, should coincide with handles.time_grain in DeerAnalysis.m
+DefaultTimeGrain = 4; % minimum time increment, should coincide with handles.time_grain in DeerLab.m
 
 
 OldGrain = TimeAxis(end)/length(TimeAxis);

@@ -7,13 +7,13 @@
 %   must be passed as a cell array of function handles.
 %
 %   The parametric model function must be of the type as the models distributed
-%   in DeerAnalysis2. The returned function handle can be used for
+%   in DeerLab2. The returned function handle can be used for
 %   parametric model fitting as the other models.
 %
 %   Example: rd_twogaussians = MIXMODELS({@rd_onegaussian,@rd_onegaussian})
 %
 
-% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 

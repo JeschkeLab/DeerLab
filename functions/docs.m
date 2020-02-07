@@ -13,7 +13,7 @@ elseif exist(HTMLfile2,'file')
     %Then open the corresponding HMLT file using the MATLAB browser
     web(HTMLfile2)
 else
-    %get path to DeerAnalysis functions folder
+    %get path to DeerLab functions folder
     path = fileparts(which('datest'));
     path = path(1:end-length('\path'));
     %list all the API functions, including models and private

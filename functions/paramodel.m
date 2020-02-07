@@ -1,8 +1,8 @@
 %
-% PARAMODEL Converts a function handle to a DeerAnalysis parametric model
+% PARAMODEL Converts a function handle to a DeerLab parametric model
 %
 %       g = PARAMODEL(f,n)
-%       Converts the input function handle (f) to a valid DeerAnalysis
+%       Converts the input function handle (f) to a valid DeerLab
 %       parametric model compatible with the fit functions. The number of
 %       parameters in the resulting parametric model must be specified by
 %       (n). The initial guess values of all parameters are set to zero.
@@ -15,7 +15,7 @@
 %       from the length of the array.
 %
 
-% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
@@ -43,7 +43,7 @@ end
 
 model = @myparametricmodel;
 
-%Define the raw structure of the DeerAnalysis parametric model functions
+%Define the raw structure of the DeerLab parametric model functions
     function Output = myparametricmodel(ax,param,idx)
         
         if nargin==0

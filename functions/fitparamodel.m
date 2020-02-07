@@ -63,7 +63,7 @@
 %
 %
 
-% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md).
+% This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 function [FitParameters,Fit] = fitparamodel(V,model,ax,K,StartParameters,varargin)
@@ -132,7 +132,7 @@ end
 
 %Get information about the parametric model
 try
-    %Check whether model is a DeerAnalysis model...
+    %Check whether model is a DeerLab model...
     Info = model();
     if nargin(model) == 2
         passlabel = false;

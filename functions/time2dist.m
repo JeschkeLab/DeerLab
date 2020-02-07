@@ -5,14 +5,14 @@
 %   Computes the N-point distance axis (r) according to the input time axis (t).
 %   The minimal and maximal distances (rmin,rmax) are determined by the empirical
 %   approximations derived by Gunnar Jeschke as implemented in the older
-%   DeerAnalysis versions.
+%   DeerLab versions.
 %
 %   [r,rmin,rmax] = TIME2DIST(t,M)
 %   The length of the output axis can be specified by the additional input
 %   parameter (M).
 %
 
-% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 

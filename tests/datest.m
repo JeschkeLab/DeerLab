@@ -1,4 +1,4 @@
-%  datest    Test suite engine for DeerAnalysis
+%  datest    Test suite engine for DeerLab
 % 
 %    Usage:
 %      datest            Run all tests
@@ -22,10 +22,10 @@
 
 function out = datest(TestName,varargin)
 
-%  Check whether DeerAnalysis is on the Matlab path
-DeerAnalysisPath = fileparts(which('datest'));
-if isempty(DeerAnalysisPath)
-    error('DeerAnalysis is not on the Matlab path!');
+%  Check whether DeerLab is on the Matlab path
+DeerLabPath = fileparts(which('datest'));
+if isempty(DeerLabPath)
+    error('DeerLab is not on the Matlab path!');
 end
 
 fid = 1; %  output to command window
@@ -70,8 +70,8 @@ else
     FileMask = [TestName '*_*.m'];
 end
 
-% Look for test in the \tests directory of DeerAnalysis
-FileList = dir(fullfile(DeerAnalysisPath,FileMask));
+% Look for test in the \tests directory of DeerLab
+FileList = dir(fullfile(DeerLabPath,FileMask));
 
 if numel(FileList)==0
     error('No test functions matching the pattern % s',FileMask);
@@ -80,8 +80,8 @@ end
 TestFileNames = sort({FileList.name});
 
 fprintf(fid,'=======================================================================\n');
-fprintf(fid,'DeerAnalysis Unity Test Suite                 % s\n(Matlab % s)\n',datestr(now),version);
-fprintf(fid,'DeerAnalysis location: % s\n',DeerAnalysisPath);
+fprintf(fid,'DeerLab Unity Test Suite                 % s\n(Matlab % s)\n',datestr(now),version);
+fprintf(fid,'DeerLab location: % s\n',DeerLabPath);
 fprintf(fid,'=======================================================================\n');
 
 %  Codes for test outcomes:
@@ -92,7 +92,7 @@ fprintf(fid,'===================================================================
 
 OutcomeStrings = {'pass','failed','crashed','not tested'};
 
-% get path to DeerAnalysis functions folder
+% get path to DeerLab functions folder
 path = fileparts(which('datest'));
 path = path(1:end-length('\path'));
 
@@ -247,18 +247,18 @@ if runTutorials
     fprintf(fid,'-----------------------------------------------------------------------\n');
     
     % Get contents of tutorials directory
-    files = dir(fullfile(erase(DeerAnalysisPath,'tests'),'/tutorials/**/*.mlx'));
+    files = dir(fullfile(erase(DeerLabPath,'tests'),'/tutorials/**/*.mlx'));
     sourcenames = {files.name};
     mnames = cellfun(@(S)[S(1:end-3) 'm'],sourcenames,'UniformOutput',false);
     
     % Generate full paths
     paths = {files.folder};
     sourcefiles = cellfun(@(x,y)fullfile(x,y),paths,sourcenames,'UniformOutput',false);
-    path = fullfile(DeerAnalysisPath,'_tutorials');
+    path = fullfile(DeerLabPath,'_tutorials');
     if ~exist(path,'dir')
         mkdir(path)
     end
-    addpath(genpath(fullfile(erase(DeerAnalysisPath,'tests'),'/tutorials')));
+    addpath(genpath(fullfile(erase(DeerLabPath,'tests'),'/tutorials')));
     mfiles = cellfun(@(y)fullfile(path,y),mnames,'UniformOutput',false);
     
     for i=1:numel(mfiles)

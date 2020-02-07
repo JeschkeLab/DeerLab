@@ -10,7 +10,7 @@
 %   The noise levels (n1,b2,n3,...,nN) for each signal can be passed as 
 %   a N-point array.
 %
-% This file is a part of DeerAnalysis. License is MIT (see LICENSE.md). 
+% This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 

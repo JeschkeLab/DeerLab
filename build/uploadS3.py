@@ -68,7 +68,7 @@ s3_client = boto3.client('s3',
 		 aws_access_key_id = AccessKeys[0],
 		 aws_secret_access_key = AccessKeys[1])
 		 
-#Get the keys to the DeerAnalysis bucket
+#Get the keys to the DeerLab bucket
 print("Retrieving S3 bucket information")
 s3 = boto3.resource('s3',
 		 aws_access_key_id = AccessKeys[0],
