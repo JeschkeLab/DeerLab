@@ -24,7 +24,7 @@ Parameters
     *   ``L`` - Regularization operator (*(M-order))xM*-element matrix)
 
 Returns
-    *   ``alphas`` - Regularization parameter candidates (array)
+    *   ``alphas`` - List of regularization parameters (array)
 
 -----------------------------
 
@@ -36,7 +36,7 @@ Description
 
     alphas = regparamrange(K,L)
 
-Estimates an array of regularization parameter candidates ``alphas`` from the generalized singular value decomposition (GSVD) of the dipolar kernel ``K`` and regularization operator ``L``.
+Determines an array of regularization parameters ``alphas`` from the generalized singular value decomposition (GSVD) of the dipolar kernel ``K`` and regularization operator ``L``.
 
 
 -----------------------------
@@ -51,6 +51,17 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     alphas = regparamrange(args,'Property1',Value1,'Property2',Value2,...)
 
+- ``'Resolution'`` - Resolution
+    Logarithmic scale resolution of the array of alpha candidates.
+
+    *Default:* ``0.1``
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			alphas = regparamrange(args,'Resolution',0.01)
+
 - ``'NoiseLevel'`` - Estimation of the noise level
     Estimation of the noise standard deviation of the signal for scaling of the singular values.
 
@@ -60,15 +71,5 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			alphas = regparamrange(args,'NoiseDeviation',0.05)
+			alphas = regparamrange(args,'NoiseLevel',0.05)
 
-- ``'logResolution'`` - Resolution
-    Logarithmic scale resolution of the array of alpha candidates.
-
-    *Default:* ``0.1``
-
-    *Example:*
-
-		.. code-block:: matlab
-
-			alphas = regparamrange(args,'logResolution',0.01)

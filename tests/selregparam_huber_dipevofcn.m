@@ -1,9 +1,5 @@
 function [err,data,maxerr] = test(opt,olddata)
 
-%=======================================
-% Check regparamrange.m
-%=======================================
-
 Dimension = 80;
 dt = 0.008;
 t = linspace(0,dt*Dimension,Dimension);
