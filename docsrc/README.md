@@ -1,6 +1,6 @@
 ## Compiling the documentation
 
-The DeerAnalysis documentation/website is written in restructred-text format and built with Sphinx. In order to compile the source files of the documentation, several packages/programs are required. This is a summary of the steps to be taken before being able to compile the documentation.
+The DeerLab documentation/website is written in restructred-text format and built with Sphinx. In order to compile the source files of the documentation, several packages/programs are required. This is a summary of the steps to be taken before being able to compile the documentation.
 
 ### Requirements: 
   * Pyhton3
@@ -52,7 +52,7 @@ In order to compile the documentation the following steps must be followed:
 		
 6) Download and install dvissvgm from https://dvisvgm.de/Downloads/
 		
-7) From /DeerAnalysis/docsrc/ run the batch script
+7) From /DeerLab/docsrc/ run the batch script
 
 	    #To compile using the cached data
             make    

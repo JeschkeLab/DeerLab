@@ -53,4 +53,4 @@ Example
 
 .. image:: ../images/noiselevel1.svg
 
-.. hint:: This function returns the estimation of the noise standard deviation (called noise level in DeerAnalysis). This definition of noise level is used throughout DeerAnalysis.
+.. hint:: This function returns the estimation of the noise standard deviation (called noise level in DeerLab). This definition of noise level is used throughout DeerLab.

@@ -44,7 +44,7 @@ Computes ``K`` for the transformation to the dipolar evolution function from the
 
     .. math:: \mathbf{K}\mathbf{P}  = \mathbf{D}
 
-Since the dipolar kernel is normalized by `\Delta r`, in order to obtain the correct time-domain signal via ``S=K*P``, the distance distribution must be properly normalized by `\Delta r` as well. By default, all distribution ``P`` returned by DeerAnalysis are already normalized.
+Since the dipolar kernel is normalized by `\Delta r`, in order to obtain the correct time-domain signal via ``S=K*P``, the distance distribution must be properly normalized by `\Delta r` as well. By default, all distribution ``P`` returned by DeerLab are already normalized.
 
 
 -----------------------------

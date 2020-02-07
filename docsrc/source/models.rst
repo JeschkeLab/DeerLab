@@ -3,7 +3,7 @@
 Parametric Models
 ======================
 
-DeerAnalysis includes the following collection of parametric models. The model names are categorized depending on whether the model is defined in time-domain (model name starts with the prefix ``td_``) or in distance model (model name starts with the prefix ``rd_``). 
+DeerLab includes the following collection of parametric models. The model names are categorized depending on whether the model is defined in time-domain (model name starts with the prefix ``td_``) or in distance model (model name starts with the prefix ``rd_``). 
 
 .. toctree::
     :maxdepth: 1

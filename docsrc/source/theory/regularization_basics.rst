@@ -29,7 +29,7 @@ If several signals :math:`S_1,S_2,...S_N` corresponding to the same distance dis
 
 .. math:: \arg\min_{\mathbf{P}\geq 0}\left\{ \sum_i^N w_i\frac{1}{2}\Vert \mathbf{K}_i\mathbf{P} - \mathbf{S}_i \Vert_2^2 + \alpha^2 \Gamma[\mathbf{L}\mathbf{P}]\right\},
 
-where :math:`w_i` are to so-called global-fit weights. They distribute the influence each signal has on the quality of the least-squares fitting. In DeerAnalysis2 these weights are computed according to the contribution of each signal to the ill-posedness of the inverse problem.
+where :math:`w_i` are to so-called global-fit weights. They distribute the influence each signal has on the quality of the least-squares fitting. In DeerLab these weights are computed according to the contribution of each signal to the ill-posedness of the inverse problem.
 
 .. math:: w_i = \frac{\sum_j^N M_j\sigma_j}{N_i\sigma_i}, \sum_i^N w_i = 1
 

@@ -5,7 +5,7 @@
 :mod:`paramodel`
 ***********************
 
-Converts a function handle to a valid DeerAnalysis parametric model
+Converts a function handle to a valid DeerLab parametric model
 
 Syntax
 =========================================
@@ -33,7 +33,7 @@ Description
 
     mod = paramodel(fcn,n)
 
-Converts the input function handle ``fcn`` to a valid DeerAnalysis parametric model compatible with the fit functions, e.g. :ref:`fitparamodel`. The number of parameters in the resulting parametric model must be specified by ``n``. The initial guess values of all parameters are set to zero. The resulting parametric model ``mod`` is returned in as a function handle.
+Converts the input function handle ``fcn`` to a valid DeerLab parametric model compatible with the fit functions, e.g. :ref:`fitparamodel`. The number of parameters in the resulting parametric model must be specified by ``n``. The initial guess values of all parameters are set to zero. The resulting parametric model ``mod`` is returned in as a function handle.
 
 .. code-block:: matlab
 

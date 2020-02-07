@@ -2,17 +2,17 @@ Downloads
 ======================
 
 
-DeerAnalysis is distributed in two different formats:
+DeerLab is distributed in two different formats:
 
 	- Releases
-		Releases are the official packages of DeerAnalysis containing the essentials for the full-functionality of the program. They contain:
+		Releases are the official packages of DeerLab containing the essentials for the full-functionality of the program. They contain:
 
 			- All DeerAnaysis functions
 			- A compiled offline version of this webpage and documentation
 			- All tutorial scripts
 
 	- Source code
-		The source code contains all code used in the development of DeerAnalysis, including: 
+		The source code contains all code used in the development of DeerLab, including: 
 
 			- All DeerAnaysis functions
 			- All source files for compiling the webpage and documentation
@@ -28,7 +28,7 @@ DeerAnalysis is distributed in two different formats:
 Downloading Releases
 -----------------------
 
-All releases (incuding previous versions) are available in the official DeerAnalysis `GitHub repository <https://github.com/luisfabib/DeerAnalysis2>`_. 
+All releases (incuding previous versions) are available in the official DeerLab `GitHub repository <https://github.com/luisfabib/deerlab>`_. 
 
 1) From the main page, select the ``releases`` tab
 
@@ -46,7 +46,7 @@ All releases (incuding previous versions) are available in the official DeerAnal
 Downloading the source code
 -----------------------------
 
-The source code is easily available in the official DeerAnalysis `GitHub repository <https://github.com/luisfabib/DeerAnalysis2>`_ either by downloading or cloning the repo. 
+The source code is easily available in the official DeerLab `GitHub repository <https://github.com/luisfabib/deerlab>`_ either by downloading or cloning the repo. 
 
 1) From the main page, select the ``Clone or download`` tab
 

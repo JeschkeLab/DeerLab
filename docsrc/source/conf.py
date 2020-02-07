@@ -12,7 +12,7 @@ from sphinx.locale import _
 from sphinx_rtd_theme import __version__
 
 # Project details
-project = 'DeerAnalysis'
+project = 'DeerLab'
 copyright = '2019, Luis Fabregas Ibanez'
 author = 'Fabregas Ibanez'
 language = 'en'
@@ -50,7 +50,7 @@ html_theme = 'sphinx_rtd_theme'
 html_context = {
     "display_github": False, # Integrate GitHub
     "github_user": "luisfabib", # Username
-    "github_repo": "DeerAnalysis2", # Repo name
+    "github_repo": "deerlab", # Repo name
     "github_version": "master", # Version
     "conf_py_path": "/source/", # Path in the checkout to the docs root
 }

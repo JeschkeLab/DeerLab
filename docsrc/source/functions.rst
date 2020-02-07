@@ -1,7 +1,7 @@
 Functions
 ======================
 
-This is the official documentation for the DeerAnalysis toolbox functions. The following list contains the names of the different function and a brief description of their functionality. The parametric model functions are listed in a separate section (see :ref:`parametric_models`).
+This is the official documentation for the DeerLab toolbox functions. The following list contains the names of the different function and a brief description of their functionality. The parametric model functions are listed in a separate section (see :ref:`parametric_models`).
 
 .. toctree::
     :hidden:
