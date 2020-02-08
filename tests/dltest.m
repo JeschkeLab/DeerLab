@@ -142,16 +142,32 @@ for iTest = 1:numel(TestFileNames)
         profile on
     end
     
+    % Run test, catch any errors
+    testFcn = str2func(thisTestName);
+    nArgsOut = nargout(testFcn);
+    nArgsIn = nargin(testFcn);
+    warning('off')
     tic
     try
-        warning('off')
-        if displayErrors
-            [err,data,maxerr(iTest)] = feval(thisTest,Opt,olddata);
+        data = [];
+        maxerr(iTest) = 0;
+        if nArgsOut==1
+            if nArgsIn==0
+                err = testFcn();
+            else
+                err = testFcn(Opt);
+            end
         else
-            [err,data] = feval(thisTest,Opt,olddata);
+            if nArgsIn<2
+                error('2 inputs are needed.');
+            end
+            if nArgsOut==3
+                [err,data,maxerr(iTest)] = testFcn(Opt,olddata);
+            else
+                [err,data] = testFcn(Opt,olddata);
+            end
         end
-        warning('on')
-        %  if test returns empty err, then treat it as not tested
+        % If test returns empty err, then treat it as not tested
         if isempty(err)
             err = 3; %  not tested
         else
@@ -164,9 +180,10 @@ for iTest = 1:numel(TestFileNames)
         err = 2;
         errorInfo = exception;
         errorStr = getReport(errorInfo);
-        errorStr = ['    ' regexprep(errorStr,'\n','\n    ') char(10)];
+        errorStr = ['    ' regexprep(errorStr,'\n','\n    ') newline];
     end
     time_used(iTest) = toc;
+    warning('on')
     
     % Retrieve profiler summary and turn profiler off
     if runCodeCoverage
