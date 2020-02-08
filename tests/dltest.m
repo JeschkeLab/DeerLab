@@ -143,7 +143,7 @@ for iTest = 1:numel(TestFileNames)
     end
     
     % Run test, catch any errors
-    testFcn = str2func(thisTestName);
+    testFcn = str2func(thisTest);
     nArgsOut = nargout(testFcn);
     nArgsIn = nargin(testFcn);
     warning('off')
