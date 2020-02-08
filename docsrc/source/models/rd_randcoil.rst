@@ -21,9 +21,9 @@ Syntax
 
 Parameters
     *   ``t`` - Time axis (N-array)
-    *   ``param`` - Model parameters
+    *   ``param`` - Model parameters (2-array)
 Returns
-    *   ``B`` - Model background (N-array)
+    *   ``P`` - Model distribution (N-array)
     *   ``info`` - Model information (struct)
 
 
@@ -72,5 +72,5 @@ Returns an ``info`` structure containing the specifics of the model:
 
     P = rd_randcoil(r,param)
 
-Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
+Computes the model distance distribution ``P`` of residue-to-residue distances ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 
