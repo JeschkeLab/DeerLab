@@ -123,7 +123,7 @@ if ~iscolumn(B)
 end
 
 if isempty(gValue)
-    %Set g-value of isotropic nitroxide radical (old DA default)
+    % Set g-value of isotropic nitroxide radical (old DA default)
     gValue = 2.004602204236924;
 else
     validateattributes(gValue,{'numeric'},{'scalar','nonnegative'},mfilename,'gValue')
@@ -152,10 +152,10 @@ end
 % Kernel construction
 %--------------------------------------------------------------------------
 
-dt = mean(diff(t));
-
 % Numerical dipolar frequency at 1 nm for given g-value, in MHz
-nu0 = 51.92052556862238*gValue/2; % MHz nm^3
+ge = 2.00231930436256; % free-electron g factor (CODATA 2018 value)
+pre = 52.041015992835895; % MHz nm^3; = (mu0/4/pi)*(muB*ge)^2/h
+nu0 = pre*(gValue/ge)^2; % MHz nm^3
 w0 = 2*pi*nu0; % Mrad s^-1 nm^3
 
 % Convert distance axis to nanoseconds if givne in Angstrom
@@ -166,7 +166,7 @@ else
     dr = 1;
 end
 
-%Validation of the dipolar multipathway parameters
+% Validation of the dipolar multipathway parameters
 if ~isempty(MultiPathParam)
     if ~iscell(MultiPathParam)
         error('Dipolar multi-pathway parameters must be cell-array {lambdas etas Bmodel}')
@@ -284,7 +284,7 @@ end
 % Normalize kernel
 K = K*dr;
 
-%Store output result in the cache
+% Store output result in the cache
 cachedData = addcache(cachedData,hashKey,K);
 
 return
