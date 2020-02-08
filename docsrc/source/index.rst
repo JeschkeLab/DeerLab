@@ -56,14 +56,6 @@ To model distance distributions, DeerLab supports two types of model classes and
     ./examples
 
 
-.. toctree::
-    :hidden:
-    :caption: Theory
-    :maxdepth: 1
-
-    ./theory
-
-
 .. Indices and tables
 .. ==================
 
