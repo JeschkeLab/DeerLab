@@ -101,7 +101,9 @@ rconv = rconv  - abs(r(idx) - rconv(idxconv));
 P = interp1(rconv,P,r,'pchip');
 
 %Normalize integral
+if ~all(P==0)
 P = P/sum(P)/mean(diff(r));
+end
 output = P;
 
 if ~iscolumn(P)

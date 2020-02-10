@@ -67,10 +67,12 @@ rsq = 6*(R0*N^nu)^2; % mean square end-to-end distance from radius of gyration
 normFact = 3/(2*pi*rsq)^(3/2); % normalization prefactor
 ShellSurf = 4*pi*r.^2; % spherical shell surface
 Gaussian = exp(-3*r.^2/(2*rsq));
-Distribution = normFact*ShellSurf.*Gaussian;
+P = normFact*ShellSurf.*Gaussian;
 
 % Normalize integral
-Distribution = Distribution/sum(Distribution)/mean(diff(r));
-output = Distribution;
+if ~all(P==0)
+P = P/sum(P)/mean(diff(r));
+end
+output = P;
 
 end

@@ -116,8 +116,9 @@ P = param(9)*Gaussian1 + param(10)*Gaussian2 + param(11)*Gaussian3 + max(1 - par
 
 % Normalize
 dr = r(2)-r(1);
-P = P/sum(P)/dr;
-
+if ~all(P==0)
+P = P/sum(P)/dr;    
+end
 output = P;
 
 return

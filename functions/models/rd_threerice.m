@@ -110,15 +110,15 @@ Rician3 = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale + r.*nu./sqscale).*bess
 Rician3(Rician2<0) = 0;
 
 %Construct distance distribution
-Distribution = param(7)*Rician1 + param(8)*Rician2 + max(1-param(7)-param(8),0)*Rician3;
+P = param(7)*Rician1 + param(8)*Rician2 + max(1-param(7)-param(8),0)*Rician3;
 
-if ~iscolumn(Distribution)
-    Distribution = Distribution';
+if ~iscolumn(P)
+    P = P';
 end
-if ~all(Distribution==0)
-    Distribution = Distribution/sum(Distribution)/mean(diff(r));
+if ~all(P==0)
+    P = P/sum(P)/mean(diff(r));
 end
-output = Distribution;
+output = P;
 
 
 

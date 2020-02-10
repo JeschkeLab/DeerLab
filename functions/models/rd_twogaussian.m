@@ -76,7 +76,9 @@ P = param(5)*Gaussian1 + max(1 - param(5),0)*Gaussian2;
 
 % Normalize
 dr = r(2)-r(1);
-P = P/sum(P)/dr;
+if ~all(P==0)
+P = P/sum(P)/dr;    
+end
 
 output = P;
 

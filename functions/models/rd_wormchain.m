@@ -77,7 +77,9 @@ P(crit>0 & crit<0.2) = kappa/(4*pi*2*sqrt(pi))*((1./(kappa*(1 - rcrit)).^(3/2).*
     + 1./(kappa*(1 - rcrit)).^(3/2).*exp(-(2 - 1/2)^2./(kappa*(1 - rcrit))).*(4.*((2 - 1/2)./sqrt(kappa*(1-rcrit))).^2-2));
 
 %Normalize integral
+if ~all(P==0)
 P = P/sum(P)/mean(diff(r));
+end
 output = P;
 
 
