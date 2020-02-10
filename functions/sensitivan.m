@@ -76,7 +76,7 @@ counter = 0;
 nout = [];
 
 for i = 1:nCombinations
-  
+    
     % Assemble input factors into user structure
     for p = 1:nParameters
         argin.(ParNames{p}) =  ParamList{i,p};
@@ -111,32 +111,32 @@ for i = 1:nCombinations
             evals{iOut} = cat(1,evals{iOut},shiftdim(out,-1));
         catch
             error(['Inconsistent output variable size. ',...
-                  'One of the outputs of the analyzed function is changing its size in between runs. ',...
-                  'To solve this, fix the axis of the output and interpolate the result. \n%s'],...
-                  '  Ex/ outFix = interp1(varAxis,out,fixAxis,''pchip'')') 
+                'One of the outputs of the analyzed function is changing its size in between runs. ',...
+                'To solve this, fix the axis of the output and interpolate the result. \n%s'],...
+                '  Ex/ outFix = interp1(varAxis,out,fixAxis,''pchip'')')
         end
     end
     
-   % Update statistics
-   %---------------------------------------------------------------
-   counter = counter + 1;
-   %Evalutate the costly percentile function only every 15 combinations or
-   %after all combinations have been evaluated
-   if counter == 15 || i == nCombinations
-       for j = 1:nout
-           vareval = evals{j};
-           stats(j).median = squeeze(median(vareval,1,'omitnan'));
-           stats(j).mean = squeeze(mean(vareval,1,'omitnan'));
-           stats(j).std = squeeze(std(vareval,0,1,'omitnan'));
-           if i>1
-               stats(j).p25 = percentile(vareval,25,1).';
-               stats(j).p75 = percentile(vareval,75,1).';
-           end
-       end
-       %Reset counter
-       counter = 0;
-   end
-   
+    % Update statistics
+    %---------------------------------------------------------------
+    counter = counter + 1;
+    %Evalutate the costly percentile function only every 15 combinations or
+    %after all combinations have been evaluated
+    if counter == 15 || i == nCombinations
+        for j = 1:nout
+            vareval = evals{j};
+            stats(j).median = squeeze(median(vareval,1,'omitnan'));
+            stats(j).mean = squeeze(mean(vareval,1,'omitnan'));
+            stats(j).std = squeeze(std(vareval,0,1,'omitnan'));
+            if i>1
+                stats(j).p25 = percentile(vareval,25,1).';
+                stats(j).p75 = percentile(vareval,75,1).';
+            end
+        end
+        %Reset counter
+        counter = 0;
+    end
+    
     % If user passes optional plotting hook, then prepare the plot
     if ~isempty(AxisHandle) && i>1
         cla(AxisHandle)
@@ -144,7 +144,7 @@ for i = 1:nCombinations
         plot(AxisHandle,Ax,stats(1).median,'k','LineWidth',1)
         hold(AxisHandle,'on')
         f = fill(AxisHandle,[Ax fliplr(Ax)] ,[stats(1).p75; max(flipud(stats(1).p25),0)],...
-          'b','LineStyle','none');
+            'b','LineStyle','none');
         f.FaceAlpha = 0.5;
         hold(AxisHandle,'off')
         axis(AxisHandle,'tight')
@@ -157,109 +157,115 @@ for i = 1:nCombinations
 end
 
 
-% Factors main effect analysis
-%-------------------------------------------------------------------------------
-main(1:nout) = {cell(nParameters,1)}; 
-mainEffect(1:nout) = {struct()};
-% Loop over all function output variables
-for iOut = 1:nout
-    % Get all evaluations of that variable
-    data = evals{iOut};
-    % Loop over all factors
-    for iPar = 1:nParameters
-        clear evalmean set
-        subset = ParamList(1:size(data,1),iPar);
-        % Find unique factor levels
-        if isa(subset{1},'function_handle')
-            subset = cellfun(@func2str,subset,'UniformOutput',false);
-        elseif ~ischar(subset{1})
-            subset = cell2mat(subset);
-        end
-        uni = unique(subset);
-        
-        % Loop throught the levels of the factor
-        evalmean = zeros(numel(uni),1);
-        for ii = 1:numel(uni)
-            
-            % Identify the indices of the evaluations using that level
-            if iscell(subset)
-                idx =  find(contains(subset,uni{ii}));
-            else
-                idx = find(subset==uni(ii));
+%If requested, proceed with factor analysis
+if nargout>1
+    % Factors main effect analysis
+    %-------------------------------------------------------------------------------
+    main(1:nout) = {cell(nParameters,1)};
+    mainEffect(1:nout) = {struct()};
+    % Loop over all function output variables
+    for iOut = 1:nout
+        % Get all evaluations of that variable
+        data = evals{iOut};
+        % Loop over all factors
+        for iPar = 1:nParameters
+            clear evalmean set
+            subset = ParamList(1:size(data,1),iPar);
+            % Find unique factor levels
+            if isa(subset{1},'function_handle')
+                subset = cellfun(@func2str,subset,'UniformOutput',false);
+            elseif ~ischar(subset{1})
+                subset = cell2mat(subset);
             end
-            % Get the subset of data for that factor level
-            M = data(idx,:).';
-            % Construct a Euclidean distance map
-            map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
-            % Make it an upper triangle-matrix and get the mean Euclidean distance
-            map = triu(map,1);
-            evalmean(ii) = mean(map(map~=0));
-        end
-        % The main effect is given by the difference between mean Euclidean
-        % distances at different factor levels
-        main{iOut}{iPar} = abs(diff(evalmean));
-    end
-end
-
-% Convert cell array to strucure array with original parameter names
-for i = 1:nout
-    for p = 1:nParameters
-        mainEffect{i}.(ParNames{p}) =  main{i}{p};
-    end
-end
-factors.main = mainEffect;
-
-
-% Factors interaction analysis
-%-------------------------------------------------------------------------------
-Interaction(1:nout) = {zeros(nParameters)};
-for i = 1:nout
-    data = evals{i};
-    for j = 1:nParameters
-        for k = 1:nParameters
-            clear evalmean set subset uni main
-            % Get subsets of the two interacting factors
-            subset{1} = ParamList(1:size(data,1),j);
-            subset{2} = ParamList(1:size(data,1),k);
-            % Get the primary factor main effects for both levels of the
-            % secondary factor
-            for jj=1:length(subset)
-                tmp = subset{jj};
-                if isa(tmp{1},'function_handle')
-                    tmp = cellfun(@func2str,tmp,'UniformOutput',false);
-                end
-                if ischar(tmp{1})
-                    uni{jj} = unique(tmp);
+            uni = unique(subset);
+            
+            % Loop throught the levels of the factor
+            evalmean = zeros(numel(uni),1);
+            for ii = 1:numel(uni)
+                
+                % Identify the indices of the evaluations using that level
+                if iscell(subset)
+                    idx =  find(contains(subset,uni{ii}));
                 else
-                    tmp = cell2mat(tmp);
-                    uni{jj} = unique(tmp);
+                    idx = find(subset==uni(ii));
                 end
-                subset{jj} = tmp;
-                
-                for ii=1:length(uni{jj})
-                    unitmp = uni{jj};
-                    if iscell(subset{jj})
-                        idx =  find(contains(subset{jj},unitmp{ii}));
-                    else
-                        idx = find(subset{jj}==unitmp(ii));
-                    end
-                    M = data(idx,:).';
-                    map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
-                    map = triu(map,1);
-                    evalmean(ii) = mean(map(map~=0));
-                end
-                % Get main effects for upper and lower levels
-                main(jj) = abs(evalmean(1) - evalmean(2));
-                
+                % Get the subset of data for that factor level
+                M = data(idx,:).';
+                % Construct a Euclidean distance map
+                map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
+                % Make it an upper triangle-matrix and get the mean Euclidean distance
+                map = triu(map,1);
+                evalmean(ii) = mean(map(map~=0));
             end
-            
-            % Compute the interaction between the factors
-            Interaction{i}(j,k) = abs(main(1) - main(2));
-            
+            % The main effect is given by the difference between mean Euclidean
+            % distances at different factor levels
+            main{iOut}{iPar} = abs(diff(evalmean));
         end
     end
+    
+    % Convert cell array to strucure array with original parameter names
+    for i = 1:nout
+        for p = 1:nParameters
+            mainEffect{i}.(ParNames{p}) =  main{i}{p};
+        end
+    end
+    factors.main = mainEffect;
+    
+    
+    % Factors interaction analysis
+    %-------------------------------------------------------------------------------
+    Interaction(1:nout) = {zeros(nParameters)};
+    for i = 1:nout
+        data = evals{i};
+        for j = 1:nParameters
+            for k = 1:nParameters
+                clear evalmean set subset uni main
+                % Get subsets of the two interacting factors
+                subset{1} = ParamList(1:size(data,1),j);
+                subset{2} = ParamList(1:size(data,1),k);
+                % Get the primary factor main effects for both levels of the
+                % secondary factor
+                for jj=1:length(subset)
+                    tmp = subset{jj};
+                    if isa(tmp{1},'function_handle')
+                        tmp = cellfun(@func2str,tmp,'UniformOutput',false);
+                    end
+                    if ischar(tmp{1})
+                        uni{jj} = unique(tmp);
+                    else
+                        tmp = cell2mat(tmp);
+                        uni{jj} = unique(tmp);
+                    end
+                    subset{jj} = tmp;
+                    
+                    for ii=1:length(uni{jj})
+                        unitmp = uni{jj};
+                        if iscell(subset{jj})
+                            idx =  find(contains(subset{jj},unitmp{ii}));
+                        else
+                            idx = find(subset{jj}==unitmp(ii));
+                        end
+                        M = data(idx,:).';
+                        map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
+                        map = triu(map,1);
+                        evalmean(ii) = mean(map(map~=0));
+                    end
+                    % Get main effects for upper and lower levels
+                    main(jj) = abs(evalmean(1) - evalmean(2));
+                    
+                end
+                
+                % Compute the interaction between the factors
+                Interaction{i}(j,k) = abs(main(1) - main(2));
+                
+            end
+        end
+    end
+    factors.inter = Interaction;
+else
+    factors.inter = cell(1,1);
+    factors.main = cell(1,1);
 end
-factors.inter = Interaction;
 
 % If only one output variable has been evaluated, then don't return cell array
 if nout==1
@@ -307,7 +313,7 @@ nout = nargout(fcnHandle);
 variableOutputs = nout<0;
 
 if ~variableOutputs
-  return;
+    return;
 end
 
 % If the functions defines a variable number of outputs, iteratively increase
@@ -316,13 +322,13 @@ end
 nout = abs(nout)-1;
 done = false;
 while ~done
-  try
-    nout = nout+1;
-    varargout = cell(1,nout);
-    [varargout{:}] = fcnHandle(argin);
-  catch
-    nout = nout-1;
-    done = true;
-  end
+    try
+        nout = nout+1;
+        varargout = cell(1,nout);
+        [varargout{:}] = fcnHandle(argin);
+    catch
+        nout = nout-1;
+        done = true;
+    end
 end
 end
