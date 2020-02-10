@@ -126,12 +126,12 @@ for i = 1:nCombinations
     end
     
     % If user passes optional plotting hook, then prepare the plot
-    if ~isempty(AxisHandle)
+    if ~isempty(AxisHandle) && i>1
         cla(AxisHandle)
         Ax = 1:length(stats(1).median);
         plot(AxisHandle,Ax,stats(1).median,'k','LineWidth',1)
         hold(AxisHandle,'on')
-        f = fill(AxisHandle,[Ax fliplr(Ax)] ,[stats(1).p75 max(fliplr(stats(1).p25),0)],...
+        f = fill(AxisHandle,[Ax fliplr(Ax)] ,[stats(1).p75; max(flipud(stats(1).p25),0)],...
           'b','LineStyle','none');
         f.FaceAlpha = 0.5;
         hold(AxisHandle,'off')
