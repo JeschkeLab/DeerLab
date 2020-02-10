@@ -44,7 +44,7 @@ Tmix = 50; %us
 T1 = 88; %us
 coefficients = overtones(5,Tmix,T1);
 
-NumericalK = dipolarkernel(t,r,'OvertoneCoeffs',coefficients);
+NumericalK = dipolarkernel(t,r,'OvertoneCoeffs',coefficients,'gValue',2.002299758702673);
 NumericalK = NumericalK/mean(diff(r));
 NumericalK = diag(NumericalK)';
 

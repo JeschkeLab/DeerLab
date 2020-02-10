@@ -40,7 +40,7 @@ AnalyticalK = [1.0000000000,0.989724398140451,0.962515792044324,...
 t = linspace(0,0.008*(length(AnalyticalK)-1),length(AnalyticalK));
 r = linspace(2.5,6,length(t));
 
-K = dipolarkernel(t,r);
+K = dipolarkernel(t,r,'gValue',2.002299758702673);
 K = K/mean(diff(r));
 
 NumericalK = diag(K);

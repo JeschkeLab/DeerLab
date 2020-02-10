@@ -38,7 +38,7 @@ kernelOut = dipolarkernel(t,DistAxis,'Method','explicit');
 kernelOut = kernelOut/mean(diff(DistAxis));
 newKdiag = diag(kernelOut).';
 
-err = any(abs(newKdiag - oldKdiag)>7e-3);
+err = any(abs(newKdiag - oldKdiag)>8e-3);
 maxerr = max(abs(newKdiag - oldKdiag));
 data = [];
 
