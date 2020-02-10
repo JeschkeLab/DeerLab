@@ -72,7 +72,9 @@ nCombinations = size(ParamList,1);
 %-------------------------------------------------------------------------------
 % Get names of the variables given by the user
 
+counter = 0;
 nout = [];
+
 for i = 1:nCombinations
   
     % Assemble input factors into user structure
@@ -113,18 +115,26 @@ for i = 1:nCombinations
         end
     end
     
-    % Update statistics
-    for j = 1:nout
-        vareval = evals{j};
-        stats(j).median = squeeze(median(vareval,1,'omitnan'));
-        stats(j).mean = squeeze(mean(vareval,1,'omitnan'));
-        stats(j).std = squeeze(std(vareval,0,1,'omitnan'));
-        if i>1
-            stats(j).p25 = percentile(vareval,25,1).';
-            stats(j).p75 = percentile(vareval,75,1).';
-        end
-    end
-    
+   % Update statistics
+   %---------------------------------------------------------------
+   counter = counter + 1;
+   %Evalutate the costly percentile function only every 15 combinations or
+   %after all combinations have been evaluated
+   if counter == 15 || i == nCombinations
+       for j = 1:nout
+           vareval = evals{j};
+           stats(j).median = squeeze(median(vareval,1,'omitnan'));
+           stats(j).mean = squeeze(mean(vareval,1,'omitnan'));
+           stats(j).std = squeeze(std(vareval,0,1,'omitnan'));
+           if i>1
+               stats(j).p25 = percentile(vareval,25,1).';
+               stats(j).p75 = percentile(vareval,75,1).';
+           end
+       end
+       %Reset counter
+       counter = 0;
+   end
+   
     % If user passes optional plotting hook, then prepare the plot
     if ~isempty(AxisHandle) && i>1
         cla(AxisHandle)
