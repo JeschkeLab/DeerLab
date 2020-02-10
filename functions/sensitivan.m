@@ -85,6 +85,8 @@ for i = 1:nCombinations
     % On the first run, determine the number of outputs and allocate arrays
     if isempty(nout)
         nout = getmaxnargout(fcnHandle,argin);
+        %Pre-allocate memory for stats structure array
+%         stats = repmat(struct('median',[],'mean',[],'std',[],'p25',[],'p75',[]),nout,1);
         evals = cell(1,nout);
     end
     
@@ -264,35 +266,34 @@ end
 end
 
 % Calculate percentile (similar to prctile function in Statistics Toolbox)
-function pct = percentile(M,p,dim)
+function Y = percentile(X,p,dim)
 
 % Set requested dimension as the first dimension
-dimIdx = 1:ndims(M);
+dimIdx = 1:ndims(X);
 dimIdx = dimIdx(dimIdx~=dim);
-M = permute(M,[dim dimIdx]);
+X = permute(X,[dim dimIdx]);
 
-sizeM = size(M);
+% Get size of data
+sizeX = size(X);
 
 % Vectorize all other dimensions
-if numel(sizeM)>2
-    V = reshape(M,[sizeM(1),prod(sizeM(2:end))]);
+if numel(sizeX)>2
+    X = reshape(X,[sizeX(1),prod(sizeX(2:end))]);
 else
-    V = M;
+    X = X;
 end
 
-% Prepare function to compute throughout first dimension
-percentile_ = @(v,p) interp1(linspace(0.5/length(v), 1-0.5/length(v), length(v))', sort(v), p*0.01, 'pchip');
-colfcn = @(func, matrix) @(col) func(matrix(:,col));
-colfcn = @(func, matrix) arrayfun(colfcn(func, matrix), 1:size(matrix,2), 'UniformOutput', false)';
-takeall = @(x) reshape([x{:}], size(x{1},2), size(x,1))';
-applyrowfcn = @(func, matrix) takeall(colfcn(func, matrix));
+N = size(X,1);
+% Sort data about first dimension
+X = sort(X,1);
+% Get list of available percentiles
+pList = 100*(0.5:1:N-0.5)/N;
+% Interpolate from list to requested percentile
+Y = interp1(pList,X,p,'linear');
 
-% Apply function nest to vectorized matrix
-pct = applyrowfcn(@(M)percentile_(M,p),V);
-
-if numel(sizeM)>2
-    %Reshape results back to original size
-    pct = reshape(pct,sizeM(2:end));
+if numel(sizeX)>2
+    % Reshape results back to original size
+    Y = reshape(Y,sizeX(2:end));
 end
 
 end
