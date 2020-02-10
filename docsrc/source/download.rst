@@ -14,7 +14,7 @@ DeerLab is distributed in two different formats:
 	- Source code
 		The source code contains all code used in the development of DeerLab, including: 
 
-			- All DeerAnaysis functions
+			- All DeerLab functions
 			- All source files for compiling the webpage and documentation
 			- The full test suite
 			- All tutorial scripts
