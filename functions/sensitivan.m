@@ -86,7 +86,7 @@ for i = 1:nCombinations
     if isempty(nout)
         nout = getmaxnargout(fcnHandle,argin);
         %Pre-allocate memory for stats structure array
-%         stats = repmat(struct('median',[],'mean',[],'std',[],'p25',[],'p75',[]),nout,1);
+        stats = repmat(struct('median',[],'mean',[],'std',[],'p25',[],'p75',[]),nout,1);
         evals = cell(1,nout);
     end
     
@@ -159,6 +159,8 @@ end
 
 % Factors main effect analysis
 %-------------------------------------------------------------------------------
+main(1:nout) = {cell(nParameters,1)}; 
+mainEffect(1:nout) = {struct()};
 % Loop over all function output variables
 for iOut = 1:nout
     % Get all evaluations of that variable
@@ -174,8 +176,10 @@ for iOut = 1:nout
             subset = cell2mat(subset);
         end
         uni = unique(subset);
+        
         % Loop throught the levels of the factor
-        for ii = 1:length(uni)
+        evalmean = zeros(numel(uni),1);
+        for ii = 1:numel(uni)
             
             % Identify the indices of the evaluations using that level
             if iscell(subset)
@@ -198,7 +202,7 @@ for iOut = 1:nout
 end
 
 % Convert cell array to strucure array with original parameter names
-for i = 1:length(main)
+for i = 1:nout
     for p = 1:nParameters
         mainEffect{i}.(ParNames{p}) =  main{i}{p};
     end
@@ -206,12 +210,13 @@ end
 factors.main = mainEffect;
 
 
-% Factors interaction analysis (beta)
+% Factors interaction analysis
 %-------------------------------------------------------------------------------
+Interaction(1:nout) = {zeros(nParameters)};
 for i = 1:nout
     data = evals{i};
-    for j = 1:size(ParamList,2)
-        for k = 1:size(ParamList,2)
+    for j = 1:nParameters
+        for k = 1:nParameters
             clear evalmean set subset uni main
             % Get subsets of the two interacting factors
             subset{1} = ParamList(1:size(data,1),j);
@@ -279,8 +284,6 @@ sizeX = size(X);
 % Vectorize all other dimensions
 if numel(sizeX)>2
     X = reshape(X,[sizeX(1),prod(sizeX(2:end))]);
-else
-    X = X;
 end
 
 N = size(X,1);
