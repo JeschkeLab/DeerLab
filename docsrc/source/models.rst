@@ -21,6 +21,15 @@ DeerLab includes the following collection of parametric models. The model names 
     ./models/rd_wormchain
     ./models/rd_wormgauss
     ./models/rd_randcoil
+    ./models/rd_shellshell
+    ./models/rd_shell
+    ./models/rd_shellsphere
+    ./models/rd_sphere
+    ./models/rd_spheresurf
+    ./models/rd_spherepoint
+    ./models/rd_shellvoidsphere
+    ./models/rd_shellvoidshell
+
 
 .. toctree::
     :maxdepth: 1
@@ -89,6 +98,22 @@ DeerLab includes the following collection of parametric models. The model names 
          &nbsp - &nbsp Worm-like chain (WLC) with Gaussian convolution distribution </li>
          <li><a class="reference internal" href="models/rd_randcoil.html#rd_randcoil"><span class="std std-ref" style="font-family: monospace">rd_randcoil</span></a>
          &nbsp - &nbsp Random coil distribution </li>
+         <li><a class="reference internal" href="models/rd_sphere.html#rd_sphere"><span class="std std-ref" style="font-family: monospace">rd_sphere</span></a>
+         &nbsp - &nbsp Particles distributed on a sphere</li>
+         <li><a class="reference internal" href="models/rd_spheresurf.html#rd_spheresurf"><span class="std std-ref" style="font-family: monospace">rd_spheresurf</span></a>
+         &nbsp - &nbsp Particles distributed on a sphere's surface</li>
+         <li><a class="reference internal" href="models/rd_shell.html#rd_shell"><span class="std std-ref" style="font-family: monospace">rd_shell</span></a>
+         &nbsp - &nbsp Particles distributed on a spherical shell</li>
+         <li><a class="reference internal" href="models/rd_shellsphere.html#rd_shellsphere"><span class="std std-ref" style="font-family: monospace">rd_shellsphere</span></a>
+         &nbsp - &nbsp Particles distributed on a sphere inside a spherical shell </li>
+         <li><a class="reference internal" href="models/rd_shellshell.html#rd_shellshell"><span class="std std-ref" style="font-family: monospace">rd_shellshell</span></a>
+         &nbsp - &nbsp Particles distributed on a spherical shell inside another spherical shell</li>
+         <li><a class="reference internal" href="models/rd_spherepoint.html#rd_spherepoint"><span class="std std-ref" style="font-family: monospace">rd_spherepoint</span></a>
+         &nbsp - &nbsp One particle distanced from particles distributed on a sphere </li>
+         <li><a class="reference internal" href="models/rd_shellvoidsphere.html#rd_shellvoidsphere"><span class="std std-ref" style="font-family: monospace">rd_shellvoidsphere</span></a>
+         &nbsp - &nbsp  Particles distributed on a sphere inside a spherical shell separated by a void </li>
+         <li><a class="reference internal" href="models/rd_shellvoidshell.html#rd_shellvoidshell"><span class="std std-ref" style="font-family: monospace">rd_shellvoidshell</span></a>
+         &nbsp - &nbsp  Particles distributed on two spherical shells separated by a void </li>
          </ul>
      </div>
    <br>
