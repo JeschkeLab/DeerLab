@@ -20,10 +20,10 @@ Syntax
         P = rd_fivegaussian(r,param)
 
 Parameters
-    *   ``t`` - Time axis (N-array)
+    *   ``r`` - Distance axis (N-array)
     *   ``param`` - Model parameters
 Returns
-    *   ``B`` - Model background (N-array)
+    *   ``P`` - Distance distribution (N-array)
     *   ``info`` - Model information (struct)
 
 -----------------------------

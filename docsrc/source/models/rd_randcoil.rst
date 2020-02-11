@@ -20,10 +20,10 @@ Syntax
         P = rd_randcoil(r,param)
 
 Parameters
-    *   ``t`` - Time axis (N-array)
-    *   ``param`` - Model parameters (2-array)
+    *   ``r`` - Distance axis (N-array)
+    *   ``param`` - Model parameters
 Returns
-    *   ``P`` - Model distribution (N-array)
+    *   ``P`` - Distance distribution (N-array)
     *   ``info`` - Model information (struct)
 
 
