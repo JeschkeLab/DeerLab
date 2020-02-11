@@ -11,8 +11,6 @@ function output = rd_randcoil(r,param)
 %   in the (info) structure. The end-to-end distance distribution is approximated 
 %   by a Gaussian coil with proper mean distance, which is good for
 %   sufficiently large N.
-%   See: N. C. Fitzkee, G. D. Rose, PNAS 2004, 101(34), 12497-12502
-%        https://doi.org/10.1073/pnas.0404236101
 %
 % PARAMETERS
 % name      symbol default lower bound upper bound
@@ -20,6 +18,9 @@ function output = rd_randcoil(r,param)
 % param(1)  N      50      2              1000    number of residues between labels, including labeled residues
 % param(2)  nu     0.602   0.33           1       scaling exponent
 % --------------------------------------------------------------------------
+%
+%   See: N. C. Fitzkee, G. D. Rose, PNAS 2004, 101(34), 12497-12502
+%        https://doi.org/10.1073/pnas.0404236101
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 

@@ -17,6 +17,9 @@ function output = rd_wormchain(r,param)
 % param(2)  Lp     10      2           100            persistence length
 % --------------------------------------------------------------------------
 %
+% See: J. Wilhelm, E. Frey, Phys. Rev. Lett. 77(12), 2581-2584 (1996)
+%      https://doi.org/10.1103/PhysRevLett.77.2581
+%
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
@@ -32,7 +35,7 @@ if nargin==0
     %If no inputs given, return info about the parametric model
     info.model  = 'Worm-like chain model near rigid limit';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Chain length';
+    info.parameters(1).name = 'Contour length';
     info.parameters(1).range = [1.5 10];
     info.parameters(1).default = 3.7;
     info.parameters(1).units = 'nm';
@@ -57,9 +60,9 @@ if ~iscolumn(r)
 end
 
 %Prepare parameters
-L=param(1);
-Lp=param(2);
-kappa=Lp/L;
+L = param(1);
+Lp = param(2);
+kappa = Lp/L;
 
 
 %Get normalized distance axis

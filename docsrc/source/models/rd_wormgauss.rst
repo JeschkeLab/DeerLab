@@ -25,7 +25,7 @@ Returns
 ============== =============== ======== ======== ======== ===============================
  Variable       Symbol         Default   Lower   Upper       Description
 ============== =============== ======== ======== ======== ===============================
-``param(1)``   :math:`L`       3.7      1.5       10        Length of the worm-like chain
+``param(1)``   :math:`L`       3.7      1.5       10        Contour length
 ``param(2)``   :math:`L_p`     10       2         100       Persistence length
 ``param(3)``   :math:`\sigma`  0.2      0.01      2         Gaussian standard deviation
 ============== =============== ======== ======== ======== ===============================
@@ -55,3 +55,10 @@ Returns an ``info`` structure containing the specifics of the model:
 
 Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 
+
+
+References
+=========================================
+
+[1] J. Wilhelm, E. Frey, Phys. Rev. Lett. 77(12), 2581-2584 (1996)
+DOI:  `10.1103/PhysRevLett.77.2581 <https://doi.org/10.1103/PhysRevLett.77.2581>`_

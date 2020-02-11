@@ -19,6 +19,9 @@ function output = rd_wormgauss(r,param)
 % param(3)  sigma  0.2     0.001       2              Gaussian standard deviation 
 % --------------------------------------------------------------------------
 %
+% See: J. Wilhelm, E. Frey, Phys. Rev. Lett. 77(12), 2581-2584 (1996)
+%      https://doi.org/10.1103/PhysRevLett.77.2581
+%
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
