@@ -19,12 +19,9 @@ Syntax
     [param,fit] = fitparamodel(V,@model,t,param0)
     [param,fit] = fitparamodel(V,@model,r,K)
     [param,fit] = fitparamodel(V,@model,r,K,param0)
-    [param,fit] = fitparamodel({V1,V2,V3},@model,r,{K1,K2,K3},param0)
-    [param,fit] = fitparamodel({V1,V2,V3},@model,{t1,t2,t3}},param0)
-    [param,fit] = fitparamodel(V,@model,t,'Property',Value)
-    [param,fit] = fitparamodel(V,@model,t,param0,'Property',Value)
-    [param,fit] = fitparamodel(V,@model,r,K,'Property',Value)
-    [param,fit] = fitparamodel(V,@model,r,K,param0,'Property',Value)
+    [param,fit] = fitparamodel({V1,V2,...},@model,r,{K1,K2,...},param0)
+    [param,fit] = fitparamodel({V1,V2,...},@model,{t1,t2,...},param0)
+    [param,fit] = fitparamodel(___,'Property',Value)
 
 
 Parameters
