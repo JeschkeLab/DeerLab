@@ -62,7 +62,7 @@
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function P = fitregmodel(S,K,r,RegType,alpha,varargin)
+function [P,alpha] = fitregmodel(S,K,r,RegType,alpha,varargin)
 
 if ~license('test','optimization_toolbox')
    error('DeerAnaysis could not find a valid licence for the Optimization Toolbox. Please install the add-on to use fitregmodel.')

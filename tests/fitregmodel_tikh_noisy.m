@@ -3,22 +3,20 @@ function [err,data,maxerr] = test(opt,olddata)
 %=======================================
 % Check Tikhonov regularization
 %=======================================
+rng(1)
 
-Dimension = 200;
-NoiseLevel = 0.01;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
+t = linspace(0,4,200);
 r = time2dist(t);
-P = rd_onegaussian(r,[3,0.5]);
+P = rd_onegaussian(r,[4,0.5]);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
-Noise = whitegaussnoise(Dimension,NoiseLevel);
-S = DipEvoFcn + Noise;
+S = K*P;
+noise = whitegaussnoise(t,0.01);
+S = S + noise;
 
-TikhResult1 = fitregmodel(S,K,r,'tikhonov','aicc','Solver','fnnls');
-err(1) = any(abs(TikhResult1 - P)>7e-2);
-maxerr = max(abs(TikhResult1 - P));
+Pfit = fitregmodel(S,K,r,'tikhonov','aic');
+err(1) = any(abs(Pfit - P)>8e-2);
+maxerr = max(abs(Pfit - P));
 
 err = any(err);
 data = [];
@@ -28,11 +26,11 @@ if opt.Display
     subplot(121)
     hold on
     plot(t,S)
-    plot(t,K*TikhResult1)
+    plot(t,K*Pfit)
     subplot(122)
     hold on
     plot(r,P,'k') 
-    plot(r,TikhResult1,'r')
+    plot(r,Pfit,'r')
 end
 
 end
