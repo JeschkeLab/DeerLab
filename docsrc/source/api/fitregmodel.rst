@@ -13,6 +13,7 @@ Syntax
 
 .. code-block:: matlab
 
+    P = fitregmodel(V,K,r)
     P = fitregmodel(V,K,r,'type',alpha)
     P = fitregmodel(V,K,r,'type','method')
     P = fitregmodel(V,K,r,'type',alpha,'Property',Value)
@@ -34,6 +35,14 @@ Returns
 
 Description
 =========================================
+
+.. code-block:: matlab
+
+    P = fitregmodel(V,K,r)
+
+Fits a regularized distance distribution ``P``  from the input signal ``V`` via Tikhonov regularization using an AIC-optimized regularization parameter.
+
+-----------------------------
 
 .. code-block:: matlab
 

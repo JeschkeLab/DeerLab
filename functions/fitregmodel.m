@@ -75,10 +75,10 @@ warning('off','MATLAB:nearlySingularMatrix')
 %--------------------------------------------------------------------------
 % Parse & Validate Required Input
 %--------------------------------------------------------------------------
-if nargin<5
+if nargin<3
     error('Not enough input arguments.')
 end
-if nargin<3 || isempty(RegType)
+if nargin<4 || isempty(RegType)
     RegType = 'tikhonov';
 elseif isa(RegType,'function_handle')
     RegFunctional = RegType;
@@ -88,7 +88,9 @@ else
     allowedInput = {'tikhonov','tv','huber'};
     RegType = validatestring(RegType,allowedInput);
 end
-
+if  nargin<5 || isempty(alpha)
+   alpha = 'aic'; 
+end
 %Check if user requested some options via name-value input
 [TolFun,Solver,NonNegConstrained,Verbose,MaxFunEvals,MaxIter,HuberParam,GlobalWeights,RegOrder] ...
     = parseoptional({'TolFun','Solver','NonNegConstrained','Verbose','MaxFunEvals','MaxIter','HuberParam','GlobalWeights','RegOrder'},varargin);
