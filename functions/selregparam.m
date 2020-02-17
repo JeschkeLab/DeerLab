@@ -120,9 +120,8 @@ if ~isempty(GlobalWeights)
     if numel(GlobalWeights) ~= numel(S)
         error('The same number of global fit weights as signals must be passed.')
     end
-    if abs(sum(GlobalWeights)-1)>1e-10
-        error('The sum of the global fit weights must equal 1.')
-    end
+    %Normalize weights
+    GlobalWeights = GlobalWeights/sum(GlobalWeights);
 end
 
 %--------------------------------------------------------------------------

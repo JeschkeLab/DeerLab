@@ -239,9 +239,8 @@ if ~isempty(GlobalWeights)
     if length(GlobalWeights) ~= length(V)
         error('The same number of global fit weights as signals must be passed.')
     end
-    if sum(GlobalWeights)~=1
-        error('The sum of the global fit weights must equal 1.')
-    end
+    %Normalize weights
+    GlobalWeights = GlobalWeights/sum(GlobalWeights);
 end
 if length(V)>1 && (strcmp(Solver,'lsqnonlin') || strcmp(Solver,'nlsqbnd') )
     Solver = 'fmincon';

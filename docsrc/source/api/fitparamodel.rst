@@ -178,7 +178,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 			param = fitparamodel(args,'Algorithm','trust-region-reflective')
 
 - ``'GlobalWeights'`` - Global analysis weights
-    Array of weighting coefficients for the individual signals in global fitting. If not specified, the global fit weights are automatically computed according to their contribution to ill-posedness. The weights must be normalized such that the sum over all weights equals one. The same number of weights as number of input signals is required.
+    Array of weighting coefficients for the individual signals in global fitting. If not specified, the global fit weights are automatically computed according to their contribution to ill-posedness. The same number of weights as number of input signals is required. Weight values do not need to be normalized.
 
     *Default:* [*empty*]
 

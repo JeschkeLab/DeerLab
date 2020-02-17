@@ -176,7 +176,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 			alpha = selregparam(args,'HuberParam',2.5)
 
 - ``'GlobalWeights'`` - Weights for global analysis
-    Array of weighting coefficients for the individual signals in global fitting regularization. If not specified, the global fit weights are automatically computed according to their contribution to ill-posedness. The weights must be normalized such that the sum over all weights equals one. The same number of weights as number of input signals is required.
+    Array of weighting coefficients for the individual signals in global fitting regularization. If not specified, the global fit weights are automatically computed according to their contribution to ill-posedness. Weight values do not need to be normalized. The same number of weights as number of input signals is required.
 
     *Default:* [*empty*]
 
