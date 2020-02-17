@@ -251,12 +251,11 @@ if nargout>1
                         evalmean(ii) = mean(map(map~=0));
                     end
                     % Get main effects for upper and lower levels
-                    main(jj) = abs(evalmean(1) - evalmean(2));
-                    
+                    main{jj} = abs(diff(evalmean));
                 end
                 
                 % Compute the interaction between the factors
-                Interaction{i}(j,k) = abs(main(1) - main(2));
+                Interaction{i}(j,k) = abs(mean(main{1}) - mean(main{2}));
                 
             end
         end
