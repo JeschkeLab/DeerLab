@@ -231,19 +231,19 @@ function K = kernelmatrix_grid(t,wdd,OvertoneCoeffs,nKnots)
 
 K = zeros(length(t),length(wdd));
 
-for n = 1:numel(OvertoneCoeffs)
-  
-    % Pre-allocate cosine of powder angles
-    costheta = linspace(0,1,nKnots);
-    % Run over all distances
-    for ir = 1:numel(wdd)
-      KTrace = 0;
-      for theta = 1:nKnots % average over cos(theta) angle (powder average)
-        KTrace = KTrace + cos(n*wdd(ir)*(1-3*costheta(theta)^2)*t);
-      end
-      K(:,ir) = K(:,ir) + OvertoneCoeffs(n)*KTrace/nKnots;
-    end
+costheta = linspace(0,1,nKnots);
+q = 1 - 3*costheta.^2;
 
+for n = 1:numel(OvertoneCoeffs)
+    
+    for ir = 1:numel(wdd)
+        K_ = 0;
+        for itheta = 1:nKnots
+            K_ = K_ + cos(n*wdd(ir)*q(itheta)*t);
+        end
+        K(:,ir) = K(:,ir) + OvertoneCoeffs(n)*K_/nKnots;
+    end
+    
 end
 
 end
