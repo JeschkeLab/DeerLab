@@ -182,7 +182,7 @@ for i = 1:nMethods
             functional = RMSD;   
     end
     [~,optimum] = min(functional);
-    functionals{i} = functional;
+    functionals{i} = functional(:);
     optima(i) = optimum;
 end
 

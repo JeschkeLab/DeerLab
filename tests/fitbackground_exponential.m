@@ -4,7 +4,7 @@ function [err,data,maxerr] = test(opt,olddata)
 % Exponential background fit
 %======================================================
 
-t = linspace(0,5,100);
+t = linspace(0,5,100).';
 d = 3;
 
 k = 0.5;

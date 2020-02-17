@@ -1,6 +1,7 @@
 function [err,data,maxerr] = test(opt,olddata)
 
 V0 = 1:100;
+V0 = V0(:);
 inputPhase = pi/4;
 
 V = V0.*exp(-1i*inputPhase);

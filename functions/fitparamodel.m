@@ -226,7 +226,7 @@ else
 end
 %Validate input signal and kernel
 if ~iscell(V)
-    V = {V};
+    V = {V(:)};
 end
 if ~iscell(K)
     K = {K};
@@ -263,7 +263,7 @@ for i=1:length(V)
 end
 %Validate input axis
 if ~iscell(ax)
-    ax = {ax};
+    ax = {ax(:)};
 end
 for i=1:length(ax)
     if ~iscolumn(ax{i})

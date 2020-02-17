@@ -13,10 +13,10 @@ inputZeroTime = abs(min(originalt));
 [correctedt,outputZeroTime] = correctzerotime(originalData,t);
 
 
-err(1) = any(abs(correctedt - originalt)>1e-10);
+err(1) = any(abs(correctedt - originalt.')>1e-10);
 err(2) = abs(outputZeroTime' - inputZeroTime)>1e-10;
 
-maxerr = max(abs(correctedt - originalt));
+maxerr = max(abs(correctedt - originalt.'));
 err = any(err);
 data = [];
 

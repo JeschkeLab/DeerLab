@@ -22,6 +22,10 @@ end
 validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
 validateattributes(V,{'numeric'},{'nonempty'},mfilename,'V')
 
+%Use column vectors
+t = t(:);
+V = V(:);
+
 %Convert time to distance axis
 r = time2dist(t);
 

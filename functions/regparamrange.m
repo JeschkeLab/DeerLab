@@ -23,7 +23,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function alpha = regparamrange(K,L,varargin)
+function alphas = regparamrange(K,L,varargin)
 
 % Check if user requested some options via name-value input
 [stdNoise,lgResolution] = parseoptional({'NoiseLevel','Resolution'},varargin);
@@ -70,4 +70,5 @@ if lgrangeMax < lgrangeMin
     lgrangeMin = temp;
 end
 lgalpha = lgrangeMax:-lgResolution:lgrangeMin;
-alpha = 10.^lgalpha;
+alphas = 10.^lgalpha;
+alphas = alphas(:);

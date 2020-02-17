@@ -93,7 +93,7 @@ APTkernel = aptkernel(t);
 %Get APT kernel data
 K = APTkernel.Base;
 NormConstant = APTkernel.NormalizationFactor;
-APT_t = APTkernel.t;
+APT_t = APTkernel.t(:).';
 Crosstalk = APTkernel.Crosstalk;
 
 %Search for background fit start
@@ -119,6 +119,7 @@ for FitStartPos = StartPosMin:StartPosMax
     [B,ModDepth] = fitbackground(S,t,BckgModel,FitStart);
 
     %Correct the background from the from factor
+    B = B.';
     FormFactor = S - (1-ModDepth)*B;
     FormFactor = FormFactor./(ModDepth*B);
     FormFactor = FormFactor/max(FormFactor);

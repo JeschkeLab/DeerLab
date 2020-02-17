@@ -4,7 +4,7 @@ function [err,data,maxerr] = test(opt,olddata)
 % Polynomial background fit
 %======================================================
 clear fitbackground
-t = linspace(0,3,100);
+t = linspace(0,3,100).';
 bckg = polyval([-1 1],t);
 bckg2 = polyval([-1 -1 1],t);
 bckg3 = polyval([-1 -1 -1 1],t);

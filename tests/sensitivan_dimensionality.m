@@ -15,8 +15,9 @@ data = [];
 
     function [y1,y2] = fcn(varpar)
         rng(varpar.x)
-        y1 = rand(1,10);
-        y2 = rand(10,1);
+        y1 = linspace(0,5,20);
+        rng(varpar.x)
+        y2 = linspace(0,5,20);
     end
 
 end

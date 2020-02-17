@@ -49,6 +49,7 @@ validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'S')
 validateattributes(StopBand,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'S')
 validateattributes(PassBand,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'S')
 validateattributes(SamplingRate,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'S')
+S = S(:);
 
 if PassBand>SamplingRate
     error('Input pass band frequency cannot exceed the sampling rate.')
@@ -95,7 +96,7 @@ if ForwardBackward
 end
 
 %Apply FIR low-pass filter to the input signal
-FilteredS = filter(FIRtransferFcn,1,[S zeros(length(FIRtransferFcn),1)'] );
+FilteredS = filter(FIRtransferFcn,1,[S; zeros(length(FIRtransferFcn),1)] );
 
 %Calculate FIR filter group delay
 Delay = FilterOrder/2 - 1;

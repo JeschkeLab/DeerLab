@@ -9,12 +9,12 @@ zt = abs(min(t));
 [ct,czt] = correctzerotime(S,t+zt);
 
 
-err(1) = any(abs(ct - t)>1e-10);
+err(1) = any(abs(ct - t.')>1e-10);
 err(2) = abs(czt' - zt)>1e-10;
 
 err = any(err);
 data = [];
-maxerr = max(abs(ct - t));
+maxerr = max(abs(ct - t.'));
 
 if opt.Display
    figure(8),clf

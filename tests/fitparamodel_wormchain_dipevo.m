@@ -32,7 +32,6 @@ for pp=1:length(rn)
     P(pp) = G;
 end
 
-P = P.';
 P = P/sum(P)/mean(diff(r));
 
 K = dipolarkernel(t,r);

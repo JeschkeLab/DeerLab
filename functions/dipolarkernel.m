@@ -139,11 +139,11 @@ validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t')
 %--------------------------------------------------------------------------
 
 persistent cachedData
-if isempty(cachedData) && Cache
+if isempty(cachedData)
     cachedData =  java.util.LinkedHashMap;
 end
 hashKey = datahash({t,r,lambda,B,varargin});
-if cachedData.containsKey(hashKey)  && Cache
+if  cachedData.containsKey(hashKey)  && Cache
     Output = cachedData.get(hashKey);
     K = java2mat(Output);
     return

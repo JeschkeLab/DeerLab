@@ -12,7 +12,7 @@ ImaginaryOffset = true;
 [correctedData,~,outputPhase,ImagOffset] = correctphase(phasedData,inputPhase,ImaginaryOffset);
 
 
-err(1) = any(abs(imag(correctedData) - imag(originalData))>1e-5);
+err(1) = any(abs(imag(correctedData) - imag(originalData.'))>1e-5);
 err(2) = abs(inputPhase - outputPhase)>1e-5;
 
 err = any(err);

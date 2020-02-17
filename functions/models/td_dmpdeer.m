@@ -32,7 +32,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function [V,lambdas,combsout] = td_dmpdeer(t,r,P,taus,ts,prob,Bparam,labels)
+function [V,lambdas,combsout,B] = td_dmpdeer(t,r,P,taus,ts,prob,Bparam,labels)
 
 if nargin<6
    error('Not enough input arguments.') 

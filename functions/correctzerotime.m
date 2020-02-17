@@ -40,6 +40,10 @@ end
 validateattributes(V,{'numeric'},{'2d'},mfilename,'S')
 validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t')
 
+%Use column vectors
+t = t(:);
+V = V(:);
+
 %Generate finely-grained interpolated signal and time axis
 resolution = 4;
 tfine = linspace(min(t),max(t),(numel(t)-1)*resolution+1);

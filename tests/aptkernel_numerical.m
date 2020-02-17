@@ -46,7 +46,7 @@ NormFactor = NormFactor/(mean(abs(diff(FreqAxis))))^2;
 t = K.t;
 CrossTalk = K.Crosstalk;
 
-tnorm_new = NormFactor;
+tnorm_new = NormFactor.';
 basediag_new = diag(Base).';
 
 err(1) = any(abs(basediag_new - basediag_old)>1e-3);

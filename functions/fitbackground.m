@@ -37,7 +37,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function [B,ModDepth,FitParam,FitDelimiter] = fitbackground(Data,t,BckgModel,FitDelimiter,varargin)
+function [B,ModDepth,FitParam,FitDelimiter] = fitbackground(V,t,BckgModel,FitDelimiter,varargin)
 
 
 if ~license('test','optimization_toolbox')
@@ -49,12 +49,12 @@ if nargin<3
 end
 
 if nargin<4
-    tstart = backgroundstart(Data,t,BckgModel);
+    tstart = backgroundstart(V,t,BckgModel);
     tend = t(end);
     FitDelimiter = [tstart tend];
 elseif ischar(FitDelimiter)
     varargin = [{FitDelimiter} varargin];
-    tstart = backgroundstart(Data,t,BckgModel);
+    tstart = backgroundstart(V,t,BckgModel);
     tend = t(end);
     FitDelimiter = [tstart tend];
     
@@ -72,10 +72,6 @@ tstart = FitDelimiter(1);
 
 if ~isa(BckgModel,'function_handle')
     error('The background model must be a valid function handle.')
-end
-
-if ~iscolumn(t)
-    t = t.';
 end
 
 %Parse optiona inputs
@@ -110,16 +106,16 @@ end
 if strcmp(Solver,'lsqnonlin') && ~license('test','optimization_toolbox')
     error('The ''lsqnonlin'' solver requires the Optimization Toolbox.')
 end
-
-DataIsColumn = iscolumn(Data);
-if ~DataIsColumn
-    Data = Data.';
-end
-Data = real(Data);
+%Ensure real part is used
+V = real(V);
+%Validate inputs
 validateattributes(InitialGuess,{'numeric'},{'2d'},mfilename,'InitialGuess')
 validateattributes(FitDelimiter,{'numeric'},{'2d','nonempty'},mfilename,'FitDelimiter')
-validateattributes(Data,{'numeric'},{'2d','nonempty'},mfilename,'Data')
+validateattributes(V,{'numeric'},{'2d','nonempty'},mfilename,'Data')
 validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
+%Use column vectors
+t = t(:);
+V = V(:);
 
 %--------------------------------------------------------------------------
 %--------------------------------------------------------------------------
@@ -132,7 +128,7 @@ FitEndTime = FitDelimiter(2);
 
 %Limit the time axis and the data to fit
 Fitt = t(FitStartPos:FitEndPos);
-FitData = Data(FitStartPos:FitEndPos);
+FitData = V(FitStartPos:FitEndPos);
 
 %Use absolute time scale to ensure proper fitting of negative-time data
 Fitt = abs(Fitt);
@@ -223,8 +219,6 @@ B = BckgModel(abs(t),FitParam);
 
 %Ensure data is real
 B = real(B);
-if ~DataIsColumn
-    B = B';
-end
+B = B(:);
 
 end
