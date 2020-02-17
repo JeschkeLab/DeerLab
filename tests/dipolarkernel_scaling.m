@@ -4,7 +4,7 @@ function [err,data,maxerr] = test(opt,olddata)
 
 t = 2; % nm
 r = 3; % us
-c = 1.2; % time scaling factor
+c = 1.2; % distance scaling factor
 
 K1 = dipolarkernel(t,r);
 K2 = dipolarkernel(t*c^3,r*c);
