@@ -1,10 +1,8 @@
 function [err,data,maxerr] = test(opt,olddata)
 
-%Check if implementation of kernel with overtones using the fresnel
-%integrals equals the analytical kernel obtained by powder averaging
-% is passes, Fresnel implementation is ok and the precision is as good as
-% the Fresnel integrals can get.
-TheoryK = [1.,-0.04445104927166716,-0.07755044305537568,0.07851607683975404,...
+% Check if implementation of kernel with overtones using the Fresnel
+% integrals equals the kernel obtained by powder averaging.
+Kdiagref = [1.,-0.04445104927166716,-0.07755044305537568,0.07851607683975404,...
                 0.036788014103474,-0.03400124912476483,-0.0472090401611318,...
                 -0.04387503453950212,0.07709889223945138,0.0561564006520221,...
                 0.02132186965158808,-0.01126891772078065,-0.02348189268499024,...
@@ -44,11 +42,11 @@ Tmix = 50; %us
 T1 = 88; %us
 coefficients = overtones(5,Tmix,T1);
 
-NumericalK = dipolarkernel(t,r,'OvertoneCoeffs',coefficients,'gValue',2.002299758702673);
-NumericalK = NumericalK/mean(diff(r));
-NumericalK = diag(NumericalK)';
+K = dipolarkernel(t,r,'OvertoneCoeffs',coefficients,'g',2.002299758702673);
+K = K/mean(diff(r));
+Kdiag = diag(K)';
 
-error = abs(NumericalK - TheoryK);
+error = abs(Kdiag - Kdiagref);
 err = any(error>1e-13);
 maxerr = max(error);
 

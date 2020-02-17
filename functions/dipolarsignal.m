@@ -27,7 +27,7 @@
 %
 %   'Overtones' - Array of RIDME overtone coefficients
 %
-%   'gValue' - Specifies the g-value of the electron spin center used to compute 
+%   'g' - Specifies the g-value of the electron spin center used to compute 
 %              the dipolar frequencies from the given distance axis.
 %
 %   'Interference' - Cell array {A1 t1 A2 t2 ... @td_bckg} containing the relative
@@ -51,9 +51,9 @@ if ischar(P)
     varargin = [{P} varargin];
     P = [];
 end
-%Parse optional input arguments
-[lambda,B,NoiseLevel,gValue,Scale,Overtones,MultiPathwayCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','gValue','Scale','Overtones','MultiPathway','Phase'},varargin);
-%Validate inputs
+% Parse optional input arguments
+[lambda,B,NoiseLevel,g,Scale,Overtones,MultiPathwayCoeff,Phase] = parseoptional({'ModDepth','Background','NoiseLevel','g','Scale','Overtones','MultiPathway','Phase'},varargin);
+% Validate inputs
 if isempty(lambda)
     lambda = 1;
 end
@@ -99,28 +99,30 @@ if ~iscolumn(P)
    P = P.'; 
 end
 
-%Get the kernel
-K = dipolarkernel(t,r,lambda,B,'OvertoneCoeffs',Overtones,'gValue',gValue,'MultiPathway',MultiPathwayCoeff);
+% Get the kernel
+K = dipolarkernel(t,r,lambda,B,'OvertoneCoeffs',Overtones,'g',g,'MultiPathway',MultiPathwayCoeff);
 
-%Calculate dipolar evolution function
+% Calculate dipolar evolution function
 if ~isempty(P)
     V = K*P;
 else
     V = K;
 end
 
-%Generate Gaussian noise
-Noise = whitegaussnoise(numel(t),NoiseLevel);
-
-%Mix phase if given
-V = V.*exp(-1i*Phase);
-
-%Add noise and scale amplitue
-V = (V + Noise);
-if ~isreal(V)
-    V = (V + 1i*Noise);
+% Phase rotate if given
+if Phase~=0
+    V = V.*exp(-1i*Phase);
 end
-V = V*Scale;
 
+% Add noise
+if NoiseLevel>0
+    V = V + whitegaussnoise(numel(t),NoiseLevel);
+    if ~isreal(V)
+        V = V + 1i*whitegaussnoise(numel(t),NoiseLevel);
+    end
+end
+
+% Scale amplitude
+V = V*Scale;
 
 end

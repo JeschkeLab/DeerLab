@@ -30,17 +30,26 @@ oldKdiag = [1.0000 0.4691 -0.1149 -0.2204 -0.1619 0.0299 0.2040 0.1691 0.0128 -0
  -0.2184 -0.2182 -0.2179 -0.2176 -0.2174 -0.2171 -0.2167 -0.2164 -0.2161 -0.2157 -0.2153 -0.2150 -0.2146 -0.2141 -0.2137 -0.2133 -0.2128 -0.2123 -0.2118 -0.2113 ...
  -0.2108 -0.2103 -0.2097 -0.2092 -0.2086 -0.2080 -0.2074 -0.2067 -0.2061 -0.2054 -0.2048 -0.2041 -0.2034 -0.2026 -0.2019 -0.2011 -0.2004 -0.1996 -0.1988 -0.1980];
 
-
 N = 500;
 dt = 0.008;
 t = linspace(0,dt*N,N);
 DistAxis = time2dist(t);
-K = dipolarkernel(t,DistAxis);
-K = K/mean(diff(DistAxis));
-newKdiag = diag(K).';
+kernelOut = dipolarkernel(t,DistAxis,'Method','grid');
+kernelOut = kernelOut/mean(diff(DistAxis));
+newKdiag = diag(kernelOut).';
 
 err = any(abs(newKdiag - oldKdiag)>8e-3);
 maxerr = max(abs(newKdiag - oldKdiag));
 data = [];
+
+
+if opt.Display
+    figure(8),clf
+    subplot(121)
+    imagesc(kernelOut)
+    subplot(122)
+    hold on
+    plot(t,kernelOut(:,5))
+end
 
 end

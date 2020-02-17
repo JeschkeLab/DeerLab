@@ -1,11 +1,11 @@
 function [err,data,maxerr] = test(opt,olddata)
 
-N = 100;
-t = linspace(0,3,N);
+t = linspace(0,3,100);
 
 K = dipolarkernel(t,3);
 
-err = any(size(K,2)>1);
+err = size(K,2)~=1;
+
 maxerr = 0;
 data = [];
 

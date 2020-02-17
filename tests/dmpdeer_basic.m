@@ -1,0 +1,29 @@
+function [err,data,maxerr] = test(opt,olddata)
+
+% Compare td_dmpdeer output to explicit calculation using dipolarkernel
+
+t = linspace(-0.3,3,401);
+r = linspace(1,3,201);
+
+r0 = 2;
+w = 0.2;
+P = rd_onegaussian(r,[r0 w]);
+
+lambdaT0 = [0.5 0; 0.2 1.2];
+
+Bfun = @td_exp;
+
+V1 = td_dmpdeer(t,r,P,lambdaT0,Bfun);
+K = dipolarkernel(t,r,lambdaT0,Bfun);
+V2 = K*P(:);
+
+maxerr = max(abs(V1-V2));
+err = maxerr>1e-10;
+data = [];
+
+if opt.Display
+  plot(t,V1,t,V2);
+  legend('td_dmpdeer','dipolarkernel');
+end
+
+end

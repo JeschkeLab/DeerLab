@@ -9,7 +9,7 @@ n = 50;
 t = (-n:n)*dt;
 
 r = 3;
-K = dipolarkernel(t,r);
+K = dipolarkernel(t,r,'Method','grid');
 
 negK = K(1:n+1);
 posK = K(n+1:end);

@@ -114,7 +114,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 			V = dipolarsignal(args,'Overtones',[0.2 0.5 0.3])
 
-- ``'gValue'`` - Electron g-value
+- ``'g'`` - Electron g-value
     Specifies the g-value of the electron spin center used to compute the dipolar frequencies from the given distance axis.
 
     *Default:* ``2.004602204236924``
@@ -123,7 +123,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			K = dipolarkernel(args,'gValue',2.00) %Use experimental g-value
+			K = dipolarkernel(args,'g',2.00) %Use experimental g-value
 
 - ``'Scale'`` - Amplitude scale
     Vertical scale to multiply to the output signal
