@@ -379,9 +379,9 @@ if runCodeCoverage
         % Print to console
         if (~isempty(TestName) && Coverage~=0) || isempty(TestName)
             if params =='c'
-                fprintf('% -20s% -18s% 3.2f% %  % 18s  % s \n',FcnName,' ',Coverage,'Lines missing:',mat2str(Missed))
+                fprintf('%-20s%-18s%6.2f%18s    %s\n',FcnName,' ',Coverage,'Lines missing:',mat2str(Missed))
             else
-                fprintf('% -20s% -18s% 3.2f% % \n',FcnName,' ',Coverage)
+                fprintf('%-20s%-18s%6.2f\n',FcnName,' ',Coverage);
             end
         end
     end
