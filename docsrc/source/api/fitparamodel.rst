@@ -5,7 +5,7 @@
 :mod:`fitparamodel`
 *********************
 
-Fits a time or distance-domain parametric model to one (or several) signals.
+Fits a time- or distance-domain parametric model to one (or several) signals.
 
 -----------------------------
 
@@ -17,23 +17,23 @@ Syntax
 
     [param,fit] = fitparamodel(V,@model,t)
     [param,fit] = fitparamodel(V,@model,t,param0)
+    [param,fit] = fitparamodel({V1,V2,___},@model,{t1,t2,___},param0)
     [param,fit] = fitparamodel(V,@model,r,K)
     [param,fit] = fitparamodel(V,@model,r,K,param0)
-    [param,fit] = fitparamodel({V1,V2,...},@model,r,{K1,K2,...},param0)
-    [param,fit] = fitparamodel({V1,V2,...},@model,{t1,t2,...},param0)
+    [param,fit] = fitparamodel({V1,V2,___},@model,r,{K1,K2,___},param0)
     [param,fit] = fitparamodel(___,'Property',Value)
 
 
 Parameters
     *   ``V`` - Input signal (*N*-element array)
     *   ``model`` - Parametric model (function handle)
-    *   ``t`` -  Model time axis (*M*-element array)
+    *   ``t`` -  Model time axis (*N*-element array)
     *   ``r`` -  Model distance axis (*M*-element array)
     *   ``K`` -  Dipolar kernel (*NxM*-element array)
     *   ``param0`` -  Model parameter inital guess (array)
 Returns
     *  ``param`` - Fitted model paramters (array)
-    *  ``fit`` - Parametric model fit (*M*-element array)
+    *  ``fit`` - Parametric model fit (*N*-element array)
 
 
 -----------------------------
@@ -64,8 +64,8 @@ Fits the **distance-domain** parametric model ``@model`` to the input signal ``V
 
 .. code-block:: matlab
 
-    P = fitparamodel({V1,V2,V3},@model,r,{K1,K2,K3})
-    P = fitparamodel({V1,V2,V3},@model,r,{K1,K2,K3},param0)
+    P = fitparamodel({V1,V2,___},@model,r,{K1,K2,___})
+    P = fitparamodel({V1,V2,___},@model,r,{K1,K2,___},param0)
 
 Passing multiple signals/kernels enables **distance-domain global fitting** of the parametric model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes *N1*, *N2*,... and a cell array of Kernel matrices with sizes *N1xM*, *N2xM*, ... must be passed as well.
 
@@ -77,7 +77,7 @@ Passing multiple signals/kernels enables **distance-domain global fitting** of t
     P = fitparamodel({V1,V2,V3},@model,{t1,t2,t3})
     P = fitparamodel({V1,V2,V3},@model,{t1,t2,t3},param0)
 
-Similarly, **time-domain global fitting** can be used when passing a time-domain ``@model`` and the model time axes ``{t1,t2,...}`` of the corresponding signals.
+Similarly, **time-domain global fitting** can be used when passing a time-domain ``@model`` and the model time axes ``{t1,t2,___}`` of the corresponding signals.
 
 -----------------------------
 
@@ -150,7 +150,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 			param = fitparamodel(args,'Lower',[0 3])
 
 - ``'Solver'`` - Optimization solver
-    Numerical solver employed for the minimization of the regularization functional models.
+    Numerical solver employed for fitting the model to the data.
 
         *   ``'lsqnonlin'`` - Non-linear least squares (requires Opt. toolbox)
         *   ``'fminsearch'`` - Unconstrained minmization (free)
@@ -189,7 +189,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 			fit = fitparamodel({S1,S2,S3},{K1,K2,K3},r,L,'tikhonov',a,'GlobalWeights',[0.1 0.6 0.3]])
 
 - ``'TolFun'`` -  Optimizer tolerance value
-    Optimizer function tolerance. The solver stops once the regularization functional evaluation reaches a value lower than this tolerance. Lower values increase the precision of the result, albeit at the cost of longer computation times.
+    Optimizer function tolerance. The solver stops once the fitting functional evaluation reaches a value lower than this tolerance. Lower values increase the precision of the result, albeit at the cost of longer computation times.
 
     *Default:* ``1e-9``
 
