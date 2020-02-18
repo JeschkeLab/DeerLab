@@ -45,7 +45,7 @@ function [Pfit,param,nGaussOpt,metrics,Peval] = fitmultigauss(S,K,r,maxGaussians
 
 
 if ~license('test','optimization_toolbox')
-   error('DeerAnaysis could not find a valid licence for the Optimization Toolbox. Please install the add-on to use fitmultigauss.')
+   error('DeerLab could not find a valid licence for the Optimization Toolbox. Please install the add-on to use fitmultigauss.')
 end
 
 % Validate user input (S, K, r, and method are validated in lower-level functions)
@@ -61,10 +61,10 @@ if ~all(size(K) > 1)
     t = K;
     K = dipolarkernel(t,r);
 end
-warning('off','DA:parseoptional')
+warning('off','DeerLab:parseoptional')
 %Parse the optional parameters in the varargin
 [Upper,Lower,BckgModel] = parseoptional({'Upper','Lower','Background'},varargin);
-warning('on','DA:parseoptional')
+warning('on','DeerLab:parseoptional')
 if ~isempty(Upper) && isempty(BckgModel) && length(Upper)~=2
     error('Upper property must be an array [<r>_max FWHM_max]')
 elseif ~isempty(Upper) && ~isempty(BckgModel) && length(Upper)<4

@@ -7,7 +7,7 @@ DeerLab is distributed in two different formats:
 	- Releases
 		Releases are the official packages of DeerLab containing the essentials for the full-functionality of the program. They contain:
 
-			- All DeerAnaysis functions
+			- All DeerLab functions
 			- A compiled offline version of this webpage and documentation
 			- All tutorial scripts
 
@@ -38,7 +38,7 @@ All releases (incuding previous versions) are available in the official DeerLab 
 
 		.. image:: ./images/downloads2.png
 
-3) Download the ``DeerAnaysis_x.y.zip`` file. Extract the files on your desired location and follow the Installation page instructions.
+3) Download the ``DeerLab_x.y.zip`` file. Extract the files on your desired location and follow the Installation page instructions.
 
 		.. image:: ./images/downloads3.png
 

@@ -1,9 +1,9 @@
 function docs(pagename)
 
-DApath = fileparts(which('docs'));
-DApath = DApath(1:end-numel('\functions'));
-HTMLfile = fullfile(DApath,'docs','api',[pagename '.html']);
-HTMLfile2 = fullfile(DApath,'docs','models',[pagename '.html']);
+DeerLabPath = fileparts(which('docs'));
+DeerLabPath = DeerLabPath(1:end-numel('\functions'));
+HTMLfile = fullfile(DeerLabPath,'docs','api',[pagename '.html']);
+HTMLfile2 = fullfile(DeerLabPath,'docs','models',[pagename '.html']);
 
 %Check whether file exists
 if exist(HTMLfile,'file')

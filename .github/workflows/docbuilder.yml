@@ -35,7 +35,7 @@ jobs:
       run: |
            cd docsrc
            sphinx-build -E -b html ./source ../docs
-    - name: Connect and update DeerAnalysis AWS S3 Bucket
+    - name: Connect and update DeerLab AWS S3 Bucket
       run: |
            cd build
            python -m synchS3 -k ${{ secrets.S3_ACCESS }} -s ${{ secrets.S3_SECRETACCESS }} -d "../docs" --bucket deeranalysis.org

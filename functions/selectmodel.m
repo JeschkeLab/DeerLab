@@ -105,10 +105,10 @@ if ~isempty(varargin)
     end
 end
 
-warning('off','DA:parseoptional')
+warning('off','DeerLab:parseoptional')
 %Parse the optional parameters in the varargin
 [Upper,Lower] = parseoptional({'Upper','Lower'},varargin2);
-warning('on','DA:parseoptional')
+warning('on','DeerLab:parseoptional')
 
 if ~isempty(Upper) && ~iscell(Upper)
     error('Upper property must be a cell array of upper bound vectors.')

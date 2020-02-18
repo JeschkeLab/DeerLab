@@ -41,7 +41,7 @@ function [B,ModDepth,FitParam,FitDelimiter] = fitbackground(V,t,BckgModel,FitDel
 
 
 if ~license('test','optimization_toolbox')
-    error('DeerAnaysis could not find a valid licence for the Optimization Toolbox. Please install the add-on to use fitbackground.')
+    error('DeerLab could not find a valid licence for the Optimization Toolbox. Please install the add-on to use fitbackground.')
 end
 
 if nargin<3
