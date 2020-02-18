@@ -5,9 +5,9 @@ function [err,data,maxerr] = test(opt,olddata)
 % Check overtones in kernel calculation
 %======================================================
 
-N = 100;
-t = linspace(0,3,N);
-r = time2dist(t);
+N = 50;
+t = linspace(0,3,N); % us
+r = time2dist(t); % nm
 Tmix = 50; % us
 T1 = 88; % us
 
@@ -17,10 +17,7 @@ Kfresnel = dipolarkernel(t,r,'Method','fresnel','OvertoneCoeffs',coefficients);
 Kgrid = dipolarkernel(t,r,'Method','grid','OvertoneCoeffs',coefficients);
 
 dr = mean(diff(r));
-Kfresnel = Kfresnel/dr;
-Kgrid = Kgrid/dr;
-
-delta = abs(Kfresnel - Kgrid);
+delta = abs(Kfresnel-Kgrid)/dr;
 err = any(delta(:)>1e-3);
 maxerr = max(delta(:));
 

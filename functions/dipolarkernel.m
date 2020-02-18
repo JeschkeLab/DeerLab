@@ -1,41 +1,45 @@
 %
-% DIPOLARKERNEL Computes the dipolar interaction kernel for the linear
-%              transformation from distance-domain to time-domain
+% DIPOLARKERNEL Dipolar kernel matrix
 %
 %       K = DIPOLARKERNEL(t,r)
-%       Computes the NxM point kernel for the trasnformation to the dipolar
-%       evolution function from the N-point  time axis (t) in us or ns and M-point
-%       distance axis (r) in ns or Angstrom.
-%
 %       K = DIPOLARKERNEL(t,r,lambda)
-%       Computes the kernel for the transformation to the form factor function
-%       with a modulation depth given by (lambda).
-%
 %       K = DIPOLARKERNEL(t,r,lambda,B)
-%       Computes the kernel for the transformation to the form factor function
-%       with a N-point background (B) multiplied.
+%       K = DIPOLARKERNEL(t,r,lambdaT0)
+%       K = DIPOLARKERNEL(t,r,lambdaT0,B)
+%       K = DIPOLARKERNEL(___,'Property',value,___)
 %
-%       K = DIPOLARKERNEL(t,r,'Property1',Value1,...)
-%       K = DIPOLARKERNEL(t,r,lambda,'Property1',Value1,...)
-%       K = DIPOLARKERNEL(t,r,lambda,B,'Property1',Value1,...)
-%       Optional arguments can be specified by parameter/value pairs.
+%  Computes the NxM kernel matrix K for the transformation of a distance
+%  distribution to a dipolar evolution function from the M-point distance
+%  axis r (in nanometers) to the N-point time axis t (in nanometers).
+%  If the modulation depth lambda, is given, it is included in K.
+%  If an N-point background (B) is given, it is included in K as well.
+%  Optional arguments can be specified by parameter/value pairs.
 %
-% The following properties are available.
+%  Inputs:
+%     t         N-element time axis, in microseconds
+%     r         M-element distance axis, in nanometers
+%     lambda    modulation depth (between 0 and 1)
+%     lambdaT0  array of modulation depths lambda and refocusing points T0 for
+%               multiple pathways, where each row contains [lambda T0] for one
+%               pathway
+%     B         N-element array with background decay, or a function handle
+%               for a background model
+%
+%  Outputs:
+%     K         NxM kernel matrix, such that the time-domain signal for a
+%               distance distribution P is K*P
+%
+%  Property/value pairs:
 %
 %   'ExcitationBandwidth' - Excitation bandwith of the pulses in MHz to be
 %                           used for limited bandwith excitation
-%
-%   'OvertoneCoeffs' - 1D-Array of coefficients for correction of overtones
-%                      in RIDME signals
-%
+%   'OvertoneCoeffs' - 1D array of coefficients for overtones in RIDME signals
 %   'g' - g-value of the spin centers
-%
-%   'Method' - The way the kernel is computed numerically:
+%   'Method' - Numerical method for kernel matrix calculation:
 %               'fresnel' - uses Fresnel integrals for the kernel (default)
 %               'grid' - powder average computed explicitly (slow)
-%
-%   'nKnots' - Number knots for the grid of powder orientations to be used
- %             in explicit kernel calculations
+%   'nKnots' - Number of knots for the grid of powder orientations to be used
+%              in the 'grid' kernel calculation method
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
@@ -118,31 +122,44 @@ validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t');
 % Memoization
 %-------------------------------------------------------------------------------
 persistent cachedData
-if isempty(cachedData)
-    cachedData =  java.util.LinkedHashMap;
-end
-hashKey = datahash({t,r,varargin});
-if cachedData.containsKey(hashKey)  && useCache
-    Output = cachedData.get(hashKey);
-    K = java2mat(Output);
-    return
+if useCache
+    if isempty(cachedData)
+        cachedData =  java.util.LinkedHashMap;
+    end
+    hashKey = datahash({t,r,varargin});
+    if cachedData.containsKey(hashKey)
+       Output = cachedData.get(hashKey);
+       K  = java2mat(Output);
+       return
+    end
 end
 
-% Validation of the multipathway parameters
+% Validation of the multi-pathway parameters
 %-------------------------------------------------------------------------------
+if ~isnumeric(lambdaT0) || ~isreal(lambdaT0)
+    error('lambdaT0 must be a numeric array.');
+end
 if numel(lambdaT0)==1
-  lambda = lambdaT0;
-  T0 = 0;
+    lambda = lambdaT0;
+    T0 = 0;
 else
-  lambda = lambdaT0(:,1);
-  T0 = lambdaT0(:,2);
+    if size(lambdaT0,2)~=2
+        error('lambdaT0 must be a numeric array.');
+    end
+    lambda = lambdaT0(:,1);
+    T0 = lambdaT0(:,2);
 end
 
-% Assert that amplitude of non-modulated pathways is not negative
+% Assert that amplitude of non-modulated pathways is not larger than 1
+% (this must hold even if the unmodulated amplitude is negative)
 if sum(lambda)>1
     error('Sum of all lambdas cannot be larger than 1.');
 end
-lambda0 = 1 - sum(lambda);
+
+% Set amplitude of unmodulated part
+% [This is not corret in general, since Lambda0 cannot be inferred from lambda.
+% However, it works fine for the usual single-pathway 4-pulse DEER signal]
+Lambda0 = 1 - sum(lambda);
 
 nPathways = numel(lambda);
 if nPathways>1
@@ -151,7 +168,7 @@ if nPathways>1
     end
 end
 
-% Kernel construction
+% Kernel matrix construction
 %-------------------------------------------------------------------------------
 % Numerical dipolar frequency at 1 nm for given g-value, in MHz
 muB = 9.2740100783e-24; % Bohr magneton, J/T (CODATA 2018 value);
@@ -169,11 +186,12 @@ switch Method
         kernelmatrix = @(t)kernelmatrix_fresnel(t,wdd,OvertoneCoeffs);
     case 'grid'
         kernelmatrix = @(t)kernelmatrix_grid(t,wdd,OvertoneCoeffs,nKnots);
+    otherwise
+        error('Kernel calculation method ''%s'' is unknown.',Method);
 end
 
 % Build dipolar signal, summing over all pathways
-nPathways = numel(lambda);
-K = lambda0;
+K = Lambda0;
 for p = 1:nPathways
     K = K + lambda(p)*kernelmatrix(t-T0(p));
 end
@@ -201,7 +219,9 @@ if ~isempty(ExcitationBandwidth)
 end
 
 % Store output result in the cache
-cachedData = addcache(cachedData,hashKey,K);
+if useCache
+    cachedData = addcache(cachedData,hashKey,K);
+end
 
 end
 
@@ -209,7 +229,7 @@ end
 % Calculate kernel using Fresnel integrals (fast)
 function K = kernelmatrix_fresnel(t,wdd,OvertoneCoeffs)
 
-K = zeros(length(t),length(wdd));
+K = zeros(numel(t),numel(wdd));
 
 for n = 1:numel(OvertoneCoeffs)
     ph = n*wdd.'.*abs(t);
@@ -229,21 +249,17 @@ end
 % (converges very slowly with nKnots)
 function K = kernelmatrix_grid(t,wdd,OvertoneCoeffs,nKnots)
 
-K = zeros(length(t),length(wdd));
+K = zeros(numel(t),numel(wdd));
 
 costheta = linspace(0,1,nKnots);
 q = 1 - 3*costheta.^2;
 
-for n = 1:numel(OvertoneCoeffs)
-    
+for it = 1:numel(t)
     for ir = 1:numel(wdd)
-        K_ = 0;
-        for itheta = 1:nKnots
-            K_ = K_ + cos(n*wdd(ir)*q(itheta)*t);
+        for n = 1:numel(OvertoneCoeffs)    
+            K(it,ir) = K(it,ir) + OvertoneCoeffs(n)*mean(cos(n*wdd(ir)*q*t(it)));
         end
-        K(:,ir) = K(:,ir) + OvertoneCoeffs(n)*K_/nKnots;
     end
-    
 end
 
 end
