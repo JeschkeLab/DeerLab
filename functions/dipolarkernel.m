@@ -183,9 +183,9 @@ wdd = w0./r.^3;
 % Set kernel matrix calculation method
 switch Method
     case 'fresnel'
-        kernelmatrix = @(t)kernelmatrix_fresnel(t,wdd,OvertoneCoeffs);
+        kernelmatrix = @(t,w)kernelmatrix_fresnel(t,w);
     case 'grid'
-        kernelmatrix = @(t)kernelmatrix_grid(t,wdd,OvertoneCoeffs,nKnots);
+        kernelmatrix = @(t,w)kernelmatrix_grid(t,w,nKnots);
     otherwise
         error('Kernel calculation method ''%s'' is unknown.',Method);
 end
@@ -193,7 +193,9 @@ end
 % Build dipolar signal, summing over all pathways
 K = Lambda0;
 for p = 1:nPathways
-    K = K + lambda(p)*kernelmatrix(t-T0(p));
+    for n = 1:numel(OvertoneCoeffs)
+        K = K + lambda(p)*OvertoneCoeffs(n)*kernelmatrix(t-T0(p),n*wdd);
+    end
 end
 
 % Multiply by background
@@ -227,17 +229,13 @@ end
 
 %===============================================================================
 % Calculate kernel using Fresnel integrals (fast)
-function K = kernelmatrix_fresnel(t,wdd,OvertoneCoeffs)
+function K = kernelmatrix_fresnel(t,wdd)
 
-K = zeros(numel(t),numel(wdd));
-
-for n = 1:numel(OvertoneCoeffs)
-    ph = n*wdd.'.*abs(t);
-    kappa = sqrt(6*ph/pi);
-    C = fresnelC(kappa)./kappa;
-    S = fresnelS(kappa)./kappa;
-    K = K + OvertoneCoeffs(n)*(cos(ph).*C + sin(ph).*S);
-end
+ph = wdd.'.*abs(t);
+kappa = sqrt(6*ph/pi);
+C = fresnelC(kappa)./kappa;
+S = fresnelS(kappa)./kappa;
+K = cos(ph).*C + sin(ph).*S;
 
 % Replace NaN values at time zero with 1
 K(isnan(K)) = 1;
@@ -247,7 +245,7 @@ end
 %===============================================================================
 % Calculate kernel using grid-based powder integration (slow)
 % (converges very slowly with nKnots)
-function K = kernelmatrix_grid(t,wdd,OvertoneCoeffs,nKnots)
+function K = kernelmatrix_grid(t,wdd,nKnots)
 
 K = zeros(numel(t),numel(wdd));
 
@@ -256,9 +254,7 @@ q = 1 - 3*costheta.^2;
 
 for it = 1:numel(t)
     for ir = 1:numel(wdd)
-        for n = 1:numel(OvertoneCoeffs)    
-            K(it,ir) = K(it,ir) + OvertoneCoeffs(n)*mean(cos(n*wdd(ir)*q*t(it)));
-        end
+        K(it,ir) = K(it,ir) + mean(cos(wdd(ir)*q*t(it)));
     end
 end
 
