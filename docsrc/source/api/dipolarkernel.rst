@@ -96,7 +96,7 @@ Additional Settings
 =========================================
 
 
-Additional settings can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
 
 .. code-block:: matlab
 
@@ -146,6 +146,8 @@ Additional settings can be specified by parameter/value pairs. All property name
 
     *   ``'fresnel'`` - Uses Fresnel integrals. This method is fast and accurate.
 
+    *   ``'integral'`` - Uses MATLAB's ``integral()`` function. This method is accurate, but slow.
+
     *   ``'grid'`` - Uses orientational averaging over a grid of orientations, using the number of orientations given in ``nKnots``. This method is slow, and it converges very slowly with the number of orientations.
 
     *Default:* ``'fresnel'``
@@ -154,7 +156,7 @@ Additional settings can be specified by parameter/value pairs. All property name
 
 		.. code-block:: matlab
 
-			K = dipolarkernel(args,'Method','grid')
+			K = dipolarkernel(args,'Method','integral')
 
 - ``'nKnots'`` - Number of orientations for orientational averaging
     If the kernel is computed using ``'grid'``, this options specifies the number of orientations between :math:`\theta=0` and :math:`\theta=\pi/2` used for orientational averaging.

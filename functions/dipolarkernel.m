@@ -37,7 +37,8 @@
 %   'g' - g-value of the spin centers
 %   'Method' - Numerical method for kernel matrix calculation:
 %               'fresnel' - uses Fresnel integrals for the kernel (default)
-%               'grid' - powder average computed explicitly (slow)
+%               'integral' - uses MATLAB's integral() function (slow, accurate)
+%               'grid' - powder average computed explicitly (slow, inaccurate)
 %   'nKnots' - Number of knots for the grid of powder orientations to be used
 %              in the 'grid' kernel calculation method
 %
@@ -186,11 +187,13 @@ switch Method
         kernelmatrix = @(t,w)kernelmatrix_fresnel(t,w);
     case 'grid'
         kernelmatrix = @(t,w)kernelmatrix_grid(t,w,nKnots);
+    case 'integral'
+        kernelmatrix = @(t,w)kernelmatrix_integral(t,w);
     otherwise
         error('Kernel calculation method ''%s'' is unknown.',Method);
 end
 
-% Build dipolar signal, summing over all pathways
+% Build dipolar signal, summing over all pathways and harmonics
 K = Lambda0;
 for p = 1:nPathways
     for n = 1:numel(OvertoneCoeffs)
@@ -250,12 +253,23 @@ function K = kernelmatrix_grid(t,wdd,nKnots)
 K = zeros(numel(t),numel(wdd));
 
 costheta = linspace(0,1,nKnots);
-q = 1 - 3*costheta.^2;
+q = t*(1-3*costheta.^2); % matrix
 
-for it = 1:numel(t)
-    for ir = 1:numel(wdd)
-        K(it,ir) = K(it,ir) + mean(cos(wdd(ir)*q*t(it)));
-    end
+for ir = 1:numel(wdd)
+    K(:,ir) = mean(cos(wdd(ir)*q),2);
+end
+
+end
+
+%===============================================================================
+% Calculate kernel using MATLAB's integrator (accurate but slow)
+function K = kernelmatrix_integral(t,wdd)
+
+K = zeros(numel(t),numel(wdd));
+
+for ir = 1:numel(wdd)
+    fun = @(costheta) cos(wdd(ir)*t*(1-3*costheta.^2));
+    K(:,ir) = integral(fun,0,1,'ArrayValued',true,'AbsTol',1e-6,'RelTol',1e-6);
 end
 
 end
