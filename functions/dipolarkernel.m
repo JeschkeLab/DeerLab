@@ -4,8 +4,8 @@
 %       K = DIPOLARKERNEL(t,r)
 %       K = DIPOLARKERNEL(t,r,lambda)
 %       K = DIPOLARKERNEL(t,r,lambda,B)
-%       K = DIPOLARKERNEL(t,r,lambdaT0)
-%       K = DIPOLARKERNEL(t,r,lambdaT0,B)
+%       K = DIPOLARKERNEL(t,r,pathinfo)
+%       K = DIPOLARKERNEL(t,r,pathinfo,B)
 %       K = DIPOLARKERNEL(___,'Property',value,___)
 %
 %  Computes the NxM kernel matrix K for the transformation of a distance
@@ -19,9 +19,10 @@
 %     t         N-element time axis, in microseconds
 %     r         M-element distance axis, in nanometers
 %     lambda    modulation depth (between 0 and 1)
-%     lambdaT0  array of modulation depths lambda and refocusing points T0 for
-%               multiple pathways, where each row contains [lambda T0] for one
-%               pathway
+%     pathinfo  px2 or px3 array of modulation depths lambda, refocusing points
+%               T0, and harmonics n for multiple pathways, each row contains
+%               [lambda T0 n] or [lambda T0] for one pathway. If n is not given
+%               it is assumed to be 1.
 %     B         N-element array with background decay, or a function handle
 %               for a background model
 %
@@ -55,12 +56,12 @@ if nargin<2
 end
 
 % Set default parameters
-lambdaT0 = 1;
+pathinfo = 1;
 B = [];
 proplist = varargin;
 
 if numel(proplist)>=1 && ~ischar(proplist{1})
-    lambdaT0 = proplist{1};
+    pathinfo = proplist{1};
     proplist(1) = [];
 end
 
@@ -137,18 +138,32 @@ end
 
 % Validation of the multi-pathway parameters
 %-------------------------------------------------------------------------------
-if ~isnumeric(lambdaT0) || ~isreal(lambdaT0)
-    error('lambdaT0 must be a numeric array.');
+if ~isnumeric(pathinfo) || ~isreal(pathinfo)
+    error('lambda/pathinfo must be a numeric array.');
 end
-if numel(lambdaT0)==1
-    lambda = lambdaT0;
+if numel(pathinfo)==1
+    lambda = pathinfo;
     T0 = 0;
+    n = 1;
 else
-    if size(lambdaT0,2)~=2
-        error('lambdaT0 must be a numeric array.');
+    if ~any(size(pathinfo,2)==[2 3])
+        error('pathinfo must be a numeric array with two or three columns.');
     end
-    lambda = lambdaT0(:,1);
-    T0 = lambdaT0(:,2);
+    lambda = pathinfo(:,1);
+    T0 = pathinfo(:,2);
+    if size(pathinfo,2)==2
+        n = ones(size(T0));
+    else
+        n = pathinfo(:,3);
+    end
+end
+
+% Fold overtones into pathway list
+nCoeffs = numel(OvertoneCoeffs);
+if nCoeffs>0
+  lambda = reshape(lambda*OvertoneCoeffs(:).',[],1);
+  T0 = reshape(repmat(T0,1,nCoeffs),[],1);
+  n = reshape(n*(1:nCoeffs),[],1);
 end
 
 % Assert that amplitude of non-modulated pathways is not larger than 1
@@ -184,27 +199,25 @@ wdd = w0./r.^3;
 % Set kernel matrix calculation method
 switch Method
     case 'fresnel'
-        kernelmatrix = @(t,w)kernelmatrix_fresnel(t,w);
-    case 'grid'
-        kernelmatrix = @(t,w)kernelmatrix_grid(t,w,nKnots);
+        kernelmatrix = @(t)kernelmatrix_fresnel(t,wdd);
     case 'integral'
-        kernelmatrix = @(t,w)kernelmatrix_integral(t,w);
+        kernelmatrix = @(t)kernelmatrix_integral(t,wdd);
+    case 'grid'
+        kernelmatrix = @(t)kernelmatrix_grid(t,wdd,nKnots);
     otherwise
         error('Kernel calculation method ''%s'' is unknown.',Method);
 end
 
-% Build dipolar signal, summing over all pathways and harmonics
+% Build dipolar kernel matrix, summing over all pathways
 K = Lambda0;
 for p = 1:nPathways
-    for n = 1:numel(OvertoneCoeffs)
-        K = K + lambda(p)*OvertoneCoeffs(n)*kernelmatrix(t-T0(p),n*wdd);
-    end
+    K = K + lambda(p)*kernelmatrix(n(p)*(t-T0(p)));
 end
 
-% Multiply by background
+% Multiply by background(s)
 if isa(B,'function_handle')
     for p = 1:nPathways
-        K = K.*B(t-T0(p),lambda(p));
+        K = K.*B(n(p)*(t-T0(p)),lambda(p));
     end
 else
     if ~isempty(B)

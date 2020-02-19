@@ -16,9 +16,9 @@ Syntax
 
     K = dipolarkernel(t,r)
     K = dipolarkernel(t,r,lambda)
-    K = dipolarkernel(t,r,lambdaT0)
+    K = dipolarkernel(t,r,pathinfo)
     K = dipolarkernel(t,r,lambda,B)
-    K = dipolarkernel(t,r,lambdaT0,B)
+    K = dipolarkernel(t,r,pathinfo,B)
     K = dipolarkernel(___,'Property',Value)
 
 
@@ -26,7 +26,7 @@ Parameters
     *   ``t``        - Time axis vector (*N*-element array), in microseconds
     *   ``r``        - Distance axis vector (*M*-element array), in nanometers
     *   ``lambda``   - Modulation depth (scalar)
-    *   ``lambdaT0`` - Array of modulation depths and refocusing times (*mx2* array)
+    *   ``pathinfo`` - Array of modulation depths, refocusing times, and harmonics (*px2* or *px3* array) for all pathways
     *   ``B``        - Background, either vector of values (*N*-element array) or function handle
 Returns
     *  ``K`` - Dipolar kernel matrix (*NxM* array)
@@ -78,17 +78,17 @@ If the background ``B`` and modulation depth ``lambda`` are specified, then both
 
 .. code-block:: matlab
 
-    K = dipolarkernel(t,r,lambdaT0)
-    K = dipolarkernel(t,r,lambdaT0,B)
+    K = dipolarkernel(t,r,pathinfo)
+    K = dipolarkernel(t,r,pathinfo,B)
 
-For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal), ``lambdaT0`` contains a list of modulation depths (amplitudes) and refocusing times (in microseconds) for all modulated pathway signals. Each row of ``lambdaT0`` needs two values: one amplitude and one time. The unmodulated amplitudes is calculated such that the sum over all amplitudes equals 1.
+For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal), ``pathinfo`` contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals. Each row of ``pathinfo`` has two or three values: one amplitude, one time, and one harmonic (1 = fundamental, 2 = first overtone, etc.). The unmodulated amplitudes is calculated such that the sum over all amplitudes equals 1.
 
 .. code-block:: matlab
 
-    lambda = [0.7 0.2];   % modulation depths of two pathways
-    T0 = [0 4];           % corresponding refocusing times, in microseconds
-    lambdaT0 = [lambda(:) T0(:)];
-    K = dipolarsignal(t,r,lambdaT0);
+    lambda = [0.7; 0.2];   % modulation depths of two pathways
+    T0 = [0; 4];           % corresponding refocusing times, in microseconds
+    pathinfo = [lambda T0];
+    K = dipolarsignal(t,r,pathinfo);
 
 
 
