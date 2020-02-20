@@ -80,7 +80,7 @@ elseif isa(RegType,'function_handle')
     RegType = 'custom';
 else
     validateattributes(RegType,{'char'},{'nonempty'})
-    allowedInput = {'tikhonov','tv','huber'};
+    allowedInput = {'tikhonov','tv','huber','custom'};
     RegType = validatestring(RegType,allowedInput);
 end
 if  nargin<5 || isempty(alpha)
@@ -103,9 +103,7 @@ else
     validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 end
 validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r')
-if numel(unique(round(diff(r),6)))~=1
-    error('Distance axis must be a monotonically increasing vector.')
-end
+validateattributes(r,{'numeric'},{'nonempty','nonnegative'},mfilename,'r')
 
 %--------------------------------------------------------------------------
 % Parse & Validate Optional Input
@@ -127,8 +125,10 @@ if isempty(TolFun)
 else
     validateattributes(TolFun,{'numeric'},{'scalar','nonempty','nonnegative'},'regularize','nonNegLSQsolTol')
 end
-if isempty(Solver)
+if isempty(Solver) && ~strcmp(RegType,'custom')
     Solver = 'fnnls';
+elseif isempty(Solver) && strcmp(RegType,'custom')
+        Solver = 'fmincon';
 else
     validateattributes(Solver,{'char'},{'nonempty'})
     allowedInput = {'analytical','fnnls','lsqnonneg','bppnnls','fmincon'};
