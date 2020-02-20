@@ -9,12 +9,12 @@ r0 = 2;
 w = 0.2;
 P = rd_onegaussian(r,[r0 w]);
 
-lambdaT0 = [0.5 0; 0.2 1.2];
+pathinfo = [0.5 0; 0.2 1.2];
 
 Bfun = @td_exp;
 
-V1 = td_dmpdeer(t,r,P,lambdaT0,Bfun);
-K = dipolarkernel(t,r,lambdaT0,Bfun);
+V1 = td_dmpdeer(t,r,P,pathinfo,Bfun);
+K = dipolarkernel(t,r,pathinfo,Bfun);
 V2 = K*P(:);
 
 maxerr = max(abs(V1-V2));

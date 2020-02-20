@@ -4,8 +4,8 @@
 %       K = DIPOLARKERNEL(t,r)
 %       K = DIPOLARKERNEL(t,r,lambda)
 %       K = DIPOLARKERNEL(t,r,lambda,B)
-%       K = DIPOLARKERNEL(t,r,lambdaT0)
-%       K = DIPOLARKERNEL(t,r,lambdaT0,B)
+%       K = DIPOLARKERNEL(t,r,pathinfo)
+%       K = DIPOLARKERNEL(t,r,pathinfo,B)
 %       K = DIPOLARKERNEL(___,'Property',value,___)
 %
 %  Computes the NxM kernel matrix K for the transformation of a distance
@@ -19,9 +19,10 @@
 %     t         N-element time axis, in microseconds
 %     r         M-element distance axis, in nanometers
 %     lambda    modulation depth (between 0 and 1)
-%     lambdaT0  array of modulation depths lambda and refocusing points T0 for
-%               multiple pathways, where each row contains [lambda T0] for one
-%               pathway
+%     pathinfo  px2 or px3 array of modulation depths lambda, refocusing points
+%               T0, and harmonics n for multiple pathways, each row contains
+%               [lambda T0 n] or [lambda T0] for one pathway. If n is not given
+%               it is assumed to be 1.
 %     B         N-element array with background decay, or a function handle
 %               for a background model
 %
@@ -37,7 +38,8 @@
 %   'g' - g-value of the spin centers
 %   'Method' - Numerical method for kernel matrix calculation:
 %               'fresnel' - uses Fresnel integrals for the kernel (default)
-%               'grid' - powder average computed explicitly (slow)
+%               'integral' - uses MATLAB's integral() function (slow, accurate)
+%               'grid' - powder average computed explicitly (slow, inaccurate)
 %   'nKnots' - Number of knots for the grid of powder orientations to be used
 %              in the 'grid' kernel calculation method
 %
@@ -54,12 +56,12 @@ if nargin<2
 end
 
 % Set default parameters
-lambdaT0 = 1;
+pathinfo = 1;
 B = [];
 proplist = varargin;
 
 if numel(proplist)>=1 && ~ischar(proplist{1})
-    lambdaT0 = proplist{1};
+    pathinfo = proplist{1};
     proplist(1) = [];
 end
 
@@ -136,18 +138,32 @@ end
 
 % Validation of the multi-pathway parameters
 %-------------------------------------------------------------------------------
-if ~isnumeric(lambdaT0) || ~isreal(lambdaT0)
-    error('lambdaT0 must be a numeric array.');
+if ~isnumeric(pathinfo) || ~isreal(pathinfo)
+    error('lambda/pathinfo must be a numeric array.');
 end
-if numel(lambdaT0)==1
-    lambda = lambdaT0;
+if numel(pathinfo)==1
+    lambda = pathinfo;
     T0 = 0;
+    n = 1;
 else
-    if size(lambdaT0,2)~=2
-        error('lambdaT0 must be a numeric array.');
+    if ~any(size(pathinfo,2)==[2 3])
+        error('pathinfo must be a numeric array with two or three columns.');
     end
-    lambda = lambdaT0(:,1);
-    T0 = lambdaT0(:,2);
+    lambda = pathinfo(:,1);
+    T0 = pathinfo(:,2);
+    if size(pathinfo,2)==2
+        n = ones(size(T0));
+    else
+        n = pathinfo(:,3);
+    end
+end
+
+% Fold overtones into pathway list
+nCoeffs = numel(OvertoneCoeffs);
+if nCoeffs>0
+  lambda = reshape(lambda*OvertoneCoeffs(:).',[],1);
+  T0 = reshape(repmat(T0,1,nCoeffs),[],1);
+  n = reshape(n*(1:nCoeffs),[],1);
 end
 
 % Assert that amplitude of non-modulated pathways is not larger than 1
@@ -183,23 +199,25 @@ wdd = w0./r.^3;
 % Set kernel matrix calculation method
 switch Method
     case 'fresnel'
-        kernelmatrix = @(t)kernelmatrix_fresnel(t,wdd,OvertoneCoeffs);
+        kernelmatrix = @(t)kernelmatrix_fresnel(t,wdd);
+    case 'integral'
+        kernelmatrix = @(t)kernelmatrix_integral(t,wdd);
     case 'grid'
-        kernelmatrix = @(t)kernelmatrix_grid(t,wdd,OvertoneCoeffs,nKnots);
+        kernelmatrix = @(t)kernelmatrix_grid(t,wdd,nKnots);
     otherwise
         error('Kernel calculation method ''%s'' is unknown.',Method);
 end
 
-% Build dipolar signal, summing over all pathways
+% Build dipolar kernel matrix, summing over all pathways
 K = Lambda0;
 for p = 1:nPathways
-    K = K + lambda(p)*kernelmatrix(t-T0(p));
+    K = K + lambda(p)*kernelmatrix(n(p)*(t-T0(p)));
 end
 
-% Multiply by background
+% Multiply by background(s)
 if isa(B,'function_handle')
     for p = 1:nPathways
-        K = K.*B(t-T0(p),lambda(p));
+        K = K.*B(n(p)*(t-T0(p)),lambda(p));
     end
 else
     if ~isempty(B)
@@ -227,17 +245,13 @@ end
 
 %===============================================================================
 % Calculate kernel using Fresnel integrals (fast)
-function K = kernelmatrix_fresnel(t,wdd,OvertoneCoeffs)
+function K = kernelmatrix_fresnel(t,wdd)
 
-K = zeros(numel(t),numel(wdd));
-
-for n = 1:numel(OvertoneCoeffs)
-    ph = n*wdd.'.*abs(t);
-    kappa = sqrt(6*ph/pi);
-    C = fresnelC(kappa)./kappa;
-    S = fresnelS(kappa)./kappa;
-    K = K + OvertoneCoeffs(n)*(cos(ph).*C + sin(ph).*S);
-end
+ph = wdd.'.*abs(t);
+kappa = sqrt(6*ph/pi);
+C = fresnelC(kappa)./kappa;
+S = fresnelS(kappa)./kappa;
+K = cos(ph).*C + sin(ph).*S;
 
 % Replace NaN values at time zero with 1
 K(isnan(K)) = 1;
@@ -247,19 +261,28 @@ end
 %===============================================================================
 % Calculate kernel using grid-based powder integration (slow)
 % (converges very slowly with nKnots)
-function K = kernelmatrix_grid(t,wdd,OvertoneCoeffs,nKnots)
+function K = kernelmatrix_grid(t,wdd,nKnots)
 
 K = zeros(numel(t),numel(wdd));
 
 costheta = linspace(0,1,nKnots);
-q = 1 - 3*costheta.^2;
+q = t*(1-3*costheta.^2); % matrix
 
-for it = 1:numel(t)
-    for ir = 1:numel(wdd)
-        for n = 1:numel(OvertoneCoeffs)    
-            K(it,ir) = K(it,ir) + OvertoneCoeffs(n)*mean(cos(n*wdd(ir)*q*t(it)));
-        end
-    end
+for ir = 1:numel(wdd)
+    K(:,ir) = mean(cos(wdd(ir)*q),2);
+end
+
+end
+
+%===============================================================================
+% Calculate kernel using MATLAB's integrator (accurate but slow)
+function K = kernelmatrix_integral(t,wdd)
+
+K = zeros(numel(t),numel(wdd));
+
+for ir = 1:numel(wdd)
+    fun = @(costheta) cos(wdd(ir)*t*(1-3*costheta.^2));
+    K(:,ir) = integral(fun,0,1,'ArrayValued',true,'AbsTol',1e-6,'RelTol',1e-6);
 end
 
 end

@@ -301,6 +301,7 @@ if isempty(GlobalWeights)
 else
     Weights = GlobalWeights;
 end
+Weights = Weights(:).';
 
 Labels = num2cell(1:numel(V));
 
