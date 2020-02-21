@@ -218,10 +218,12 @@ switch lower(SearchMethod)
             intervalEnd = max(log(alphaRange));
             logalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
             logalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
-            fcnval1 = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
-            fcnval2 = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
+            [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
+            [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
             alphasEvaluated = [logalpha1 logalpha2];
             Functional = [fcnval1 fcnval2];
+            Residual = [res1 res2];
+            Penalty = [pen1 pen2];
             
             % Subdivide interval until convergence
             iIter = 0;
@@ -230,24 +232,30 @@ switch lower(SearchMethod)
                     intervalEnd = logalpha2;
                     logalpha2 = logalpha1;
                     logalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
-                    fcnval1 = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
-                    fcnval2 = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
+                    [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
+                    [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
                     alphasEvaluated(end+1) = logalpha1;
                     Functional(end+1) = fcnval1;
+                    Residual(end+1) = res1;
+                    Penalty(end+1) = pen1;
                 else
                     intervalStart = logalpha1;
                     logalpha1 = logalpha2;
                     logalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
-                    fcnval1 = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
-                    fcnval2 = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
+                    [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
+                    [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
                     alphasEvaluated(end+1) = logalpha2;
                     Functional(end+1) = fcnval2;
+                    Residual(end+1) = res2;
+                    Penalty(end+1) = pen2;
                 end
                 iIter = iIter + 1;
             end
             
             % Store results
             Functionals{iMethod} = Functional;
+            Residuals{iMethod} = Residual;
+            Penalties{iMethod} = Penalty;
             if fcnval1<fcnval2
                 alphaOpt(iMethod) = exp(logalpha1);
             else
@@ -263,7 +271,7 @@ switch lower(SearchMethod)
         %-----------------------------------------------------------------------
         
         for ii = 1:numel(alphaRange)
-            Functional(ii,:) = evalalpha(alphaRange(ii),SelectionMethod);
+            [Functional(ii,:),Residual(ii),Penalty(ii)] = evalalpha(alphaRange(ii),SelectionMethod);
         end
         for iMethod = 1:numel(SelectionMethod)
             % Find index of selection functional minimum
@@ -271,19 +279,25 @@ switch lower(SearchMethod)
             % Store the corresponding regularization parameter
             alphaOpt(iMethod) = alphaRange(Index);
             Functionals{iMethod} = Functional(:,iMethod);
+            Residuals{iMethod} = Residual(:);
+            Penalties{iMethod} = Penalty(:);
         end
 end
 
 if numel(Functionals)==1
     Functionals = Functionals{1};
+    Residuals = Residuals{1};
+    Penalties = Penalties{1};
     Functionals = Functionals(:);
+    Residuals = Residuals(:);
+    Penalties = Penalties(:);
 end
 % Turn warnings back on
 warning('on','MATLAB:nearlySingularMatrix');
 
 
 %--------------------------------------------------------------------------
-    function Functional = evalalpha(alpha,SelectionMethod)
+    function [Functional,Residual,Penalty] = evalalpha(alpha,SelectionMethod)
         
         
         %--------------------------------------------------------------------------
@@ -393,8 +407,9 @@ warning('on','MATLAB:nearlySingularMatrix');
             end
 
         end
-        
-        
+        %Return the summed penalty and residual terms over all signals
+        Residual = sum(Residual);
+        Penalty = sum(Penalty);
     end
 
 
