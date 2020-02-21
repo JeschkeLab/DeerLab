@@ -274,6 +274,10 @@ switch lower(SearchMethod)
         end
 end
 
+if numel(Functionals)==1
+    Functionals = Functionals{1};
+    Functionals = Functionals(:);
+end
 % Turn warnings back on
 warning('on','MATLAB:nearlySingularMatrix');
 
