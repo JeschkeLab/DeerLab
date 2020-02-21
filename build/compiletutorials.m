@@ -1,37 +1,37 @@
 
 clc
 
-files = dir('../tutorials/**/*.mlx');
+files = dir('../tutorials/**/*.m');
 sourcenames = {files.name};
-pdfnames = cellfun(@(S)[S(1:end-3) 'pdf'],sourcenames,'UniformOutput',false);
-htmlnames = cellfun(@(S)[S(1:end-3) 'html'],sourcenames,'UniformOutput',false);
-mnames = cellfun(@(S)[S(1:end-3) 'm'],sourcenames,'UniformOutput',false);
+pdfnames = cellfun(@(S)[S(1:end-1) 'pdf'],sourcenames,'UniformOutput',false);
+htmlnames = cellfun(@(S)[S(1:end-1) 'html'],sourcenames,'UniformOutput',false);
+mlxnames = cellfun(@(S)[S(1:end-1) 'mlx'],sourcenames,'UniformOutput',false);
 
 paths = {files.folder};
 sourcefiles = cellfun(@(x,y)fullfile(x,y),paths,sourcenames,'UniformOutput',false);
 pdffiles = cellfun(@(x,y)fullfile(x,y),paths,pdfnames,'UniformOutput',false);
 htmlfiles = cellfun(@(x,y)fullfile(x,y),paths,htmlnames,'UniformOutput',false);
-mfiles = cellfun(@(x,y)fullfile(x,y),paths,mnames,'UniformOutput',false);
+mlxfiles = cellfun(@(x,y)fullfile(x,y),paths,mlxnames,'UniformOutput',false);
+
+%Convert M-files to live scripts
+for i=1:numel(mlxnames)
+    fprintf('Conversion: m -> mlx (file %i of %i)...',i,numel(sourcefiles))
+    matlab.internal.liveeditor.openAndSave(sourcefiles{i},mlxfiles{i});
+    fprintf(' complete \n')
+end
 
 %Convert live script into other formats
 for i=1:numel(pdfnames)
-    fprintf('Conversion: mlx -> pdf (file %i of %i)...',i,numel(sourcefiles))
-    matlab.internal.liveeditor.openAndConvert(sourcefiles{i},pdffiles{i});
+    fprintf('Conversion: mlx -> pdf (file %i of %i)...',i,numel(mlxfiles))
+    matlab.internal.liveeditor.openAndConvert(mlxfiles{i},pdffiles{i});
     fprintf(' complete \n')
 end
 
 for i=1:numel(htmlnames)
-    fprintf('Conversion: mlx -> html (file %i of %i)...',i,numel(sourcefiles))
-    matlab.internal.liveeditor.openAndConvert(sourcefiles{i},htmlfiles{i});
+    fprintf('Conversion: mlx -> html (file %i of %i)...',i,numel(mlxfiles))
+    matlab.internal.liveeditor.openAndConvert(mlxfiles{i},htmlfiles{i});
     fprintf(' complete \n')
 end
-
-for i=1:numel(mnames)
-    fprintf('Conversion: mlx -> m (file %i of %i)...',i,numel(sourcefiles))
-    matlab.internal.liveeditor.openAndConvert(sourcefiles{i},mfiles{i});
-    fprintf(' complete \n')
-end
-
 
 if ispc
     
@@ -45,9 +45,9 @@ if ispc
         fprintf(' complete \n')
     end
     
-    for i=1:numel(mnames)
-        fprintf('Deleting: m (file %i of %i)...',i,numel(sourcefiles))
-        delete(mfiles{i});
+    for i=1:numel(mlxnames)
+        fprintf('Deleting: mlx (file %i of %i)...',i,numel(sourcefiles))
+        delete(mlxfiles{i});
         fprintf(' complete \n')
     end
     
