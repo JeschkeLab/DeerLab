@@ -183,6 +183,9 @@ else
     SearchMethod = validatestring(SearchMethod,{'golden','grid'});
 end
 
+if strcmp(SearchMethod,'golden') && (strcmp(SelectionMethod,'lr') || strcmp(SelectionMethod,'lc'))
+    error('The ''lr'' and ''lc'' selection methods are not compatible with the golden-search algorithm. Use the option selregparam(...,''Search'',''grid'') to enable their use.')
+end    
 %--------------------------------------------------------------------------
 %  Preparations
 %--------------------------------------------------------------------------
@@ -271,7 +274,28 @@ switch lower(SearchMethod)
         %-----------------------------------------------------------------------
         
         for ii = 1:numel(alphaRange)
-            [Functional(ii,:),Residual(ii),Penalty(ii)] = evalalpha(alphaRange(ii),SelectionMethod);
+            [Functional(ii,:),Residual(ii,:),Penalty(ii,:)] = evalalpha(alphaRange(ii),SelectionMethod);
+        end
+        
+        
+        %  Grid-search specific selection methods        
+        for i = 1:length(SelectionMethod)
+            for Sidx = 1:length(S)
+                switch lower(SelectionMethod{i})
+                    
+                    case 'lr' % L-curve minimum-radius method (LR)
+                        Eta = log(Penalty(:,Sidx));
+                        Rho = log(Residual(:,Sidx));
+                        Functional(:,i) = Functional(:,i) + weights(Sidx)*((((Rho - min(Rho))/(max(Rho) - min(Rho))).^2 + ((Eta - min(Eta))/(max(Eta) - min(Eta))).^2));
+                        
+                    case 'lc' % L-curve maximum-curvature method (LC)
+                        d1Residual = gradient(log(Residual(:,Sidx)));
+                        d2Residual = gradient(d1Residual);
+                        d1Penalty = gradient(log(Penalty(:,Sidx)));
+                        d2Penalty = gradient(d1Penalty);
+                        Functional(:,i) = Functional(:,i) + weights(Sidx)*((d1Residual.*d2Penalty - d2Residual.*d1Penalty)./(d1Residual.^2 + d1Penalty.^2).^(3/2));
+                end
+            end
         end
         for iMethod = 1:numel(SelectionMethod)
             % Find index of selection functional minimum
@@ -337,18 +361,6 @@ warning('on','MATLAB:nearlySingularMatrix');
                 nr = length(S{SIndex});
                 switch lower(SelectionMethod{MethodIndex})
                     
-                    case 'lr' % L-curve Minimum-Radius method (LR)
-                        Eta = log(Penalty(SIndex));
-                        Rho = log(Residual(SIndex));
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*((((Rho - min(Rho))/(max(Rho) - min(Rho))).^2 + ((Eta - min(Eta))/(max(Eta) - min(Eta))).^2));
-                        
-                    case 'lc' % L-curve Maximum-Curvature method (LC)
-                        d1Residual = gradient(log(Residual(SIndex)));
-                        d2Residual = gradient(d1Residual);
-                        d1Penalty = gradient(log(Penalty(SIndex)));
-                        d2Penalty = gradient(d1Penalty);
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*((d1Residual.*d2Penalty - d2Residual.*d1Penalty)./(d1Residual.^2 + d1Penalty.^2).^(3/2));
-                        
                     case 'cv' % Cross validation (CV)
                         InfluenceDiagonal = diag(InfluenceMatrix{SIndex});
                         Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(sum(abs(S{SIndex} - K{SIndex}*(P)./(ones(nr,1) - InfluenceDiagonal)).^2));
@@ -402,14 +414,13 @@ warning('on','MATLAB:nearlySingularMatrix');
                         
                     case 'mcl' % Mallows' C_L (MCL)
                         Functional(MethodIndex) = Functional(MethodIndex) +  weights(SIndex)*(Residual^2 + 2*NoiseLevel(SIndex)^2*trace(InfluenceMatrix{SIndex}) - 2*nr*NoiseLevel(SIndex)^2);
-                        
+                    
+                    otherwise
+                        Functional(MethodIndex) = 0;
                 end
             end
 
         end
-        %Return the summed penalty and residual terms over all signals
-        Residual = sum(Residual);
-        Penalty = sum(Penalty);
     end
 
 
