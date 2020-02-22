@@ -10,8 +10,8 @@ P = P/sum(P);
 K = dipolarkernel(t,r);
 S = K*P;
 
-OptParam1 = selregparam(S,K,r,'tikhonov','all','NonNegConstrained',false,'NoiseLevel',0.05);
-OptParam2 = selregparam(S,K,r,'tikhonov',{'all'},'NonNegConstrained',false,'NoiseLevel',0.05);
+OptParam1 = selregparam(S,K,r,'tikhonov','all','NonNegConstrained',false,'NoiseLevel',0.05,'search','grid');
+OptParam2 = selregparam(S,K,r,'tikhonov',{'all'},'NonNegConstrained',false,'NoiseLevel',0.05,'search','grid');
 
 %Accept testif all values are the same (should be as there is no noise)
 err(1) = length(OptParam2)~=14;

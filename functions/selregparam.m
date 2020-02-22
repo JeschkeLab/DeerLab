@@ -183,7 +183,7 @@ else
     SearchMethod = validatestring(SearchMethod,{'golden','grid'});
 end
 
-if strcmp(SearchMethod,'golden') && (strcmp(SelectionMethod,'lr') || strcmp(SelectionMethod,'lc'))
+if strcmp(SearchMethod,'golden') && (any(strcmp(SelectionMethod,'lr')) || any(strcmp(SelectionMethod,'lc')))
     error('The ''lr'' and ''lc'' selection methods are not compatible with the golden-search algorithm. Use the option selregparam(...,''Search'',''grid'') to enable their use.')
 end    
 %--------------------------------------------------------------------------
@@ -225,8 +225,8 @@ switch lower(SearchMethod)
             [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
             alphasEvaluated = [logalpha1 logalpha2];
             Functional = [fcnval1 fcnval2];
-            Residual = [res1 res2];
-            Penalty = [pen1 pen2];
+            Residual = [sum(res1) sum(res2)];
+            Penalty = [sum(pen1) sum(pen2)];
             
             % Subdivide interval until convergence
             iIter = 0;
@@ -239,8 +239,8 @@ switch lower(SearchMethod)
                     [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
                     alphasEvaluated(end+1) = logalpha1;
                     Functional(end+1) = fcnval1;
-                    Residual(end+1) = res1;
-                    Penalty(end+1) = pen1;
+                    Residual(end+1) = sum(pen1);
+                    Penalty(end+1) = sum(pen1);
                 else
                     intervalStart = logalpha1;
                     logalpha1 = logalpha2;
@@ -249,8 +249,8 @@ switch lower(SearchMethod)
                     [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
                     alphasEvaluated(end+1) = logalpha2;
                     Functional(end+1) = fcnval2;
-                    Residual(end+1) = res2;
-                    Penalty(end+1) = pen2;
+                    Residual(end+1) = sum(res2);
+                    Penalty(end+1) = sum(pen2);
                 end
                 iIter = iIter + 1;
             end
@@ -303,8 +303,8 @@ switch lower(SearchMethod)
             % Store the corresponding regularization parameter
             alphaOpt(iMethod) = alphaRange(Index);
             Functionals{iMethod} = Functional(:,iMethod);
-            Residuals{iMethod} = Residual(:);
-            Penalties{iMethod} = Penalty(:);
+            Residuals{iMethod} = sum(Residual,2);
+            Penalties{iMethod} = sum(Penalty,2);
         end
 end
 
