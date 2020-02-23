@@ -80,7 +80,7 @@ end
 TestFileNames = sort({FileList.name});
 
 fprintf(fid,'=======================================================================\n');
-fprintf(fid,'DeerLab Unity Test Suite                 % s\n(Matlab % s)\n',datestr(now),version);
+fprintf(fid,'DeerLab Unit Test Suite                 % s\n(Matlab % s)\n',datestr(now),version);
 fprintf(fid,'DeerLab location: % s\n',DeerLabPath);
 fprintf(fid,'=======================================================================\n');
 

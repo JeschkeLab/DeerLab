@@ -113,6 +113,7 @@ else
         SelectionMethod = {SelectionMethod};
     end
 end
+LcurveMethods = any(strcmpi(SelectionMethod,'lr')) || any(strcmpi(SelectionMethod,'lc'));
 
 % Validate global weights
 if ~isempty(GlobalWeights)
@@ -122,6 +123,8 @@ if ~isempty(GlobalWeights)
     end
     %Normalize weights
     GlobalWeights = GlobalWeights/sum(GlobalWeights);
+else
+    GlobalWeights = globalweights(S);
 end
 
 %--------------------------------------------------------------------------
@@ -177,15 +180,20 @@ end
 
 % Validate Search input
 if isempty(SearchMethod)
-    SearchMethod = 'golden';
+    if LcurveMethods
+        SearchMethod = 'grid';
+    else
+        SearchMethod = 'golden';
+    end
 else
     validateattributes(SearchMethod,{'char'},{'nonempty'},mfilename,'Search')
     SearchMethod = validatestring(SearchMethod,{'golden','grid'});
 end
 
-if strcmp(SearchMethod,'golden') && (any(strcmp(SelectionMethod,'lr')) || any(strcmp(SelectionMethod,'lc')))
+if LcurveMethods && strcmp(SearchMethod,'golden')
     error('The ''lr'' and ''lc'' selection methods are not compatible with the golden-search algorithm. Use the option selregparam(...,''Search'',''grid'') to enable their use.')
-end    
+end
+
 %--------------------------------------------------------------------------
 %  Preparations
 %--------------------------------------------------------------------------
@@ -215,14 +223,14 @@ switch lower(SearchMethod)
         epsilon = 0.1; % termination interval size (logalpha)
         maxIterations = 10; % maximum number of iterations
         tau = (sqrt(5)-1)/2;
-        for iMethod = 1:numel(SelectionMethod)
+        for m = 1:numel(SelectionMethod)
             
             intervalStart = min(log(alphaRange));
             intervalEnd = max(log(alphaRange));
             logalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
             logalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
-            [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
-            [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
+            [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(m));
+            [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(m));
             alphasEvaluated = [logalpha1 logalpha2];
             Functional = [fcnval1 fcnval2];
             Residual = [sum(res1) sum(res2)];
@@ -235,18 +243,18 @@ switch lower(SearchMethod)
                     intervalEnd = logalpha2;
                     logalpha2 = logalpha1;
                     logalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
-                    [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
-                    [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
+                    [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(m));
+                    [fcnval2,~,~] = evalalpha(exp(logalpha2),SelectionMethod(m));
                     alphasEvaluated(end+1) = logalpha1;
                     Functional(end+1) = fcnval1;
-                    Residual(end+1) = sum(pen1);
+                    Residual(end+1) = sum(res1);
                     Penalty(end+1) = sum(pen1);
                 else
                     intervalStart = logalpha1;
                     logalpha1 = logalpha2;
                     logalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
-                    [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(iMethod));
-                    [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(iMethod));
+                    [fcnval1,~,~] = evalalpha(exp(logalpha1),SelectionMethod(m));
+                    [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(m));
                     alphasEvaluated(end+1) = logalpha2;
                     Functional(end+1) = fcnval2;
                     Residual(end+1) = sum(res2);
@@ -256,15 +264,15 @@ switch lower(SearchMethod)
             end
             
             % Store results
-            Functionals{iMethod} = Functional;
-            Residuals{iMethod} = Residual;
-            Penalties{iMethod} = Penalty;
+            Functionals{m} = Functional;
+            Residuals{m} = Residual;
+            Penalties{m} = Penalty;
             if fcnval1<fcnval2
-                alphaOpt(iMethod) = exp(logalpha1);
+                alphaOpt(m) = exp(logalpha1);
             else
-                alphaOpt(iMethod) = exp(logalpha2);
+                alphaOpt(m) = exp(logalpha2);
             end
-            alphaRanges{iMethod} = alphasEvaluated;
+            alphaRanges{m} = alphasEvaluated;
             
         end
         
@@ -273,41 +281,47 @@ switch lower(SearchMethod)
         %  Grid search
         %-----------------------------------------------------------------------
         
-        for ii = 1:numel(alphaRange)
-            [Functional(ii,:),Residual(ii,:),Penalty(ii,:)] = evalalpha(alphaRange(ii),SelectionMethod);
+        for a = 1:numel(alphaRange)
+            [Functional(a,:),Residual(a,:),Penalty(a,:)] = evalalpha(alphaRange(a),SelectionMethod);
         end
         
-        
-        %  Grid-search specific selection methods        
-        for i = 1:length(SelectionMethod)
-            for Sidx = 1:length(S)
-                switch lower(SelectionMethod{i})
+        %  Grid-search specific selection methods
+        for m = 1:length(SelectionMethod)
+            for s = 1:length(S)
+                switch lower(SelectionMethod{m})
                     
                     case 'lr' % L-curve minimum-radius method (LR)
-                        Eta = log(Penalty(:,Sidx));
-                        Rho = log(Residual(:,Sidx));
-                        Functional(:,i) = Functional(:,i) + weights(Sidx)*((((Rho - min(Rho))/(max(Rho) - min(Rho))).^2 + ((Eta - min(Eta))/(max(Eta) - min(Eta))).^2));
+                        Eta = log(Penalty(:,s));
+                        Rho = log(Residual(:,s));
+                        dd = @(x)(x-min(x))/(max(x)-min(x));
+                        functional_ = dd(Rho).^2 + dd(Eta).^2;
                         
                     case 'lc' % L-curve maximum-curvature method (LC)
-                        d1Residual = gradient(log(Residual(:,Sidx)));
+                        d1Residual = gradient(log(Residual(:,s)));
                         d2Residual = gradient(d1Residual);
-                        d1Penalty = gradient(log(Penalty(:,Sidx)));
+                        d1Penalty = gradient(log(Penalty(:,s)));
                         d2Penalty = gradient(d1Penalty);
-                        Functional(:,i) = Functional(:,i) + weights(Sidx)*((d1Residual.*d2Penalty - d2Residual.*d1Penalty)./(d1Residual.^2 + d1Penalty.^2).^(3/2));
+                        functional_ = (d1Residual.*d2Penalty - d2Residual.*d1Penalty)./(d1Residual.^2 + d1Penalty.^2).^(3/2);
+                        
+                    otherwise
+                        functional_ = 0;
                 end
+                Functional(:,m) = Functional(:,m) + GlobalWeights(s)*functional_;
             end
         end
-        for iMethod = 1:numel(SelectionMethod)
+        
+        for m = 1:numel(SelectionMethod)
             % Find index of selection functional minimum
-            [~,Index] = min(Functional(:,iMethod));
+            [~,idx] = min(Functional(:,m));
             % Store the corresponding regularization parameter
-            alphaOpt(iMethod) = alphaRange(Index);
-            Functionals{iMethod} = Functional(:,iMethod);
-            Residuals{iMethod} = sum(Residual,2);
-            Penalties{iMethod} = sum(Penalty,2);
+            alphaOpt(m) = alphaRange(idx);
+            Functionals{m} = Functional(:,m);
+            Residuals{m} = sum(Residual,2);
+            Penalties{m} = sum(Penalty,2);
         end
 end
 
+% Do not return cell array if only one method is used
 if numel(Functionals)==1
     Functionals = Functionals{1};
     Residuals = Residuals{1};
@@ -316,6 +330,7 @@ if numel(Functionals)==1
     Residuals = Residuals(:);
     Penalties = Penalties(:);
 end
+
 % Turn warnings back on
 warning('on','MATLAB:nearlySingularMatrix');
 
@@ -356,72 +371,71 @@ warning('on','MATLAB:nearlySingularMatrix');
         
         % If multiple selection methods are requested then process them sequentially
         Functional = zeros(length(SelectionMethod),1);
-        for MethodIndex = 1:length(SelectionMethod)
-            for SIndex = 1:length(S)
-                nr = length(S{SIndex});
-                switch lower(SelectionMethod{MethodIndex})
+        for im = 1:length(SelectionMethod)
+            for is = 1:length(S)
+                nr = length(S{is});
+                switch lower(SelectionMethod{im})
                     
                     case 'cv' % Cross validation (CV)
-                        InfluenceDiagonal = diag(InfluenceMatrix{SIndex});
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(sum(abs(S{SIndex} - K{SIndex}*(P)./(ones(nr,1) - InfluenceDiagonal)).^2));
+                        InfluenceDiagonal = diag(InfluenceMatrix{is});
+                        f_ = sum(abs(S{is} - K{is}*(P)./(ones(nr,1) - InfluenceDiagonal)).^2);
                         
                     case 'gcv' % Generalized Cross Validation (GCV)
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(Residual(SIndex)^2/((1 - trace(InfluenceMatrix{SIndex})/nr)^2));
+                        f_ = Residual(is)^2/((1 - trace(InfluenceMatrix{is})/nr)^2);
                         
                     case 'rgcv' % Robust Generalized Cross Validation (rGCV)
                         TuningParameter = 0.9;
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(Residual(SIndex)^2/((1 - trace(InfluenceMatrix{SIndex})/nr)^2)*(TuningParameter + (1 - TuningParameter)*trace(InfluenceMatrix{SIndex}^2)/nr));
+                        f_ = Residual(is)^2/((1 - trace(InfluenceMatrix{is})/nr)^2)*(TuningParameter + (1 - TuningParameter)*trace(InfluenceMatrix{is}^2)/nr);
                         
                     case 'srgcv' % Strong Robust Generalized Cross Validation (srGCV)
                         TuningParameter = 0.8;
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(Residual(SIndex)^2/((1 - trace(InfluenceMatrix{SIndex})/nr)^2)*(TuningParameter + (1 - TuningParameter)*trace(PseudoInverse{SIndex}'*PseudoInverse{SIndex})/nr));
+                        f_ = Residual(is)^2/((1 - trace(InfluenceMatrix{is})/nr)^2)*(TuningParameter + (1 - TuningParameter)*trace(PseudoInverse{is}'*PseudoInverse{is})/nr);
                         
                     case 'aic' % Akaike information criterion (AIC)
                         Criterion = 2;
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(nr*log(Residual(SIndex)^2/nr) + Criterion*trace(InfluenceMatrix{SIndex}));
+                        f_ = nr*log(Residual(is)^2/nr) + Criterion*trace(InfluenceMatrix{is});
                         
                     case 'bic' % Bayesian information criterion (BIC)
                         Criterion = log(nr);
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(nr*log(Residual(SIndex)^2/nr) + Criterion*trace(InfluenceMatrix{SIndex}));
+                        f_ = nr*log(Residual(is)^2/nr) + Criterion*trace(InfluenceMatrix{is});
                         
                     case 'aicc' % Corrected Akaike information criterion (AICC)
-                        Criterion = 2*nr/(nr-trace(InfluenceMatrix{SIndex})-1);
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(nr*log(Residual(SIndex)^2/nr) + Criterion*trace(InfluenceMatrix{SIndex}));
+                        Criterion = 2*nr/(nr-trace(InfluenceMatrix{is})-1);
+                        f_ = nr*log(Residual(is)^2/nr) + Criterion*trace(InfluenceMatrix{is});
                         
                     case 'rm' % Residual method (RM)
-                        Scaling = K{SIndex}.'*(eye(size(InfluenceMatrix{SIndex})) - InfluenceMatrix{SIndex});
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(Residual(SIndex)^2/sqrt(trace(Scaling'*Scaling)));
+                        Scaling = K{is}.'*(eye(size(InfluenceMatrix{is})) - InfluenceMatrix{is});
+                        f_ = Residual(is)^2/sqrt(trace(Scaling'*Scaling));
                         
                     case 'ee' % Extrapolated Error (EE)
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(Residual(SIndex)^2/norm(K{SIndex}.'*(K{SIndex}*P - S{SIndex})));
+                        f_ = Residual(is)^2/norm(K{is}.'*(K{is}*P - S{is}));
                         
                     case 'ncp' % Normalized Cumulative Periodogram (NCP)
-                        ResidualPeriodogram = abs(fft(K{SIndex}*P - S{SIndex})).^2;
+                        ResidualPeriodogram = abs(fft(K{is}*P - S{is})).^2;
                         WhiteNoisePowerSpectrum = zeros(length(ResidualPeriodogram),1);
                         ResidualPowerSpectrum = zeros(length(ResidualPeriodogram),1);
                         for j=1:length(ResidualPeriodogram) - 1
                             ResidualPowerSpectrum(j)  = norm(ResidualPeriodogram(2:j+1),1)/norm(ResidualPeriodogram(2:end),1);
                             WhiteNoisePowerSpectrum(j) = j/(length(ResidualPeriodogram) - 1);
                         end
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(norm(ResidualPowerSpectrum - WhiteNoisePowerSpectrum));
+                        f_ = norm(ResidualPowerSpectrum - WhiteNoisePowerSpectrum);
                         
                     case 'gml' % Generalized Maximum Likelihood (GML)
                         Treshold = 1e-9;
-                        EigenValues = eig(eye(size(InfluenceMatrix{SIndex})) - InfluenceMatrix{SIndex});
+                        EigenValues = eig(eye(size(InfluenceMatrix{is})) - InfluenceMatrix{is});
                         EigenValues(EigenValues < Treshold) = 0;
                         NonZeroEigenvalues = real(EigenValues(EigenValues~=0));
-                        Functional(MethodIndex) = Functional(MethodIndex) + weights(SIndex)*(S{SIndex}'*(S{SIndex} - K{SIndex}*P)/nthroot(prod(NonZeroEigenvalues),length(NonZeroEigenvalues)));
+                        f_ = S{is}'*(S{is} - K{is}*P)/nthroot(prod(NonZeroEigenvalues),length(NonZeroEigenvalues));
                         
                     case 'mcl' % Mallows' C_L (MCL)
-                        Functional(MethodIndex) = Functional(MethodIndex) +  weights(SIndex)*(Residual^2 + 2*NoiseLevel(SIndex)^2*trace(InfluenceMatrix{SIndex}) - 2*nr*NoiseLevel(SIndex)^2);
+                        f_ = Residual^2 + 2*NoiseLevel(is)^2*trace(InfluenceMatrix{is}) - 2*nr*NoiseLevel(is)^2;
                     
                     otherwise
-                        Functional(MethodIndex) = 0;
+                        f_ = 0;
                 end
+                Functional(im) = Functional(im) + weights(is)*f_;
             end
-
         end
     end
-
 
 end
