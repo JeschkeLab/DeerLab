@@ -286,6 +286,10 @@ end
 % Execution
 %--------------------------------------------------------------------------
 
+%Parse errors in the model function, and reformat them
+model = @(ax,Parameters,idx)errorhandler(model,'modelfcn',ax,Parameters,idx);
+
+
 % Define the cost functional of a single signal
 switch CostModel
     case 'lsq'
@@ -421,4 +425,4 @@ if nargout==2
     end
 end
 
-return
+end
