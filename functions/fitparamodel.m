@@ -54,6 +54,8 @@
 %
 %   'MaxFunEvals' - Maximum number of optimizer function evaluations
 %
+%   'MultiStart' - Number of starting points for global optimization
+%
 %   'Verbose' - Display options for the solvers:
 %                 'off' - no information displayed
 %                 'final' - display solver exit message

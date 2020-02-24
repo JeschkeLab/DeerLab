@@ -221,6 +221,17 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 			param = fitparamodel(args,'MaxFunEval',1e10)
 
+- ``'MultiStart'`` -  Multi-start global optimization
+    Number of initial points to be generated for a global search. For each start point, a local minimum is searched, and the solution with the lowest cost functional value is selected as the global optimum.
+
+    *Default:* ``1`` (No global optimization)
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			param = fitparamodel(args,'MultiStart',50)
+
 - ``'Verbose'`` -  Information display
     Set the level of detail display for the solvers:
 
