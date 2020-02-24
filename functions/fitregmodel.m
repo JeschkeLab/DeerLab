@@ -102,7 +102,7 @@ if isa(alpha,'char')
 else
     validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 end
-validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r')
+% validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r')
 validateattributes(r,{'numeric'},{'nonempty','nonnegative'},mfilename,'r')
 
 %--------------------------------------------------------------------------
