@@ -164,8 +164,8 @@ else
 end
 
 % Parse the optional parameters in the varargin
-[Solver,Algorithm,MaxIter,Verbose,MaxFunEvals,TolFun,CostModel,GlobalWeights,UpperBounds,LowerBounds] = parseoptional(...
-    {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower'},varargin);
+[Solver,Algorithm,MaxIter,Verbose,MaxFunEvals,TolFun,CostModel,GlobalWeights,UpperBounds,LowerBounds,MultiStart] = parseoptional(...
+    {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower','MultiStart'},varargin);
 
 % Validate optional inputs
 if isempty(CostModel)
@@ -173,6 +173,11 @@ if isempty(CostModel)
 else
     validInputs = {'lsq','chisquare'};
     CostModel = validatestring(CostModel,validInputs);
+end
+if isempty(MultiStart)
+    MultiStart = 1;
+else
+    validateattributes(MultiStart,{'numeric'},{'scalar','nonnegative'},mfilename,'MultiStarts')
 end
 if isempty(TolFun)
     TolFun = 1e-10;
@@ -337,80 +342,99 @@ end
 % Disable ill-conditioned matrix warnings
 warning('off','MATLAB:nearlySingularMatrix')
 
-% Fit the parametric model...
-switch Solver
-    case 'fminsearchcon'
-        % ...under constraints for the parameter values range
-        solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
-            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
-            'TolFun',TolFun,'TolCon',1e-20,...
-            'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        [FitParameters,~,exitflag] = fminsearchcon(CostFcn,StartParameters,LowerBounds,UpperBounds,[],[],[],solverOpts);
-        % Check how optimization exited...
-        if exitflag == 0
-            % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+%Preprare multiple start global optimization if requested
+MultiStartParameters = multistarts(MultiStart,StartParameters,LowerBounds,UpperBounds);
+fvals = zeros(1,MultiStart);
+fits = cell(1,MultiStart);
+
+for runIdx = 1:MultiStart
+
+    StartParameters = MultiStartParameters(runIdx,:);
+    
+    % Fit the parametric model...
+    switch Solver
+        case 'fminsearchcon'
+            % ...under constraints for the parameter values range
             solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,...
-                'TolFun',TolFun,'TolCon',1e-10,...
-                'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [FitParameters] = fminsearchcon(CostFcn,FitParameters,LowerBounds,UpperBounds,[],[],[],solverOpts);
-        end
-        
-    case 'fmincon'
-        % ...under constraints for the parameter values range
-        solverOpts = optimoptions(@fmincon,'Algorithm',Algorithm,'Display',Verbose,...
-            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
-            'TolFun',TolFun,'TolCon',1e-20,'StepTolerance',1e-20,...
-            'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        [FitParameters,~,exitflag]  = fmincon(CostFcn,StartParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
-        % Check how optimization exited...
-        if exitflag == 0
-            % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-            solverOpts = optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,'Display',Verbose);
-            [FitParameters]  = fmincon(CostFcn,FitParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
-        end
-        
-    case 'lsqnonlin'
-        solverOpts = optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display',Verbose,...
-            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
-            'TolFun',TolFun,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax{1},Parameters,1) - V{1}));
-        [FitParameters,~,~,exitflag]  = lsqnonlin(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
-        if exitflag == 0
-            % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-            solverOpts = optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,'Display',Verbose);
-            [FitParameters]  = lsqnonlin(ModelCost,FitParameters,LowerBounds,UpperBounds,solverOpts);
-        end
-        
-    case 'nlsqbnd'
-        solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
-            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
-            'TolFun',TolFun,'TolCon',1e-20,...
-            'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax{1},Parameters,1) - V{1}));
-        [FitParameters,~,~,exitflag] = nlsqbnd(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
-        % nlsqbnd returns a column, transpose to adapt to row-style of MATLAB solvers
-        FitParameters = FitParameters.';
-        if exitflag == 0
-            % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-            solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,...
+                'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
                 'TolFun',TolFun,'TolCon',1e-20,...
                 'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [FitParameters] = nlsqbnd(ModelCost,FitParameters,LowerBounds,UpperBounds,solverOpts);
-        end
-        
-    case 'fminsearch'
-        % ...unconstrained with all possible values
-        if strcmp(Verbose,'iter-detailed')
-            Verbose = 'iter';
-        end
-        solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
-            'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
-            'TolFun',TolFun,'TolCon',1e-10,...
-            'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-        FitParameters  = fminsearch(CostFcn,StartParameters,solverOpts);
+            [FitParameters,fval,exitflag] = fminsearchcon(CostFcn,StartParameters,LowerBounds,UpperBounds,[],[],[],solverOpts);
+            % Check how optimization exited...
+            if exitflag == 0
+                % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+                solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
+                    'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,...
+                    'TolFun',TolFun,'TolCon',1e-10,...
+                    'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+                [FitParameters,fval] = fminsearchcon(CostFcn,FitParameters,LowerBounds,UpperBounds,[],[],[],solverOpts);
+            end
+            
+        case 'fmincon'
+            % ...under constraints for the parameter values range
+            solverOpts = optimoptions(@fmincon,'Algorithm',Algorithm,'Display',Verbose,...
+                'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+                'TolFun',TolFun,'TolCon',1e-20,'StepTolerance',1e-20,...
+                'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+            [FitParameters,fval,exitflag]  = fmincon(CostFcn,StartParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
+            % Check how optimization exited...
+            if exitflag == 0
+                % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+                solverOpts = optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,'Display',Verbose);
+                [FitParameters,fval]  = fmincon(CostFcn,FitParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
+            end
+            
+        case 'lsqnonlin'
+            solverOpts = optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display',Verbose,...
+                'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+                'TolFun',TolFun,'DiffMinChange',0,'DiffMaxChange',Inf);
+            ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax{1},Parameters,1) - V{1}));
+            [FitParameters,fval,~,exitflag]  = lsqnonlin(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
+            
+            if exitflag == 0
+                % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+                solverOpts = optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,'Display',Verbose);
+                [FitParameters,fval]  = lsqnonlin(ModelCost,FitParameters,LowerBounds,UpperBounds,solverOpts);
+            end
+            
+        case 'nlsqbnd'
+            solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
+                'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+                'TolFun',TolFun,'TolCon',1e-20,...
+                'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+            ModelCost = @(Parameters) (sqrt(0.5)*(K{1}*model(ax{1},Parameters,1) - V{1}));
+            [FitParameters,fval,~,exitflag] = nlsqbnd(ModelCost,StartParameters,LowerBounds,UpperBounds,solverOpts);
+            % nlsqbnd returns a column, transpose to adapt to row-style of MATLAB solvers
+            FitParameters = FitParameters.';
+            if exitflag == 0
+                % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+                solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
+                    'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,...
+                    'TolFun',TolFun,'TolCon',1e-20,...
+                    'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+                [FitParameters,fval] = nlsqbnd(ModelCost,FitParameters,LowerBounds,UpperBounds,solverOpts);
+            end
+            
+        case 'fminsearch'
+            % ...unconstrained with all possible values
+            if strcmp(Verbose,'iter-detailed')
+                Verbose = 'iter';
+            end
+            solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
+                'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+                'TolFun',TolFun,'TolCon',1e-10,...
+                'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+            [FitParameters,fval]  = fminsearch(CostFcn,StartParameters,solverOpts);
+    end
+
+    fvals(runIdx) = fval;
+    fits{runIdx} = FitParameters;
+    
 end
+
+%Find global minimum from multiple runs
+[~,globmin] = min(fvals);
+FitParameters = fits{globmin};
 
 % Set the warnings back on
 warning('on','MATLAB:nearlySingularMatrix')
