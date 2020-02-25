@@ -54,8 +54,8 @@ if length(param)~=nParam
 end
 
 % Compute the model distance distribution
-Lam = (param(2)/sqrt(2*log(2)));
-P = sqrt(2/pi)*1/Lam*exp(-2*((r(:) - param(1))/Lam).^2);
+sigma = (param(2)/(2*sqrt(2*log(2))));
+P = sqrt(2/pi)*1/sigma*exp(-((r(:) - param(1))/(sqrt(2)*sigma)).^2);
 dr = r(2)-r(1);
 if ~all(P==0)
 P = P/sum(P)/dr;    

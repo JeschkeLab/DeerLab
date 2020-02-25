@@ -15,6 +15,8 @@ DeerLab includes the following collection of parametric models. The model names 
     ./models/rd_threegaussian
     ./models/rd_fourgaussian
     ./models/rd_fivegaussian
+    ./models/rd_gengaussian
+    ./models/rd_skewgaussian
     ./models/rd_onerice
     ./models/rd_tworice
     ./models/rd_threerice
@@ -85,7 +87,11 @@ DeerLab includes the following collection of parametric models. The model names 
          <li><a class="reference internal" href="models/rd_fourgaussian.html#rd_fourgaussian"><span class="std std-ref" style="font-family: monospace">rd_fourgaussian</span></a>
          &nbsp - &nbsp Tetramodal Gaussian distribution </li>
          <li><a class="reference internal" href="models/rd_fivegaussian.html#rd_fivegaussian"><span class="std std-ref" style="font-family: monospace">rd_fivegaussian</span></a>
-         &nbsp - &nbsp Pentamodal Gaussian distribution </li>
+         &nbsp - &nbsp Tetramodal Gaussian distribution </li>
+         <li><a class="reference internal" href="models/rd_gengaussian.html#rd_gengaussian"><span class="std std-ref" style="font-family: monospace">rd_gengaussian</span></a>
+         &nbsp - &nbsp Generalized Gaussian distribution </li>
+         <li><a class="reference internal" href="models/rd_skewgaussian.html#rd_skewgaussian"><span class="std std-ref" style="font-family: monospace">rd_skewgaussian</span></a>
+         &nbsp - &nbsp Skew Gaussian distribution </li>
          <li><a class="reference internal" href="models/rd_onerice.html#rd_onerice"><span class="std std-ref" style="font-family: monospace">rd_onerice</span></a>
          &nbsp - &nbsp Unimodal Rician distribution </li>
          <li><a class="reference internal" href="models/rd_tworice.html#rd_tworice"><span class="std std-ref" style="font-family: monospace">rd_tworice</span></a>
