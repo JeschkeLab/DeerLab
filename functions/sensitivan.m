@@ -29,9 +29,11 @@
 %       .std    standard deviations of the output variables
 %       .p25    25th percentiles of the output variables
 %       .p75    75th percentiles of the output variables
+%
 %     factors   results of factor analysis
 %       .main   main effects
 %       .inter  interactions between factors
+%
 %     evals     cell array with all outputs computed for all factor level
 %               combinations
 %
@@ -67,7 +69,6 @@ nParameters = numel(ParNames);
 ParamList = prepvalidation(Parameters,'RandPerm',RandPerm);
 nCombinations = size(ParamList,1);
 
-
 % Factorial experiment design
 %-------------------------------------------------------------------------------
 % Get names of the variables given by the user
@@ -87,7 +88,15 @@ for i = 1:nCombinations
         nout = getmaxnargout(fcnHandle,argin);
         %Pre-allocate memory for stats structure array
         stats = repmat(struct('median',[],'mean',[],'std',[],'p25',[],'p75',[]),nout,1);
-        evals = cell(1,nout);
+        evals = cell(1,nout);        
+        sizeOut = cell(1,nout);
+        %Prepare containers for dynamic statistical estimators
+        markers25 = cell(1,nout);
+        markers50 = cell(1,nout);
+        markers75 = cell(1,nout);
+        OutSum(1:nout) = {0};
+        OutSumSq(1:nout) = {0};
+
     end
     
     % Run the user function with current factor set
@@ -103,35 +112,76 @@ for i = 1:nCombinations
     % Store outputs in an N-dimensional array
     for iOut = 1:nout
         out = varargsout{iOut};
-        % Convert vectors to rows
-        if iscolumn(out)
-            out = out.';
-        end
-        try
-            evals{iOut} = cat(1,evals{iOut},shiftdim(out,-1));
-        catch
+        
+        if isempty(sizeOut{iOut})
+            sizeOut{iOut} = size(out);
+        elseif any(sizeOut{iOut}~= size(out))
             error(['Inconsistent output variable size. ',...
                 'One of the outputs of the analyzed function is changing its size in between runs. ',...
                 'To solve this, fix the axis of the output and interpolate the result. \n%s'],...
                 '  Ex/ outFix = interp1(varAxis,out,fixAxis,''pchip'')')
+        end
+        % Convert vectors to rows
+        if iscolumn(out)
+            out = out.';
+        end
+        
+        if nargout>1
+            
+            %Estimate the memory costs of the current sensitivity analysis
+            info = whos('varargsout');
+            memoryusage = nCombinations*info.bytes;
+            memoryMatlab = memory;
+            memoryMatlab = memoryMatlab.MemAvailableAllArrays;
+            
+            %Perform memory checks after first run
+            if i==1
+                %Stop now if the estimate would exceed virtual memory available
+                %to MATLAB. Ootherwise it will crash mid-execution.
+                if memoryusage > memoryMatlab
+                    error(['The current sensitivity analysis is requesting a factor '...
+                        'analysis and/or the evaluated outputs at all combinations.'...
+                        ' According to the input this will require %.2f GB of memory, '...
+                        'which exceed the amoun available to MATLAB (%.2f GB).'],round(memoryusage/1e9,2),round(memoryMatlab/1e9,2))
+                end
+                
+                %If the estimate exceeds 3GB, warn the user that this may
+                %affect perfrmance and offer solution
+                if memoryusage/1e9 > 3
+                    warning('on','all')
+                    warning(['sensitivan will require %.2f GB of memory. This may slow down '...
+                        'your analysis or MATLAB instance. Consider reducing the amount '...
+                        'of factors/levels requesting only the ''stats'' output.'],memoryusage/1e9)
+                    warning('off','all')
+                end
+                
+            end
+            
+            %Store the outputs of the current parameter combination
+            evals{iOut} = cat(1,evals{iOut},shiftdim(out,-1));
+
         end
     end
     
     % Update statistics
     %---------------------------------------------------------------
     counter = counter + 1;
-    %Evalutate the costly percentile function only every 15 combinations or
-    %after all combinations have been evaluated
-    if counter == 15 || i == nCombinations
+    if counter == 5 || i == nCombinations
+        %Dynamically update the statistical estimators for all outputs
         for j = 1:nout
-            vareval = evals{j};
-            stats(j).median = squeeze(median(vareval,1,'omitnan'));
-            stats(j).mean = squeeze(mean(vareval,1,'omitnan'));
-            stats(j).std = squeeze(std(vareval,0,1,'omitnan'));
-            if i>1
-                stats(j).p25 = percentile(vareval,25,1).';
-                stats(j).p75 = percentile(vareval,75,1).';
-            end
+            %Get current sample/observation for output j
+            sample = varargsout{j};
+            
+            %Dynamic mean and standard deviation
+            OutSum{j} = OutSum{j} + sample;
+            OutSumSq{j} = OutSumSq{j} + sample.*sample;
+            stats(j).mean = OutSum{j}/i;
+            stats(j).std = OutSumSq{j} - (OutSum{j}.*OutSum{j}/i)/(i-1);
+            
+            %Dynamic percentiles/quantiles
+            [stats(j).median, markers50{j}] = dynprctile(0.50,sample,markers50{j});
+            [stats(j).p25, markers25{j}] = dynprctile(0.25,sample,markers25{j});
+            [stats(j).p75, markers75{j}] = dynprctile(0.75,sample,markers75{j});
         end
         %Reset counter
         counter = 0;
@@ -274,38 +324,6 @@ if nout==1
 end
 
 end
-
-% Calculate percentile (similar to prctile function in Statistics Toolbox)
-function Y = percentile(X,p,dim)
-
-% Set requested dimension as the first dimension
-dimIdx = 1:ndims(X);
-dimIdx = dimIdx(dimIdx~=dim);
-X = permute(X,[dim dimIdx]);
-
-% Get size of data
-sizeX = size(X);
-
-% Vectorize all other dimensions
-if numel(sizeX)>2
-    X = reshape(X,[sizeX(1),prod(sizeX(2:end))]);
-end
-
-N = size(X,1);
-% Sort data about first dimension
-X = sort(X,1);
-% Get list of available percentiles
-pList = 100*(0.5:1:N-0.5)/N;
-% Interpolate from list to requested percentile
-Y = interp1(pList,X,p,'linear');
-
-if numel(sizeX)>2
-    % Reshape results back to original size
-    Y = reshape(Y,sizeX(2:end));
-end
-
-end
-
 
 function nout = getmaxnargout(fcnHandle,argin)
 nout = nargout(fcnHandle);
