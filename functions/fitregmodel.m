@@ -245,7 +245,11 @@ switch lower(Solver)
         end
         if ~strcmp(RegType,'custom')
             RegFunctional = regfunctional(RegType,V,L,K,alpha,HuberParam);
+        else
+        %Parse errors in the analyzed function, and reformat them
+        RegFunctional = @(P)errorhandler(RegFunctional,'regfcn',P);
         end
+        
         fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',GradObj,'MaxFunEvals',MaxFunEvals,'Display',Verbose,'MaxIter',MaxIter);
         [P,~,exitflag] =  fmincon(RegFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         % Check how optimization exited...

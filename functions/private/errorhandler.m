@@ -19,6 +19,8 @@ function output = errorhandler(fcnh,env,varargin)
      switch env
          case 'modelfcn'
              msg = sprintf('An error was found in the model function. \n\nCaused by:\n  %s',err.message);
+         case 'regfcn'
+             msg = sprintf('An error was found in the regularization functional. \n\nCaused by:\n  %s',err.message);
      end
      
      % Construct error
