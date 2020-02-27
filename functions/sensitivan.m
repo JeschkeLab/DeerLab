@@ -21,6 +21,11 @@
 %
 %     'RandPerm' - Specifies whether to randomly permutate the validation
 %                  parameters combinations (default = true)
+%   
+%     'dynamicStats' - Specifies whether the statistical estimators are
+%                      computed using the full set of observations or approximated
+%                      dynamically at each iteration. 
+%                      (default = depends on available memory)
 %
 %   Outputs:
 %     stats     structure array with summary statistics for each variable
@@ -60,7 +65,12 @@ end
 
 validateattributes(Parameters,{'struct'},{'nonempty'},mfilename,'Parameters');
 
-[AxisHandle,RandPerm] = parseoptional({'AxisHandle','RandPerm'},varargin);
+[AxisHandle,RandPerm,dynamicStats] = ...
+    parseoptional({'AxisHandle','RandPerm','dynamicStats'},varargin);
+
+if ~isempty(dynamicStats)
+    validateattributes(dynamicStats,{'logical'},{'nonempty'},mfilename,'dynamicStats')
+end
 
 % Get parameter names, generate all parameter combinations
 ParNames = fieldnames(Parameters);
@@ -88,7 +98,7 @@ for i = 1:nCombinations
         nout = getmaxnargout(fcnHandle,argin);
         %Pre-allocate memory for stats structure array
         stats = repmat(struct('median',[],'mean',[],'std',[],'p25',[],'p75',[]),nout,1);
-        evals = cell(1,nout);        
+        evals = cell(1,nout);
         sizeOut = cell(1,nout);
         %Prepare containers for dynamic statistical estimators
         markers25 = cell(1,nout);
@@ -96,7 +106,7 @@ for i = 1:nCombinations
         markers75 = cell(1,nout);
         OutSum(1:nout) = {0};
         OutSumSq(1:nout) = {0};
-
+        
     end
     
     % Run the user function with current factor set
@@ -107,6 +117,22 @@ for i = 1:nCombinations
     numericOutput = cellfun(@(x)isnumeric(x),varargsout);
     if ~all(numericOutput)
         error('Non-numeric output arguments by the input function are not accepted.');
+    end
+    
+    %Perform memory checks to estimate if there is enough memory
+    if i==1
+        isEnoughMemory = memorycheck(varargsout,nargout,nCombinations);
+    end
+    
+    %If not specified by the user, decide which statistics estimators to use
+    if isempty(dynamicStats) && isEnoughMemory
+        dynamicStats = false;
+    elseif isempty(dynamicStats) && ~isEnoughMemory
+        dynamicStats = true;
+    elseif dynamicStats && ~isEnoughMemory
+        error(['The current sensitivity analysis using order statistics ' ...
+               'requires more memory than available. Change the option ' ...
+               '''DynamicStats'' to true to proceed.'])
     end
     
     % Store outputs in an N-dimensional array
@@ -126,62 +152,49 @@ for i = 1:nCombinations
             out = out.';
         end
         
-        if nargout>1
-            
-            %Estimate the memory costs of the current sensitivity analysis
-            info = whos('varargsout');
-            memoryusage = nCombinations*info.bytes;
-            memoryMatlab = memory;
-            memoryMatlab = memoryMatlab.MemAvailableAllArrays;
-            
-            %Perform memory checks after first run
-            if i==1
-                %Stop now if the estimate would exceed virtual memory available
-                %to MATLAB. Ootherwise it will crash mid-execution.
-                if memoryusage > memoryMatlab
-                    error(['The current sensitivity analysis is requesting a factor '...
-                        'analysis and/or the evaluated outputs at all combinations.'...
-                        ' According to the input this will require %.2f GB of memory, '...
-                        'which exceed the amoun available to MATLAB (%.2f GB).'],round(memoryusage/1e9,2),round(memoryMatlab/1e9,2))
-                end
-                
-                %If the estimate exceeds 3GB, warn the user that this may
-                %affect perfrmance and offer solution
-                if memoryusage/1e9 > 3
-                    warning('on','all')
-                    warning(['sensitivan will require %.2f GB of memory. This may slow down '...
-                        'your analysis or MATLAB instance. Consider reducing the amount '...
-                        'of factors/levels requesting only the ''stats'' output.'],memoryusage/1e9)
-                    warning('off','all')
-                end
-                
-            end
-            
+
+        if isEnoughMemory && ~dynamicStats
             %Store the outputs of the current parameter combination
             evals{iOut} = cat(1,evals{iOut},shiftdim(out,-1));
-
         end
     end
     
     % Update statistics
     %---------------------------------------------------------------
     counter = counter + 1;
+    % Evalutate the costly percentile function only every 5 combinations or
+    % after all combinations have been evaluated
     if counter == 5 || i == nCombinations
-        %Dynamically update the statistical estimators for all outputs
-        for j = 1:nout
-            %Get current sample/observation for output j
-            sample = varargsout{j};
-            
-            %Dynamic mean and standard deviation
-            OutSum{j} = OutSum{j} + sample;
-            OutSumSq{j} = OutSumSq{j} + sample.*sample;
-            stats(j).mean = OutSum{j}/i;
-            stats(j).std = OutSumSq{j} - (OutSum{j}.*OutSum{j}/i)/(i-1);
-            
-            %Dynamic percentiles/quantiles
-            [stats(j).median, markers50{j}] = dynprctile(0.50,sample,markers50{j});
-            [stats(j).p25, markers25{j}] = dynprctile(0.25,sample,markers25{j});
-            [stats(j).p75, markers75{j}] = dynprctile(0.75,sample,markers75{j});
+        
+        if dynamicStats
+            %Dynamically update the statistical estimators for all outputs
+            for j = 1:nout
+                %Get current sample/observation for output j
+                sample = varargsout{j};
+                
+                %Dynamic mean and standard deviation
+                OutSum{j} = OutSum{j} + sample;
+                OutSumSq{j} = OutSumSq{j} + sample.*sample;
+                stats(j).mean = OutSum{j}/i;
+                stats(j).std = OutSumSq{j} - (OutSum{j}.*OutSum{j}/i)/(i-1);
+                
+                %Dynamic percentiles/quantiles
+                [stats(j).median, markers50{j}] = dynprctile(0.50,sample,markers50{j});
+                [stats(j).p25, markers25{j}] = dynprctile(0.25,sample,markers25{j});
+                [stats(j).p75, markers75{j}] = dynprctile(0.75,sample,markers75{j});
+            end
+        else
+            %Update statistical estimators using order statistics
+            for j = 1:nout
+                vareval = evals{j};
+                stats(j).median = squeeze(median(vareval,1,'omitnan'));
+                stats(j).mean = squeeze(mean(vareval,1,'omitnan'));
+                stats(j).std = squeeze(std(vareval,0,1,'omitnan'));
+                if i>1
+                    stats(j).p25 = percentile(vareval,25,1).';
+                    stats(j).p75 = percentile(vareval,75,1).';
+                end
+            end
         end
         %Reset counter
         counter = 0;
@@ -347,5 +360,70 @@ while ~done
         nout = nout-1;
         done = true;
     end
+end
+end
+
+% Calculate percentile (similar to prctile function in Statistics Toolbox)
+function Y = percentile(X,p,dim)
+
+% Set requested dimension as the first dimension
+dimIdx = 1:ndims(X);
+dimIdx = dimIdx(dimIdx~=dim);
+X = permute(X,[dim dimIdx]);
+
+% Get size of data
+sizeX = size(X);
+
+% Vectorize all other dimensions
+if numel(sizeX)>2
+    X = reshape(X,[sizeX(1),prod(sizeX(2:end))]);
+end
+
+N = size(X,1);
+% Sort data about first dimension
+X = sort(X,1);
+% Get list of available percentiles
+pList = 100*(0.5:1:N-0.5)/N;
+% Interpolate from list to requested percentile
+Y = interp1(pList,X,p,'linear');
+
+if numel(sizeX)>2
+    % Reshape results back to original size
+    Y = reshape(Y,sizeX(2:end));
+end
+
+end
+
+function isEnoughMemory = memorycheck(sample,nargout,nCombinations)
+
+%Estimate the memory costs of the current sensitivity analysis
+info = whos('sample');
+memoryusage = nCombinations*info.bytes;
+memoryMatlab = memory;
+memoryMatlab = memoryMatlab.MemAvailableAllArrays;
+
+
+%Stop now if the estimate would exceed virtual memory available
+%to MATLAB. Ootherwise it will crash mid-execution.
+if memoryusage > memoryMatlab && nargout>1
+    error(['The current sensitivity analysis is requesting a factor '...
+        'analysis and/or the evaluated outputs at all combinations.'...
+        ' According to the input this will require %.2f GB of memory, '...
+        'which exceed the amoun available to MATLAB (%.2f GB).'],round(memoryusage/1e9,2),round(memoryMatlab/1e9,2))
+elseif  memoryusage > memoryMatlab && nargout==1
+    isEnoughMemory = false;
+else
+    isEnoughMemory = true;
+end
+
+%If the estimate exceeds 3GB, use dynamic
+if memoryusage/1e9 > 3 && nargout>1
+    warning('on','all')
+    warning(['sensitivan will require %.2f GB of memory. This may slow down '...
+        'your analysis or MATLAB instance. Consider reducing the amount '...
+        'of factors/levels or requesting only the ''stats'' output.'],memoryusage/1e9)
+    warning('off','all')
+elseif memoryusage/1e9 > 3 && nargout==1
+    isEnoughMemory = false;
 end
 end

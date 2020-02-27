@@ -122,3 +122,15 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 			[median,iqr] = sensitivan(fcn,varpar,'AxisHandle',gca)
 
+
+- ``'dynamicStats'`` -  Enable dynamica statistical estimators
+Specifies whether the statistical estimators are computed using the full set of observations (``false``) or approximated dynamically at each iteration (``true``).
+
+    *Default:* ``false`` (if enough memory available) ``true`` (if not enough memory available)
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			[median,iqr] = sensitivan(fcn,varpar,'dynamicStats',true)
+
