@@ -19,7 +19,7 @@ Syntax
     P = fitmultigauss(S,K,r,Ngauss)
     P = fitmultigauss(S,t,r,Ngauss)
     P = fitmultigauss(S,K,r,Ngauss,metric)
-    P = fitmultigauss(S,t,r,Ngauss,metric,'BackgModel',model)
+    P = fitmultigauss(S,t,r,Ngauss,metric,'Background',model)
     [P,param,Nopt,metrics,Peval] = fitmultigauss(S,K,r,Ngauss,metric,'Property',Value)
 
 
@@ -78,9 +78,9 @@ If the default kernel is to be used, the time-axis can be passed instead of the 
 
 .. code-block:: matlab
 
-	P = fitmultigauss(S,t,r,Ngauss,metric,'BackgModel',model)
+	P = fitmultigauss(S,t,r,Ngauss,metric,'Background',model)
 
-By passing the ``'BackModel'`` option, the background function and modulation depth are fitted along the multigauss distribution parameters. 
+By passing the ``'Background'`` option, the background function and modulation depth are fitted along the multigauss distribution parameters. 
 
 -----------------------------
 
@@ -102,7 +102,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
     P = fitmultigauss(args,'Property1',Value1,'Property2',Value2,...)
 
-- ``'BckgModel'`` - Parametric background model
+- ``'Background'`` - Parametric background model
     Function handle of the corresponding time-domain background model.
 
     *Default:* [*empty*] - Background and modulation depth are not fitted
@@ -111,7 +111,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = fitmultigauss(S,t,r,Ngauss,metric,'BackgModel',@td_exp)
+			P = fitmultigauss(S,t,r,Ngauss,metric,'Background',@td_exp)
 
 - ``'Upper'`` - Parameters upper bound constraints
     Array ``[<r>_max FWHM_max]`` containing the upper bound for the FWHM and mean distance of all the Gaussians.
