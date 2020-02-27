@@ -51,12 +51,12 @@ r = time2dist(traw);
 
 %Optimization & Correction of phase
 V = correctphase(Vraw);
-%Optimization & Correctionof zero-time
+%Optimization & Correction of zero-time
 t = correctzerotime(V,traw);
 %Optimization & Correction of Y-axis scale
 V = correctscale(V,t);
 %% Prepare the dipolar kernel
-% Since experimental dipolar signals contain a inter-molecular contribution, 
+% Since experimental dipolar signals contain an inter-molecular contribution, 
 % i.e. a background, this must be fitted and included into the dipolar kernel 
 % before the regularization.
 % 
