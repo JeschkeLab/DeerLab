@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 S1 = ones(40,1);
 S2 = ones(70,1);
@@ -14,6 +14,6 @@ w = globalweights(S,NoiseLevel);
 
 maxerr = max(abs(w-wref));
 err = maxerr>1e-6;
-data = [];
+ 
 
 end

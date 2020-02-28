@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 Ntime = 100;
 Ndist = 200;
@@ -23,8 +23,8 @@ err  = any(err);
 maxerr = max(abs(TikhResult - P));
 
 
-err = any(err);
-data = [];
+pass = all(err);
+ 
 
 if opt.Display
  	figure(8),clf

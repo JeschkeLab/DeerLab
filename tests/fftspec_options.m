@@ -1,28 +1,33 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-FreqAxis = linspace(-10,10,200);
+%Check that fftspec() runs with all its options
+
+nu = linspace(-10,10,200);
 t = linspace(0,1/mean(2*10)*100,100);
-
 S = exp(-t).*cos(2*pi*5*t);
-Spectrum = abs(fftshift(fft(S,2*length(S))));
+[nu1,spec1] = fftspec(t,S,'Type','abs','ZeroFilling',400);
+[nu2,spec2] = fftspec(t,S,'Type','real','Apodization',false);
 
-[X1] = fftspec(t,S,'Type','abs','ZeroFilling',200);
-[X2] = fftspec(t,S,'Type','real','Apodization',false);
 
-err(1) = any(length(X1)~=200);
-err(2) = any(length(X2)~=200);
-err = any(err);
-maxerr = length(X1 - 200);
-data = [];
+% Pass 1: spectra has right size
+pass(1) = length(spec1) == 400;
+% Pass 2: frequency axis has right size
+pass(2) = length(nu1) == 400;
+% Pass 2: spectra has right size
+pass(3) = length(spec2) == 200;
+% Pass 2: frequency axis has right size
+pass(4) = length(nu2) == 200;
+
+pass = all(pass);
+
+maxerr = NaN;
+ 
 
 if opt.Display
-  figure,clf
-  subplot(121)
-  plot(t,S)
-  subplot(122)
-  hold on
-  plot(FreqAxis,Spectrum)
-  plot(FrequencyAxis,Xabs)
+    plot(nu1,spec1,nu2,spec2)
+    xlabel('\nu [MHz]')
+    ylabel('Intensity [a.u.]')
+    grid on, axis tight, box on
 end
 
 end

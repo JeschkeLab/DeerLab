@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %=======================================
 % Check TV regularization
@@ -19,8 +19,8 @@ TVResult1 = fitregmodel(DipEvoFcn,K,r,'tv',RegParam,'Solver','fmincon','RegOrder
 error = abs(TVResult1 - P);
 err(1) = any(error>2e-1);
 maxerr = max(error);
-err = any(err);
-data = [];
+pass = all(err);
+ 
 
 if opt.Display
  	figure(8),clf

@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
 t = linspace(0,5,200).';
 
@@ -9,8 +9,8 @@ r3 = linspace(rmin,rmax,200).';
 
 err(1) = any(abs(r1-r2)>1e-10);
 err(2) = any(abs(r1-r3)>1e-10);
-err = any(err);
+pass = all(err);
 maxerr = max(abs(r1-r2));
-data = [];
+ 
 
 end

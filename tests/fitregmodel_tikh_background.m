@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %=======================================
 % Check Tikhonov regularization
@@ -29,8 +29,8 @@ err(3) = any(abs(TikhResult3 - P)>4e-2);
 
 maxerr = max(abs(TikhResult1 - P));
 
-err = any(err);
-data = [];
+pass = all(err);
+ 
 
 if opt.Display
  	figure(8),clf

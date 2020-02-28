@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 Dimension = 100;
 dt = 0.008;
@@ -17,7 +17,7 @@ OptParam2 = selregparam(S,K,r,'tikhonov',{'all'},'NonNegConstrained',false,'Nois
 err(1) = length(OptParam2)~=14;
 err(2) = length(OptParam1)~=14;
 maxerr = NaN;
-data = [];
+ 
 
 
 

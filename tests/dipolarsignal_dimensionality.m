@@ -1,4 +1,6 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+% Check indifference of dipolarsignal() towards input dimensionality
 
 t = linspace(-1,4,20);
 r = linspace(1,6,50);
@@ -16,12 +18,14 @@ V7 = dipolarsignal(t.',r,P,'moddepth',lam,'background',B.');
 V8 = dipolarsignal(t,r.',P.','moddepth',lam,'background',B);
 V9 = dipolarsignal(t.',r.',P.','moddepth',lam,'background',B.');
 
+% Pass 1: all signals are equal
+pass(1) = isequal(V1,V2,V3,V4,V5,V5,V6,V7,V8,V9);
+% Pass 2: all signals are column vectors
+pass(2) = iscolumn(V1) & iscolumn(V2) & iscolumn(V3) & iscolumn(V4) & iscolumn(V5) & iscolumn(V6) & iscolumn(V7) & iscolumn(V8) & iscolumn(V9);
 
-err(1) = ~isequal(V1,V2,V3,V4,V5,V5,V6,V7,V8,V9);
-err(2) = ~iscolumn(V1) | ~iscolumn(V2) | ~iscolumn(V3) | ~iscolumn(V4) | ~iscolumn(V5) | ~iscolumn(V6) | ~iscolumn(V7) | ~iscolumn(V8) | ~iscolumn(V9);
+pass = all(pass);
 
-err = any(err);
-maxerr = max(max(abs(V1 - V2)));
-data = [];
+maxerr = NaN;
+ 
 
 end

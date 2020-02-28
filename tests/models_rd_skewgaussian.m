@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 
 r = linspace(0,50,500);
@@ -20,8 +20,8 @@ err(3) = any(P1<0) | any(P2<0);
 %Control there are no NaN
 err(4) = any (isnan(P1)) | any(isnan(P2)) | any(isnan(P3)) | any(isnan(P4));
 
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = NaN;
 
 end

@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %======================================================
 % Make sure metric distances are computed allright
@@ -23,9 +23,9 @@ err(1)  = any(values>1e-7);
 err(2)  = any(~isreal(values));
 err(3) = ~isstruct(values_all);
 
-err = any(err);
+pass = all(err);
 maxerr = NaN;
-data = [];
+ 
 
 end
 

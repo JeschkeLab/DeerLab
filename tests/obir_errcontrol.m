@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %=======================================
 % Check Tikhonov regularization
@@ -23,6 +23,6 @@ catch
 end
 
 maxerr = 0;
-data = [];
+ 
 
 end

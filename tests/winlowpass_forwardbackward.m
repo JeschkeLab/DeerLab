@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 dt = 0.5e-9;
 nu1 = 0.5e9;
@@ -22,7 +22,7 @@ attenuation = mag2db(max(filteredspec)/max(spec));
 
 err = attenuation>-30;
 maxerr = attenuation;
-data = [];
+ 
 
 if opt.Display
 figure(1),clf

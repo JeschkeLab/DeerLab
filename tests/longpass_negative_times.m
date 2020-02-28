@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 Dimension = 100;
 t = linspace(-0.5,5,Dimension);
@@ -14,8 +14,8 @@ Result = fitregmodel(Filtered,K,r,'tikhonov','aic','Solver','fnnls');
 error = abs(Result - P);
 err(1) = any(error>7e-1);
 maxerr = max(error);
-err = any(err);
-data = [];
+pass = all(err);
+ 
 
 if opt.Display
     figure(9),clf

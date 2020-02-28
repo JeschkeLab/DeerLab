@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 N = 60;
 dt = 0.008;
@@ -26,8 +26,8 @@ err(3) = any(abs(alphaopt1 - alphaopt3) > 1e-2);
 err(4) = any(abs(alphaopt4 - alphaopt5) > 1e-2);
 err(5) = any(abs(alphaopt4 - alphaopt6) > 1e-2);
 
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = 0;
 
 end

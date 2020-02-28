@@ -1,4 +1,6 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
+
+% Check indifference of fitparamodel() towards input dimensionality
 
 t = linspace(0,5,50);
 r = linspace(1,6,50);
@@ -22,14 +24,19 @@ param0 = [4 0.3];
 [~,Vfit3] = fitparamodel(S,mymodel,t.',param0,'upper',[100 100],'lower',[0 0]);
 [~,Vfit4] = fitparamodel(S.',mymodel,t.',param0.','upper',[100 100],'lower',[0 0]);
 
-err(1) = ~isequal(Pfit1,Pfit2,Pfit3,Pfit4);
-err(2) = ~iscolumn(Pfit1) | ~iscolumn(Pfit2) | ~iscolumn(Pfit3) | ~iscolumn(Pfit4);
-err(3) = ~iscolumn(Vfit1) | ~iscolumn(Vfit2) | ~iscolumn(Vfit3) | ~iscolumn(Vfit4);
+% Pass 1: all distributions are equal
+pass(1) = isequal(Pfit1,Pfit2,Pfit3,Pfit4);
+% Pass 2: all distributions are columns 
+pass(2) = iscolumn(Pfit1) & iscolumn(Pfit2) & iscolumn(Pfit3) & iscolumn(Pfit4);
+% Pass 2: all signals are equal 
+pass(3) = isequal(Vfit1,Vfit2,Vfit3,Vfit4);
+% Pass 2: all signals are columns 
+pass(4) = iscolumn(Vfit1) & iscolumn(Vfit2) & iscolumn(Vfit3) & iscolumn(Vfit4);
 
-err = any(err);
+pass = all(pass);
 
-maxerr = max(abs(Pfit1 - Pfit2));
-data = [];
+maxerr = NaN;
+ 
 
 
 end

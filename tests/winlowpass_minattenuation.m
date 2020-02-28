@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 dt = 0.5e-9;
 nu1 = 0.5e9;
@@ -13,9 +13,9 @@ ws =  0.04e9;
 [Sfilt2] = winlowpass(S,ws,wp,sampl,'MinimalAttenuation',50);
 
 
-err = any(abs(Sfilt1 - Sfilt2)>1e-10);
+pass = all(abs(Sfilt1 - Sfilt2)>1e-10);
 maxerr = max(abs(Sfilt1 - Sfilt2));
-data = [];
+ 
 
 if opt.Display
 figure(1),clf

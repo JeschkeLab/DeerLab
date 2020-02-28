@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 
 r = linspace(0,50,500);
@@ -26,8 +26,8 @@ dr = mean(diff(r));
 %Control normalization
 err(5) = round(sum(P1)*dr)~=1 |round(sum(P2)*dr)~=1 | round(sum(P3)*dr)~=1 | round(sum(P4)*dr)~=1;
 
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = NaN;
 
 end

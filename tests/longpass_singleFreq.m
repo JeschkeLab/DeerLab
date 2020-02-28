@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %=======================================
 % Check TV regularization
@@ -25,8 +25,8 @@ Result = fitregmodel(Filtered,K,r,'tikhonov','aic','Solver','fnnls');
 error = abs(Result - P);
 err(1) = any(error>4e-1);
 maxerr = max(error);
-err = any(err);
-data = [];
+pass = all(err);
+ 
 
 if opt.Display
     figure(9),clf

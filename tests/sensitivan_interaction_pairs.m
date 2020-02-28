@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 x = linspace(0,100,100);
 
@@ -12,8 +12,8 @@ Interaction = fctrs.inter;
 err(1) = Interaction{1}(1,3)>Interaction{1}(1,2);
 err(2) = Interaction{2}(1,2)>Interaction{2}(1,3);
 
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = 0;
 
 end

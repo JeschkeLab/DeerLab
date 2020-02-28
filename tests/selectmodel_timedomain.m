@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %Test if selectmethod can identify that the optimal method is a two
 %gaussian model as given as the input signal
@@ -19,8 +19,8 @@ optimum3 = selectmodel(Models,B,t,'bic');
 
 err(1) = optimum1~=optimum2;
 err(2) = optimum2~=optimum3;
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = NaN;
 
 

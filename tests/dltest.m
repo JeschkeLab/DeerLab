@@ -113,24 +113,6 @@ for iTest = 1:numel(TestFileNames)
     
     thisTest = TestFileNames{iTest}(1:end-2);
     
-    
-    %  Load, or regenerate, comparison data
-    olddata = [];
-    TestDataFile = ['data/' thisTest '.mat'];
-    if exist(TestDataFile,'file')
-        if Opt.Regenerate
-            delete(TestDataFile);
-            olddata = [];
-        else
-            try
-                olddata = load(TestDataFile,'data');
-                olddata = olddata.data;
-            catch
-                error('Could not load data for test ''% s''.',thisTest);
-            end
-        end
-    end
-    
     % Clear data in the cache before testing
     Pos = strfind(thisTest,'_');
     functionName = thisTest(1:Pos(1)-1);
@@ -149,35 +131,35 @@ for iTest = 1:numel(TestFileNames)
     warning('off')
     tic
     try
-        data = [];
+         
         maxerr(iTest) = 0;
         if nArgsOut==1
             if nArgsIn==0
-                err = testFcn();
+                pass = testFcn();
             else
-                err = testFcn(Opt);
+                pass = testFcn(Opt);
             end
         else
-            if nArgsIn<2
-                error('2 inputs are needed.');
+            if nArgsIn<1
+                error('1 input is needed.');
             end
-            if nArgsOut==3
-                [err,data,maxerr(iTest)] = testFcn(Opt,olddata);
+            if nArgsOut==2
+                [pass,maxerr(iTest)] = testFcn(Opt);
             else
-                [err,data] = testFcn(Opt,olddata);
+                [pass] = testFcn(Opt);
             end
         end
         % If test returns empty err, then treat it as not tested
-        if isempty(err)
-            err = 3; %  not tested
+        if isempty(pass)
+            pass = 3; %  not tested
         else
-            err = any(err~=0);
+            pass = any(pass~=1);
         end
         errorInfo = [];
         errorStr = '';
     catch exception
-        data = [];
-        err = 2;
+         
+        pass = 2;
         errorInfo = exception;
         errorStr = getReport(errorInfo);
         errorStr = ['    ' regexprep(errorStr,'\n','\n    ') newline];
@@ -208,51 +190,62 @@ for iTest = 1:numel(TestFileNames)
             end
         end
     end
-    isRegressionTest = ~isempty(data);
-    saveTestData = isRegressionTest && isempty(olddata);
-    if saveTestData
-        save(TestDataFile,'data');
-    end
     
-    testResults(iTest).err = double(err);
-    testResults(iTest).err = double(err);
+    testResults(iTest).err = double(pass);
+    testResults(iTest).err = double(pass);
     testResults(iTest).name = thisTest;
     testResults(iTest).errorData = errorInfo;
     
     outcomeStr = OutcomeStrings{testResults(iTest).err+1};
     
-    if ~isempty(data)
-        typeStr = 'regression';
-    else
-        typeStr = 'direct';
-    end
-    
     if displayTimings
-        timeStr = sprintf('% 0.3f seconds',time_used(iTest));
+        timeStr = sprintf('% 0.3f sec',time_used(iTest));
     else
         timeStr = [];
     end
     
     try
         if displayErrors
-            maxerrStr = sprintf('% 0.2e ',maxerr(iTest));
+            if ~isnan(maxerr(iTest))
+                maxerrStr = sprintf('% 0.2e ',maxerr(iTest));
+            else
+                maxerrStr = ' --------';
+            end
         else
             maxerrStr = [];
         end
     catch
         maxerrStr = [];
     end
-    str = sprintf('% -36s  % -12s% -8s% s% s\n% s',...
-        testResults(iTest).name,typeStr,outcomeStr,maxerrStr,timeStr,errorStr);
+   
+    str = sprintf('% -38s   %-8s% -8s% s \n',...
+        testResults(iTest).name,outcomeStr,maxerrStr,timeStr);
     str(str=='\') = '/';
     
-    testResults(iTest).msg = str;
+    
+    str2 = sprintf('% -38s   %-8s% -8s% s \n% s',...
+        testResults(iTest).name,outcomeStr,maxerrStr,timeStr,errorStr);
+    str2(str2=='\') = '/';
+    testResults(iTest).msg = str2;
+    
+    switch outcomeStr
+        case 'pass'
+            fid = 1;
+        case 'failed'
+            fid = 1;
+            str = ['[\b' str ']\b'];
+        case 'crashed'
+            fid = 2;
+    end
     
     fprintf(fid,str);
+    
     if Opt.Display
         if iTest<numel(TestFileNames), pause; end
     end
 end
+
+fid = 1;
 
 allErrors = [];
 
@@ -315,11 +308,13 @@ if runTutorials
             outcomeStr = 'pass';
             errorStr = '';
             allErrors(end+1) = 0;
+            fid = 1;
         catch exception
             outcomeStr = 'crash';
             allErrors(end+1) = 2;
             errorStr = getReport(exception);
             errorStr = ['    ' regexprep(errorStr,'\n','\n    '),newline];
+            fid = 2;
         end
         tutorialTime = toc;
         

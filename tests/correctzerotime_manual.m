@@ -1,23 +1,22 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Zero-time correction function
-%======================================================
+% Test manual zero-time correction
 
-originalt = -5:1:80;
-originalData = 1000 - (originalt.^2);
-originalData = originalData/max(originalData);
-t = originalt + abs(min(originalt));
-inputZeroTime = abs(min(originalt));
+t = -5:1:80;
+x = 1000 - (t.^2);
+x = x/max(x);
+t = t + abs(min(t));
+ztin = abs(min(t));
 
-[correctedt,outputZeroTime] = correctzerotime(originalData,t,inputZeroTime);
+[tcorr,ztout] = correctzerotime(x,t,ztin);
 
+% Pass 1: corrected time-axis is equal to original
+pass(1) = all(abs(tcorr - t.') < 1e-10);
+% Pass 2: zero-time is returned properly
+pass(2) = abs(ztout' - ztin) < 1e-10;
 
-err(1) = any(abs(correctedt - originalt.')>1e-10);
-err(2) = abs(outputZeroTime' - inputZeroTime)>1e-10;
+pass = all(pass);
 
-maxerr = max(abs(correctedt - originalt.'));
-err = any(err);
-data = [];
+maxerr = max(abs(tcorr - t.')); 
 
 end

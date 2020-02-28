@@ -1,54 +1,50 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%==============================================================
-% Get start of background fit ensure that integer is returned
-%==============================================================
-%Parameters
-k = 0.5;
-N = 200;
-dt = 0.016;
-t = linspace(0,N*dt,N);
-%Construct some dipolar evolution function 
+% Check error control of backgroundstart() towards wrong inputs
+
+t = linspace(0,4,150);
 r = time2dist(t);
 P = rd_onegaussian(r,[3,0.5]);
-%Construct background
-B = exp(-k*t).';
+B = td_exp(t,0.5);
 lam0 = 0.5;
-%Account modulation depth for the offset=1
 S = dipolarsignal(t,r,P,'background',B,'moddepth',lam0);
 
+% Pass 1: forgetting the background model
 try
     backgroundstart(S,t);
-    err(1) = true;
+    pass(1) = false;
 catch
-    err(1) = false;
+    pass(1) = true;
 end
 
-
+% Pass 2: passing a complex signal
 S2 = dipolarsignal(t,r,P,'background',B,'moddepth',lam0,'phase',pi/2);
 try
     backgroundstart(S2,t,@td_poly1);
-    err(2) = true;
+    pass(2) = false;
 catch
-    err(2) = false;
+    pass(2) = true;
 end
 
+% Pass 3: passing a non function-handle as model
 model = rand(2,2);
 try
     backgroundstart(S,t,model);
-    err(3) = true;
+    pass(3) = false;
 catch
-    err(3) = false;
+    pass(3) = true;
 end
 
+% Pass 3: passing relative start/end positions in inverse order
 try
     backgroundstart(S,t,@td_poly1,'RelSearchStart',0.9,'RelSearchEnd',0.1);
-    err(4) = true;
+    pass(4) = false;
 catch
-    err(4) = false;
+    pass(4) = true;
 end
-err = any(err);
-data = [];
-maxerr = 0;
+
+pass = all(pass);
+ 
+maxerr = NaN;
 
 end

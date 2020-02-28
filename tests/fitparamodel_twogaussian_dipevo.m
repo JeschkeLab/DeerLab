@@ -1,35 +1,30 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
+% Test a distance-domain fit of a two-Gaussian model
 
-Dimension = 400;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-InputParam = [3 0.5 4 0.5 0.4];
-P = rd_twogaussian(r,InputParam);
-
+t = linspace(0,5,300);
+r = linspace(1,6,300);
+parIn = [3 0.5 4 0.5 0.4];
+P = rd_twogaussian(r,parIn);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
 
-InitialGuess = [2 0.5 5 0.3 0.5];
-[FitParam,FitP] = fitparamodel(DipEvoFcn,@rd_twogaussian,r,K,InitialGuess);
-err(1) = any(abs(FitP - P)>1e-5);
-err = any(err);
+par0 = [2 0.5 5 0.3 0.5];
+[~,Pfit] = fitparamodel(S,@rd_twogaussian,r,K,par0);
 
-maxerr = max(abs(FitP - P));
-data = [];
+
+%Pass: distance distribution is well fitted
+pass = all(abs(Pfit - P) < 1e-10);
+
+maxerr = max(abs(Pfit - P));
+ 
 
 if opt.Display
-   figure(1),clf
-   subplot(121)
-   hold on
-   plot(t,DipEvoFcn,'b')
-   plot(t,K*FitP,'r')
-   subplot(122)
-   hold on
-   plot(r,P,'b')
-   plot(r,FitP,'r')
-   
+   plot(r,P,'k',r,Pfit,'r')
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

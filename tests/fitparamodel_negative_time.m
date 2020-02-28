@@ -1,33 +1,28 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+%Check that fitparamodel works with negative times
 
 rng(2)
-t = linspace(-5,5,300);
-r = time2dist(t);
+t = linspace(-5,1,300);
+r = linspace(2,6,200);
 P = rd_onegaussian(r,[4 0.4]);
 K = dipolarkernel(t,r);
-V = K*P;
-V = V + whitegaussnoise(300,0.02);
-V = V/max(V);
-
+V = K*P + whitegaussnoise(t,0.02);
 
 [~,Pfit] = fitparamodel(V,@rd_onegaussian,r,K);
-
 error = abs(Pfit - P);
-err = any(error>7e-2);
-maxerr= max(error);
-data = [];
+
+%Pass: solution fits the ground truth
+pass = all(error < 7e-2);
+
+maxerr = max(error);
 
 if opt.Display
-figure(8)
-clf
-subplot(121)
-plot(r,P,r,Pfit)
-subplot(122)
-plot(t,V,t,K*Pfit)
+   plot(r,P,'k',r,Pfit,'r')
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
-
-
-
-
 
 end

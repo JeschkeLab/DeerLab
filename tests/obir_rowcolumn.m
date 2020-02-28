@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %=======================================
 % Check Tikhonov regularization
@@ -30,9 +30,9 @@ Pfit1 = obir(S,K,r.','tikh',alpha,'NoiseLevelAim',0.05);
 Pfit2 = obir(S,K,r,'tikh',alpha,'NoiseLevelAim',0.05);
 err(2) = any(abs(Pfit1 - Pfit2)>1e-10);
 
-err = any(err);
+pass = all(err);
 maxerr = max(abs(Pfit1 - Pfit2));
-data = [];
+ 
 
 if opt.Display
  	figure(8),clf

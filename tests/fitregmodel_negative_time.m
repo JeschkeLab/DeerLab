@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 t = linspace(-3,5,200);
 r = time2dist(t);
@@ -13,9 +13,9 @@ alpha = 2;
 Pfit = fitregmodel(V,K,r,'tikhonov',alpha);
 
 error = abs(Pfit - P);
-err = any(error>5e-1);
+pass = all(error>5e-1);
 maxerr= max(error);
-data = [];
+ 
 
 if opt.Display
 figure(8)

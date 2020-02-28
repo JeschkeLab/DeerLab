@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 Ntime = 100;
 Ndist = 100;
@@ -39,6 +39,6 @@ RegParam2 = selregparam(DipEvoFcn,K,r,'tikhonov','aic');
 err = RegParam2 < RegParam1;
 
 maxerr = NaN;
-data = [];
+ 
 
 end

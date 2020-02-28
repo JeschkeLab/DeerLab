@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 rng(2)
 Ntime1 = 100;
@@ -46,9 +46,9 @@ norm1 = norm(P - Dist1);
 norm2 = norm(P - Dist2);
 norm3 = norm(P - Dist3);
 
-err = any(normResult > [norm2 norm3]);
-err = any(err);
-data = [];
+pass = all(normResult > [norm2 norm3]);
+pass = all(err);
+ 
 maxerr = normResult;
 
 if opt.Display

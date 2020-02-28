@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 clear regularize
 
@@ -21,8 +21,8 @@ Result = fitregmodel(DipEvoFcn,K,r,'huber',RegParam,'Solver','fnnls','HuberParam
 error = abs(Result - P);
 err(1) = any(error>1e-2);
 maxerr = max(error);
-err = any(err);
-data = [];
+pass = all(err);
+ 
 
 if opt.Display
  	figure(8),clf

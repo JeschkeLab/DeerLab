@@ -1,4 +1,7 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+% Check error control of fitbackground() towards wrong inputs
+
 
 t = linspace(0,10,100);
 lam0 = 0.25;
@@ -8,52 +11,58 @@ V = dipolarsignal(t,3,'Background',td_exp(t,k),'moddepth',lam0);
 tstart = 4.2424;
 tend = 10.0000;
 
+% Pass 1: one time too much
 twrong = 5;
 try
 fitbackground(V,t,@td_exp,[tstart tend twrong]);
-err(1) = true;
+pass(1) = false;
 catch 
-err(1) = false;    
+pass(1) = true;    
 end
 
+% Pass 2: not passing a valid model function handle
 model = rand(12,1);
 try
 fitbackground(V,t,model,tstart);
-err(2) = true;
+pass(2) = false;
 catch 
-err(2) = false;    
+pass(2) = true;    
 end
 
+% Pass 3: passing several moodulation depths
 try
 fitbackground(V,t,@td_exp,'moddepth',[0.5 0.1]);
-err(3) = true;
+pass(3) = false;
 catch 
-err(3) = false;    
+pass(3) = true;    
 end
 
+% Pass 4: passing a wrong modulation depth
 try
 fitbackground(V,t,@td_exp,'moddepth',2);
-err(4) = true;
+pass(4) = false;
 catch 
-err(4) = false;    
+pass(4) = true;    
 end
 
+% Pass 5: not enough inputs
 try
 fitbackground(V,t);
-err(5) = true;
+pass(5) = false;
 catch 
-err(5) = false;    
+pass(5) = true;    
 end
 
+% Pass 6: non increasing vector
 try
 fitbackground(V,t,@td_exp,[tend tstart]);
-err(6) = true;
+pass(6) = false;
 catch 
-err(6) = false;    
+pass(6) = true;    
 end
 
-err = any(err);
-maxerr = 0;
-data = [];
+pass = all(pass);
+maxerr = NaN;
+ 
 
 end

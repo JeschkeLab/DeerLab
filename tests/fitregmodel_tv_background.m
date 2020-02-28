@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %=======================================
 % Check Tikhonov regularization
@@ -26,7 +26,7 @@ Result = fitregmodel(V,KB,r,'tv',RegParam,'Solver','fnnls','RegOrder',3);
 error = abs(Result - P);
 err(1) = any(error > 2e-2);
 maxerr = max(error);
-data = [];
+ 
 
 if opt.Display
  	figure(8),clf

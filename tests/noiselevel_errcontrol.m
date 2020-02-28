@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 N = 200;
 dt = 0.008;
@@ -26,7 +26,7 @@ catch
 end
 
 maxerr = 0;
-data = [];
+ 
 
 
 end

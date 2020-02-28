@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 n = 20;
 x = linspace(0,1,n);
@@ -13,8 +13,8 @@ err(2) = any(size(stats(2).mean)~=[n 1]);
 err(3) = any(size(stats(3).mean)~=[n n]);
 
 
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = 0;
 
 end

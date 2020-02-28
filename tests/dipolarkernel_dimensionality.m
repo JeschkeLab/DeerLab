@@ -1,4 +1,6 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+% Check indifference of diplarkernel() towards input dimensionality
 
 t = linspace(-1,4,20);
 r = linspace(1,6,50);
@@ -14,9 +16,10 @@ K6 = dipolarkernel(t,r.',lam,B.','Cache',false);
 K7 = dipolarkernel(t.',r,lam,B.','Cache',false);
 K8 = dipolarkernel(t.',r.',lam,B.','Cache',false);
 
-err = ~isequal(K1,K2,K3,K4,K5,K5,K6,K7,K8);
+% Pass: all kernels are equal
+pass = isequal(K1,K2,K3,K4,K5,K5,K6,K7,K8);
 
-maxerr = max(max(abs(K1 - K2)));
-data = [];
+maxerr = NaN;
+ 
 
 end

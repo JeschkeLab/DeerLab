@@ -1,27 +1,34 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Test data preparation function
-%======================================================
+% Check that apt() works with defined input schemes
 
 %Parameters
-Dimension = 200;
-t = linspace(-0.6,2,Dimension);
+t = linspace(-0.6,2,200);
 r = time2dist(t);
 P = rd_onegaussian(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
 
 aptK = aptkernel(t);
 
-[aptP1] = apt(DipEvoFcn,aptK,0.05);
-[aptP2] = apt(DipEvoFcn,aptK);
+%Pass default value or let function use it
+[aptP1] = apt(S,aptK,0.05);
+[aptP2,r] = apt(S,aptK);
 
-error = abs(aptP1 - aptP2);
-err = any(error>1e-10);
-data = [];
-maxerr = max(error);
+%Pass if the signal is equal down to numerical error
+pass = isequal(aptP1,aptP2);
+ 
+maxerr = NaN;
+
+%Plot if requested
+if opt.Display 
+    plot(r,aptP1,r,aptP2);
+    xlabel('r [nm]')
+    ylabel('P(r) [nm^{-1}]')
+    legend('Input scheme 1','Input scheme 2')
+    axis tight, grid on, box on
+end
 
 
 end

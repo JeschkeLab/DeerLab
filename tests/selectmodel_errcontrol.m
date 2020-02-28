@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 N = 200;
 dt = 0.016;
@@ -60,9 +60,9 @@ catch
     err(7) = false;
 end
 
-err = any(err);
+pass = all(err);
 maxerr = NaN;
-data = [];
+ 
 
 end
 

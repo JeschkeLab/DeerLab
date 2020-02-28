@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 rng(2)
 t = linspace(0,4,200);
@@ -19,7 +19,7 @@ Upper = stats.p75;
 Lower = stats.p25;
 
 err = false;
-data = [];
+ 
 maxerr = NaN;
 
 if opt.Display

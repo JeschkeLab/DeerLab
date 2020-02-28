@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 N = 100;
 dt = 0.008;
@@ -12,8 +12,8 @@ S = K*P;
 [OptParam,Functionals,RegParams] = selregparam(S,K,r,'tikhonov',{'aic','gml','gcv'},'Search','grid');
 %Accept testif all values are the same (should be as there is no noise)
 err(1) = any(diff(OptParam) > 1e-2);
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = max(diff(OptParam));
 
 if opt.Display

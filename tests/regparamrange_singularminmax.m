@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 N = 200;
 t = linspace(0,5,N);
@@ -14,6 +14,6 @@ catch
 end
 
 maxerr = 0;
-data = [];
+ 
 
 end

@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 param.N = [300 250 500];
 
@@ -10,7 +10,7 @@ catch
     err = false;
 end
 
-data = [];
+ 
 maxerr = 0;
 
 end

@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 M = 200;
 t = linspace(0,4,M);
@@ -22,8 +22,8 @@ stats  = sensitivan(fcnHandle,Parameters,'AxisHandle',AxisHandle);
 
 err(1) = ~isstruct(stats);
 err(2) = length(stats)~=2;
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = 0;
 
 if opt.Display

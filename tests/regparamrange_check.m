@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 N = 200;
 dt = 0.008;
@@ -12,6 +12,6 @@ alpha = regparamrange(K,L,'Resolution',lgRes);
 
 err = length(alpha)~=85;
 maxerr = NaN;
-data = [];
+ 
 
 end

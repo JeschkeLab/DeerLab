@@ -1,19 +1,18 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-clear aptkernel
-N = 200;
-dt = 0.008;
-t = linspace(0,dt*(N-1),N);
+% Check error control of aptkernel() towards wrong inputs
 
+t = linspace(0,3,200);
+
+% Pass 1: giving a string as excitation bandwidth
 try
     K = aptkernel(t,'ExcitationBandwidth','a');
-    err(1) = true;
+    pass = false;
 catch
-    err(1) = false;
+    pass = true;
 end
 
-err = any(err);
-maxerr = 0;
-data = [];
+maxerr = NaN;
+ 
 
 end

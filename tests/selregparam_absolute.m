@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 % Test the absolute values returned by selregparam 
 % Fails if the values are different than on the 22/02/2020
@@ -24,10 +24,10 @@ logalpha2 = [-11.4187 2.9825 3.0426 4.3148 2.9825 4.3148 3.0426 4.3148 4.3148 4.
 %Accept testif all values are the same (should be as there is no noise)
 err(1) = any(abs(logalpha1 - log(alphaopt1))>1e-2);
 err(2) = any(abs(logalpha2 - log(alphaopt2))>1e-2);
-err = any(err);
+pass = all(err);
 
 maxerr = max(abs(logalpha2 - log(alphaopt2)));
-data = [];
+ 
 
 
 

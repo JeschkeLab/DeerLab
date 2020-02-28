@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 Dimension = 80;
 dt = 0.008;
@@ -13,9 +13,9 @@ DipEvoFcn = K*P;
 [OptParam,~,~] = selregparam(DipEvoFcn,K,r,'huber',{'aic','gcv'});
 
 %Accept testif all values are the same (should be as there is no noise)
-err = any(any(OptParam - OptParam' > 1e-2));
+pass = all(any(OptParam - OptParam' > 1e-2));
 maxerr = max(max(OptParam - OptParam'));
-data = [];
+ 
 
 
 

@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %=======================================
 % Check Tikhonov regularization
@@ -18,8 +18,8 @@ Pfit = fitregmodel(S,K,r,'tikhonov','aic');
 err(1) = any(abs(Pfit - P)>8e-2);
 maxerr = max(abs(Pfit - P));
 
-err = any(err);
-data = [];
+pass = all(err);
+ 
 
 if opt.Display
  	figure(8),clf

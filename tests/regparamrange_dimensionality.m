@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 t = linspace(0,5,80);
 r = time2dist(t);
@@ -10,6 +10,6 @@ alphas = regparamrange(K,sparse(L));
 
 err = ~iscolumn(alphas);
 maxerr = NaN;
-data = [];
+ 
 
 end

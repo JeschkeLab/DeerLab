@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %Test if selectmethod can identify that the optimal method is a two
 %rice model as given as the input signal
@@ -18,7 +18,7 @@ Models = {@rd_onerice,@rd_tworice,@rd_threerice};
 [optimum,metric] = selectmodel(Models,DipEvoFcn,r,K,'aicc','Solver','lsqnonlin');
 
 err = optimum~=2;
-data = [];
+ 
 maxerr = 0;
 
 

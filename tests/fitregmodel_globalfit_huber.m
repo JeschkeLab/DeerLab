@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 Ntime1 = 100;
 Ndist = 200;
@@ -46,8 +46,8 @@ norm2 = norm(P - Dist2);
 norm3 = norm(P - Dist3);
 
 err(1) = any(normResult > [norm2 norm3]);
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = normResult;
 
 if opt.Display

@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(data,opts)
+function [pass,maxerr] = test(data,opts)
 
 currentpath = pwd;
 cd(fileparts(mfilename('fullpath')))
@@ -12,8 +12,8 @@ output = prepvalidation(Parameters);
 
 err(1) = ~isequal(size(output),[6*5 2]);
 err(2) = length(output{1,1})~= 100;
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = NaN;
 
 cd(currentpath)

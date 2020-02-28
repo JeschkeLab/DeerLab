@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 Dimension = 200;
 dt = 0.016;
@@ -15,7 +15,7 @@ Models = {@rd_onegaussian,@rd_twogaussian,@rd_threegaussian};
 [optimum2,metric2] = selectmodel(Models,S,r,K,'aicc','CostModel','lsq');
 
 err = optimum1~=optimum2;
-data = [];
+ 
 maxerr = NaN;
 
 if opt.Display

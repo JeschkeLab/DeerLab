@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 x = linspace(0,100,100);
 
@@ -12,8 +12,8 @@ mainEffect = fctrs.main;
 err(1) = mainEffect{1}.a>mainEffect{1}.b(1);
 err(2) = mainEffect{2}.a>mainEffect{2}.c(1);
 err(3) = numel(mainEffect{1}.c)~=2;
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = 0;
 
 end

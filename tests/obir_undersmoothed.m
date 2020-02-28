@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %=======================================
 % Check Tikhonov regularization
@@ -24,9 +24,9 @@ end
 
 Pfit = obir(S,K,r,'tikh',alpha,'NoiseLevelAim',0.05,'Axishandle',axhandle);
 
-err = any(abs(Pfit - P)>7e-1);
+pass = all(abs(Pfit - P)>7e-1);
 maxerr = max(abs(Pfit - P));
-data = [];
+ 
 
 if opt.Display
  	figure(8),clf

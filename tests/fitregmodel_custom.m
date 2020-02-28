@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %===============================================================================
 % Make sure fitregparam handles custom regularization functional
@@ -19,10 +19,10 @@ RegFunctional = @(P)(1/2*norm(K*P-V)^2 + alpha^2/2*norm(L*P)^2);
 Pfit = fitregmodel(V,K,r,RegFunctional,alpha,'Solver','fmincon');
 
 deltaP = abs(Pfit-P);
-err = any(deltaP>0.1);
+pass = all(deltaP>0.1);
 maxerr = max(deltaP);
 
-data = [];
+ 
 
 if opt.Display
    	figure(8),clf

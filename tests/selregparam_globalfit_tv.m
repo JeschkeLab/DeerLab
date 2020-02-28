@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 
 rng(1)
@@ -24,8 +24,8 @@ alpha = selregparam(Ss,Ks,r,'tv','aic');
 
 Pfit = fitregmodel(Ss,Ks,r,'tv',alpha);
 
-err = any(abs(Pfit - P) > 0.5);
-data = [];
+pass = all(abs(Pfit - P) > 0.5);
+ 
 maxerr = max(abs(Pfit - P));
 
 if opt.Display

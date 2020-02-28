@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 N = 200;
 dt = 0.008;
@@ -23,7 +23,7 @@ approxlevel = noiselevel(S);
 
 err = abs(approxlevel - truelevel)>1e-2;
 maxerr = abs(approxlevel - truelevel);
-data = [];
+ 
 
 
 end

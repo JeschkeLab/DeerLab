@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 t = linspace(-1,4,20);
 r = linspace(1,6,50);
@@ -20,9 +20,9 @@ err(5) = ~iscolumn(F1) | ~iscolumn(F2) | ~iscolumn(F3) | ~iscolumn(F4);
 err(6) = ~iscolumn(res1) | ~iscolumn(res2) | ~iscolumn(res3) | ~iscolumn(res4);
 err(7) = ~iscolumn(pen1) | ~iscolumn(pen2) | ~iscolumn(pen3) | ~iscolumn(pen4);
 
-err = any(err);
+pass = all(err);
 
 maxerr = max(abs(alpha1 - alpha2));
-data = [];
+ 
 
 end

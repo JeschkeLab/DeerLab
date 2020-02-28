@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
 
 Dimension = 200;
@@ -16,9 +16,9 @@ S = K*MixedP;
 param0 = 0.9*mixedmodelParameters;
 [~,Fit] = fitparamodel(S,mixedModel,r,K,param0);
 
-err = any(abs(MixedP - Fit)>1e-5);
+pass = all(abs(MixedP - Fit)>1e-5);
 maxerr = max(abs(MixedP - Fit));
-data = [];
+ 
 
 if opt.Display
    figure(1),clf,hold on

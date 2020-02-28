@@ -1,4 +1,6 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+% Check that overtones are accurately generated
 
 r = 4; % nm
 t = linspace(-1,4,401); % us
@@ -13,9 +15,9 @@ for n = 1:numel(c)
 end
 
 error = abs(K - Kref);
-err = any(error>1e-13);
-maxerr = max(error);
 
-data = [];
+% Pass 1: kernel returned by function equal to reference
+pass = all(error < 1e-13);
+maxerr = max(error);
 
 end

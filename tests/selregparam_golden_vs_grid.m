@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 N = 100;
 dt = 0.008;
@@ -19,8 +19,8 @@ tictoc2 = toc;
 err(1) = (alpha1 - alpha2) > 1e-1;
 err(2) = tictoc1 > tictoc2;
 
-err = any(err);
-data = [];
+pass = all(err);
+ 
 maxerr = max(abs(alpha1 - alpha2));
 
 

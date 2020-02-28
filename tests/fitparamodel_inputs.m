@@ -1,11 +1,12 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
-Dimension = 200;
-t = linspace(0,5,Dimension);
-r = time2dist(t);
+% Check the different input schemes of fitparamodel()
+
+t = linspace(0,5,200);
+r = linspace(2,6,100);
 
 P = rd_onegaussian(r,[3,0.5]);
-B = td_strexp(t,[3,0.5]);
+B = td_strexp(t,[0.5,3]);
 K = dipolarkernel(t,r);
 S = K*P;
 
@@ -23,21 +24,24 @@ warning('on')
 
 Pfit2 = rd_onegaussian(r,fitparam);
 
-err(1) = any(abs(Pfit1 - P)>1e-5);
-err(2) = any(abs(Bfit1 - B)>1e-5);
-err(3) = any(abs(Bfit2 - B)>1e-5);
-err(4) = any(abs(Pfit2 - P)>1e-5);
-err(5) = any(abs(Pfit3 - P)>1e-5);
+% Pass 1-5: all fits are consistent with the inputs
+pass(1) = all(abs(Pfit1 - P) < 1e-5);
+pass(2) = all(abs(Bfit1 - B) < 1e-5);
+pass(3) = all(abs(Bfit2 - B) < 1e-5);
+pass(4) = all(abs(Pfit2 - P) < 1e-5);
+pass(5) = all(abs(Pfit3 - P) < 1e-5);
 
-err = any(err);
+pass = all(pass);
 
 maxerr = max(abs(Pfit1 - P));
-data = [];
-
+ 
 if opt.Display
-   figure(1),clf,hold on
-   plot(t,P,'b')
-   plot(t,Pfit,'r')
+   plot(r,P,'k',r,Pfit1,'r')
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
+
 
 end

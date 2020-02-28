@@ -1,29 +1,33 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
+
+% Check that fitparamodel works with fminsearchcon (free) solver 
 
 rng(1)
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-paramin  = [3,0.5];
-P = rd_onegaussian(r,paramin);
+t = linspace(0,3,200);
+r = linspace(2,6,150);
+parIn  = [3,0.5];
+P = rd_onegaussian(r,parIn);
 
 K = dipolarkernel(t,r);
 S = K*P;
 
 param0 = [2 0.1];
-[fitparam,Pfit] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fminsearchcon');
-err(1) = any(abs(Pfit - P)>2e-5);
-err(2) = any(abs(fitparam - paramin)>1e-3);
-err = any(err);
+[parFit,Pfit] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fminsearchcon');
+
+%Pass 1-2: fminsearchcon finds the correct solution
+pass(1) = all(abs(Pfit - P) < 3e-5);
+pass(2) = all(abs(parFit - parIn) < 1e-3);
+
+pass = all(pass);
 
 maxerr = max(abs(Pfit - P));
-data = [];
-
+ 
 if opt.Display
-   figure(1),clf,hold on
-   plot(t,S,'b')
-   plot(t,K*Pfit,'r')
+   plot(r,P,'k',r,Pfit,'r')
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

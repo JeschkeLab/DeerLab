@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %=======================================
 % Check Tikhonov regularization
@@ -18,11 +18,11 @@ Noise = whitegaussnoise(Dimension,0.02);
 RegParam = 0.1;
 Resultfnnls = fitregmodel(DipEvoFcn+Noise,K,r,'tv',RegParam,'Solver','fnnls','RegOrder',3);
 
-err = any(abs(Resultfnnls - P)>2e-1);
+pass = all(abs(Resultfnnls - P)>2e-1);
 
 maxerr = max(abs(Resultfnnls - P));
 
-data = [];
+ 
 
 if opt.Display
  	figure(8),clf

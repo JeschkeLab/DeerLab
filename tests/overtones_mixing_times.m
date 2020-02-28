@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 %=======================================
 % Test RIDME overtone coefficients
@@ -12,10 +12,10 @@ TheoreticalCoeff = TheoreticalCoeff/sum(TheoreticalCoeff);
 CalculatedCoeff = overtones(n,Tmix,T1);
 error1 = abs(CalculatedCoeff-TheoreticalCoeff);
 
-err = any(error1 > 1e-10);
+pass = all(error1 > 1e-10);
 
-err = any(err);
+pass = all(err);
 maxerr = max(error1);
-data = [];
+ 
 
 end

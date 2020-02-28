@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
 
 
@@ -16,10 +16,10 @@ Pfit4 = fitregmodel(S.',K,r.');
 
 err(1) = ~isequal(Pfit1,Pfit2,Pfit3,Pfit4);
 err(2) = ~iscolumn(Pfit1) | ~iscolumn(Pfit2) | ~iscolumn(Pfit3) | ~iscolumn(Pfit4);
-err = any(err);
+pass = all(err);
 
 maxerr = max(abs(Pfit1 - Pfit2));
-data = [];
+ 
 
 
 end

@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 Ntime1 = 100;
 Ndist = 200;
@@ -38,9 +38,9 @@ Ks = {K1,K2,K3};
 
 Result = fitregmodel(Ss,Ks,r,'tikhonov',regparam,'Solver','fnnls','GlobalWeights',[0.4 0.5 0.1]);
 
-err = any(isnan(Result));
-err = any(err);
-data = [];
+pass = all(isnan(Result));
+pass = all(err);
+ 
 maxerr = 0;
 
 end
