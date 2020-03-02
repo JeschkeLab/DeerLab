@@ -1,6 +1,6 @@
 function [pass,maxerr] = test(opt)
 
-% Test Tikhonov regularization with the fmincon solver (toolbox)
+% Test Tikhonov regularization with the lsqnonneg solver (toolbox)
 
 rng(1)
 t = linspace(0,3,200);
@@ -10,9 +10,9 @@ K = dipolarkernel(t,r);
 S = K*P + whitegaussnoise(t,0.01);
 alpha = 0.2615;
 
-Pfit = fitregmodel(S,K,r,'tikhonov',alpha,'Solver','fmincon');
+Pfit = fitregmodel(S,K,r,'tikhonov',alpha,'Solver','lsqnonneg');
 
-%Pass : fmincon manages to fit the distribution
+%Pass : lsqnonneg manages to fit the distribution
 pass = all(abs(Pfit - P) < 3e-1);
 
 maxerr = max(abs(Pfit - P));

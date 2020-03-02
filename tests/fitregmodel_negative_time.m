@@ -1,33 +1,28 @@
 function [pass,maxerr] = test(opt)
 
-t = linspace(-3,5,200);
-r = time2dist(t);
-P = rd_onegaussian(r,[4 0.4]);
+% Check that fitregmodel() works with negative times
+
+rng(1)
+t = linspace(-2,4,300);
+r = linspace(2,6,100);
+P = rd_onegaussian(r,[3,0.5]);
 K = dipolarkernel(t,r);
-V = K*P;
-rng(2)
-V = V + whitegaussnoise(200,0.01);
-rng('default')
-V = V/max(V);
-alpha = 2;
-Pfit = fitregmodel(V,K,r,'tikhonov',alpha);
+S = K*P + whitegaussnoise(t,0.01);
+alpha = 0.31;
+Pfit = fitregmodel(S,K,r,'tikhonov',alpha);
 
 error = abs(Pfit - P);
-pass = all(error>5e-1);
-maxerr= max(error);
+% Pass: the distribution is well fitted
+pass = all(error < 5e-2);
+
+maxerr = max(error);
  
-
 if opt.Display
-figure(8)
-clf
-subplot(121)
-plot(r,P,r,Pfit)
-subplot(122)
-plot(t,V,t,K*Pfit)
+   plot(r,P,r,Pfit)
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
-
-
-
-
 
 end

@@ -1,6 +1,6 @@
 function [pass,maxerr] = test(opt)
 
-% Test Huber regularization using the fnnls solver (free)
+% Test Huber regularization using the fmincon solver (toolbox)
 
 t = linspace(0,4,300);
 r = linspace(2,6,100);
