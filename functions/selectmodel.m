@@ -140,9 +140,9 @@ end
 %-------------------------------------------------------------------------------
 nMethods = length(Methods);
 N = numel(S);
-AICc = zeros(nMethods,1);
-BIC = zeros(nMethods,1);
-AIC = zeros(nMethods,1);
+AICc = zeros(length(Models),1);
+BIC = zeros(length(Models),1);
+AIC = zeros(length(Models),1);
 fitparams = cell(nMethods,1);
 for i = 1:length(Models)
     

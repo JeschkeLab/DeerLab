@@ -1,66 +1,61 @@
 function [pass,maxerr] = test(opt)
 
-N = 200;
-dt = 0.016;
-t = linspace(0,dt*N,N);
-r = time2dist(t);
-InputParam = [3 0.3 5 0.3 0.5];
-P = rd_twogaussian(r,InputParam);
+t = linspace(0,5,80);
+S = dipolarsignal(t,3);
+r = linspace(1,6,50);
 K = dipolarkernel(t,r);
-S = K*P;
 Models = {@rd_onegaussian,@rd_twogaussian,@rd_threegaussian};
 
+% Pass 1: invalid selection method
 try
     selectmodel(Models,S,r,K,'gsad'); 
-    err(1) = true;
+    pass(1) = false;
 catch
-    err(1) = false;
+    pass(1) = true;
 end
+
+% Pass 2: not enough input arguments
 try
     selectmodel(Models); 
-    err(2) = true;
+    pass(2) = false;
 catch
-    err(2) = false;
-end
-try
-    selectmodel(Models,S,r,K,'gsad'); 
-    err(3) = true;
-catch
-    err(3) = false;
+    pass(2) = true;
 end
 
+% Pass 3: not enough upper boundaries
 try
     selectmodel(Models,S,r,K,'aic','upper',[1 2 3]); 
-    err(3) = true;
+    pass(3) = false;
 catch
-    err(3) = false;
-end
-try
-    selectmodel(Models,S,r,K,'aic','lower',[1 2 3]); 
-    err(4) = true;
-catch
-    err(4) = false;
-end
-try
-    selectmodel(Models,K,'aic','lower',{[1 2 3],[1 2 3],[1 3 4],[1 4 5]}); 
-    err(5) = true;
-catch
-    err(5) = false;
-end
-try
-    selectmodel(@rd_fivegaussian,K,'aic','lower',{[1 2 3],[1 2 3],[1 3 4],[1 4 5]}); 
-    err(6) = true;
-catch
-    err(6) = false;
-end
-try
-    selectmodel(Models,S,r,K,'aic',[1 2 3]); 
-    err(7) = true;
-catch
-    err(7) = false;
+    pass(3) = true;
 end
 
-pass = all(err);
+% Pass 4: not enough lower boundaries
+try
+    selectmodel(Models,S,r,K,'aic','lower',[1 2 3]); 
+    pass(4) = false;
+catch
+    pass(4) = true;
+end
+
+% Pass 5: too many lower boundaries
+try
+    selectmodel(Models,K,'aic','lower',{[1 2 3],[1 2 3],[1 3 4],[1 4 5]}); 
+    pass(5) = false;
+catch
+    pass(5) = true;
+end
+
+% Pass 6: option string not defined
+try
+    selectmodel(Models,S,r,K,'aic',[1 2 3]); 
+    pass(6) = false;
+catch
+    pass(6) = true;
+end
+
+pass = all(pass);
+
 maxerr = NaN;
  
 
