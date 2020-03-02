@@ -1,37 +1,33 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
-warning('off','all')
+% Test a distance-domain fit of custom defined model
 
-Ntime = 200;
-Ndist = 200;
-
-dt = 0.008;
-t = linspace(0,dt*Ntime,Ntime);
-[~,rmin,rmax] = time2dist(t);
-r = linspace(rmin,rmax,Ndist);
-InputParam = [3,0.2];
+t = linspace(0,5,200);
+r = linspace(1,6,300);
 P = rd_onegaussian(r,[3,0.2]);
-
 K = dipolarkernel(t,r);
 S = K*P;
 
 InitialGuess = [3.5 0.3];
-fcnhandle = @(r,param)exp(-((r-param(1))/(param(2))).^2);
+fcnhandle = @(r,p)exp(-((r - p(1))/(p(2))).^2);
 
-[FitParam,FitP] = fitparamodel(S,fcnhandle,r,K,InitialGuess);
-err(1) = any(abs(FitP - P)>1e-5);
-err(2)  = length(FitP) < length(S);
-err = any(err);
+[~,Pfit] = fitparamodel(S,fcnhandle,r,K,InitialGuess);
 
-maxerr = max(abs(FitP - P));
-data = [];
+%Pass 1: distance distribution is well fitted
+pass(1) = all(abs(Pfit - P) < 1e-9);
+%Pass 2: dimensions are right
+pass(2)  = length(Pfit) > length(S);
 
-warning('on','all')
+pass = all(pass);
 
+maxerr = max(abs(Pfit - P));
+ 
 if opt.Display
-   figure(1),clf,hold on
-   plot(t,P,'b')
-   plot(t,FitP,'r')
+   plot(r,P,'k',r,Pfit,'r')
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

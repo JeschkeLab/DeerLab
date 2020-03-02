@@ -1,20 +1,28 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Compare kernel calculation methods
-%======================================================
+% Check that the different kernel calculation methods lead to same result
 
-N = 50;
-t = linspace(0,3,N);
-r = linspace(1,5,N);
+t = linspace(0,3,50);
+r = linspace(1,5,50);
 
 KF = dipolarkernel(t,r,'Method','fresnel');
 KG = dipolarkernel(t,r,'Method','grid');
+KI = dipolarkernel(t,r,'Method','integral');
 
-delta = abs(KF-KG);
-err = any(delta(:)>1e-4);
+delta1 = abs(KF-KG);
+delta2 = abs(KF-KI);
+delta3 = abs(KI-KG);
 
-maxerr = max(delta(:));
-data = [];
+% Pass 1: fresnel and integral methods give same result
+pass(1) = all(delta1(:) < 1e-4);
+% Pass 1: fresnel and grid methods give same result
+pass(2) = all(delta2(:) < 1e-4);
+% Pass 1: grid and integral methods give same result
+pass(3) = all(delta3(:) < 1e-4);
+
+pass = all(pass);
+
+maxerr = max(delta1(:));
+ 
 
 end

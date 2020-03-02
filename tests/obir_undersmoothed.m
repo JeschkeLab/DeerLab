@@ -1,19 +1,16 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check Tikhonov regularization
-%=======================================
+% Check that obir() enforces oversmoothing at the start
 
-Dimension = 100;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-P = rd_onegaussian(r,[3,0.3]);
-rng(2)
+rng(1)
+t = linspace(0,3,200);
+r = linspace(0,5,100);
+P = rd_twogaussian(r,[2,0.3,3.5,0.3,0.5]);
 K = dipolarkernel(t,r);
-S = dipolarsignal(t,r,P,'noiselevel',0.05);
+noiselvl = 0.05;
+S = K*P + whitegaussnoise(t,noiselvl);
 
-alpha = 0.000005;
+alpha = 0.005;
 
 if opt.Display
     figure(8),clf
@@ -22,18 +19,20 @@ else
     axhandle = [];
 end
 
-Pfit = obir(S,K,r,'tikh',alpha,'NoiseLevelAim',0.05,'Axishandle',axhandle);
+Pfit = obir(S,K,r,'tikh',alpha,'NoiseLevelAim',noiselvl,'Axishandle',axhandle);
 
-err = any(abs(Pfit - P)>7e-1);
+% Pass: the distribution is well fitted
+pass = all(abs(Pfit - P) < 7e-1);
+
 maxerr = max(abs(Pfit - P));
-data = [];
-
+ 
+ 
 if opt.Display
- 	figure(8),clf
-    hold on
-    plot(r,P,'k') 
-    plot(r,Pfit,'b')
-    legend('truth','OBIR','Tikh')
+    plot(r,P,'k',r,Pfit)
+    legend('truth','regularization','OBIR')
+    xlabel('r [nm]')
+    ylabel('P(r) [nm^{-1}]')
+    grid on, axis tight, box on
 end
 
 end

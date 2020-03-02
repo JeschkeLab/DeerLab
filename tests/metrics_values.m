@@ -1,31 +1,29 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Make sure metric distances are computed allright
-%======================================================
+% Check that metric distances are computed allright
 
-metricNames = {'overlap','determination','chebyshev','cosine',...
-    'correlation','chi','bregman','mad','msd','rmsd', 'nrmsd',...
-    'hellinger','euclidean', 'braycurtis','bhattacharyya','tv'};
-
-rng(2);
-
+rng(1);
 trial = rand(20,1);
 trial = trial/sum(trial);
 truth = trial;
-
+metricNames = {'overlap','determination','chebyshev','cosine',...
+    'correlation','chi','bregman','mad','msd','rmsd', 'nrmsd',...
+    'hellinger','euclidean', 'braycurtis','bhattacharyya','tv'};
 for i = 1:length(metricNames)
     values(i) = metrics(trial,truth,metricNames{i});
 end
 values_all = metrics(trial,truth);
 
-err(1)  = any(values>1e-7);
-err(2)  = any(~isreal(values));
-err(3) = ~isstruct(values_all);
+% Pass 1: all metrics identify that values are equal
+pass(1)  = all(values < 1e-7);
+% Pass 1: all metrics are real values
+pass(2)  = all(isreal(values));
+% Pass 1: full metric is returned as structure
+pass(3) = isstruct(values_all);
 
-err = any(err);
+pass = all(pass);
 maxerr = NaN;
-data = [];
+ 
 
 end
 

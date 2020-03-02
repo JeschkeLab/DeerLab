@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 M = 200;
 t = linspace(0,4,M);
@@ -20,10 +20,9 @@ fcnHandle = @(param)myfitting(param,t,r,V);
 
 [stats] = sensitivan(fcnHandle,Parameters,'AxisHandle',AxisHandle);
 
-err(1) = length(stats)~=2;
-err = any(err);
-data = [];
-maxerr = 0;
+pass = length(stats) == 2;
+ 
+maxerr = NaN;
 
 if opt.Display
     cla

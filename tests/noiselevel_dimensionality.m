@@ -1,18 +1,18 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-rng(2)
+% Check indifference of noiselevel() towards input dimensionality
+
+rng(1)
 t = linspace(-1,4,100);
 S = dipolarsignal(t,3,'noiselevel',0.02);
 
 level1 = noiselevel(S);
 level2 = noiselevel(S);
 
+% Pass: noiselevels are equal
+pass = isequal(round(level1,5),round(level2,5));
 
-err(1) = ~isequal(round(level1,5),round(level2,5));
-
-err = any(err);
-
-maxerr = max(abs(level1 - level2));
-data = [];
+maxerr = NaN;
+ 
 
 end

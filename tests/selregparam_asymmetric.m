@@ -1,44 +1,27 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-Ntime = 100;
-Ndist = 100;
+% Check that selregparam works with non-square kernel matrices
 
-dt = 0.008;
-t = linspace(0,dt*Ntime,Ntime);
-[~,rmin,rmax] = time2dist(t);
-r = linspace(rmin,rmax,Ndist);
-
+t = linspace(0,3,200);
+r = linspace(2,6,100);
 P = rd_onegaussian(r,[3,0.5]);
-P = P/sum(P);
-
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam1 = selregparam(DipEvoFcn,K,r,'tikhonov','aic');
+alpha1 = selregparam(S,K,r,'tikhonov','aic');
 
-
-Ntime = 100;
-Ndist = 200;
-
-dt = 0.008;
-t = linspace(0,dt*Ntime,Ntime);
-[~,rmin,rmax] = time2dist(t);
-r = linspace(rmin,rmax,Ndist);
-
+t = linspace(0,3,400);
+r = linspace(2,6,100);
 P = rd_onegaussian(r,[3,0.5]);
-P = P/sum(P);
-
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam2 = selregparam(DipEvoFcn,K,r,'tikhonov','aic');
+alpha2 = selregparam(S,K,r,'tikhonov','aic');
 
-%RegParam2 should be larger to compensate for worse condition number 
-err = RegParam2 < RegParam1;
+% Pass: alpha2 compensates for larger condition number
+pass = alpha2 > alpha1;
 
 maxerr = NaN;
-data = [];
+ 
 
 end

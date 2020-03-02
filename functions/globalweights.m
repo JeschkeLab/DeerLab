@@ -28,6 +28,10 @@ if numel(S)~=numel(NoiseLevel)
   error('Number of signals and number of elements in noise level array must match.');
 end
 
+%Ensure use of column vectors
+NoiseLevel = NoiseLevel(:);
+N = N(:);
+
 % Compute the weights
 weights = 1./(N.*NoiseLevel);
 

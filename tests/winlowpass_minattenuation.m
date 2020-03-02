@@ -1,4 +1,6 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+% Check that winlowpass works with user-defined minimal attenuation
 
 dt = 0.5e-9;
 nu1 = 0.5e9;
@@ -12,25 +14,26 @@ ws =  0.04e9;
 [Sfilt1] = winlowpass(S,ws,wp,sampl);
 [Sfilt2] = winlowpass(S,ws,wp,sampl,'MinimalAttenuation',50);
 
+% Pass: the filtered signals are equal
+pass = all(abs(Sfilt1 - Sfilt2) < 1e-10);
 
-err = any(abs(Sfilt1 - Sfilt2)>1e-10);
 maxerr = max(abs(Sfilt1 - Sfilt2));
-data = [];
+
 
 if opt.Display
-figure(1),clf
-subplot(121)
-hold on
-plot(t,S)
-plot(t,Sfilt)
-
-nu = time2freq(t,2*N);
-
-subplot(122)
-hold on
-plot(nu,spec)
-plot(nu,specfilt)
-xline(wp,'k--');
+    figure(1),clf
+    subplot(121)
+    hold on
+    plot(t,S)
+    plot(t,Sfilt)
+    
+    nu = time2freq(t,2*N);
+    
+    subplot(122)
+    hold on
+    plot(nu,spec)
+    plot(nu,specfilt)
+    xline(wp,'k--');
 end
 
 

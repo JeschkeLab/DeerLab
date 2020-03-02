@@ -1,48 +1,36 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check Tikhonov regularization
-%=======================================
+% Check that obir() works with Huber regularization using the fnnls solver
 
-Dimension = 100;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
+rng(1)
+t = linspace(0,3,200);
+r = linspace(0,5,100);
 P = rd_twogaussian(r,[2,0.3,3.5,0.3,0.5]);
-
 K = dipolarkernel(t,r);
-RegMatrix =  regoperator(Dimension,2);
-DipEvoFcn = K*P;
-NoiseLevel = 0.05;
-Noise = whitegaussnoise(Dimension,NoiseLevel);
-S = DipEvoFcn+Noise;
-
-%Set optimal regularization parameter (found numerically lambda=0.13)
-OptParam = 12;
-OptHuber = 1.35;
+noiselvl = 0.1;
+S = K*P + whitegaussnoise(t,noiselvl);
+alpha = 12;
 
 if opt.Display
-    figure(8),clf
     axhandle = axes();
 else
     axhandle = [];
 end
 
-Result = obir(S,K,r,'huber',OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','Huberparam',OptHuber,'axishandle',axhandle);
+Pobir = obir(S,K,r,'huber',alpha,'DivergenceStop',true,'NoiseLevelAim',noiselvl,'Solver','fnnls','axishandle',axhandle);
+Preg = fitregmodel(S,K,r,'huber',alpha);
 
-RegResult = fitregmodel(S,K,r,'huber',OptParam);
+% Pass: OBIR leads to a better result than plain regularization
+pass = mean(abs(Pobir - P)) < mean(abs(Preg - P));
 
-err = norm(Result - P) > norm(RegResult - P);
-maxerr = norm(Result - P);
-data = [];
-
+maxerr = max(abs(Pobir - P));
+ 
 if opt.Display
- 	figure(8),clf
-    hold on
-    plot(r,P,'k') 
-    plot(r,Result,'b')
-    plot(r,RegResult,'r')
-    legend('truth','OBIR','Huber')
+    plot(r,P,'k',r,Preg,r,Pobir)
+    legend('truth','regularization','OBIR')
+    xlabel('r [nm]')
+    ylabel('P(r) [nm^{-1}]')
+    grid on, axis tight, box on
 end
 
 end

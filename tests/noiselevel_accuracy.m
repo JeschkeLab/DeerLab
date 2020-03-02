@@ -1,29 +1,26 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-N = 200;
-dt = 0.008;
-t = linspace(0,dt*N,N);
-r = time2dist(t);
-InputParam = [3 0.5];
-P = rd_onegaussian(r,InputParam);
-P = P/sum(P);
+% Check that noiselevel() estimates the noise level accurately
 
+rng(1)
+t = linspace(0,3,200);
+r = linspace(2,6,100);
+P = rd_onegaussian(r,[3 0.5]);
 K = dipolarkernel(t,r);
 S = K*P;
+noise = rand(numel(t),1);
+noise = noise - mean(noise);
+noise = 0.02*noise/noise(1);
+S = S + noise;
 
-rng(2)
-Noise = rand(N,1);
-Noise = Noise - mean(Noise);
-Noise = 0.02*Noise/Noise(1);
-
-S = S + Noise;
-
-truelevel = std(Noise);
+truelevel = std(noise);
 approxlevel = noiselevel(S);
 
-err = abs(approxlevel - truelevel)>1e-2;
+% Pass: the noise level is well estimated
+pass = abs(approxlevel - truelevel) < 1e-2;
+
 maxerr = abs(approxlevel - truelevel);
-data = [];
+ 
 
 
 end

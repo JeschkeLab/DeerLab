@@ -1,20 +1,29 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Check kernel is constructed properly
-%======================================================
+% Check that dipolar kernel with modulation depth works
 
-t = linspace(0,5,200); % us
+t = linspace(0,5,50); % us
 r = time2dist(t); % nm
-lambda = 0.4;
-K = dipolarkernel(t,r,lambda);
+P = rd_onegaussian(r,[3,0.5]);
+K = dipolarkernel(t,r);
+lam = 0.4;
+F = 1 -lam + lam*K*P;
+K = dipolarkernel(t,r,lam);
+Ffit = K*P;
 
-err = false;
-maxerr = 0;
-data = [];
+% Pass: the kernel transform into the correct signal
+pass = all(abs(F - Ffit) < 1e-10);
 
+maxerr = max(abs(F - Ffit));
+ 
+%Plot if requested
 if opt.Display
-    figure(8),clf
-    plot(t,K(:,10))
+   plot(t,V,'k',t,Ffit,'r')
+   legend('truth','K*P')
+   xlabel('t [\mus]')
+   ylabel('V(t)')
+   grid on, axis tight, box on
 end
+
+
 end

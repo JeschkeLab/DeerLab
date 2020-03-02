@@ -94,11 +94,13 @@ for i = 1:length(S)
 end
 
 % Validate the selection methods input
+allMethods = false;
 allowedMethodInputs = {'lr','lc','cv','gcv','rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl'};
 if iscell(SelectionMethod)
     for i=1:length(SelectionMethod)
         if strcmp(SelectionMethod{i},'all')
             SelectionMethod = allowedMethodInputs;
+            allMethods = true;
             break;
         end
         validateattributes(SelectionMethod{i},{'char'},{'nonempty'})
@@ -108,6 +110,7 @@ else
     validateattributes(SelectionMethod,{'char'},{'nonempty'})
     if strcmp(SelectionMethod,'all')
         SelectionMethod = allowedMethodInputs;
+        allMethods = true;
     else
         SelectionMethod = validatestring(SelectionMethod,allowedMethodInputs);
         SelectionMethod = {SelectionMethod};
@@ -190,9 +193,16 @@ else
     SearchMethod = validatestring(SearchMethod,{'golden','grid'});
 end
 
+if allMethods && strcmp(SearchMethod,'golden')
+    LcurveMethods = false;
+    SelectionMethod(strcmp(SelectionMethod,'lr')) = [];
+    SelectionMethod(strcmp(SelectionMethod,'lc')) = [];
+end
+
 if LcurveMethods && strcmp(SearchMethod,'golden')
     error('The ''lr'' and ''lc'' selection methods are not compatible with the golden-search algorithm. Use the option selregparam(...,''Search'',''grid'') to enable their use.')
 end
+
 
 %--------------------------------------------------------------------------
 %  Preparations

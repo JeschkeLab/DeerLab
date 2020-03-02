@@ -1,24 +1,24 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-Dimension = 100;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
+% Test selregparam with Tikhonov regularization using all selection 
+% functionals and the grid search algorithm
+
+t = linspace(0,3,200);
+r = linspace(2,6,100);
 P = rd_onegaussian(r,[3,0.5]);
-P = P/sum(P);
-
 K = dipolarkernel(t,r);
 S = K*P;
 
-OptParam1 = selregparam(S,K,r,'tikhonov','all','NonNegConstrained',false,'NoiseLevel',0.05,'search','grid');
-OptParam2 = selregparam(S,K,r,'tikhonov',{'all'},'NonNegConstrained',false,'NoiseLevel',0.05,'search','grid');
+alphaopt1 = selregparam(S,K,r,'tikhonov','all','NonNegConstrained',false,'NoiseLevel',0.05,'search','grid');
+alphaopt2 = selregparam(S,K,r,'tikhonov',{'all'},'NonNegConstrained',false,'NoiseLevel',0.05,'search','grid');
 
 %Accept testif all values are the same (should be as there is no noise)
-err(1) = length(OptParam2)~=14;
-err(2) = length(OptParam1)~=14;
-maxerr = NaN;
-data = [];
+pass(1) = length(alphaopt2) == 14;
+pass(2) = length(alphaopt1) == 14;
 
+pass = all(pass);
+
+maxerr = NaN;
 
 
 end

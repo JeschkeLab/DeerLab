@@ -1,15 +1,18 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-N = 30;
-t = linspace(0,3,N);
+% Chech that number of knots in dipolarkernel() can be modified
+
+t = linspace(0,3,30);
 r = time2dist(t);
 
 K1 = dipolarkernel(t,r,'Method','grid');
 K2 = dipolarkernel(t,r,'Method','grid','Knots',1201);
 
+% Pass: both kernels are equal 
 delta = abs(K1 - K2);
-err = any(delta(:)>1e-5);
+pass = all(delta(:) < 1e-5);
+
 maxerr = max(delta(:));
-data = [];
+ 
 
 end

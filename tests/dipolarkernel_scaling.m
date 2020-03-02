@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 % Check whether K matrix elements scale properly with t and r
 
@@ -10,5 +10,8 @@ K1 = dipolarkernel(t,r);
 K2 = dipolarkernel(t*c^3,r*c);
 
 maxerr = max(abs(K1-K2));
-err = maxerr>1e-15;
-data = [];
+
+% Pass: kernel is properly scaled
+pass = maxerr < 1e-15;
+ 
+end

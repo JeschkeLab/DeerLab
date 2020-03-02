@@ -1,30 +1,30 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%Test if selectmethod can identify that the optimal method is a two
-%rice model as given as the input signal
-Dimension = 300;
-dt = 0.016;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-InputParam = [3 0.2 5.5 0.7 0.5];
-P = rd_tworice(r,InputParam);
-P = P/sum(P)/mean(diff(r));
+% Test if selectmethod can identify that the optimal method is a two
+% Rician model as given as the input signal
 
+t = linspace(0,3,200);
+r = linspace(2,6,100);
+parIn = [3 0.3 5 0.3 0.5];
+P = rd_twogaussian(r,parIn);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
+models = {@rd_onerice,@rd_tworice,@rd_threerice};
 
-Models = {@rd_onerice,@rd_tworice,@rd_threerice};
+[optimum,metric] = selectmodel(models,S,r,K,'aicc','Solver','lsqnonlin');
 
-[optimum,metric] = selectmodel(Models,DipEvoFcn,r,K,'aicc','Solver','lsqnonlin');
-
-err = optimum~=2;
-data = [];
-maxerr = 0;
+% Pass: the optimal model is found
+pass = optimum==2;
+ 
+maxerr = NaN;
 
 
 if opt.Display
-figure(8),clf
-plot(metric)
+    plot(1:3,metric)
+    set(gca,'xtick',[1 2 3],'xticklabel',{'One Rice','Two Rice','Three Rice'})
+    xtickangle(45)
+    ylabel('AICc')
+    grid on, axis tight, box on
 end
 
 end

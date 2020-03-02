@@ -1,28 +1,27 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-FreqAxis = linspace(-10,10,200);
+% Check that the different spectra types are computed correctly 
+
 t = linspace(0,1/mean(2*10)*100,100);
-
 S = exp(-t).*cos(2*pi*5*t);
-Spectrum = abs(fftshift(fft(S,2*length(S))));
 
-[Xabs] = fftspec(t,S,'Type','abs');
-[Xreal] = fftspec(t,S,'Type','real');
-[Ximag] = fftspec(t,S,'Type','imag');
+[nu,specAbs] = fftspec(t,S,'Type','abs');
+specRe = fftspec(t,S,'Type','real');
+specIm = fftspec(t,S,'Type','imag');
 
-error = abs(sqrt(Xreal.^2 + Ximag.^2) - Xabs);
-err = any(error>1e-10);
+error = abs(sqrt(specRe.^2 + specIm.^2) - specAbs);
+
+% Pass: absolute spectrum is can be computed from the real/imag spectra
+pass = all(error < 1e-10);
+
 maxerr = max(error);
-data = [];
-
+ 
 if opt.Display
-  figure,clf
-  subplot(121)
-  plot(t,S)
-  subplot(122)
-  hold on
-  plot(FreqAxis,Spectrum)
-  plot(FrequencyAxis,Xabs)
+    plot(nu,specAbs,nu,specRe,nu,specIm)
+    xlabel('\nu [MHz]')
+    ylabel('Intensity [a.u.]')
+    grid on, axis tight, box on
+    legend('reference','output')
 end
 
 end

@@ -1,17 +1,18 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
+% Check that regparamrange works with the defaults
+
+t = linspace(0,3,200);
 r = time2dist(t);
-
 K = dipolarkernel(t,r);
-L = regoperator(Dimension,2);
+L = regoperator(r,2);
 
 alpha = regparamrange(K,sparse(L));
 
-err = (length(alpha)~=85);
-maxerr = length(alpha)-85;
-data = [];
+% Pass: the right number of elements are returned
+pass = length(alpha) == 85;
+
+maxerr = NaN;
+ 
 
 end

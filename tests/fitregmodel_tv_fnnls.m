@@ -1,34 +1,30 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check Tikhonov regularization
-%=======================================
+% Test TV regularization with the fnnls solver (free)
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-P = rd_onegaussian(r,[3,0.5]);
-
+rng(1)
+t = linspace(0,3,200);
+r = linspace(1,5,100);
+P = rd_onegaussian(r,[3,0.2]);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P + whitegaussnoise(t,0.01);
+alpha = 0.01356;
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 1e-3;
-TikhResult1 = fitregmodel(DipEvoFcn,K,r,'tv',RegParam,'Solver','fnnls','RegOrder',3);
+Pfit = fitregmodel(S,K,r,'tv',alpha,'Solver','fnnls');
 
-err = any(abs(TikhResult1 - P)>3e-2);
+error = abs(Pfit - P);
 
-maxerr = max(abs(TikhResult1 - P));
+%Pass : fnnls manages to fit the distribution
+pass = all(error < 3e-1);
 
-data = [];
+maxerr = max(abs(Pfit - P));
 
 if opt.Display
- 	figure(8),clf
-    hold on
-    plot(r,P,'k') 
-    plot(r,TikhResult1,'r')
-    axis tight
+   plot(r,P,'k',r,Pfit)
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

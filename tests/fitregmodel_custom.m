@@ -1,35 +1,29 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%===============================================================================
-% Make sure fitregparam handles custom regularization functional
-%===============================================================================
+% Check that fitregmodel handles custom regularization functional
 
-N = 100;
-dt = 0.008;
-t = linspace(0,dt*N,N);
-r = time2dist(t);
+t = linspace(0,3.2,200);
+r = linspace(2,6,100);
 P = rd_onegaussian(r,[3,0.5]);
 K = dipolarkernel(t,r);
-V = K*P;
+S = K*P;
+alpha = 0.05;
+L = regoperator(r,3);
+RegFunctional = @(P)(1/2*norm(K*P - S)^2 + alpha^2/2*norm(L*P)^2);
+Pfit = fitregmodel(S,K,r,RegFunctional,alpha,'Solver','fmincon');
+deltaP = abs(Pfit - P);
 
-% Set optimal regularization parameter
-alpha = 0.2;
-L = regoperator(N,3);
-RegFunctional = @(P)(1/2*norm(K*P-V)^2 + alpha^2/2*norm(L*P)^2);
-Pfit = fitregmodel(V,K,r,RegFunctional,alpha,'Solver','fmincon');
+% Pass: distribution is well fitted
+pass = all(deltaP < 1e-2);
 
-deltaP = abs(Pfit-P);
-err = any(deltaP>0.1);
 maxerr = max(deltaP);
 
-data = [];
-
 if opt.Display
-   	figure(8),clf
-    hold on
-    plot(r,P,'k') 
-    plot(r,Pfit,'r')
-    legend('model','fit');
+   plot(r,P,r,Pfit)
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

@@ -1,28 +1,34 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-Dimension = 100;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
+% Test selregparam with unconstrained TV regularization
+
+t = linspace(0,3,200);
+r = linspace(2,6,100);
 P = rd_onegaussian(r,[3,0.5]);
-P = P/sum(P);
-
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
 
-[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,r,'tv',{'aic','gcv'},'NonNegConstrained',false);
+[alphaopt,fcns,alphas] = selregparam(S,K,r,'tv',{'aic','gcv'},'NonNegConstrained',false);
 
-%Accept testif all values are the same (should be as there is no noise)
-err = any(any(OptParam - OptParam' > 1e-2));
-maxerr = max(max(OptParam - OptParam'));
-data = [];
+% Pass: similar regularization parameter values are found
+pass = all(abs(diff(alphaopt)) < 1e-2);
 
+maxerr = max(abs(diff(alphaopt)));
+ 
 if opt.Display
-   figure(8),clf
-   hold on
-   plot(RegParamSet,Functionals{1})
-   plot(RegParamSet,Functionals{2})
+    
+    subplot(121)
+    plot(log(alphas),log(fcns{1}+ 1e5),'.')
+    xlabel('log_{10}(\alpha)')
+    yabel('AIC')
+    grid on, axis tight, box on
+    
+    subplot(122)
+    plot(log(alphas),log(fcns{2}),'.')
+    xlabel('log_{10}(\alpha)')
+    yabel('GML')
+    grid on, axis tight, box on
+    
 end
-
 
 end

@@ -1,4 +1,6 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+% Check indifference of selectmodel() towards input dimensionality
 
 t = linspace(0,5,80);
 S = dipolarsignal(t,3);
@@ -10,12 +12,18 @@ K = dipolarkernel(t,r);
 [opt3,f3,params3] = selectmodel({@rd_onegaussian,@rd_fourgaussian},S,r.',K,'aicc');
 [opt4,f4,params4] = selectmodel({@rd_onegaussian,@rd_fourgaussian},S.',r.',K,'aicc');
 
-err(1) = ~iscolumn(f1) | ~iscolumn(f2) | ~iscolumn(f3) | ~iscolumn(f4);
-err(2) = iscolumn(params1) | iscolumn(params2) | iscolumn(params3)| iscolumn(params4);
-err(2) = ~isequal(opt1,opt2,opt3,opt4);
+% Pass 1: all functionals are equal 
+pass(1) = iscolumn(f1) & iscolumn(f2) & iscolumn(f3) & iscolumn(f4);
+% Pass 2: all parameter vectors are rows 
+pass(2) = ~iscolumn(params1) & ~iscolumn(params2) & ~iscolumn(params3) & ~iscolumn(params4);
+% Pass 3: all optimas are equal 
+pass(3) = isequal(opt1,opt2,opt3,opt4);
+% Pass 4: all parameter vectors are equal 
+pass(4) = isequal(params1,params2,params3,params4);
 
-err = any(err);
-maxerr = max(opt1 - opt2);
-data = [];
+pass = all(pass);
+
+maxerr = NaN;
+ 
 
 end

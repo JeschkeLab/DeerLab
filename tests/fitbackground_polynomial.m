@@ -1,8 +1,7 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Polynomial background fit
-%======================================================
+% Check that fitbackground() can fit polynomials
+
 clear fitbackground
 t = linspace(0,3,100).';
 bckg = polyval([-1 1],t);
@@ -22,22 +21,34 @@ fit = fit*(1-lambda1);
 fit2 = fit2*(1-lambda2);
 fit3 = fit3*(1-lambda3);
 
-err(1) = any(abs(fit - bckg)>1e-8);
-err(2) = any(abs(fit2 - bckg2)>1e-8);
-err(3) =  any(abs(fit3 - bckg3)>1e-8);
-err = any(err);
-maxerr = max(abs(fit - bckg));
-data = [];
+% Pass 1-3: all background are well fitted
+pass(1) = all(abs(fit - bckg) < 1e-8);
+pass(2) = all(abs(fit2 - bckg2) < 1e-8);
+pass(3) =  all(abs(fit3 - bckg3) < 1e-8);
 
+pass = all(pass);
+maxerr = max(abs(fit - bckg));
+ 
+%Plot results
 if opt.Display
-  figure(8),clf
-  subplot(131)
-  plot(t,bckg,t,fit)
-  subplot(132)
-  plot(t,bckg2,t,fit2)
-  subplot(133)
-  plot(t,bckg3,t,fit3)
-  legend('truth','fit')
+    subplot(131)
+    plot(t,bckg,t,fit)
+    legend('truth','fit')
+    xlabel('t [\mus]')
+    ylabel('B(t)')
+    grid on, axis tight, box on
+    subplot(132)
+    plot(t,bckg2,t,fit2)
+    legend('truth','fit')
+    xlabel('t [\mus]')
+    ylabel('B(t)')
+    grid on, axis tight, box on
+    subplot(133)
+    plot(t,bckg3,t,fit3)
+    legend('truth','fit')
+    xlabel('t [\mus]')
+    ylabel('B(t)')
+    grid on, axis tight, box on
 end
 
 end

@@ -1,36 +1,36 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
+% Test a time-domain fit of a single Gaussian model
 
-warning('off','all')
-
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-InputParam = [3 0.5];
-P = rd_onegaussian(r,[3,0.5]);
-
+t = linspace(0,5,300);
+r = linspace(2,6,300);
+parIn = [3 0.5];
+P = rd_onegaussian(r,parIn);
 K = dipolarkernel(t,r);
 S = K*P;
+InitialGuess = [2 0.1];
 
 mymodel = @(t,param)K*rd_onegaussian(r,param);
+parFit = fitparamodel(S,mymodel,t,InitialGuess);
+Pfit = rd_onegaussian(r,parFit);
 
-InitialGuess = [2 0.1];
-[FitParam,Sfit] = fitparamodel(S,mymodel,t,InitialGuess);
-Pfit = rd_onegaussian(r,FitParam);
-err(1) = any(abs(Pfit - P)>1e-5);
-err(2) = any(abs(FitParam - InputParam)>1e-3);
-err = any(err);
+
+%Pass 1: distance distribution is well fitted
+pass(1) = all(abs(Pfit - P) < 1e-5);
+%Pass 2: model parameters are well fitted
+pass(2) = all(abs(parFit - parIn) < 1e-3);
+
+pass = all(pass);
 
 maxerr = max(abs(Pfit - P));
-data = [];
-
-warning('on','all')
-
+ 
 if opt.Display
-   figure(1),clf,hold on
-   plot(t,S,'b')
-   plot(t,Sfit,'r')
+   plot(r,P,'k',r,Pfit,'r')
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
+
 
 end

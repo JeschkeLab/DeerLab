@@ -1,4 +1,4 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 % Compare td_dmpdeer output to explicit calculation using dipolarkernel
 
@@ -18,8 +18,8 @@ K = dipolarkernel(t,r,pathinfo,Bfun);
 V2 = K*P(:);
 
 maxerr = max(abs(V1-V2));
-err = maxerr>1e-10;
-data = [];
+pass = maxerr < 1e-10;
+ 
 
 if opt.Display
   plot(t,V1,t,V2);

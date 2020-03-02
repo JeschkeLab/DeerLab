@@ -1,32 +1,29 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-N = 200;
-dt = 0.008;
-t = linspace(0,dt*N,N);
-r = time2dist(t);
-InputParam = [3 0.5];
-P = rd_onegaussian(r,InputParam);
-P = P/sum(P);
+% Check error control of nosielevel() towards wrong inputs
 
+rng(1)
+t = linspace(0,3,200);
+r = linspace(2,6,100);
+P = rd_onegaussian(r,[3 0.5]);
 K = dipolarkernel(t,r);
 S = K*P;
 
-rng(2)
-Noise = rand(N,1);
-Noise = Noise - mean(Noise);
-Noise = 0.02*Noise/Noise(1);
+noise = rand(numel(t),1);
+noise = noise - mean(noise);
+noise = 0.02*noise/noise(1);
+S = S + noise;
 
-S = S + Noise;
-
+% Pass: asking to remove too many points
 try
     noiselevel(S,1000);
-    err = true;
+    pass = false;
 catch
-   err = false; 
+    pass = true; 
 end
 
-maxerr = 0;
-data = [];
+maxerr = NaN;
+ 
 
 
 end

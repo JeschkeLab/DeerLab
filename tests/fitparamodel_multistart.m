@@ -1,36 +1,32 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-
-%Test that using the multistart option helps finding the global minimum
-%instead of the local one
+%Test that using the multistart option helps finding the global minimum instead of the local one
 
 t = linspace(0,5,300);
 r1 = linspace(2,6,200);
-InputParam = [3 0.3 4 0.3 5 0.3 0.3 0.3];
-P = rd_threegaussian(r1,InputParam);
+P = rd_threegaussian(r1,[3 0.3 4 0.3 5 0.3 0.3 0.3]);
 K = dipolarkernel(t,r1);
 rng(5)
 S = K*P + whitegaussnoise(t,0.01);
-[~,Pfit1] = fitparamodel(S,@rd_threegaussian,r1,K,'tolfun',1e-4);
-r2 = linspace(2,6,200);
-K = dipolarkernel(t,r2);
-[~,Pfit2] = fitparamodel(S,@rd_threegaussian,r2,K,'tolfun',1e-4,'multistart',50);
+[~,Plocal] = fitparamodel(S,@rd_threegaussian,r1,K,'tolfun',1e-4);
+[~,Pmulti] = fitparamodel(S,@rd_threegaussian,r1,K,'tolfun',1e-4,'multistart',50);
 
-err(1) = max(abs(P - Pfit2)) > max(abs(P - Pfit1)>1e-5);
-err(2) = any(abs(P - Pfit2) > 1e-1);
+%Pass 1: solution with multi-start is better
+pass(1) = max(abs(P - Pmulti)) < max(abs(P - Plocal));
+%Pass 2: solution with multi-start fits the truth
+pass(2) = all(abs(P - Pmulti) < 1e-1);
 
-err = any(err);
-maxerr = max(abs(P - Pfit2));
-data = [];
+pass = all(pass);
+
+maxerr = max(abs(P - Pmulti));
+ 
 
 if opt.Display
-clf
-plot(r1,P,'k',r1,Pfit1,'r',r2,Pfit2,'b','linewidth',1)
+plot(r1,P,'k',r1,Plocal,'r',r1,Pmulti,'b','linewidth',1)
 grid on, axis tight
-legend('truth','Local','Global')
+legend('truth','local minimum','global minimum')
 xlabel('r [nm]')
 ylabel('P(r) [nm^{-1}]')
-set(gca,'fontsize',13)
 end
 
 end

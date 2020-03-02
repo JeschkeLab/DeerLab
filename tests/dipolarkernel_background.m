@@ -1,34 +1,32 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Check kernel is constructed properly
-%======================================================
+% Test kernel construction with modulation depth and background
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,Dimension*dt,Dimension);
+t = linspace(0,3,80);
 r = time2dist(t);
 P = rd_onegaussian(r,[3,0.5]);
-P = P/sum(P)/mean(diff(r));
-B = exp(-0.5*t);
+B = td_exp(t,0.5);
 K = dipolarkernel(t,r);
 
-Trace  = K*P;
-Trace = (Trace + 2).*B';
-ModDepth = 1/Trace(1);
-Trace = Trace/Trace(1);
+S  = K*P;
+lam = 0.25;
+V = (1 - lam + lam*S).*B;
 
-KB = dipolarkernel(t,r,ModDepth,B);
-TraceB  = KB*P;
+KB = dipolarkernel(t,r,lam,B);
+Vfit  = KB*P;
 
-err = any(abs(TraceB - Trace)>1e-10);
-maxerr = max(abs(TraceB - Trace));
-data = [];
+% Pass: the kernel transform the distribution into correct signal
+pass = all(abs(Vfit - V) < 1e-10);
+
+maxerr = max(abs(Vfit - V));
+ 
 
 if opt.Display
-   figure(3)
-   plot(t,TraceB,'r',t,B,'r--',t,Trace,'b')
-   legend('truth','B','K*P')
+   plot(t,V,'k',t,Vfit,'r',t,(1-lam)*B,'r--')
+   legend('truth','B','K_B*P')
+   xlabel('t [\mus]')
+   ylabel('V(t)')
+   grid on, axis tight, box on
 end
 
 end

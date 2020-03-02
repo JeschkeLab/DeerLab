@@ -1,32 +1,28 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check Tikhonov regularization
-%=======================================
+% Test Tikhonov regularization with the fmincon solver (toolbox)
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
+rng(1)
+t = linspace(0,3,200);
+r = linspace(2,4,200);
 P = rd_onegaussian(r,[3,0.5]);
-
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P + whitegaussnoise(t,0.01);
+alpha = 0.2615;
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 5;
-Result = fitregmodel(DipEvoFcn,K,r,'tikhonov',RegParam,'Solver','fmincon');
+Pfit = fitregmodel(S,K,r,'tikhonov',alpha,'Solver','fmincon');
 
-err(1) = any(abs(Result - P)>5e-1);
-maxerr = max(abs(Result - P));
-err = any(err);
-data = [];
+%Pass : fmincon manages to fit the distribution
+pass = all(abs(Pfit - P) < 3e-1);
+
+maxerr = max(abs(Pfit - P));
 
 if opt.Display
- 	figure(8),clf
-    hold on
-    plot(r,P,'k') 
-    plot(r,Result,'r')
+   plot(r,P,'k',r,Pfit)
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end
