@@ -1,16 +1,20 @@
 function [pass,maxerr] = test(opt)
 
+% Check indifference of sensitivan() towards input dimensionality
+
 varpar.x = linspace(1,8,3);
 [stats1] = sensitivan(@fcn,varpar);
 varpar.x = varpar.x.';
 [stats2] = sensitivan(@fcn,varpar);
 
-err(1) = ~iscolumn(stats1(1).median) | ~iscolumn(stats2(1).median) | ~iscolumn(stats1(2).median) | ~iscolumn(stats2(2).median);
-err(2) = ~isequal(stats1,stats2);
+% Pass 1: all medians are columns
+pass(1) = iscolumn(stats1(1).median) & iscolumn(stats2(1).median) & iscolumn(stats1(2).median) & iscolumn(stats2(2).median);
+% Pass 1: all statistics are equal
+pass(2) = isequal(stats1,stats2);
 
-pass = all(err);
-maxerr = max(stats1(1).median - stats2(1).median);
- 
+pass = all(pass);
+
+maxerr = NaN;
 
 
     function [y1,y2] = fcn(varpar)

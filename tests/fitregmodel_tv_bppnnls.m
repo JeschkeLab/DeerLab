@@ -1,6 +1,6 @@
 function [pass,maxerr] = test(opt)
 
-% Test TV regularization with the fnnls solver (free)
+% Test TV regularization with the bppnnls solver (free)
 
 rng(1)
 t = linspace(0,3,200);
@@ -10,11 +10,11 @@ K = dipolarkernel(t,r);
 S = K*P + whitegaussnoise(t,0.01);
 alpha = 0.01356;
 
-Pfit = fitregmodel(S,K,r,'tv',alpha,'Solver','fnnls');
+Pfit = fitregmodel(S,K,r,'tv',alpha,'Solver','bppnnls');
 
 error = abs(Pfit - P);
 
-%Pass : fnnls manages to fit the distribution
+%Pass : bppnnls manages to fit the distribution
 pass = all(error < 3e-1);
 
 maxerr = max(abs(Pfit - P));

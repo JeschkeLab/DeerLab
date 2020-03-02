@@ -10,11 +10,11 @@ K = dipolarkernel(t,r);
 S = K*P + whitegaussnoise(t,0.01);
 alpha = 0.01356;
 
-Pfit = fitregmodel(S,K,r,'tv',alpha,'Solver','fnnls');
+Pfit = fitregmodel(S,K,r,'tv',alpha,'Solver','lsqnonneg');
 
 error = abs(Pfit - P);
 
-%Pass : fnnls manages to fit the distribution
+%Pass : lsqnonneg manages to fit the distribution
 pass = all(error < 3e-1);
 
 maxerr = max(abs(Pfit - P));

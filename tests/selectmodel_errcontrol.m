@@ -1,5 +1,7 @@
 function [pass,maxerr] = test(opt)
 
+% Check error control of regoperator() towards wrong inputs
+
 t = linspace(0,5,80);
 S = dipolarsignal(t,3);
 r = linspace(1,6,50);

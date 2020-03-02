@@ -1,11 +1,13 @@
 function [pass,maxerr] = test(opt)
 
+% Check the precision of the fresnel integral functions
 
 currentpath = pwd;
 cd(fileparts(mfilename('fullpath')))
 cd ../functions/private
 
-
+% High precision values of the Fresnel integrals 
+% (Computed in Mathematica)
 AnalyticalFresnelS = [0.4382591473903547,0.3434156783636995,0.4963129989686961,...
             0.4205157484121662,0.4991913819171168,0.4469607612369303,...
             0.4997047894534464,0.4602142143930145,0.4998610456296845,...
@@ -76,15 +78,18 @@ AnalyticalFresnelC = [0.7798934003768227,0.4882534060753405,0.6057207893003999,.
             0.5032815452071224,0.4999998923480199,0.5032152513654198,...
             0.4999998986788171];        
         
-%Get the numerical values
+% Compute the numerical values returned by the functions
 NumericalFresnelS = fresnelS(1:100);
 NumericalFresnelC = fresnelC(1:100);
-        
-err(1) = any(abs(NumericalFresnelS - AnalyticalFresnelS)>1e-8);
-err(2) = any(abs(NumericalFresnelC - AnalyticalFresnelC)>1e-8);
-pass = all(err);
+     
+% Pass 1;2: the integrals are precise down to 8 digits
+pass(1) = all(abs(NumericalFresnelS - AnalyticalFresnelS) < 1e-8);
+pass(2) = all(abs(NumericalFresnelC - AnalyticalFresnelC) < 1e-8);
+
+pass = all(pass);
+
 maxerr = max(abs(NumericalFresnelS - AnalyticalFresnelS));
   
- 
- cd(currentpath)
+cd(currentpath)
+
 end

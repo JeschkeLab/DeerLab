@@ -20,11 +20,14 @@ fcnHandle = @(param)myfitting(param,t,r,V);
 
 stats  = sensitivan(fcnHandle,Parameters,'AxisHandle',AxisHandle);
 
-err(1) = ~isstruct(stats);
-err(2) = length(stats)~=2;
-pass = all(err);
+% Pass 1: the first output is a structure
+pass(1) = isstruct(stats);
+% Pass 2: the statistics are done on both output variables
+pass(2) = length(stats) == 2;
+
+pass = all(pass);
  
-maxerr = 0;
+maxerr = NaN;
 
 if opt.Display
     cla

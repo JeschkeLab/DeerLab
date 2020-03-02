@@ -20,10 +20,9 @@ fcnHandle = @(param)myfitting(param,t,r,V);
 
 [stats] = sensitivan(fcnHandle,Parameters,'AxisHandle',AxisHandle);
 
-err(1) = length(stats)~=2;
-pass = all(err);
+pass = length(stats) == 2;
  
-maxerr = 0;
+maxerr = NaN;
 
 if opt.Display
     cla

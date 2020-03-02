@@ -24,13 +24,17 @@ alpha = selregparam(Ss,Ks,r,'tv','aic');
 
 Pfit = fitregmodel(Ss,Ks,r,'tv',alpha);
 
-pass = all(abs(Pfit - P) > 0.5);
+% Pass: the distribution is well fitted with the optimized parameter
+pass = all(abs(Pfit - P) < 0.5);
  
 maxerr = max(abs(Pfit - P));
 
 if opt.Display
-figure(8),clf
-plot(r,P,r,Pfit)
+   plot(r,P,r,Pfit)
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

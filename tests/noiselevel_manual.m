@@ -1,27 +1,25 @@
 function [pass,maxerr] = test(opt)
 
-N = 200;
-dt = 0.008;
-t = linspace(0,dt*N,N);
-r = time2dist(t);
-InputParam = [3 0.5];
-P = rd_onegaussian(r,InputParam);
-P = P/sum(P);
+% Check that noiselevel() accepts a manual point for the estimation
 
+rng(1)
+t = linspace(0,3,200);
+r = linspace(2,6,100);
+P = rd_onegaussian(r,[3 0.5]);
 K = dipolarkernel(t,r);
 S = K*P;
 
-rng(2)
-Noise = rand(N,1);
-Noise = Noise - mean(Noise);
-Noise = 0.02*Noise/Noise(1);
-
-S = S + Noise;
+noise = rand(numel(t),1);
+noise = noise - mean(noise);
+noise = 0.02*noise/noise(1);
+S = S + noise;
 
 approxlevel1 = noiselevel(S);
-approxlevel2 = noiselevel(S,1/5*N);
+approxlevel2 = noiselevel(S,1/5*numel(t));
 
-err = abs(approxlevel1 - approxlevel2)>1e-10;
+% Pass: the noise level is well estimated
+pass = abs(approxlevel1 - approxlevel2) < 1e-10;
+
 maxerr = abs(approxlevel1 - approxlevel2);
  
 

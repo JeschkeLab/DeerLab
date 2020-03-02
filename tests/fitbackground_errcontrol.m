@@ -2,7 +2,6 @@ function [pass,maxerr] = test(opt)
 
 % Check error control of fitbackground() towards wrong inputs
 
-
 t = linspace(0,10,100);
 lam0 = 0.25;
 k = 0.05;

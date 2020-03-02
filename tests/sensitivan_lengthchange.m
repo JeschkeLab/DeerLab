@@ -1,17 +1,19 @@
 function [pass,maxerr] = test(opt)
 
-param.N = [300 250 500];
+% Check that sensitivan behaves correctly with arrays of changing size
 
 rng(1)
+param.N = [300 250 500];
+
+% Pass: an error is returned as expected
 try
-    [mean]  = sensitivan(@(param)myfcn(param),param);
-    err = true;
+    sensitivan(@(param)myfcn(param),param);
+    pass = false;
 catch
-    err = false;
+    pass = true;
 end
 
- 
-maxerr = 0;
+maxerr = NaN;
 
 end
 
