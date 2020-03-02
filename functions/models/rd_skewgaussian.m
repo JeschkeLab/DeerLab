@@ -45,11 +45,10 @@ if nargin==0
     info.parameters(2).default = 0.5;
     info.parameters(2).units = 'nm';
  
-    
-    info.parameters(2).name = 'skewness alpha';
-    info.parameters(2).range = [-25 25];
-    info.parameters(2).default = 5;
-    info.parameters(2).units = '';
+    info.parameters(3).name = 'skewness alpha';
+    info.parameters(3).range = [-25 25];
+    info.parameters(3).default = 5;
+    info.parameters(3).units = '';
     
     output = info;
     return

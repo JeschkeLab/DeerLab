@@ -44,12 +44,11 @@ if nargin==0
     info.parameters(2).range = [0.2 5];
     info.parameters(2).default = 0.5;
     info.parameters(2).units = 'nm';
- 
     
-    info.parameters(2).name = 'kurtosis beta';
-    info.parameters(2).range = [0.25 15];
-    info.parameters(2).default = 5;
-    info.parameters(2).units = '';
+    info.parameters(3).name = 'kurtosis beta';
+    info.parameters(3).range = [0.25 15];
+    info.parameters(3).default = 5;
+    info.parameters(3).units = '';
     
     output = info;
     return

@@ -1,27 +1,30 @@
 function [pass,maxerr] = test(opt)
 
+% Check dimensionality, non-negativity, and values at boundaries of model
+
+info = rd_onerice();
 
 r = linspace(0,50,500);
+par0 = [info.parameters(:).default];
+bounds = [info.parameters(:).range];
+lower = bounds(1:2:end);
+upper = bounds(2:2:end);
 
-%Control row/column effect
-P1 = rd_onerice(r,[3.5 0.7]);
-P2 = rd_onerice(r.',[3.5 0.7]);
-err(1) = ~isequal(P1,P2);
+P1 = rd_onerice(r,par0);
+P2 = rd_onerice(r.',par0);
+P3 = rd_onerice(r,lower);
+P4 = rd_onerice(r,upper);
 
-%Control non-negativity
-err(2) = any(P1<0);
+% Pass 1: dimensionality is correct
+pass(1) = isequal(P1,P2);
+% Pass 2: non-negativity of default values fulfilled
+pass(2) = all(P1 >= 0);
+% Pass 3: non-negativity of default boundaries fulfilled
+pass(3) = all(P1 >= 0) & all(P2 >= 0);
+% Pass 4: there are no NaN values
+pass(4) = all(~isnan(P1)) & all(~isnan(P2)) & all(~isnan(P3)) & all(~isnan(P4));
 
-P3 = rd_onerice(r,[1 0.1]);
-P4 = rd_onerice(r,[10 5]);
-
-%Control non-negativity ov default boundaries
-err(3) = any(P1<0) | any(P2<0);
-
-%Control there are no NaN
-err(4) = any (isnan(P1)) | any(isnan(P2)) | any(isnan(P3)) | any(isnan(P4));
-
-
-pass = all(err);
+pass = all(pass);
  
 maxerr = NaN;
 
