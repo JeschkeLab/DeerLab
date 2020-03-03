@@ -99,7 +99,7 @@ end
 FilteredS = filter(FIRtransferFcn,1,[S; zeros(length(FIRtransferFcn),1)] );
 
 %Calculate FIR filter group delay
-Delay = FilterOrder/2 - 1;
+Delay = (FilterOrder + 1)/2 - 1;
 
 %Correct for FIR filter delay
 FilteredS = FilteredS(Delay+1:Delay+N);
