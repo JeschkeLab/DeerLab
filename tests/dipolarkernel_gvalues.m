@@ -9,8 +9,10 @@ r = 3; % us
 g1 = 2.1;
 g2 = 2.4;
 
+ge = 2.00231930436256; % free-electron g factor (CODATA 2018 value)
+
 K1 = dipolarkernel(t,r,'g',[g1 g2]);
-K2 = dipolarkernel(t,r/(g1*g2/gfree^2)^(1/3));
+K2 = dipolarkernel(t,r/(g1*g2/ge^2)^(1/3));
 
 maxerr = max(abs(K1-K2));
 
