@@ -131,7 +131,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 			K = dipolarkernel(args,'OvertoneCoeffs',[0.4 0.2 0.4])   % fundamental, 1st, and 2nd overtone
 
 - ``'g'`` - Electron g-value
-    Specifies the g-value of the electron spin center used to compute the dipolar frequencies from the given distance axis.
+    Specifies the two g-values of the electron spin centers used to compute the dipolar frequencies from the given distance axis.
 
     *Default:* free-electron g value
 
@@ -139,7 +139,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			K = dipolarkernel(args,'g',2.01)
+			K = dipolarkernel(args,'g',[2.01 2.1])
 
 - ``'Method'`` - Kernel matrix calculation method
     Specifies the method the kernel matrix is computed numerically.

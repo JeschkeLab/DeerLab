@@ -35,7 +35,7 @@
 %   'ExcitationBandwidth' - Excitation bandwith of the pulses in MHz to be
 %                           used for limited bandwith excitation
 %   'OvertoneCoeffs' - 1D array of coefficients for overtones in RIDME signals
-%   'g' - g-value of the spin centers
+%   'g' - g-values of the spin centers, [g1 g2]
 %   'Method' - Numerical method for kernel matrix calculation:
 %               'fresnel' - uses Fresnel integrals for the kernel (default)
 %               'integral' - uses MATLAB's integral() function (slow, accurate)
@@ -111,9 +111,12 @@ end
 
 ge = 2.00231930436256; % free-electron g factor (CODATA 2018 value)
 if isempty(g)
-    g = ge;
+    g = [ge ge];
 end
-validateattributes(g,{'numeric'},{'scalar','nonnegative'},mfilename,'g');
+validateattributes(g,{'numeric'},{'nonempty','nonnegative'},mfilename,'g');
+if numel(g)~=2
+    error('The array supplied for ''g'' must contain one or two elements.');
+end
 
 validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r');
 if numel(unique(round(diff(r),6)))~=1 && length(r)~=1
@@ -190,7 +193,7 @@ end
 muB = 9.2740100783e-24; % Bohr magneton, J/T (CODATA 2018 value);
 mu0 = 1.25663706212e-6; % magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
 h = 6.62607015e-34; % Planck constant, J/Hz (CODATA 2018)
-nu0 = (mu0/4/pi)*(muB*g)^2/h*1e21; % MHz nm^3
+nu0 = (mu0/4/pi)*muB^2*g(1)*g(2)/h*1e21; % MHz nm^3
 w0 = 2*pi*nu0; % Mrad s^-1 nm^3
 
 % Get vector of dipolar frequencies at all distances
