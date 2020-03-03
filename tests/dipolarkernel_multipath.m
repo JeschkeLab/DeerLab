@@ -18,10 +18,12 @@ T0 = [0; tau2-t2];
 
 K = dipolarkernel(t,r,[lambda T0]);
 
+dr = mean(diff(r));
 Kref = 1-sum(lambda);
 for p = 1:numel(lambda)
-  Kref = Kref + lambda(p)*dipolarkernel(t-T0(p),r);
+  Kref = Kref + lambda(p)*dipolarkernel(t-T0(p),r)/dr;
 end
+Kref = Kref*dr;
 
 maxerr = abs(max(K(:) - Kref(:)));
 

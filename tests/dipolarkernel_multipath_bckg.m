@@ -23,13 +23,15 @@ Bmodel = @(t,lam)td_exp(t,k*lam);
 
 K = dipolarkernel(t,r,[lambda T0],Bmodel);
 
+dr = mean(diff(r));
 Kref = 1-sum(lambda);
 for p = 1:numel(lambda)
-  Kref = Kref + lambda(p)*dipolarkernel(t-T0(p),r);
+  Kref = Kref + lambda(p)*dipolarkernel(t-T0(p),r)/dr;
 end
 for p = 1:numel(lambda)
   Kref = Kref.*Bmodel(t-T0(p),lambda(p));
 end
+Kref = Kref*dr;
 
 maxerr = abs(max(K(:) - Kref(:)));
 
