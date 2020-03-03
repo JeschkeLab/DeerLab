@@ -46,7 +46,6 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-
 function [stats,factors,evals] = sensitivan(fcnHandle,Parameters,varargin)
 
 % Input validation
@@ -398,19 +397,17 @@ function isEnoughMemory = memorycheck(sample,nargout,nCombinations)
 
 %Estimate the memory costs of the current sensitivity analysis
 info = whos('sample');
-memoryusage = nCombinations*info.bytes;
-memoryMatlab = memory;
-memoryMatlab = memoryMatlab.MemAvailableAllArrays;
-
+memoryusage = nCombinations*info.bytes/1e9; %GB
+[memoryfree,~] = memorystatus(); %GB
 
 %Stop now if the estimate would exceed virtual memory available
 %to MATLAB. Ootherwise it will crash mid-execution.
-if memoryusage > memoryMatlab && nargout>1
+if memoryusage > memoryfree && nargout>1
     error(['The current sensitivity analysis is requesting a factor '...
         'analysis and/or the evaluated outputs at all combinations.'...
         ' According to the input this will require %.2f GB of memory, '...
-        'which exceed the amoun available to MATLAB (%.2f GB).'],round(memoryusage/1e9,2),round(memoryMatlab/1e9,2))
-elseif  memoryusage > memoryMatlab && nargout==1
+        'which exceed the amoun available to MATLAB (%.2f GB).'],round(memoryusage/1e9,2),round(memoryfree/1e9,2))
+elseif  memoryusage > memoryfree && nargout==1
     isEnoughMemory = false;
 else
     isEnoughMemory = true;
