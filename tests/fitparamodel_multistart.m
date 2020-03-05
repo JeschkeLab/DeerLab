@@ -11,10 +11,8 @@ S = K*P + whitegaussnoise(t,0.01);
 [~,Plocal] = fitparamodel(S,@rd_threegaussian,r1,K,'tolfun',1e-4);
 [~,Pmulti] = fitparamodel(S,@rd_threegaussian,r1,K,'tolfun',1e-4,'multistart',50);
 
-%Pass 1: solution with multi-start is better
-pass(1) = max(abs(P - Pmulti)) < max(abs(P - Plocal));
-%Pass 2: solution with multi-start fits the truth
-pass(2) = all(abs(P - Pmulti) < 1e-1);
+%Pass: solution with multi-start fits the truth
+pass = all(abs(P - Pmulti) < 1e-1);
 
 pass = all(pass);
 
