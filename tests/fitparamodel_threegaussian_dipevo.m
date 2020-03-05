@@ -17,7 +17,7 @@ pass = all(abs(FitP - P) < 1e-10);
 maxerr = max(abs(FitP - P));
  
 if opt.Display
-   plot(r,P,'k',r,Pfit,'r')
+   plot(r,P,'k',r,FitP,'r')
    legend('truth','fit')
    xlabel('r [nm]')
    ylabel('P(r) [nm^{-1}]')

@@ -14,8 +14,8 @@ t = (tau1 + tau2) - (t1 + t2);
 
 % Pathway amplitudes and zero times
 prob = 0.8;
-lambda = [prob^2; prob*(1-prob)];
-T0 = [0; tau2-t2];
+lambda = [1-prob; prob^2; prob*(1-prob)];
+T0 = [NaN; 0; tau2-t2];
 
 % Background model
 k = 0.3;
@@ -23,12 +23,15 @@ Bmodel = @(t,lam)td_exp(t,k*lam);
 
 K = dipolarkernel(t,r,[lambda T0],Bmodel);
 
+unmodulated = isnan(T0);
+Kref = sum(lambda(unmodulated));
 dr = mean(diff(r));
-Kref = 1-sum(lambda);
 for p = 1:numel(lambda)
+  if unmodulated(p), continue; end
   Kref = Kref + lambda(p)*dipolarkernel(t-T0(p),r)/dr;
 end
 for p = 1:numel(lambda)
+  if unmodulated(p), continue; end
   Kref = Kref.*Bmodel(t-T0(p),lambda(p));
 end
 Kref = Kref*dr;

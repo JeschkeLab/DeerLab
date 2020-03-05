@@ -1,6 +1,6 @@
 function [pass,maxerr] = test(opt)
 
-%Check that multi-pathway kernels are properly generated
+% Check that multi-pathway kernels are properly generated
 
 r = linspace(2,6,50);
 
@@ -13,14 +13,16 @@ t = (tau1 + tau2) - (t1 + t2);
 
 % Pathway amplitudes and zero times
 prob = 0.8;
-lambda = [prob^2; prob*(1-prob)];
-T0 = [0; tau2-t2];
+lambda = [1-prob; prob^2; prob*(1-prob)];
+T0 = [NaN; 0; tau2-t2];
 
 K = dipolarkernel(t,r,[lambda T0]);
 
+unmodulated = isnan(T0);
+Kref = sum(lambda(unmodulated));
 dr = mean(diff(r));
-Kref = 1-sum(lambda);
 for p = 1:numel(lambda)
+  if unmodulated(p), continue; end
   Kref = Kref + lambda(p)*dipolarkernel(t-T0(p),r)/dr;
 end
 Kref = Kref*dr;

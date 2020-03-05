@@ -10,19 +10,16 @@ K = dipolarkernel(t,r);
 
 S  = K*P;
 lam = 0.25;
-V = (1 - lam + lam*S).*B;
+V0 = (1 - lam + lam*S).*B;
 
 KB = dipolarkernel(t,r,lam,B);
-Vfit  = KB*P;
+V  = KB*P;
 
-% Pass: the kernel transform the distribution into correct signal
-pass = all(abs(Vfit - V) < 1e-10);
-
-maxerr = max(abs(Vfit - V));
- 
+maxerr = max(abs(V-V0));
+pass = maxerr < 1e-10;
 
 if opt.Display
-   plot(t,V,'k',t,Vfit,'r',t,(1-lam)*B,'r--')
+   plot(t,V0,'k',t,V,'r',t,(1-lam)*B,'r--')
    legend('truth','B','K_B*P')
    xlabel('t [\mus]')
    ylabel('V(t)')

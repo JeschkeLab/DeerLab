@@ -19,6 +19,7 @@
 %     t         N-element time axis, in microseconds
 %     r         M-element distance axis, in nanometers
 %     lambda    modulation depth (between 0 and 1)
+%               this is equivalent to pathinfo = [1-lambda NaN 0; lambda 0 1]
 %     pathinfo  px2 or px3 array of modulation depths lambda, refocusing points
 %               T0, and harmonics n for multiple pathways, each row contains
 %               [lambda T0 n] or [lambda T0] for one pathway. If n is not given
@@ -146,8 +147,9 @@ if ~isnumeric(pathinfo) || ~isreal(pathinfo)
 end
 if numel(pathinfo)==1
     lambda = pathinfo;
-    T0 = 0;
-    n = 1;
+    lambda = [1-lambda lambda];
+    T0 = [NaN 0];
+    n = [0 1];
 else
     if ~any(size(pathinfo,2)==[2 3])
         error('pathinfo must be a numeric array with two or three columns.');
@@ -161,6 +163,13 @@ else
     end
 end
 
+% Combine all unmodulated components into Lambda0, and eliminate from list
+unmodulated = isnan(T0);
+Lambda0 = sum(lambda(unmodulated));
+lambda(unmodulated) = [];
+T0(unmodulated)  = [];
+n(unmodulated) = [];
+
 % Fold overtones into pathway list
 nCoeffs = numel(OvertoneCoeffs);
 if nCoeffs>0
@@ -171,14 +180,9 @@ end
 
 % Assert that amplitude of non-modulated pathways is not larger than 1
 % (this must hold even if the unmodulated amplitude is negative)
-if sum(lambda)>1
+if sum(lambda)+Lambda0>1
     error('Sum of all lambdas cannot be larger than 1.');
 end
-
-% Set amplitude of unmodulated part
-% [This is not corret in general, since Lambda0 cannot be inferred from lambda.
-% However, it works fine for the usual single-pathway 4-pulse DEER signal]
-Lambda0 = 1 - sum(lambda);
 
 nPathways = numel(lambda);
 if nPathways>1
