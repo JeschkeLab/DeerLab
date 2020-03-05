@@ -468,8 +468,8 @@ if makeBadges
         fprintf(fileID,'{ \n');
         fprintf(fileID,'"schemaVersion": 1, \n');
         fprintf(fileID,'"label": "Coverage", \n');
-        fprintf(fileID,'"message": "% 3.0f% % ", \n',TotalCoverage);
-        fprintf(fileID,'"color": "% s"\n',color);
+        fprintf(fileID,'"message": "%3.0f %% ", \n',TotalCoverage);
+        fprintf(fileID,'"color": "%s"\n',color);
         fprintf(fileID,'} \n');
         fclose(fileID);
         fprintf('Coverage badge created: % s\n',fullfile(pwd,'coverage_badge.json'))
