@@ -81,15 +81,24 @@ If the background ``B`` and modulation depth ``lambda`` are specified, then both
     K = dipolarkernel(t,r,pathinfo)
     K = dipolarkernel(t,r,pathinfo,B)
 
-For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal), ``pathinfo`` contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals. Each row of ``pathinfo`` has two or three values: one amplitude, one time, and one harmonic (1 = fundamental, 2 = first overtone, etc.). The unmodulated amplitudes is calculated such that the sum over all amplitudes equals 1.
+For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal), ``pathinfo`` contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals. Each row of ``pathinfo`` has two or three values: one amplitude, one time, and one harmonic (1 = fundamental, 2 = first overtone, etc.). For a pathway with unmodulated signal, set the refocusing time to ``NaN``.
 
 .. code-block:: matlab
 
-    lambda = [0.7; 0.2];   % modulation depths of two pathways
-    T0 = [0; 4];           % corresponding refocusing times, in microseconds
+    % three pathways, the first unmodulated, the second refocusing at time 0, the third at time 4 microseconds
+    pathinfo = [0.3 NaN; 0.6 0; 0.1 4];
     pathinfo = [lambda T0];
     K = dipolarsignal(t,r,pathinfo);
 
+In the above example, the first pathway has a refocusing time of ``NaN``, indicating that it is a constant offset.
+
+To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway refocused at time 0, use
+
+.. code-block:: matlab
+
+    lambda = 0.4; % modulation depth
+    pathinfo = [1-lambda NaN; lambda 0];
+    K = dipolarsignal(t,r,pathinfo);
 
 
 Additional Settings
