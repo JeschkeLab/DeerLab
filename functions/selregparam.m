@@ -230,8 +230,8 @@ switch lower(SearchMethod)
         %  Golden-section search algorithm
         %-----------------------------------------------------------------------
         
-        epsilon = 0.1; % termination interval size (logalpha)
-        maxIterations = 10; % maximum number of iterations
+        epsilon = 0.01; % termination interval size (logalpha)
+        maxIterations = 500; % maximum number of iterations
         tau = (sqrt(5)-1)/2;
         for m = 1:numel(SelectionMethod)
             
