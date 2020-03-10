@@ -38,7 +38,7 @@ jobs:
       if: success()
       run: |
            scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} -r ../deerlab ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/
-           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} scp -r /home/lufa/scp_traffic/deerlab ${{ secrets.CISERVER_HOST }}:~/deerlab/
+           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} scp -r /home/lufa/scp_traffic/deerlab ${{ secrets.CISERVER_HOST }}:~
            ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f -r /home/lufa/scp_traffic/deerlab"
     - name: Run test suite connected to CI-Server
       if: success()
@@ -52,7 +52,7 @@ jobs:
                #Transfer log file to the gateway
                scp -o StrictHostKeyChecking=no -i ~/.ssh/gateway_key -P ${{ secrets.GATEWAY_PORT }} ./dltestsuite.error ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/ || true
                #Delete the source files
-               cd ~/deerlab/
+               cd ~
                rm -f -r deerlab
            EOF
     - name: Disconnect CI-server
