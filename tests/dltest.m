@@ -355,14 +355,11 @@ if runCodeCoverage
         TotalCovered = TotalCovered + Covered;
         Runnable = length(unique(RunnableLines));
         Code = fileread(FcnName);
-        
-        %Callstats does not seem to count nargin==0 cases as runnable, this leads
-        %to some cases (e.g. the rd_models) to have more runned lines than
-        %callstats says
+        % Account for lines missed by callstats
         if Covered > Runnable
-                TotalRunnable = TotalRunnable + Covered;
+            TotalRunnable = TotalRunnable + Covered;
         else
-                TotalRunnable = TotalRunnable + Runnable;
+            TotalRunnable = TotalRunnable + Runnable;
         end
 
         fprintf('%i/%i run/total \n',Covered,Runnable)
@@ -375,13 +372,13 @@ if runCodeCoverage
         end
         MissedEnds = length(strfind(Code,'error')) + length(strfind(Code,'return')) ...
             + length(strfind(Code,'break')) + length(strfind(Code,'fprintf')) + length(strfind(Code,'plot'));
-        % account for end statement after return command
+        % Account for unreachable end-statements or lines
         if Runnable - Covered <= MissedEnds
             Covered = Runnable;
             Missed = [];
         end
         Coverage = 100*Covered/Runnable;
-        % Print to console
+        % Print to command window
         if (~isempty(TestName) && Coverage~=0) || isempty(TestName)
             if params =='c'
                 fprintf('%-20s%-18s%6.2f%18s    %s\n',FcnName,' ',Coverage,'Lines missing:',mat2str(Missed))
