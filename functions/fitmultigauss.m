@@ -63,7 +63,7 @@ if ~all(size(K) > 1)
 end
 warning('off','DeerLab:parseoptional')
 %Parse the optional parameters in the varargin
-[Upper,Lower,BckgModel] = parseoptional({'Upper','Lower','Background'},varargin);
+[Upper,Lower,BckgModel] = parseoptional({'Upper','Lower','Background','internal::parseLater'},varargin);
 warning('on','DeerLab:parseoptional')
 if ~isempty(Upper) && isempty(BckgModel) && length(Upper)~=2
     error('Upper property must be an array [<r>_max FWHM_max]')
@@ -79,11 +79,11 @@ if ~isempty(BckgModel) && ~exist('t','var')
     error('Time axis must be provided for a time-domain fit.')
 end
 %Remove the Lower and Upper options from varargin so they are not passed to fitparamodel
-Idx = find(cellfun(@(x)(ischar(x) && contains(lower(x),'upper')),varargin));
+Idx = find(cellfun(@(x)(ischar(x) && strcmpi(x,'upper')),varargin));
 varargin(Idx:Idx+1) = [];
-Idx = find(cellfun(@(x)(ischar(x) && contains(lower(x),'lower')),varargin));
+Idx = find(cellfun(@(x)(ischar(x) && strcmpi(x,'lower')),varargin));
 varargin(Idx:Idx+1) = [];
-Idx = find(cellfun(@(x)(ischar(x) && contains(lower(x),'background')),varargin));
+Idx = find(cellfun(@(x)(ischar(x) && strcmpi(x,'background')),varargin));
 varargin(Idx:Idx+1) = [];
 % Compile list of multi-Gaussian models
 multiGaussModels = cell(maxGaussians,1);

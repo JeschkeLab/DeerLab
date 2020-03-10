@@ -20,8 +20,6 @@
 %   'EndCutOff' - Maximal number of points to evaluate from the signal.
 %                 Must be an integer value between 1 and length(V)
 %
-%   For further property-value pair options see "help fitbackground"
-%
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
