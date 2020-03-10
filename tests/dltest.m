@@ -350,12 +350,22 @@ if runCodeCoverage
         FcnName = Files(n).name;
         Path = Files(n).folder;
         RunnableLines = callstats('file_lines',fullfile(Path,FcnName));
-        TotalRunnable = TotalRunnable + length(unique(RunnableLines));
         Executed = unique(ExecutedLines{n});
         Covered = length(Executed);
         TotalCovered = TotalCovered + Covered;
         Runnable = length(unique(RunnableLines));
         Code = fileread(FcnName);
+        
+        %Callstats does not seem to count nargin==0 cases as runnable, this leads
+        %to some cases (e.g. the rd_models) to have more runned lines than
+        %callstats says
+        if Covered > Runnable
+                TotalRunnable = TotalRunnable + Covered;
+        else
+                TotalRunnable = TotalRunnable + Runnable;
+        end
+
+        fprintf('%i/%i run/total \n',Covered,Runnable)
         if params =='l'
             Missed = RunnableLines;
             for k=1:length(Executed)
