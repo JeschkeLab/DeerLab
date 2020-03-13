@@ -62,7 +62,9 @@ B = [];
 proplist = varargin;
 
 if numel(proplist)>=1 && ~ischar(proplist{1})
-    pathinfo = proplist{1};
+    if ~isempty( proplist{1})
+        pathinfo = proplist{1};
+    end
     proplist(1) = [];
 end
 
@@ -150,7 +152,7 @@ if numel(pathinfo)==1
     lambda = [1-lambda lambda];
     T0 = [NaN 0];
     n = [0 1];
-else
+elseif numel(pathinfo)>1
     if ~any(size(pathinfo,2)==[2 3])
         error('pathinfo must be a numeric array with two or three columns.');
     end
