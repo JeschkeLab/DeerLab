@@ -14,7 +14,7 @@
 </p>
 
 ### About
-The DeerLab software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar EPR spectroscopy techniques (RIDME, DQC, SIFTER). The main homepage can be found at www.deeranalysis.org. This is the GitHub repository of the DeerLab source code, including instructions for compiling and installing DeerLab.
+The DeerLab software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar EPR spectroscopy techniques (RIDME, DQC, SIFTER). The main homepage can be found at [luisfabib.github.io/deerlab](https://luisfabib.github.io/deerlab). This is the GitHub repository of the DeerLab source code, including instructions for compiling and installing DeerLab.
 
 It consists of a collection of functions that perform processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows.
 
