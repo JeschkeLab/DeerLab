@@ -27,6 +27,8 @@
 %                      dynamically at each iteration. 
 %                      (default = depends on available memory)
 %
+%     'Verbose' - Display information on estimated remaining time
+%
 %   Outputs:
 %     stats     structure array with summary statistics for each variable
 %       .median medians of the output variables
@@ -36,7 +38,7 @@
 %       .p25    25th percentiles of the output variables
 %       .p75    75th percentiles of the output variables
 %       .p98    98th percentiles of the output variables
-
+%
 %     factors   results of factor analysis
 %       .main   main effects
 %       .inter  interactions between factors
@@ -66,11 +68,16 @@ end
 
 validateattributes(Parameters,{'struct'},{'nonempty'},mfilename,'Parameters');
 
-[AxisHandle,RandPerm,dynamicStats] = ...
-    parseoptional({'AxisHandle','RandPerm','dynamicStats'},varargin);
+[AxisHandle,RandPerm,dynamicStats,Verbose] = ...
+    parseoptional({'AxisHandle','RandPerm','dynamicStats','Verbose'},varargin);
 
 if ~isempty(dynamicStats)
     validateattributes(dynamicStats,{'logical'},{'nonempty'},mfilename,'dynamicStats')
+end
+if isempty(Verbose)
+   Verbose = false;
+else
+    validateattributes(Verbose,{'logical'},{'nonempty'},mfilename,'dynamicStats')
 end
 
 % Get parameter names, generate all parameter combinations
@@ -224,6 +231,20 @@ for i = 1:nCombinations
         end
         %Reset counter
         counter = 0;
+    end
+    
+    %If requested, show expected remaining time
+    if Verbose
+        if exist('S','var')
+            fprintf(repmat('\b',1,numel(S)));
+        end
+        remaining = fcntime/i*(nCombinations - i);
+        h = floor(remaining/3600);
+        min = floor(remaining/60-h*60);
+        s = floor(remaining - h*3600 - min*60);
+        perc = 1/nCombinations*100;
+        S = sprintf('Progress: %.2f percentage finished \nEstimated remaining time: %ih% imin %is \n',perc,h,min,s);
+        fprintf(S);
     end
 end
 
