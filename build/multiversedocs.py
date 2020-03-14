@@ -32,10 +32,10 @@ for tag in tags:
 	subprocess.run (["git", "checkout", commit])
 
     #Build source code in .\docsrc
-	os.system('.\docsrc\make.bat clean')
+	os.system('..\docsrc\make.bat clean')
 
     #Get list from all HTML files in the compiled documentation
-    path = './docs/'
+    path = '../docs/'
     htmlfiles = [f for f in glob.glob(path + "**/*.html", recursive = True)]
 
 
@@ -65,6 +65,6 @@ for tag in tags:
 			
 
     #Copy current build into collective docs
-    shutil.copytree('./docs', ['./multidocs/' + tag])
+    shutil.copytree('../docs', ['../multidocs/' + tag])
 
 	print('File processing for version '+tag+' completed                                \n', end='\r')
