@@ -25,18 +25,18 @@ currentag = currentag.replace("\\n'","")
 
 for tag in tags:
 
-    #Get commit SHA corresponding to current tag
+	#Get commit SHA corresponding to current tag
 	commit = subprocess.check_output (["git", "rev-list", "-n", "1", tag])
 
-    #Checkout that commit
+	#Checkout that commit
 	subprocess.run (["git", "checkout", commit])
 
-    #Build source code in .\docsrc
+	#Build source code in .\docsrc
 	os.system('..\docsrc\make.bat clean')
 
-    #Get list from all HTML files in the compiled documentation
-    path = '../docs/'
-    htmlfiles = [f for f in glob.glob(path + "**/*.html", recursive = True)]
+	#Get list from all HTML files in the compiled documentation
+	path = '../docs/'
+	htmlfiles = [f for f in glob.glob(path + "**/*.html", recursive = True)]
 
 
 	#Loop over all HTML available at that version
@@ -64,7 +64,9 @@ for tag in tags:
 			print(line,end = '')
 			
 
-    #Copy current build into collective docs
-    shutil.copytree('../docs', ['../multidocs/' + tag])
+	#Copy current build into collective docs
+	shutil.copytree('../docs', ['../multidocs/' + tag])
 
 	print('File processing for version '+tag+' completed                                \n', end='\r')
+
+	subprocess.run (["git", "checkout", "-"])
