@@ -15,3 +15,5 @@ tutorials/**/*.m
 tests/_tutorials
 tests/_tutorials/**
 build/__pycache__/multiversedocs.cpython-37.pyc
+multidocs/**/*
+build/__pycache__/multiversedocs_testing.cpython-37.pyc
