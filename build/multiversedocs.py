@@ -118,12 +118,15 @@ for tag in tags:
                     idx = href.find(tag)
                     href = href[:idx] + 'develop/_static/theme_override.css'
                     line = line.replace(line,'<link rel="stylesheet" href="' + href + '" type="text/css" />')   
-                
-            if '<title>DeerLab development-version documentation</title>' in line and tag != 'develop':
-                    line = line.replace(line,'<title>DeerLab '+tag+' documentation</title>')
                     
-            if 'DeerLab development-version documentation' in line and tag != 'develop':
-                    line = line.replace(line,'DeerLab '+tag+' documentation')      
+            # Edits in the relesed versions index.html files
+            if '<title>DeerLab development-version documentation' in line and tag != 'develop':
+                    line = line.replace(line,'<title>DeerLab documentation</title>')
+            if '<li>DeerLab development-version documentation' in line and tag != 'develop':
+                    line = line.replace(line,'<li>DeerLab '+tag+' documentation</li>')    
+
+            if '<h1>DeerLab development-version documentation' in line and tag != 'develop':
+                    line = line.replace(line,'<h1>DeerLab '+tag+' documentation</h1>')  
                     
             #Print line into file
             print(line,end = '')
@@ -134,7 +137,8 @@ for tag in tags:
         shutil.copytree('../docs', '../multidocs/' + tag)
     else:
         shutil.copytree('../docs', '../multidocs/' + tag)
-
+    
+    #Copy the homepage html file to the multidocs build
     if tag == 'develop':
         shutil.copyfile('../docsrc/source/homepage/index.html', '../multidocs/index.html')
         shutil.copytree('../docsrc/source/homepage/_static', '../multidocs/_static')
