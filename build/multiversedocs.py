@@ -112,8 +112,7 @@ for tag in tags:
                     href = href[:idx] + 'develop/_static/custom.css'
                     line = line.replace(line,'<link rel="stylesheet" href="' + href + '" type="text/css" />')
             
-            if 'theme_override.css' in line:
-                if tag != 'develop':
+            if 'theme_override.css' in line and tag != 'develop':
                     href = os.path.relpath('multidocs/' + tag + relpath, 'multidocs/' + 'develop' + relpath)
                     href = href[3:]
                     idx = href.find(tag)
@@ -123,7 +122,7 @@ for tag in tags:
             if '<title>DeerLab development-version documentation</title>' in line and tag != 'develop':
                     line = line.replace(line,'<title>DeerLab '+tag+' documentation</title>')
                     
-              if 'DeerLab development-version documentation' in line and tag != 'develop':
+            if 'DeerLab development-version documentation' in line and tag != 'develop':
                     line = line.replace(line,'DeerLab '+tag+' documentation')      
                     
             #Print line into file
