@@ -1,4 +1,4 @@
-﻿DeerLab development-version Documentation
+﻿DeerLab development-version documentation
 =====================================================
        
 .. important:: DeerLab is currently in its pre-release stage. Major changes (change of function names and calling syntax) are possible until the first stable version is released.

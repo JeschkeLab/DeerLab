@@ -120,9 +120,12 @@ for tag in tags:
                     href = href[:idx] + 'develop/_static/theme_override.css'
                     line = line.replace(line,'<link rel="stylesheet" href="' + href + '" type="text/css" />')   
                 
-            if 'DeerLab development-version Documentation' in line:
-                    line = line.replace(line,'DeerLab '+tag+' Documentation')
-                
+            if '<title>DeerLab development-version documentation</title>' in line and tag != 'develop':
+                    line = line.replace(line,'<title>DeerLab '+tag+' documentation</title>')
+                    
+              if 'DeerLab development-version documentation' in line and tag != 'develop':
+                    line = line.replace(line,'DeerLab '+tag+' documentation')      
+                    
             #Print line into file
             print(line,end = '')
             
