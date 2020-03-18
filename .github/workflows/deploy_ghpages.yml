@@ -11,8 +11,7 @@ on:
 
 jobs:
 
-  build:
-    name: Build
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -31,11 +30,14 @@ jobs:
            sudo apt install texlive-extra-utils
            sudo apt-get install texlive-latex-extra
            
-    - name: Run Sphinx Builder
-      run: |
-           cd docsrc
-           sphinx-build -E -b html ./source ../docs
-    - name: Connect and update DeerLab AWS S3 Bucket
+    - name: Build multi-version docs
       run: |
            cd build
-           python -m synchS3 -k ${{ secrets.S3_ACCESS }} -s ${{ secrets.S3_SECRETACCESS }} -d "../docs" --bucket deeranalysis.org
+           python -m multiversedocs
+           cd ..
+           
+    - name: Deploy to GH-Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./multidocs
