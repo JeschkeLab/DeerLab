@@ -8,7 +8,6 @@
   <img src="https://img.shields.io/github/issues-raw/luisfabib/deerlab?style=flat"></img>
   <img src="https://img.shields.io/badge/MATLAB-R2016b--R2019b-brightgreen?style=flat"></img>
   <img src="https://img.shields.io/github/downloads/luisfabib/deerlab/total?style=flat"></img>
-  <img src="https://github.com/luisfabib/deerlab/workflows/Webpage%20update/badge.svg?style=flat-square"></img>
   <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fdeershields.s3.eu-central-1.amazonaws.com%2Fcoverage_badge.json"></img>
   <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fdeershields.s3.eu-central-1.amazonaws.com%2Ftestsuite_badge.json"></img>
 </p>
