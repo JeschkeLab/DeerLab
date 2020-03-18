@@ -17,12 +17,13 @@ tags = subprocess.check_output (["git", "tag"])
 #Format output 
 tags = formatProcOut(tags)
 tags = tags.split("\\n")
-tags = tags[:-2]
 tags.insert(0,"develop")
 
+newtags = list()
 for tag in tags: 
-    if any(tag in ignore for ignore in ignoredtags):
-        tags.remove(tag)
+    if not any(tag in ignore for ignore in ignoredtags):
+        newtags.append(tag)
+tags = newtags;
 
 path = os.path.join('..','multidocs')
 if os.path.exists(path):
