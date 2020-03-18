@@ -41,11 +41,15 @@ startbranch = startbranch.replace("\\n","")
 
 for tag in tags:
     
-    makefilepath = os.path.join('..', 'docsrc', 'make.bat')
+    cddir = os.path.join('..','docsrc')
+    os.chdir (cddir)
+    src = os.path.join('.', 'source')
+    dest = os.path.join('..', 'docs')
+    buildcmd = ['sphinx-build', '-E', '-b', 'html',src,dest]
     if tag == 'develop':
         subprocess.run (["git", "checkout", "develop"])
         #Build source code in .\docsrc
-        subprocess.run ([makefilepath, "clean"])
+        subprocess.run (buildcmd)
     else:
         subprocess.run (["git", "checkout", "master"])
         #Get commit SHA corresponding to current tag
@@ -55,7 +59,10 @@ for tag in tags:
         #Checkout that commit
         subprocess.run (["git", "checkout","-f", commit])
         #Build source code in .\docsrc
-        subprocess.run ([makefilepath])
+        subprocess.run (buildcmd)
+        
+    cddir = os.path.join('..','build')
+    os.chdir (cddir)
 
     #The devleopment version is compiled first, then copy the development index.html to the rest
     if tag != 'develop':
