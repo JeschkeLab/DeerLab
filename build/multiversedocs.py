@@ -108,8 +108,7 @@ for tag in tags:
                 #Make the current version the default selection
                 for version in tags:
                             
-                     
-                    href = os.path.relpath('multidocs/' + version + relpath, 'multidocs/' + tag + relpath)
+                    href = os.path.relpath(os.path.join('multidocs',version,relpath), os.path.join('multidocs',tag,relpath))
                     href = href[3:]
                     if tag == version:
                         line = line.replace(line,'        <option selected value="' + href + '">' + version + '</option>\n' + line)
@@ -141,6 +140,9 @@ for tag in tags:
 
             if '<h1>DeerLab development-version documentation' in line and tag != 'develop':
                     line = line.replace(line,'<h1>DeerLab '+tag+' documentation</h1>')  
+                    
+            if 'DeerAnalysis' in line:
+                    line = line.replace('DeerAnalysis','DeerLab')
                     
             #Print line into file
             print(line,end = '')
