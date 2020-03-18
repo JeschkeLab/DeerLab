@@ -1,4 +1,4 @@
-name: Webpage update
+name: Docs Build & Deployment
 
 on: 
    push:

@@ -24,7 +24,7 @@ for tag in tags:
     if any(tag in ignore for ignore in ignoredtags):
         tags.remove(tag)
 
-path = '../multidocs'
+path = os.path.join('..','multidocs')
 if os.path.exists(path):
     shutil.rmtree(path)
     
@@ -40,11 +40,12 @@ startbranch = formatProcOut(startbranch)
 startbranch = startbranch.replace("\\n","")
 
 for tag in tags:
-
+    
+    makefilepath = os.path.join('..', 'docsrc', 'make.bat')
     if tag == 'develop':
         subprocess.run (["git", "checkout", "develop"])
         #Build source code in .\docsrc
-        subprocess.run (["..\docsrc\make.bat", "clean"])
+        subprocess.run ([makefilepath, "clean"])
     else:
         subprocess.run (["git", "checkout", "master"])
         #Get commit SHA corresponding to current tag
@@ -54,13 +55,16 @@ for tag in tags:
         #Checkout that commit
         subprocess.run (["git", "checkout","-f", commit])
         #Build source code in .\docsrc
-        subprocess.run (["..\docsrc\make.bat"])
+        subprocess.run ([makefilepath])
 
     #The devleopment version is compiled first, then copy the development index.html to the rest
     if tag != 'develop':
-         shutil.copyfile('../multidocs/develop/index.html', '../docs/index.html')
-         counter = 0
-         for line in fileinput.input('../docs/index.html', inplace=True):
+        src = os.path.join('..','multidocs','develop','index.html')
+        dest = os.path.join('..','docs','index.html')
+        shutil.copyfile(src, dest)
+        counter = 0
+        path = os.path.join('..','docs','index.html')
+        for line in fileinput.input(path, inplace=True):
             if not counter:
                 if '<div class="select">' in line:
                     counter = 1000
@@ -70,16 +74,19 @@ for tag in tags:
                 if '<div class="select_arrow">\n' in line:
                     counter = 3
                 counter -= 1
+
     #Get list from all HTML files in the compiled documentation
-    path = '../docs/'
-    htmlfiles = [f for f in glob.glob(path + "**/*.html", recursive = True)]
+    docspath = os.path.join('..','docs')
+    multidocspath = os.path.join('..','multidocs')
+    filterpath = os.path.join('**','*.html')
+    htmlfiles = [f for f in glob.glob(docspath + filterpath, recursive = True)]
 
 
     #Loop over all HTML available at that version
     for file in htmlfiles:
     
 
-        relpath = file.replace('../docs','.')
+        relpath = file.replace(docspath,'.')
         
         print('Processing ' + file + '...                                     ', end='\r')
         #Go through all files
@@ -134,14 +141,14 @@ for tag in tags:
 
     #Copy current build into collective docs
     if tag == mostrecent:
-        shutil.copytree('../docs', '../multidocs/' + tag)
+        shutil.copytree(docspath, os.path.join(multidocspath,tag))
     else:
-        shutil.copytree('../docs', '../multidocs/' + tag)
+        shutil.copytree(docspath, os.path.join(multidocspath,tag))
     
     #Copy the homepage html file to the multidocs build
     if tag == 'develop':
-        shutil.copyfile('../docsrc/source/homepage/index.html', '../multidocs/index.html')
-        shutil.copytree('../docsrc/source/homepage/_static', '../multidocs/_static')
+        shutil.copyfile(os.path.join('..','docsrc','source','homepage','index.html'), os.path.join('..','multidocs','index.html'))
+        shutil.copytree(os.path.join('..','docsrc','source','homepage','_static'), os.path.join('..','multidocs','_static'))
         
     print('File processing for version ' + tag + ' completed                                \n', end='\r')
     print('\n')
