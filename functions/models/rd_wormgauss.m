@@ -65,6 +65,7 @@ end
 if ~iscolumn(r)
     r = r.';
 end
+validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
 %Prepare parameters
 L=param(1);

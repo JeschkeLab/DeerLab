@@ -61,6 +61,7 @@ end
 if ~iscolumn(r)
   r = r.';
 end
+validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
 N = param(1); % number of residues
 nu = param(2); % scaling exponent

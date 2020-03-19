@@ -49,6 +49,9 @@ if length(param)~=nParam
   error('The number of input parameters does not match the number of model parameters.')
 end
 
+%Parse input
+validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
+
 % Compute the model distance distribution
 R = param(1);
 P = zeros(numel(r),1);

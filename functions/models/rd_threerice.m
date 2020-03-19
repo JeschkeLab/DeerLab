@@ -85,6 +85,9 @@ if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
+%Parse input
+validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
+
 nu = param(1);
 sqscale = param(2).^2;
 %Compute rician/rice distribution using the zeroth order modified Bessel function of

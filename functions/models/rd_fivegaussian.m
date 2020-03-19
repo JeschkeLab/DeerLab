@@ -119,6 +119,9 @@ if nargin~=2
     error('Model requires two input arguments.')
 end
 
+%Parse input
+validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
+
 % Compute the model distance distribution
 Lam1 = (param(2)/sqrt(2*log(2)));
 Lam2 = (param(4)/sqrt(2*log(2)));
