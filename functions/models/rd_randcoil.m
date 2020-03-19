@@ -13,10 +13,11 @@ function output = rd_randcoil(r,param)
 %   sufficiently large N.
 %
 % PARAMETERS
-% name      symbol default lower bound upper bound
+% name      symbol default lower bound   upper bound
 % --------------------------------------------------------------------------
-% param(1)  N      50      2              1000    number of residues between labels, including labeled residues
-% param(2)  nu     0.602   0.33           1       scaling exponent
+% param(1)  N      50         2          1000    number of residues between labels, including labeled residues
+% param(2)  R0     0.20      0.10        0.40    segment length
+% param(3)  nu     0.60      0.33        1.00    scaling exponent
 % --------------------------------------------------------------------------
 %
 %   See: N. C. Fitzkee, G. D. Rose, PNAS 2004, 101(34), 12497-12502
@@ -26,8 +27,7 @@ function output = rd_randcoil(r,param)
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-R0 = 0.198; % 1.98 Å per residue
-nParam = 2;
+nParam = 3;
 
 if nargin~=0 && nargin~=2
     error('Model requires two input arguments.')
@@ -42,11 +42,17 @@ if nargin==0
     info.parameters(1).range = [2 1000];
     info.parameters(1).default = 50;
     info.parameters(1).units = '';
+        
+    info.parameters(2).name = 'Segment length';
+    info.parameters(2).range = [0.1 0.4];
+    info.parameters(2).default = 0.2;
+    info.parameters(2).units = 'nm';  
     
-    info.parameters(2).name = ['Scaling exponent',char(957)];
-    info.parameters(2).range = [0.33 1];
-    info.parameters(2).default = 0.602;
-    info.parameters(2).units = '';
+    info.parameters(3).name = ['Scaling exponent',char(957)];
+    info.parameters(3).range = [0.33 1];
+    info.parameters(3).default = 0.602;
+    info.parameters(3).units = '';
+  
     
     output = info;
     return
@@ -65,6 +71,8 @@ validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilena
 
 N = param(1); % number of residues
 nu = param(2); % scaling exponent
+R0 = param(3); % residue length
+
 rsq = 6*(R0*N^nu)^2; % mean square end-to-end distance from radius of gyration
 normFact = 3/(2*pi*rsq)^(3/2); % normalization prefactor
 ShellSurf = 4*pi*r.^2; % spherical shell surface
