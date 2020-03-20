@@ -157,8 +157,8 @@ for tag in tags:
     
     #Copy the homepage html file to the multidocs build
     if tag == 'develop':
-        shutil.copyfile(os.path.join('..','docsrc','source','homepage','index.html'), os.path.join('..','multidocs','index.html'))
-        shutil.copytree(os.path.join('..','docsrc','source','homepage','_static'), os.path.join('..','multidocs','_static'))
+        shutil.copyfile(os.path.join('..','webpage','index.html'), os.path.join('..','multidocs','index.html'))
+        shutil.copytree(os.path.join('..','webpage','_static'), os.path.join('..','multidocs','_static'))
         
     print('File processing for version ' + tag + ' completed                                \n', end='\r')
     print('\n')
