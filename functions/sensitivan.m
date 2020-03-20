@@ -32,9 +32,11 @@
 %       .median medians of the output variables
 %       .mean   means of the output variables
 %       .std    standard deviations of the output variables
+%       .p2     2nd  percentiles of the output variables
 %       .p25    25th percentiles of the output variables
 %       .p75    75th percentiles of the output variables
-%
+%       .p98    98th percentiles of the output variables
+
 %     factors   results of factor analysis
 %       .main   main effects
 %       .inter  interactions between factors
@@ -96,13 +98,15 @@ for i = 1:nCombinations
     if isempty(nout)
         nout = getmaxnargout(fcnHandle,argin);
         %Pre-allocate memory for stats structure array
-        stats = repmat(struct('median',[],'mean',[],'std',[],'p25',[],'p75',[]),nout,1);
+        stats = repmat(struct('median',[],'mean',[],'std',[],'p2',[],'p25',[],'p75',[],'p98',[]),nout,1);
         evals = cell(1,nout);
         sizeOut = cell(1,nout);
         %Prepare containers for dynamic statistical estimators
+        markers2 = cell(1,nout);
         markers25 = cell(1,nout);
         markers50 = cell(1,nout);
         markers75 = cell(1,nout);
+        markers98 = cell(1,nout);
         OutSum(1:nout) = {0};
         OutSumSq(1:nout) = {0};
         
@@ -179,8 +183,10 @@ for i = 1:nCombinations
                 
                 %Dynamic percentiles/quantiles
                 [stats(j).median, markers50{j}] = dynprctile(0.50,sample,markers50{j});
-                [stats(j).p25, markers25{j}] = dynprctile(0.25,sample,markers25{j});
+                [stats(j).p98, markers98{j}] = dynprctile(0.98,sample,markers98{j});
                 [stats(j).p75, markers75{j}] = dynprctile(0.75,sample,markers75{j});
+                [stats(j).p25, markers25{j}] = dynprctile(0.25,sample,markers25{j});
+                [stats(j).p2, markers2{j}] = dynprctile(0.02,sample,markers2{j});
             end
         else
             %Update statistical estimators using order statistics
@@ -190,8 +196,10 @@ for i = 1:nCombinations
                 stats(j).mean = squeeze(mean(vareval,1,'omitnan'));
                 stats(j).std = squeeze(std(vareval,0,1,'omitnan'));
                 if i>1
+                    stats(j).p2  = percentile(vareval,2,1).';
                     stats(j).p25 = percentile(vareval,25,1).';
                     stats(j).p75 = percentile(vareval,75,1).';
+                    stats(j).p98 = percentile(vareval,98,1).';
                 end
             end
         end
@@ -384,7 +392,7 @@ X = sort(X,1);
 % Get list of available percentiles
 pList = 100*(0.5:1:N-0.5)/N;
 % Interpolate from list to requested percentile
-Y = interp1(pList,X,p,'linear');
+Y = interp1(pList,X,p,'linear','extrap');
 
 if numel(sizeX)>2
     % Reshape results back to original size
