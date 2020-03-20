@@ -15,12 +15,12 @@ Syntax
 
 .. code-block:: matlab
 
-   noiselevel('fcnName')
-   noiselevel fcnName 
+   docs('fcnName')
+   docs fcnName 
 
 
 Parameters
-    *   ``fcnName`` - Function name (string)
+    *   ``fcnName`` - Function name (character array)
 
 -----------------------------
 
@@ -30,8 +30,7 @@ Description
 
 .. code-block:: matlab
 
-   noiselevel('dipolarkernel')
-   noiselevel dipolarkernel 
+   docs('dipolarkernel')
+   docs dipolarkernel 
 
 Opens the offline documentation page of, e.g. the ``dipolarkernel`` function in the MATLAB web explorer.
-
