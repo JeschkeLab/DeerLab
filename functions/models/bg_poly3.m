@@ -60,14 +60,14 @@ if nargin==0
     return
 end
 
-%If user passes them, check that the number of parameters matches the model
+% If user passes them, check that the number of parameters matches the model
 if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
-%If necessary inputs given, compute the model distance distribution
-t = abs(t);
-Background = polyval(fliplr(param),t);
+% If necessary inputs given, compute the model distance distribution
+p = fliplr(param);
+Background = polyval(p,abs(t));
 if ~iscolumn(Background)
     Background = Background';
 end

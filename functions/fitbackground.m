@@ -129,9 +129,6 @@ FitEndTime = tFitRange(2);
 tfit = t(FitStartPos:FitEndPos);
 FitData = V(FitStartPos:FitEndPos);
 
-% Use absolute time scale to ensure proper fitting of negative-time data
-tfit = abs(tfit);
-
 % Construct cost functional for minimization
 % Fit signal or log(signal);
 Fgmodel = @(p,lambda)(1 - lambda + eps)*bgmodel(tfit,p);
@@ -201,7 +198,7 @@ if fitModDepth
 end
 
 % Extrapolate fitted background to whole time axis
-B = bgmodel(abs(t),FitParam);
+B = bgmodel(t,FitParam);
 
 % Ensure data is real
 B = real(B);

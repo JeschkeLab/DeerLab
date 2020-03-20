@@ -13,7 +13,7 @@
 % name    symbol default lower bound upper bound
 % ------------------------------------------------------------------
 % PARAM(1)  k     0.25      0            200        decay rate
-% PARAM(2)  d      3       0            6          fractal dimension
+% PARAM(2)  d      3        0            6          fractal dimension
 % ------------------------------------------------------------------
 %
 
@@ -48,14 +48,15 @@ if nargin==0
     return
 end
 
-%If user passes them, check that the number of parameters matches the model
+% If user passes them, check that the number of parameters matches the model
 if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
-%If necessary inputs given, compute the model distance distribution
-t = abs(t);
-Background = exp(-(param(1)*t).^(param(2)/3));
+% If necessary inputs given, compute the model distance distribution
+k = param(1);
+d = param(2);
+Background = exp(-(k*abs(t)).^(d/3));
 if ~iscolumn(Background)
     Background = Background';
 end

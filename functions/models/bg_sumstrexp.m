@@ -67,16 +67,20 @@ if nargin==0
 
 end
 
-%If user passes them, check that the number of parameters matches the model
+% If user passes them, check that the number of parameters matches the model
 if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
-%If necessary inputs given, compute the model distance distribution
-t = abs(t);
-StretchedExp1 = exp(-(param(1)*t).^(param(2)/3));
-StretchedExp2 = exp(-(param(3)*t).^(param(4)/3));
-Background = param(5)*StretchedExp1 + (1-param(5))*StretchedExp2;
+% If necessary inputs given, compute the model distance distribution
+k1 = param(1);
+d1 = param(2);
+k2 = param(3);
+d2 = param(4);
+w1 = param(5);
+StretchedExp1 = exp(-(k1*abs(t)).^(d1/3));
+StretchedExp2 = exp(-(k2*abs(t)).^(d2/3));
+Background = w1*StretchedExp1 + (1-w1)*StretchedExp2;
 if ~iscolumn(Background)
     Background = Background';
 end

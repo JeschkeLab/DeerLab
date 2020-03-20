@@ -30,7 +30,7 @@ if nargin~=0 && nargin~=2
 end
 
 if nargin==0
-    %If no inputs given, return info about the parametric model
+    % If no inputs given, return info about the parametric model
     info.model  = 'Exponential';
     info.nparam  = nParam;
     info.parameters(1).name = 'Decay rate k';
@@ -42,14 +42,14 @@ if nargin==0
     return
 end
 
-%If user passes them, check that the number of parameters matches the model
+% If user passes them, check that the number of parameters matches the model
 if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
-%If necessary inputs given, compute the model distance distribution
-t = abs(t);
-Background = exp(-param(1)*t);
+% If necessary inputs given, compute the model distance distribution
+k = param(1);
+Background = exp(-k*abs(t));
 if ~iscolumn(Background)
     Background = Background';
 end
