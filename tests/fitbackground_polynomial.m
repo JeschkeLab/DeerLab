@@ -13,9 +13,9 @@ data2fit2 = bckg2(1:end);
 data2fit3 = bckg3(1:end);
 tstart = t(1);
 
-[fit,lambda1] = fitbackground(data2fit,t,@td_poly1,tstart);
-[fit2,lambda2] = fitbackground(data2fit2,t,@td_poly2,tstart);
-[fit3,lambda3] = fitbackground(data2fit3,t,@td_poly3,tstart);
+[fit,lambda1] = fitbackground(data2fit,t,@bg_poly1,tstart);
+[fit2,lambda2] = fitbackground(data2fit2,t,@bg_poly2,tstart);
+[fit3,lambda3] = fitbackground(data2fit3,t,@bg_poly3,tstart);
 
 fit = fit*(1-lambda1);
 fit2 = fit2*(1-lambda2);

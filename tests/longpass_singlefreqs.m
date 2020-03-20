@@ -4,7 +4,7 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(0,3,200);
 r = linspace(0,6,200);
-Ptrue = rd_onegaussian(r,[4,0.5]);
+Ptrue = dd_onegaussian(r,[4,0.5]);
 K = dipolarkernel(t,r);
 S = K*Ptrue;
 

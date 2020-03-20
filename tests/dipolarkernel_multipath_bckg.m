@@ -19,7 +19,7 @@ T0 = [NaN; 0; tau2-t2];
 
 % Background model
 k = 0.3;
-Bmodel = @(t,lam)td_exp(t,k*lam);
+Bmodel = @(t,lam)bg_exp(t,k*lam);
 
 K = dipolarkernel(t,r,[lambda T0],Bmodel);
 

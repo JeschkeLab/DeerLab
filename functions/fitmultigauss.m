@@ -87,13 +87,13 @@ Idx = find(cellfun(@(x)(ischar(x) && strcmpi(x,'background')),varargin));
 varargin(Idx:Idx+1) = [];
 % Compile list of multi-Gaussian models
 multiGaussModels = cell(maxGaussians,1);
-multiGaussModels{1} = @rd_onegaussian;
-if maxGaussians>=2, multiGaussModels{2} = @rd_twogaussian;   end
-if maxGaussians>=3, multiGaussModels{3} = @rd_threegaussian; end
-if maxGaussians>=4, multiGaussModels{4} = @rd_fourgaussian;  end
-if maxGaussians>=5, multiGaussModels{5} = @rd_fivegaussian;  end
+multiGaussModels{1} = @dd_onegaussian;
+if maxGaussians>=2, multiGaussModels{2} = @dd_twogaussian;   end
+if maxGaussians>=3, multiGaussModels{3} = @dd_threegaussian; end
+if maxGaussians>=4, multiGaussModels{4} = @dd_fourgaussian;  end
+if maxGaussians>=5, multiGaussModels{5} = @dd_fivegaussian;  end
 for i = 6:maxGaussians
-    multiGaussModels{i} =  mixmodels({multiGaussModels{i-1},@rd_onegaussian});
+    multiGaussModels{i} =  mixmodels({multiGaussModels{i-1},@dd_onegaussian});
 end
 
 %If the user has specified som boundaries then set the models boundaries appropiately

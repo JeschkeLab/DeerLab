@@ -4,15 +4,15 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(-1,5,200);
 r = time2dist(t);
-P = rd_onegaussian(r,[5,0.2]);
-B = td_exp(t,0.3);
+P = dd_onegaussian(r,[5,0.2]);
+B = bg_exp(t,0.3);
 scale = 1e8;
 V = dipolarsignal(t,r,P,'Moddepth',0.25,'Background',B,'Scale',scale);
 
 [Vc,scalefit] = correctscale(V,t);
 
 % Pass: scale found accurately
-pass  = abs(scalefit - scale) < 1e-7;
+pass  = abs(scalefit - scale) < 1e-5;
  
 maxerr = max(abs(scalefit - scale));
 

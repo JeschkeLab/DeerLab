@@ -5,10 +5,10 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,3,200);
 r = linspace(2,6,100);
 parIn = [3 0.3 5 0.3 0.5];
-P = rd_twogaussian(r,parIn);
+P = dd_twogaussian(r,parIn);
 K = dipolarkernel(t,r);
 S = K*P;
-models = {@rd_onegaussian,@rd_twogaussian,@rd_threegaussian};
+models = {@dd_onegaussian,@dd_twogaussian,@dd_threegaussian};
 
 %nm
 [opt1,metric1] = selectmodel(models,S,r,K,'aicc','CostModel','chisquare');

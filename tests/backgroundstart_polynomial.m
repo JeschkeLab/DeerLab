@@ -4,13 +4,13 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(0,3.2,200);
 r = time2dist(t);
-S = dipolarkernel(t,r)*rd_onegaussian(r,[3,0.5]);
+S = dipolarkernel(t,r)*dd_onegaussian(r,[3,0.5]);
 B = 1  - t.';
 lam = 0.5;
 F = (1 - lam) + lam*S;
 V = F.*B;
-t0 = backgroundstart(V,t,@td_poly1);
-[Bfit,lam] = fitbackground(V,t,@td_poly1,t0);
+t0 = backgroundstart(V,t,@bg_poly1);
+[Bfit,lam] = fitbackground(V,t,@bg_poly1,t0);
 Bfit = Bfit*(1-lam);
 B = B*(1-lam);
 

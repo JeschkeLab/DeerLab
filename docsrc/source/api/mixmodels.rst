@@ -59,6 +59,6 @@ If one mixes a single Gaussian model (2 parameters) with a WLC model (2 paramete
 
 .. code-block:: matlab
 
-    newmodel = mixmodels({@rd_onegaussian,@rd_wormchain})
+    newmodel = mixmodels({@dd_onegaussian,@dd_wormchain})
 
 the resulting model ``newmodel`` will contain 5 parameters in the followig order: 1 amplitude parameter, the 2 single-Gaussian parameters and the 2 WLC parameters. 

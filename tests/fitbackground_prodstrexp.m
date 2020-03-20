@@ -21,9 +21,9 @@ data2fit3 = bckg3(1:end);
 
 tstart = t(20);
 
-fit = fitbackground(data2fit,t,@td_prodstrexp,tstart);
-fit2 = fitbackground(data2fit2,t,@td_prodstrexp,tstart);
-fit3 = fitbackground(data2fit3,t,@td_prodstrexp,tstart);
+fit = fitbackground(data2fit,t,@bg_prodstrexp,tstart);
+fit2 = fitbackground(data2fit2,t,@bg_prodstrexp,tstart);
+fit3 = fitbackground(data2fit3,t,@bg_prodstrexp,tstart);
 
 % Pass 1-3: all background are well fitted
 pass(1) = all(abs(fit - bckg) < 1e-3);

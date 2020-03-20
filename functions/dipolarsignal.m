@@ -30,7 +30,7 @@
 %   'g' - Specifies the g-value of the electron spin center used to compute 
 %              the dipolar frequencies from the given distance axis.
 %
-%   'Interference' - Cell array {A1 t1 A2 t2 ... @td_bckg} containing the relative
+%   'Interference' - Cell array {A1 t1 A2 t2 ... @bg_bckg} containing the relative
 %                    amplitudes and time shifts of the dipolar interferences. 
 %                    The background model can be passed as a last argument to 
 %                    include the time-shifted backgrounds

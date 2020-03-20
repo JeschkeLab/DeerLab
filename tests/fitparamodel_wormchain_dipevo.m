@@ -5,12 +5,12 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,5,300);
 r = linspace(1,6,300);
 parIn = [4 4.5];
-P = rd_wormchain(r,[2.7,20]);
+P = dd_wormchain(r,[2.7,20]);
 
 K = dipolarkernel(t,r);
 S = K*P;
 
-[~,Pfit] = fitparamodel(S,@rd_wormchain,r,K,'Solver','lsqnonlin');
+[~,Pfit] = fitparamodel(S,@dd_wormchain,r,K,'Solver','lsqnonlin');
 
 %Pass 1: distance distribution is well fitted
 pass = any(abs(Pfit - P) < 5e-3);

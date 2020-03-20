@@ -117,7 +117,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			opt = selectmodel({@rd_onegaussian,@rd_onerice},S,r,K,'aicc','Upper',{[10 1],[10 2]})
+			opt = selectmodel({@dd_onegaussian,@dd_onerice},S,r,K,'aicc','Upper',{[10 1],[10 2]})
 
 - ``'Lower'`` - Parameter lower bound constraints
     Cell array containing the lower bound values for the parameters of the evaluated parametric models.
@@ -128,6 +128,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			opt = selectmodel({@rd_onegaussian,@rd_onerice},S,r,K,'aicc','Lower',{[1 0.1],[10 0.2]})
+			opt = selectmodel({@dd_onegaussian,@dd_onerice},S,r,K,'aicc','Lower',{[1 0.1],[10 0.2]})
 
 See :ref:`fitparamodel` for a detailed list of other property-value pairs accepted by the function.

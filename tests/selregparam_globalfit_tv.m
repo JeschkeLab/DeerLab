@@ -8,7 +8,7 @@ t2 = linspace(0,3,200);
 t3 = linspace(0,4,300);
 
 r = linspace(2,5,200);
-P = rd_twogaussian(r,[3,0.4,3.5,0.4,0.3]);
+P = dd_twogaussian(r,[3,0.4,3.5,0.4,0.3]);
 
 K1 = dipolarkernel(t1,r);
 S1 = dipolarsignal(t1,r,P,'noiselevel',0.03);

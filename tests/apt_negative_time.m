@@ -4,12 +4,12 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(-0.6,2,200);
 r = time2dist(t);
-P = rd_onegaussian(r,[3,0.5]);
+P = dd_onegaussian(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = K*P;
 aptK = aptkernel(t);
 [aptP,aptr] = apt(S,aptK,0.05);
-P = rd_onegaussian(aptr,[3,0.5]);
+P = dd_onegaussian(aptr,[3,0.5]);
 
 %Pass: if the signal fits well enough
 pass = all(abs(aptP - P) < 9e-1);

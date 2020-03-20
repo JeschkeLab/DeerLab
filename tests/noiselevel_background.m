@@ -6,10 +6,10 @@ function [pass,maxerr] = test(opt)
 rng(1)
 t = linspace(0,3,200);
 r = linspace(2,6,100);
-P = rd_onegaussian(r,[3 0.5]);
+P = dd_onegaussian(r,[3 0.5]);
 K = dipolarkernel(t,r);
 lam = 0.25;
-B = td_exp(t,1.5);
+B = bg_exp(t,1.5);
 V = (1 - lam + lam*K*P).*B;
 
 noise = rand(numel(t),1);

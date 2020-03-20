@@ -5,11 +5,11 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,5,300);
 r = linspace(2,6,300);
 parIn = [2 0.4 3.5 0.3 5 0.3 0.3 0.3];
-P = rd_threerice(r,parIn);
+P = dd_threerice(r,parIn);
 K = dipolarkernel(t,r);
 S = K*P;
 
-[~,FitP] = fitparamodel(S,@rd_threerice,r,K,0.75*parIn);
+[~,FitP] = fitparamodel(S,@dd_threerice,r,K,0.75*parIn);
 
 %Pass: distance distribution is well fitted
 pass = all(abs(FitP - P) < 1e-2);

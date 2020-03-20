@@ -4,7 +4,7 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(-1,4,20);
 r = linspace(1,6,50);
-B = td_exp(t,0.3);
+B = bg_exp(t,0.3);
 lam = 0.5;
 
 K1 = dipolarkernel(t,r,lam,B,'Cache',false);

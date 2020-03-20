@@ -5,12 +5,12 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,3,200);
 r = linspace(2,6,100);
 parIn = [3 0.5];
-P = rd_onerice(r,parIn);
+P = dd_onerice(r,parIn);
 K = dipolarkernel(t,r);
 S = K*P;
 par0 = [2 0.1];
 
-[parFit,Pfit] = fitparamodel(S,@rd_onerice,r,K,par0,'solver','fmincon');
+[parFit,Pfit] = fitparamodel(S,@dd_onerice,r,K,par0,'solver','fmincon');
 
 % Pass 1: distance distribution is well fitted
 pass(1) = all(abs(Pfit - P) < 1e-5);

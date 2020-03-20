@@ -22,9 +22,9 @@ param1 = [0.45,2.8];
 param2 = [0.8,3];
 param3 = [1.1,3];
 
-fit = fitbackground(data2fit,t,@td_exp,tstart,'initialguess',param1);
-fit2 = fitbackground(data2fit2,t,@td_exp,tstart,'initialguess',param2);
-fit3 = fitbackground(data2fit3,t,@td_exp,tstart,'initialguess',param3);
+fit = fitbackground(data2fit,t,@bg_exp,tstart,'initialguess',param1);
+fit2 = fitbackground(data2fit2,t,@bg_exp,tstart,'initialguess',param2);
+fit3 = fitbackground(data2fit3,t,@bg_exp,tstart,'initialguess',param3);
 
 % Pass 1-3: all background are well fitted
 err(1) = any(abs(fit - bckg) < 1e-5);

@@ -4,8 +4,8 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(0,4,150);
 r = time2dist(t);
-P = rd_onegaussian(r,[3,0.5]);
-B = td_exp(t,0.5);
+P = dd_onegaussian(r,[3,0.5]);
+B = bg_exp(t,0.5);
 lam0 = 0.5;
 S = dipolarsignal(t,r,P,'background',B,'moddepth',lam0);
 
@@ -20,7 +20,7 @@ end
 % Pass 2: passing a complex signal
 S2 = dipolarsignal(t,r,P,'background',B,'moddepth',lam0,'phase',pi/2);
 try
-    backgroundstart(S2,t,@td_poly1);
+    backgroundstart(S2,t,@bg_poly1);
     pass(2) = false;
 catch
     pass(2) = true;
@@ -37,7 +37,7 @@ end
 
 % Pass 3: passing relative start/end positions in inverse order
 try
-    backgroundstart(S,t,@td_poly1,'RelSearchStart',0.9,'RelSearchEnd',0.1);
+    backgroundstart(S,t,@bg_poly1,'RelSearchStart',0.9,'RelSearchEnd',0.1);
     pass(4) = false;
 catch
     pass(4) = true;

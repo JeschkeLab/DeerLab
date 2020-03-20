@@ -91,7 +91,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@td_exp,tstart,'ModDepth',0.45)
+			B = fitbackground(V,t,@bg_exp,tstart,'ModDepth',0.45)
 
 
 - ``'InitialGuess`` - Initial parameter values
@@ -103,7 +103,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@td_exp,tstart,'InitialGuess',[0.75 3])
+			B = fitbackground(V,t,@bg_exp,tstart,'InitialGuess',[0.75 3])
 
 
 - ``'LogFit`` - Fit in log-scale
@@ -115,7 +115,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@td_exp,tstart,'LogFit',true)
+			B = fitbackground(V,t,@bg_exp,tstart,'LogFit',true)
 
 - ``'Solver'`` - Optimization solver
     Specifies the solver used for fitting the background model.
@@ -126,4 +126,4 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@td_exp,tstart,'Solver','nlsqbnd')
+			B = fitbackground(V,t,@bg_exp,tstart,'Solver','nlsqbnd')

@@ -4,9 +4,9 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(0,3,200);
 r = linspace(2,6,100);
-P = rd_onegaussian(r,[3,0.5]);
+P = dd_onegaussian(r,[3,0.5]);
 K = dipolarkernel(t,r);
-B = td_exp(t,0.15);
+B = bg_exp(t,0.15);
 lam = 0.25;
 V = (1 - lam + lam*K*P).*B;
 alpha = 0.13;

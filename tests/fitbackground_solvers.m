@@ -5,14 +5,14 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,10,100);
 lam0 = 0.25;
 k = 0.05;
-V = dipolarsignal(t,3,'Background',td_exp(t,k),'moddepth',lam0);
+V = dipolarsignal(t,3,'Background',bg_exp(t,k),'moddepth',lam0);
 tstart = 4.2424;
 tend = 10.0000;
 
-B1 = fitbackground(V,t,@td_exp,[tstart tend],'Solver','lsqnonlin');
-B2 = fitbackground(V,t,@td_exp,[tstart tend],'Solver','fminsearchcon');
+B1 = fitbackground(V,t,@bg_exp,[tstart tend],'Solver','lsqnonlin');
+B2 = fitbackground(V,t,@bg_exp,[tstart tend],'Solver','fminsearchcon');
 if ispc
-B3 = fitbackground(V,t,@td_exp,[tstart tend],'Solver','nlsqbnd');
+B3 = fitbackground(V,t,@bg_exp,[tstart tend],'Solver','nlsqbnd');
 end
 
 % Pass 1: lsqnonlin and fminsearchcon give same background fit

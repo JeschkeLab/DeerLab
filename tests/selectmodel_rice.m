@@ -6,10 +6,10 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,3,200);
 r = linspace(2,6,100);
 parIn = [3 0.3 5 0.3 0.5];
-P = rd_twogaussian(r,parIn);
+P = dd_twogaussian(r,parIn);
 K = dipolarkernel(t,r);
 S = K*P;
-models = {@rd_onerice,@rd_tworice,@rd_threerice};
+models = {@dd_onerice,@dd_tworice,@dd_threerice};
 
 [optimum,metric] = selectmodel(models,S,r,K,'aicc','Solver','lsqnonlin');
 

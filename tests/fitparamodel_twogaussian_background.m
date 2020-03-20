@@ -5,15 +5,15 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,5,300);
 r = linspace(2,6,300);
 parIn = [2.5 0.5 4 0.5 0.4];
-P = rd_twogaussian(r,parIn);
+P = dd_twogaussian(r,parIn);
 K = dipolarkernel(t,r);
-B = td_exp(t,0.15);
+B = bg_exp(t,0.15);
 lam = 0.25;
 V = (1 - lam + lam*K*P).*B;
 KB = dipolarkernel(t,r,lam,B);
 par0 = [2 0.1 5 0.1 0.1];
 
-[~,Pfit] = fitparamodel(V,@rd_twogaussian,r,KB,par0);
+[~,Pfit] = fitparamodel(V,@dd_twogaussian,r,KB,par0);
 
 %Pass: distance distribution is well fitted
 pass = all(abs(Pfit - P) < 1e-5);

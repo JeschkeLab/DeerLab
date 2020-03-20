@@ -4,7 +4,7 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(-0.5,5,300);
 r = time2dist(t);
-P = rd_onegaussian(r,[4 0.4]);
+P = dd_onegaussian(r,[4 0.4]);
 K = dipolarkernel(t,r);
 rng(2)
 S = K*P + whitegaussnoise(300,0.02);
@@ -14,8 +14,8 @@ B = exp(-k*(abs(t)))';
 F = (1-lam) + lam*S;
 V = F.*B;
 B = (1-lam).*B;
-tstart = backgroundstart(V,t,@td_exp);
-[Bfit,lambdafit] = fitbackground(V,t,@td_exp,tstart);
+tstart = backgroundstart(V,t,@bg_exp);
+[Bfit,lambdafit] = fitbackground(V,t,@bg_exp,tstart);
 Bfit = (1-lambdafit).*Bfit;
 
 error = abs(B - Bfit);

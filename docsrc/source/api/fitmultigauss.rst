@@ -111,7 +111,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = fitmultigauss(S,t,r,Ngauss,metric,'Background',@td_exp)
+			P = fitmultigauss(S,t,r,Ngauss,metric,'Background',@bg_exp)
 
 - ``'Upper'`` - Parameters upper bound constraints
     Array ``[<r>_max FWHM_max]`` containing the upper bound for the FWHM and mean distance of all the Gaussians.

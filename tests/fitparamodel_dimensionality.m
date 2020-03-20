@@ -4,18 +4,18 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(0,5,50);
 r = linspace(1,6,50);
-P = rd_onegaussian(r,[4 0.3]);
+P = dd_onegaussian(r,[4 0.3]);
 
 K = dipolarkernel(t,r);
 S = K*P;
 
-[~,Pfit1] = fitparamodel(S,@rd_onegaussian,r,K);
-[~,Pfit2] = fitparamodel(S.',@rd_onegaussian,r,K);
-[~,Pfit3] = fitparamodel(S,@rd_onegaussian,r.',K);
-[~,Pfit4] = fitparamodel(S.',@rd_onegaussian,r.',K);
+[~,Pfit1] = fitparamodel(S,@dd_onegaussian,r,K);
+[~,Pfit2] = fitparamodel(S.',@dd_onegaussian,r,K);
+[~,Pfit3] = fitparamodel(S,@dd_onegaussian,r.',K);
+[~,Pfit4] = fitparamodel(S.',@dd_onegaussian,r.',K);
 
 
-mymodel = @(t,param)K*rd_onegaussian(r,param);
+mymodel = @(t,param)K*dd_onegaussian(r,param);
 
 param0 = [4 0.3];
 

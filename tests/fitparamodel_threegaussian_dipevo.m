@@ -5,11 +5,11 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,5,300);
 r = linspace(2,6,300);
 parIn = [3 0.3 4 0.3 5 0.3 0.3 0.3];
-P = rd_threegaussian(r,parIn);
+P = dd_threegaussian(r,parIn);
 K = dipolarkernel(t,r);
 S = K*P;
 
-[~,FitP] = fitparamodel(S,@rd_threegaussian,r,K);
+[~,FitP] = fitparamodel(S,@dd_threegaussian,r,K,'multistart',60);
 
 %Pass: distance distribution is well fitted
 pass = all(abs(FitP - P) < 1e-10);

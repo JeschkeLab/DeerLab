@@ -4,8 +4,8 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(0,3,200);
 r = linspace(0,8,200);
-P = rd_twogaussian(r,[1.5,0.3,4.5,0.3,0.5]);
-Ptrue = rd_onegaussian(r,[4.5,0.3]);
+P = dd_twogaussian(r,[1.5,0.3,4.5,0.3,0.5]);
+Ptrue = dd_onegaussian(r,[4.5,0.3]);
 K = dipolarkernel(t,r);
 S = K*P;
 Sfilt = longpass(t,S,2);

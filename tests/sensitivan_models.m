@@ -3,12 +3,12 @@ function [pass,maxerr] = test(opt)
 M = 200;
 t = linspace(0,4,M);
 r = time2dist(t);
-B = td_exp(t,0.3);
-P = rd_onegaussian(r,[4,0.3]);
+B = bg_exp(t,0.3);
+P = dd_onegaussian(r,[4,0.3]);
 V = dipolarsignal(t,r,P,'noiselevel',0.02,'ModDepth',0.3,'Background',B);
 
 Parameters.regparam = linspace(10,50,3);
-Parameters.Bmodel = {@td_exp,@td_strexp};
+Parameters.Bmodel = {@bg_exp,@bg_strexp};
 
 if opt.Display
     f = figure(1); clf;AxisHandle = axes(f);

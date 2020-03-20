@@ -38,15 +38,15 @@ Description
 
 Returns the optimal start time ``t0`` and corresponding array index ``pos`` at which to start fitting the background function corresponding to the model given by ``model``. The pre-defined background models defined by the ``model`` argument are the following:
 
-* ``@td_exp`` - See :ref:`td_exp` for details.
+* ``@bg_exp`` - See :ref:`bg_exp` for details.
 
-* ``@td_strexp`` -  See :ref:`td_strexp` for details.
+* ``@bg_strexp`` -  See :ref:`bg_strexp` for details.
 
-* ``@td_prodstrexp`` -  See :ref:`td_prodstrexp` for details.
+* ``@bg_prodstrexp`` -  See :ref:`bg_prodstrexp` for details.
 
-* ``@td_sumstrexp`` -  See :ref:`td_sumstrexp` for details.
+* ``@bg_sumstrexp`` -  See :ref:`bg_sumstrexp` for details.
 
-*  ``@td_poly1``, ``@td_poly2``, ``@td_poly3`` - See :ref:`td_poly1`, :ref:`td_poly2` and :ref:`td_poly3`  for details.
+*  ``@bg_poly1``, ``@bg_poly2``, ``@bg_poly3`` - See :ref:`bg_poly1`, :ref:`bg_poly2` and :ref:`bg_poly3`  for details.
 
 .. image:: ../images/backgroundstart1.svg
 

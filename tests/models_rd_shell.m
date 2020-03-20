@@ -2,7 +2,7 @@ function [pass,maxerr] = test(opt)
 
 % Check dimensionality, non-negativity, and values at boundaries of model
 
-info = rd_shell();
+info = dd_shell();
 
 r = linspace(0,50,500);
 par0 = [info.parameters(:).default];
@@ -10,10 +10,10 @@ bounds = [info.parameters(:).range];
 lower = bounds(1:2:end);
 upper = bounds(2:2:end);
 
-P1 = rd_shell(r,par0);
-P2 = rd_shell(r.',par0);
-P3 = rd_shell(r,lower);
-P4 = rd_shell(r,upper);
+P1 = dd_shell(r,par0);
+P2 = dd_shell(r.',par0);
+P3 = dd_shell(r,lower);
+P4 = dd_shell(r,upper);
 
 % Pass 1: dimensionality is correct
 pass(1) = isequal(P1,P2);

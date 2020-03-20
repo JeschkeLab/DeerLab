@@ -13,7 +13,7 @@ for ik = 1:numel(k)
   Bs{ik} = Bmodel(k(ik));
   B = Bs{ik};
   tstart = t(20);
-  Bfit{ik} = fitbackground(B,t,@td_exp,tstart,'Logfit',true);
+  Bfit{ik} = fitbackground(B,t,@bg_exp,tstart,'Logfit',true);
   maxerr(ik) = max(abs(Bfit{ik} - Bs{ik}));
 end
 

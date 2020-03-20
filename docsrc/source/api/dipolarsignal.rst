@@ -86,7 +86,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			V = dipolarsignal(args,'Background',td_srtexp(t,param))
+			V = dipolarsignal(args,'Background',bg_srtexp(t,param))
 
 - ``'NoiseLevel'`` - Level of noise on the signal
     Scalar value containing the desired standard deviation of a Gaussian noise vector 

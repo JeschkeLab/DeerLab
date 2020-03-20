@@ -5,7 +5,7 @@ function [pass,maxerr] = test(opt)
 rng(1)
 t = linspace(-2,4,300);
 r = linspace(2,6,100);
-P = rd_onegaussian(r,[3,0.5]);
+P = dd_onegaussian(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = K*P + whitegaussnoise(t,0.01);
 alpha = 0.31;

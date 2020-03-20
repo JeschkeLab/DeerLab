@@ -5,17 +5,17 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,2,400);
 r = time2dist(t);
 paramin  = [3 0.5];
-P = rd_onegaussian(r,paramin);
+P = dd_onegaussian(r,paramin);
 rng(1)
 S = dipolarsignal(t,r,P,'noiselevel',0.05);
 K = dipolarkernel(t,r);
 
 param0 = [2 0.1];
-[parafit1,Pfit1] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fminsearchcon');
-[parafit2,Pfit2] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fmincon');
+[parafit1,Pfit1] = fitparamodel(S,@dd_onegaussian,r,K,param0,'Solver','fminsearchcon');
+[parafit2,Pfit2] = fitparamodel(S,@dd_onegaussian,r,K,param0,'Solver','fmincon');
 
-[fitparam3,Pfit3] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','lsqnonlin');
-[fitparam4,Pfit4] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fminsearchcon');
+[fitparam3,Pfit3] = fitparamodel(S,@dd_onegaussian,r,K,param0,'Solver','lsqnonlin');
+[fitparam4,Pfit4] = fitparamodel(S,@dd_onegaussian,r,K,param0,'Solver','fminsearchcon');
 
 % Pass 1-2: fmincon (toolbox) and fminsearchcon (free) find the same solution
 err(1) = all(abs(Pfit1 - Pfit2) < 1e-5);

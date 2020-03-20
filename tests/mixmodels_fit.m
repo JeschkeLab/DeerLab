@@ -6,7 +6,7 @@ t = linspace(0,3,200);
 r = linspace(2,6,100);
 parIn1 = [3 0.5];
 parIn2 = [4 0.5];
-mixedModel = mixmodels({@rd_onegaussian,@rd_onegaussian});
+mixedModel = mixmodels({@dd_onegaussian,@dd_onegaussian});
 parInMix = [0.3 parIn1 parIn2];
 Pmix = mixedModel(r,parInMix);
 

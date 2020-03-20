@@ -5,11 +5,11 @@ function [pass,maxerr] = test(opt)
 rng(2)
 t = linspace(-5,1,300);
 r = linspace(2,6,200);
-P = rd_onegaussian(r,[4 0.4]);
+P = dd_onegaussian(r,[4 0.4]);
 K = dipolarkernel(t,r);
 V = K*P + whitegaussnoise(t,0.02);
 
-[~,Pfit] = fitparamodel(V,@rd_onegaussian,r,K);
+[~,Pfit] = fitparamodel(V,@dd_onegaussian,r,K);
 error = abs(Pfit - P);
 
 %Pass: solution fits the ground truth

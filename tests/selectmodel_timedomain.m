@@ -4,8 +4,8 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(0,3,200);
 r = time2dist(t);
-B = td_strexp(t,[0.2 4]);
-models = {@td_exp,@td_strexp,@td_prodstrexp};
+B = bg_strexp(t,[0.2 4]);
+models = {@bg_exp,@bg_strexp,@bg_prodstrexp};
 
 [optimum1,metric] = selectmodel(models,B,t,'aicc');
 optimum2 = selectmodel(models,B,t,'aic');

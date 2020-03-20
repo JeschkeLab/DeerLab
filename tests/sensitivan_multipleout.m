@@ -3,8 +3,8 @@ function [pass,maxerr] = test(opt)
 M = 200;
 t = linspace(0,4,M);
 r = time2dist(t);
-B = td_exp(t,0.3);
-P = rd_onegaussian(r,[4,0.3]);
+B = bg_exp(t,0.3);
+P = dd_onegaussian(r,[4,0.3]);
 V = dipolarsignal(t,r,P,'noiselevel',0.05,'ModDepth',0.3,'Background',B);
 
 Parameters.regparam = linspace(10,50,2);
@@ -54,7 +54,7 @@ function [Pfit,Bfit] = myfitting(param,t,r,V)
 
 V = V + whitegaussnoise(length(V), param.validationnoise);
 
-[Bfit,lambdafit] = fitbackground(V,t,@td_exp);
+[Bfit,lambdafit] = fitbackground(V,t,@bg_exp);
 
 order = 2;
 K = dipolarkernel(t,r,lambdafit,Bfit);

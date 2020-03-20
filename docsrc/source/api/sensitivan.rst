@@ -34,11 +34,13 @@ Returns
          *   ``.p25`` - 25th percentile of the output variables
          *   ``.p75`` - 75th percentile of the output variables
 
+
     *   ``factors`` - Factor analysis results (struct)
 
          *   ``.main`` - Main effects of the factors
          *   ``.inter`` - interactions between factors
-
+		 
+		 
     *   ``evals`` - Evaluated function output arguments (cell array)
 
 
@@ -124,7 +126,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 
 - ``'dynamicStats'`` -  Enable dynamic statistical estimators
-Specifies whether the statistical estimators are computed using the full set of observations (``false``) or approximated dynamically at each iteration (``true``).
+	Specifies whether the statistical estimators are computed using the full set of observations (``false``) or approximated dynamically at each iteration (``true``).
 
     *Default:* ``false`` (if enough memory available) ``true`` (if not enough memory available)
 

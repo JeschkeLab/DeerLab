@@ -5,11 +5,11 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,3,200);
 r = linspace(2,6,150);
 parIn = [3 0.5];
-P = rd_onegaussian(r,[3,0.5]);
+P = dd_onegaussian(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = K*P;
 
-[parFit,Pfit] = fitparamodel(S,@rd_onegaussian,r,K,'Solver','fmincon');
+[parFit,Pfit] = fitparamodel(S,@dd_onegaussian,r,K,'Solver','fmincon');
 
 %Pass 1-2: fmincon finds the correct solution with the LSQ
 pass(1) = all(abs(Pfit - P) < 1e-5);

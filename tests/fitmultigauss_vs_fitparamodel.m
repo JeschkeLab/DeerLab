@@ -5,11 +5,11 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,3.2,200);
 r = time2dist(t);
 InputParam = [3 0.5 4 0.5 0.4];
-P = rd_twogaussian(r,InputParam);
+P = dd_twogaussian(r,InputParam);
 K = dipolarkernel(t,r);
 S = K*P;
 par0 = [2 0.1 5 0.1 0.5];
-[~,P_FP] = fitparamodel(S,@rd_twogaussian,r,K,par0);
+[~,P_FP] = fitparamodel(S,@dd_twogaussian,r,K,par0);
 P_MG = fitmultigauss(S,K,r,6);
 
 % Pass: fitparamodel and fitmultigauss find the same solution

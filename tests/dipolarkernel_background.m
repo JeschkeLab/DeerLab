@@ -4,8 +4,8 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(0,3,80);
 r = time2dist(t);
-P = rd_onegaussian(r,[3,0.5]);
-B = td_exp(t,0.5);
+P = dd_onegaussian(r,[3,0.5]);
+B = bg_exp(t,0.5);
 K = dipolarkernel(t,r);
 
 S  = K*P;

@@ -5,7 +5,7 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,3,100);
 r = time2dist(t);
 InputParam = [4 0.1 4.5 0.4 0.35];
-P = rd_twogaussian(r,InputParam);
+P = dd_twogaussian(r,InputParam);
 
 K = dipolarkernel(t,r);
 S = K*P;
