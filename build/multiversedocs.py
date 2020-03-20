@@ -87,7 +87,7 @@ for tag in tags:
     docspath = os.path.join('..','docs')
     multidocspath = os.path.join('..','multidocs')
     filterpath = os.path.join('**','*.html')
-    htmlfiles = [f for f in glob.glob(docspath + filterpath, recursive = True)]
+    htmlfiles = [f for f in glob.glob(os.path.join(docspath,filterpath), recursive = True)]
 
 
     #Loop over all HTML available at that version
