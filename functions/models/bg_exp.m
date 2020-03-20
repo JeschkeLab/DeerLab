@@ -1,10 +1,10 @@
 %
-% TD_EXP Exponential background model
+% BG_EXP Exponential background model
 %
-%   info = TD_EXP
+%   info = BG_EXP
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   B = TD_EXP(t,param)
+%   B = BG_EXP(t,param)
 %   Computes the N-point model (B) from the N-point time axis (t) according to
 %   the paramteres array (param). The required parameters can also be found
 %   in the (info) structure.

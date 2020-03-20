@@ -4,7 +4,7 @@ function [pass,maxerr] = test(opt)
 
 rng(2)
 r = linspace(1,6,300);
-P = dd_twogaussian(r,[2,0.3,4,0.3,0.5]);
+P = dd_twogauss(r,[2,0.3,4,0.3,0.5]);
 
 t1 = linspace(0,0.8,100);
 K1 = dipolarkernel(t1,r);

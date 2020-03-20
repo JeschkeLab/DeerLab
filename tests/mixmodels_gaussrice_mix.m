@@ -5,14 +5,14 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,3,200);
 r = linspace(2,6,100);
 parIn1 = [2.5 0.3];
-P1 = dd_onegaussian(r,parIn1);
+P1 = dd_onegauss(r,parIn1);
 parIn2 = [3.5 0.3];
-P2 = dd_onegaussian(r,parIn2);
+P2 = dd_onegauss(r,parIn2);
 parIn3 = [4.5 0.3];
 P3 = dd_onerice(r,parIn3);
 P = 0.4*P2 + 0.3*P1 + 0.3*P3;
 
-mixedModel = mixmodels({@dd_onegaussian,@dd_onegaussian,@dd_onerice});
+mixedModel = mixmodels({@dd_onegauss,@dd_onegauss,@dd_onerice});
 parInMix = [0.3 0.4 parIn1 parIn2 parIn3];
 Pmix = mixedModel(r,parInMix);
 

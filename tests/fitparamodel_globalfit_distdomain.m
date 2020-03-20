@@ -4,7 +4,7 @@ function [pass,maxerr] = test(opt)
 
 dt = 0.008;
 r = linspace(1,5,100);
-P = dd_twogaussian(r,[2,0.3,4,0.3,0.5]);
+P = dd_twogauss(r,[2,0.3,4,0.3,0.5]);
 
 Ntime1 = 100;
 t1 = linspace(0,dt*Ntime1,Ntime1);
@@ -24,10 +24,10 @@ S3 = K3*P + whitegaussnoise(Ntime3,0.1);
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 
-[~,Pglobal] = fitparamodel(Ss,@dd_twogaussian,r,Ks);
-[~,Plocal1] = fitparamodel(S1,@dd_twogaussian,r,K1);
-[~,Plocal2] = fitparamodel(S2,@dd_twogaussian,r,K2);
-[~,Plocal3] = fitparamodel(S3,@dd_twogaussian,r,K3);
+[~,Pglobal] = fitparamodel(Ss,@dd_twogauss,r,Ks);
+[~,Plocal1] = fitparamodel(S1,@dd_twogauss,r,K1);
+[~,Plocal2] = fitparamodel(S2,@dd_twogauss,r,K2);
+[~,Plocal3] = fitparamodel(S3,@dd_twogauss,r,K3);
 
 rmsdglobal = norm(P - Pglobal);
 rmsdlocal1 = norm(P - Plocal1);

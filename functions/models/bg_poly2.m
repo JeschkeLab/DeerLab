@@ -1,10 +1,10 @@
 %
-% TD_POLY2 Polynomial 2nd-order background model 
+% BG_POLY2 Polynomial 2nd-order background model 
 %
-%   info = TD_POLY2
+%   info = BG_POLY2
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   B = TD_POLY2(t,param)
+%   B = BG_POLY2(t,param)
 %   Computes the N-point model (B) from the N-point time axis (t) according to 
 %   the paramteres array (param). The required parameters can also be found 
 %   in the (info) structure.

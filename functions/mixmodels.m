@@ -10,7 +10,7 @@
 %   in DeerLab2. The returned function handle can be used for
 %   parametric model fitting as the other models.
 %
-%   Example: dd_twogaussians = MIXMODELS({@dd_onegaussian,@dd_onegaussian})
+%   Example: dd_twogausss = MIXMODELS({@dd_onegauss,@dd_onegauss})
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 

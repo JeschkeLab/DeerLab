@@ -1,11 +1,11 @@
 
 %
-% DD_GENGAUSSIAN Generalized Gaussian distribution parametric model
+% DD_SKEWGAUSS Skew Gaussian distribution parametric model
 %
-%   info = DD_GENGAUSSIAN
+%   info = DD_SKEWGAUSS
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   P = DD_GENGAUSSIAN(r,param)
+%   P = DD_SKEWGAUSS(r,param)
 %   Computes the N-point model (P) from the N-point distance axis (r) according to 
 %   the paramteres array (param). The required parameters can also be found 
 %   in the (info) structure.
@@ -15,7 +15,7 @@
 % --------------------------------------------------------------------------
 % param(1)  <r>    3.5     1.0         20         mean distance
 % param(2)   w     0.5     0.2         5          FWHM
-% param(3)  beta   5.0     0.25        15         kurtosis
+% param(3)  alpha  5.0     -15         15         skewness
 % --------------------------------------------------------------------------
 %
 
@@ -23,7 +23,7 @@
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function output = dd_gengaussian(r,param)
+function output = dd_skewgauss(r,param)
 
 nParam = 3;
 
@@ -44,9 +44,9 @@ if nargin==0
     info.parameters(2).range = [0.2 5];
     info.parameters(2).default = 0.5;
     info.parameters(2).units = 'nm';
-    
-    info.parameters(3).name = 'kurtosis beta';
-    info.parameters(3).range = [0.25 15];
+ 
+    info.parameters(3).name = 'skewness alpha';
+    info.parameters(3).range = [-25 25];
     info.parameters(3).default = 5;
     info.parameters(3).units = '';
     
@@ -64,9 +64,9 @@ validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilena
 
 % Compute the model distance distribution
 sigma = (param(2)/(2*sqrt(2*log(2))));
-beta = param(3);
-x = abs(r(:) - param(1))/sigma;
-P = beta/(2*sigma*gamma(1/beta))*exp(-x.^beta);
+
+x = (r(:) - param(1))/(sigma);
+P = 2*sqrt(2/pi)*exp(-((r(:) - param(1))/(sqrt(2)*sigma)).^2).*1/2.*(1 + erf(param(3)*x/sqrt(2)));
 dr = r(2)-r(1);
 if ~all(P==0)
 P = P/sum(P)/dr;    

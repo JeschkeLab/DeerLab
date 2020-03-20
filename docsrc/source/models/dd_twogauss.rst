@@ -1,9 +1,9 @@
 .. highlight:: matlab
-.. _dd_twogaussian:
+.. _dd_twogauss:
 
 
 ***********************
-:mod:`dd_twogaussian`
+:mod:`dd_twogauss`
 ***********************
 
 Sum of two Gaussian distributions parametric model
@@ -16,8 +16,8 @@ Syntax
 
 .. code-block:: matlab
 
-        info = dd_twogaussian()
-        P = dd_twogaussian(r,param)
+        info = dd_twogauss()
+        P = dd_twogauss(r,param)
 
 Parameters
     *   ``r`` - Distance axis (N-array)
@@ -49,7 +49,7 @@ with :math:`\sigma_i = w_i/\sqrt{2ln(2)}`
 
 Example using default parameters:
 
-.. image:: ../images/model_dd_twogaussian.png
+.. image:: ../images/model_dd_twogauss.png
    :width: 40%
 
 
@@ -61,7 +61,7 @@ Description
 
 .. code-block:: matlab
 
-        info = dd_twogaussian()
+        info = dd_twogauss()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -74,7 +74,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    P = dd_twogaussian(r,param)
+    P = dd_twogauss(r,param)
 
 Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 

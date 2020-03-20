@@ -6,7 +6,7 @@ function [pass,maxerr] = test(opt)
 rng(1)
 t = linspace(0,3,200);
 r = linspace(2,6,100);
-P = dd_onegaussian(r,[3 0.5]);
+P = dd_onegauss(r,[3 0.5]);
 K = dipolarkernel(t,r);
 lam = 0.25;
 B = bg_exp(t,1.5);

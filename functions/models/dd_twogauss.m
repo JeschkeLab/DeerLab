@@ -1,10 +1,10 @@
 %
-% DD_TWOGAUSSIAN Sum of two Gaussian distributions parametric model
+% DD_TWOGAUSS Sum of two Gaussian distributions parametric model
 %
-%   info = DD_TWOGAUSSIAN
+%   info = DD_TWOGAUSS
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   P = DD_TWOGAUSSIAN(r,param)
+%   P = DD_TWOGAUSS(r,param)
 %   Computes the N-point model (P) from the N-point distance axis (r) according to 
 %   the paramteres array (param). The required parameters can also be found 
 %   in the (info) structure.
@@ -23,7 +23,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function output = dd_twogaussian(r,param)
+function output = dd_twogauss(r,param)
 
 nParam = 5;
 

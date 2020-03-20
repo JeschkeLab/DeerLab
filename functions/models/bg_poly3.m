@@ -1,10 +1,10 @@
 %
-% TD_POLY3 Polynomial 3rd-order background model
+% BG_POLY3 Polynomial 3rd-order background model
 %
-%   info = TD_POLY3
+%   info = BG_POLY3
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   B = TD_POLY3(t,param)
+%   B = BG_POLY3(t,param)
 %   Computes the N-point model (B) from the N-point time axis (t) according to
 %   the paramteres array (param). The required parameters can also be found
 %   in the (info) structure.

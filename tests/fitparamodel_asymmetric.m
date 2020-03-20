@@ -5,11 +5,11 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,2,100);
 r = linspace(1,6,200);
 parain = [3,0.5];
-P = dd_onegaussian(r,[3,0.5]);
+P = dd_onegauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = K*P;
 par0 = [2 0.1];
-[parafit,Pfit] = fitparamodel(S,@dd_onegaussian,r,K,par0);
+[parafit,Pfit] = fitparamodel(S,@dd_onegauss,r,K,par0);
 
 % Pass 1: distirbution is well fitted
 pass(1) = all(abs(Pfit - P) < 1e-5);

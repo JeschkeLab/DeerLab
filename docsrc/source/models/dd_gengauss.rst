@@ -1,12 +1,12 @@
 .. highlight:: matlab
-.. _dd_skewgaussian:
+.. _dd_gengauss:
 
 
 ***********************
-:mod:`dd_skewgaussian`
+:mod:`dd_gengauss`
 ***********************
 
-Skew Gaussian distribution parametric model
+Generalized Gaussian distribution parametric model
 
 -----------------------------
 
@@ -16,8 +16,8 @@ Syntax
 
 .. code-block:: matlab
 
-        info = dd_skewgaussian()
-        P = dd_skewgaussian(r,param)
+        info = dd_gengauss()
+        P = dd_gengauss(r,param)
 
 Parameters
     *   ``r`` - Distance axis (N-array)
@@ -31,11 +31,10 @@ Returns
 Model
 =========================================
 
-.. image:: ../images/model_scheme_dd_skewgaussian.png
+.. image:: ../images/model_scheme_dd_gengauss.png
    :width: 40%
 
-
-:math:`P(r) = \sqrt{\frac{2}{\pi}}\frac{1}{\sigma}\exp\left(-\frac{(r-\left<r\right>)^2}{\sqrt(2)\sigma^2}\right)\frac{1}{2}\left(1 + erf\left(\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
+:math:`P(r) = \frac{\beta}{2\sigma\Gamma(1/\beta)}\exp\left(-\left(\frac{(r-\left<r\right>)}{\sigma}\right)^\beta \right)`
 
 with :math:`\sigma = w/(2\sqrt{2ln(2)})`
 
@@ -44,13 +43,13 @@ with :math:`\sigma = w/(2\sqrt{2ln(2)})`
 ============== ======================== ========= ============= ============= ========================
 ``param(1)``   :math:`\left<r\right>`     3.5     1.0              20         Mean distance
 ``param(2)``   :math:`w`                  0.5     0.2              5          FWHM
-``param(2)``   :math:`\alpha`             5.0     -15              15         Skewness
+``param(2)``   :math:`\beta`              5.0     0.25             15         Kurtosis
 ============== ======================== ========= ============= ============= ========================
 
 
 Example using default parameters:
 
-.. image:: ../images/model_dd_skewgaussian.png
+.. image:: ../images/model_dd_gengauss.png
    :width: 40%
 
 
@@ -62,7 +61,7 @@ Description
 
 .. code-block:: matlab
 
-        info = dd_skewgaussian()
+        info = dd_gengauss()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -75,7 +74,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    P = dd_skewgaussian(r,param)
+    P = dd_gengauss(r,param)
 
 Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 

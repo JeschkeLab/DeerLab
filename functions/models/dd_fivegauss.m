@@ -1,10 +1,10 @@
 %
-% DD_FIVEGAUSSIAN Sum of four Gaussian distributions parametric model
+% DD_FIVEGAUSS Sum of four Gaussian distributions parametric model
 %
-%   info = DD_FIVEGAUSSIAN
+%   info = DD_FIVEGAUSS
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   P = DD_FIVEGAUSSIAN(r,param)
+%   P = DD_FIVEGAUSS(r,param)
 %   Computes the N-point model (P) from the N-point distance axis (r) according to 
 %   the paramteres array (param). The required parameters can also be found 
 %   in the (info) structure.
@@ -33,7 +33,7 @@
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function output = dd_fivegaussian(r,param)
+function output = dd_fivegauss(r,param)
 
 nParam = 14;
 

@@ -6,13 +6,13 @@ rng(1)
 t = linspace(0,3,200);
 r = linspace(2,6,150);
 parIn  = [3,0.5];
-P = dd_onegaussian(r,parIn);
+P = dd_onegauss(r,parIn);
 
 K = dipolarkernel(t,r);
 S = K*P;
 
 param0 = [2 0.1];
-[parFit,Pfit] = fitparamodel(S,@dd_onegaussian,r,K,param0,'Solver','fminsearchcon');
+[parFit,Pfit] = fitparamodel(S,@dd_onegauss,r,K,param0,'Solver','fminsearchcon');
 
 %Pass 1-2: fminsearchcon finds the correct solution
 pass(1) = all(abs(Pfit - P) < 3e-5);

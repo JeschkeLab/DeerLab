@@ -1,10 +1,10 @@
 %
-% TD_PRODSTREXP Product of two stretched exponentials background model
+% BG_PRODSTREXP Product of two stretched exponentials background model
 %
-%   info = TD_SUMSTREXP
+%   info = BG_SUMSTREXP
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   B = TD_SUMSTREXP(t,param)
+%   B = BG_SUMSTREXP(t,param)
 %   Computes the N-point model (B) from the N-point time axis (t) according to
 %   the paramteres array (param). The required parameters can also be found
 %   in the (info) structure.

@@ -6,11 +6,11 @@ rng(2)
 t = linspace(0,3,200);
 r = linspace(2,6,150);
 parIn = [3,0.3];
-P = dd_onegaussian(r,parIn);
+P = dd_onegauss(r,parIn);
 K = dipolarkernel(t,r);
 S = dipolarsignal(t,r,P,'noiselevel',0.01);
 
-[parFit,Pfit] = fitparamodel(S,@dd_onegaussian,r,K,'costmodel','chisquare');
+[parFit,Pfit] = fitparamodel(S,@dd_onegauss,r,K,'costmodel','chisquare');
 
 %Pass 1-2: fmincon finds the correct solution with the Chi^2
 pass(1) = any(abs(Pfit - P) < 1e-1);

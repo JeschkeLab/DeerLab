@@ -1,10 +1,10 @@
 %
-% TD_STREXP Stretched exponential background model
+% BG_STREXP Stretched exponential background model
 %
-%   info = TD_STREXP
+%   info = BG_STREXP
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   B = TD_STREXP(t,param)
+%   B = BG_STREXP(t,param)
 %   Computes the N-point model (B) from the N-point time axis (t) according to
 %   the paramteres array (param). The required parameters can also be found
 %   in the (info) structure.

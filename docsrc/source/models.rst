@@ -10,13 +10,13 @@ DeerLab includes the following collection of parametric models. The model names 
     :hidden:
     :caption: Distance-distribution models
 
-    ./models/dd_onegaussian
-    ./models/dd_twogaussian
-    ./models/dd_threegaussian
-    ./models/dd_fourgaussian
-    ./models/dd_fivegaussian
-    ./models/dd_gengaussian
-    ./models/dd_skewgaussian
+    ./models/dd_onegauss
+    ./models/dd_twogauss
+    ./models/dd_threegauss
+    ./models/dd_fourgauss
+    ./models/dd_fivegauss
+    ./models/dd_gengauss
+    ./models/dd_skewgauss
     ./models/dd_onerice
     ./models/dd_tworice
     ./models/dd_threerice
@@ -78,19 +78,19 @@ DeerLab includes the following collection of parametric models. The model names 
      <div class="sectionLogo"><img class="avatar" src="./_static/img/models_section_distance.png"></div>
      <div class="sectionTitle"><h3>Distance distribution models</h3></div>
          <ul class="simple" style="width: 90%;margin: auto;">
-         <li><a class="reference internal" href="models/dd_onegaussian.html#dd_onegaussian"><span class="std std-ref" style="font-family: monospace">dd_onegaussian</span></a>
+         <li><a class="reference internal" href="models/dd_onegauss.html#dd_onegauss"><span class="std std-ref" style="font-family: monospace">dd_onegauss</span></a>
          &nbsp - &nbsp Unimodal Gaussian distribution </li>
-         <li><a class="reference internal" href="models/dd_twogaussian.html#dd_twogaussian"><span class="std std-ref" style="font-family: monospace">dd_twogaussian</span></a>
+         <li><a class="reference internal" href="models/dd_twogauss.html#dd_twogauss"><span class="std std-ref" style="font-family: monospace">dd_twogauss</span></a>
          &nbsp - &nbsp Bimodal Gaussian distribution </li>
-         <li><a class="reference internal" href="models/dd_threegaussian.html#dd_threegaussian"><span class="std std-ref" style="font-family: monospace">dd_threegaussian</span></a>
+         <li><a class="reference internal" href="models/dd_threegauss.html#dd_threegauss"><span class="std std-ref" style="font-family: monospace">dd_threegauss</span></a>
          &nbsp - &nbsp Trimodal Gaussian distribution </li>
-         <li><a class="reference internal" href="models/dd_fourgaussian.html#dd_fourgaussian"><span class="std std-ref" style="font-family: monospace">dd_fourgaussian</span></a>
+         <li><a class="reference internal" href="models/dd_fourgauss.html#dd_fourgauss"><span class="std std-ref" style="font-family: monospace">dd_fourgauss</span></a>
          &nbsp - &nbsp Tetramodal Gaussian distribution </li>
-         <li><a class="reference internal" href="models/dd_fivegaussian.html#dd_fivegaussian"><span class="std std-ref" style="font-family: monospace">dd_fivegaussian</span></a>
+         <li><a class="reference internal" href="models/dd_fivegauss.html#dd_fivegauss"><span class="std std-ref" style="font-family: monospace">dd_fivegauss</span></a>
          &nbsp - &nbsp Pentamodal Gaussian distribution </li>
-         <li><a class="reference internal" href="models/dd_gengaussian.html#dd_gengaussian"><span class="std std-ref" style="font-family: monospace">dd_gengaussian</span></a>
+         <li><a class="reference internal" href="models/dd_gengauss.html#dd_gengauss"><span class="std std-ref" style="font-family: monospace">dd_gengauss</span></a>
          &nbsp - &nbsp Generalized Gaussian distribution </li>
-         <li><a class="reference internal" href="models/dd_skewgaussian.html#dd_skewgaussian"><span class="std std-ref" style="font-family: monospace">dd_skewgaussian</span></a>
+         <li><a class="reference internal" href="models/dd_skewgauss.html#dd_skewgauss"><span class="std std-ref" style="font-family: monospace">dd_skewgauss</span></a>
          &nbsp - &nbsp Skew Gaussian distribution </li>
          <li><a class="reference internal" href="models/dd_onerice.html#dd_onerice"><span class="std std-ref" style="font-family: monospace">dd_onerice</span></a>
          &nbsp - &nbsp Unimodal Rician distribution </li>

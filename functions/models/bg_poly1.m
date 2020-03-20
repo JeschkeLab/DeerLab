@@ -1,10 +1,10 @@
 %
-% TD_POLY1 Polynomial 1st-order background model
+% BG_POLY1 Polynomial 1st-order background model
 %
-%   info = TD_POLY1
+%   info = BG_POLY1
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   B = TD_POLY1(t,param)
+%   B = BG_POLY1(t,param)
 %   Computes the N-point model (B) from the N-point time axis (t) according to
 %   the paramteres array (param). The required parameters can also be found
 %   in the (info) structure.
