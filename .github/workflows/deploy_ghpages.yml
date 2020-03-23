@@ -4,11 +4,14 @@ on:
    push:
       branches:
       - master
-      - develop
+      - hotfixes
       paths:
       - 'build/**'
       - 'docsrc/**'
-      - '.github/**'
+      
+   schedule:
+        # Run once a weel on Sunday at 12:00 PM
+        - cron:  '0 12 * * 0'
 
 jobs:
 
