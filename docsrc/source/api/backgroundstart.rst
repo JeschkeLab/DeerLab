@@ -63,38 +63,38 @@ Optional arguments can be specified by parameter/value pairs. All property names
     [t0,pos]  = backgroundstart(args,'Property1',Value1,'Property2',Value2,...)
 
 
-- ``'RelSearchStart'`` - Relative Search Start
-    Relative position at which the background start search starts.
+- ``'SearchStart'`` - Relative Search Start
+    Time (in microseconds) at which the background search starts
 
-    *Default:* ``0.1``
-
-    *Example:*
-
-		.. code-block:: matlab
-
-			P = backgroundstart(args,'RelSearchStart',0.25)
-
-- ``'RelSearchEnd'`` - Relative Search End
-    Relative position at which the background start search stops.
-
-    *Default:* ``0.6``
+    *Default:* ``0.1*max(t)``
 
     *Example:*
 
 		.. code-block:: matlab
 
-			P = backgroundstart(args,'RelSearchEnd',0.7)
+			P = backgroundstart(args,'RelSearchStart',1.5)
+
+- ``'SearchEnd'`` - Relative Search End
+    Time (in microseconds) at which the background search ends
+
+    *Default:* ``0.6*max(t)``
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			P = backgroundstart(args,'RelSearchEnd',4)
 
 - ``'EndCutOff'`` - Signal cutoff
-    Maximal number of points to evaluate from the signal. Must be an integer value between ``1`` and ``length(V)``. By default the whole signal is evaluated. 
+    Time (in microseconds) after which the signal is no longer used for fitting By default the whole signal is evaluated. 
 
-    *Default:* ``length(S)``
+    *Default:* ``max(t)``
 
     *Example:*
 
 		.. code-block:: matlab
 
-			P = backgroundstart(args,'EndCutOff',80)
+			P = backgroundstart(args,'EndCutOff',6.5)
 
 - For further property-value pair options see :ref:`fitbackground`.
 
