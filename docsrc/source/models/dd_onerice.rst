@@ -31,7 +31,7 @@ Returns
 Model
 =========================================
 
-:math:`P(r) = \frac{r}{\sigma^2}\exp\left(-\frac{(r^2+\left<r\right>^2)}{2\sigma^2}\right)I_0\left(\frac{r\left<r\right>}{\sigma^2} \right)`
+:math:`P(r) = \frac{\left<r\right>^{L-1}}{\sigma^2}r^L\exp\left(-\frac{(r^2+\left<r\right>^2)}{2\sigma^2}\right)I_{L-1}\left(\frac{r\left<r\right>}{\sigma^2} \right)`
 
 where :math:`I_0(x)` is the modified Bessel function of the first kind with order zero.
 

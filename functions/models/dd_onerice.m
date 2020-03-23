@@ -54,10 +54,14 @@ end
 %Parse input
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
-nu=param(1);
-sqscale=param(2).^2;
-%Compute rician/rice distribution using the zeroth order modified Bessel function of the first kind
-P = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale + r.*nu./sqscale).*besseli(0,r.*nu./sqscale,1);
+%Model parameters
+nu = param(1);
+sig = param(2);
+%Degrees of freedom
+L = 1.5;
+
+%Compute Rician distribution as a non-central chi-squared distribution with L=1.5 
+P = nu^(L-1)./(sig^2)*r.^L.*exp(-(r.^2+nu^2)/(2*sig^2) + nu*r/sig^2).*besseli(L-1,nu*r/sig^2,1);
 
 %The Rice distribution is zero for negative values.
 P(P<0)=0;

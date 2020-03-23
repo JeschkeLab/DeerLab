@@ -31,9 +31,9 @@ Returns
 Model
 =========================================
 
-:math:`P(r) = \frac{r}{\sigma_1^2}\exp\left(-\frac{(r^2+\left<r_1\right>^2)}{2\sigma_1^2}\right)I_0\left(\frac{r\left<r_1\right>}{\sigma_1^2} \right) + (1 - A_1) \frac{r}{\sigma_2^2}\exp\left(-\frac{(r^2+\left<r_2\right>^2)}{2\sigma_2^2}\right)I_0\left(\frac{r\left<r_2\right>}{\sigma_2^2} \right)`
+:math:`P(r) = A_1\frac{\left<r_1\right>^{L-1}}{\sigma_1^2}r^L\exp\left(-\frac{(r^2+\left<r_1\right>^2)}{2\sigma_1^2}\right)I_{L-1}\left(\frac{r\left<r_1\right>}{\sigma_1^2} \right) + (1 - A_1) \frac{\left<r_2\right>^{L-1}}{\sigma_2^2}r^L\exp\left(-\frac{(r^2+\left<r_2\right>^2)}{2\sigma_2^2}\right)I_{L-1}\left(\frac{r\left<r_2\right>}{\sigma_2^2} \right)`
 
-where :math:`I_0(x)` is the modified Bessel function of the first kind with order zero.
+where `L = 1.5` and :math:`I_L-1(x)` is the modified Bessel function of the first kind with order zero.
 
 ============== ======================== ========= ======== ======== ===============================
  Variable       Symbol                    Default   Lower   Upper       Description

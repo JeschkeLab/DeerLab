@@ -88,39 +88,38 @@ end
 %Parse input
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
+%Degrees of freedom
+L = 1.5;
+
 nu = param(1);
-sqscale = param(2).^2;
-%Compute rician/rice distribution using the zeroth order modified Bessel function of
-%the first kind
-Rician1 = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale + r.*nu./sqscale).*besseli(0,r.*nu./sqscale,1);
+sig = param(2);
+%Compute Rician distribution as a non-central chi-squared distribution with L=1.5 
+Rician1 = nu^(L-1)./(sig^2)*r.^L.*exp(-(r.^2+nu^2)/(2*sig^2) + nu*r/sig^2).*besseli(L-1,nu*r/sig^2,1);
 %The Rice distribution is zero for negative values.
 Rician1(Rician1<0)=0;
 
 nu = param(3);
-sqscale = param(4).^2;
-%Compute rician/rice distribution using the zeroth order modified Bessel function of
-%the first kind
-Rician2 = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale + r.*nu./sqscale).*besseli(0,r.*nu./sqscale,1);
+sig = param(4);
+%Compute Rician distribution as a non-central chi-squared distribution with L=1.5 
+Rician2 = nu^(L-1)./(sig^2)*r.^L.*exp(-(r.^2+nu^2)/(2*sig^2) + nu*r/sig^2).*besseli(L-1,nu*r/sig^2,1);
 %The Rice distribution is zero for negative values.
-Rician2(Rician2<0) = 0;
+Rician2(Rician2<0)=0;
 
 nu = param(5);
-sqscale = param(6).^2;
-%Compute rician/rice distribution using the zeroth order modified Bessel function of
-%the first kind
-Rician3 = (r./sqscale).*exp(-1/2*(r.^2 + nu.^2)./sqscale + r.*nu./sqscale).*besseli(0,r.*nu./sqscale,1);
+sig = param(6);
+%Compute Rician distribution as a non-central chi-squared distribution with L=1.5 
+Rician3 = nu^(L-1)./(sig^2)*r.^L.*exp(-(r.^2+nu^2)/(2*sig^2) + nu*r/sig^2).*besseli(L-1,nu*r/sig^2,1);
 %The Rice distribution is zero for negative values.
-Rician3(Rician2<0) = 0;
+Rician3(Rician3<0)=0;
 
 %Construct distance distribution
 P = param(7)*Rician1 + param(8)*Rician2 + max(1-param(7)-param(8),0)*Rician3;
 
-if ~iscolumn(P)
-    P = P';
-end
+
 if ~all(P==0)
     P = P/sum(P)/mean(diff(r));
 end
+P = P(:);
 output = P;
 
 
