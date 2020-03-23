@@ -17,8 +17,8 @@ if ismac
     
     % Get PID of MATLAB process
     [~,str] = system(['ps -o ppid,command |grep ',version('-release'),'.app']);
-    slash = strfind('/',str);
-    PID = verStr(1:slash(1)-1);
+    slash = strfind(str,'/');
+    PID = str(1:slash(1)-1);
     % Get memory information of MATLAB process
     [~,info] = system(['top -pid ',PID,' -l 1 -s 0 | grep PhysMem']);
     % Parse results
