@@ -1,28 +1,29 @@
 %
 % FITPARAMODEL Fits a time- or distance-domain parametric model to one (or several) signals
 %
-%   [param,fit,ci] = FITPARAMODEL(V,@model,t)
-%   [param,fit,ci] = FITPARAMODEL(V,@model,r,K)
+%   [param,fit,paramci,fitci] = FITPARAMODEL(V,@model,t)
+%   [param,fit,paramci,fitci] = FITPARAMODEL(V,@model,r,K)
 %   Fitting of the N-point signal (V) to a M-point parametric model
 %   (@model) given a M-point distance/time axis (r/t). For distance-domain fitting
 %   the NxM point kernel (K). The fitted model corresponds to a parametric model
 %   calculated by the passed function handle (@model). The fitted parameters (param)
-%   are returned as the first output argument, their 99% confidence intervals (ci) are
-%   returned as the third output, and the fitted model as the second output.
+%   are returned as the first output argument, their 99% confidence intervals (paramci) are
+%   returned as the third output, the fitted model as the second output and the corresponding
+%   99% confidence bands (fitci) as the fourth output.
 %
-%   [param,fit,ci] = FITPARAMODEL(V,@model,t,param0)
-%   [param,fit,ci] = FITPARAMODEL(V,@model,r,K,param0)
+%   [param,fit,paramci,fitci] = FITPARAMODEL(V,@model,t,param0)
+%   [param,fit,paramci,fitci] = FITPARAMODEL(V,@model,r,K,param0)
 %   The initial guess of the model parameters can be passed as a last
 %   argument (param0). If (@model) is a user-defined function handle, it is
 %   required to pass (param0) as an arugment.
 %
-%   [param,fit,ci] = FITPARAMODEL({V1,V2,___},@model,{t1,t2,___},param0)
-%   [param,fit,ci] = FITPARAMODEL({V1,V2,___},@model,r,{K1,K2,___},param0)
+%   [param,fit,paramci,fitci] = FITPARAMODEL({V1,V2,___},@model,{t1,t2,___},param0)
+%   [param,fit,paramci,fitci] = FITPARAMODEL({V1,V2,___},@model,r,{K1,K2,___},param0)
 %   Passing multiple signals/kernels enables global fitting of the
 %   to a single parametric model distance distribution. The global fit weights
 %   are automatically computed according to their contribution to ill-posedness.
 %
-%   [param,fit,ci] = FITPARAMODEL(___,'Property',Values)
+%   [param,fit,paramci,fitci] = FITPARAMODEL(___,'Property',Values)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 % The properties to be passed as options can be set in any order.
@@ -56,7 +57,7 @@
 %
 %   'MultiStart' - Number of starting points for global optimization
 %
-%   'ConfidenceLevel' - Level for parameter confidence intervals
+%   'ConfidenceLevel' - Level for confidence intervals
 %
 %   'Verbose' - Display options for the solvers:
 %                 'off' - no information displayed
@@ -69,7 +70,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function [parfit,modelfit,parci] = fitparamodel(V,model,ax,K,StartParameters,varargin)
+function [parfit,modelfit,parci,modelci] = fitparamodel(V,model,ax,K,StartParameters,varargin)
 
 %--------------------------------------------------------------------------
 % Input Parsening & Validation
@@ -229,7 +230,7 @@ end
 if ~ispc && strcmp(Solver,'nlsqbnd')
     error('The ''nlsqbnd'' solver is only available for Windows systems.')
 end
-    
+
 if isempty(Algorithm)
     if strcmp(Solver,'lsqnonlin')
         Algorithm = 'trust-region-reflective';
@@ -301,7 +302,7 @@ end
 %--------------------------------------------------------------------------
 
 %Parse errors in the model function, and reformat them
-model = @(ax,Parameters,idx)errorhandler(model,'modelfcn',ax,Parameters,idx);
+% model = @(ax,Parameters,idx)errorhandler(model,'modelfcn',ax,Parameters,idx);
 
 
 % Define the cost functional of a single signal
@@ -361,7 +362,7 @@ fits = cell(1,MultiStart);
 jacobian = [];
 
 for runIdx = 1:MultiStart
-
+    
     StartParameters = MultiStartParameters(runIdx,:);
     
     % Fit the parametric model...
@@ -402,13 +403,13 @@ for runIdx = 1:MultiStart
                 'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
                 'TolFun',TolFun,'DiffMinChange',0,'DiffMaxChange',Inf);
             [parfit,fval,~,exitflag,~,~,jacobian]  = lsqnonlin(VecCostFcn,StartParameters,LowerBounds,UpperBounds,solverOpts);
-
+            
             if exitflag == 0
                 % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
                 solverOpts = optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,'Display',Verbose);
                 [parfit,fval,~,~,~,jacobian]  = lsqnonlin(VecCostFcn,parfit,LowerBounds,UpperBounds,solverOpts);
             end
-
+            
         case 'nlsqbnd'
             solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
                 'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
@@ -437,7 +438,7 @@ for runIdx = 1:MultiStart
                 'DiffMinChange',1e-8,'DiffMaxChange',0.1);
             [parfit,fval]  = fminsearch(CostFcn,StartParameters,solverOpts);
     end
-
+    
     fvals(runIdx) = fval;
     fits{runIdx} = parfit;
     
@@ -455,15 +456,15 @@ end
 hessian = jacobian'*jacobian;
 % Compute residual vector
 residual = VecCostFcn(parfit);
-lastwarn(''); 
+lastwarn('');
 % Set significance level for 99% confidence intervals
 alpha = 1 - ConfidenceLevel;
 %Get Student's T critical value
-critical = tinv(1 - alpha/2,length(residual) - numel(parfit));      
+critical = tinv(1 - alpha/2,length(residual) - numel(parfit));
 % Estimate the covariance matrix by means of the inverse of Fisher information matrix
-covmatrix = var(residual).*inv(hessian); 
+covmatrix = var(residual).*inv(hessian);
 % Detect if there was a 'nearly singular' warning
-[~, warnId] = lastwarn; 
+[~, warnId] = lastwarn;
 % Compute upper/lower confidence intervals
 parci = nan(numel(parfit),2);
 if ~strcmp(warnId,'MATLAB:nearlySingularMatrix')
@@ -478,9 +479,18 @@ warning('on','MATLAB:nearlySingularMatrix')
 if nargout>1
     for i = 1:length(ax)
         modelfit{i} = model(ax{i},parfit,Labels{i});
-    end    
+        if nargout>3
+            modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax{i})).';
+            upper = modelfit{i} + critical*sqrt(modelvariance);
+            lower = modelfit{i} - critical*sqrt(modelvariance);
+            modelci{i} = [upper(:) lower(:)];
+        end
+    end
     if length(modelfit)==1
         modelfit = modelfit{1};
+        if nargout>3
+            modelci = modelci{1};
+        end
     end
 end
 

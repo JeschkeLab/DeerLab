@@ -15,13 +15,13 @@ Syntax
 
 .. code-block:: matlab
 
-    [param,fit,ci] = fitparamodel(V,@model,t)
-    [param,fit,ci] = fitparamodel(V,@model,t,param0)
-    [param,fit,ci] = fitparamodel({V1,V2,___},@model,{t1,t2,___},param0)
-    [param,fit,ci] = fitparamodel(V,@model,r,K)
-    [param,fit,ci] = fitparamodel(V,@model,r,K,param0)
-    [param,fit,ci] = fitparamodel({V1,V2,___},@model,r,{K1,K2,___},param0)
-    [param,fit,ci] = fitparamodel(___,'Property',Value)
+    [param,fit,paramci,fitci] = fitparamodel(V,@model,t)
+    [param,fit,paramci,fitci] = fitparamodel(V,@model,t,param0)
+    [param,fit,paramci,fitci] = fitparamodel({V1,V2,___},@model,{t1,t2,___},param0)
+    [param,fit,paramci,fitci] = fitparamodel(V,@model,r,K)
+    [param,fit,paramci,fitci] = fitparamodel(V,@model,r,K,param0)
+    [param,fit,paramci,fitci] = fitparamodel({V1,V2,___},@model,r,{K1,K2,___},param0)
+    [param,fit,paramci,fitci] = fitparamodel(___,'Property',Value)
 
 
 Parameters
@@ -34,7 +34,8 @@ Parameters
 Returns
     *  ``param`` - Fitted model paramters (*W*-array)
     *  ``fit`` - Parametric model fit (*N*-element array)
-    *  ``ci`` - Fit confidence intervals (*Wx2*-element array)
+    *  ``paramci`` - Fit confidence intervals (*Wx2*-element array)
+    *  ``fitci`` - Model fit confidence bands (*Nx2*-element array)
 
 
 -----------------------------
@@ -50,7 +51,7 @@ Description
 
 Fits the **time-domain** parametric model ``@model`` to the input signal ``V`` on a time axis ``t``. User-defined inital guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
 
-The fitted parameters as well as their 99%-confidence intervals are returned as the ``param`` and ``ci`` outputs, respectively. The fitted model is returned as the second ``fit`` output. 
+The fitted parameters as well as their 99%-confidence intervals are returned as the ``param`` and ``paramci`` outputs, respectively. The fitted model and its 99%-confidence band are returned as the ``fit`` and ``fitci`` outputs, respectively. 
 
 -----------------------------
 
