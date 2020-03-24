@@ -173,7 +173,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 - ``'Algorithm'`` - Numerical solver algorithm
     Algorithm to be used by the solvers (see ``fmincon`` or ``lsqnonlin`` MATLAB documentation)
 
-    *Default:* see MATLAB docs
+    *Default:* see MATLAB documentation
 
     *Example:*
 
