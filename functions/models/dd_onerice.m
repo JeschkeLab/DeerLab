@@ -13,7 +13,7 @@ function output = dd_onerice(r,param)
 % PARAMETERS
 % name     symbol default lower bound upper bound
 % --------------------------------------------------------------------------
-% param(1)  <nu>    3.5     1.0         10          mean distance
+% param(1)  nu      3.5     1.0         10          mean distance
 % param(2)  sigma   0.7     0.1          5          standard deviation
 % --------------------------------------------------------------------------
 %
@@ -29,7 +29,7 @@ if nargin~=0 && nargin~=2
 end
 
 if nargin==0
-    %If no inputs given, return info about the parametric model
+    % If no inputs given, return info about the parametric model
     info.model  = 'Single Rice/Rician distribution';
     info.nparam  = nParam;
     info.parameters(1).name = ['Mean distance ',char(957)];
@@ -46,34 +46,24 @@ if nargin==0
     return
 end
 
-%If user passes them, check that the number of parameters matches the model
+% If user passes them, check that the number of parameters matches the model
 if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
-%Parse input
+% Parse input
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
-%Model parameters
+% Compute non-central chi distribution with 3 degrees of freedom (a 3D Rician)
 nu = param(1);
 sig = param(2);
-%Degrees of freedom
-L = 1.5;
+P = rice3d(r,nu,sig);
+P = P(:);
 
-%Compute Rician distribution as a non-central chi-squared distribution with L=1.5 
-P = nu^(L-1)./(sig^2)*r.^L.*exp(-(r.^2+nu^2)/(2*sig^2) + nu*r/sig^2).*besseli(L-1,nu*r/sig^2,1);
-
-%The Rice distribution is zero for negative values.
-P(P<0)=0;
-
-if ~iscolumn(P)
-    P = P';
-end
 if ~all(P==0)
     P = P/sum(P)/mean(diff(r));
 end
+
 output = P;
-
-
 
 return

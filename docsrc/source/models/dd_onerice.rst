@@ -31,14 +31,14 @@ Returns
 Model
 =========================================
 
-:math:`P(r) = \frac{\left<r\right>^{L-1}}{\sigma^2}r^L\exp\left(-\frac{(r^2+\left<r\right>^2)}{2\sigma^2}\right)I_{L-1}\left(\frac{r\left<r\right>}{\sigma^2} \right)`
+:math:`P(r) = \frac{\nu^{n/2-1}}{\sigma^2}r^{n/2}\exp\left(-\frac{(r^2+\nu^2)}{2\sigma^2}\right)I_{n/2-1}\left(\frac{r\nu}{\sigma^2} \right)`
 
-where :math:`I_0(x)` is the modified Bessel function of the first kind with order zero.
+where :math:`n=3` and :math:`I_{n/2-1}(x)` is the modified Bessel function of the first kind with order :math:`n/2-1`. This is a three-dimensional non-central chi distribution, the 3D generalization of the 2D Rice distribution.
 
 ============== ======================== ========= ============= ============= ========================
  Variable       Symbol                    Default   Lower bound   Upper bound      Description
 ============== ======================== ========= ============= ============= ========================
-``param(1)``   :math:`\left<r\right>`     3.5     1.0              10         Mean distance
+``param(1)``   :math:`\nu`                3.5     1.0              10         Mean distance
 ``param(2)``   :math:`\sigma`             0.7     0.1              5          Standard deviation
 ============== ======================== ========= ============= ============= ========================
 

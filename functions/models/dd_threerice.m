@@ -13,14 +13,14 @@ function output = dd_threerice(r,param)
 % PARAMETERS
 % name      symbol default lower bound upper bound
 % --------------------------------------------------------------------------
-% param(1)  <nu1>    2.5     1.0        10         mean distance
-% param(2)  sigma1   0.4     0.1        5          standard deviation
-% param(3)  <nu2>    4.0     1.0        10         mean distance
-% param(4)  sigma2   0.4     0.1        5          standard deviation
-% param(5)  <nu3>    5.0     1.0        10         mean distance
-% param(6)  sigma3   0.4     0.1        5          standard deviation
-% param(7)  p1       0.3     0          1          fraction of pairs at 1st distance
-% param(8)  p2       0.3     0          1          fraction of pairs at 2nd distance
+% param(1)  nu1      2.5     1.0        10         mean distance, 1st component
+% param(2)  sigma1   0.4     0.1        5          standard deviation, 1st component
+% param(3)  nu2      4.0     1.0        10         mean distance, 2nd component
+% param(4)  sigma2   0.4     0.1        5          standard deviation, 2nd component
+% param(5)  nu3      5.0     1.0        10         mean distance, 3rd component
+% param(6)  sigma3   0.4     0.1        5          standard deviation, 3rd component
+% param(7)  p1       0.3     0          1          fraction of 1st component
+% param(8)  p2       0.3     0          1          fraction of 2nd component
 % --------------------------------------------------------------------------
 %
 
@@ -34,7 +34,7 @@ if nargin~=0 && nargin~=2
 end
 
 if nargin==0
-    %If no inputs given, return info about the parametric model
+    % If no inputs given, return info about the parametric model
     info.model  = 'Three Rice/Rician distributions';
     info.nparam  = nParam;
     
@@ -80,48 +80,31 @@ if nargin==0
     return
 end
 
-%If user passes them, check that the number of parameters matches the model
+% If user passes them, check that the number of parameters matches the model
 if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
-%Parse input
+% Parse input
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
-%Degrees of freedom
-L = 1.5;
-
-nu = param(1);
-sig = param(2);
-%Compute Rician distribution as a non-central chi-squared distribution with L=1.5 
-Rician1 = nu^(L-1)./(sig^2)*r.^L.*exp(-(r.^2+nu^2)/(2*sig^2) + nu*r/sig^2).*besseli(L-1,nu*r/sig^2,1);
-%The Rice distribution is zero for negative values.
-Rician1(Rician1<0)=0;
-
-nu = param(3);
-sig = param(4);
-%Compute Rician distribution as a non-central chi-squared distribution with L=1.5 
-Rician2 = nu^(L-1)./(sig^2)*r.^L.*exp(-(r.^2+nu^2)/(2*sig^2) + nu*r/sig^2).*besseli(L-1,nu*r/sig^2,1);
-%The Rice distribution is zero for negative values.
-Rician2(Rician2<0)=0;
-
-nu = param(5);
-sig = param(6);
-%Compute Rician distribution as a non-central chi-squared distribution with L=1.5 
-Rician3 = nu^(L-1)./(sig^2)*r.^L.*exp(-(r.^2+nu^2)/(2*sig^2) + nu*r/sig^2).*besseli(L-1,nu*r/sig^2,1);
-%The Rice distribution is zero for negative values.
-Rician3(Rician3<0)=0;
-
-%Construct distance distribution
-P = param(7)*Rician1 + param(8)*Rician2 + max(1-param(7)-param(8),0)*Rician3;
-
+% Compute non-central chi distribution with 3 degrees of freedom (a 3D Rician)
+nu1 = param(1);
+sig1 = param(2);
+nu2 = param(3);
+sig2 = param(4);
+nu3 = param(5);
+sig3 = param(6);
+p1 = param(7);
+p2 = param(8);
+p3 = 1-p1-p2;
+P = p1*rice3d(r,nu1,sig1) + p2*rice3d(r,nu2,sig2) + p3*rice3d(r,nu3,sig3);
+P = P(:);
 
 if ~all(P==0)
     P = P/sum(P)/mean(diff(r));
 end
-P = P(:);
+
 output = P;
-
-
 
 return

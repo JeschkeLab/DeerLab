@@ -32,9 +32,12 @@ Returns
 Model
 =========================================
 
-:math:`P(r) = A_1\frac{\left<r_1\right>^{L-1}}{\sigma_1^2}r^L\exp\left(-\frac{(r^2+\left<r_1\right>^2)}{2\sigma_1^2}\right)I_{L-1}\left(\frac{r\left<r_1\right>}{\sigma_1^2} \right) + A_2 \frac{\left<r_2\right>^{L-1}}{\sigma_2^2}r^L\exp\left(-\frac{(r^2+\left<r_2\right>^2)}{2\sigma_2^2}\right)I_{L-1}\left(\frac{r\left<r_2\right>}{\sigma_2^2} \right) + (1 - A_1 - A_2) \frac{\left<r_3\right>^{L-1}}{\sigma_3^2}r^L\exp\left(-\frac{(r^2+\left<r_3\right>^2)}{2\sigma_3^2}\right)I_{L-1}\left(\frac{r\left<r_3\right>}{\sigma_3^2} \right)`
+:math:`P(r) = A_1 R(r,\nu_1,\sigma_1) + A_2 R(r,\nu_2,\sigma_2) + (1-A_1-A_2) R(r,\nu_3,\sigma_3)`
 
-where :math:`I_0(x)` is the modified Bessel function of the first kind with order zero.
+:math:`R(r,\nu,\sigma) = \frac{\nu^{n/2-1}}{\sigma^2}r^{n/2}\exp\left(-\frac{(r^2+\nu^2)}{2\sigma^2}\right)I_{n/2-1}\left(\frac{r\nu}{\sigma^2} \right)`
+
+where :math:`n=3` and :math:`I_{n/2-1}(x)` is the modified Bessel function of the first kind with order :math:`n/2-1`.
+This is a three-dimensional non-central chi distribution, the 3D generalization of the 2D Rice distribution.
 
 ============== ======================== ========= ======== ========= ===================================
  Variable       Symbol                    Default   Lower    Upper       Description
