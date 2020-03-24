@@ -15,13 +15,13 @@ Syntax
 
 .. code-block:: matlab
 
-    [param,fit] = fitparamodel(V,@model,t)
-    [param,fit] = fitparamodel(V,@model,t,param0)
-    [param,fit] = fitparamodel({V1,V2,___},@model,{t1,t2,___},param0)
-    [param,fit] = fitparamodel(V,@model,r,K)
-    [param,fit] = fitparamodel(V,@model,r,K,param0)
-    [param,fit] = fitparamodel({V1,V2,___},@model,r,{K1,K2,___},param0)
-    [param,fit] = fitparamodel(___,'Property',Value)
+    [param,fit,ci] = fitparamodel(V,@model,t)
+    [param,fit,ci] = fitparamodel(V,@model,t,param0)
+    [param,fit,ci] = fitparamodel({V1,V2,___},@model,{t1,t2,___},param0)
+    [param,fit,ci] = fitparamodel(V,@model,r,K)
+    [param,fit,ci] = fitparamodel(V,@model,r,K,param0)
+    [param,fit,ci] = fitparamodel({V1,V2,___},@model,r,{K1,K2,___},param0)
+    [param,fit,ci] = fitparamodel(___,'Property',Value)
 
 
 Parameters
@@ -30,10 +30,11 @@ Parameters
     *   ``t`` -  Model time axis (*N*-element array)
     *   ``r`` -  Model distance axis (*M*-element array)
     *   ``K`` -  Dipolar kernel (*NxM*-element array)
-    *   ``param0`` -  Model parameter inital guess (array)
+    *   ``param0`` -  Model parameter inital guess (*W*-array)
 Returns
-    *  ``param`` - Fitted model paramters (array)
+    *  ``param`` - Fitted model paramters (*W*-array)
     *  ``fit`` - Parametric model fit (*N*-element array)
+    *  ``ci`` - Fit confidence intervals (*Wx2*-element array)
 
 
 -----------------------------
@@ -44,18 +45,20 @@ Description
 
 .. code-block:: matlab
 
-    [param,fit] = fitparamodel(V,@model,t)
-    [param,fit] = fitparamodel(V,@model,t,param0)
+    [param,fit,ci] = fitparamodel(V,@model,t)
+    [param,fit,ci] = fitparamodel(V,@model,t,param0)
 
 Fits the **time-domain** parametric model ``@model`` to the input signal ``V`` on a time axis ``t``. User-defined inital guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
+
+The fitted parameters as well as their 99%-confidence intervals are returned as the ``param`` and ``ci`` outputs, respectively. The fitted model is returned as the second ``fit`` output. 
 
 -----------------------------
 
 
 .. code-block:: matlab
 
-    [param,fit] = fitparamodel(V,@model,r,K)
-    [param,fit] = fitparamodel(V,@model,r,K,param0)
+    [param,fit,ci] = fitparamodel(V,@model,r,K)
+    [param,fit,ci] = fitparamodel(V,@model,r,K,param0)
 
 Fits the **distance-domain** parametric model ``@model`` to the input signal ``V`` on a distance axis ``r``. The dipolar kernel ``K`` is required as in input for distance-domain fitting. User-defined inital guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
 
@@ -64,8 +67,8 @@ Fits the **distance-domain** parametric model ``@model`` to the input signal ``V
 
 .. code-block:: matlab
 
-    P = fitparamodel({V1,V2,___},@model,r,{K1,K2,___})
-    P = fitparamodel({V1,V2,___},@model,r,{K1,K2,___},param0)
+    param = fitparamodel({V1,V2,___},@model,r,{K1,K2,___})
+    param = fitparamodel({V1,V2,___},@model,r,{K1,K2,___},param0)
 
 Passing multiple signals/kernels enables **distance-domain global fitting** of the parametric model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes *N1*, *N2*,... and a cell array of Kernel matrices with sizes *N1xM*, *N2xM*, ... must be passed as well.
 
@@ -74,8 +77,8 @@ Passing multiple signals/kernels enables **distance-domain global fitting** of t
 
 .. code-block:: matlab
 
-    P = fitparamodel({V1,V2,V3},@model,{t1,t2,t3})
-    P = fitparamodel({V1,V2,V3},@model,{t1,t2,t3},param0)
+    param = fitparamodel({V1,V2,V3},@model,{t1,t2,t3})
+    param = fitparamodel({V1,V2,V3},@model,{t1,t2,t3},param0)
 
 Similarly, **time-domain global fitting** can be used when passing a time-domain ``@model`` and the model time axes ``{t1,t2,___}`` of the corresponding signals.
 
@@ -220,6 +223,17 @@ Optional arguments can be specified by parameter/value pairs. All property names
 		.. code-block:: matlab
 
 			param = fitparamodel(args,'MaxFunEval',1e10)
+
+- ``'ConfidenceLevel'`` -  Level for parameter confidence intervals
+    Level of the confidence intervals computed for each fitted parameter. Must be a scalar value between 0 and 1.
+
+    *Default:* ``0.99`` (99% confidence intervals)
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			param = fitparamodel(args,'ConfidenceLevel',0.95)
 
 - ``'MultiStart'`` -  Multi-start global optimization
     Number of initial points to be generated for a global search. For each start point, a local minimum is searched, and the solution with the lowest cost functional value is selected as the global optimum.

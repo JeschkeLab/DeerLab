@@ -61,5 +61,6 @@ DeerLab includes code from the following projects, which have their own licenses
 - [fminsearchcon.m](https://www.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd-fminsearchcon) (Bound constrained optimization using fminsearch by John D'Errico) [BSD]
 - [nlsqbnd.m](https://www.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd-fminsearchcon) (Non-linear least squares solver with box constraints by Alain Barraud) [BSD]
 - [golden.m](https://www.mathworks.com/matlabcentral/fileexchange/25919-golden-section-method-algorithm) (Golden Section method algorithm by Katarzyna Zarnowiec) [BSD]
+- [jacobianest.m](https://www.mathworks.com/matlabcentral/fileexchange/13490-adaptive-robust-numerical-differentiation) (Adaptive Robust Numerical Differentiation by John D'Errico) [BSD]
 
 Copyright (c) 2019-2020: Luis Fabregas, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/luisfabib/deerlab/contributors).
