@@ -10,7 +10,7 @@ K = dipolarkernel(t,r);
 S = K*P;
 par0 = [2 0.1 1 0.6 0.2];
 
-[~,Pfit] = fitparamodel(S,@dd_tworice,r,K,par0);
+[~,Pfit] = fitparamodel(S,@dd_tworice,r,K,par0,'multistart',10);
 
 %Pass: distance distribution is well fitted
 pass = all(abs(Pfit - P) < 1e-5);

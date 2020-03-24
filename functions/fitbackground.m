@@ -146,7 +146,8 @@ else
 end
 
 % Initialize bounds and initial parameter values
-parinfo = bgmodel().parameters;
+info = bgmodel();
+parinfo = info.parameters;
 Ranges = cat(1,parinfo.range);
 lowerBounds = Ranges(:,1);
 upperBounds = Ranges(:,2);
