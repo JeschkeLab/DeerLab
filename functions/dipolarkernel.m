@@ -275,10 +275,14 @@ function K = kernelmatrix_grid(t,wdd,nKnots)
 K = zeros(numel(t),numel(wdd));
 
 costheta = linspace(0,1,nKnots);
-q = t*(1-3*costheta.^2); % matrix
 
+q = 1-3*costheta.^2;
 for ir = 1:numel(wdd)
-    K(:,ir) = mean(cos(wdd(ir)*q),2);
+  D_ = 0;
+  for itheta = 1:nKnots
+    D_ = D_ + cos(wdd(ir)*q(itheta)*t);
+  end
+  K(:,ir) = D_/nKnots;
 end
 
 end
