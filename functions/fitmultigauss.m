@@ -13,7 +13,7 @@
 %   If a the default kernel is to be used, the time axis (t) can be passed
 %   instead of the kernel.
 %
-%   [P,param,opt,metrics,Peval] = FITMULTIGAUSS(...)
+%   [P,param,Pci,paramci,opt,metrics,Peval] = FITMULTIGAUSS(...)
 %   If requested alongside the distribution (P), the optimal fit model
 %   parameters (param), the optimal number of Gaussians (opt) and
 %   evaluated selection metrics (metrics) are returned. The fitted distance
@@ -41,7 +41,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function [Pfit,param,nGaussOpt,metrics,Peval] = fitmultigauss(S,K,r,maxGaussians,method,varargin)
+function [Pfit,param,Pfitci,paramci,nGaussOpt,metrics,Peval] = fitmultigauss(S,K,r,maxGaussians,method,varargin)
 
 
 if ~license('test','optimization_toolbox')
@@ -56,16 +56,22 @@ else
 end
 if nargin<5
     method = 'aicc';
+elseif nargin==6
+    varargin = [{method} varargin];
+    method = 'aicc';
 end
+
 if ~all(size(K) > 1)
     t = K;
     K = dipolarkernel(t,r);
 end
-warning('off','DeerLab:parseoptional')
+
+
 %Parse the optional parameters in the varargin
-optionalProperties = {'Upper','Lower','Background','internal::parseLater'};
+optionalProperties = {'Upper','Lower','Background','internal::parselater'};
 [Upper,Lower,BckgModel] = parseoptional(optionalProperties,varargin);
-warning('on','DeerLab:parseoptional')
+
+
 if ~isempty(Upper) && isempty(BckgModel) && length(Upper)~=2
     error('Upper property must be an array [<r>_max FWHM_max]')
 elseif ~isempty(Upper) && ~isempty(BckgModel) && length(Upper)<4
@@ -84,6 +90,12 @@ for i=1:numel(optionalProperties)
     Idx = find(cellfun(@(x)(ischar(x) && strcmpi(x,optionalProperties{i})),varargin));
     varargin(Idx:Idx+1) = [];
 end
+
+if nargin>3
+    %Include internal option in order for fitparamodel to return the covariance matrix
+    varargin = [varargin {'internal::returncovariancematrix'} {true}];
+end
+
 % Compile list of multi-Gaussian models
 multiGaussModels = cell(maxGaussians,1);
 multiGaussModels{1} = @dd_onegauss;
@@ -173,25 +185,41 @@ if ~isempty(BckgModel)
         range = [infoB.parameters(:).range];
         Blower = range(1:2:end-1);
         Bupper = range(2:2:end);
-        timeMultiGaussModels{i} = @(t,param) (1-param(Nparam+1) + param(Nparam+1)*dipolarkernel(t,r)*DistModel(r,param(1:Nparam)) ).*BckgModel(t,param(Nparam+2:end));
+        timeMultiGaussModels{i} = @(t,param) (1 - param(Nparam+1) + param(Nparam+1)*dipolarkernel(t,r)*DistModel(r,param(1:Nparam)) ).*BckgModel(t,param(Nparam+2:end));
         param0{i} = [Pparam 0.5 Bparam];
     end
 end
 
 % Run fitting and model selection to see which multi-Gauss model is optimal
 if ~isempty(BckgModel)
-    [nGaussOpt,metrics,fitparams] = selectmodel(timeMultiGaussModels,S,t,method,param0,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
+    [nGaussOpt,metrics,fitparams,paramcis] = selectmodel(timeMultiGaussModels,S,t,method,param0,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
 else
-    [nGaussOpt,metrics,fitparams] = selectmodel(multiGaussModels,S,r,K,method,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
+    [nGaussOpt,metrics,fitparams,paramcis] = selectmodel(multiGaussModels,S,r,K,method,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
 end
 
 % Calculate the distance distribution for the optimal multi-Gauss model
 param = fitparams{nGaussOpt};
+paramci = paramcis{nGaussOpt}{1};
 optModel = multiGaussModels{nGaussOpt};
 info = optModel();
 Pfit = optModel(r,param(1:info.nparam));
 
-if nargout>4
+if nargin>3
+    %Compute Jacobian for  current multi-Gauss model
+    covmatrix = paramcis{nGaussOpt}{2};
+    critical = paramcis{nGaussOpt}{3};
+    covmatrix = covmatrix(1:info.nparam,1:info.nparam);
+    jacobian = jacobianest(@(par)optModel(r,par),param(1:info.nparam));
+    % Calculate the confidence bands for the distance distribution
+    modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(r)).';
+    upper = Pfit + critical*sqrt(modelvariance);
+    lower = Pfit - critical*sqrt(modelvariance);
+    upper = max(upper,0);
+    lower = max(lower,0);
+    Pfitci = [upper(:) lower(:)];
+end
+
+if nargout>6
     Peval = zeros(maxGaussians,numel(r));
     for i=1:maxGaussians
         info = multiGaussModels{i}();

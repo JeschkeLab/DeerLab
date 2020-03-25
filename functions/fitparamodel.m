@@ -169,8 +169,8 @@ else
 end
 
 % Parse the optional parameters in the varargin
-[Solver,Algorithm,MaxIter,Verbose,MaxFunEvals,TolFun,CostModel,GlobalWeights,UpperBounds,LowerBounds,MultiStart,ConfidenceLevel] = parseoptional(...
-    {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower','MultiStart','ConfidenceLevel'},varargin);
+[Solver,Algorithm,MaxIter,Verbose,MaxFunEvals,TolFun,CostModel,GlobalWeights,UpperBounds,LowerBounds,MultiStart,ConfidenceLevel,returnCovariance] = parseoptional(...
+    {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower','MultiStart','ConfidenceLevel','internal::returncovariancematrix'},varargin);
 
 % Validate optional inputs
 if isempty(CostModel)
@@ -183,6 +183,11 @@ if isempty(MultiStart)
     MultiStart = 1;
 else
     validateattributes(MultiStart,{'numeric'},{'scalar','nonnegative'},mfilename,'MultiStarts')
+end
+if isempty(returnCovariance)
+    returnCovariance = false;
+else
+    validateattributes(returnCovariance,{'logical'},{'nonempty'},mfilename,'returnCovariance')
 end
 if isempty(TolFun)
     TolFun = 1e-10;
@@ -471,6 +476,13 @@ if nargout>2
     if ~strcmp(warnId,'MATLAB:nearlySingularMatrix')
         parci(:,1) = parfit - critical*sqrt(diag(covmatrix).');
         parci(:,2) = parfit + critical*sqrt(diag(covmatrix).');
+    end
+    %If wrapper functions internally request the covariance matrix, pack it up
+    if returnCovariance
+        tmp{1} = parci;
+        tmp{2} = covmatrix;
+        tmp{3} = critical;
+        parci = tmp;
     end
     
 end

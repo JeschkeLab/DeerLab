@@ -19,13 +19,13 @@ Syntax
 
     opt = selectmodel(Models,S,r,K,'method')
     [opt,f] = selectmodel(Models,S,r,K,'method')
-    [opt,f,param] = selectmodel(Models,S,r,K,'method')
-    [opt,f,param] = selectmodel(Models,S,r,K,'method',param0)
-    [opt,f,param] = selectmodel(Models,S,t,'method')
-    [opt,f,param] = selectmodel(Models,S,t,'method',param0)
-    [opt,f,param] = selectmodel(Models,S,t,'method','Property',Value)
-    [opt,f,param] = selectmodel(Models,S,r,K,'method',param0,'Property',Value)
-    [opt,f,param] = selectmodel(Models,S,t,'method',param0,'Property',Value)
+    [opt,f,param,paramcis] = selectmodel(Models,S,r,K,'method')
+    [opt,f,param,paramcis] = selectmodel(Models,S,r,K,'method',param0)
+    [opt,f,param,paramcis] = selectmodel(Models,S,t,'method')
+    [opt,f,param,paramcis] = selectmodel(Models,S,t,'method',param0)
+    [opt,f,param,paramcis] = selectmodel(Models,S,t,'method','Property',Value)
+    [opt,f,param,paramcis] = selectmodel(Models,S,r,K,'method',param0,'Property',Value)
+    [opt,f,param,paramcis] = selectmodel(Models,S,t,'method',param0,'Property',Value)
 
 
 Parameters
@@ -40,7 +40,7 @@ Returns
     *  ``opt`` - Optimal parametric model index (scalar)
     *  ``f`` - Evaluated model selection functional (cell array)
     *  ``param`` - Fitted parameters for each evaluated model (cell array)
-
+    *  ``paramcis`` - Fit confidence intervals for each evaluated model (cell array)
 
 
 -----------------------------
@@ -92,9 +92,9 @@ The initial guess values for the parameters of each model can be passed as a cel
 
 .. code-block:: matlab
 
-    [opt,f,param] = selectmodel(args)
+    [opt,f,param,paramcis] = selectmodel(args)
 
-The method selection functionals ``f`` for the different methods and a cell array ``params`` with the fitted parameters for each of the evaluated models.
+Additional outputs include, the evaluated method selection functionals ``f`` for the different methods and a cell array ``params`` with the fitted parameters for each of the evaluated models , as well as their confidence intervals ``paramcis``.
 
 -----------------------------
 

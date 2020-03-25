@@ -20,9 +20,9 @@ end
 Properties = lower(Properties);
 
 % Check if flag is passed to ingore parsening errors
-if any(contains(Properties,'internal::parselater'))
+if any(contains(lower(Properties),'internal::parselater'))
     showErrors = false;
-    Properties(contains(Properties,'internal::parselater')) = [];
+    Properties(contains(lower(Properties),'internal::parselater')) = [];
 else
     showErrors = true;
 end

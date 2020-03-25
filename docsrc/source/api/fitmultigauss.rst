@@ -20,7 +20,8 @@ Syntax
     P = fitmultigauss(S,t,r,Ngauss)
     P = fitmultigauss(S,K,r,Ngauss,metric)
     P = fitmultigauss(S,t,r,Ngauss,metric,'Background',model)
-    [P,param,Nopt,metrics,Peval] = fitmultigauss(S,K,r,Ngauss,metric,'Property',Value)
+    P = fitmultigauss(S,K,r,Ngauss,'Property',Value)
+    [P,param,Pci,paramci,Nopt,metrics,Peval] = fitmultigauss(S,K,r,Ngauss,metric,'Property',Value)
 
 
 Parameters
@@ -33,8 +34,10 @@ Parameters
 
 
 Returns
-    *  ``P`` - Distance Distribution (*M*-element array)
-    *  ``param`` - Fitted model parameters (array)
+    *  ``P`` - Fitted distance distribution (*M*-element array)
+    *  ``param`` - Fitted model parameters (*W*-array)
+    *  ``Pci`` - Fitted distribution confidence intervals (*Mx2*-array)
+    *  ``paramci`` - Fitted parameters confidence intervals(*Wx2*-array)
     *  ``Nopt`` - Optimal number of Gaussian (scalar)
     *  ``metrics`` - Evaluated model selection functionals (cell array)
     *  ``Peval`` - Fitted distance distributions for each multigauss model (*Ngauss x N* matrix)
@@ -89,7 +92,7 @@ By passing the ``'Background'`` option, the background function and modulation d
 
     [P,param,Nopt,metrics] = fitmultigauss(args)
 
-If requested alongside the distribution ``P``, the optimal fit model parameters ``param``, the optimal number of gaussians ``Nopt`` and evaluated selection metrics ``metrics`` are returned.
+If requested alongside the distribution ``P``, the optimal fit model parameters ``param``, as well their respective confidence intervals ``Pci`` and ``paramci`` the optimal number of gaussians ``Nopt`` and evaluated selection metrics ``metrics`` are returned.
 
 -----------------------------
 

@@ -18,10 +18,10 @@
 %   The initial guess values for the parameters of each model can be passed
 %   as a cell array {par1,...parN} of value vectors.
 %
-%   [opt,f,params] = SELECTMODEL(...)
+%   [opt,f,params,paramcis] = SELECTMODEL(...)
 %   Returns a cell array the method selector functionals (f) for the
 %   different methods and a cell array (params) with the fitted parameters
-%   for each of the evaluated models.
+%   for each of the evaluated models as well as their confidence intervals (paramcis).
 %
 %   opt = SELECTMODEL(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
@@ -40,7 +40,7 @@
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function [optima,functionals,fitparams] = selectmodel(Models,S,ax,K,Methods,param0,varargin)
+function [optima,functionals,fitparams,paramcis] = selectmodel(Models,S,ax,K,Methods,param0,varargin)
 
 if nargin<4
    error('At least four input arguments required.') 
@@ -143,22 +143,25 @@ N = numel(S);
 AICc = zeros(length(Models),1);
 BIC = zeros(length(Models),1);
 AIC = zeros(length(Models),1);
+RMSD = zeros(length(Models),1);
 fitparams = cell(nMethods,1);
+paramcis = cell(nMethods,1);
 for i = 1:length(Models)
     
     if isTimeDomain
-        [paramfit,Fit] = fitparamodel(S,Models{i},ax,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
+        [parfit,fit,parci] = fitparamodel(S,Models{i},ax,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
     else
-        [paramfit,Fit] = fitparamodel(S,Models{i},ax,K,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
+        [parfit,fit,parci] = fitparamodel(S,Models{i},ax,K,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
     end
-    fitparams{i} = paramfit;
+    fitparams{i} = parfit;
+    paramcis{i} = parci;
     
-    nParams = numel(paramfit);
+    nParams = numel(parfit);
     Q = nParams + 1;
     if isTimeDomain
-        SSR = sum((S(:)-Fit(:)).^2);
+        SSR = sum((S(:)-fit(:)).^2);
     else
-        SSR = sum((S(:)-K*Fit(:)).^2);
+        SSR = sum((S(:)-K*fit(:)).^2);
     end
     AIC(i) =  N*log(SSR/N) + 2*Q;
     AICc(i) = N*log(SSR/N) + 2*Q + 2*Q*(Q+1)/(N-Q-1);
