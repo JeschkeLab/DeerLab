@@ -407,7 +407,7 @@ for runIdx = 1:MultiStart
             if exitflag == 0
                 % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
                 solverOpts = optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,'Display',Verbose);
-                [parfit,fval,~,~,~,jacobian]  = lsqnonlin(VecCostFcn,parfit,LowerBounds,UpperBounds,solverOpts);
+                [parfit,fval,~,~,~,~,jacobian]  = lsqnonlin(VecCostFcn,parfit,LowerBounds,UpperBounds,solverOpts);
             end
             
         case 'nlsqbnd'
@@ -448,35 +448,37 @@ end
 [~,globmin] = min(fvals);
 parfit = fits{globmin};
 
-
-% Numerically estimate the Jacobian if not done by MATLAB's lsqnonlin
-if isempty(jacobian)
-    jacobian = jacobianest(VecCostFcn,parfit);
+if nargout>2
+    
+    % Numerically estimate the Jacobian if not done by MATLAB's lsqnonlin
+    if isempty(jacobian)
+        jacobian = jacobianest(VecCostFcn,parfit);
+    end
+    hessian = jacobian'*jacobian;
+    % Compute residual vector
+    residual = VecCostFcn(parfit);
+    lastwarn('');
+    % Set significance level for confidence intervals
+    alpha = 1 - ConfidenceLevel;
+    %Get Student's T critical value
+    critical = tinv(1 - alpha/2,length(residual) - numel(parfit));
+    % Estimate the covariance matrix by means of the inverse of Fisher information matrix
+    covmatrix = var(residual).*inv(hessian);
+    % Detect if there was a 'nearly singular' warning
+    [~, warnId] = lastwarn;
+    % Compute upper/lower confidence intervals
+    parci = nan(numel(parfit),2);
+    if ~strcmp(warnId,'MATLAB:nearlySingularMatrix')
+        parci(:,1) = parfit - critical*sqrt(diag(covmatrix).');
+        parci(:,2) = parfit + critical*sqrt(diag(covmatrix).');
+    end
+    
 end
-hessian = jacobian'*jacobian;
-% Compute residual vector
-residual = VecCostFcn(parfit);
-lastwarn('');
-% Set significance level for 99% confidence intervals
-alpha = 1 - ConfidenceLevel;
-%Get Student's T critical value
-critical = tinv(1 - alpha/2,length(residual) - numel(parfit));
-% Estimate the covariance matrix by means of the inverse of Fisher information matrix
-covmatrix = var(residual).*inv(hessian);
-% Detect if there was a 'nearly singular' warning
-[~, warnId] = lastwarn;
-% Compute upper/lower confidence intervals
-parci = nan(numel(parfit),2);
-if ~strcmp(warnId,'MATLAB:nearlySingularMatrix')
-    parci(:,1) = parfit - critical*sqrt(diag(covmatrix).');
-    parci(:,2) = parfit + critical*sqrt(diag(covmatrix).');
-end
 
-% Set the warnings back on
-warning('on','MATLAB:nearlySingularMatrix')
-
-% Compute fitted parametric model
+% Compute fitted parametric model and confidence bands if requested
 if nargout>1
+    modelfit = cell(numel(ax),1);
+    modelci = cell(numel(ax),1);
     for i = 1:length(ax)
         modelfit{i} = model(ax{i},parfit,Labels{i});
         if nargout>3
@@ -493,5 +495,8 @@ if nargout>1
         end
     end
 end
+
+% Set the warnings back on
+warning('on','MATLAB:nearlySingularMatrix')
 
 end
