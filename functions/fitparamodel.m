@@ -456,9 +456,7 @@ parfit = fits{globmin};
 if nargout>2
     
     % Numerically estimate the Jacobian if not done by MATLAB's lsqnonlin
-    if isempty(jacobian)
-        jacobian = jacobianest(VecCostFcn,parfit);
-    end
+    jacobian = jacobianest(VecCostFcn,parfit);
     hessian = jacobian'*jacobian;
     % Compute residual vector
     residual = VecCostFcn(parfit);
@@ -471,12 +469,15 @@ if nargout>2
     covmatrix = var(residual).*inv(hessian);
     % Detect if there was a 'nearly singular' warning
     [~, warnId] = lastwarn;
+    if strcmp(warnId,'MATLAB:nearlySingularMatrix') || strcmp(warnId,'MATLAB:singularMatrix')
+        covmatrix = var(residual).*sparse(pinv(full(hessian)));
+        lastwarn('');
+    end
     % Compute upper/lower confidence intervals
     parci = nan(numel(parfit),2);
-    if ~strcmp(warnId,'MATLAB:nearlySingularMatrix')
-        parci(:,1) = parfit - critical*sqrt(diag(covmatrix).');
-        parci(:,2) = parfit + critical*sqrt(diag(covmatrix).');
-    end
+    parci(:,1) = parfit - critical*sqrt(diag(covmatrix).');
+    parci(:,2) = parfit + critical*sqrt(diag(covmatrix).');
+    
     %If wrapper functions internally request the covariance matrix, pack it up
     if returnCovariance
         tmp{1} = parci;
