@@ -482,6 +482,8 @@ if nargout>1
     for i = 1:length(ax)
         modelfit{i} = model(ax{i},parfit,Labels{i});
         if nargout>3
+            %Compute Jacobian for time/distance-model
+            jacobian = jacobianest(@(par)model(ax{i},par,Labels{i}),parfit);
             modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax{i})).';
             upper = modelfit{i} + critical*sqrt(modelvariance);
             lower = modelfit{i} - critical*sqrt(modelvariance);
