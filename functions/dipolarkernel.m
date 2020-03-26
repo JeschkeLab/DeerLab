@@ -147,22 +147,28 @@ end
 if ~isnumeric(pathinfo) || ~isreal(pathinfo)
     error('lambda/pathinfo must be a numeric array.');
 end
+
 if numel(pathinfo)==1
     lambda = pathinfo;
-    lambda = [1-lambda lambda];
-    T0 = [NaN 0];
-    n = [0 1];
-elseif numel(pathinfo)>1
-    if ~any(size(pathinfo,2)==[2 3])
-        error('pathinfo must be a numeric array with two or three columns.');
-    end
-    lambda = pathinfo(:,1);
-    T0 = pathinfo(:,2);
-    if size(pathinfo,2)==2
-        n = ones(size(T0));
-    else
-        n = pathinfo(:,3);
-    end
+    pathinfo = [1-lambda NaN; lambda 0];
+end
+
+if ~any(size(pathinfo,2)==[2 3])
+  error('pathinfo must be a numeric array with two or three columns.');
+end
+if any(isnan(pathinfo(:,1)))
+  error('In pathinfo, NaN can only appear in the second column (refocusing time).');
+end
+if any(abs(pathinfo(:,1))>1)
+  error('In pathinfo, amplitudes (first row) cannot be larger than 1.');
+end
+
+lambda = pathinfo(:,1);
+T0 = pathinfo(:,2);
+if size(pathinfo,2)==2
+  n = ones(size(T0));
+else
+  n = pathinfo(:,3);
 end
 
 % Combine all unmodulated components into Lambda0, and eliminate from list
@@ -183,13 +189,13 @@ end
 % Assert that amplitude of non-modulated pathways is not larger than 1
 % (this must hold even if the unmodulated amplitude is negative)
 if round(sum(lambda)+Lambda0,5)>1
-    error('Sum of all lambdas cannot be larger than 1.');
+    error('In pathinfo, the sum of all lambdas cannot be larger than 1.');
 end
 
-nPathways = numel(lambda);
-if nPathways>1
+nModPathways = numel(lambda);
+if nModPathways>1
     if ~isempty(B) && ~isa(B,'function_handle')
-        error('For a multi-pathway model, B must be a function handle.');
+        error('For a model with multiple modulated pathways, B must be a function handle.');
     end
 end
 
@@ -219,13 +225,13 @@ end
 
 % Build dipolar kernel matrix, summing over all pathways
 K = Lambda0;
-for p = 1:nPathways
+for p = 1:nModPathways
     K = K + lambda(p)*kernelmatrix(n(p)*(t-T0(p)));
 end
 
 % Multiply by background(s)
 if isa(B,'function_handle')
-    for p = 1:nPathways
+    for p = 1:nModPathways
         K = K.*B(n(p)*(t-T0(p)),lambda(p));
     end
 else

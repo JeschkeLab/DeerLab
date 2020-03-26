@@ -4,7 +4,7 @@
 :mod:`dipolarkernel`
 *********************
 
-Computes the dipolar kernel matrix ``K`` that transforms a distance distribution ``P`` to a time-domain dipolar signal ``D`` via ``D = K*P``.
+Computes the dipolar kernel matrix ``K`` that transforms a distance distribution ``P`` to a time-domain dipolar signal ``V`` via ``V = K*P``.
 
 -------------------------------
 
@@ -26,7 +26,7 @@ Parameters
     *   ``t``        - Time axis vector (*N*-element array), in microseconds
     *   ``r``        - Distance axis vector (*M*-element array), in nanometers
     *   ``lambda``   - Modulation depth (scalar)
-    *   ``pathinfo`` - Array of modulation depths, refocusing times, and harmonics (*px2* or *px3* array) for all pathways
+    *   ``pathinfo`` - Array of modulation depths, refocusing times, and harmonics (*px2* or *px3* array) for multiple dipolar pathways
     *   ``B``        - Background, either vector of values (*N*-element array) or function handle
 Returns
     *  ``K`` - Dipolar kernel matrix (*NxM* array)
@@ -55,7 +55,7 @@ The dipolar kernel is normalized by `\Delta r`, such that it returns a dipolar s
 
     K = dipolarkernel(t,r,lambda)
 
-If the modulation depth ``lambda`` is specified, then it is included into the kernel matrix. ``K`` then describes the transformation from the distance distribution to the form factor `\mathbf{F}` given by
+If the modulation depth ``lambda`` (a number between 0 and 1) is specified, then it is included into the kernel matrix. ``K`` then describes the transformation from the distance distribution to a time-domain signal `\mathbf{V}` that includes a constant offset of amplitude `1-\lambda`, and dipolar modulation with amplitude `\lambda`:
 
 
     .. math:: \mathbf{K}\mathbf{P}  = \mathbf{F} = (1-\lambda) + \lambda \mathbf{D}
@@ -68,7 +68,7 @@ If the modulation depth ``lambda`` is specified, then it is included into the ke
 
     K = dipolarkernel(t,r,lambda,B)
 
-If the background ``B`` and modulation depth ``lambda`` are specified, then both are included into the kernel matrix. ``B`` can be either an array with the precalculated background decay, or a function handle with a background model. ``K`` describes the transformation from the distance distribution to the dipolar signal `\mathbf{V}` given by
+If the background ``B`` and modulation depth ``lambda`` are specified, then both are included into the kernel matrix. ``B`` can be either an array with the precalculated background decay (over ``t``), or a function handle with a background model. ``K`` describes the transformation from the distance distribution to the dipolar signal `\mathbf{V}` given by
 
     .. math:: \mathbf{K}\mathbf{P}  = \mathbf{V} = [(1-\lambda) + \lambda \mathbf{D} ]\mathbf{B}
 
@@ -81,23 +81,41 @@ If the background ``B`` and modulation depth ``lambda`` are specified, then both
     K = dipolarkernel(t,r,pathinfo)
     K = dipolarkernel(t,r,pathinfo,B)
 
-For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal), ``pathinfo`` contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals. Each row of ``pathinfo`` has two or three values: one amplitude, one time, and one harmonic (1 = fundamental, 2 = first overtone, etc.). For a pathway with unmodulated signal, set the refocusing time to ``NaN``.
+For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathinfo`` is a 2D array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals.
+
+Each row of ``pathinfo`` contains two values: one modulation depth and one refocusing time. For a pathway with unmodulated signal, set the refocusing time to ``NaN``.
+
+Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals. If not given, the harmonic is 1 for all pathways.
+
+Example 1: To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use
 
 .. code-block:: matlab
 
-    % three pathways, the first unmodulated, the second refocusing at time 0, the third at time 4 microseconds
-    pathinfo = [0.3 NaN; 0.6 0; 0.1 4];
-    pathinfo = [lambda T0];
+    lambda = 0.4; % modulation depth main signal
+	
+    pathinfo = [1-lambda NaN; lambda 0];
+	
+	% alternative input
+	pathinfo(1,:) = [1-lambda NaN];    % unmodulated part, gives offset
+	pathinfo(2,:) = [lambda 0];        % main modulation, refocusing at time zero
+	
     K = dipolarsignal(t,r,pathinfo);
 
-In the above example, the first pathway has a refocusing time of ``NaN``, indicating that it is a constant offset.
+The shorthand input syntax ``dipolarkernel(t,r,lambda)`` is equivalent to this input.
 
-To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway refocused at time 0, use
+Example 2: To specify a more complete 4-pulse DEER model that includes the 2+1 contribution, use
 
 .. code-block:: matlab
 
-    lambda = 0.4; % modulation depth
-    pathinfo = [1-lambda NaN; lambda 0];
+	Lambda0 = 0.5;   % unmodulated part
+    lambda = 0.4;    % modulation depth main signal
+	lambda21 = 0.1;  % modulation depth 2+1 contribution
+	tau2 = 4;        % refocusing time of 2+1 contribution
+	
+	pathinfo(1,:) = [Lambda0  NaN];     % unmodulated part, gives offset
+	pathinfo(2,:) = [lambda4  0];       % main modulation, refocusing at time zero
+	pathinfo(2,:) = [lambda21 tau2];    % 2+1 modulation, refocusing at time tau2
+	
     K = dipolarsignal(t,r,pathinfo);
 
 
@@ -125,7 +143,7 @@ Additional settings can be specified via name-value pairs. All property names ar
         K = dipolarkernel(t,r,'ExcitationBandwidth',50)     % 50 MHz excitation bandwidth
 
 - ``'OvertoneCoeffs'`` - RIDME overtone coefficients
-    1D-Array containing the overtone coefficients for RIDME experimens. If passed, the dipolar kernel overtones are calculated based on the passed coefficients. The coefficient values must be normalized. The kernel containing up to the :math:`k^{th}` overtone is constructed as follows
+    1D array containing the overtone coefficients for RIDME experimens. If passed, the dipolar kernel overtones are calculated based on the passed coefficients. The coefficient values must be normalized. The kernel containing up to the :math:`k^{th}` overtone is constructed as follows
 
     .. math:: K(t,r)  = \int_{0}^{1}\sum_{k=1}^K c_k\cos\left[(3\cos^2\theta -1)k\frac{\mu_0\hbar\gamma_A\gamma_B}{4\pi r^3}t\right]\mathrm{d} \cos\theta
 
