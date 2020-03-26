@@ -131,33 +131,29 @@ end
 
 % Check that parametric model is passed as function handle
 if ~isa(model,'function_handle')
-    error('Model must be a valid function handle.')
+    error('Model must be a function handle.')
 end
 
 % Get information about the parametric model
 try
-    % Check whether model is a DeerLab model...
+    % Check whether model is a DeerLab model function...
     Info = model();
-    if nargin(model) == 2
-        passlabel = false;
-    else
-        passlabel = true;
-    end
-    if passlabel
-        model = @(ax,param,idx) model(ax,param,idx);
-    else
+    if nargin(model)==2
         model = @(ax,param,idx) model(ax,param);
+    else
+        model = @(ax,param,idx) model(ax,param,idx);
     end
     
 catch
     % ... if not, then user is required to pass the inital values
-    if isempty(StartParameters) || ischar(StartParameters)
+    if ~exist('StartParameters','var') || isempty(StartParameters) || ischar(StartParameters)
         error('For this model, please provide the required inital guess parameters.')
     end
-    % If passed, then transform the function handle to valid parametric model
+    % If passed, then transform the function handle to DeerLab model function
     model = paramodel(model,StartParameters,[],[],isDistanceDomain);
     Info = model();
 end
+
 if nargin<5 || isempty(StartParameters)
     % If user does not give parameters, use the defaults of the model
     StartParameters =  [Info.parameters(:).default];

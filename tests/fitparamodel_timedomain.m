@@ -7,11 +7,11 @@ r = linspace(2,6,300);
 parIn = [3 0.5];
 P = dd_onegauss(r,parIn);
 K = dipolarkernel(t,r);
-S = K*P;
+V = K*P;
 InitialGuess = [2 0.1];
 
 mymodel = @(t,param)K*dd_onegauss(r,param);
-parFit = fitparamodel(S,mymodel,t,InitialGuess);
+parFit = fitparamodel(V,mymodel,t,InitialGuess);
 Pfit = dd_onegauss(r,parFit);
 
 
