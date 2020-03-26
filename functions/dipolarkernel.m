@@ -182,7 +182,7 @@ end
 
 % Assert that amplitude of non-modulated pathways is not larger than 1
 % (this must hold even if the unmodulated amplitude is negative)
-if sum(lambda)+Lambda0>1
+if round(sum(lambda)+Lambda0,5)>1
     error('Sum of all lambdas cannot be larger than 1.');
 end
 
