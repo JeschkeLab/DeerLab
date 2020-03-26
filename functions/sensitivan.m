@@ -203,27 +203,28 @@ for i = 1:nCombinations
                 end
             end
         end
+
+    
+        % If user passes optional plotting hook, then prepare the plot
+        if ~isempty(AxisHandle)
+            cla(AxisHandle)
+            Ax = 1:length(stats(1).median);
+            plot(AxisHandle,Ax,stats(1).median,'k','LineWidth',1)
+            hold(AxisHandle,'on')
+            fill(AxisHandle,[Ax fliplr(Ax)] ,[stats(1).p75; max(flipud(stats(1).p25),0)],...
+                'b','LineStyle','none','FaceAlpha',0.4);
+            fill(AxisHandle,[Ax fliplr(Ax)] ,[stats(1).p98; max(flipud(stats(1).p2),0)],...
+                'b','LineStyle','none','FaceAlpha',0.3);
+            hold(AxisHandle,'off')
+            axis(AxisHandle,'tight')
+            grid(AxisHandle,'on')
+            box(AxisHandle,'on')
+            title(sprintf('Run %i/%i',i,length(ParamList)));
+            drawnow
+        end
         %Reset counter
         counter = 0;
     end
-    
-    % If user passes optional plotting hook, then prepare the plot
-    if ~isempty(AxisHandle) && i>1
-        cla(AxisHandle)
-        Ax = 1:length(stats(1).median);
-        plot(AxisHandle,Ax,stats(1).median,'k','LineWidth',1)
-        hold(AxisHandle,'on')
-        f = fill(AxisHandle,[Ax fliplr(Ax)] ,[stats(1).p75; max(flipud(stats(1).p25),0)],...
-            'b','LineStyle','none');
-        f.FaceAlpha = 0.5;
-        hold(AxisHandle,'off')
-        axis(AxisHandle,'tight')
-        grid(AxisHandle,'on')
-        box(AxisHandle,'on')
-        title(sprintf('Run %i/%i',i,length(ParamList)));
-        drawnow
-    end
-    
 end
 
 
