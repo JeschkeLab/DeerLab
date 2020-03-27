@@ -4,7 +4,7 @@
 :mod:`dipolarkernel`
 *********************
 
-Computes the dipolar kernel matrix ``K`` that transforms a distance distribution ``P`` to a time-domain dipolar signal ``V`` via ``V = K*P``.
+Computes the dipolar kernel matrix  that transforms a distance distribution to a time-domain dipolar signal.
 
 -------------------------------
 
@@ -12,7 +12,7 @@ Computes the dipolar kernel matrix ``K`` that transforms a distance distribution
 Syntax
 =========================================
 
-::
+.. code-block:: matlab
 
     K = dipolarkernel(t,r)
     K = dipolarkernel(t,r,lambda)
@@ -26,7 +26,7 @@ Parameters
     *   ``t``        - Time axis vector (*N*-element array), in microseconds
     *   ``r``        - Distance axis vector (*M*-element array), in nanometers
     *   ``lambda``   - Modulation depth (scalar)
-    *   ``pathinfo`` - Array of modulation depths, refocusing times, and harmonics (*px2* or *px3* array) for multiple dipolar pathways
+    *   ``pathinfo`` - Modulation depths, refocusing times, and harmonics (*px2* or *px3* array) for multiple dipolar pathways
     *   ``B``        - Background, either vector of values (*N*-element array) or function handle
 Returns
     *  ``K`` - Dipolar kernel matrix (*NxM* array)
@@ -87,7 +87,8 @@ Each row of ``pathinfo`` contains two values: one modulation depth and one refoc
 
 Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals. If not given, the harmonic is 1 for all pathways.
 
-Example 1: To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use
+Example 1:
+	To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use
 
 .. code-block:: matlab
 
@@ -103,12 +104,13 @@ Example 1: To specify the standard model for 4-pulse DEER with an unmodulated of
 
 The shorthand input syntax ``dipolarkernel(t,r,lambda)`` is equivalent to this input.
 
-Example 2: To specify a more complete 4-pulse DEER model that includes the 2+1 contribution, use
+Example 2:
+	To specify a more complete 4-pulse DEER model that includes the 2+1 contribution, use
 
 .. code-block:: matlab
 
 	Lambda0 = 0.5;   % unmodulated part
-    lambda = 0.4;    % modulation depth main signal
+	lambda = 0.4;    % modulation depth main signal
 	lambda21 = 0.1;  % modulation depth 2+1 contribution
 	tau2 = 4;        % refocusing time of 2+1 contribution
 	
@@ -116,14 +118,18 @@ Example 2: To specify a more complete 4-pulse DEER model that includes the 2+1 c
 	pathinfo(2,:) = [lambda4  0];       % main modulation, refocusing at time zero
 	pathinfo(2,:) = [lambda21 tau2];    % 2+1 modulation, refocusing at time tau2
 	
-    K = dipolarsignal(t,r,pathinfo);
+	K = dipolarsignal(t,r,pathinfo);
+
+
+-------------------------------
+
 
 
 Additional Settings
 =========================================
 
 
-Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
 
 .. code-block:: matlab
 

@@ -77,13 +77,16 @@ Passing multiple signals and kernels enables global fitting of a kernel model to
 -----------------------------
 
 
-Optional Arguments
+
+Additional Settings
 =========================================
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
+
 
 .. code-block:: matlab
 
-    P = fitregmodel(args,'Property1',Value1,'Property2',Value2,...)
+    P = fitregmodel(___,'Property1',Value1,'Property2',Value2,___)
 
 - ``'NonNegConstrained'`` - Non-negativity constraint
     Specifies whether the distance distribution ``P`` is to be computed under the non-negativity constraint. If the constraint is lifted, the distance distribution is computed according to the analytical solution of the inverse problem and does not require any numerical solver.
@@ -94,7 +97,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = fitregmodel(args,'NonNegConstrained',false)
+			P = fitregmodel(___,'NonNegConstrained',false)
 
 - ``'HuberParam'`` - Huber parameter value
     Value of the superparameter used in pseudo-Huber regularization.
@@ -105,7 +108,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-				P = fitregmodel(args,'HuberParam',2.5)
+				P = fitregmodel(___,'HuberParam',2.5)
 
 - ``'RegOrder'`` - Regularization matrix order
     Order of the regularization operator matrix.
@@ -116,7 +119,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = fitregmodel(args,'RegOrder',3)
+			P = fitregmodel(___,'RegOrder',3)
 
 
 - ``'GlobalWeights'`` - Weights for global fitting
@@ -144,7 +147,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-				P = fitregmodel(args,'Solver','fmincon')
+				P = fitregmodel(___,'Solver','fmincon')
 
 - ``'TolFun'`` - Optimizer tolerance value
     Optimizer function tolerance. The solver stops once the regularization functional evaluation reaches a value lower than this tolerance. Lower values increase the precision of the result, albeit at the cost of longer computation times.
@@ -155,7 +158,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = fitregmodel(args,'TolFun',1e-20)
+			P = fitregmodel(___,'TolFun',1e-20)
 
 - ``'MaxIter'`` - Maximal solver iterations
     Maximum number of iterations of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
@@ -166,7 +169,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = fitregmodel(args,'MaxIter',1e10)
+			P = fitregmodel(___,'MaxIter',1e10)
 
 - ``'MaxFunEval'`` - Maximal solver function evalutions
     Maximum number of function evaluation of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
@@ -177,7 +180,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = fitregmodel(args,'MaxFunEval',1e10)
+			P = fitregmodel(___,'MaxFunEval',1e10)
 
 - ``'Verbose'`` - Information display
     Set the level of detail display for the solvers:
@@ -193,5 +196,5 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			fit = fitparamodel(args,'Verbose','iter-detailed')
+			P = fitparamodel(___,'Verbose','iter-detailed')
 

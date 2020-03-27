@@ -40,10 +40,3 @@ Determines the amplitude scale ``V0`` of a dipolar signal ``V`` and time axis ``
 
 
 -----------------------------
-
-Example
-=====================================
-
-
-.. image:: ../images/correctscale1.svg
-    :align: center

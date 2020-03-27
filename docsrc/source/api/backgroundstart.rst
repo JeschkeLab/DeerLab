@@ -16,7 +16,7 @@ Syntax
 .. code-block:: matlab
 
     [t0,pos] = backgroundstart(V,t,model)
-    [t0,pos] = backgroundstart(V,t,model,'Property',Value)
+    [t0,pos] = backgroundstart(___,'Property',Value)
 
 Parameters
     *   ``V`` - Signal (*N*-element array)
@@ -48,19 +48,17 @@ Returns the optimal start time ``t0`` and corresponding array index ``pos`` at w
 
 *  ``@bg_poly1``, ``@bg_poly2``, ``@bg_poly3`` - See :ref:`bg_poly1`, :ref:`bg_poly2` and :ref:`bg_poly3`  for details.
 
-.. image:: ../images/backgroundstart1.svg
-
 -----------------------------
 
 
-Optional Arguments
+Additional Settings
 =========================================
 
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
 
 .. code-block:: matlab
 
-    [t0,pos]  = backgroundstart(args,'Property1',Value1,'Property2',Value2,...)
+    [t0,pos]  = backgroundstart(___,'Property1',Value1,'Property2',Value2,___)
 
 
 - ``'SearchStart'`` - Relative Search Start
@@ -72,7 +70,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = backgroundstart(args,'RelSearchStart',1.5)
+			[t0,pos] = backgroundstart(___,'RelSearchStart',1.5)
 
 - ``'SearchEnd'`` - Relative Search End
     Time (in microseconds) at which the background search ends
@@ -83,7 +81,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = backgroundstart(args,'RelSearchEnd',4)
+			[t0,pos] = backgroundstart(___,'RelSearchEnd',4)
 
 - ``'EndCutOff'`` - Signal cutoff
     Time (in microseconds) after which the signal is no longer used for fitting By default the whole signal is evaluated. 
@@ -94,7 +92,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = backgroundstart(args,'EndCutOff',6.5)
+			[t0,pos] = backgroundstart(___,'EndCutOff',6.5)
 
 - For further property-value pair options see :ref:`fitbackground`.
 

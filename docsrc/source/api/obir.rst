@@ -16,7 +16,7 @@ Syntax
 .. code-block:: matlab
 
      P = obir(S,K,r,'type',alpha)
-     P = obir(S,K,r,'type',alpha,'Property',Value)
+     P = obir(___,'Property',Value)
 
 
 Parameters
@@ -51,13 +51,14 @@ The type of regularization employed in obir is set by the ``'type'`` input argum
 -----------------------------
 
 
-Optional Arguments
+Additional Settings
 =========================================
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
 
 .. code-block:: matlab
 
-    P = obir(args,'Property1',Value1,'Property2',Value2,...)
+    P = obir(___,'Property1',Value1,'Property2',Value2,___)
 
 
 - ``'NoiseLevelAim'`` - Noise level aim value
@@ -69,7 +70,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = obir(args,'NoiseLevelAim',0.05)
+			P = obir(___,'NoiseLevelAim',0.05)
 
 - ``'RegOrder'`` - Regularization matrix order
     Order of the regularization operator.
@@ -80,7 +81,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = obir(args,'RegOrder',3)
+			P = obir(___,'RegOrder',3)
 
 - ``'DivergenceStop'`` - Stop if divergence of residual value
     Specify whether the Bregman iterations must be stopped if the functional value increases instead of decreasing.
@@ -91,7 +92,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = obir(args,'DivergenceStop',true)
+			P = obir(___,'DivergenceStop',true)
 
 - ``'MaxOuterIter'`` - Maximal number of Bregman iterations
    Maximal number of allowed Bregman iterations specified as a scalar value.
@@ -102,7 +103,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = obir(args,'MaxOuterIter',1e5)
+			P = obir(___,'MaxOuterIter',1e5)
 
 - ``'AxisHandle'`` - Axis handle to plot intermediate results
     Axis handle for plotting. If specified the state of the distance distribution at each Bregman iteration is displayed on the given axis object.
@@ -113,7 +114,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = obir(args,'AxisHandle',gca)
+			P = obir(___,'AxisHandle',gca)
 
 - ``'Solver'`` - Optimization solver
     Numerical solver employed for the minimization of the regularization functional models.
@@ -127,7 +128,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = obir(args,'Solver','fmincon')
+			P = obir(___,'Solver','fmincon')
 
 - ``'TolFun'`` - Optimizer tolerance value
     Optimizer function tolerance. The solver stops once the regularization functional evaluation reaches a value lower than this tolerance. Lower values increase the precision of the result, albeit at the cost of longer computation times.
@@ -138,7 +139,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = obir(args,'TolFun',1e-20)
+			P = obir(___,'TolFun',1e-20)
 
 - ``'MaxIter'`` - Maximal solver iterations
     Maximum number of iterations of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'`` solver.
@@ -149,7 +150,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = obir(args,'MaxIter',1e10)
+			P = obir(___,'MaxIter',1e10)
 
 - ``'MaxFunEval'`` - Maximal solver function evalutions
     Maximum number of function evaluation of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'`` solver.
@@ -160,4 +161,4 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = obir(args,'MaxFunEval',1e10)
+			P = obir(___,'MaxFunEval',1e10)

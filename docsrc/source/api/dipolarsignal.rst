@@ -18,7 +18,7 @@ Syntax
 
     V = dipolarsignal(t,r,P)
     V = dipolarsignal(t,r)
-    V = dipolarsignal(t,r,P,'Property',Value)
+    V = dipolarsignal(___,'Property',Value)
 
 
 Parameters
@@ -56,13 +56,14 @@ If no distribution ``P`` is provided, then the dipolar signal corresponding to a
 
 
 
-Optional Arguments
+Additional Settings
 =========================================
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
 
 .. code-block:: matlab
 
-    V = dipolarsignal(args,'Property1',Value1,'Property2',Value2,...)
+    V = dipolarsignal(___,'Property1',Value1,'Property2',Value2,___)
 
 
 - ``'ModDepth'`` Modulation depth
@@ -74,7 +75,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			V = dipolarsignal(args,'ModDepth',0.4)
+			V = dipolarsignal(___,'ModDepth',0.4)
 
 
 - ``'Background'`` - Background function
@@ -86,7 +87,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			V = dipolarsignal(args,'Background',bg_srtexp(t,param))
+			V = dipolarsignal(___,'Background',bg_srtexp(t,param))
 
 - ``'NoiseLevel'`` - Level of noise on the signal
     Scalar value containing the desired standard deviation of a Gaussian noise vector 
@@ -97,7 +98,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			V = dipolarsignal(args,'NoiseLevel',0.05)
+			V = dipolarsignal(___,'NoiseLevel',0.05)
 
 		.. Important::
 			Each call of ``dipolarsignal`` will return a different noise realization. To set the output to a fixed noise realization, the random number generator must be fixed. In MATLAB this can be accomplished by calling ``rng(k)`` where ``k`` is some integer number.
@@ -112,7 +113,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			V = dipolarsignal(args,'Overtones',[0.2 0.5 0.3])
+			V = dipolarsignal(___,'Overtones',[0.2 0.5 0.3])
 
 - ``'g'`` - Electron g-value
     Specifies the g-value of the electron spin center used to compute the dipolar frequencies from the given distance axis.
@@ -123,7 +124,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			K = dipolarkernel(args,'g',2.00) %Use experimental g-value
+			K = dipolarkernel(___,'g',2.00) %Use experimental g-value
 
 - ``'Scale'`` - Amplitude scale
     Vertical scale to multiply to the output signal
@@ -134,7 +135,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			V = dipolarsignal(args,'Scale', 1e3)
+			V = dipolarsignal(___,'Scale', 1e3)
 
 - ``'Phase'`` - IQ phase of the signal
     Scalar-valued phase of the complex-valued signal (in radians).
@@ -145,5 +146,5 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			V = dipolarsignal(args,'Phase', pi/2)
+			V = dipolarsignal(___,'Phase', pi/2)
 

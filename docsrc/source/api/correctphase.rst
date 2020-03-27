@@ -77,8 +77,3 @@ A third boolean argument ``oc`` can be passed to enable/diasable the fitting of 
 Returns, in addition to ``Vr``, the imaginary-part of the corrected signal ``Vi``, the fitted or applied phase angle ``ph`` (in radians), and the fitted imaginary offset ``io``.
 
 -----------------------------
-
-Example
-=====================================
-
-.. image:: ../images/correctphase1.svg

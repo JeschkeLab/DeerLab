@@ -63,11 +63,11 @@ which will compute all the possible combinations of the values of the first and 
 ================== ============= ===========
 
 
-
-Optional Arguments
+Additional Settings
 =========================================
 
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
+
 
 .. code-block:: matlab
 
@@ -82,5 +82,5 @@ RandPerm
 
     .. code-block:: matlab
 
-        [mean,std] = validate(op,param,'RandPerm',false)
+         varparam = prepvalidation(param,'RandPerm',false)
 

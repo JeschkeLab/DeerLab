@@ -5,7 +5,7 @@
 :mod:`apt`
 *********************
 
-Approximate Pake Transformation (APT) of dipolar spectroscopy data
+Approximate Pake transformation (APT) of dipolar spectroscopy data
 
 -----------------------------
 

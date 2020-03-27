@@ -23,7 +23,7 @@
 %   P = FITMULTIGAUSS(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
-%   'BckgModel' - Function handle to the background model to be fitted
+%   'Background' - Function handle to the background model to be fitted
 %                 along the multigauss distance distribution model.
 %                 Requires the time-axis to be passed instead of the
 %                 kernel.

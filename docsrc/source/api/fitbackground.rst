@@ -6,7 +6,7 @@
 :mod:`fitbackground`
 **********************
 
-Fit a parametric background model function to a dipolar time-domain signal
+Fit a parametric background model function to a dipolar signal
 
 -----------------------------
 
@@ -17,13 +17,10 @@ Syntax
 .. code-block:: matlab
 
     B = fitbackground(V,t,@model)
-    [B,lambda] = fitbackground(V,t,@model)
-    [B,lambda,param] = fitbackground(V,t,@model)
     [B,lambda,param,tstart] = fitbackground(V,t,@model)
-    [B,lambda,param] = fitbackground(V,t,@model,tstart)
-    [B,lambda,param] = fitbackground(V,t,@model,[tstart tend])
-    [B,lambda,param] = fitbackground(V,t,@model,'Property',Value)
-    [B,lambda,param] = fitbackground(V,t,@model,[tstart tend],'Property',Value)
+    [B,lambda,param,tstart] = fitbackground(V,t,@model,tstart)
+    [B,lambda,param,tstart] = fitbackground(V,t,@model,[tstart tend])
+    [B,lambda,param,tstart] = fitbackground(___,'Property',Value)
 
 Parameters
     *   ``V`` - Data to fit (*M*-element array)
@@ -49,7 +46,7 @@ Description
 
    [B,lambda,param,tstart] = fitbackground(V,t,@model)
 
-Fits the time-domain parametric background model ``@model`` and the modulation depth ``lambda`` to a time-domain signal ``V`` with time-axis ``t``, resulting in a fitted background ``B`` . When not specified, the optimal fitting start time ''tstart'' is computed automatically by means of the :ref:`backgroundstart` function and returned as an output. The fitted parameters of the model are returned as a last output argument.
+Fits the time-domain parametric background model ``@model`` and the modulation depth ``lambda`` to a time-domain signal ``V`` with time-axis ``t``, resulting in a fitted background ``B`` . When not specified, the optimal fitting start time ``tstart`` is computed automatically by means of the :ref:`backgroundstart` function and returned as an output. The fitted parameters of the model are returned as a last output argument.
 
 -----------------------------
 
@@ -73,14 +70,14 @@ The start and end times of the fitting can be specified by passing a two-element
 -----------------------------
 
 
-Optional Arguments
+Additional Settings
 =========================================
 
-Additional arguments can be specified by optional name-value pairs. All names are case insensitive and the name-value pairs can be passed in any order after the required input arguments have been passed.
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
 
 .. code-block:: matlab
 
-    B = fitbackground(args,'Property1',Value1,'Property2',Value2,...)
+    B = fitbackground(___,'Property1',Value1,'Property2',Value2,___)
 
 - ``'ModDepth`` - Modulation depth
     Fixes the modulation depth to a user-defined value instead of fitting it along with the background parameters.

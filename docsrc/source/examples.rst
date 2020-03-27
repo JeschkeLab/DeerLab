@@ -113,9 +113,3 @@ This is a collection of tutorials for the use of the DeerLab API. The tutorials 
    <br>
    <br>
 
-
-
-Do you want to share your ideas using DeerLab? 
-      If you have an nice example or tutorial on a custom implementation of the DeerLab API and want to share it, you can download the `tutorial template <https://deertutorials.s3.eu-central-1.amazonaws.com/template.mlx>`_ to write your own tutorial. 
-      Submit your tutorial to luis.fabregas@phys.chem.ethz.ch to be reviewed (basically a test of compilation and version compatibility), and it will be published in this page with your name as the author. 
-

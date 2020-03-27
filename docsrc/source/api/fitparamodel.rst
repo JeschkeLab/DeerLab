@@ -107,13 +107,16 @@ By doing so, ``fitparamodel`` will automatically pass the index ``idx = (1,2,...
 -----------------------------
 
 
-Optional Arguments
+
+Additional Settings
 =========================================
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
+
 
 .. code-block:: matlab
 
-    param = fitparamodel(args,'Property1',Value1,'Property2',Value2,...)
+    param = fitparamodel(___,'Property1',Value1,'Property2',Value2,___)
 
 
 - ``'CostModel'`` - Optimization cost functional
@@ -129,7 +132,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			param = fitparamodel(args,'CostModel','chisquared')
+			param = fitparamodel(___,'CostModel','chisquared')
 
 - ``'Upper'`` - Parameters upper bound constraints
     Array of upper bounds for the model parameters.
@@ -140,7 +143,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			param = fitparamodel(args,'Upper',[1 100])
+			param = fitparamodel(___,'Upper',[1 100])
 
 - ``'Lower'`` - Parameters lower bound constraints
     Array of lower bounds for the model parameters.
@@ -151,7 +154,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			param = fitparamodel(args,'Lower',[0 3])
+			param = fitparamodel(___,'Lower',[0 3])
 
 - ``'Solver'`` - Optimization solver
     Numerical solver employed for fitting the model to the data.
@@ -168,7 +171,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			param = fitparamodel(args,'Solver','fmincon')
+			param = fitparamodel(___,'Solver','fmincon')
 
 - ``'Algorithm'`` - Numerical solver algorithm
     Algorithm to be used by the solvers (see ``fmincon`` or ``lsqnonlin`` MATLAB documentation)
@@ -179,7 +182,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			param = fitparamodel(args,'Algorithm','trust-region-reflective')
+			param = fitparamodel(___,'Algorithm','trust-region-reflective')
 
 - ``'GlobalWeights'`` - Global analysis weights
     Array of weighting coefficients for the individual signals in global fitting. If not specified, the global fit weights are automatically computed according to their contribution to ill-posedness. The same number of weights as number of input signals is required. Weight values do not need to be normalized.
@@ -190,7 +193,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			fit = fitparamodel({S1,S2,S3},{K1,K2,K3},r,L,'tikhonov',a,'GlobalWeights',[0.1 0.6 0.3]])
+			param = fitparamodel({S1,S2,S3},{K1,K2,K3},r,L,'tikhonov',a,'GlobalWeights',[0.1 0.6 0.3]])
 
 - ``'TolFun'`` -  Optimizer tolerance value
     Optimizer function tolerance. The solver stops once the fitting functional evaluation reaches a value lower than this tolerance. Lower values increase the precision of the result, albeit at the cost of longer computation times.
@@ -201,7 +204,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			param = fitparamodel(args,'TolFun',1e-20)
+			param = fitparamodel(___,'TolFun',1e-20)
 
 - ``'MaxIter'`` - Maximal solver iterations
     Maximum number of iterations of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
@@ -212,7 +215,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			param = fitparamodel(args,'MaxIter',1e10)
+			param = fitparamodel(___,'MaxIter',1e10)
 
 - ``'MaxFunEval'`` -  Maximal solver function evalutions
     Maximum number of function evaluation of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
@@ -223,7 +226,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			param = fitparamodel(args,'MaxFunEval',1e10)
+			param = fitparamodel(___,'MaxFunEval',1e10)
 
 - ``'ConfidenceLevel'`` -  Level for parameter confidence intervals
     Level of the confidence intervals computed for each fitted parameter. Must be a scalar value between 0 and 1.
@@ -234,7 +237,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			param = fitparamodel(args,'ConfidenceLevel',0.95)
+			param = fitparamodel(___,'ConfidenceLevel',0.95)
 
 - ``'MultiStart'`` -  Multi-start global optimization
     Number of initial points to be generated for a global search. For each start point, a local minimum is searched, and the solution with the lowest cost functional value is selected as the global optimum.
@@ -245,7 +248,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			param = fitparamodel(args,'MultiStart',50)
+			param = fitparamodel(___,'MultiStart',50)
 
 - ``'Verbose'`` -  Information display
     Set the level of detail display for the solvers:
@@ -261,4 +264,4 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			param = fitparamodel(args,'Verbose','iter-detailed')
+			param = fitparamodel(___,'Verbose','iter-detailed')

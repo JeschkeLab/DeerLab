@@ -49,13 +49,14 @@ If two output arguments are requested, the frequency axis ``nu`` is returned as 
 -----------------------------
 
 
-Optional Arguments
+Additional Settings
 =========================================
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
 
 .. code-block:: matlab
 
-    spec = fftspec(args,'Property1',Value1,'Property2',Value2,...)
+    spec = fftspec(___,'Property1',Value1,'Property2',Value2,___)
 
 
 - ``'Type'`` - Spectrum type
@@ -71,7 +72,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			spec = fftspec(args,'Type','real')
+			spec = fftspec(___,'Type','real')
 
 
 - ``'ZeroFilling'`` - Zero-filling
@@ -83,4 +84,4 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			spec = fftspec(args,'ZeroFilling',400)
+			spec = fftspec(___,'ZeroFilling',400)
