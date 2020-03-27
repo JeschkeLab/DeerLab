@@ -1,35 +1,29 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check Tikhonov regularization
-%=======================================
+% Check that fitregmodel handles custom regularization functional
 
-Dimension = 100;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-P = rd_onegaussian(r,[3,0.5]);
-
+t = linspace(0,3.2,200);
+r = linspace(2,6,100);
+P = dd_onegauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
+alpha = 0.05;
+L = regoperator(r,3);
+RegFunctional = @(P)(1/2*norm(K*P - S)^2 + alpha^2/2*norm(L*P)^2);
+Pfit = fitregmodel(S,K,r,RegFunctional,alpha,'Solver','fmincon');
+deltaP = abs(Pfit - P);
 
+% Pass: distribution is well fitted
+pass = all(deltaP < 1e-2);
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 0.2;
-RegMatrix = regoperator(Dimension,3);
-RegFunctional = @(P)(1/2*norm(K*P - DipEvoFcn)^2 + RegParam^2*max(RegMatrix*P)^2);
-Result = fitregmodel(DipEvoFcn,K,r,RegFunctional,RegParam,'Solver','fmincon');
-
-err = any(abs(Result - P)>5e-1);
-maxerr = max(abs(Result - P));
-
-data = [];
+maxerr = max(deltaP);
 
 if opt.Display
- 	figure(8),clf
-    hold on
-    plot(r,P,'k') 
-    plot(r,Result,'r')
+   plot(r,P,r,Pfit)
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

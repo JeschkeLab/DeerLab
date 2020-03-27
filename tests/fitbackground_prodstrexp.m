@@ -1,10 +1,8 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Exponential background fit
-%======================================================
+% Check that fitbackground() can fit a product of stretched exponentials
 
-t = linspace(0,5,100);
+t = linspace(0,5,100).';
 d = 3;
 
 k = 0.5;
@@ -23,25 +21,41 @@ data2fit3 = bckg3(1:end);
 
 tstart = t(20);
 
-fit = fitbackground(data2fit,t,@td_prodstrexp,tstart);
-fit2 = fitbackground(data2fit2,t,@td_prodstrexp,tstart);
-fit3 = fitbackground(data2fit3,t,@td_prodstrexp,tstart);
+fit = fitbackground(data2fit,t,@bg_prodstrexp,tstart);
+fit2 = fitbackground(data2fit2,t,@bg_prodstrexp,tstart);
+fit3 = fitbackground(data2fit3,t,@bg_prodstrexp,tstart);
 
-err(1) = any(abs(fit - bckg)>1e-3);
-err(2) = any(abs(fit2 - bckg2)>1e-3);
-err(3) =  any(abs(fit3 - bckg3)>1e-3);
-err = any(err);
+% Pass 1-3: all background are well fitted
+pass(1) = all(abs(fit - bckg) < 1e-3);
+pass(2) = all(abs(fit2 - bckg2) < 1e-3);
+pass(3) =  all(abs(fit3 - bckg3) < 1e-3);
+
+pass = all(pass);
+
 maxerr = max(fit - bckg);
-data = [];
+ 
 
+%Plot results
 if opt.Display
-  figure,clf
-  subplot(131)
-  plot(t,bckg,t,fit)
-  subplot(132)
-  plot(t,bckg2,t,fit2)
-  subplot(133)
-  plot(t,bckg3,t,fit3)
+    subplot(131)
+    plot(t,bckg,t,fit)
+    legend('truth','fit')
+    xlabel('t [\mus]')
+    ylabel('B(t)')
+    grid on, axis tight, box on
+    subplot(132)
+    plot(t,bckg2,t,fit2)
+    legend('truth','fit')
+    xlabel('t [\mus]')
+    ylabel('B(t)')
+    grid on, axis tight, box on
+    subplot(133)
+    plot(t,bckg3,t,fit3)
+    legend('truth','fit')
+    xlabel('t [\mus]')
+    ylabel('B(t)')
+    grid on, axis tight, box on
 end
+
 
 end

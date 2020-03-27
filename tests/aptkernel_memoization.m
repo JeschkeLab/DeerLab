@@ -1,21 +1,25 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-N = 800;
-dt = 0.008;
-t = linspace(0,dt*(N-1),N);
+% Check that aptkernel() memoization works
 
+t = linspace(0,3,800);
+% First run: slow
 tic 
 preK = aptkernel(t);
 pre = toc;
+% Second run: fast (cached)
 tic 
 postK = aptkernel(t);
 post = toc;
 
-err(1) = post>pre/10;
-err(2) = any(any(abs(preK.Base - postK.Base)>1e-15));
-err = any(err);
-data = [];
-maxerr = max(max(abs(preK.Base - postK.Base)));
+% Pass 1: cached results should run at least 10x faster
+err(1) = post < pre/10;
+% Pass 2: cached results should be equal
+err(2) = isequal(preK.Base,postK.Base);
+
+pass = all(err);
+ 
+maxerr = NaN;
 
 
 end

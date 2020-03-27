@@ -1,23 +1,19 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check regparamrange.m
-%=======================================
+% Check that regparamrange resolution can be set up manually
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
+t = linspace(0,3,200);
 r = time2dist(t);
-
 K = dipolarkernel(t,r);
-L = regoperator(Dimension,2);
-logRes = 0.1;
-alpha = regparamrange(K,L,'logResolution',logRes);
+L = regoperator(r,2);
+lgRes = 0.1;
 
-err = (length(alpha)~=85);
+alpha = regparamrange(K,L,'Resolution',lgRes);
+
+% Pass: the right number of elements are returned
+pass = length(alpha) == 85;
+
 maxerr = NaN;
-data = [];
-
-
+ 
 
 end

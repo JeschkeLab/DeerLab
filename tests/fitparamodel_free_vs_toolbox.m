@@ -1,43 +1,39 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
-rng(1)
+% Check that fitparamodel() finds the same solution with a free solver and a toolbox solver
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
+t = linspace(0,2,400);
 r = time2dist(t);
-paramin  = [3,0.5];
-P = rd_onegaussian(r,paramin);
-
+paramin  = [3 0.5];
+P = dd_onegauss(r,paramin);
+rng(1)
 S = dipolarsignal(t,r,P,'noiselevel',0.05);
-
 K = dipolarkernel(t,r);
 
-
 param0 = [2 0.1];
-[fitparam1,Pfit1] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fminsearchcon');
-[fitparam2,Pfit2] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fmincon');
+[parafit1,Pfit1] = fitparamodel(S,@dd_onegauss,r,K,param0,'Solver','fminsearchcon');
+[parafit2,Pfit2] = fitparamodel(S,@dd_onegauss,r,K,param0,'Solver','fmincon');
 
-[fitparam3,Pfit3] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','lsqnonlin');
-[fitparam4,Pfit4] = fitparamodel(S,@rd_onegaussian,r,K,param0,'Solver','fminsearchcon');
+[fitparam3,Pfit3] = fitparamodel(S,@dd_onegauss,r,K,param0,'Solver','lsqnonlin');
+[fitparam4,Pfit4] = fitparamodel(S,@dd_onegauss,r,K,param0,'Solver','fminsearchcon');
 
-err(1) = any(abs(Pfit1 - Pfit2)>1e-5);
-err(2) = any(abs(fitparam1 - fitparam2)>1e-3);
+% Pass 1-2: fmincon (toolbox) and fminsearchcon (free) find the same solution
+err(1) = all(abs(Pfit1 - Pfit2) < 1e-5);
+err(2) = all(abs(parafit1 - parafit2) < 1e-3);
+% Pass 3-4: lsqnonlin (toolbox) and fminsearchcon (free) find the same solution
+err(3) = all(abs(Pfit3 - Pfit4) < 1e-5);
+err(4) = all(abs(fitparam3 - fitparam4) < 1e-3);
 
-err(3) = any(abs(Pfit3 - Pfit4)>1e-5);
-err(4) = any(abs(fitparam3 - fitparam4)>1e-3);
-
-err = any(err);
+pass = all(err);
 
 maxerr = max(abs(Pfit1 - Pfit2));
-data = [];
-
+ 
 if opt.Display
-   figure(1),clf,hold on
-   plot(t,S,'k.')
-   plot(t,K*Pfit1,'r')
-   plot(t,K*Pfit2,'b')
-
+   plot(r,P,'k',r,Pfit1,r,Pfit2,r,Pfit3,r,Pfit4)
+   legend('truth','fit 1','fit 2','fit 3','fit 4')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

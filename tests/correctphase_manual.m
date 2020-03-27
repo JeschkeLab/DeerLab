@@ -1,22 +1,22 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Phase correction function
-%======================================================
+% Test that manual phase correction works
 
-originalData = 1:100;
-inputPhase = pi/4;
+x = (1:100).';
+phiIn = pi/4;
+xphased = x.*exp(-1i*phiIn);
+[xRe,xIm,phiOut] = correctphase(xphased,phiIn);
 
-phasedData = originalData.*exp(-1i*inputPhase);
+% Pass 1: real part is equal to unphased input
+pass(1) = any(abs(xRe - real(x)) < 1e-10);
+% Pass 2: imaginary part is equal to unphased input
+pass(2) = any(abs(xIm - imag(x)) < 1e-10);
+% Pass 3: phase is returned properly
+pass(3) = isequal(phiIn,phiOut);
 
-[correctedData,~,outputPhase] = correctphase(phasedData,inputPhase);
+pass = all(pass);
 
-
-err(1) = any(abs(imag(correctedData) - imag(originalData))>1e-10);
-err(2) = abs(inputPhase - outputPhase)>1e-5;
-
-err = any(err);
-maxerr = max(abs(inputPhase - outputPhase));
-data = [];
+maxerr = max(abs(xIm - imag(x)));
+ 
 
 end

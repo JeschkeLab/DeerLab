@@ -18,9 +18,8 @@ Syntax
 
     V = deerload(filename)
     [t,V] = deerload(filename)
-    [t,V,pars] = deerload(filename)
     [t,V,pars,file] = deerload(filename)
-    [t,V] = deerload
+    [t,V,pars,file] = deerload
 
 
 Parameters
@@ -46,8 +45,10 @@ Description
     V = deerload(filename)
     [t,V] = deerload(filename)
 
-Read spectral data from a file specified in the string ``filename`` into the arrays ``t`` (time-axis in microseconds) and ``V`` (data).
+Read spectral data from a file specified in the string ``filename`` and returns the time-axis vector ``t`` and data vector ``V``.
 
+.. Important::
+   Most commercial spectrometers save their data in nanoseconds. Since DeerLab time-units are specfied in microseconds, it is recommended to check the values of ``t`` returned by ``deerload`` and convert to microseconds if necessary. 
 
 -----------------------------
 

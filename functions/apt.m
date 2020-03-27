@@ -53,7 +53,7 @@ warning('off','all')
 K = APTkernel.Base;
 NormConstant = APTkernel.NormalizationFactor;
 APT_FrequencyAxis = APTkernel.FreqAxis;
-APT_t = APTkernel.t;
+APT_t = APTkernel.t(:).';
 Crosstalk = APTkernel.Crosstalk;
 
 %Compute frequency distribution

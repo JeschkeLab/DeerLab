@@ -17,7 +17,7 @@ Syntax
 
     Sout = winlowpass(S,Fstop,Fpass,Fsamp)
     [Sout,H] = winlowpass(S,Fstop,Fpass,Fsamp)
-    [Sout,H] = winlowpass(S,Fstop,Fpass,Fsamp,'Property',Value)
+    [Sout,H] = winlowpass(___,'Property',Value)
 
 
 Parameters
@@ -53,13 +53,15 @@ The filter transfer function parameters ``H`` requested as a second ouput argume
 -----------------------------
 
 
-Optional Arguments
+Additional Settings
 =========================================
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
+
 
 .. code-block:: matlab
 
-    P = winlowpass(args,'Property1',Value1,'Property2',Value2,...)
+    P = winlowpass(___,'Property1',Value1,'Property2',Value2,___)
 
 - ``'MinimalAttenuation'`` - Minimal sidelobe attenuation
     Minimal attenuation level [dB] of the first sidelobe after the stopband.
@@ -70,7 +72,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = selregparam(args,'MinimalAttenuation',60)
+			P = selregparam(___,'MinimalAttenuation',60)
 
 
 - ``ForwardBackward'`` - Forward-backward filtering
@@ -82,4 +84,4 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			P = selregparam(args,'ForwardBackward',false)
+			P = selregparam(___,'ForwardBackward',false)

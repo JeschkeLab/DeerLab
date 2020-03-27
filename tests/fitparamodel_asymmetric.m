@@ -1,33 +1,34 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
+% Check that fitparamodel() can fit signals with non-square kernel matrices
 
-Ntime = 100;
-Ndist = 200;
-
-dt = 0.008;
-t = linspace(0,dt*Ntime,Ntime);
-[~,rmin,rmax] = time2dist(t);
-r = linspace(rmin,rmax,Ndist);
-InputParam = [3,0.5];
-P = rd_onegaussian(r,[3,0.5]);
-
+t = linspace(0,2,100);
+r = linspace(1,6,200);
+parain = [3,0.5];
+P = dd_onegauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
+par0 = [2 0.1];
+[parafit,Pfit] = fitparamodel(S,@dd_onegauss,r,K,par0);
 
-InitialGuess = [2 0.1];
-[FitParam,FitP] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,InitialGuess);
-err(1) = any(abs(FitP - P)>1e-5);
-err(2) = any(abs(FitParam - InputParam)>1e-3);
-err(3)  = length(FitP) < length(DipEvoFcn);
-err = any(err);
+% Pass 1: distirbution is well fitted
+pass(1) = all(abs(Pfit - P) < 1e-5);
+% Pass 2: fit parameters agree
+pass(2) = all(abs(parafit - parain) < 1e-3);
+% Pass 3: the dimensions are correct
+pass(3)  = length(Pfit) > length(S);
 
-maxerr = max(abs(FitP - P));
-data = [];
+pass = all(pass);
+
+maxerr = max(abs(Pfit - P));
+ 
 
 if opt.Display
-   figure(1),clf,hold on
-   plot(t,DipEvoFcn,'b')
-   plot(t,K*FitP,'r')
+   plot(r,P,'k',r,Pfit,'r')
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

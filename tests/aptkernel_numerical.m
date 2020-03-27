@@ -1,9 +1,8 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Check apt kernel is constructed properly
-%======================================================
+% Check that aptkernel() is constructed as was in DeerAnalysis
 
+%Control vectors extracted from the APT kernel of DeerAnalysis
 tnorm_old =  [97.7108 47.3550 31.1710 23.0929 18.3430 15.1978 12.9709 11.3131 10.0272 9.0068 8.1710 7.4806 6.8943 6.3965 5.9626 5.5868 5.2528 4.9591 4.6941 4.4583 ...
  4.2429 4.0495 3.8710 3.7094 3.5591 3.4221 3.2938 3.1762 3.0653 2.9633 2.8666 2.7772 2.6921 2.6132 2.5377 2.4675 2.4001 2.3372 2.2766 2.2201 ...
  2.1653 2.1141 2.0644 2.0178 1.9725 1.9300 1.8885 1.8495 1.8114 1.7754 1.7403 1.7071 1.6746 1.6439 1.6137 1.5852 1.5571 1.5306 1.5044 1.4796 ...
@@ -32,28 +31,28 @@ basediag_old =  [1.0000 0.9999 0.9994 0.9975 0.9933 0.9853 0.9717 0.9505 0.9196 
  -0.0294 0.0279 -0.0206 0.0102 0.0000 -0.0116 0.0199 -0.0256 0.0292 -0.0278 0.0253 -0.0198 0.0128 -0.0062 -0.0022 0.0082 -0.0148 0.0194 -0.0229 0.0259 ...
  -0.0265 0.0278 -0.0265 0.0263 -0.0242 0.0229 -0.0207 0.0189 -0.0171 0.0152 -0.0140 0.0123 -0.0118 0.0105];
 
-
+%Simulate the same kernel with DeerLab
 N = 512;
 dt = 0.008;
 t = linspace(0,dt*(N-1),N);
 K = aptkernel(t);
-
-FreqAxis = K.FreqAxis;
+nu = K.FreqAxis;
 Base = K.Base;
-Base = Base/mean(abs(diff(FreqAxis)));
+Base = Base/mean(abs(diff(nu)));
 NormFactor = K.NormalizationFactor;
-NormFactor = NormFactor/(mean(abs(diff(FreqAxis))))^2;
+NormFactor = NormFactor/(mean(abs(diff(nu))))^2;
 t = K.t;
-CrossTalk = K.Crosstalk;
-
-tnorm_new = NormFactor;
+tnorm_new = NormFactor.';
 basediag_new = diag(Base).';
 
-err(1) = any(abs(basediag_new - basediag_old)>1e-3);
-err(2) = any(abs(tnorm_new - tnorm_old)>1e-1);
+% Pass 1: All kernel base diagonal elements are similar to DeerAnalysis
+pass(1) = all(abs(basediag_new - basediag_old) < 1e-3);
+% Pass 1: All kernel normalization factors are similar to DeerAnalysis
+pass(2) = all(abs(tnorm_new - tnorm_old) < 1e-1);
 
-err = any(err);
+pass = all(pass);
+
 maxerr = max(abs(basediag_new - basediag_old));
-data = [];
+ 
 
 end

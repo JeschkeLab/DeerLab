@@ -1,28 +1,31 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
+% Check that fitparamodel works with lsqnonlin (toolbox) solver 
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-InputParam = [3 0.5];
-P = rd_onegaussian(r,[3,0.5]);
-
+rng(1)
+t = linspace(0,3,200);
+r = linspace(2,6,150);
+parIn = [3 0.5];
+P = dd_onegauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
 
-[FitParam,FitP] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,'Solver','lsqnonlin');
-err(1) = any(abs(FitP - P)>1e-5);
-err(2) = any(abs(FitParam - InputParam)>1e-3);
-err = any(err);
+[parFit,Pfit] = fitparamodel(S,@dd_onegauss,r,K,'Solver','lsqnonlin');
 
-maxerr = max(abs(FitP - P));
-data = [];
+%Pass 1-2: lsqnonlin finds the correct solution
+pass(1) = all(abs(Pfit - P) < 1e-5);
+pass(2) = all(abs(parFit - parIn) < 1e-3);
 
+pass = all(pass);
+
+maxerr = max(abs(Pfit - P));
+ 
 if opt.Display
-   figure(1),clf,hold on
-   plot(t,DipEvoFcn,'b')
-   plot(t,K*FitP,'r')
+   plot(r,P,'k',r,Pfit,'r')
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

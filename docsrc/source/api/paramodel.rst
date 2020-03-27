@@ -55,7 +55,7 @@ Example
 
         K = dipolarkernel(r,t)
         %Define a time-domain model, signal+background
-        fcn = @(t,p) td_exp(t,p(1)).*(K*rd_onegaussian(r,p(2:3)))
+        fcn = @(t,p) bg_exp(t,p(1)).*(K*dd_onegauss(r,p(2:3)))
         %Set initial guess values
         param0 = [0.25,0.5,0.1];
         mod = paramodel(fcn,param0);

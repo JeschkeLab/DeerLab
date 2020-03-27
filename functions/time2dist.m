@@ -19,6 +19,7 @@
 function [r,rmin,rmax] = time2dist(t,M)
 
 validateattributes(t,{'numeric'},{'nonempty','increasing'})
+t = t(:);
 
 if nargin<2 || isempty(M)
     M = length(t);
@@ -34,5 +35,6 @@ rmin = (4*dt*ny0/0.85)^(1/3);
 rmax = 6*(tmax/2)^(1/3);
 
 r = linspace(rmin,rmax,M);
+r = r(:);
 
 end

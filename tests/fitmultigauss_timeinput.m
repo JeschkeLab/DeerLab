@@ -1,34 +1,28 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
+% Check that fitmultigauss() works with time-axis as input
 
-Dimension = 100;
-t = linspace(0,5,Dimension);
-r = time2dist(t);
+t = linspace(0,5,100);
+r = linspace(2,6,300);
 InputParam = [4 0.2 4 1 3 0.4 0.4 0.4];
-P = rd_threegaussian(r,InputParam);
-
-
-B = td_exp(t,0.55);
+P = dd_threegauss(r,InputParam);
 V = dipolarsignal(t,r,P);
+[Pfit,~,Pci] = fitmultigauss(V,t,r,5,'aicc');
 
-[FitP,fitp] = fitmultigauss(V,t,r,5,'aicc');
-err = any(abs(FitP - P)>8e-1);
+% Pass: distribution is well fitted
+pass = all(abs(Pfit - P) < 8e-1);
 
-
-maxerr = max(abs(FitP - P));
-data = [];
-
+maxerr = max(abs(Pfit - P));
+ 
 if opt.Display
-   figure(1),clf
-   subplot(121)
    hold on
-   plot(t,V,'b')
-   K = dipolarkernel(t,r);
-   plot(t,K*FitP,'r')
-   subplot(122)
-   hold on
-   plot(r,P,'b')
-   plot(r,FitP,'r')
+   plot(r,P,'k',r,Pfit,'r')
+   fill([r fliplr(r)], [Pci(:,1); flipud(Pci(:,2))],'r','Linestyle','none','facealpha',0.25)
+   hold off
+   legend('truth','fit','ci')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

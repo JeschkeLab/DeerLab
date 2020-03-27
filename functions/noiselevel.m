@@ -17,6 +17,8 @@
 function Level = noiselevel(S,M)
 
 validateattributes(S,{'numeric'},{'2d','nonempty'})
+S = S(:);
+
 %Get signal length
 N = length(S);
 
@@ -33,7 +35,7 @@ end
 
 %Extract the piece of signal to estimate
 idx = ceil(N-M):N;
-idx = idx.';
+idx = idx(:);
 Cutoff = S(idx);
 
 %Fit a line to remove possible oscillation fragment

@@ -1,10 +1,10 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 M = 200;
 t = linspace(0,4,M);
 r = time2dist(t);
-B = td_exp(t,0.3);
-P = rd_onegaussian(r,[4,0.3]);
+B = bg_exp(t,0.3);
+P = dd_onegauss(r,[4,0.3]);
 V = dipolarsignal(t,r,P,'noiselevel',0.05,'ModDepth',0.3,'Background',B);
 
 Parameters.regparam = linspace(10,50,2);
@@ -20,11 +20,14 @@ fcnHandle = @(param)myfitting(param,t,r,V);
 
 stats  = sensitivan(fcnHandle,Parameters,'AxisHandle',AxisHandle);
 
-err(1) = ~isstruct(stats);
-err(2) = length(stats)~=2;
-err = any(err);
-data = [];
-maxerr = 0;
+% Pass 1: the first output is a structure
+pass(1) = isstruct(stats);
+% Pass 2: the statistics are done on both output variables
+pass(2) = length(stats) == 2;
+
+pass = all(pass);
+ 
+maxerr = NaN;
 
 if opt.Display
     cla
@@ -51,7 +54,7 @@ function [Pfit,Bfit] = myfitting(param,t,r,V)
 
 V = V + whitegaussnoise(length(V), param.validationnoise);
 
-[Bfit,lambdafit] = fitbackground(V,t,@td_exp);
+[Bfit,lambdafit] = fitbackground(V,t,@bg_exp);
 
 order = 2;
 K = dipolarkernel(t,r,lambdafit,Bfit);

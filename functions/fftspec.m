@@ -51,15 +51,12 @@ if isempty(ZeroFilling)
 else
     validateattributes(ZeroFilling,{'numeric'},{'scalar','nonnegative'},mfilename,'ZeroFilling')
 end
-if ~iscolumn(t)
-   t = t.'; 
-end
-if ~iscolumn(S)
-   S = S.'; 
-end
 validateattributes(useApodization,{'logical'},{'nonempty'},mfilename,'useApodization')
 validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
 validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
+%Use column vectors
+t = t(:);
+S = S(:);
 
 %If requested apply Hamming apodization window
 if useApodization

@@ -1,4 +1,6 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+% Check error control of winlowpass() towards wrong inputs
 
 dt = 0.5e-9;
 nu1 = 0.5e9;
@@ -9,23 +11,25 @@ sampl = 1/2*(1/dt);
 wp = 0.01e9;
 ws =  0.04e9;
 
+% Pass 1: stopband larger than the passband
 try
     winlowpass(S,wp,ws,sampl);
-    err(1) = true;
+    pass(1) = false;
 catch
-    err(1) = false;
+    pass(1) = true;
 end
 
+% Pass 2: sampling frequency too small
 try
     winlowpass(S,ws,sampl,wp);
-    err(2) = true;
+    pass(2) = false;
 catch
-    err(2) = false;
+    pass(2) = true;
 end
 
 
-err = any(err);
-data = [];
+pass = all(pass);
+ 
 maxerr = 0;
 
 

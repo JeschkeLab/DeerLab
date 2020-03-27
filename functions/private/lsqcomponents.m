@@ -50,11 +50,11 @@ distDim = length(L);
 KtS = zeros(distDim,1);
 GramMatrix = zeros(distDim,distDim);
 
-%Get weights of different signals for global fitting
+% Get weights of different signals for global fitting
 if isempty(weights)
-weights = globalweights(S);
+    weights = globalweights(S);
 end
-%Compute the terms depending on different signals
+% Compute the terms depending on different signals
 for i=1:nSignals
     KtS = KtS + weights(i)*K{i}.'*S{i};
     GramMatrix = GramMatrix + weights(i)*K{i}.'*K{i};

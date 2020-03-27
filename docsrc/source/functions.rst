@@ -38,7 +38,6 @@ This is the official documentation for the DeerLab toolbox functions. The follow
     ./api/time2freq
     ./api/whitenoise
     ./api/winlowpass
-    ./api/docs
 
 .. raw:: html
 
@@ -143,10 +142,10 @@ This is the official documentation for the DeerLab toolbox functions. The follow
          &nbsp - &nbsp Time to distance axis convertor </li>
          <li><a class="reference internal" href="api/noiselevel.html#noiselevel"><span class="std std-ref" style="font-family: monospace">noiselevel</span></a>
          &nbsp - &nbsp Noise level estimator </li>
+         <li><a class="reference internal" href="api/overtones.html#overtones"><span class="std std-ref" style="font-family: monospace">overtones</span></a>
+         &nbsp - &nbsp RIDME overtone coefficients</li>
          <li><a class="reference internal" href="api/fftspec.html#fftspec"><span class="std std-ref" style="font-family: monospace">fftspec</span></a>
          &nbsp - &nbsp Fast-Fourier trasnform spectrum </li>
-         <li><a class="reference internal" href="api/docs.html#docs"><span class="std std-ref" style="font-family: monospace">docs</span></a>
-         &nbsp - &nbsp Documentation caller </li>
          </ul>
    </div>
    <br>

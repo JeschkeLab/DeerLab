@@ -6,7 +6,7 @@
 :mod:`fitbackground`
 **********************
 
-Isolate a background function fit on a dipolar signal
+Fit a parametric background model function to a dipolar signal
 
 -----------------------------
 
@@ -17,26 +17,23 @@ Syntax
 .. code-block:: matlab
 
     B = fitbackground(V,t,@model)
-    [B,lambda] = fitbackground(V,t,@model)
-    [B,lambda,param] = fitbackground(V,t,@model)
     [B,lambda,param,tstart] = fitbackground(V,t,@model)
-    [B,lambda,param] = fitbackground(V,t,@model,tstart)
-    [B,lambda,param] = fitbackground(V,t,@model,[tstart tend])
-    [B,lambda,param] = fitbackground(V,t,@model,'Property',Value)
-    [B,lambda,param] = fitbackground(V,t,@model,[tstart tend],'Property',Value)
+    [B,lambda,param,tstart] = fitbackground(V,t,@model,tstart)
+    [B,lambda,param,tstart] = fitbackground(V,t,@model,[tstart tend])
+    [B,lambda,param,tstart] = fitbackground(___,'Property',Value)
 
 Parameters
     *   ``V`` - Data to fit (*M*-element array)
-    *   ``t`` - Time axis (*N*-element array)
-    *   ``tfit`` - Time axis to fit (*M*-element array)
+    *   ``t`` - Time axis, in microseconds (*N*-element array)
     *   ``@model`` - Background model (function handle)
-    *   ``tstart`` - Time at which fit starts (scalar)
-    *   ``tend`` - Time at which fit end (scalar)
+    *   ``tstart`` - Time at which fit starts, in microseconds (scalar)
+    *   ``tend`` - Time at which fit ends, in microseconds (scalar)
 
 Returns
-    *   ``B`` - Background function (*M*-element array)
-    *   ``lambda`` - Modulation depth (scalar)
+    *   ``B`` - Fitted background function evaluated over ``t`` (*M*-element array)
+    *   ``lambda`` - Fitted modulation depth (scalar)
     *   ``param`` - Fitted parameter values (array)
+    *   ``tstart`` - Automatically determined starting time (if not given as input), in microseconds (scalar)
 
 
 -----------------------------
@@ -49,7 +46,7 @@ Description
 
    [B,lambda,param,tstart] = fitbackground(V,t,@model)
 
-Fits the background ``B`` and the modulation depth ``lambda`` to a time-domain signal ``V`` and time-axis ``t`` based on a given time-domain parametric model ``@model``. When not specified, the optimal fitting start time ''tstart'' is computed automatically by means of the :ref:`backgroundstart` function and returned as an output. The fitted parameters of the model are returned as a last output argument.
+Fits the time-domain parametric background model ``@model`` and the modulation depth ``lambda`` to a time-domain signal ``V`` with time-axis ``t``, resulting in a fitted background ``B`` . When not specified, the optimal fitting start time ``tstart`` is computed automatically by means of the :ref:`backgroundstart` function and returned as an output. The fitted parameters of the model are returned as a last output argument.
 
 -----------------------------
 
@@ -73,41 +70,41 @@ The start and end times of the fitting can be specified by passing a two-element
 -----------------------------
 
 
-Optional Arguments
+Additional Settings
 =========================================
 
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
 
 .. code-block:: matlab
 
-    B = fitbackground(args,'Property1',Value1,'Property2',Value2,...)
+    B = fitbackground(___,'Property1',Value1,'Property2',Value2,___)
 
 - ``'ModDepth`` - Modulation depth
-    Fixes the modulation depth to a user-defined value instead of fitting it along the background.
+    Fixes the modulation depth to a user-defined value instead of fitting it along with the background parameters.
 
-    *Default:* [*empty*] (automatically fitted)
+    *Default:* ``[]`` (empty) (automatically fitted)
 
     *Example:*
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@td_exp,tstart,'ModDepth',0.45)
+			B = fitbackground(V,t,@bg_exp,tstart,'ModDepth',0.45)
 
 
 - ``'InitialGuess`` - Initial parameter values
-    User-given estimation of the fit parameters, passed as an array. If not specified, the parametric model defaults are employed.
+    User-given estimation of the background parameters, passed as an array. If not specified, the parametric model defaults are employed.
 
-    *Default:* [*empty*]
+    *Default:* ``[]`` (empty)
 
     *Example:*
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@td_exp,tstart,'InitialGuess',[0.75 3])
+			B = fitbackground(V,t,@bg_exp,tstart,'InitialGuess',[0.75 3])
 
 
 - ``'LogFit`` - Fit in log-scale
-    Specifies the whether the logarithm of the signal is to be fitted.
+    Specifies whether to use the signal (``false``) or the logarithm of the signal (``true``) during fitting.
 
     *Default:* ``false``
 
@@ -115,15 +112,15 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@td_exp,tstart,'LogFit',true)
+			B = fitbackground(V,t,@bg_exp,tstart,'LogFit',true)
 
 - ``'Solver'`` - Optimization solver
-    Specifies the solver used for fitting the background model.
+    Specifies the solver used for fitting the background model (``lsqnonlin``, ``fminsearchcon``, ``nlsqbnd``).
 
-    *Default:* ``'lsqnonlin'`` (Optimization Toolbox installed) or ``'nlsqbnd'`` (Optimization Toolbox not installed)
+    *Default:* ``'lsqnonlin'`` (Optimization Toolbox installed) or ``'fminsearchcon'`` (Optimization Toolbox not installed)
 
     *Example:*
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@td_exp,tstart,'Solver','nlsqbnd')
+			B = fitbackground(V,t,@bg_exp,tstart,'Solver','nlsqbnd')

@@ -49,8 +49,15 @@
 
 function [P,ConvergenceCurve] = obir(S,K,r,RegType,alpha,varargin)
 
-if ~iscolumn(S)
-    S = S';
+validateattributes(S,{'numeric'},{'nonempty'},mfilename,'S')
+validateattributes(K,{'numeric'},{'nonempty'},mfilename,'K')
+S = S(:);
+r = r(:);
+if length(S)~=size(K,1)
+    error('K and signal arguments must fulfill size(K,1)==length(S).')
+end
+if ~isreal(S)
+    error('Input signal cannot be complex.')
 end
 
 %Get optional parameters
@@ -87,12 +94,6 @@ if isa(alpha,'char')
     alpha = selregparam(S,K,r,RegType,alpha);
 else
     validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
-end
-validateattributes(S,{'numeric'},{'nonempty'},mfilename,'S')
-validateattributes(K,{'numeric'},{'nonempty'},mfilename,'K')
-checklengths(S,K);
-if ~isreal(S)
-    error('Input signal cannot be complex.')
 end
 
 if nargin<3 || isempty(RegType)

@@ -18,14 +18,12 @@ Syntax
 .. code-block:: matlab
 
     opt = selectmodel(Models,S,r,K,'method')
-    [opt,f] = selectmodel(Models,S,r,K,'method')
-    [opt,f,param] = selectmodel(Models,S,r,K,'method')
-    [opt,f,param] = selectmodel(Models,S,r,K,'method',param0)
-    [opt,f,param] = selectmodel(Models,S,t,'method')
-    [opt,f,param] = selectmodel(Models,S,t,'method',param0)
-    [opt,f,param] = selectmodel(Models,S,t,'method','Property',Value)
-    [opt,f,param] = selectmodel(Models,S,r,K,'method',param0,'Property',Value)
-    [opt,f,param] = selectmodel(Models,S,t,'method',param0,'Property',Value)
+    [opt,f,param,paramcis] = selectmodel(Models,S,r,K,'method')
+    [opt,f,param,paramcis] = selectmodel(Models,S,r,K,{'method1','method2',___})
+    [opt,f,param,paramcis] = selectmodel(Models,S,r,K,'method',param0)
+    [opt,f,param,paramcis] = selectmodel(Models,S,t,'method')
+    [opt,f,param,paramcis] = selectmodel(Models,S,t,'method',param0)
+    [opt,f,param,paramcis] = selectmodel(___,'Property',Value)
 
 
 Parameters
@@ -40,7 +38,7 @@ Returns
     *  ``opt`` - Optimal parametric model index (scalar)
     *  ``f`` - Evaluated model selection functional (cell array)
     *  ``param`` - Fitted parameters for each evaluated model (cell array)
-
+    *  ``paramcis`` - Fit confidence intervals for each evaluated model (cell array)
 
 
 -----------------------------
@@ -52,7 +50,7 @@ Description
 
 .. code-block:: matlab
 
-        opt = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'aic',..})
+        opt = selectmodel({@model1,@model2,___,@modelN},S,r,K,{'aic',___})
 
 Evaluates the fits of the parametric models ``model1``,..., ``modelN`` to a signal ``S`` according to the dipolar kernel ``K`` and distance axis ``r``. The models must be passed as a cell array of function handles. Each fit is then evaluated according to the model selection criterions specified in the last input argument.
 
@@ -70,7 +68,7 @@ The function returns an array containing the optimal model for each selection me
 
 .. code-block:: matlab
 
-        opt = selectmodel({@model1,@model2,..,@modelN},S,t,{'aic',..})
+        opt = selectmodel({@model1,@model2,___,@modelN},S,t,{'aic',___})
 
 Evaluates the fits of the  time-domain parametric models ``model1``,..., ``modelN`` to a signal ``S`` according to the time axis ``t``.
 
@@ -80,11 +78,11 @@ Evaluates the fits of the  time-domain parametric models ``model1``,..., ``model
 
 .. code-block:: matlab
 
-        opt = selectmodel({@model1,@model2,..,@modelN},S,r,K,{'aic',..},{par1,..parN})
-        opt = selectmodel({@model1,@model2,..,@modelN},S,t,{'aic',..},{par1,..parN})
+        opt = selectmodel({@model1,@model2,___,@modelN},S,r,K,{'aic',___},{par1,___,parN})
+        opt = selectmodel({@model1,@model2,___,@modelN},S,t,{'aic',___},{par1,___,parN})
 
 
-The initial guess values for the parameters of each model can be passed as a cell array ``{par1,...parN}`` of value vectors.
+The initial guess values for the parameters of each model can be passed as a cell array ``{par1,___,parN}`` of value vectors.
 
 
 -----------------------------
@@ -92,21 +90,22 @@ The initial guess values for the parameters of each model can be passed as a cel
 
 .. code-block:: matlab
 
-    [opt,f,param] = selectmodel(args)
+    [opt,f,param,paramcis] = selectmodel(args)
 
-The method selection functionals ``f`` for the different methods and a cell array ``params`` with the fitted parameters for each of the evaluated models.
+Additional outputs include, the evaluated method selection functionals ``f`` for the different methods and a cell array ``params`` with the fitted parameters for each of the evaluated models , as well as their confidence intervals ``paramcis``.
 
 -----------------------------
 
 
 
-Optional Arguments
+Additional Settings
 =========================================
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
+
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
 
 .. code-block:: matlab
 
-    opt = selectmodel(args,'Property1',Value1,'Property2',Value2,..)
+    opt = selectmodel(___,'Property1',Value1,'Property2',Value2,___)
 
 - ``'Upper'`` - Parameter upper bound constraints
     Cell array containing the upper bound values for the parameters of the evaluated parametric models.
@@ -117,7 +116,7 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			opt = selectmodel({@rd_onegaussian,@rd_onerice},S,r,K,'aicc','Upper',{[10 1],[10 2]})
+			opt = selectmodel({@dd_onegauss,@dd_onerice},S,r,K,'aicc','Upper',{[10 1],[10 2]})
 
 - ``'Lower'`` - Parameter lower bound constraints
     Cell array containing the lower bound values for the parameters of the evaluated parametric models.
@@ -128,6 +127,6 @@ Optional arguments can be specified by parameter/value pairs. All property names
 
 		.. code-block:: matlab
 
-			opt = selectmodel({@rd_onegaussian,@rd_onerice},S,r,K,'aicc','Lower',{[1 0.1],[10 0.2]})
+			opt = selectmodel({@dd_onegauss,@dd_onerice},S,r,K,'aicc','Lower',{[1 0.1],[10 0.2]})
 
 See :ref:`fitparamodel` for a detailed list of other property-value pairs accepted by the function.

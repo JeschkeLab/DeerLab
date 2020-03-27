@@ -1,33 +1,31 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
+
+% Check that fitparamodel works with fmincon (toolbox) solver using the Chi^2 cost function 
 
 rng(2)
-Dimension = 300;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-P = rd_onegaussian(r,[3,0.3]);
-
+t = linspace(0,3,200);
+r = linspace(2,6,150);
+parIn = [3,0.3];
+P = dd_onegauss(r,parIn);
 K = dipolarkernel(t,r);
-DipEvoFcn = dipolarsignal(t,r,P,'noiselevel',0.01);
+S = dipolarsignal(t,r,P,'noiselevel',0.01);
 
-[~,FitP] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,'costmodel','chisquare');
-err(1) = any(abs(FitP - P)>8e-2);
-err = any(err);
+[parFit,Pfit] = fitparamodel(S,@dd_onegauss,r,K,'costmodel','chisquare');
 
-maxerr = max(abs(FitP - P));
-data = [];
+%Pass 1-2: fmincon finds the correct solution with the Chi^2
+pass(1) = any(abs(Pfit - P) < 1e-1);
+pass(2) = all(abs(parFit - parIn) < 1e-1);
 
+pass = all(pass);
+
+maxerr = max(abs(Pfit - P));
+ 
 if opt.Display
-     figure(1),clf
-   subplot(121)
-   hold on
-   plot(t,DipEvoFcn,'b')
-   plot(t,K*FitP,'r')
-   subplot(122)
-   hold on
-   plot(r,P,'b')
-   plot(r,FitP,'r')
+   plot(r,P,'k',r,Pfit,'r')
    legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

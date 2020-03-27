@@ -1,19 +1,22 @@
-function [err,data,maxerr] = test(data,opts)
+function [pass,maxerr] = test(data,opts)
+
+% Check that prepvalidation() works with cell arrays containing numericals
 
 currentpath = pwd;
 cd(fileparts(mfilename('fullpath')))
 cd ../functions/private
 
-
 Parameters.par1 = num2cell(rand(5,100),2);
 Parameters.par2 = num2cell(rand(6,100),2);
-
 output = prepvalidation(Parameters);
 
-err(1) = ~isequal(size(output),[6*5 2]);
-err(2) = length(output{1,1})~= 100;
-err = any(err);
-data = [];
+% Pass 1: the output dimensions are correct
+pass(1) = isequal(size(output),[30 2]);
+% Pass 1: The dimensions of the array are correct
+pass(2) = length(output{1,1}) == 100;
+
+pass = all(pass);
+ 
 maxerr = NaN;
 
 cd(currentpath)

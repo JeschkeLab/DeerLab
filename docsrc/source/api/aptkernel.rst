@@ -51,14 +51,13 @@ Since the APT is based on a time-domain to frequency-domain transformation, the 
 -----------------------------
 
 
-
-Optional Arguments
+Additional Settings
 =========================================
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
 
 .. code-block:: matlab
 
-    K = aptkernel(t,'Property1',Value1,'Property2',Value2,...)
+    K = aptkernel(t,'Property1',Value1,'Property2',Value2,___)
 
 
 -``'ExcitationBandwidth'`` - Excitation bandwith of the pulses in **MHz**. 

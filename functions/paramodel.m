@@ -14,20 +14,23 @@
 %       the resulting parametric model. The number of parameters is computed
 %       from the length of the array.
 %
+%       g = PARAMODEL(f,param0,lower,upper)
+%       Lower and upper bounds for the parameters can be provided as optional
+%       input arguments.
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-
-
 function model = paramodel(handle,param0,lower,upper,normalize)
 
+if nargin<2
+  error('At least two inputs (function handle and parameter vector) are needed.');
+end
 if nargin<4
    normalize = false; 
 end
 
-nParam = length(param0);
-
+nParam = numel(param0);
 
 if nargin<3 || isempty(lower)
     lower = zeros(nParam,1) - realmax;
@@ -37,21 +40,21 @@ if nargin<4 || isempty(upper)
     upper = zeros(nParam,1) + realmax;
 end
 
-if any(length(param0)~=length(upper) & length(param0)~=length(lower))
-   error('The Inital guess and upper/lower boundaries must have equal length); ') 
+if length(param0)~=length(upper) || length(param0)~=length(lower)
+   error('The inital guess and upper/lower boundaries must have equal length.') 
 end
 
 model = @myparametricmodel;
 
-%Define the raw structure of the DeerLab parametric model functions
+% Define the raw structure of the DeerLab parametric model functions
     function Output = myparametricmodel(ax,param,idx)
         
         if nargin==0
-            %If no inputs given, return info about the parametric model
+            % If no inputs given, return info about the parametric model
             info.Model  = 'Automatically converted parametric model';
             info.Equation  = 'custom';
             info.nparam  = nParam;
-            for i=1:nParam
+            for i = 1:nParam
                 info.parameters(i).name = ' ';
                 info.parameters(i).range = [lower(i) upper(i)];
                 info.parameters(i).default = param0(i);
@@ -62,13 +65,12 @@ model = @myparametricmodel;
             
         elseif nargin >= 2
             
-            %If user passes them, check that the number of parameters matches the model
+            % If user passes them, check that the number of parameters matches the model
             if length(param)~=nParam
                 error('The number of input parameters does not match the number of model parameters.')
             end
             
-            %If necessary inputs given, compute the model distance distribution
-%             ax = abs(ax);
+            % If necessary inputs given, compute the model distance distribution
             if nargin(handle)==3
                 Output = handle(ax,param,idx);
             else
@@ -78,10 +80,10 @@ model = @myparametricmodel;
                 Output = Output/sum(Output)/mean(diff(ax));
             end
             if ~iscolumn(Output)
-                Output = Output';
+                Output = Output.';
             end
         else
-            %Else, the user has given wrong number of inputs
+            % Else, the user has given wrong number of inputs
             error('Model requires two input arguments.')
         end
         

@@ -1,29 +1,31 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
+% Check that the mixed models can be used for fitting
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-InputParam1 = [3 0.5];
-InputParam2 = [4 0.5];
-mixedModel = mixmodels({@rd_onegaussian,@rd_onegaussian});
-mixedmodelParameters = [0.3 InputParam1 InputParam2];
-MixedP = mixedModel(r,mixedmodelParameters);
+t = linspace(0,3,200);
+r = linspace(2,6,100);
+parIn1 = [3 0.5];
+parIn2 = [4 0.5];
+mixedModel = mixmodels({@dd_onegauss,@dd_onegauss});
+parInMix = [0.3 parIn1 parIn2];
+Pmix = mixedModel(r,parInMix);
 
 K = dipolarkernel(t,r);
-S = K*MixedP;
-param0 = 0.9*mixedmodelParameters;
-[~,Fit] = fitparamodel(S,mixedModel,r,K,param0);
+S = K*Pmix;
+par0 = 0.9*parInMix;
+[~,Pfit] = fitparamodel(S,mixedModel,r,K,par0);
 
-err = any(abs(MixedP - Fit)>1e-5);
-maxerr = max(abs(MixedP - Fit));
-data = [];
+% Pass: the distribution is well fitted with the mixed model
+pass = all(abs(Pmix - Pfit) < 1e-5);
 
+maxerr = max(abs(Pmix - Pfit));
+ 
 if opt.Display
-   figure(1),clf,hold on
-   plot(t,MixedP,'b')
-   plot(t,Fit,'r')
+   plot(r,Pmix,'k',r,Pfit)
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

@@ -22,6 +22,10 @@ end
 validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
 validateattributes(V,{'numeric'},{'nonempty'},mfilename,'V')
 
+%Use column vectors
+t = t(:);
+V = V(:);
+
 %Convert time to distance axis
 r = time2dist(t);
 
@@ -31,8 +35,9 @@ Amp0 = max(V);
 %Time-domain fitting of Gaussian distribution, exponential background,
 %modulation depth and the overall amplitude
 K = dipolarkernel(t,r);
-fitmodel = @(t,param)param(1)*td_exp(t,param(5)).*((1-param(2)) + param(2)*K*rd_onegaussian(r,param(3:4)));
+fitmodel = @(t,param)param(1)*bg_exp(t,param(5)).*((1-param(2)) + param(2)*K*dd_onegauss(r,param(3:4)));
 %Set the initial values for the fitting
+% Amp lam rmean w k
 param0 = [Amp0 0.5 3 0.3 0.2];
 %Run the parametric model fitting
 paramfit = fitparamodel(V,fitmodel,t,param0,...

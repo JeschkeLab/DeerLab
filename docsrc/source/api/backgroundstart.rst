@@ -16,7 +16,7 @@ Syntax
 .. code-block:: matlab
 
     [t0,pos] = backgroundstart(V,t,model)
-    [t0,pos] = backgroundstart(V,t,model,'Property',Value)
+    [t0,pos] = backgroundstart(___,'Property',Value)
 
 Parameters
     *   ``V`` - Signal (*N*-element array)
@@ -38,63 +38,61 @@ Description
 
 Returns the optimal start time ``t0`` and corresponding array index ``pos`` at which to start fitting the background function corresponding to the model given by ``model``. The pre-defined background models defined by the ``model`` argument are the following:
 
-* ``@td_exp`` - See :ref:`td_exp` for details.
+* ``@bg_exp`` - See :ref:`bg_exp` for details.
 
-* ``@td_strexp`` -  See :ref:`td_strexp` for details.
+* ``@bg_strexp`` -  See :ref:`bg_strexp` for details.
 
-* ``@td_prodstrexp`` -  See :ref:`td_prodstrexp` for details.
+* ``@bg_prodstrexp`` -  See :ref:`bg_prodstrexp` for details.
 
-* ``@td_sumstrexp`` -  See :ref:`td_sumstrexp` for details.
+* ``@bg_sumstrexp`` -  See :ref:`bg_sumstrexp` for details.
 
-*  ``@td_poly1``, ``@td_poly2``, ``@td_poly3`` - See :ref:`td_poly1`, :ref:`td_poly2` and :ref:`td_poly3`  for details.
-
-.. image:: ../images/backgroundstart1.svg
+*  ``@bg_poly1``, ``@bg_poly2``, ``@bg_poly3`` - See :ref:`bg_poly1`, :ref:`bg_poly2` and :ref:`bg_poly3`  for details.
 
 -----------------------------
 
 
-Optional Arguments
+Additional Settings
 =========================================
 
-Optional arguments can be specified by parameter/value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed..
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
 
 .. code-block:: matlab
 
-    [t0,pos]  = backgroundstart(args,'Property1',Value1,'Property2',Value2,...)
+    [t0,pos]  = backgroundstart(___,'Property1',Value1,'Property2',Value2,___)
 
 
-- ``'RelSearchStart'`` - Relative Search Start
-    Relative position at which the background start search starts.
+- ``'SearchStart'`` - Relative Search Start
+    Time (in microseconds) at which the background search starts
 
-    *Default:* ``0.1``
-
-    *Example:*
-
-		.. code-block:: matlab
-
-			P = backgroundstart(args,'RelSearchStart',0.25)
-
-- ``'RelSearchEnd'`` - Relative Search End
-    Relative position at which the background start search stops.
-
-    *Default:* ``0.6``
+    *Default:* ``0.1*max(t)``
 
     *Example:*
 
 		.. code-block:: matlab
 
-			P = backgroundstart(args,'RelSearchEnd',0.7)
+			[t0,pos] = backgroundstart(___,'RelSearchStart',1.5)
+
+- ``'SearchEnd'`` - Relative Search End
+    Time (in microseconds) at which the background search ends
+
+    *Default:* ``0.6*max(t)``
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			[t0,pos] = backgroundstart(___,'RelSearchEnd',4)
 
 - ``'EndCutOff'`` - Signal cutoff
-    Maximal number of points to evaluate from the signal. Must be an integer value between ``1`` and ``length(V)``. By default the whole signal is evaluated. 
+    Time (in microseconds) after which the signal is no longer used for fitting By default the whole signal is evaluated. 
 
-    *Default:* ``length(S)``
+    *Default:* ``max(t)``
 
     *Example:*
 
 		.. code-block:: matlab
 
-			P = backgroundstart(args,'EndCutOff',80)
+			[t0,pos] = backgroundstart(___,'EndCutOff',6.5)
 
 - For further property-value pair options see :ref:`fitbackground`.
 

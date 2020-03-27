@@ -33,9 +33,7 @@ validateattributes(Steepness,{'numeric'},{'nonempty','scalar','nonnegative'},mfi
 validateattributes(PassDist,{'numeric'},{'nonempty','scalar','nonnegative'},mfilename,'PassBandDist')
 validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
 validateattributes(S,{'numeric'},{'nonempty'},mfilename,'S')
-if iscolumn(S)
-    S = S';
-end
+S = S(:);
 if ~isreal(S)
     error('Input signal cannot be complex.')
 end
@@ -50,14 +48,16 @@ StopDist = PassDist - 1/2*TransitionBand;
 %Get all frequencies in MHz
 PassBandFreq = 52.04/(PassDist^3);
 StopBandFreq = 52.04/(StopDist^3);
-SamplingFreq = 1/(dt);
+SamplingFreq = 1/dt;
 
 %Convert all frequencies to Hz
 PassBandFreq = PassBandFreq*1e6;
 StopBandFreq = StopBandFreq*1e6;
 SamplingFreq = SamplingFreq*1e6;
 
+
 %Filter the signal using a windowed lowpass FIR filter
-FilteredS = winlowpass(S,StopBandFreq,PassBandFreq,SamplingFreq);
+FilteredS = winlowpass(S,StopBandFreq,PassBandFreq,SamplingFreq,'ForwardBackward',true);
+
 
 end

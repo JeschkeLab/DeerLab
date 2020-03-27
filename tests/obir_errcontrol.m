@@ -1,28 +1,25 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check Tikhonov regularization
-%=======================================
+% Check error control of nosielevel() towards wrong inputs
 
-Dimension = 100;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-P = rd_onegaussian(r,[3,0.3]);
-rng(2)
+rng(1)
+t = linspace(0,3,200);
+r = linspace(2,6,100);
+P = dd_onegauss(r,[3,0.3]);
 K = dipolarkernel(t,r);
 S = dipolarsignal(t,r,P,'noiselevel',0.05,'phase',pi/2);
 
 alpha = 0.5;
 
+% Pass 1: passing a signal with complex values
 try
-    Pfit = obir(S,K,r,'tikh',alpha);
-    err = true;
+    obir(S,K,r,'tikh',alpha);
+    pass = false;
 catch
-   err = false;
+    pass = true;
 end
 
-maxerr = 0;
-data = [];
+maxerr = NaN;
+ 
 
 end

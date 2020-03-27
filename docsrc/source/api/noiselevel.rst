@@ -48,9 +48,4 @@ If parameter ``M`` is specified, the noise level estimation is done from the las
 
 -----------------------------
 
-Example
-============
-
-.. image:: ../images/noiselevel1.svg
-
 .. hint:: This function returns the estimation of the noise standard deviation (called noise level in DeerLab). This definition of noise level is used throughout DeerLab.

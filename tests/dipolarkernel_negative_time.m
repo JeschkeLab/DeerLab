@@ -1,35 +1,27 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Check kernel is constructed properly
-%======================================================
+% Check that kernel is constructed properly for negative times using fresnel method
 
-Ntime = 302;
-Ndist = 200;
+tneg = linspace(-5,0,50);
+tpos = linspace(0,5,50);
+r = 3;
+Kneg = dipolarkernel(tneg,r);
+Kpos = dipolarkernel(tpos,r);
 
-dt = 0.008;
-t = linspace(-dt*Ntime/2,dt*Ntime/2,Ntime);
-[~,rmin,rmax] = time2dist(t);
-DistAxis = linspace(rmin,rmax,Ndist);
-kernel = dipolarkernel(t,DistAxis);
-kernel = kernel/mean(diff(DistAxis));
-trace = kernel(:,1);
+delta = abs(Kneg - flipud(Kpos));
 
-negtrace = trace(1:Ntime/2)';
-postrace = trace(Ntime/2+1:end)';
+% Pass: the negative and positive kernel parts are identical
+pass = all(delta(:) < 1e-12);
 
-err(1) = any(any(abs(fliplr(negtrace) - postrace)>1e-12));
-err = any(err);
-maxerr = max(abs(fliplr(negtrace) - postrace));
-data = [];
+maxerr = max(delta(:));
 
+%Plot if requested
 if opt.Display
-    figure(8),clf
-    subplot(121)
-    imagesc(kernel)
-    subplot(122)
-    hold on
-    plot(t(Ntime/2+1:end),fliplr(negtrace))
-    plot(t(Ntime/2+1:end),postrace)
+    plot(tneg,Kneg,tpos,Kpos);
+    legend('negative','positive');
+    xlabel('t [\mus]')
+    ylabel('V(t)')
+    grid on, axis tight, box on
 end
+
 end

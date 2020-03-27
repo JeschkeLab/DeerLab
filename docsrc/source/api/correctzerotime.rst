@@ -55,9 +55,3 @@ Corrects the time axis ``t`` for a given zero-time ``t0`` in ns/us.
 
 
 -----------------------------
-
-Example
-=====================================
-
-.. image:: ../images/correctzerotime1.svg
-    :align: center

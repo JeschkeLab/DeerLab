@@ -1,32 +1,26 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check Tikhonov regularization
-%=======================================
+% Test unconstrained Tikhonov regularization
 
-Dimension = 100;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-P = rd_onegaussian(r,[3,0.5]);
-
+t = linspace(0,2,200);
+r = linspace(2,5,100);
+P = dd_onegauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
+alpha = 1;
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 1;
-Result = fitregmodel(DipEvoFcn,K,r,'tikhonov',RegParam,'NonNegConstrained',false);
+Pfit = fitregmodel(S,K,r,'tikhonov',alpha,'NonNegConstrained',false);
 
-err(1) = any(abs(Result - P)>4e-1);
-maxerr = max(abs(Result - P));
-err = any(err);
-data = [];
+pass = all(abs(Pfit - P) < 4e-1);
+
+maxerr = max(abs(Pfit - P));
 
 if opt.Display
- 	figure(8),clf
-    hold on
-    plot(r,P,'k') 
-    plot(r,Result,'r')
+   plot(r,P,'k',r,Pfit)
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

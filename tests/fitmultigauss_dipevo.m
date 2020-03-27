@@ -1,34 +1,26 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
+% Test the fit quality of fitmultigauss() with a dipolar evolution function
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
+t = linspace(0,2,100);
 r = time2dist(t);
-InputParam = [4 0.2 4 1 3 0.4 0.4 0.4];
-P = rd_threegaussian(r,InputParam);
-
-
+paramtrue = [4 0.2 4 1 3 0.4 0.4 0.4];
+P = dd_threegauss(r,paramtrue);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
+Pfit = fitmultigauss(S,K,r,5,'aicc','TolFun',1e-15);
 
-[FitP,FitParam] = fitmultigauss(DipEvoFcn,K,r,5,'aicc','TolFun',1e-15);
-err = any(abs(FitP - P)>7e-2);
+% Pass: distribution is well fitted
+pass = all(abs(Pfit - P) < 7e-2);
 
-
-maxerr = max(abs(FitP - P));
-data = [];
-
+maxerr = max(abs(Pfit - P));
+ 
 if opt.Display
-   figure(1),clf
-   subplot(121)
-   hold on
-   plot(t,DipEvoFcn,'b')
-   plot(t,K*FitP,'r')
-   subplot(122)
-   hold on
-   plot(r,P,'b')
-   plot(r,FitP,'r')
+   plot(r,P,'k',r,Pfit,'r')
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

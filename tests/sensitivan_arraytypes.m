@@ -1,4 +1,6 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+% Check that sensitivan works with different array types
 
 n = 20;
 x = linspace(0,1,n);
@@ -8,14 +10,16 @@ param.b = linspace(0.02,0.1,2);
 
 stats  = sensitivan(@(param)myfcn(param,x),param);
 
-err(1) = any(size(stats(1).mean)>1);
-err(2) = any(size(stats(2).mean)~=[n 1]);
-err(3) = any(size(stats(3).mean)~=[n n]);
+% Pass 1: first variable is a scalar
+pass(1) = any(size(stats(1).mean) == 1);
+% Pass 1: second variable is a vector
+pass(2) = any(size(stats(2).mean) == [n 1]);
+% Pass 3: third variable is a matrix
+pass(3) = any(size(stats(3).mean) == [n n]);
 
-
-err = any(err);
-data = [];
-maxerr = 0;
+pass = all(pass);
+ 
+maxerr = NaN;
 
 end
 

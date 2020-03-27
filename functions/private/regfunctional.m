@@ -65,7 +65,7 @@ function [Functional,Gradient] = TikhonovFunctional(Signal,Distribution,L,Kernel
 
 Residual = 0;
 ResidualGradient = 0;
-for i=1:length(Signal)
+for i = 1:length(Signal)
     Residual = Residual + weights(i)*1/2*norm(Kernel{i}*Distribution - Signal{i})^2;
     ResidualGradient =  ResidualGradient + weights(i)*Kernel{i}.'*(Kernel{i}*Distribution - Signal{i});
 end
