@@ -29,9 +29,6 @@ x0 = x0(:).';
 lb = lb(:).';
 ub = ub(:).';
 
-%Fix the random number generator
-rng(0)
-
 %Generate n-1 new starting points within the bounds
 x0 = [x0; (ub-lb).*rand(n-1,numel(x0)) + lb];
 
