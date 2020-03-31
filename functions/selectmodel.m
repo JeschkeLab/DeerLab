@@ -24,14 +24,14 @@
 %   for each of the evaluated models as well as their confidence intervals (paramcis).
 %
 %   opt = SELECTMODEL(...,'Property',Value)
-%   Additional (optional) arguments can be passed as property-value pairs.
+%   Additional (optional) arguments can be passed as name-value pairs.
 %
 %   'Lower' - Cell array containing the lower bound values for the parameters 
 %             of the evaluated parametric models.
 %   'Upper' - Cell array containing the upper bound values for the parameters 
 %             of the evaluated parametric models.
 %
-%   See "help fitparamodel" for a detailed list of other property-value pairs
+%   See "help fitparamodel" for a detailed list of other name-value pairs
 %   accepted by the function.
 %
 
@@ -39,7 +39,7 @@
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function [optima,functionals,fitparams,paramcis] = selectmodel(Models,V,ax,K,Methods,param0,varargin)
+function [optima,functionals,fitparams,paramcis] = selectmodel(models,V,ax,K,methods,param0,varargin)
 
 if nargin<4
    error('At least four input arguments required.') 
@@ -47,50 +47,51 @@ end
 
 isTimeDomain = false;
 
-%Input: selectmodel(Models,S,r,K,Methods)
 if ~ischar(K) && nargin<6
-    param0(1:length(Models)) = {[]};
-%Input: selectmodel(Models,S,t,Methods)
+    % selectmodel(Models,S,r,K,Methods)
+    param0(1:length(models)) = {[]};
 elseif ischar(K) && nargin<5
-    param0(1:length(Models)) = {[]};
-    Methods = K;
+    % selectmodel(Models,S,t,Methods)
+    param0(1:length(models)) = {[]};
+    methods = K;
     K = [];
     isTimeDomain = true;
-%Input: selectmodel(Models,S,t,Methods,'options',arg)
-elseif ischar(K) && ischar(Methods)   
-    varargin = [{Methods} {param0} varargin];
+elseif ischar(K) && ischar(methods)   
+    % selectmodel(Models,S,t,Methods,'options',arg)
+    varargin = [{methods} {param0} varargin];
     param0 = {};
-    param0(1:length(Models)) = {[]};
-    Methods = K;
+    param0(1:length(models)) = {[]};
+    methods = K;
     K = [];
     isTimeDomain = true;
-%Input: selectmodel(Models,S,t,Methods,param0,'options',arg)
-elseif ischar(K) && ~ischar(Methods)   
+elseif ischar(K) && ~ischar(methods)   
+    % selectmodel(Models,S,t,Methods,param0,'options',arg)
     varargin = [{param0} varargin];
-    param0 = Methods;
-    Methods = K;
+    param0 = methods;
+    methods = K;
     K = [];
     isTimeDomain = true;
-%Input: selectmodel(Models,S,r,K,Methods,'options',arg)
 elseif ischar(param0)
+    % selectmodel(Models,S,r,K,Methods,'options',arg)
     varargin = [{param0} varargin];
     param0 = {};
-    param0(1:length(Models)) = {[]};
+    param0(1:length(models)) = {[]};
 else
     if ~iscell(param0)
         error('Sixth input argument must be a cell array of inital parameter values.')
     end
 end
+
 % Input validation
 %-------------------------------------------------------------------------------
-if ~iscell(Models)
+if ~iscell(models)
     error('First input must be a cell array of model functions.');
 end
-if ~iscell(Methods)
-    Methods = {Methods};
+if ~iscell(methods)
+    methods = {methods};
 end
 
-%Remove the Lower and Upper options from varargin so they are not passed to fitparamodel
+% Remove the Lower and Upper options from varargin so they are not passed to fitparamodel
 varargin2 = [];
 Idx = find(cellfun(@(x)(ischar(x) && contains(lower(x),'upper')),varargin));
 varargin2 = [varargin2 varargin(Idx:Idx+1)];
@@ -104,8 +105,9 @@ if ~isempty(varargin)
     end
 end
 
+
+% Parse the optional parameters in the varargin
 warning('off','DeerLab:parseoptional')
-%Parse the optional parameters in the varargin
 [Upper,Lower] = parseoptional({'Upper','Lower'},varargin2);
 warning('on','DeerLab:parseoptional')
 
@@ -115,53 +117,55 @@ end
 if ~isempty(Lower) && ~iscell(Lower)
     error('Lower property must be a cell array of lower bound vectors.')
 end
-if length(Upper) > length(Models) || length(Lower) > length(Models)
+if length(Upper) > length(models) || length(Lower) > length(models)
     error('Lower/Upper bound cell array cannot exceed the number of models.')
 end
-%Set the bounds for the models
-UpperBounds = cell(1,length(Models));
-LowerBounds = cell(1,length(Models));
+
+% Set the bounds for the models
+UpperBounds = cell(1,length(models));
+LowerBounds = cell(1,length(models));
 UpperBounds(1:length(Upper)) = Upper;
 LowerBounds(1:length(Lower)) = Lower;
 
 
 allowedMethodInputs = {'aic','aicc','bic','rmsd'};
-for i = 1:length(Methods)
-    if strcmp(Methods{i},'all')
-        Methods = allowedMethodInputs;
+for i = 1:length(methods)
+    if strcmp(methods{i},'all')
+        methods = allowedMethodInputs;
         break;
     end
-    validateattributes(Methods{i},{'char'},{'nonempty'})
-    Methods{i} = validatestring(Methods{i},allowedMethodInputs);
+    validateattributes(methods{i},{'char'},{'nonempty'})
+    methods{i} = validatestring(methods{i},allowedMethodInputs);
 end
 
 % Run all parametric model fits and evaluate selection metrics
 %-------------------------------------------------------------------------------
-nMethods = length(Methods);
+nMethods = length(methods);
+nModels = length(models);
 N = numel(V);
-AICc = zeros(length(Models),1);
-BIC = zeros(length(Models),1);
-AIC = zeros(length(Models),1);
-RMSD = zeros(length(Models),1);
+AICc = zeros(nModels,1);
+BIC = zeros(nModels,1);
+AIC = zeros(nModels,1);
+RMSD = zeros(nModels,1);
 fitparams = cell(nMethods,1);
 paramcis = cell(nMethods,1);
-for i = 1:length(Models)
+for i = 1:nModels
     
     if isTimeDomain
-        [parfit,fit,parci] = fitparamodel(V,Models{i},ax,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
+        [parfit,fit,parci] = fitparamodel(V,models{i},ax,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
     else
-        [parfit,fit,parci] = fitparamodel(V,Models{i},ax,K,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
+        [parfit,fit,parci] = fitparamodel(V,models{i},ax,K,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
     end
     fitparams{i} = parfit;
     paramcis{i} = parci;
     
     nParams = numel(parfit);
-    Q = nParams + 1;
     if isTimeDomain
         SSR = sum((V(:)-fit(:)).^2);
     else
         SSR = sum((V(:)-K*fit(:)).^2);
     end
+    Q = nParams + 1;
     AIC(i) =  N*log(SSR/N) + 2*Q;
     AICc(i) = N*log(SSR/N) + 2*Q + 2*Q*(Q+1)/(N-Q-1);
     BIC(i) =  N*log(SSR/N) + Q*log(N);
@@ -173,7 +177,7 @@ end
 optima = zeros(nMethods,1);
 functionals = cell(nMethods,1);
 for i = 1:nMethods
-    switch Methods{i}
+    switch methods{i}
         case 'aic'
             functional = AIC;         
         case 'aicc'
@@ -188,6 +192,6 @@ for i = 1:nMethods
     optima(i) = optimum;
 end
 
-if length(functionals)==1
+if nMethods==1
     functionals = functionals{1};
 end
