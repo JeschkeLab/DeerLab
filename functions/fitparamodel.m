@@ -1,30 +1,30 @@
 %
 % FITPARAMODEL Fits a time- or distance-domain parametric model to one (or several) signals
 %
-%   [param,fit,paramci,fitci] = FITPARAMODEL(V,@model,t)
-%   [param,fit,paramci,fitci] = FITPARAMODEL(V,@model,r,K)
-%   Fitting of the N-point signal (V) to a M-point parametric model
-%   (@model) given a M-point distance/time axis (r/t). For distance-domain fitting
-%   the NxM point kernel (K). The fitted model corresponds to a parametric model
+%   [param,Vfit,paramci,fitci] = FITPARAMODEL(V,@model,t)
+%   [param,Vfit,paramci,fitci] = FITPARAMODEL(V,@model,r,K)
+%   Fits the N-point signal (V) to a M-point parametric model (@model) given an
+%   M-point distance/time axis (r/t). For distance-domain fitting, provide
+%   the NxM point kernel matrix (K). The fitted model corresponds to a parametric model
 %   calculated by the passed function handle (@model). The fitted parameters (param)
 %   are returned as the first output argument, their 99% confidence intervals (paramci) are
-%   returned as the third output, the fitted model as the second output and the corresponding
-%   99% confidence bands (fitci) as the fourth output.
+%   returned as the third output, the fitted model as the second output, and the
+%   corresponding 99% confidence bands (fitci) as the fourth output.
 %
-%   [param,fit,paramci,fitci] = FITPARAMODEL(V,@model,t,param0)
-%   [param,fit,paramci,fitci] = FITPARAMODEL(V,@model,r,K,param0)
+%   [param,Vfit,paramci,fitci] = FITPARAMODEL(V,@model,t,param0)
+%   [param,Vfit,paramci,fitci] = FITPARAMODEL(V,@model,r,K,param0)
 %   The initial guess of the model parameters can be passed as a last
-%   argument (param0). If (@model) is a user-defined function handle, it is
-%   required to pass (param0) as an arugment.
+%   argument (param0). This is optional for DeerLab model functions. If (@model)
+%   is a user-defined function handle, (param0) is required.
 %
-%   [param,fit,paramci,fitci] = FITPARAMODEL({V1,V2,___},@model,{t1,t2,___},param0)
-%   [param,fit,paramci,fitci] = FITPARAMODEL({V1,V2,___},@model,r,{K1,K2,___},param0)
-%   Passing multiple signals/kernels enables global fitting of the
-%   to a single parametric model distance distribution. The global fit weights
-%   are automatically computed according to their contribution to ill-posedness.
+%   [param,Vfit,paramci,fitci] = FITPARAMODEL({V1,V2,___},@model,{t1,t2,___},param0)
+%   [param,Vfit,paramci,fitci] = FITPARAMODEL({V1,V2,___},@model,r,{K1,K2,___},param0)
+%   Pass multiple signals/kernels to enable global fitting of a single parametric
+%   model to all data. The global fit weights are automatically computed according
+%   to their contribution to ill-posedness.
 %
-%   [param,fit,paramci,fitci] = FITPARAMODEL(___,'Property',Values)
-%   Additional (optional) arguments can be passed as property-value pairs.
+%   [param,Vfit,paramci,fitci] = FITPARAMODEL(___,'Property',Values)
+%   Additional (optional) arguments can be passed as name-value pairs.
 %
 % The properties to be passed as options can be set in any order.
 %
@@ -34,37 +34,25 @@
 %             'nlsqbnd' - Non-linear constrained least-squares (free)
 %       'fminsearchbnd' - Non-linear constrained minimization (free)
 %          'fminsearch' - Unconstrained minimization
-%
 %   'CostModel' - Type of fitting cost functional to use.
 %                      'lsq' - Least-squares fitting
 %                      'chisquared' - Chi-squared fitting (as in GLADD or DD)
-%
 %   'GlobalWeights' - Array of weighting coefficients for the individual signals in
 %                     global fitting.
-%
 %   'Algorithm' - Algorithm to be used by the solvers (see fmincon or
 %                 lsqnonlin documentation)
-%
 %   'Lower' - Lower bound on the model parameters
-%
 %   'Upper' - Upper bound on the model parameters
-%
 %   'TolFun' - Optimizer function tolerance
-%
 %   'MaxIter' - Maximum number of optimizer iterations
-%
 %   'MaxFunEvals' - Maximum number of optimizer function evaluations
-%
 %   'MultiStart' - Number of starting points for global optimization
-%
 %   'ConfidenceLevel' - Level for confidence intervals
-%
 %   'Verbose' - Display options for the solvers:
 %                 'off' - no information displayed
 %                 'final' - display solver exit message
 %                 'iter-detailed' - display state of solver at each iteration
 %               See MATLAB doc optimoptions for detailed explanation
-%
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
@@ -72,40 +60,36 @@
 
 function [parfit,modelfit,parci,modelci] = fitparamodel(V,model,ax,K,StartParameters,varargin)
 
-%--------------------------------------------------------------------------
-% Input Parsening & Validation
-%--------------------------------------------------------------------------
-
-if ~license('test','optimization_toolbox')
-    OptimizationToolboxInstalled = false;
-else
-    OptimizationToolboxInstalled = true;
+% Input parsing & validation
+%-------------------------------------------------------------------------------
+if nargin<3
+  error('At least three inputs (V, model, t) are required.');
 end
 
-% Parse the different styles of input
 
-% Input #1 fitparamodel(V,model,t)
+% Parse the different styles of input
 if nargin<4 || isempty(K)
-    Knotpassed = true;
-    % Input #2 fitparamodel(V,model,t,'Property',Value)
+    % fitparamodel(V,model,t)
+    Kpassed = false;
 elseif nargin>3 && ischar(K) && ~iscell(K)
+    % fitparamodel(V,model,t,'Property',Value)
     if nargin>4
         varargin = [{K} {StartParameters} varargin];
     end
     StartParameters = [];
-    Knotpassed = true;
-    % Input #3 fitparamodel(V,model,t,StartParameters,'Property',Value)
+    Kpassed = false;
 elseif nargin>3 &&  ~all(size(K)>1) && ~iscell(K)
+    % fitparamodel(V,model,t,StartParameters,'Property',Value)
     if nargin>4
         varargin = [{StartParameters} varargin];
     end
     StartParameters = K;
-    Knotpassed = true;
-    % Input #4 fitparamodel(V,model,r,K,StartParameters,'Property',Value)
+    Kpassed = false;
 else
-    Knotpassed = false;
+    % fitparamodel(V,model,r,K,StartParameters,'Property',Value)
+    Kpassed = true;
 end
-if Knotpassed
+if ~Kpassed
     % Check if global fitting is in use
     if iscell(V)
         K = cell(size(V));
@@ -136,7 +120,7 @@ end
 
 % Get information about the parametric model
 try
-    % Check whether model is a DeerLab model function...
+    % Check whether model is a DeerLab model function
     Info = model();
     if nargin(model)==2
         model = @(ax,param,idx) model(ax,param);
@@ -145,11 +129,11 @@ try
     end
     
 catch
-    % ... if not, then user is required to pass the inital values
+    % If not, require user to pass the inital values
     if ~exist('StartParameters','var') || isempty(StartParameters) || ischar(StartParameters)
         error('For this model, please provide the required inital guess parameters.')
     end
-    % If passed, then transform the function handle to DeerLab model function
+    % Wrap the function handle into a DeerLab model function
     model = paramodel(model,StartParameters,[],[],isDistanceDomain);
     Info = model();
 end
@@ -157,7 +141,7 @@ end
 if nargin<5 || isempty(StartParameters)
     % If user does not give parameters, use the defaults of the model
     StartParameters =  [Info.parameters(:).default];
-elseif nargin > 4 && ischar(StartParameters)
+elseif nargin>4 && ischar(StartParameters)
     varargin = [{StartParameters} varargin];
     StartParameters = [Info.parameters(:).default];
 else
@@ -165,7 +149,7 @@ else
 end
 
 % Parse the optional parameters in the varargin
-[Solver,Algorithm,MaxIter,Verbose,MaxFunEvals,TolFun,CostModel,GlobalWeights,UpperBounds,LowerBounds,MultiStart,ConfidenceLevel,returnCovariance] = parseoptional(...
+[Solver,Algorithm,maxIter,Verbose,maxFunEvals,TolFun,CostModel,GlobalWeights,upperBounds,lowerBounds,MultiStart,ConfidenceLevel,returnCovariance] = parseoptional(...
     {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower','MultiStart','ConfidenceLevel','internal::returncovariancematrix'},varargin);
 
 % Validate optional inputs
@@ -190,15 +174,15 @@ if isempty(TolFun)
 else
     validateattributes(TolFun,{'numeric'},{'scalar','nonnegative'},mfilename,'TolFun')
 end
-if isempty(MaxFunEvals)
-    MaxFunEvals = 5000;
+if isempty(maxFunEvals)
+    maxFunEvals = 5000;
 else
-    validateattributes(MaxFunEvals,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxFunEvals')
+    validateattributes(maxFunEvals,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxFunEvals')
 end
-if isempty(MaxIter)
-    MaxIter = 3000;
+if isempty(maxIter)
+    maxIter = 3000;
 else
-    validateattributes(MaxIter,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxIter')
+    validateattributes(maxIter,{'numeric'},{'scalar','nonnegative'},mfilename,'MaxIter')
 end
 if isempty(Verbose)
     Verbose = 'off';
@@ -210,13 +194,15 @@ if isempty(ConfidenceLevel)
 else
     validateattributes(ConfidenceLevel,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'ConfidenceLevel')
     if ConfidenceLevel>1 || ConfidenceLevel<0
-        error('The confidence level option must be a value between 0 and 1')
+        error('The confidence level option must be a value between 0 and 1.')
     end
 end
 
-if isempty(Solver) && ~license('test','optimization_toolbox')
+% Solver
+OptimizationToolboxInstalled = license('test','optimization_toolbox');
+if isempty(Solver) && ~OptimizationToolboxInstalled
     Solver = 'fminsearchcon';
-elseif isempty(Solver) && license('test','optimization_toolbox')
+elseif isempty(Solver) && OptimizationToolboxInstalled
     Solver = 'lsqnonlin';
 else
     validateattributes(Solver,{'char'},{'nonempty'},mfilename,'Solver')
@@ -250,13 +236,13 @@ end
 if ~iscell(K)
     K = {K};
 end
-if length(K)~=length(V)
+if numel(K)~=numel(V)
     error('The number of kernels and signals must be equal.')
 end
 if ~isempty(GlobalWeights)
     validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
-    if length(GlobalWeights) ~= length(V)
-        error('The same number of global fit weights as signals must be passed.')
+    if length(GlobalWeights)~=length(V)
+        error('The number of global fit weights and signals must be equal.')
     end
     % Normalize weights
     GlobalWeights = GlobalWeights/sum(GlobalWeights);
@@ -270,7 +256,7 @@ for i = 1:length(V)
         V{i} = real(V{i});
     end
     if length(V{i})~=size(K{i},1)
-        error('K and V arguments must fulfill size(K,1)==length(S).')
+        error('The number of rows in K must match the number of elements in V.')
     end
     if ~isreal(V{i})
         error('Input signal cannot be complex.')
@@ -302,9 +288,8 @@ end
 % Execution
 %--------------------------------------------------------------------------
 
-%Parse errors in the model function, and reformat them
+% Parse errors in the model function, and reformat them
 % model = @(ax,Parameters,idx)errorhandler(model,'modelfcn',ax,Parameters,idx);
-
 
 % Define the cost functional of a single signal
 switch CostModel
@@ -324,40 +309,41 @@ end
 Weights = Weights(:).';
 
 Labels = num2cell(1:numel(V));
-auxcat = @(x) cat(1,x{:});
+catvec = @(x) cat(1,x{:});
 
 % Create a new handle which evaluates the model cost function for every signal
 if length(ax)>1
     CostFcn = @(Parameters) (sum(Weights.*cellfun(@(K,V,t,idx)ModelCost(Parameters,K,V,t,idx),K,V,ax,Labels)));
-    VecCostFcn = @(Parameters) auxcat(cellfun(@(K,V,t,idx) Weights(idx)*(sqrt(0.5)*(K*model(t,Parameters,idx) - V)),K,V,ax,Labels,'UniformOutput',false));
+    VecCostFcn = @(Parameters) catvec(cellfun(@(K,V,t,idx) Weights(idx)*(sqrt(0.5)*(K*model(t,Parameters,idx) - V)),K,V,ax,Labels,'UniformOutput',false));
 else
     CostFcn = @(Parameters) (sum(Weights.*cellfun(@(K,V,idx)ModelCost(Parameters,K,V,ax{1},idx),K,V,Labels)));
-    VecCostFcn = @(Parameters) auxcat(cellfun(@(K,V,idx) Weights(idx)*(sqrt(0.5)*(K*model(ax{1},Parameters,idx) - V)),K,V,Labels,'UniformOutput',false));
+    VecCostFcn = @(Parameters) catvec(cellfun(@(K,V,idx) Weights(idx)*(sqrt(0.5)*(K*model(ax{1},Parameters,idx) - V)),K,V,Labels,'UniformOutput',false));
 end
 
 % Prepare upper/lower bounds on parameter search
 Ranges =  [Info.parameters(:).range];
-if isempty(LowerBounds)
-    LowerBounds = Ranges(1:2:end-1);
+if isempty(lowerBounds)
+    lowerBounds = Ranges(1:2:end-1);
 end
-if isempty(UpperBounds)
-    UpperBounds = Ranges(2:2:end);
+if isempty(upperBounds)
+    upperBounds = Ranges(2:2:end);
 end
-if any(UpperBounds==realmax) || any(LowerBounds == -realmax)
-    warning('Some model parameters are unbounded. Use ''Lower'' and ''Upper'' options to pass parameter boundaries')
+if any(upperBounds==realmax) || any(lowerBounds==-realmax)
+    warning('Some model parameters are unbounded. Use ''Lower'' and ''Upper'' options to pass parameter boundaries.')
 end
-if any(length(StartParameters)~=length(UpperBounds) & length(StartParameters)~=length(LowerBounds))
-    error('The Inital guess and upper/lower boundaries must have equal length); ')
+if  length(StartParameters)~=length(upperBounds) || ...
+    length(StartParameters)~=length(lowerBounds)
+    error('The Inital guess and upper/lower boundaries must have equal length.')
 end
-if any(UpperBounds<LowerBounds)
+if any(upperBounds<lowerBounds)
     error('Lower bound values cannot be larger than upper bound values.')
 end
 
 % Disable ill-conditioned matrix warnings
 warning('off','MATLAB:nearlySingularMatrix')
 
-%Preprare multiple start global optimization if requested
-MultiStartParameters = multistarts(MultiStart,StartParameters,LowerBounds,UpperBounds);
+% Preprare multiple start global optimization if requested
+MultiStartParameters = multistarts(MultiStart,StartParameters,lowerBounds,upperBounds);
 fvals = zeros(1,MultiStart);
 fits = cell(1,MultiStart);
 jacobian = [];
@@ -371,61 +357,61 @@ for runIdx = 1:MultiStart
         case 'fminsearchcon'
             % ...under constraints for the parameter values range
             solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+                'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
                 'TolFun',TolFun,'TolCon',1e-20,...
                 'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [parfit,fval,exitflag] = fminsearchcon(CostFcn,StartParameters,LowerBounds,UpperBounds,[],[],[],solverOpts);
+            [parfit,fval,exitflag] = fminsearchcon(CostFcn,StartParameters,lowerBounds,upperBounds,[],[],[],solverOpts);
             % Check how optimization exited...
             if exitflag == 0
                 % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
                 solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
-                    'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,...
+                    'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,...
                     'TolFun',TolFun,'TolCon',1e-10,...
                     'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-                [parfit,fval] = fminsearchcon(CostFcn,parfit,LowerBounds,UpperBounds,[],[],[],solverOpts);
+                [parfit,fval] = fminsearchcon(CostFcn,parfit,lowerBounds,upperBounds,[],[],[],solverOpts);
             end
             
         case 'fmincon'
             % ...under constraints for the parameter values range
             solverOpts = optimoptions(@fmincon,'Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+                'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
                 'TolFun',TolFun,'TolCon',1e-20,'StepTolerance',1e-20,...
                 'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [parfit,fval,exitflag]  = fmincon(CostFcn,StartParameters,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
+            [parfit,fval,exitflag]  = fmincon(CostFcn,StartParameters,[],[],[],[],lowerBounds,upperBounds,[],solverOpts);
             % Check how optimization exited...
             if exitflag == 0
                 % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-                solverOpts = optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,'Display',Verbose);
-                [parfit,fval]  = fmincon(CostFcn,parfit,[],[],[],[],LowerBounds,UpperBounds,[],solverOpts);
+                solverOpts = optimoptions(solverOpts,'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,'Display',Verbose);
+                [parfit,fval]  = fmincon(CostFcn,parfit,[],[],[],[],lowerBounds,upperBounds,[],solverOpts);
             end
             
         case 'lsqnonlin'
             solverOpts = optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+                'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
                 'TolFun',TolFun,'DiffMinChange',0,'DiffMaxChange',Inf);
-            [parfit,fval,~,exitflag,~,~,jacobian]  = lsqnonlin(VecCostFcn,StartParameters,LowerBounds,UpperBounds,solverOpts);
+            [parfit,fval,~,exitflag,~,~,jacobian]  = lsqnonlin(VecCostFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
             
             if exitflag == 0
                 % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-                solverOpts = optimoptions(solverOpts,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,'Display',Verbose);
-                [parfit,fval,~,~,~,~,jacobian]  = lsqnonlin(VecCostFcn,parfit,LowerBounds,UpperBounds,solverOpts);
+                solverOpts = optimoptions(solverOpts,'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,'Display',Verbose);
+                [parfit,fval,~,~,~,~,jacobian]  = lsqnonlin(VecCostFcn,parfit,lowerBounds,upperBounds,solverOpts);
             end
             
         case 'nlsqbnd'
             solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+                'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
                 'TolFun',TolFun,'TolCon',1e-20,...
                 'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [parfit,fval,~,exitflag] = nlsqbnd(VecCostFcn,StartParameters,LowerBounds,UpperBounds,solverOpts);
+            [parfit,fval,~,exitflag] = nlsqbnd(VecCostFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
             % nlsqbnd returns a column, transpose to adapt to row-style of MATLAB solvers
             parfit = parfit.';
             if exitflag == 0
                 % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
                 solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
-                    'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals,...
+                    'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,...
                     'TolFun',TolFun,'TolCon',1e-20,...
                     'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-                [parfit,fval] = nlsqbnd(VecCostFcn,parfit,LowerBounds,UpperBounds,solverOpts);
+                [parfit,fval] = nlsqbnd(VecCostFcn,parfit,lowerBounds,upperBounds,solverOpts);
             end
             
         case 'fminsearch'
@@ -434,7 +420,7 @@ for runIdx = 1:MultiStart
                 Verbose = 'iter';
             end
             solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',MaxIter,'MaxFunEvals',MaxFunEvals,...
+                'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
                 'TolFun',TolFun,'TolCon',1e-10,...
                 'DiffMinChange',1e-8,'DiffMaxChange',0.1);
             [parfit,fval]  = fminsearch(CostFcn,StartParameters,solverOpts);
@@ -445,7 +431,7 @@ for runIdx = 1:MultiStart
     
 end
 
-%Find global minimum from multiple runs
+% Find global minimum from multiple runs
 [~,globmin] = min(fvals);
 parfit = fits{globmin};
 

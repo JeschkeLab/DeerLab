@@ -9,6 +9,7 @@
 %   w = GLOBALWEIGHTS({S1,S2,S3,...},[n1,n2,n3,...])
 %   The noise levels (n1,b2,n3,...,nN) for each signal can be passed as 
 %   an N-element array.
+%
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.

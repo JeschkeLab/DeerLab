@@ -1,20 +1,20 @@
 %
 % SELECTMODEL Optimal parametric model selection
 %
-%   opt = SELECTMODEL({@model1,...,@modelN},S,r,K,{'aic',...})
+%   opt = SELECTMODEL({@model1,...,@modelN},V,r,K,{'aic',...})
 %   Evaluates the fits of the parametric models (model1,...,modelN) to a
-%   signal (S) according to the dipolar kernel (K) and distance axis (r).
+%   signal (V) according to the dipolar kernel (K) and distance axis (r).
 %   The models must be passed as a cell array of function handles. Each fit
 %   is then evaluated according to the model selection criterions
 %   ('aic','aicc','bic','rmsd') specified in the last input argument M-point
 %   cell array. Function returns a M-point array containing the optimal models
 %   according to each selection method.
 %
-%   opt = SELECTMODEL({@model1,...,@modelN},S,t,{'aic',...})
+%   opt = SELECTMODEL({@model1,...,@modelN},V,t,{'aic',...})
 %   Evaluates the fits of the time-domain parametric models by specifying
 %   the time axis (t).
 %
-%   opt = SELECTMODEL({@model1,...,@modelN},S,r,K,{'aic',...},{par1,...,parN})
+%   opt = SELECTMODEL({@model1,...,@modelN},V,r,K,{'aic',...},{par1,...,parN})
 %   The initial guess values for the parameters of each model can be passed
 %   as a cell array {par1,...parN} of value vectors.
 %
@@ -28,7 +28,6 @@
 %
 %   'Lower' - Cell array containing the lower bound values for the parameters 
 %             of the evaluated parametric models.
-%
 %   'Upper' - Cell array containing the upper bound values for the parameters 
 %             of the evaluated parametric models.
 %
@@ -40,7 +39,7 @@
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
 
-function [optima,functionals,fitparams,paramcis] = selectmodel(Models,S,ax,K,Methods,param0,varargin)
+function [optima,functionals,fitparams,paramcis] = selectmodel(Models,V,ax,K,Methods,param0,varargin)
 
 if nargin<4
    error('At least four input arguments required.') 
@@ -139,7 +138,7 @@ end
 % Run all parametric model fits and evaluate selection metrics
 %-------------------------------------------------------------------------------
 nMethods = length(Methods);
-N = numel(S);
+N = numel(V);
 AICc = zeros(length(Models),1);
 BIC = zeros(length(Models),1);
 AIC = zeros(length(Models),1);
@@ -149,9 +148,9 @@ paramcis = cell(nMethods,1);
 for i = 1:length(Models)
     
     if isTimeDomain
-        [parfit,fit,parci] = fitparamodel(S,Models{i},ax,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
+        [parfit,fit,parci] = fitparamodel(V,Models{i},ax,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
     else
-        [parfit,fit,parci] = fitparamodel(S,Models{i},ax,K,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
+        [parfit,fit,parci] = fitparamodel(V,Models{i},ax,K,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
     end
     fitparams{i} = parfit;
     paramcis{i} = parci;
@@ -159,9 +158,9 @@ for i = 1:length(Models)
     nParams = numel(parfit);
     Q = nParams + 1;
     if isTimeDomain
-        SSR = sum((S(:)-fit(:)).^2);
+        SSR = sum((V(:)-fit(:)).^2);
     else
-        SSR = sum((S(:)-K*fit(:)).^2);
+        SSR = sum((V(:)-K*fit(:)).^2);
     end
     AIC(i) =  N*log(SSR/N) + 2*Q;
     AICc(i) = N*log(SSR/N) + 2*Q + 2*Q*(Q+1)/(N-Q-1);

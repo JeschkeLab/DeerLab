@@ -24,11 +24,8 @@
 %
 %   'ModDepth' - Fixes the modulation depth to a user-defined value instead
 %                of fitting it along the background.
-%
 %   'LogFit' - Specifies whether to fit the log of the signal (default: false)
-%
 %   'InitialGuess' - Array of initial values for the fit parameters
-%
 %   'Solver' - Optimization solver used for the fitting
 %             'lsqnonlin' - Non-linear constrained least-squares (toolbox)
 %             'nlsqbnd'   - Non-linear constrained least-squares (free)
@@ -84,8 +81,10 @@ if ~isempty(ModDepth)
 end
 fitModDepth = isempty(ModDepth);
 
+OptimizationToolboxInstalled = license('test','optimization_toolbox');
+
 if isempty(Solver)
-    if license('test','optimization_toolbox')
+    if OptimizationToolboxInstalled 
         Solver = 'lsqnonlin';
     else
         Solver = 'fminsearchcon';
@@ -101,7 +100,7 @@ if strcmp(Solver,'nlsqbnd') && ~ispc
    error('The ''nlsqbnd'' solver is only available for Windows systems.') 
 end
 
-if strcmp(Solver,'lsqnonlin') && ~license('test','optimization_toolbox')
+if strcmp(Solver,'lsqnonlin') && ~OptimizationToolboxInstalled 
     error('The ''lsqnonlin'' solver requires the Optimization Toolbox.')
 end
 
@@ -130,7 +129,7 @@ tfit = t(FitStartPos:FitEndPos);
 FitData = V(FitStartPos:FitEndPos);
 
 % Construct cost functional for minimization
-% Fit signal or log(signal);
+% Fit signal or log(signal)
 Fgmodel = @(p,lambda)(1 - lambda + eps)*bgmodel(tfit,p);
 if LogFit
     residuals = @(p,lambda) sqrt(1/2)*(log(Fgmodel(p,lambda)) - log(FitData));
@@ -163,6 +162,7 @@ else
         StartParameters(end+1) = 0.5;
     end
 end
+
 % Solve the constrained nonlinear minimization problem
 switch lower(Solver)
     case 'lsqnonlin'

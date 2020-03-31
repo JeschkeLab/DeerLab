@@ -9,6 +9,7 @@ P = dd_threegauss(r,parIn);
 K = dipolarkernel(t,r);
 S = K*P;
 
+rng(0)
 [~,FitP] = fitparamodel(S,@dd_threegauss,r,K,'multistart',60);
 
 %Pass: distance distribution is well fitted
