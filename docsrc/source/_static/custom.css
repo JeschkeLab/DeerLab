@@ -32,14 +32,15 @@ padding-bottom:10px !important;
 padding-top:-10px !important;
 }
 
+.rst-content code.literal{
+	color:#000000 !important;
+}
 
+
+/*Set the size of the download buttons of the tutorials*/
 .tutorial_buttons{
     width:125px;
     height:125px;
-}
-
-.rst-content code.literal{
-	color:#000000 !important;
 }
 
 /*Change default fonts used throughout the documentation*/

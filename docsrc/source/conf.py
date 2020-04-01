@@ -13,7 +13,7 @@ from sphinx_rtd_theme import __version__
 
 # Project details
 project = 'DeerLab'
-copyright = '2019, Luis Fabregás Ibáñez, Stefan Stoll, and others'
+copyright = '2019-2020, Luis Fabregás Ibáñez, Stefan Stoll, and others'
 author = 'Fabregas Ibanez'
 language = 'en'
 

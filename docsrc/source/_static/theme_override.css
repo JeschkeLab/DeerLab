@@ -2711,7 +2711,8 @@ html {
     margin-left: -1.2em;
     font-size: .8em;
     line-height: 1.6em;
-    color: #5c87d6}
+    color: #5c87d6;
+    visibility: hidden}
 .wy-menu-vertical li.on a,.wy-menu-vertical li.current>a {
     color: #9EBFFF;
     padding: .4045em 2.618em;
