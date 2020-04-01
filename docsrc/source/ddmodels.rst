@@ -1,11 +1,67 @@
 Distance distribution models
 =======================================
 
-DeerLab can handle both parameter-free and parametric models for distance distribution.
+In DeerLab, distance distributions can be represented either as parameter-free models or as parametric models.
 
-Parameter-free distance distributions are returned by the fit functions :doc:`fitregmodel<api/fitregmodel>` and :doc:`obir<api/obir>`.
+Parameter-free distance distributions
+------------------------------------------------
 
-A series of parametric models for distance distributions are available and can be used with several functions, including :doc:`fitparamodel<api/fitparamodel>` and :doc:`selectmodel<api/selectmodel>`. All parametric distance distribution models start with the prefix ``dd_``.
+A parameter-free distance distribution is a vector of population densities ``P`` defined over a vector of distances ``r``. Outside the range of ``r``, the distance distribution is considered zero, i.e. it is truncated to the range of ``r``. Such parameter-free distance distributions are returned by the fit functions :doc:`fitregmodel<api/fitregmodel>` and :doc:`obir<api/obir>`. A ``P`` can be converted to a time-domain signal using :doc:`dipolarsignal<api/dipolarsignal>` or :doc:`dipolarkernel<api/dipolarkernel>`.
+
+Parameter-free distance distributions are preferred over parametric distance distributions, since they make fewer assumptions about the distribution and are more flexible. They introduce less bias.
+
+Parametric distance distributions
+------------------------------------------------
+
+DeerLab provide a series of parametric distance distributions models. These can be used with several functions, including :doc:`fitparamodel<api/fitparamodel>` and :doc:`selectmodel<api/selectmodel>`. All parametric distance distribution models are functions start with the prefix ``dd_``. They take a distance vector ``r`` and a parameter vector ``param`` as inputs and return the distance distribution as a vector ``P``. Here is an example:
+
+.. code-block:: matlab
+
+        P = dd_onerice(r,params)
+
+
+There are several classes of parametric distance distribution models. The first class contains models that are based on basis functions and linear combinations thereof.
+
+=================================================  ===================================================
+  Model function                                       Description
+=================================================  ===================================================
+:doc:`dd_onerice<models/dd_onerice>`               Single 3D-Rice distribution
+:doc:`dd_tworice<models/dd_tworice>`               Two 3D-Rice distributions
+:doc:`dd_threerice<models/dd_threerice>`           Three 3D-Rice distributions
+:doc:`dd_onegauss<models/dd_onegauss>`             Single Gaussian distribution
+:doc:`dd_twogauss<models/dd_twogauss>`             Two Gaussians distributions
+:doc:`dd_threegauss<models/dd_threegauss>`         Three Gaussians distributions
+:doc:`dd_fourgauss<models/dd_threegauss>`          Four Gaussians distributions
+:doc:`dd_fivegauss<models/dd_threegauss>`          Five Gaussians distributions
+:doc:`dd_gengauss<models/dd_gengauss>`             Single generalized Gaussian distribution
+:doc:`dd_skewgauss<models/dd_skewgauss>`           Single skew Gaussian distribution
+=================================================  ===================================================
+
+The second group contains distance distribution models that represent three-dimensional disordered segmented objects such as proteins and other polymers.
+
+=================================================  ===================================================
+  Model function                                       Description
+=================================================  ===================================================
+:doc:`dd_wormchain<models/dd_wormchain>`           Worm-like chain
+:doc:`dd_wormgauss<models/dd_wormgauss>`           Worm-like chain with Gaussian convolution
+:doc:`dd_randcoil<models/dd_randcoil>`             Random coil
+=================================================  ===================================================
+
+Finally, DeerLab provides a series of models for distributions of labels in simple confined spaces such as spheres and spherical shells.
+
+====================================================  =============================================================================
+  Model function                                       Description
+====================================================  =============================================================================
+:doc:`dd_sphere<models/dd_sphere>`                    Labels distributed in a sphere
+:doc:`dd_spheresurf<models/dd_spheresurf>`            Labels distributed on a sphere's surface
+:doc:`dd_spherepoint<models/dd_spherepoint>`          One label fixed, other label distributed in a sphere
+:doc:`dd_shell<models/dd_shell>`                      Labels distributed on a spherical shell
+:doc:`dd_shellsphere<models/dd_shellsphere>`          Labels distributed on a sphere inside a spherical shell
+:doc:`dd_shellshell<models/dd_shellshell>`            Labels distributed on a spherical shell inside another spherical shell
+:doc:`dd_shellvoidshell<models/dd_shellvoidshell>`    Labels distributed on two spherical shells separated by a void
+:doc:`dd_shellvoidsphere<models/dd_shellvoidsphere>`  Labels distributed on a sphere inside a spherical shell separated by a void 
+====================================================  =============================================================================
+
 
 .. toctree::
     :maxdepth: 1
@@ -34,7 +90,8 @@ A series of parametric models for distance distributions are available and can b
     ./models/dd_shellvoidsphere
     ./models/dd_shellvoidshell
 
-.. raw:: html
+..
+  .. raw:: html
 
    <br>
    <div class="tutorialSectionBox ", style="border: #5c87d6 1.5px solid; padding-bottom:15px;">
@@ -62,9 +119,9 @@ A series of parametric models for distance distributions are available and can b
          <li><a class="reference internal" href="models/dd_threerice.html#dd_threerice"><span class="std std-ref" style="font-family: monospace">dd_threerice</span></a>
          &nbsp - &nbsp Trimodal Rician distribution </li>
          <li><a class="reference internal" href="models/dd_wormchain.html#dd_wormchain"><span class="std std-ref" style="font-family: monospace">dd_wormchain</span></a>
-         &nbsp - &nbsp Worm-like chain (WLC) distribution </li>
+         &nbsp - &nbsp Worm-like chain distribution </li>
          <li><a class="reference internal" href="models/dd_wormgauss.html#dd_wormgauss"><span class="std std-ref" style="font-family: monospace">dd_wormgauss</span></a>
-         &nbsp - &nbsp Worm-like chain (WLC) with Gaussian convolution distribution </li>
+         &nbsp - &nbsp Worm-like chain with Gaussian convolution distribution </li>
          <li><a class="reference internal" href="models/dd_randcoil.html#dd_randcoil"><span class="std std-ref" style="font-family: monospace">dd_randcoil</span></a>
          &nbsp - &nbsp Random coil distribution </li>
          <li><a class="reference internal" href="models/dd_sphere.html#dd_sphere"><span class="std std-ref" style="font-family: monospace">dd_sphere</span></a>

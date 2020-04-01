@@ -6,7 +6,7 @@
 :mod:`dd_threegauss`
 ************************
 
-Sum of three Gaussian distributions parametric model
+Sum of three Gaussian distributions
 
 -----------------------------
 

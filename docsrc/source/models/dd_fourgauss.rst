@@ -6,7 +6,7 @@
 :mod:`dd_fourgauss`
 ************************
 
-Sum of four Gaussian distributions parametric model
+Sum of four Gaussian distributions
 
 -----------------------------
 
