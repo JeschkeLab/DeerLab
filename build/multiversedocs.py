@@ -134,13 +134,13 @@ for tag in tags:
                     line = line.replace(line,'<link rel="stylesheet" href="' + href + '" type="text/css" />')   
                     
             # Edits in the relesed versions index.html files
-            if '<title>DeerLab development-version documentation' in line and tag != 'develop':
-                    line = line.replace(line,'<title>DeerLab documentation</title>')
-            if '<li>DeerLab development-version documentation' in line and tag != 'develop':
-                    line = line.replace(line,'<li>DeerLab '+tag+' documentation</li>')    
+            if '<title>DeerLab-development Documentation' in line and tag != 'develop':
+                    line = line.replace(line,'<title>DeerLab Documentation</title>')
+            if '<li>DeerLab-development Documentation' in line and tag != 'develop':
+                    line = line.replace(line,'<li>DeerLab '+tag+' Documentation</li>')    
 
-            if '<h1>DeerLab development-version documentation' in line and tag != 'develop':
-                    line = line.replace(line,'<h1>DeerLab '+tag+' documentation</h1>')  
+            if '<h1>DeerLab-development Documentation' in line and tag != 'develop':
+                    line = line.replace(line,'<h1>DeerLab '+tag+' Documentation</h1>')  
                     
             if 'DeerAnalysis' in line:
                     line = line.replace('DeerAnalysis','DeerLab')

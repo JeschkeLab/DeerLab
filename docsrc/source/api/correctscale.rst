@@ -39,4 +39,3 @@ Description
 Determines the amplitude scale ``V0`` of a dipolar signal ``V`` and time axis ``t`` (in ns/us). The output signal ``Vc`` is normalized by the scale via ``Vc = V/V0``. The amplitude scale is determined by fitting a single-Gaussian distance distribution parametric model with exponential background to the signal.
 
 
------------------------------

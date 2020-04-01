@@ -33,6 +33,10 @@ padding-top:-10px !important;
 }
 
 
+.tutorial_buttons{
+    width:125px;
+    height:125px;
+}
 
 .rst-content code.literal{
 	color:#000000 !important;
@@ -58,12 +62,12 @@ body{
 }
 .tutorialSectionBox .sectionTitle h3 {
     position: relative;
-    top: -0.9em;
-    margin-left: 1em;
+    top: 0em;
+    margin-left: 0em;
     display: inline;
     background-color: white;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
+    padding-left: 0em;
+    padding-right: 0em;
 }
 .tutorialSectionBox .sectionLogo {
     position: relative;
@@ -81,8 +85,8 @@ body{
 .tutorialSectionBox .sectionContent {
 }
 .sectionLogo .avatar {
-    height: 60px;
-    width: 60px;
+    height: 80px;
+    width: 80px;
     margin: 0px;
 }
 .avatar {

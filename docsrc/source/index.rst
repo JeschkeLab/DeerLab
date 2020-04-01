@@ -1,7 +1,9 @@
-﻿DeerLab development-version documentation
+﻿DeerLab-development Documentation
 =====================================================
        
-.. important:: DeerLab is currently in its pre-release stage. Major changes (change of function names and calling syntax) are possible until the first stable version is released.
+Welcome to the documentation for DeerLab.
+
+.. note:: DeerLab is currently in its pre-release stage. Major changes (change of function names and calling syntax) are possible until the first stable version is released.
 
 DeerLab is a MATLAB toolbox for the analysis of data from dipolar EPR (electron paramagnetic resonance) spectroscopy. This includes techniques such as DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others.
 
@@ -9,6 +11,12 @@ DeerLab consists of a collection of functions that perform single processing or 
 
 To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians, worm-like chain, etc.). It also provides a selection of background models. There are functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
 
+.. toctree::
+    :hidden:
+    :maxdepth: 1
+
+
+    Home<self>
 
 .. toctree::
     :hidden:

@@ -5,7 +5,7 @@
 :mod:`paramodel`
 ***********************
 
-Converts a function handle to a valid DeerLab parametric model
+Converts a function handle to a DeerLab parametric model
 
 Syntax
 =========================================

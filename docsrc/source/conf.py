@@ -60,9 +60,10 @@ html_context = {
 # -------------------------------------------------------------
 html_theme_options = {
     'sticky_navigation': False,
-    'titles_only': True,
+    'titles_only': False,
+    'collapse_navigation': False,
     'logo_only': True,
-    'navigation_depth':0,
+    'navigation_depth':2,
     #'style_nav_header_background': '#2a7bf8'
 }
 html_copy_source = False
@@ -106,8 +107,10 @@ html_static_path = ['_static']
 # Add path to custom CSS file to overwrite some of the default CSS settings
 html_css_files = [
     'custom.css',
+    'table_util.css',
+    'table_main.css',
     'theme_override.css'
-]	
+]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
