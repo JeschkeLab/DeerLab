@@ -17,28 +17,28 @@ Syntax
 
 .. code-block:: matlab
 
-    opt = selectmodel(Models,S,r,K,'method')
-    [opt,f,param,paramcis] = selectmodel(Models,S,r,K,'method')
-    [opt,f,param,paramcis] = selectmodel(Models,S,r,K,{'method1','method2',___})
-    [opt,f,param,paramcis] = selectmodel(Models,S,r,K,'method',param0)
-    [opt,f,param,paramcis] = selectmodel(Models,S,t,'method')
-    [opt,f,param,paramcis] = selectmodel(Models,S,t,'method',param0)
+    opt = selectmodel(models,V,r,K,'method')
+    [opt,f,param,paramcis] = selectmodel(models,V,r,K,'method')
+    [opt,f,param,paramcis] = selectmodel(models,V,r,K,{'method1','method2',___})
+    [opt,f,param,paramcis] = selectmodel(models,V,r,K,'method',param0)
+    [opt,f,param,paramcis] = selectmodel(models,V,t,'method')
+    [opt,f,param,paramcis] = selectmodel(models,V,t,'method',param0)
     [opt,f,param,paramcis] = selectmodel(___,'Property',Value)
 
 
 Parameters
-    *   ``Models`` - Input parametric models (cell array of function handles)
-    *   ``S`` - Input signal (*N*-element array)
-    *   ``r`` -  Distance Axis (*N*-element array)
+    *   ``models`` - Input parametric models (cell array of function handles)
+    *   ``V`` - Input signal (*N*-element array)
+    *   ``r`` -  Distance axis (*N*-element array), in nanometers
     *   ``K`` -  Dipolar kernel (*NxM*-element array)
-    *   ``t`` -  Time Axis (*N*-array)
+    *   ``t`` -  Time axis (*N*-array), in microseconds
     *   ``method`` - Model selection type(s) (string or cell array of strings)
     *   ``param0`` -  Initial parameter values for each model (cell array of numerical vectors)
 Returns
-    *  ``opt`` - Optimal parametric model index (scalar)
-    *  ``f`` - Evaluated model selection functional (cell array)
+    *  ``opt`` - Index of optimal parametric model (scalar)
+    *  ``f`` - Evaluated model selection functionals (cell array)
     *  ``param`` - Fitted parameters for each evaluated model (cell array)
-    *  ``paramcis`` - Fit confidence intervals for each evaluated model (cell array)
+    *  ``paramcis`` - Confidence intervals for the fitted parameters for each evaluated model (cell array)
 
 
 -----------------------------
@@ -50,9 +50,9 @@ Description
 
 .. code-block:: matlab
 
-        opt = selectmodel({@model1,@model2,___,@modelN},S,r,K,{'aic',___})
+        opt = selectmodel({@model1,@model2,___,@modelN},V,r,K,{'aic',___})
 
-Evaluates the fits of the parametric models ``model1``,..., ``modelN`` to a signal ``S`` according to the dipolar kernel ``K`` and distance axis ``r``. The models must be passed as a cell array of function handles. Each fit is then evaluated according to the model selection criterions specified in the last input argument.
+Fits the distance distribution models ``model1``, ..., ``modelN`` to a signal ``V``, using the dipolar kernel ``K`` and distance axis ``r``. The models must be passed as a cell array of function handles. The fits are then evaluated according to the model selection criteria specified in the last input argument:
 
 *   ``'aic'`` - Akaike information criterion
 *   ``'aicc'`` - Corrected Akaike information criterion
@@ -68,9 +68,9 @@ The function returns an array containing the optimal model for each selection me
 
 .. code-block:: matlab
 
-        opt = selectmodel({@model1,@model2,___,@modelN},S,t,{'aic',___})
+        opt = selectmodel({@model1,@model2,___,@modelN},V,t,{'aic',___})
 
-Evaluates the fits of the  time-domain parametric models ``model1``,..., ``modelN`` to a signal ``S`` according to the time axis ``t``.
+Fits the time-domain parametric models ``model1``, ..., ``modelN`` to a signal ``V`` defined over the time axis ``t``.
 
 
 -----------------------------
@@ -78,8 +78,8 @@ Evaluates the fits of the  time-domain parametric models ``model1``,..., ``model
 
 .. code-block:: matlab
 
-        opt = selectmodel({@model1,@model2,___,@modelN},S,r,K,{'aic',___},{par1,___,parN})
-        opt = selectmodel({@model1,@model2,___,@modelN},S,t,{'aic',___},{par1,___,parN})
+        opt = selectmodel({@model1,@model2,___,@modelN},V,r,K,{'aic',___},{par1,___,parN})
+        opt = selectmodel({@model1,@model2,___,@modelN},V,t,{'aic',___},{par1,___,parN})
 
 
 The initial guess values for the parameters of each model can be passed as a cell array ``{par1,___,parN}`` of value vectors.
@@ -90,9 +90,9 @@ The initial guess values for the parameters of each model can be passed as a cel
 
 .. code-block:: matlab
 
-    [opt,f,param,paramcis] = selectmodel(args)
+    [opt,f,param,paramcis] = selectmodel(___)
 
-Additional outputs include, the evaluated method selection functionals ``f`` for the different methods and a cell array ``params`` with the fitted parameters for each of the evaluated models , as well as their confidence intervals ``paramcis``.
+Additional outputs include: the evaluated method selection functionals ``f`` for the different methods, a cell array ``params`` with the fitted parameters for each of the evaluated models, as well as their confidence intervals ``paramcis``.
 
 -----------------------------
 
@@ -116,7 +116,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			opt = selectmodel({@dd_onegauss,@dd_onerice},S,r,K,'aicc','Upper',{[10 1],[10 2]})
+			opt = selectmodel({@dd_onegauss,@dd_onerice},V,r,K,'aicc','Upper',{[10 1],[10 2]})
 
 - ``'Lower'`` - Parameter lower bound constraints
     Cell array containing the lower bound values for the parameters of the evaluated parametric models.
@@ -127,6 +127,6 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			opt = selectmodel({@dd_onegauss,@dd_onerice},S,r,K,'aicc','Lower',{[1 0.1],[10 0.2]})
+			opt = selectmodel({@dd_onegauss,@dd_onerice},V,r,K,'aicc','Lower',{[1 0.1],[10 0.2]})
 
-See :ref:`fitparamodel` for a detailed list of other property-value pairs accepted by the function.
+See :ref:`fitparamodel` for a detailed list of other name-value pairs accepted by the function.

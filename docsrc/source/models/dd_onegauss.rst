@@ -6,7 +6,7 @@
 :mod:`dd_onegauss`
 ***********************
 
-Gaussian distribution parametric model
+Gaussian distribution
 
 -----------------------------
 

@@ -9,7 +9,7 @@ DeerLab is a MATLAB toolbox for the analysis of data from dipolar EPR (electron 
 
 DeerLab consists of a collection of functions that perform single processing or fitting tasks. They can be combined in scripts to generate custom analysis workflows. Many different models for time-domain signals and for distance distributions are available.
 
-To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians, worm-like chain, etc.). It also provides a selection of background models. There are functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
+To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of :doc:`parameterized distance distribution models <ddmodels>` (mutli-Gaussians, worm-like chain, etc.). It also provides a selection of :doc:`background models <bgmodels>`. There are functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
 
 .. toctree::
     :hidden:
@@ -33,7 +33,8 @@ To model distance distributions, DeerLab supports two types of model classes and
     :maxdepth: 1
 
     ./functions
-    ./models
+    ./ddmodels
+    ./bgmodels
 
 
 .. Indices and tables

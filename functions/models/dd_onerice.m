@@ -1,6 +1,6 @@
 function output = dd_onerice(r,param)
 %
-% DD_ONERICE Rician distribution parametric model
+% DD_ONERICE 3D-Rice distribution parametric model
 %
 %   info = DD_ONERICE
 %   Returns an (info) structure containing the specifics of the model.
@@ -13,8 +13,8 @@ function output = dd_onerice(r,param)
 % PARAMETERS
 % name     symbol default lower bound upper bound
 % --------------------------------------------------------------------------
-% param(1)  nu      3.5     1.0         10          mean distance
-% param(2)  sigma   0.7     0.1          5          standard deviation
+% param(1)  nu      3.5     1.0         10          center
+% param(2)  sigma   0.7     0.1          5          width
 % --------------------------------------------------------------------------
 %
 
@@ -30,14 +30,14 @@ end
 
 if nargin==0
     % If no inputs given, return info about the parametric model
-    info.model  = 'Single Rice/Rician distribution';
+    info.model  = 'Single 3D-Rice distribution';
     info.nparam  = nParam;
-    info.parameters(1).name = ['Mean distance ',char(957)];
+    info.parameters(1).name = ['Center ',char(957)];
     info.parameters(1).range = [1 10];
     info.parameters(1).default = 3.5;
     info.parameters(1).units = 'nm';
     
-    info.parameters(2).name = ['Standard deviation ',char(963)];
+    info.parameters(2).name = ['Width ',char(963)];
     info.parameters(2).range = [0.1 5];
     info.parameters(2).default = 0.7;
     info.parameters(2).units = 'nm';
@@ -57,8 +57,8 @@ validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilena
 % Compute non-central chi distribution with 3 degrees of freedom (a 3D Rician)
 nu = param(1);
 sig = param(2);
-P = rice3d(r,nu,sig);
-P = P(:);
+a = 1;
+P = multirice3d(r,nu,sig,a);
 
 if ~all(P==0)
     P = P/sum(P)/mean(diff(r));

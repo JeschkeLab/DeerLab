@@ -6,7 +6,7 @@
 :mod:`dd_twogauss`
 ***********************
 
-Sum of two Gaussian distributions parametric model
+Sum of two Gaussian distributions
 
 -----------------------------
 

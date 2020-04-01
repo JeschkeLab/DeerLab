@@ -96,9 +96,9 @@ Example 1:
 	
     pathinfo = [1-lambda NaN; lambda 0];
 	
-	% alternative input
-	pathinfo(1,:) = [1-lambda NaN];    % unmodulated part, gives offset
-	pathinfo(2,:) = [lambda 0];        % main modulation, refocusing at time zero
+    % alternative input
+    pathinfo(1,:) = [1-lambda NaN];    % unmodulated part, gives offset
+    pathinfo(2,:) = [lambda 0];        % main modulation, refocusing at time zero
 	
     K = dipolarsignal(t,r,pathinfo);
 

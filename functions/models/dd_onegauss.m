@@ -53,16 +53,15 @@ if length(param)~=nParam
   error('The number of input parameters does not match the number of model parameters.')
 end
 
-%Parse input
+% Parse input
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
 % Compute the model distance distribution
-sigma = (param(2)/(2*sqrt(2*log(2))));
-P = sqrt(2/pi)*1/sigma*exp(-((r(:) - param(1))/(sqrt(2)*sigma)).^2);
-dr = r(2)-r(1);
-if ~all(P==0)
-P = P/sum(P)/dr;    
-end
+fwhm = param(2);
+r0 = param(1);
+a = 1;
+P = multigaussfun(r,r0,fwhm,a);
+
 output = P;
 
 return

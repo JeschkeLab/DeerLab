@@ -6,7 +6,7 @@
 :mod:`dd_fivegauss`
 ************************
 
-Sum of five Gaussian distributions parametric model
+Sum of five Gaussian distributions
 
 -----------------------------
 

@@ -6,7 +6,7 @@
 :mod:`dd_threerice`
 ***********************
 
-Sum of three Gaussian distributions parametric model
+Sum of three 3D-Rice distributions
 
 -----------------------------
 
@@ -42,14 +42,14 @@ This is a three-dimensional non-central chi distribution, the 3D generalization 
 ============== ======================== ========= ======== ========= ===================================
  Variable       Symbol                    Default   Lower    Upper       Description
 ============== ======================== ========= ======== ========= ===================================
-``param(1)``   :math:`\left<r_1\right>`     2.5     1.0        20         1st Rician mean distance
-``param(2)``   :math:`\sigma_1`             0.4     0.1        5          1st Rician standard deviation
-``param(3)``   :math:`\left<r_2\right>`     4.0     1.0        20         2nd Rician mean distance
-``param(4)``   :math:`\sigma_2`             0.4     0.1        5          2nd Rician standard deviation
-``param(5)``   :math:`\left<r_3\right>`     5.0     1.0        20         3rd Rician mean distance
-``param(6)``   :math:`\sigma_3`             0.4     0.1        5          3rd Rician standard deviation
-``param(7)``   :math:`A_1`                  0.3     0          1          1st Rician relative amplitude
-``param(8)``   :math:`A_2`                  0.3     0          1          2nd Rician relative amplitude
+``param(1)``   :math:`\left<r_1\right>`     2.5     1.0        20         center, 1st component
+``param(2)``   :math:`\sigma_1`             0.4     0.1        5          width, 1st component
+``param(3)``   :math:`\left<r_2\right>`     4.0     1.0        20         center, 2nd component
+``param(4)``   :math:`\sigma_2`             0.4     0.1        5          width, 2nd component
+``param(5)``   :math:`\left<r_3\right>`     5.0     1.0        20         center, 3rd component
+``param(6)``   :math:`\sigma_3`             0.4     0.1        5          width. 3rd component
+``param(7)``   :math:`A_1`                  0.3     0          1          amplitude, 1st component
+``param(8)``   :math:`A_2`                  0.3     0          1          amplitude, 2nd component
 ============== ======================== ========= ======== ========= ===================================
 
 
