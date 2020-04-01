@@ -20,9 +20,9 @@ pass(1) = isequal(P1,P2);
 % Pass 2: non-negativity of default values fulfilled
 pass(2) = all(P1 >= 0);
 % Pass 3: non-negativity of default boundaries fulfilled
-pass(3) = all(P1 >= 0) & all(P2 >= 0);
+pass(3) = all(P1 >= 0) && all(P2 >= 0);
 % Pass 4: there are no NaN values
-pass(4) = all(~isnan(P1)) & all(~isnan(P2)) & all(~isnan(P3)) & all(~isnan(P4));
+pass(4) = all(~isnan(P1)) && all(~isnan(P2)) && all(~isnan(P3)) && all(~isnan(P4));
 
 pass = all(pass);
  

@@ -1,6 +1,6 @@
 function output = dd_threerice(r,param)
 %
-% DD_THREERICE Sum of three rician distributions parametric model
+% DD_THREERICE Sum of three 3D-Rice distributions parametric model
 %
 %   info = DD_THREERICE
 %   Returns an (info) structure containing the specifics of the model.
@@ -13,14 +13,14 @@ function output = dd_threerice(r,param)
 % PARAMETERS
 % name      symbol default lower bound upper bound
 % --------------------------------------------------------------------------
-% param(1)  nu1      2.5     1.0        10         mean distance, 1st component
-% param(2)  sigma1   0.4     0.1        5          standard deviation, 1st component
-% param(3)  nu2      4.0     1.0        10         mean distance, 2nd component
-% param(4)  sigma2   0.4     0.1        5          standard deviation, 2nd component
-% param(5)  nu3      5.0     1.0        10         mean distance, 3rd component
-% param(6)  sigma3   0.4     0.1        5          standard deviation, 3rd component
-% param(7)  p1       0.3     0          1          fraction of 1st component
-% param(8)  p2       0.3     0          1          fraction of 2nd component
+% param(1)  nu1      2.5     1.0        10         center of 1st component
+% param(2)  sigma1   0.4     0.1        5          width of 1st component
+% param(3)  nu2      4.0     1.0        10         center of 2nd component
+% param(4)  sigma2   0.4     0.1        5          width of 2nd component
+% param(5)  nu3      5.0     1.0        10         center of 3rd component
+% param(6)  sigma3   0.4     0.1        5          width of 3rd component
+% param(7)  p1       0.3     0          1          amplitude of 1st component
+% param(8)  p2       0.3     0          1          amplitude of 2nd component
 % --------------------------------------------------------------------------
 %
 
@@ -35,44 +35,44 @@ end
 
 if nargin==0
     % If no inputs given, return info about the parametric model
-    info.model  = 'Three Rice/Rician distributions';
+    info.model  = 'Three 3D-Rice distributions';
     info.nparam  = nParam;
     
-    info.parameters(1).name = ['Mean distance ',char(957),'1 1st Rician'];
+    info.parameters(1).name = ['Center ',char(957),'1 1st component'];
     info.parameters(1).range = [1 10];
     info.parameters(1).default = 2.0;
     info.parameters(1).units = 'nm';
     
-    info.parameters(2).name = ['Standard deviation ',char(963),'1 1st Rician'];
+    info.parameters(2).name = ['Width ',char(963),'1 1st component'];
     info.parameters(2).range = [0.1 5];
     info.parameters(2).default = 0.7;
     info.parameters(2).units = 'nm';
     
-    info.parameters(3).name = ['Mean distance ',char(957),'2 2nd Rician'];
+    info.parameters(3).name = ['Center ',char(957),'2 2nd component'];
     info.parameters(3).range = [1 10];
     info.parameters(3).default = 4.0;
     info.parameters(3).units = 'nm';
     
-    info.parameters(4).name = ['Standard deviation ',char(963),'2 2nd Rician'];
+    info.parameters(4).name = ['Width ',char(963),'2 2nd component'];
     info.parameters(4).range = [0.1 5];
     info.parameters(4).default = 0.7;
     info.parameters(4).units = 'nm';
     
-    info.parameters(5).name = ['Mean distance ',char(957),'3 3rd Rician'];
+    info.parameters(5).name = ['Center ',char(957),'3 3rd component'];
     info.parameters(5).range = [1 10];
     info.parameters(5).default = 5.0;
     info.parameters(5).units = 'nm';
     
-    info.parameters(6).name = ['Standard deviation ',char(963),'3 3rd Rician'];
+    info.parameters(6).name = ['Width ',char(963),'3 3rd component'];
     info.parameters(6).range = [0.1 5];
     info.parameters(6).default = 0.7;
     info.parameters(6).units = 'nm';
     
-    info.parameters(7).name = 'Relative amplitude A1 1st Rician';
+    info.parameters(7).name = 'Relative amplitude A1 1st component';
     info.parameters(7).range = [0 1];
     info.parameters(7).default = 0.3;
     
-    info.parameters(8).name = 'Relative amplitude A2 2nd Rician';
+    info.parameters(8).name = 'Relative amplitude A2 2nd component';
     info.parameters(8).range = [0 1];
     info.parameters(8).default = 0.3;
     
@@ -89,21 +89,11 @@ end
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
 % Compute non-central chi distribution with 3 degrees of freedom (a 3D Rician)
-nu1 = param(1);
-sig1 = param(2);
-nu2 = param(3);
-sig2 = param(4);
-nu3 = param(5);
-sig3 = param(6);
-p1 = param(7);
-p2 = param(8);
-p3 = 1-p1-p2;
-P = p1*rice3d(r,nu1,sig1) + p2*rice3d(r,nu2,sig2) + p3*rice3d(r,nu3,sig3);
-P = P(:);
-
-if ~all(P==0)
-    P = P/sum(P)/mean(diff(r));
-end
+nu = param([1 3 5]);
+sig = param([2 4 6]);
+a = param([7 8]);
+a(3) = max(1-sum(a),0);
+P = multirice3d(r,nu,sig,a);
 
 output = P;
 

@@ -12,11 +12,11 @@
 % PARAMETERS
 % name      symbol default lower bound upper bound
 % --------------------------------------------------------------------------
-% param(1)  <r1>   2.5     1.0         20         1st mean distance
-% param(2)  w1     0.5     0.2         5          FWHM of 1st distance
-% param(3)  <r2>   3.5     1.0         20         2nd mean distance
-% param(4)  w2     0.5     0.2         5          FWHM of 2nd distance
-% param(5)  A      0.5     0           1          fraction of pairs at 1st distance
+% param(1)  <r1>   2.5     1.0         20         center of 1st Gaussian
+% param(2)  w1     0.5     0.2         5          FWHM of 1st Gaussian
+% param(3)  <r2>   3.5     1.0         20         center of 2nd Gaussian
+% param(4)  w2     0.5     0.2         5          FWHM of 2nd Gaussian
+% param(5)  A      0.5     0           1          amplitude of 1st Gaussian
 % --------------------------------------------------------------------------
 %
 
@@ -67,21 +67,15 @@ if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
-%Parse input
+% Parse input
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
 % Compute the model distance distribution
-Lam1 = (param(2)/sqrt(2*log(2)));
-Lam2 = (param(4)/sqrt(2*log(2)));
-Gaussian1 = sqrt(2/pi)*1/Lam1*exp(-2*((r(:) - param(1))/Lam1).^2);
-Gaussian2 = sqrt(2/pi)*1/Lam2*exp(-2*((r(:) - param(3))/Lam2).^2);
-P = param(5)*Gaussian1 + max(1 - param(5),0)*Gaussian2;
-
-% Normalize
-dr = r(2)-r(1);
-if ~all(P==0)
-P = P/sum(P)/dr;    
-end
+fwhm = param([2 4]);
+r0 = param([1 3]);
+a = param(5);
+a(2) = max(1-a,0);
+P = multigaussfun(r,r0,fwhm,a);
 
 output = P;
 
