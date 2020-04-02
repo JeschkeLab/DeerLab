@@ -22,18 +22,24 @@ k = 0.3;
 Bmodel = @(t)bg_exp(t,k);
 
 K = dipolarkernel(t,r,[lambda T0],Bmodel);
-
 unmodulated = isnan(T0);
 Kref = sum(lambda(unmodulated));
+Krenorm = Kref;
 dr = mean(diff(r));
 for p = 1:numel(lambda)
   if unmodulated(p), continue; end
   Kref = Kref + lambda(p)*dipolarkernel(t-T0(p),r)/dr;
+  Krenorm = Krenorm + lambda(p)*dipolarkernel(-T0(p),r)/dr;
 end
+Kref = Kref./Krenorm;
+
+Brenorm = 1;
 for p = 1:numel(lambda)
   if unmodulated(p), continue; end
   Kref = Kref.*Bmodel(lambda(p)*(t-T0(p)));
+  Brenorm = Brenorm.*Bmodel(lambda(p)*(-T0(p)));
 end
+Kref = Kref./Brenorm;
 Kref = Kref*dr;
 
 maxerr = abs(max(K(:) - Kref(:)));

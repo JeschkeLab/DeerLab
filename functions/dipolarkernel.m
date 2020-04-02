@@ -225,15 +225,21 @@ end
 
 % Build dipolar kernel matrix, summing over all pathways
 K = Lambda0;
+Krenorm = Lambda0;
 for p = 1:nModPathways
     K = K + lambda(p)*kernelmatrix(n(p)*(t-T0(p)));
+    Krenorm = Krenorm + lambda(p)*kernelmatrix(-T0(p)*n(p));
 end
+K = K./Krenorm;
 
 % Multiply by background(s)
 if isa(B,'function_handle')
+    Brenorm = 1;
     for p = 1:nModPathways
         K = K.*B(lambda(p)*n(p)*(t-T0(p)));
+        Brenorm = Brenorm.*B(-T0(p)*lambda(p)*n(p));
     end
+    K = K./Brenorm;
 else
     if ~isempty(B)
         K = K.*B;
@@ -286,7 +292,7 @@ q = 1-3*costheta.^2;
 for ir = 1:numel(wdd)
   D_ = 0;
   for itheta = 1:nKnots
-    D_ = D_ + cos(wdd(ir)*q(itheta)*t);
+    D_ = D_ + cos(wdd(ir)*q(itheta)*abs(t));
   end
   K(:,ir) = D_/nKnots;
 end
@@ -300,7 +306,7 @@ function K = kernelmatrix_integral(t,wdd)
 K = zeros(numel(t),numel(wdd));
 
 for ir = 1:numel(wdd)
-    fun = @(costheta) cos(wdd(ir)*t*(1-3*costheta.^2));
+    fun = @(costheta) cos(wdd(ir)*abs(t)*(1-3*costheta.^2));
     K(:,ir) = integral(fun,0,1,'ArrayValued',true,'AbsTol',1e-6,'RelTol',1e-6);
 end
 
