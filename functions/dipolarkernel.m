@@ -43,6 +43,8 @@
 %               'grid' - powder average computed explicitly (slow, inaccurate)
 %   'nKnots' - Number of knots for the grid of powder orientations to be used
 %              in the 'grid' kernel calculation method
+%   'Renormalize' - Re-normalization of multi-pathway kernels to ensure the
+%                   equality V(0) == 1 is satisfied. (default = true)
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
@@ -74,8 +76,8 @@ if numel(proplist)>=1 && ~ischar(proplist{1})
 end
 
 % Check if user requested some options via name-value input
-[ExcitationBandwidth,OvertoneCoeffs,g,Method,nKnots,useCache] = ...
-    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','g','Method','nKnots','Cache'},proplist);
+[ExcitationBandwidth,OvertoneCoeffs,g,Method,nKnots,useCache,Renormalize] = ...
+    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','g','Method','nKnots','Cache','Renormalize'},proplist);
 if isempty(useCache)
     useCache = true;
 end
@@ -84,6 +86,11 @@ if isempty(Method)
 end
 validateattributes(Method,{'char'},{'nonempty'},mfilename,'Method');
 
+if isempty(Renormalize)
+    Renormalize = true;
+else
+    validateattributes(Renormalize,{'logical'},{'nonempty'},mfilename,'Renormalize');
+end
 if isempty(OvertoneCoeffs)
     OvertoneCoeffs = 1;
 end
@@ -230,7 +237,9 @@ for p = 1:nModPathways
     K = K + lambda(p)*kernelmatrix(n(p)*(t-T0(p)));
     Krenorm = Krenorm + lambda(p)*kernelmatrix(-T0(p)*n(p));
 end
+if Renormalize
 K = K./Krenorm;
+end
 
 % Multiply by background(s)
 if isa(B,'function_handle')
@@ -239,7 +248,9 @@ if isa(B,'function_handle')
         K = K.*B(lambda(p)*n(p)*(t-T0(p)));
         Brenorm = Brenorm.*B(-T0(p)*lambda(p)*n(p));
     end
+    if Renormalize
     K = K./Brenorm;
+    end
 else
     if ~isempty(B)
         K = K.*B;

@@ -201,3 +201,14 @@ Additional settings can be specified via name-value pairs. All property names ar
     .. code-block:: matlab
 
         K = dipolarkernel(args,'Method','grid','nKnots',1e4)
+
+- ``'Renormalize'`` - Re-normalization of multi-pathway dipolar kernels
+    If the kernel is computed for a multi-pathway model via the ``pathinfo`` variable, the kernel does not necessarily satisfy ``V(0) == 1``. This option enables(``true``) or disables(``false``) a re-normalization to ensure that equality is satisfied.
+
+    *Default:* ``true``
+
+    *Example:*
+
+    .. code-block:: matlab
+
+        K = dipolarkernel(args,'Renormalize',false)
