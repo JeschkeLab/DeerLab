@@ -25,7 +25,7 @@
 %               [lambda T0 n] or [lambda T0] for one pathway. If n is not given
 %               it is assumed to be 1.
 %     B         N-element array with background decay, or a function handle
-%               for a background model
+%               for a background model: @(t)bg_model(t,par)
 %
 %  Outputs:
 %     K         NxM kernel matrix, such that the time-domain signal for a
@@ -232,7 +232,7 @@ end
 % Multiply by background(s)
 if isa(B,'function_handle')
     for p = 1:nModPathways
-        K = K.*B(n(p)*(t-T0(p)),lambda(p));
+        K = K.*B(lambda(p)*n(p)*(t-T0(p)));
     end
 else
     if ~isempty(B)

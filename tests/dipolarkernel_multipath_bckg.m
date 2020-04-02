@@ -19,7 +19,7 @@ T0 = [NaN; 0; tau2-t2];
 
 % Background model
 k = 0.3;
-Bmodel = @(t,lam)bg_exp(t,k*lam);
+Bmodel = @(t)bg_exp(t,k);
 
 K = dipolarkernel(t,r,[lambda T0],Bmodel);
 
@@ -32,7 +32,7 @@ for p = 1:numel(lambda)
 end
 for p = 1:numel(lambda)
   if unmodulated(p), continue; end
-  Kref = Kref.*Bmodel(t-T0(p),lambda(p));
+  Kref = Kref.*Bmodel(lambda(p)*(t-T0(p)));
 end
 Kref = Kref*dr;
 
