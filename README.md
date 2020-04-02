@@ -47,7 +47,6 @@ In order for MATLAB to access the DeerLab API functions, the path to the DeerLab
 2) Add the following lines of code:
 
        addpath('mypath/DeerLab/functions')
-       addpath('mypath/DeerLab/functions/models')
 
 3) Save ``startup.m`` and restart MATLAB.
 

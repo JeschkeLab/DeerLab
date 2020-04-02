@@ -45,6 +45,5 @@ Method B) Add DeerLab path at startup
 	 .. code-block:: matlab
 
 		 addpath('mypath/DeerLab/functions')
-		 addpath('mypath/DeerLab/functions/models')
 		 
 	3) Save ``startup.m`` and restart MATLAB.
