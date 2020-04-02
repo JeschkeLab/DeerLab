@@ -35,6 +35,7 @@ To model distance distributions, DeerLab supports two types of model classes and
     ./functions
     ./ddmodels
     ./bgmodels
+    ./expmodels
 
 
 .. Indices and tables
