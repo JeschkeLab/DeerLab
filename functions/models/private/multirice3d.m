@@ -12,9 +12,6 @@ end
 if numel(a)~=N
   error('Number of amplitudes and number of centers must be equal.');
 end
-if any(a<0)
-  error('Amplitudes must not be negative.');
-end
 
 n = 3; % degrees of freedom
 
