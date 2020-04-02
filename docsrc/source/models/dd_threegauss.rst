@@ -52,7 +52,7 @@ with :math:`\sigma_i = w_i/\sqrt{2ln(2)}`
 Example using default parameters:
 
 .. image:: ../images/model_dd_threegauss.png
-   :width: 40%
+   :width: 650px
 
 
 -----------------------------

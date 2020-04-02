@@ -42,7 +42,7 @@ Model
 Example:
 
 .. image:: ../images/model_dd_wormchain.png
-   :width: 40%
+   :width: 650px
 
 
 -----------------------------

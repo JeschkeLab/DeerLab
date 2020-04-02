@@ -54,7 +54,7 @@ with
 Example using default parameters:
 
 .. image:: ../images/model_dd_shellsphere.png
-   :width: 40%
+   :width: 650px
 
 
 -----------------------------

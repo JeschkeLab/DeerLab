@@ -50,7 +50,7 @@ where :math:`\nu_0 = 3/(12\pi r_0 N \nu)^{3/2}`
 Example using default parameters:
 
 .. image:: ../images/model_dd_randcoil.png
-   :width: 40%
+   :width: 650px
 
 
 -----------------------------

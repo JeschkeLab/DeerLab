@@ -32,7 +32,7 @@ Model
 =========================================
 
 .. image:: ../images/model_scheme_dd_skewgauss.png
-   :width: 40%
+   :width: 650px
 
 
 :math:`P(r) = \sqrt{\frac{2}{\pi}}\frac{1}{\sigma}\exp\left(-\frac{(r-\left<r\right>)^2}{\sqrt(2)\sigma^2}\right)\frac{1}{2}\left(1 + erf\left(\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
@@ -51,7 +51,7 @@ with :math:`\sigma = w/(2\sqrt{2ln(2)})`
 Example using default parameters:
 
 .. image:: ../images/model_dd_skewgauss.png
-   :width: 40%
+   :width: 650px
 
 
 -----------------------------

@@ -46,7 +46,7 @@ with :math:`\sigma = w/\sqrt{2ln(2)}`
 Example using default parameters:
 
 .. image:: ../images/model_dd_onegauss.png
-   :width: 40%
+   :width: 650px
 
 
 -----------------------------

@@ -48,7 +48,7 @@ Model
 Example using default parameters:
 
 .. image:: ../images/model_dd_spheresurf.png
-   :width: 40%
+   :width: 650px
 
 
 -----------------------------

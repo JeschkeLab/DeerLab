@@ -32,7 +32,7 @@ Model
 =========================================
 
 .. image:: ../images/model_scheme_dd_gengauss.png
-   :width: 40%
+   :width: 650px
 
 :math:`P(r) = \frac{\beta}{2\sigma\Gamma(1/\beta)}\exp\left(-\left(\frac{(r-\left<r\right>)}{\sigma}\right)^\beta \right)`
 
@@ -50,7 +50,7 @@ with :math:`\sigma = w/(2\sqrt{2ln(2)})`
 Example using default parameters:
 
 .. image:: ../images/model_dd_gengauss.png
-   :width: 40%
+   :width: 650px
 
 
 -----------------------------
