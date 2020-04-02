@@ -14,11 +14,11 @@ function output = dd_threerice(r,param)
 % name      symbol default lower bound upper bound
 % --------------------------------------------------------------------------
 % param(1)  nu1      2.5     1.0        10         center of 1st component
-% param(2)  sigma1   0.4     0.1        5          width of 1st component
+% param(2)  sigma1   0.7     0.1        5          width of 1st component
 % param(3)  nu2      4.0     1.0        10         center of 2nd component
-% param(4)  sigma2   0.4     0.1        5          width of 2nd component
+% param(4)  sigma2   0.7     0.1        5          width of 2nd component
 % param(5)  nu3      5.0     1.0        10         center of 3rd component
-% param(6)  sigma3   0.4     0.1        5          width of 3rd component
+% param(6)  sigma3   0.7     0.1        5          width of 3rd component
 % param(7)  p1       0.3     0          1          amplitude of 1st component
 % param(8)  p2       0.3     0          1          amplitude of 2nd component
 % --------------------------------------------------------------------------

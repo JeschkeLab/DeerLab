@@ -56,6 +56,22 @@ There are several classes of parametric distance distribution models. The first 
 			</div>
 		</div>
 
+		<div class="row" onclick="window.location='models/dd_fourrice.html#dd_fourrice'">
+			<div class="cell">
+				<span class="std std-ref" style="font-family: monospace">dd_fourrice</span>			</div>
+			<div class="cell">
+				Four 3D-Rice distributions
+			</div>
+		</div>
+
+		<div class="row" onclick="window.location='models/dd_fiverice.html#dd_fiverice'">
+			<div class="cell">
+				<span class="std std-ref" style="font-family: monospace">dd_fiverice</span>			</div>
+			<div class="cell">
+				Five 3D-Rice distributions
+			</div>
+		</div>
+
 		<div class="row" onclick="window.location='models/dd_onegauss.html#dd_onegauss'">
 			<div class="cell">
 				<span class="std std-ref" style="font-family: monospace">dd_onegauss</span>			</div>

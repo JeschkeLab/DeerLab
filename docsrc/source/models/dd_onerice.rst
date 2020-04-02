@@ -46,7 +46,7 @@ where :math:`n=3` and :math:`I_{n/2-1}(x)` is the modified Bessel function of th
 Example using default parameters:
 
 .. image:: ../images/model_dd_onerice.png
-   :width: 40%
+   :width: 650px
 
 
 -----------------------------

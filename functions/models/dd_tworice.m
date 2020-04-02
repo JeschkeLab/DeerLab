@@ -14,9 +14,9 @@ function output = dd_tworice(r,param)
 % name      symbol default lower bound upper bound
 % --------------------------------------------------------------------------
 % param(1)  nu1      2.5     1.0        10         center of 1st component
-% param(2)  sigma1   0.4     0.1        5          spread of 1st component
+% param(2)  sigma1   0.7     0.1        5          spread of 1st component
 % param(3)  nu2      4.0     1.0        10         center of 2nd component
-% param(4)  sigma2   0.4     0.1        5          spread of 2nd component
+% param(4)  sigma2   0.7     0.1        5          spread of 2nd component
 % param(5)  p1       0.5     0          1          amplitude of 1st component
 % --------------------------------------------------------------------------
 %

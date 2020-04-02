@@ -43,11 +43,11 @@ This is a three-dimensional non-central chi distribution, the 3D generalization 
  Variable       Symbol                    Default   Lower    Upper       Description
 ============== ======================== ========= ======== ========= ===================================
 ``param(1)``   :math:`\left<r_1\right>`     2.5     1.0        20         center, 1st component
-``param(2)``   :math:`\sigma_1`             0.4     0.1        5          width, 1st component
+``param(2)``   :math:`\sigma_1`             0.7     0.1        5          width, 1st component
 ``param(3)``   :math:`\left<r_2\right>`     4.0     1.0        20         center, 2nd component
-``param(4)``   :math:`\sigma_2`             0.4     0.1        5          width, 2nd component
+``param(4)``   :math:`\sigma_2`             0.7     0.1        5          width, 2nd component
 ``param(5)``   :math:`\left<r_3\right>`     5.0     1.0        20         center, 3rd component
-``param(6)``   :math:`\sigma_3`             0.4     0.1        5          width. 3rd component
+``param(6)``   :math:`\sigma_3`             0.7     0.1        5          width. 3rd component
 ``param(7)``   :math:`A_1`                  0.3     0          1          amplitude, 1st component
 ``param(8)``   :math:`A_2`                  0.3     0          1          amplitude, 2nd component
 ============== ======================== ========= ======== ========= ===================================
@@ -56,7 +56,7 @@ This is a three-dimensional non-central chi distribution, the 3D generalization 
 Example using default parameters:
 
 .. image:: ../images/model_dd_threerice.png
-   :width: 40%
+   :width: 650px
 
 
 -----------------------------
