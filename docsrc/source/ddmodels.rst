@@ -6,12 +6,16 @@ In DeerLab, distance distributions can be represented either as parameter-free m
 Parameter-free distance distributions
 ------------------------------------------------
 
+.. rst-class:: coderef
+
 A parameter-free distance distribution is a vector of population densities ``P`` defined over a vector of distances ``r``. Outside the range of ``r``, the distance distribution is considered zero, i.e. it is truncated to the range of ``r``. Such parameter-free distance distributions are returned by the fit functions :ref:`fitregmodel` and :ref:`obir`. A ``P`` can be converted to a time-domain signal using :ref:`dipolarsignal` or :ref:`dipolarkernel`.
 
 Parameter-free distance distributions are preferred over parametric distance distributions, since they make fewer assumptions about the distribution and are more flexible. They introduce less bias.
 
 Parametric distance distributions
 ------------------------------------------------
+
+.. rst-class:: coderef
 
 DeerLab provide a series of parametric distance distributions models. These can be used with several functions, including :ref:`fitparamodel` and :ref:`selectmodel`. All parametric distance distribution models are functions start with the prefix ``dd_``. They take a distance vector ``r`` and a parameter vector ``param`` as inputs and return the distance distribution as a vector ``P``. Here is an example:
 

@@ -3,23 +3,19 @@ Experiment models
 
 In DeerLab, experiments can be represented as parametric models.
 
-
-Parametric dipolar experiment models
-------------------------------------------------
-
-There are several classes of experiment models:
-
 .. rst-class:: func-list
 
-=================== ======================
-Model function          Description
-=================== ======================
-:ref:`exp_5pdeer`    5-pulse DEER
-=================== ======================
+======================= ===============================================================
+Model function           Description
+======================= ===============================================================
+:ref:`exp_4pdeer`         4-pulse DEER experiment
+:ref:`exp_ovl4pdeer`      4-pulse DEER with overlaping observer pulse
+:ref:`exp_5pdeer`         5-pulse DEER experiment
+======================= ===============================================================
 
 
 .. toctree::
-    :maxdepth: 0
+    :maxdepth: 1
     :hidden:
     :glob:
     :caption: Background models

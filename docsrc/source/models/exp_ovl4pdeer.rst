@@ -1,12 +1,12 @@
 .. highlight:: matlab
-.. _exp_5pdeer:
+.. _exp_ovl4pdeer:
 
 
 ***********************
-:mod:`exp_5pdeer`
+:mod:`exp_ovl4pdeer`
 ***********************
 
-5-pulse DEER experiment 
+4-pulse DEER experiment with overlaping observer pulse
 
 -----------------------------
 
@@ -16,9 +16,9 @@ Syntax
 
 .. code-block:: matlab
 
-        info = exp_5pdeer(t)
-        K = exp_5pdeer(t,r,param,Bmodel)
-        [K,B] = exp_5pdeer(t,r,param,Bmodel)
+        info = exp_ovl4pdeer(t)
+        K = exp_ovl4pdeer(t,r,param,Bmodel)
+        [K,B] = exp_ovl4pdeer(t,r,param,Bmodel)
 
 Parameters
     *   ``t`` - Time axis (*M*-array)
@@ -36,7 +36,7 @@ Returns
 Model
 =========================================
 
-.. image:: ../images/model_scheme_exp_5pdeer.png
+.. image:: ../images/model_scheme_exp_ovl4pdeer.png
    :width: 550px
 
 
@@ -50,16 +50,16 @@ where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the 
 ============== ======================== ================= ==================== ==================== ============================================
  Variable        Symbol                   Default          Lower                Upper                Description
 ============== ======================== ================= ==================== ==================== ============================================
-``param(1)``   :math:`\Lambda_0`        0.4                0                    1                     unmodulated pathways, amplitude
-``param(2)``   :math:`\lambda_1`        0.4                0                    1                     1st modulated pathway, amplitude
-``param(3)``   :math:`\lambda_2`        0.2                0                    1                     2nd modulated pathway, amplitude
-``param(4)``   :math:`T_0^{(2)}`        :math:`\max(t)/2`  :math:`\max(t)/2-2`  :math:`\max(t)/2+2`    2nd modulated pathway, refocusing time
+``param(1)``   :math:`\Lambda_0`        0.1                0                    1                     unmodulated pathways, amplitude
+``param(2)``   :math:`\lambda_1`        0.8                0                    1                     1st modulated pathway, amplitud e
+``param(3)``   :math:`\lambda_2`        0.1                0                    1                     2nd modulated pathway, amplitude
+``param(4)``   :math:`T_0^{(2)}`        :math:`\max(t)`   :math:`\max(t)-2`    :math:`\max(t)+2`      2nd modulated pathway, refocusing time
 ============== ======================== ================= ==================== ==================== ============================================
 
 
 Example of a simulated signal using default parameters:
 
-.. image:: ../images/model_exp_5pdeer.png
+.. image:: ../images/model_exp_ovl4pdeer.png
    :width: 550px
 
 -----------------------------
@@ -70,7 +70,7 @@ Description
 
 .. code-block:: matlab
 
-        info = exp_5pdeer(t)
+        info = exp_ovl4pdeer(t)
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -83,7 +83,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    [K,B] = exp_5pdeer(t,r,param,Bmodel)
+    [K,B] = exp_ovl4pdeer(t,r,param,Bmodel)
 
 Computes the distance distribution model ``P`` from the time axis ``t`` and distance axis ``r`` according to the parameters array ``param``.  The required parameters can also be found in the ``info`` structure. 
 
@@ -92,6 +92,6 @@ The full background ``B`` is also computed from the basic background model ``Bmo
 .. code-block:: matlab
 
     Bmodel = @(t) bg_exp(t,k);
-    [K,B] = exp_5pdeer(t,r,param,Bmodel)
+    [K,B] = exp_ovl4pdeer(t,r,param,Bmodel)
 
 

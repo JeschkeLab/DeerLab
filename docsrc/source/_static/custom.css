@@ -107,6 +107,10 @@ a.visited{
 color:#000;
 }
 
+/*For links containing code*/
+.coderef a{
+    font-family: monospace
+}
 
 ul.metro li.nocolor_class a.tile { background-color: #FFFFFF; border-radius: 50%; width: 110px; height: 110px;}
 
