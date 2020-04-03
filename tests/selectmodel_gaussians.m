@@ -7,10 +7,10 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,3,200);
 r = linspace(2,6,100);
 parIn = [3 0.3 5 0.3 0.5];
-P = dd_twogauss(r,parIn);
+P = dd_gauss2(r,parIn);
 K = dipolarkernel(t,r);
 S = K*P;
-models = {@dd_onegauss,@dd_twogauss,@dd_threegauss};
+models = {@dd_gauss,@dd_gauss2,@dd_gauss3};
 
 [optimum1,metric1] = selectmodel(models,S,r,K,'aicc');
 [optimum2,metric2] = selectmodel(models,S,r,K,'aic');

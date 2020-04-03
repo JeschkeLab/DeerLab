@@ -96,13 +96,13 @@ end
 
 % Compile list of multi-Gaussian models
 multiGaussModels = cell(maxGaussians,1);
-multiGaussModels{1} = @dd_onegauss;
-if maxGaussians>=2, multiGaussModels{2} = @dd_twogauss;   end
-if maxGaussians>=3, multiGaussModels{3} = @dd_threegauss; end
-if maxGaussians>=4, multiGaussModels{4} = @dd_fourgauss;  end
-if maxGaussians>=5, multiGaussModels{5} = @dd_fivegauss;  end
+multiGaussModels{1} = @dd_gauss;
+if maxGaussians>=2, multiGaussModels{2} = @dd_gauss2; end
+if maxGaussians>=3, multiGaussModels{3} = @dd_gauss3; end
+if maxGaussians>=4, multiGaussModels{4} = @dd_gauss4; end
+if maxGaussians>=5, multiGaussModels{5} = @dd_gauss5; end
 for i = 6:maxGaussians
-    multiGaussModels{i} =  mixmodels({multiGaussModels{i-1},@dd_onegauss});
+    multiGaussModels{i} =  mixmodels({multiGaussModels{i-1},@dd_gauss});
 end
 
 % If the user has specified som boundaries then set the models boundaries appropiately

@@ -7,10 +7,10 @@ S = dipolarsignal(t,3);
 r = linspace(1,6,50);
 K = dipolarkernel(t,r);
 
-[opt1,f1,params1] = selectmodel({@dd_onegauss,@dd_fourgauss},S,r,K,'aicc');
-[opt2,f2,params2] = selectmodel({@dd_onegauss,@dd_fourgauss},S.',r,K,'aicc');
-[opt3,f3,params3] = selectmodel({@dd_onegauss,@dd_fourgauss},S,r.',K,'aicc');
-[opt4,f4,params4] = selectmodel({@dd_onegauss,@dd_fourgauss},S.',r.',K,'aicc');
+[opt1,f1,params1] = selectmodel({@dd_gauss,@dd_gauss4},S,r,K,'aicc');
+[opt2,f2,params2] = selectmodel({@dd_gauss,@dd_gauss4},S.',r,K,'aicc');
+[opt3,f3,params3] = selectmodel({@dd_gauss,@dd_gauss4},S,r.',K,'aicc');
+[opt4,f4,params4] = selectmodel({@dd_gauss,@dd_gauss4},S.',r.',K,'aicc');
 
 % Pass 1: all functionals are equal 
 pass(1) = iscolumn(f1) & iscolumn(f2) & iscolumn(f3) & iscolumn(f4);

@@ -6,7 +6,7 @@ t = linspace(-1,4,20);
 r = linspace(1,6,50);
 B = bg_exp(t,0.3);
 lam = 0.5;
-P = dd_onegauss(r,[3 0.3]);
+P = dd_gauss(r,[3 0.3]);
 
 V1 = dipolarsignal(t,r,P,'moddepth',lam,'background',B);
 V2 = dipolarsignal(t.',r,P,'moddepth',lam,'background',B);

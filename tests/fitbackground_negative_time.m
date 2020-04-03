@@ -4,7 +4,7 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(-0.5,5,300);
 r = time2dist(t);
-P = dd_onegauss(r,[4 0.4]);
+P = dd_gauss(r,[4 0.4]);
 K = dipolarkernel(t,r);
 rng(2)
 S = K*P + whitegaussnoise(300,0.02);

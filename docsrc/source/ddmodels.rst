@@ -21,7 +21,7 @@ DeerLab provide a series of parametric distance distributions models. These can 
 
 .. code-block:: matlab
 
-        P = dd_onerice(r,param)
+        P = dd_rice(r,param)
 
 
 There are several classes of parametric distance distribution models. The first class contains models that are based on basis functions and linear combinations thereof.
@@ -31,16 +31,16 @@ There are several classes of parametric distance distribution models. The first 
 ============================= ===================================================
   Model function                 Description
 ============================= ===================================================
-:ref:`dd_onerice`               Single 3D-Rice distribution
-:ref:`dd_tworice`               Two 3D-Rice distributions
-:ref:`dd_threerice`             Three 3D-Rice distributions
-:ref:`dd_fourrice`              Four 3D-Rice distributions
-:ref:`dd_fiverice`              Five 3D-Rice distributions
-:ref:`dd_onegauss`              Single Gaussian distribution
-:ref:`dd_twogauss`              Two Gaussians distributions
-:ref:`dd_threegauss`            Three Gaussians distributions
-:ref:`dd_fourgauss`             Four Gaussians distributions
-:ref:`dd_fivegauss`             Five Gaussians distributions
+:ref:`dd_rice`                  Single 3D-Rice distribution
+:ref:`dd_rice2`                 Two 3D-Rice distributions
+:ref:`dd_rice3`                 Three 3D-Rice distributions
+:ref:`dd_rice4`                 Four 3D-Rice distributions
+:ref:`dd_rice5`                 Five 3D-Rice distributions
+:ref:`dd_gauss`                 Single Gaussian distribution
+:ref:`dd_gauss2`                Two Gaussians distributions
+:ref:`dd_gauss3`                Three Gaussians distributions
+:ref:`dd_gauss4`                Four Gaussians distributions
+:ref:`dd_gauss5`                Five Gaussians distributions
 :ref:`dd_gengauss`              Single generalized Gaussian distribution
 :ref:`dd_skewgauss`             Single skew Gaussian distribution
 ============================= ===================================================

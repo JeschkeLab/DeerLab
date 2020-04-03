@@ -5,7 +5,7 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,5,100);
 r = linspace(2,6,300);
 InputParam = [4 0.2 4 1 3 0.4 0.4 0.4];
-P = dd_threegauss(r,InputParam);
+P = dd_gauss3(r,InputParam);
 V = dipolarsignal(t,r,P);
 [Pfit,~,Pci] = fitmultigauss(V,t,r,5,'aicc');
 

@@ -5,7 +5,7 @@ function [pass,maxerr] = test(opt)
 N = 100;
 t = linspace(0,3,N);
 r = time2dist(t);
-P = dd_onegauss(r,[4,0.4]);
+P = dd_gauss(r,[4,0.4]);
 
 % Pass 1: not enough input arguments
 try

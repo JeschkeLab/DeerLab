@@ -5,7 +5,7 @@ function [pass,maxerr] = test(opt)
 Dimension = 200;
 t = linspace(-0.6,2,Dimension);
 r = time2dist(t);
-P = dd_onegauss(r,[3,0.5]);
+P = dd_gauss(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
 S = K*P;

@@ -1,11 +1,10 @@
-function output = dd_threerice(r,param)
 %
-% DD_THREERICE Sum of three 3D-Rice distributions parametric model
+% DD_RICE3 Sum of three 3D-Rice distributions parametric model
 %
-%   info = DD_THREERICE
+%   info = DD_RICE3
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   P = DD_THREERICE(r,param)
+%   P = DD_RICE3(r,param)
 %   Computes the N-point model (P) from the N-point distance axis (r) according to
 %   the paramteres array (param). The required parameters can also be found
 %   in the (info) structure.
@@ -26,6 +25,8 @@ function output = dd_threerice(r,param)
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+
+function output = dd_rice3(r,param)
 
 nParam = 8;
 

@@ -1,9 +1,9 @@
 .. highlight:: matlab
-.. _dd_threegauss:
+.. _dd_gauss3:
 
 
 ************************
-:mod:`dd_threegauss`
+:mod:`dd_gauss3`
 ************************
 
 Sum of three Gaussian distributions
@@ -16,8 +16,8 @@ Syntax
 
 .. code-block:: matlab
 
-        info = dd_threegauss()
-        P = dd_threegauss(r,param)
+        info = dd_gauss3()
+        P = dd_gauss3(r,param)
 
 Parameters
     *   ``r`` - Distance axis (N-array)
@@ -51,7 +51,7 @@ with :math:`\sigma_i = w_i/\sqrt{2ln(2)}`
 
 Example using default parameters:
 
-.. image:: ../images/model_dd_threegauss.png
+.. image:: ../images/model_dd_gauss3.png
    :width: 650px
 
 
@@ -63,7 +63,7 @@ Description
 
 .. code-block:: matlab
 
-        info = dd_threegauss()
+        info = dd_gauss3()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -76,7 +76,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    P = dd_threegauss(r,param)
+    P = dd_gauss3(r,param)
 
 Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 

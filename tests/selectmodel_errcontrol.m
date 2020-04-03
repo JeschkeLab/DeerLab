@@ -6,7 +6,7 @@ t = linspace(0,5,80);
 S = dipolarsignal(t,3);
 r = linspace(1,6,50);
 K = dipolarkernel(t,r);
-Models = {@dd_onegauss,@dd_twogauss,@dd_threegauss};
+Models = {@dd_gauss,@dd_gauss2,@dd_gauss3};
 
 % Pass 1: invalid selection method
 try

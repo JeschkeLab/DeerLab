@@ -1,8 +1,8 @@
 .. highlight:: matlab
-.. _dd_tworice:
+.. _dd_rice2:
 
 ***********************
-:mod:`dd_tworice`
+:mod:`dd_rice2`
 ***********************
 
 Sum of two 3D-Rice distributions
@@ -15,8 +15,8 @@ Syntax
 
 .. code-block:: matlab
 
-        info = dd_tworice()
-        P = dd_tworice(r,param)
+        info = dd_rice2()
+        P = dd_rice2(r,param)
 
 Parameters
     *   ``r`` - Distance axis (N-array)
@@ -51,7 +51,7 @@ This is a three-dimensional non-central chi distribution, the 3D generalization 
 
 Example using default parameters:
 
-.. image:: ../images/model_dd_tworice.png
+.. image:: ../images/model_dd_rice2.png
    :width: 650px
 
 
@@ -63,7 +63,7 @@ Description
 
 .. code-block:: matlab
 
-        info = dd_tworice()
+        info = dd_rice2()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -76,7 +76,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    P = dd_tworice(r,param)
+    P = dd_rice2(r,param)
 
 Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 

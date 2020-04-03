@@ -6,7 +6,7 @@ N = 100;
 dt = 0.008;
 t = linspace(0,dt*N,N);
 r = time2dist(t);
-P = dd_onegauss(r,[3,0.5]);
+P = dd_gauss(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
 S = K*P;

@@ -4,7 +4,7 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(0,3,200);
 r = linspace(2,6,100);
-P = dd_onegauss(r,[3,0.5]);
+P = dd_gauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = dipolarsignal(t,r,P,'noiselevel',0.05);
 

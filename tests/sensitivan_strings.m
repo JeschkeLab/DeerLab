@@ -46,7 +46,7 @@ M = 200;
 t = linspace(0,4,M);
 r = time2dist(t);
 
-P = dd_onegauss(r,[4,0.3]);
+P = dd_gauss(r,[4,0.3]);
 K = dipolarkernel(t,r);
 S = K*P;
 S = dipolarsignal(t,r,P,'noiselevel',0.05);
