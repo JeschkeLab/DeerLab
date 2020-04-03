@@ -69,7 +69,7 @@ html_copy_source = False
 html_theme_path = ["../.."]
 html_logo = "demo/static/logo-wordmark-light.svg"
 html_show_sourcelink = True
-html_favicon = 'favicon.ico'
+html_favicon = '_static/favicon.ico'
 html_static_path = ['_static']
 
 # Extensions to theme docs
@@ -126,7 +126,7 @@ html_theme_path = ["_themes", ]
 html_static_path = ['_static']
 highlight_language = 'matlab'
 primary_domain = 'mat'
-html_logo = '../source/logo.png'
+html_logo = '_static/logo.png'
 
 
 # Design pygments patch for MATLAB true code highlighting
