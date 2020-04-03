@@ -108,7 +108,7 @@ Additional settings can be specified via name-value pairs. All property names ar
     [median,iqr] = sensitivan(___,'Property1',Value1,'Property2',Value2,___)
 
 - ``'RandPerm'`` - Randomized level-combination evaluation
-    Specifies whether to randomly permute the sensitivity anaysis parameter combinations.
+    Specifies whether to randomly permute the sensitivity analysis parameter combinations.
 
     *Default:* ``true``
 
@@ -119,7 +119,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 			[median,iqr] = sensitivan(___,'RandPerm',false)
 
 - ``'AxisHandle'`` - Plot intermediate results
-    Axis handle to plot the state of the validation results at each level combination. The display is refreshed every 5 level cobinations (for the sake of speed).
+    Axis handle to plot the state of the validation results at each level combination. The display is refreshed every 5 level combinations (for the sake of speed).
 
     *Default:* [*empty*]
 

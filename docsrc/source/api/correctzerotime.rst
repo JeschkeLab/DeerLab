@@ -41,7 +41,7 @@ Description
 
         [tc,t0,pos] = correctzerotime(V,t)
 
-Determines the zero time of a dipolar signal ``V`` and corrects the time axis ``t`` in ns/us for it. If input signal ``V`` is in ns/us the zero time ``t0`` and corrected time axis ``tc`` will be returned in ns/us.
+Determines the zero time of a dipolar signal ``V`` and corrects the time axis ``t`` (in microseconds) for it. If input signal ``V`` is the zero time ``t0`` and corrected time axis ``tc`` will be returned.
 
 
 -----------------------------
@@ -51,7 +51,7 @@ Determines the zero time of a dipolar signal ``V`` and corrects the time axis ``
 
     tc = correctzerotime(V,t,t0)
 
-Corrects the time axis ``t`` for a given zero-time ``t0`` in ns/us.
+Corrects the time axis ``t`` for a given zero-time ``t0`` in microseconds.
 
 
 

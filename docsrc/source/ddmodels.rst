@@ -21,7 +21,7 @@ DeerLab provide a series of parametric distance distributions models. These can 
 
 .. code-block:: matlab
 
-        P = dd_onerice(r,params)
+        P = dd_onerice(r,param)
 
 
 There are several classes of parametric distance distribution models. The first class contains models that are based on basis functions and linear combinations thereof.

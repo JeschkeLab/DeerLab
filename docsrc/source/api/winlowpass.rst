@@ -22,8 +22,8 @@ Syntax
 
 Parameters
     *   ``S`` - Signal (*N*-element array)
-    *   ``Fstop`` - Stopband frequency (scalar)
-    *   ``Fpass`` - Passband frequency (scalar)
+    *   ``Fstop`` - Stop-band frequency (scalar)
+    *   ``Fpass`` - Pass-band frequency (scalar)
     *   ``Fsamp`` - Sampling frequency (scalar)
 Returns
     *   ``Sout`` - Filtered signal (*N*-element array)
@@ -39,7 +39,7 @@ Description
 
     Sout = winlowpass(S,Fstop,Fpass,Fsamp)
 
-Filters the N-point signal ``S`` using a Kaiser-windowed lowpass FIR filter with a transition band given by the passband ``Fpass`` and stopband ``Fstop`` frequencies in Hz. The filter is then constructed according to the sampling rate ``Fsamp`` of the signal in Hz.
+Filters the N-point signal ``S`` using a Kaiser-windowed lowpass FIR filter with a transition band given by the pass-band ``Fpass`` and stop-band ``Fstop`` frequencies in Hz. The filter is then constructed according to the sampling rate ``Fsamp`` of the signal in Hz.
 
 -----------------------------
 
@@ -48,7 +48,7 @@ Filters the N-point signal ``S`` using a Kaiser-windowed lowpass FIR filter with
 
     [Sout,H] = winlowpass(S,Fstop,Fpass,Fsamp)
 
-The filter transfer function parameters ``H`` requested as a second ouput argument.
+The filter transfer function parameters ``H`` requested as a second output argument.
 
 -----------------------------
 
@@ -64,7 +64,7 @@ Additional settings can be specified via name-value pairs. All property names ar
     P = winlowpass(___,'Property1',Value1,'Property2',Value2,___)
 
 - ``'MinimalAttenuation'`` - Minimal sidelobe attenuation
-    Minimal attenuation level [dB] of the first sidelobe after the stopband.
+    Minimal attenuation level [dB] of the first sidelobe after the stop-band.
 
     *Default:* ``50``
 

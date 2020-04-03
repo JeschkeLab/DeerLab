@@ -41,7 +41,7 @@ Description
 
 Fit a distance distribution ``P`` on a distance axis ``r`` to the signal ``S`` according to the kernel ``K``. The (M-2)xM point regularization matrix ``L`` and regularization parameter ``alpha`` control the regularization properties.
 
-The type of regularization employed in obir is set by the ``'type'`` input argument. The regularization models implemented in ``obir`` are:
+The type of regularization employed in ``obir`` is set by the ``'type'`` input argument. The regularization models implemented in ``obir`` are:
 
 *    ``'tikhonov'`` -   Tikhonov regularization
 *    ``'tv'``       -   Total variation regularization
@@ -152,7 +152,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 			P = obir(___,'MaxIter',1e10)
 
-- ``'MaxFunEval'`` - Maximal solver function evalutions
+- ``'MaxFunEval'`` - Maximal solver function evaluations
     Maximum number of function evaluation of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'`` solver.
 
     *Default:* ``2e7``

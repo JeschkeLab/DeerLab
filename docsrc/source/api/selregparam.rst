@@ -169,7 +169,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 			alpha = selregparam(___,'NonNegConstrained',false)
 
 - ``'HuberParam'`` - Huber parameter value
-    Value of the superparameter used in pseudo-Huber regularization.
+    Value of the super-parameter used in pseudo-Huber regularization.
 
     *Default:* ``1.35``
 

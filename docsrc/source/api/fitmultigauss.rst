@@ -40,7 +40,7 @@ Returns
     *  ``paramci`` - Fitted parameters confidence intervals(*Wx2*-array)
     *  ``Nopt`` - Optimal number of Gaussian (scalar)
     *  ``metrics`` - Evaluated model selection functionals (cell array)
-    *  ``Peval`` - Fitted distance distributions for each multigauss model (*Ngauss x N* matrix)
+    *  ``Peval`` - Fitted distance distributions for each multi-gauss model (*Ngauss x N* matrix)
 
 -----------------------------
 
@@ -52,7 +52,7 @@ Description
 
         P = fitmultigauss(S,K,r,Ngauss)
 
-Fits the dipolar signal ``S`` to a distance distribution ``P`` using a multi-gauss parametric model according to the dipolar kernel ``K`` and distance axis ``r``. The function chooses the optimal number of Gaussian distributions up to a maximum number given by ``Ngauss`` by means of the corrected Aikaike information criterion (AICC).
+Fits the dipolar signal ``S`` to a distance distribution ``P`` using a multi-gauss parametric model according to the dipolar kernel ``K`` and distance axis ``r``. The function chooses the optimal number of Gaussian distributions up to a maximum number given by ``Ngauss`` by means of the corrected Akaike information criterion (AICC).
 
 -----------------------------
 
@@ -61,7 +61,7 @@ Fits the dipolar signal ``S`` to a distance distribution ``P`` using a multi-gau
 
         P = fitmultigauss(S,K,r,Ngauss,metric)
 
-The metric employed for the selection of the optimal multigauss model can be specified as an additional input ``metric``. The accepted inputs are:
+The metric employed for the selection of the optimal multi-gauss model can be specified as an additional input ``metric``. The accepted inputs are:
 
 	*   ``'aic'`` - Akaike information criterion
 	*   ``'aicc'`` - Corrected Akaike information criterion
@@ -83,7 +83,7 @@ If the default kernel is to be used, the time-axis can be passed instead of the 
 
 	P = fitmultigauss(S,t,r,Ngauss,metric,'Background',model)
 
-By passing the ``'Background'`` option, the background function and modulation depth are fitted along the multigauss distribution parameters. 
+By passing the ``'Background'`` option, the background function and modulation depth are fitted along the multi-gauss distribution parameters. 
 
 -----------------------------
 
@@ -92,7 +92,7 @@ By passing the ``'Background'`` option, the background function and modulation d
 
     [P,param,Nopt,metrics] = fitmultigauss(args)
 
-If requested alongside the distribution ``P``, the optimal fit model parameters ``param``, as well their respective confidence intervals ``Pci`` and ``paramci`` the optimal number of gaussians ``Nopt`` and evaluated selection metrics ``metrics`` are returned.
+If requested alongside the distribution ``P``, the optimal fit model parameters ``param``, as well their respective confidence intervals ``Pci`` and ``paramci`` the optimal number of Gaussians ``Nopt`` and evaluated selection metrics ``metrics`` are returned.
 
 -----------------------------
 

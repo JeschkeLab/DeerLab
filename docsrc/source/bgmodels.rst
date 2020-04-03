@@ -1,13 +1,13 @@
 Background models
 ======================
 
-DeerLab includes a collection of parametric models that can be used to model the background signal, i.e. the signal due to randomly distributed spins in the sample that are not part of the spin-labelled protein or object.
+DeerLab includes a collection of parametric models that can be used to model the background signal, i.e. the signal due to randomly distributed spins in the sample that are not part of the spin-labeled protein or object.
 
-All background model functions start with the prefix ``bg_``. They take a time axis vector ``t`` (in microseconds) and a paramete vector ``params`` as inputs and return a background function ``B``, defined over ``t``, as output. Here is an example:
+All background model functions start with the prefix ``bg_``. They take a time axis vector ``t`` (in microseconds) and a parameter vector ``param`` as inputs and return a background function ``B``, defined over ``t``, as output. Here is an example:
 
 .. code-block:: matlab
 
-        B = bg_strexp(t,params)
+        B = bg_strexp(t,param)
 
 
 

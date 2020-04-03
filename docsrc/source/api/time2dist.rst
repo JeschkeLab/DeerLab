@@ -49,7 +49,7 @@ The length of the output axis can be specified by the parameter ``M``.
 -----------------------------
 
 
-These empirical equation approximate the minimal and maximal detectable distances given a certain timestep :math:`\Delta t` and trace length :math:`t_\text{max}`.
+These empirical equation approximate the minimal and maximal detectable distances given a certain time step :math:`\Delta t` and trace length :math:`t_\text{max}`.
 
 .. math:: r_\text{min} = 4\left( \frac{4\Delta t \nu_0}{0.85} \right)^{1/3}
 

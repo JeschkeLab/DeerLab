@@ -6,7 +6,7 @@
 :mod:`exp_ovl4pdeer`
 ***********************
 
-4-pulse DEER experiment with overlaping observer pulse
+4-pulse DEER experiment with overlapping observer pulse
 
 -----------------------------
 
@@ -51,7 +51,7 @@ where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the 
  Variable        Symbol                   Default          Lower                Upper                Description
 ============== ======================== ================= ==================== ==================== ============================================
 ``param(1)``   :math:`\Lambda_0`        0.1                0                    1                     unmodulated pathways, amplitude
-``param(2)``   :math:`\lambda_1`        0.8                0                    1                     1st modulated pathway, amplitud e
+``param(2)``   :math:`\lambda_1`        0.8                0                    1                     1st modulated pathway, amplitude
 ``param(3)``   :math:`\lambda_2`        0.1                0                    1                     2nd modulated pathway, amplitude
 ``param(4)``   :math:`T_0^{(2)}`        :math:`\max(t)`   :math:`\max(t)-2`    :math:`\max(t)+2`      2nd modulated pathway, refocusing time
 ============== ======================== ================= ==================== ==================== ============================================

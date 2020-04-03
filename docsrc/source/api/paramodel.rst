@@ -24,7 +24,7 @@ Parameters
     *   ``lower`` - Lower bounds of parameters (M-array)
 
 Returns
-    *   ``mod`` - Parameteric model (function handle)
+    *   ``mod`` - Parametric model (function handle)
 
 Description
 =========================================
@@ -39,7 +39,7 @@ Converts the input function handle ``fcn`` to a valid DeerLab parametric model c
 
         mod = paramodel(fcn,param0)
 
-If an array of inital guess values ``param0`` is passed, these are set into the resulting parametric model. The number of parameters is computed from the length of the array. In this case, the model is unconstrained and no bounds are enforced upon the parameter values.
+If an array of initial guess values ``param0`` is passed, these are set into the resulting parametric model. The number of parameters is computed from the length of the array. In this case, the model is unconstrained and no bounds are enforced upon the parameter values.
 
 .. code-block:: matlab
 

@@ -101,7 +101,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 			P = fitregmodel(___,'NonNegConstrained',false)
 
 - ``'HuberParam'`` - Huber parameter value
-    Value of the superparameter used in pseudo-Huber regularization.
+    Value of the super-parameter used in pseudo-Huber regularization.
 
     *Default:* ``1.35``
 
@@ -172,7 +172,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 			P = fitregmodel(___,'MaxIter',1e10)
 
-- ``'MaxFunEval'`` - Maximal solver function evalutions
+- ``'MaxFunEval'`` - Maximal solver function evaluations
     Maximum number of function evaluation of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
 
     *Default:* ``2e7``
@@ -197,5 +197,5 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			P = fitparamodel(___,'Verbose','iter-detailed')
+			P = fitregmodel(___,'Verbose','iter-detailed')
 

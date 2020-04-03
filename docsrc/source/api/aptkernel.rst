@@ -60,7 +60,7 @@ Additional settings can be specified via name-value pairs. All property names ar
     K = aptkernel(t,'Property1',Value1,'Property2',Value2,___)
 
 
--``'ExcitationBandwidth'`` - Excitation bandwith of the pulses in **MHz**. 
+-``'ExcitationBandwidth'`` - Excitation bandwidth of the pulses in **MHz**. 
     If specified, its value is used in the compensation of limited excitation bandwidth of the experimental pulses. If not specified infinite excitation bandwidth is assumed.
 
     *Default:* empty, corresponding to infinite excitation bandwidth

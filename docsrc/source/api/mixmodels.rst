@@ -25,7 +25,7 @@ Parameters
     *   ``models`` - Input parametric models (*N*-element cell array of function handles)
 
 Returns
-    *   ``newModel`` - Generated mixed parameteric model (function handle)
+    *   ``newModel`` - Generated mixed parametric model (function handle)
 
 -----------------------------
 
@@ -46,7 +46,7 @@ Information about the new model and its parameters can be accessed by
 
             info = newmodel();
 
-The mixed models will incude an additional amplitude parameter for each additional model in the mix.
+The mixed models will include an additional amplitude parameter for each additional model in the mix.
 
 -----------------------------
 
@@ -61,4 +61,4 @@ If one mixes a single Gaussian model (2 parameters) with a WLC model (2 paramete
 
     newmodel = mixmodels({@dd_onegauss,@dd_wormchain})
 
-the resulting model ``newmodel`` will contain 5 parameters in the followig order: 1 amplitude parameter, the 2 single-Gaussian parameters and the 2 WLC parameters. 
+the resulting model ``newmodel`` will contain 5 parameters in the following order: 1 amplitude parameter, the 2 single-Gaussian parameters and the 2 WLC parameters. 

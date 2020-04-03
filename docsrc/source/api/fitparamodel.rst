@@ -30,9 +30,9 @@ Parameters
     *   ``t`` -  Model time axis (*N*-element array)
     *   ``r`` -  Model distance axis (*M*-element array)
     *   ``K`` -  Dipolar kernel (*NxM*-element array)
-    *   ``param0`` -  Model parameter inital guess (*W*-array)
+    *   ``param0`` -  Model parameter initial guess (*W*-array)
 Returns
-    *  ``param`` - Fitted model paramters (*W*-array)
+    *  ``param`` - Fitted model parameters (*W*-array)
     *  ``fit`` - Parametric model fit (*N*-element array)
     *  ``paramci`` - Fit confidence intervals (*Wx2*-element array)
     *  ``fitci`` - Model fit confidence bands (*Nx2*-element array)
@@ -49,7 +49,7 @@ Description
     [param,fit,ci] = fitparamodel(V,@model,t)
     [param,fit,ci] = fitparamodel(V,@model,t,param0)
 
-Fits the **time-domain** parametric model ``@model`` to the input signal ``V`` on a time axis ``t``. User-defined inital guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
+Fits the **time-domain** parametric model ``@model`` to the input signal ``V`` on a time axis ``t``. User-defined initial guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
 
 The fitted parameters as well as their 99%-confidence intervals are returned as the ``param`` and ``paramci`` outputs, respectively. The fitted model and its 99%-confidence band are returned as the ``fit`` and ``fitci`` outputs, respectively. 
 
@@ -61,7 +61,7 @@ The fitted parameters as well as their 99%-confidence intervals are returned as 
     [param,fit,ci] = fitparamodel(V,@model,r,K)
     [param,fit,ci] = fitparamodel(V,@model,r,K,param0)
 
-Fits the **distance-domain** parametric model ``@model`` to the input signal ``V`` on a distance axis ``r``. The dipolar kernel ``K`` is required as in input for distance-domain fitting. User-defined inital guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
+Fits the **distance-domain** parametric model ``@model`` to the input signal ``V`` on a distance axis ``r``. The dipolar kernel ``K`` is required as in input for distance-domain fitting. User-defined initial guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
 
 -----------------------------
 
@@ -160,7 +160,7 @@ Additional settings can be specified via name-value pairs. All property names ar
     Numerical solver employed for fitting the model to the data.
 
         *   ``'lsqnonlin'`` - Non-linear least squares (requires Opt. toolbox)
-        *   ``'fminsearch'`` - Unconstrained minmization (free)
+        *   ``'fminsearch'`` - Unconstrained minimization (free)
         *   ``'fmincon'`` - Constrained non-linear minimization solver (requires Opt. toolbox)
         *   ``'fminsearchcon'`` - Constrained non-linear minimization solver (free)
         *   ``'nlsqbnd'`` - Non-linear least squares (free)
@@ -217,7 +217,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 			param = fitparamodel(___,'MaxIter',1e10)
 
-- ``'MaxFunEval'`` -  Maximal solver function evalutions
+- ``'MaxFunEval'`` -  Maximal solver function evaluations
     Maximum number of function evaluation of the solver. After the solver exceeds this number the optimization will stop. This option is only relevant for the ``'fmincon'``  and ``'lsqnonneg'`` solvers.
 
     *Default:* ``2e7``

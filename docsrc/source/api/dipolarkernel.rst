@@ -68,7 +68,7 @@ If the modulation depth ``lambda`` (a number between 0 and 1) is specified, then
 
     K = dipolarkernel(t,r,lambda,B)
 
-If the background ``B`` and modulation depth ``lambda`` are specified, then both are included into the kernel matrix. ``B`` can be either an array with the precalculated background decay (over ``t``), or a function handle with a background model. ``K`` describes the transformation from the distance distribution to the dipolar signal `\mathbf{V}` given by
+If the background ``B`` and modulation depth ``lambda`` are specified, then both are included into the kernel matrix. ``B`` can be either an array with the pre-calculated background decay (over ``t``), or a function handle with a background model. ``K`` describes the transformation from the distance distribution to the dipolar signal `\mathbf{V}` given by
 
     .. math:: \mathbf{K}\mathbf{P}  = \mathbf{V} = [(1-\lambda) + \lambda \mathbf{D} ]\mathbf{B}
 
@@ -135,7 +135,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
     K = dipolarkernel(___,'Property1',Value1,'Property2',Value2,___)
 
-- ``'ExcitationBandwidth'`` - Excitation bandwith of the pulses in **MHz**. 
+- ``'ExcitationBandwidth'`` - Excitation bandwidth of the pulses in **MHz**. 
     Use this to include limited excitation bandwidth of the experimental pulses. If not specified, infinite excitation bandwidth is assumed. The compensation for a given excitation bandwidth :math:`\Delta\omega` is taken into account by the approximation
 
     .. math:: K_{\Delta\omega}(t,r)  = \mathrm{exp}\left(-\frac{\omega_\mathrm{dd}^2}{\Delta\omega^2}\right)K(t,r)
@@ -149,7 +149,7 @@ Additional settings can be specified via name-value pairs. All property names ar
         K = dipolarkernel(t,r,'ExcitationBandwidth',50)     % 50 MHz excitation bandwidth
 
 - ``'OvertoneCoeffs'`` - RIDME overtone coefficients
-    1D array containing the overtone coefficients for RIDME experimens. If passed, the dipolar kernel overtones are calculated based on the passed coefficients. The coefficient values must be normalized. The kernel containing up to the :math:`k^{th}` overtone is constructed as follows
+    1D array containing the overtone coefficients for RIDME experiments. If passed, the dipolar kernel overtones are calculated based on the passed coefficients. The coefficient values must be normalized. The kernel containing up to the :math:`k^{th}` overtone is constructed as follows
 
     .. math:: K(t,r)  = \int_{0}^{1}\sum_{k=1}^K c_k\cos\left[(3\cos^2\theta -1)k\frac{\mu_0\hbar\gamma_A\gamma_B}{4\pi r^3}t\right]\mathrm{d} \cos\theta
 
@@ -181,7 +181,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
     *   ``'integral'`` - Uses MATLAB's ``integral()`` function. This method is accurate, but slow.
 
-    *   ``'grid'`` - Uses orientational averaging over a grid of orientations, using the number of orientations given in ``nKnots``. This method is slow, and it converges very slowly with the number of orientations.
+    *   ``'grid'`` - Uses orientation averaging over a grid of orientations, using the number of orientations given in ``nKnots``. This method is slow, and it converges very slowly with the number of orientations.
 
     *Default:* ``'fresnel'``
 
@@ -191,8 +191,8 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 			K = dipolarkernel(args,'Method','integral')
 
-- ``'nKnots'`` - Number of orientations for orientational averaging
-    If the kernel is computed using ``'grid'``, this options specifies the number of orientations between :math:`\theta=0` and :math:`\theta=\pi/2` used for orientational averaging.
+- ``'nKnots'`` - Number of orientations for orientation averaging
+    If the kernel is computed using ``'grid'``, this options specifies the number of orientations between :math:`\theta=0` and :math:`\theta=\pi/2` used for orientation averaging.
 
     *Default:* ``5001``
 

@@ -23,7 +23,7 @@ Parameters
     *   ``M`` - Output length (scalar)
 
 Returns
-    *   ``nu`` - Fequency axis (*M*-element array)
+    *   ``nu`` - Frequency axis (*M*-element array)
 
 -----------------------------
 

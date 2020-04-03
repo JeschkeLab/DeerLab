@@ -8,10 +8,10 @@ This is the official documentation for the DeerLab toolbox functions. The follow
 
 
 
-Modelling
+Modeling
 =========================================
 
-This class of functions allows simulation of dipolar signals and their modelling for fitting experimental data.
+This class of functions allows simulation of dipolar signals and their modeling for fitting experimental data.
 
 .. toctree::
     :hidden:
@@ -30,8 +30,8 @@ This class of functions allows simulation of dipolar signals and their modelling
 =============================================  ============================================================
 Function                                         Description
 =============================================  ============================================================
-:ref:`dipolarkernel`                           Dipolar kernel contructor
-:ref:`aptkernel`                               APT kernel contructor
+:ref:`dipolarkernel`                           Dipolar kernel constructor
+:ref:`aptkernel`                               APT kernel constructor
 :ref:`dipolarsignal`                           Dipolar signal simulator
 :ref:`whitegaussnoise`                         Gaussian white noise generator
 :ref:`paramodel`                               Parametric model builder
@@ -160,10 +160,10 @@ This class of functions provides several tools for quick commands typically requ
 Function                                         Description
 =============================================  ============================================================
 :ref:`deerload`                                  Spectrometer data loader
-:ref:`time2freq`                                 Time to frequency axis convertor
-:ref:`time2dist`                                 Time to distance axis convertor
+:ref:`time2freq`                                 Time to frequency axis converter
+:ref:`time2dist`                                 Time to distance axis converter
 :ref:`noiselevel`                                Noise level estimator
-:ref:`fftspec`                                   Fast-Fourier trasnform spectrum
+:ref:`fftspec`                                   Fast-Fourier transform spectrum
 :ref:`prepvalidation`                            Full-factorial analysis preparation
 =============================================  ============================================================
 

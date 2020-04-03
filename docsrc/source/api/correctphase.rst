@@ -24,7 +24,7 @@ Syntax
 
 
 Parameters
-    *   ``V`` - Complex-valued signal (*N*-eement array)
+    *   ``V`` - Complex-valued signal (*N*-element array)
     *   ``ph`` - Correction phase (scalar)
     *   ``oc`` - Imaginary offset correction (boolean)
 Returns
@@ -64,7 +64,7 @@ Applied a phase correction with a given phase angle ``ph`` (in radians) to input
     Vr = correctphase(V,ph,oc)
     Vr = correctphase(V,[],oc)
 
-A third boolean argument ``oc`` can be passed to enable/diasable the fitting of a possible offset on the imaginary component of the data (defaults to ``false``). This is compatible with both automatic and manual phase correction.
+A third boolean argument ``oc`` can be passed to enable/disable the fitting of a possible offset on the imaginary component of the data (defaults to ``false``). This is compatible with both automatic and manual phase correction.
 
 
 -----------------------------

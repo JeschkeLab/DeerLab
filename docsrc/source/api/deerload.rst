@@ -48,7 +48,7 @@ Description
 Read spectral data from a file specified in the string ``filename`` and returns the time-axis vector ``t`` and data vector ``V``.
 
 .. Important::
-   Most commercial spectrometers save their data in nanoseconds. Since DeerLab time-units are specfied in microseconds, it is recommended to check the values of ``t`` returned by ``deerload`` and convert to microseconds if necessary. 
+   Most commercial spectrometers save their data in nanoseconds. Since DeerLab time-units are specified in microseconds, it is recommended to check the values of ``t`` returned by ``deerload`` and convert to microseconds if necessary. 
 
 -----------------------------
 
