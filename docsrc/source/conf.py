@@ -24,7 +24,6 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinxcontrib.httpdomain',
     'sphinx.ext.imgmath',
-    'button'
 ]
 
 # Render Latex math equations as svg instead of rendering with JavaScript
