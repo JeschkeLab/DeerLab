@@ -1,5 +1,5 @@
 .. highlight:: matlab
-.. _validate:
+.. _sensitivan:
 
 ***********************
 :mod:`sensitivan`

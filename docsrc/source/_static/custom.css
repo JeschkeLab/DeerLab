@@ -110,6 +110,59 @@ color:#000;
 
 ul.metro li.nocolor_class a.tile { background-color: #FFFFFF; border-radius: 50%; width: 110px; height: 110px;}
 
+/*----------------------------------------------*/
+/*---------Function list table class------------*/
+/* Accessed via ".. rst-class:: func-list"      */
+/*----------------------------------------------*/
+
+/*Remove the alternate row background color from default sphinx+RTD*/
+table.func-list.docutils:not(.field-list) tr:nth-child(2n-1) td {
+    background: unset;
+}
+
+/*Make the links looks like code*/
+table.func-list.docutils a {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 15px;
+}
+
+/*Formatting of the table cells*/
+.rst-content table.func-list.docutils td {
+    width: 300px;
+    padding-left: 35px;
+    border-bottom: solid 1px #f2f2f2;
+    border-top: solid 1px #f2f2f2;
+    border-left: hidden 1px #fff;
+    border-right: hidden 1px #fff;
+    font-size: 15px;
+}
+
+/*Formatting of the table header*/
+.rst-content table.func-list.docutils thead th{
+    background: #fff;
+    padding-left: 35px;
+    border-bottom: solid 1px #f2f2f2;
+    border-top: hidden 1px #fff;
+    border-left: hidden 1px #fff;
+    border-right: hidden 1px #fff;
+    font-size: 15px;
+}
+
+/*Coloring when hovering over row*/
+table.func-list.docutils tbody tr.row-odd, table.func-list.docutils tbody tr.row-even{
+    border-radius: 15px;
+}
+
+/*Coloring when hovering over row*/
+table.func-list.docutils tbody tr.row-odd:hover, table.func-list.docutils tbody tr.row-even:hover{
+    background-color: #ececff!important;
+}
+
+/*----------------------------------------------*/
+/*----------------------------------------------*/
 
 /*Override table width restrictions*/
 @media screen and (min-width: 767px) {

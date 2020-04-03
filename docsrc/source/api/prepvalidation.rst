@@ -33,7 +33,7 @@ Returns all the possible permutations of the parameters in the input structure a
 *   ``param(n).name`` - Name of the parameter in the script (string)
 *   ``param(n).values`` - Values to be adapted by the parameter (Cell or numerical array)
 
-.. Important:: This function is automatically called by :ref:`validate`, where the ``param`` structure and not ``varparam`` must be passed.
+.. Important:: This function is automatically called by :ref:`sensitivan`, where the ``param`` structure and not ``varparam`` must be passed.
 
 For example, a case where two parameters ``varA`` and ``varB`` are to be validated. The first parameter should be validated times at for the strings ``'str1'`` and ``'str2'``  and the second parameter should be linearly validated 3 times in the range 5 to 15:
 
