@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="./docsrc/source/logo_dark.png" alt="DeerLab Logo" width="60%"></img>
+<img src="./docsrc/source/_static/logo_dark.png" alt="DeerLab Logo" width="60%"></img>
 </p>
 </div>
 
