@@ -12,7 +12,7 @@ parIn3 = [4.5 0.3];
 P3 = dd_rice(r,parIn3);
 P = 0.4*P2 + 0.3*P1 + 0.3*P3;
 
-mixedModel = mixmodels({@dd_gauss,@dd_gauss,@dd_rice});
+mixedModel = mixmodels(@dd_gauss,@dd_gauss,@dd_rice);
 parInMix = [0.3 0.4 parIn1 parIn2 parIn3];
 Pmix = mixedModel(r,parInMix);
 

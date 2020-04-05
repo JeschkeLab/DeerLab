@@ -10,7 +10,7 @@ parIn2 = [4 0.5];
 P2 = dd_gauss(r,parIn2);
 P = 0.7*P2 + 0.3*P1;
 
-mixedModel = mixmodels({@dd_gauss,@dd_gauss});
+mixedModel = mixmodels(@dd_gauss,@dd_gauss);
 parInMix = [0.3 parIn1 parIn2];
 Pmix = mixedModel(r,parInMix);
 
