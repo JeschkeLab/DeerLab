@@ -16,10 +16,10 @@ Syntax
 
 .. code-block:: matlab
 
-    P = fitmultigauss(S,K,r,Ngauss)
-    P = fitmultigauss(S,t,r,Ngauss)
-    P = fitmultigauss(S,K,r,Ngauss,metric)
-    P = fitmultigauss(S,t,r,Ngauss,metric,'Background',model)
+    P = fitmultigauss(S,K,r,Nmax)
+    P = fitmultigauss(S,t,r,Nmax)
+    P = fitmultigauss(S,K,r,Nmax,metric)
+    P = fitmultigauss(S,t,r,Nmax,metric,'Background',model)
     P = fitmultigauss(___,'Property',Value)
     [P,param,Pci,paramci,Nopt,metrics,Peval] = fitmultigauss(___)
 
@@ -29,7 +29,7 @@ Parameters
     *   ``K`` -  Dipolar kernel (*NxM*-element array)
     *   ``r`` -  Distance Axis (*N*-element array)
     *   ``t`` -  Time Axis (*N*-element array)
-    *   ``Ngauss`` - Maximum number of Gaussians (scalar)
+    *   ``Nmax`` - Maximum number of Gaussians (scalar)
     *    ``metric`` - Metric for model selection (string)
 
 
@@ -40,7 +40,7 @@ Returns
     *  ``paramci`` - Fitted parameters confidence intervals(*Wx2*-array)
     *  ``Nopt`` - Optimal number of Gaussian (scalar)
     *  ``metrics`` - Evaluated model selection functionals (cell array)
-    *  ``Peval`` - Fitted distance distributions for each multi-gauss model (*Ngauss x N* matrix)
+    *  ``Peval`` - Fitted distance distributions for each multi-gauss model (*Nmax x N* matrix)
 
 -----------------------------
 
@@ -50,16 +50,16 @@ Description
 
 .. code-block:: matlab
 
-        P = fitmultigauss(S,K,r,Ngauss)
+        P = fitmultigauss(S,K,r,Nmax)
 
-Fits the dipolar signal ``S`` to a distance distribution ``P`` using a multi-gauss parametric model according to the dipolar kernel ``K`` and distance axis ``r``. The function chooses the optimal number of Gaussian distributions up to a maximum number given by ``Ngauss`` by means of the corrected Akaike information criterion (AICC).
+Fits the dipolar signal ``S`` to a distance distribution ``P`` using a multi-gauss parametric model according to the dipolar kernel ``K`` and distance axis ``r``. The function chooses the optimal number of Gaussian distributions up to a maximum number given by ``Nmax`` by means of the corrected Akaike information criterion (AICC).
 
 -----------------------------
 
 
 .. code-block:: matlab
 
-        P = fitmultigauss(S,K,r,Ngauss,metric)
+        P = fitmultigauss(S,K,r,Nmax,metric)
 
 The metric employed for the selection of the optimal multi-gauss model can be specified as an additional input ``metric``. The accepted inputs are:
 
@@ -72,7 +72,7 @@ The metric employed for the selection of the optimal multi-gauss model can be sp
 
 .. code-block:: matlab
 
-        P = fitmultigauss(S,t,r,Ngauss)
+        P = fitmultigauss(S,t,r,Nmax)
 
 If the default kernel is to be used, the time-axis can be passed instead of the kernel.
 
@@ -81,7 +81,7 @@ If the default kernel is to be used, the time-axis can be passed instead of the 
 
 .. code-block:: matlab
 
-	P = fitmultigauss(S,t,r,Ngauss,metric,'Background',model)
+	P = fitmultigauss(S,t,r,Nmax,metric,'Background',model)
 
 By passing the ``'Background'`` option, the background function and modulation depth are fitted along the multi-gauss distribution parameters. 
 

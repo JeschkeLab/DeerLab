@@ -1,15 +1,15 @@
 %
 % FITMULTIGAUSS Multi-Gauss fitting of a distance distribution
 %
-%   P = FITMULTIGAUSS(V,K,r,Ngauss,method)
+%   P = FITMULTIGAUSS(V,K,r,Nmax,method)
 %   Fits a multi-Gauss parametric distance distribution model to the dipolar
 %   signal (V), using the dipolar kernel (K) and distance axis (r). The function
 %   compares multi-Gaussian distributions with up to a maximum number of Gaussians
-%   given by (Ngauss) and determines the optimum one using the model selection
+%   given by (Nmax) and determines the optimum one using the model selection
 %   criterion given in (method) ('AIC', 'BIC', or 'AICc'). The fitted
 %   distribution is returned in P.
 %
-%   P = FITMULTIGAUSS(V,t,r,Ngauss,method)
+%   P = FITMULTIGAUSS(V,t,r,Nmax,method)
 %   If a the default kernel is to be used, the time axis (t) can be passed
 %   instead of the kernel.
 %
@@ -42,10 +42,6 @@
 function [Pfit,param,Pfitci,paramci,nGaussOpt,metrics,Peval] = fitmultigauss(V,K,r,maxGaussians,method,varargin)
 
 
-if ~license('test','optimization_toolbox')
-   error('DeerLab could not find a valid licence for the Optimization Toolbox. Please install the add-on to use fitmultigauss.')
-end
-
 % Validate user input (S, K, r, and method are validated in lower-level functions)
 if nargin<4
     error('Not enough input arguments.')
@@ -65,7 +61,7 @@ if ~all(size(K) > 1)
 end
 
 
-%Parse the optional parameters in the varargin
+% Parse the optional parameters in the varargin
 optionalProperties = {'Upper','Lower','Background','internal::parselater'};
 [Upper,Lower,BckgModel] = parseoptional(optionalProperties,varargin);
 
@@ -83,14 +79,15 @@ end
 if ~isempty(BckgModel) && ~exist('t','var')
     error('Time axis must be provided for a time-domain fit.')
 end
-%Remove used options from varargin so they are not passed to fitparamodel
-for i=1:numel(optionalProperties)
+
+% Remove used options from varargin so they are not passed to fitparamodel
+for i = 1:numel(optionalProperties)
     Idx = find(cellfun(@(x)(ischar(x) && strcmpi(x,optionalProperties{i})),varargin));
     varargin(Idx:Idx+1) = [];
 end
 
 if nargin>3
-    %Include internal option in order for fitparamodel to return the covariance matrix
+    % Include internal option in order for fitparamodel to return the covariance matrix
     varargin = [varargin {'internal::returncovariancematrix'} {true}];
 end
 
@@ -151,7 +148,7 @@ end
 
 if ~isempty(BckgModel)
     if isempty(LowerBounds)
-        for i=1:maxGaussians
+        for i = 1:maxGaussians
             info = multiGaussModels{i}();
             range = [info.parameters(:).range];
             Plower = range(1:2:end-1);
@@ -163,7 +160,7 @@ if ~isempty(BckgModel)
         end
     end
     if isempty(UpperBounds)
-        for i=1:maxGaussians
+        for i = 1:maxGaussians
             info = multiGaussModels{i}();
             range = [info.parameters(:).range];
             Pupper = range(2:2:end);
@@ -173,7 +170,7 @@ if ~isempty(BckgModel)
             UpperBounds{i} = [Pupper 0 Bupper];
         end
     end
-    for i=1:maxGaussians
+    for i = 1:maxGaussians
         DistModel = multiGaussModels{i};
         info = DistModel();
         Nparam = info.nparam;
