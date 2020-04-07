@@ -13,15 +13,15 @@
 % name      symbol default lower bound upper bound
 % --------------------------------------------------------------------------
 % param(1)  <r1>   2.5     1.5         20         center of 1st Gaussian
-% param(2)  w1     0.5     0.2         5          FWHM of 1st Gaussian
+% param(2)  fwhm1  0.5     0.2         5          FWHM of 1st Gaussian
 % param(3)  <r2>   3.0     1.5         20         center of 2nd Gaussian
-% param(4)  w2     0.5     0.2         5          FWHM of 2nd Gaussian
+% param(4)  fwhm2  0.5     0.2         5          FWHM of 2nd Gaussian
 % param(5)  <r3>   3.5     1.5         20         center of 3rd Gaussian
-% param(6)  w3     0.5     0.2         5          FWHM of 3rd Gaussian
+% param(6)  fwhm3  0.5     0.2         5          FWHM of 3rd Gaussian
 % param(7)  <r4>   4.5     1.5         20         center of 4th Gaussian
-% param(8)  w4     0.5     0.2         5          FWHM of 4th Gaussian
+% param(8)  fwhm4  0.5     0.2         5          FWHM of 4th Gaussian
 % param(9)  <r5>   5.0     1.5         20         center of 5th Gaussian
-% param(10) w5     0.5     0.2         5          FWHM of 5th Gaussian
+% param(10) fwhm5  0.5     0.2         5          FWHM of 5th Gaussian
 % param(11) p1     0.2     0           1          amplitude of 1st Gaussian
 % param(12) p2     0.2     0           1          amplitude of 2nd Gaussian
 % param(13) p3     0.2     0           1          amplitude of 3rd Gaussian

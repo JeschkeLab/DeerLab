@@ -33,13 +33,13 @@ Model
 
 :math:`P(r) = \sqrt{\frac{2}{\pi}}\frac{1}{\sigma}\exp\left(-\frac{(r-\left<r\right>)^2}{\sigma^2}\right)`
 
-with :math:`\sigma = w/\sqrt{2ln(2)}`
+with :math:`\sigma = \mathrm{FWHM}/\sqrt{2ln(2)}`
 
 ============== ======================== ========= ============= ============= ========================
  Variable       Symbol                    Default   Lower bound   Upper bound      Description
 ============== ======================== ========= ============= ============= ========================
 ``param(1)``   :math:`\left<r\right>`     3.5     1.0              20         Mean distance
-``param(2)``   :math:`w`                  0.5     0.2              5          FWHM
+``param(2)``   :math:`\mathrm{FWHM}`      0.5     0.2              5          FWHM
 ============== ======================== ========= ============= ============= ========================
 
 
