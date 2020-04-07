@@ -59,7 +59,7 @@
 %                     See MATLAB doc optimoptions for detailed explanation
 %
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
 function [P,alpha] = fitregmodel(V,K,r,RegType,alpha,varargin)
