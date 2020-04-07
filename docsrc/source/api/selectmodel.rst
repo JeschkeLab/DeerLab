@@ -19,9 +19,11 @@ Syntax
 
     opt = selectmodel(models,V,r,K,'method')
     [opt,f,param,paramcis] = selectmodel(models,V,r,K,'method')
+    [opt,f,param,paramcis] = selectmodel(models,{V1,V2,___},r,{K1,K2,___},'method')
     [opt,f,param,paramcis] = selectmodel(models,V,r,K,{'method1','method2',___})
     [opt,f,param,paramcis] = selectmodel(models,V,r,K,'method',param0)
     [opt,f,param,paramcis] = selectmodel(models,V,t,'method')
+    [opt,f,param,paramcis] = selectmodel(models,{V1,V2,___},{t1,t2,___},'method')
     [opt,f,param,paramcis] = selectmodel(models,V,t,'method',param0)
     [opt,f,param,paramcis] = selectmodel(___,'Property',Value)
 
@@ -65,12 +67,33 @@ The function returns an array containing the optimal model for each selection me
 
 -----------------------------
 
+.. code-block:: matlab
+
+    opt = selectmodel({@model1,@model2,___,@modelN},V,t,{'aic',___})
+
+Fits the time-domain parametric models ``model1``, ..., ``modelN`` to a signal ``V`` defined over the time axis ``t``.
+
+
+-----------------------------
 
 .. code-block:: matlab
 
-        opt = selectmodel({@model1,@model2,___,@modelN},V,t,{'aic',___})
 
-Fits the time-domain parametric models ``model1``, ..., ``modelN`` to a signal ``V`` defined over the time axis ``t``.
+    opt = selectmodel(models,{V1,V2,___},r,{K1,K2,___})
+    opt = selectmodel(models,{V1,V2,___},r,{K1,K2,___},param0)
+
+Passing multiple signals/kernels enables distance-domain global fitting of the parametric models to single distributions. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes *N1*, *N2*,... and a cell array of kernel matrices with sizes *N1xM*, *N2xM*, ... must be passed as well.
+
+
+-----------------------------
+
+.. code-block:: matlab
+
+
+    opt = selectmodel(models,{V1,V2,___},{t1,t2,___})
+    opt = selectmodel(models,{V1,V2,___},{t1,t2,___},param0)
+
+Similarly, time-domain global fitting can be used when passing time-domain ``models`` and the model time axes ``{t1,t2,___}`` of the corresponding signals.
 
 
 -----------------------------
@@ -78,8 +101,8 @@ Fits the time-domain parametric models ``model1``, ..., ``modelN`` to a signal `
 
 .. code-block:: matlab
 
-        opt = selectmodel({@model1,@model2,___,@modelN},V,r,K,{'aic',___},{par1,___,parN})
-        opt = selectmodel({@model1,@model2,___,@modelN},V,t,{'aic',___},{par1,___,parN})
+    opt = selectmodel(models,V,r,K,{'aic',___},{par1,___,parN})
+    opt = selectmodel(models,V,t,{'aic',___},{par1,___,parN})
 
 
 The initial guess values for the parameters of each model can be passed as a cell array ``{par1,___,parN}`` of value vectors.
