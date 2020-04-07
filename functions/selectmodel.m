@@ -14,6 +14,17 @@
 %   Evaluates the fits of the time-domain parametric models by specifying
 %   the time axis (t).
 %
+%   opt = SELECTMODEL({@model1,...,@modelN},{V1,V2,...},r,{K1,K2,...},{'aic',...})
+%   Passing multiple signals/kernels enables distance-domain global fitting
+%   of the parametric models to single distributions. 
+%   The multiple signals are passed as a cell array of arrays of sizes N1,N2,...
+%   and a cell array of kernel matrices with sizes N1xM,N2xM,... must be 
+%   passed as well.
+% 
+%   opt = SELECTMODEL({@model1,...,@modelN},{V1,V2,...},{t1,t2,...},{'aic',...})
+%   Similarly, time-domain global fitting can be used when passing time-domain
+%   and the model time axes {t1,t2,...} of the corresponding signals.
+%
 %   opt = SELECTMODEL({@model1,...,@modelN},V,r,K,{'aic',...},{par1,...,parN})
 %   The initial guess values for the parameters of each model can be passed
 %   as a cell array {par1,...parN} of value vectors.
@@ -120,6 +131,7 @@ if length(Upper) > length(models) || length(Lower) > length(models)
     error('Lower/Upper bound cell array cannot exceed the number of models.')
 end
 
+%Parse the required inputs for global fitting
 if ~iscell(Vs)
    Vs = {Vs}; 
 end
@@ -129,14 +141,12 @@ end
 if isTimeDomain && ~iscell(ax)
    ax = {ax}; 
 end
-
 if isempty(GlobalWeights)
     GlobalWeights = globalweights(Vs);
 else
     validateattributes(GlobalWeights,{'numerical'},{'nonempty','nonnegative'},mfilename,'GlobalWeights')
     GlobalWeights = GlobalWeights/sum(GlobalWeights);
 end
-
 
 % Set the bounds for the models
 UpperBounds = cell(1,length(models));

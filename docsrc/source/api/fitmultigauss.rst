@@ -20,6 +20,9 @@ Syntax
     P = fitmultigauss(S,t,r,Nmax)
     P = fitmultigauss(S,K,r,Nmax,metric)
     P = fitmultigauss(S,t,r,Nmax,metric,'Background',model)
+    P = fitmultigauss({V1,V2,___},{K1,K2,___},r,Nmax,metric)
+    P = fitmultigauss({V1,V2,___},{t1,t2,___},r,Nmax,metric)
+    P = fitmultigauss({V1,V2,___},{t1,t2,___},r,Nmax,metric,'Background',model)
     P = fitmultigauss(___,'Property',Value)
     [P,param,Pci,paramci,Nopt,metrics,Peval] = fitmultigauss(___)
 
@@ -84,6 +87,28 @@ If the default kernel is to be used, the time-axis can be passed instead of the 
 	P = fitmultigauss(S,t,r,Nmax,metric,'Background',model)
 
 By passing the ``'Background'`` option, the background function and modulation depth are fitted along the multi-gauss distribution parameters. 
+
+-----------------------------
+
+
+.. code-block:: matlab
+
+    P = fitmultigauss({V1,V2,___},{K1,K2,___},r,Nmax,metric)
+
+Passing multiple signals/kernels enables distance-domain global fitting of the parametric model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes *N1*, *N2*,... and a cell array of kernel matrices with sizes *N1xM*, *N2xM*, ... must be passed as well.
+
+
+-----------------------------
+
+.. code-block:: matlab
+
+
+    P = fitmultigauss({V1,V2,___},{t1,t2,___},r,Nmax,metric)
+    P = fitmultigauss({V1,V2,___},{t1,t2,___},r,Nmax,metric,'Background',model)
+
+Similarly, time-domain global fitting can be used when passing time-domain ``models`` and the model time axes ``{t1,t2,___}`` of the corresponding signals. If a background model is specified, it will be applied to all input signals. 
+
+
 
 -----------------------------
 

@@ -13,6 +13,17 @@
 %   If a the default kernel is to be used, the time axis (t) can be passed
 %   instead of the kernel.
 %
+%   P = FITMULTIGAUSS({V1,V1,...},{K1,K2,K3},r,Nmax,method)
+%   Passing multiple signals/kernels enables distance-domain global fitting
+%   of the parametric models to single distributions. 
+%   The multiple signals are passed as a cell array of arrays of sizes N1,N2,...
+%   and a cell array of kernel matrices with sizes N1xM,N2xM,... must be 
+%   passed as well.
+%
+%   P = FITMULTIGAUSS({V1,V1,...},{t1,t2,t3},r,Nmax,method)
+%   Similarly, time-domain global fitting can be used when passing time-domain
+%   and the model time axes {t1,t2,...} of the corresponding signals.
+%
 %   [P,param,Pci,paramci,opt,metrics,Peval] = FITMULTIGAUSS(___)
 %   If requested alongside the distribution (P), the optimal fit model
 %   parameters (param), the optimal number of Gaussians (opt) and
@@ -26,7 +37,9 @@
 %   'Background' - Function handle to the background model to be fitted
 %                 along the multigauss distance distribution model.
 %                 Requires the time-axis to be passed instead of the
-%                 kernel.
+%                 kernel. Can be used with global fitting, where the same
+%                 model will be applied to all signals.
+%
 %   'Lower' - Array [<r>_min FWHM_min] containing the lower bound for the
 %             FWHM and mean distance of all the Gaussians.
 %   'Upper' -  Array [<r>_max FWHM_max] containing the upper bound values
@@ -39,7 +52,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
 
-function [Pfit,param,Pfitci,paramci,nGaussOpt,metrics,Peval] = fitmultigauss(V,K,r,maxGaussians,method,varargin)
+function [Pfit,param,Pfitci,paramci,nGaussOpt,metrics,Peval] = fitmultigauss(Vs,Ks,r,maxGaussians,method,varargin)
 
 
 % Validate user input (S, K, r, and method are validated in lower-level functions)
@@ -55,16 +68,9 @@ elseif nargin==6
     method = 'aicc';
 end
 
-if ~all(size(K) > 1)
-    t = K;
-    K = dipolarkernel(t,r);
-end
-
-
 % Parse the optional parameters in the varargin
 optionalProperties = {'Upper','Lower','Background','internal::parselater'};
 [Upper,Lower,BckgModel] = parseoptional(optionalProperties,varargin);
-
 
 if ~isempty(Upper) && isempty(BckgModel) && length(Upper)~=2
     error('Upper property must be an array [<r>_max FWHM_max]')
@@ -75,9 +81,6 @@ if ~isempty(Lower) && isempty(BckgModel)  && length(Lower)~=2
     error('Lower property must be an array [<r>_min FWHM_min]')
 elseif ~isempty(Upper) && ~isempty(BckgModel) && length(Lower)<4
     error('Lower property must be an array [<r>_min FWHM_min lambda_min Bparam_min]')
-end
-if ~isempty(BckgModel) && ~exist('t','var')
-    error('Time axis must be provided for a time-domain fit.')
 end
 
 % Remove used options from varargin so they are not passed to fitparamodel
@@ -90,6 +93,26 @@ if nargin>3
     % Include internal option in order for fitparamodel to return the covariance matrix
     varargin = [varargin {'internal::returncovariancematrix'} {true}];
 end
+
+
+
+%Parse the required inputs for global fitting
+if ~iscell(Vs)
+   Vs = {Vs}; 
+end
+if ~iscell(Ks)
+   Ks = {Ks}; 
+end
+for i=1:numel(Ks)
+    if ~all(size(Ks{i}) > 1)
+        ts{i} = Ks{i};
+        Ks{i} = dipolarkernel(ts{i},r);
+    end
+end
+if ~isempty(BckgModel) && ~exist('ts','var')
+    error('Time axes must be provided for a time-domain fit.')
+end
+Nsignals = numel(Vs);
 
 % Compile list of multi-Gaussian models
 multiGaussModels = cell(maxGaussians,1);
@@ -155,7 +178,7 @@ if ~isempty(BckgModel)
             infoB = BckgModel();
             range = [infoB.parameters(:).range];
             Blower = range(1:2:end-1);
-            LowerBounds{i} = [Plower 0 Blower];
+            LowerBounds{i} = [Plower repmat([0 Blower],1,Nsignals)];
             
         end
     end
@@ -167,7 +190,7 @@ if ~isempty(BckgModel)
             infoB = BckgModel();
             range = [infoB.parameters(:).range];
             Bupper = range(2:2:end);
-            UpperBounds{i} = [Pupper 0 Bupper];
+            UpperBounds{i} = [Pupper repmat([1 Bupper],1,Nsignals)];
         end
     end
     for i = 1:maxGaussians
@@ -177,19 +200,19 @@ if ~isempty(BckgModel)
         Pparam = [info.parameters(:).default];
         infoB = BckgModel();
         Bparam = [infoB.parameters(:).default];
-        range = [infoB.parameters(:).range];
-        Blower = range(1:2:end-1);
-        Bupper = range(2:2:end);
-        timeMultiGaussModels{i} = @(t,param) (1 - param(Nparam+1) + param(Nparam+1)*dipolarkernel(t,r)*DistModel(r,param(1:Nparam)) ).*BckgModel(t,param(Nparam+2:end));
-        param0{i} = [Pparam 0.5 Bparam];
+        lampars = Nparam + (1+numel(Bparam))*(1:Nsignals)-numel(Bparam);
+        Bpars = lampars + 1;
+        lam0 = 0.25;
+        timeMultiGaussModels{i} = @(t,param,idx) (1 - param(lampars(idx)) + param(lampars(idx))*dipolarkernel(t,r)*DistModel(r,param(1:Nparam)) ).*BckgModel(t,param(Bpars(idx):Bpars(idx)+numel(Bparam)-1));
+        param0{i} = [Pparam repmat([lam0 Bparam],1,Nsignals)];
     end
 end
 
 % Run fitting and model selection to see which multi-Gauss model is optimal
 if ~isempty(BckgModel)
-    [nGaussOpt,metrics,fitparams,paramcis] = selectmodel(timeMultiGaussModels,V,t,method,param0,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
+    [nGaussOpt,metrics,fitparams,paramcis] = selectmodel(timeMultiGaussModels,Vs,ts,method,param0,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
 else
-    [nGaussOpt,metrics,fitparams,paramcis] = selectmodel(multiGaussModels,V,r,K,method,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
+    [nGaussOpt,metrics,fitparams,paramcis] = selectmodel(multiGaussModels,Vs,r,Ks,method,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
 end
 
 % Calculate the distance distribution for the optimal multi-Gauss model

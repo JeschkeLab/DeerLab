@@ -15,14 +15,14 @@ S = K*P;
 
 % Pass 1: all distributions are equal
 pass(1) = isequal(Pfit1,Pfit2,Pfit3,Pfit4);
-% Pass 1: all distributions are columns vectors
+% Pass 2: all distributions are columns vectors
 pass(2) = iscolumn(Pfit1) & iscolumn(Pfit2) & iscolumn(Pfit3) & iscolumn(Pfit4);
-% Pass 1: all fit parameters are row vectors
+% Pass 3: all fit parameters are row vectors
 pass(3) = ~iscolumn(parfit1) & ~iscolumn(parfit2) & ~iscolumn(parfit3) & ~iscolumn(parfit4);
 
 pass = all(pass);
 
-maxerr = max(abs(Pfit1 - Pfit2));
+maxerr = NaN;
  
 
 if opt.Display
