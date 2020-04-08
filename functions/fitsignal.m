@@ -1,79 +1,95 @@
-function [Pfit,Vfit,Bfit] = fitsignal(V,t,r,dd_model,bg_model,ex_model)
+function [Pfit,Vfit,Bfit,parfit] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model)
 
-% Use simple default models if not specified
 if nargin<5
-    ex_model = @ex_4pdeer;
-end
-if nargin<4
-    bg_model = @bg_strexp;
+    error('At least five inputs (V,t,r,@dd,@bg) need to be specified.');
 end
 
+% Use simple default experiment model if not specified
+if nargin<6
+    ex_model = @exp_4pdeer;
+end
+
+% Get information about distance distribution parameters
 if isa(dd_model,'function_handle')
-    % Get information about distance distribution model
-    info = dd_model();
-    modelidx = ones(1,info.nparam)*1;
-    param0 = [info.parameters.default];
-    range = [info.parameters.range];
-    lower = range(1:2:end-1);
-    upper = range(2:2:end);
+    [par0_dd,lower_dd,upper_dd] = getmodelparams(dd_model);
+elseif isempty(dd_model)
+    par0_dd = [];
+    lower_dd = [];
+    upper_dd = [];
 else
-    param0 = [];
-    lower = [];
-    upper = [];
-    modelidx = [];
+    error('Distribution model (4th input) must either be a function handle (for a parametric model) or [] (for a parameter-free distribution).')
 end
+Ndd = numel(par0_dd);
 
-% Get information about background model
-info = bg_model();
-modelidx = [modelidx ones(1,info.nparam)*2];
-param0 = [param0 info.parameters.default];
-range = [info.parameters.range];
-lower = [lower range(1:2:end-1)];
-upper = [upper range(2:2:end)];
+% Get information about background parameters
+if isa(bg_model,'function_handle')
+    [par0_bg,lower_bg,upper_bg] = getmodelparams(bg_model);
+elseif isempty(bg_model)
+    par0_bg = [];
+    lower_bg = [];
+    upper_bg = [];
+else
+    error('Background model (5th input) must either be a function handle, or [] if no background should be fitted.')
+end
+Nbg = numel(par0_bg);
 
-% Get information about experiment model
-info = ex_model(t);
-modelidx = [modelidx ones(1,info.nparam)*3];
-param0 = [param0 info.parameters.default];
-range = [info.parameters.range];
-lower = [lower range(1:2:end-1)];
-upper = [upper range(2:2:end)];
+% Get information about experiment parameters
+if isa(ex_model,'function_handle')
+    [par0_ex,lower_ex,upper_ex] = getmodelparams(ex_model);
+else
+    error('Experiment model (6th input) must be a function handle.');
+end
+Nex = numel(par0_ex);
 
-% Call fitparamodel to fit the parameterset
-parfit = fitparamodel(V,@Vmodel,t,param0,'Lower',lower,'Upper',upper);
+% Combine all parameters into a single vector
+par0 = [par0_dd par0_bg par0_ex];
+lower = [lower_dd lower_bg lower_ex];
+upper = [upper_dd upper_bg upper_ex];
+modelidx = [ones(1,Ndd) ones(1,Nbg)*2 ones(1,Nex)*3];
 
-% Get the model fits
+% Fit the parameters
+parfit = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper);
+
+% Calculate the fitted signal, background, and distribution
 [Vfit,Bfit,Pfit] = Vmodel(t,parfit);
 
 
-    % Function for our general multipulse DEER signal model
-    function [Vfit,Bfit,Pfit] = Vmodel(t,par)
+    % General multi-pathway DEER signal model function
+    function [V,B,P] = Vmodel(t,par)
         
-        % Extreact parameter subsets
-        theta_dd = par(modelidx == 1);
-        theta_bg = par(modelidx == 2);
-        theta_ex = par(modelidx == 3);
-
-        % Prepare the background model
-        Bbasis = @(t)bg_model(t,theta_bg);
-
-        % Get the dipolar kernel and background according to experiment
-        [K,Bfit] = ex_model(t,r,theta_ex,Bbasis);
+        % Extract parameter subsets
+        par_dd = par(modelidx==1);
+        par_bg = par(modelidx==2);
+        par_ex = par(modelidx==3);
+        
+        % Calculate the experiment kernel and the background
+        if isa(bg_model,'function_handle')
+            Bfcn = @(t) bg_model(t,par_bg);
+        else
+            Bfcn = [];
+        end
+        [K,B] = ex_model(t,r,par_ex,Bfcn);
         
         % Get the distance distribution from the model or via regularization
         if isa(dd_model,'function_handle')
-            % Parametric distribution
-            Pfit = dd_model(r,theta_dd);
+            P = dd_model(r,par_dd);
         else
-            % Parameter-free distribution
-            Pfit = fitregmodel(V,K,r,'tikh','aic');
+            P = fitregmodel(Vexp,K,r,'tikh','aic');
         end
         
-        % Finally, compute the dipolar signal
-        Vfit = K*Pfit;
+        % Compute the dipolar signal
+        V = K*P;
         
     end
-
     
+end
+
+function [par0,lo,up] = getmodelparams(model)
+
+info = model();
+par0 = [info.parameters.default];
+range = [info.parameters.range];
+lo = range(1:2:end-1);
+up = range(2:2:end);
 
 end

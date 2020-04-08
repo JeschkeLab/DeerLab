@@ -4,6 +4,7 @@
 %   info = EXP_5PDEER(t)
 %   Returns an (info) structure containing the specifics of the model.
 %
+%   [K,B] = EXP_5PDEER(t,r,param)
 %   [K,B] = EXP_5PDEER(t,r,param,Bmodel)
 %   Computes the NxM dipolar kernel (K) and N-point multi-pathway background (B) 
 %   from the N-point time axis (t) and M-point distance axis (r) according to
@@ -28,8 +29,15 @@ function varargout = exp_5pdeer(t,r,param,Bmodel)
 
 nParam = 4;
 
-if nargin~=1 && nargin~=4
-    error('Model requires one or four input arguments.')
+if nargin==2
+    error('Model doesn''t work with 2 input arguments.')
+end
+if nargin>4
+    error('Model takes at most 4 input arguments, not %d.',nargin)
+end
+
+if nargin<4
+    Bmodel = [];
 end
 
 if nargin==1
@@ -78,8 +86,13 @@ pathway(2,:) = [lambda(2) T0(1)];
 pathway(3,:) = [lambda(3) T0(2)];
 
 % Construct multi-pathway kernel and background
-K = dipolarkernel(t,r,pathway,Bmodel);
-B = Bmodel(lambda(2)*(t-T0(1))).*Bmodel(lambda(3)*(t-T0(2)));
+if ~isempty(Bmodel)
+    K = dipolarkernel(t,r,pathway,Bmodel);
+    B = Bmodel(lambda(2)*(t-T0(1))).*Bmodel(lambda(3)*(t-T0(2)));
+else
+    K = dipolarkernel(t,r,pathway);
+    B = ones(size(t));
+end
 
 varargout{1} = K;
 varargout{2} = B;

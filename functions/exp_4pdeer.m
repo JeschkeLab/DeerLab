@@ -4,6 +4,7 @@
 %   info = EXP_4PDEER(t)
 %   Returns an (info) structure containing the specifics of the model.
 %
+%   [K,B] = EXP_4PDEER(t,r,param)
 %   [K,B] = EXP_4PDEER(t,r,param,Bmodel)
 %   Computes the NxM dipolar kernel (K) and N-point multi-pathway background (B) 
 %   from the N-point time axis (t) and M-point distance axis (r) according to
@@ -25,11 +26,18 @@ function varargout = exp_4pdeer(t,r,param,Bmodel)
 
 nParam = 1;
 
-if nargin~=1 && nargin~=4
-    error('Model requires one or three input arguments.')
+if nargin==2
+    error('Model doesn''t work with 2 input arguments.')
+end
+if nargin>4
+    error('Model takes at most 4 input arguments, not %d.',nargin)
 end
 
-if nargin==1
+if nargin<4
+  Bmodel = [];
+end
+
+if nargin==0
     % If no inputs given, return info about the parametric model
     info.model  = '4-pulse DEER experiment (single pathway)';
     info.nparam  = nParam;
@@ -56,11 +64,14 @@ pathway(1,:) = [1-lambda NaN];
 pathway(2,:) = [lambda 0];
 
 % Construct multi-pathway kernel and background
-K = dipolarkernel(t,r,pathway,Bmodel);
-B = Bmodel(t);
-
+if ~isempty(Bmodel)
+    K = dipolarkernel(t,r,pathway,Bmodel);
+    B = Bmodel(t);
+else
+    K = dipolarkernel(t,r,pathway);
+    B = ones(size(t));
+end
 varargout{1} = K;
 varargout{2} = B;
-
 
 end

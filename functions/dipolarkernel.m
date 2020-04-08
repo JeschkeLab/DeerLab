@@ -232,25 +232,27 @@ end
 
 % Build dipolar kernel matrix, summing over all pathways
 K = Lambda0;
-Krenorm = Lambda0;
+Knorm = Lambda0;
 for p = 1:nModPathways
     K = K + lambda(p)*kernelmatrix(n(p)*(t-T0(p)));
-    Krenorm = Krenorm + lambda(p)*kernelmatrix(-T0(p)*n(p));
+    Knorm = Knorm + lambda(p)*kernelmatrix(-T0(p)*n(p));
 end
 if Renormalize
-K = K./Krenorm;
+    K = K./Knorm;
 end
 
 % Multiply by background(s)
 if isa(B,'function_handle')
-    Brenorm = 1;
+    Bnorm = 1;
+    B_ = 1;
     for p = 1:nModPathways
-        K = K.*B(lambda(p)*n(p)*(t-T0(p)));
-        Brenorm = Brenorm.*B(-T0(p)*lambda(p)*n(p));
+        B_ = B_.*B(lambda(p)*n(p)*(t-T0(p)));
+        Bnorm = Bnorm.*B(-T0(p)*lambda(p)*n(p));
     end
     if Renormalize
-    K = K./Brenorm;
+        B_ = B_./Bnorm;
     end
+    K = K.*B_;
 else
     if ~isempty(B)
         K = K.*B;
