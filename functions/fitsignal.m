@@ -46,21 +46,29 @@ par0 = [par0_dd par0_bg par0_ex];
 lower = [lower_dd lower_bg lower_ex];
 upper = [upper_dd upper_bg upper_ex];
 modelidx = [ones(1,Ndd) ones(1,Nbg)*2 ones(1,Nex)*3];
+ddidx = modelidx==1;
+bgidx = modelidx==2;
+exidx = modelidx==3;
 
 % Fit the parameters
-parfit = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper);
+parfit_ = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper);
 
 % Calculate the fitted signal, background, and distribution
-[Vfit,Bfit,Pfit] = Vmodel(t,parfit);
+[Vfit,Bfit,Pfit] = Vmodel(t,parfit_);
+
+% Return fitted parameter in structure
+parfit.dd = parfit_(ddidx);
+parfit.bg = parfit_(bgidx);
+parfit.ex = parfit_(exidx);
 
 
     % General multi-pathway DEER signal model function
     function [V,B,P] = Vmodel(t,par)
         
         % Extract parameter subsets
-        par_dd = par(modelidx==1);
-        par_bg = par(modelidx==2);
-        par_ex = par(modelidx==3);
+        par_dd = par(ddidx);
+        par_bg = par(bgidx);
+        par_ex = par(exidx);
         
         % Calculate the experiment kernel and the background
         if isa(bg_model,'function_handle')
