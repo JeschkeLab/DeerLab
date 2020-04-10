@@ -1,7 +1,7 @@
 %
 % FITSIGNAL  Fit model to dipolar time-domain trace
 %
-%   [Pfit,Vfit,Bfit,parfit] = FITSIGNAL(V,t,r,dd,bg,ex)
+%   [Pfit,Vfit,Bfit,parfit] = FITSIGNAL(V,t,r,dd,bg,ex,par0)
 %   __ = FITSIGNAL(V,t,r,dd,bg)
 %   __ = FITSIGNAL(V,t,r,dd)
 %   __ = FITSIGNAL(V,t,r)
@@ -22,6 +22,8 @@
 %    bg     function handle to background model, or [] if no background should
 %           be included; default []
 %    ex     function handle to experiment model; default []
+%    par0   starting parameters, 3-element cell array {par0_dd,par0_bd,par0_ex}
+%           default: {[],[],[]} (automatic choice)
 %
 %  Output:
 %    Pfit   fitted distance distribution
@@ -39,7 +41,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [Pfit,Vfit,Bfit,parfit] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model)
+function [Pfit,Vfit,Bfit,parfit] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model,par0)
 
 if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
@@ -56,6 +58,13 @@ end
 if nargin<4, dd_model = []; end
 if nargin<5, bg_model = []; end
 if nargin<6, ex_model = []; end
+if nargin<7, par0 = {[],[],[]}; end
+
+if ~isempty(par0)
+    if ~iscell(par0) || numel(par0)~=3
+        error('Initial parameters (7th input) must be a 3-element cell array.')
+    end
+end
 
 % Get information about distance distribution parameters
 if isa(dd_model,'function_handle')
@@ -94,7 +103,11 @@ else
 end
 
 % Combine all parameters into a single vector
-par0 = [par0_dd par0_bg par0_ex];
+if isempty(par0{1}), par0{1} = par0_dd; end
+if isempty(par0{2}), par0{2} = par0_bg; end
+if isempty(par0{3}), par0{3} = par0_ex; end
+par0 = [par0{1} par0{2} par0{3}];
+ 
 lower = [lower_dd lower_bg lower_ex];
 upper = [upper_dd upper_bg upper_ex];
 

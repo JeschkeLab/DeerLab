@@ -148,9 +148,13 @@ else
     validateattributes(StartParameters,{'numeric'},{'2d','nonempty'},mfilename,'StartParameters')
 end
 
-% Parse the optional parameters in the varargin
-[Solver,Algorithm,maxIter,Verbose,maxFunEvals,TolFun,CostModel,GlobalWeights,upperBounds,lowerBounds,MultiStart,ConfidenceLevel,returnCovariance] = parseoptional(...
-    {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals','TolFun','CostModel','GlobalWeights','Upper','Lower','MultiStart','ConfidenceLevel','internal::returncovariancematrix'},varargin);
+% Parse the optional parameters in varargin
+optionalProperties = {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals',...
+  'TolFun','CostModel','GlobalWeights','Upper','Lower','MultiStart',...
+  'ConfidenceLevel','internal::returncovariancematrix'};
+[Solver,Algorithm,maxIter,Verbose,maxFunEvals,TolFun,CostModel,GlobalWeights,...
+  upperBounds,lowerBounds,MultiStart,ConfidenceLevel,returnCovariance] = ...
+  parseoptional(optionalProperties,varargin);
 
 % Validate optional inputs
 if isempty(CostModel)
