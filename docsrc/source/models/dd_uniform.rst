@@ -1,12 +1,12 @@
 .. highlight:: matlab
-.. _dd_triangle:
+.. _dd_uniform:
 
 
 ***********************
-:mod:`dd_triangle`
+:mod:`dd_uniform`
 ***********************
 
-Triangle distribution
+Uniform distribution
 
 -----------------------------
 
@@ -16,8 +16,8 @@ Syntax
 
 .. code-block:: matlab
 
-        info = dd_triangle()
-        P = dd_triangle(r,param)
+        info = dd_uniform()
+        P = dd_uniform(r,param)
 
 Parameters
     *   ``r`` - Distance axis (N-array)
@@ -32,20 +32,19 @@ Model
 =========================================
 
 
-This provides a simple triangular distribution.
+This provides a simple uniform distribution.
 
 ============== ======================== ========= ============= ============= ========================
  Variable       Symbol                    Default   Lower bound   Upper bound      Description
 ============== ======================== ========= ============= ============= ========================
-``param(1)``   :math:`r_0`                3.5       1.0              20         mode
-``param(2)``   :math:`w_\mathrm{L}`       0.3       0.1              5          left width
-``param(3)``   :math:`w_\mathrm{R}`       0.3       0.1              5          right width
+``param(1)``   :math:`r_\mathrm{L}`         2.5       0.1              6           left edge
+``param(2)``   :math:`r_\mathrm{R}`         3.0       0.2              20          right edge
 ============== ======================== ========= ============= ============= ========================
 
 
 Example using default parameters:
 
-.. image:: ../images/model_dd_triangle.png
+.. image:: ../images/model_dd_uniform.png
    :width: 650px
 
 
@@ -57,7 +56,7 @@ Description
 
 .. code-block:: matlab
 
-        info = dd_triangle()
+        info = dd_uniform()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -70,7 +69,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    P = dd_triangle(r,param)
+    P = dd_uniform(r,param)
 
 Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 

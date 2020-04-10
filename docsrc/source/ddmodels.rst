@@ -44,6 +44,7 @@ There are several classes of parametric distance distribution models. The first 
 :ref:`dd_gengauss`              Single generalized Gaussian distribution
 :ref:`dd_skewgauss`             Single skew Gaussian distribution
 :ref:`dd_triangle`              Triangle distribution
+:ref:`dd_uniform`               Uniform distribution
 ============================= ===================================================
 
 
