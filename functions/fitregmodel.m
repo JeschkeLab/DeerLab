@@ -93,7 +93,7 @@ optionalProperties = {'TolFun','Solver','NonNegConstrained','Verbose','MaxFunEva
     = parseoptional(optionalProperties,varargin);
 
 
-%Remove used options from varargin so they are not passed to selregparam
+% Remove used options from varargin so they are not passed to selregparam
 for i=1:numel(optionalProperties)
     Idx = find(cellfun(@(x)(ischar(x) && strcmpi(x,optionalProperties{i})),varargin));
     varargin(Idx:Idx+1) = [];
