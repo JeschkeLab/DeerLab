@@ -35,7 +35,7 @@ if nargin==0
     %If no inputs given, return info about the parametric model
     info.model  = 'Two-Gaussian distribution';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Mean distance <r1> of 1st Gaussian';
+    info.parameters(1).name = 'Center <r1> of 1st Gaussian';
     info.parameters(1).range = [1 20];
     info.parameters(1).default = 2.5;
     info.parameters(1).units = 'nm';
@@ -45,7 +45,7 @@ if nargin==0
     info.parameters(2).default = 0.5;
     info.parameters(2).units = 'nm';
     
-    info.parameters(3).name = 'Mean distance <r2> 2nd Gaussian';
+    info.parameters(3).name = 'Center <r2> 2nd Gaussian';
     info.parameters(3).range = [1 20];
     info.parameters(3).default = 3.5;
     info.parameters(3).units = 'nm';

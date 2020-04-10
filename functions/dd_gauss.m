@@ -13,7 +13,7 @@
 % PARAMETERS
 % name    symbol default lower bound upper bound
 % --------------------------------------------------------------------------
-% param(1)  <r>    3.5     1.0         20         mean distance
+% param(1)  <r>    3.5     1.0         20         center
 % param(2)  fwhm   0.5     0.2         5          FWHM
 % --------------------------------------------------------------------------
 %
@@ -34,7 +34,7 @@ if nargin==0
     %If no inputs given, return info about the parametric model
     info.model  = 'Single Gaussian distribution';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Mean distance <r>';
+    info.parameters(1).name = 'Center <r>';
     info.parameters(1).range = [1 20];
     info.parameters(1).default = 3.5;
     info.parameters(1).units = 'nm';

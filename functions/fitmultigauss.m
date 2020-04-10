@@ -134,15 +134,14 @@ if ~isempty(Upper) || ~isempty(Lower)
         boundary = zeros(1,info.nparam);
         ParamNames = {info.parameters(:).name};
         % Find the parameter indexes for the FWHM and mean distances
-        FWHMidx = contains(ParamNames,'FWHM');
-        Distidx = contains(ParamNames,'distance');
+        FWHMidx = contains(lower(ParamNames),'FWHM');
+        Distidx = contains(lower(ParamNames),'center');
         if ~isempty(Upper)
             boundary(FWHMidx) = Upper(2); % FWHM upper bound
             boundary(Distidx) = Upper(1); % Mean distaces upper bound
             boundary(~(Distidx | FWHMidx)) = 1; % Amplitudes upper bound
             if numel(Upper)>2
-                boundary(numel(boundary)+1) = Upper(3); % Modulation depth upper bound
-                boundary(numel(boundary)+1:numel(boundary) + numel(Upper(4:end))) = Upper(4:end); % Background upper bound
+                boundary(numel(boundary)+1:numel(boundary) + numel(Upper(3:end))) = Upper(3:end); % Background upper bound
             end
             UpperBounds{i} = boundary;
         else
@@ -154,8 +153,7 @@ if ~isempty(Upper) || ~isempty(Lower)
             boundary(Distidx) = Lower(1); % Mean distaces lower bound
             boundary(~(Distidx | FWHMidx)) = 0; % Amplitudes lower bound
             if numel(Lower)>2
-                boundary(numel(boundary)+1) = Lower(3); % Modulation depth lower bound
-                boundary(numel(boundary)+1:numel(boundary) + numel(Lower(4:end))) = Lower(4:end); %Background upper bound
+                boundary(numel(boundary)+1:numel(boundary) + numel(Lower(3:end))) = Lower(3:end); %Background upper bound
             end
             LowerBounds{i} = boundary;
         else
@@ -230,11 +228,11 @@ if nargin>3
     jacobian = jacobianest(@(par)optModel(r,par),param(1:info.nparam));
     % Calculate the confidence bands for the distance distribution
     modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(r)).';
-    upper = Pfit + critical*sqrt(modelvariance);
-    lower = Pfit - critical*sqrt(modelvariance);
-    upper = max(upper,0);
-    lower = max(lower,0);
-    Pfitci = [upper(:) lower(:)];
+    upperci = Pfit + critical*sqrt(modelvariance);
+    lowerci = Pfit - critical*sqrt(modelvariance);
+    upperci = max(upperci,0);
+    lowerci = max(lowerci,0);
+    Pfitci = [upperci(:) lowerci(:)];
 end
 
 if nargout>6

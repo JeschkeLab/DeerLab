@@ -1,7 +1,6 @@
 function [pass,maxerr] = test(opt)
 
-% Check that fitmultigauss do global fit with different backgrounds
-
+% Check that fitmultigauss global fitting with background boundaries
 rng(1)
 
 r = linspace(2,6,200);
@@ -20,9 +19,18 @@ k2 = 0.3;
 B2 = bg_exp(t2,k2);
 V2 = dipolarsignal(t2,r,P,lam2,B2);
 
-[Pfit,parfit,~,~,Nopt] = fitmultigauss({V1,V2},{t1,t2},r,3,'aicc','background',@bg_exp,'tolfun',1e-4);
+Plower = [1 0.2];
+Pupper = [20 5];
+B1lower = [0.1 0.1];
+B1upper = [0.4 0.4];
+B2lower = [0.1 0.1];
+B2upper = [0.4 0.4];
+upper = [Pupper B1upper B2upper];
+lower = [Plower B1lower B2lower];
 
-% Pass 1: distribution is well fitted
+[Pfit,parfit] = fitmultigauss({V1,V2},{t1,t2},r,3,'aicc','background',@bg_exp,'upper',upper,'lower',lower,'tolfun',1e-4);
+
+% % Pass 1: distribution is well fitted
 pass(1) = all(abs(Pfit - P) < 8e-1);
 % Pass 2-3: modulation depth and background parameters of individual signals are well fitted
 pass(2) = all(abs(parfit(end-3:end-2) - [lam1 k1]) < 1e-2);
