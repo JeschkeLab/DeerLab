@@ -24,7 +24,7 @@ DeerLab provide a series of parametric distance distributions models. These can 
         P = dd_rice(r,param)
 
 
-There are several classes of parametric distance distribution models. The first class contains models that are based on basis functions and linear combinations thereof.
+DeerLab's parametric distance distribution models can be classified into several groups. There are models that are based on basis functions and linear combinations thereof. Gaussian and 3D-Rice functions are the most important ones.
 
 .. rst-class:: func-list
 
@@ -43,12 +43,9 @@ There are several classes of parametric distance distribution models. The first 
 :ref:`dd_gauss5`                Five Gaussians distributions
 :ref:`dd_gengauss`              Single generalized Gaussian distribution
 :ref:`dd_skewgauss`             Single skew Gaussian distribution
-:ref:`dd_triangle`              Triangle distribution
-:ref:`dd_uniform`               Uniform distribution
 ============================= ===================================================
 
-
-The second group contains distance distribution models that represent three-dimensional disordered segmented objects such as proteins and other polymers.
+A second group of distance distribution models represent three-dimensional disordered segmented objects such as proteins and other polymers.
 
 .. rst-class:: func-list
 
@@ -61,7 +58,7 @@ The second group contains distance distribution models that represent three-dime
 =========================== ===================================================
 
 
-Finally, DeerLab provides a series of models for distributions of labels in simple confined spaces such as spheres and spherical shells.
+A third group provides models for distributions of labels in simple confined spaces such as spheres and spherical shells.
 
 .. rst-class:: func-list
 
@@ -77,6 +74,17 @@ Finally, DeerLab provides a series of models for distributions of labels in simp
 :ref:`dd_shellvoidshell`         Labels distributed on two spherical shells separated by a void
 :ref:`dd_shellvoidsphere`        Labels distributed on a sphere inside a spherical shell separated by a void 
 ============================== =============================================================================
+
+
+Finally, DeerLab provides a series of distance distribution models that represent simple geometric shapes. These models are worthless for practical purposes, but are useful as toy distributions for methods development.
+
+.. rst-class:: func-list
+
+============================= ===================================================
+:ref:`dd_circle`                Semi-circle distribution
+:ref:`dd_triangle`              Triangle distribution
+:ref:`dd_uniform`               Uniform distribution
+============================= ===================================================
 
 
 .. toctree::

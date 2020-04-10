@@ -128,7 +128,7 @@ parfit.ex = parfit_(exidx);
             Bfcn = @(t) bg_model(t,par(bgidx));
         else
             Bfcn = [];
-        end        
+        end
         if isa(ex_model,'function_handle')
             [K,B] = ex_model(t,r,par(exidx),Bfcn);
         else
