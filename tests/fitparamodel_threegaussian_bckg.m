@@ -9,7 +9,7 @@ parIn = [2.5 0.5 4 0.5 3 0.2 0.3 0.4];
 P = dd_gauss3(r,parIn);
 B = bg_exp(t,0.15);
 lam = 0.5;
-V = dipolarsignal(t,r,P,'moddepth',lam,'background',B);
+V = dipolarsignal(t,r,P,lam,B);
 KB = dipolarkernel(t,r,lam,B);
 par0 = [2 0.3 4 0.1 1 0.2 0.1 0.5];
 

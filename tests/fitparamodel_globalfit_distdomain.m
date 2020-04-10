@@ -1,6 +1,7 @@
 function [pass,maxerr] = test(opt)
 
 % Test distance-domain global fit of parametric models
+rng(10)
 
 dt = 0.008;
 r = linspace(1,5,500);
@@ -14,7 +15,7 @@ S1 = K1*P + whitegaussnoise(Ntime1,0.02);
 Ntime2 = 200;
 t2 = linspace(0,dt*Ntime2,Ntime2);
 K2 = dipolarkernel(t2,r);
-S2 = K2*P + whitegaussnoise(Ntime2,0.05);
+S2 = K2*P + whitegaussnoise(Ntime2,0.02);
 
 Ntime3 = 300;
 t3 = linspace(0,dt*Ntime3,Ntime3);

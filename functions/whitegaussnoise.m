@@ -17,7 +17,7 @@
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
-function ampnoise = whitegaussnoise(N,level)
+function noise = whitegaussnoise(N,level)
 
 if numel(N)>1
    N = numel(N); 
@@ -28,14 +28,14 @@ validateattributes(N,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'
 validateattributes(level,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'seed')
 
 %Generate Gaussian noise
-noise = randn(N,1);
+randvec = randn(N,1);
 %Increase amplitude of the noise vector until standard deviation matches
 %the requested noise level
-ampnoise = 0*noise;
+noise = 0*randvec;
 amp = 0;
-while std(ampnoise)<level
+while std(noise)<level
     amp = amp + level/100;
-    ampnoise = amp*noise;
+    noise = amp*randvec;
 end
 
 end

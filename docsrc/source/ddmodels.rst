@@ -43,6 +43,7 @@ There are several classes of parametric distance distribution models. The first 
 :ref:`dd_gauss5`                Five Gaussians distributions
 :ref:`dd_gengauss`              Single generalized Gaussian distribution
 :ref:`dd_skewgauss`             Single skew Gaussian distribution
+:ref:`dd_triangle`              Triangle distribution
 ============================= ===================================================
 
 
