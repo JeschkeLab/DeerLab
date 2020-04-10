@@ -16,13 +16,13 @@ t2 = linspace(0,3,100);
 B2 = bg_exp(t2,0.3);
 V2 = dipolarsignal(t2,r,P,'moddepth',0.3,'background',B2);
 
-[Pfit,parfit] = fitmultigauss({V1,V2},{t1,t2},r,3,'aicc','background',@bg_exp);
+[Pfit,parfit] = fitmultigauss({V1,V2},{t1,t2},r,5,'aicc','background',@bg_exp);
 
 % Pass 1: distribution is well fitted
 pass(1) = all(abs(Pfit - P) < 8e-1);
 % Pass 2-3: modulation depth and background parameters of individual signals are well fitted
-pass(2) = all(abs(parfit(6:7) - 0.2) < 1e-2);
-pass(3) = all(abs(parfit(8:9) - 0.3) < 1e-2);
+pass(2) = all(abs(parfit(6:7) - 0.2) < 5e-2);
+pass(3) = all(abs(parfit(8:9) - 0.3) < 5e-2);
 
 maxerr = max(abs(Pfit - P));
 

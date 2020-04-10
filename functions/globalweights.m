@@ -34,7 +34,7 @@ NoiseLevel = NoiseLevel(:);
 N = N(:);
 
 % Compute the weights
-weights = 1./(N.*NoiseLevel);
+weights = 1./(N.*NoiseLevel.^2);
 
 % Normalize
 weights = weights/sum(weights);

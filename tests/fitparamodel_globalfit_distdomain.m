@@ -19,7 +19,7 @@ S2 = K2*P + whitegaussnoise(Ntime2,0.05);
 Ntime3 = 300;
 t3 = linspace(0,dt*Ntime3,Ntime3);
 K3 = dipolarkernel(t3,r);
-S3 = K3*P + whitegaussnoise(Ntime3,0.06);
+S3 = K3*P + whitegaussnoise(Ntime3,0.03);
 
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
