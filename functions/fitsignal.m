@@ -93,7 +93,7 @@ end
 % Get information about experiment parameters
 if isa(ex_model,'function_handle')
     [par0_ex,lower_ex,upper_ex,N_ex] = getmodelparams(ex_model);
-elseif isempty(bg_model)
+elseif isempty(ex_model)
     par0_ex = [];
     lower_ex = [];
     upper_ex = [];
