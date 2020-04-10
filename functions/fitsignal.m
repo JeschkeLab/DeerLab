@@ -6,8 +6,15 @@
 %   __ = FITSIGNAL(V,t,r,dd)
 %   __ = FITSIGNAL(V,t,r)
 %
+%   Fits a dipolar model to the experimental signal in V, using distance axis r.
+%   The model is specified by the distance distribution (dd), the background
+%   (bg), and the experiment (ex).
+%
+%   FITSIGNAL can handle both parametric and non-parametric distance
+%   distribution models.
+%
 %  Input:
-%    V      time-domain signal (N-element vector)
+%    V      time-domain signal to fit (N-element vector)
 %    t      time axis, in microseconds (N-element vector)
 %    r      distance axis, in nanometers (M-element vector)
 %    dd     function handle to distribution model (for parametric distribution)
@@ -38,15 +45,17 @@ if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
 end
 
-if nargin<4
-  dd_model = [];
+validateattributes(Vexp,{'numeric'},{'vector'},mfilename,'V (1st input)');
+validateattributes(t,{'numeric'},{'vector'},mfilename,'t (2nd input)');
+validateattributes(r,{'numeric'},{'vector'},mfilename,'r (3rd input)');
+
+if numel(Vexp)~=numel(t)
+    error('V (1st input) and t (2nd input) must have the same number of elements.')
 end
-if nargin<5
-  bg_model = [];
-end
-if nargin<6
-  ex_model = [];
-end
+
+if nargin<4, dd_model = []; end
+if nargin<5, bg_model = []; end
+if nargin<6, ex_model = []; end
 
 % Get information about distance distribution parameters
 if isa(dd_model,'function_handle')
@@ -113,7 +122,6 @@ else
     % Calculate the fitted signal, background, and distribution
     [Vfit,Bfit,Pfit] = Vmodel(t,parfit_);
 end
-
 
 % Return fitted parameter in structure
 parfit.dd = parfit_(ddidx);
