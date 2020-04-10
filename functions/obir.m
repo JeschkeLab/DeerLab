@@ -2,6 +2,7 @@
 % OBIR Osher's Bregman-iterated regularization method
 %
 %   P = OBIR(S,K,r,'type',alpha)
+%
 %   OBIR of the N-point signal (S) to a M-point distance
 %   distribution (P) given a M-point distance axis (r) and NxM point kernel
 %   (K). The regularization parameter (alpha) controls the regularization 
@@ -9,38 +10,36 @@
 %
 %   The type of regularization employed in OBIR is set by the 'type'
 %   input argument. The regularization models implemented in OBIR are:
-%          'tikhonov' -   Tikhonov regularization
-%          'tv'       -   Total variation regularization
-%          'huber'    -   pseudo-Huber regularization
+%       'tikhonov' -   Tikhonov regularization
+%       'tv'       -   Total variation regularization
+%       'huber'    -   pseudo-Huber regularization
 %
 %   P = OBIR(...,'Property',Value)
-%   Additional (optional) arguments can be passed as property-value pairs.
+%   Additional (optional) arguments can be passed as name-value pairs.
 % 
-%  The property-value pairs to be passed as options can be set in any order.
+%  The name-value pairs to be passed as options can be set in any order.
 %
 %       'RegOrder' - Order of the regularization operator L (default = 2).
-%
 %       'NoiseLevelAim' - Level (standard deviation) of noise at which 
 %                         Bregman iterations are to stop.
-%
 %       'DivergenceStop'- True/false forces Bregman iterations to stop if
 %                         the evolution of the fit's standard deviation 
 %                         starts to diverge. 
-%
 %       'MaxOuterIter' - Maximal number of Bregman iterations.
-%
 %       'Solver' - Minimization solver (default = 'fnnls')
 %                      'fmincon' - Non linear constrained minimization
 %                      'fnnls' - Fast non-negative least-squares
-%
+%       'HuberParam' - Huber parameter used in the 'huber' model (default = 1.35).
 %       'TolFun' - Optimizer function tolerance
-%
 %       'MaxIter' - Maximum number of optimizer iterations
-%
-%       'MaxFunEvals' - Maximum number of optimizer function evaluations   
-%
+%       'MaxFunEvals' - Maximum number of optimizer function evaluations
 %       'AxisHandle' - Axis handle to plot the state of the distance
-%                      distribution at each iteration     
+%                      distribution at each iteration
+%       'Verbose' - Display options for the solvers:
+%                    'off' - no information displayed
+%                    'final' - display solver exit message
+%                    'iter-detailed' - display state of solver at each iteration
+%                     See MATLAB doc optimoptions for detailed explanation
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
@@ -49,7 +48,11 @@
 
 function [P,ConvergenceCurve] = obir(S,K,r,RegType,alpha,varargin)
 
-validateattributes(S,{'numeric'},{'nonempty'},mfilename,'S')
+if nargin<3
+    error('At least three inputs (S,K,r) are required.')
+end
+
+validateattributes(S,{'numeric'},{'nonempty','vector'},mfilename,'S')
 validateattributes(K,{'numeric'},{'nonempty'},mfilename,'K')
 S = S(:);
 r = r(:);
@@ -60,9 +63,12 @@ if ~isreal(S)
     error('Input signal cannot be complex.')
 end
 
-%Get optional parameters
-[NoiseLevelAim,Solver,MaxIter,TolFun,MaxFunEvals,DivergenceStop,MaxOuterIter,HuberParam,AxisHandle,RegOrder] ...
-    = parseoptional({'NoiseLevelAim','Solver','MaxIter','TolFun','MaxFunEvals','DivergenceStop','MaxOuterIter','HuberParam','AxisHandle','RegOrder'},varargin);
+% Get optional parameters
+optionalProperties = {'Verbose','NoiseLevelAim','Solver','MaxIter','TolFun',...
+  'MaxFunEvals','DivergenceStop','MaxOuterIter','HuberParam','AxisHandle','RegOrder'};
+[Verbose,NoiseLevelAim,Solver,MaxIter,TolFun,MaxFunEvals,DivergenceStop,...
+  MaxOuterIter,HuberParam,AxisHandle,RegOrder] ...
+    = parseoptional(optionalProperties,varargin);
 
 if isempty(RegOrder)
     RegOrder = 2;
@@ -106,9 +112,13 @@ end
 
 L = regoperator(length(r),RegOrder);
 
-%--------------------------------------------------------------------------
-% Parse & Validate Optional Input
-%--------------------------------------------------------------------------
+% Parse & validate optional input
+%-------------------------------------------------------------------------------
+if isempty(Verbose)
+    Verbose = 'off';
+else
+    validateattributes(Verbose,{'char'},{'nonempty'},mfilename,'Verbose')
+end
 
 if isempty(TolFun)
     TolFun = 1e-10;
@@ -140,20 +150,18 @@ else
     validateattributes(DivergenceStop,{'logical'},{'nonempty'},mfilename,'DivergenceStop')
 end
 
-%--------------------------------------------------------------------------
 % Preparation
-%--------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
 
-%Initialize
+% Initialize
 SizeP = length(r);
 Subgradient = zeros(SizeP,1);
 Counter = 1;
 Iteration = 1;
 P = zeros(SizeP,1);
 
-%--------------------------------------------------------------------------
 % Osher's Bregman Iterations Algorithm
-%--------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
 
 Dimension = length(r);
 InitialGuess = zeros(Dimension,1);
@@ -161,63 +169,65 @@ NonNegConst = zeros(Dimension,1);
 
 while Iteration <= MaxOuterIter
     
-    %Store privous iteration distribution
-    CheckP = P;
+    % Store previous iteration distribution
+    Pprev = P;
     
     switch Solver
         case 'fmincon'
-            %Define current minimization problem
+            % Define current minimization problem
             RegFunctional = regfunctional(RegType,S,L,K,alpha,HuberParam);
             fminconFunctional = @(P)obirfunctional(P,RegFunctional,Subgradient);
-            fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,'Display','off','MaxIter',MaxIter);
-            %Run minimzation
+            fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,...
+              'Display',Verbose,'MaxIter',MaxIter);
+            % Run minimzation
             P =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         case 'fnnls'
             [Q,KtS] = lsqcomponents(S,r,K,L,alpha,RegType,HuberParam);
             KtS = KtS - Subgradient;
-            P = fnnls(Q,KtS,InitialGuess,TolFun);
+            P = fnnls(Q,KtS,InitialGuess,TolFun,Verbose);
     end
-    %Store current convergence curve point
+    % Store current convergence curve point
     ConvergenceCurve(Iteration) = std(K*P - S);
     
-    %If hook to axes is given, then plot the current P
+    % If hook to axes is given, then plot the current P
     if ~isempty(AxisHandle)
-        plot(AxisHandle,ConvergenceCurve),drawnow
+        plot(AxisHandle,ConvergenceCurve)
+        drawnow
     end
-    %Update subgradient at current solution
+    % Update subgradient at current solution
     Subgradient = Subgradient + K'*(K*P - S);
-    
-    
-    
-    %--------------------------------------------------------------------------
-    %Iteration Control
+        
+    % Iteration control
     %--------------------------------------------------------------------------
     if Iteration == 1
-        %If at first iteration, thae residual deviation is already below the noise deviation then impose oversmoothing and remain at first iteration
+        % If at first iteration, the residual deviation is already below the
+        % noise deviation then impose oversmoothing and remain at first iteration
         if NoiseLevelAim  > std(K*P - S)
             alpha = alpha*2^Counter;
             Counter = Counter + 1;
         else
-            %Once the residual deviation is above the treshold, then proceed further with the Bregman iterations
-            Iteration  = Iteration +1;
+            % Once the residual deviation is above the treshold, then proceed
+            % further with the Bregman iterations
+            Iteration  = Iteration + 1;
         end
     else
-        %For the rest of the Bregman iterations control the condition and stop when fulfilled
+        % For the rest of the Bregman iterations control the condition and stop
+        % when fulfilled
         if NoiseLevelAim  > std(K*P - S)
             break;
         else
-            Iteration  = Iteration +1;
+            Iteration  = Iteration + 1;
         end
-        %If residual deviation starts to diverge, stop
-        if DivergenceStop && std(K*CheckP - S) < std(K*P - S)
-            P = CheckP;
+        % If residual deviation starts to diverge, stop
+        if DivergenceStop && std(K*Pprev - S) < std(K*P - S)
+            P = Pprev;
             break;
         end
     end
     
 end
 
-%Normalize distribution integral
+% Normalize distribution
 P = P/sum(P)/mean(diff(r));
 
 end

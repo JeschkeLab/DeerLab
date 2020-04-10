@@ -36,22 +36,14 @@
 %                      'lsqnonneg' - Non-negative least-squares 
 %                      'fmincon' - Non-linear constrained minimization
 %                      'bppnnls' -  Block principal pivoting non-negative least-squares solver
-%
 %   'NonNegConstrained' - Enable/disable non-negativity constraint (true/false)
-%
 %   'HuberParam' - Huber parameter used in the 'huber' model (default = 1.35).
-%
 %   'GlobalWeights' - Array of weighting coefficients for the individual signals in
 %                     global fitting.
-%
 %   'RegOrder' - Order of the regularization operator L (default = 2).
-%
 %   'TolFun' - Optimizer function tolerance
-%
 %   'MaxIter' - Maximum number of optimizer iterations
-%
-%   'MaxFunEvals' - Maximum number of optimizer function evaluations   
-%
+%   'MaxFunEvals' - Maximum number of optimizer function evaluations
 %   'Verbose' - Display options for the solvers:
 %                    'off' - no information displayed  
 %                    'final' - display solver exit message
