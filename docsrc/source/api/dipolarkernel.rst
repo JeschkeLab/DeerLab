@@ -100,7 +100,7 @@ Example 1:
     pathinfo(1,:) = [1-lambda NaN];    % unmodulated part, gives offset
     pathinfo(2,:) = [lambda 0];        % main modulation, refocusing at time zero
 	
-    K = dipolarsignal(t,r,pathinfo);
+    K = dipolarkernel(t,r,pathinfo);
 
 The shorthand input syntax ``dipolarkernel(t,r,lambda)`` is equivalent to this input.
 
@@ -118,7 +118,7 @@ Example 2:
 	pathinfo(2,:) = [lambda4  0];       % main modulation, refocusing at time zero
 	pathinfo(2,:) = [lambda21 tau2];    % 2+1 modulation, refocusing at time tau2
 	
-	K = dipolarsignal(t,r,pathinfo);
+	K = dipolarkernel(t,r,pathinfo);
 
 
 -------------------------------

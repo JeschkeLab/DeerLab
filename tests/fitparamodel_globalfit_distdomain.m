@@ -1,6 +1,7 @@
 function [pass,maxerr] = test(opt)
 
 % Test distance-domain global fit of parametric models
+rng(10)
 
 dt = 0.008;
 r = linspace(1,5,500);

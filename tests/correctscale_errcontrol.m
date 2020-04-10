@@ -7,7 +7,7 @@ r = time2dist(t);
 P = dd_gauss(r,[5,0.2]);
 B = bg_exp(t,0.3);
 TrueOffset = 1e8;
-V = dipolarsignal(t,r,P,'Moddepth',0.25,'Background',B,'Scale',TrueOffset,'Phase',pi/2);
+V = dipolarsignal(t,r,P,0.25,B,'Scale',TrueOffset,'Phase',pi/2);
 
 %Pass 1: passing a complex valued signal
 try

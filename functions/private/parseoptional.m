@@ -11,7 +11,7 @@
 
 function varargout = parseoptional(Properties,varargin)
 
-%If only one property passed put it into a cell array
+% If only one property passed put it into a cell array
 if length(Properties)==1 && ~iscell(Properties)
     Properties = {Properties};
 end
@@ -45,7 +45,7 @@ if isempty(varargin{1})
 end
 
 % Parse property-value pairs in varargin
-% --------------------------------------
+% ------------------------------------------------------------------------------
 for i = 1:2:length(varargin(:))
     currentProperty = lower(varargin{i});
     if isa(currentProperty,'char')
@@ -71,8 +71,8 @@ for i = 1:2:length(varargin(:))
             end
         end
     else
-        %If the varargin does not contain Property-value pairs, then show error
-        error('DeerLab:parseoptional','The input is not a valid Property-Value pair.')
+        % If the varargin does not contain Property-value pairs, then show error
+        error('DeerLab:parseoptional','The input is not a valid name-value pair.')
     end
     
 end

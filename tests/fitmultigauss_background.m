@@ -7,7 +7,7 @@ r = time2dist(t);
 InputParam = [4 0.2 4 1 3 0.4 0.4 0.4];
 P = dd_gauss3(r,InputParam);
 B = bg_exp(t,0.55);
-V = dipolarsignal(t,r,P,'moddepth',0.5,'background',B);
+V = dipolarsignal(t,r,P,0.5,B);
 FitP = fitmultigauss(V,t,r,5,'aicc','background',@bg_exp,'Upper',[6 1 0.9 1],'Lower',[1 0.1 0.2 0.01]);
 
 % Pass: distribution is well fitted

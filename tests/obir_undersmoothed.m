@@ -2,7 +2,7 @@ function [pass,maxerr] = test(opt)
 
 % Check that obir() enforces oversmoothing at the start
 
-rng(1)
+rng(11)
 t = linspace(0,3,200);
 r = linspace(0,5,100);
 P = dd_gauss2(r,[2,0.3,3.5,0.3,0.5]);

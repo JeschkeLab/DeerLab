@@ -1,19 +1,19 @@
 %
 % DIPOLARKERNEL Dipolar kernel matrix
 %
-%       K = DIPOLARKERNEL(t,r)
-%       K = DIPOLARKERNEL(t,r,lambda)
-%       K = DIPOLARKERNEL(t,r,lambda,B)
-%       K = DIPOLARKERNEL(t,r,pathinfo)
-%       K = DIPOLARKERNEL(t,r,pathinfo,B)
-%       K = DIPOLARKERNEL(___,'Property',value,___)
+%   K = DIPOLARKERNEL(t,r)
+%   K = DIPOLARKERNEL(t,r,lambda)
+%   K = DIPOLARKERNEL(t,r,lambda,B)
+%   K = DIPOLARKERNEL(t,r,pathinfo)
+%   K = DIPOLARKERNEL(t,r,pathinfo,B)
+%   K = DIPOLARKERNEL(___,'Property',value,___)
 %
 %  Computes the NxM kernel matrix K for the transformation of a distance
 %  distribution to a dipolar evolution function from the M-point distance
 %  axis r (in nanometers) to the N-point time axis t (in nanometers).
 %  If the modulation depth lambda, is given, it is included in K.
 %  If an N-point background (B) is given, it is included in K as well.
-%  Optional arguments can be specified by parameter/value pairs.
+%  Optional arguments can be specified by name-value pairs.
 %
 %  Inputs:
 %     t         N-element time axis, in microseconds
@@ -29,22 +29,22 @@
 %
 %  Outputs:
 %     K         NxM kernel matrix, such that the time-domain signal for a
-%               distance distribution P is K*P
+%               Mx1 distance distribution vector P is K*P
 %
-%  Property/value pairs:
+%  Name-value pairs:
 %
 %   'ExcitationBandwidth' - Excitation bandwith of the pulses in MHz to be
 %                           used for limited bandwith excitation
 %   'OvertoneCoeffs' - 1D array of coefficients for overtones in RIDME signals
-%   'g' - g-values of the spin centers, [g1 g2]
-%   'Method' - Numerical method for kernel matrix calculation:
-%               'fresnel' - uses Fresnel integrals for the kernel (default)
-%               'integral' - uses MATLAB's integral() function (slow, accurate)
-%               'grid' - powder average computed explicitly (slow, inaccurate)
-%   'nKnots' - Number of knots for the grid of powder orientations to be used
-%              in the 'grid' kernel calculation method
-%   'Renormalize' - Re-normalization of multi-pathway kernels to ensure the
-%                   equality V(0) == 1 is satisfied. (default = true)
+%   'g'              - g-values of the spin centers, [g1 g2]
+%   'Method'         - Numerical method for kernel matrix calculation:
+%                      'fresnel' - uses Fresnel integrals for the kernel (default)
+%                      'integral' - uses MATLAB's integral() function (slow, accurate)
+%                      'grid' - powder average computed explicitly (slow, inaccurate)
+%   'nKnots'         - Number of knots for the grid of powder orientations to be used
+%                      in the 'grid' kernel calculation method
+%   'Renormalize'    - Re-normalization of multi-pathway kernels to ensure the
+%                      equality V(0) == 1 is satisfied. (default = true)
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).

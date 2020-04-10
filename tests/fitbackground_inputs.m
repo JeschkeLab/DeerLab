@@ -3,16 +3,19 @@ function [pass,maxerr] = test(opt)
 
 % Check that fitbackground() works with all input schemes
 
-t = linspace(0,10,100);
+t = linspace(0,5,100);
 lam0 = 0.25;
 k = 0.05;
-V = dipolarsignal(t,3,'Background',bg_exp(t,k),'moddepth',lam0);
-tstart = 4.2424;
-tend = 10;
+B = bg_exp(t,k);
+r = linspace(1,6,300);
+P = dd_gauss(r,[3,0.3]);
+V = dipolarsignal(t,r,P,lam0);
+tstart = 2;
+tend = 5;
 
-B1 = fitbackground(V,t,@bg_exp,'ModDepth',0.25);
-B2 = fitbackground(V,t,@bg_exp,tstart,'ModDepth',0.25);
-B3 = fitbackground(V,t,@bg_exp,[tstart tend],'ModDepth',0.25);
+B1 = fitbackground(V,t,@bg_exp,'ModDepth',lam0);
+B2 = fitbackground(V,t,@bg_exp,tstart,'ModDepth',lam0);
+B3 = fitbackground(V,t,@bg_exp,[tstart tend],'ModDepth',lam0);
 B4 = fitbackground(V,t,@bg_exp);
 
 % Pass 1-3: all background are well fitted

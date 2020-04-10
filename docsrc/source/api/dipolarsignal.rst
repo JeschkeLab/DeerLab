@@ -5,7 +5,7 @@
 :mod:`dipolarsignal`
 *********************
 
-Generation of dipolar signals from distance distributions
+Generate a dipolar signal from the distance distribution
 
 -----------------------------
 
@@ -16,15 +16,22 @@ Syntax
 
 .. code-block:: matlab
 
-    V = dipolarsignal(t,r,P)
     V = dipolarsignal(t,r)
+    V = dipolarsignal(t,r,P)
+    V = dipolarsignal(t,r,P,lam)
+    V = dipolarsignal(t,r,P,lam,B)
+    V = dipolarsignal(t,r,P,pathinfo)
+    V = dipolarsignal(t,r,P,pathinfo,B)
     V = dipolarsignal(___,'Property',Value)
 
 
 Parameters
-    *   ``t`` - Time axis (*N*-element array)
-    *   ``r`` - Distance axis (*M*-element array)
+    *   ``t`` - Time axis, in microseconds (*N*-element array)
+    *   ``r`` - Distance axis, in nanometers (*M*-element array)
     *   ``P`` - Distance distribution (*M*-element array)
+    *   ``lam`` - Modulation depth (scalar)
+    *   ``pathinfo`` - Modulation pathway info array (Kx2 array)
+    *   ``B`` - Backround (*N*-element array)
 
 Returns
     *   ``V`` - Dipolar signal (N-array)
@@ -55,6 +62,30 @@ If no distribution ``P`` is provided, then the dipolar signal corresponding to a
 -----------------------------
 
 
+.. code-block:: matlab
+
+    V = dipolarsignal(t,r,P,lam)
+
+Include the modulation depth ``lam`` in the dipolar signal. If omitted, ``lam`` is set to 1.
+
+-----------------------------
+
+.. code-block:: matlab
+
+    V = dipolarsignal(t,r,P,lam,B)
+
+Include the background ``B`` in the dipolar signal. If omitted, ``B`` is set to all ``ones(size(t))``.
+
+-----------------------------
+
+.. code-block:: matlab
+
+    V = dipolarsignal(t,r,P,pathinfo,B)
+
+Compute the multi-pathway dipolar signal using the pathway specification in ``pathinfo``. See :ref:`dipolarkernel` for details.
+
+-----------------------------
+
 
 Additional Settings
 =========================================
@@ -66,29 +97,6 @@ Additional settings can be specified via name-value pairs. All property names ar
     V = dipolarsignal(___,'Property1',Value1,'Property2',Value2,___)
 
 
-- ``'ModDepth'`` Modulation depth
-    Modulation depth of the form factor, must be passed as a scalar value between 0 and 1.
-
-    *Default:* ``1``
-
-    *Example:*
-
-		.. code-block:: matlab
-
-			V = dipolarsignal(___,'ModDepth',0.4)
-
-
-- ``'Background'`` - Background function
-    Background function passed as a *N*-element array.
-
-    *Default:* [*empty*]]
-
-    *Example:*
-
-		.. code-block:: matlab
-
-			V = dipolarsignal(___,'Background',bg_srtexp(t,param))
-
 - ``'NoiseLevel'`` - Level of noise on the signal
     Scalar value containing the desired standard deviation of a Gaussian noise vector 
 
@@ -98,10 +106,10 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			V = dipolarsignal(___,'NoiseLevel',0.05)
+			V = dipolarsignal(___,'NoiseLevel',0.05);
 
 		.. Important::
-			Each call of ``dipolarsignal`` will return a different noise realization. To set the output to a fixed noise realization, the random number generator must be fixed. In MATLAB this can be accomplished by calling ``rng(k)`` where ``k`` is some integer number.
+			Each call of ``dipolarsignal`` will return a different noise realization. If you need a reproducible noise realization, seed MATLAB's random number generator with a specific integer seed ``k`` using ``rng(k)``.
 
 
 - ``'Overtones'`` - RIDME overtone coefficients
@@ -113,18 +121,18 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			V = dipolarsignal(___,'Overtones',[0.2 0.5 0.3])
+			V = dipolarsignal(___,'Overtones',[0.2 0.5 0.3]);
 
 - ``'g'`` - Electron g-value
     Specifies the g-value of the electron spin center used to compute the dipolar frequencies from the given distance axis.
 
-    *Default:* ``2.004602204236924``
+    *Default:* ``2.00231930436256``
 
     *Example:*
 
 		.. code-block:: matlab
 
-			K = dipolarkernel(___,'g',2.00) %Use experimental g-value
+			K = dipolarkernel(___,'g',2.005);   % Use experimental g-value
 
 - ``'Scale'`` - Amplitude scale
     Vertical scale to multiply to the output signal
@@ -135,7 +143,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			V = dipolarsignal(___,'Scale', 1e3)
+			V = dipolarsignal(___,'Scale', 1e3);
 
 - ``'Phase'`` - IQ phase of the signal
     Scalar-valued phase of the complex-valued signal (in radians).
@@ -146,5 +154,4 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			V = dipolarsignal(___,'Phase', pi/2)
-
+			V = dipolarsignal(___,'Phase', pi/2);

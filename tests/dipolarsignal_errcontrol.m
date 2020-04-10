@@ -9,7 +9,7 @@ P = dd_gauss(r,[4,0.4]);
 
 % Pass 1: not enough input arguments
 try
-    dipolarsignal(t,r);
+    V = dipolarsignal(t);
     pass(1) = false;
 catch
     pass(1) = true;
@@ -17,7 +17,7 @@ end
 
 % Pass 2: negative modulation depth
 try
-    dipolarsignal(t,r,P,'moddepth',-0.1);
+    V = dipolarsignal(t,r,P,-0.1);
     pass(2) = false;
 catch
     pass(2) = true;
@@ -25,7 +25,7 @@ end
 
 % Pass 3: modulation depth larger than 1
 try
-    dipolarsignal(t,r,P,'moddepth',1.5);
+    V = dipolarsignal(t,r,P,1.5);
     pass(3) = false;
 catch
     pass(3) = true;
