@@ -35,8 +35,9 @@
 %       'fminsearchbnd' - Non-linear constrained minimization (free)
 %          'fminsearch' - Unconstrained minimization
 %   'CostModel' - Type of fitting cost functional to use.
-%                      'lsq' - Least-squares fitting
-%                      'chisquared' - Chi-squared fitting (as in GLADD or DD)
+%                      'ssr' - sum of squared residuals
+%                      'chi2' - chi-squared
+%                      'chi2red' - reduced chi-squared
 %   'GlobalWeights' - Array of weighting coefficients for the individual signals in
 %                     global fitting.
 %   'Algorithm' - Algorithm to be used by the solvers (see fmincon or
@@ -158,9 +159,9 @@ optionalProperties = {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals',...
 
 % Validate optional inputs
 if isempty(CostModel)
-    CostModel = 'lsq';
+    CostModel = 'ssr';
 else
-    validInputs = {'lsq','chisquare'};
+    validInputs = {'ssr','chi2','chi2red'};
     CostModel = validatestring(CostModel,validInputs);
 end
 if isempty(MultiStart)
@@ -267,6 +268,7 @@ for i = 1:length(V)
     end
     validateattributes(V{i},{'numeric'},{'nonempty'},mfilename,'V')
 end
+
 % Validate input axis
 if ~iscell(ax)
     ax = {ax(:)};
@@ -285,24 +287,13 @@ for i = 1:length(ax)
             error('V and t arguments must fulfill length(t)==length(S).')
         end
     end
-    
 end
 
-%--------------------------------------------------------------------------
-% Execution
-%--------------------------------------------------------------------------
+% Preparation of objective functions, parameter ranges, etc
+%-------------------------------------------------------------------------------
 
 % Parse errors in the model function, and reformat them
 % model = @(ax,Parameters,idx)errorhandler(model,'modelfcn',ax,Parameters,idx);
-
-% Define the cost functional of a single signal
-switch CostModel
-    case 'lsq'
-        ModelCost = @(Parameters,K,S,ax,idx) norm(K*model(ax,Parameters,idx) - S)^2;
-    case 'chisquare'
-        nParam = length(StartParameters);
-        ModelCost = @(Parameters,K,S,ax,idx) 1/(length(S) - nParam)/(noiselevel(S)^2)*sum((K*model(ax,Parameters,idx) - S).^2);
-end
 
 % Get weights of different signals for global fitting
 if isempty(GlobalWeights)
@@ -315,16 +306,29 @@ Weights = Weights(:).';
 Labels = num2cell(1:numel(V));
 catvec = @(x) cat(1,x{:});
 
-% Create a new handle which evaluates the model cost function for every signal
-if length(ax)>1
-    CostFcn = @(Parameters) (sum(Weights.*cellfun(@(K,V,t,idx)ModelCost(Parameters,K,V,t,idx),K,V,ax,Labels)));
-    VecCostFcn = @(Parameters) catvec(cellfun(@(K,V,t,idx) Weights(idx)*(sqrt(0.5)*(K*model(t,Parameters,idx) - V)),K,V,ax,Labels,'UniformOutput',false));
-else
-    CostFcn = @(Parameters) (sum(Weights.*cellfun(@(K,V,idx)ModelCost(Parameters,K,V,ax{1},idx),K,V,Labels)));
-    VecCostFcn = @(Parameters) catvec(cellfun(@(K,V,idx) Weights(idx)*(sqrt(0.5)*(K*model(ax{1},Parameters,idx) - V)),K,V,Labels,'UniformOutput',false));
+% Define the objective functional of a single signal
+nParam = length(StartParameters);
+ssr = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2; 
+chi2 = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2/noiselevel(S)^2;
+chi2red = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2/noiselevel(S)^2/(numel(S)-nParam);
+switch CostModel
+    case 'ssr', ModelCost = ssr;
+    case 'chi2', ModelCost = chi2;
+    case 'chi2red', ModelCost = chi2red;
 end
 
-% Prepare upper/lower bounds on parameter search
+% Create a new handle which evaluates the objective function for every signal
+if numel(ax)>1
+    % different horizontal axes for different signals
+    ObjFcn = @(p) sum(Weights.*cellfun(@(K,V,t,idx)ModelCost(p,K,V,t,idx),K,V,ax,Labels));
+    VecObjFcn = @(p) catvec(cellfun(@(K,V,t,idx) Weights(idx)*(sqrt(0.5)*(K*model(t,p,idx) - V)),K,V,ax,Labels,'UniformOutput',false));
+else
+    % single horizontal axes for different signals
+    ObjFcn = @(p) sum(Weights.*cellfun(@(K,V,idx)ModelCost(p,K,V,ax{1},idx),K,V,Labels));
+    VecObjFcn = @(p) catvec(cellfun(@(K,V,idx) Weights(idx)*(sqrt(0.5)*(K*model(ax{1},p,idx) - V)),K,V,Labels,'UniformOutput',false));
+end
+
+% Prepare upper/lower bounds on parameter search range
 Ranges =  [Info.parameters(:).range];
 if isempty(lowerBounds)
     lowerBounds = Ranges(1:2:end-1);
@@ -343,13 +347,16 @@ if any(upperBounds<lowerBounds)
     error('Lower bound values cannot be larger than upper bound values.')
 end
 
+% Preprare multiple start global optimization if requested
+MultiStartParameters = multistarts(MultiStart,StartParameters,lowerBounds,upperBounds);
+
+% Execution
+%-------------------------------------------------------------------------------
 % Disable ill-conditioned matrix warnings
 warning('off','MATLAB:nearlySingularMatrix')
 
-% Preprare multiple start global optimization if requested
-MultiStartParameters = multistarts(MultiStart,StartParameters,lowerBounds,upperBounds);
 fvals = zeros(1,MultiStart);
-fits = cell(1,MultiStart);
+parfits = cell(1,MultiStart);
 jacobian = [];
 
 for runIdx = 1:MultiStart
@@ -364,7 +371,7 @@ for runIdx = 1:MultiStart
                 'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
                 'TolFun',TolFun,'TolCon',1e-20,...
                 'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [parfit,fval,exitflag] = fminsearchcon(CostFcn,StartParameters,lowerBounds,upperBounds,[],[],[],solverOpts);
+            [parfit,fval,exitflag] = fminsearchcon(ObjFcn,StartParameters,lowerBounds,upperBounds,[],[],[],solverOpts);
             % Check how optimization exited...
             if exitflag == 0
                 % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
@@ -372,7 +379,7 @@ for runIdx = 1:MultiStart
                     'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,...
                     'TolFun',TolFun,'TolCon',1e-10,...
                     'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-                [parfit,fval] = fminsearchcon(CostFcn,parfit,lowerBounds,upperBounds,[],[],[],solverOpts);
+                [parfit,fval] = fminsearchcon(ObjFcn,parfit,lowerBounds,upperBounds,[],[],[],solverOpts);
             end
             
         case 'fmincon'
@@ -381,24 +388,24 @@ for runIdx = 1:MultiStart
                 'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
                 'TolFun',TolFun,'TolCon',1e-20,'StepTolerance',1e-20,...
                 'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [parfit,fval,exitflag]  = fmincon(CostFcn,StartParameters,[],[],[],[],lowerBounds,upperBounds,[],solverOpts);
+            [parfit,fval,exitflag]  = fmincon(ObjFcn,StartParameters,[],[],[],[],lowerBounds,upperBounds,[],solverOpts);
             % Check how optimization exited...
             if exitflag == 0
                 % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
                 solverOpts = optimoptions(solverOpts,'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,'Display',Verbose);
-                [parfit,fval]  = fmincon(CostFcn,parfit,[],[],[],[],lowerBounds,upperBounds,[],solverOpts);
+                [parfit,fval]  = fmincon(ObjFcn,parfit,[],[],[],[],lowerBounds,upperBounds,[],solverOpts);
             end
             
         case 'lsqnonlin'
             solverOpts = optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display',Verbose,...
                 'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
                 'TolFun',TolFun,'DiffMinChange',0,'DiffMaxChange',Inf);
-            [parfit,fval,~,exitflag,~,~,jacobian]  = lsqnonlin(VecCostFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
+            [parfit,fval,~,exitflag,~,~,jacobian]  = lsqnonlin(VecObjFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
             
             if exitflag == 0
                 % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
                 solverOpts = optimoptions(solverOpts,'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,'Display',Verbose);
-                [parfit,fval,~,~,~,~,jacobian]  = lsqnonlin(VecCostFcn,parfit,lowerBounds,upperBounds,solverOpts);
+                [parfit,fval,~,~,~,~,jacobian]  = lsqnonlin(VecObjFcn,parfit,lowerBounds,upperBounds,solverOpts);
             end
             
         case 'nlsqbnd'
@@ -406,7 +413,7 @@ for runIdx = 1:MultiStart
                 'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
                 'TolFun',TolFun,'TolCon',1e-20,...
                 'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [parfit,fval,~,exitflag] = nlsqbnd(VecCostFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
+            [parfit,fval,~,exitflag] = nlsqbnd(VecObjFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
             % nlsqbnd returns a column, transpose to adapt to row-style of MATLAB solvers
             parfit = parfit.';
             if exitflag == 0
@@ -415,7 +422,7 @@ for runIdx = 1:MultiStart
                     'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,...
                     'TolFun',TolFun,'TolCon',1e-20,...
                     'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-                [parfit,fval] = nlsqbnd(VecCostFcn,parfit,lowerBounds,upperBounds,solverOpts);
+                [parfit,fval] = nlsqbnd(VecObjFcn,parfit,lowerBounds,upperBounds,solverOpts);
             end
             
         case 'fminsearch'
@@ -427,49 +434,46 @@ for runIdx = 1:MultiStart
                 'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
                 'TolFun',TolFun,'TolCon',1e-10,...
                 'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [parfit,fval]  = fminsearch(CostFcn,StartParameters,solverOpts);
+            [parfit,fval]  = fminsearch(ObjFcn,StartParameters,solverOpts);
     end
     
     fvals(runIdx) = fval;
-    fits{runIdx} = parfit;
+    parfits{runIdx} = parfit;
     
 end
 
 % Find global minimum from multiple runs
 [~,globmin] = min(fvals);
-parfit = fits{globmin};
+parfit = parfits{globmin};
 
 if nargout>2
     
-    % Numerically estimate the Jacobian if not done by MATLAB's lsqnonlin
-    jacobian = jacobianest(VecCostFcn,parfit);
+    % Numerically estimate the Jacobian and Hessian
+    jacobian = jacobianest(VecObjFcn,parfit);
     hessian = jacobian'*jacobian;
-    % Compute residual vector
-    residual = VecCostFcn(parfit);
-    lastwarn('');
+    % Compute residual vector and variance
+    residual = VecObjFcn(parfit);
+    sigma2 = var(residual);
     % Set significance level for confidence intervals
     alpha = 1 - ConfidenceLevel;
-    %Get Student's T critical value
-    critical = tinv(1 - alpha/2,length(residual) - numel(parfit));
+    % Get Student's t critical value [tinv() from Statistics & ML Toolbox]
+    critical = tinv(1 - alpha/2,numel(residual) - numel(parfit));
     % Estimate the covariance matrix by means of the inverse of Fisher information matrix
-    covmatrix = var(residual).*inv(hessian);
+    lastwarn('');
+    covmatrix = sigma2.*inv(hessian);
     % Detect if there was a 'nearly singular' warning
     [~, warnId] = lastwarn;
     if strcmp(warnId,'MATLAB:nearlySingularMatrix') || strcmp(warnId,'MATLAB:singularMatrix')
-        covmatrix = var(residual).*sparse(pinv(full(hessian)));
+        covmatrix = sigma2.*sparse(pinv(full(hessian)));
         lastwarn('');
     end
-    % Compute upper/lower confidence intervals
-    parci = nan(numel(parfit),2);
-    parci(:,1) = parfit - critical*sqrt(diag(covmatrix).');
-    parci(:,2) = parfit + critical*sqrt(diag(covmatrix).');
     
-    %If wrapper functions internally request the covariance matrix, pack it up
+    % Compute upper/lower confidence intervals
+    parci = parfit.' + critical*[-1 1]*sqrt(diag(covmatrix));
+    
+    % If wrapper functions internally request the covariance matrix, pack it up
     if returnCovariance
-        tmp{1} = parci;
-        tmp{2} = covmatrix;
-        tmp{3} = critical;
-        parci = tmp;
+        parci = {parci, covmatrix, critical};
     end
     
 end

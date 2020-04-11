@@ -11,7 +11,7 @@ S = K*P;
 models = {@dd_gauss,@dd_gauss2,@dd_gauss3};
 
 %nm
-[opt1,metric1] = selectmodel(models,S,r,K,'aicc','CostModel','chisquare');
+[opt1,metric1] = selectmodel(models,S,r,K,'aicc','CostModel','chi2red');
 [opt2,metric2] = selectmodel(models,S,r,K,'aicc','CostModel','lsq');
 
 % Pass: both cost functionals lead to the same result

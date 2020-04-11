@@ -10,7 +10,7 @@ P = dd_gauss(r,parIn);
 K = dipolarkernel(t,r);
 S = dipolarsignal(t,r,P,'noiselevel',0.01);
 
-[parFit,Pfit] = fitparamodel(S,@dd_gauss,r,K,'costmodel','chisquare');
+[parFit,Pfit] = fitparamodel(S,@dd_gauss,r,K,'costmodel','chi2red');
 
 %Pass 1-2: fmincon finds the correct solution with the Chi^2
 pass(1) = any(abs(Pfit - P) < 1e-1);

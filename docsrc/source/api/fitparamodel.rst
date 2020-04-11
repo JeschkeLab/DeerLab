@@ -119,20 +119,21 @@ Additional settings can be specified via name-value pairs. All property names ar
     param = fitparamodel(___,'Property1',Value1,'Property2',Value2,___)
 
 
-- ``'CostModel'`` - Optimization cost functional
-    Type of fitting cost functional to use.
+- ``'CostModel'`` - Optimization objective functional
+    Type of objective functional to use.
 
-    * ``'lsq'`` - Least-squares fitting
-    * ``'chisquared'`` - :math:`\chi^2`-fitting (as in GLADD or DD)
+    * ``'ssr'`` - Sum of squared residuals
+    * ``'chi2'`` - :math:`\chi^2`
+    * ``'chi2red'`` - Reduced :math:`\chi^2` (= ssr divided by variance and number of degrees of freedom)
 
 
-    *Default:* ``lsq``
+    *Default:* ``ssr``
 
     *Example:*
 
 		.. code-block:: matlab
 
-			param = fitparamodel(___,'CostModel','chisquared')
+			param = fitparamodel(___,'CostModel','chi2red')
 
 - ``'Upper'`` - Parameters upper bound constraints
     Array of upper bounds for the model parameters.
