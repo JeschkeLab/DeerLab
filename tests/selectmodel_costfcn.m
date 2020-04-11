@@ -12,7 +12,7 @@ models = {@dd_gauss,@dd_gauss2,@dd_gauss3};
 
 %nm
 [opt1,metric1] = selectmodel(models,S,r,K,'aicc','CostModel','chi2red');
-[opt2,metric2] = selectmodel(models,S,r,K,'aicc','CostModel','lsq');
+[opt2,metric2] = selectmodel(models,S,r,K,'aicc','CostModel','ssr');
 
 % Pass: both cost functionals lead to the same result
 pass = opt1==opt2;

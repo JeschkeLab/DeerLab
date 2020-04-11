@@ -7,7 +7,7 @@ r1 = linspace(2,6,200);
 P = dd_gauss3(r1,[3 0.3 4 0.3 5 0.3 0.3 0.3]);
 K = dipolarkernel(t,r1);
 rng(5)
-S = K*P + whitegaussnoise(t,0.01);
+S = K*P + whitegaussnoise(t,0.01,true);
 [~,Plocal] = fitparamodel(S,@dd_gauss3,r1,K,'tolfun',1e-4);
 [~,Pmulti] = fitparamodel(S,@dd_gauss3,r1,K,'tolfun',1e-4,'multistart',50);
 
