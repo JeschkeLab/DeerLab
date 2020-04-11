@@ -469,7 +469,7 @@ if nargout>2
     end
     
     % Compute upper/lower confidence intervals
-    parci = parfit.' + critical*[-1 1]*sqrt(diag(covmatrix));
+    parci = parfit.' + critical*sqrt(diag(covmatrix)).*[+1 -1];
     
     % If wrapper functions internally request the covariance matrix, pack it up
     if returnCovariance
