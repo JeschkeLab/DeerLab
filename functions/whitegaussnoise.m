@@ -15,34 +15,31 @@
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
-function noise = whitegaussnoise(N,level,matchlevel)
+function noise = whitegaussnoise(N,level,rescale)
 
-if nargin<3 || isempty(matchlevel)
-    matchlevel = false;
+if nargin<2 || nargin>3
+    error('Two inputs (N, level) are required.');
+end
+
+if nargin<3
+    rescale = '';
 end
 
 if numel(N)>1
    N = numel(N); 
 end
 
-% Validate input
+% Validate inputs
 validateattributes(N,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'N')
 validateattributes(level,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'level')
-validateattributes(matchlevel,{'logical'},{'nonempty'},mfilename,'matchlevel')
+validateattributes(rescale,{'char'},{},mfilename,'rescale')
 
-if matchlevel
-    %Generate Gaussian noise with matched standard deviation
-    randvec = randn(N,1);
-    %Increase amplitude of the noise vector until standard deviation matches
-    %the requested noise level exactly
-    noise = 0*randvec;
-    amp = 0;
-    while std(noise)<level
-        amp = amp + level/100;
-        noise = amp*randvec;
-    end
-else
-    % Generate Gaussian noise with proper distribution standard deviation
-    noise = level*randn(N,1);
+rescale = strcmp(rescale,'rescale');
+
+noise = randn(N,1);
+if rescale
+  noise = noise/std(noise); 
 end
+noise = level*noise;
+
 end

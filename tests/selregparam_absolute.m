@@ -7,7 +7,7 @@ t = linspace(0,5,200);
 r = linspace(2,5,100);
 P = dd_gauss(r,[3,0.4]);
 K = dipolarkernel(t,r);
-S = K*P + whitegaussnoise(t,0.02,true);
+S = K*P + whitegaussnoise(t,0.02,'rescale');
 
 methods = {'lr','lc','cv','gcv','rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl'};
 alphaopt1 = selregparam(S,K,r,'tikhonov',methods,'NonNegConstrained',false,'NoiseLevel',0.05,'search','grid');
