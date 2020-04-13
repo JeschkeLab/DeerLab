@@ -54,7 +54,7 @@
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
-function [P,alpha] = fitregmodel(V,K,r,RegType,alpha,varargin)
+function [P,Pci,alpha] = fitregmodel(V,K,r,RegType,alpha,varargin)
 
 % Turn off warnings to avoid ill-conditioned warnings 
 warning('off','MATLAB:nearlySingularMatrix')
@@ -80,8 +80,8 @@ if  nargin<5 || isempty(alpha)
 end
 
 % Check if user requested some options via name-value input
-optionalProperties = {'TolFun','Solver','NonNegConstrained','Verbose','MaxFunEvals','MaxIter','HuberParam','GlobalWeights','RegOrder','internal::parseLater'};
-[TolFun,Solver,NonNegConstrained,Verbose,MaxFunEvals,MaxIter,HuberParam,GlobalWeights,RegOrder] ...
+optionalProperties = {'TolFun','Solver','NonNegConstrained','Verbose','MaxFunEvals','MaxIter','HuberParam','GlobalWeights','RegOrder','ConfidenceLevel','internal::parseLater'};
+[TolFun,Solver,NonNegConstrained,Verbose,MaxFunEvals,MaxIter,HuberParam,GlobalWeights,RegOrder,ConfidenceLevel] ...
     = parseoptional(optionalProperties,varargin);
 
 
@@ -113,7 +113,14 @@ if isempty(Verbose)
 else
     validateattributes(Verbose,{'char'},{'nonempty'},mfilename,'Verbose')
 end
-
+if isempty(ConfidenceLevel)
+   ConfidenceLevel = 0.95; 
+else
+    validateattributes(ConfidenceLevel,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'Verbose')
+    if ConfidenceLevel<=0 || ConfidenceLevel>1
+       error('The ''ConfidenceLevel'' option must be a scalar value in the range [0 1].') 
+    end
+end
 if isempty(RegOrder)
     RegOrder = 2;
 else
@@ -186,7 +193,14 @@ for i = 1:numel(V)
     end
     validateattributes(V{i},{'numeric'},{'nonempty'},mfilename,'S')
 end
-
+if nargin>1
+    getConfidenceIntervals = true;
+else
+    getConfidenceIntervals = false;
+end
+if strcmp(RegType,'custom')
+    getConfidenceIntervals = false;
+end
 %--------------------------------------------------------------------------
 % Regularization processing
 %--------------------------------------------------------------------------
@@ -203,7 +217,7 @@ if ~NonNegConstrained && ~strcmp(Solver,'fmincon')
 end
 
 % If using LSQ-based solvers then precompute the KtK and KtS input arguments
-if ~strcmp(Solver,'fmincon')
+if ~strcmp(Solver,'fmincon') || getConfidenceIntervals
     [Q,KtS,weights] =  lsqcomponents(V,r,K,L,alpha,RegType,HuberParam,GlobalWeights);
 end
 
@@ -257,6 +271,36 @@ switch lower(Solver)
             fminconOptions = optimoptions(fminconOptions,'MaxIter',2*MaxIter,'MaxFunEvals',2*MaxFunEvals);
             P  = fmincon(RegFunctional,P,[],[],[],[],NonNegConst,[],[],fminconOptions);
         end
+end
+
+if getConfidenceIntervals
+    
+    var = 0;
+    
+    % Estimate the contribution to variance from the different signals
+    for i=1:numel(V)
+    % Get the Moore=Penrose pseudoinverse
+    Q = lsqcomponents(V{i},r,K{i},L,alpha,RegType,HuberParam);
+    pK = Q\K{i}.';
+    
+    % Estimate the residual standard deviation
+    sig = std(V{i} - K{i}*P);
+    
+    % Get the Gaussian quantile according to requested coverage
+    alpha = 1 - ConfidenceLevel;
+    p = 1 - alpha/2;
+    z = norminv(p);
+
+    % Estimate variance from covariance matrix
+    var = var + weights(i)*sig*sqrt(diag(pK*pK.'));    
+    end
+    
+    % Compute the standard confidence intervals constrained to parameter space
+    Pci(1,:) = max(P - z*var,0);
+    Pci(2,:) = P + z*var;
+
+else
+    Pci = nan(2,numel(P)); 
 end
 
 % Normalize distribution
