@@ -8,12 +8,19 @@
 %   (K). The regularization parameter (alpha) controls the regularization 
 %   properties.
 %
-%   P = FITREGMODEL(V,K,r,regtype,method)
+%   [P,Pci] = FITREGMODEL(V,K,r,regtype,method)
+%   An estimation of the 99%-confidence intervals is returned as a second 
+%   output (Pci).
+%
+%   [P,Pci] = FITREGMODEL(V,K,r,regtype,method)
 %   Instead of passing a numerial value for the regularization parameter
 %   (alpha), the name of a selection method (method) can be passed and 
 %   the regularization parameter will be automatically selected by means
 %   of the selregparam function.
 %
+%   [P,Pci,alpha] = FITREGMODEL(V,K,r,regtype,method)
+%   The value of the regularization parameter found via selection
+%   methods and used for fitting (P) is returned in (alpha). 
 %
 %   The type of regularization employed in FITREGMODEL is set by the regtype
 %   input argument. The regularization models implemented in FITREGMODEL are:
@@ -40,7 +47,8 @@
 %   'HuberParam' - Huber parameter used in the 'huber' model (default = 1.35).
 %   'GlobalWeights' - Array of weighting coefficients for the individual signals in
 %                     global fitting.
-%   'RegOrder' - Order of the regularization operator L (default = 2).
+%   'RegOrder' - Order of the regularization operator L (default = 2)
+%   'ConfidenceLevel' - Level for the confidence intervals (0-1, default=0.99)
 %   'TolFun' - Optimizer function tolerance
 %   'MaxIter' - Maximum number of optimizer iterations
 %   'MaxFunEvals' - Maximum number of optimizer function evaluations
@@ -114,7 +122,7 @@ else
     validateattributes(Verbose,{'char'},{'nonempty'},mfilename,'Verbose')
 end
 if isempty(ConfidenceLevel)
-   ConfidenceLevel = 0.95; 
+   ConfidenceLevel = 0.99; 
 else
     validateattributes(ConfidenceLevel,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'Verbose')
     if ConfidenceLevel<=0 || ConfidenceLevel>1

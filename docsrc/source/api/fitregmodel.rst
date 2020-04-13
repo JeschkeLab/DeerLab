@@ -19,7 +19,7 @@ Syntax
     P = fitregmodel(V,K,r,'regtype','method')
     P = fitregmodel(V,K,r,'regtype',alpha,'Property',Value)
     P = fitregmodel(V,K,r,'regtype','method','Property',Value)
-    [P,alpha] = fitregmodel(___)
+    [P,Pci,alpha] = fitregmodel(___)
 
 Parameters
     *   ``V`` - Input signal (*N*-element array) or input signals (cell array)
@@ -31,6 +31,7 @@ Parameters
 
 Returns
     *  ``P`` - Distance distribution (*M*-element array)
+    *  ``Pci`` - Estimated confidence intervals (*2xM*-element array)
     *  ``alpha`` - regularization parameter (scalar)
 
 -----------------------------
@@ -41,15 +42,17 @@ Description
 
 .. code-block:: matlab
 
-    P = fitregmodel(V,K,r)
+    [P,Pci] = fitregmodel(V,K,r)
 
-Fits a distance distribution ``P`` to the input signal ``V`` given the kernel matrix ``K``, using Tikhonov regularization using an AIC-optimized regularization parameter.
+Fits a distance distribution ``P`` to the input signal ``V`` given the kernel matrix ``K``, using Tikhonov regularization using an AIC-optimized regularization parameter. 
+
+The ``Pci`` output contains the upper and lower 99%-confidence bands of the fitted distance distribution. The upper confidence band can be accessed via  ``Pci(1,:)`` and the lower confidence band via ``Pci(2,:)``.
 
 -----------------------------
 
 .. code-block:: matlab
 
-    P = fitregmodel(V,K,r,'regtype',alpha)
+    [P,Pci] = fitregmodel(V,K,r,'regtype',alpha)
 
 Fits a distance distribution ``P`` to the input signal ``V`` using the regularization method specified in ``'regtype'`` and the regularization parameter value given in ``alpha``. The available values for ``'regtype'`` are
 
@@ -62,18 +65,21 @@ Fits a distance distribution ``P`` to the input signal ``V`` using the regulariz
 
 .. code-block:: matlab
 
-    P = fitregmodel(V,K,r,'regtype','method')
+    [P,Pci,alpha] = fitregmodel(V,K,r,'regtype','method')
 
-Instead of passing a numerical value for the regularization parameter ``alpha``, the name of a selection method ``method`` (e.g. ``'AIC'``, ``'BIC'``, etc.) can be passed and the regularization parameter will be automatically selected by means of the :ref:`selregparam` function.
+
+.. rst-class:: coderef
+
+Instead of passing a numerical value for the regularization parameter ``alpha``, the name of a selection method ``method`` (e.g. ``'AIC'``, ``'BIC'``, etc.) can be passed and the regularization parameter will be automatically selected by means of the :ref:`selregparam` function. The selected optimal value is returned as the last output ``alpha``. 
 
 -----------------------------
 
 
 .. code-block:: matlab
 
-    P = fitregmodel({V1,V2,...},{K1,K2,...},r,...)
+    [P,Pci] =  = fitregmodel({V1,V2,___},{K1,K2,___},r,___)
 
-Passing multiple signals and kernels enables global fitting of a kernel model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes N1,N2,... and a cell array of kernel matrices with sizes N1xM,N2xM,... must be passed as well.
+Passing multiple signals and kernels enables global fitting of a kernel model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes `N_1`, `N_2`,... and a cell array of kernel matrices with sizes `N_1 \times M`, `N_2 \times M`,... must be passed as well.
 
 -----------------------------
 
@@ -133,6 +139,17 @@ Additional settings can be specified via name-value pairs. All property names ar
 		.. code-block:: matlab
 
 			P = fitregmodel({S1,S2,S3},{K1,K2,K3},r,L,'tikhonov',a,'GlobalWeights',[0.1 0.6 0.3]])
+
+- ``'ConfidenceLevel'`` -  Level for parameter confidence bands
+    Level of the confidence bands computed for each fitted parameter. Must be a scalar value between 0 and 1.
+
+    *Default:* ``0.99`` (99% confidence bands)
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			P = fitregmodel(___,'ConfidenceLevel',0.95)
 
 - ``'Solver'`` - Optimization solver
     Numerical solver employed for solving the regularized optimization problem.
