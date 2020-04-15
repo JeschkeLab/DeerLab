@@ -50,6 +50,7 @@ a=dct1d(initial_data); % discrete cosine transform of initial data
 I=[1:n-1]'.^2; a2=(a(2:end)/2).^2;
 % use  fzero to solve the equation t=zeta*gamma^[5](t)
 t_star=root(@(t)fixed_point(t,N,I,a2),N);
+t_star = max(t_star,0.0001);
 % smooth the discrete cosine transform of initial data using t_star
 a_t=a.*exp(-[0:n-1]'.^2*pi^2*t_star/2);
 % now apply the inverse discrete cosine transform
@@ -57,7 +58,7 @@ if (nargout>1)|(nargout==0)
     density=idct1d(a_t)/R;
 end
 % take the rescaling of the data into account
-bandwidth=sqrt(t_star)*R;
+bandwidth= sqrt(t_star)*R;
 density(density<0)=eps; % remove negatives due to round-off error
 if nargout==0
     figure(1), plot(xmesh,density)
