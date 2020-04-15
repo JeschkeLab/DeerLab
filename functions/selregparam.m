@@ -1,65 +1,63 @@
 %
 %  SELREGPARAM Selection of optimal regularization parameter
 %
-%    alpha = SELREGPARAM(S,K,r,'type','method')
-%    Returns the optimal regularization parameter (alpha) from a range of
-%    regularization parameter candidates (alphas). The parameter for the
-%    regularization type given by ('type') is computed based on the input
-%    signal (S), and the dipolar kernel (K) on a distance axis (r).
-%    The method employed for the selection of the regularization parameter
-%    can be specified as the ('method') input argument.
+%    alphaopt = SELREGPARAM(V,K,r,regtype,method)
+%    alphaopt = SELREGPARAM(V,K,r,regtype,methodlist)
+%    [alphaopt,F,alphas] = SELREGPARAM(___)
+%    ___ = SELREGPARAM({V1,V2,...},{K1,K2,...},___)
+%    alpha = SELREGPARAM(___,Name,Value)
 %
-%    alpha = SELREGPARAM(S,K,r,'type',{'method1',...,'methodN'})
+%  Returns the optimal regularization parameter (alphaopt) from a range of
+%  regularization parameter candidates. The parameter for the regularization
+%  type given by (type) is computed based on the input signal (V) and the
+%  dipolar kernel (K) on a distance axis (r). The method employed for the
+%  selection of the regularization parameter is given in (method).
+%
+%  Inputs:
+%    V          signal
+%    K          dipolar kernel matrix
+%    r          distance vector, in nanometers
+%    regtype    regularization type: 'tikhonov', 'tv', 'huber'
+%    method     selection method: 'lr','lc','cv','gcv','rgcv','srgcv','aic',...
+%                  'bic','aicc','rm','ee','ncp','gml','mcl'
+%    methodlist cell array of selection methods, e.g. {'aic','bic','gcv'}
+%   
+%  Outputs:
+%    alphaopt   optimal alpha, or alphas, determined
+%    F          list of evaluated model-selection functionals
+%    alpha      vector of evaluated alpha values
+%
 %    If multiple selection methods are passed as a cell array of strings,
 %    the function returns (alpha) as an N-point array of optimal
 %    regularization parameters corresponding to the input methods,
 %
-%    [alpha,F,alphas] = SELREGPARAM(...,{'method1',...,'methodN'})
-%    If requested, the second output argument returns the model selection
-%    functionals of correspnding to the different input selection methods. A
-%    third output argument (alphas) returns a vector with the alpha candidate
-%    values evaluated in the search.
-%
-%    alpha = SELREGPARAM({S1,S2,...},{K1,K2,...},r,'type','method')
 %    Passing multiple signals/kernels enables selection of the regularization
 %    parameter for global fitting of the regularization model to a
 %    single distribution. The global fit weights are automatically computed
 %    according to their contribution to ill-posedness.
 %
-%    alpha = SELREGPARAM(...,'Property',Values)
-%    Additional (optional) arguments can be passed as property-value pairs.
-%
-%  The properties to be passed as options can be set in any order.
+%  Name-value pairs:
 %
 %    'NonNegConstrained' - True/false to enforce non-negativity (default=true)
-%
 %    'RegOrder' - Order of the regularization operator L (default = 2).
-%
 %    'Refine' - True/false to enforce a second search aroud the optimal value
 %               with a finer grid to achieve a better value of the optimum.
-%
 %    'HuberParameter' - Huber parameter used in the 'huber' model (default = 1.35).
-%
 %    'GlobalWeights' - Array of weighting coefficients for the individual signals in
 %                      global fitting regularization.
-%
 %    'TolFun' - Optimizer function tolerance.
-%
 %    'NoiseLevel' - Array of noise levels of the input signals.
-%
 %    'Range' - Range of alpha-value candidates to evaluate
-%
 %    'Search' - Search method to use ('golden' or 'grid')
+%
 
 %  This file is a part of DeerLab. License is MIT (see LICENSE.md).
 %  Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [alphaOpt,Functionals,alphaRange,Residuals,Penalties] = selregparam(S,K,r,RegType,SelectionMethod,varargin)
+function [alphaOpt,Functionals,alphaRange,Residuals,Penalties] = selregparam(V,K,r,RegType,SelectionMethod,varargin)
 
-%--------------------------------------------------------------------------
-%  Parse & Validate Required Input
-%--------------------------------------------------------------------------
-
+%  Parse & validate required input
+%-------------------------------------------------------------------------------
 
 % Turn off warnings to avoid ill-conditioned warnings
 warning('off','MATLAB:nearlySingularMatrix')
@@ -68,28 +66,28 @@ warning('off','MATLAB:nearlySingularMatrix')
 [TolFun,NonNegConstrained,NoiseLevel,GlobalWeights,HuberParameter,alphaRange,RegOrder,SearchMethod] ...
     = parseoptional({'TolFun','NonNegConstrained','NoiseLevel','GlobalWeights','HuberParameter','Range','RegOrder','Search'},varargin);
 
-if ~iscell(S)
-    S = {S};
+if ~iscell(V)
+    V = {V};
 end
 if ~iscell(K)
     K = {K};
 end
-if numel(K)~=numel(S)
+if numel(K)~=numel(V)
     error('The number of kernels and signals must be equal.')
 end
 
 % Validate input signals
-for i = 1:length(S)
-    if ~iscolumn(S{i})
-        S{i} = S{i}.';
+for i = 1:length(V)
+    if ~iscolumn(V{i})
+        V{i} = V{i}.';
     end
-    if ~isreal(S{i})
-        S{i} = error('Input signal(s) cannot be complex.');
+    if ~isreal(V{i})
+        V{i} = error('Input signal(s) cannot be complex.');
     end
-    if length(S{i})~=size(K{i},1)
+    if length(V{i})~=size(K{i},1)
         error('K and signal arguments must fulfill size(K,1)==length(S).')
     end
-    validateattributes(S{i},{'numeric'},{'nonempty'},mfilename,'S')
+    validateattributes(V{i},{'numeric'},{'nonempty'},mfilename,'S')
     validateattributes(K{i},{'numeric'},{'nonempty'},mfilename,'K')
 end
 
@@ -121,18 +119,17 @@ LcurveMethods = any(strcmpi(SelectionMethod,'lr')) || any(strcmpi(SelectionMetho
 % Validate global weights
 if ~isempty(GlobalWeights)
     validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
-    if numel(GlobalWeights) ~= numel(S)
+    if numel(GlobalWeights) ~= numel(V)
         error('The same number of global fit weights as signals must be passed.')
     end
     %Normalize weights
     GlobalWeights = GlobalWeights/sum(GlobalWeights);
 else
-    GlobalWeights = globalweights(S);
+    GlobalWeights = globalweights(V);
 end
 
-%--------------------------------------------------------------------------
-%  Parse & Validate Optional Input
-%--------------------------------------------------------------------------
+% Parse & validate optional input
+%-------------------------------------------------------------------------------
 warning('off','all')
 
 if isempty(RegOrder)
@@ -153,7 +150,7 @@ if isempty(RegType)
     RegType = 'tikhonov';
 else
     validateattributes(RegType,{'char'},{'nonempty'})
-    allowedInput = {'tikhonov','tv','huber','hubercirc','berhu'};
+    allowedInput = {'tikhonov','tv','huber'};
     RegType = validatestring(RegType,allowedInput);
 end
 if isempty(HuberParameter)
@@ -164,11 +161,11 @@ end
 
 % Validate NoiseLevel input
 if isempty(NoiseLevel)
-    for i=1:length(S)
-        NoiseLevel(i) = noiselevel(S{i});
+    for i=1:length(V)
+        NoiseLevel(i) = noiselevel(V{i});
     end
 else
-    if length(NoiseLevel)~=length(S)
+    if length(NoiseLevel)~=length(V)
         error('The same number of noise levels as signals must be provided.')
     end
     validateattributes(NoiseLevel,{'numeric'},{'scalar','nonempty','nonnegative'})
@@ -204,9 +201,8 @@ if LcurveMethods && strcmp(SearchMethod,'golden')
 end
 
 
-%--------------------------------------------------------------------------
 %  Preparations
-%--------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
 nr = size(K{1},2);
 % Get regularization operator
 L = regoperator(nr,RegOrder);
@@ -218,7 +214,6 @@ else
 end
 
 
-%-------------------------------------------------------------------------------
 % Evaluate functional over search range, using specified search method
 %-------------------------------------------------------------------------------
 Functionals = cell(1,numel(SelectionMethod));
@@ -297,7 +292,7 @@ switch lower(SearchMethod)
         
         %  Grid-search specific selection methods
         for m = 1:length(SelectionMethod)
-            for s = 1:length(S)
+            for s = 1:length(V)
                 switch lower(SelectionMethod{m})
                     
                     case 'lr' % L-curve minimum-radius method (LR)
@@ -349,19 +344,19 @@ warning('on','MATLAB:nearlySingularMatrix');
     function [Functional,Residual,Penalty] = evalalpha(alpha,SelectionMethod)
         
         
-        %--------------------------------------------------------------------------
+        %-----------------------------------------------------------------------
         %  Pseudo-Inverses and Ps
-        %--------------------------------------------------------------------------
+        %-----------------------------------------------------------------------
         
-        [Q,KtS,weights] = lsqcomponents(S,r,K,L,alpha,RegType,HuberParameter,GlobalWeights);
+        [Q,KtS,weights] = lsqcomponents(V,r,K,L,alpha,RegType,HuberParameter,GlobalWeights);
         InitialGuess = zeros(numel(r),1);
         if NonNegConstrained
             P = fnnls(Q,KtS,InitialGuess,TolFun);
         else
             P  = Q\KtS;
         end
-        for idx = 1:length(S)
-            Q = lsqcomponents(S{idx},r,K{idx},L,alpha,'tikhonov',HuberParameter,GlobalWeights);
+        for idx = 1:length(V)
+            Q = lsqcomponents(V{idx},r,K{idx},L,alpha,'tikhonov',HuberParameter,GlobalWeights);
             PseudoInverse{idx} = Q\K{idx}.';
             switch lower(RegType)
                 case 'tikhonov'
@@ -371,24 +366,24 @@ warning('on','MATLAB:nearlySingularMatrix');
                 case 'huber'
                     Penalty(idx) = sum(sqrt((L*P/HuberParameter).^2 + 1 ) - 1);
             end
-            Residual(idx) = norm(K{idx}*P - S{idx});
+            Residual(idx) = norm(K{idx}*P - V{idx});
             InfluenceMatrix{idx} = K{idx}*PseudoInverse{idx};
         end
         
-        %--------------------------------------------------------------------------
+        %-----------------------------------------------------------------------
         %  Selection methods for optimal regularization parameter
-        %--------------------------------------------------------------------------
+        %-----------------------------------------------------------------------
         
         % If multiple selection methods are requested then process them sequentially
         Functional = zeros(length(SelectionMethod),1);
         for im = 1:length(SelectionMethod)
-            for is = 1:length(S)
-                nr = length(S{is});
+            for is = 1:length(V)
+                nr = length(V{is});
                 switch lower(SelectionMethod{im})
                     
                     case 'cv' % Cross validation (CV)
                         InfluenceDiagonal = diag(InfluenceMatrix{is});
-                        f_ = sum(abs(S{is} - K{is}*(P)./(ones(nr,1) - InfluenceDiagonal)).^2);
+                        f_ = sum(abs(V{is} - K{is}*(P)./(ones(nr,1) - InfluenceDiagonal)).^2);
                         
                     case 'gcv' % Generalized Cross Validation (GCV)
                         f_ = Residual(is)^2/((1 - trace(InfluenceMatrix{is})/nr)^2);
@@ -418,10 +413,10 @@ warning('on','MATLAB:nearlySingularMatrix');
                         f_ = Residual(is)^2/sqrt(trace(Scaling'*Scaling));
                         
                     case 'ee' % Extrapolated Error (EE)
-                        f_ = Residual(is)^2/norm(K{is}.'*(K{is}*P - S{is}));
+                        f_ = Residual(is)^2/norm(K{is}.'*(K{is}*P - V{is}));
                         
                     case 'ncp' % Normalized Cumulative Periodogram (NCP)
-                        ResidualPeriodogram = abs(fft(K{is}*P - S{is})).^2;
+                        ResidualPeriodogram = abs(fft(K{is}*P - V{is})).^2;
                         WhiteNoisePowerSpectrum = zeros(length(ResidualPeriodogram),1);
                         ResidualPowerSpectrum = zeros(length(ResidualPeriodogram),1);
                         for j=1:length(ResidualPeriodogram) - 1
@@ -435,7 +430,7 @@ warning('on','MATLAB:nearlySingularMatrix');
                         EigenValues = eig(eye(size(InfluenceMatrix{is})) - InfluenceMatrix{is});
                         EigenValues(EigenValues < Treshold) = 0;
                         NonZeroEigenvalues = real(EigenValues(EigenValues~=0));
-                        f_ = S{is}'*(S{is} - K{is}*P)/nthroot(prod(NonZeroEigenvalues),length(NonZeroEigenvalues));
+                        f_ = V{is}'*(V{is} - K{is}*P)/nthroot(prod(NonZeroEigenvalues),length(NonZeroEigenvalues));
                         
                     case 'mcl' % Mallows' C_L (MCL)
                         f_ = Residual^2 + 2*NoiseLevel(is)^2*trace(InfluenceMatrix{is}) - 2*nr*NoiseLevel(is)^2;

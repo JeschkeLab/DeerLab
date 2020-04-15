@@ -283,30 +283,32 @@ end
 
 if getConfidenceIntervals
     
-    var = 0;
+    sigP = 0;
     
     % Estimate the contribution to variance from the different signals
-    for i=1:numel(V)
-    % Get the Moore=Penrose pseudoinverse
-    Q = lsqcomponents(V{i},r,K{i},L,alpha,RegType,HuberParam);
-    pK = Q\K{i}.';
-    
-    % Estimate the residual standard deviation
-    sig = std(V{i} - K{i}*P);
-    
-    % Get the Gaussian quantile according to requested coverage
-    alpha = 1 - ConfidenceLevel;
-    p = 1 - alpha/2;
-    z = norminv(p);
-
-    % Estimate variance from covariance matrix
-    var = var + weights(i)*sig*sqrt(diag(pK*pK.'));    
+    for i = 1:numel(V)
+        % Get the regularized pseudoinverse
+        Q = lsqcomponents(V{i},r,K{i},L,alpha,RegType,HuberParam);
+        pKinv = Q\K{i}.';
+        
+        % Estimate the residual standard deviation
+        sig = std(V{i} - K{i}*P);
+        
+        % Get the Gaussian quantile according to requested coverage
+        alpha = 1 - ConfidenceLevel;
+        p = 1 - alpha/2;
+        z = norminv(p); % [norminv() requires Staatistics & ML toolbox]
+        
+        % Get standard error from covariance matrix
+        covP = pKinv*pKinv.';
+        sigP_ = sig*sqrt(diag(covP));
+        sigP = sigP + weights(i)*sigP_;
     end
     
     % Compute the standard confidence intervals constrained to parameter space
-    Pci(1,:) = max(P - z*var,0);
-    Pci(2,:) = P + z*var;
-
+    Pci(1,:) = max(P - z*sigP,0);
+    Pci(2,:) = P + z*sigP;
+    
 else
     Pci = nan(2,numel(P)); 
 end
