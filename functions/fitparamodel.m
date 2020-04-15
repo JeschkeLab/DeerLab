@@ -446,18 +446,19 @@ end
 [~,globmin] = min(fvals);
 parfit = parfits{globmin};
 
-if nargout>2
+% Evaluate parameter uncertainty
+calcParamUncertainty = nargout>2;
+if calcParamUncertainty
     
-    % Numerically estimate the Jacobian and Hessian
-    jacobian = jacobianest(VecObjFcn,parfit);
-    hessian = jacobian'*jacobian;
-    % Compute residual vector and variance
+    % Compute residual vector and estimate variance from that
     residual = VecObjFcn(parfit);
     sigma2 = var(residual);
-    % Set significance level for confidence intervals
-    alpha = 1 - ConfidenceLevel;
-    % Get Student's t critical value [tinv() from Statistics & ML Toolbox]
-    critical = tinv(1 - alpha/2,numel(residual) - numel(parfit));
+    
+    % Calculate numerical estimates of the Jacobian and Hessian
+    % of the negative log-likelihood
+    jacobian = jacobianest(VecObjFcn,parfit);
+    hessian = jacobian'*jacobian;
+    
     % Estimate the covariance matrix by means of the inverse of Fisher information matrix
     lastwarn('');
     covmatrix = sigma2.*inv(hessian);
@@ -468,12 +469,19 @@ if nargout>2
         lastwarn('');
     end
     
+    % Set significance level for confidence intervals
+    alpha = 1 - ConfidenceLevel;
+    p = 1-alpha/2; % percentile
+    N = numel(residual)-numel(parfit); % degrees of freedom
+    % Get Student's t critical value [tinv() from Statistics & ML Toolbox]
+    z = tinv(p,N);
+    
     % Compute upper/lower confidence intervals
-    parci = parfit.' + critical*sqrt(diag(covmatrix)).*[+1 -1];
+    parci = parfit.' + z*sqrt(diag(covmatrix)).*[+1 -1];
     
     % If wrapper functions internally request the covariance matrix, pack it up
     if returnCovariance
-        parci = {parci, covmatrix, critical};
+        parci = {parci, covmatrix, z};
     end
     
 end
@@ -488,8 +496,8 @@ if nargout>1
             %Compute Jacobian for time/distance-model
             jacobian = jacobianest(@(par)model(ax{i},par,Labels{i}),parfit);
             modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax{i})).';
-            upper = modelfit{i} + critical*sqrt(modelvariance);
-            lower = modelfit{i} - critical*sqrt(modelvariance);
+            upper = modelfit{i} + z*sqrt(modelvariance);
+            lower = modelfit{i} - z*sqrt(modelvariance);
             modelci{i} = [upper(:) lower(:)];
         end
     end
