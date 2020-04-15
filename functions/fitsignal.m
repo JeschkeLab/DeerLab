@@ -1,7 +1,7 @@
 %
 % FITSIGNAL  Fit model to dipolar time-domain trace
 %
-%   [Pfit,Vfit,Bfit,parfit] = FITSIGNAL(V,t,r,dd,bg,ex,par0)
+%   [Vfit,Pfit,Bfit,parfit] = FITSIGNAL(V,t,r,dd,bg,ex,par0)
 %   __ = FITSIGNAL(V,t,r,dd,bg)
 %   __ = FITSIGNAL(V,t,r,dd)
 %   __ = FITSIGNAL(V,t,r)
@@ -26,8 +26,8 @@
 %           default: {[],[],[]} (automatic choice)
 %
 %  Output:
-%    Pfit   fitted distance distribution
 %    Vfit   fitted time-domain signal
+%    Pfit   fitted distance distribution
 %    Bfit   fitted background decay
 %    parfit structure with fitted parameters
 %           .dd  fitted parameters for distance distribution model
@@ -41,7 +41,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [Pfit,Vfit,Bfit,parfit] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model,par0)
+function [Vfit,Pfit,Bfit,parfit] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model,par0)
 
 if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
