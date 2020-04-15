@@ -96,25 +96,44 @@ for iOut = 1:numel(evals)
     medians = median(boots);
     stds = std(boots);
     
-    for i = 1:nParam(iOut)  
+    for i = 1:nParam(iOut)
+        booti = boots(:,i);
+        
+        %Statistical metrics
         stats{iOut}(i).mean = means(i);
         stats{iOut}(i).median = medians(i);
         stats{iOut}(i).std = stds(i);
-        stats{iOut}(i).p2 = percentile(boots(:,i),2,1);
-        stats{iOut}(i).p25 = percentile(boots(:,i),25,1);
-        stats{iOut}(i).p75 = percentile(boots(:,i),75,1);
-        stats{iOut}(i).p98 = percentile(boots(:,i),98,1);
-        xmin = 0.75*stats{iOut}(i).p2;
-        xmax = 1.25*stats{iOut}(i).p98;
-        [~,y,x] = kde(boots(:,i),400,xmin,xmax);
-        stats{iOut}(i).bootdist.x = x;
-        stats{iOut}(i).bootdist.y = y;
-        edges = linspace(xmin,xmax,50);
-        [bins,edges] = histcounts(boots(:,i),50,'Normalization','pdf');
-        stats{iOut}(i).boothist.bins = bins;
-        stats{iOut}(i).boothist.edges = edges;
+        stats{iOut}(i).p2 = percentile(booti,2,1);
+        stats{iOut}(i).p25 = percentile(booti,25,1);
+        stats{iOut}(i).p75 = percentile(booti,75,1);
+        stats{iOut}(i).p98 = percentile(booti,98,1);
+        if nParam(iOut)<20
+            %Kernel-density estimations
+            xmin = 0.9*stats{iOut}(i).p2;
+            xmax = 1.1*stats{iOut}(i).p98;
+            if all(diff(booti)==0)
+                y = 1;
+                x = 0;
+            else
+                [~,y,x] = kde(booti,100,xmin,xmax);
+            end
+            stats{iOut}(i).bootdist.x = x;
+            stats{iOut}(i).bootdist.y = y;
+            edges = linspace(xmin,xmax,50);
+            
+            %Histograms
+            %Determine optimal bins via Freedman-Diaconis rule
+            nbins = round(range(booti)/(2*iqr(booti)/(numel(booti)).^(1/3)),0);
+            if isinf(nbins) || isnan(nbins)
+                nbins = 10;
+            end
+            
+            [bins,edges] = histcounts(booti,nbins,'Normalization','pdf');
+            stats{iOut}(i).boothist.bins = bins;
+            stats{iOut}(i).boothist.edges = edges;
+        end
     end
-
+    
 end
 
 end
