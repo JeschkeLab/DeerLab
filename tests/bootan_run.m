@@ -14,7 +14,7 @@ parfit = fitparamodel(V,@dd_gauss,r,K);
 
 Vfit = K*dd_gauss(r,parfit) + whitegaussnoise(t,sig);
 
-results = bootan(@bootfcn,V,Vfit,'samples',80,'verbose',false);
+bootan(@bootfcn,V,Vfit,10,'verbose',false);
 
 % Pass 1: no crashes happened
 pass = true;

@@ -1,13 +1,26 @@
-function stats = bootan(fcn,Vexp,Vfit,varargin)
+function stats = bootan(fcn,Vexp,Vfit,nSamples,varargin)
+
+% Parse input scheme: bootan(fcn,Vexp,Vfit,'prop',value,___)
+if nargin>=4 && ischar(nSamples)
+   varargin = [{nSamples} varargin];
+   nSamples = [];
+end
 
 % Parse the optional parameters in varargin
-optionalProperties = {'Verbose','Samples'};
-[Verbose,nSamples] = parseoptional(optionalProperties,varargin);
+optionalProperties = {'Verbose','Resampling'};
+[Verbose,Resampling] = parseoptional(optionalProperties,varargin);
 
-if isempty(nSamples)
+if nargin<4 || isempty(nSamples)
     nSamples = 1000;
 else
     validateattributes(nSamples,{'numeric'},{'nonnegative','scalar','nonempty'},mfilename,'Nsamples')
+end
+if isempty(Resampling)
+    Resampling = 'gaussian';
+else
+    validateattributes(Resampling,{'char'},{'nonempty'},mfilename,'Resampling')
+    validInputs = {'residual','gaussian'};
+    Resampling = validatestring(Resampling,validInputs);
 end
 
 if isempty(Verbose)
@@ -18,6 +31,10 @@ end
 
 if numel(Vexp)~=numel(Vfit)
     error('V and Vfit (2nd and 3rd input) must have the same number of element.')
+end
+
+if ~isa(fcn,'function_handle')
+   error('The 1st input must be a valid function handle of the form @(V)fcn(__,V,__)') 
 end
 
 % Determine the number of outputs returned by function handle and allocate arrays
@@ -42,9 +59,17 @@ for iSample = 1:nSamples
     
     % Get a bootstrap sample
     if iSample>1
-        % Resample residuals (using the fact that they are Gaussian distributed
-        % and use data residuals to get variance)
-        Vresample = Vfit + sigma*randn(size(Vfit));
+        
+        %Determine requested re-sampling method
+        switch Resampling
+            case 'gaussian'
+                % Resample from a Gaussian distribution with
+                % variance estimated from the residuals
+                Vresample = Vfit + sigma*randn(size(Vfit));
+            case 'residual'
+                % Resample from the residual directly
+                Vresample =  Vfit + residuals(randperm(numel(Vfit)));
+        end
     else
         % Use original data
         Vresample = Vexp;
@@ -81,6 +106,7 @@ for iSample = 1:nSamples
         evals{iOut} = cat(1,evals{iOut},shiftdim(out,-1));
     end
     
+    %Reset the printed line (for one-line updat printing)
     if Verbose
         fprintf(repmat('\b',1,numel(S)));
     end
@@ -99,7 +125,7 @@ for iOut = 1:numel(evals)
     for i = 1:nParam(iOut)
         booti = boots(:,i);
         
-        %Statistical metrics
+        % Store the statistical metrics in structure
         stats{iOut}(i).mean = means(i);
         stats{iOut}(i).median = medians(i);
         stats{iOut}(i).std = stds(i);
@@ -107,8 +133,10 @@ for iOut = 1:numel(evals)
         stats{iOut}(i).p25 = percentile(booti,25,1);
         stats{iOut}(i).p75 = percentile(booti,75,1);
         stats{iOut}(i).p98 = percentile(booti,98,1);
+        
+        %Compute the bootstrapped distributions for non-vectorial variables
         if nParam(iOut)<20
-            %Kernel-density estimations
+            % Kernel-density estimations
             xmin = 0.9*stats{iOut}(i).p2;
             xmax = 1.1*stats{iOut}(i).p98;
             if all(diff(booti)==0)
@@ -119,16 +147,15 @@ for iOut = 1:numel(evals)
             end
             stats{iOut}(i).bootdist.x = x;
             stats{iOut}(i).bootdist.y = y;
-            edges = linspace(xmin,xmax,50);
             
-            %Histograms
-            %Determine optimal bins via Freedman-Diaconis rule
+            %Determine optimal bins for histogram via Freedman-Diaconis rule
             nbins = round(range(booti)/(2*iqr(booti)/(numel(booti)).^(1/3)),0);
             if isinf(nbins) || isnan(nbins)
-                nbins = 10;
+                nbins = 20;
             end
             
-            [bins,edges] = histcounts(booti,nbins,'Normalization','pdf');
+            % Get the distribution histogram
+            [bins,edges] = histcounts(booti,nbins,'Normalization','probability');
             stats{iOut}(i).boothist.bins = bins;
             stats{iOut}(i).boothist.edges = edges;
         end

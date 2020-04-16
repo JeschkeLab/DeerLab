@@ -1,6 +1,6 @@
 function [pass,maxerr] = test(opt)
 
-% Check that bootan() internal loop works
+% Check that bootan's verbose mode works without crashes
 
 sig = 0.05;
 
@@ -13,12 +13,10 @@ V = K*P;
 parfit = fitparamodel(V,@dd_gauss,r,K);
 
 Vfit = K*dd_gauss(r,parfit) + whitegaussnoise(t,sig);
+evalc('bootan(@bootfcn,V,Vfit,10,''verbose'',true)');
 
-results = bootan(@bootfcn,V,Vfit,10,'verbose',false);
-
-% Pass 1-2: outputs has correct structure
-pass(1) = numel(results)==2;
-pass(2) = iscell(results);
+% Pass 1-2: function with verbose does not crash
+pass = true;
 
 pass = all(pass);
 
