@@ -473,8 +473,8 @@ if calcParamUncertainty
     alpha = 1 - ConfidenceLevel;
     p = 1-alpha/2; % percentile
     N = numel(residual)-numel(parfit); % degrees of freedom
-    % Get Student's t critical value [tinv() from Statistics & ML Toolbox]
-    z = tinv(p,N);
+    % Get Student's t critical value
+    z = t_inv(p,N);
     
     % Compute upper/lower confidence intervals
     parci = parfit.' + z*sqrt(diag(covmatrix)).*[+1 -1];

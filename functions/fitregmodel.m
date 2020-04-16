@@ -55,9 +55,9 @@
 %   'Verbose' - Display options for the solvers:
 %                    'off' - no information displayed  
 %                    'final' - display solver exit message
-%                    'iter-detailed' - display state of solver at each iteration                   iteration
+%                    'iter-detailed' - display state of solver at each iteration                   
 %                     See MATLAB doc optimoptions for detailed explanation
-%
+
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
@@ -297,7 +297,7 @@ if getConfidenceIntervals
         % Get the Gaussian quantile according to requested coverage
         alpha = 1 - ConfidenceLevel;
         p = 1 - alpha/2;
-        z = norminv(p); % [norminv() requires Staatistics & ML toolbox]
+        z = norm_inv(p);
         
         % Get standard error from covariance matrix
         covP = pKinv*pKinv.';
