@@ -18,7 +18,7 @@ Pupper = [20 5];
 
 [Pfit] = fitmultigauss({V1,V2},{t1,t2},r,3,'aicc','upper',Pupper,'lower',Plower,'tolfun',1e-4);
 
-% % Pass 1: distribution is well fitted
+% Pass 1: distribution is well fitted
 pass = all(abs(Pfit - P) < 8e-1);
 
 maxerr = max(abs(Pfit - P));

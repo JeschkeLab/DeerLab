@@ -201,7 +201,7 @@ for i = 1:numel(V)
     end
     validateattributes(V{i},{'numeric'},{'nonempty'},mfilename,'S')
 end
-if nargin>1
+if nargout>1
     getConfidenceIntervals = true;
 else
     getConfidenceIntervals = false;
@@ -267,8 +267,8 @@ switch lower(Solver)
         if ~strcmp(RegType,'custom')
             RegFunctional = regfunctional(RegType,V,L,K,alpha,HuberParam);
         else
-        %Parse errors in the analyzed function, and reformat them
-        RegFunctional = @(P)errorhandler(RegFunctional,'regfcn',P);
+            % Parse errors in the analyzed function, and reformat them
+            RegFunctional = @(P)errorhandler(RegFunctional,'regfcn',P);
         end
         
         fminconOptions = optimoptions(@fmincon,'SpecifyObjectiveGradient',GradObj,'MaxFunEvals',MaxFunEvals,'Display',Verbose,'MaxIter',MaxIter);
@@ -281,40 +281,40 @@ switch lower(Solver)
         end
 end
 
+% Normalize distribution
+P = P/sum(P)/dr;
+
+% Calculate confidence intervals
+%-------------------------------------------------------------------------------
 if getConfidenceIntervals
     
+    % Estimate the contribution to P variance from the different signals
     sigP = 0;
-    
-    % Estimate the contribution to variance from the different signals
     for i = 1:numel(V)
+        % Estimate the residual standard deviation
+        sig = std(V{i} - K{i}*P);
+        
         % Get the regularized pseudoinverse
         Q = lsqcomponents(V{i},r,K{i},L,alpha,RegType,HuberParam);
         pKinv = Q\K{i}.';
         
-        % Estimate the residual standard deviation
-        sig = std(V{i} - K{i}*P);
-        
-        % Get the Gaussian quantile according to requested coverage
-        alpha = 1 - ConfidenceLevel;
-        p = 1 - alpha/2;
-        z = norm_inv(p);
-        
         % Get standard error from covariance matrix
         covP = pKinv*pKinv.';
         sigP_ = sig*sqrt(diag(covP));
+        
         sigP = sigP + weights(i)*sigP_;
     end
     
-    % Compute the standard confidence intervals constrained to parameter space
-    Pci(1,:) = max(P - z*sigP,0);
-    Pci(2,:) = P + z*sigP;
+    % Get the Gaussian quantile according to requested coverage
+    alpha = 1 - ConfidenceLevel;
+    p = 1 - alpha/2;
+    z = norm_inv(p);
     
-else
-    Pci = nan(2,numel(P)); 
+    % Compute the standard confidence intervals, constrained to be nonnegative
+    Pci(:,1) = max(P - z*sigP,0);
+    Pci(:,2) = P + z*sigP;
+    
 end
-
-% Normalize distribution
-P = P/sum(P)/dr;
 
 % Turn warnings back on
 warning('on','MATLAB:nearlySingularMatrix')

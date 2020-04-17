@@ -1,29 +1,29 @@
 %
 % FITPARAMODEL Fits a time- or distance-domain parametric model to one (or several) signals
 %
-%   [param,Vfit,paramci,fitci] = FITPARAMODEL(V,@model,t)
-%   [param,Vfit,paramci,fitci] = FITPARAMODEL(V,@model,r,K)
+%   [param,Vfit,paramci,modelci] = FITPARAMODEL(V,@model,t)
+%   [param,Vfit,paramci,modelci] = FITPARAMODEL(V,@model,r,K)
 %   Fits the N-point signal (V) to a M-point parametric model (@model) given an
 %   M-point distance/time axis (r/t). For distance-domain fitting, provide
 %   the NxM point kernel matrix (K). The fitted model corresponds to a parametric model
 %   calculated by the passed function handle (@model). The fitted parameters (param)
 %   are returned as the first output argument, their 99% confidence intervals (paramci) are
 %   returned as the third output, the fitted model as the second output, and the
-%   corresponding 99% confidence bands (fitci) as the fourth output.
+%   corresponding 99% confidence bands (modelci) as the fourth output.
 %
-%   [param,Vfit,paramci,fitci] = FITPARAMODEL(V,@model,t,param0)
-%   [param,Vfit,paramci,fitci] = FITPARAMODEL(V,@model,r,K,param0)
+%   [param,Vfit,paramci,modelci] = FITPARAMODEL(V,@model,t,param0)
+%   [param,Vfit,paramci,modelci] = FITPARAMODEL(V,@model,r,K,param0)
 %   The initial guess of the model parameters can be passed as a last
 %   argument (param0). This is optional for DeerLab model functions. If (@model)
 %   is a user-defined function handle, (param0) is required.
 %
-%   [param,Vfit,paramci,fitci] = FITPARAMODEL({V1,V2,___},@model,{t1,t2,___},param0)
-%   [param,Vfit,paramci,fitci] = FITPARAMODEL({V1,V2,___},@model,r,{K1,K2,___},param0)
+%   [param,Vfit,paramci,modelci] = FITPARAMODEL({V1,V2,___},@model,{t1,t2,___},param0)
+%   [param,Vfit,paramci,modelci] = FITPARAMODEL({V1,V2,___},@model,r,{K1,K2,___},param0)
 %   Pass multiple signals/kernels to enable global fitting of a single parametric
 %   model to all data. The global fit weights are automatically computed according
 %   to their contribution to ill-posedness.
 %
-%   [param,Vfit,paramci,fitci] = FITPARAMODEL(___,'Property',Values)
+%   [param,Vfit,paramci,modelci] = FITPARAMODEL(___,'Property',Values)
 %   Additional (optional) arguments can be passed as name-value pairs.
 %
 % The properties to be passed as options can be set in any order.
@@ -94,15 +94,15 @@ if ~Kpassed
     % Check if global fitting is in use
     if iscell(V)
         K = cell(size(V));
-        for i=1:length(V)
+        for i = 1:numel(V)
             if iscell(ax)
-                K{i} = eye(length(V{i}),length(ax{i}));
+                K{i} = eye(numel(V{i}),numel(ax{i}));
             else
-                K{i} = eye(length(V{i}),length(ax));
+                K{i} = eye(numel(V{i}),numel(ax));
             end
         end
     else
-        K = eye(length(V),length(ax));
+        K = eye(numel(V),numel(ax));
     end
     isDistanceDomain = false;
 else
@@ -241,26 +241,27 @@ end
 if ~iscell(K)
     K = {K};
 end
-if numel(K)~=numel(V)
+nSignals = numel(V);
+if numel(K)~=nSignals
     error('The number of kernels and signals must be equal.')
 end
 if ~isempty(GlobalWeights)
     validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
-    if length(GlobalWeights)~=length(V)
+    if numel(GlobalWeights)~=nSignals
         error('The number of global fit weights and signals must be equal.')
     end
     % Normalize weights
     GlobalWeights = GlobalWeights/sum(GlobalWeights);
 end
 
-for i = 1:length(V)
+for i = 1:nSignals
     if ~iscolumn(V{i})
         V{i} = V{i}.';
     end
     if ~isreal(V{i})
         V{i} = real(V{i});
     end
-    if length(V{i})~=size(K{i},1)
+    if numel(V{i})~=size(K{i},1)
         error('The number of rows in K must match the number of elements in V.')
     end
     if ~isreal(V{i})
@@ -273,7 +274,7 @@ end
 if ~iscell(ax)
     ax = {ax(:)};
 end
-for i = 1:length(ax)
+for i = 1:numel(ax)
     if ~iscolumn(ax{i})
         ax{i} = ax{i}.';
     end
@@ -283,8 +284,8 @@ for i = 1:length(ax)
     % If using distance domain, only one axis must be passed
     if ~isDistanceDomain
         % Is using time-domain,control that same amount of axes as signals are passed
-        if length(V{i})~=length(ax{i})
-            error('V and t arguments must fulfill length(t)==length(S).')
+        if numel(V{i})~=numel(ax{i})
+            error('V and t arguments must fulfill numel(t)==numel(S).')
         end
     end
 end
@@ -303,11 +304,11 @@ else
 end
 Weights = Weights(:).';
 
-Labels = num2cell(1:numel(V));
+Labels = num2cell(1:nSignals);
 catvec = @(x) cat(1,x{:});
 
 % Define the objective functional of a single signal
-nParam = length(StartParameters);
+nParam = numel(StartParameters);
 ssr = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2; 
 chi2 = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2/noiselevel(S)^2;
 chi2red = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2/noiselevel(S)^2/(numel(S)-nParam);
@@ -339,9 +340,9 @@ end
 if any(upperBounds==realmax) || any(lowerBounds==-realmax)
     warning('Some model parameters are unbounded. Use ''Lower'' and ''Upper'' options to pass parameter boundaries.')
 end
-if  length(StartParameters)~=length(upperBounds) || ...
-    length(StartParameters)~=length(lowerBounds)
-    error('The Inital guess and upper/lower boundaries must have equal length.')
+if  numel(StartParameters)~=numel(upperBounds) || ...
+    numel(StartParameters)~=numel(lowerBounds)
+    error('The inital guess and upper/lower boundaries must have equal length.')
 end
 if any(upperBounds<lowerBounds)
     error('Lower bound values cannot be larger than upper bound values.')
@@ -457,7 +458,7 @@ if calcParamUncertainty
     % Calculate numerical estimates of the Jacobian and Hessian
     % of the negative log-likelihood
     jacobian = jacobianest(VecObjFcn,parfit);
-    hessian = jacobian'*jacobian;
+    hessian = jacobian.'*jacobian;
     
     % Estimate the covariance matrix by means of the inverse of Fisher information matrix
     lastwarn('');
@@ -471,13 +472,13 @@ if calcParamUncertainty
     
     % Set significance level for confidence intervals
     alpha = 1 - ConfidenceLevel;
-    p = 1-alpha/2; % percentile
+    p = 1 - alpha/2; % percentile
     N = numel(residual)-numel(parfit); % degrees of freedom
     % Get Student's t critical value
     z = t_inv(p,N);
     
-    % Compute upper/lower confidence intervals
-    parci = parfit.' + z*sqrt(diag(covmatrix)).*[+1 -1];
+    % Compute bounds of confidence intervals
+    parci = parfit.' + z*sqrt(diag(covmatrix)).*[-1 +1];
     
     % If wrapper functions internally request the covariance matrix, pack it up
     if returnCovariance
@@ -486,26 +487,34 @@ if calcParamUncertainty
     
 end
 
-% Compute fitted parametric model and confidence bands if requested
+% Compute fitted parametric model if requested
 if nargout>1
     modelfit = cell(numel(ax),1);
-    modelci = cell(numel(ax),1);
-    for i = 1:length(ax)
+    for i = 1:numel(ax)
         modelfit{i} = model(ax{i},parfit,Labels{i});
-        if nargout>3
-            %Compute Jacobian for time/distance-model
-            jacobian = jacobianest(@(par)model(ax{i},par,Labels{i}),parfit);
-            modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax{i})).';
-            upper = modelfit{i} + z*sqrt(modelvariance);
-            lower = modelfit{i} - z*sqrt(modelvariance);
-            modelci{i} = [upper(:) lower(:)];
-        end
     end
-    if length(modelfit)==1
+end
+
+% Compute model output confidence intervals if requested
+if nargout>3
+    modelci = cell(numel(ax),1);
+    for i = 1:numel(ax)
+        % Compute Jacobian for time/distance-model
+        jacobian = jacobianest(@(par)model(ax{i},par,Labels{i}),parfit);
+        modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax{i})).';
+        upper = modelfit{i} + z*sqrt(modelvariance);
+        lower = modelfit{i} - z*sqrt(modelvariance);
+        modelci{i} = [lower(:) upper(:)];
+    end
+    
+end
+
+if numel(ax)==1
+    if nargout>1
         modelfit = modelfit{1};
-        if nargout>3
-            modelci = modelci{1};
-        end
+    end
+    if nargout>3
+        modelci = modelci{1};
     end
 end
 
