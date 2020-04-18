@@ -38,8 +38,8 @@ with :math:`\sigma = \mathrm{FWHM}/\sqrt{2ln(2)}`
 ============== ======================== ========= ============= ============= ========================
  Variable       Symbol                    Default   Lower bound   Upper bound      Description
 ============== ======================== ========= ============= ============= ========================
-``param(1)``   :math:`\left<r\right>`     3.5     1.0              20         Mean distance
-``param(2)``   :math:`\mathrm{FWHM}`      0.5     0.2              5          FWHM
+``param(1)``   :math:`r0`                 3.5         1.0              20         center distance (nm)
+``param(2)``   :math:`\mathrm{FWHM}`      0.5         0.2              5          FWHM (nm)
 ============== ======================== ========= ============= ============= ========================
 
 

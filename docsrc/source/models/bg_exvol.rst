@@ -31,7 +31,7 @@ Returns
 Model
 =========================================
 
-This implements a hard-shell excluded-volume model, with spherical excluded volume of radius ``R`` (first parameter) and excited spin concentration ``c_x`` (second parameter, in micromole/L). To get the excited spin concentration, multiply the total spin concentration with the pump excitation efficiency.
+This implements a hard-shell excluded-volume model, with distance of closest approach ``R`` (first parameter) and excited spin concentration ``c_x`` (second parameter, in micromole/L). To get the excited spin concentration, multiply the total spin concentration with the pump excitation efficiency.
 
 The analytical expression for the decay function as a function of ``R`` and ``c_x`` is complicated, see Kattnig et al, J.Phys.Chem.B 2013, 117, 16542.
 

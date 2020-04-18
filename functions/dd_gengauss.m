@@ -1,4 +1,3 @@
-
 %
 % DD_GENGAUSS Generalized Gaussian distribution parametric model
 %
@@ -13,8 +12,8 @@
 % PARAMETERS
 % name    symbol default lower bound upper bound
 % --------------------------------------------------------------------------
-% param(1)  <r>    3.5     1.0         20         mean distance
-% param(2)   w     0.5     0.2         5          FWHM
+% param(1)   r0    3.5     1.0         20         location (nm)
+% param(2)   w     0.5     0.2         5          FWHM (nm)
 % param(3)  beta   5.0     0.25        15         kurtosis
 % --------------------------------------------------------------------------
 %

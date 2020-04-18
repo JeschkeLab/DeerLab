@@ -1,4 +1,3 @@
-
 %
 % DD_SKEWGAUSS Skew Gaussian distribution parametric model
 %
@@ -13,8 +12,8 @@
 % PARAMETERS
 % name    symbol default lower bound upper bound
 % --------------------------------------------------------------------------
-% param(1)  <r>    3.5     1.0         20         mean distance
-% param(2)   w     0.5     0.2         5          FWHM
+% param(1)   r0    3.5     1.0         20         location (nm)
+% param(2)   w     0.5     0.2         5          FWHM (nm)
 % param(3)  alpha  5.0     -15         15         skewness
 % --------------------------------------------------------------------------
 %
@@ -32,10 +31,11 @@ if nargin~=0 && nargin~=2
 end
 
 if nargin==0
-    %If no inputs given, return info about the parametric model
+    % If no inputs given, return info about the parametric model
     info.model  = 'Skew Gaussian distribution';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Mean distance <r>';
+    
+    info.parameters(1).name = 'Location r0';
     info.parameters(1).range = [1 20];
     info.parameters(1).default = 3.5;
     info.parameters(1).units = 'nm';
@@ -59,17 +59,22 @@ if length(param)~=nParam
   error('The number of input parameters does not match the number of model parameters.')
 end
 
-%Parse input
+% Parse input
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
 % Compute the model distance distribution
-sigma = (param(2)/(2*sqrt(2*log(2))));
+r0 = param(1);
+fwhm = param(2);
+alpha = param(3);
 
-x = (r(:) - param(1))/(sigma);
-P = 2*sqrt(2/pi)*exp(-((r(:) - param(1))/(sqrt(2)*sigma)).^2).*1/2.*(1 + erf(param(3)*x/sqrt(2)));
+sigma = fwhm/(2*sqrt(2*log(2)));
+x = (r(:) - r0)/sigma/sqrt(2);
+
+P = 1/sqrt(2*pi)*exp(-x.^2).*(1+erf(alpha*x));
+
 dr = r(2)-r(1);
 if ~all(P==0)
-P = P/sum(P)/dr;    
+    P = P/sum(P)/dr;    
 end
 output = P;
 

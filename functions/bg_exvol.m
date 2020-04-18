@@ -12,7 +12,7 @@
 % PARAMETERS
 % name    symbol  default lower bound upper bound
 % ----------------------------------------------------------------------------
-% PARAM(1)  R       1         0.1         20        exclusion radius
+% PARAM(1)  R       1         0.1         20        distance of closest approach (nm)
 % PARAM(1)  lamc    50        0.01       1000       lambda*concentration (uM)
 % ----------------------------------------------------------------------------
 %
@@ -33,10 +33,12 @@ if nargin==0
     % If no inputs given, return info about the parametric model
     info.model  = 'Excluded volume';
     info.nparam  = nParam;
-    info.parameters(1).name = 'exclusion radius R';
+    
+    info.parameters(1).name = 'distance of closest approach R';
     info.parameters(1).range = [0.1 20];
     info.parameters(1).default = 1;
     info.parameters(1).units = 'nm';
+    
     info.parameters(2).name = 'concentration of excited spins';
     info.parameters(2).range = [0.01 1000];
     info.parameters(2).default = 50;
@@ -49,7 +51,7 @@ end
 % If user passes them, check that the number of parameters matches the model
 if length(param)~=nParam
     error('The number of input parameters (%d) does not match the number of model parameters (%d).',...
-      length(param),nParam)
+        length(param),nParam)
 end
 
 % Load precalculated reduction factor look-up table (Kattnig Eq.(18))
@@ -59,31 +61,32 @@ if isempty(exvol)
     load('bg_exvol','exvol');
 end
 
+% Get parameters
 R = param(1); % nm
 lambda_c = param(2); % uM
 
-NA = 6.02214076e23; % Avogadro constant
-lambda = 1;
-c = lambda_c*1e-6*1e3*NA; % umol/L -> mol/L -> mol/m^3 -> spins/m^3
+NA = 6.02214076e23; % Avogadro constant, mol^-1
+lambda_c = lambda_c*1e-6*1e3*NA; % umol/L -> mol/L -> mol/m^3 -> spins/m^3
 
 A = (mu0/4/pi)*(gfree*bmagn)^2/hbar; % Eq.(6); m^3 rad/s
 
+% Calculate reduction factor (Eq.(18))
 if R==0
     alpha = 1;
 else
-    dR = A*(t*1e-6)/(R*1e-9)^3; % unitless
+    dR = A*abs(t*1e-6)/(R*1e-9)^3; % unitless
     
     % Use interpolation of look-up table for small dR
     small = dR<max(exvol.dR);
     alpha = zeros(size(dR));
-    alpha(small) = interp1(exvol.dR,exvol.alpha,dR(small),'makima'); % Eq.(18)
+    alpha(small) = interp1(exvol.dR,exvol.alpha,dR(small),'makima');
     
-    % For large dR, use limiting expression of Eq.(18)
+    % For large dR, use limiting dR->inf expression
     alpha(~small) = 1 - (3/2/pi)*sqrt(3)./dR(~small);
 end
 
 K = 8*pi^2/9/sqrt(3)*A*abs(t*1e-6).*alpha; % Eq.(17)
-V = exp(-c*lambda*K); % Eq.(13)
+V = exp(-lambda_c*K); % Eq.(13)
 
 if ~iscolumn(V)
     V = V.';
