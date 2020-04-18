@@ -20,6 +20,7 @@ Model function                                 Description
 =============================================  ============================================================
 :doc:`bg_exp<models/bg_exp>`                   Exponential decay
 :doc:`bg_strexp<models/bg_strexp>`             Stretched exponential decay
+:doc:`bg_exvol<models/bg_exvol>`               Hard-shell excluded-volume model
 :doc:`bg_sumstrexp<models/bg_sumstrexp>`       Sum of two stretched exponential decays
 :doc:`bg_prodstrexp<models/bg_prodstrexp>`     Product of two stretched exponential decays
 =============================================  ============================================================
