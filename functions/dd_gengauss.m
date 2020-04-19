@@ -68,12 +68,12 @@ width = param(2);
 beta = param(3);
 
 sigma = width/(2*sqrt(2*log(2)));
-x = (r(:)-r0)/sigma;
+x = abs(r(:)-r0)/sigma;
 P = beta/(2*sigma*gamma(1/beta))*exp(-x.^beta);
 
 % Normalize
 if ~all(P==0)
-    dr = r(2)-r(1);
+    dr = mean(diff(r));
     P = P/sum(P)/dr;    
 end
 
