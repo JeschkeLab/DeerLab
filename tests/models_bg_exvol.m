@@ -1,28 +1,35 @@
 function [pass,maxerr] = test(opt)
 
-% Basic functionality test on bg_exvol
+% Basic functionality test of background model
 
-% Pass 1: dimensionality is correct
-t = linspace(0,6,301);
-R = 14; % nm
-lam = 1;
-c = 500; % uM
-par = [R lam*c];
-B1 = bg_exvol(t,par);
-B2 = bg_exvol(t.',par);
-pass(1) = iscolumn(B1) && iscolumn(B2);
+model = @bg_exvol;
+info = model();
 
-% Pass 2: specific value
-t = 6; % us
-R = 14; % nm
-lam = 1;
-c = 500; % uM
-Bval = bg_exvol(t,[R lam*c]);
-Bval0 = 0.5011333;
-pass(2) = abs(Bval-Bval0);
+t = linspace(-5,5,500);
+par0 = [info.parameters(:).default];
+bounds = [info.parameters(:).range];
+lower = bounds(1:2:end);
+upper = bounds(2:2:end);
+
+B1 = model(t,par0);
+B2 = model(t.',par0);
+B3 = model(t,lower);
+B4 = model(t,upper);
+ 
+t0 = 2.5;
+B5 = model(t0,par0);
+Bval0 = 0.882896642393692;
+
+% Pass 1-2: dimensionality is correct
+pass(1) = isequal(B1,B2);
+pass(2) = iscolumn(B1) && iscolumn(B2);
+% Pass 3: there are no NaN values
+pass(3) = all(~isnan(B1)) & all(~isnan(B2)) & all(~isnan(B3)) & all(~isnan(B4));
+% Pass 4: specific value is reproducible
+pass(4) = abs(B5-Bval0) < 1e-8;
 
 pass = all(pass);
 
-maxerr = abs(Bval-Bval0);
+maxerr = abs(B5-Bval0);
 
 end
