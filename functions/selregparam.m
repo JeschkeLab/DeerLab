@@ -54,7 +54,7 @@
 %  This file is a part of DeerLab. License is MIT (see LICENSE.md).
 %  Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [alphaOpt,Functionals,alphaRange,Residuals,Penalties] = selregparam(V,K,r,RegType,SelectionMethod,varargin)
+function [alphaOpt,Functionals,alphaRanges,Residuals,Penalties] = selregparam(V,K,r,RegType,SelectionMethod,varargin)
 
 %  Parse & validate required input
 %-------------------------------------------------------------------------------
@@ -213,10 +213,10 @@ else
     validateattributes(alphaRange,{'numeric'},{'nonempty','nonnegative'},mfilename,'RegParamRange')
 end
 
-
 % Evaluate functional over search range, using specified search method
 %-------------------------------------------------------------------------------
 Functionals = cell(1,numel(SelectionMethod));
+alphaRanges = cell(1,numel(SelectionMethod));
 alphaOpt = zeros(1,numel(SelectionMethod));
 switch lower(SearchMethod)
     
@@ -236,7 +236,7 @@ switch lower(SearchMethod)
             logalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
             [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(m));
             [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(m));
-            alphasEvaluated = [logalpha1 logalpha2];
+            alphasEvaluated = [exp(logalpha1) exp(logalpha2)];
             Functional = [fcnval1 fcnval2];
             Residual = [sum(res1) sum(res2)];
             Penalty = [sum(pen1) sum(pen2)];
@@ -250,7 +250,7 @@ switch lower(SearchMethod)
                     logalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
                     [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(m));
                     [fcnval2,~,~] = evalalpha(exp(logalpha2),SelectionMethod(m));
-                    alphasEvaluated(end+1) = logalpha1;
+                    alphasEvaluated(end+1) = exp(logalpha1);
                     Functional(end+1) = fcnval1;
                     Residual(end+1) = sum(res1);
                     Penalty(end+1) = sum(pen1);
@@ -260,7 +260,7 @@ switch lower(SearchMethod)
                     logalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
                     [fcnval1,~,~] = evalalpha(exp(logalpha1),SelectionMethod(m));
                     [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(m));
-                    alphasEvaluated(end+1) = logalpha2;
+                    alphasEvaluated(end+1) = exp(logalpha2);
                     Functional(end+1) = fcnval2;
                     Residual(end+1) = sum(res2);
                     Penalty(end+1) = sum(pen2);
@@ -277,7 +277,7 @@ switch lower(SearchMethod)
             else
                 alphaOpt(m) = exp(logalpha2);
             end
-            alphaRanges{m} = alphasEvaluated;
+            alphaRanges{m} = alphasEvaluated(:);
             
         end
         
@@ -321,6 +321,7 @@ switch lower(SearchMethod)
             % Store the corresponding regularization parameter
             alphaOpt(m) = alphaRange(idx);
             Functionals{m} = Functional(:,m);
+            alphaRanges{m} = alphaRange(:);
             Residuals{m} = sum(Residual,2);
             Penalties{m} = sum(Penalty,2);
         end
@@ -330,11 +331,13 @@ end
 if numel(Functionals)==1
     Functionals = Functionals{1};
     Residuals = Residuals{1};
+    alphaRanges = alphaRanges{1};
     Penalties = Penalties{1};
     Functionals = Functionals(:);
     Residuals = Residuals(:);
     Penalties = Penalties(:);
 end
+
 
 % Turn warnings back on
 warning('on','MATLAB:nearlySingularMatrix');
