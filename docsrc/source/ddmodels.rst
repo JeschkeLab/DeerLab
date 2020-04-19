@@ -43,6 +43,7 @@ DeerLab's parametric distance distribution models can be classified into several
 :ref:`dd_gauss5`                Five Gaussians distributions
 :ref:`dd_gengauss`              Single generalized Gaussian distribution
 :ref:`dd_skewgauss`             Single skew Gaussian distribution
+:ref:`dd_cos`                   Raised-cosine distribution
 ============================= ===================================================
 
 A second group of distance distribution models represent three-dimensional disordered segmented objects such as proteins and other polymers.

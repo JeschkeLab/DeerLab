@@ -1,12 +1,12 @@
 .. highlight:: matlab
-.. _dd_circle:
+.. _dd_cos:
 
 
 ***********************
-:mod:`dd_circle`
+:mod:`dd_cos`
 ***********************
 
-Semi-circle distribution
+Raised-cosine distribution
 
 -----------------------------
 
@@ -16,11 +16,11 @@ Syntax
 
 .. code-block:: matlab
 
-        info = dd_circle()
-        P = dd_circle(r,param)
+        info = dd_cos()
+        P = dd_cos(r,param)
 
 Parameters
-    *   ``r`` - Distance axis (N-array)
+    *   ``r`` - Distance axis (N-array), in nanometers
     *   ``param`` - Model parameters
 Returns
     *   ``P`` - Distance distribution (N-array)
@@ -31,21 +31,21 @@ Returns
 Model
 =========================================
 
-This provides a `semi-circle distribution <https://en.wikipedia.org/wiki/Wigner_semicircle_distribution>`_, defined by  :math:`P(r) = 2\pi\sqrt{(r-r_0)^2/R^2+1}` for :math:`r_0-R\le r\le r_0+R` and zero otherwise.
 
-
+This provides a `raised-cosine distribution <https://en.wikipedia.org/wiki/Raised_cosine_distribution>`_, defined by 
+:math:`P(r) = \frac{1}{2w}\cos\left(\frac{r-r_0}{w}\pi\right)` for :math:`r_0-w \le r \le r_0+w`, and zero otherwise.
 
 ============== ======================== ========= ============= ============= ========================
  Variable       Symbol                    Default   Lower bound   Upper bound      Description
 ============== ======================== ========= ============= ============= ========================
-``param(1)``   :math:`r_0`                 3.0       0.1              20          center
-``param(2)``   :math:`R`                   0.5       0.1               5          radius
+``param(1)``   :math:`r_0`                 3.0       0.1              20          center, in nm
+``param(2)``   :math:`w`                   0.5       0.1               5          fwhm, in nm
 ============== ======================== ========= ============= ============= ========================
 
 
 Example using default parameters:
 
-.. image:: ../images/model_dd_circle.png
+.. image:: ../images/model_dd_cos.png
    :width: 650px
 
 
@@ -57,7 +57,7 @@ Description
 
 .. code-block:: matlab
 
-        info = dd_circle()
+        info = dd_cos()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -70,7 +70,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    P = dd_circle(r,[3 0.5]])
+    P = dd_cos(r,[3 0.5]])
 
 Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 
