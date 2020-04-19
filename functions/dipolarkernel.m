@@ -166,10 +166,9 @@ end
 if any(isnan(pathinfo(:,1)))
   error('In pathinfo, NaN can only appear in the second column (refocusing time).');
 end
-if any(abs(pathinfo(:,1))>1)
-  error('In pathinfo, amplitudes (first row) cannot be larger than 1.');
-end
 
+%Nomalize the pathway amplitues to unity
+pathinfo(:,1) = pathinfo(:,1)/sum(pathinfo(:,1));
 lambda = pathinfo(:,1);
 T0 = pathinfo(:,2);
 if size(pathinfo,2)==2
