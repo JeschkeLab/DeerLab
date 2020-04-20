@@ -17,11 +17,16 @@
 %    V      time-domain signal to fit (N-element vector)
 %    t      time axis, in microseconds (N-element vector)
 %    r      distance axis, in nanometers (M-element vector)
-%    dd     function handle to distribution model (for parametric distribution)
-%           or [] for parameter-free distribution; default: []
-%    bg     function handle to background model, or [] if no background should
-%           be included; default []
-%    ex     function handle to experiment model; default []
+%    dd     distance distribution model (default 'P')
+%           - function handle to parametric distribution model
+%           - 'P' to indicate parameter-free distribution (default)
+%           - 'none' to indicate no distribution, i.e. only background
+%    bg     background model (default @bg_exp)
+%           - function handle to parametric background model
+%           - 'none' to indicate no background decay
+%    ex     experiment model (default @exp_4pdeer)
+%           - function handle to experiment model
+%           - 'none' to indicate simple dipolar oscillation (mod.depth = 1)
 %    par0   starting parameters, 3-element cell array {par0_dd,par0_bd,par0_ex}
 %           default: {[],[],[]} (automatic choice)
 %
@@ -55,9 +60,10 @@ if numel(Vexp)~=numel(t)
     error('V (1st input) and t (2nd input) must have the same number of elements.')
 end
 
-if nargin<4, dd_model = []; end
-if nargin<5, bg_model = []; end
-if nargin<6, ex_model = []; end
+% Set defaults
+if nargin<4, dd_model = 'P'; end
+if nargin<5, bg_model = @bg_exp; end
+if nargin<6, ex_model = @ex_4pdeer; end
 if nargin<7, par0 = {[],[],[]}; end
 
 if ~isempty(par0)
@@ -67,39 +73,54 @@ if ~isempty(par0)
 end
 
 % Get information about distance distribution parameters
+par0_dd = [];
+lower_dd = [];
+upper_dd = [];
+N_dd = 0;
+includeForeground = true;
 if isa(dd_model,'function_handle')
     [par0_dd,lower_dd,upper_dd,N_dd] = getmodelparams(dd_model);
-elseif isempty(dd_model)
-    par0_dd = [];
-    lower_dd = [];
-    upper_dd = [];
-    N_dd = 0;
+    parfreeDistribution = false;
+elseif ischar(dd_model) && strcmp(dd_model,'P')
+    parfreeDistribution = true;
+elseif ischar(dd_model) && strcmp(dd_model,'none')
+    includeForeground = false;
+    parfreeDistribution = false;
 else
-    error('Distribution model (4th input) must either be a function handle (for a parametric model) or [] (for a parameter-free distribution).')
+    error('Distribution model (4th input) must either be a function handle, ''P'', or ''none''.')
 end
 
 % Get information about background parameters
+par0_bg = [];
+lower_bg = [];
+upper_bg = [];
+N_bg = 0;
+includeBackground = true;
 if isa(bg_model,'function_handle')
     [par0_bg,lower_bg,upper_bg,N_bg] = getmodelparams(bg_model);
-elseif isempty(bg_model)
-    par0_bg = [];
-    lower_bg = [];
-    upper_bg = [];
-    N_bg = 0;
+elseif ischar(bg_model) && strcmp(bg_model,'none')
+    includeBackground = false;
 else
-    error('Background model (5th input) must either be a function handle, or [] if no background should be fitted.')
+    error('Background model (5th input) must either be a function handle, or ''none''.')
 end
 
 % Get information about experiment parameters
+par0_ex = [];
+lower_ex = [];
+upper_ex = [];
+N_ex = 0;
+includeExperiment = true;
 if isa(ex_model,'function_handle')
     [par0_ex,lower_ex,upper_ex,N_ex] = getmodelparams(ex_model);
-elseif isempty(ex_model)
-    par0_ex = [];
-    lower_ex = [];
-    upper_ex = [];
-    N_ex = 0;
+elseif ischar(ex_model) && strcmp(ex_model,'none')
+    includeExperiment = false;
 else
-    error('Experiment model (6th input) must either be a function handle, or [] if no experimental parameters should be fitted.')
+    error('Experiment model (6th input) must either be a function handle, or ''none''.')
+end
+
+% Catch nonsensical situation
+if ~includeForeground && ~includeBackground
+    error('Cannot fit anything without distribution model and without background model.')
 end
 
 % Combine all parameters into a single vector
@@ -136,6 +157,7 @@ else
     [Vfit,Bfit,Pfit] = Vmodel(t,parfit_);
 end
 
+
 % Return fitted parameter in structure
 parfit.dd = parfit_(ddidx);
 parfit.bg = parfit_(bgidx);
@@ -145,31 +167,40 @@ parfit.ex = parfit_(exidx);
     function [V,B,P] = Vmodel(t,par)
         
         % Calculate the background and the experiment kernel matrix
-        if isa(bg_model,'function_handle')
-            Bfcn = @(t) bg_model(t,par(bgidx));
-        else
-            Bfcn = [];
-        end
-        if isa(ex_model,'function_handle')
-            [K,B] = ex_model(t,r,par(exidx),Bfcn);
+        Bfcn = @(t) bg_model(t,par(bgidx));        
+        if includeExperiment
+            if includeBackground
+                [K,B] = ex_model(t,r,par(exidx),Bfcn);
+            else
+                K = ex_model(t,r,par(exidx));
+                B = ones(numel(t),1);
+            end
         else
             K = dipolarkernel(t,r);
-            if ~isempty(Bfcn)
+            if includeBackground
                 B = Bfcn(t);
             else
-                B = ones(size(t));
+                B = ones(numel(t),1);
             end
         end
         
-        % Get the distance distribution from the model or via regularization
-        if isa(dd_model,'function_handle')
-            P = dd_model(r,par(ddidx));
+        % Get the distance distribution
+        if includeForeground
+            if parfreeDistribution
+                P = fitregmodel(Vexp,K,r,regtype,regparam);
+            else
+                P = dd_model(r,par(ddidx));
+            end
         else
-            P = fitregmodel(Vexp,K,r,regtype,regparam);
+            P = zeros(numel(t),1);
         end
         
-        % Compute the dipolar signal
-        V = K*P;
+        % Compute the total signal
+        if includeForeground
+            V = K*P;
+        else
+            V = B;
+        end
         
     end
     
