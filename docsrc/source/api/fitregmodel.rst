@@ -19,7 +19,7 @@ Syntax
     P = fitregmodel(V,K,r,'regtype','method')
     P = fitregmodel(V,K,r,'regtype',alpha,'Property',Value)
     P = fitregmodel(V,K,r,'regtype','method','Property',Value)
-    [P,Pci,alpha] = fitregmodel(___)
+    [P,Pci,alpha,stats] = fitregmodel(___)
 
 Parameters
     *   ``V`` - Input signal (*N*-element array) or input signals (cell array)
@@ -33,6 +33,7 @@ Returns
     *  ``P`` - Distance distribution (*M*-element array)
     *  ``Pci`` - Estimated confidence intervals (*2xM*-element array)
     *  ``alpha`` - regularization parameter (scalar)
+    *  ``stats`` - Goodness-of-fit statistics (structure)
 
 -----------------------------
 
@@ -83,6 +84,20 @@ Passing multiple signals and kernels enables global fitting of a kernel model to
 
 -----------------------------
 
+.. code-block:: matlab
+
+    [P,Pci,alpha,stats] = fitregmodel(___)
+
+The ``stats`` structure provides several statistical metric which allow judgment on the quality of the fitted signal on the experimental data ``V`` and allows comparison between fits. The structure contains the following fields: 
+
+         *   ``.chi2red`` - Reduced `\chi^2` test
+         *   ``.R2`` - `R^2` test
+         *   ``.RMSD`` - Root-mean squared deviation (RMSD)
+         *   ``.AIC`` - Akaike information criterion
+         *   ``.AICc`` - Corrected Akaike information criterion
+         *   ``.BIC`` - Bayesian information criterion
+
+-----------------------------
 
 
 Additional Settings

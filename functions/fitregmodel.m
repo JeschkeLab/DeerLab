@@ -20,9 +20,10 @@
 %   the regularization parameter will be automatically selected by means
 %   of the selregparam function.
 %
-%   [P,Pci,alpha] = FITREGMODEL(V,K,r,regtype,method)
+%   [P,Pci,alpha,stats] = FITREGMODEL(V,K,r,regtype,method)
 %   The value of the regularization parameter found via selection
-%   methods and used for fitting (P) is returned in (alpha). 
+%   methods and used for fitting (P) is returned in (alpha).  A structure 
+%   containing different statistical estimators of goodness of fit is returned as (stats). 
 %
 %   The type of regularization employed in FITREGMODEL is set by the regtype
 %   input argument. The regularization models implemented in FITREGMODEL are:
@@ -64,7 +65,7 @@
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
-function [P,Pci,alpha] = fitregmodel(V,K,r,RegType,alpha,varargin)
+function [P,Pci,alpha,stats] = fitregmodel(V,K,r,RegType,alpha,varargin)
 
 % Turn off warnings to avoid ill-conditioned warnings 
 warning('off','MATLAB:nearlySingularMatrix')
@@ -324,6 +325,20 @@ if getConfidenceIntervals
     %Do not return a cell if only one confidence level is requested
     if numel(p)==1
         Pci = Pci{1};
+    end
+end
+
+% If requested compute Goodness of Fit for all signals
+if nargout>3
+    stats = cell(numel(V),1);
+    for i=1:numel(V)
+        Vfit = K{i}*P;
+        Ndof = numel(V{i});
+        stats{i} = gof(V{i},Vfit,Ndof);
+    end
+    
+    if numel(V)==1
+        stats = stats{1};
     end
 end
 

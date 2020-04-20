@@ -1,8 +1,8 @@
 %
 % FITPARAMODEL Fits a time- or distance-domain parametric model to one (or several) signals
 %
-%   [param,Vfit,paramci,modelci] = FITPARAMODEL(V,@model,t)
-%   [param,Vfit,paramci,modelci] = FITPARAMODEL(V,@model,r,K)
+%   [param,Vfit,paramci,modelci,stats] = FITPARAMODEL(V,@model,t)
+%   [param,Vfit,paramci,modelci,stats] = FITPARAMODEL(V,@model,r,K)
 %   Fits the N-point signal (V) to a M-point parametric model (@model) given an
 %   M-point distance/time axis (r/t). For distance-domain fitting, provide
 %   the NxM point kernel matrix (K). The fitted model corresponds to a parametric model
@@ -11,8 +11,9 @@
 %   returned as the third output, the fitted model as the second output, and the
 %   corresponding 95% confidence bands (modelci) as the fourth output. If
 %   more than one confidence level is requested, (paramci) and (modelci)
-%   are given as cell arrays containing the confidence intervals at the different 
-%   confidence levels.
+%   are given as cell arrays containing the confidence intervals at the different
+%   confidence levels. A structure containing different statistical
+%   estimators of goodness of fit is returned as (stats).
 %
 %   [param,Vfit,paramci,modelci] = FITPARAMODEL(V,@model,t,param0)
 %   [param,Vfit,paramci,modelci] = FITPARAMODEL(V,@model,r,K,param0)
@@ -62,7 +63,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [parfit,modelfit,parci,modelci] = fitparamodel(V,model,ax,K,StartParameters,varargin)
+function [parfit,modelfit,parci,modelci,stats] = fitparamodel(V,model,ax,K,StartParameters,varargin)
 
 % Input parsing & validation
 %-------------------------------------------------------------------------------
@@ -520,6 +521,24 @@ if nargout>3
         modelci{i} = [lower(:) upper(:)];
     end
     
+end
+
+% If requested compute Goodness of Fit for all signals
+if nargout>4
+    stats = cell(numel(V),1);
+    for i=1:numel(V)
+        if isDistanceDomain
+            Vfit = K{i}*modelfit{1};
+        else
+            Vfit = modelfit{i};
+        end
+        Ndof = numel(V{i}) - numel(StartParameters);
+        stats{i} = gof(V{i},Vfit,Ndof);
+    end
+    
+    if numel(V)==1
+        stats = stats{1};
+    end
 end
 
 if numel(ax)==1

@@ -15,13 +15,13 @@ Syntax
 
 .. code-block:: matlab
 
-    [param,fit,paramci,fitci] = fitparamodel(V,@model,t)
-    [param,fit,paramci,fitci] = fitparamodel(V,@model,t,param0)
-    [param,fit,paramci,fitci] = fitparamodel({V1,V2,___},@model,{t1,t2,___},param0)
-    [param,fit,paramci,fitci] = fitparamodel(V,@model,r,K)
-    [param,fit,paramci,fitci] = fitparamodel(V,@model,r,K,param0)
-    [param,fit,paramci,fitci] = fitparamodel({V1,V2,___},@model,r,{K1,K2,___},param0)
-    [param,fit,paramci,fitci] = fitparamodel(___,'Property',Value)
+    [param,fit,paramci,fitci,stats] = fitparamodel(V,@model,t)
+    [param,fit,paramci,fitci,stats] = fitparamodel(V,@model,t,param0)
+    [param,fit,paramci,fitci,stats] = fitparamodel({V1,V2,___},@model,{t1,t2,___},param0)
+    [param,fit,paramci,fitci,stats] = fitparamodel(V,@model,r,K)
+    [param,fit,paramci,fitci,stats] = fitparamodel(V,@model,r,K,param0)
+    [param,fit,paramci,fitci,stats] = fitparamodel({V1,V2,___},@model,r,{K1,K2,___},param0)
+    [param,fit,paramci,fitci,stats] = fitparamodel(___,'Property',Value)
 
 
 Parameters
@@ -36,6 +36,7 @@ Returns
     *  ``fit`` - Parametric model fit (*N*-element array)
     *  ``paramci`` - Fit confidence intervals (*Wx2*-element array)
     *  ``fitci`` - Model fit confidence bands (*Nx2*-element array)
+    *  ``stats`` - Goodness-of-fit statistics (structure)
 
 
 -----------------------------
@@ -107,6 +108,20 @@ By doing so, ``fitparamodel`` will automatically pass the index ``idx = (1,2,...
 
 -----------------------------
 
+.. code-block:: matlab
+
+    [param,fit,paramci,fitci,stats] = fitparamodel(___)
+
+The ``stats`` structure provides several statistical metric which allow judgment on the quality of the fitted ``Vfit`` on the experimental data ``V`` and allows comparison between fits. The structure contains the following fields: 
+
+         *   ``.chi2red`` - Reduced `\chi^2` test
+         *   ``.R2`` - `R^2` test
+         *   ``.RMSD`` - Root-mean squared deviation (RMSD)
+         *   ``.AIC`` - Akaike information criterion
+         *   ``.AICc`` - Corrected Akaike information criterion
+         *   ``.BIC`` - Bayesian information criterion
+
+-----------------------------
 
 
 Additional Settings
