@@ -9,8 +9,10 @@
 %   properties.
 %
 %   [P,Pci] = FITREGMODEL(V,K,r,regtype,method)
-%   An estimation of the 99%-confidence intervals is returned as a second 
-%   output (Pci).
+%   An estimation of the 95%-confidence intervals is returned as a second 
+%   output (Pci). If more than one confidence level is requested, (Pci)
+%   is returned as a cell array containing the confidence intervals at the 
+%   different confidence levels.
 %
 %   [P,Pci] = FITREGMODEL(V,K,r,regtype,method)
 %   Instead of passing a numerial value for the regularization parameter
@@ -48,7 +50,7 @@
 %   'GlobalWeights' - Array of weighting coefficients for the individual signals in
 %                     global fitting.
 %   'RegOrder' - Order of the regularization operator L (default = 2)
-%   'ConfidenceLevel' - Level for the confidence intervals (0-1, default=0.99)
+%   'ConfidenceLevel' - Confidence lvel(s) for the confidence intervals (0-1, default=0.95)
 %   'TolFun' - Optimizer function tolerance
 %   'MaxIter' - Maximum number of optimizer iterations
 %   'MaxFunEvals' - Maximum number of optimizer function evaluations
@@ -122,11 +124,11 @@ else
     validateattributes(Verbose,{'char'},{'nonempty'},mfilename,'Verbose')
 end
 if isempty(ConfidenceLevel)
-   ConfidenceLevel = 0.99; 
+   ConfidenceLevel = 0.95; 
 else
-    validateattributes(ConfidenceLevel,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'Verbose')
-    if ConfidenceLevel<=0 || ConfidenceLevel>1
-       error('The ''ConfidenceLevel'' option must be a scalar value in the range [0 1].') 
+    validateattributes(ConfidenceLevel,{'numeric'},{'nonnegative','nonempty'},mfilename,'ConfidenceLevel')
+    if any(ConfidenceLevel<=0 | ConfidenceLevel>1)
+       error('The ''ConfidenceLevel'' option must contain values in the range [0 1].') 
     end
 end
 if isempty(RegOrder)
@@ -308,12 +310,21 @@ if getConfidenceIntervals
     % Get the Gaussian quantile according to requested coverage
     alpha = 1 - ConfidenceLevel;
     p = 1 - alpha/2;
-    z = norm_inv(p);
     
-    % Compute the standard confidence intervals, constrained to be nonnegative
-    Pci(:,1) = max(P - z*sigP,0);
-    Pci(:,2) = P + z*sigP;
+    Pci = cell(numel(p),1);
+    %Get the confidence intervals at the requested confidence levels
+    for j=1:numel(p)
+        % Get the critical value of corresponding normal distribution
+        z = norm_inv(p(j));
+        % Compute the standard confidence intervals, constrained to be nonnegative
+        Pci{j}(:,1) = max(P - z*sigP,0);
+        Pci{j}(:,2) = P + z*sigP;
+    end
     
+    %Do not return a cell if only one confidence level is requested
+    if numel(p)==1
+        Pci = Pci{1};
+    end
 end
 
 % Turn warnings back on

@@ -7,9 +7,12 @@
 %   M-point distance/time axis (r/t). For distance-domain fitting, provide
 %   the NxM point kernel matrix (K). The fitted model corresponds to a parametric model
 %   calculated by the passed function handle (@model). The fitted parameters (param)
-%   are returned as the first output argument, their 99% confidence intervals (paramci) are
+%   are returned as the first output argument, their 95% confidence intervals (paramci) are
 %   returned as the third output, the fitted model as the second output, and the
-%   corresponding 99% confidence bands (modelci) as the fourth output.
+%   corresponding 95% confidence bands (modelci) as the fourth output. If
+%   more than one confidence level is requested, (paramci) and (modelci)
+%   are given as cell arrays containing the confidence intervals at the different 
+%   confidence levels.
 %
 %   [param,Vfit,paramci,modelci] = FITPARAMODEL(V,@model,t,param0)
 %   [param,Vfit,paramci,modelci] = FITPARAMODEL(V,@model,r,K,param0)
@@ -48,7 +51,7 @@
 %   'MaxIter' - Maximum number of optimizer iterations
 %   'MaxFunEvals' - Maximum number of optimizer function evaluations
 %   'MultiStart' - Number of starting points for global optimization
-%   'ConfidenceLevel' - Level for confidence intervals
+%   'ConfidenceLevel' - Confidence level(s) for confidence intervals
 %   'Verbose' - Display options for the solvers:
 %                 'off' - no information displayed
 %                 'final' - display solver exit message
@@ -64,9 +67,8 @@ function [parfit,modelfit,parci,modelci] = fitparamodel(V,model,ax,K,StartParame
 % Input parsing & validation
 %-------------------------------------------------------------------------------
 if nargin<3
-  error('At least three inputs (V, model, t) are required.');
+    error('At least three inputs (V, model, t) are required.');
 end
-
 
 % Parse the different styles of input
 if nargin<4 || isempty(K)
@@ -151,11 +153,11 @@ end
 
 % Parse the optional parameters in varargin
 optionalProperties = {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals',...
-  'TolFun','CostModel','GlobalWeights','Upper','Lower','MultiStart',...
-  'ConfidenceLevel','internal::returncovariancematrix'};
+    'TolFun','CostModel','GlobalWeights','Upper','Lower','MultiStart',...
+    'ConfidenceLevel','internal::returncovariancematrix'};
 [Solver,Algorithm,maxIter,Verbose,maxFunEvals,TolFun,CostModel,GlobalWeights,...
-  upperBounds,lowerBounds,MultiStart,ConfidenceLevel,returnCovariance] = ...
-  parseoptional(optionalProperties,varargin);
+    upperBounds,lowerBounds,MultiStart,ConfidenceLevel,returnCovariance] = ...
+    parseoptional(optionalProperties,varargin);
 
 % Validate optional inputs
 if isempty(CostModel)
@@ -195,11 +197,11 @@ else
     validateattributes(Verbose,{'char'},{'nonempty'},mfilename,'Verbose')
 end
 if isempty(ConfidenceLevel)
-    ConfidenceLevel = 0.99;
+    ConfidenceLevel = 0.95;
 else
-    validateattributes(ConfidenceLevel,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'ConfidenceLevel')
-    if ConfidenceLevel>1 || ConfidenceLevel<0
-        error('The confidence level option must be a value between 0 and 1.')
+    validateattributes(ConfidenceLevel,{'numeric'},{'nonnegative','nonempty'},mfilename,'ConfidenceLevel')
+    if any(ConfidenceLevel>1 | ConfidenceLevel<0)
+        error('The confidence level option must have values between 0 and 1.')
     end
 end
 
@@ -309,7 +311,7 @@ catvec = @(x) cat(1,x{:});
 
 % Define the objective functional of a single signal
 nParam = numel(StartParameters);
-ssr = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2; 
+ssr = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2;
 chi2 = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2/noiselevel(S)^2;
 chi2red = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2/noiselevel(S)^2/(numel(S)-nParam);
 switch CostModel
@@ -341,7 +343,7 @@ if any(upperBounds==realmax) || any(lowerBounds==-realmax)
     warning('Some model parameters are unbounded. Use ''Lower'' and ''Upper'' options to pass parameter boundaries.')
 end
 if  numel(StartParameters)~=numel(upperBounds) || ...
-    numel(StartParameters)~=numel(lowerBounds)
+        numel(StartParameters)~=numel(lowerBounds)
     error('The inital guess and upper/lower boundaries must have equal length.')
 end
 if any(upperBounds<lowerBounds)
@@ -358,7 +360,6 @@ warning('off','MATLAB:nearlySingularMatrix')
 
 fvals = zeros(1,MultiStart);
 parfits = cell(1,MultiStart);
-jacobian = [];
 
 for runIdx = 1:MultiStart
     
@@ -401,12 +402,12 @@ for runIdx = 1:MultiStart
             solverOpts = optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display',Verbose,...
                 'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
                 'TolFun',TolFun,'DiffMinChange',0,'DiffMaxChange',Inf);
-            [parfit,fval,~,exitflag,~,~,jacobian]  = lsqnonlin(VecObjFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
+            [parfit,fval,~,exitflag,~,~]  = lsqnonlin(VecObjFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
             
             if exitflag == 0
                 % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
                 solverOpts = optimoptions(solverOpts,'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,'Display',Verbose);
-                [parfit,fval,~,~,~,~,jacobian]  = lsqnonlin(VecObjFcn,parfit,lowerBounds,upperBounds,solverOpts);
+                [parfit,fval,~,~,~,~]  = lsqnonlin(VecObjFcn,parfit,lowerBounds,upperBounds,solverOpts);
             end
             
         case 'nlsqbnd'
@@ -474,11 +475,23 @@ if calcParamUncertainty
     alpha = 1 - ConfidenceLevel;
     p = 1 - alpha/2; % percentile
     N = numel(residual)-numel(parfit); % degrees of freedom
-    % Get Student's t critical value
-    z = t_inv(p,N);
     
-    % Compute bounds of confidence intervals
-    parci = parfit.' + z*sqrt(diag(covmatrix)).*[-1 +1];
+    parci = cell(numel(p),1);
+    z = zeros(numel(p),1);
+    %Get the CI at requested confidence levels
+    for j=1:numel(p)
+        
+        % Get Student's t critical value
+        z(j) = t_inv(p(j),N);
+        % Compute bounds of confidence intervals
+        parci{j} = parfit.' + z(j)*sqrt(diag(covmatrix)).*[-1 +1];
+        
+    end
+    
+    %Do not return a cell if only one confidence level is requested
+    if numel(p)==1
+        parci = parci{1};
+    end
     
     % If wrapper functions internally request the covariance matrix, pack it up
     if returnCovariance

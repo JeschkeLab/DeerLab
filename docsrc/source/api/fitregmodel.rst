@@ -46,7 +46,7 @@ Description
 
 Fits a distance distribution ``P`` to the input signal ``V`` given the kernel matrix ``K``, using Tikhonov regularization using an AIC-optimized regularization parameter. 
 
-The ``Pci`` output contains the upper and lower 99%-confidence bands of the fitted distance distribution. The upper confidence band can be accessed via  ``Pci(1,:)`` and the lower confidence band via ``Pci(2,:)``.
+The ``Pci`` output contains the upper and lower 95%-confidence bands of the fitted distance distribution. The upper confidence band can be accessed via  ``Pci(:,1)`` and the lower confidence band via ``Pci(:,2)``.
 
 -----------------------------
 
@@ -141,15 +141,17 @@ Additional settings can be specified via name-value pairs. All property names ar
 			P = fitregmodel({S1,S2,S3},{K1,K2,K3},r,L,'tikhonov',a,'GlobalWeights',[0.1 0.6 0.3]])
 
 - ``'ConfidenceLevel'`` -  Level for parameter confidence bands
-    Level of the confidence bands computed for each fitted parameter. Must be a scalar value between 0 and 1.
+    Confidence level(s) of the confidence intervals computed for each fitted parameter. Must be an array containing values between 0 and 1. If more than one confidence level is requested, ``Pci`` is returned as a cell array containing the confidence intervals at the different requested levels.
 
-    *Default:* ``0.99`` (99% confidence bands)
+    *Default:* ``0.95`` (95% confidence bands)
 
     *Example:*
 
 		.. code-block:: matlab
 
-			P = fitregmodel(___,'ConfidenceLevel',0.95)
+			P = fitregmodel(___,'ConfidenceLevel',[0.99 0.5])
+			Pci99 = Pci{1};
+			Pci50 = Pci{2};
 
 - ``'Solver'`` - Optimization solver
     Numerical solver employed for solving the regularized optimization problem.

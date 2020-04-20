@@ -46,20 +46,21 @@ Description
 
 .. code-block:: matlab
 
-    [param,fit,ci] = fitparamodel(V,@model,t)
-    [param,fit,ci] = fitparamodel(V,@model,t,param0)
+    [param,fit,paramci,fitci] = fitparamodel(V,@model,t)
+    [param,fit,paramci,fitci] = fitparamodel(V,@model,t,param0)
 
 Fits the **time-domain** parametric model ``@model`` to the input signal ``V`` on a time axis ``t``. User-defined initial guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
 
-The fitted parameters as well as their 99%-confidence intervals are returned as the ``param`` and ``paramci`` outputs, respectively. The fitted model and its 99%-confidence band are returned as the ``fit`` and ``fitci`` outputs, respectively. 
+The fitted parameters as well as their 95% confidence intervals are returned as the ``param`` and ``paramci`` outputs, respectively. The fitted model and its confidence bands are returned as the ``fit`` and ``fitci`` outputs, respectively.
+
 
 -----------------------------
 
 
 .. code-block:: matlab
 
-    [param,fit,ci] = fitparamodel(V,@model,r,K)
-    [param,fit,ci] = fitparamodel(V,@model,r,K,param0)
+    [param,fit,paramci,fitci] = fitparamodel(V,@model,r,K)
+    [param,fit,paramci,fitci] = fitparamodel(V,@model,r,K,param0)
 
 Fits the **distance-domain** parametric model ``@model`` to the input signal ``V`` on a distance axis ``r``. The dipolar kernel ``K`` is required as in input for distance-domain fitting. User-defined initial guess values can be passed as an additional argument, if not they are automatically determined from the model. If the model is a user-defined function handle, the function will require ``param0`` to be passed.
 
@@ -229,16 +230,18 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 			param = fitparamodel(___,'MaxFunEval',1e10)
 
-- ``'ConfidenceLevel'`` -  Level for parameter confidence intervals
-    Level of the confidence intervals computed for each fitted parameter. Must be a scalar value between 0 and 1.
+- ``'ConfidenceLevel'`` -  Confidence level of confidence intervals
+    Confidence level(s) of the confidence intervals computed for each fitted parameter. Must be an array containing values between 0 and 1. If more than one confidence level is requested, the ``paramci`` and ``fitci`` variables are returned as cell arrays containing the confidence intervals at the different requested levels.
 
-    *Default:* ``0.99`` (99% confidence intervals)
+    *Default:* ``0.95`` (95% confidence intervals)
 
     *Example:*
 
 		.. code-block:: matlab
 
-			param = fitparamodel(___,'ConfidenceLevel',0.95)
+			[param,fit,paramci,fitci] = fitparamodel(___,'ConfidenceLevel',[0.99 0.5])
+			paramci99 = paramci{1};
+			paramci50 = paramci{2};
 
 - ``'MultiStart'`` -  Multi-start global optimization
     Number of initial points to be generated for a global search. For each start point, a local minimum is searched, and the solution with the lowest cost functional value is selected as the global optimum.
