@@ -146,7 +146,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
     .. code-block:: matlab
 
-        K = dipolarkernel(t,r,'ExcitationBandwidth',50)     % 50 MHz excitation bandwidth
+        K = dipolarkernel(___,'ExcitationBandwidth',50)     % 50 MHz excitation bandwidth
 
 - ``'OvertoneCoeffs'`` - RIDME overtone coefficients
     1D array containing the overtone coefficients for RIDME experiments. If passed, the dipolar kernel overtones are calculated based on the passed coefficients. The coefficient values must be normalized. The kernel containing up to the :math:`k^{th}` overtone is constructed as follows
@@ -161,7 +161,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			K = dipolarkernel(args,'OvertoneCoeffs',[0.4 0.2 0.4])   % fundamental, 1st, and 2nd overtone
+			K = dipolarkernel(___,'OvertoneCoeffs',[0.4 0.2 0.4])   % fundamental, 1st, and 2nd overtone
 
 - ``'g'`` - Electron g-value
     Specifies the two g-values of the electron spin centers used to compute the dipolar frequencies from the given distance axis.
@@ -172,7 +172,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			K = dipolarkernel(args,'g',[2.01 2.1])
+			K = dipolarkernel(___,'g',[2.01 2.1])
 
 - ``'Method'`` - Kernel matrix calculation method
     Specifies the method the kernel matrix is computed numerically.
@@ -189,7 +189,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			K = dipolarkernel(args,'Method','integral')
+			K = dipolarkernel(___,'Method','integral')
 
 - ``'nKnots'`` - Number of orientations for orientation averaging
     If the kernel is computed using ``'grid'``, this options specifies the number of orientations between :math:`\theta=0` and :math:`\theta=\pi/2` used for orientation averaging.
@@ -200,7 +200,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
     .. code-block:: matlab
 
-        K = dipolarkernel(args,'Method','grid','nKnots',1e4)
+        K = dipolarkernel(___,'Method','grid','nKnots',1e4)
 
 - ``'Renormalize'`` - Re-normalization of multi-pathway dipolar kernels
     If the kernel is computed for a multi-pathway model via the ``pathinfo`` variable, the kernel does not necessarily satisfy ``V(0) == 1``. This option enables(``true``) or disables(``false``) a re-normalization to ensure that equality is satisfied.
@@ -211,4 +211,4 @@ Additional settings can be specified via name-value pairs. All property names ar
 
     .. code-block:: matlab
 
-        K = dipolarkernel(args,'Renormalize',false)
+        K = dipolarkernel(___,'Renormalize',false)

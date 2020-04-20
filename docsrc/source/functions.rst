@@ -32,6 +32,7 @@ Function                                         Description
 =============================================  ============================================================
 :ref:`dipolarkernel`                           Dipolar kernel constructor
 :ref:`aptkernel`                               APT kernel constructor
+:ref:`dipolarbackground`                       Multi-pathway background constructor
 :ref:`dipolarsignal`                           Dipolar signal simulator
 :ref:`whitegaussnoise`                         Gaussian white noise generator
 :ref:`paramodel`                               Parametric model builder

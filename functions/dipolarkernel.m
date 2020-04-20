@@ -10,7 +10,7 @@
 %
 %  Computes the NxM kernel matrix K for the transformation of a distance
 %  distribution to a dipolar evolution function from the M-point distance
-%  axis r (in nanometers) to the N-point time axis t (in nanometers).
+%  axis r (in nanometers) to the N-point time axis t (in microseconds).
 %  If the modulation depth lambda, is given, it is included in K.
 %  If an N-point background (B) is given, it is included in K as well.
 %  Optional arguments can be specified by name-value pairs.
@@ -164,7 +164,7 @@ if ~any(size(pathinfo,2)==[2 3])
   error('pathinfo must be a numeric array with two or three columns.');
 end
 if any(isnan(pathinfo(:,1)))
-  error('In pathinfo, NaN can only appear in the second column (refocusing time).');
+  error('In pathinfo, NaN can only appear in the second column (refocusing time) e.g. path(1,:) = [Lam0 NaN];');
 end
 
 %Nomalize the pathway amplitudes to unity
@@ -236,15 +236,7 @@ end
 
 % Multiply by background(s)
 if isa(B,'function_handle')
-    Bnorm = 1;
-    B_ = 1;
-    for p = 1:nModPathways
-        B_ = B_.*B(lambda(p)*n(p)*(t-T0(p)));
-        Bnorm = Bnorm.*B(-T0(p)*lambda(p)*n(p));
-    end
-    if Renormalize
-        B_ = B_./Bnorm;
-    end
+    B_ = dipolarbackground(t,pathinfo,B,'OvertoneCoeffs',OvertoneCoeffs,'Renormalize',Renormalize);
     K = K.*B_;
 else
     if ~isempty(B)
