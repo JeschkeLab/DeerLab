@@ -167,7 +167,7 @@ if any(isnan(pathinfo(:,1)))
   error('In pathinfo, NaN can only appear in the second column (refocusing time).');
 end
 
-%Nomalize the pathway amplitues to unity
+%Nomalize the pathway amplitudes to unity
 pathinfo(:,1) = pathinfo(:,1)/sum(pathinfo(:,1));
 lambda = pathinfo(:,1);
 T0 = pathinfo(:,2);
@@ -192,16 +192,10 @@ if nCoeffs>0
   n = reshape(n*(1:nCoeffs),[],1);
 end
 
-% Assert that amplitude of non-modulated pathways is not larger than 1
-% (this must hold even if the unmodulated amplitude is negative)
-if round(sum(lambda)+Lambda0,5)>1
-    error('In pathinfo, the sum of all lambdas cannot be larger than 1.');
-end
-
 nModPathways = numel(lambda);
 if nModPathways>1
     if ~isempty(B) && ~isa(B,'function_handle')
-        error('For a model with multiple modulated pathways, B must be a function handle.');
+        error('For a model with multiple modulated pathways, B must be a function handle of the type: @(t) bg_model(t,par)');
     end
 end
 
