@@ -21,6 +21,7 @@ This class of functions allows simulation of dipolar signals and their modeling 
     ./api/dipolarkernel
     ./api/aptkernel
     ./api/dipolarsignal
+    ./api/dipolarbackground
     ./api/whitenoise
     ./api/paramodel
     ./api/mixmodels
