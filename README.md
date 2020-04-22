@@ -52,7 +52,7 @@ In order for MATLAB to access the DeerLab API functions, the path to the DeerLab
 
 ### License
 
-The DeerLab toolbox is licensed under the MIT License. The complete toolbox consists of the functions ([functions/](https://github.com/luisfabib/deerlab/tree/master/functions)), documentation source ([docsrc/](https://github.com/luisfabib/deerlab/tree/master/docsrc)), tutorial scripts ([tutorials/](https://github.com/luisfabib/deerlab/tree/master/tutorials)), test suite ([tests/](https://github.com/luisfabib/deerlab/tree/master/tests)), and pipeline scripts ([.github/workflows](https://github.com/luisfabib/deerlab/tree/master/.github/workflows)). See below for exceptions.
+The DeerLab toolbox is licensed under the MIT License. The complete toolbox consists of the functions ([functions/](https://github.com/JeschkeLab/DeerLab/tree/master/functions)), documentation source ([docsrc/](https://github.com/JeschkeLab/DeerLab/tree/master/docsrc)), tutorial scripts ([tutorials/](https://github.com/JeschkeLab/DeerLab/tree/master/tutorials)), test suite ([tests/](https://github.com/JeschkeLab/DeerLab/tree/master/tests)), and pipeline scripts ([.github/workflows](https://github.com/JeschkeLab/DeerLab/tree/master/.github/workflows)). See below for exceptions.
 
 DeerLab includes code from the following projects, which have their own licenses:
 - [datahash.m](https://www.mathworks.com/matlabcentral/fileexchange/31272-datahash) (Hash-key generator by Jan Simon) [BSD] 
@@ -63,4 +63,4 @@ DeerLab includes code from the following projects, which have their own licenses
 - [jacobianest.m](https://www.mathworks.com/matlabcentral/fileexchange/13490-adaptive-robust-numerical-differentiation) (Adaptive Robust Numerical Differentiation by John D'Errico) [BSD]
 - [kde.m](https://ch.mathworks.com/matlabcentral/fileexchange/14034-kernel-density-estimator) (Kernel Density Estimator by Zdravko Botev) [BSD]
 
-Copyright (c) 2019-2020: Luis Fabregas, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/luisfabib/deerlab/contributors).
+Copyright (c) 2019-2020: Luis Fabregas, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).

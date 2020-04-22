@@ -48,8 +48,8 @@ html_theme = 'sphinx_rtd_theme'
 # -------------------------------------------------------------
 html_context = {
     "display_github": False, # Integrate GitHub
-    "github_user": "luisfabib", # Username
-    "github_repo": "deerlab", # Repo name
+    "github_user": "JeschkeLab", # Username
+    "github_repo": "DeerLab", # Repo name
     "github_version": "master", # Version
     "conf_py_path": "/source/", # Path in the checkout to the docs root
 }

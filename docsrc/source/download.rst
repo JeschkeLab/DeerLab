@@ -28,7 +28,7 @@ DeerLab is distributed in two different formats:
 Downloading Releases
 -----------------------
 
-All releases (including previous versions) are available in the official DeerLab `GitHub repository <https://github.com/luisfabib/deerlab>`_. 
+All releases (including previous versions) are available in the official DeerLab `GitHub repository <https://github.com/JeschkeLab/DeerLab>`_. 
 
 1) From the main page, select the ``releases`` tab
 
@@ -46,7 +46,7 @@ All releases (including previous versions) are available in the official DeerLab
 Downloading the source code
 -----------------------------
 
-The source code is easily available in the official DeerLab `GitHub repository <https://github.com/luisfabib/deerlab>`_ either by downloading or cloning the repository. 
+The source code is easily available in the official DeerLab `GitHub repository <https://github.com/JeschkeLab/DeerLab>`_ either by downloading or cloning the repository. 
 
 1) From the main page, select the ``Clone or download`` tab
 
