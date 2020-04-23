@@ -2,13 +2,13 @@ function [pass,maxerr] = test(opt)
 
 % Test fitmultimodel() using Gaussian models
 
-t = linspace(0,2,100);
-r = time2dist(t);
+t = linspace(0,2,300);
+r = linspace(2,6,300);
 paramtrue = [4 0.2 0.4 4 1 0.4 3 0.4];
 P = dd_gauss3(r,paramtrue);
 K = dipolarkernel(t,r);
 S = K*P;
-Pfit = fitmultimodel(S,K,r,@dd_gauss,5,'aicc','TolFun',1e-8);
+[Pfit] = fitmultimodel(S,K,r,@dd_gauss,5,'aicc','TolFun',1e-8);
 
 % Pass: distribution is well fitted
 pass = all(abs(Pfit - P) < 7e-2);

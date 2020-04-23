@@ -54,7 +54,7 @@ This class of functions can be used and/or combined to create fitting routines o
     ./api/apt
     ./api/backgroundstart
     ./api/fitbackground
-    ./api/fitmultigauss
+    ./api/fitmultimodel
     ./api/fitparamodel
     ./api/fitregmodel
     ./api/obir
@@ -69,7 +69,7 @@ Function                                         Description
 =============================================  ============================================================
 :ref:`backgroundstart`                           Background fit start point optimizer
 :ref:`fitbackground`                             Background fitting engine
-:ref:`fitmultigauss`                             Multi-Gauss fitting engine
+:ref:`fitmultimodel`                             Multi-component model fitting engine
 :ref:`fitparamodel`                              Parametric model fitting engine
 :ref:`fitregmodel`                               Regularization fitting engine
 :ref:`obir`                                      Osher-Bregman iterative regularization

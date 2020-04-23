@@ -2,13 +2,13 @@ function [pass,maxerr] = test(opt)
 
 % Check that fitmultimodel() and fitparamodel() return the same answer
 
-t = linspace(0,3.2,200);
-r = time2dist(t);
+t = linspace(0,3,300);
+r = linspace(2,6,300);
 InputParam = [3 0.5 0.4 4 0.5];
 P = dd_gauss2(r,InputParam);
 K = dipolarkernel(t,r);
 S = K*P;
-par0 = [2 0.1 5 0.1 0.5];
+par0 = [2 0.1 0.5 5 0.1];
 
 [~,P_FP] = fitparamodel(S,@dd_gauss2,r,K,par0);
 P_MG = fitmultimodel(S,K,r,@dd_gauss,6);

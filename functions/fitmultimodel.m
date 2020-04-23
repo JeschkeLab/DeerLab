@@ -68,7 +68,6 @@ elseif nargin==7
     method = 'aicc';
 end
 
-
 % Parse the optional parameters
 %--------------------------------------------------------------
 optionalProperties = {'Upper','Lower','Background','internal::parselater'};
@@ -164,14 +163,16 @@ if ~isempty(Upper) || ~isempty(Lower)
         info = multiModels{i}();
         boundary = zeros(1,info.nparam);
         ParamNames = {info.parameters(:).name};
-        % Find the parameter indexes for the FWHM and mean distances
-        FWHMidx = contains(lower(ParamNames),'FWHM');
-        Distidx = contains(lower(ParamNames),'center');
+
+        %Get the indices of the different parameters on the mixed models
+        paramidx = (1:nparam+1:info.nparam) + (0:nparam).';
+        ampidx = paramidx(end,1:end-1);
         if ~isempty(Upper)
-            boundary(FWHMidx) = Upper(2); % FWHM upper bound
-            boundary(Distidx) = Upper(1); % Mean distaces upper bound
-            boundary(~(Distidx | FWHMidx)) = 1; % Amplitudes upper bound
-            if numel(Upper)>nparam+2
+            for j=1:nparam
+                boundary(paramidx(j,:)) = Upper(j);
+            end
+            boundary(ampidx) = 1; % Amplitudes upper bound
+            if numel(Upper)>nparam+1
                 boundary(numel(boundary)+1:numel(boundary) + numel(Upper(3:end))) = Upper(3:end); % Background upper bound
             end
             UpperBounds{i} = boundary;
@@ -180,10 +181,11 @@ if ~isempty(Upper) || ~isempty(Lower)
         end
         boundary = zeros(1,info.nparam);
         if ~isempty(Lower)
-            boundary(FWHMidx) = Lower(2); % FWHM lower bound
-            boundary(Distidx) = Lower(1); % Mean distaces lower bound
-            boundary(~(Distidx | FWHMidx)) = 0; % Amplitudes lower bound
-            if numel(Lower)>nparam+2
+            for j=1:nparam
+                boundary(paramidx(j,:)) = Lower(j);
+            end
+            boundary(ampidx) = 0; % Amplitudes lower bound
+            if numel(Lower)>nparam+1
                 boundary(numel(boundary)+1:numel(boundary) + numel(Lower(3:end))) = Lower(3:end); %Background upper bound
             end
             LowerBounds{i} = boundary;
