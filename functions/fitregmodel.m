@@ -309,8 +309,7 @@ if getConfidenceIntervals
     end
     
     % Get the Gaussian quantile according to requested coverage
-    alpha = 1 - ConfidenceLevel;
-    p = 1 - alpha/2;
+    p = 1 - (1 - ConfidenceLevel)/2;
     
     Pci = cell(numel(p),1);
     %Get the confidence intervals at the requested confidence levels
