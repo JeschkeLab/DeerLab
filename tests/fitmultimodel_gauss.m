@@ -4,7 +4,7 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(0,2,100);
 r = time2dist(t);
-paramtrue = [4 0.2 4 1 3 0.4 0.4 0.4];
+paramtrue = [4 0.2 0.4 4 1 0.4 3 0.4];
 P = dd_gauss3(r,paramtrue);
 K = dipolarkernel(t,r);
 S = K*P;

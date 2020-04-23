@@ -3,7 +3,7 @@ function [pass,maxerr] = test(opt)
 % Test that fitmultimodel() works with multiple signals using global fit
 
 r = linspace(2,6,300);
-parIn = [4 0.2 4 1 3 0.4 0.4 0.4];
+parIn = [4 0.2 0.4 4 1 0.4 3 0.4];
 P = dd_gauss3(r,parIn);
 
 t1 = linspace(0,2,200);

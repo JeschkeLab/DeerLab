@@ -14,18 +14,18 @@
 % --------------------------------------------------------------------------
 % param(1)  <r1>   2.5     1.5         20         center of 1st Gaussian
 % param(2)  fwhm1  0.5     0.2         5          FWHM of 1st Gaussian
-% param(3)  <r2>   3.0     1.5         20         center of 2nd Gaussian
-% param(4)  fwhm2  0.5     0.2         5          FWHM of 2nd Gaussian
-% param(5)  <r3>   3.5     1.5         20         center of 3rd Gaussian
-% param(6)  fwhm3  0.5     0.2         5          FWHM of 3rd Gaussian
-% param(7)  <r4>   4.5     1.5         20         center of 4th Gaussian
-% param(8)  fwhm4  0.5     0.2         5          FWHM of 4th Gaussian
-% param(9)  <r5>   5.0     1.5         20         center of 5th Gaussian
-% param(10) fwhm5  0.5     0.2         5          FWHM of 5th Gaussian
-% param(11) p1     0.2     0           1          amplitude of 1st Gaussian
-% param(12) p2     0.2     0           1          amplitude of 2nd Gaussian
-% param(13) p3     0.2     0           1          amplitude of 3rd Gaussian
-% param(14) p4     0.2     0           1          amplitude of 4th Gaussian
+% param(3)  a1     0.2     0           1          amplitude of 1st Gaussian
+% param(4)  <r2>   3.0     1.5         20         center of 2nd Gaussian
+% param(5)  fwhm2  0.5     0.2         5          FWHM of 2nd Gaussian
+% param(6)  a2     0.2     0           1          amplitude of 2nd Gaussian
+% param(7)  <r3>   3.5     1.5         20         center of 3rd Gaussian
+% param(8)  fwhm3  0.5     0.2         5          FWHM of 3rd Gaussian
+% param(9)  a3     0.2     0           1          amplitude of 3rd Gaussian
+% param(10) <r4>   4.5     1.5         20         center of 4th Gaussian
+% param(11) fwhm4  0.5     0.2         5          FWHM of 4th Gaussian
+% param(12) a4     0.2     0           1          amplitude of 4th Gaussian
+% param(13) <r5>   5.0     1.5         20         center of 5th Gaussian
+% param(14) fwhm5  0.5     0.2         5          FWHM of 5th Gaussian
 %--------------------------------------------------------------------------
 %
 
@@ -54,63 +54,63 @@ if nargin==0
     info.parameters(2).range = [0.2 5];
     info.parameters(2).default = 0.5;
     info.parameters(2).units = 'nm';
+        
+    info.parameters(3).name = 'Relative amplitude a1 of 1st Gaussian';
+    info.parameters(3).range = [0 1];
+    info.parameters(3).default = 0.2;
     
-    info.parameters(3).name = 'Center <r2> of 2nd Gaussian';
-    info.parameters(3).range = [1 20];
-    info.parameters(3).default = 3;
-    info.parameters(3).units = 'nm';
-    
-    info.parameters(4).name = 'FWHM w2 of 2nd Gaussian';
-    info.parameters(4).range = [0.2 5];
-    info.parameters(4).default = 0.5;
+    info.parameters(4).name = 'Center <r2> of 2nd Gaussian';
+    info.parameters(4).range = [1 20];
+    info.parameters(4).default = 3;
     info.parameters(4).units = 'nm';
     
-    info.parameters(5).name = 'Center <r3> of 3rd Gaussian';
-    info.parameters(5).range = [1 20];
-    info.parameters(5).default = 3.5;
+    info.parameters(5).name = 'FWHM w2 of 2nd Gaussian';
+    info.parameters(5).range = [0.2 5];
+    info.parameters(5).default = 0.5;
     info.parameters(5).units = 'nm';
     
-    info.parameters(6).name = 'FWHM w3 of 3rd Gaussian';
-    info.parameters(6).range = [0.2 5];
-    info.parameters(6).default = 0.5;
-    info.parameters(6).units = 'nm';
+    info.parameters(6).name = 'Relative amplitude a2 of 2nd Gaussian';
+    info.parameters(6).range = [0 1];
+    info.parameters(6).default = 0.2;
     
-    info.parameters(7).name = 'Center <r4> of 4th Gaussian';
+    info.parameters(7).name = 'Center <r3> of 3rd Gaussian';
     info.parameters(7).range = [1 20];
-    info.parameters(7).default = 4;
+    info.parameters(7).default = 3.5;
     info.parameters(7).units = 'nm';
     
-    info.parameters(8).name = 'FWHM w4 of 4th Gaussian';
+    info.parameters(8).name = 'FWHM w3 of 3rd Gaussian';
     info.parameters(8).range = [0.2 5];
     info.parameters(8).default = 0.5;
     info.parameters(8).units = 'nm';
-    
-    info.parameters(9).name = 'Center <r4> of 4th Gaussian';
-    info.parameters(9).range = [1 20];
-    info.parameters(9).default = 5;
-    info.parameters(9).units = 'nm';
-    
-    info.parameters(10).name = 'FWHM w4 of 4th Gaussian';
-    info.parameters(10).range = [0.2 5];
-    info.parameters(10).default = 0.5;
+       
+    info.parameters(9).name = 'Relative amplitude a3 of 3rd Gaussian';
+    info.parameters(9).range = [0 1];
+    info.parameters(9).default = 0.2;
+       
+    info.parameters(10).name = 'Center <r4> of 4th Gaussian';
+    info.parameters(10).range = [1 20];
+    info.parameters(10).default = 4;
     info.parameters(10).units = 'nm';
     
-    info.parameters(11).name = 'Relative amplitude A1 of 1st Gaussian';
-    info.parameters(11).range = [0 1];
-    info.parameters(11).default = 0.2;
+    info.parameters(11).name = 'FWHM w4 of 4th Gaussian';
+    info.parameters(11).range = [0.2 5];
+    info.parameters(11).default = 0.5;
+    info.parameters(11).units = 'nm';
     
-    info.parameters(12).name = 'Relative amplitude A2 of 2nd Gaussian';
+    info.parameters(12).name = 'Relative amplitude a4 of 4th Gaussian';
     info.parameters(12).range = [0 1];
     info.parameters(12).default = 0.2;
     
-    info.parameters(13).name = 'Relative amplitude A3 of 3rd Gaussian';
-    info.parameters(13).range = [0 1];
-    info.parameters(13).default = 0.2;
-       
-    info.parameters(14).name = 'Relative amplitude A4 of 4th Gaussian';
-    info.parameters(14).range = [0 1];
-    info.parameters(14).default = 0.2;
+    info.parameters(13).name = 'Center <r4> of 4th Gaussian';
+    info.parameters(13).range = [1 20];
+    info.parameters(13).default = 5;
+    info.parameters(13).units = 'nm';
     
+    info.parameters(14).name = 'FWHM w4 of 4th Gaussian';
+    info.parameters(14).range = [0.2 5];
+    info.parameters(14).default = 0.5;
+    info.parameters(14).units = 'nm';
+
     output = info;
     return
 end
@@ -123,9 +123,9 @@ end
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
 % Compute the model distance distribution
-fwhm = param([2 4 6 8 10]);
-r0 = param([1 3 5 7 9]);
-a = param([11 12 13 14]);
+fwhm = param([2 5 8 11 14]);
+r0 = param([1 4 7 10 13]);
+a = param([3 6 9 12]);
 a(5) = max(1-sum(a),0);
 P = multigaussfun(r,r0,fwhm,a);
 

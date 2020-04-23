@@ -31,7 +31,7 @@ Returns
 Model
 =========================================
 
-:math:`P(r) = A_1 R(r,\nu_1,\sigma_1) + (1-A_1) R(r,\nu_2,\sigma_2)`
+:math:`P(r) = a_1 R(r,\nu_1,\sigma_1) + (1-a_1) R(r,\nu_2,\sigma_2)`
 
 :math:`R(r,\nu,\sigma) = \frac{\nu^{n/2-1}}{\sigma^2}r^{n/2}\exp\left(-\frac{(r^2+\nu^2)}{2\sigma^2}\right)I_{n/2-1}\left(\frac{r\nu}{\sigma^2} \right)`
 
@@ -43,9 +43,9 @@ This is a three-dimensional non-central chi distribution, the 3D generalization 
 ============== ======================== ========= ======== ======== ===============================
 ``param(1)``   :math:`\nu_1`                2.5     1.0      10      center, 1st component
 ``param(2)``   :math:`\sigma_1`             0.7     0.1      5       width, 1st component
-``param(3)``   :math:`\nu_2`                4.0     1.0      10      center, 2nd component
-``param(4)``   :math:`\sigma_2`             0.7     0.1      5       width, 2nd component
-``param(5)``   :math:`A_1`                  0.5     0        1       amplitude, 1st component
+``param(3)``   :math:`a_1`                  0.5     0        1       amplitude, 1st component
+``param(4)``   :math:`\nu_2`                4.0     1.0      10      center, 2nd component
+``param(5)``   :math:`\sigma_2`             0.7     0.1      5       width, 2nd component
 ============== ======================== ========= ======== ======== ===============================
 
 

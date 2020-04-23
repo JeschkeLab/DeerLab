@@ -4,7 +4,7 @@ function [pass,maxerr] = test(opt)
 
 
 r = linspace(2,6,100);
-parIn = [3 0.3 5 0.3 0.5];
+parIn = [3 0.3 0.5 5 0.3];
 P = dd_gauss2(r,parIn);
 
 t1 = linspace(0,3,200);

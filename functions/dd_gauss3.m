@@ -14,12 +14,12 @@
 % --------------------------------------------------------------------------
 % param(1)  <r1>   2.5     1.5         20         center of 1st Gaussian
 % param(2)  fwhm1  0.5     0.2         5          FWHM of 1st Gaussian
-% param(3)  <r2>   3.5     1.5         20         center of 2nd Gaussian
-% param(4)  fwhm1  0.5     0.2         5          FWHM of 2nd Gaussian
-% param(5)  <r3>   5.0     1.5         20         center of 3rd Gaussian
-% param(6)  fwhm3  0.5     0.2         5          FWHM of 3rd Gaussian
-% param(7)  p1     0.3     0           1          amplitude of 1st Gaussian
-% param(8)  p2     0.3     0           1          ampltiude of 2nd Gaussian
+% param(3)  a1     0.3     0           1          amplitude of 1st Gaussian
+% param(4)  <r2>   3.5     1.5         20         center of 2nd Gaussian
+% param(5)  fwhm1  0.5     0.2         5          FWHM of 2nd Gaussian
+% param(6)  a2     0.3     0           1          ampltiude of 2nd Gaussian
+% param(7)  <r3>   5.0     1.5         20         center of 3rd Gaussian
+% param(8)  fwhm3  0.5     0.2         5          FWHM of 3rd Gaussian
 % --------------------------------------------------------------------------
 %
 
@@ -48,33 +48,33 @@ if nargin==0
     info.parameters(2).default = 0.5;
     info.parameters(2).units = 'nm';
     
-    info.parameters(3).name = 'Center <r2> of 2nd Gaussian';
-    info.parameters(3).range = [1 20];
-    info.parameters(3).default = 3.5;
-    info.parameters(3).units = 'nm';
+    info.parameters(3).name = 'Relative amplitude a1 of 1st Gaussian';
+    info.parameters(3).range = [0 1];
+    info.parameters(3).default = 0.3;
     
-    info.parameters(4).name = 'FWHM w2 of 2nd Gaussian';
-    info.parameters(4).range = [0.2 5];
-    info.parameters(4).default = 0.5;
+    info.parameters(4).name = 'Center <r2> of 2nd Gaussian';
+    info.parameters(4).range = [1 20];
+    info.parameters(4).default = 3.5;
     info.parameters(4).units = 'nm';
     
-    info.parameters(5).name = 'Center <r3> of 3rd Gaussian';
-    info.parameters(5).range = [1 20];
-    info.parameters(5).default = 3.5;
+    info.parameters(5).name = 'FWHM w2 of 2nd Gaussian';
+    info.parameters(5).range = [0.2 5];
+    info.parameters(5).default = 0.5;
     info.parameters(5).units = 'nm';
     
-    info.parameters(6).name = 'FWHM w3 of 3rd Gaussian';
-    info.parameters(6).range = [0.2 5];
-    info.parameters(6).default = 0.5;
-    info.parameters(6).units = 'nm';
+    info.parameters(6).name = 'Relative amplitude a2 of 2nd Gaussian';
+    info.parameters(6).range = [0 1];
+    info.parameters(6).default = 0.3;
     
-    info.parameters(7).name = 'Relative amplitude A1 of 1st Gaussian';
-    info.parameters(7).range = [0 1];
-    info.parameters(7).default = 0.3;
+    info.parameters(7).name = 'Center <r3> of 3rd Gaussian';
+    info.parameters(7).range = [1 20];
+    info.parameters(7).default = 3.5;
+    info.parameters(7).units = 'nm';
     
-    info.parameters(8).name = 'Relative amplitude A2 of 2nd Gaussian';
-    info.parameters(8).range = [0 1];
-    info.parameters(8).default = 0.3;
+    info.parameters(8).name = 'FWHM w3 of 3rd Gaussian';
+    info.parameters(8).range = [0.2 5];
+    info.parameters(8).default = 0.5;
+    info.parameters(8).units = 'nm';
        
     output = info;
     return
@@ -89,9 +89,9 @@ end
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
 % Compute the model distance distribution
-fwhm = param([2 4 6]);
-r0 = param([1 3 5]);
-a = param([7 8]);
+fwhm = param([2 5 8]);
+r0 = param([1 4 7]);
+a = param([3 6]);
 a(3) = max(1-sum(a),0);
 P = multigaussfun(r,r0,fwhm,a);
 

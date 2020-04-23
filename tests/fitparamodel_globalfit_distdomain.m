@@ -5,7 +5,7 @@ rng(10)
 
 dt = 0.008;
 r = linspace(1,5,500);
-P = dd_gauss2(r,[2,0.3,4,0.3,0.5]);
+P = dd_gauss2(r,[2,0.3,0.5,4,0.3]);
 
 Ntime1 = 150;
 t1 = linspace(0,dt*Ntime1,Ntime1);

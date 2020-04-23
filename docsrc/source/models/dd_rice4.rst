@@ -32,7 +32,7 @@ Returns
 Model
 =========================================
 
-:math:`P(r) = A_1 R(r,\nu_1,\sigma_1) + A_2 R(r,\nu_2,\sigma_2) + A_3 R(r,\nu_3,\sigma_3) + (1-A_1-A_2-A_3) R(r,\nu_4,\sigma_4)`
+:math:`P(r) = a_1 R(r,\nu_1,\sigma_1) + a_2 R(r,\nu_2,\sigma_2) + a_3 R(r,\nu_3,\sigma_3) + (1-a_1-a_2-a_3) R(r,\nu_4,\sigma_4)`
 
 :math:`R(r,\nu,\sigma) = \frac{\nu^{n/2-1}}{\sigma^2}r^{n/2}\exp\left(-\frac{(r^2+\nu^2)}{2\sigma^2}\right)I_{n/2-1}\left(\frac{r\nu}{\sigma^2} \right)`
 
@@ -44,15 +44,15 @@ This is a three-dimensional non-central chi distribution, the 3D generalization 
 ============== ======================== ========= ======== ========= ===================================
 ``param(1)``   :math:`\left<r_1\right>`     2.5     1.0        20         center, 1st component
 ``param(2)``   :math:`\sigma_1`             0.7     0.1        5          width, 1st component
-``param(3)``   :math:`\left<r_2\right>`     3.5     1.0        20         center, 2nd component
-``param(4)``   :math:`\sigma_2`             0.7     0.1        5          width, 2nd component
-``param(5)``   :math:`\left<r_3\right>`     4.5     1.0        20         center, 3rd component
-``param(6)``   :math:`\sigma_3`             0.7     0.1        5          width. 3rd component
-``param(7)``   :math:`\left<r_3\right>`     5.5     1.0        20         center, 4th component
-``param(8)``   :math:`\sigma_3`             0.7     0.1        5          width. 4th component
-``param(9)``   :math:`A_1`                  0.25     0          1         amplitude, 1st component
-``param(10)``  :math:`A_2`                  0.25     0          1         amplitude, 2nd component
-``param(11)``  :math:`A_3`                  0.25     0          1         amplitude, 3rd component
+``param(3)``   :math:`a_1`                  0.25     0          1         amplitude, 1st component
+``param(4)``   :math:`\left<r_2\right>`     3.5     1.0        20         center, 2nd component
+``param(5)``   :math:`\sigma_2`             0.7     0.1        5          width, 2nd component
+``param(6)``   :math:`a_2`                  0.25     0          1         amplitude, 2nd component
+``param(7)``   :math:`\left<r_3\right>`     4.5     1.0        20         center, 3rd component
+``param(8)``   :math:`\sigma_3`             0.7     0.1        5          width. 3rd component
+``param(9)``   :math:`a_3`                  0.25     0          1         amplitude, 3rd component
+``param(10)``  :math:`\left<r_3\right>`     5.5     1.0        20         center, 4th component
+``param(11)``  :math:`\sigma_3`             0.7     0.1        5          width. 4th component
 ============== ======================== ========= ======== ========= ===================================
 
 

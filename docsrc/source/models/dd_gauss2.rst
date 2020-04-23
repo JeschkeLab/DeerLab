@@ -32,7 +32,7 @@ Returns
 Model
 =========================================
 
-:math:`P(r) = A_1\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_1}\exp\left(-\frac{(r-\left<r_1\right>)^2}{\sigma_1^2}\right) + (1 - A_1)\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_2}\exp\left(-\frac{(r-\left<r_2\right>)^2}{\sigma_2^2}\right)`
+:math:`P(r) = a_1\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_1}\exp\left(-\frac{(r-\left<r_1\right>)^2}{\sigma_1^2}\right) + (1 - a_1)\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_2}\exp\left(-\frac{(r-\left<r_2\right>)^2}{\sigma_2^2}\right)`
 
 with :math:`\sigma_i = \mathrm{FWHM}_i/\sqrt{2ln(2)}`
 
@@ -42,9 +42,9 @@ with :math:`\sigma_i = \mathrm{FWHM}_i/\sqrt{2ln(2)}`
 ============== ======================== ========= ======== ========= ===================================
 ``param(1)``   :math:`\left<r_1\right>`     2.5     1.0        20       1st Gaussian center distance
 ``param(2)``   :math:`\mathrm{FWHM}_1`      0.5     0.2        5        1st Gaussian FWHM
-``param(3)``   :math:`\left<r_2\right>`     3.5     1.0        20       2nd Gaussian center distance
-``param(4)``   :math:`\mathrm{FWHM}_2`      0.5     0.2        5        2nd Gaussian FWHM
-``param(5)``   :math:`A_1`                  0.5     0          1        1st Gaussian relative amplitude
+``param(3)``   :math:`a_1`                  0.5     0          1        1st Gaussian relative amplitude
+``param(4)``   :math:`\left<r_2\right>`     3.5     1.0        20       2nd Gaussian center distance
+``param(5)``   :math:`\mathrm{FWHM}_2`      0.5     0.2        5        2nd Gaussian FWHM
 ============== ======================== ========= ======== ========= ===================================
 
 Example using default parameters:

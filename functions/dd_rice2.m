@@ -14,9 +14,9 @@
 % --------------------------------------------------------------------------
 % param(1)  nu1      2.5     1.0        10         center of 1st component
 % param(2)  sigma1   0.7     0.1        5          spread of 1st component
-% param(3)  nu2      4.0     1.0        10         center of 2nd component
-% param(4)  sigma2   0.7     0.1        5          spread of 2nd component
-% param(5)  p1       0.5     0          1          amplitude of 1st component
+% param(3)  a1       0.5     0          1          amplitude of 1st component
+% param(4)  nu2      4.0     1.0        10         center of 2nd component
+% param(5)  sigma2   0.7     0.1        5          spread of 2nd component
 % --------------------------------------------------------------------------
 %
 
@@ -44,20 +44,20 @@ if nargin==0
     info.parameters(2).range = [0.1 5];
     info.parameters(2).default = 0.7;
     info.parameters(2).units = 'nm';
+        
+    info.parameters(3).name = 'Relative amplitude a1 1st component';
+    info.parameters(3).range = [0 1];
+    info.parameters(3).default = 0.5;
     
-    info.parameters(3).name = ['Center ',char(957),'2 2nd component'];
-    info.parameters(3).range = [1 10];
-    info.parameters(3).default = 4.0;
-    info.parameters(3).units = 'nm';
-    
-    info.parameters(4).name = ['Spread ',char(963),'2 2nd component'];
-    info.parameters(4).range = [0.1 5];
-    info.parameters(4).default = 0.7;
+    info.parameters(4).name = ['Center ',char(957),'2 2nd component'];
+    info.parameters(4).range = [1 10];
+    info.parameters(4).default = 4.0;
     info.parameters(4).units = 'nm';
     
-    info.parameters(5).name = 'Relative amplitude A1 1st component';
-    info.parameters(5).range = [0 1];
-    info.parameters(5).default = 0.5;
+    info.parameters(5).name = ['Spread ',char(963),'2 2nd component'];
+    info.parameters(5).range = [0.1 5];
+    info.parameters(5).default = 0.7;
+    info.parameters(5).units = 'nm';
     
     output = info;
     return;
@@ -72,9 +72,9 @@ end
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
 % Compute non-central chi distribution with 3 degrees of freedom (a 3D Rician)
-nu = param([1 3]);
-sig = param([2 4]);
-a = param(5);
+nu = param([1 4]);
+sig = param([2 5]);
+a = param(3);
 a(2) = max(1-a,0);
 
 P = multirice3d(r,nu,sig,a);

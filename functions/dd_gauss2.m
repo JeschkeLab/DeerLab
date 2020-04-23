@@ -14,9 +14,9 @@
 % --------------------------------------------------------------------------
 % param(1)  <r1>   2.5     1.0         20         center of 1st Gaussian
 % param(2)  fwhm1  0.5     0.2         5          FWHM of 1st Gaussian
-% param(3)  <r2>   3.5     1.0         20         center of 2nd Gaussian
-% param(4)  fwhm2  0.5     0.2         5          FWHM of 2nd Gaussian
-% param(5)  A      0.5     0           1          amplitude of 1st Gaussian
+% param(3)  a1      0.5     0           1          amplitude of 1st Gaussian
+% param(4)  <r2>   3.5     1.0         20         center of 2nd Gaussian
+% param(5)  fwhm2  0.5     0.2         5          FWHM of 2nd Gaussian
 % --------------------------------------------------------------------------
 %
 
@@ -44,20 +44,21 @@ if nargin==0
     info.parameters(2).range = [0.2 5];
     info.parameters(2).default = 0.5;
     info.parameters(2).units = 'nm';
+        
+    info.parameters(3).name = 'Relative amplitude a1 1st Gaussian';
+    info.parameters(3).range = [0 1];
+    info.parameters(3).default = 0.5;
     
-    info.parameters(3).name = 'Center <r2> 2nd Gaussian';
-    info.parameters(3).range = [1 20];
-    info.parameters(3).default = 3.5;
-    info.parameters(3).units = 'nm';
-    
-    info.parameters(4).name = 'FWHM w2 of 2nd Gaussian';
-    info.parameters(4).range = [0.2 5];
-    info.parameters(4).default = 0.5;
+    info.parameters(4).name = 'Center <r2> 2nd Gaussian';
+    info.parameters(4).range = [1 20];
+    info.parameters(4).default = 3.5;
     info.parameters(4).units = 'nm';
     
-    info.parameters(5).name = 'Relative amplitude A 1st Gaussian';
-    info.parameters(5).range = [0 1];
+    info.parameters(5).name = 'FWHM w2 of 2nd Gaussian';
+    info.parameters(5).range = [0.2 5];
     info.parameters(5).default = 0.5;
+    info.parameters(5).units = 'nm';
+
     output = info;
     return
 end
@@ -71,9 +72,9 @@ end
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
 % Compute the model distance distribution
-fwhm = param([2 4]);
-r0 = param([1 3]);
-a = param(5);
+fwhm = param([2 5]);
+r0 = param([1 4]);
+a = param(3);
 a(2) = max(1-a,0);
 P = multigaussfun(r,r0,fwhm,a);
 

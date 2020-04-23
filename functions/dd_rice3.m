@@ -13,13 +13,13 @@
 % name      symbol default lower bound upper bound
 % --------------------------------------------------------------------------
 % param(1)  nu1      2.5     1.0        10         center of 1st component
-% param(2)  sigma1   0.7     0.1        5          width of 1st component
-% param(3)  nu2      4.0     1.0        10         center of 2nd component
-% param(4)  sigma2   0.7     0.1        5          width of 2nd component
-% param(5)  nu3      5.0     1.0        10         center of 3rd component
-% param(6)  sigma3   0.7     0.1        5          width of 3rd component
-% param(7)  p1       0.3     0          1          amplitude of 1st component
-% param(8)  p2       0.3     0          1          amplitude of 2nd component
+% param(2)  sigma1   0.7     0.1        5          spread of 1st component
+% param(3)  a1       0.3     0          1          amplitude of 1st component
+% param(4)  nu2      4.0     1.0        10         center of 2nd component
+% param(5)  sigma2   0.7     0.1        5          spread of 2nd component
+% param(6)  a2       0.3     0          1          amplitude of 2nd component
+% param(7)  nu3      5.0     1.0        10         center of 3rd component
+% param(8)  sigma3   0.7     0.1        5          spread of 3rd component
 % --------------------------------------------------------------------------
 %
 
@@ -44,39 +44,39 @@ if nargin==0
     info.parameters(1).default = 2.0;
     info.parameters(1).units = 'nm';
     
-    info.parameters(2).name = ['Width ',char(963),'1 1st component'];
+    info.parameters(2).name = ['Spread ',char(963),'1 1st component'];
     info.parameters(2).range = [0.1 5];
     info.parameters(2).default = 0.7;
     info.parameters(2).units = 'nm';
     
-    info.parameters(3).name = ['Center ',char(957),'2 2nd component'];
-    info.parameters(3).range = [1 10];
-    info.parameters(3).default = 4.0;
-    info.parameters(3).units = 'nm';
+    info.parameters(3).name = 'Relative amplitude a1 1st component';
+    info.parameters(3).range = [0 1];
+    info.parameters(3).default = 0.3;
     
-    info.parameters(4).name = ['Width ',char(963),'2 2nd component'];
-    info.parameters(4).range = [0.1 5];
-    info.parameters(4).default = 0.7;
+    info.parameters(4).name = ['Center ',char(957),'2 2nd component'];
+    info.parameters(4).range = [1 10];
+    info.parameters(4).default = 4.0;
     info.parameters(4).units = 'nm';
     
-    info.parameters(5).name = ['Center ',char(957),'3 3rd component'];
-    info.parameters(5).range = [1 10];
-    info.parameters(5).default = 5.0;
+    info.parameters(5).name = ['Spread ',char(963),'2 2nd component'];
+    info.parameters(5).range = [0.1 5];
+    info.parameters(5).default = 0.7;
     info.parameters(5).units = 'nm';
     
-    info.parameters(6).name = ['Width ',char(963),'3 3rd component'];
-    info.parameters(6).range = [0.1 5];
-    info.parameters(6).default = 0.7;
-    info.parameters(6).units = 'nm';
+    info.parameters(6).name = 'Relative amplitude a2 2nd component';
+    info.parameters(6).range = [0 1];
+    info.parameters(6).default = 0.3;
     
-    info.parameters(7).name = 'Relative amplitude A1 1st component';
-    info.parameters(7).range = [0 1];
-    info.parameters(7).default = 0.3;
+    info.parameters(7).name = ['Center ',char(957),'3 3rd component'];
+    info.parameters(7).range = [1 10];
+    info.parameters(7).default = 5.0;
+    info.parameters(7).units = 'nm';
     
-    info.parameters(8).name = 'Relative amplitude A2 2nd component';
-    info.parameters(8).range = [0 1];
-    info.parameters(8).default = 0.3;
-    
+    info.parameters(8).name = ['Spread ',char(963),'3 3rd component'];
+    info.parameters(8).range = [0.1 5];
+    info.parameters(8).default = 0.7;
+    info.parameters(8).units = 'nm';
+
     output = info;
     return
 end
@@ -90,9 +90,9 @@ end
 validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
 
 % Compute non-central chi distribution with 3 degrees of freedom (a 3D Rician)
-nu = param([1 3 5]);
-sig = param([2 4 6]);
-a = param([7 8]);
+nu = param([1 4 7]);
+sig = param([2 5 8]);
+a = param([3 6]);
 a(3) = max(1-sum(a),0);
 P = multirice3d(r,nu,sig,a);
 
