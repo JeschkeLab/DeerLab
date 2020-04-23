@@ -42,7 +42,7 @@ end
 
 if nargin==1
     % If no inputs given, return info about the parametric model
-    info.model  = '4-pulse DEER experiment (single pathway)';
+    info.model  = '5-pulse DEER experiment (two modulated pathways)';
     info.nparam  = nParam;
     info.parameters(1).name = 'Unmodulated pathway amplitude';
     info.parameters(1).range = [0 1];

@@ -37,7 +37,7 @@ if nargin<4
   Bmodel = [];
 end
 
-if nargin==0
+if nargin==1
     % If no inputs given, return info about the parametric model
     info.model  = '4-pulse DEER experiment (single pathway)';
     info.nparam  = nParam;
