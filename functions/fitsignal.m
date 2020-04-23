@@ -46,7 +46,10 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [Vfit,Pfit,Bfit,parfit] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model,par0)
+function [Vfit,Pfit,Bfit,parfit] = fitsignal(Vexp,t,r,dd_model,bg_model,exp_model,par0)
+
+% Clear persistent variables in the function
+clear fitsignal
 
 if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
@@ -63,7 +66,7 @@ end
 % Set defaults
 if nargin<4, dd_model = 'P'; end
 if nargin<5, bg_model = @bg_exp; end
-if nargin<6, ex_model = @ex_4pdeer; end
+if nargin<6, exp_model = @exp_4pdeer; end
 if nargin<7, par0 = {[],[],[]}; end
 
 if ~isempty(par0)
@@ -110,9 +113,9 @@ lower_ex = [];
 upper_ex = [];
 N_ex = 0;
 includeExperiment = true;
-if isa(ex_model,'function_handle')
-    [par0_ex,lower_ex,upper_ex,N_ex] = getmodelparams(ex_model);
-elseif ischar(ex_model) && strcmp(ex_model,'none')
+if isa(exp_model,'function_handle')
+    [par0_ex,lower_ex,upper_ex,N_ex] = getmodelparams(exp_model,t);
+elseif ischar(exp_model) && strcmp(exp_model,'none')
     includeExperiment = false;
 else
     error('Experiment model (6th input) must either be a function handle, or ''none''.')
@@ -166,13 +169,16 @@ parfit.ex = parfit_(exidx);
     % General multi-pathway DEER signal model function
     function [V,B,P] = Vmodel(t,par)
         
+        % Define persistents for soft-memoization of alpha-search
+        persistent par_prev regparam_prev
+        
         % Calculate the background and the experiment kernel matrix
         Bfcn = @(t) bg_model(t,par(bgidx));        
         if includeExperiment
             if includeBackground
-                [K,B] = ex_model(t,r,par(exidx),Bfcn);
+                [K,B] = exp_model(t,r,par(exidx),Bfcn);
             else
-                K = ex_model(t,r,par(exidx));
+                K = exp_model(t,r,par(exidx));
                 B = ones(numel(t),1);
             end
         else
@@ -186,8 +192,20 @@ parfit.ex = parfit_(exidx);
         
         % Get the distance distribution
         if includeForeground
+                        
+            % Use the alpha-search settings by default
+            alpha = regparam;
+            % If the parameter vectors has not changed by much...
+            if ~isempty(par_prev)
+                if all(abs(par_prev-par)./par < 1e-3)
+                    % ...use the alpha optimized in the previous iteration
+                    alpha = regparam_prev;
+                end
+            end
+            par_prev = par;
+                        
             if parfreeDistribution
-                P = fitregmodel(Vexp,K,r,regtype,regparam);
+                [P,~,regparam_prev] = fitregmodel(Vexp,K,r,regtype,alpha);
             else
                 P = dd_model(r,par(ddidx));
             end
@@ -206,9 +224,13 @@ parfit.ex = parfit_(exidx);
     
 end
 
-function [par0,lo,up,N] = getmodelparams(model)
+function [par0,lo,up,N] = getmodelparams(model,t)
 
-info = model();
+if contains(func2str(model),'exp_')
+    info = model(t);
+else
+    info = model();
+end
 par0 = [info.parameters.default];
 range = [info.parameters.range];
 lo = range(1:2:end-1);
