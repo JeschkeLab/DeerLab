@@ -25,7 +25,7 @@
 %  Outputs:
 %    alphaopt   optimal alpha, or alphas, determined
 %    F          list of evaluated model-selection functionals
-%    alpha      vector of evaluated alpha values
+%    alphas     vector of evaluated alpha values
 %
 %    If multiple selection methods are passed as a cell array of strings,
 %    the function returns (alpha) as an N-point array of optimal
@@ -48,7 +48,7 @@
 %    'TolFun' - Optimizer function tolerance.
 %    'NoiseLevel' - Array of noise levels of the input signals.
 %    'Range' - Range of alpha-value candidates to evaluate
-%    'Search' - Search method to use ('golden' or 'grid')
+%    'Search' - Search method to use: 'fminbnd' (default), 'golden', 'grid'
 %
 
 %  This file is a part of DeerLab. License is MIT (see LICENSE.md).
@@ -187,21 +187,21 @@ if isempty(SearchMethod)
     if LcurveMethods
         SearchMethod = 'grid';
     else
-        SearchMethod = 'golden';
+        SearchMethod = 'fminbnd';
     end
 else
     validateattributes(SearchMethod,{'char'},{'nonempty'},mfilename,'Search')
-    SearchMethod = validatestring(SearchMethod,{'golden','grid'});
+    SearchMethod = validatestring(SearchMethod,{'golden','grid','fminbnd'});
 end
 
-if allMethods && strcmp(SearchMethod,'golden')
+if allMethods && ~strcmp(SearchMethod,'grid')
     LcurveMethods = false;
     SelectionMethod(strcmp(SelectionMethod,'lr')) = [];
     SelectionMethod(strcmp(SelectionMethod,'lc')) = [];
 end
 
 if LcurveMethods && strcmp(SearchMethod,'golden')
-    error('The ''lr'' and ''lc'' selection methods are not compatible with the golden-search algorithm. Use the option selregparam(...,''Search'',''grid'') to enable their use.')
+    error('The ''lr'' and ''lc'' selection methods work only with selregparam(...,''Search'',''grid'').')
 end
 
 
@@ -220,27 +220,41 @@ end
 % Evaluate functional over search range, using specified search method
 %-------------------------------------------------------------------------------
 Functionals = cell(1,numel(SelectionMethod));
+Residuals = cell(1,numel(SelectionMethod));
+Penalties = cell(1,numel(SelectionMethod));
 alphaRanges = cell(1,numel(SelectionMethod));
 alphaOpt = zeros(1,numel(SelectionMethod));
 switch lower(SearchMethod)
+    
+    case 'fminbnd'
+        
+        opt = optimset('TolX',0.01);        
+        lga_min = log10(min(alphaRange));
+        lga_max = log10(max(alphaRange));
+        for m = 1:numel(SelectionMethod)
+            fun = @(lga) evalalpha(10.^lga,SelectionMethod(m));
+            lga_opt(m) = fminbnd(fun,lga_min,lga_max,opt);
+            [Functionals{m},Residuals{m},Penalties{m}] = fun(lga_opt(m));
+        end
+        alphaOpt = 10.^lga_opt;
     
     case 'golden'
         %-----------------------------------------------------------------------
         %  Golden-section search algorithm
         %-----------------------------------------------------------------------
         
-        epsilon = 0.01; % termination interval size (logalpha)
+        epsilon = 0.01; % termination interval size (log10 scale)
         maxIterations = 500; % maximum number of iterations
         tau = (sqrt(5)-1)/2;
         for m = 1:numel(SelectionMethod)
             
-            intervalStart = min(log(alphaRange));
-            intervalEnd = max(log(alphaRange));
-            logalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
-            logalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
-            [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(m));
-            [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(m));
-            alphasEvaluated = [exp(logalpha1) exp(logalpha2)];
+            intervalStart = min(log10(alphaRange));
+            intervalEnd = max(log10(alphaRange));
+            lgalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
+            lgalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
+            [fcnval1,res1,pen1] = evalalpha(10^lgalpha1,SelectionMethod(m));
+            [fcnval2,res2,pen2] = evalalpha(10^lgalpha2,SelectionMethod(m));
+            alphasEvaluated = 10.^[lgalpha1 lgalpha2];
             Functional = [fcnval1 fcnval2];
             Residual = [sum(res1) sum(res2)];
             Penalty = [sum(pen1) sum(pen2)];
@@ -249,22 +263,22 @@ switch lower(SearchMethod)
             iIter = 0;
             while abs(intervalEnd-intervalStart)>epsilon && iIter<maxIterations
                 if fcnval1<fcnval2
-                    intervalEnd = logalpha2;
-                    logalpha2 = logalpha1;
-                    logalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
-                    [fcnval1,res1,pen1] = evalalpha(exp(logalpha1),SelectionMethod(m));
-                    [fcnval2,~,~] = evalalpha(exp(logalpha2),SelectionMethod(m));
-                    alphasEvaluated(end+1) = exp(logalpha1);
+                    intervalEnd = lgalpha2;
+                    lgalpha2 = lgalpha1;
+                    lgalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
+                    [fcnval1,res1,pen1] = evalalpha(10^lgalpha1,SelectionMethod(m));
+                    [fcnval2,~,~] = evalalpha(10^lgalpha2,SelectionMethod(m));
+                    alphasEvaluated(end+1) = 10^lgalpha1;
                     Functional(end+1) = fcnval1;
                     Residual(end+1) = sum(res1);
                     Penalty(end+1) = sum(pen1);
                 else
-                    intervalStart = logalpha1;
-                    logalpha1 = logalpha2;
-                    logalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
-                    [fcnval1,~,~] = evalalpha(exp(logalpha1),SelectionMethod(m));
-                    [fcnval2,res2,pen2] = evalalpha(exp(logalpha2),SelectionMethod(m));
-                    alphasEvaluated(end+1) = exp(logalpha2);
+                    intervalStart = lgalpha1;
+                    lgalpha1 = lgalpha2;
+                    lgalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
+                    [fcnval1,~,~] = evalalpha(10^lgalpha1,SelectionMethod(m));
+                    [fcnval2,res2,pen2] = evalalpha(10^lgalpha2,SelectionMethod(m));
+                    alphasEvaluated(end+1) = 10^lgalpha2;
                     Functional(end+1) = fcnval2;
                     Residual(end+1) = sum(res2);
                     Penalty(end+1) = sum(pen2);
@@ -277,9 +291,9 @@ switch lower(SearchMethod)
             Residuals{m} = Residual;
             Penalties{m} = Penalty;
             if fcnval1<fcnval2
-                alphaOpt(m) = exp(logalpha1);
+                alphaOpt(m) = 10^lgalpha1;
             else
-                alphaOpt(m) = exp(logalpha2);
+                alphaOpt(m) = 10^lgalpha2;
             end
             alphaRanges{m} = alphasEvaluated(:);
             

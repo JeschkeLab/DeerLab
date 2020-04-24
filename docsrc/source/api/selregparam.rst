@@ -144,11 +144,12 @@ Additional settings can be specified via name-value pairs. All property names ar
     Specifies the type of algorithm used for searching the optimal regularization parameter. The possible settings are: 
 
 
+		*   ``'fminbnd'`` - MATLAB's built-in function minimizer, based on golden section search with parabolic interpolation, over the interval specified in ``'Range'``.
 		*   ``'grid'`` - Systematic search over a grid of regularization parameter values, using the grid specified in ``'Range'``.
-		*   ``'golden'`` - Golden-ratio search algorithm over the interval specified in ``'Range'``  (not compatible with the ``lc`` or ``lr`` selection methods).
+		*   ``'golden'`` - Manually implemented golden section search algorithm over the interval specified in ``'Range'``  (not compatible with the ``lc`` or ``lr`` selection methods), more primitive than ``'fminbnd'``.
 
 
-    *Default:* ``golden``
+    *Default:* ``fminbnd``
 
     *Example:*
 
