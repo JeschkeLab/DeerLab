@@ -1,9 +1,9 @@
 %
 % OBIR Osher's Bregman-iterated regularization method
 %
-%   P = OBIR(S,K,r,'type',alpha)
+%   P = OBIR(V,K,r,'type',alpha)
 %
-%   OBIR of the N-point signal (S) to a M-point distance
+%   OBIR of the N-point signal (V) to a M-point distance
 %   distribution (P) given a M-point distance axis (r) and NxM point kernel
 %   (K). The regularization parameter (alpha) controls the regularization 
 %   properties.
@@ -46,20 +46,20 @@
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
-function [P,ConvergenceCurve] = obir(S,K,r,RegType,alpha,varargin)
+function [P,ConvergenceCurve] = obir(V,K,r,RegType,alpha,varargin)
 
 if nargin<3
     error('At least three inputs (S,K,r) are required.')
 end
 
-validateattributes(S,{'numeric'},{'nonempty','vector'},mfilename,'S')
+validateattributes(V,{'numeric'},{'nonempty','vector'},mfilename,'S')
 validateattributes(K,{'numeric'},{'nonempty'},mfilename,'K')
-S = S(:);
+V = V(:);
 r = r(:);
-if length(S)~=size(K,1)
+if length(V)~=size(K,1)
     error('K and signal arguments must fulfill size(K,1)==length(S).')
 end
-if ~isreal(S)
+if ~isreal(V)
     error('Input signal cannot be complex.')
 end
 
@@ -91,13 +91,13 @@ else
 end
 
 if isempty(NoiseLevelAim)
-    NoiseLevelAim = noiselevel(S);
+    NoiseLevelAim = noiselevel(V);
 else
     validateattributes(NoiseLevelAim,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'NoiseLevelAim')
 end
 
 if isa(alpha,'char')
-    alpha = selregparam(S,K,r,RegType,alpha);
+    alpha = selregparam(V,K,r,RegType,alpha);
 else
     validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 end
@@ -175,19 +175,19 @@ while Iteration <= MaxOuterIter
     switch Solver
         case 'fmincon'
             % Define current minimization problem
-            RegFunctional = regfunctional(RegType,S,L,K,alpha,HuberParam);
+            RegFunctional = regfunctional(RegType,V,L,K,alpha,HuberParam);
             fminconFunctional = @(P)obirfunctional(P,RegFunctional,Subgradient);
             fminconOptions = optimset('GradObj','on','MaxFunEvals',MaxFunEvals,...
               'Display',Verbose,'MaxIter',MaxIter);
             % Run minimzation
             P =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         case 'fnnls'
-            [Q,KtS] = lsqcomponents(S,r,K,L,alpha,RegType,HuberParam);
+            [KtKreg,KtS] = lsqcomponents(V,K,r,L,alpha,RegType,HuberParam);
             KtS = KtS - Subgradient;
-            P = fnnls(Q,KtS,InitialGuess,TolFun,Verbose);
+            P = fnnls(KtKreg,KtS,InitialGuess,TolFun,Verbose);
     end
     % Store current convergence curve point
-    ConvergenceCurve(Iteration) = std(K*P - S);
+    ConvergenceCurve(Iteration) = std(K*P - V);
     
     % If hook to axes is given, then plot the current P
     if ~isempty(AxisHandle)
@@ -195,14 +195,14 @@ while Iteration <= MaxOuterIter
         drawnow
     end
     % Update subgradient at current solution
-    Subgradient = Subgradient + K'*(K*P - S);
+    Subgradient = Subgradient + K.'*(K*P - V);
         
     % Iteration control
     %--------------------------------------------------------------------------
     if Iteration == 1
         % If at first iteration, the residual deviation is already below the
         % noise deviation then impose oversmoothing and remain at first iteration
-        if NoiseLevelAim  > std(K*P - S)
+        if NoiseLevelAim  > std(K*P - V)
             alpha = alpha*2^Counter;
             Counter = Counter + 1;
         else
@@ -213,13 +213,13 @@ while Iteration <= MaxOuterIter
     else
         % For the rest of the Bregman iterations control the condition and stop
         % when fulfilled
-        if NoiseLevelAim  > std(K*P - S)
+        if NoiseLevelAim  > std(K*P - V)
             break;
         else
             Iteration  = Iteration + 1;
         end
         % If residual deviation starts to diverge, stop
-        if DivergenceStop && std(K*Pprev - S) < std(K*P - S)
+        if DivergenceStop && std(K*Pprev - V) < std(K*P - V)
             P = Pprev;
             break;
         end

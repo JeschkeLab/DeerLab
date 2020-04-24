@@ -9,8 +9,8 @@
 %   K = DIPOLARKERNEL(___,'Property',value,___)
 %
 %  Computes the NxM kernel matrix K for the transformation of a distance
-%  distribution to a dipolar evolution function from the M-point distance
-%  axis r (in nanometers) to the N-point time axis t (in microseconds).
+%  distribution to a dipolar evolution function, using the M-point distance
+%  axis r (in nanometers) and the N-point time axis t (in microseconds).
 %  If the modulation depth lambda, is given, it is included in K.
 %  If an N-point background (B) is given, it is included in K as well.
 %  Optional arguments can be specified by name-value pairs.

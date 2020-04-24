@@ -90,6 +90,13 @@ if  nargin<5 || isempty(alpha)
    alpha = 'aic'; 
 end
 
+if ~iscell(V)
+    V = {V};
+end
+if ~iscell(K)
+    K = {K};
+end
+
 % Check if user requested some options via name-value input
 optionalProperties = {'TolFun','Solver','NonNegConstrained','Verbose','MaxFunEvals','MaxIter','HuberParam','GlobalWeights','RegOrder','ConfidenceLevel','internal::parseLater'};
 [TolFun,Solver,NonNegConstrained,Verbose,MaxFunEvals,MaxIter,HuberParam,GlobalWeights,RegOrder,ConfidenceLevel] ...
@@ -107,6 +114,24 @@ if strcmp(RegType,'custom')
 else
     GradObj = true;
 end
+
+if isempty(GlobalWeights)
+    if numel(V)==1
+        GlobalWeights = 1;
+    else
+        GlobalWeights = globalweights(V);
+    end
+end
+
+if ~isempty(GlobalWeights)
+    validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
+    if numel(GlobalWeights) ~= numel(V)
+        error('The same number of global fit weights as signals must be passed.')
+    end
+    % Normalize weights
+    GlobalWeights = GlobalWeights/sum(GlobalWeights);
+end
+
 if isa(alpha,'char')
     alpha = selregparam(V,K,r,RegType,alpha,[{'GlobalWeights'},{GlobalWeights},varargin]);
 else
@@ -175,20 +200,6 @@ if isempty(NonNegConstrained)
 else
     validateattributes(NonNegConstrained,{'logical'},{'nonempty'},'regularize','NonNegConstrained')
 end
-if ~iscell(V)
-    V = {V};
-end
-if ~iscell(K)
-    K = {K};
-end
-if ~isempty(GlobalWeights)
-    validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
-    if length(GlobalWeights) ~= length(V)
-        error('The same number of global fit weights as signals must be passed.')
-    end
-    % Normalize weights
-    GlobalWeights = GlobalWeights/sum(GlobalWeights);
-end
 if numel(K)~=numel(V)
     error('The number of kernels must be equal to the number of kernels.')
 end
@@ -212,6 +223,7 @@ end
 if strcmp(RegType,'custom')
     getConfidenceIntervals = false;
 end
+
 %--------------------------------------------------------------------------
 % Regularization processing
 %--------------------------------------------------------------------------
@@ -229,7 +241,7 @@ end
 
 % If using LSQ-based solvers then precompute the KtK and KtS input arguments
 if ~strcmp(Solver,'fmincon') || getConfidenceIntervals
-    [Q,KtS,weights] =  lsqcomponents(V,r,K,L,alpha,RegType,HuberParam,GlobalWeights);
+    [KtKreg,KtS] = lsqcomponents(V,K,r,L,alpha,RegType,HuberParam,GlobalWeights);
 end
 
 % Solve the regularization functional minimization problem
@@ -238,30 +250,29 @@ switch lower(Solver)
     case 'analytical'
         P = zeros(nr,1);
         for i = 1:length(V)
-            PseudoInverse = Q\K{i}.';
-            P = P + weights(i)*PseudoInverse*V{i};
+            PseudoInverse = KtKreg\K{i}.';
+            P = P + GlobalWeights(i)*PseudoInverse*V{i};
         end
         
     case 'lsqnonneg'
         solverOpts = optimset('Display','off','TolX',TolFun);
-        P = lsqnonneg(Q,KtS,solverOpts);
+        P = lsqnonneg(KtKreg,KtS,solverOpts);
 
     case 'fnnls'
-        [P,~,~,flag] = fnnls(Q,KtS,InitialGuess,TolFun,Verbose);
-        %In some cases, fnnls may return negatives if tolerance is to high
+        [P,~,~,flag] = fnnls(KtKreg,KtS,InitialGuess,TolFun,Verbose);
+        % In some cases, fnnls may return negatives if tolerance is too high
         if flag==-1
             %... in those cases continue from current solution
-            [P,~,~,flag] = fnnls(Q,KtS,P,1e-20);
+            [P,~,~,flag] = fnnls(KtKreg,KtS,P,1e-20);
         end
         if flag==-2
             warning('FNNLS cannot solve the problem. Regularization parameter may be too large.')
         end
         
     case 'bppnnls'
-        P = nnls_bpp(Q,KtS,Q\KtS);
+        P = nnls_bpp(KtKreg,KtS,KtKreg\KtS);
         
     case 'fmincon'
-        % Constrained Tikhonov/Total variation/Huber regularization
         if NonNegConstrained
             NonNegConst = zeros(nr,1);
         else
@@ -298,14 +309,14 @@ if getConfidenceIntervals
         sig = std(V{i} - K{i}*P);
         
         % Get the regularized pseudoinverse
-        Q = lsqcomponents(V{i},r,K{i},L,alpha,RegType,HuberParam);
-        pKinv = Q\K{i}.';
+        KtKreg = lsqcomponents(V{i},K{i},r,L,alpha,RegType,HuberParam);
+        pKinv = KtKreg\K{i}.';
         
         % Get standard error from covariance matrix
         covP = pKinv*pKinv.';
         sigP_ = sig*sqrt(diag(covP));
         
-        sigP = sigP + weights(i)*sigP_;
+        sigP = sigP + GlobalWeights(i)*sigP_;
     end
     
     % Get the Gaussian quantile according to requested coverage

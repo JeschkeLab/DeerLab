@@ -40,7 +40,7 @@
 %
 %    'NonNegConstrained' - True/false to enforce non-negativity (default=true)
 %    'RegOrder' - Order of the regularization operator L (default = 2).
-%    'Refine' - True/false to enforce a second search aroud the optimal value
+%    'Refine' - True/false to enforce a second search around the optimal value
 %               with a finer grid to achieve a better value of the optimum.
 %    'HuberParameter' - Huber parameter used in the 'huber' model (default = 1.35).
 %    'GlobalWeights' - Array of weighting coefficients for the individual signals in
@@ -58,6 +58,10 @@ function [alphaOpt,Functionals,alphaRanges,Residuals,Penalties] = selregparam(V,
 
 %  Parse & validate required input
 %-------------------------------------------------------------------------------
+
+if nargin<5
+    error('selregparam needs 5 inputs: V, K, r, RegType, SelectionMethod.')
+end
 
 % Turn off warnings to avoid ill-conditioned warnings
 warning('off','MATLAB:nearlySingularMatrix')
@@ -122,7 +126,7 @@ if ~isempty(GlobalWeights)
     if numel(GlobalWeights) ~= numel(V)
         error('The same number of global fit weights as signals must be passed.')
     end
-    %Normalize weights
+    % Normalize weights
     GlobalWeights = GlobalWeights/sum(GlobalWeights);
 else
     GlobalWeights = globalweights(V);
@@ -138,7 +142,7 @@ else
     validateattributes(RegOrder,{'numeric'},{'scalar','nonnegative'})
 end
 
-% Validate nonNegLSQsolTol input
+% Validate TolFun input
 if isempty(TolFun)
     TolFun = 1e-9;
 else
@@ -161,7 +165,7 @@ end
 
 % Validate NoiseLevel input
 if isempty(NoiseLevel)
-    for i=1:length(V)
+    for i = 1:length(V)
         NoiseLevel(i) = noiselevel(V{i});
     end
 else
@@ -345,22 +349,20 @@ warning('on','MATLAB:nearlySingularMatrix');
 
 %--------------------------------------------------------------------------
     function [Functional,Residual,Penalty] = evalalpha(alpha,SelectionMethod)
-        
-        
+                
         %-----------------------------------------------------------------------
         %  Pseudo-Inverses and Ps
         %-----------------------------------------------------------------------
         
-        [Q,KtS,weights] = lsqcomponents(V,r,K,L,alpha,RegType,HuberParameter,GlobalWeights);
-        InitialGuess = zeros(numel(r),1);
+        [KtKreg,KtV] = lsqcomponents(V,K,r,L,alpha,RegType,HuberParameter,GlobalWeights);
         if NonNegConstrained
-            P = fnnls(Q,KtS,InitialGuess,TolFun);
+            P = fnnls(KtKreg,KtV,[],TolFun);
         else
-            P  = Q\KtS;
+            P = KtKreg\KtV;
         end
         for idx = 1:length(V)
-            Q = lsqcomponents(V{idx},r,K{idx},L,alpha,'tikhonov',HuberParameter,GlobalWeights);
-            PseudoInverse{idx} = Q\K{idx}.';
+            KtKreg = lsqcomponents(V{idx},K{idx},r,L,alpha,'tikhonov',HuberParameter,GlobalWeights);
+            PseudoInverse{idx} = KtKreg\K{idx}.';
             switch lower(RegType)
                 case 'tikhonov'
                     Penalty(idx) = norm(L*P);
@@ -441,7 +443,7 @@ warning('on','MATLAB:nearlySingularMatrix');
                     otherwise
                         f_ = 0;
                 end
-                Functional(im) = Functional(im) + weights(is)*f_;
+                Functional(im) = Functional(im) + GlobalWeights(is)*f_;
             end
         end
     end
