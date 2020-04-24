@@ -59,6 +59,7 @@ This class of functions can be used and/or combined to create fitting routines o
     ./api/fitregmodel
     ./api/obir
     ./api/regoperator
+    ./api/bootan
     ./api/sensitivan
 
 
@@ -67,6 +68,7 @@ This class of functions can be used and/or combined to create fitting routines o
 =============================================  ============================================================
 Function                                         Description
 =============================================  ============================================================
+:ref:`bootan`                                    Bootstrap uncertainty analysis
 :ref:`backgroundstart`                           Background fit start point optimizer
 :ref:`fitbackground`                             Background fitting engine
 :ref:`fitmultimodel`                             Multi-component model fitting engine
