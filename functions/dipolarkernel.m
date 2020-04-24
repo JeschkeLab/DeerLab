@@ -98,6 +98,9 @@ validateattributes(OvertoneCoeffs,{'numeric'},{'nonnegative'},mfilename,'Overton
 
 if ~isempty(ExcitationBandwidth)
     validateattributes(ExcitationBandwidth,{'numeric'},{'scalar','nonnegative'},mfilename,'ExcitationBandwidth');
+    if strcmp(Method,'fresnel')
+       error('Compensation for limited excitation bandwidth is not compatible with the ''fresnel'' method. Please use the ''integral'' or '' grid'' methods.') 
+    end
 end
 
 if ~isempty(B)
@@ -216,9 +219,9 @@ switch Method
     case 'fresnel'
         kernelmatrix = @(t)kernelmatrix_fresnel(t,wdd);
     case 'integral'
-        kernelmatrix = @(t)kernelmatrix_integral(t,wdd);
+        kernelmatrix = @(t)kernelmatrix_integral(t,wdd,ExcitationBandwidth);
     case 'grid'
-        kernelmatrix = @(t)kernelmatrix_grid(t,wdd,nKnots);
+        kernelmatrix = @(t)kernelmatrix_grid(t,wdd,nKnots,ExcitationBandwidth);
     otherwise
         error('Kernel calculation method ''%s'' is unknown.',Method);
 end
@@ -250,11 +253,6 @@ if length(r)>1
     K = K*dr;
 end
 
-% If given, include limited excitation bandwidth
-if ~isempty(ExcitationBandwidth)
-    K = exp(-wdd.'.^2/ExcitationBandwidth^2).*K;
-end
-
 % Store output result in the cache
 if useCache
     cachedData = addcache(cachedData,hashKey,K);
@@ -280,7 +278,7 @@ end
 %===============================================================================
 % Calculate kernel using grid-based powder integration (slow)
 % (converges very slowly with nKnots)
-function K = kernelmatrix_grid(t,wdd,nKnots)
+function K = kernelmatrix_grid(t,wdd,nKnots,wex)
 
 K = zeros(numel(t),numel(wdd));
 
@@ -290,7 +288,12 @@ q = 1-3*costheta.^2;
 for ir = 1:numel(wdd)
   D_ = 0;
   for itheta = 1:nKnots
-    D_ = D_ + cos(wdd(ir)*q(itheta)*abs(t));
+    C = cos(wdd(ir)*q(itheta)*abs(t));
+    % If given, include limited excitation bandwidth
+    if ~isempty(wex)
+        C = C*exp(-(wdd(ir)*q(itheta)).^2/wex^2);
+    end
+     D_ = D_ + C;
   end
   K(:,ir) = D_/nKnots;
 end
@@ -299,12 +302,17 @@ end
 
 %===============================================================================
 % Calculate kernel using MATLAB's integrator (accurate but slow)
-function K = kernelmatrix_integral(t,wdd)
+function K = kernelmatrix_integral(t,wdd,wex)
 
 K = zeros(numel(t),numel(wdd));
 
 for ir = 1:numel(wdd)
-    fun = @(costheta) cos(wdd(ir)*abs(t)*(1-3*costheta.^2));
+    % If given, include limited excitation bandwidth
+    if ~isempty(wex)
+        fun = @(costheta) cos(wdd(ir)*abs(t)*(1-3*costheta.^2))*exp(-(wdd(ir)*(1-3*costheta.^2))^2/wex^2);
+    else
+        fun = @(costheta) cos(wdd(ir)*abs(t)*(1-3*costheta.^2));
+    end
     K(:,ir) = integral(fun,0,1,'ArrayValued',true,'AbsTol',1e-6,'RelTol',1e-6);
 end
 
