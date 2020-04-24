@@ -48,9 +48,6 @@
 
 function [Vfit,Pfit,Bfit,parfit] = fitsignal(Vexp,t,r,dd_model,bg_model,exp_model,par0)
 
-% Clear persistent variables in the function
-clear fitsignal
-
 if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
 end
@@ -144,6 +141,7 @@ exidx = modelidx==3;
 % Regularization settings
 regtype = 'tikh';
 regparam = 'aic';
+alphaOptThreshold = 1e-3; % relative parameter change threshold for reoptimizing alpha
 
 if numel(par0)==0
     % Solve regularization only
@@ -153,10 +151,15 @@ if numel(par0)==0
     Bfit = ones(size(Vfit));
     parfit_ = [];
 else
+    % Keep track of alpha and parameter vector across iterations, to avoid
+    % doing alpha optimizations if parameter vector doesn't change much
+    par_prev = [];
+    regparam_prev = [];
     % Fit the parameters
     parfit_ = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper);
   
     % Calculate the fitted signal, background, and distribution
+    alpha = regparam; % use original setting for final run
     [Vfit,Bfit,Pfit] = Vmodel(t,parfit_);
 end
 
@@ -168,10 +171,7 @@ parfit.ex = parfit_(exidx);
 
     % General multi-pathway DEER signal model function
     function [V,B,P] = Vmodel(t,par)
-        
-        % Define persistents for soft-memoization of alpha-search
-        persistent par_prev regparam_prev
-        
+                
         % Calculate the background and the experiment kernel matrix
         Bfcn = @(t) bg_model(t,par(bgidx));        
         if includeExperiment
@@ -192,12 +192,12 @@ parfit.ex = parfit_(exidx);
         
         % Get the distance distribution
         if includeForeground
-                        
+            
             % Use the alpha-search settings by default
             alpha = regparam;
             % If the parameter vectors has not changed by much...
             if ~isempty(par_prev)
-                if all(abs(par_prev-par)./par < 1e-3)
+                if all(abs(par_prev-par)./par < alphaOptThreshold)
                     % ...use the alpha optimized in the previous iteration
                     alpha = regparam_prev;
                 end

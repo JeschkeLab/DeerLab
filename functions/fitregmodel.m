@@ -140,7 +140,7 @@ end
 if isempty(TolFun)
     TolFun = 1e-9;
 else
-    validateattributes(TolFun,{'numeric'},{'scalar','nonempty','nonnegative'},'regularize','nonNegLSQsolTol')
+    validateattributes(TolFun,{'numeric'},{'scalar','nonempty','nonnegative'},'regularize','TolFun')
 end
 if isempty(Solver) && ~strcmp(RegType,'custom')
     Solver = 'fnnls';
