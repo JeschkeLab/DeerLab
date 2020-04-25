@@ -2,7 +2,7 @@
 % REGFUNCTIONAL Regularization functional constructor
 %
 %   fhandle = REGFUNCTIONAL('type',S,L,K,alpha)
-%   Returns the cost model functional of a regularization model. The function
+%   Returns the objective functional of a regularization model. The function
 %   requires the signal (S), dipolar kernel (K), regularization matrix (L)
 %   and regularization parameter (alpha). The type of regularization
 %   functional is determined by the 'type' string argument.

@@ -135,7 +135,7 @@ Additional settings can be specified via name-value pairs. All property names ar
     param = fitparamodel(___,'Property1',Value1,'Property2',Value2,___)
 
 
-- ``'CostModel'`` - Optimization objective functional
+- ``'ObjFun'`` - Optimization objective functional
     Type of objective functional to use.
 
     * ``'ssr'`` - Sum of squared residuals
@@ -149,7 +149,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			param = fitparamodel(___,'CostModel','chi2red')
+			param = fitparamodel(___,'ObjFun','chi2red')
 
 - ``'Upper'`` - Parameters upper bound constraints
     Array of upper bounds for the model parameters.
@@ -259,7 +259,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 			paramci50 = paramci{2};
 
 - ``'MultiStart'`` -  Multi-start global optimization
-    Number of initial points to be generated for a global search. For each start point, a local minimum is searched, and the solution with the lowest cost functional value is selected as the global optimum.
+    Number of initial points to be generated for a global search. For each start point, a local minimum is searched, and the solution with the lowest objective function value is selected as the global optimum.
 
     *Default:* ``1`` (No global optimization)
 

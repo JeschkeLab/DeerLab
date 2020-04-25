@@ -38,7 +38,7 @@
 %             'nlsqbnd' - Non-linear constrained least-squares (free)
 %       'fminsearchbnd' - Non-linear constrained minimization (free)
 %          'fminsearch' - Unconstrained minimization
-%   'CostModel' - Type of fitting cost functional to use.
+%   'ObjFun' - Type of objective function to use.
 %                      'ssr' - sum of squared residuals
 %                      'chi2' - chi-squared
 %                      'chi2red' - reduced chi-squared
@@ -154,18 +154,18 @@ end
 
 % Parse the optional parameters in varargin
 optionalProperties = {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals',...
-    'TolFun','CostModel','GlobalWeights','Upper','Lower','MultiStart',...
+    'TolFun','ObjFun','GlobalWeights','Upper','Lower','MultiStart',...
     'ConfidenceLevel','internal::returncovariancematrix'};
-[Solver,Algorithm,maxIter,Verbose,maxFunEvals,TolFun,CostModel,GlobalWeights,...
+[Solver,Algorithm,maxIter,Verbose,maxFunEvals,TolFun,ObjFunType,GlobalWeights,...
     upperBounds,lowerBounds,MultiStart,ConfidenceLevel,returnCovariance] = ...
     parseoptional(optionalProperties,varargin);
 
 % Validate optional inputs
-if isempty(CostModel)
-    CostModel = 'ssr';
+if isempty(ObjFunType)
+    ObjFunType = 'ssr';
 else
     validInputs = {'ssr','chi2','chi2red'};
-    CostModel = validatestring(CostModel,validInputs);
+    ObjFunType = validatestring(ObjFunType,validInputs);
 end
 if isempty(MultiStart)
     MultiStart = 1;
@@ -207,7 +207,7 @@ else
 end
 
 % Solver
-OptimizationToolboxInstalled = optimtoolbox_installed;
+OptimizationToolboxInstalled = optimtoolbox_installed();
 if isempty(Solver) && ~OptimizationToolboxInstalled
     Solver = 'fminsearchcon';
 elseif isempty(Solver) && OptimizationToolboxInstalled
@@ -315,20 +315,20 @@ nParam = numel(StartParameters);
 ssr = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2;
 chi2 = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2/noiselevel(S)^2;
 chi2red = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2/noiselevel(S)^2/(numel(S)-nParam);
-switch CostModel
-    case 'ssr', ModelCost = ssr;
-    case 'chi2', ModelCost = chi2;
-    case 'chi2red', ModelCost = chi2red;
+switch ObjFunType
+    case 'ssr', objfun = ssr;
+    case 'chi2', objfun = chi2;
+    case 'chi2red', objfun = chi2red;
 end
 
 % Create a new handle which evaluates the objective function for every signal
 if numel(ax)>1
     % different horizontal axes for different signals
-    ObjFcn = @(p) sum(Weights.*cellfun(@(K,V,t,idx)ModelCost(p,K,V,t,idx),K,V,ax,Labels));
+    ObjFcn = @(p) sum(Weights.*cellfun(@(K,V,t,idx)objfun(p,K,V,t,idx),K,V,ax,Labels));
     VecObjFcn = @(p) catvec(cellfun(@(K,V,t,idx) Weights(idx)*(sqrt(0.5)*(K*model(t,p,idx) - V)),K,V,ax,Labels,'UniformOutput',false));
 else
     % single horizontal axes for different signals
-    ObjFcn = @(p) sum(Weights.*cellfun(@(K,V,idx)ModelCost(p,K,V,ax{1},idx),K,V,Labels));
+    ObjFcn = @(p) sum(Weights.*cellfun(@(K,V,idx)objfun(p,K,V,ax{1},idx),K,V,Labels));
     VecObjFcn = @(p) catvec(cellfun(@(K,V,idx) Weights(idx)*(sqrt(0.5)*(K*model(ax{1},p,idx) - V)),K,V,Labels,'UniformOutput',false));
 end
 

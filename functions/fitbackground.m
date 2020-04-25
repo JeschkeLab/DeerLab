@@ -81,7 +81,7 @@ if ~isempty(ModDepth)
 end
 fitModDepth = isempty(ModDepth);
 
-OptimizationToolboxInstalled = license('test','optimization_toolbox');
+OptimizationToolboxInstalled = optimtoolbox_installed();
 
 if isempty(Solver)
     if OptimizationToolboxInstalled 
@@ -128,7 +128,7 @@ FitEndTime = tFitRange(2);
 tfit = t(FitStartPos:FitEndPos);
 FitData = V(FitStartPos:FitEndPos);
 
-% Construct cost functional for minimization
+% Construct objective function for minimization
 % Fit signal or log(signal)
 Fgmodel = @(p,lambda)(1 - lambda + eps)*bgmodel(tfit,p);
 if LogFit
@@ -137,11 +137,11 @@ else
     residuals = @(p,lambda) sqrt(1/2)*(Fgmodel(p,lambda) - FitData);
 end
 if fitModDepth
-    CostFcnVec = @(param) residuals(param(1:end-1),param(end));
-    CostFcn = @(param) norm(residuals(param(1:end-1),param(end)))^2;
+    ObjFcnVec = @(param) residuals(param(1:end-1),param(end));
+    ObjFcn = @(param) norm(residuals(param(1:end-1),param(end)))^2;
 else
-    CostFcnVec = @(param) residuals(param,ModDepth);
-    CostFcn = @(param) norm(residuals(param,ModDepth))^2;
+    ObjFcnVec = @(param) residuals(param,ModDepth);
+    ObjFcn = @(param) norm(residuals(param,ModDepth))^2;
 end
 
 % Initialize bounds and initial parameter values
@@ -171,7 +171,7 @@ switch lower(Solver)
             'MaxIter',8000,'MaxFunEvals',8000,...
             'TolFun',1e-10,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
         % Run solver
-        FitParam = lsqnonlin(CostFcnVec,StartParameters,lowerBounds,upperBounds,solveropts);
+        FitParam = lsqnonlin(ObjFcnVec,StartParameters,lowerBounds,upperBounds,solveropts);
     case 'nlsqbnd'
         % Prepare minimization problem solver
         solveropts = optimset('Algorithm','trust-region-reflective','Display','off',...
@@ -179,7 +179,7 @@ switch lower(Solver)
             'TolFun',1e-20,'TolCon',1e-20,...
             'DiffMinChange',1e-8,'DiffMaxChange',0.1);
         % Run solver
-        FitParam = nlsqbnd(CostFcnVec,StartParameters,lowerBounds,upperBounds,solveropts);
+        FitParam = nlsqbnd(ObjFcnVec,StartParameters,lowerBounds,upperBounds,solveropts);
         % nlsqbnd returns a column, transpose to adapt to row-style of MATLAB solvers
         FitParam = FitParam.';
     case 'fminsearchcon'
@@ -189,7 +189,7 @@ switch lower(Solver)
             'TolFun',1e-20,'TolCon',1e-20,...
             'DiffMinChange',1e-8,'DiffMaxChange',0.1);
         % Run solver
-        FitParam = fminsearchcon(CostFcn,StartParameters,lowerBounds,upperBounds,[],[],[],solverOpts);
+        FitParam = fminsearchcon(ObjFcn,StartParameters,lowerBounds,upperBounds,[],[],[],solverOpts);
 end
 
 % Extract the fitted modulation depth

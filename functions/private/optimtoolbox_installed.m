@@ -1,10 +1,10 @@
-% Tests whether functions from the Optimization Toolbox can be used
+    % Tests whether functions from the Optimization Toolbox can be used
 
 function tf = optimtoolbox_installed()
 
 licensed = license('test','optimization_toolbox');
-installed = ~isempty(which('lsqnonlin')) && ~isempty(which('optimoptions'));
+installed = exist('lsqnonlin','file') && exist('optimoptions','file');
 
-tf = licensed & installed;
+tf = licensed && installed;
 
 return
