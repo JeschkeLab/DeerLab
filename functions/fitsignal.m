@@ -169,6 +169,23 @@ parfit.dd = parfit_(ddidx);
 parfit.bg = parfit_(bgidx);
 parfit.ex = parfit_(exidx);
 
+% Plotting
+if nargout==0
+    subplot(2,1,1);
+    plot(t,Vexp,t,Vfit)
+    axis tight
+    grid on
+    xlabel('time (us)');
+    ylabel('V');
+    legend('exp','fit');
+    subplot(2,1,2);
+    plot(r,Pfit);
+    ylabel('distance (nm)');
+    axis tight
+    ylabel('P (nm^{-1})');
+    grid on
+end
+
     % General multi-pathway DEER signal model function
     function [V,B,P] = Vmodel(t,par)
         
