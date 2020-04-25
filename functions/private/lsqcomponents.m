@@ -92,12 +92,12 @@ end
 KtKreg = KtK + alpha^2*regterm;
 
     function regterm = optimizeregterm(fun)
-        P = zeros(numel(r),1);
+        P = zeros(nr,1);
         for j = 1:maxIter
             Pprev = P;
             % Compute pseudoinverse and unconst. distribution recursively
             KtKreg_ = KtK + alpha^2*fun(P);
-            P = zeros(numel(r),1);
+            P = zeros(nr,1);
             for ii = 1:numel(V)
                 P = P + weights(ii)*KtKreg_\K{ii}.'*V{ii};
             end

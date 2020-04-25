@@ -171,7 +171,7 @@ parfit.ex = parfit_(exidx);
 
     % General multi-pathway DEER signal model function
     function [V,B,P] = Vmodel(t,par)
-                
+        
         % Calculate the background and the experiment kernel matrix
         Bfcn = @(t) bg_model(t,par(bgidx));        
         if includeExperiment

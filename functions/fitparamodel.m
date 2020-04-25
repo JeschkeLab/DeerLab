@@ -207,7 +207,7 @@ else
 end
 
 % Solver
-OptimizationToolboxInstalled = license('test','optimization_toolbox');
+OptimizationToolboxInstalled = optimtoolbox_installed;
 if isempty(Solver) && ~OptimizationToolboxInstalled
     Solver = 'fminsearchcon';
 elseif isempty(Solver) && OptimizationToolboxInstalled
