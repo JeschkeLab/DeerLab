@@ -135,22 +135,6 @@ Additional settings can be specified via name-value pairs. All property names ar
     param = fitparamodel(___,'Property1',Value1,'Property2',Value2,___)
 
 
-- ``'ObjFun'`` - Optimization objective functional
-    Type of objective functional to use.
-
-    * ``'ssr'`` - Sum of squared residuals
-    * ``'chi2'`` - :math:`\chi^2`
-    * ``'chi2red'`` - Reduced :math:`\chi^2` (= ssr divided by variance and number of degrees of freedom)
-
-
-    *Default:* ``ssr``
-
-    *Example:*
-
-		.. code-block:: matlab
-
-			param = fitparamodel(___,'ObjFun','chi2red')
-
 - ``'Upper'`` - Parameters upper bound constraints
     Array of upper bounds for the model parameters.
 

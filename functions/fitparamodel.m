@@ -36,12 +36,8 @@
 %           'lsqnonlin' - Non-linear constrained least-squares (toolbox)
 %             'fmincon' - Non-linear constrained minimization (toolbox)
 %             'nlsqbnd' - Non-linear constrained least-squares (free)
-%       'fminsearchbnd' - Non-linear constrained minimization (free)
+%       'fminsearchcon' - Non-linear constrained minimization (free)
 %          'fminsearch' - Unconstrained minimization
-%   'ObjFun' - Type of objective function to use.
-%                      'ssr' - sum of squared residuals
-%                      'chi2' - chi-squared
-%                      'chi2red' - reduced chi-squared
 %   'GlobalWeights' - Array of weighting coefficients for the individual signals in
 %                     global fitting.
 %   'Algorithm' - Algorithm to be used by the solvers (see fmincon or
@@ -154,19 +150,13 @@ end
 
 % Parse the optional parameters in varargin
 optionalProperties = {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals',...
-    'TolFun','ObjFun','GlobalWeights','Upper','Lower','MultiStart',...
+    'TolFun','GlobalWeights','Upper','Lower','MultiStart',...
     'ConfidenceLevel','internal::returncovariancematrix'};
-[Solver,Algorithm,maxIter,Verbose,maxFunEvals,TolFun,ObjFunType,GlobalWeights,...
+[Solver,Algorithm,maxIter,Verbose,maxFunEvals,TolFun,GlobalWeights,...
     upperBounds,lowerBounds,MultiStart,ConfidenceLevel,returnCovariance] = ...
     parseoptional(optionalProperties,varargin);
 
 % Validate optional inputs
-if isempty(ObjFunType)
-    ObjFunType = 'ssr';
-else
-    validInputs = {'ssr','chi2','chi2red'};
-    ObjFunType = validatestring(ObjFunType,validInputs);
-end
 if isempty(MultiStart)
     MultiStart = 1;
 else
@@ -312,14 +302,7 @@ catvec = @(x) cat(1,x{:});
 
 % Define the objective functional of a single signal
 nParam = numel(StartParameters);
-ssr = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2;
-chi2 = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2/noiselevel(S)^2;
-chi2red = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2/noiselevel(S)^2/(numel(S)-nParam);
-switch ObjFunType
-    case 'ssr', objfun = ssr;
-    case 'chi2', objfun = chi2;
-    case 'chi2red', objfun = chi2red;
-end
+objfun = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2;
 
 % Create a new handle which evaluates the objective function for every signal
 if numel(ax)>1
