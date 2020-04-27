@@ -8,7 +8,7 @@ P = dd_gauss(r,[4 0.5]);
 K = dipolarkernel(t,r);
 V = K*P + whitegaussnoise(t,0.005);
 
-[alphaopt1,aic1,alphas1] = selregparam(V,K,'tikh','aic','Search','golden');
+[alphaopt1,aic1,alphas1] = selregparam(V,K,'tikh','aic','Search','fminbnd');
 [alphaopt2,aic2,alphas2] = selregparam(V,K,'tikh','aic','Search','grid');
 
 % Pass 1-2: vectors have the right size

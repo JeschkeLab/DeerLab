@@ -13,17 +13,13 @@ RegMethod = 'Tikhonov';
 SelMethod = 'AIC';
 
 [alpha1] = selregparam(V,K,RegMethod,SelMethod,'Search','fminbnd');
-[alpha2] = selregparam(V,K,RegMethod,SelMethod,'Search','golden');
-[alpha3,~,alphas] = selregparam(V,K,RegMethod,SelMethod,'Search','grid');
+[alpha2,~,alphas] = selregparam(V,K,RegMethod,SelMethod,'Search','grid');
 
-lga = log10([alpha1 alpha2 alpha3]);
+lga = log10([alpha1 alpha2]);
 
 % Pass if all methods find similar results
-pass(1) = abs(lga(2)-lga(1)) < 0.02;
-
-dlga = abs(mean(diff(log10(alphas))));
-pass(2) = abs(lga(3)-lga(1)) < dlga/2;
+pass = abs(lga(2)-lga(1)) < 0.02;
  
-maxerr = max(abs(alpha2 - alpha3));
+maxerr = max(abs(alpha1 - alpha2));
 
 end

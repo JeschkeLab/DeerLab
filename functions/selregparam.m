@@ -190,7 +190,7 @@ if isempty(SearchMethod)
     end
 else
     validateattributes(SearchMethod,{'char'},{'nonempty'},mfilename,'Search')
-    SearchMethod = validatestring(SearchMethod,{'golden','grid','fminbnd'});
+    SearchMethod = validatestring(SearchMethod,{'grid','fminbnd'});
 end
 
 if allMethods && ~strcmp(SearchMethod,'grid')
@@ -199,7 +199,7 @@ if allMethods && ~strcmp(SearchMethod,'grid')
     SelectionMethod(strcmp(SelectionMethod,'lc')) = [];
 end
 
-if LcurveMethods && strcmp(SearchMethod,'golden')
+if LcurveMethods && strcmp(SearchMethod,'fminbnd')
     error('The ''lr'' and ''lc'' selection methods work only with selregparam(...,''Search'',''grid'').')
 end
 
@@ -227,77 +227,21 @@ switch lower(SearchMethod)
     
     case 'fminbnd'
         
-        opt = optimset('TolX',0.01);        
         lga_min = log10(min(alphaRange));
         lga_max = log10(max(alphaRange));
+        lga_opt = zeros(numel(SelectionMethod),1);
         for m = 1:numel(SelectionMethod)
             fun = @(lga) evalalpha(10.^lga,SelectionMethod(m));
-            lga_opt(m) = fminbnd(fun,lga_min,lga_max,opt);
-            [Functionals{m},Residuals{m},Penalties{m}] = fun(lga_opt(m));
+            % Optimize alpha via the fminbnd function
+            [lga_opt(m),~,history] = fminbnd_alpha(fun,lga_min,lga_max);
+            % Get the vectors of evaluated alphas and functional values
+            Functionals{m} = history(:,2);
+            alphaRanges{m} = 10.^history(:,1);
+            % Get the residual and penalty values 
+            [~,Residuals{m},Penalties{m}] = fun(lga_opt(m));
         end
         alphaOpt = 10.^lga_opt;
     
-    case 'golden'
-        %-----------------------------------------------------------------------
-        %  Golden-section search algorithm
-        %-----------------------------------------------------------------------
-        
-        epsilon = 0.01; % termination interval size (log10 scale)
-        maxIterations = 500; % maximum number of iterations
-        tau = (sqrt(5)-1)/2;
-        for m = 1:numel(SelectionMethod)
-            
-            intervalStart = min(log10(alphaRange));
-            intervalEnd = max(log10(alphaRange));
-            lgalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
-            lgalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
-            [fcnval1,res1,pen1] = evalalpha(10^lgalpha1,SelectionMethod(m));
-            [fcnval2,res2,pen2] = evalalpha(10^lgalpha2,SelectionMethod(m));
-            alphasEvaluated = 10.^[lgalpha1 lgalpha2];
-            Functional = [fcnval1 fcnval2];
-            Residual = [sum(res1) sum(res2)];
-            Penalty = [sum(pen1) sum(pen2)];
-            
-            % Subdivide interval until convergence
-            iIter = 0;
-            while abs(intervalEnd-intervalStart)>epsilon && iIter<maxIterations
-                if fcnval1<fcnval2
-                    intervalEnd = lgalpha2;
-                    lgalpha2 = lgalpha1;
-                    lgalpha1 = intervalStart + (1-tau)*(intervalEnd-intervalStart);
-                    [fcnval1,res1,pen1] = evalalpha(10^lgalpha1,SelectionMethod(m));
-                    [fcnval2,~,~] = evalalpha(10^lgalpha2,SelectionMethod(m));
-                    alphasEvaluated(end+1) = 10^lgalpha1;
-                    Functional(end+1) = fcnval1;
-                    Residual(end+1) = sum(res1);
-                    Penalty(end+1) = sum(pen1);
-                else
-                    intervalStart = lgalpha1;
-                    lgalpha1 = lgalpha2;
-                    lgalpha2 = intervalStart + tau*(intervalEnd-intervalStart);
-                    [fcnval1,~,~] = evalalpha(10^lgalpha1,SelectionMethod(m));
-                    [fcnval2,res2,pen2] = evalalpha(10^lgalpha2,SelectionMethod(m));
-                    alphasEvaluated(end+1) = 10^lgalpha2;
-                    Functional(end+1) = fcnval2;
-                    Residual(end+1) = sum(res2);
-                    Penalty(end+1) = sum(pen2);
-                end
-                iIter = iIter + 1;
-            end
-            
-            % Store results
-            Functionals{m} = Functional;
-            Residuals{m} = Residual;
-            Penalties{m} = Penalty;
-            if fcnval1<fcnval2
-                alphaOpt(m) = 10^lgalpha1;
-            else
-                alphaOpt(m) = 10^lgalpha2;
-            end
-            alphaRanges{m} = alphasEvaluated(:);
-            
-        end
-        
     case 'grid'
         %-----------------------------------------------------------------------
         %  Grid search
@@ -461,4 +405,18 @@ warning('on','MATLAB:nearlySingularMatrix');
         end
     end
 
+end
+
+
+% Wrapper for the fminbnd function
+function [x, fval, history] = fminbnd_alpha(fun,lga_min,lga_max)
+    history = [];
+    options = optimset('OutputFcn', @recordhistory,'TolX',0.01);
+    [x, fval] = fminbnd(fun,lga_min,lga_max,options);
+        
+    % At each iteration record the current state of the optimization
+    function stop = recordhistory(x,optimvalues,~)
+        stop = false;
+        history = [history; [x optimvalues.fval]];
+    end
 end
