@@ -133,7 +133,7 @@ if ~isempty(GlobalWeights)
 end
 
 if isa(alpha,'char')
-    alpha = selregparam(V,K,r,RegType,alpha,[{'GlobalWeights'},{GlobalWeights},varargin]);
+    alpha = selregparam(V,K,RegType,alpha,[{'GlobalWeights'},{GlobalWeights},varargin]);
 else
     validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 end
@@ -241,7 +241,7 @@ end
 
 % If using LSQ-based solvers then precompute the KtK and KtS input arguments
 if ~strcmp(Solver,'fmincon') || getConfidenceIntervals
-    [KtKreg,KtS] = lsqcomponents(V,K,r,L,alpha,RegType,HuberParam,GlobalWeights);
+    [KtKreg,KtS] = lsqcomponents(V,K,L,alpha,RegType,HuberParam,GlobalWeights);
 end
 
 % Solve the regularization functional minimization problem
@@ -309,7 +309,7 @@ if getConfidenceIntervals
         sig = std(V{i} - K{i}*P);
         
         % Get the regularized pseudoinverse
-        KtKreg = lsqcomponents(V{i},K{i},r,L,alpha,RegType,HuberParam);
+        KtKreg = lsqcomponents(V{i},K{i},L,alpha,RegType,HuberParam);
         pKinv = KtKreg\K{i}.';
         
         % Get standard error from covariance matrix

@@ -1,14 +1,14 @@
 %
 % LSQCOMPONENTS Construct input arguments for NNLS solvers
 %
-%   [KtKreg,KtV] = LSQCOMPONENTS(V,K,r,L,alpha,regtype)
-%   [KtKreg,KtV] = LSQCOMPONENTS(V,K,r,L,alpha,regtype,eta)
-%   [KtKreg,KtV] = LSQCOMPONENTS({V1,V2,...},{K1,K2,...},r,L,alpha,regtype,eta,w)
+%   [KtKreg,KtV] = LSQCOMPONENTS(V,K,L,alpha,regtype)
+%   [KtKreg,KtV] = LSQCOMPONENTS(V,K,L,alpha,regtype,eta)
+%   [KtKreg,KtV] = LSQCOMPONENTS({V1,V2,...},{K1,K2,...},L,alpha,regtype,eta,w)
 %
 %   Computes the components required by non-negative least-squares (NNLS)
 %   solvers (KtKreg) and (KtV) for fitting a regularization model. The function
-%   requires the signal (V), the dipolar kernel (K), the distance axis (r),
-%   the regularization matrix (L), and the regularization parameter (alpha).
+%   requires the signal (V), the dipolar kernel (K), the regularization matrix (L),
+%   and the regularization parameter (alpha).
 %
 %   The type of regularization functional is determined by (regtype).
 %   The Huber parameter can be specified by passing as the (eta) argument.
@@ -20,7 +20,6 @@
 % Inputs:
 %   V       signal
 %   K       kernel matrix (us and nm)
-%   r       distance axis (nm)
 %   L       regularization operator matrix (see regoperator)
 %   alpha   regularization parameter
 %   regtype regularzion type: 'Tikhonovov', 'Huber', 'TV'
@@ -36,7 +35,7 @@
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
-function [KtKreg,KtV] = lsqcomponents(V,K,r,L,alpha,RegType,HuberParam,weights)
+function [KtKreg,KtV] = lsqcomponents(V,K,L,alpha,RegType,HuberParam,weights)
 
 % Ensure that signals and kernel are in a cell array
 if ~iscell(V)
@@ -51,10 +50,10 @@ nSignals = numel(V);
 nr = size(L,2);
 
 % Provide defaults for Huber parameter and weights
-if nargin<7 || isempty(HuberParam)
+if nargin<6 || isempty(HuberParam)
    HuberParam = 1.35; 
 end
-if nargin<8 
+if nargin<7
     if nSignals==1
         weights = 1;
     else
@@ -102,7 +101,7 @@ KtKreg = KtK + alpha^2*regterm;
                 P = P + weights(ii)*KtKreg_\K{ii}.'*V{ii};
             end
             % Normalize distribution by its integral to stabilize convergence
-            P = P/sum(abs(P))/mean(diff(r));
+            P = P/sum(abs(P));
             % Monitor largest changes in the distribution
             change = max(abs(P - Pprev));
             % Stop if result is stable

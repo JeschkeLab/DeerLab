@@ -15,17 +15,16 @@ Syntax
 
 .. code-block:: matlab
 
-    alpha = selregparam(V,K,r,'type','method')
-    alpha = selregparam(V,K,r,'type','all')
-    alpha = selregparam(V,K,r,'type',{'method1','method2',___})
-    alpha = selregparam({V1,V2,___},{K1,K2,___},r,'type','method')
+    alpha = selregparam(V,K,'type','method')
+    alpha = selregparam(V,K,'type','all')
+    alpha = selregparam(V,K,'type',{'method1','method2',___})
+    alpha = selregparam({V1,V2,___},{K1,K2,___},'type','method')
     alpha = selregparam(___,'Property',Value)
     [alpha,selfcn,alphas,res,pen] = selregparam(___)
 
 Parameters
     *   ``V`` - Input signal (*N*-element array)
     *   ``K`` -  Dipolar kernel (*NxM*-element array)
-    *   ``r`` -  Distance axis (*M*-element array)
     *   ``type`` - Regularization type (string)
     *   ``method`` - Model selection type (string)
 Returns
@@ -44,9 +43,9 @@ Description
 
 .. code-block:: matlab
 
-    [alpha] = selregparam(V,K,r,'type','method')
+    [alpha] = selregparam(V,K,'type','method')
 
-Returns the optimal regularization parameter ``alpha`` from a range of regularization parameter candidates ``alphas``. The parameter for the regularization type given by ``'type'`` is computed based on the input signal ``V``, the dipolar kernel ``K`` and the regularization operator ``L``. The method employed for the selection of the regularization parameter can be specified as the ``'method'`` input argument. The available regularization models specified by ``'type'`` are
+Returns the optimal regularization parameter ``alpha`` from a range of regularization parameter candidates ``alphas``. The parameter for the regularization type given by ``'type'`` is computed based on the input signal ``V`` and the dipolar kernel ``K``. The method employed for the selection of the regularization parameter can be specified as the ``'method'`` input argument. The available regularization models specified by ``'type'`` are
 
     *   ``'tikhonov'`` - Tikhonov regularization
     *   ``'tv'`` - Total variation regularization
@@ -57,7 +56,7 @@ Returns the optimal regularization parameter ``alpha`` from a range of regulariz
 
 .. code-block:: matlab
 
-    [alpha,selfcn,alphas] = selregparam(V,K,r,'type',{'method1','method2',___})
+    [alpha,selfcn,alphas] = selregparam(V,K,'type',{'method1','method2',___})
 
 If multiple selection methods are passed as a cell array of strings, the function returns ``alpha`` as an array of optimal regularization parameters corresponding to the input methods. The selection models functionals ``selfcn`` are also returned as a cell array of arrays containing the evaluated functionals of the requested models. The order of the output parameters corresponds to the order of the model strings in the input.
 
@@ -65,7 +64,7 @@ If multiple selection methods are passed as a cell array of strings, the functio
 
 .. code-block:: matlab
 
-    [alpha,selfcn,alphas,res,pen] = selregparam(V,K,r,'type',{'method1','method2',___})
+    [alpha,selfcn,alphas,res,pen] = selregparam(V,K,'type',{'method1','method2',___})
 
 The vector of evaluated residual ``res`` and penalty ``pen`` terms can be requested as additional outputs. They can be used, e.g. to build the L-curve.
 
@@ -74,7 +73,7 @@ The vector of evaluated residual ``res`` and penalty ``pen`` terms can be reques
 
 .. code-block:: matlab
 
-    [alpha,selfcn,alphas] = selregparam(V,K,r,'type','all')
+    [alpha,selfcn,alphas] = selregparam(V,K,'type','all')
 
 Alternatively, the argument ``'all'`` can be passed, which will compute the optimal regularization parameter based on all the selection methods implemented in the function.
 
@@ -84,7 +83,7 @@ Alternatively, the argument ``'all'`` can be passed, which will compute the opti
 
 .. code-block:: matlab
 
-  alpha = selregparam({V1,V2,___},{K1,K2,___},r,'type','method')
+  alpha = selregparam({V1,V2,___},{K1,K2,___},'type','method')
 
 Passing multiple signals/kernels enables selection of the regularization parameter for global fitting of the regularization model to a single distribution. The global fit weights are automatically computed according to their contribution to ill-posedness. The multiple signals are passed as a cell array of arrays of sizes *N1*, *N2*,... and a cell array of Kernel matrices with sizes *N1xM*, *N2xM*,... must be passed as well.
 

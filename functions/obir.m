@@ -97,7 +97,7 @@ else
 end
 
 if isa(alpha,'char')
-    alpha = selregparam(V,K,r,RegType,alpha);
+    alpha = selregparam(V,K,RegType,alpha);
 else
     validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 end
@@ -182,7 +182,7 @@ while Iteration <= MaxOuterIter
             % Run minimzation
             P =  fmincon(fminconFunctional,InitialGuess,[],[],[],[],NonNegConst,[],[],fminconOptions);
         case 'fnnls'
-            [KtKreg,KtS] = lsqcomponents(V,K,r,L,alpha,RegType,HuberParam);
+            [KtKreg,KtS] = lsqcomponents(V,K,L,alpha,RegType,HuberParam);
             KtS = KtS - Subgradient;
             P = fnnls(KtKreg,KtS,InitialGuess,TolFun,Verbose);
     end

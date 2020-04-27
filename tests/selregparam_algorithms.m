@@ -12,9 +12,9 @@ V = dipolarsignal(t,r,P,'noiselevel',0.05);
 RegMethod = 'Tikhonov';
 SelMethod = 'AIC';
 
-[alpha1] = selregparam(V,K,r,RegMethod,SelMethod,'Search','fminbnd');
-[alpha2] = selregparam(V,K,r,RegMethod,SelMethod,'Search','golden');
-[alpha3,~,alphas] = selregparam(V,K,r,RegMethod,SelMethod,'Search','grid');
+[alpha1] = selregparam(V,K,RegMethod,SelMethod,'Search','fminbnd');
+[alpha2] = selregparam(V,K,RegMethod,SelMethod,'Search','golden');
+[alpha3,~,alphas] = selregparam(V,K,RegMethod,SelMethod,'Search','grid');
 
 lga = log10([alpha1 alpha2 alpha3]);
 

@@ -1,8 +1,8 @@
 %
 %  SELREGPARAM Selection of optimal regularization parameter
 %
-%    alphaopt = SELREGPARAM(V,K,r,regtype,method)
-%    alphaopt = SELREGPARAM(V,K,r,regtype,methodlist)
+%    alphaopt = SELREGPARAM(V,K,regtype,method)
+%    alphaopt = SELREGPARAM(V,K,regtype,methodlist)
 %    [alphaopt,F,alphas] = SELREGPARAM(___)
 %    ___ = SELREGPARAM({V1,V2,...},{K1,K2,...},___)
 %    alpha = SELREGPARAM(___,Name,Value)
@@ -10,13 +10,12 @@
 %  Returns the optimal regularization parameter (alphaopt) from a range of
 %  regularization parameter candidates. The parameter for the regularization
 %  type given by (type) is computed based on the input signal (V) and the
-%  dipolar kernel (K) on a distance axis (r). The method employed for the
-%  selection of the regularization parameter is given in (method).
+%  dipolar kernel (K). The method employed for the selection of the 
+%  regularization parameter is given in (method).
 %
 %  Inputs:
 %    V          signal
 %    K          dipolar kernel matrix
-%    r          distance vector, in nanometers
 %    regtype    regularization type: 'tikhonov', 'tv', 'huber'
 %    method     selection method: 'lr','lc','cv','gcv','rgcv','srgcv','aic',...
 %                  'bic','aicc','rm','ee','ncp','gml','mcl'
@@ -54,13 +53,13 @@
 %  This file is a part of DeerLab. License is MIT (see LICENSE.md).
 %  Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [alphaOpt,Functionals,alphaRanges,Residuals,Penalties] = selregparam(V,K,r,RegType,SelectionMethod,varargin)
+function [alphaOpt,Functionals,alphaRanges,Residuals,Penalties] = selregparam(V,K,RegType,SelectionMethod,varargin)
 
 %  Parse & validate required input
 %-------------------------------------------------------------------------------
 
-if nargin<5
-    error('selregparam needs 5 inputs: V, K, r, RegType, SelectionMethod.')
+if nargin<4
+    error('selregparam needs 5 inputs: V, K, RegType, SelectionMethod.')
 end
 
 % Turn off warnings to avoid ill-conditioned warnings
@@ -368,14 +367,14 @@ warning('on','MATLAB:nearlySingularMatrix');
         %  Pseudo-Inverses and Ps
         %-----------------------------------------------------------------------
         
-        [KtKreg,KtV] = lsqcomponents(V,K,r,L,alpha,RegType,HuberParameter,GlobalWeights);
+        [KtKreg,KtV] = lsqcomponents(V,K,L,alpha,RegType,HuberParameter,GlobalWeights);
         if NonNegConstrained
             P = fnnls(KtKreg,KtV,[],TolFun);
         else
             P = KtKreg\KtV;
         end
         for idx = 1:length(V)
-            KtKreg = lsqcomponents(V{idx},K{idx},r,L,alpha,'tikhonov',HuberParameter,GlobalWeights);
+            KtKreg = lsqcomponents(V{idx},K{idx},L,alpha,'tikhonov',HuberParameter,GlobalWeights);
             PseudoInverse{idx} = KtKreg\K{idx}.';
             switch lower(RegType)
                 case 'tikhonov'
