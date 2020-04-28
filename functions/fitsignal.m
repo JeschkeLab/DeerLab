@@ -1,7 +1,7 @@
 %
 % FITSIGNAL  Fit model to dipolar time-domain trace
 %
-%   [Vfit,Pfit,Bfit,parfit] = FITSIGNAL(V,t,r,dd,bg,ex,par0)
+%   [Vfit,Pfit,Bfit,parfit,parci] = FITSIGNAL(V,t,r,dd,bg,ex,par0)
 %   __ = FITSIGNAL(V,t,r,dd,bg)
 %   __ = FITSIGNAL(V,t,r,dd)
 %   __ = FITSIGNAL(V,t,r)
@@ -38,15 +38,16 @@
 %           .dd  fitted parameters for distance distribution model
 %           .bg  fitted parameters for background model
 %           .ex  fitted parameters for experiment model
+%    parci structure with confidence intervals for parameter, similar to parfit
 %
 % Example:
-%    Pfit = fitsignal(Vexp,t,r,@dd_gauss,@bg_exp,@exp_4pdeer)
+%    Vfit = fitsignal(Vexp,t,r,@dd_gauss,@bg_exp,@exp_4pdeer)
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [Vfit,Pfit,Bfit,parfit] = fitsignal(Vexp,t,r,dd_model,bg_model,exp_model,par0)
+function [Vfit,Pfit,Bfit,parfit,parci] = fitsignal(Vexp,t,r,dd_model,bg_model,exp_model,par0)
 
 if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
@@ -133,7 +134,7 @@ lower = [lower_dd lower_bg lower_ex];
 upper = [upper_dd upper_bg upper_ex];
 
 % Build index vectors for accessing parameter subsets
-modelidx = [ones(1,N_dd) ones(1,N_bg)*2 ones(1,N_ex)*3];
+modelidx = [ones(1,N_dd) ones(1,N_bg)*2 ones(1,N_ex)*3].';
 ddidx = modelidx==1;
 bgidx = modelidx==2;
 exidx = modelidx==3;
@@ -150,24 +151,29 @@ if numel(par0)==0
     Vfit = K*Pfit;
     Bfit = ones(size(Vfit));
     parfit_ = [];
+    parci_ = [];
 else
     % Keep track of alpha and parameter vector across iterations, to avoid
     % doing alpha optimizations if parameter vector doesn't change much
     par_prev = [];
     regparam_prev = [];
     % Fit the parameters
-    parfit_ = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper);
+    [parfit_,~,parci_] = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper);
   
     % Calculate the fitted signal, background, and distribution
     alpha = regparam; % use original setting for final run
     [Vfit,Bfit,Pfit] = Vmodel(t,parfit_);
 end
 
-
 % Return fitted parameter in structure
+parfit_ = parfit_(:);
 parfit.dd = parfit_(ddidx);
 parfit.bg = parfit_(bgidx);
 parfit.ex = parfit_(exidx);
+
+parci.dd = parci_(ddidx,:);
+parci.bg = parci_(bgidx,:);
+parci.ex = parci_(exidx,:);
 
 % Plotting
 if nargout==0
