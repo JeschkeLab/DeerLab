@@ -11,15 +11,15 @@ All background model functions start with the prefix ``bg_``. They take a time a
         B = bg_strexp(t,param,lambda)
 
 
-The first class of models involves physical models that represent homogeneous uniform distributions of spin labels.
+The first class of models involves physical models that represent homogeneous uniform distributions of spin labels in space.
 
 .. rst-class:: func-list
 
 =============================================  ============================================================
 Model function                                 Description
 =============================================  ============================================================
-:doc:`bg_homo<models/bg_homo>`                   Multi-pulse background in a homogenous medium
-:doc:`bg_fractal<models/bg_fractal>`                Multi-pulse background in a fractal medium
+:doc:`bg_hom3d<models/bg_hom3d>`                 Homogeneous distribution in 3D
+:doc:`bg_homfractal<models/bg_homfractal>`       Homogeneous distribution in 0-6 dimensions
 =============================================  ============================================================
 
 
