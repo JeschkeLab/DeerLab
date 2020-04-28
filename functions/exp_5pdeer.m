@@ -88,7 +88,7 @@ pathway(3,:) = [lambda(3) T0(2)];
 % Construct multi-pathway kernel and background
 if ~isempty(Bmodel)
     K = dipolarkernel(t,r,pathway,Bmodel);
-    B = Bmodel(lambda(2)*(t-T0(1))).*Bmodel(lambda(3)*(t-T0(2)));
+    B = Bmodel((t-T0(1)),lambda(2)).*Bmodel((t-T0(2)),lambda(3));
 else
     K = dipolarkernel(t,r,pathway);
     B = ones(size(t));

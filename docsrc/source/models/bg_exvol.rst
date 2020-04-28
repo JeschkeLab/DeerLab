@@ -9,7 +9,6 @@ Hard-shell excluded-volume background parametric model
 
 -----------------------------
 
-
 Syntax
 =========================================
 
@@ -17,10 +16,13 @@ Syntax
 
         info = bg_exvol()
         P = bg_exvol(r,param)
+        P = bg_exvol(r,param,lambda)
 
 Parameters
-    *   ``t`` - Time axis (N-array), in microseconds
+    *   ``t`` - Time axis (N-array)
     *   ``param`` - Model parameters
+    *   ``lambda`` -Dipolar pathway amplitude
+
 Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
@@ -35,12 +37,12 @@ This implements a hard-shell excluded-volume model, with distance of closest app
 
 The analytical expression for the decay function as a function of ``R`` and ``c_x`` is complicated, see Kattnig et al, J.Phys.Chem.B 2013, 117, 16542.
 
-========== =================== ========= ============= ============= ================================================
- Variable   Symbol              Default   Lower bound   Upper bound      Description
-========== =================== ========= ============= ============= ================================================
-param(1)    :math:`R`              1          0.1            20           Exclusion radius
-param(1)    :math:`c_x`            50         0.01          1000          Excited spin concentration (uM)
-========== =================== ========= ============= ============= ================================================
+============= =================== ========= ============= ============= ================================================
+ Variable      Symbol              Default   Lower bound   Upper bound      Description
+============= =================== ========= ============= ============= ================================================
+``param(1)``    :math:`R`              1          0.1            20           Exclusion radius
+``param(1)``    :math:`c_x`            50         0.01          1000          Spin concentration (uM)
+============= =================== ========= ============= ============= ================================================
 
 -----------------------------
 
@@ -65,5 +67,12 @@ Returns an ``info`` structure containing the specifics of the model:
 
     B = bg_exvol(t,param)
 
-Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
+Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param`` for a dipolar pathway amplitude ``lambda=1``. The required parameters can also be found in the ``info`` structure.
 
+-----------------------------
+
+.. code-block:: matlab
+
+    B = bg_exvol(t,param,lambda)
+
+Computes the background model ``B`` for a given dipolar pathway amplitude ``lambda``.

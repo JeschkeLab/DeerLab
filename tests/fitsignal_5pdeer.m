@@ -12,7 +12,7 @@ info = exp_5pdeer(t);
 parIn = [info.parameters.default];
 
 kappa = 0.4;
-Bmodel = @(t) bg_exp(t,kappa);
+Bmodel = @(t,lam) bg_exp(t,kappa,lam);
 K = exp_5pdeer(t,r,parIn,Bmodel);
 
 V = K*P + whitegaussnoise(t,0.01);

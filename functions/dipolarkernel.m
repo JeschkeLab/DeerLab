@@ -25,7 +25,7 @@
 %               [lambda T0 n] or [lambda T0] for one pathway. If n is not given
 %               it is assumed to be 1.
 %     B         N-element array with background decay, or a function handle
-%               for a background model: @(t)bg_model(t,par)
+%               for a background model: @(t,lambda)bg_model(t,par,lambda)
 %
 %  Outputs:
 %     K         NxM kernel matrix, such that the time-domain signal for a
@@ -197,8 +197,9 @@ end
 
 nModPathways = numel(lambda);
 if nModPathways>1
-    if ~isempty(B) && ~isa(B,'function_handle')
-        error('For a model with multiple modulated pathways, B must be a function handle of the type: @(t) bg_model(t,par)');
+    if ~isempty(B) && (~isa(B,'function_handle') || nargin(B)~=2)
+        error(['For a model with multiple modulated pathways, B must be a ',...
+               'function handle of the type: @(t,lambda) bg_model(t,par,lambda)']);
     end
 end
 

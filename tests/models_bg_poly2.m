@@ -20,6 +20,10 @@ t0 = 2.5;
 B5 = model(t0,par0);
 Bval0 = -7.750000000000000;
 
+
+B6 = model(t,par0,1);
+B7 = model(t,2*par0,0.5);
+
 % Pass 1: dimensionality is correct
 pass(1) = isequal(B1,B2);
 pass(2) = iscolumn(B1) && iscolumn(B2);
@@ -27,6 +31,8 @@ pass(2) = iscolumn(B1) && iscolumn(B2);
 pass(3) = all(~isnan(B1)) & all(~isnan(B2)) & all(~isnan(B3)) & all(~isnan(B4));
 % Pass 2: specific value is reproducible
 pass(4) = abs(B5-Bval0) < 1e-8;
+% Pass 5: pathway amplitude can be specified correctly
+pass(5) = isequal(B6,B7);
 
 pass = all(pass);
 

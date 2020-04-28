@@ -51,8 +51,9 @@ if isempty(OvertoneCoeffs)
 end
 validateattributes(OvertoneCoeffs,{'numeric'},{'nonnegative'},mfilename,'OvertoneCoeffs');
 
-if ~isa(Bmodel,'function_handle')
-    error('For a model with multiple modulated pathways, B must be a function handle of the type: @(t) bg_model(t,par)');
+if ~isa(Bmodel,'function_handle') || nargin(Bmodel)~=2 
+    error(['For a model with multiple modulated pathways, B must be a ',...
+           'function handle of the type: @(t,lambda) bg_model(t,par,lambda)']);
 end
 
 % Make sure all vectors are column vectors
@@ -109,8 +110,8 @@ nModPathways = numel(lambda);
 Bnorm = 1;
 B = 1;
 for p = 1:nModPathways
-    B = B.*Bmodel(lambda(p)*n(p)*(t-T0(p)));
-    Bnorm = Bnorm.*Bmodel(-T0(p)*lambda(p)*n(p));
+    B = B.*Bmodel(n(p)*(t-T0(p)),lambda(p));
+    Bnorm = Bnorm.*Bmodel(-T0(p)*n(p),lambda(p));
 end
 if Renormalize
     B = B./Bnorm;

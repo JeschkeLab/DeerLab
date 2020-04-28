@@ -14,7 +14,7 @@ B0 = bg_exp(t,lams(2)*kappa);
 B0 = B0.*bg_exp(t-T0,lams(3)*kappa);
 
 %Output
-Bmodel = @(t) bg_exp(t,kappa);
+Bmodel = @(t,lam) bg_exp(t,kappa,lam);
 path(1,:) = [lams(1) NaN];
 path(2,:) = [lams(2) 0];
 path(3,:) = [lams(3) T0];

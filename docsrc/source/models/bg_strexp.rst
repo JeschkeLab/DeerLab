@@ -18,10 +18,13 @@ Syntax
 
         info = bg_strexp()
         P = bg_strexp(r,param)
+        P = bg_strexp(r,param,lambda)
 
 Parameters
     *   ``t`` - Time axis (N-array)
     *   ``param`` - Model parameters
+    *   ``lambda`` -Dipolar pathway amplitude
+
 Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
@@ -32,14 +35,14 @@ Returns
 Model
 =========================================
 
-:math:`B(t) = e^{-(kt)^{d/3}}`
+:math:`B(t) = \exp\left(-\lambda\kappa_d\vert t\vert^{d/3}\right)`
 
-========== ========== ========= ============= ============= ========================
- Variable   Symbol     Default   Lower bound   Upper bound      Description
-========== ========== ========= ============= ============= ========================
-param(1)   :math:`k`      3.5      0              200           Decay rate
-param(2)   :math:`d`      3        0              6             Fractal dimension
-========== ========== ========= ============= ============= ========================
+============= ================= ========= ============= ============= ========================
+ Variable       Symbol            Default   Lower bound   Upper bound      Description
+============= ================= ========= ============= ============= ========================
+``param(1)``   :math:`\kappa_d`    3.5      0              200           Decay rate
+``param(2)``   :math:`d`           3        0              6             Fractal dimension
+============= ================= ========= ============= ============= ========================
 
 -----------------------------
 
@@ -64,5 +67,12 @@ Returns an ``info`` structure containing the specifics of the model:
 
     B = bg_strexp(t,param)
 
-Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
+Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param`` for a dipolar pathway amplitude ``lambda=1``. The required parameters can also be found in the ``info`` structure.
 
+-----------------------------
+
+.. code-block:: matlab
+
+    B = bg_strexp(t,param,lambda)
+
+Computes the background model ``B`` for a given dipolar pathway amplitude ``lambda``.

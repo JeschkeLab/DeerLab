@@ -7,8 +7,8 @@ rng(1)
 t = linspace(0,5,100);
 r = linspace(2,6,30);
 P = dd_gauss(r,[4.5 0.6]);
-B = bg_exp(t,0.2);
 lam = 0.3;
+B = bg_exp(t,0.5,lam);
 V = dipolarsignal(t,r,P,lam,B,'noiselevel',0.01);
 
 [~,Pfit1] = fitsignal(V,t,r);

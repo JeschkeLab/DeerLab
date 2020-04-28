@@ -35,7 +35,7 @@ Description
 
    B = dipolarbackground(t,pathinfo,Bmodel)
 
-Computes the multipathway background ``B`` for the time axis ``t`` (in microseconds) corresponding to the dipolar pathways specified in ``pathinfo``. The total background is computed from the basis background function model specified in ``Bmodel``. This model must be a function handle of the type ``@(t) bg_model(t,params)``.
+Computes the multipathway background ``B`` for the time axis ``t`` (in microseconds) corresponding to the dipolar pathways specified in ``pathinfo``. The total background is computed from the basis background function model specified in ``Bmodel``. This model must be a function handle of the type ``Bmodel @(t,lambda) bg_model(t,params,lambda)``.
 
 For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathinfo`` is a 2D array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals.
 
@@ -57,7 +57,7 @@ Example:
     pathinfo(1,:) = [1-lambda NaN];    % unmodulated part, gives offset
     pathinfo(2,:) = [lambda 0];        % main modulation, refocusing at time zero
     
-    Bmodel = @(t) bg_exp(t,kappa)
+    Bmodel = @(t,lambda) bg_exp(t,kappa,lambda)
     
     B = dipolarbackground(t,pathinfo,Bmodel)
 

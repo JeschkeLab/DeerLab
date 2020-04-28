@@ -81,11 +81,13 @@ If the background ``B`` and modulation depth ``lambda`` are specified, then both
     K = dipolarkernel(t,r,pathinfo)
     K = dipolarkernel(t,r,pathinfo,B)
 
-For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathinfo`` is a 2D array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals.
+For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathinfo`` is a 2D array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals. 
 
 Each row of ``pathinfo`` contains two values: one modulation depth and one refocusing time. For a pathway with unmodulated signal, set the refocusing time to ``NaN``.
 
 Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals. If not given, the harmonic is 1 for all pathways.
+
+In these cases, the background model must be specified as a function handle accepting the time-axis ``t`` and pathway amplitude ``lambda`` as inputs, i.e. ``B = @(t,lambda) bg_model(t,param,lambda)``.
 
 Example 1:
 	To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use

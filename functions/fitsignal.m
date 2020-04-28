@@ -190,7 +190,7 @@ end
     function [V,B,P] = Vmodel(t,par)
         
         % Calculate the background and the experiment kernel matrix
-        Bfcn = @(t) bg_model(t,par(bgidx));        
+        Bfcn = @(t,lam) bg_model(t,par(bgidx),lam);        
         if includeExperiment
             if includeBackground
                 [K,B] = exp_model(t,r,par(exidx),Bfcn);

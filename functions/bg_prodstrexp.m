@@ -1,21 +1,23 @@
 %
 % BG_PRODSTREXP Product of two stretched exponentials background model
 %
-%   info = BG_SUMSTREXP
+%   info = BG_PRODSTREXP
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   B = BG_SUMSTREXP(t,param)
+%   B = BG_PRODSTREXP(t,param)
+%   B = BG_PRODSTREXP(t,param,lambda)
 %   Computes the N-point model (B) from the N-point time axis (t) according to
 %   the paramteres array (param). The required parameters can also be found
-%   in the (info) structure.
+%   in the (info) structure. The pathway amplitude (lambda) can be
+%   included, if not given the default lambda=1 will be used.
 %
 % PARAMETERS
 % name    symbol default lower bound upper bound
 % --------------------------------------------------------------------------
-% PARAM(1)  k1     3.5      0            200        1st strexp decay rate
-% PARAM(2)  d1      3       0            6          1st strexp fractal dimension
-% PARAM(3)  k2     3.5      0            200        2nd strexp decay rate
-% PARAM(4)  d2      3       0            6          2nd strexp fractal dimension
+% PARAM(1) kappa1     3.5      0            200        1st strexp decay rate
+% PARAM(2)  d1        3        0            6          1st strexp fractal dimension
+% PARAM(3) kappa2     3.5      0            200        2nd strexp decay rate
+% PARAM(4)  d2        3        0            6          2nd strexp fractal dimension
 % --------------------------------------------------------------------------
 %
 
@@ -23,20 +25,19 @@
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
-function output = bg_prodstrexp(t,param)
+function output = bg_prodstrexp(t,param,lambda)
 
 nParam = 4;
 
-if nargin~=0 && nargin~=2
-    error('Model requires two input arguments.')
+if all(nargin~=[0 2 3])
+    error('Model requires at least two input arguments.')
 end
 
 if nargin==0
     %If no inputs given, return info about the parametric model
     info.model  = 'Product of two stretched exponentials';
-    info.Equation  = 'exp(-(k1*t)^(d1/3))*exp(-(k2*t)^(d2/3))';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Decay rate k1 of 1st stretched exponential';
+    info.parameters(1).name = 'Decay rate kappa1 of 1st stretched exponential';
     info.parameters(1).range = [0 200];
     info.parameters(1).default = 3.5;
     info.parameters(1).units = 'us^-1';
@@ -46,7 +47,7 @@ if nargin==0
     info.parameters(2).default = 3;
     info.parameters(2).units = ' ';
     
-    info.parameters(3).name = 'Decay rate k2 of 2nd stretched exponential';
+    info.parameters(3).name = 'Decay rate kappa2 of 2nd stretched exponential';
     info.parameters(3).range = [0 200];
     info.parameters(3).default = 3.5;
     info.parameters(3).units = 'us^-1';
@@ -60,6 +61,9 @@ if nargin==0
     return
 end
 
+if nargin<3
+    lambda = 1;
+end
 
 % If user passes them, check that the number of parameters matches the model
 if length(param)~=nParam
@@ -67,17 +71,15 @@ if length(param)~=nParam
 end
 
 % If necessary inputs given, compute the model distance distribution
-k1 = param(1);
+kappa1 = param(1);
 d1 = param(2);
-k2 = param(3);
+kappa2 = param(3);
 d2 = param(4);
-StretchedExp1 = exp(-(k1*abs(t)).^(d1/3));
-StretchedExp2 = exp(-(k2*abs(t)).^(d2/3));
-Background = StretchedExp1.*StretchedExp2;
-if ~iscolumn(Background)
-    Background = Background';
-end
-output = Background;
+strexp1 = exp(-lambda*kappa1*abs(t).^(d1/3));
+strexp2 = exp(-lambda*kappa2*abs(t).^(d2/3));
+B = strexp1.*strexp2;
+B = B(:);
+output = B;
 
 
 return

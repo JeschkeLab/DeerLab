@@ -5,7 +5,7 @@ function [pass,maxerr] = test(opt)
 t = linspace(-1,5,150);
 kappa = 0.3;
 lam = 0.5;
-Bmodel = @(t) bg_exp(t,kappa);
+Bmodel = @(t,lam) bg_exp(t,kappa,lam);
 path(1,:) = [1-lam NaN];
 path(2,:) = [lam 0];
 

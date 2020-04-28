@@ -130,7 +130,7 @@ FitData = V(FitStartPos:FitEndPos);
 
 % Construct objective function for minimization
 % Fit signal or log(signal)
-Fgmodel = @(p,lambda)(1 - lambda + eps)*bgmodel(tfit,p);
+Fgmodel = @(p,lambda)(1 - lambda + eps)*bgmodel(tfit,p,lambda);
 if LogFit
     residuals = @(p,lambda) sqrt(1/2)*(log(Fgmodel(p,lambda)) - log(FitData));
 else
@@ -199,7 +199,7 @@ if fitModDepth
 end
 
 % Extrapolate fitted background to whole time axis
-B = bgmodel(t,FitParam);
+B = bgmodel(t,FitParam,ModDepth);
 
 % Ensure data is real
 B = real(B);

@@ -10,7 +10,7 @@ lam = 0.5;
 B0 = bg_exp(t,lam*kappa);
 
 %Output
-Bmodel = @(t) bg_exp(t,kappa);
+Bmodel = @(t,lam) bg_exp(t,kappa,lam);
 path(1,:) = [1-lam NaN];
 path(2,:) = [lam 0];
 

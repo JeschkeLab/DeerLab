@@ -17,10 +17,13 @@ Syntax
 
         info = bg_poly3()
         P = bg_poly3(r,param)
+        P = bg_poly3(r,param,lambda)
 
 Parameters
     *   ``t`` - Time axis (N-array)
     *   ``param`` - Model parameters
+    *   ``lambda`` -Dipolar pathway amplitude
+
 Returns
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
@@ -31,16 +34,16 @@ Returns
 Model
 =========================================
 
-:math:`B(t) = p_0 + p_1t + p_2t^2 + p_3t^3`
+:math:`B(t) = p_0 + p_1(\lambda t) + p_2(\lambda t)^2 + p_3(\lambda t)^3`
 
-========== ============= ========= ============= ============= ==============================
- Variable   Symbol        Default   Lower bound   Upper bound      Description
-========== ============= ========= ============= ============= ==============================
-param(1)    :math:`p_0`     1          0            200          Intercept
-param(2)    :math:`p_1`     -1         -200         200          1st order weight
-param(3)    :math:`p_2`     -1         -200         200          2nd order weight
-param(3)    :math:`p_3`     -1         -200         200          3rd order weight
-========== ============= ========= ============= ============= ==============================
+============= ============= ========= ============= ============= ==============================
+ Variable       Symbol        Default   Lower bound   Upper bound      Description
+============= ============= ========= ============= ============= ==============================
+``param(1)``   :math:`p_0`     1          0            200          Intercept
+``param(2)``   :math:`p_1`     -1         -200         200          1st order weight
+``param(3)``   :math:`p_2`     -1         -200         200          2nd order weight
+``param(3)``   :math:`p_3`     -1         -200         200          3rd order weight
+============= ============= ========= ============= ============= ==============================
 
 -----------------------------
 
@@ -50,7 +53,7 @@ Description
 
 .. code-block:: matlab
 
-        info = bg_exp()
+        info = bg_poly3()
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -63,7 +66,14 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    B = bg_exp(t,param)
+    B = bg_poly3(t,param)
 
-Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
+Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param`` for a dipolar pathway amplitude ``lambda=1``. The required parameters can also be found in the ``info`` structure.
 
+-----------------------------
+
+.. code-block:: matlab
+
+    B = bg_poly3(t,param,lambda)
+
+Computes the background model ``B`` for a given dipolar pathway amplitude ``lambda``.

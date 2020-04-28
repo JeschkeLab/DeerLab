@@ -5,9 +5,11 @@
 %   Returns an (info) structure containing the specifics of the model.
 %
 %   B = BG_POLY3(t,param)
+%   B = BG_POLY3(t,param,lambda)
 %   Computes the N-point model (B) from the N-point time axis (t) according to
 %   the paramteres array (param). The required parameters can also be found
-%   in the (info) structure.
+%   in the (info) structure. The pathway amplitude (lambda) can be
+%   included, if not given the default lambda=1 will be used.
 %
 % PARAMETERS
 % name    symbol default lower bound upper bound
@@ -24,12 +26,12 @@
 
 
 
-function output = bg_poly3(t,param)
+function output = bg_poly3(t,param,lambda)
 
 nParam = 4;
 
-if nargin~=0 && nargin~=2
-    error('Model requires two input arguments.')
+if all(nargin~=[0 2 3])
+    error('Model requires at least two input arguments.')
 end
 
 if nargin==0
@@ -60,6 +62,10 @@ if nargin==0
     return
 end
 
+if nargin<3
+    lambda = 1;
+end
+
 % If user passes them, check that the number of parameters matches the model
 if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
@@ -67,11 +73,9 @@ end
 
 % If necessary inputs given, compute the model distance distribution
 p = fliplr(param);
-Background = polyval(p,abs(t));
-if ~iscolumn(Background)
-    Background = Background';
-end
-output = Background;
+B = polyval(lambda*p,abs(t));
+B = B(:);
+output = B;
 
 
 return
