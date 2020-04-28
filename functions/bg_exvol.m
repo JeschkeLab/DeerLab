@@ -73,8 +73,12 @@ conc = param(2); % uM
 
 NA = 6.02214076e23; % Avogadro constant, mol^-1
 conc = conc*1e-6*1e3*NA; % umol/L -> mol/L -> mol/m^3 -> spins/m^3
+gfree = 2.00231930436256; % free-electron g factor (CODATA 2018 value)
+muB = 9.2740100783e-24; % Bohr magneton, J/T (CODATA 2018 value);
+h = 6.62607015e-34; % Planck constant, J/Hz (CODATA 2018)
+hbar = h/2/pi;
 
-A = (mu0/4/pi)*(gfree*bmagn)^2/hbar; % Eq.(6); m^3 rad/s
+A = (mu0/4/pi)*(gfree*muB)^2/hbar; % Eq.(6); m^3 rad/s
 
 % Calculate reduction factor (Eq.(18))
 if R==0
