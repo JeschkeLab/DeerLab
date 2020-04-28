@@ -5,7 +5,7 @@
 :mod:`bg_homfractal`
 ***********************
 
-Multi-pulse DEER background in a fractal medium
+Background due to a homogeneous spin distribution in a fractal dimension
 
 
 -----------------------------
@@ -20,14 +20,14 @@ Syntax
         P = bg_homfractal(r,param)
         P = bg_homfractal(r,param,lambda)
 
-Parameters
-    *   ``t`` - Time axis (N-array)
-    *   ``param`` - Model parameters
-    *   ``lambda`` -Dipolar pathway amplitude
+Inputs
+    *   ``t`` -- Time axis (N-array)
+    *   ``param`` -- Model parameters
+    *   ``lambda`` -- Modulation amplitude (between 0 and 1)
 
-Returns
-    *   ``B`` - Model background (N-array)
-    *   ``info`` - Model information (struct)
+Outputs
+    *   ``B`` -- Model background (N-array)
+    *   ``info`` -- Model information (struct)
 
 
 -----------------------------
@@ -36,12 +36,12 @@ Model
 =========================================
 
 
-============= ============= ========= ============= ============= ==================================
+============= ============= ========= ============= ============= ===========================================
  Variable       Symbol        Default   Lower bound   Upper bound      Description
-============= ============= ========= ============= ============= ==================================
-``param(1)``   :math:`c_d`     50          0.01          5000          Spin concentration [`mol/dm^d`]
+============= ============= ========= ============= ============= ===========================================
+``param(1)``   :math:`c_d`     50          0.01          5000          Spin concentration (μmol/dm\ :sup:`d`)
 ``param(2)``   :math:`d`       3           0                6          Fractal dimension
-============= ============= ========= ============= ============= ==================================
+============= ============= ========= ============= ============= ===========================================
 
 -----------------------------
 
@@ -55,9 +55,9 @@ Description
 
 Returns an ``info`` structure containing the specifics of the model:
 
-* ``info.model`` -  Full name of the parametric model.
-* ``info.nparam`` -  Total number of adjustable parameters.
-* ``info.parameters`` - Structure array with information on individual parameters.
+* ``info.model`` -- Full name of the parametric model.
+* ``info.nparam`` -- Total number of adjustable parameters.
+* ``info.parameters`` -- Structure array with information on individual parameters.
 
 -----------------------------
 
@@ -66,7 +66,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
     B = bg_homfractal(t,param)
 
-Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param`` for a dipolar pathway amplitude ``lambda=1``. The required parameters can also be found in the ``info`` structure.
+Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param`` for a modulation amplitude ``lambda=1``. The required parameters can also be found in the ``info`` structure.
 
 -----------------------------
 
@@ -74,4 +74,4 @@ Computes the background model ``B`` from the axis ``t`` according to the paramet
 
     B = bg_homfractal(t,param,lambda)
 
-Computes the background model ``B`` for a given dipolar pathway amplitude ``lambda``.
+Computes the background model ``B`` for a given modulation amplitude ``lambda``.

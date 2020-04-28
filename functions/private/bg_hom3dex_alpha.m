@@ -1,4 +1,4 @@
-function bg_exvol_alpha()
+function bg_hom3dex_alpha()
 
 % Precalculates DEER background reduction factor alpha(d)
 % See
@@ -10,8 +10,8 @@ function bg_exvol_alpha()
 %    alpha = (3/2/pi)*(2*pi/3-sqrt(3)./d); 
 % as an excellent approximation (error at d
 
-filename = 'bg_exvol.mat';
 saveData = false;
+filename = 'bg_hom3dex_alpha.mat';
 doPlotting = true;
 
 % Set up dR range

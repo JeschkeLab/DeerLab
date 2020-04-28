@@ -14,7 +14,7 @@
 % PARAMETERS
 % name    symbol default lower bound upper bound
 % ------------------------------------------------------------------
-% PARAM(1)  c       50        0.01       5000     fractal concentration (umol/dm^d)
+% PARAM(1)  c       50        0.01       5000     fractal spin concentration (umol/dm^d)
 % PARAM(2)  d       3          0         6        fractal dimension
 % ------------------------------------------------------------------
 %
@@ -71,10 +71,11 @@ conc = conc*1e-6*(10^d)*NA; % umol/dm^d -> mol/m^d -> spins/m^d
 
 muB = 9.2740100783e-24; % Bohr magneton, J/T (CODATA 2018 value);
 mu0 = 1.25663706212e-6; % magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
-hbar = 6.62607015e-34/2/pi; % reduced Planck constant, J/Hz (CODATA 2018)
+h = 6.62607015e-34; % reduced Planck constant, J/Hz (CODATA 2018)
 ge = 2.00231930436256; % free-electron g factor (CODATA 2018 value)
+hbar = h/2/pi;
 
-D = (mu0/4/pi)*(muB*ge)^2/hbar*1e-6; % m^3 mus^-1
+D = (mu0/4/pi)*(muB*ge)^2/hbar; % m^3 s^-1
 
 % Compute constants
 if d==3
@@ -87,7 +88,7 @@ else
 end
 
 % Compute background function
-B = exp(4*pi/3*c*Lam*lambda*conc*D^(d/3)*abs(t).^(d/3));
+B = exp(4*pi/3*c*Lam*lambda*conc*D^(d/3)*abs(t*1e-6).^(d/3));
 B = B(:);
 output = B;
 

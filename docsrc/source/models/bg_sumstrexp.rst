@@ -6,7 +6,7 @@
 :mod:`bg_sumstrexp`
 ***********************
 
-Sum of two stretched exponentials background parametric model
+Sum of two stretched exponentials background model
 
 -----------------------------
 
@@ -20,12 +20,12 @@ Syntax
         P = bg_sumstrexp(r,param)
         P = bg_sumstrexp(r,param,lambda)
 
-Parameters
+Inputs
     *   ``t`` - Time axis (N-array)
-    *   ``param`` - Model parameters
-    *   ``lambda`` -Dipolar pathway amplitude
+    *   ``param`` -- Model parameters
+    *   ``lambda`` -- Modulation amplitude (between 0 and 1)
 
-Returns
+Outputs
     *   ``B`` - Model background (N-array)
     *   ``info`` - Model information (struct)
 
@@ -59,9 +59,9 @@ Description
 
 Returns an ``info`` structure containing the specifics of the model:
 
-* ``info.model`` -  Full name of the parametric model.
-* ``info.nparam`` -  Total number of adjustable parameters.
-* ``info.parameters`` - Structure array with information on individual parameters.
+* ``info.model`` -- Full name of the parametric model.
+* ``info.nparam`` -- Total number of adjustable parameters.
+* ``info.parameters`` -- Structure array with information on individual parameters.
 
 -----------------------------
 
@@ -70,7 +70,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
     B = bg_sumstrexp(t,param)
 
-Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param`` for a dipolar pathway amplitude ``lambda=1``. The required parameters can also be found in the ``info`` structure.
+Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param`` for a modulation amplitude ``lambda=1``. The required parameters can also be found in the ``info`` structure.
 
 -----------------------------
 
@@ -78,5 +78,5 @@ Computes the background model ``B`` from the axis ``t`` according to the paramet
 
     B = bg_sumstrexp(t,param,lambda)
 
-Computes the background model ``B`` for a given dipolar pathway amplitude ``lambda``.
+Computes the background model ``B`` for a given modulation amplitude ``lambda``.
 

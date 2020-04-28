@@ -2,7 +2,7 @@ function [pass,maxerr] = test(opt)
 
 % Basic functionality test of background model
 
-model = @bg_exvol;
+model = @bg_hom3dex;
 info = model();
 
 t = linspace(-5,5,500);
@@ -21,7 +21,7 @@ B5 = model(t0,par0);
 Bval0 = 0.882896642393692;
 
 B6 = model(t,par0,1);
-B7 = model(t,par0.*[1 2],0.5);
+B7 = model(t,par0.*[2 1],0.5);
 
 % Pass 1-2: dimensionality is correct
 pass(1) = isequal(B1,B2);
