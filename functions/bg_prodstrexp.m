@@ -70,7 +70,7 @@ if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
-% If necessary inputs given, compute the model distance distribution
+% If necessary inputs given, compute the model background
 kappa1 = param(1);
 d1 = param(2);
 kappa2 = param(3);

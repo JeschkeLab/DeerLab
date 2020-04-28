@@ -74,6 +74,7 @@ conc = param(2); % uM
 NA = 6.02214076e23; % Avogadro constant, mol^-1
 conc = conc*1e-6*1e3*NA; % umol/L -> mol/L -> mol/m^3 -> spins/m^3
 gfree = 2.00231930436256; % free-electron g factor (CODATA 2018 value)
+mu0 = 1.25663706212e-6; % magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
 muB = 9.2740100783e-24; % Bohr magneton, J/T (CODATA 2018 value);
 h = 6.62607015e-34; % Planck constant, J/Hz (CODATA 2018)
 hbar = h/2/pi;

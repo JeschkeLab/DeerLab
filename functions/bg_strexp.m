@@ -59,7 +59,7 @@ if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
-% If necessary inputs given, compute the model distance distribution
+% If necessary inputs given, compute the model background
 kappa = param(1);
 d = param(2);
 Background = exp(-lambda*kappa*abs(t).^(d/3));
