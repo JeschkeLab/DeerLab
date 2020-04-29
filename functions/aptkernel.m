@@ -37,23 +37,6 @@ validateattributes(t,{'numeric'},{'nonempty','increasing'},'t')
 % Use absolute time scale, required for negative times
 t = abs(t);
 
-% Memoization
-%-------------------------------------------------------------------------------
-persistent cachedData
-if isempty(cachedData)
-    cachedData =  java.util.LinkedHashMap;
-end
-hashKey = datahash({t,varargin});
-if cachedData.containsKey(hashKey)
-    Output = cachedData.get(hashKey);
-    [APTkernel] = java2mat(Output);
-    APTkernel.NormalizationFactor = APTkernel.NormalizationFactor.';
-    APTkernel.FreqAxis = APTkernel.FreqAxis.';
-    APTkernel.t = APTkernel.t.';
-    return
-end
-
-
 % Turn off warnings to avoid ill-conditioned warnings 
 warning('off','all')
 
@@ -86,9 +69,6 @@ APTkernel = struct('Base',Base,...
                       'FreqAxis',FreqAxis(:),...
                       't',t(:),...
                       'Crosstalk',crosstalk);
-
-% Store output result in the cache
-cachedData = addcache(cachedData,hashKey,APTkernel);
 
 % Turn warnings back on
 warning('on','all')
