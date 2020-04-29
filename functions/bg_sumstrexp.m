@@ -15,9 +15,9 @@
 % name    symbol default lower bound upper bound
 % --------------------------------------------------------------------------
 % PARAM(1) kappa1   3.5      0            200        1st strexp decay rate
-% PARAM(2)  d1      3        0            6          1st strexp fractal dimension
+% PARAM(2)  d1      1        0            6          1st strexp stretch factor
 % PARAM(3) kappa2   3.5      0            200        2nd strexp decay rate
-% PARAM(4)  d2      3        0            6          2nd strexp fractal dimension
+% PARAM(4)  d2      1        0            6          2nd strexp stretch factor
 % PARAM(5)  A1      0.5      0            1          Relative amplitude
 % --------------------------------------------------------------------------
 %
@@ -43,9 +43,9 @@ if nargin==0
     info.parameters(1).default = 3.5;
     info.parameters(1).units = 'us^-1';
     
-    info.parameters(2).name = 'fractal dimension d1 of 1st stretched exponential';
+    info.parameters(2).name = 'stretch factor d1 of 1st stretched exponential';
     info.parameters(2).range = [0 6];
-    info.parameters(2).default = 3;
+    info.parameters(2).default = 1;
     info.parameters(2).units = ' ';
     
     info.parameters(3).name = 'decay rate kappa2 of 2nd stretched exponential';
@@ -53,9 +53,9 @@ if nargin==0
     info.parameters(3).default = 3.5;
     info.parameters(3).units = 'us^-1';
     
-    info.parameters(4).name = 'fractal dimension d2 of 2nd stretched exponential';
+    info.parameters(4).name = 'stretch factor d2 of 2nd stretched exponential';
     info.parameters(4).range = [0 6];
-    info.parameters(4).default = 3;
+    info.parameters(4).default = 1;
     info.parameters(4).units = ' ';
     
     info.parameters(5).name = 'relative amplitude of 1st stretched exponential';
@@ -83,8 +83,8 @@ d1 = param(2);
 kappa2 = param(3);
 d2 = param(4);
 w1 = param(5);
-strexp1 = exp(-lambda*kappa1*abs(t).^(d1/3));
-strexp2 = exp(-lambda*kappa2*abs(t).^(d2/3));
+strexp1 = exp(-lambda*kappa1*abs(t).^d1);
+strexp2 = exp(-lambda*kappa2*abs(t).^d2);
 B = w1*strexp1 + (1-w1)*strexp2;
 B = B(:);
 output = B;

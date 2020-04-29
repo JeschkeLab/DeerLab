@@ -35,7 +35,7 @@ Model
 
 This implements a hard-shell excluded-volume model, with distance of closest approach ``R`` (first parameter) and spin concentration ``c`` (second parameter, in μM).
 
-The analytical expression for the decay function as a function of ``R`` and ``c`` is complicated, see Kattnig et al, J.Phys.Chem.B 2013, 117, 16542.
+The analytical expression for the decay function as a function of ``R`` and ``c`` is complicated, see `Kattnig et al, J.Phys.Chem.B 2013, 117, 16542 <https://pubs.acs.org/doi/abs/10.1021/jp408338q>`_.
 
 ============= =================== ========= ============= ============= ================================================
  Variable      Symbol              Default   Lower bound   Upper bound      Description

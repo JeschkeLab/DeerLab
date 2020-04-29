@@ -41,7 +41,7 @@ if nargin==0
     info.parameters(1).default = 0.25;
     info.parameters(1).units = 'us^-1';
     
-    info.parameters(2).name = 'fractal dimension d';
+    info.parameters(2).name = 'stretch factor d';
     info.parameters(2).range = [0 6];
     info.parameters(2).default = 1;
     info.parameters(2).units = ' ';
