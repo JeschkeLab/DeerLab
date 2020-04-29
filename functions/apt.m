@@ -46,27 +46,27 @@ end
 % APT algorithm
 %--------------------------------------------------------------------------
 
-%Turn off warnings to avoid ill-conditioned warnings 
+% Turn off warnings to avoid ill-conditioned warnings 
 warning('off','all')
 
-%Get APT kernel data
+% Get APT kernel data
 K = APTkernel.Base;
 NormConstant = APTkernel.NormalizationFactor;
 APT_FrequencyAxis = APTkernel.FreqAxis;
 APT_t = APTkernel.t(:).';
 Crosstalk = APTkernel.Crosstalk;
 
-%Compute frequency distribution
+% Compute frequency distribution
 [FreqDimension,~] = size(K);
 FreqP = zeros(1,FreqDimension);
 for k=1:FreqDimension
     FreqP(k) = FreqP(k)+sum(K(k,:).*S.*APT_t)/NormConstant(k);
 end
 
-%Perform crosstalk correction
+% Perform crosstalk correction
 APTdistribution = Crosstalk\FreqP'; % crosstalk correction, eqn [22]
 
-%Map fequencies to distances
+% Map fequencies to distances
 Freq2Dist = zeros(length(APT_FrequencyAxis),1); % initialize distance axis (mapping of dipolar frequencies to distances)
 for k = 1:length(Freq2Dist)
     Freq2Dist(k) = (52.04/APT_FrequencyAxis(k))^(1/3);
@@ -78,7 +78,7 @@ end
 APTdistribution = interp1(Freq2Dist,APTdistribution,MappedDistances,'pchip',0);
 APTdistribution = APTdistribution';
 
-%Perform distance-domain smoothing filtering
+% Perform distance-domain smoothing filtering
 FilteredAPTdistribution = zeros(length(APTdistribution),1);
 for k = 1:length(APTdistribution)
     DDSfilter = (MappedDistances - MappedDistances(k)*ones(1,length(MappedDistances)))/DistDomainSmoothing;
@@ -87,24 +87,24 @@ for k = 1:length(APTdistribution)
     FilteredAPTdistribution(k) = sum(DDSfilter.*APTdistribution)/sum(DDSfilter);
 end
 
-%Normalize integral
+% Normalize integral
 for k=1:length(APTdistribution)
     FilteredAPTdistribution(k) = FilteredAPTdistribution(k)/(MappedDistances(k))^4;
 end
-%Renormalize
+% Renormalize
 FilteredAPTdistribution = FilteredAPTdistribution/max(FilteredAPTdistribution);
 
-%Interpolate to uniform distance axis
+% Interpolate to uniform distance axis
 Uniformr = linspace(min(MappedDistances),max(MappedDistances),length(S));
 P = uniformgrain(MappedDistances,FilteredAPTdistribution,Uniformr);
 
-%Normalize to unity integral
+% Normalize to unity integral
 P = P/sum(P)/mean(diff(Uniformr));
 
-%Make the distribution a column
-P = P';
+% Make the distribution a column
+P = P(:);
 
-%Turn warnings back on
+% Turn warnings back on
 warning('on','all')
 
 end
