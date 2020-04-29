@@ -17,18 +17,15 @@ Syntax
 .. code-block:: matlab
 
         info = exp_ovl4pdeer(t)
-        K = exp_ovl4pdeer(t,r,param,Bmodel)
-        [K,B] = exp_ovl4pdeer(t,r,param,Bmodel)
+        pathways = exp_ovl4pdeer(t,param)
 
 Parameters
     *   ``t`` - Time axis (*M*-array)
-    *   ``r`` - Distance axis (*N*-array)
     *   ``param`` - Model parameters (array)
-    *   ``Bmodel`` - Background model (function handle)
 Returns
-    *   ``K`` - Dipolar kernel (*MxN*-array)
-    *   ``B`` - Experiment background (*M*-array)
+    *   ``pathways`` - Dipolar pathways (matrix)
     *   ``info`` - Model information (struct)
+
 
 
 -----------------------------
@@ -47,14 +44,14 @@ Model
 where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the two modulated dipolar pathways.
 
 
-============== ======================== ================= ==================== ==================== ============================================
+============== ======================== ================= ==================== ==================== ==============================================
  Variable        Symbol                   Default          Lower                Upper                Description
-============== ======================== ================= ==================== ==================== ============================================
+============== ======================== ================= ==================== ==================== ==============================================
 ``param(1)``   :math:`\Lambda_0`        0.1                0                    1                     unmodulated pathways, amplitude
 ``param(2)``   :math:`\lambda_1`        0.8                0                    1                     1st modulated pathway, amplitude
 ``param(3)``   :math:`\lambda_2`        0.1                0                    1                     2nd modulated pathway, amplitude
-``param(4)``   :math:`T_0^{(2)}`        :math:`\max(t)`   :math:`\max(t)-2`    :math:`\max(t)+2`      2nd modulated pathway, refocusing time
-============== ======================== ================= ==================== ==================== ============================================
+``param(4)``   :math:`T_0^{(2)}`        :math:`\max(t)`   :math:`\max(t)-2`    :math:`\max(t)+2`      2nd modulated pathway, refocusing time [us]
+============== ======================== ================= ==================== ==================== ==============================================
 
 
 Example of a simulated signal using default parameters:
@@ -80,18 +77,10 @@ Returns an ``info`` structure containing the specifics of the model:
 
 -----------------------------
 
-
 .. code-block:: matlab
 
-    [K,B] = exp_ovl4pdeer(t,r,param,Bmodel)
+    pathways = exp_ovl4pdeer(t,param)
 
-Computes the distance distribution model ``P`` from the time axis ``t`` and distance axis ``r`` according to the parameters array ``param``.  The required parameters can also be found in the ``info`` structure. 
-
-The full background ``B`` is also computed from the basic background model ``Bmodel``, which has to be passed as a function of the time-axis ``t``. For example: 
-
-.. code-block:: matlab
-
-    Bmodel = @(t) bg_exp(t,k);
-    [K,B] = exp_ovl4pdeer(t,r,param,Bmodel)
+Generates the dipolar pathways matrix ``pathways`` from the time-axis ``t`` and model parameters ``param``. 
 
 

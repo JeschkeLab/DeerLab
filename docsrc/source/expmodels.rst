@@ -11,6 +11,7 @@ Model function           Description
 :ref:`exp_4pdeer`         4-pulse DEER experiment
 :ref:`exp_ovl4pdeer`      4-pulse DEER with overlapping observer pulse
 :ref:`exp_5pdeer`         5-pulse DEER experiment
+:ref:`exp_7pdeer`         7-pulse DEER experiment
 ======================= ===============================================================
 
 

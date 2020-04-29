@@ -17,17 +17,13 @@ Syntax
 .. code-block:: matlab
 
         info = exp_4pdeer(t)
-        K = exp_4pdeer(t,r,param,Bmodel)
-        [K,B] = exp_4pdeer(t,r,param,Bmodel)
+        pathways = exp_4pdeer(t,param)
 
 Parameters
     *   ``t`` - Time axis (*M*-array)
-    *   ``r`` - Distance axis (*N*-array)
     *   ``param`` - Model parameters (array)
-    *   ``Bmodel`` - Background model (function handle)
 Returns
-    *   ``K`` - Dipolar kernel (*MxN*-array)
-    *   ``B`` - Experiment background (*M*-array)
+    *   ``pathways`` - Dipolar pathways (matrix)
     *   ``info`` - Model information (struct)
 
 
@@ -80,15 +76,8 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    [K,B] = exp_4pdeer(t,r,param,Bmodel)
+    pathways = exp_4pdeer(t,param)
 
-Computes the distance distribution model ``P`` from the time axis ``t`` and distance axis ``r`` according to the parameters array ``param``.  The required parameters can also be found in the ``info`` structure. 
-
-The full background ``B`` is also computed from the basic background model ``Bmodel``, which has to be passed as a function of the time-axis ``t``. For example: 
-
-.. code-block:: matlab
-
-    Bmodel = @(t) bg_exp(t,k);
-    [K,B] = exp_4pdeer(t,r,param,Bmodel)
+Generates the dipolar pathways matrix ``pathways`` from the time-axis ``t`` and model parameters ``param``. 
 
 

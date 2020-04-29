@@ -1,12 +1,12 @@
 .. highlight:: matlab
-.. _exp_5pdeer:
+.. _exp_7pdeer:
 
 
 ***********************
-:mod:`exp_5pdeer`
+:mod:`exp_7pdeer`
 ***********************
 
-5-pulse DEER experiment 
+7-pulse DEER experiment 
 
 -----------------------------
 
@@ -16,8 +16,8 @@ Syntax
 
 .. code-block:: matlab
 
-        info = exp_5pdeer(t)
-        pathways = exp_5pdeer(t,param)
+        info = exp_7pdeer(t)
+        pathways = exp_7pdeer(t,param)
 
 Parameters
     *   ``t`` - Time axis (*M*-array)
@@ -32,15 +32,16 @@ Returns
 Model
 =========================================
 
-.. image:: ../images/model_scheme_exp_5pdeer.png
-   :width: 550px
+.. image:: ../images/model_scheme_exp_7pdeer.png
+   :width: 650px
 
+In order to reduce the parameter space, only the dipolar pathways refocusing at positive times (pathways #1-3) are considered in this model:
 
-:math:`V(t) = [\Lambda_0 + \lambda_1D(t-T_0^{(1)}) + \lambda_2D(t-T_0^{(2)})]B(t)B(t - T_0^{(2)})`
+:math:`V(t) = [\Lambda_0 + \sum^3_{p=1} \lambda_p D(t-T_0^{(p)}))]\prod^3_{p=1} B(t - T_0^{(p)})`
 
-:math:`K(t,r) = [\Lambda_0 + \lambda_1K(t-T_0^{(1)},r) + \lambda_2K(t-T_0^{(2)},r)]B(t)B(t - T_0^{(2)})`
+:math:`K(t,r) = [\Lambda_0 + \sum^3_{p=1} \lambda_p K(t-T_0^{(p)},r)]\prod^3_{p=1} B(t - T_0^{(p)})`
 
-where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the two modulated dipolar pathways.
+where :math:`T_0^{(1)}=0\;\mu s`, :math:`T_0^{(2)}`, and :math:`T_0^{(3)}` are the refocusing times of the three modulated dipolar pathways  at positive evolution times.
 
 
 ============== ======================== ================= ==================== ==================== =============================================
@@ -49,13 +50,15 @@ where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the 
 ``param(1)``   :math:`\Lambda_0`        0.4                0                    1                     unmodulated pathways, amplitude
 ``param(2)``   :math:`\lambda_1`        0.4                0                    1                     1st modulated pathway, amplitude
 ``param(3)``   :math:`\lambda_2`        0.2                0                    1                     2nd modulated pathway, amplitude
-``param(4)``   :math:`T_0^{(2)}`        :math:`\max(t)/2`  :math:`\max(t)/2-2`  :math:`\max(t)/2+2`   2nd modulated pathway, refocusing time [us]
+``param(4)``   :math:`\lambda_3`        0.2                0                    1                     3rd modulated pathway, amplitude
+``param(5)``   :math:`T_0^{(2)}`        `1/5\max(t)`       `1/5\max(t)-2`       `1/5\max(t)+2`        2nd modulated pathway, refocusing time [us]
+``param(6)``   :math:`T_0^{(3)}`        `2/5\max(t)`       `2/5\max(t)-2`       `2/5\max(t)+2`        3rd modulated pathway, refocusing time [us]
 ============== ======================== ================= ==================== ==================== =============================================
 
 
 Example of a simulated signal using default parameters:
 
-.. image:: ../images/model_exp_5pdeer.png
+.. image:: ../images/model_exp_7pdeer.png
    :width: 550px
 
 -----------------------------
@@ -66,7 +69,7 @@ Description
 
 .. code-block:: matlab
 
-        info = exp_5pdeer(t)
+        info = exp_7pdeer(t)
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -78,7 +81,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-        pathways = exp_5pdeer(t,param)
+        pathways = exp_7pdeer(t,param)
 
 Generates the dipolar pathways matrix ``pathways`` from the time-axis ``t`` and model parameters ``param``. 
 
