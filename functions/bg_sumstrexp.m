@@ -36,29 +36,29 @@ end
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.model  = 'Sum of two stretched exponentials';
+    info.model  = 'sum of two stretched exponentials';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Decay rate kappa1 of 1st stretched exponential';
+    info.parameters(1).name = 'decay rate kappa1 of 1st stretched exponential';
     info.parameters(1).range = [0 200];
     info.parameters(1).default = 3.5;
     info.parameters(1).units = 'us^-1';
     
-    info.parameters(2).name = 'Fractal dimension d1 of 1st stretched exponential';
+    info.parameters(2).name = 'fractal dimension d1 of 1st stretched exponential';
     info.parameters(2).range = [0 6];
     info.parameters(2).default = 3;
     info.parameters(2).units = ' ';
     
-    info.parameters(3).name = 'Decay rate kappa2 of 2nd stretched exponential';
+    info.parameters(3).name = 'decay rate kappa2 of 2nd stretched exponential';
     info.parameters(3).range = [0 200];
     info.parameters(3).default = 3.5;
     info.parameters(3).units = 'us^-1';
     
-    info.parameters(4).name = 'Fractal dimension d2 of 2nd stretched exponential';
+    info.parameters(4).name = 'fractal dimension d2 of 2nd stretched exponential';
     info.parameters(4).range = [0 6];
     info.parameters(4).default = 3;
     info.parameters(4).units = ' ';
     
-    info.parameters(5).name = 'Relative amplitude of 1st stretched exponential';
+    info.parameters(5).name = 'relative amplitude of 1st stretched exponential';
     info.parameters(5).range = [0 1];
     info.parameters(5).default = 0.5;
     info.parameters(5).units = ' ';

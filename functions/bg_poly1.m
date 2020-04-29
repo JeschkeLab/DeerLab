@@ -34,14 +34,14 @@ end
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.model  = 'Polynomial 1st Order';
+    info.model  = 'Polynomial 1st order';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Intercept p0';
+    info.parameters(1).name = 'intercept p0';
     info.parameters(1).range = [0 200];
     info.parameters(1).default = 1;
     info.parameters(1).units = ' ';
     
-    info.parameters(2).name = 'Slope p1';
+    info.parameters(2).name = 'slope p1';
     info.parameters(2).range = [-200 200];
     info.parameters(2).default = -1;
     info.parameters(2).units = 'us^-1';

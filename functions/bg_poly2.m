@@ -35,19 +35,19 @@ end
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.model  = 'Polynomial 2nd Order';
+    info.model  = 'polynomial 2nd order';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Intercept p0';
+    info.parameters(1).name = 'intercept p0';
     info.parameters(1).range = [0 200];
     info.parameters(1).default = 1;
     info.parameters(1).units = ' ';
 
-    info.parameters(2).name = '1st order weight p1';
+    info.parameters(2).name = '1st-order coefficient p1';
     info.parameters(2).range = [-200 200];
     info.parameters(2).default = -1;
     info.parameters(2).units = 'us^-1';
     
-    info.parameters(3).name = '2nd order weight p2';
+    info.parameters(3).name = '2nd-order coefficient p2';
     info.parameters(3).range = [-200 200];
     info.parameters(3).default = -1;
     info.parameters(3).units = 'us^-2';

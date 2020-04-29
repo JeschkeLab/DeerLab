@@ -33,14 +33,14 @@ end
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.model  = 'Homogenous distribution in d dimensions (0<d<6)';
+    info.model  = 'homogenous distribution in d dimensions (0<d<6)';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Spin concentration c';
+    info.parameters(1).name = 'spin concentration c';
     info.parameters(1).range = [0.01 5000];
     info.parameters(1).default = 50;
     info.parameters(1).units = 'umol dm^-d';
         
-    info.parameters(2).name = 'Dimension d';
+    info.parameters(2).name = 'dimension d';
     info.parameters(2).range = [eps 6-6*eps];
     info.parameters(2).default = 3;
     info.parameters(2).units = ' ';

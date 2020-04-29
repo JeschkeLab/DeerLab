@@ -67,6 +67,8 @@ if nargin<5, bg_model = @bg_exp; end
 if nargin<6, exp_model = @exp_4pdeer; end
 if nargin<7, par0 = {[],[],[]}; end
 
+calculateCI = nargin>=5 || nargout==0;
+
 if ~isempty(par0)
     if ~iscell(par0) || numel(par0)~=3
         error('Initial parameters (7th input) must be a 3-element cell array.')
@@ -158,7 +160,11 @@ else
     par_prev = [];
     regparam_prev = [];
     % Fit the parameters
-    [parfit_,~,parci_] = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper);
+    if calculateCI
+        [parfit_,~,parci_] = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper);
+    else
+        parfit_ = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper);
+    end
   
     % Calculate the fitted signal, background, and distribution
     alpha = regparam; % use original setting for final run
@@ -171,9 +177,11 @@ parfit.dd = parfit_(ddidx);
 parfit.bg = parfit_(bgidx);
 parfit.ex = parfit_(exidx);
 
-parci.dd = parci_(ddidx,:);
-parci.bg = parci_(bgidx,:);
-parci.ex = parci_(exidx,:);
+if calculateCI
+    parci.dd = parci_(ddidx,:);
+    parci.bg = parci_(bgidx,:);
+    parci.ex = parci_(exidx,:);
+end
 
 % Plotting
 if nargout==0
@@ -186,10 +194,33 @@ if nargout==0
     legend('exp','fit');
     subplot(2,1,2);
     plot(r,Pfit);
-    ylabel('distance (nm)');
+    xlabel('distance (nm)');
     axis tight
     ylabel('P (nm^{-1})');
     grid on
+    
+    disp('Fitted parameters and confidence intervals')
+    if numel(parfit.dd)>0
+        pars = dd_model().parameters;
+        for p = 1:numel(parfit.dd)
+            fprintf('  dd(%d):   %10f  (%10f, %10f)  %s (%s)\n',p,parfit.dd(p),...
+                parci.dd(p,1),parci.dd(p,2),pars(p).name,pars(p).units);
+        end
+    end
+    if numel(parfit.bg)>0
+        for p = 1:numel(parfit.bg)
+            pars = bg_model().parameters;
+            fprintf('  bg(%d):   %10f  (%10f, %10f)  %s (%s)\n',p,parfit.bg(p),...
+                parci.bg(p,1),parci.bg(p,2),pars(p).name,pars(p).units)
+        end
+    end
+    if numel(parfit.ex)>0
+        for p = 1:numel(parfit.ex)
+            pars = exp_model(t).parameters;
+            fprintf('  ex(%d):   %10f  (%10f, %10f)  %s (%s)\n',p,parfit.ex(p),...
+                parci.ex(p,1),parci.ex(p,2),pars(p).name,pars(p).units)
+        end
+    end
 end
 
     % General multi-pathway DEER signal model function

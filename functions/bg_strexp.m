@@ -34,14 +34,14 @@ end
 
 if nargin==0
     %If no inputs given, return info about the parametric model
-    info.model  = 'Stretched exponential';
+    info.model  = 'stretched exponential';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Decay rate kappa';
+    info.parameters(1).name = 'decay rate kappa';
     info.parameters(1).range = [0 200];
     info.parameters(1).default = 0.25;
     info.parameters(1).units = 'us^-1';
     
-    info.parameters(2).name = 'Fractal dimension d';
+    info.parameters(2).name = 'fractal dimension d';
     info.parameters(2).range = [0 6];
     info.parameters(2).default = 3;
     info.parameters(2).units = ' ';

@@ -35,7 +35,7 @@ if nargin==0
     % If no inputs given, return info about the parametric model
     info.model  = 'Exponential';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Decay rate kappa';
+    info.parameters(1).name = 'decay rate kappa';
     info.parameters(1).range = [0 200];
     info.parameters(1).default = 0.35;
     info.parameters(1).units = 'us^-1';
