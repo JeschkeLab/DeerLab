@@ -301,7 +301,8 @@ P = P/sum(P)/dr;
 % Calculate confidence intervals
 %-------------------------------------------------------------------------------
 if getConfidenceIntervals
-    
+     warning('off','MATLAB:nearlySingularMatrix')
+     
     % Estimate the contribution to P variance from the different signals
     sigP = 0;
     for i = 1:numel(V)
