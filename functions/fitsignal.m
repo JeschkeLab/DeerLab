@@ -1,7 +1,7 @@
 %
 % FITSIGNAL  Fit model to dipolar time-domain trace
 %
-%   [Vfit,Pfit,Bfit,parfit,parci] = FITSIGNAL(V,t,r,dd,bg,ex,par0)
+%   [Vfit,Pfit,Bfit,parfit,parci,stats] = FITSIGNAL(V,t,r,dd,bg,ex,par0)
 %   __ = FITSIGNAL(V,t,r,dd,bg)
 %   __ = FITSIGNAL(V,t,r,dd)
 %   __ = FITSIGNAL(V,t,r)
@@ -39,7 +39,8 @@
 %           .bg  fitted parameters for background model
 %           .ex  fitted parameters for experiment model
 %    parci structure with confidence intervals for parameter, similar to parfit
-%
+%    stats goodness of fit statistical estimators, N-element structure array 
+
 % Example:
 %    Vfit = fitsignal(Vexp,t,r,@dd_gauss,@bg_exp,@exp_4pdeer)
 %
@@ -47,7 +48,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [Vfit,Pfit,Bfit,parfit,parci] = fitsignal(Vexp,t,r,dd_model,bg_model,exp_model,par0)
+function [Vfit,Pfit,Bfit,parfit,parci,stats] = fitsignal(Vexp,t,r,dd_model,bg_model,exp_model,par0)
 
 if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
@@ -67,7 +68,7 @@ if nargin<5, bg_model = @bg_exp; end
 if nargin<6, exp_model = @exp_4pdeer; end
 if nargin<7, par0 = {[],[],[]}; end
 
-calculateCI = nargin>=5 || nargout==0;
+calculateCI = nargout>=5 || nargout==0;
 
 if ~isempty(par0)
     if ~iscell(par0) || numel(par0)~=3
@@ -161,9 +162,9 @@ else
     regparam_prev = [];
     % Fit the parameters
     if calculateCI
-        [parfit_,~,parci_] = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper);
+        [parfit_,~,parci_,~,stats] = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',1e-5,'Verbose','iter-detailed');
     else
-        parfit_ = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper);
+        parfit_ = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',1e-5);
     end
   
     % Calculate the fitted signal, background, and distribution
@@ -225,19 +226,21 @@ end
 
     % General multi-pathway DEER signal model function
     function [V,B,P] = Vmodel(t,par)
-        
         % Calculate the background and the experiment kernel matrix
-        Bfcn = @(t,lam) bg_model(t,par(bgidx),lam);        
         if includeExperiment
+            pathinfo = exp_model(t,par(exidx));
             if includeBackground
-                [K,B] = exp_model(t,r,par(exidx),Bfcn);
+                Bfcn = @(t,lam) bg_model(t,par(bgidx),lam);
+                B = dipolarbackground(t,pathinfo,Bfcn);
             else
-                K = exp_model(t,r,par(exidx));
+                Bfcn = [];
                 B = ones(numel(t),1);
             end
+            K = dipolarkernel(t,r,pathinfo,Bfcn);
         else
             K = dipolarkernel(t,r);
             if includeBackground
+                Bfcn = @(t) bg_model(t,par(bgidx));
                 B = Bfcn(t);
             else
                 B = ones(numel(t),1);
@@ -273,7 +276,6 @@ end
         else
             V = B;
         end
-        
     end
     
 end

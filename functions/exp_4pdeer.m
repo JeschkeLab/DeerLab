@@ -4,12 +4,10 @@
 %   info = EXP_4PDEER(t)
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   [K,B] = EXP_4PDEER(t,r,param)
-%   [K,B] = EXP_4PDEER(t,r,param,Bmodel)
-%   Computes the NxM dipolar kernel (K) and N-point multi-pathway background (B) 
-%   from the N-point time axis (t) and M-point distance axis (r) according to
-%   the paramteres array (param) and background model (Bmodel). The required
-%   parameters can also be found in the (info) structure.
+%   pathways = EXP_4PDEER(t,param)
+%   Computes the dipolar pathway informatio matrix according to the paramters
+%   array (param) and the specified experiment. The required parameters can
+%   also be found in the (info) structure.
 %
 %
 % PARAMETERS
@@ -22,19 +20,12 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function varargout = exp_4pdeer(t,r,param,Bmodel)
+function output = exp_4pdeer(t,param)
 
 nParam = 1;
 
-if nargin==2
-    error('Model doesn''t work with 2 input arguments.')
-end
-if nargin>4
-    error('Model takes at most 4 input arguments, not %d.',nargin)
-end
-
-if nargin<4
-  Bmodel = [];
+if nargin~=1 && nargin>2
+    error('Model requires at two input arguments.')
 end
 
 if nargin==1
@@ -46,7 +37,7 @@ if nargin==1
     info.parameters(1).default = 0.3;
     info.parameters(1).units = '';
     
-    varargout{1} = info;
+    output = info;
     return
 end
 
@@ -55,23 +46,10 @@ if length(param)~=nParam
     error('The number of input parameters does not match the number of model parameters.')
 end
 
-% Parse input
-validateattributes(r,{'numeric'},{'nonnegative','increasing','nonempty'},mfilename,'r')
-
 % Dipolar pathways
 lambda = param(1);
 pathway(1,:) = [1-lambda NaN];
 pathway(2,:) = [lambda 0];
-
-% Construct multi-pathway kernel and background
-if ~isempty(Bmodel)
-    K = dipolarkernel(t,r,pathway,Bmodel);
-    B = Bmodel(t,lambda);
-else
-    K = dipolarkernel(t,r,pathway);
-    B = ones(size(t));
-end
-varargout{1} = K;
-varargout{2} = B;
+output = pathway;
 
 end

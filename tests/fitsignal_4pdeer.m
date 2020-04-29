@@ -10,11 +10,11 @@ P = dd_gauss(r,[4.5 0.6]);
 
 info = exp_4pdeer(t);
 parIn = [info.parameters.default];
+pathinfo = exp_4pdeer(t,parIn);
 
 kappa = 0.4;
 Bmodel = @(t,lam) bg_exp(t,kappa,lam);
-K = exp_4pdeer(t,r,parIn,Bmodel);
-
+K = dipolarkernel(t,r,pathinfo,Bmodel);
 V = K*P + whitegaussnoise(t,0.01);
 
 [Vfit,Pfit] = fitsignal(V,t,r,'P',@bg_exp,@exp_4pdeer);
