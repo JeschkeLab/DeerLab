@@ -199,15 +199,15 @@ end
 % Solver
 OptimizationToolboxInstalled = optimtoolbox_installed();
 if isempty(Solver) && ~OptimizationToolboxInstalled
-    Solver = 'fminsearchcon';
+    Solver = 'lmlsqnonlin';
 elseif isempty(Solver) && OptimizationToolboxInstalled
     Solver = 'lsqnonlin';
 else
     validateattributes(Solver,{'char'},{'nonempty'},mfilename,'Solver')
     if OptimizationToolboxInstalled
-        SolverList = {'fminsearchcon','lsqnonlin','fmincon','fminsearch','nlsqbnd'};
+        SolverList = {'fminsearchcon','lsqnonlin','fmincon','fminsearch','nlsqbnd','lmlsqnonlin'};
     else
-        SolverList = {'fminsearchcon','fminsearch','nlsqbnd'};
+        SolverList = {'fminsearchcon','fminsearch','nlsqbnd','lmlsqnonlin'};
     end
     validatestring(Solver,SolverList);
 end
@@ -392,6 +392,16 @@ for runIdx = 1:MultiStart
                 % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
                 solverOpts = optimoptions(solverOpts,'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,'Display',Verbose);
                 [parfit,fval,~,~,~,~]  = lsqnonlin(VecObjFcn,parfit,lowerBounds,upperBounds,solverOpts);
+            end
+            
+        case 'lmlsqnonlin'
+            
+            solverOpts = struct('Display',Verbose,'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,'TolFun',TolFun);
+            [parfit,fval,~,exitflag,~,~]  = lmlsqnonlin(VecObjFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
+            if exitflag == 0
+                % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
+                 solverOpts = struct('Display',Verbose,'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,'TolFun',TolFun);
+                [parfit,fval,~,~,~,~]  = lmlsqnonlin(VecObjFcn,parfit,lowerBounds,upperBounds,solverOpts);
             end
             
         case 'nlsqbnd'

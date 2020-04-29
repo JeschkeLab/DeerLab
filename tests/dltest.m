@@ -209,7 +209,7 @@ for iTest = 1:numel(TestFileNames)
             if ~isnan(maxerr(iTest))
                 maxerrStr = sprintf('% 0.2e ',maxerr(iTest));
             else
-                maxerrStr = ' --------';
+                maxerrStr = ' -------- ';
             end
         else
             maxerrStr = [];
