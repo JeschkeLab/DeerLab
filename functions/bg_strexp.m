@@ -14,8 +14,8 @@
 % PARAMETERS
 % name    symbol default lower bound upper bound
 % ------------------------------------------------------------------
-% PARAM(1) kappa     0.25      0            200        decay rate
-% PARAM(2)   d       3         0            6          fractal dimension
+% PARAM(1) kappa   0.25        0           200         decay rate
+% PARAM(2)   d       1         0            6          stretch factor
 % ------------------------------------------------------------------
 %
 
@@ -43,7 +43,7 @@ if nargin==0
     
     info.parameters(2).name = 'fractal dimension d';
     info.parameters(2).range = [0 6];
-    info.parameters(2).default = 3;
+    info.parameters(2).default = 1;
     info.parameters(2).units = ' ';
     
     output = info;
@@ -62,7 +62,7 @@ end
 % If necessary inputs given, compute the model background
 kappa = param(1);
 d = param(2);
-Background = exp(-lambda*kappa*abs(t).^(d/3));
+Background = exp(-lambda*kappa*abs(t).^d);
 if ~iscolumn(Background)
     Background = Background';
 end

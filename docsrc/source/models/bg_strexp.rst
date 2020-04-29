@@ -35,13 +35,13 @@ Outputs
 Model
 =========================================
 
-:math:`B(t) = \exp\left(-\lambda\kappa_d\vert t\vert^{d/3}\right)`
+:math:`B(t) = \exp\left(-\lambda \kappa \vert t\vert^{d}\right)`
 
 ============= ================= ========= ============= ============= ========================
  Variable       Symbol            Default   Lower bound   Upper bound      Description
 ============= ================= ========= ============= ============= ========================
-``param(1)``   :math:`\kappa_d`    3.5      0              200           Decay rate
-``param(2)``   :math:`d`           3        0              6             Fractal dimension
+``param(1)``   :math:`\kappa`      3.5      0              200           Decay rate
+``param(2)``   :math:`d`           1        0              6             Stretch factor
 ============= ================= ========= ============= ============= ========================
 
 -----------------------------
