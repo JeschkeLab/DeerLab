@@ -162,7 +162,7 @@ else
     regparam_prev = [];
     % Fit the parameters
     if calculateCI
-        [parfit_,~,parci_,~,stats] = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',1e-5,'Verbose','iter-detailed');
+        [parfit_,~,parci_,~,stats] = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',1e-5);
     else
         parfit_ = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',1e-5);
     end
