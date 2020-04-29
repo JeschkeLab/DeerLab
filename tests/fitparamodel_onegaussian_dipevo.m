@@ -11,7 +11,7 @@ K = dipolarkernel(t,r);
 S = K*P;
 
 par0 = [2 0.1];
-[parFit,Pfit] = fitparamodel(S,@dd_gauss,r,K,par0,'Solver','fmincon');
+[parFit,Pfit] = fitparamodel(S,@dd_gauss,r,K,par0);
 
 %Pass 1: distance distribution is well fitted
 pass(1) = all(abs(Pfit - P) < 1e-5);

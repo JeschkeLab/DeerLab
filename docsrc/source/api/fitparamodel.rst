@@ -160,22 +160,20 @@ Additional settings can be specified via name-value pairs. All property names ar
 - ``'Solver'`` - Optimization solver
     Numerical solver employed for fitting the model to the data.
 
-        *   ``'lsqnonlin'`` - Non-linear least squares (requires Opt. toolbox)
-        *   ``'fminsearch'`` - Unconstrained minimization (free)
-        *   ``'fmincon'`` - Constrained non-linear minimization solver (requires Opt. toolbox)
-        *   ``'fminsearchcon'`` - Constrained non-linear minimization solver (free)
-        *   ``'nlsqbnd'`` - Non-linear least squares (free)
+        *   ``'lsqnonlin'`` - Non-linear least squares (requires Optimization toolbox)
+        *   ``'lmlsqnonlin'`` - Levenberg-Marquardt non-linear least squares (free)
+        *   ``'nlsqbnd'`` - Non-linear least squares (free, Windows OS only)
 
-    *Default:* ``'lsqnonlin'`` (Optimization Toolbox installed) or ``'nlsqbnd'`` (Optimization Toolbox not installed)
+    *Default:* ``'lsqnonlin'`` (Optimization Toolbox installed) or ``'lmlsqnonlin'`` (Optimization Toolbox not installed)
 
     *Example:*
 
 		.. code-block:: matlab
 
-			param = fitparamodel(___,'Solver','fmincon')
+			param = fitparamodel(___,'Solver','lmlsqnonlin')
 
 - ``'Algorithm'`` - Numerical solver algorithm
-    Algorithm to be used by the solvers (see ``fmincon`` or ``lsqnonlin`` MATLAB documentation)
+    Algorithm to be used by the solvers (see ``lsqnonlin`` MATLAB documentation)
 
     *Default:* see MATLAB documentation
 
@@ -194,7 +192,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			param = fitparamodel({S1,S2,S3},{K1,K2,K3},r,L,'tikhonov',a,'GlobalWeights',[0.1 0.6 0.3]])
+			param = fitparamodel({S1,S2,S3},@dd_gauss,r,{K1,K2,K3},'GlobalWeights',[0.1 0.6 0.3]])
 
 - ``'TolFun'`` -  Optimizer tolerance value
     Optimizer function tolerance. The solver stops once the fitting functional evaluation reaches a value lower than this tolerance. Lower values increase the precision of the result, albeit at the cost of longer computation times.

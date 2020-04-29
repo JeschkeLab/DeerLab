@@ -205,9 +205,9 @@ elseif isempty(Solver) && OptimizationToolboxInstalled
 else
     validateattributes(Solver,{'char'},{'nonempty'},mfilename,'Solver')
     if OptimizationToolboxInstalled
-        SolverList = {'fminsearchcon','lsqnonlin','fmincon','fminsearch','nlsqbnd','lmlsqnonlin'};
+        SolverList = {'lsqnonlin','nlsqbnd','lmlsqnonlin'};
     else
-        SolverList = {'fminsearchcon','fminsearch','nlsqbnd','lmlsqnonlin'};
+        SolverList = {'nlsqbnd','lmlsqnonlin'};
     end
     validatestring(Solver,SolverList);
 end
@@ -350,38 +350,7 @@ for runIdx = 1:MultiStart
     StartParameters = MultiStartParameters(runIdx,:);
     
     % Fit the parametric model...
-    switch Solver
-        case 'fminsearchcon'
-            % ...under constraints for the parameter values range
-            solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
-                'TolFun',TolFun,'TolCon',1e-20,...
-                'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [parfit,fval,exitflag] = fminsearchcon(ObjFcn,StartParameters,lowerBounds,upperBounds,[],[],[],solverOpts);
-            % Check how optimization exited...
-            if exitflag == 0
-                % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-                solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
-                    'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,...
-                    'TolFun',TolFun,'TolCon',1e-10,...
-                    'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-                [parfit,fval] = fminsearchcon(ObjFcn,parfit,lowerBounds,upperBounds,[],[],[],solverOpts);
-            end
-            
-        case 'fmincon'
-            % ...under constraints for the parameter values range
-            solverOpts = optimoptions(@fmincon,'Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
-                'TolFun',TolFun,'TolCon',1e-20,'StepTolerance',1e-20,...
-                'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [parfit,fval,exitflag]  = fmincon(ObjFcn,StartParameters,[],[],[],[],lowerBounds,upperBounds,[],solverOpts);
-            % Check how optimization exited...
-            if exitflag == 0
-                % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-                solverOpts = optimoptions(solverOpts,'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,'Display',Verbose);
-                [parfit,fval]  = fmincon(ObjFcn,parfit,[],[],[],[],lowerBounds,upperBounds,[],solverOpts);
-            end
-            
+    switch Solver           
         case 'lsqnonlin'
             solverOpts = optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display',Verbose,...
                 'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
@@ -393,7 +362,6 @@ for runIdx = 1:MultiStart
                 solverOpts = optimoptions(solverOpts,'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,'Display',Verbose);
                 [parfit,fval,~,~,~,~]  = lsqnonlin(VecObjFcn,parfit,lowerBounds,upperBounds,solverOpts);
             end
-            
         case 'lmlsqnonlin'
             
             solverOpts = struct('Display',Verbose,'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,'TolFun',TolFun);
@@ -420,17 +388,6 @@ for runIdx = 1:MultiStart
                     'DiffMinChange',1e-8,'DiffMaxChange',0.1);
                 [parfit,fval] = nlsqbnd(VecObjFcn,parfit,lowerBounds,upperBounds,solverOpts);
             end
-            
-        case 'fminsearch'
-            % ...unconstrained with all possible values
-            if strcmp(Verbose,'iter-detailed')
-                Verbose = 'iter';
-            end
-            solverOpts=optimset('Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
-                'TolFun',TolFun,'TolCon',1e-10,...
-                'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [parfit,fval]  = fminsearch(ObjFcn,StartParameters,solverOpts);
     end
     
     fvals(runIdx) = fval;

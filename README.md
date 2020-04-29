@@ -15,9 +15,9 @@
 ### About
 The DeerLab software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar EPR spectroscopy techniques (RIDME, DQC, SIFTER). The main homepage can be found at [jeschkelab.github.io/DeerLab](https://jeschkelab.github.io/DeerLab/). This is the GitHub repository of the DeerLab source code, including instructions for compiling and installing DeerLab.
 
-It consists of a collection of functions that perform processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows.
+It consists of a collection of functions that perform modelling, processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows.
 
-To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background models. There are functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
+To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background and experiment models. There are functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
 
 ### Requirements
 DeerLab requires the following products:
@@ -58,9 +58,10 @@ DeerLab includes code from the following projects, which have their own licenses
 - [datahash.m](https://www.mathworks.com/matlabcentral/fileexchange/31272-datahash) (Hash-key generator by Jan Simon) [BSD] 
 - [fresnelS.m, fresnelC.m](https://www.mathworks.com/matlabcentral/fileexchange/28765-fresnels-and-fresnelc) (Efficient and accurate Fresnel integrals by John D'Errico) [BSD]
 - [fminsearchcon.m](https://www.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd-fminsearchcon) (Bound constrained optimization using fminsearch by John D'Errico) [BSD]
-- [nlsqbnd.m](https://www.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd-fminsearchcon) (Non-linear least squares solver with box constraints by Alain Barraud) [BSD]
+- [nlsqbnd.m](https://ch.mathworks.com/matlabcentral/fileexchange/23621-nlsqbnd) (Non-linear least squares solver with box constraints by Alain Barraud) [BSD]
 - [golden.m](https://www.mathworks.com/matlabcentral/fileexchange/25919-golden-section-method-algorithm) (Golden Section method algorithm by Katarzyna Zarnowiec) [BSD]
 - [jacobianest.m](https://www.mathworks.com/matlabcentral/fileexchange/13490-adaptive-robust-numerical-differentiation) (Adaptive Robust Numerical Differentiation by John D'Errico) [BSD]
 - [kde.m](https://ch.mathworks.com/matlabcentral/fileexchange/14034-kernel-density-estimator) (Kernel Density Estimator by Zdravko Botev) [BSD]
+- [LevenbergMarquardt.m, jacobiansimple.m](https://ch.mathworks.com/matlabcentral/fileexchange/53449-levenberg-marquardt-toolbox)(Levenberg-Marquardt & Jacobian toolbox by Alexander Dentler)[BSD]
 
 Copyright (c) 2019-2020: Luis Fabregas, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).
