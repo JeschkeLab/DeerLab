@@ -137,20 +137,6 @@ if numel(unique(round(diff(r),6)))~=1 && length(r)~=1
 end
 validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t');
 
-% Memoization
-%-------------------------------------------------------------------------------
-persistent cachedData
-if useCache
-    if isempty(cachedData)
-        cachedData =  java.util.LinkedHashMap;
-    end
-    hashKey = datahash({t,r,varargin});
-    if cachedData.containsKey(hashKey)
-       Output = cachedData.get(hashKey);
-       K  = java2mat(Output);
-       return
-    end
-end
 
 % Validation of the multi-pathway parameters
 %-------------------------------------------------------------------------------
@@ -170,7 +156,7 @@ if any(isnan(pathinfo(:,1)))
   error('In pathinfo, NaN can only appear in the second column (refocusing time) e.g. path(1,:) = [Lam0 NaN];');
 end
 
-%Nomalize the pathway amplitudes to unity
+% Normalize the pathway amplitudes to unity
 pathinfo(:,1) = pathinfo(:,1)/sum(pathinfo(:,1));
 lambda = pathinfo(:,1);
 T0 = pathinfo(:,2);
@@ -215,17 +201,13 @@ w0 = 2*pi*nu0; % Mrad s^-1 nm^3
 % Get vector of dipolar frequencies at all distances
 wdd = w0./r.^3;
 
-% Set kernel matrix calculation method
-switch Method
-    case 'fresnel'
-        kernelmatrix = @(t)kernelmatrix_fresnel(t,wdd);
-    case 'integral'
-        kernelmatrix = @(t)kernelmatrix_integral(t,wdd,ExcitationBandwidth);
-    case 'grid'
-        kernelmatrix = @(t)kernelmatrix_grid(t,wdd,nKnots,ExcitationBandwidth);
-    otherwise
-        error('Kernel calculation method ''%s'' is unknown.',Method);
+% Memoization
+if useCache
+    kernelmatrix_ = memoize(@calckernelmatrix);
+else
+    kernelmatrix_ = @calckernelmatrix;
 end
+kernelmatrix = @(t)kernelmatrix_(Method,t,wdd,ExcitationBandwidth,nKnots);
 
 % Build dipolar kernel matrix, summing over all pathways
 K = Lambda0;
@@ -254,9 +236,22 @@ if length(r)>1
     K = K*dr;
 end
 
-% Store output result in the cache
-if useCache
-    cachedData = addcache(cachedData,hashKey,K);
+end
+
+
+%===============================================================================
+% Calculate elementary kernel
+function K = calckernelmatrix(method,t,wdd,wex,nKnots)
+
+switch method
+    case 'fresnel'
+        K = kernelmatrix_fresnel(t,wdd);
+    case 'grid'
+        K = kernelmatrix_grid(t,wdd,wex,nKnots);
+    case 'integral'
+        K = kernelmatrix_integral(t,wdd,wex);
+    otherwise
+        error('Kernel calculation method ''%s'' is unknown.',method);
 end
 
 end
@@ -279,7 +274,7 @@ end
 %===============================================================================
 % Calculate kernel using grid-based powder integration (slow)
 % (converges very slowly with nKnots)
-function K = kernelmatrix_grid(t,wdd,nKnots,wex)
+function K = kernelmatrix_grid(t,wdd,wex,nKnots)
 
 K = zeros(numel(t),numel(wdd));
 
