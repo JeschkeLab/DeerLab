@@ -15,41 +15,63 @@ Syntax
 
 .. code-block:: matlab
 
-   Level = noiselevel(V)
-   Level = noiselevel(V,M)
+   sigma = noiselevel(V2D)
+   sigma = noiselevel(Vc)
+   sigma = noiselevel(V)
+   sigma = noiselevel(V,filter)
+   sigma = noiselevel(V,Vref)
 
 Parameters
-    *   ``V`` - Signal vector (*N*-element array)
-    *   ``M`` -  Number of points considered (scalar)
+    *   ``V2D`` - 2D-dataset of scans of a dipolar signal (*NxM*-element matrix)
+    *   ``Vc`` - 1D complex valued dipolar signal (*N*-element array)
+    *   ``V`` - 1D dipolar signal (*N*-element array)
+    *   ``filter`` - Filtering method (string)
+    *   ``Vref`` - Reference signal (*N*-element array)
+
+
 Returns
-    *  Noise level (scalar)
+    *  ``sigma`` - Estimated noise standard deviation (scalar)
 
 -----------------------------
 
 
 Description
 =========================================
-The function can be called as follows
 
 .. code-block:: matlab
 
-   Level = noiselevel(V)
+   sigma = noiselevel(V2D)
 
-Returns the standard deviation estimation of the noise in the signal ``V``. The estimation is done from the last quarter of the signal, i.e. ``M=3/4*N``.
+If a 2D-dataset ``V2D`` of different scans for a signal is provided, the noise standard deviation is estimated from the deviations between scans. The second dimension of ``V2D`` must contain the different scans. The function returns the standard deviation of the averaged signal not of the individual scans.
 
------------------------------
-
-
-.. code-block:: matlab
-
-    Level = noiselevel(V,M)
-
-If parameter ``M`` is specified, the noise level estimation is done from the last ``M`` points of the N-point signal.
 
 -----------------------------
 
 .. code-block:: matlab
 
-   Level = noiselevel(V)
+   sigma = noiselevel(Vc)
 
-If S is a 2D-dataset of different scans, the noise standard deviation is estimated from the deviations between scans. The second dimension of ``V`` must contain the different scans. The function then returns the standard deviation of the averaged signal not of the individual scans.
+If a complex-valued signal ``Vc`` is provided, the imaginary component is minimzed via phase correction and the noise standard deviation is estimated from the phase-corrected imaginary component.
+
+
+-----------------------------
+
+.. code-block:: matlab
+
+   sigma = noiselevel(V)
+   sigma = noiselevel(V,filter)
+
+If a real-valued signal ``V`` is provided, the noise standard deviation is estimated from the deviation obtained via application of a moving mean filter. The nature of the filter can specified by setting ``filter`` to one of the following methods: 
+
+
+	*  ``'movmean'`` - Moving mean filter (default)
+	*  ``'savgol'`` - Savitzky-Golay filter
+	
+
+-----------------------------
+
+.. code-block:: matlab
+
+   sigma = noiselevel(V,Vref)
+
+If a reference model signal ``Vref`` is given, the noise level is estimated from the difference between both signals.
