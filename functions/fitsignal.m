@@ -14,8 +14,8 @@
 %   Fits a dipolar model to the experimental signal in V, using distance axis r.
 %   The model is specified by the distance distribution (dd), the background
 %   (bg), and the experiment (ex). If multiple signals (V1,V2,...) and their
-%   corresponding time axes (t1,t2,...) are given, they will be fitted globally 
-%   to the specified distance distribution (dd). For each signal a specific 
+%   corresponding time axes (t1,t2,...) are given, they will be fitted globally
+%   to the specified distance distribution (dd). For each signal a specific
 %   background (bg1,bg2,...) and experiment (ex1,ex2) models can be assigned.
 %
 %   FITSIGNAL can handle both parametric and non-parametric distance
@@ -215,6 +215,12 @@ else
     % doing alpha optimizations if parameter vector doesn't change much
     par_prev = [];
     regparam_prev = [];
+    
+    % Create some containers to cache variables not changing between
+    % different signals in global fitting
+    P_cached = [];
+    K_cached = [];
+    B_cached = [];
     % Fit the parameters
     parfit_ = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',1e-5);
     
@@ -288,58 +294,70 @@ end
 % General multi-pathway DEER signal model function
     function [V,B,P] = Vmodel(~,par,idx)
         
-        for Vidx = 1:nVexp
-            % Calculate the background and the experiment kernel matrix
-            if includeExperiment(Vidx)
-                pathinfo = ex_model{Vidx}(t{Vidx},par(exidx{Vidx}));
-                if includeBackground(Vidx)
-                    Bfcn = @(t,lam) bg_model{Vidx}(t,par(bgidx{Vidx}),lam);
-                    B = dipolarbackground(t{Vidx},pathinfo,Bfcn);
+        % Perform global fitting only for the first signal
+        if idx == 1
+            for Vidx = 1:nVexp
+                % Calculate the background and the experiment kernel matrix
+                if includeExperiment(Vidx)
+                    pathinfo = ex_model{Vidx}(t{Vidx},par(exidx{Vidx}));
+                    if includeBackground(Vidx)
+                        Bfcn = @(t,lam) bg_model{Vidx}(t,par(bgidx{Vidx}),lam);
+                        B{Vidx} = dipolarbackground(t{Vidx},pathinfo,Bfcn);
+                    else
+                        Bfcn = [];
+                        B{Vidx} = ones(numel(t{Vidx}),1);
+                    end
+                    K{Vidx} = dipolarkernel(t{Vidx},r,pathinfo,Bfcn);
                 else
-                    Bfcn = [];
-                    B = ones(numel(t{Vidx}),1);
+                    K{Vidx} = dipolarkernel(t{Vidx},r);
+                    if includeBackground(Vidx)
+                        Bfcn = @(t) bg_model{Vidx}(t,par(bgidx{Vidx}));
+                        B{Vidx} = Bfcn(t{Vidx});
+                    else
+                        B{Vidx} = ones(numel(t{Vidx}),1);
+                    end
                 end
-                K{Vidx} = dipolarkernel(t{Vidx},r,pathinfo,Bfcn);
-            else
-                K{Vidx} = dipolarkernel(t{Vidx},r);
-                if includeBackground(Vidx)
-                    Bfcn = @(t) bg_model{Vidx}(t,par(bgidx{Vidx}));
-                    B = Bfcn(t{Vidx});
+            end
+            % Get the distance distribution
+            if includeForeground && nargin<4
+                
+                % Use the alpha-search settings by default
+                alpha = regparam;
+                % If the parameter vectors has not changed by much...
+                if ~isempty(par_prev)
+                    if all(abs(par_prev-par)./par < alphaOptThreshold)
+                        % ...use the alpha optimized in the previous iteration
+                        alpha = regparam_prev;
+                    end
+                end
+                par_prev = par;
+                
+                if parfreeDistribution
+                    [P,~,regparam_prev] = fitregmodel(Vexp,K,r,regtype,alpha);
                 else
-                    B = ones(numel(t{Vidx}),1);
+                    P = dd_model(r,par(ddidx));
                 end
-            end
-        end
-        
-        % Get the distance distribution
-        if includeForeground && nargin<4
-            
-            % Use the alpha-search settings by default
-            alpha = regparam;
-            % If the parameter vectors has not changed by much...
-            if ~isempty(par_prev)
-                if all(abs(par_prev-par)./par < alphaOptThreshold)
-                    % ...use the alpha optimized in the previous iteration
-                    alpha = regparam_prev;
-                end
-            end
-            par_prev = par;
-            
-            if parfreeDistribution
-                [P,Pci,regparam_prev] = fitregmodel(Vexp,K,r,regtype,alpha);
             else
-                P = dd_model(r,par(ddidx));
+                P = zeros(numel(t),1);
             end
+            K_cached = K;
+            B_cached = B;
+            P_cached = P;
         else
-            P = zeros(numel(t),1);
+            % Compute the rest of the signals from the cached results
+            K = K_cached;
+            B = B_cached;
+            P = P_cached;
         end
         
         % Compute the total signal
         if includeForeground
             V = K{idx}*P;
         else
-            V = B;
+            V = B{idx};
         end
+        
+        B = B{idx};
     end
 
 end
