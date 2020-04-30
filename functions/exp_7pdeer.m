@@ -37,32 +37,32 @@ if nargin==1
     % If no inputs given, return info about the parametric model
     info.model  = '7-pulse DEER experiment (three modulated pathways)';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Unmodulated pathway amplitude';
+    info.parameters(1).name = 'unmodulated pathway amplitude';
     info.parameters(1).range = [0 1];
     info.parameters(1).default = 0.3;
     info.parameters(1).units = '';
     
-    info.parameters(2).name = '1st Modulated pathway amplitude';
+    info.parameters(2).name = '1st modulated pathway amplitude';
     info.parameters(2).range = [0 1];
     info.parameters(2).default = 0.5;
     info.parameters(2).units = '';
     
-    info.parameters(3).name = '2nd Modulated pathway amplitude';
+    info.parameters(3).name = '2nd modulated pathway amplitude';
     info.parameters(3).range = [0 1];
     info.parameters(3).default = 0.3;
     info.parameters(3).units = '';
     
-    info.parameters(4).name = '3rd Modulated pathway amplitude';
+    info.parameters(4).name = '3rd modulated pathway amplitude';
     info.parameters(4).range = [0 1];
     info.parameters(4).default = 0.2;
     info.parameters(4).units = '';
     
-    info.parameters(5).name = '2nd Modulated pathway refocusing time';
+    info.parameters(5).name = '2nd modulated pathway refocusing time';
     info.parameters(5).range = [max(t)/5 - 2, max(t)/5 + 2];
     info.parameters(5).default = max(t)/5;
     info.parameters(5).units = 'us';
     
-    info.parameters(6).name = '3rd Modulated pathway refocusing time';
+    info.parameters(6).name = '3rd modulated pathway refocusing time';
     info.parameters(6).range = [max(t)*2/5 - 2, max(t)*2/5 + 2];
     info.parameters(6).default = max(t)*2/5;
     info.parameters(6).units = 'us';

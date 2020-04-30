@@ -357,7 +357,7 @@ for runIdx = 1:MultiStart
         % if maxIter exceeded, doube iterations and continue
         solverOpts.MaxIter = 2*maxIter;
         solverOpts.MaxFunEvals = 2*maxFunEvals;
-        [parfit,fval]  = lsqnonlin(@ResidualsFcn,parfit,lowerBounds,upperBounds,solverOpts);
+        [parfit,fval]  = solverFcn(@ResidualsFcn,parfit,lowerBounds,upperBounds,solverOpts);
     end
     
     fvals(runIdx) = fval;
