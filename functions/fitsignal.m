@@ -62,20 +62,19 @@ if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
 end
 
-
-%Validation of V,t,r
-%-----------------------------
+% Validation of Vexp, t, r
+%-------------------------------------------------------------------------------
 if ~iscell(Vexp)
     Vexp = {Vexp};
 end
+nSignals = numel(Vexp);
 if ~iscell(t)
     t = {t};
 end
-nVexp = numel(Vexp);
-if numel(t) ~= nVexp
+if numel(t) ~= nSignals
     error('The same number of signals V and time axes must be provided.')
 end
-for i=1:nVexp
+for i = 1:nSignals
     Vexp{i} = Vexp{i}(:);
     t{i} = t{i}(:);
     if length(Vexp{i})~=length(t{i})
@@ -110,7 +109,7 @@ if ~isempty(par0)
 end
 
 % Get information about distance distribution parameters
-%----------------------------------------------------------
+%-------------------------------------------------------------------------------
 par0_dd = [];
 lower_dd = [];
 upper_dd = [];
@@ -129,19 +128,19 @@ else
 end
 
 % Get information about background parameters
-%----------------------------------------------------------
-par0_bg = cell(1,nVexp);
-lower_bg = cell(1,nVexp);
-upper_bg = cell(1,nVexp);
-N_bg = zeros(nVexp,1);
+%-------------------------------------------------------------------------------
+par0_bg = cell(1,nSignals);
+lower_bg = cell(1,nSignals);
+upper_bg = cell(1,nSignals);
+N_bg = zeros(nSignals,1);
 if ~iscell(bg_model)
     bg_model = {bg_model};
 end
-if numel(bg_model)~=nVexp
-    bg_model = repmat(bg_model,nVexp,1);
+if numel(bg_model)~=nSignals
+    bg_model = repmat(bg_model,nSignals,1);
 end
-includeBackground = nan(nVexp,1);
-for i=1:nVexp
+includeBackground = NaN(nSignals,1);
+for i = 1:nSignals
     includeBackground(i) = true;
     if isa(bg_model{i},'function_handle')
         [par0_bg{i},lower_bg{i},upper_bg{i},N_bg(i)] = getmodelparams(bg_model{i});
@@ -153,19 +152,19 @@ for i=1:nVexp
 end
 
 % Get information about experiment parameters
-%----------------------------------------------------------
-par0_ex = cell(1,nVexp);
-lower_ex = cell(1,nVexp);
-upper_ex = cell(1,nVexp);
-N_ex = zeros(nVexp,1);
+%-------------------------------------------------------------------------------
+par0_ex = cell(1,nSignals);
+lower_ex = cell(1,nSignals);
+upper_ex = cell(1,nSignals);
+N_ex = zeros(nSignals,1);
 if ~iscell(ex_model)
     ex_model = {ex_model};
 end
-if numel(ex_model)~=nVexp
-    ex_model = repmat(ex_model,nVexp,1);
+if numel(ex_model)~=nSignals
+    ex_model = repmat(ex_model,nSignals,1);
 end
-includeExperiment = nan(nVexp,1);
-for i=1:nVexp
+includeExperiment = NaN(nSignals,1);
+for i = 1:nSignals
     includeExperiment(i) = true;
     if isa(ex_model{i},'function_handle')
         [par0_ex{i},lower_ex{i},upper_ex{i},N_ex(i)] = getmodelparams(ex_model{i},t{i});
@@ -177,7 +176,7 @@ for i=1:nVexp
 end
 
 % Catch nonsensical situation
-if ~includeForeground && ~includeBackground
+if any(~includeForeground & ~includeBackground)
     error('Cannot fit anything without distribution model and without background model.')
 end
 
@@ -185,32 +184,39 @@ end
 if isempty(par0{1}), par0{1} = par0_dd; end
 if isempty(par0{2}), par0{2} = par0_bg; end
 if isempty(par0{3}), par0{3} = par0_ex; end
-
-
 par0 = [par0{1} cell2mat(par0{2}) cell2mat(par0{3})];
 lower = [lower_dd cell2mat(lower_bg) cell2mat(lower_ex)];
 upper = [upper_dd cell2mat(upper_bg) cell2mat(upper_ex)];
+nParams = numel(par0);
 
 % Build index vectors for accessing parameter subsets
-bgidx = cell(nVexp,1);
-exidx = cell(nVexp,1);
-
 ddidx = 1:N_dd;
-for i=1:nVexp
+bgidx = cell(nSignals,1);
+exidx = cell(nSignals,1);
+for i = 1:nSignals
     bgidx{i} = N_dd + sum(N_bg(1:i-1)) + (1:N_bg(i));
     exidx{i} = N_dd + sum(N_bg) + sum(N_ex(1:i-1)) + (1:N_ex(i));
 end
 
-if numel(par0)==0
-    % Solve regularization only
-    K = cellfun(@(t)dipolarkernel(t,r),t,'UniformOutput',false);
-    Pfit = fitregmodel(Vexp,K,r,regtype,regparam);
+% Perform fitting
+%-------------------------------------------------------------------------------
+RegularizationOnly = nParams==0;
+if RegularizationOnly
     
-    Vfit = cellfun(@(K)K*Pfit,K,'UniformOutput',false);
-    Bfit(1:nVexp) = {ones(size(Vfit))};
+    % Solve regularization only
+    for i = 1:nSignals
+        K{i} = dipolarkernel(t{i},r); 
+    end
+    Pfit = fitregmodel(Vexp,K,r,regtype,regparam);    
+    for i = 1:nSignals
+        Vfit{i} = K{i}*Pfit;
+        Bfit{i} = ones(size(Vexp{i}));
+    end
     parfit_ = [];
     parci_ = [];
+    
 else
+    
     % Keep track of alpha and parameter vector across iterations, to avoid
     % doing alpha optimizations if parameter vector doesn't change much
     par_prev = [];
@@ -221,100 +227,130 @@ else
     P_cached = [];
     K_cached = [];
     B_cached = [];
+    
     % Fit the parameters
-    parfit_ = fitparamodel(Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',1e-5);
+    args = {Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',1e-5};
+    if calculateCI
+        [parfit_,~,parci_] = fitparamodel(args{:});
+    else
+        parfit_ = fitparamodel(args{:});
+        parci_ = [];
+    end
     
     % Calculate the fitted signal, background, and distribution
     alpha = regparam; % use original setting for final run
-    [Vfit,Bfit,Pfit] = cellfun(@(idx)Vmodel([],parfit_,idx),num2cell(1:nVexp),'UniformOutput',false);
-    Pfit = Pfit{1};
+    for i = 1:nSignals
+        [Vfit{i},Bfit{i},Pfit] = Vmodel([],parfit_,i);
+    end
 end
 
-% Return fitted parameter in structure
+% Return fitted parameters and confidence intervals in structures
+%-------------------------------------------------------------------------------
 parfit_ = parfit_(:);
 parfit.dd = parfit_(ddidx);
-for i=1:nVexp
+for i = 1:nSignals
     parfit.bg{i} = parfit_(bgidx{i});
     parfit.ex{i} = parfit_(exidx{i});
 end
-
 if calculateCI
     parci.dd = parci_(ddidx,:);
-    parci.bg = parci_(bgidx,:);
-    parci.ex = parci_(exidx,:);
-end
-
-% Do not return a cell array if there is only one signal
-if nVexp == 1
-    Vfit = Vfit{1};
-    Bfit = Bfit{1};
+    for i = 1:nSignals
+        parci.bg{i} = parci_(bgidx{i},:);
+        parci.ex{i} = parci_(exidx{i},:);
+    end
 end
 
 % Plotting
+%-------------------------------------------------------------------------------
 if nargout==0
-    subplot(2,1,1);
-    plot(t,Vexp,t,Vfit)
-    axis tight
-    grid on
-    xlabel('time (us)');
-    ylabel('V');
-    legend('exp','fit');
+    for i = 1:nSignals
+        subplot(2,nSignals,i);
+        plot(t{i},Vexp{i},t{i},Vfit{i})
+        axis tight
+        grid on
+        xlabel('time (us)');
+        ylabel(sprintf('V\\{%d\\}',i));
+        legend('exp','fit');
+    end
     subplot(2,1,2);
     plot(r,Pfit);
     xlabel('distance (nm)');
     axis tight
     ylabel('P (nm^{-1})');
     grid on
+    drawnow
     
     disp('Fitted parameters and confidence intervals')
-    str = '  %s(%d):   %10f  (%10f, %10f)  %s (%s)\n';
+    str = '  %s{%d}(%d):   %10f  (%10f, %10f)  %s (%s)\n';
     if numel(parfit.dd)>0
         pars = dd_model().parameters;
         for p = 1:numel(parfit.dd)
-            fprintf(str,'dd',p,parfit.dd(p),...
-                parci.dd(p,1),parci.dd(p,2),pars(p).name,pars(p).units);
+            c = parfit.dd(p);
+            ci = parci.dd(p,:)-c;
+            fprintf(str,'dd',1,p,c,...
+                ci(1),ci(2),pars(p).name,pars(p).units);
         end
     end
     if numel(parfit.bg)>0
-        pars = bg_model().parameters;
-        for p = 1:numel(parfit.bg)
-            fprintf(str,'bg',p,parfit.bg(p),...
-                parci.bg(p,1),parci.bg(p,2),pars(p).name,pars(p).units)
+        for i = 1:nSignals
+            pars = bg_model{i}().parameters;
+            for p = 1:numel(parfit.bg{i})
+                c = parfit.bg{i}(p);
+                ci = parci.bg{i}(p,:)-c;
+                fprintf(str,'bg',i,p,c,...
+                    ci(1),ci(2),pars(p).name,pars(p).units)
+            end
         end
     end
     if numel(parfit.ex)>0
-        pars = ex_model(t).parameters;
-        for p = 1:numel(parfit.ex)
-            fprintf(str,'ex',p,parfit.ex(p),...
-                parci.ex(p,1),parci.ex(p,2),pars(p).name,pars(p).units)
+        for i = 1:nSignals
+            pars = ex_model{i}(t).parameters;
+            for p = 1:numel(parfit.ex{i})
+                c = parfit.ex{i}(p);
+                ci = parci.ex{i}(p,:)-c;
+                fprintf(str,'ex',i,p,c,...
+                    ci(1),ci(2),pars(p).name,pars(p).units)
+            end
         end
     end
 end
 
+% Return numeric and not cell arrays if there is only one signal
+if nSignals==1
+    Vfit = Vfit{1};
+    Bfit = Bfit{1};
+    if ~isempty(parci_)
+        parci.bg = parci.bg{1};
+        parci.ex = parci.ex{1};
+    end
+end
+
+%===============================================================================
+
 % General multi-pathway DEER signal model function
     function [V,B,P] = Vmodel(~,par,idx)
         
-        % Perform global fitting only for the first signal
-        if idx == 1
-            for Vidx = 1:nVexp
+        % Calculate all K, all B, and P when called for first signal
+        if idx==1
+            for j = 1:nSignals
                 % Calculate the background and the experiment kernel matrix
-                if includeExperiment(Vidx)
-                    pathinfo = ex_model{Vidx}(t{Vidx},par(exidx{Vidx}));
-                    if includeBackground(Vidx)
-                        Bfcn = @(t,lam) bg_model{Vidx}(t,par(bgidx{Vidx}),lam);
-                        B{Vidx} = dipolarbackground(t{Vidx},pathinfo,Bfcn);
+                if includeExperiment(j)
+                    pathinfo = ex_model{j}(t{j},par(exidx{j}));
+                    if includeBackground(j)
+                        Bfcn = @(t,lam) bg_model{j}(t,par(bgidx{j}),lam);
+                        B{j} = dipolarbackground(t{j},pathinfo,Bfcn);
                     else
                         Bfcn = [];
-                        B{Vidx} = ones(numel(t{Vidx}),1);
+                        B{j} = ones(numel(t{j}),1);
                     end
-                    K{Vidx} = dipolarkernel(t{Vidx},r,pathinfo,Bfcn);
+                    K{j} = dipolarkernel(t{j},r,pathinfo,Bfcn);
                 else
-                    K{Vidx} = dipolarkernel(t{Vidx},r);
-                    if includeBackground(Vidx)
-                        Bfcn = @(t) bg_model{Vidx}(t,par(bgidx{Vidx}));
-                        B{Vidx} = Bfcn(t{Vidx});
+                    K{j} = dipolarkernel(t{j},r);
+                    if includeBackground(j)
+                        Bfcn = @(t) bg_model{j}(t,par(bgidx{j}));
+                        B{j} = Bfcn(t{j});
                     else
-                        B{Vidx} = ones(numel(t{Vidx}),1);
+                        B{j} = ones(numel(t{j}),1);
                     end
                 end
             end
@@ -356,8 +392,8 @@ end
         else
             V = B{idx};
         end
-        
         B = B{idx};
+        
     end
 
 end
