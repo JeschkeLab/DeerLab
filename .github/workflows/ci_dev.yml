@@ -38,15 +38,15 @@ jobs:
     - name: Transfer source files to CI-server
       if: success()
       run: |
-           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} -r ../deerlab ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/
-           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} scp -r /home/lufa/scp_traffic/deerlab ${{ secrets.CISERVER_HOST }}:~
-           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f -r /home/lufa/scp_traffic/deerlab"
+           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} -r ../DeerLab ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/
+           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} scp -r /home/lufa/scp_traffic/DeerLab ${{ secrets.CISERVER_HOST }}:~
+           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f -r /home/lufa/scp_traffic/DeerLab"
     - name: Run test suite connected to CI-Server
       if: success()
       run: |
            ssh -tt -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} -t ${{ secrets.GATEWAY_HOST }} ssh ${{ secrets.CISERVER_HOST }} << EOF
                #Run test suite
-               cd deerlab/build
+               cd DeerLab/build
                matlab -nodesktop -r "dltestsuite;exit"
                python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "coverage_badge.json" --bucket deershields
                python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "testsuite_badge.json" --bucket deershields
@@ -54,7 +54,7 @@ jobs:
                scp -o StrictHostKeyChecking=no -i ~/.ssh/gateway_key -P ${{ secrets.GATEWAY_PORT }} ./dltestsuite.error ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/ || true
                #Delete the source files
                cd ~
-               rm -f -r deerlab
+               rm -f -r DeerLab
            EOF
     - name: Disconnect CI-server
       if: success()
