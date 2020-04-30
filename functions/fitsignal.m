@@ -62,9 +62,15 @@ if numel(Vexp)~=numel(t)
     error('V (1st input) and t (2nd input) must have the same number of elements.')
 end
 
+% Regularization settings
+regtype = 'tikh';
+regparam = 'aic';
+alphaOptThreshold = 1e-3; % relative parameter change threshold for reoptimizing alpha
+
+
 % Set defaults
 if nargin<4, dd_model = 'P'; end
-if nargin<5, bg_model = @bg_exp; end
+if nargin<5, bg_model = @bg_hom3d; end
 if nargin<6, exp_model = @exp_4pdeer; end
 if nargin<7, par0 = {[],[],[]}; end
 
@@ -142,11 +148,6 @@ ddidx = modelidx==1;
 bgidx = modelidx==2;
 exidx = modelidx==3;
 
-% Regularization settings
-regtype = 'tikh';
-regparam = 'aic';
-alphaOptThreshold = 1e-3; % relative parameter change threshold for reoptimizing alpha
-
 if numel(par0)==0
     % Solve regularization only
     K = dipolarkernel(t,r);
@@ -201,24 +202,25 @@ if nargout==0
     grid on
     
     disp('Fitted parameters and confidence intervals')
+    str = '  %s(%d):   %10f  (%10f, %10f)  %s (%s)\n';
     if numel(parfit.dd)>0
         pars = dd_model().parameters;
         for p = 1:numel(parfit.dd)
-            fprintf('  dd(%d):   %10f  (%10f, %10f)  %s (%s)\n',p,parfit.dd(p),...
+            fprintf(str,'dd',p,parfit.dd(p),...
                 parci.dd(p,1),parci.dd(p,2),pars(p).name,pars(p).units);
         end
     end
     if numel(parfit.bg)>0
+        pars = bg_model().parameters;
         for p = 1:numel(parfit.bg)
-            pars = bg_model().parameters;
-            fprintf('  bg(%d):   %10f  (%10f, %10f)  %s (%s)\n',p,parfit.bg(p),...
+            fprintf(str,'bg',p,parfit.bg(p),...
                 parci.bg(p,1),parci.bg(p,2),pars(p).name,pars(p).units)
         end
     end
     if numel(parfit.ex)>0
+        pars = exp_model(t).parameters;
         for p = 1:numel(parfit.ex)
-            pars = exp_model(t).parameters;
-            fprintf('  ex(%d):   %10f  (%10f, %10f)  %s (%s)\n',p,parfit.ex(p),...
+            fprintf(str,'ex',p,parfit.ex(p),...
                 parci.ex(p,1),parci.ex(p,2),pars(p).name,pars(p).units)
         end
     end

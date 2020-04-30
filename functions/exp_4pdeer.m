@@ -32,7 +32,7 @@ if nargin==1
     % If no inputs given, return info about the parametric model
     info.model  = '4-pulse DEER experiment (single pathway)';
     info.nparam  = nParam;
-    info.parameters(1).name = 'Modulation depth';
+    info.parameters(1).name = 'modulation depth';
     info.parameters(1).range = [0 1];
     info.parameters(1).default = 0.3;
     info.parameters(1).units = '';
