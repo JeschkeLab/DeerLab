@@ -1,10 +1,10 @@
 %
-% EXP_OVL4PDEER 4-pulse DEER with band overlap experiment model 
+% EX_OVL4PDEER 4-pulse DEER with band overlap experiment model 
 %
-%   info = EXP_OVL4PDEER(t)
+%   info = EX_OVL4PDEER(t)
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   pathways = EXP_OVL4PDEER(t,param)
+%   pathways = EX_OVL4PDEER(t,param)
 %   Computes the dipolar pathway informatio matrix according to the paramters
 %   array (param) and the specified experiment. The required parameters can
 %   also be found in the (info) structure.
@@ -23,7 +23,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function output = exp_ovl4pdeer(t,param)
+function output = ex_ovl4pdeer(t,param)
 
 nParam = 4;
 

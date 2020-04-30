@@ -1,10 +1,10 @@
 %
-% EXP_4PDEER Single-pathway 4-pulse DEER experiment model 
+% EX_4PDEER Single-pathway 4-pulse DEER experiment model 
 %
-%   info = EXP_4PDEER(t)
+%   info = EX_4PDEER(t)
 %   Returns an (info) structure containing the specifics of the model.
 %
-%   pathways = EXP_4PDEER(t,param)
+%   pathways = EX_4PDEER(t,param)
 %   Computes the dipolar pathway informatio matrix according to the paramters
 %   array (param) and the specified experiment. The required parameters can
 %   also be found in the (info) structure.
@@ -20,7 +20,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function output = exp_4pdeer(t,param)
+function output = ex_4pdeer(t,param)
 
 nParam = 1;
 

@@ -8,7 +8,7 @@ t = linspace(0,5,100);
 r = linspace(2,6,200);
 B = bg_exp(t,0.2);
 
-[~,~,Bfit] = fitsignal(B,t,r,'none',@bg_exp,@exp_4pdeer);
+[~,~,Bfit] = fitsignal(B,t,r,'none',@bg_exp,@ex_4pdeer);
 
 % Pass 1: background is well fitted
 pass = all(abs(B - Bfit) < 1e-8);

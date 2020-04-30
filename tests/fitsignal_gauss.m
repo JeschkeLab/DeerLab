@@ -12,7 +12,7 @@ kappa = 0.2;
 B = bg_exp(t,lam*kappa);
 V = dipolarsignal(t,r,P,lam,B,'noiselevel',0.01);
 
-[Vfit,Pfit,Bfit,parfit] = fitsignal(V,t,r,@dd_gauss,@bg_exp,@exp_4pdeer);
+[Vfit,Pfit,Bfit,parfit] = fitsignal(V,t,r,@dd_gauss,@bg_exp,@ex_4pdeer);
 lamfit = parfit.ex;
 % Pass 1: signal is well fitted
 pass(1) = all(abs(Vfit - V) < 3e-2);

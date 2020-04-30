@@ -14,7 +14,7 @@ V = dipolarsignal(t,r,P,lam,B,'noiselevel',0.01);
 [~,Pfit1] = fitsignal(V,t,r);
 [~,Pfit2] = fitsignal(V,t,r,'P');
 [~,Pfit3] = fitsignal(V,t,r,'P',@bg_exp);
-[~,Pfit4] = fitsignal(V,t,r,'P',@bg_exp,@exp_4pdeer);
+[~,Pfit4] = fitsignal(V,t,r,'P',@bg_exp,@ex_4pdeer);
 
 % Pass 1: al input schemes yield the same results
 pass = isequal(Pfit1,Pfit2,Pfit3,Pfit4);

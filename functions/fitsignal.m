@@ -24,7 +24,7 @@
 %    bg     background model (default @bg_exp)
 %           - function handle to parametric background model
 %           - 'none' to indicate no background decay
-%    ex     experiment model (default @exp_4pdeer)
+%    ex     experiment model (default @ex_4pdeer)
 %           - function handle to experiment model
 %           - 'none' to indicate simple dipolar oscillation (mod.depth = 1)
 %    par0   starting parameters, 3-element cell array {par0_dd,par0_bd,par0_ex}
@@ -42,13 +42,13 @@
 %    stats goodness of fit statistical estimators, N-element structure array 
 
 % Example:
-%    Vfit = fitsignal(Vexp,t,r,@dd_gauss,@bg_exp,@exp_4pdeer)
+%    Vfit = fitsignal(Vexp,t,r,@dd_gauss,@bg_exp,@ex_4pdeer)
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [Vfit,Pfit,Bfit,parfit,parci,stats] = fitsignal(Vexp,t,r,dd_model,bg_model,exp_model,par0)
+function [Vfit,Pfit,Bfit,parfit,parci,stats] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model,par0)
 
 if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
@@ -71,7 +71,7 @@ alphaOptThreshold = 1e-3; % relative parameter change threshold for reoptimizing
 % Set defaults
 if nargin<4, dd_model = 'P'; end
 if nargin<5, bg_model = @bg_hom3d; end
-if nargin<6, exp_model = @exp_4pdeer; end
+if nargin<6, ex_model = @ex_4pdeer; end
 if nargin<7, par0 = {[],[],[]}; end
 
 calculateCI = nargout>=5 || nargout==0;
@@ -120,9 +120,9 @@ lower_ex = [];
 upper_ex = [];
 N_ex = 0;
 includeExperiment = true;
-if isa(exp_model,'function_handle')
-    [par0_ex,lower_ex,upper_ex,N_ex] = getmodelparams(exp_model,t);
-elseif ischar(exp_model) && strcmp(exp_model,'none')
+if isa(ex_model,'function_handle')
+    [par0_ex,lower_ex,upper_ex,N_ex] = getmodelparams(ex_model,t);
+elseif ischar(ex_model) && strcmp(ex_model,'none')
     includeExperiment = false;
 else
     error('Experiment model (6th input) must either be a function handle, or ''none''.')
@@ -218,7 +218,7 @@ if nargout==0
         end
     end
     if numel(parfit.ex)>0
-        pars = exp_model(t).parameters;
+        pars = ex_model(t).parameters;
         for p = 1:numel(parfit.ex)
             fprintf(str,'ex',p,parfit.ex(p),...
                 parci.ex(p,1),parci.ex(p,2),pars(p).name,pars(p).units)
@@ -230,7 +230,7 @@ end
     function [V,B,P] = Vmodel(t,par)
         % Calculate the background and the experiment kernel matrix
         if includeExperiment
-            pathinfo = exp_model(t,par(exidx));
+            pathinfo = ex_model(t,par(exidx));
             if includeBackground
                 Bfcn = @(t,lam) bg_model(t,par(bgidx),lam);
                 B = dipolarbackground(t,pathinfo,Bfcn);
@@ -284,7 +284,7 @@ end
 
 function [par0,lo,up,N] = getmodelparams(model,t)
 
-if contains(func2str(model),'exp_')
+if contains(func2str(model),'ex_')
     info = model(t);
 else
     info = model();

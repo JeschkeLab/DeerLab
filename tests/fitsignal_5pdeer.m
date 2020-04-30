@@ -8,16 +8,16 @@ t = linspace(0,5,100);
 r = linspace(2,6,70);
 P = dd_gauss(r,[4.5 0.6]);
 
-info = exp_5pdeer(t);
+info = ex_5pdeer(t);
 parIn = [info.parameters.default];
-pathinfo = exp_5pdeer(t,parIn);
+pathinfo = ex_5pdeer(t,parIn);
 
 kappa = 0.4;
 Bmodel = @(t,lam) bg_exp(t,kappa,lam);
 K = dipolarkernel(t,r,pathinfo,Bmodel);
 V = K*P + whitegaussnoise(t,0.01);
 
-[Vfit,Pfit] = fitsignal(V,t,r,'P',@bg_exp,@exp_5pdeer);
+[Vfit,Pfit] = fitsignal(V,t,r,'P',@bg_exp,@ex_5pdeer);
 
 % Pass 1: signal is well fitted
 pass(1) = all(abs(Vfit - V) < 3e-2);

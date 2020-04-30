@@ -1,9 +1,9 @@
 .. highlight:: matlab
-.. _exp_4pdeer:
+.. _ex_4pdeer:
 
 
 ***********************
-:mod:`exp_4pdeer`
+:mod:`ex_4pdeer`
 ***********************
 
 4-pulse DEER experiment 
@@ -16,8 +16,8 @@ Syntax
 
 .. code-block:: matlab
 
-        info = exp_4pdeer(t)
-        pathways = exp_4pdeer(t,param)
+        info = ex_4pdeer(t)
+        pathways = ex_4pdeer(t,param)
 
 Parameters
     *   ``t`` - Time axis (*M*-array)
@@ -32,7 +32,7 @@ Returns
 Model
 =========================================
 
-.. image:: ../images/model_scheme_exp_4pdeer.png
+.. image:: ../images/model_scheme_ex_4pdeer.png
    :width: 550px
 
 
@@ -52,7 +52,7 @@ where :math:`T_0^{(1)}=0` is the refocusing time of the modulated dipolar pathwa
 
 Example of a simulated signal using default parameters:
 
-.. image:: ../images/model_exp_4pdeer.png
+.. image:: ../images/model_ex_4pdeer.png
    :width: 550px
 
 -----------------------------
@@ -63,7 +63,7 @@ Description
 
 .. code-block:: matlab
 
-        info = exp_4pdeer(t)
+        info = ex_4pdeer(t)
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -76,7 +76,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-    pathways = exp_4pdeer(t,param)
+    pathways = ex_4pdeer(t,param)
 
 Generates the dipolar pathways matrix ``pathways`` from the time-axis ``t`` and model parameters ``param``. 
 

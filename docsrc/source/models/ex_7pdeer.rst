@@ -1,9 +1,9 @@
 .. highlight:: matlab
-.. _exp_7pdeer:
+.. _ex_7pdeer:
 
 
 ***********************
-:mod:`exp_7pdeer`
+:mod:`ex_7pdeer`
 ***********************
 
 7-pulse DEER experiment 
@@ -16,8 +16,8 @@ Syntax
 
 .. code-block:: matlab
 
-        info = exp_7pdeer(t)
-        pathways = exp_7pdeer(t,param)
+        info = ex_7pdeer(t)
+        pathways = ex_7pdeer(t,param)
 
 Parameters
     *   ``t`` - Time axis (*M*-array)
@@ -32,7 +32,7 @@ Returns
 Model
 =========================================
 
-.. image:: ../images/model_scheme_exp_7pdeer.png
+.. image:: ../images/model_scheme_ex_7pdeer.png
    :width: 650px
 
 In order to reduce the parameter space, only the dipolar pathways refocusing at positive times (pathways #1-3) are considered in this model:
@@ -58,7 +58,7 @@ where :math:`T_0^{(1)}=0\;\mu s`, :math:`T_0^{(2)}`, and :math:`T_0^{(3)}` are t
 
 Example of a simulated signal using default parameters:
 
-.. image:: ../images/model_exp_7pdeer.png
+.. image:: ../images/model_ex_7pdeer.png
    :width: 550px
 
 -----------------------------
@@ -69,7 +69,7 @@ Description
 
 .. code-block:: matlab
 
-        info = exp_7pdeer(t)
+        info = ex_7pdeer(t)
 
 Returns an ``info`` structure containing the specifics of the model:
 
@@ -81,7 +81,7 @@ Returns an ``info`` structure containing the specifics of the model:
 
 .. code-block:: matlab
 
-        pathways = exp_7pdeer(t,param)
+        pathways = ex_7pdeer(t,param)
 
 Generates the dipolar pathways matrix ``pathways`` from the time-axis ``t`` and model parameters ``param``. 
 

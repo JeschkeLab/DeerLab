@@ -8,16 +8,16 @@ t = linspace(0,5,100);
 r = linspace(2,6,100);
 P = dd_gauss(r,[4.5 0.6]);
 
-info = exp_ovl4pdeer(t);
+info = ex_ovl4pdeer(t);
 parIn = [info.parameters.default];
-pathinfo = exp_ovl4pdeer(t,parIn);
+pathinfo = ex_ovl4pdeer(t,parIn);
 
 kappa = 0.4;
 Bmodel = @(t,lam) bg_exp(t,kappa,lam);
 K = dipolarkernel(t,r,pathinfo,Bmodel);
 V = K*P + whitegaussnoise(t,0.01);
 
-[Vfit,Pfit] = fitsignal(V,t,r,'P',@bg_exp,@exp_ovl4pdeer);
+[Vfit,Pfit] = fitsignal(V,t,r,'P',@bg_exp,@ex_ovl4pdeer);
 
 % Pass 1: signal is well fitted
 pass(1) = all(abs(Vfit - V) < 3e-2);
