@@ -89,28 +89,53 @@ else
     % fitparamodel(V,model,r,K,StartParameters,'Property',Value)
     Kpassed = true;
 end
-if ~Kpassed
-    % Check if global fitting is in use
-    if iscell(V)
-        K = cell(size(V));
-        for i = 1:numel(V)
-            if iscell(ax)
-                K{i} = eye(numel(V{i}),numel(ax{i}));
-            else
-                K{i} = eye(numel(V{i}),numel(ax));
-            end
-        end
-    else
-        K = eye(numel(V),numel(ax));
+isDistanceDomain = Kpassed;
+
+% Validate input signals
+if ~iscell(V)
+    V = {V(:)};
+end
+nSignals = numel(V);
+for i = 1:nSignals
+    if ~iscolumn(V{i})
+        V{i} = V{i}(:);
     end
-    isDistanceDomain = false;
-else
+    if ~isreal(V{i})
+        V{i} = real(V{i});
+    end
+    if ~isreal(V{i})
+        error('Input signal cannot be complex.')
+    end
+    validateattributes(V{i},{'numeric'},{'nonempty'},mfilename,'V')
+end
+
+% Validate input axis
+if ~iscell(ax)
+    ax = {ax(:)};
+end
+nAxes = numel(ax);
+for i = 1:nAxes
+    if ~iscolumn(ax{i})
+        ax{i} = ax{i}(:);
+    end
+    if numel(unique(round(diff(ax{i}),6)))~=1
+        error('Distance/time axis must be a monotonically increasing vector.')
+    end
+    % If using distance domain, only one axis must be passed
+    if ~isDistanceDomain
+        % Is using time-domain,control that same amount of axes as signals are passed
+        if numel(V{i})~=numel(ax{i})
+            error('V and t arguments must fulfill numel(t)==numel(S).')
+        end
+    end
+end
+
+if isDistanceDomain
     % Input #5 fitparamodel(V,model,r,K,'Property',Value)
     if nargin>4 && ischar(StartParameters)
         varargin = [{StartParameters},varargin];
         StartParameters = [];
     end
-    isDistanceDomain = true;
 end
 
 % Check that parametric model is passed as function handle
@@ -121,7 +146,7 @@ end
 % Get information about the parametric model
 try
     % Check whether model is a DeerLab model function
-    Info = model();
+    paraminfo = model().parameters;
     if nargin(model)==2
         model = @(ax,param,idx) model(ax,param);
     else
@@ -135,15 +160,30 @@ catch
     end
     % Wrap the function handle into a DeerLab model function
     model = paramodel(model,StartParameters,[],[],isDistanceDomain);
-    Info = model();
+    paraminfo = model().parameters;
+end
+
+% Validate kernel
+if isDistanceDomain
+    if ~iscell(K)
+        K = {K};
+    end
+    for i = 1:nSignals
+        if size(K{i},1)~=numel(V{i})
+            error('The number of rows in K must match the number of elements in V.')
+        end
+    end
+    if numel(K)~=nSignals
+        error('The number of kernels and signals must be equal.')
+    end
 end
 
 if nargin<5 || isempty(StartParameters)
     % If user does not give parameters, use the defaults of the model
-    StartParameters =  [Info.parameters(:).default];
+    StartParameters =  [paraminfo(:).default];
 elseif nargin>4 && ischar(StartParameters)
     varargin = [{StartParameters} varargin];
-    StartParameters = [Info.parameters(:).default];
+    StartParameters = [paraminfo.parameters(:).default];
 else
     validateattributes(StartParameters,{'numeric'},{'2d','nonempty'},mfilename,'StartParameters')
 end
@@ -198,24 +238,23 @@ end
 
 % Solver
 OptimizationToolboxInstalled = optimtoolbox_installed();
-if isempty(Solver) && ~OptimizationToolboxInstalled
-    Solver = 'lmlsqnonlin';
-elseif isempty(Solver) && OptimizationToolboxInstalled
-    Solver = 'lsqnonlin';
+if OptimizationToolboxInstalled
+    DefaultSolver = 'lsqnonlin';
+    SolverList = {'lsqnonlin','nlsqbnd','lmlsqnonlin'};
 else
-    validateattributes(Solver,{'char'},{'nonempty'},mfilename,'Solver')
-    if OptimizationToolboxInstalled
-        SolverList = {'lsqnonlin','nlsqbnd','lmlsqnonlin'};
-    else
-        SolverList = {'nlsqbnd','lmlsqnonlin'};
-    end
-    validatestring(Solver,SolverList);
+    DefaultSolver = 'lmlsqnonlin';
+    SolverList = {'nlsqbnd','lmlsqnonlin'};
 end
-
+if isempty(Solver)
+    Solver = DefaultSolver;
+end
+validateattributes(Solver,{'char'},{'nonempty'},mfilename,'Solver')
+validatestring(Solver,SolverList);
 if ~ispc && strcmp(Solver,'nlsqbnd')
     error('The ''nlsqbnd'' solver is only available for Windows systems.')
 end
 
+% Algorithm
 if isempty(Algorithm)
     if strcmp(Solver,'lsqnonlin')
         Algorithm = 'trust-region-reflective';
@@ -227,61 +266,15 @@ else
     Algorithm = validatestring(Algorithm,validInputs);
 end
 
-% Validate input signal and kernel
-if ~iscell(V)
-    V = {V(:)};
-end
-if ~iscell(K)
-    K = {K};
-end
-nSignals = numel(V);
-if numel(K)~=nSignals
-    error('The number of kernels and signals must be equal.')
-end
+% Global weights
 if ~isempty(GlobalWeights)
     validateattributes(GlobalWeights,{'numeric'},{'nonnegative'})
     if numel(GlobalWeights)~=nSignals
         error('The number of global fit weights and signals must be equal.')
     end
-    % Normalize weights
     GlobalWeights = GlobalWeights/sum(GlobalWeights);
 end
 
-for i = 1:nSignals
-    if ~iscolumn(V{i})
-        V{i} = V{i}.';
-    end
-    if ~isreal(V{i})
-        V{i} = real(V{i});
-    end
-    if numel(V{i})~=size(K{i},1)
-        error('The number of rows in K must match the number of elements in V.')
-    end
-    if ~isreal(V{i})
-        error('Input signal cannot be complex.')
-    end
-    validateattributes(V{i},{'numeric'},{'nonempty'},mfilename,'V')
-end
-
-% Validate input axis
-if ~iscell(ax)
-    ax = {ax(:)};
-end
-for i = 1:numel(ax)
-    if ~iscolumn(ax{i})
-        ax{i} = ax{i}.';
-    end
-    if numel(unique(round(diff(ax{i}),6)))~=1
-        error('Distance/Time axis must be a monotonically increasing vector.')
-    end
-    % If using distance domain, only one axis must be passed
-    if ~isDistanceDomain
-        % Is using time-domain,control that same amount of axes as signals are passed
-        if numel(V{i})~=numel(ax{i})
-            error('V and t arguments must fulfill numel(t)==numel(S).')
-        end
-    end
-end
 
 % Preparation of objective functions, parameter ranges, etc
 %-------------------------------------------------------------------------------
@@ -298,25 +291,9 @@ end
 Weights = Weights(:).';
 
 Labels = num2cell(1:nSignals);
-catvec = @(x) cat(1,x{:});
-
-% Define the objective functional of a single signal
-nParam = numel(StartParameters);
-objfun = @(p,K,S,ax,idx) norm(K*model(ax,p,idx)-S)^2;
-
-% Create a new handle which evaluates the objective function for every signal
-if numel(ax)>1
-    % different horizontal axes for different signals
-    ObjFcn = @(p) sum(Weights.*cellfun(@(K,V,t,idx)objfun(p,K,V,t,idx),K,V,ax,Labels));
-    VecObjFcn = @(p) catvec(cellfun(@(K,V,t,idx) Weights(idx)*(sqrt(0.5)*(K*model(t,p,idx) - V)),K,V,ax,Labels,'UniformOutput',false));
-else
-    % single horizontal axes for different signals
-    ObjFcn = @(p) sum(Weights.*cellfun(@(K,V,idx)objfun(p,K,V,ax{1},idx),K,V,Labels));
-    VecObjFcn = @(p) catvec(cellfun(@(K,V,idx) Weights(idx)*(sqrt(0.5)*(K*model(ax{1},p,idx) - V)),K,V,Labels,'UniformOutput',false));
-end
 
 % Prepare upper/lower bounds on parameter search range
-Ranges =  [Info.parameters(:).range];
+Ranges =  [paraminfo(:).range];
 if isempty(lowerBounds)
     lowerBounds = Ranges(1:2:end-1);
 end
@@ -337,57 +314,50 @@ end
 % Preprare multiple start global optimization if requested
 MultiStartParameters = multistarts(MultiStart,StartParameters,lowerBounds,upperBounds);
 
-% Execution
+
+
+% Configure solver
+%-------------------------------------------------------------------------------
+switch Solver
+    
+    case 'lsqnonlin'
+        solverOpts = optimoptions(@lsqnonlin,'Algorithm',Algorithm,...
+            'Display',Verbose,'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
+            'TolFun',TolFun,'DiffMinChange',0,'DiffMaxChange',Inf);
+        solverFcn = @lsqnonlin;
+        
+    case 'lmlsqnonlin'
+        
+        solverOpts = struct('Display',Verbose,'MaxIter',maxIter,'MaxFunEvals',...
+            maxFunEvals,'TolFun',TolFun);
+        solverFcn = @lmlsqnonlin;
+        
+    case 'nlsqbnd'
+        
+        solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
+            'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
+            'TolFun',TolFun,'TolCon',1e-20,...
+            'DiffMinChange',1e-8,'DiffMaxChange',0.1);
+        solverFcn = @nlsqbnd;
+end
+
+% Run least-squares fitting
 %-------------------------------------------------------------------------------
 % Disable ill-conditioned matrix warnings
 warning('off','MATLAB:nearlySingularMatrix')
 
 fvals = zeros(1,MultiStart);
 parfits = cell(1,MultiStart);
-
 for runIdx = 1:MultiStart
     
     StartParameters = MultiStartParameters(runIdx,:);
     
-    % Fit the parametric model...
-    switch Solver           
-        case 'lsqnonlin'
-            solverOpts = optimoptions(@lsqnonlin,'Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
-                'TolFun',TolFun,'DiffMinChange',0,'DiffMaxChange',Inf);
-            [parfit,fval,~,exitflag,~,~]  = lsqnonlin(VecObjFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
-            
-            if exitflag == 0
-                % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-                solverOpts = optimoptions(solverOpts,'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,'Display',Verbose);
-                [parfit,fval,~,~,~,~]  = lsqnonlin(VecObjFcn,parfit,lowerBounds,upperBounds,solverOpts);
-            end
-        case 'lmlsqnonlin'
-            
-            solverOpts = struct('Display',Verbose,'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,'TolFun',TolFun);
-            [parfit,fval,~,exitflag,~,~]  = lmlsqnonlin(VecObjFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
-            if exitflag == 0
-                % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-                 solverOpts = struct('Display',Verbose,'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,'TolFun',TolFun);
-                [parfit,fval,~,~,~,~]  = lmlsqnonlin(VecObjFcn,parfit,lowerBounds,upperBounds,solverOpts);
-            end
-            
-        case 'nlsqbnd'
-            solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
-                'MaxIter',maxIter,'MaxFunEvals',maxFunEvals,...
-                'TolFun',TolFun,'TolCon',1e-20,...
-                'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-            [parfit,fval,~,exitflag] = nlsqbnd(VecObjFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
-            % nlsqbnd returns a column, transpose to adapt to row-style of MATLAB solvers
-            parfit = parfit.';
-            if exitflag == 0
-                % ... if maxIter exceeded (flag =0) then doube iterations and continue from where it stopped
-                solverOpts = optimset('Algorithm',Algorithm,'Display',Verbose,...
-                    'MaxIter',2*maxIter,'MaxFunEvals',2*maxFunEvals,...
-                    'TolFun',TolFun,'TolCon',1e-20,...
-                    'DiffMinChange',1e-8,'DiffMaxChange',0.1);
-                [parfit,fval] = nlsqbnd(VecObjFcn,parfit,lowerBounds,upperBounds,solverOpts);
-            end
+    [parfit,fval,~,exitflag]  = solverFcn(@ResidualsFcn,StartParameters,lowerBounds,upperBounds,solverOpts);
+    if exitflag==0
+        % if maxIter exceeded, doube iterations and continue
+        solverOpts.MaxIter = 2*maxIter;
+        solverOpts.MaxFunEvals = 2*maxFunEvals;
+        [parfit,fval]  = lsqnonlin(@ResidualsFcn,parfit,lowerBounds,upperBounds,solverOpts);
     end
     
     fvals(runIdx) = fval;
@@ -399,17 +369,19 @@ end
 [~,globmin] = min(fvals);
 parfit = parfits{globmin};
 
-% Evaluate parameter uncertainty
+
+% Calculate parameter confidence intervals
+%-------------------------------------------------------------------------------
 calcParamUncertainty = nargout>2;
 if calcParamUncertainty
     
     % Compute residual vector and estimate variance from that
-    residual = VecObjFcn(parfit);
-    sigma2 = var(residual);
+    residuals = ResidualsFcn(parfit);
+    sigma2 = var(residuals);
     
     % Calculate numerical estimates of the Jacobian and Hessian
     % of the negative log-likelihood
-    jacobian = jacobianest(VecObjFcn,parfit);
+    jacobian = jacobianest(@ResidualsFcn,parfit);
     hessian = jacobian.'*jacobian;
     
     % Estimate the covariance matrix by means of the inverse of Fisher information matrix
@@ -425,7 +397,7 @@ if calcParamUncertainty
     % Set significance level for confidence intervals
     alpha = 1 - ConfidenceLevel;
     p = 1 - alpha/2; % percentile
-    N = numel(residual)-numel(parfit); % degrees of freedom
+    N = numel(residuals)-numel(parfit); % degrees of freedom
     
     parci = cell(numel(p),1);
     z = zeros(numel(p),1);
@@ -451,32 +423,35 @@ if calcParamUncertainty
     
 end
 
-% Compute fitted parametric model if requested
-if nargout>1
-    modelfit = cell(numel(ax),1);
-    for i = 1:numel(ax)
+% Evaluate fitted model and model confidence intervals
+%-------------------------------------------------------------------------------
+computeFittedModel = nargout>1;
+if computeFittedModel
+    modelfit = cell(nAxes,1);
+    for i = 1:nAxes
         modelfit{i} = model(ax{i},parfit,Labels{i});
     end
 end
 
-% Compute model output confidence intervals if requested
-if nargout>3
-    modelci = cell(numel(ax),1);
-    for i = 1:numel(ax)
+computeModelCI = nargout>3;
+if computeModelCI
+    modelci = cell(nAxes,1);
+    for i = 1:nAxes
         % Compute Jacobian for time/distance-model
         jacobian = jacobianest(@(par)model(ax{i},par,Labels{i}),parfit);
         modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax{i})).';
         upper = modelfit{i} + z*sqrt(modelvariance);
         lower = modelfit{i} - z*sqrt(modelvariance);
         modelci{i} = [lower(:) upper(:)];
-    end
-    
+    end    
 end
 
-% If requested compute Goodness of Fit for all signals
-if nargout>4
-    stats = cell(numel(V),1);
-    for i=1:numel(V)
+% Calculate goodness of fit
+%-------------------------------------------------------------------------------
+computeStats = nargout>4;
+if computeStats
+    stats = cell(nSignals,1);
+    for i = 1:nSignals
         if isDistanceDomain
             Vfit = K{i}*modelfit{1};
         else
@@ -486,21 +461,39 @@ if nargout>4
         stats{i} = gof(V{i},Vfit,Ndof);
     end
     
-    if numel(V)==1
+    if nSignals==1
         stats = stats{1};
     end
 end
 
-if numel(ax)==1
-    if nargout>1
+if nAxes==1
+    if computeFittedModel
         modelfit = modelfit{1};
     end
-    if nargout>3
+    if computeModelCI
         modelci = modelci{1};
     end
 end
 
 % Set the warnings back on
 warning('on','MATLAB:nearlySingularMatrix')
-
+    
+    % Function that provides vector of residuals, which is the objective
+    % function for the least-squares solvers
+    function r = ResidualsFcn(p)
+        r_ = cell(nSignals,1);
+        t = ax{1};
+        for iSignal = 1:nSignals
+            if nAxes>1
+                t = ax{iSignal};
+            end
+            if isDistanceDomain
+                r_{iSignal} = Weights(iSignal)*(V{iSignal}-K{iSignal}*model(t,p,iSignal));
+            else
+                r_{iSignal} = Weights(iSignal)*(V{iSignal}-model(t,p,iSignal));
+            end
+        end
+        r = vertcat(r_{:});
+    end
+    
 end

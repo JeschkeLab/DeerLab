@@ -24,12 +24,12 @@ if numel(x0) ~= numel(lb) || numel(x0) ~= numel(ub)
    error('The lower/upper bound size(s) are not compatible with the initial guess vector x0.') 
 end
 
-%Ensure the use of row vectors
+% Ensure the use of row vectors
 x0 = x0(:).';
 lb = lb(:).';
 ub = ub(:).';
 
-%Generate n-1 new starting points within the bounds
+% Generate n-1 new starting points within the bounds
 x0 = [x0; (ub-lb).*rand(n-1,numel(x0)) + lb];
 
 end
