@@ -4,20 +4,20 @@ function [pass,maxerr] = test(opt)
 
 
 t = linspace(0,5,100).';
-d = 3;
+d = 1;
 lam = 0.3;
 
 k = 0.5;
 k2 = 0.2;
-bckg = 0.4*exp(-k*(t).^(d/3)) + 0.6*exp(-k2*(t).^(d/3));
+bckg = 0.4*exp(-lam*k*(t).^(d)) + 0.6*exp(-lam*k2*(t).^(d));
 bckg = (1-lam)*bckg;
 k = 1;
 k2 = 0.6;
-bckg2 = 0.4*exp(-k*(t).^(d/3)) + 0.6*exp(-k2*(t).^(d/3));
+bckg2 = 0.4*exp(-lam*k*(t).^(d)) + 0.6*exp(-lam*k2*(t).^(d));
 bckg2 = (1-lam)*bckg2;
 k = 1.5;
 k2 = 2;
-bckg3 = 0.4*exp(-k*(t).^(d/3)) + 0.6*exp(-k2*(t).^(d/3));
+bckg3 = 0.4*exp(-lam*k*(t).^(d)) + 0.6*exp(-lam*k2*(t).^(d));
 bckg3 = (1-lam)*bckg3;
 
 data2fit = bckg(1:end);

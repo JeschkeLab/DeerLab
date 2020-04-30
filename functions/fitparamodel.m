@@ -183,7 +183,7 @@ if nargin<5 || isempty(StartParameters)
     StartParameters =  [paraminfo(:).default];
 elseif nargin>4 && ischar(StartParameters)
     varargin = [{StartParameters} varargin];
-    StartParameters = [paraminfo.parameters(:).default];
+    StartParameters = [paraminfo(:).default];
 else
     validateattributes(StartParameters,{'numeric'},{'2d','nonempty'},mfilename,'StartParameters')
 end

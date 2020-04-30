@@ -3,19 +3,19 @@ function [pass,maxerr] = test(opt)
 % Test if selectmethod can identify the optimal background model
 
 
-kappa = 0.2;
-d = 2.5;
+kappa = 0.5;
+d = 1.5;
 
 t1 = linspace(0,3,200);
 B1 = bg_strexp(t1,[kappa d]);
 
-t2 = linspace(0,3,200);
+t2 = linspace(0,5,300);
 B2 = bg_strexp(t2,[kappa d]);
 
-t3 = linspace(0,3,200);
+t3 = linspace(0,4,100);
 B3 = bg_strexp(t3,[kappa d]);
 
-models = {@bg_exp,@bg_strexp,@bg_prodstrexp};
+models = {@bg_exp,@bg_strexp,@bg_sumstrexp};
 
 [optimum,metric] = selectmodel(models,{B1,B2,B3},{t1,t2,t3},'aicc');
 
