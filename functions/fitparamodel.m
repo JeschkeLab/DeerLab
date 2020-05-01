@@ -146,7 +146,8 @@ end
 % Get information about the parametric model
 try
     % Check whether model is a DeerLab model function
-    paraminfo = model().parameters;
+    paraminfo = model();
+    paraminfo = paraminfo.parameters;
     if nargin(model)==2
         model = @(ax,param,idx) model(ax,param);
     else
@@ -160,7 +161,8 @@ catch
     end
     % Wrap the function handle into a DeerLab model function
     model = paramodel(model,StartParameters,[],[],isDistanceDomain);
-    paraminfo = model().parameters;
+    paraminfo = model();
+    paraminfo = paraminfo.parameters;
 end
 
 % Validate kernel
