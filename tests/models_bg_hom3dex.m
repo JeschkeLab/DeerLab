@@ -29,7 +29,7 @@ pass(2) = iscolumn(B1) && iscolumn(B2);
 % Pass 3: there are no NaN values
 pass(3) = all(~isnan(B1)) & all(~isnan(B2)) & all(~isnan(B3)) & all(~isnan(B4));
 % Pass 4: specific value is reproducible
-pass(4) = abs(B5-Bval0) < 1e-8;
+pass(4) = abs(B5-Bval0) < 1e-6;
 % Pass 5: pathway amplitude can be specified correctly
 pass(5) = isequal(B6,B7);
 

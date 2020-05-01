@@ -11,7 +11,7 @@ r = linspace(2,5,200);
 P = dd_gauss2(r,[3,0.4,0.3,3.5,0.4]);
 
 K1 = dipolarkernel(t1,r);
-S1 = dipolarsignal(t1,r,P,'noiselevel',0.03);
+S1 = dipolarsignal(t1,r,P,'noiselevel',0.01);
 K2 = dipolarkernel(t2,r);
 S2 = dipolarsignal(t2,r,P,'noiselevel',0.02);
 K3 = dipolarkernel(t3,r);
@@ -20,7 +20,7 @@ S3 = dipolarsignal(t3,r,P,'noiselevel',0.02);
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 
-alpha = selregparam(Ss,Ks,'tv','aic');
+alpha = selregparam(Ss,Ks,'tv','aicc');
 
 Pfit = fitregmodel(Ss,Ks,r,'tv',alpha);
 

@@ -15,7 +15,7 @@ B2 = bg_strexp(t2,[kappa d]);
 t3 = linspace(0,4,100);
 B3 = bg_strexp(t3,[kappa d]);
 
-models = {@bg_exp,@bg_strexp,@bg_sumstrexp};
+models = {@bg_exp,@bg_strexp,@bg_poly2};
 
 [optimum,metric] = selectmodel(models,{B1,B2,B3},{t1,t2,t3},'aicc');
 
@@ -26,7 +26,7 @@ maxerr = NaN;
 
 if opt.Display
     plot(1:3,metric)
-    set(gca,'xtick',[1 2 3],'xticklabel',{'Exponential','Stretched Exponential','Product of stretched exponentials'})
+    set(gca,'xtick',[1 2 3],'xticklabel',{'Exponential','Stretched Exponential','Polynomial 2n order'})
     xtickangle(45)
     ylabel('AICc')
     grid on, axis tight, box on

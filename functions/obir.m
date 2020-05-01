@@ -228,7 +228,9 @@ while Iteration <= MaxOuterIter
 end
 
 % Normalize distribution
+if ~all(P==0)
 P = P/sum(P)/mean(diff(r));
+end
 
 end
 
