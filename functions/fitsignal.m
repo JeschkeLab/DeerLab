@@ -96,6 +96,8 @@ validateattributes(r,{'numeric'},{'vector'},mfilename,'r (3rd input)');
 % Regularization settings
 regtype = 'tikh';
 regparam = 'aic';
+staticalpha = false;
+Pregci = [];
 alphaOptThreshold = 1e-3; % relative parameter change threshold for reoptimizing alpha
 
 
@@ -210,9 +212,9 @@ if RegularizationOnly
     
     % Solve regularization only
     for i = 1:nSignals
-        K{i} = dipolarkernel(t{i},r); 
+        K{i} = dipolarkernel(t{i},r);
     end
-    Pfit = fitregmodel(Vexp,K,r,regtype,regparam);    
+    Pfit = fitregmodel(Vexp,K,r,regtype,regparam);
     for i = 1:nSignals
         Vfit{i} = K{i}*Pfit;
         Bfit{i} = ones(size(Vexp{i}));
@@ -235,17 +237,80 @@ else
     
     % Fit the parameters
     args = {Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',1e-5};
-    if calculateCI
-        [parfit_,~,parci_] = fitparamodel(args{:});
-    else
-        parfit_ = fitparamodel(args{:});
-        parci_ = [];
-    end
+    [parfit_] = fitparamodel(args{:});
+    
     
     % Calculate the fitted signal, background, and distribution
     alpha = regparam; % use original setting for final run
     for i = 1:nSignals
         [Vfit{i},Bfit{i},Pfit] = Vmodel([],parfit_,i);
+    end
+    
+    if calculateCI
+        
+        % Use a static alpha-value for regularization, if used
+        staticalpha = true;
+        
+        Weights = globalweights(Vexp);
+        covmatrix = 0;
+        
+        % Compute the jacobian of the signal fit with respect to parameter set
+        
+        for i=1:nSignals
+            lsqfcn = @(fitpar)Vexp{i} - Vmodel([],fitpar,i);
+            jacobian = jacobianest(lsqfcn,parfit_);
+            hessian = jacobian.'*jacobian;
+            
+            % Estimate the covariance matrix by means of the inverse of Fisher information matrix
+            lastwarn('');
+            sigma2 = std(Vexp{i}-Vfit{i}).^2;
+            covmatrix_ = sigma2.*inv(hessian);
+            % Detect if there was a 'nearly singular' warning
+            [~, warnId] = lastwarn;
+            if strcmp(warnId,'MATLAB:nearlySingularMatrix') || strcmp(warnId,'MATLAB:singularMatrix')
+                covmatrix_ = sigma2.*sparse(pinv(full(hessian)));
+                lastwarn('');
+            end
+            
+            covmatrix = covmatrix + Weights(i)*covmatrix_;
+        end
+        
+        % Set significance level for confidence intervals
+        ConfidenceLevel = 0.95;
+        cov = 1 - ConfidenceLevel;
+        p = 1 - cov/2; % percentile
+        N = numel(Vexp{1}) - numel(parfit_); % degrees of freedom
+        
+        parci_ = cell(numel(p),1);
+        z = zeros(numel(p),1);
+        %Get the CI at requested confidence levels
+        for jj=1:numel(p)
+            if parfreeDistribution
+            % Get Student's t critical value
+            z(jj) = t_inv(p(jj),N);
+            else
+            % Get Gaussian critical value
+            z(jj) = norm_inv(p(jj));           
+            end
+            % Compute bounds of confidence intervals
+            parci_{jj} = parfit_.' + z(jj)*sqrt(diag(covmatrix)).*[-1 +1];
+        end
+        parci_ = parci_{1};
+        parci_ = max(parci_,lower.');
+        parci_ = min(parci_,upper.');
+        
+        for idx = 1:nSignals
+            %Propagate errors in the parameter sets to the models
+            VfitCI{idx} = propagate(covmatrix,@Vmodel,parfit_,Vfit{idx},z,t{idx});
+            %          BfitCI{idx} = propagate(covmatrix(bgidx{idx},bgidx{idx}),bg_model{idx},parfit_(bgidx{idx}),Bfit{idx},z,t{idx});
+        end
+        if parfreeDistribution
+            PfitCI = Pregci;
+        else
+            PfitCI = max(propagate(covmatrix(ddidx,ddidx),dd_model,parfit_(ddidx),Pfit,z,r),0);
+        end
+    else
+        parci_ = [];
     end
 end
 
@@ -270,15 +335,21 @@ end
 if nargout==0
     for i = 1:nSignals
         subplot(2,nSignals,i);
-        plot(t{i},Vexp{i},t{i},Vfit{i})
+        plot(t{i},Vexp{i},'k.',t{i},Vfit{i},'b')
+        hold on
+        fill([t{i}; flipud(t{i})],[VfitCI{i}(:,1); flipud(VfitCI{i}(:,2))],'b','LineStyle','none','FaceAlpha',0.2)
+        hold off
         axis tight
         grid on
         xlabel('time (us)');
         ylabel(sprintf('V\\{%d\\}',i));
-        legend('exp','fit');
+        legend('exp','fit','CI');
     end
     subplot(2,1,2);
-    plot(r,Pfit);
+    plot(r,Pfit,'b');
+    hold on
+    fill([r fliplr(r)],[PfitCI(:,1); flipud(PfitCI(:,2))],'b','LineStyle','none','FaceAlpha',0.2)
+    hold off
     xlabel('distance (nm)');
     axis tight
     ylabel('P (nm^{-1})');
@@ -288,20 +359,22 @@ if nargout==0
     disp('Fitted parameters and confidence intervals')
     str = '  %s{%d}(%d):   %10f  (%10f, %10f)  %s (%s)\n';
     if numel(parfit.dd)>0
-        pars = dd_model().parameters;
+        info = dd_model();
+        pars = info.parameters;
         for p = 1:numel(parfit.dd)
             c = parfit.dd(p);
-            ci = parci.dd(p,:)-c;
+            ci = parci.dd(p,:);
             fprintf(str,'dd',1,p,c,...
                 ci(1),ci(2),pars(p).name,pars(p).units);
         end
     end
     if numel(parfit.bg)>0
         for i = 1:nSignals
-            pars = bg_model{i}().parameters;
+            info = bg_model{i}();
+            pars = info.parameters;
             for p = 1:numel(parfit.bg{i})
                 c = parfit.bg{i}(p);
-                ci = parci.bg{i}(p,:)-c;
+                ci = parci.bg{i}(p,:);
                 fprintf(str,'bg',i,p,c,...
                     ci(1),ci(2),pars(p).name,pars(p).units)
             end
@@ -309,10 +382,11 @@ if nargout==0
     end
     if numel(parfit.ex)>0
         for i = 1:nSignals
-            pars = ex_model{i}(t).parameters;
+            info = ex_model{i}(t{i});
+            pars = info.parameters;
             for p = 1:numel(parfit.ex{i})
                 c = parfit.ex{i}(p);
-                ci = parci.ex{i}(p,:)-c;
+                ci = parci.ex{i}(p,:);
                 fprintf(str,'ex',i,p,c,...
                     ci(1),ci(2),pars(p).name,pars(p).units)
             end
@@ -335,6 +409,9 @@ end
 % General multi-pathway DEER signal model function
     function [V,B,P] = Vmodel(~,par,idx)
         
+        if nargin<3
+            idx = 1;
+        end
         % Calculate all K, all B, and P when called for first signal
         if idx==1
             for j = 1:nSignals
@@ -366,7 +443,7 @@ end
                 alpha = regparam;
                 % If the parameter vectors has not changed by much...
                 if ~isempty(par_prev)
-                    if all(abs(par_prev-par)./par < alphaOptThreshold)
+                    if all(abs(par_prev-par)./par < alphaOptThreshold) || staticalpha
                         % ...use the alpha optimized in the previous iteration
                         alpha = regparam_prev;
                     end
@@ -374,7 +451,7 @@ end
                 par_prev = par;
                 
                 if parfreeDistribution
-                    [P,~,regparam_prev] = fitregmodel(Vexp,K,r,regtype,alpha);
+                    [P,Pregci,regparam_prev] = fitregmodel(Vexp,K,r,regtype,alpha);
                 else
                     P = dd_model(r,par(ddidx));
                 end
@@ -400,7 +477,6 @@ end
         B = B{idx};
         
     end
-
 end
 
 function [par0,lo,up,N] = getmodelparams(model,t)
@@ -417,3 +493,14 @@ up = range(2:2:end);
 N = numel(par0);
 
 end
+
+function modelFitCI = propagate(covmatrix,model,param,modelFit,z,ax)
+
+jacobian = jacobianest(@(par)model(ax,par),param);
+modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax)).';
+upper = modelFit + z*sqrt(modelvariance);
+lower = modelFit - z*sqrt(modelvariance);
+modelFitCI = [upper lower];
+end
+
+
