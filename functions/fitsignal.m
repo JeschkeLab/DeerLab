@@ -17,6 +17,8 @@
 %   corresponding time axes (t1,t2,...) are given, they will be fitted globally
 %   to the specified distance distribution (dd). For each signal a specific
 %   background (bg1,bg2,...) and experiment (ex1,ex2) models can be assigned.
+%   If the inputs signal(s) is not pre-processed, it will automatically
+%   undergo phase-correction, zero-time and scale adjustment.
 %
 %   FITSIGNAL can handle both parametric and non-parametric distance
 %   distribution models.
@@ -80,11 +82,14 @@ for i = 1:nSignals
     if length(Vexp{i})~=length(t{i})
         error('V{%i} and t{%i} must have the same number of elements.',i,i)
     end
-    if ~isreal(Vexp{i})
-        error('Input signals cannot be complex-valued.')
-    end
     validateattributes(Vexp{i},{'numeric'},{'vector'},mfilename,'V (1st input)');
     validateattributes(t{i},{'numeric'},{'vector'},mfilename,'t (2nd input)');
+    %If not pre-processed, do standard preprocessing steps
+    if ~isreal(Vexp{i})
+        Vexp{i} = correctphase(Vexp{i});
+        t{i} = correctzerotime(Vexp{i},t{i});
+        Vexp{i} = correctscale(Vexp{i},t{i});
+    end
 end
 validateattributes(r,{'numeric'},{'vector'},mfilename,'r (3rd input)');
 

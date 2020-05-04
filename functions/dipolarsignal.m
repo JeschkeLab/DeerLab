@@ -82,8 +82,9 @@ if isempty(Phase)
     Phase = 0;
 end
 %validateattributes(lambda,{'numeric'},{'scalar','nonnegative','nonempty'},mfilename,'pathinfo')
-validateattributes(B,{'numeric'},{'2d'},mfilename,'B')
-
+if ~isa(B,'function_handle')
+    validateattributes(B,{'numeric'},{'2d'},mfilename,'B')
+end
 validateattributes(NoiseLevel,{'numeric'},{'scalar','nonnegative'},mfilename,'NoiseLevel')
 validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t')
 validateattributes(r,{'numeric'},{'increasing','nonempty','nonnegative'},mfilename,'r')
