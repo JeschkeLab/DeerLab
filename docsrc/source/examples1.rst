@@ -1,20 +1,12 @@
-Tutorials
---------------------------
-
-This is a collection of tutorials and examples for the use of DeerLab. The tutorials cover topics from the basics of dipolar analysis to more advanced topics. You can download the individual tutorials in various formats by using the buttons located on top of each tutorial. 
-
-
----------------------
-
-Tutorials - Basics
+Examples - Basics
 =========================================
 
-.. toctree::
+This is a collection of examples for the use of DeerLab. They cover topics from the basics of dipolar analysis to more advanced topics. You can download the individual examples in various formats by using the buttons located on top of each example. 
+
+.. toctree:
     :maxdepth: 0
     :hidden:
-    :includehidden:
-    :glob:
-    :caption: Tutorials - Basics
+    :caption: Examples - Basics
 
     ./examples/example_simulation_4deer
     ./examples/example_simulation_4deer_part2
@@ -118,70 +110,4 @@ Tutorials - Basics
 	</div>
 	</div>
 
-
----------------------
-
-Tutorials - Advanced
-=========================================
-
-.. toctree::
-    :maxdepth: 0
-    :hidden:
-    :includehidden:
-    :glob:
-    :caption: Tutorials - Advanced
-
-    ./examples/example_timedomainfitting
-    ./examples/example_selectmodel
-    ./examples/example_timedomainfitting
-    ./examples/example_globalfit_regularization
-    ./examples/example_globalfit_timedomain
-    ./examples/example_bilevelopt_background
-
-.. raw:: html
-
-	<div class="limiter">
-	<div class="container-table100">
-	<div class="wrap-table100">
-	<div class="table">
-
-
-		<div class="row" onclick="window.location='examples/example_timedomainfitting.html#example_timedomainfitting'">
-			<div class="cell">
-				Fitting a custom time-domain model of a 4-pulse DEER signal
-			</div>
-		</div>
-
-
-		<div class="row" onclick="window.location='examples/example_selectmodel.html#example_selectmodel'">
-			<div class="cell">
-				Selecting an optimal parametric model for fitting a dipolar signal
-			</div>
-		</div>
-
-
-		<div class="row" onclick="window.location='examples/example_globalfit_regularization.html#example_globalfit_regularization'">
-			<div class="cell">
-				Global fit of a dipolar evolution function using regularization
-			</div>
-		</div>
-
-
-		<div class="row" onclick="window.location='examples/example_globalfit_timedomain.html#example_globalfit_timedomain'">
-			<div class="cell">
-				Global fit of a time-domain parameteric 4-pulse DEER dipolar signal
-			</div>
-		</div>
-
-
-		<div class="row" onclick="window.location='examples/example_bilevelopt_background.html#example_bilevelopt_background'">
-			<div class="cell">
-				Bilevel optimization - Fitting background with a model-free distance distribution
-			</div>
-		</div>
-
-	</div>
-	</div>
-	</div>
-	</div>
 

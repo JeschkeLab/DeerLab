@@ -29,7 +29,12 @@ extensions = [
 # Render Latex math equations as svg instead of rendering with JavaScript
 imgmath_image_format = 'svg'
 imgmath_dvisvgm = 'dvisvgm'
-
+imgmath_latex_preamble = r'''
+\newcommand{\mr}[1]{\mathrm{#1}}
+\newcommand{\mx}[1]{\boldsymbol{#1}}
+\newcommand{\vc}[1]{\boldsymbol{#1}}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+'''
 
 # Setup template stuff
 templates_path = ['_templates']

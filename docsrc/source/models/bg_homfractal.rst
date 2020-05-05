@@ -35,6 +35,8 @@ Outputs
 Model
 =========================================
 
+This implements the background due to a homogeneous distribution of spins in a d-dimensional space, with d-dimensional spin concentration ``c_d``.
+
 
 ============= ============= ========= ============= ============= ===========================================
  Variable       Symbol        Default   Lower bound   Upper bound      Description

@@ -33,15 +33,15 @@ Outputs
 Model
 =========================================
 
-This implements a hard-shell excluded-volume model, with distance of closest approach ``R`` (first parameter) and spin concentration ``c`` (second parameter, in μM).
+This implements a hard-shell excluded-volume model, with spin concentration ``c`` (first parameter, in μM) and distance of closest approach ``R`` (second parameter, in nm).
 
 The analytical expression for the decay function as a function of ``R`` and ``c`` is complicated, see `Kattnig et al, J.Phys.Chem.B 2013, 117, 16542 <https://pubs.acs.org/doi/abs/10.1021/jp408338q>`_.
 
 ============= =================== ========= ============= ============= ================================================
  Variable      Symbol              Default   Lower bound   Upper bound      Description
 ============= =================== ========= ============= ============= ================================================
-``param(1)``    :math:`c`              50         0.01          1000          Spin concentration (μM)
-``param(2)``    :math:`R`              1          0.1            20           Exclusion distance (nm)
+``param(1)``    :math:`c`              50         0.01          1000          spin concentration (μM)
+``param(2)``    :math:`R`              1          0.1            20           exclusion distance (nm)
 ============= =================== ========= ============= ============= ================================================
 
 -----------------------------

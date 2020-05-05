@@ -51,7 +51,7 @@ body{
 /*Override the width of the page to cover the whole window*/
 .wy-nav-content {
     background: #ffffff !important;
-    max-width: none !important;
+/*    max-width: none !important;*/
 }
 
 /*Begin CSS formatting of the functions and models sections*/
@@ -126,7 +126,7 @@ table.func-list.docutils:not(.field-list) tr:nth-child(2n-1) td {
 
 /*Make the links looks like code*/
 table.func-list.docutils a {
-    color: #000;
+    /*color: #000;*/
     text-decoration: none;
     cursor: pointer;
     font-family: monospace;
@@ -152,6 +152,7 @@ table.func-list.docutils a {
     border-top: hidden 1px #fff;
     border-left: hidden 1px #fff;
     border-right: hidden 1px #fff;
+    margin-bottom: 0px;
     font-size: 15px;
 }
 

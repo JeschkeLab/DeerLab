@@ -5,7 +5,7 @@
 :mod:`deerload`
 ***********************
 
-Load experimental spectrometer data
+Load experimental DEER data from file
 
 
 -----------------------------
@@ -23,13 +23,12 @@ Syntax
 
 
 Parameters
-    *   ``filename`` - Name of data file (string)
-    *   ``t`` - Time axis (*N*-element array)
+    *   ``filename`` -- Name of data file (string)
 Returns
-    *   ``t`` - Time axis (*N*-element array)
-    *   ``V`` - Experimental signal (*N*-element array)
-    *   ``pars`` - Parameter file entries (struct)
-    *   ``file`` - Full path to data file(string)
+    *   ``t`` -- Time axis (*N*-element array)
+    *   ``V`` -- Experimental signal (*N*-element array)
+    *   ``pars`` -- Parameter file entries (struct)
+    *   ``file`` -- Full path to data file(string)
 
 
 
@@ -48,7 +47,7 @@ Description
 Read spectral data from a file specified in the string ``filename`` and returns the time-axis vector ``t`` and data vector ``V``.
 
 .. Important::
-   Most commercial spectrometers save their data in nanoseconds. Since DeerLab time-units are specified in microseconds, it is recommended to check the values of ``t`` returned by ``deerload`` and convert to microseconds if necessary. 
+   Most commercial spectrometers save their data in nanoseconds. Since the required time unit in DeerLab is microseconds, it is important to check the values of ``t`` returned by ``deerload`` and convert to microseconds if necessary.
 
 -----------------------------
 

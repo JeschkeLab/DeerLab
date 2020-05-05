@@ -20,10 +20,10 @@ Syntax
         pathways = ex_4pdeer(t,param)
 
 Parameters
-    *   ``t`` - Time axis (*M*-array)
+    *   ``t`` - Time axis (*M*-array), in microseconds
     *   ``param`` - Model parameters (array)
 Returns
-    *   ``pathways`` - Dipolar pathways (matrix)
+    *   ``pathways`` - Dipolar pathways (array)
     *   ``info`` - Model information (struct)
 
 
@@ -35,10 +35,11 @@ Model
 .. image:: ../images/model_scheme_ex_4pdeer.png
    :width: 550px
 
+This experiment model has one modulated pathway and an unmodulated contribution. The kernel is 
 
-:math:`V(t) = [1-\lambda + \lambda D(t-T_0^{(1)})]B(t-T_0^{(1)}) = [1-\lambda + \lambda D(t)]B(t)`
-
-:math:`K(t,r) = [1-\lambda + \lambda K(t-T_0^{(1)},r)]B(t-T_0^{(1)}) = [1-\lambda + \lambda K(t,r)]B(t)`
+.. math::
+   K(t,r) =
+   [1-\lambda + \lambda K_0(t-T_0^{(1)},r)]B(t-T_0^{(1)},\lambda)
 
 where :math:`T_0^{(1)}=0` is the refocusing time of the modulated dipolar pathway.
 
@@ -46,7 +47,7 @@ where :math:`T_0^{(1)}=0` is the refocusing time of the modulated dipolar pathwa
 ============== ================ ============ ============ ============ ================================================
  Variable        Symbol           Default       Lower        Upper                Description
 ============== ================ ============ ============ ============ ================================================
-``param(1)``   :math:`\lambda`     0.3           0            1          Modulated pathway amplitude (modulation depth)
+``param(1)``   :math:`\lambda`     0.3           0            1          modulated pathway amplitude (modulation depth)
 ============== ================ ============ ============ ============ ================================================
 
 
