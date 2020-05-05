@@ -1,15 +1,16 @@
 %
 % BOOTAN Bootstrap analysis for uncertainty estimation
 %
-%   stats = BOOTAN(fcn,V,Vfit)
-%   stats = BOOTAN(fcn,V,Vfit,Nsamples)
-%   stats = BOOTAN(___,'Name',value,___)
+%   [bootci,stats] = BOOTAN(fcn,V,Vfit)
+%   [bootci,stats] = BOOTAN(fcn,V,Vfit,Nsamples)
+%   [bootci,stats] = BOOTAN(fcn,{V1,V2,___},{Vfit1,Vfit2,___},Nsamples)
+%   [bootci,stats] = BOOTAN(___,'Name',value,___)
 %
 %   Performs a bootstrap analysis of the output variables returned by the
 %   function (fcn) given an experimental signal (V) and its fit (Vfit).
 %
 %   Inputs:
-%     fcn        function handle to the data analysis function, must be 
+%     fcn        function handle to the data analysis function, must be
 %                accept V as sole input: fcn = @(V) myfunction(___,V,___)
 %     V          experimental signal
 %     Vfit       fitted signal
@@ -23,6 +24,10 @@
 %                        'residual' - sample noise from the fit residuals
 %
 %   Outputs:
+%     bootci    structure array with confidence intervals for each variable
+%       .ci99   99%-Confidence intervals (percentile-based)
+%       .ci95   95%-Confidence intervals (percentile-based)
+%       .ci50   50%-Confidence intervals (percentile-based)
 %     stats     structure array with summary statistics for each variable
 %       .median medians of the output variables
 %       .mean   means of the output variables
@@ -31,9 +36,6 @@
 %       .p25    25th percentiles of the output variables
 %       .p75    75th percentiles of the output variables
 %       .p99    98th percentiles of the output variables
-%       .ci99   99%-Confidence intervals (percentile-based)
-%       .ci95   95%-Confidence intervals (percentile-based)
-%       .ci50   50%-Confidence intervals (percentile-based)
 %       .boothist    structure containing histogram data of the variable distributions
 %                        .edges  Histogram edges (X-data)
 %                        .bins   Histogram bins (in probability) (Y-data)
@@ -50,7 +52,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function stats = bootan(fcn,Vexp,Vfit,nSamples,varargin)
+function [ci,stats] = bootan(fcn,Vexp,Vfit,nSamples,varargin)
 
 % Parse input scheme: bootan(fcn,Vexp,Vfit,'prop',value,___)
 if nargin>=4 && ischar(nSamples)
@@ -81,10 +83,21 @@ else
     validateattributes(Verbose,{'logical'},{'nonempty'},mfilename,'Verbose')
 end
 
-if numel(Vexp)~=numel(Vfit)
-    error('V and Vfit (2nd and 3rd input) must have the same number of element.')
+if ~iscell(Vexp)
+    Vexp = {Vexp};
 end
-
+if ~iscell(Vfit)
+    Vfit = {Vfit};
+end
+if numel(Vexp) ~= numel(Vfit)
+    error('The same number of signals V and fits Vfit must be provided.')
+end
+nSignals = numel(Vexp);
+for i=1:numel(Vfit)
+    if numel(Vexp{i}) ~= numel(Vfit{i})
+        error('V{%i} and Vfit{%i} must have the same number of element.',i,i)
+    end
+end
 if ~isa(fcn,'function_handle')
     error('The 1st input must be a valid function handle of the form @(V)fcn(__,V,__)')
 end
@@ -95,11 +108,15 @@ evals = cell(1,nout);
 sizeOut = cell(1,nout);
 
 % Get residuals and estimate standard deviation
-residuals = Vfit - Vexp;
-sigma = std(residuals);
-
+residuals = cell(1,nSignals);
+sigma = zeros(1,nSignals);
+for i=1:nSignals
+    residuals{i} = Vfit{i} - Vexp{i};
+    sigma(i) = std(residuals{i});
+end
 % Generate bootstrap samples from data
 %-------------------------------------------------------------------------------
+Vresample = cell(1,nSignals);
 warning('off','all')
 for iSample = 1:nSamples
     
@@ -109,24 +126,25 @@ for iSample = 1:nSamples
         fprintf(S);
     end
     
-    % Get a bootstrap sample
-    if iSample>1
-        
-        %Determine requested re-sampling method
-        switch Resampling
-            case 'gaussian'
-                % Resample from a Gaussian distribution with
-                % variance estimated from the residuals
-                Vresample = Vfit + sigma*randn(size(Vfit));
-            case 'residual'
-                % Resample from the residual directly
-                Vresample =  Vfit + residuals(randperm(numel(Vfit)));
+    for i=1:nSignals
+        % Get a bootstrap sample
+        if iSample>1
+            
+            %Determine requested re-sampling method
+            switch Resampling
+                case 'gaussian'
+                    % Resample from a Gaussian distribution with
+                    % variance estimated from the residuals
+                    Vresample{i} = Vfit{i} + sigma(i)*randn(size(Vfit{i}));
+                case 'residual'
+                    % Resample from the residual directly
+                    Vresample{i} =  Vfit{i} + residuals{i}(randperm(numel(Vfit{i})));
+            end
+        else
+            % Use original data on the first run
+            Vresample{i} = Vexp{i};
         end
-    else
-        % Use original data on the first run
-        Vresample = Vexp;
     end
-    
     % Run the model function with bootstrap sample
     varargsout = cell(1,nout);
     [varargsout{:}] = fcn(Vresample);
@@ -174,56 +192,56 @@ for iOut = 1:numel(evals)
     medians = median(boots);
     stds = std(boots);
     
-    for i = 1:nParam(iOut)
-        booti = boots(:,i);
-        
-        % Store the statistical metrics in structure
-        stats{iOut}(i).mean = means(i);
-        stats{iOut}(i).median = medians(i);
-        stats{iOut}(i).std = stds(i);
-        
-        % Percentiles
-        stats{iOut}(i).p1  = percentile(booti,1,1);
-        stats{iOut}(i).p25 = percentile(booti,25,1);
-        stats{iOut}(i).p75 = percentile(booti,75,1);
-        stats{iOut}(i).p99 = percentile(booti,99,1);
-       
-        % Confidence intervals
-        stats{iOut}(i).ci50(:,1) = stats{iOut}(i).p25;
-        stats{iOut}(i).ci50(:,2) = stats{iOut}(i).p75;
-        stats{iOut}(i).ci95(:,1) = percentile(booti,2.5,1);
-        stats{iOut}(i).ci95(:,2) = percentile(booti,97.5,1);
-        stats{iOut}(i).ci99(:,1) = percentile(booti,0.5,1);
-        stats{iOut}(i).ci99(:,2) = percentile(booti,99.5,1);
-        
-        %Compute the bootstrapped distributions for non-vectorial variables
-        if nParam(iOut)<20
+    ci{iOut}.ci50(:,1) = percentile(boots,25,1);
+    ci{iOut}.ci50(:,2) = percentile(boots,75,1);
+    ci{iOut}.ci95(:,1) = percentile(boots,2.5,1);
+    ci{iOut}.ci95(:,2) = percentile(boots,97.5,1);
+    ci{iOut}.ci99(:,1) = percentile(boots,0.5,1);
+    ci{iOut}.ci99(:,2) = percentile(boots,99.5,1);
+    
+    if nargout>1
+        for i = 1:nParam(iOut)
+            booti = boots(:,i);
             
-            % Kernel-density estimation
-            xmin = 0.9*stats{iOut}(i).p1;
-            xmax = 1.1*stats{iOut}(i).p99;
-            if all(diff(booti)==0)
-                pdf = 1;
-                values = 0;
-            else
-                [~,pdf,values] = kde(booti,100,xmin,xmax);
+            % Store the statistical metrics in structure
+            stats{iOut}(i).mean = means(i);
+            stats{iOut}(i).median = medians(i);
+            stats{iOut}(i).std = stds(i);
+            
+            % Percentiles
+            stats{iOut}(i).p1  = percentile(booti,1,1);
+            stats{iOut}(i).p25 = percentile(booti,25,1);
+            stats{iOut}(i).p75 = percentile(booti,75,1);
+            stats{iOut}(i).p99 = percentile(booti,99,1);
+            
+            %Compute the bootstrapped distributions for non-vectorial variables
+            if nParam(iOut)<50
+                
+                % Kernel-density estimation
+                xmin = 0.9*stats{iOut}(i).p1;
+                xmax = 1.1*stats{iOut}(i).p99;
+                if all(diff(booti)==0)
+                    pdf = 1;
+                    values = 0;
+                else
+                    [~,pdf,values] = kde(booti,100,xmin,xmax);
+                end
+                stats{iOut}(i).bootdist.values = values;
+                stats{iOut}(i).bootdist.pdf = pdf;
+                
+                %Determine optimal bins for histogram via Freedman-Diaconis rule
+                nbins = round(range(booti)/(2*iqr(booti)/(numel(booti)).^(1/3)),0);
+                if isinf(nbins) || isnan(nbins)
+                    nbins = 20;
+                end
+                
+                % Get the distribution histogram
+                [bins,edges] = histcounts(booti,nbins,'Normalization','probability');
+                stats{iOut}(i).boothist.bins = bins;
+                stats{iOut}(i).boothist.edges = edges;
             end
-            stats{iOut}(i).bootdist.values = values;
-            stats{iOut}(i).bootdist.pdf = pdf;
-            
-            %Determine optimal bins for histogram via Freedman-Diaconis rule
-            nbins = round(range(booti)/(2*iqr(booti)/(numel(booti)).^(1/3)),0);
-            if isinf(nbins) || isnan(nbins)
-                nbins = 20;
-            end
-            
-            % Get the distribution histogram
-            [bins,edges] = histcounts(booti,nbins,'Normalization','probability');
-            stats{iOut}(i).boothist.bins = bins;
-            stats{iOut}(i).boothist.edges = edges;
         end
     end
-    
 end
 
 end
