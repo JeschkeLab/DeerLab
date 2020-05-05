@@ -279,26 +279,38 @@ else
         
         % Compute the jacobian of the signal fit with respect to parameter set
         for i=1:nSignals
-            lsqfcn = @(fitpar)Vexp{i} - VmodelCI(fitpar,i);
-            jacobian = jacobianest(lsqfcn,parfit_);
-            hessian = jacobian.'*jacobian;
+            
+            if parfreeDistribution
+                % Mixed signal - augmented Jacobian
+                L = regoperator(r,2);  
+                Kmod = @(par)Kmodels{i}({par(exidx{i}),par(bgidx{i})}); 
+                J = [jacobianest(@(p)Kmod(p)*Pfit,parfit_), Kmod(parfit_); 
+                     zeros(size(L,1),numel(parfit_)), regparam_prev*L];
+                subidx_P = numel(parfit_)+[1:numel(Pfit)]; 
+                subidx_theta = 1:numel(parfit_);
+            else
+                % Full parametric signal - numerical Jacobian
+                J = jacobianest(@(par)Vmodel([],par,i),parfit_);
+            end
             
             % Estimate the covariance matrix by means of the inverse of Fisher information matrix
+            warning('off','MATLAB:nearlySingularMatrix')
             lastwarn('');
             sigma2 = std(Vexp{i}-Vfit{i}).^2;
-            covmatrix_ = sigma2.*inv(hessian);
+            covmatrix_ = sigma2.*inv(J.'*J);
             % Detect if there was a 'nearly singular' warning
             [~, warnId] = lastwarn;
             if strcmp(warnId,'MATLAB:nearlySingularMatrix') || strcmp(warnId,'MATLAB:singularMatrix')
-                covmatrix_ = sigma2.*sparse(pinv(full(hessian)));
+                covmatrix_ = sigma2.*sparse(pinv(full(J.'*J)));
                 lastwarn('');
             end
+            warning('on','MATLAB:nearlySingularMatrix')
             
             covmatrix = covmatrix + Weights(i)*covmatrix_;
         end
         
         % Set significance level for confidence intervals
-        ConfidenceLevel = 0.95;
+        ConfidenceLevel = [0.95 0.5];
         cov = 1 - ConfidenceLevel;
         p = 1 - cov/2; % percentile
         N = numel(Vexp{1}) - numel(parfit_); % degrees of freedom
@@ -308,28 +320,33 @@ else
         %Get the CI at requested confidence levels
         for jj=1:numel(p)
             if parfreeDistribution
+            % Get Gaussian critical value
+            z(jj) = norm_inv(p(jj));
+            covmatsub = covmatrix(subidx_theta,subidx_theta);
+            parci_{jj} = parfit_.' + z(jj)*sqrt(diag(covmatsub)).*[-1 +1];
+            covmatsub = covmatrix(subidx_P,subidx_P);
+            PfitCI{jj}(:,1) = Pfit + z(jj)*sqrt(diag(covmatsub));
+            PfitCI{jj}(:,2) = max(0,Pfit - z(jj)*sqrt(diag(covmatsub)));
+            
+            else
             % Get Student's t critical value
             z(jj) = t_inv(p(jj),N);
-            else
-            % Get Gaussian critical value
-            z(jj) = norm_inv(p(jj));           
+            ci = parfit_.' + z(jj)*sqrt(diag(covmatrix)).*[-1 +1];
+            ci = max(ci,lower.');
+            ci = min(ci,upper.');
+            parci_{jj} = ci;
             end
-            % Compute bounds of confidence intervals
-            parci_{jj} = parfit_.' + z(jj)*sqrt(diag(covmatrix)).*[-1 +1];
         end
         parci_ = parci_{1};
-        parci_ = max(parci_,lower.');
-        parci_ = min(parci_,upper.');
         
         for idx = 1:nSignals
             %Propagate errors in the parameter sets to the models
-            VfitCI{idx} = propagate(covmatrix,@Vmodel,parfit_,Vfit{idx},z,t{idx});
-            %          BfitCI{idx} = propagate(covmatrix(bgidx{idx},bgidx{idx}),bg_model{idx},parfit_(bgidx{idx}),Bfit{idx},z,t{idx});
+            VfitCI{idx} = propagate(covmatrix,J,parfit_,Vfit{idx},z(1),t{idx});
         end
-        if parfreeDistribution
-            PfitCI = Pregci;
-        else
-            PfitCI = max(propagate(covmatrix(ddidx,ddidx),dd_model,parfit_(ddidx),Pfit,z,r),0);
+        if ~parfreeDistribution
+            for i=1:numel(z)
+            PfitCI{i} = max(propagate(covmatrix(ddidx,ddidx),dd_model,parfit_(ddidx),Pfit,z(i),r),0);
+            end
         end
     else
         parci_ = [];
@@ -370,7 +387,8 @@ if nargout==0
     subplot(2,1,2);
     plot(r,Pfit,'b');
     hold on
-    fill([r fliplr(r)],[PfitCI(:,1); flipud(PfitCI(:,2))],'b','LineStyle','none','FaceAlpha',0.2)
+    fill([r fliplr(r)],[PfitCI{1}(:,1); flipud(PfitCI{1}(:,2))],'b','LineStyle','none','FaceAlpha',0.2)
+    fill([r fliplr(r)],[PfitCI{2}(:,1); flipud(PfitCI{2}(:,2))],'b','LineStyle','none','FaceAlpha',0.3)
     hold off
     xlabel('distance (nm)');
     axis tight
@@ -378,7 +396,7 @@ if nargout==0
     grid on
     drawnow
     
-    disp('Fitted parameters and confidence intervals')
+    disp('Fitted parameters and 95%-confidence intervals')
     str = '  %s{%d}(%d):   %10f  (%10f, %10f)  %s (%s)\n';
     if numel(parfit.dd)>0
         info = dd_model();
@@ -502,7 +520,11 @@ end
 
 function modelFitCI = propagate(covmatrix,model,param,modelFit,z,ax)
 
-jacobian = jacobianest(@(par)model(ax,par),param);
+if isnumeric(model)
+    jacobian = model;
+else
+    jacobian = jacobianest(@(par)model(ax,par),param);
+end
 modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax)).';
 upper = modelFit + z*sqrt(modelvariance);
 lower = modelFit - z*sqrt(modelvariance);
