@@ -66,7 +66,7 @@ P(r<r0-fwhm | r>r0+fwhm) = 0;
 if any(P~=0)
     P = P/sum(P)/mean(diff(r));
 end
-
+P = P(:);
 output = P;
 
 return

@@ -10,10 +10,10 @@ bounds = [info.parameters(:).range];
 lower = bounds(1:2:end);
 upper = bounds(2:2:end);
 
-P1 = dd_circle(r,par0);
-P2 = dd_circle(r.',par0);
-P3 = dd_circle(r,lower);
-P4 = dd_circle(r,upper);
+P1 = dd_cos(r,par0);
+P2 = dd_cos(r.',par0);
+P3 = dd_cos(r,lower);
+P4 = dd_cos(r,upper);
 
 % Pass 1: dimensionality is correct
 pass(1) = isequal(P1,P2);
@@ -30,6 +30,8 @@ pass(5) = abs(sum(P1)*dr-1)<1e-10;
 r0 = par0(1);
 fwhm = par0(2);
 pass(6) = all(P1(r<r0-fwhm)==0) && all(P1(r>r0+fwhm)==0);
+% Pass 7: orientation
+pass(7) = iscolumn(P1) & iscolumn(P2);
 
 pass = all(pass);
 
