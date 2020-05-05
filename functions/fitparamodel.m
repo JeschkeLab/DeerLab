@@ -346,7 +346,7 @@ end
 % Run least-squares fitting
 %-------------------------------------------------------------------------------
 % Disable ill-conditioned matrix warnings
-warning('off','MATLAB:nearlySingularMatrix')
+warning('off','MATLAB:nearlySingularMatrix'), warning('off','MATLAB:singularMatrix')
 
 fvals = zeros(1,MultiStart);
 parfits = cell(1,MultiStart);
@@ -479,7 +479,7 @@ if nAxes==1
 end
 
 % Set the warnings back on
-warning('on','MATLAB:nearlySingularMatrix')
+warning('on','MATLAB:nearlySingularMatrix'), warning('on','MATLAB:singularMatrix')
     
     % Function that provides vector of residuals, which is the objective
     % function for the least-squares solvers

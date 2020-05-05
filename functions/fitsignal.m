@@ -108,6 +108,7 @@ if nargin<6, ex_model = @ex_4pdeer; end
 if nargin<7, par0 = {[],[],[]}; end
 
 calculateCI = nargout>=5 || nargout==0;
+computeStats = nargout>4 || nargout==0;
 
 if ~isempty(par0)
     if ~iscell(par0) || numel(par0)~=3
@@ -294,7 +295,7 @@ else
             end
             
             % Estimate the covariance matrix by means of the inverse of Fisher information matrix
-            warning('off','MATLAB:nearlySingularMatrix')
+            warning('off','MATLAB:nearlySingularMatrix'), warning('off','MATLAB:singularMatrix')
             lastwarn('');
             sigma2 = std(Vexp{i}-Vfit{i}).^2;
             covmatrix_ = sigma2.*inv(J.'*J);
@@ -304,7 +305,7 @@ else
                 covmatrix_ = sigma2.*sparse(pinv(full(J.'*J)));
                 lastwarn('');
             end
-            warning('on','MATLAB:nearlySingularMatrix')
+            warning('on','MATLAB:nearlySingularMatrix'), warning('on','MATLAB:singularMatrix')
             
             covmatrix = covmatrix + Weights(i)*covmatrix_;
         end
@@ -353,6 +354,16 @@ else
     end
 end
 
+% Calculate goodness of fit
+%-------------------------------------------------------------------------------
+if computeStats
+    stats = cell(nSignals,1);
+    for i = 1:nSignals
+        Ndof = numel(Vexp{i}) - numel(parfit_);
+        stats{i} = gof(Vexp{i},Vfit{i},Ndof);
+    end
+end
+
 % Return fitted parameters and confidence intervals in structures
 %-------------------------------------------------------------------------------
 parfit_ = parfit_(:);
@@ -374,30 +385,33 @@ end
 if nargout==0
     for i = 1:nSignals
         subplot(2,nSignals,i);
-        plot(t{i},Vexp{i},'k.',t{i},Vfit{i},'b')
+        plot(t{i},Vexp{i},'k.',t{i},Vfit{i},'r','LineWidth',1.5)
         hold on
-        fill([t{i}; flipud(t{i})],[VfitCI{i}(:,1); flipud(VfitCI{i}(:,2))],'b','LineStyle','none','FaceAlpha',0.2)
+        fill([t{i}; flipud(t{i})],[VfitCI{i}(:,1); flipud(VfitCI{i}(:,2))],'r','LineStyle','none','FaceAlpha',0.4)
         hold off
         axis tight
         grid on
-        xlabel('time (us)');
+        xlabel('Time [\mus]');
         ylabel(sprintf('V\\{%d\\}',i));
-        legend('exp','fit','CI');
+        legend('Data','Fit','95%-CI');
     end
     subplot(2,1,2);
-    plot(r,Pfit,'b');
+    plot(r,Pfit,'k','LineWidth',1.5);
     hold on
-    fill([r fliplr(r)],[PfitCI{1}(:,1); flipud(PfitCI{1}(:,2))],'b','LineStyle','none','FaceAlpha',0.2)
-    fill([r fliplr(r)],[PfitCI{2}(:,1); flipud(PfitCI{2}(:,2))],'b','LineStyle','none','FaceAlpha',0.3)
+    fill([r fliplr(r)],[PfitCI{1}(:,1); flipud(PfitCI{1}(:,2))],'r','LineStyle','none','FaceAlpha',0.2)
+    fill([r fliplr(r)],[PfitCI{2}(:,1); flipud(PfitCI{2}(:,2))],'r','LineStyle','none','FaceAlpha',0.5)
     hold off
-    xlabel('distance (nm)');
-    axis tight
-    ylabel('P (nm^{-1})');
-    grid on
+    xlabel('Distance [nm]');
+    ylabel('P [nm^{-1}]');
+    legend('Fit','95%-CI','50%-CI')
+    axis tight,grid on
     drawnow
-    
+    disp('Goodness-of-fit')
+    for i=1:nSignals
+        fprintf('  V{%i}: %s2 = %.3f  RMSD  = %.3f \n',i,char(hex2dec('3c7')),stats{i}.chi2red,stats{i}.RMSD)
+    end
     disp('Fitted parameters and 95%-confidence intervals')
-    str = '  %s{%d}(%d):   %10f  (%10f, %10f)  %s (%s)\n';
+    str = '  %s{%d}(%d):   %.7f  (%.7f, %.7f)  %s (%s)\n';
     if numel(parfit.dd)>0
         info = dd_model();
         pars = info.parameters;
@@ -442,6 +456,8 @@ if nSignals==1
         parci.bg = parci.bg{1};
         parci.ex = parci.ex{1};
     end
+    stats = stats{1};
+        
 end
 
 %===============================================================================
