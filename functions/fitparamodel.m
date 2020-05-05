@@ -399,7 +399,7 @@ if calcParamUncertainty
     % Set significance level for confidence intervals
     alpha = 1 - ConfidenceLevel;
     p = 1 - alpha/2; % percentile
-    N = numel(residuals)-numel(parfit); % degrees of freedom
+    N = numel(residuals) - numel(parfit); % degrees of freedom
     
     parci = cell(numel(p),1);
     z = zeros(numel(p),1);
@@ -410,7 +410,8 @@ if calcParamUncertainty
         z(j) = t_inv(p(j),N);
         % Compute bounds of confidence intervals
         parci{j} = parfit.' + z(j)*sqrt(diag(covmatrix)).*[-1 +1];
-        
+        parci{j} = max(parci{j},lowerBounds.');
+        parci{j} = min(parci{j},upperBounds.');
     end
     
     %Do not return a cell if only one confidence level is requested
