@@ -2,21 +2,21 @@
 % EX_OVL4PDEER 4-pulse DEER with band overlap experiment model 
 %
 %   info = EX_OVL4PDEER(t)
-%   Returns an (info) structure containing the specifics of the model.
+%   Returns an (info) structure containing the specifics of the model, including
+%   a list of parameters.
 %
 %   pathways = EX_OVL4PDEER(t,param)
-%   Computes the dipolar pathway informatio matrix according to the paramters
-%   array (param) and the specified experiment. The required parameters can
-%   also be found in the (info) structure.
+%   Computes the dipolar pathway information array according to the paramater
+%   array (param).
 %
 %
 % PARAMETERS
 % name     symbol  default lower bound upper bound
 % -----------------------------------------------------------------------
-% PARAM(1)  lam0    0.1       0            1        Unmodulated pathway amplitude
-% PARAM(2)  lam1    0.8       0            1        1st Modulated pathway amplitude
-% PARAM(3)  lam2    0.1       0            1        2nd Modulated pathway amplitude
-% PARAM(4)  T02    max(t)  max(t)-2      max(t)+2   2nd Modulated pathway refocusing time
+% PARAM(1)  lam0    0.1       0            1        unmodulated pathway amplitude
+% PARAM(2)  lam1    0.8       0            1        1st modulated pathway amplitude
+% PARAM(3)  lam2    0.1       0            1        2nd modulated pathway amplitude
+% PARAM(4)  T02    max(t)  max(t)-2      max(t)+2   2nd modulated pathway refocusing time
 % -----------------------------------------------------------------------
 %
 

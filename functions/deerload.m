@@ -46,19 +46,22 @@
 
 function varargout = deerload(FileName,Scaling)
 
-if (nargout<0) || (nargout>4)
+if nargout>4
     error('Please provide 1, 2, 3 or 4 output arguments!');
 end
 
-if (nargin<1), FileName = pwd; end
+if nargin<1
+    FileName = pwd;
+end
 
-if (nargin<2)
+if nargin<2
     Scaling = '';
 end
 
-%Prepare output container
+% Prepare output container
 varargout = cell(1,nargout);
-%Load the data using eprload
+
+% Load the data using eprload
 [varargout{:}] = eprload(FileName,Scaling);
 
 % Convert time axis to microseconds if loaded in nanoseconds
@@ -71,6 +74,9 @@ if length(varargout)>1
         tmp{2} = V(:,2);
         V = tmp;
     end
+    
+    t = t/1e3; % nanoseconds -> microseconds
+    
     varargout{1} = t;
     varargout{2} = V;
 end

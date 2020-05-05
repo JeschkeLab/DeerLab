@@ -20,8 +20,6 @@
 %
 %   Name-value pair arguments:
 %
-%   'ModDepth'   - Modulation depth of the form factor
-%   'Background' - Array containing a background function
 %   'NoiseLevel' - Level (standard deviation) of gaussian noise to add
 %   'Scale'      - Vertical scale to add to the ouput signal
 %   'Phase'      - Phase of the signal in radians.
@@ -94,7 +92,7 @@ validateattributes(Overtones,{'numeric'},{'2d','nonnegative'},mfilename,'Overton
 validateattributes(Phase,{'numeric'},{'2d','scalar'},mfilename,'Phase')
 
 if ~isempty(P) && numel(r)~=numel(P)
-    error('The distance axis and distribution lengths must be equal.')
+    error('The lengths of the distance axis (second input) and the distribution (third input) must be equal.')
 end
 
 if numel(unique(round(diff(r),6)))~=1 && ~isscalar(r)

@@ -7,12 +7,14 @@ r = linspace(2,6,300);
 parIn = [3 0.3 0.3 4 0.3 0.3 5 0.3];
 P = dd_gauss3(r,parIn);
 K = dipolarkernel(t,r);
-S = K*P;
+V = K*P;
 
-rng(0)
-[~,FitP] = fitparamodel(S,@dd_gauss3,r,K,'multistart',60);
+rng(67)
+lb = parIn - [0.5 0.2 0.2 1 0.2 0.2 0.5 0.2];
+ub = parIn + [0.5 0.2 0.2 1 0.2 0.2 1   0.2];
+[~,FitP] = fitparamodel(V,@dd_gauss3,r,K,'multistart',5,'Lower',lb,'Upper',ub);
 
-%Pass: distance distribution is well fitted
+% Pass: distance distribution is well fitted
 pass = all(abs(FitP - P) < 1e-10);
 
 maxerr = max(abs(FitP - P));

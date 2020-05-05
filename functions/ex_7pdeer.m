@@ -2,23 +2,23 @@
 % EX_5PDEER 7-pulse DEER experiment model 
 %
 %   info = EX_7PDEER(t)
-%   Returns an (info) structure containing the specifics of the model.
+%   Returns an (info) structure containing the specifics of the model, including
+%   a list of parameters.
 %
 %   pathways = EX_7PDEER(t,param)
-%   Computes the dipolar pathway informatio matrix according to the paramters
-%   array (param) and the specified experiment. The required parameters can
-%   also be found in the (info) structure.
+%   Computes the dipolar pathway information array according to the paramater
+%   array (param).
 %
 %
 % PARAMETERS
 % name     symbol  default lower bound upper bound
 % -----------------------------------------------------------------------
-% PARAM(1)  lam0    0.4       0            1            Unmodulated pathway amplitude
-% PARAM(2)  lam1    0.4       0            1            1st Modulated pathway amplitude
-% PARAM(3)  lam2    0.2       0            1            2nd Modulated pathway amplitude
-% PARAM(4)  lam3    0.2       0            1            2nd Modulated pathway amplitude
-% PARAM(5)  T02  max(t)/5   max(t)/5-2     max(t)/5+2   2nd Modulated pathway refocusing time
-% PARAM(6)  T03  max(t)*2/5  max(t)*2/5-2  max(t)2/5+2  3rd Modulated pathway refocusing time
+% PARAM(1)  lam0    0.4       0            1            unmodulated pathway amplitude
+% PARAM(2)  lam1    0.4       0            1            1st modulated pathway amplitude
+% PARAM(3)  lam2    0.2       0            1            2nd modulated pathway amplitude
+% PARAM(4)  lam3    0.2       0            1            2nd modulated pathway amplitude
+% PARAM(5)  T02  max(t)/5   max(t)/5-2     max(t)/5+2   2nd modulated pathway refocusing time
+% PARAM(6)  T03  max(t)*2/5  max(t)*2/5-2  max(t)2/5+2  3rd modulated pathway refocusing time
 % -----------------------------------------------------------------------
 %
 
@@ -29,8 +29,8 @@ function output = ex_7pdeer(t,param)
 
 nParam = 6;
 
-if nargin==1 && nargin>2
-    error('Model requires at two input arguments.')
+if nargin>2
+    error('Model requires one or two input arguments.')
 end
 
 if nargin==1

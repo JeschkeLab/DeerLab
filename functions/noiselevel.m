@@ -85,11 +85,13 @@ end
 switch estimationMethod
     
     case '2D'
-        N = size(V,2);
-        % Estimate the standard deviation of the single scans
-        sigma = mean(std(V,[],2));
-        % Estimate the standard deviation after averaging
-        sigma = sigma/sqrt(N);
+        % Estimate standard deviations for all time point, and average over scans
+        if size(V,2)<10
+            warning('Only a few scans are given. Noise standard deviation estimate will be inaccurate.');
+        end
+        sigma = std(V,0,2);
+        sigma = mean(sigma);
+        
     case 'filtering'
         
         switch filterType
@@ -103,6 +105,7 @@ switch estimationMethod
     case 'complex'
         [~,Vim] = correctphase(V);
         sigma = std(Vim);
+        
     case 'reference'
         sigma = std(V - Vref);
 end

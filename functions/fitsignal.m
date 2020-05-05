@@ -495,6 +495,15 @@ end
 if nSignals==1
     Vfit = Vfit{1};
     Bfit = Bfit{1};
+    if iscell(parfit.dd)
+        parfit.dd = parfit.dd{1};
+    end
+    if iscell(parfit.bg)
+        parfit.bg = parfit.bg{1};
+    end
+    if iscell(parfit.ex)
+        parfit.ex = parfit.ex{1};
+    end
     if ~isempty(parci_)
         parci.bg = parci.bg{1};
         parci.ex = parci.ex{1};
