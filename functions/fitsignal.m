@@ -10,6 +10,7 @@
 %   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},ex)
 %   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r,dd)
 %   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r)
+%   __ = FITSIGNAL(___,'Property',Values,___)
 %
 %   Fits a dipolar model to the experimental signal in V, using distance axis r.
 %   The model is specified by the distance distribution (dd), the background
@@ -50,6 +51,15 @@
 %           .ex  fitted parameters for experiment model
 %    parci structure with confidence intervals for parameter, similar to parfit
 %    stats goodness of fit statistical estimators, N-element structure array
+%
+%  Name-value pairs:
+%
+%   'TolFun'        - Optimizer function tolerance
+%   'RegType'       - Regularization functional type ('tikh','tv','huber')
+%   'RegParam'      - Regularization parameter selection ('lr','lc','cv','gcv',
+%                     'rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl')
+%   'alphaOptThreshold' - relative parameter change threshold for reoptimizing
+%                         the regularization parameter
 
 % Example:
 %    Vfit = fitsignal(Vexp,t,r,@dd_gauss,@bg_exp,@ex_4pdeer)
@@ -58,7 +68,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [Vfit,Pfit,Bfit,parfit,parci,stats] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model,par0)
+function [Vfit,Pfit,Bfit,parfit,parci,stats] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model,par0,varargin)
 
 if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
@@ -93,13 +103,36 @@ for i = 1:nSignals
 end
 validateattributes(r,{'numeric'},{'vector'},mfilename,'r (3rd input)');
 
-% Regularization settings
-regtype = 'tikh';
-regparam = 'aic';
-staticalpha = false;
-Pregci = [];
-alphaOptThreshold = 1e-3; % relative parameter change threshold for reoptimizing alpha
 
+% Parse the optional parameters in varargin
+optionalProperties = {'RegParam','RegType','alphaOptThreshold','TolFun'};
+[regparam,regtype,alphaOptThreshold,TolFun] = parseoptional(optionalProperties,varargin);
+
+if isempty(TolFun)
+    TolFun = 1e-5;
+else
+    validateattributes(TolFun,{'numeric'},{'scalar','nonnegative'},mfilename,'TolFun option');
+end
+
+% Regularization settings
+if isempty(regtype)
+    regtype = 'tikh';
+else
+    validateattributes(regtype,{'char'},{'nonempty'},mfilename,'RegType option');
+    regtype = validatestring(regtype,{'tikh','tv','huber'});
+end
+if isempty(regparam)
+    regparam = 'aic';
+else
+    allowedMethodInputs = {'lr','lc','cv','gcv','rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl'};
+    validateattributes(regparam,{'char'},{'nonempty'},mfilename,'RegParam option');
+    regparam = validatestring(regparam,allowedMethodInputs);
+end
+if isempty(alphaOptThreshold)
+    alphaOptThreshold = 1e-3;
+else
+    validateattributes(alphaOptThreshold,{'numeric'},{'scalar','nonnegative'},mfilename,'alphaOptThreshold option');
+end
 
 % Set defaults
 if nargin<4, dd_model = 'P'; end
@@ -260,7 +293,7 @@ else
     B_cached = [];
     
     % Fit the parameters
-    args = {Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',1e-5};
+    args = {Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',TolFun};
     [parfit_] = fitparamodel(args{:});
     
     
@@ -271,10 +304,6 @@ else
     end
     
     if calculateCI
-        
-        % Use a static alpha-value for regularization, if used
-        staticalpha = true;
-        
         Weights = globalweights(Vexp);
         covmatrix = 0;
         
@@ -283,30 +312,37 @@ else
             
             if parfreeDistribution
                 % Mixed signal - augmented Jacobian
-                L = regoperator(r,2);  
-                Kmod = @(par)Kmodels{i}({par(exidx{i}),par(bgidx{i})}); 
-                J = [jacobianest(@(p)Kmod(p)*Pfit,parfit_), Kmod(parfit_); 
-                     zeros(size(L,1),numel(parfit_)), regparam_prev*L];
-                subidx_P = numel(parfit_)+[1:numel(Pfit)]; 
+                L = regoperator(r,2);
+                Kmod = @(par)Kmodels{i}({par(exidx{i}),par(bgidx{i})});
+                J = [jacobianest(@(p)Kmod(p)*Pfit,parfit_), Kmod(parfit_);
+                    zeros(size(L,1),numel(parfit_)), regparam_prev*L];
+                subidx_P = numel(parfit_)+[1:numel(Pfit)];
                 subidx_theta = 1:numel(parfit_);
             else
                 % Full parametric signal - numerical Jacobian
                 J = jacobianest(@(par)Vmodel([],par,i),parfit_);
             end
             
-            % Estimate the covariance matrix by means of the inverse of Fisher information matrix
+            % Suppress warnings for a moment
             warning('off','MATLAB:nearlySingularMatrix'), warning('off','MATLAB:singularMatrix')
             lastwarn('');
+            
+            % Estimate variance on experimental signal
             sigma2 = std(Vexp{i}-Vfit{i}).^2;
+            
+            % Estimate the covariance matrix by means of the inverse of Fisher information matrix
             covmatrix_ = sigma2.*inv(J.'*J);
-            % Detect if there was a 'nearly singular' warning
+            
+            % Detect if there was a 'nearly singular' warning...
             [~, warnId] = lastwarn;
             if strcmp(warnId,'MATLAB:nearlySingularMatrix') || strcmp(warnId,'MATLAB:singularMatrix')
+                % ...and if there was, then use a pseudoinverse instead of inverse
                 covmatrix_ = sigma2.*sparse(pinv(full(J.'*J)));
                 lastwarn('');
             end
             warning('on','MATLAB:nearlySingularMatrix'), warning('on','MATLAB:singularMatrix')
             
+            % Combine covariance matrices from different signals
             covmatrix = covmatrix + Weights(i)*covmatrix_;
         end
         
@@ -318,35 +354,40 @@ else
         
         parci_ = cell(numel(p),1);
         z = zeros(numel(p),1);
-        %Get the CI at requested confidence levels
+        % Get the CI at requested confidence levels
         for jj=1:numel(p)
             if parfreeDistribution
-            % Get Gaussian critical value
-            z(jj) = norm_inv(p(jj));
-            covmatsub = covmatrix(subidx_theta,subidx_theta);
-            parci_{jj} = parfit_.' + z(jj)*sqrt(diag(covmatsub)).*[-1 +1];
-            covmatsub = covmatrix(subidx_P,subidx_P);
-            PfitCI{jj}(:,1) = Pfit + z(jj)*sqrt(diag(covmatsub));
-            PfitCI{jj}(:,2) = max(0,Pfit - z(jj)*sqrt(diag(covmatsub)));
-            
+                % Get Gaussian critical value
+                z(jj) = norm_inv(p(jj));
+
+                % Compute (unconstrained) CI for parameters
+                covmatsub = covmatrix(subidx_theta,subidx_theta);
+                parci_{jj} = parfit_.' + z(jj)*sqrt(diag(covmatsub)).*[-1 +1];
+                
+                % Compute CI for parameter-free distribution
+                covmatsub = covmatrix(subidx_P,subidx_P);
+                PfitCI{jj}(:,1) = Pfit + z(jj)*sqrt(diag(covmatsub));
+                PfitCI{jj}(:,2) = max(0,Pfit - z(jj)*sqrt(diag(covmatsub)));
             else
-            % Get Student's t critical value
-            z(jj) = t_inv(p(jj),N);
-            ci = parfit_.' + z(jj)*sqrt(diag(covmatrix)).*[-1 +1];
-            ci = max(ci,lower.');
-            ci = min(ci,upper.');
-            parci_{jj} = ci;
+                % Get Student's t critical value
+                z(jj) = t_inv(p(jj),N);
+                
+                % Compute (unconstrained) CI for parameters
+                parci_{jj} = parfit_.' + z(jj)*sqrt(diag(covmatrix)).*[-1 +1];
             end
+            % Constrain parameter CIs to model boundaries
+            parci_{jj} = max(parci_{jj},lower.');
+            parci_{jj} = min(parci_{jj},upper.');
         end
         parci_ = parci_{1};
         
         for idx = 1:nSignals
-            %Propagate errors in the parameter sets to the models
+            %Propagate errors in the parameter sets to the signal model
             VfitCI{idx} = propagate(covmatrix,J,parfit_,Vfit{idx},z(1),t{idx});
         end
         if ~parfreeDistribution
             for i=1:numel(z)
-            PfitCI{i} = max(propagate(covmatrix(ddidx,ddidx),dd_model,parfit_(ddidx),Pfit,z(i),r),0);
+                PfitCI{i} = max(propagate(covmatrix(ddidx,ddidx),dd_model,parfit_(ddidx),Pfit,z(i),r),0);
             end
         end
     else
@@ -362,6 +403,8 @@ if computeStats
         Ndof = numel(Vexp{i}) - numel(parfit_);
         stats{i} = gof(Vexp{i},Vfit{i},Ndof);
     end
+else
+    stats = [];
 end
 
 % Return fitted parameters and confidence intervals in structures
@@ -456,8 +499,9 @@ if nSignals==1
         parci.bg = parci.bg{1};
         parci.ex = parci.ex{1};
     end
-    stats = stats{1};
-        
+    if ~isempty(stats)
+        stats = stats{1};
+    end
 end
 
 %===============================================================================
@@ -483,7 +527,7 @@ end
                 alpha = regparam;
                 % If the parameter vectors has not changed by much...
                 if ~isempty(par_prev)
-                    if all(abs(par_prev-par)./par < alphaOptThreshold) || staticalpha
+                    if all(abs(par_prev-par)./par < alphaOptThreshold)
                         % ...use the alpha optimized in the previous iteration
                         alpha = regparam_prev;
                     end
@@ -491,7 +535,7 @@ end
                 par_prev = par;
                 
                 if parfreeDistribution
-                    [P,Pregci,regparam_prev] = fitregmodel(Vexp,K,r,regtype,alpha);
+                    [P,~,regparam_prev] = fitregmodel(Vexp,K,r,regtype,alpha);
                 else
                     P = dd_model(r,par(ddidx));
                 end
@@ -519,6 +563,8 @@ end
     end
 end
 
+%===============================================================================
+
 function [par0,lo,up,N] = getmodelparams(model,t)
 
 if contains(func2str(model),'ex_')
@@ -533,6 +579,8 @@ up = range(2:2:end);
 N = numel(par0);
 
 end
+
+%===============================================================================
 
 function modelFitCI = propagate(covmatrix,model,param,modelFit,z,ax)
 
