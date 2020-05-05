@@ -205,18 +205,41 @@ for i = 1:nSignals
     exidx{i} = N_dd + sum(N_bg) + sum(N_ex(1:i-1)) + (1:N_ex(i));
 end
 
+%Generate K(theta) and B(theta) for the multi-pathway kernel and background
+Bmodels = cell(nSignals,1);
+Kmodels = cell(nSignals,1);
+for j = 1:nSignals
+    if includeBackground(j)
+        Bfcn = @(t,lam,par) bg_model{j}(t,par,lam);
+    else
+        Bfcn = @(~,~,~) ones(numel(t{j}),1);
+    end
+    
+    if includeExperiment(j)
+        Exfcn = @(par)ex_model{j}(t{j},par);
+        Bmodels{j} = @(par) dipolarbackground(t{j},Exfcn(par{1}),@(t,lam)Bfcn(t,lam,par{2}));
+        Kmodels{j} = @(par) dipolarkernel(t{j},r,Exfcn(par{1}),@(t,lam)Bfcn(t,lam,par{2}));
+    else
+        Kmodels{j} = @(~) dipolarkernel(t{j},r);
+        Bmodels{j} = @(par) Bfcn(t,1,par);
+    end
+end
+
 % Perform fitting
 %-------------------------------------------------------------------------------
 RegularizationOnly = nParams==0;
 if RegularizationOnly
     
     % Solve regularization only
+    Ks = cell(nSignals,1);
+    Vfit = cell(nSignals,1);
+    Bfit = cell(nSignals,1);
     for i = 1:nSignals
-        K{i} = dipolarkernel(t{i},r);
+        Ks{i} = Kmodels{i}([]);
     end
-    Pfit = fitregmodel(Vexp,K,r,regtype,regparam);
+    Pfit = fitregmodel(Vexp,Ks,r,regtype,regparam);
     for i = 1:nSignals
-        Vfit{i} = K{i}*Pfit;
+        Vfit{i} = Ks{i}*Pfit;
         Bfit{i} = ones(size(Vexp{i}));
     end
     parfit_ = [];
@@ -255,9 +278,8 @@ else
         covmatrix = 0;
         
         % Compute the jacobian of the signal fit with respect to parameter set
-        
         for i=1:nSignals
-            lsqfcn = @(fitpar)Vexp{i} - Vmodel([],fitpar,i);
+            lsqfcn = @(fitpar)Vexp{i} - VmodelCI(fitpar,i);
             jacobian = jacobianest(lsqfcn,parfit_);
             hessian = jacobian.'*jacobian;
             
@@ -416,26 +438,10 @@ end
         if idx==1
             for j = 1:nSignals
                 % Calculate the background and the experiment kernel matrix
-                if includeExperiment(j)
-                    pathinfo = ex_model{j}(t{j},par(exidx{j}));
-                    if includeBackground(j)
-                        Bfcn = @(t,lam) bg_model{j}(t,par(bgidx{j}),lam);
-                        B{j} = dipolarbackground(t{j},pathinfo,Bfcn);
-                    else
-                        Bfcn = [];
-                        B{j} = ones(numel(t{j}),1);
-                    end
-                    K{j} = dipolarkernel(t{j},r,pathinfo,Bfcn);
-                else
-                    K{j} = dipolarkernel(t{j},r);
-                    if includeBackground(j)
-                        Bfcn = @(t) bg_model{j}(t,par(bgidx{j}));
-                        B{j} = Bfcn(t{j});
-                    else
-                        B{j} = ones(numel(t{j}),1);
-                    end
-                end
+                K{j} = Kmodels{j}({par(exidx{j}),par(bgidx{j})});
+                B{j} = Bmodels{j}({par(exidx{j}),par(bgidx{j})});
             end
+            
             % Get the distance distribution
             if includeForeground && nargin<4
                 
@@ -468,7 +474,7 @@ end
             P = P_cached;
         end
         
-        % Compute the total signal
+        % Compute the current signal
         if includeForeground
             V = K{idx}*P;
         else
