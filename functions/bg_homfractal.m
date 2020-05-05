@@ -62,10 +62,6 @@ end
 conc = param(1); % umol/dm^d
 d = param(2);
 
-if d<=0 || d>=6
-    error('Dimensionailty d must satisfy 0 < d < 6.');
-end
-
 NA = 6.02214076e23; % Avogadro constant, mol^-1
 conc = conc*1e-6*(10^d)*NA; % umol/dm^d -> mol/m^d -> spins/m^d
 
