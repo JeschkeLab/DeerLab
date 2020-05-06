@@ -17,8 +17,8 @@ Syntax
 .. code-block:: matlab
 
         info = bg_hom3d()
-        P = bg_hom3d(r,param)
-        P = bg_hom3d(r,param,lambda)
+        P = bg_hom3d(t,param)
+        P = bg_hom3d(t,param,lambda)
 
 Inputs
     *   ``t`` -- Time axis (N-array)

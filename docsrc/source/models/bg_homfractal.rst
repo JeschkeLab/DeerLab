@@ -17,8 +17,8 @@ Syntax
 .. code-block:: matlab
 
         info = bg_homfractal()
-        P = bg_homfractal(r,param)
-        P = bg_homfractal(r,param,lambda)
+        P = bg_homfractal(t,param)
+        P = bg_homfractal(t,param,lambda)
 
 Inputs
     *   ``t`` -- Time axis (N-array)

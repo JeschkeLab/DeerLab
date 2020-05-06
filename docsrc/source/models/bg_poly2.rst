@@ -16,8 +16,8 @@ Syntax
 .. code-block:: matlab
 
         info = bg_poly2()
-        P = bg_poly2(r,param)
-        P = bg_poly2(r,param,lambda)
+        P = bg_poly2(t,param)
+        P = bg_poly2(t,param,lambda)
 
 Inputs
     *   ``t`` -- Time axis (N-array)
