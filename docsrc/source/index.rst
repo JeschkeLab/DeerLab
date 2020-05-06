@@ -29,6 +29,7 @@ DeerLab provides two types of distance distribution models: parameter-free model
     ./models
     ./preprocess
     ./fitting
+    ./uncertainty
 
 .. toctree::
     :hidden:
