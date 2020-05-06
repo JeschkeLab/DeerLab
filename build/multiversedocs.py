@@ -10,7 +10,7 @@ def formatProcOut(input):
     output = output.replace("'","")
     return output
 
-ignoredtags = ['v.0.1-beta','0.1-beta','0.2.beta','0.5.beta']
+ignoredtags = ['v.0.1-beta','0.1-beta','0.2.beta','0.5.beta','0.6.beta','0.8.beta']
 
 #Get list of all tags in the DeerLab repo
 tags = subprocess.check_output (["git", "tag"])
