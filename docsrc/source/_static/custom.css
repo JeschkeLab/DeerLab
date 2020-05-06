@@ -51,7 +51,7 @@ body{
 /*Override the width of the page to cover the whole window*/
 .wy-nav-content {
     background: #ffffff !important;
-/*    max-width: none !important;*/
+    max-width: none !important;*/
 }
 
 /*Begin CSS formatting of the functions and models sections*/

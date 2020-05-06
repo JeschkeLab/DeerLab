@@ -25,29 +25,27 @@ Here is an example for a parametric model:
 
 .. code-block:: matlab
 
-    out = bootan(@(V)fitfcn(V,r,K),Vexp,Vfit,1000,'verbose',true);
+    bootci = bootan(@(V)fitfcn(V,r,K),Vexp,Vfit,1000,'verbose',true);
     
-    function pfit = fitfcn(Vin,r,K)
-    pfit = fitparamodel(Vin,@dd_gauss,r,K);
+    function parfit = fitfcn(Vin,r,K)
+           parfit = fitparamodel(Vin,@dd_gauss,r,K);
     end
 
-The output ``out`` contains calculated bootstrap 50%, 90%, and 95% confidence intervals for all parameters.
+The output ``bootci`` contains calculated bootstrap 50%, 90%, and 95% confidence intervals for all parameters.
 
 Here is an example for a model with a parameter-free distribution:
 
 .. code-block:: matlab
 
-    out = bootan(@(V)fitfcn(V,t,r),Vexp,Vfit,100,'verbose',true);
+    bootci = bootan(@(V)fitfcn(V,t,r),Vexp,Vfit,100,'verbose',true);
 
-    function pfit = fitfcn(Vin,t,r)
-    [~,Pfit,~,pfit] = fitsignal(Vin,t,r,'P',@bg_hom3d,@ex_4pdeer,[],'RegParam',1);
-    pfit = [Pfit; pfit.bg; pfit.ex];
+    function [Pfit, parfit.bg, parfit.ex] = fitfcn(Vin,t,r)
+           [~,Pfit,~,parfit] = fitsignal(Vin,t,r,'P',@bg_hom3d,@ex_4pdeer,[],'RegParam',1);
     end
 
 To plot the resulting CIs for the parameter-free distance distribution, use
 
 .. code-block:: matlab
     
-    ci = out{1}.ci99;
-    idx = 1:numel(r);
-    plot(r,ci(idx,1),r,ci(idx,2),r,Pfit)
+    Pci = bootci{1}.ci95;
+    plot(r,Pfit,'k',r,Pci(:,1),'r',r,Pci(:,2),'r')
