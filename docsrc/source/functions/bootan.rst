@@ -27,6 +27,7 @@ Parameters
 
 Returns
     *   ``bootci`` - Bootstrapped confidence intervals (struct)
+
          *   ``.ci50`` - 50%-confidence intervals of the output variables
          *   ``.ci95`` - 95%-confidence intervals of the output variables
          *   ``.ci99`` - 99%-confidence intervals of the output variables
