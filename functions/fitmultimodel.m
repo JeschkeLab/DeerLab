@@ -1,37 +1,37 @@
 %
-% FITMULTIGAUSS Multi-Gauss fitting of a distance distribution
+% FITMULTIMODEL Multi-model fitting of a distance distribution
 %
-%   P = FITMULTIGAUSS(V,K,r,Nmax,method)
-%   Fits a multi-Gauss parametric distance distribution model to the dipolar
-%   signal (V), using the dipolar kernel (K) and distance axis (r). The function
-%   compares multi-Gaussian distributions with up to a maximum number of Gaussians
-%   given by (Nmax) and determines the optimum one using the model selection
-%   criterion given in (method) ('AIC', 'BIC', or 'AICc'). The fitted
-%   distribution is returned in P.
+%   P = FITMULTIMODEL(V,K,r,@basis,Nmax,method)
+%   Fits a multi-model parametric distance distribution model to the dipolar
+%   signal (V) using (@model) as the basis function, the dipolar kernel (K)
+%   and distance axis (r). The function compares these multi-model distributions
+%   with up to a maximum number of basis functions given by (Nmax) and 
+%   determines the optimum one using the model selection criterion given in 
+%   (method) ('AIC', 'BIC', or 'AICc'). The fitted distribution is returned in P.
 %
-%   P = FITMULTIGAUSS(V,t,r,Nmax,method)
+%   P = FITMULTIMODEL(V,t,r,@basis,Nmax,method)
 %   If a the default kernel is to be used, the time axis (t) can be passed
 %   instead of the kernel.
 %
-%   P = FITMULTIGAUSS({V1,V1,...},{K1,K2,K3},r,Nmax,method)
+%   P = FITMULTIMODEL({V1,V1,...},{K1,K2,K3},r,@basis,Nmax,method)
 %   Passing multiple signals/kernels enables distance-domain global fitting
 %   of the parametric models to single distributions. 
 %   The multiple signals are passed as a cell array of arrays of sizes N1,N2,...
 %   and a cell array of kernel matrices with sizes N1xM,N2xM,... must be 
 %   passed as well.
 %
-%   P = FITMULTIGAUSS({V1,V1,...},{t1,t2,t3},r,Nmax,method)
+%   P = FITMULTIMODEL({V1,V1,...},{t1,t2,t3},r,@basis,Nmax,method)
 %   Similarly, time-domain global fitting can be used when passing time-domain
 %   and the model time axes {t1,t2,...} of the corresponding signals.
 %
-%   [P,param,Pci,paramci,opt,metrics,Peval] = FITMULTIGAUSS(___)
+%   [P,param,Pci,paramci,opt,metrics,Peval] = FITMULTIMODEL(___)
 %   If requested alongside the distribution (P), the optimal fit model
 %   parameters (param), the optimal number of Gaussians (opt) and
 %   evaluated selection metrics (metrics) are returned. The fitted distance
 %   distributions fitted for ech multigauss model can be requested as a
 %   fifth output argument (Peval).
 %
-%   P = FITMULTIGAUSS(...,'Property',Value)
+%   P = FITMULTIMODEL(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
 %
 %   'Background' - Function handle to the background model to be fitted
