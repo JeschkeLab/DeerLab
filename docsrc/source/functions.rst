@@ -32,7 +32,6 @@ This class of functions allows simulation of dipolar signals and their modeling 
 Function                                         Description
 =============================================  ============================================================
 :ref:`dipolarkernel`                           Dipolar kernel constructor
-:ref:`aptkernel`                               APT kernel constructor
 :ref:`dipolarbackground`                       Multi-pathway background constructor
 :ref:`dipolarsignal`                           Dipolar signal simulator
 :ref:`whitegaussnoise`                         Gaussian white noise generator
@@ -69,14 +68,11 @@ This class of functions can be used and/or combined to create fitting routines o
 Function                                         Description
 =============================================  ============================================================
 :ref:`bootan`                                    Bootstrap uncertainty analysis
-:ref:`backgroundstart`                           Background fit start point optimizer
-:ref:`fitbackground`                             Background fitting engine
 :ref:`fitmultimodel`                             Multi-component model fitting engine
 :ref:`fitparamodel`                              Parametric model fitting engine
 :ref:`fitregmodel`                               Regularization fitting engine
 :ref:`obir`                                      Osher-Bregman iterative regularization
 :ref:`regoperator`                               Regularization operator constructor
-:ref:`apt`                                       Approximate Pake transformation
 :ref:`sensitivan`                                Sensitivity analysis engine
 =============================================  ============================================================
 
@@ -94,7 +90,6 @@ This class of functions provide tools for preparing experimental data for analys
     ./api/correctphase
     ./api/correctzerotime
     ./api/correctscale
-    ./api/suppressghost
     ./api/longpass
     ./api/winlowpass
 
@@ -106,7 +101,6 @@ Function                                         Description
 :ref:`correctphase`                              IQ Phase correction
 :ref:`correctzerotime`                           Dipolar zero-time correction
 :ref:`correctscale`                              Dipolar signal amplitude rescaling
-:ref:`suppressghost`                             Ghost-distance suppression
 :ref:`longpass`                                  Longpass filtering
 :ref:`winlowpass`                                Windowed-lowpass filtering
 =============================================  ============================================================
@@ -165,9 +159,27 @@ Function                                         Description
 =============================================  ============================================================
 :ref:`deerload`                                  Spectrometer data loader
 :ref:`time2freq`                                 Time to frequency axis converter
-:ref:`time2dist`                                 Time to distance axis converter
 :ref:`noiselevel`                                Noise level estimator
 :ref:`fftspec`                                   Fast-Fourier transform spectrum
 :ref:`prepvalidation`                            Full-factorial analysis preparation
 =============================================  ============================================================
 
+---------------------------
+
+Obsolescent Functions
+""""""""""""""""""""""
+
+
+This class of functions provides tools for reproducing obsolete analysis methods or workflows encountered in older software (e.g. DeerAnalysis). These functions have become obsolete and are not recommended for routine data analysis.
+
+.. rst-class:: func-list
+
+=============================================  ============================================================
+Function                                         Description
+=============================================  ============================================================
+:ref:`time2dist`                                 Time to distance axis converter
+:ref:`backgroundstart`                           Background fit start point optimizer
+:ref:`fitbackground`                             Background fitting engine
+:ref:`aptkernel`                                 APT kernel constructor
+:ref:`apt`                                       Approximate Pake transformation
+=============================================  ============================================================
