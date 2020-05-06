@@ -18,13 +18,13 @@ This class of functions allows simulation of dipolar signals and their modeling 
     :glob:
     :maxdepth: 0
 
-    ./api/dipolarkernel
-    ./api/aptkernel
-    ./api/dipolarsignal
-    ./api/dipolarbackground
-    ./api/whitenoise
-    ./api/paramodel
-    ./api/mixmodels
+    ./functions/dipolarkernel
+    ./functions/aptkernel
+    ./functions/dipolarsignal
+    ./functions/dipolarbackground
+    ./functions/whitenoise
+    ./functions/paramodel
+    ./functions/mixmodels
 
 .. rst-class:: func-list
 
@@ -50,16 +50,17 @@ This class of functions can be used and/or combined to create fitting routines o
     :glob:
     :maxdepth: 0
 
-    ./api/apt
-    ./api/backgroundstart
-    ./api/fitbackground
-    ./api/fitmultimodel
-    ./api/fitparamodel
-    ./api/fitregmodel
-    ./api/obir
-    ./api/regoperator
-    ./api/bootan
-    ./api/sensitivan
+    ./functions/fitsignal
+    ./functions/apt
+    ./functions/backgroundstart
+    ./functions/fitbackground
+    ./functions/fitmultimodel
+    ./functions/fitparamodel
+    ./functions/fitregmodel
+    ./functions/obir
+    ./functions/regoperator
+    ./functions/bootan
+    ./functions/sensitivan
 
 
 .. rst-class:: func-list
@@ -67,13 +68,13 @@ This class of functions can be used and/or combined to create fitting routines o
 =============================================  ============================================================
 Function                                         Description
 =============================================  ============================================================
+:ref:`fitsignal`                                 Full model signal fitting engine
 :ref:`bootan`                                    Bootstrap uncertainty analysis
 :ref:`fitmultimodel`                             Multi-component model fitting engine
 :ref:`fitparamodel`                              Parametric model fitting engine
 :ref:`fitregmodel`                               Regularization fitting engine
 :ref:`obir`                                      Osher-Bregman iterative regularization
 :ref:`regoperator`                               Regularization operator constructor
-:ref:`sensitivan`                                Sensitivity analysis engine
 =============================================  ============================================================
 
 
@@ -87,11 +88,11 @@ This class of functions provide tools for preparing experimental data for analys
     :glob:
     :maxdepth: 0
 
-    ./api/correctphase
-    ./api/correctzerotime
-    ./api/correctscale
-    ./api/longpass
-    ./api/winlowpass
+    ./functions/correctphase
+    ./functions/correctzerotime
+    ./functions/correctscale
+    ./functions/longpass
+    ./functions/winlowpass
 
 .. rst-class:: func-list
 
@@ -117,9 +118,9 @@ This class of functions helps to find an optimal choice of model or model parame
     :glob:
     :maxdepth: 0
 
-    ./api/selectmodel
-    ./api/selregparam
-    ./api/regparamrange
+    ./functions/selectmodel
+    ./functions/selregparam
+    ./functions/regparamrange
 
 
 .. rst-class:: func-list
@@ -144,12 +145,12 @@ This class of functions provides several tools for quick commands typically requ
     :glob:
     :maxdepth: 0
 
-    ./api/deerload
-    ./api/time2freq
-    ./api/time2dist
-    ./api/noiselevel
-    ./api/fftspec
-    ./api/prepvalidation
+    ./functions/deerload
+    ./functions/time2freq
+    ./functions/time2dist
+    ./functions/noiselevel
+    ./functions/fftspec
+    ./functions/prepvalidation
 
 
 .. rst-class:: func-list
@@ -161,7 +162,6 @@ Function                                         Description
 :ref:`time2freq`                                 Time to frequency axis converter
 :ref:`noiselevel`                                Noise level estimator
 :ref:`fftspec`                                   Fast-Fourier transform spectrum
-:ref:`prepvalidation`                            Full-factorial analysis preparation
 =============================================  ============================================================
 
 ---------------------------
