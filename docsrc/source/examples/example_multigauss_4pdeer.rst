@@ -1,8 +1,8 @@
 .. highlight:: matlab
-.. _example_mixmodels_fitting:
+.. _example_multigauss_4pdeer:
 
 **********************************************************************************
-Fitting a mixed distance-domain model
+Multi-Gauss fitting of a 4-pulse DEER signal
 **********************************************************************************
 
-.. literalinclude:: ../../../examples/DL_fitting_mixedmodels.m
+.. literalinclude:: ../../../examples/DL_multigauss_4pdeer.m

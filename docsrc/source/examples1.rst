@@ -1,20 +1,16 @@
 Examples - Basics
 =========================================
 
-This is a collection of examples for the use of DeerLab. They cover topics from the basics of dipolar analysis to more advanced topics. You can download the individual examples in various formats by using the buttons located on top of each example. 
+This is a collection of examples for the use of DeerLab.
 
 .. toctree:
     :maxdepth: 0
     :hidden:
     :caption: Examples - Basics
 
-    ./examples/example_simulation_4deer
-    ./examples/example_simulation_4deer_part2
-    ./examples/example_basicprocessing
-    ./examples/example_basicprocessing_multigauss
+    ./examples/example_multigauss_4pdeer
     ./examples/example_mixmodels_fitting
-    ./examples/example_sensitivan_tikhonov_simple
-    ./examples/example_sensitivan_ridmecoeff
+    ./examples/example_ci_regularization
     ./examples/example_pakepattern
     ./examples/example_aptsimple
     ./examples/example_visualization_lcurve
@@ -29,30 +25,10 @@ This is a collection of examples for the use of DeerLab. They cover topics from 
 	<div class="table">
 
 
-		<div class="row" onclick="window.location='examples/example_simulation_4deer.html#example_simulation_4deer'">
+
+		<div class="row" onclick="window.location='examples/example_multigauss_4pdeer.html#example_multigauss_4pdeer'">
 			<div class="cell">
-				Basics of 4-pulse DEER signal simulation (1)
-			</div>
-		</div>
-
-
-		<div class="row" onclick="window.location='examples/example_simulation_4deer_part2.html#example_simulation_4deer_part2'">
-			<div class="cell">
-				Basics of 4-pulse DEER signal simulation (2)
-			</div>
-		</div>
-
-
-		<div class="row" onclick="window.location='examples/example_basicprocessing.html#example_basicprocessing'">
-			<div class="cell">
-				Basic signal processing of experimental 4-pulse DEER data (Regularization)
-			</div>
-		</div>
-
-
-		<div class="row" onclick="window.location='examples/example_basicprocessing_multigauss.html#example_basicprocessing_multigauss'">
-			<div class="cell">
-				Basic signal processing of experimental 4-pulse DEER data (Multi-Gauss)
+				 Multi-Gauss fitting of a 4-pulse DEER signal
 			</div>
 		</div>
 
@@ -64,16 +40,9 @@ This is a collection of examples for the use of DeerLab. They cover topics from 
 		</div>
 
 
-		<div class="row" onclick="window.location='examples/example_sensitivan_tikhonov_simple.html#example_sensitivan_tikhonov_simple'">
+		<div class="row" onclick="window.location='examples/example_ci_regularization.html#example_ci_regularization'">
 			<div class="cell">
-				Sensitivity analysis - Simple case with Tikhonov regularization
-			</div>
-		</div>
-
-
-		<div class="row" onclick="window.location='examples/example_sensitivan_ridmecoeff.html#example_sensitivan_ridmecoeff'">
-			<div class="cell">
-				Sensitivity analysis - RIDME overtone coefficients
+				Confidence intervals for regularization results
 			</div>
 		</div>
 
@@ -87,7 +56,7 @@ This is a collection of examples for the use of DeerLab. They cover topics from 
 
 		<div class="row" onclick="window.location='examples/example_aptsimple.html#example_aptsimple'">
 			<div class="cell">
-				Simple processing with the approximate Pake transformation (APT)
+				Data analysis with the approximate Pake transformation (APT)
 			</div>
 		</div>
 

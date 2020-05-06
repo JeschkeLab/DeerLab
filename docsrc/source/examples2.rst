@@ -1,7 +1,7 @@
 Examples - Advanced
 =========================================
 
-This is a collection of examples for the use of DeerLab. They cover topics from the basics of dipolar analysis to more advanced topics. You can download the individual examples in various formats by using the buttons located on top of each example. 
+This is a collection of examples for the use of DeerLab.
 
 .. toctree:
     :maxdepth: 0
@@ -11,7 +11,7 @@ This is a collection of examples for the use of DeerLab. They cover topics from 
     ./examples/example_timedomainfitting
     ./examples/example_selectmodel
     ./examples/example_timedomainfitting
-    ./examples/example_globalfit_regularization
+    ./examples/example_multigauss_4pdeer
     ./examples/example_globalfit_timedomain
     ./examples/example_bilevelopt_background
 
