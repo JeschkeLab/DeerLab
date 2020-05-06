@@ -124,9 +124,13 @@ end
 if isempty(regparam)
     regparam = 'aic';
 else
-    allowedMethodInputs = {'lr','lc','cv','gcv','rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl'};
-    validateattributes(regparam,{'char'},{'nonempty'},mfilename,'RegParam option');
-    regparam = validatestring(regparam,allowedMethodInputs);
+    if ischar(regparam)
+        allowedMethodInputs = {'lr','lc','cv','gcv','rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl'};
+        validateattributes(regparam,{'char'},{'nonempty'},mfilename,'RegParam option');
+        regparam = validatestring(regparam,allowedMethodInputs);
+    else
+        validateattributes(regparam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
+    end
 end
 if isempty(alphaOptThreshold)
     alphaOptThreshold = 1e-3;
@@ -222,6 +226,7 @@ if any(~includeForeground & ~includeBackground)
 end
 
 % Combine all parameters into a single vector
+if isempty(par0), par0 = {[],[],[]}; end
 if isempty(par0{1}), par0{1} = par0_dd; end
 if isempty(par0{2}), par0{2} = par0_bg; end
 if isempty(par0{3}), par0{3} = par0_ex; end
