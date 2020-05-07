@@ -3,7 +3,7 @@ Example scripts
 
 Here is a collection of example scripts for the use of DeerLab. You can also find them in the ``examples`` subfolder in the DeerLab folder.
 
-.. toctree::
+.. toctree:
     :maxdepth: 0
     :hidden:
     :glob:
