@@ -1,27 +1,36 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+% Check error control of regoperator() towards wrong inputs
 
 N = 20;
+
+% Pass 1: first input passed as a matrix
 try
   regoperator(rand(100,10),2);
-  err(1) = true;
+  pass(1) = false;
 catch 
-  err(1) = false;
-end
-try
-  regoperator(N,4);
-  err(2) = true;
-catch 
-  err(2) = false;
-end
-try
-  regoperator(N);
-  err(3) = true;
-catch 
-  err(3) = false;
+  pass(1) = true;
 end
 
-err = any(err);
-maxerr = 0;
-data = [];
+% Pass 2: order exceeds 3
+try
+  regoperator(N,4);
+  pass(2) = false;
+catch 
+  pass(2) = true;
+end
+
+% Pass 3: no order specified
+try
+  regoperator(N);
+  pass(3) = false;
+catch 
+  pass(3) = true;
+end
+
+pass = all(pass);
+
+maxerr = NaN;
+ 
 
 end

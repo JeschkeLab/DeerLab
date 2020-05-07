@@ -1,21 +1,29 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%======================================================
-% Check kernel is constructed properly
-%======================================================
+% Check that dipolar kernel with modulation depth works
 
-t = linspace(0,5,200);
-%nm
-r = time2dist(t);
-lambda = 0.4;
-K = dipolarkernel(t,r,lambda,'gValue',2);
+t = linspace(0,4,150); % us
+r = time2dist(t); % nm
+P = dd_gauss(r,[3,0.3]);
+K = dipolarkernel(t,r);
 
-err = false;
-maxerr = 0;
-data = [];
+lam = 0.4;
+Fref = (1-lam) + lam*K*P;
+Klam = dipolarkernel(t,r,lam);
+Ffit = Klam*P;
 
+err = abs(Fref-Ffit);
+maxerr = max(err);
+pass = maxerr < 1e-10;
+ 
+% Plot if requested
 if opt.Display
-    figure(8),clf
-    plot(t,K(:,10))
+   plot(t,Fref,'k',t,Ffit,'r')
+   legend('truth','K*P')
+   xlabel('t [\mus]')
+   ylabel('V(t)')
+   grid on, axis tight, box on
 end
+
+
 end

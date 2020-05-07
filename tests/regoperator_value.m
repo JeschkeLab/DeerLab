@@ -1,28 +1,31 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 % Check whether regoperator returns correct matrices
-%===============================================================================
 
 n = 20;
 
 L0 = regoperator(n,0);
 L0ref = eye(n);
-ok(1) = all(L0(:)==L0ref(:));
+% Pass 1: the 0th order operator is equal to reference
+pass(1) = isequal(L0,L0ref);
 
 L1 = regoperator(n,1);
 L1ref = diff(eye(n),1);
-ok(2) = all(L1(:)==L1ref(:));
+% Pass 2: the 1st order operator is equal to reference
+pass(2) = isequal(L1,L1ref);
 
 L2 = regoperator(n,2);
 L2ref = diff(eye(n),2);
-ok(3) = all(L2(:)==L2ref(:));
+% Pass 3: the 2nd order operator is equal to reference
+pass(3) = isequal(L2,L2ref);
 
 L3 = regoperator(n,3);
-L2ref = diff(eye(n),3);
-ok(4) = all(L3(:)==L2ref(:));
+L3ref = diff(eye(n),3);
+% Pass 4: the 3rd order operator is equal to reference
+pass(4) = isequal(L3,L3ref);
 
-err = any(~ok);
-maxerr = 0;
-data = [];
+pass = all(pass);
+
+maxerr = NaN;
 
 end

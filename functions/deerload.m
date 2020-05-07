@@ -42,29 +42,43 @@
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 function varargout = deerload(FileName,Scaling)
 
-if (nargout<0) || (nargout>4)
+if nargout>4
     error('Please provide 1, 2, 3 or 4 output arguments!');
 end
 
-if (nargin<1), FileName = pwd; end
+if nargin<1
+    FileName = pwd;
+end
 
-if (nargin<2)
+if nargin<2
     Scaling = '';
 end
 
-%Prepare output container
+% Prepare output container
 varargout = cell(1,nargout);
-%Load the data using eprload
+
+% Load the data using eprload
 [varargout{:}] = eprload(FileName,Scaling);
 
 % Convert time axis to microseconds if loaded in nanoseconds
-if length(varargout)>1 && ~iscell(varargout{1})
+if length(varargout)>1
     t = varargout{1};
+    V = varargout{2};
+    if iscell(t)
+        t = t{1};
+        tmp{1} = V(:,1);
+        tmp{2} = V(:,2);
+        V = tmp;
+    end
+    
+    t = t/1e3; % nanoseconds -> microseconds
+    
     varargout{1} = t;
+    varargout{2} = V;
 end
 
 return

@@ -1,11 +1,13 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+% Check that sensitivan works with strings as factor levels
 
 rng(2)
 t = linspace(0,4,200);
 r = time2dist(t);
 
-Parameters.regparam = linspace(0.1,1,3);
-Parameters.type = {'tikh','tv'};
+param.regparam = linspace(0.1,1,3);
+param.type = {'tikh','tv'};
 
 if opt.Display
     f = figure(1); clf;AxisHandle = axes(f);
@@ -13,26 +15,27 @@ else
     AxisHandle = [];
 end
 
-stats = sensitivan(@myfitting,Parameters,'AxisHandle',AxisHandle);
+stats = sensitivan(@myfitting,param,'AxisHandle',AxisHandle);
 Median = stats.median;
 Upper = stats.p75;
 Lower = stats.p25;
 
-err = false;
-data = [];
+% Pass: the analysis runs with strings
+pass = true;
+ 
 maxerr = NaN;
 
 if opt.Display
-        cla
-        hold on
-        plot(r,Median,'b','LineWidth',1)
-        f = fill([r fliplr(r)] ,[Upper.' fliplr(Lower.')],...
-            'b','LineStyle','none');
-        f.FaceAlpha = 0.5;
-        hold('off')
-        axis('tight')
-        grid('on')
-        box('on')
+    cla
+    hold on
+    plot(r,Median,'b','LineWidth',1)
+    f = fill([r fliplr(r)] ,[Upper.' fliplr(Lower.')],...
+        'b','LineStyle','none');
+    f.FaceAlpha = 0.5;
+    hold('off')
+    axis('tight')
+    grid('on')
+    box('on')
 end
 
 end
@@ -43,7 +46,7 @@ M = 200;
 t = linspace(0,4,M);
 r = time2dist(t);
 
-P = rd_onegaussian(r,[4,0.3]);
+P = dd_gauss(r,[4,0.3]);
 K = dipolarkernel(t,r);
 S = K*P;
 S = dipolarsignal(t,r,P,'noiselevel',0.05);

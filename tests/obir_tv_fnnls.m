@@ -1,48 +1,36 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check Tikhonov regularization
-%=======================================
+% Check that obir() works with Tikhonov regularization using the fnnls solver
 
-Dimension = 100;
-dt = 0.008;
-rng(2)
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-P1 = rd_onegaussian(r,[2,0.3]);
-P2 = rd_onegaussian(r,[3.5,0.3]);
-P = 0.5*P1 + 0.5*P2;
-P = P/sum(P)/mean(diff(r));
-
+rng(1)
+t = linspace(0,3,200);
+r = linspace(0,5,100);
+P = dd_gauss2(r,[2,0.3,0.5,3.5,0.3]);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
-NoiseLevel = 0.02;
-Noise = whitegaussnoise(Dimension,NoiseLevel);
-S = DipEvoFcn+Noise;
+noiselvl = 0.1;
+S = K*P + whitegaussnoise(t,noiselvl,'renorm');
+alpha = 0.5;
 
 if opt.Display
-    figure(8),clf
     axhandle = axes();
 else
     axhandle = [];
 end
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-OptParam = 0.002;
-Result = obir(S,K,r,'tv',OptParam,'DivergenceStop',true,'NoiseLevelAim',NoiseLevel,'Solver','fnnls','axishandle',axhandle);
-RegResult = fitregmodel(S,K,r,'tv',OptParam);
+Pobir = obir(S,K,r,'tv',alpha,'DivergenceStop',true,'NoiseLevelAim',noiselvl,'Solver','fnnls','axishandle',axhandle);
+Preg = fitregmodel(S,K,r,'tv',alpha);
 
-err = norm(Result - P) > norm(RegResult - P);
-maxerr = norm(Result - P);
-data = [];
+% Pass: OBIR leads to a better result than plain regularization
+pass = mean(abs(Pobir - P)) < mean(abs(Preg - P));
 
+maxerr = max(abs(Pobir - P));
+ 
 if opt.Display
- 	figure(8),clf
-    hold on
-    plot(r,P,'k') 
-    plot(r,Result,'b')
-    plot(r,RegResult,'r')
-    legend('truth','OBIR','TV')
+    plot(r,P,'k',r,Preg,r,Pobir)
+    legend('truth','regularization','OBIR')
+    xlabel('r [nm]')
+    ylabel('P(r) [nm^{-1}]')
+    grid on, axis tight, box on
 end
 
 end

@@ -1,42 +1,30 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check Tikhonov regularization
-%=======================================
+% Test Tikhonov regularization with a background-kernel
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-P = rd_onegaussian(r,[3,0.5]);
-
+t = linspace(0,3,200);
+r = linspace(2,6,100);
+P = dd_gauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
-B = exp(-0.15*t)';
-V = (DipEvoFcn+5).*B;
-ModDepth = 1/V(1);
+B = bg_exp(t,0.15);
+lam = 0.25;
+V = (1 - lam + lam*K*P).*B;
+alpha = 0.13;
+KB = dipolarkernel(t,r,lam,B);
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 0.13;
-KB = dipolarkernel(t,r,ModDepth,B);
-TikhResult1 = fitregmodel(V,KB,r,'tikhonov',RegParam,'Solver','fnnls');
-TikhResult2 = fitregmodel(V,KB,r,'tikhonov',RegParam,'Solver','bppnnls');
-TikhResult3 = fitregmodel(V,KB,r,'tikhonov',RegParam,'Solver','lsqnonneg','TolFun',1e-15);
+Pfit = fitregmodel(V,KB,r,'tikhonov',alpha,'Solver','fnnls');
 
-err(1) = any(abs(TikhResult1 - P)>4e-2);
-err(2) = any(abs(TikhResult2 - P)>4e-2);
-err(3) = any(abs(TikhResult3 - P)>4e-2);
+% Pass: the distribution is well fitted
+pass = all(abs(Pfit - P) < 3e-1);
 
-maxerr = max(abs(TikhResult1 - P));
-
-err = any(err);
-data = [];
-
+maxerr = max(abs(Pfit - P));
+ 
 if opt.Display
- 	figure(8),clf
-    hold on
-    plot(r,P,'k') 
-    plot(r,TikhResult1,'r')
+   plot(r,P,r,Pfit)
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

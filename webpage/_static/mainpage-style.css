@@ -1,0 +1,191 @@
+/* 
+CSS formatting for the DeerLab homepage
+
+Based on: 
+Template 2091 Ziggy
+http://www.tooplate.com/view/2091-ziggy
+*/
+
+/*============
+BASIC STYLE
+============*/
+
+ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+body {
+	font-family: 'Open Sans', sans-serif;
+}
+
+p {
+	font-size: 13px;
+	color: #7a7a7a;
+	line-height: 22px;
+}
+
+.primary-button a {
+	text-decoration: none;
+	padding:  .5rem 1rem;
+	display: inline-block;
+	border-radius: 24px;
+	font-size: 11px;
+	text-transform: uppercase;
+	font-weight: 700;
+	letter-spacing: 1px;
+}
+
+
+.documentation_button  a{
+	display: inline-block;
+ 	padding: 3%;
+}
+
+.documentation_button {
+	background-color:#4D64AE;
+	border-radius:.3rem;
+	border:1px solid #18ab29;
+	display:inline-block;
+	cursor:pointer;
+	color:#fff;
+	border-color:#4D64AE;
+	font-family:"Roboto",sans-serif;
+	font-size:10px;
+	user-select: none;
+	padding:.5rem 1rem;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.documentation_button:hover {
+	background-color:#0056b3;
+	text-decoration: none;
+	color: #fff;
+}
+.documentation_button:active {
+	position:relative;
+	color: #fff;
+	text-decoration: none;			
+	top:1px;
+}
+.documentation_button:focus {
+	position:relative;
+	text-decoration: none;			
+	color: #fff;
+	top:1px;
+}
+
+.download_button  a{
+	display: inline-block;
+ 	padding: 50%;
+}
+.download_button {
+	display: inline-block;
+	background-color:#218838;
+	border-radius:.3rem;
+	border:1px solid #218838;
+	display:inline-block;
+	cursor:pointer;
+	color:#fff;
+	border-color:#218838;
+	font-family:"Roboto",sans-serif;
+	font-size:10px;
+	user-select: none;
+	padding:.5rem 1rem;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.download_button:hover {
+	background-color:#28a745;
+	text-decoration: none;
+	color: #fff;
+}
+.download_button:active {
+	position:relative;
+	top:1px;
+}
+.download_button:focus {
+	position:relative;
+	text-decoration: none;			
+	color: #fff;
+	top:1px;
+}
+
+/* ======================
+----- FIRST SECTION------
+=======================*/
+
+.first-section {
+	background-image: url(img/header_bckg.png);
+	background-size: cover;
+	width: 100%;
+	background-repeat: no-repeat;
+	padding: 0% 0px 8% 0px;
+}
+
+.first-section .text-content {
+	text-align: right;
+	color: #fff;
+}
+
+.first-section .text-content h2 {
+	font-size: 78px;
+	text-transform: uppercase;
+	font-weight: 800;
+	letter-spacing: 1px;
+}
+
+.first-section .button-block {
+	padding-top: 75px;
+}
+
+.first-section .text-content .line-dec {
+	width: 100px;
+	height: 3px;
+	background-color: #fff;
+	margin: 25px 0px 25px auto;
+}
+
+.first-section .text-content span {
+	font-size: 28px;
+	font-weight: 300;
+	letter-spacing: 1px;
+}
+
+
+/* ======================
+---- SECOND SECTION------
+=======================*/
+
+.second-section {
+	padding: 40px 0px;
+}
+
+.second-section .service-item {
+	text-align: center;
+}
+
+.second-section .service-item .icon img {
+	max-width: 100%;
+	overflow: hidden;
+}
+
+.second-section h4 {
+	font-size: 16px;
+	color: #415b90;
+	margin-top: 25px;
+	margin-bottom: 15px;
+}
+
+.second-section h5 {
+	font-size: 20px;
+	color: #415b90;
+    text-align: center;
+	margin-top: 25px;
+	margin-bottom: 30px;
+}
+
+

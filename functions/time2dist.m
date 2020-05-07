@@ -13,12 +13,13 @@
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
 function [r,rmin,rmax] = time2dist(t,M)
 
 validateattributes(t,{'numeric'},{'nonempty','increasing'})
+t = t(:);
 
 if nargin<2 || isempty(M)
     M = length(t);
@@ -34,5 +35,6 @@ rmin = (4*dt*ny0/0.85)^(1/3);
 rmax = 6*(tmax/2)^(1/3);
 
 r = linspace(rmin,rmax,M);
+r = r(:);
 
 end

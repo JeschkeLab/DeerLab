@@ -1,49 +1,38 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
+
+% Check error control of dipolarsignal() towards wrong inputs
 
 N = 100;
 t = linspace(0,3,N);
 r = time2dist(t);
-P = rd_onegaussian(r,[4,0.4]);
+P = dd_gauss(r,[4,0.4]);
 
+% Pass 1: not enough input arguments
 try
-    dipolarsignal(t,r);
-    err(1) = true;
+    V = dipolarsignal(t);
+    pass(1) = false;
 catch
-    err(1) = false;
+    pass(1) = true;
 end
 
+% Pass 2: negative modulation depth
 try
-    dipolarsignal(t,r,P,'moddepth',-0.1);
-    err(2) = true;
+    V = dipolarsignal(t,r,P,-0.1);
+    pass(2) = false;
 catch
-    err(2) = false;
+    pass(2) = true;
 end
 
+% Pass 3: modulation depth larger than 1
 try
-    dipolarsignal(t,r,P,'moddepth',1.5);
-    err(3) = true;
+    V = dipolarsignal(t,r,P,1.5);
+    pass(3) = false;
 catch
-    err(3) = false;
+    pass(3) = true;
 end
 
-try
-    r2 = r.^2;
-    dipolarsignal(t,r2,P);
-    err(4) = true;
-catch
-    err(4) = false;
-end
-
-try
-    r2 = linspace(2,5,10);
-    dipolarsignal(t,r2,P);
-    err(5) = true;
-catch
-    err(5) = false;
-end
-
-err = any(err);
-data = [];
-maxerr = 0;
+pass = all(pass);
+ 
+maxerr = NaN;
 
 end

@@ -1,14 +1,14 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
 M = 200;
 t = linspace(0,4,M);
 r = time2dist(t);
-B = td_exp(t,0.3);
-P = rd_onegaussian(r,[4,0.3]);
-V = dipolarsignal(t,r,P,'noiselevel',0.02,'ModDepth',0.3,'Background',B);
+B = bg_exp(t,0.3);
+P = dd_gauss(r,[4,0.3]);
+V = dipolarsignal(t,r,P,0.3,B,'noiselevel',0.02);
 
 Parameters.regparam = linspace(10,50,3);
-Parameters.Bmodel = {@td_exp,@td_strexp};
+Parameters.Bmodel = {@bg_exp,@bg_strexp};
 
 if opt.Display
     f = figure(1); clf;AxisHandle = axes(f);
@@ -20,10 +20,9 @@ fcnHandle = @(param)myfitting(param,t,r,V);
 
 [stats] = sensitivan(fcnHandle,Parameters,'AxisHandle',AxisHandle);
 
-err(1) = length(stats)~=2;
-err = any(err);
-data = [];
-maxerr = 0;
+pass = length(stats) == 2;
+ 
+maxerr = NaN;
 
 if opt.Display
     cla

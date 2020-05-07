@@ -1,46 +1,19 @@
-﻿Welcome to...
-=========================================
+﻿DeerLab-development Documentation
+=====================================================
 
+.. warning:: DeerLab is currently in the pre-release stage (version numbers 0.x) and under active development. Major changes are likely before the first stable version (1.0) is released.
 
-.. image:: logo_dark.png
-    :width: 650px
-    :align: center
+DeerLab is a MATLAB toolbox for the analysis of data from dipolar EPR (electron paramagnetic resonance) spectroscopy. Dipolar EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others.
 
-.. raw:: html
+DeerLab consists of a collection of functions that perform individual tasks. There are functions for generating synthetic signals as well as for processing and fitting experimental data.
 
-	<p align="center" style="top-padding: 100px">
-	 <img src="https://img.shields.io/github/issues-raw/luisfabib/deerlab?style=flat"></img>
-	 <img src="https://img.shields.io/badge/MATLAB-R2016b--R2019b-brightgreen?style=flat"></img>
-	 <img src="https://img.shields.io/github/downloads/luisfabib/deerlab/total?style=flat"></img>
-	 <img src="https://github.com/luisfabib/deerlab/workflows/Webpage%20update/badge.svg?style=flat-square"></img>
-	 <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fdeershields.s3.eu-central-1.amazonaws.com%2Fcoverage_badge.json"></img>
-	 <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fdeershields.s3.eu-central-1.amazonaws.com%2Ftestsuite_badge.json"></img>
-	</p>
+DeerLab provides two types of distance distribution models: parameter-free models (as used in Tikhonov regularization) as well as a series of parametrized distance distribution models (multi-Gaussians, multi-Rice, worm-like chain, etc.). It also provides a selection of background models (homogeneous spin distribution in 3 or fractal dimensions, excluded-volume effects). 
 
-
-       
--------
-
-.. raw:: html
-     :file: ./_static/downloadbutton.html
-       
--------
-
-.. important:: DeerLab is currently on its pre-release phase. Minor changes and some major changes can be expected in the short-term future until the first stable version is released. 
-
-This software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar spectroscopy techniques (DQC, RIDME, SIFTER).
-
-
-
-
-It consists of a collection of functions (the API) that provides a series of functions that perform single processing or fitting tasks. They can be combined in scripts to generate custom analysis workflows.
-
-To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background models. There are API functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
-
+A publication about DeerLab is in preparation. When you use DeerLab in your work, please cite "L. Fábregas Ibáñez, G. Jeschke, S. Stoll, DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, in preparation". Please check back frequently for updated publication information.
 
 .. toctree::
     :hidden:
-    :caption: First Steps
+    :caption: Getting DeerLab
     :maxdepth: 1
 
     ./download
@@ -48,19 +21,23 @@ To model distance distributions, DeerLab supports two types of model classes and
 
 .. toctree::
     :hidden:
-    :caption: API Documentation
+    :caption: User Guide
     :maxdepth: 1
 
-    ./functions
-    ./models
+    ./firstscript
+    ./basics
+    ./preprocess
+    ./fitting
+    ./uncertainty
     ./examples
-
 
 .. toctree::
     :hidden:
-    :caption: Theory
+    :caption: Reference
     :maxdepth: 1
 
+    ./functions
+    ./modelsref
     ./theory
 
 

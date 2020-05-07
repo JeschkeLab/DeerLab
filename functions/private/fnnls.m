@@ -30,12 +30,12 @@ unsolvable = false;
 count = 0;
 
 % Provide starting vector if not given.
-if (nargin<3) || isempty(x0)
+if nargin<3 || isempty(x0)
     x0 = zeros(size(AtA,2),1);
 end
 
 % Calculate tolerance if not given.
-if (nargin<4)
+if nargin<4
     tol = 10*eps*norm(AtA,1)*max(size(AtA));
 end
 N = numel(x0);
@@ -68,7 +68,7 @@ while any(w>tol) && any(~passive)
     x_ = zeros(N,1);
     x_(passive) = Atbt(passive)/AtAt(passive,passive);
     % Inner loop: Iteratively eliminate negative variables from candidate solution.
-    while any((x_<=tol) & passive) && (iIteration<maxIterations)
+    while any((x_<=tol) & passive) && iIteration<maxIterations
         
         iIteration = iIteration + 1;
         

@@ -1,12 +1,14 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-N = 100;
-r = linspace(1,5,N);
+% Check that one can generate kernels with one single distance-domain point
 
+r = linspace(1,5,100);
 K = dipolarkernel(0.5,r);
 
-err = any(size(K,1)>1);
-maxerr = 0;
-data = [];
+% Pass: time-domain dimension is a singlet
+pass = size(K,1)==1;
+
+maxerr = NaN;
+ 
 
 end

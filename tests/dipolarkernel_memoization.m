@@ -1,25 +1,28 @@
-function [err,data,maxerr] = test(opt,data)
+function [pass,maxerr] = test(opt)
 
-%Clear persistent variable
+% Clear persistent variable
 clear dipolarkernel
 
-Dimension = 1000;
-t = linspace(0,6,Dimension);
+t = linspace(0,6,1000);
 r = time2dist(t);
 
+% First run: slow
 tic
 preK = dipolarkernel(t,r);
 precached = toc;
-
+% Second run: fast (cached)
 tic
 postK = dipolarkernel(t,r);
 postcached = toc;
 
-err(1) = postcached>=precached/10;
-error = abs(postK - preK);
-err(2) = any(any(error>1e-18));
-data = [];
-err = any(err);
-maxerr = max(max(error));
+% Pass 1: cached results should run at least 10x faster
+pass(1) = postcached <= precached/10;
+% Pass 2: cached results should be equal
+pass(2) = isequal(postK,preK);
+
+pass = all(pass);
+
+delta = abs(postK - preK);
+maxerr = max(delta(:));
 
 end

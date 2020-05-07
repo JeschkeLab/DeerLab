@@ -1,34 +1,28 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-InputParam = [3 0.5];
-P = rd_onegaussian(r,InputParam);
-P = P/sum(P);
+% Check that noiselevel() estimates the noise level accurately even in the
+% presence of a background function
 
+rng(1)
+t = linspace(0,3,200);
+r = linspace(2,6,100);
+P = dd_gauss(r,[3 0.5]);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
-B = exp(-1.5*t)';
-V = (DipEvoFcn + 5).*B;
-B = B*(1-1/V(1));
-V = V/V(1);
-V = V./sqrt(B);
+lam = 0.25;
+B = bg_exp(t,1.5);
+V = (1 - lam + lam*K*P).*B;
 
-rng(2)
-Noise = rand(Dimension,1);
-Noise = Noise - mean(Noise);
-Noise = 0.02*Noise/Noise(1);
+noise = rand(numel(t),1);
+noise = noise - mean(noise);
+noise = 0.02*noise/noise(1);
+V = V + noise;
 
-V = V + Noise;
-
-truelevel = std(Noise);
+truelevel = std(noise);
 approxlevel = noiselevel(V);
 
-err = abs(approxlevel - truelevel)>1e-2;
+% Pass: the noise level is well estimated
+pass = abs(approxlevel - truelevel) < 1e-2;
+
 maxerr = abs(approxlevel - truelevel);
-data = [];
-
-
+ 
 end

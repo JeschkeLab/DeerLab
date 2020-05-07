@@ -1,74 +1,62 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check regparamrange.m
-%=======================================
+% Check error control of selregparam() towards wrong inputs
 
 N = 100;
 dt = 0.008;
 t = linspace(0,dt*N,N);
 r = time2dist(t);
-P = rd_onegaussian(r,[3,0.5]);
+P = dd_gauss(r,[3,0.5]);
 
 K = dipolarkernel(t,r);
 S = K*P;
 
+% Pass 1: signal not right size
 try
     S2 = rand(10,1);
-    selregparam(S2,K,r,'tikhonov',{'aic','gml','gcv'});
-    err(1) = true;
+    selregparam(S2,K,'tikhonov',{'aic','gml','gcv'});
+    pass(1) = false;
 catch
-    err(1) = false;
+    pass(1) = true;
 end
 
+% Pass 2: too many global weights
 try
-    selregparam(S,K,r,'tikhonov','aic','GlobalWeights',[0.2 0.8]);
-    err(2) = true;
+    selregparam(S,K,'tikhonov','aic','GlobalWeights',[0.2 0.8]);
+    pass(2) = false;
 catch
-    err(2) = false;
+    pass(2) = true;
 end
 
 
+% Pass 3: not enough noise levels
 try
-    selregparam({S,S},{K,K},r,'tikhonov','aic','GlobalWeights',[1 0.5]);
-    err(3) = true;
+    selregparam({S,S},{K,K},'tikhonov','aic','NoiseLevel',[0.5]);
+    pass(3) = false;
 catch
-    err(3) = false;
+    pass(3) = true;
 end
 
+% Pass 4: not enough signals
 try
-    selregparam({S,S},{K,K},r,'tikhonov','aic','NoiseLevel',[0.5]);
-    err(3) = true;
+    selregparam({S},{K,K},'tikhonov','aic','GlobalWeights',[1 0.5]);
+    pass(4) = false;
 catch
-    err(3) = false;
+    pass(4) = true;
 end
 
-try
-    selregparam({S},{K,K},r,'tikhonov','aic','GlobalWeights',[1 0.5]);
-    err(4) = true;
-catch
-    err(4) = false;
-end
-
-
-try
-    selregparam({S,S},{K,K},r,'tikhonov','aic','GlobalWeights',[1 0.5]);
-    err(5) = true;
-catch
-    err(5) = false;
-end
-
+% Pass 5: a complex-valued signal is passed
 try
     S2 = S + 1i*S;
-    selregparam({S2,S2},{K,K},r,'tikhonov','aic','GlobalWeights',[1 0.5]);
-    err(5) = true;
+    selregparam({S2,S2},{K,K},'tikhonov','aic','GlobalWeights',[1 0.5]);
+    pass(5) = false;
 catch
-    err(5) = false;
+    pass(5) = true;
 end
 
-err = any(err);
-data = [];
-maxerr = 0;
+pass = all(pass);
+ 
+maxerr = NaN;
 
 
 

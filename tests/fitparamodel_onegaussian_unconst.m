@@ -1,34 +1,33 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
+% Test an unconstrained distance-domain fit of one Gaussian
 
-Dimension = 200;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-InputParam = [3 0.5];
-P = rd_onegaussian(r,[3,0.5]);
-
+t = linspace(0,3,300);
+r = linspace(2,6,200);
+parIn = [3 0.5];
+P = dd_gauss(r,parIn);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
 
 InitialGuess = [2 0.1];
-[~,FitP] = fitparamodel(DipEvoFcn,@rd_onegaussian,r,K,InitialGuess,'solver','fminsearch');
-err(1) = any(abs(FitP - P)>1e-5);
-err = any(err);
+[parFit,Pfit] = fitparamodel(S,@dd_gauss,r,K,InitialGuess,'Upper',[realmax realmax],'Lower',[-realmax -realmax]);
 
-maxerr = max(abs(FitP - P));
-data = [];
 
+% Pass 1: distance distribution is well fitted
+pass(1) = all(abs(Pfit - P) < 1e-4);
+% Pass 2: model parameters are well fitted
+pass(2) = all(abs(parFit - parIn) < 1e-2);
+
+pass = all(pass);
+
+maxerr = max(abs(Pfit - P));
+ 
 if opt.Display
-   figure(1),clf
-   subplot(121)
-   hold on
-   plot(t,DipEvoFcn,'b')
-   plot(t,K*FitP,'r')
-   subplot(122)
-   hold on
-   plot(r,P,'b')
-   plot(r,FitP,'r')
+   plot(r,P,'k',r,Pfit,'r')
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

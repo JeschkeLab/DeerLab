@@ -1,119 +1,118 @@
 %
 % LSQCOMPONENTS Construct input arguments for NNLS solvers
 %
-%   [Q,KtS] = LSQCOMPONENTS(S,r,K,L,alpha,'type')
-%   Computes the components required by non-negative least-squares (NNLS)
-%   solvers (Q) and (KtS) for fitting a regularization model. The function
-%   requires the signal (S), dipolar kernel (K), regularization matrix (L)
-%   and regularization parameter (alpha). The type of regularization
-%   functional is determined by the 'type' string argument.
+%   [KtKreg,KtV] = LSQCOMPONENTS(V,K,L,alpha,regtype)
+%   [KtKreg,KtV] = LSQCOMPONENTS(V,K,L,alpha,regtype,eta)
+%   [KtKreg,KtV] = LSQCOMPONENTS({V1,V2,...},{K1,K2,...},L,alpha,regtype,eta,w)
 %
-%   [Q,KtS] = LSQCOMPONENTS(S,r,K,L,alpha,'type',eta)
+%   Computes the components required by non-negative least-squares (NNLS)
+%   solvers (KtKreg) and (KtV) for fitting a regularization model. The function
+%   requires the signal (V), the dipolar kernel (K), the regularization matrix (L),
+%   and the regularization parameter (alpha).
+%
+%   The type of regularization functional is determined by (regtype).
 %   The Huber parameter can be specified by passing as the (eta) argument.
 %
-%   [Q,KtS,w] = LSQCOMPONENTS({S1,S2,...},r,{K1,K2,...},L,alpha,'type',eta)
-%   Passing multiple signals/kernels constructs the LSQ components (Q) and (KtS)
-%   as required for global fit of the regularization functionals. The global fit
-%   weights are automatically computed according to their contribution
-%   to ill-posedness. The calculated weights (w) can be requested as an
-%   additional output argument.
+%   Passing multiple signals/kernels constructs the LSQ components (KtKreg) and
+%   (KtV) as required for global fit of the regularization functionals. In this
+%   case, the weights need to passed in (w).
 %
-%   [Q,KtS] = LSQCOMPONENTS(S,r,K,L,alpha,'type',eta,w)
-%   The global fit weights (w) can be manually passed to avoid computing them
-%   automatically.
+% Inputs:
+%   V       signal
+%   K       kernel matrix (us and nm)
+%   L       regularization operator matrix (see regoperator)
+%   alpha   regularization parameter
+%   regtype regularzion type: 'Tikhonovov', 'Huber', 'TV'
+%   eta     parameter for Huber regularization (optional, default 1.35)
+%   w       global weights (required only if V has multiple signals)
+%
+% Output:
+%   KtKreg  K.'*K plus regularization term (weighted sum for multiple signals)
+%   KtV     K.*V (weighted sum for multiple signals)
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
-function [Q,KtS,weights] = lsqcomponents(S,r,K,L,alpha,RegType,HuberParam,weights)
+function [KtKreg,KtV] = lsqcomponents(V,K,L,alpha,RegType,HuberParam,weights)
 
-%Ensure that signals and kernel are in a cell array
-if ~iscell(S)
-    S = {S};
+% Ensure that signals and kernel are in a cell array
+if ~iscell(V)
+    V = {V};
 end
 if ~iscell(K)
     K = {K};
 end
-%If Huber parameter not given, just use the default
-if nargin<7 || isempty(HuberParam)
+
+% Prepare
+nSignals = numel(V);
+nr = size(L,2);
+
+% Provide defaults for Huber parameter and weights
+if nargin<6 || isempty(HuberParam)
    HuberParam = 1.35; 
 end
-%If Huber parameter not given, just use the default
-if nargin<8 
-    weights = [];
-end
-%Prepare
-nSignals = length(S);
-distDim = length(L);
-KtS = zeros(distDim,1);
-GramMatrix = zeros(distDim,distDim);
-
-%Get weights of different signals for global fitting
-if isempty(weights)
-weights = globalweights(S);
-end
-%Compute the terms depending on different signals
-for i=1:nSignals
-    KtS = KtS + weights(i)*K{i}.'*S{i};
-    GramMatrix = GramMatrix + weights(i)*K{i}.'*K{i};
+if nargin<7
+    if nSignals==1
+        weights = 1;
+    else
+        error('For multiple signals, weights need to be provided.');
+    end
 end
 
-%Compute then the LSQ components needed by NNLS optimizers
+% Compute the terms as a weighted sum over components
+KtV = zeros(nr,1);
+KtK = zeros(nr,nr);
+for i = 1:nSignals
+    KtV = KtV + weights(i)*K{i}.'*V{i};
+    KtK = KtK + weights(i)*K{i}.'*K{i};
+end
+
+% Compute then the LSQ components needed by NNLS optimizers
 switch lower(RegType)
     
     case 'tikhonov'
-        Q = GramMatrix + alpha^2*(L.'*L);
+        regterm = L.'*L;
         
     case 'tv'
-        localP = zeros(distDim,1);
-        for j=1:500
-            prev = localP;
-            %Compute pseudoinverse and unconst. distribution recursively
-            TVterm = L.'*((L./sqrt((L*localP).^2 + eps)));
-            localQ = (GramMatrix + alpha^2*TVterm);
-            localP = 0*localP;
-            for i=1:nSignals
-                localP = localP + weights(i)*localQ\K{i}.'*S{i};
-            end
-            %Normalize distribution by its integral to stabilize convergence
-            localP = localP/sum(abs(localP))/mean(diff(r));
-            %Monitor largest changes in the distribution
-            change = max(localP - prev);    
-                        
-            %Stop if result is stable
-            if change < 1e-1
-                break;
-            end
-        end
-        %Compute the partial pseudinverse from the optimized result
-        TVterm = L.'*((L./sqrt((L*localP).^2 + eps)));
-        Q = (GramMatrix + alpha^2*TVterm);
+        maxIter = 500;
+        changeThreshold = 1e-1;
+        TVFcn = @(p)L.'*((L./sqrt((L*p).^2 + eps)));
+        regterm = optimizeregterm(TVFcn);
         
     case 'huber'
-        localP = zeros(distDim,1);
-        for j=1:500
-            prev = localP;
-            %Compute pseudoinverse and unconst. distribution recursively
-            HuberTerm = 1/(HuberParam^2)*(L.'*(L./sqrt((L*localP/HuberParam).^2 + 1)));
-            localQ = (GramMatrix + alpha^2*HuberTerm);
-            localP = 0*localP;
-            for i=1:nSignals
-                localP = localP + weights(i)*localQ\K{i}.'*S{i};
+        maxIter = 500;
+        changeThreshold = 1e-2;
+        HuberFcn = @(p) 1/(HuberParam^2)*(L.'*(L./sqrt((L*p/HuberParam).^2 + 1)));
+        regterm = optimizeregterm(HuberFcn);
+end
+
+KtKreg = KtK + alpha^2*regterm;
+
+    function regterm = optimizeregterm(fun)
+        P = zeros(nr,1);
+        for j = 1:maxIter
+            Pprev = P;
+            % Compute pseudoinverse and unconst. distribution recursively
+            KtKreg_ = KtK + alpha^2*fun(P);
+            P = zeros(nr,1);
+            for ii = 1:numel(V)
+                P = P + weights(ii)*KtKreg_\K{ii}.'*V{ii};
             end
-            %Normalize distribution by its integral to stabilize convergence
-            localP = localP/sum(abs(localP))/mean(diff(r));
-            %Monitor largest changes in the distribution
-            change = max(localP - prev);
-            %Stop if result is stable
-            if change < 1e-2
+            % Normalize distribution by its integral to stabilize convergence
+            P = P/sum(abs(P));
+            % Monitor largest changes in the distribution
+            change = max(abs(P - Pprev));
+            % Stop if result is stable
+            if change < changeThreshold
                 break;
             end
         end
-        %Compute the partial pseudinverse from the optimized result
-        HuberTerm = 1/(HuberParam^2)*(L.'*(L./sqrt((L*localP/HuberParam).^2 + 1)));
-        Q = (GramMatrix + alpha^2*HuberTerm);
-end
+        % Compute the regularization term from the optimized result
+        regterm = fun(P);
+    end
+
 
 end
+

@@ -1,7 +1,7 @@
 %
 % MIXMODELS Combine parametric models into one
 %
-%   newmodel = MIXMODELS({@model1,@model2,...,@modelN})
+%   newmodel = MIXMODELS(@model1,@model2,...,@modelN)
 %   Combines the parametric model function handles (@model1,...,@modelN)
 %   into a new parametric model function handle (newmodel). The models
 %   must be passed as a cell array of function handles.
@@ -10,88 +10,94 @@
 %   in DeerLab2. The returned function handle can be used for
 %   parametric model fitting as the other models.
 %
-%   Example: rd_twogaussians = MIXMODELS({@rd_onegaussian,@rd_onegaussian})
+%   Example: dd_mix = MIXMODELS(@dd_gauss,@dd_gauss)
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
+function mixModelFcn = mixmodels(varargin)
 
-function finalModel = mixmodels(models)
-
-if ~isa(models,'cell') || any(~cellfun(@(models)isa(models,'function_handle'),models))
-   error('Input argument must be a cell array of valid function handles.')
+if numel(varargin)==1
+    models = {varargin};
+else
+    models = varargin;
 end
 
-%Check how many models are to be mixed
-nModels = length(models);
+if numel(varargin)==0
+    error('At least one model must be provided.')
+end
+
+if ~all(cellfun(@(M)isa(M,'function_handle'),models))
+    error('Input arguments must all be function handles.')
+end
+
+% Detemine number of models to be mixed
+nModels = numel(models);
+
 % Combine the information structures of the models
-%------------------------------------------------------
-%Account for weight parameters between the models
-mixedInfo.nparam = nModels-1;
-mixedInfo.model = 'Mixed model';
-for j=1:mixedInfo.nparam
-    mixedInfo.parameters(j).name = sprintf('Relative amplitude of model #%i',j);
-    mixedInfo.parameters(j).range = [0 1];
-    mixedInfo.parameters(j).default = 1/(mixedInfo.nparam + 1);
-    mixedInfo.parameters(j).units = '';
+%-------------------------------------------------------------------------------
+Info.model = 'Mixed model';
+Info.models = {};
+
+% Add amplitudes for each model except last
+for j = 1:nModels-1
+    Info.parameters(j).name = sprintf('Component %i: Relative amplitude',j);
+    Info.parameters(j).range = [0 1];
+    Info.parameters(j).default = 1/nModels;
+    Info.parameters(j).units = '';
 end
-%Compile necessary parameters for each mode into an array
-paramsplit = zeros(length(models),1);
-paramsplit(1) = mixedInfo.nparam;
-%Get information strucutre from each model
-for i=1:length(models)
-    currentModel = models{i};
-    info = currentModel();
-    paramsplit(i+1) =  paramsplit(i) + info.nparam;
-    mixedInfo.models{i} =  info.model;
-    for j=1:info.nparam
-        mixedInfo.parameters(length(mixedInfo.parameters)+1).name = sprintf('%s of model #%i',info.parameters(j).name,i);
-        mixedInfo.parameters(length(mixedInfo.parameters)).range = info.parameters(j).range;
-        mixedInfo.parameters(length(mixedInfo.parameters)).default = info.parameters(j).default;
-        mixedInfo.parameters(length(mixedInfo.parameters)).units = info.parameters(j).units;
+pidx_amp = 1:nModels-1;
+
+% Combine info structures from all models
+idx = pidx_amp(end);
+for i = 1:nModels
+    info = models{i}();
+    pidx{i} = idx + (1:info.nparam);
+    idx = idx + info.nparam;
+    Info.models{i} = info.model;
+    param_ = info.parameters;
+    for j = 1:info.nparam
+        param_(j).name = sprintf('Component %i: %s',i,param_(j).name);
     end
-    mixedInfo.nparam =  mixedInfo.nparam + info.nparam;
+    Info.parameters = [Info.parameters param_];
 end
 
-% Merge the parametric model fuctions
-%------------------------------------------------------
+Info.nparam = numel(Info.parameters);
 
-%Start with a dummy function handle
-mixedModel = @(r,param) 0*r;
+% Mixed model function handle
+%-------------------------------------------------------------------------------
+mixModelFcn = @mixedFunction;
 
-for j=1:nModels-1
-    currentModel = models{j};
-    mixedModel = @(r,param) (mixedModel(r,param) + param(j)*currentModel(r,param(paramsplit(j)+1:paramsplit(1+j))) );
-end
-%For the last model use constrained amplitude
-currentModel = models{end};
-mixedModel = @(r,param) (mixedModel(r,param) + max(1 - sum(param(1:paramsplit(1))),0)*currentModel(r,param(paramsplit(end-1)+1:paramsplit(end))) );
-
-%Bundle everyhting into a function handle which can handle varargin cases
-finalModel = @mixedFunction;
-
-    %Function to allow request of information structure or model values
-    function output = mixedFunction(varargin)
+    % Function to allow request of information structure or model values
+  function output = mixedFunction(varargin)
 
         if nargin==0
-            output = mixedInfo;
+            output = Info;
             return
-        else
-            if nargin<2
-                error('At least two input argumetns (ax,param) are required.')
-            elseif  nargin>3
-                error('Too many input argumetns given.')
-            end
-        
-            r = varargin{1};
-            if ~iscolumn(r)
-               r = r.'; 
-            end
-            distr = mixedModel(r,varargin{2});
-            output = distr;
         end
         
+        if nargin<2
+            error('At least two input arguments (r,param) are required.')
+        elseif  nargin>3
+            error('Only two input arguments are allows.')
+        end
+        
+        x = varargin{1};
+        params = varargin{2};
+        if ~iscolumn(x)
+            x = x.';
+        end
+        
+        amp = params(pidx_amp);
+        amp(end+1) = max(1-sum(amp),0);
+        
+        y = 0;
+        for k = 1:numel(models)
+            y = y + amp(k)*models{k}(x,params(pidx{k}));
+        end
+        output = y;
+        
     end
-
+    
 end

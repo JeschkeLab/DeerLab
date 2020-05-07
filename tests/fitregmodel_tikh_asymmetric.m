@@ -1,36 +1,31 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-Ntime = 100;
-Ndist = 200;
+% Check that fitregmodel() works with non-square kernel matrices
 
-dt = 0.008;
-t = linspace(0,dt*Ntime,Ntime);
-[~,rmin,rmax] = time2dist(t);
-r = linspace(rmin,rmax,Ndist);
-P = rd_onegaussian(r,[3,0.5]);
-
+t = linspace(0,2,200);
+r = linspace(2,6,100);
+P = dd_gauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
 
-TikhResult = fitregmodel(DipEvoFcn,K,r,'tikhonov','aic','Solver','fnnls');
+Pfit = fitregmodel(S,K,r,'tikhonov','aic','Solver','fnnls');
 
+% Pass 1: the distribution is well fitted
+pass(1) = all(abs(Pfit - P) < 1e-3);
+% Pass 2: the distance-dimension has the right size
+pass(2) = length(Pfit) == numel(r);
+% Pass 3: the time-dimension has the right size
+pass(3) = length(K*Pfit) == numel(t);
+pass  = any(pass);
 
-err(1) = any(abs(TikhResult - P)>3e-2);
-err(2) = length(TikhResult) ~= Ndist;
-err(3) = length(K*TikhResult) ~= Ntime;
-err  = any(err);
-
-maxerr = max(abs(TikhResult - P));
-
-
-err = any(err);
-data = [];
-
+maxerr = max(abs(Pfit - P));
+ 
 if opt.Display
- 	figure(8),clf
-    hold on
-    plot(r,P,'k') 
-    plot(r,TikhResult,'r')
+   plot(r,P,r,Pfit)
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

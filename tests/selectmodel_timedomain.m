@@ -1,32 +1,27 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%Test if selectmethod can identify that the optimal method is a two
-%gaussian model as given as the input signal
+% Test if selectmethod can identify an optimal background model
 
-Dimension = 200;
-dt = 0.016;
-t = linspace(0,dt*Dimension,Dimension);
+t = linspace(0,3,200);
 r = time2dist(t);
+B = bg_strexp(t,[0.2 4]);
+models = {@bg_exp,@bg_strexp,@bg_prodstrexp};
 
-K = dipolarkernel(t,r);
-B = td_strexp(t,[0.2 4]);
+[optimum1,metric] = selectmodel(models,B,t,'aicc');
+optimum2 = selectmodel(models,B,t,'aic');
+optimum3 = selectmodel(models,B,t,'bic');
 
-Models = {@td_exp,@td_strexp,@td_prodstrexp};
-
-[optimum1,metric] = selectmodel(Models,B,t,'aicc');
-optimum2 = selectmodel(Models,B,t,'aic');
-optimum3 = selectmodel(Models,B,t,'bic');
-
-err(1) = optimum1~=optimum2;
-err(2) = optimum2~=optimum3;
-err = any(err);
-data = [];
+% Pass: the different functional find the same optimum
+pass = isequal(optimum1,optimum2,optimum3);
+ 
 maxerr = NaN;
 
-
 if opt.Display
-figure(8),clf
-plot(metric)
+    plot(1:3,metric)
+    set(gca,'xtick',[1 2 3],'xticklabel',{'Exponential','Stretched Exp.','Prod. Stretched Exp.'})
+    xtickangle(45)
+    ylabel('AICc')
+    grid on, axis tight, box on
 end
 
 end

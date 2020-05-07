@@ -1,290 +1,318 @@
 %
-% DIPOLARKERNEL Computes the dipolar interaction kernel for the linear
-%              transformation from distance-domain to time-domain
+% DIPOLARKERNEL Dipolar kernel matrix
 %
-%       K = DIPOLARKERNEL(t,r)
-%       Computes the NxM point kernel for the trasnformation to the dipolar
-%       evolution function from the N-point  time axis (t) in us or ns and M-point
-%       distance axis (r) in ns or Angstrom.
+%   K = DIPOLARKERNEL(t,r)
+%   K = DIPOLARKERNEL(t,r,lambda)
+%   K = DIPOLARKERNEL(t,r,lambda,B)
+%   K = DIPOLARKERNEL(t,r,pathinfo)
+%   K = DIPOLARKERNEL(t,r,pathinfo,B)
+%   K = DIPOLARKERNEL(___,'Property',value,___)
 %
-%       K = DIPOLARKERNEL(t,r,lambda)
-%       Computes the kernel for the transformation to the form factor function
-%       with a modulation depth given by (lambda).
+%  Computes the NxM kernel matrix K for the transformation of a distance
+%  distribution to a dipolar evolution function, using the M-point distance
+%  axis r (in nanometers) and the N-point time axis t (in microseconds).
+%  If the modulation depth lambda, is given, it is included in K.
+%  If an N-point background (B) is given, it is included in K as well.
+%  Optional arguments can be specified by name-value pairs.
 %
-%       K = DIPOLARKERNEL(t,r,lambda,B)
-%       Computes the kernel for the transformation to the form factor function
-%       with a N-point background (B) multiplied.
+%  Inputs:
+%     t         N-element time axis, in microseconds
+%     r         M-element distance axis, in nanometers
+%     lambda    modulation depth (between 0 and 1) (default 1)
+%               this is equivalent to pathinfo = [1-lambda NaN 0; lambda 0 1]
+%     pathinfo  px2 or px3 array of modulation depths lambda, refocusing points
+%               T0, and harmonics n for multiple pathways, each row contains
+%               [lambda T0 n] or [lambda T0] for one pathway. If n is not given
+%               it is assumed to be 1.
+%     B         N-element array with background decay, or a function handle
+%               for a background model: @(t,lambda)bg_model(t,par,lambda)
+%               by default, no background decay is included
 %
-%       K = DIPOLARKERNEL(t,r,'Property1',Value1,...)
-%       K = DIPOLARKERNEL(t,r,lambda,'Property1',Value1,...)
-%       K = DIPOLARKERNEL(t,r,lambda,B,'Property1',Value1,...)
-%       Optional arguments can be specified by parameter/value pairs.
+%  Outputs:
+%     K         NxM kernel matrix, such that the time-domain signal for a
+%               Mx1 distance distribution vector P is V = K*P
 %
-% The allowed properties to be passed as options can be set in any order.
+%  Name-value pairs:
 %
 %   'ExcitationBandwidth' - Excitation bandwith of the pulses in MHz to be
 %                           used for limited bandwith excitation
-%
-%   'OvertoneCoeffs' - 1D-Array of coefficients for correction of overtones
-%                      in RIDME signals
-%
-%   'gValue' - g-value of the spin centers
-%
-%   'Method' - The way the kernel is computed numerically:
-%                       'fresnel' - uses Fresnel integrals for the kernel
-%                       'explicit' - powder average computed explicitly
-%
-%   'Knots' - Number knots for the grid of powder orientations to be used
-%             in explicit kernel calculations
-%
-%   'MultiPathway' - Parameters of the dipolar multi-pathway model. Passed as 
-%                    a cell array {etas lambdas Bmodel} containing the following parameters:
-%
-%         etas     - Time-shifts of the individual dipolar pathways. (N-vector)
-%         lambdas  - Amplitudes of the different pathways. The first element
-%                    is the amplitude of the unmodulated component and the remaining
-%                    elements are the amplitudes of the modulated components. (N+1-vector). 
-%         Bmodel   - Background model, must accept the time axis and the pathway 
-%                    amplitude as inputs. (function handle)
+%   'OvertoneCoeffs' - 1D array of coefficients for overtones in RIDME signals
+%   'g'              - g-values of the spin centers, [g1 g2]
+%   'Method'         - Numerical method for kernel matrix calculation:
+%                      'fresnel' - uses Fresnel integrals for the kernel (default)
+%                      'integral' - uses MATLAB's integral() function (slow, accurate)
+%                      'grid' - powder average computed explicitly (slow, inaccurate)
+%   'nKnots'         - Number of knots for the grid of powder orientations to be used
+%                      in the 'grid' kernel calculation method
+%   'Renormalize'    - Re-normalization of multi-pathway kernels to ensure the
+%                      equality V(0) == 1 is satisfied. (default = true)
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-
-
-function K = dipolarkernel(t,r,lambda,B,varargin)
+function K = dipolarkernel(t,r,varargin)
 
 % Input parsing
-%--------------------------------------------------------------------------
-switch nargin
-    case {1,2}
-        lambda = [];
-        B = [];
+%-------------------------------------------------------------------------------
+if nargin<2
+    error('At least two inputs (t and r) are required.');
 end
 
-% Case ModDepth and B not passed
-if nargin>2 && isa(lambda,'char')
-    varargin = [{lambda} {B} varargin];
-    lambda = [];
-    B = [];
+% Set default parameters
+pathinfo = 1;
+B = [];
+proplist = varargin;
+
+if numel(proplist)>=1 && ~ischar(proplist{1})
+    if ~isempty( proplist{1})
+        pathinfo = proplist{1};
+    end
+    proplist(1) = [];
 end
-if nargin < 4
-    B = [];
-end
-% Case ModDepth passed but not B
-if nargin>3 && isa(B,'char')
-    varargin = [{B} varargin];
-    B = [];
+
+if numel(proplist)>=1 && ~ischar(proplist{1})
+    B = proplist{1};
+    proplist(1) = [];
 end
 
 % Check if user requested some options via name-value input
-[ExcitationBandwidth,OvertoneCoeffs,gValue,Method,Knots,MultiPathParam,Cache] = ...
-    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','gValue','Method','Knots','MultiPathway','Cache'},varargin);
-if isempty(Cache)
-    Cache = true;
+[ExcitationBandwidth,OvertoneCoeffs,g,Method,nKnots,useCache,Renormalize] = ...
+    parseoptional({'ExcitationBandwidth','OvertoneCoeffs','g','Method','nKnots','Cache','Renormalize'},proplist);
+if isempty(useCache)
+    useCache = true;
 end
 if isempty(Method)
     Method = 'fresnel';
-else
-    validateattributes(Method,{'char'},{'nonempty'},mfilename,'Method');
 end
+validateattributes(Method,{'char'},{'nonempty'},mfilename,'Method');
 
+if isempty(Renormalize)
+    Renormalize = true;
+else
+    validateattributes(Renormalize,{'logical'},{'nonempty'},mfilename,'Renormalize');
+end
 if isempty(OvertoneCoeffs)
     OvertoneCoeffs = 1;
-else
-    validateattributes(OvertoneCoeffs,{'numeric'},{'nonnegative'},mfilename,'OvertoneCoeffs');
 end
+validateattributes(OvertoneCoeffs,{'numeric'},{'nonnegative'},mfilename,'OvertoneCoeffs');
 
 if ~isempty(ExcitationBandwidth)
     validateattributes(ExcitationBandwidth,{'numeric'},{'scalar','nonnegative'},mfilename,'ExcitationBandwidth');
+    if strcmp(Method,'fresnel')
+       error('Compensation for limited excitation bandwidth is not compatible with the ''fresnel'' method. Please use the ''integral'' or '' grid'' methods.') 
+    end
 end
 
 if ~isempty(B)
-    validateattributes(B,{'numeric'},{},mfilename,'B')
-    checklengths(t,B);
+    validateattributes(B,{'numeric','function_handle'},{},mfilename,'B');
+    if isnumeric(B) 
+        checklengths(t,B);
+    end
 end
 
-if isempty(Knots)
-    Knots = 1001;
-else
-    validateattributes(Knots,{'numeric'},{'scalar'},mfilename,'Knots')
+if isempty(nKnots)
+    nKnots = 5001;
+end
+validateattributes(nKnots,{'numeric'},{'scalar'},mfilename,'Knots');
+
+% Make sure all vectors are column vectors
+t = t(:);
+r = r(:);
+if isnumeric(B)
+    B = B(:);
 end
 
-if ~iscolumn(t)
-    t = t.';
+ge = 2.00231930436256; % free-electron g factor (CODATA 2018 value)
+if isempty(g)
+    g = [ge ge];
+end
+validateattributes(g,{'numeric'},{'nonempty','nonnegative'},mfilename,'g');
+if numel(g)~=2
+    error('The array supplied for ''g'' must contain one or two elements.');
 end
 
-if iscolumn(r)
-    r = r.';
-end
-if ~iscolumn(B)
-    B = B.';
-end
-
-if isempty(gValue)
-    %Set g-value of isotropic nitroxide radical (old DA default)
-    gValue = 2.004602204236924;
-else
-    validateattributes(gValue,{'numeric'},{'scalar','nonnegative'},mfilename,'gValue')
-end
-
-validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r')
+validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r');
 if numel(unique(round(diff(r),6)))~=1 && length(r)~=1
-    error('Distance axis must be a monotonically increasing vector.')
+    error('Distance axis must be a monotonically increasing vector.');
 end
-validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t')
+validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t');
 
-% Memoization
-%--------------------------------------------------------------------------
 
-persistent cachedData
-if isempty(cachedData) && Cache
-    cachedData =  java.util.LinkedHashMap;
-end
-hashKey = datahash({t,r,lambda,B,varargin});
-if cachedData.containsKey(hashKey)  && Cache
-    Output = cachedData.get(hashKey);
-    K = java2mat(Output);
-    return
+% Validation of the multi-pathway parameters
+%-------------------------------------------------------------------------------
+if ~isnumeric(pathinfo) || ~isreal(pathinfo)
+    error('lambda/pathinfo must be a numeric array.');
 end
 
-% Kernel construction
-%--------------------------------------------------------------------------
+if numel(pathinfo)==1
+    lambda = pathinfo;
+    pathinfo = [1-lambda NaN; lambda 0];
+end
 
-dt = mean(diff(t));
+if ~any(size(pathinfo,2)==[2 3])
+  error('pathinfo must be a numeric array with two or three columns.');
+end
+if any(isnan(pathinfo(:,1)))
+  error('In pathinfo, NaN can only appear in the second column (refocusing time) e.g. path(1,:) = [Lam0 NaN];');
+end
 
+% Normalize the pathway amplitudes to unity
+pathinfo(:,1) = pathinfo(:,1)/sum(pathinfo(:,1));
+lambda = pathinfo(:,1);
+T0 = pathinfo(:,2);
+if size(pathinfo,2)==2
+  n = ones(size(T0));
+else
+  n = pathinfo(:,3);
+end
+
+% Combine all unmodulated components into Lambda0, and eliminate from list
+unmodulated = isnan(T0);
+Lambda0 = sum(lambda(unmodulated));
+lambda(unmodulated) = [];
+T0(unmodulated)  = [];
+n(unmodulated) = [];
+
+% Fold overtones into pathway list
+nCoeffs = numel(OvertoneCoeffs);
+if nCoeffs>0
+  lambda = reshape(lambda*OvertoneCoeffs(:).',[],1);
+  T0 = reshape(repmat(T0,1,nCoeffs),[],1);
+  n = reshape(n*(1:nCoeffs),[],1);
+end
+
+nModPathways = numel(lambda);
+if nModPathways>1
+    if ~isempty(B) && (~isa(B,'function_handle') || nargin(B)~=2)
+        error(['For a model with multiple modulated pathways, B must be a ',...
+               'function handle of the type: @(t,lambda) bg_model(t,par,lambda)']);
+    end
+end
+
+% Kernel matrix construction
+%-------------------------------------------------------------------------------
 % Numerical dipolar frequency at 1 nm for given g-value, in MHz
-nu0 = 51.92052556862238*gValue/2; % MHz nm^3
+muB = 9.2740100783e-24; % Bohr magneton, J/T (CODATA 2018 value);
+mu0 = 1.25663706212e-6; % magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
+h = 6.62607015e-34; % Planck constant, J/Hz (CODATA 2018)
+nu0 = (mu0/4/pi)*muB^2*g(1)*g(2)/h*1e21; % Hz m^3 -> MHz nm^3
 w0 = 2*pi*nu0; % Mrad s^-1 nm^3
 
-% Convert distance axis to nanoseconds if givne in Angstrom
-rinput = r;
-if length(r)~=1
-    dr = mean(diff(rinput));
+% Get vector of dipolar frequencies at all distances
+wdd = w0./r.^3;
+
+% Memoization
+if useCache
+    kernelmatrix_ = memoize(@calckernelmatrix);
 else
-    dr = 1;
+    kernelmatrix_ = @calckernelmatrix;
+end
+kernelmatrix = @(t)kernelmatrix_(Method,t,wdd,ExcitationBandwidth,nKnots);
+
+% Build dipolar kernel matrix, summing over all pathways
+K = Lambda0;
+for p = 1:nModPathways
+    K = K + lambda(p)*kernelmatrix(n(p)*(t-T0(p)));
 end
 
-%Validation of the dipolar multipathway parameters
-if ~isempty(MultiPathParam)
-    if ~iscell(MultiPathParam)
-        error('Dipolar multi-pathway parameters must be cell-array {lambdas etas Bmodel}')
+% Renormalize if requested
+if Renormalize
+    Knorm = Lambda0;
+    for p = 1:nModPathways
+        Knorm = Knorm + lambda(p)*kernelmatrix(-T0(p)*n(p));
     end
-    if numel(MultiPathParam)<2
-        error('Dipolar multi-pathway parameters must contain at least two elements {lambdas etas}')
-    end
-    pathlam = MultiPathParam{1};
-    patheta = MultiPathParam{2};
-    validateattributes(pathlam,{'numeric'},{'nonnegative','nonempty'},mfilename,'lambdas')
-    validateattributes(patheta,{'numeric'},{'nonempty'},mfilename,'etas')
-    if numel(pathlam)~=(numel(patheta)+1)
-       error('For N eta-values, N+1 lambda-values are required (eta1,eta2,... <-> lambda0,lambda1,lambda2,...)') 
-    end
-    if numel(MultiPathParam)>2 && ~isa(MultiPathParam{3},'function_handle')
-        error('The last element of the Interference option must be valid function handle.')
-    elseif numel(MultiPathParam)>2 && isa(MultiPathParam{3},'function_handle')
-        Bmodel = MultiPathParam{end};
-        MultiPathParam(end) = [];
-    else
-        Bmodel = [];
-    end
+    K = K./Knorm;
 end
 
-% Get absolute time axis scale (required for negative times)
-traw = t;
-t = abs(t); %ns
-
-% Get vector of dipolar frequencies
-wdd = w0./(r.^3);
-
-K = zeros(length(t),length(wdd));
-for OvertoneIdx = 1:numel(OvertoneCoeffs)
-    
-    switch Method
-        case 'explicit'
-            % Method using explicit numerical powder average (slow)
-            %----------------------------------------------------------
-            % Pre-allocate cosine of powder angles
-            costheta = linspace(0,1,Knots);
-            % Sweep through all distances
-            for DistanceIndex = 1:length(r)
-                KTrace = 0;
-                for theta = 1:Knots % average over cos(theta) angle (powder average)
-                    KTrace = KTrace + cos(OvertoneIdx*wdd(DistanceIndex)*(1-3*costheta(theta)^2)*t);
-                end
-                % normalize dipolar time evolution trace
-                K(:,DistanceIndex) = K(:,DistanceIndex) + OvertoneCoeffs(OvertoneIdx)*KTrace;
-            end
-            
-        case  'fresnel'
-            % Method using Fresnel integrals (fast)
-            %----------------------------------------------------------
-            % Compute dipolar kernel
-            % Allocate products for speed
-            wddt = OvertoneIdx*wdd.*t;
-            kappa = sqrt(6*wddt/pi);
-            % Compute Fresnel integrals of 0th order
-            C = fresnelC(kappa);
-            S = fresnelS(kappa);
-            K = K + OvertoneCoeffs(OvertoneIdx)*sqrt(pi./(wddt*6)).*(cos(wddt).*C + sin(wddt).*S);
-            % Replace undefined Fresnel NaN value at time zero
-            K(isnan(K)) = 1;
-    end
-end
-
-% If given, account for limited excitation bandwidth
-if ~isempty(ExcitationBandwidth)
-    K = exp(-wdd'.^2/ExcitationBandwidth^2).*K;
-end
-
-if strcmp(Method,'explicit')
-    [~,BckgStart] = min(t);
-    K = K./K(BckgStart,:);
-end
-
-% Build modulation depth and background into the kernel
-%----------------------------------------------------------
-if ~isempty(lambda)
-    K = (1-lambda) + lambda*K;
-end
+% Multiply by background
 if ~isempty(B)
+    if isa(B,'function_handle')
+        B = dipolarbackground(t,pathinfo,B,'OvertoneCoeffs',OvertoneCoeffs,'Renormalize',Renormalize);
+    end
     K = K.*B;
 end
 
-% Build dipolar multi-pathway (DMP) model
-%----------------------------------------------------------
-if ~isempty(MultiPathParam)
-    K = zeros(length(t),length(wdd));
-    Knorm = zeros(length(t),length(wdd));
-    B = ones(length(t),1);
-    Bnorm = ones(length(t),1);
-    lam0 = pathlam(1);
-    K = K + lam0;
-    Knorm = Knorm + lam0;
-    %Loop over all modulated pathways
-    for i=1:numel(patheta)
-        %If background model is given then compute the background
-        if ~isempty(Bmodel)
-            %Simulate the background according to input model
-            B = B.*Bmodel(traw-patheta(i),pathlam(i+1));
-            Bnorm = Bnorm.*Bmodel(-patheta(i),pathlam(i+1));
-        end
-        %Use a recursive call to dipolarkernel to build the pathway kernels
-        Kpathway = dipolarkernel(traw-patheta(i),r,'Method',Method)/dr;
-        Knormpath = dipolarkernel(-patheta(i),r,'Method',Method)/dr;
-        lampath = pathlam(i+1);
-        K = K + lampath*Kpathway;
-        Knorm = Knorm + lampath*Knormpath;
-    end
-    K = 1./(Knorm.*Bnorm).*K.*B;
+% Include dr into kernel
+if length(r)>1
+    dr = mean(diff(r));
+    K = K*dr;
+end
+
 end
 
 
-% Normalize kernel
-K = K*dr;
+%===============================================================================
+% Calculate elementary kernel
+function K = calckernelmatrix(method,t,wdd,wex,nKnots)
 
-%Store output result in the cache
-cachedData = addcache(cachedData,hashKey,K);
+switch method
+    case 'fresnel'
+        K = kernelmatrix_fresnel(t,wdd);
+    case 'grid'
+        K = kernelmatrix_grid(t,wdd,wex,nKnots);
+    case 'integral'
+        K = kernelmatrix_integral(t,wdd,wex);
+    otherwise
+        error('Kernel calculation method ''%s'' is unknown.',method);
+end
 
-return
+end
+
+%===============================================================================
+% Calculate kernel using Fresnel integrals (fast and accurate)
+function K = kernelmatrix_fresnel(t,wdd)
+
+ph = wdd.'.*abs(t);
+kappa = sqrt(6*ph/pi);
+C = fresnelC(kappa)./kappa;
+S = fresnelS(kappa)./kappa;
+K = cos(ph).*C + sin(ph).*S;
+
+% Replace NaN values at time zero with 1
+K(isnan(K)) = 1;
+
+end
+
+%===============================================================================
+% Calculate kernel using grid-based powder integration (slow)
+% (converges very slowly with nKnots)
+function K = kernelmatrix_grid(t,wdd,wex,nKnots)
+
+K = zeros(numel(t),numel(wdd));
+
+costheta = linspace(0,1,nKnots);
+
+q = 1-3*costheta.^2;
+for ir = 1:numel(wdd)
+  D_ = 0;
+  for itheta = 1:nKnots
+    C = cos(wdd(ir)*q(itheta)*abs(t));
+    % If given, include limited excitation bandwidth
+    if ~isempty(wex)
+        C = C*exp(-(wdd(ir)*q(itheta)).^2/wex^2);
+    end
+     D_ = D_ + C;
+  end
+  K(:,ir) = D_/nKnots;
+end
+
+end
+
+%===============================================================================
+% Calculate kernel using MATLAB's integrator (accurate but slow)
+function K = kernelmatrix_integral(t,wdd,wex)
+
+K = zeros(numel(t),numel(wdd));
+
+for ir = 1:numel(wdd)
+    % If given, include limited excitation bandwidth
+    if ~isempty(wex)
+        fun = @(costheta) cos(wdd(ir)*abs(t)*(1-3*costheta.^2))*exp(-(wdd(ir)*(1-3*costheta.^2))^2/wex^2);
+    else
+        fun = @(costheta) cos(wdd(ir)*abs(t)*(1-3*costheta.^2));
+    end
+    K(:,ir) = integral(fun,0,1,'ArrayValued',true,'AbsTol',1e-6,'RelTol',1e-6);
+end
+
+end

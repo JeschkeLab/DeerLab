@@ -11,16 +11,17 @@
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
-function FrequencyAxis = time2freq(t,FreqPoints)
+function nu = time2freq(t,FreqPoints)
 
 if nargin<2 
     FreqPoints = length(t);
 end
 
 dt = mean(diff(t));
-FrequencyAxis = linspace(-1/(2*dt),1/(2*dt),FreqPoints);
+nu = linspace(-1/(2*dt),1/(2*dt),FreqPoints);
+nu = nu(:);
 
 end

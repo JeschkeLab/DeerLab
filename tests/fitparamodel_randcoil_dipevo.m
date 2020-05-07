@@ -1,37 +1,30 @@
-function [err,data,maxerr] = test(opt,oldata)
+function [pass,maxerr] = test(opt)
 
+% Test a distance-domain fit of a random coil model
 
-Dimension = 500;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-InputParam = [20 0.49];
-R0=0.198; % 1.98 Å per residue
-SquareDist = 6*R0*InputParam(1)^InputParam(2)^2; %mean square end-to-end distance from radius of gyration
-normFact = 3/(2*pi*SquareDist)^(3/2); % normalization prefactor
-ShellSurf = 4*pi*r.^2; % spherical shell surface
-Gaussian = exp(-3*r.^2/(2*SquareDist));
-P = normFact*ShellSurf.*Gaussian;
-P = P/sum(P)/mean(diff(r));
-P = P.';
-
+t = linspace(0,3,400);
+r = linspace(1,6,150);
+parIn = [20,0.2,0.49];
+P = dd_randcoil(r,parIn);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
 
-[~,FitP] = fitparamodel(DipEvoFcn,@rd_randcoil,r,K);
-err = any(abs(FitP - P)>1e-7);
+[parFit,Pfit] = fitparamodel(S,@dd_randcoil,r,K);
 
-maxerr = max(abs(FitP - P));
-data = [];
+%Pass 1: distance distribution is well fitted
+pass(1) = all(abs(Pfit - P) < 1e-7);
+
+pass = all(pass);
+
+maxerr = max(abs(Pfit - P));
+ 
 
 if opt.Display
-   figure(1),clf,
-   subplot(121),hold on
-   plot(t,DipEvoFcn,'b')
-   plot(t,K*FitP,'r')
-   subplot(122),hold on
-   plot(r,P,'b')
-   plot(r,FitP,'r')
+   plot(r,P,'k',r,Pfit,'r')
+   legend('truth','fit')
+   xlabel('r [nm]')
+   ylabel('P(r) [nm^{-1}]')
+   grid on, axis tight, box on
 end
 
 end

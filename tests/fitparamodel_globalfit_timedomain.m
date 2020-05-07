@@ -1,78 +1,70 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-Ntime1 = 100;
-Ndist = 200;
+% Test time-domain global fit of parametric models
+
 rng(2)
 dt = 0.008;
+r = linspace(1,5,100);
+P = dd_gauss2(r,[2,0.3,0.5,4,0.3]);
+
+Ntime1 = 100;
 t1 = linspace(0,dt*Ntime1,Ntime1);
-[~,rmin,rmax] = time2dist(t1);
-r = linspace(rmin,rmax,Ndist);
-
-P = rd_twogaussian(r,[2,0.3,4,0.3,0.5]);
-
 K1 = dipolarkernel(t1,r);
-S1 = K1*P;
-noise = whitegaussnoise(length(S1),0.03);
-S1 = S1 + noise;
+S1 = K1*P + whitegaussnoise(Ntime1,0.03);
 
 Ntime2 = 200;
 t2 = linspace(0,dt*Ntime2,Ntime2);
 K2 = dipolarkernel(t2,r);
-S2 = K2*P;
-noise = whitegaussnoise(length(S2),0.05);
-S2 = S2 + noise;
+S2 = K2*P + whitegaussnoise(Ntime2,0.05);
 
 Ntime3 = 300;
 t3 = linspace(0,dt*Ntime3,Ntime3);
 K3 = dipolarkernel(t3,r);
-S3 = K3*P;
-noise = whitegaussnoise(length(S3),0.1);
-S3 = S3 + noise;
-rng('default')
+S3 = K3*P + whitegaussnoise(Ntime3,0.1);
 
 Ss = {S1,S2,S3};
-
-tmodel = t3;
-info = rd_twogaussian();
-mymodel = @(t,param)dipolarkernel(t,r)*rd_twogaussian(r,param);
-
-
+info = dd_gauss2();
+mymodel = @(t,param)dipolarkernel(t,r)*dd_gauss2(r,param);
 InitialGuess = [2 0.1 5 0.1 0.5];
 range = [info.parameters(:).range];
 upper = range(2:2:end);
 lower = range(1:2:end-1);
+parglobal = fitparamodel(Ss,mymodel,{t1,t2,t3},InitialGuess,'Upper',upper,'lower',lower);
+parlocal = fitparamodel(S3,mymodel,t3,InitialGuess,'Upper',upper,'lower',lower);
 
-paramglobal = fitparamodel(Ss,mymodel,{t1,t2,t3},InitialGuess,'Upper',upper,'lower',lower);
-
-param3 = fitparamodel(S3,mymodel,tmodel,InitialGuess,'Upper',upper,'lower',lower);
-
-Pfit = rd_twogaussian(r,paramglobal);
-Dist3 = rd_twogaussian(r,param3);
+Pglobal = dd_gauss2(r,parglobal);
+Plocal = dd_gauss2(r,parlocal);
 
 
-normResult = norm(P - Pfit);
-norm3 = norm(P - Dist3);
+normResult = norm(P - Pglobal);
+norm3 = norm(P - Plocal);
 
-err(1) = any(normResult > [norm3]);
-err = any(err);
-data = [];
-maxerr = max(P - Pfit);
+
+% Pass: global fit is a better fit than the local one
+pass = all(normResult < norm3);
+ 
+maxerr = max(P - Pglobal);
 
 if opt.Display
-    figure(8),clf
     subplot(121)
     hold on
     plot(t1,S1,'k')
-    plot(t1,K1*Pfit,'r')
+    plot(t1,K1*Pglobal,'r')
     plot(t2,S2+1,'k')
-    plot(t2,K2*Pfit + 1,'r')
+    plot(t2,K2*Pglobal + 1,'r')
     plot(t3,S3+2,'k')
-    plot(t3,K3*Pfit + 2,'r')
+    plot(t3,K3*Pglobal + 2,'r')
+    grid on, axis tight, box on
+    xlabel('r [nm]')
+    ylabel('P(r) [nm^{-1}]')
     subplot(122)
     hold on
     plot(r,P,'k')
-    plot(r,Pfit,'r')
-    plot(r,Dist3,'b--')
+    plot(r,Pglobal,'r')
+    plot(r,Plocal,'b--')
+    grid on, axis tight, box on
+    xlabel('r [nm]')
+    ylabel('P(r) [nm^{-1}]')
 end
 
 end

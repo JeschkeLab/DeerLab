@@ -1,22 +1,14 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check Tikhonov regularization
-%=======================================
+% Check that obir() works with Tikhonov regularization using the fmincon solver
 
-Dimension = 100;
-dt = 0.008;
 rng(2)
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-P = rd_twogaussian(r,[2,0.3,3.5,0.3,0.5]);
-
+t = linspace(0,3,200);
+r = linspace(0,5,100);
+P = dd_gauss2(r,[2,0.3,0.5,3.5,0.3]);
 K = dipolarkernel(t,r);
-RegMatrix =  regoperator(Dimension,2);
-DipEvoFcn = K*P;
-NoiseLevel = 0.05;
-Noise = whitegaussnoise(Dimension,NoiseLevel);
-S = DipEvoFcn+Noise;
+noiselvl = 0.1;
+S = K*P + whitegaussnoise(t,noiselvl);
 
 if opt.Display
     figure(8),clf
@@ -25,23 +17,21 @@ else
     axhandle = [];
 end
 
-%Set optimal regularization parameter (found numerically lambda=0.13)
-RegParam = 2;
-Result = obir(S,K,r,'tikhonov',RegParam,'NoiseLevelAim',NoiseLevel,'Solver','fmincon','axishandle',axhandle);
+alpha = 3;
+Pobir = obir(S,K,r,'tikhonov',alpha,'NoiseLevelAim',noiselvl,'Solver','fmincon','axishandle',axhandle);
 
-RegResult = fitregmodel(S,K,r,'tikhonov',RegParam);
+Preg = fitregmodel(S,K,r,'tikhonov',alpha);
 
-err = norm(Result - P) > norm(RegResult - P);
-maxerr = norm(Result - P);
-data = [];
+pass = mean(abs(Pobir - P)) < mean(abs(Preg - P));
 
+maxerr = max(abs(Pobir - P));
+ 
 if opt.Display
- 	figure(8),clf
-    hold on
-    plot(r,P,'k') 
-    plot(r,Result,'b')
-    plot(r,RegResult,'r')
-    legend('truth','OBIR','Tikh')
+    plot(r,P,'k',r,Preg,r,Pobir)
+    legend('truth','regularization','OBIR')
+    xlabel('r [nm]')
+    ylabel('P(r) [nm^{-1}]')
+    grid on, axis tight, box on
 end
 
 end

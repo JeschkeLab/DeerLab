@@ -1,30 +1,27 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check regparamrange.m
-%=======================================
+% Test selregparam with unconstrained Huber regularization
 
-Dimension = 100;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-P = rd_onegaussian(r,[3,0.5]);
-
+t = linspace(0,3,200);
+r = linspace(2,6,100);
+P = dd_gauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
-DipEvoFcn = K*P;
+S = K*P;
 
-[OptParam,Functionals,RegParams] = selregparam(DipEvoFcn,K,r,'huber',{'aic','gcv'},'NonNegConstrained',false);
+[alphaopt,fcns,alphas] = selregparam(S,K,'huber',{'aic','gcv'},'NonNegConstrained',false);
 
-%Accept testif all values are the same (should be as there is no noise)
-err = any(any(OptParam - OptParam' > 1e-2));
-maxerr = max(max(OptParam - OptParam'));
-data = [];
+% Pass: both methods find the same solutions
+pass = abs(diff(alphaopt)) < 1e-2;
+
+maxerr = abs(diff(alphaopt));
+ 
 
 if opt.Display
-   figure(8),clf
-   hold on
-   plot(RegParams,Functionals{1})
-   plot(RegParams,Functionals{2})
+   plot(log10(alphas),fcns{1},log10(alphas),fcns{2})
+   xlabel('log_{10}(\alpha)')
+   ylabel('Functional')
+   legend('AIC','BIC')
+   grid on, axis tight, box on
 end
 
 

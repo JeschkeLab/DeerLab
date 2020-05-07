@@ -1,25 +1,20 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-%=======================================
-% Check regparamrange.m
-%=======================================
+% Test selregparam with Huber regularization
 
-Dimension = 80;
-dt = 0.008;
-t = linspace(0,dt*Dimension,Dimension);
-r = time2dist(t);
-P = rd_onegaussian(r,[3,0.5]);
-
+t = linspace(0,3,200);
+r = linspace(2,6,100);
+P = dd_gauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
-RegMatrix = regoperator(Dimension,2);
-DipEvoFcn = K*P;
+S = K*P;
 
-[OptParam,~,~] = selregparam(DipEvoFcn,K,r,'huber',{'aic','gcv'});
+alphaopt = selregparam(S,K,'huber',{'aic','gcv'});
 
-%Accept testif all values are the same (should be as there is no noise)
-err = any(any(OptParam - OptParam' > 1e-2));
-maxerr = max(max(OptParam - OptParam'));
-data = [];
+% Pass: both methods find the same solutions
+pass = abs(diff(alphaopt)) < 1e-2;
+
+maxerr = abs(diff(alphaopt));
+ 
 
 
 

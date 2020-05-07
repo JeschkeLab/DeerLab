@@ -17,7 +17,7 @@
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
 function [tcorr,t0,idxt0] = correctzerotime(V,t,t0)
@@ -39,6 +39,10 @@ if any(t<0)
 end
 validateattributes(V,{'numeric'},{'2d'},mfilename,'S')
 validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t')
+
+%Use column vectors
+t = t(:);
+V = V(:);
 
 %Generate finely-grained interpolated signal and time axis
 resolution = 4;

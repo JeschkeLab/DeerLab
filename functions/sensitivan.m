@@ -21,24 +21,34 @@
 %
 %     'RandPerm' - Specifies whether to randomly permutate the validation
 %                  parameters combinations (default = true)
+%   
+%     'dynamicStats' - Specifies whether the statistical estimators are
+%                      computed using the full set of observations or approximated
+%                      dynamically at each iteration. 
+%                      (default = depends on available memory)
+%
+%     'Verbose' - Display information on estimated remaining time
 %
 %   Outputs:
 %     stats     structure array with summary statistics for each variable
 %       .median medians of the output variables
 %       .mean   means of the output variables
 %       .std    standard deviations of the output variables
+%       .p2     2nd  percentiles of the output variables
 %       .p25    25th percentiles of the output variables
 %       .p75    75th percentiles of the output variables
+%       .p98    98th percentiles of the output variables
+%
 %     factors   results of factor analysis
 %       .main   main effects
 %       .inter  interactions between factors
+%
 %     evals     cell array with all outputs computed for all factor level
 %               combinations
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
-
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 function [stats,factors,evals] = sensitivan(fcnHandle,Parameters,varargin)
 
@@ -58,7 +68,17 @@ end
 
 validateattributes(Parameters,{'struct'},{'nonempty'},mfilename,'Parameters');
 
-[AxisHandle,RandPerm] = parseoptional({'AxisHandle','RandPerm'},varargin);
+[AxisHandle,RandPerm,dynamicStats,Verbose] = ...
+    parseoptional({'AxisHandle','RandPerm','dynamicStats','Verbose'},varargin);
+
+if ~isempty(dynamicStats)
+    validateattributes(dynamicStats,{'logical'},{'nonempty'},mfilename,'dynamicStats')
+end
+if isempty(Verbose)
+   Verbose = false;
+else
+    validateattributes(Verbose,{'logical'},{'nonempty'},mfilename,'dynamicStats')
+end
 
 % Get parameter names, generate all parameter combinations
 ParNames = fieldnames(Parameters);
@@ -67,14 +87,15 @@ nParameters = numel(ParNames);
 ParamList = prepvalidation(Parameters,'RandPerm',RandPerm);
 nCombinations = size(ParamList,1);
 
-
 % Factorial experiment design
 %-------------------------------------------------------------------------------
 % Get names of the variables given by the user
 
+counter = 0;
 nout = [];
+
 for i = 1:nCombinations
-  
+    
     % Assemble input factors into user structure
     for p = 1:nParameters
         argin.(ParNames{p}) =  ParamList{i,p};
@@ -83,7 +104,19 @@ for i = 1:nCombinations
     % On the first run, determine the number of outputs and allocate arrays
     if isempty(nout)
         nout = getmaxnargout(fcnHandle,argin);
+        %Pre-allocate memory for stats structure array
+        stats = repmat(struct('median',[],'mean',[],'std',[],'p2',[],'p25',[],'p75',[],'p98',[]),nout,1);
         evals = cell(1,nout);
+        sizeOut = cell(1,nout);
+        %Prepare containers for dynamic statistical estimators
+        markers2 = cell(1,nout);
+        markers25 = cell(1,nout);
+        markers50 = cell(1,nout);
+        markers75 = cell(1,nout);
+        markers98 = cell(1,nout);
+        OutSum(1:nout) = {0};
+        OutSumSq(1:nout) = {0};
+        
     end
     
     % Run the user function with current factor set
@@ -96,153 +129,234 @@ for i = 1:nCombinations
         error('Non-numeric output arguments by the input function are not accepted.');
     end
     
+    %Perform memory checks to estimate if there is enough memory
+    if i==1
+        isEnoughMemory = memorycheck(varargsout,nargout,nCombinations);
+    end
+    
+    %If not specified by the user, decide which statistics estimators to use
+    if isempty(dynamicStats) && isEnoughMemory
+        dynamicStats = false;
+    elseif isempty(dynamicStats) && ~isEnoughMemory
+        dynamicStats = true;
+    elseif dynamicStats && ~isEnoughMemory
+        error(['The current sensitivity analysis using order statistics ' ...
+               'requires more memory than available. Change the option ' ...
+               '''DynamicStats'' to true to proceed.'])
+    end
+    
     % Store outputs in an N-dimensional array
     for iOut = 1:nout
         out = varargsout{iOut};
+        
+        if isempty(sizeOut{iOut})
+            sizeOut{iOut} = size(out);
+        elseif any(sizeOut{iOut}~= size(out))
+            error(['Inconsistent output variable size. ',...
+                'One of the outputs of the analyzed function is changing its size in between runs. ',...
+                'To solve this, fix the axis of the output and interpolate the result. \n%s'],...
+                '  Ex/ outFix = interp1(varAxis,out,fixAxis,''pchip'')')
+        end
         % Convert vectors to rows
         if iscolumn(out)
             out = out.';
         end
-        try
+        
+
+        if isEnoughMemory && ~dynamicStats
+            %Store the outputs of the current parameter combination
             evals{iOut} = cat(1,evals{iOut},shiftdim(out,-1));
-        catch
-            error(['Inconsistent output variable size. ',...
-                  'One of the outputs of the analyzed function is changing its size in between runs. ',...
-                  'To solve this, fix the axis of the output and interpolate the result. \n%s'],...
-                  '  Ex/ outFix = interp1(varAxis,out,fixAxis,''pchip'')') 
         end
     end
     
     % Update statistics
-    for j = 1:nout
-        vareval = evals{j};
-        stats(j).median = squeeze(median(vareval,1,'omitnan'));
-        stats(j).mean = squeeze(mean(vareval,1,'omitnan'));
-        stats(j).std = squeeze(std(vareval,0,1,'omitnan'));
-        if i>1
-            stats(j).p25 = percentile(vareval,25,1).';
-            stats(j).p75 = percentile(vareval,75,1).';
-        end
-    end
-    
-    % If user passes optional plotting hook, then prepare the plot
-    if ~isempty(AxisHandle)
-        cla(AxisHandle)
-        Ax = 1:length(stats(1).median);
-        plot(AxisHandle,Ax,stats(1).median,'k','LineWidth',1)
-        hold(AxisHandle,'on')
-        f = fill(AxisHandle,[Ax fliplr(Ax)] ,[stats(1).p75 max(fliplr(stats(1).p25),0)],...
-          'b','LineStyle','none');
-        f.FaceAlpha = 0.5;
-        hold(AxisHandle,'off')
-        axis(AxisHandle,'tight')
-        grid(AxisHandle,'on')
-        box(AxisHandle,'on')
-        title(sprintf('Run %i/%i',i,length(ParamList)));
-        drawnow
-    end
-    
-end
-
-
-% Factors main effect analysis
-%-------------------------------------------------------------------------------
-% Loop over all function output variables
-for iOut = 1:nout
-    % Get all evaluations of that variable
-    data = evals{iOut};
-    % Loop over all factors
-    for iPar = 1:nParameters
-        clear evalmean set
-        subset = ParamList(1:size(data,1),iPar);
-        % Find unique factor levels
-        if isa(subset{1},'function_handle')
-            subset = cellfun(@func2str,subset,'UniformOutput',false);
-        elseif ~ischar(subset{1})
-            subset = cell2mat(subset);
-        end
-        uni = unique(subset);
-        % Loop throught the levels of the factor
-        for ii = 1:length(uni)
-            
-            % Identify the indices of the evaluations using that level
-            if iscell(subset)
-                idx =  find(contains(subset,uni{ii}));
-            else
-                idx = find(subset==uni(ii));
+    %---------------------------------------------------------------
+    counter = counter + 1;
+    % Evalutate the costly percentile function only every 5 combinations or
+    % after all combinations have been evaluated
+    if counter == 5 || i == nCombinations
+        
+        if dynamicStats
+            %Dynamically update the statistical estimators for all outputs
+            for j = 1:nout
+                %Get current sample/observation for output j
+                sample = varargsout{j};
+                
+                %Dynamic mean and standard deviation
+                OutSum{j} = OutSum{j} + sample;
+                OutSumSq{j} = OutSumSq{j} + sample.*sample;
+                stats(j).mean = OutSum{j}/i;
+                stats(j).std = OutSumSq{j} - (OutSum{j}.*OutSum{j}/i)/(i-1);
+                
+                %Dynamic percentiles/quantiles
+                [stats(j).median, markers50{j}] = dynprctile(0.50,sample,markers50{j});
+                [stats(j).p98, markers98{j}] = dynprctile(0.98,sample,markers98{j});
+                [stats(j).p75, markers75{j}] = dynprctile(0.75,sample,markers75{j});
+                [stats(j).p25, markers25{j}] = dynprctile(0.25,sample,markers25{j});
+                [stats(j).p2, markers2{j}] = dynprctile(0.02,sample,markers2{j});
             end
-            % Get the subset of data for that factor level
-            M = data(idx,:).';
-            % Construct a Euclidean distance map
-            map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
-            % Make it an upper triangle-matrix and get the mean Euclidean distance
-            map = triu(map,1);
-            evalmean(ii) = mean(map(map~=0));
-        end
-        % The main effect is given by the difference between mean Euclidean
-        % distances at different factor levels
-        main{iOut}{iPar} = abs(diff(evalmean));
-    end
-end
-
-% Convert cell array to strucure array with original parameter names
-for i = 1:length(main)
-    for p = 1:nParameters
-        mainEffect{i}.(ParNames{p}) =  main{i}{p};
-    end
-end
-factors.main = mainEffect;
-
-
-% Factors interaction analysis (beta)
-%-------------------------------------------------------------------------------
-for i = 1:nout
-    data = evals{i};
-    for j = 1:size(ParamList,2)
-        for k = 1:size(ParamList,2)
-            clear evalmean set subset uni main
-            % Get subsets of the two interacting factors
-            subset{1} = ParamList(1:size(data,1),j);
-            subset{2} = ParamList(1:size(data,1),k);
-            % Get the primary factor main effects for both levels of the
-            % secondary factor
-            for jj=1:length(subset)
-                tmp = subset{jj};
-                if isa(tmp{1},'function_handle')
-                    tmp = cellfun(@func2str,tmp,'UniformOutput',false);
+        else
+            %Update statistical estimators using order statistics
+            for j = 1:nout
+                vareval = evals{j};
+                stats(j).median = squeeze(median(vareval,1,'omitnan'));
+                stats(j).mean = squeeze(mean(vareval,1,'omitnan'));
+                stats(j).std = squeeze(std(vareval,0,1,'omitnan'));
+                if i>1
+                    stats(j).p2  = percentile(vareval,2,1).';
+                    stats(j).p25 = percentile(vareval,25,1).';
+                    stats(j).p75 = percentile(vareval,75,1).';
+                    stats(j).p98 = percentile(vareval,98,1).';
                 end
-                if ischar(tmp{1})
-                    uni{jj} = unique(tmp);
+            end
+        end
+
+    
+        % If user passes optional plotting hook, then prepare the plot
+        if ~isempty(AxisHandle)
+            cla(AxisHandle)
+            Ax = 1:length(stats(1).median);
+            plot(AxisHandle,Ax,stats(1).median,'k','LineWidth',1)
+            hold(AxisHandle,'on')
+            fill(AxisHandle,[Ax fliplr(Ax)] ,[stats(1).p75; max(flipud(stats(1).p25),0)],...
+                'b','LineStyle','none','FaceAlpha',0.4);
+            fill(AxisHandle,[Ax fliplr(Ax)] ,[stats(1).p98; max(flipud(stats(1).p2),0)],...
+                'b','LineStyle','none','FaceAlpha',0.3);
+            hold(AxisHandle,'off')
+            axis(AxisHandle,'tight')
+            grid(AxisHandle,'on')
+            box(AxisHandle,'on')
+            title(sprintf('Run %i/%i',i,length(ParamList)));
+            drawnow
+        end
+        %Reset counter
+        counter = 0;
+    end
+    
+    %If requested, show expected remaining time
+    if Verbose
+        if exist('S','var')
+            fprintf(repmat('\b',1,numel(S)));
+        end
+        remaining = fcntime/i*(nCombinations - i);
+        h = floor(remaining/3600);
+        min = floor(remaining/60-h*60);
+        s = floor(remaining - h*3600 - min*60);
+        perc = 1/nCombinations*100;
+        S = sprintf('Progress: %.2f percentage finished \nEstimated remaining time: %ih% imin %is \n',perc,h,min,s);
+        fprintf(S);
+    end
+end
+
+
+%If requested, proceed with factor analysis
+if nargout>1
+    % Factors main effect analysis
+    %-------------------------------------------------------------------------------
+    main(1:nout) = {cell(nParameters,1)};
+    mainEffect(1:nout) = {struct()};
+    % Loop over all function output variables
+    for iOut = 1:nout
+        % Get all evaluations of that variable
+        data = evals{iOut};
+        % Loop over all factors
+        for iPar = 1:nParameters
+            clear evalmean set
+            subset = ParamList(1:size(data,1),iPar);
+            % Find unique factor levels
+            if isa(subset{1},'function_handle')
+                subset = cellfun(@func2str,subset,'UniformOutput',false);
+            elseif ~ischar(subset{1})
+                subset = cell2mat(subset);
+            end
+            uni = unique(subset);
+            
+            % Loop throught the levels of the factor
+            evalmean = zeros(numel(uni),1);
+            for ii = 1:numel(uni)
+                
+                % Identify the indices of the evaluations using that level
+                if iscell(subset)
+                    idx =  find(contains(subset,uni{ii}));
                 else
-                    tmp = cell2mat(tmp);
-                    uni{jj} = unique(tmp);
+                    idx = find(subset==uni(ii));
                 end
-                subset{jj} = tmp;
-                
-                for ii=1:length(uni{jj})
-                    unitmp = uni{jj};
-                    if iscell(subset{jj})
-                        idx =  find(contains(subset{jj},unitmp{ii}));
-                    else
-                        idx = find(subset{jj}==unitmp(ii));
-                    end
-                    M = data(idx,:).';
-                    map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
-                    map = triu(map,1);
-                    evalmean(ii) = mean(map(map~=0));
-                end
-                % Get main effects for upper and lower levels
-                main(jj) = abs(evalmean(1) - evalmean(2));
-                
+                % Get the subset of data for that factor level
+                M = data(idx,:).';
+                % Construct a Euclidean distance map
+                map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
+                % Make it an upper triangle-matrix and get the mean Euclidean distance
+                map = triu(map,1);
+                evalmean(ii) = mean(map(map~=0));
             end
-            
-            % Compute the interaction between the factors
-            Interaction{i}(j,k) = abs(main(1) - main(2));
-            
+            % The main effect is given by the difference between mean Euclidean
+            % distances at different factor levels
+            main{iOut}{iPar} = abs(diff(evalmean));
         end
     end
+    
+    % Convert cell array to strucure array with original parameter names
+    for i = 1:nout
+        for p = 1:nParameters
+            mainEffect{i}.(ParNames{p}) =  main{i}{p};
+        end
+    end
+    factors.main = mainEffect;
+    
+    
+    % Factors interaction analysis
+    %-------------------------------------------------------------------------------
+    Interaction(1:nout) = {zeros(nParameters)};
+    for i = 1:nout
+        data = evals{i};
+        for j = 1:nParameters
+            for k = 1:nParameters
+                clear evalmean set subset uni main
+                % Get subsets of the two interacting factors
+                subset{1} = ParamList(1:size(data,1),j);
+                subset{2} = ParamList(1:size(data,1),k);
+                % Get the primary factor main effects for both levels of the
+                % secondary factor
+                for jj=1:length(subset)
+                    tmp = subset{jj};
+                    if isa(tmp{1},'function_handle')
+                        tmp = cellfun(@func2str,tmp,'UniformOutput',false);
+                    end
+                    if ischar(tmp{1})
+                        uni{jj} = unique(tmp);
+                    else
+                        tmp = cell2mat(tmp);
+                        uni{jj} = unique(tmp);
+                    end
+                    subset{jj} = tmp;
+                    
+                    for ii=1:length(uni{jj})
+                        unitmp = uni{jj};
+                        if iscell(subset{jj})
+                            idx =  find(contains(subset{jj},unitmp{ii}));
+                        else
+                            idx = find(subset{jj}==unitmp(ii));
+                        end
+                        M = data(idx,:).';
+                        map = bsxfun(@plus,dot(M,M,1),dot(M,M,1)')-2*(M'*M);
+                        map = triu(map,1);
+                        evalmean(ii) = mean(map(map~=0));
+                    end
+                    % Get main effects for upper and lower levels
+                    main{jj} = abs(diff(evalmean));
+                end
+                
+                % Compute the interaction between the factors
+                Interaction{i}(j,k) = abs(mean(main{1}) - mean(main{2}));
+                
+            end
+        end
+    end
+    factors.inter = Interaction;
+else
+    factors.inter = cell(1,1);
+    factors.main = cell(1,1);
 end
-factors.inter = Interaction;
 
 % If only one output variable has been evaluated, then don't return cell array
 if nout==1
@@ -253,62 +367,34 @@ end
 
 end
 
-% Calculate percentile (similar to prctile function in Statistics Toolbox)
-function pct = percentile(M,p,dim)
+function isEnoughMemory = memorycheck(sample,nargout,nCombinations)
 
-% Set requested dimension as the first dimension
-dimIdx = 1:ndims(M);
-dimIdx = dimIdx(dimIdx~=dim);
-M = permute(M,[dim dimIdx]);
+%Estimate the memory costs of the current sensitivity analysis
+info = whos('sample');
+memoryusage = nCombinations*info.bytes/1e9; %GB
+[memoryfree,~] = memorystatus(); %GB
 
-sizeM = size(M);
-
-% Vectorize all other dimensions
-if numel(sizeM)>2
-    V = reshape(M,[sizeM(1),prod(sizeM(2:end))]);
+%Stop now if the estimate would exceed virtual memory available
+%to MATLAB. Ootherwise it will crash mid-execution.
+if memoryusage > memoryfree && nargout>1
+    error(['The current sensitivity analysis is requesting a factor '...
+        'analysis and/or the evaluated outputs at all combinations.'...
+        ' According to the input this will require %.2f GB of memory, '...
+        'which exceed the amoun available to MATLAB (%.2f GB).'],round(memoryusage/1e9,2),round(memoryfree/1e9,2))
+elseif  memoryusage > memoryfree && nargout==1
+    isEnoughMemory = false;
 else
-    V = M;
+    isEnoughMemory = true;
 end
 
-% Prepare function to compute throughout first dimension
-percentile_ = @(v,p) interp1(linspace(0.5/length(v), 1-0.5/length(v), length(v))', sort(v), p*0.01, 'pchip');
-colfcn = @(func, matrix) @(col) func(matrix(:,col));
-colfcn = @(func, matrix) arrayfun(colfcn(func, matrix), 1:size(matrix,2), 'UniformOutput', false)';
-takeall = @(x) reshape([x{:}], size(x{1},2), size(x,1))';
-applyrowfcn = @(func, matrix) takeall(colfcn(func, matrix));
-
-% Apply function nest to vectorized matrix
-pct = applyrowfcn(@(M)percentile_(M,p),V);
-
-if numel(sizeM)>2
-    %Reshape results back to original size
-    pct = reshape(pct,sizeM(2:end));
-end
-
-end
-
-
-function nout = getmaxnargout(fcnHandle,argin)
-nout = nargout(fcnHandle);
-variableOutputs = nout<0;
-
-if ~variableOutputs
-  return;
-end
-
-% If the functions defines a variable number of outputs, iteratively increase
-% number of requested outputs until the function crashes, to determine maximum
-% number of outputs.
-nout = abs(nout)-1;
-done = false;
-while ~done
-  try
-    nout = nout+1;
-    varargout = cell(1,nout);
-    [varargout{:}] = fcnHandle(argin);
-  catch
-    nout = nout-1;
-    done = true;
-  end
+%If the estimate exceeds 3GB, use dynamic
+if memoryusage/1e9 > 3 && nargout>1
+    warning('on','all')
+    warning(['sensitivan will require %.2f GB of memory. This may slow down '...
+        'your analysis or MATLAB instance. Consider reducing the amount '...
+        'of factors/levels or requesting only the ''stats'' output.'],memoryusage/1e9)
+    warning('off','all')
+elseif memoryusage/1e9 > 3 && nargout==1
+    isEnoughMemory = false;
 end
 end

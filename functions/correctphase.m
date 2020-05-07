@@ -22,7 +22,7 @@
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
 function [Vreal,Vimag,Phase,ImagOffset] = correctphase(V,Phase,fitImagOffset)
@@ -47,9 +47,8 @@ if ~isempty(Phase)
 end
 validateattributes(fitImagOffset,{'logical'},{'nonempty'},mfilename,'FittedImaginaryOffset')
 
-if iscolumn(V)
-    V = V.';
-end
+%Ensure column vector
+V = V(:);
 
 ImagOffset = 0;
 
@@ -82,10 +81,10 @@ Vc = (V - 1i*ImagOffset)*exp(1i*Phase);
 Vreal = real(Vc);
 Vimag = imag(Vc);
 
-if iscolumn(V) && ~iscolumn(Vreal)
-    Vreal = Vreal.';
-    Vimag = Vimag.';
-end
+%Return column vectors
+Vreal = Vreal(:);
+Vimag = Vimag(:);
+
 
 end
 

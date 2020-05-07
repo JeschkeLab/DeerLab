@@ -1,46 +1,42 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-Ntime1 = 100;
-Ndist = 200;
 
-dt = 0.008;
-t1 = linspace(0,dt*Ntime1,Ntime1);
-[~,rmin,rmax] = time2dist(t1);
-r = linspace(rmin,rmax,Ndist);
+% Test global fit using Tikhonov regularization and user-given global weigths
 
-P = rd_twogaussian(r,[2,0.3,4,0.3,0.5]);
+rng(2)
+r = linspace(1,6,300);
+P = dd_gauss2(r,[2,0.3,0.5,4,0.3]);
 
+t1 = linspace(0,0.8,100);
 K1 = dipolarkernel(t1,r);
-S1 = K1*P;
-noise = whitegaussnoise(length(S1),0.03);
-S1 = S1 + noise;
+S1 = K1*P + whitegaussnoise(t1,0.03);
 
-Ntime2 = 200;
-t2 = linspace(0,dt*Ntime2,Ntime2);
+t2 = linspace(0,1.6,200);
 K2 = dipolarkernel(t2,r);
-S2 = K2*P;
-noise = whitegaussnoise(length(S2),0.05);
-S2 = S2 + noise;
+S2 = K2*P + whitegaussnoise(t2,0.05);
 
-Ntime3 = 300;
-t3 = linspace(0,dt*Ntime3,Ntime3);
+t3 = linspace(0,2.4,300);
 K3 = dipolarkernel(t3,r);
-S3 = K3*P;
-noise = whitegaussnoise(length(S3),0.1);
-S3 = S3 + noise;
+S3 = K3*P + whitegaussnoise(t3,0.1);
 
-
-%Set optimal regularization parameter (found numerically lambda=0.13)
-regparam = 2;
-
+regparam = 1;
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 
-Result = fitregmodel(Ss,Ks,r,'tikhonov',regparam,'Solver','fnnls','GlobalWeights',[0.4 0.5 0.1]);
 
-err = any(isnan(Result));
-err = any(err);
-data = [];
-maxerr = 0;
+Pglobal = fitregmodel(Ss,Ks,r,'tikh',regparam,'Solver','fnnls','GlobalWeights',[1 2 1]);
+
+% Pass: the distribution is somewhat fitted, but it runs
+pass = all(abs(P - Pglobal) < 5.5e-1);
+
+maxerr = max(abs(P - Pglobal));
+
+if opt.Display
+    plot(r,P,'k', r,Pglobal,'r')
+    xlabel('r [nm]')
+    ylabel('P(r) [nm^{-1}]')
+    legend('truth','global','local 1','local 2','local 3')
+    grid on, axis tight, box on
+end
 
 end

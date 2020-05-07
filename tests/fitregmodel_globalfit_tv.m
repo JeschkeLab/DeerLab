@@ -1,75 +1,58 @@
-function [err,data,maxerr] = test(opt,olddata)
+function [pass,maxerr] = test(opt)
 
-warning('off','all')
 
-Ntime1 = 100;
-Ndist = 200;
+% Test global fit using TV regularization
 
-dt = 0.008;
-t1 = linspace(0,dt*Ntime1,Ntime1);
-[~,rmin,rmax] = time2dist(t1);
-r = linspace(rmin,rmax,Ndist);
+rng(2)
+r = linspace(1,6,300);
+P = dd_gauss2(r,[2,0.3,0.5,4,0.3]);
 
-P = rd_onegaussian(r,[2,0.3]) + rd_onegaussian(r,[4,0.3]);
-P = P/sum(P)/mean(diff(r));
+t1 = linspace(0,0.8,100);
 K1 = dipolarkernel(t1,r);
-S1 = K1*P;
-noise = whitegaussnoise(length(S1),0.03);
-S1 = S1 + noise;
+S1 = K1*P + whitegaussnoise(t1,0.03);
 
-Ntime2 = 200;
-t2 = linspace(0,dt*Ntime2,Ntime2);
+t2 = linspace(0,1.6,200);
 K2 = dipolarkernel(t2,r);
-S2 = K2*P;
-noise = whitegaussnoise(length(S2),0.05);
-S2 = S2 + noise;
+S2 = K2*P + whitegaussnoise(t2,0.05);
 
-Ntime3 = 300;
-t3 = linspace(0,dt*Ntime3,Ntime3);
+t3 = linspace(0,2.4,300);
 K3 = dipolarkernel(t3,r);
-S3 = K3*P;
-noise = whitegaussnoise(length(S3),0.1);
-S3 = S3 + noise;
-
-
-%Set optimal regularization parameter (found numerically lambda=0.13)
-regparam = 1;
+S3 = K3*P + whitegaussnoise(t3,0.1);
 
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
+regparam = 0.001;
 
-Result = fitregmodel(Ss,Ks,r,'tv',regparam,'Solver','fnnls');
-Dist1 = fitregmodel(S1,K1,r,'tv',regparam,'Solver','fnnls');
-Dist2 = fitregmodel(S2,K2,r,'tv',regparam,'Solver','fnnls');
-Dist3 = fitregmodel(S3,K3,r,'tv',regparam,'Solver','fnnls');
+Pglobal = fitregmodel(Ss,Ks,r,'tv',regparam);
+Plocal1 = fitregmodel(S1,K1,r,'tv',regparam);
+Plocal2 = fitregmodel(S2,K2,r,'tv',regparam);
+Plocal3 = fitregmodel(S3,K3,r,'tv',regparam);
 
-normResult = norm(P - Result);
-norm1 = norm(P - Dist1);
-norm2 = norm(P - Dist2);
-norm3 = norm(P - Dist3);
+error_global = norm(P - Pglobal);
+error_local1 = norm(P - Plocal1);
+error_local2 = norm(P - Plocal2);
+error_local3 = norm(P - Plocal3);
 
-err(1) = any(normResult > [norm2 norm3]);
-err = any(err);
-data = [];
-maxerr = normResult;
+% Pass: the global fit is better than the local fits
+pass = all(error_global < [error_local2 error_local3]);
+
+maxerr = max(abs(Pglobal - P));
 
 if opt.Display
-figure(8),clf
-subplot(121)
-hold on
-plot(t1,S1,'k')
-plot(t2,S2+1,'k')
-plot(t3,S3+2,'k')
-plot(t1,K1*Result,'r')
-plot(t2,K2*Result + 1,'r')
-plot(t3,K3*Result + 2,'r')
-subplot(122)
-hold on
-plot(r,P,'k')
-plot(r,Result,'r')
-plot(r,Dist1,'g--')
-plot(r,Dist2,'b--')
-plot(r,Dist3,'r--')
+    subplot(121)
+    hold on
+    plot(t1,S1,'k', t2,S2+1,'k', t3,S3+2,'k')
+    plot(t1,K1*Pglobal,'r' ,t2,K2*Pglobal + 1,'r' ,t3,K3*Pglobal + 2,'r')
+    xlabel('t [\mus]')
+    ylabel('V(t)')
+    legend('data','fit')
+    grid on, axis tight, box on
+    subplot(122)
+    plot(r,P,'k', r,Pglobal,'c', r,Plocal1,'g--', r,Plocal2,'b--', r,Plocal3,'r--')
+    xlabel('r [nm]')
+    ylabel('P(r) [nm^{-1}]')
+    legend('truth','global','local 1','local 2','local 3')
+    grid on, axis tight, box on
 end
 
 end

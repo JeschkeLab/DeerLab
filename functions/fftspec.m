@@ -23,7 +23,7 @@
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
 function varargout = fftspec(t,S,varargin)
@@ -51,15 +51,12 @@ if isempty(ZeroFilling)
 else
     validateattributes(ZeroFilling,{'numeric'},{'scalar','nonnegative'},mfilename,'ZeroFilling')
 end
-if ~iscolumn(t)
-   t = t.'; 
-end
-if ~iscolumn(S)
-   S = S.'; 
-end
 validateattributes(useApodization,{'logical'},{'nonempty'},mfilename,'useApodization')
 validateattributes(S,{'numeric'},{'2d','nonempty'},mfilename,'FitData')
 validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
+%Use column vectors
+t = t(:);
+S = S(:);
 
 %If requested apply Hamming apodization window
 if useApodization

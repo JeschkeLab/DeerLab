@@ -1,0 +1,77 @@
+name: Scheduled Continuous Integration
+
+on:
+  schedule:
+    # Run  every day at 6:30 AM
+    - cron:  '30 6 * * *'
+
+jobs:
+  build:
+    name: Scheduled CI (dev)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout trigger commit
+      uses: actions/checkout@v2
+      with:
+        ref: develop
+    - name: Install dependencies
+      run: |
+           sudo apt-get install -y openvpn openconnect
+    - name: Prepare VM
+      if: success()
+      run: |
+           rm -f -r ./.git
+           echo "${{ secrets.GATEWAY_KEY }}" > ~/sshkey
+           sudo chmod 600 ~/sshkey
+    - name: Establish VPN connection
+      if: success()
+      run: |
+           # Force returning packets to be routed over public interface and not over the VPN
+           sudo ip rule add from $(ip route get 1 | grep -Po '(?<=src )(\S+)') table 128
+           sudo ip route add table 128 to $(ip route get 1 | grep -Po '(?<=src )(\S+)')/32 dev $(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)')
+           sudo ip route add table 128 default via $(ip -4 route ls | grep default | grep -Po '(?<=via )(\S+)')
+           # Start network tunnel (TUN) device
+           sudo openvpn --mktun --dev tun1
+           sudo ifconfig tun1 up
+           # Launch VPN connection
+           echo "${{ secrets.VPN_PASSWD }}" | sudo openconnect ${{ secrets.VPN_SERVER }} --user=${{ secrets.VPN_USER }} --background --passwd-on-stdin
+    - name: Transfer source files to CI-server
+      if: success()
+      run: |
+           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} -r ../DeerLab ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/
+           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} scp -r /home/lufa/scp_traffic/DeerLab ${{ secrets.CISERVER_HOST }}:~
+           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f -r /home/lufa/scp_traffic/DeerLab"
+    - name: Run test suite connected to CI-Server
+      if: success()
+      run: |
+           ssh -tt -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} -t ${{ secrets.GATEWAY_HOST }} ssh ${{ secrets.CISERVER_HOST }} << EOF
+               #Run test suite
+               cd DeerLab/build
+               matlab -nodesktop -r "dltestsuite;exit"
+               python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "coverage_badge.json" --bucket deershields
+               python3 uploadS3.py --keyfile ~/.ssh/aws_access_keys.txt --file "testsuite_badge.json" --bucket deershields
+               #Transfer log file to the gateway
+               scp -o StrictHostKeyChecking=no -i ~/.ssh/gateway_key -P ${{ secrets.GATEWAY_PORT }} ./dltestsuite.error ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/ || true
+               #Delete the source files
+               cd ~
+               rm -f -r DeerLab
+           EOF
+    - name: Disconnect CI-server
+      if: success()
+      run: |
+           #Transfer log file to GitHub VM
+           scp -o StrictHostKeyChecking=no -i ~/sshkey -P ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }}:/home/lufa/scp_traffic/dltestsuite.error ~/ || true
+           ssh -o StrictHostKeyChecking=no -i ~/sshkey -p ${{ secrets.GATEWAY_PORT }} ${{ secrets.GATEWAY_HOST }} "rm -f /home/lufa/scp_traffic/dltestsuite.error" || true
+           rm -f ~/sshkey
+    - name: All tests passed successfully
+      if: success()
+      run: |
+           ! [ -f ~/dltestsuite.error ] && echo "Test suite passed" || (echo "Test suite failed" && deerfailed)
+    - name: Disconnect VPN connection
+      if: always()
+      run: |
+           #Ensure the VPN is disconnected by killing openconnect
+           sudo pkill openconnect
+           #Remove TUN device
+           sudo ifconfig tun1 down
+           sudo openvpn --rmtun --dev tun1
