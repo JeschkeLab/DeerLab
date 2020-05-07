@@ -5,23 +5,4 @@
 Fitting a custom time-domain model of a 4-pulse DEER signal
 **********************************************************************************
 
-.. raw:: html
-
-	<br>
-	<p align="center">
-		<a href="https://deertutorials.s3.eu-central-1.amazonaws.com/parametric_timedomain/parametric_timedomain.pdf" title="Download PDF file" target="_blank" download> 
-			<img src="../_static/img/download_pdf_button.png" class="tutorial_buttons";" alt="pdf">
-		</a>
-		&nbsp;&nbsp;&nbsp;
-		<a href="https://deertutorials.s3.eu-central-1.amazonaws.com/parametric_timedomain/parametric_timedomain.mlx" title="Download Live Script" target="_blank"> 
-			<img src="../_static/img/download_live_button.png" class="tutorial_buttons";" alt="live">
-		</a>
-		&nbsp;&nbsp;&nbsp;
-		<a href="https://deertutorials.s3.eu-central-1.amazonaws.com/parametric_timedomain/parametric_timedomain.m" title="Download Source File" target="_blank">
-			<img src="../_static/img/download_source_button.png" class="tutorial_buttons";" alt="pdf">
-		</a>
-		&nbsp;&nbsp;&nbsp;
-	</p>
-
-.. raw:: html
-	:file: ../../../tutorials/parametric_timedomain/parametric_timedomain.html
+.. literalinclude:: ../../../examples/DL_custom_timedomain_model.m

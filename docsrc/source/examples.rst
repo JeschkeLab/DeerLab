@@ -3,9 +3,10 @@ Example scripts
 
 Here is a collection of example scripts for the use of DeerLab. You can also find them in the ``examples`` subfolder in the DeerLab folder.
 
-.. toctree:
+.. toctree::
     :maxdepth: 0
     :hidden:
+    :glob:
     :caption: Examples - Basics
 
     ./examples/example_tikhonovbasic
@@ -16,7 +17,10 @@ Here is a collection of example scripts for the use of DeerLab. You can also fin
     ./examples/example_aptsimple
     ./examples/example_visualization_lcurve
     ./examples/example_backgroundtreatment
-
+    ./examples/example_basicprocessing
+    ./examples/example_timedomainfitting
+    ./examples/example_selectmodel
+    ./examples/example_globalfit_regularization
 
 .. raw:: html
 
@@ -25,6 +29,11 @@ Here is a collection of example scripts for the use of DeerLab. You can also fin
 	<div class="wrap-table100">
 	<div class="table">
 
+		<div class="row" onclick="window.location='examples/example_basicprocessing.html#example_basicprocessing'">
+			<div class="cell">
+				 Basic fitting of a 4-pulse DEER signal, parameter-free distribution
+			</div>
+		</div>
 
 
 		<div class="row" onclick="window.location='examples/example_multigauss_4pdeer.html#example_multigauss_4pdeer'">
@@ -83,18 +92,6 @@ Here is a collection of example scripts for the use of DeerLab. You can also fin
 
 The following scripts are more advanced.
 
-.. toctree:
-    :maxdepth: 0
-    :hidden:
-    :caption: Examples - Advanced
-
-    ./examples/example_timedomainfitting
-    ./examples/example_selectmodel
-    ./examples/example_timedomainfitting
-    ./examples/example_multigauss_4pdeer
-    ./examples/example_globalfit_timedomain
-    ./examples/example_bilevelopt_background
-
 .. raw:: html
 
 	<div class="limiter">
@@ -112,30 +109,16 @@ The following scripts are more advanced.
 
 		<div class="row" onclick="window.location='examples/example_selectmodel.html#example_selectmodel'">
 			<div class="cell">
-				Selecting an optimal parametric model for fitting a dipolar signal
-			</div>
+				Selecting an optimal parametric model for fitting a dipolar signal			</div>
 		</div>
 
 
 		<div class="row" onclick="window.location='examples/example_globalfit_regularization.html#example_globalfit_regularization'">
 			<div class="cell">
-				Global fit of a dipolar evolution function using regularization
+				Global fit of dipolar evolution functions using fitregmodel
 			</div>
 		</div>
 
-
-		<div class="row" onclick="window.location='examples/example_globalfit_timedomain.html#example_globalfit_timedomain'">
-			<div class="cell">
-				Global fit of a time-domain parameteric 4-pulse DEER dipolar signal
-			</div>
-		</div>
-
-
-		<div class="row" onclick="window.location='examples/example_bilevelopt_background.html#example_bilevelopt_background'">
-			<div class="cell">
-				Bilevel optimization - Fitting background with a model-free distance distribution
-			</div>
-		</div>
 
 	</div>
 	</div>
