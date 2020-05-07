@@ -6,7 +6,7 @@
 % This short example will cover some basic manipulation of parametric models 
 % for fitting distance distributions.
 
-clear,clc,clf
+clear, clc, clf
 
 %====================
 % Simulate the data
@@ -19,19 +19,19 @@ clear,clc,clf
 t = linspace(-0.5,4,350);
 r = linspace(2,6,200);
 
-%Distribution parameters
+% Distribution parameters
 rmean = 4.5;
 width = 0.3;
 chain = 4.3;
 pers = 10;
 amp = 0.35;
 
-%Generate distribution
+% Generate distribution
 P = dd_gauss(r,[rmean width]);
 P = amp*P + (1 - amp)*dd_wormchain(r,[chain pers]);
-%Normalize distribution
+% Normalize distribution
 P = P/sum(P)/mean(diff(r));
-%Generate dipolar evolution function
+% Generate dipolar evolution function
 D = dipolarsignal(t,r,P,'noiselevel',0.02);
 
 %=======================================

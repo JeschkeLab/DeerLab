@@ -12,12 +12,15 @@
 %   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r)
 %   __ = FITSIGNAL(___,'Property',Values,___)
 %
-%   Fits a dipolar model to the experimental signal in V, using distance axis r.
-%   The model is specified by the distance distribution (dd), the background
-%   (bg), and the experiment (ex). If multiple signals (V1,V2,...) and their
-%   corresponding time axes (t1,t2,...) are given, they will be fitted globally
-%   to the specified distance distribution (dd). For each signal a specific
-%   background (bg1,bg2,...) and experiment (ex1,ex2) models can be assigned.
+%   Fits a dipolar model to the experimental signal V with time axis t, using
+%   distance axis r. The model is specified by the distance distribution (dd),
+%   the background (bg), and the experiment (ex).
+%
+%   If multiple signals (V1,V2,...) and their corresponding time axes (t1,t2,...)
+%   are given, they will be fitted globally with a single distance distribution (dd).
+%   For each signal, a specific background (bg1,bg2,...) and experiment (ex1,ex2)
+%   models can be assigned.
+%
 %   If the inputs signal(s) is not pre-processed, it will automatically
 %   undergo phase-correction, zero-time and scale adjustment.
 %
@@ -29,14 +32,14 @@
 %    t      time axis, in microseconds (N-element vector)
 %    r      distance axis, in nanometers (M-element vector)
 %    dd     distance distribution model (default 'P')
-%           - function handle to parametric distribution model
-%           - 'P' to indicate parameter-free distribution (default)
+%           - 'P' to indicate parameter-free distribution
+%           - function handle to parametric distribution model (e.g. @dd_gauss)
 %           - 'none' to indicate no distribution, i.e. only background
-%    bg     background model (default @bg_exp)
-%           - function handle to parametric background model
+%    bg     background model (default @bg_hom3d)
+%           - function handle to parametric background model (e.g. @bg_hom3d)
 %           - 'none' to indicate no background decay
 %    ex     experiment model (default @ex_4pdeer)
-%           - function handle to experiment model
+%           - function handle to experiment model (e.g. @ex_4pdeer)
 %           - 'none' to indicate simple dipolar oscillation (mod.depth = 1)
 %    par0   starting parameters, 3-element cell array {par0_dd,par0_bd,par0_ex}
 %           default: {[],[],[]} (automatic choice)
@@ -62,7 +65,7 @@
 %                         the regularization parameter
 
 % Example:
-%    Vfit = fitsignal(Vexp,t,r,@dd_gauss,@bg_exp,@ex_4pdeer)
+%    Vfit = fitsignal(Vexp,t,r,@dd_gauss,@bg_hom3d,@ex_4pdeer)
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
@@ -83,18 +86,18 @@ nSignals = numel(Vexp);
 if ~iscell(t)
     t = {t};
 end
-if numel(t) ~= nSignals
-    error('The same number of signals V and time axes must be provided.')
+if numel(t)~=nSignals
+    error('The same number of signals V and time axes t must be provided.')
 end
 for i = 1:nSignals
     Vexp{i} = Vexp{i}(:);
     t{i} = t{i}(:);
-    if length(Vexp{i})~=length(t{i})
+    if numel(Vexp{i})~=numel(t{i})
         error('V{%i} and t{%i} must have the same number of elements.',i,i)
     end
     validateattributes(Vexp{i},{'numeric'},{'vector'},mfilename,'V (1st input)');
     validateattributes(t{i},{'numeric'},{'vector'},mfilename,'t (2nd input)');
-    %If not pre-processed, do standard preprocessing steps
+    % If not pre-processed, do standard preprocessing steps
     if ~isreal(Vexp{i})
         Vexp{i} = correctphase(Vexp{i});
         t{i} = correctzerotime(Vexp{i},t{i});
@@ -117,26 +120,25 @@ end
 % Regularization settings
 if isempty(regtype)
     regtype = 'tikh';
-else
-    validateattributes(regtype,{'char'},{'nonempty'},mfilename,'RegType option');
-    regtype = validatestring(regtype,{'tikh','tv','huber'});
 end
+validateattributes(regtype,{'char'},{'nonempty'},mfilename,'RegType option');
+regtype = validatestring(regtype,{'tikh','tv','huber'});
+
 if isempty(regparam)
     regparam = 'aic';
-else
-    if ischar(regparam)
-        allowedMethodInputs = {'lr','lc','cv','gcv','rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl'};
-        validateattributes(regparam,{'char'},{'nonempty'},mfilename,'RegParam option');
-        regparam = validatestring(regparam,allowedMethodInputs);
-    else
-        validateattributes(regparam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
-    end
 end
+if ischar(regparam)
+    allowedMethodInputs = {'lr','lc','cv','gcv','rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl'};
+    validateattributes(regparam,{'char'},{'nonempty'},mfilename,'RegParam option');
+    regparam = validatestring(regparam,allowedMethodInputs);
+else
+    validateattributes(regparam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
+end
+
 if isempty(alphaOptThreshold)
     alphaOptThreshold = 1e-3;
-else
-    validateattributes(alphaOptThreshold,{'numeric'},{'scalar','nonnegative'},mfilename,'alphaOptThreshold option');
 end
+validateattributes(alphaOptThreshold,{'numeric'},{'scalar','nonnegative'},mfilename,'alphaOptThreshold option');
 
 % Set defaults
 if nargin<4, dd_model = 'P'; end
@@ -146,6 +148,7 @@ if nargin<7, par0 = {[],[],[]}; end
 
 calculateCI = nargout>=5 || nargout==0;
 computeStats = nargout>4 || nargout==0;
+verbose = 'off';
 
 if ~isempty(par0)
     if ~iscell(par0) || numel(par0)~=3
@@ -276,7 +279,7 @@ if RegularizationOnly
     for i = 1:nSignals
         Ks{i} = Kmodels{i}([]);
     end
-    Pfit = fitregmodel(Vexp,Ks,r,regtype,regparam);
+    Pfit = fitregmodel(Vexp,Ks,r,regtype,regparam,'Verbose',verbose);
     for i = 1:nSignals
         Vfit{i} = Ks{i}*Pfit;
         Bfit{i} = ones(size(Vexp{i}));
@@ -298,7 +301,7 @@ else
     B_cached = [];
     
     % Fit the parameters
-    args = {Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',TolFun};
+    args = {Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',TolFun,'Verbose',verbose};
     [parfit_] = fitparamodel(args{:});
     
     
@@ -549,7 +552,7 @@ end
                 par_prev = par;
                 
                 if parfreeDistribution
-                    [P,~,regparam_prev] = fitregmodel(Vexp,K,r,regtype,alpha);
+                    [P,~,regparam_prev] = fitregmodel(Vexp,K,r,regtype,alpha,'Verbose',verbose);
                 else
                     P = dd_model(r,par(ddidx));
                 end

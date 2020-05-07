@@ -13,7 +13,7 @@
 
 clear,clc,clf
 
-%Prepare components
+% Prepare components
 t = linspace(0,5,400);
 r = linspace(0,9,500);
 P = dd_gauss2(r,[3.5 0.3 4 0.2 0.2]);
@@ -21,10 +21,9 @@ B = bg_exp(t,0.2);
 lam = 0.3;
 V = dipolarsignal(t,r,P,lam,B,'noiselevel',0.01);
 
-%Plot
+% Plot
 subplot(221)
-plot(t,V,'Linewidth',1.5)
-set(gca,'fontsize',14)
+plot(t,V)
 axis tight, grid on
 xlabel('Time [\mus]'),ylabel('V(t)')
 
@@ -39,7 +38,7 @@ xlabel('Time [\mus]'),ylabel('V(t)')
 % Using the |fitbackground| function we obtain the fitted background as well as 
 % the fitted modulation depth.
 
-%Fit the background function
+% Fit the background function
 [B,lambda] = fitbackground(V,t,@bg_exp); 
 
 
@@ -48,12 +47,11 @@ xlabel('Time [\mus]'),ylabel('V(t)')
 % increase at later times and thus to an approximation |Dcorr| of the real dipolar 
 % evolution function.
 
-%"Correct" for the background and modulation depth
+% "Correct" for the background and modulation depth
 Dcorr = (V./B - (1 - lambda))/lambda;
 
 subplot(222)
-plot(t,Dcorr,'Linewidth',1.5)
-set(gca,'fontsize',14)
+plot(t,Dcorr)
 axis tight, grid on
 xlabel('Time [\mus]'),ylabel('D_{corr}(t)')
 
@@ -64,21 +62,21 @@ xlabel('Time [\mus]'),ylabel('D_{corr}(t)')
 % Now that the signal has the appropiate structure for Fourier transform it, 
 % we can call the |fftspec| function to obtained the Pake pattern.
 
-%Compute spectrum
+% Compute spectrum
 [nu,pake] = fftspec(t,Dcorr,'Apodization',false);
  
 % In order to avoid truncation ripples in the Fourier spectrum and at the same 
 % time to compensate for the increase of noise, we recommend the use of apodization 
 % using the appropiate option in |fftspec|.
 
-%Compute spectrum with apodization
+% Compute spectrum with apodization
 [nuapo,pakeapo] = fftspec(t,Dcorr,'Apodization',true);
 
-%Plot results
+% Plot results
 subplot(2,2,[3 4])
-plot(nu,pake,nuapo,pakeapo,'Linewidth',1.5)
+plot(nu,pake,nuapo,pakeapo)
 axis tight, grid on
-set(gca,'xlim',[-10 10],'fontsize',14)
+xlim([-10 10])
 xlabel('Frequency [MHz]'),ylabel('Intensity [a.u.]')
 legend('Raw','Apodized')
 

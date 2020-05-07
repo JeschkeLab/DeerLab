@@ -24,4 +24,4 @@ Global fit of a dipolar evolution function using regularization
 	</p>
 
 .. raw:: html
-	:file: ../../../tutorials/globalfit_regularization/globalfit_regularization.html
+	:file: ../../../examples/globalfit_regularization/globalfit_regularization.html

@@ -1,7 +1,7 @@
 A first script
 ============================================================
 
-This section walks through a basic example DeerLab script that simulates a noisy DEER data trace and then fits it.
+Here is a first script that shows how DeerLab works. It simulates a noisy DEER data trace and then fits it.
 
 We start by generating a distance distribution consisting of a single Gaussian:
 
@@ -35,7 +35,7 @@ We can look at the result:
 
    plot(t,V,t,Vexp,t,(1-lambda)*B)     % plotting
 
-Now that we have a noise DEER trace, we fit it (in a single step) with a parameter-free distance distribution and a homogeneous 3D background.
+Now that we have a noisy DEER trace, we fit it (in a single step) with a parameter-free distance distribution and a homogeneous 3D background.
 
 .. code-block:: matlab
 

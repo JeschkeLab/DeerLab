@@ -7,7 +7,7 @@
 % background using a multi-Gauss model, i.e automatically optimizing the
 % number of Gaussians in the model.
 
-clear,clc,clf
+clear, clc, clf
 
 %==================
 % Generate data
@@ -29,8 +29,9 @@ V = dipolarsignal(t,r,P,lam,B,'NoiseLevel',0.01);
 %=========================
 NGauss = 5; % maximum number of Gaussians
 
-%Launch a multi-Gauss fit, including the fitting of an exponential background 
-[Pfit,param,Pci,paramci,Nopt,metrics,Peval] = fitmultimodel(V,t,r,@dd_gauss,NGauss,'aic','background',@bg_exp,'confidencelevel',0.95,'multistart',1);
+% Launch a multi-Gauss fit, including the fitting of an exponential background 
+[Pfit,param,Pci,paramci,Nopt,metrics,Peval] = fitmultimodel(V,t,r,@dd_gauss,NGauss,...
+    'aic','background',@bg_exp,'confidencelevel',0.95,'multistart',1);
 
 % Construct the fitted dipolar kernel
 K = dipolarkernel(t,r,param(end-1),bg_exp(t,param(end)));
@@ -40,11 +41,12 @@ Vfit = K*Pfit;
 % at the Akaike weights for each model. They basically tell you the
 % probability of a model being the most optimal choice.
 
-%Compute the Akaike weights
-w = 100*exp(-(metrics - min(metrics))/2)/sum(exp(-(metrics - min(metrics))/2));
+% Compute the Akaike weights
+d = metrics - min(metrics);
+w = 100*exp(-d/2)/sum(exp(-d/2));
 
 % Plot results
-subplot(321),cla
+subplot(321), cla
 hold on
 plot(t,V,'k.','LineWidth',1)
 plot(t,Vfit,'b','LineWidth',1.5)
@@ -53,7 +55,7 @@ box on,legend('model','fit')
 xlabel('time (\mus)'),ylabel('S(t)')
 axis tight
 
-subplot(322),cla
+subplot(322), cla
 hold on
 plot(r,P,'k','LineWidth',1.5)
 plot(r,Pfit,'b','LineWidth',1.5)
@@ -62,7 +64,7 @@ box on, axis tight
 legend('model','optimal fit','95%-CI')
 xlabel('distance (nm)'), ylabel('P(r)')
 
-subplot(323),cla
+subplot(323), cla
 hold on
 ax = 1:length(metrics);
 plot(ax,w,'-o','LineWidth',1.5)
@@ -70,11 +72,10 @@ box on,axis tight
 ylabel('Akaike Weight [%]')
 xlabel('Number of Gaussians in model')
 
-subplot(3,2,[4 6]),cla
+subplot(3,2,[4 6]), cla
 hold on
 plot(r,Peval + 2*(1:NGauss).','b-','LineWidth',1.5)
 box on,axis tight
 set(gca,'ytick',2:2:2*NGauss,'yticklabel',1:NGauss)
 xlabel('distance (nm)')
 ylabel('Number of Gaussians in model')
-

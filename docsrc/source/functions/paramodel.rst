@@ -54,11 +54,11 @@ Example
 .. code-block:: matlab
 
         K = dipolarkernel(r,t)
-        %Define a time-domain model, signal+background
-        fcn = @(t,p) bg_exp(t,p(1)).*(K*dd_gauss(r,p(2:3)))
-        %Set initial guess values
+        % Define a time-domain model, signal+background
+        fcn = @(t,p) (K*dd_gauss(r,p(2:3))).*bg_hom3d(t,p(1))
+        % Set initial guess values
         param0 = [0.25,0.5,0.1];
         mod = paramodel(fcn,param0);
-        %Fit model
+        % Fit model
         I = eye(size(K));
         Vfit = fitparamodel(Vexp,I,t,mod);

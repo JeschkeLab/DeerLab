@@ -76,22 +76,22 @@ Description
     __ = fitsignal(V,t,r,dd)
     __ = fitsignal(V,t,r)
 
-Fits a full time-domain model of the dipolar signal constructed from the distance distribution model ``dd``, background model ``bg`` and experiment model ``ex`` to the experimental data ``V``, defined on a time-axis ``t``. The distance distribution is fitted on the specified distance-axis ``r``. If some models are not specified, the defaults are used: ``'P'`` for the ``dd`` model, ``@bg_exp`` for the ``bg`` model, and ``@ex_4pdeer`` for the experiment model.
+Fits a full time-domain model of the dipolar signal constructed from the distance distribution model ``dd``, background model ``bg`` and experiment model ``ex`` to the experimental data ``V``, defined on a time-axis ``t``. The distance distribution is fitted on the specified distance axis ``r``. If some models are not specified, the defaults are used: ``'P'`` for the ``dd`` model, ``@bg_hom3d`` for the ``bg`` model, and ``@ex_4pdeer`` for the experiment model.
 
-The fitted dipolar signal ``Vfit``, fitted distribution ``Pfit`` and fitted background ``Bfit`` are returned as the first outputs. The corresponding model parameters are returned in the ``parfit`` structure and their corresponding confidence intervals in the ``parci`` structure.
+The fitted dipolar signal ``Vfit``, fitted distribution ``Pfit`` and fitted background ``Bfit`` are returned as the first outputs. The corresponding model parameters are returned in the ``parfit`` structure and their corresponding confidence intervals in the ``parci`` structure. ``stats`` contains information on the quality of the fit.
 
 .. code-block:: matlab
 
     fitsignal(V,t,r,dd,bg,ex)
 
-If the function is called without outputs, the function will automatically plot the fit results and print a summary of the fit results and list all parameters and their confidence intervals on the command window. 
+If the function is called without outputs, the function plots the fit results, prints a summary of the fit results, and lists all parameters and their confidence intervals. 
 
 Examples:
 
 .. code-block:: matlab
 
     fitsignal(V,t,r,@dd_gauss,@bg_hom3d,@ex_4pdeer)  % Fit a 4pDEER signal with homogenous 3D background with Gaussian distribution
-    fitsignal(V,t,r,'P',@bg_exp,@ex_5pdeer)          % Fit a 5pDEER signal with exponential background and Tikhonov regularization
+    fitsignal(V,t,r,'P',@bg_hom3d,@ex_5pdeer)          % Fit a 5pDEER signal with exponential background and Tikhonov regularization
     fitsignal(V,t,r,'none',@bg_strexp,@ex_4pdeer)    % Fit a 4pDEER stretched exponential background (no foreground)
     fitsignal(V,t,r,@dd_rice,'none','none')          % Fit a dipolar evolution function with Rician distribution
     fitsignal(V,t,r,@dd_gauss2,'none',@ex_4pdeer)    % Fit a 4pDEER form factor (no background) with bimodal Gaussian distribution
@@ -107,6 +107,7 @@ Examples:
 Multiple dipolar signals ``{V1,V2,__}`` can be globally fitted to a global distance distribution specified by the model ``dd``. For each signal passed, an experiment and background model can be specified for each signal. The corresponding time-axes ``{t1,t2,__}`` must be provided for all signals respectively.
 
 .. code-block:: matlab
+
     __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},ex)
     __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd,bg,{ex1,ex2,__})
     __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd,bg,ex)
@@ -119,8 +120,8 @@ Examples:
 
 .. code-block:: matlab
 
-    fitsignal({V1,V2},{t1,t2},r,@dd_gauss,@bg_exp,{@ex_4pdeer,@ex_4pdeer})  % Fit a Gaussian distribution to a 4pDEER and a 5pDEER signal globally
-    fitsignal({V1,V2},{t1,t2},r,'P',@bg_exp,@ex_5pdeer)          % Fit a Tikhonov regularized distribution to two different 4pDEER signals
+    fitsignal({V1,V2},{t1,t2},r,@dd_gauss,@bg_hom3d,{@ex_4pdeer,@ex_4pdeer})  % Fit a Gaussian distribution to a 4pDEER and a 5pDEER signal globally
+    fitsignal({V1,V2},{t1,t2},r,'P',@bg_hom3d,@ex_5pdeer)          % Fit a Tikhonov regularized distribution to two different 4pDEER signals
 
 ------------------------
 
@@ -128,7 +129,7 @@ Examples:
 Additional Settings
 =========================================
 
-Additional settings can be specified via name-value pairs. All property names are case insensitive and the property-value pairs can be passed in any order after the required input arguments have been passed.
+Additional settings can be specified via name-value pairs. All property names are case insensitive and the name-value pairs can be passed in any order after the required input arguments have been passed.
 
 
 
@@ -174,10 +175,11 @@ Additional settings can be specified via name-value pairs. All property names ar
 		.. code-block:: matlab
 
 			fitsignal(___,'RegParam','bic')
+			fitsignal(___,'RegParam',0.2)
 
 
 - ``'alphaOptThreshold'`` - Relative parameter change threshold 
-    Specifies the relative parameter change threshold for reoptimizing the regularization parameter
+    Specifies the relative parameter change threshold for reoptimizing the regularization parameter during the fitting
 
     *Default:* ``1e-3``
 

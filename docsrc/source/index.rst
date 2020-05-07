@@ -1,15 +1,13 @@
 ﻿DeerLab-development Documentation
 =====================================================
-       
-Welcome to the documentation for DeerLab.
 
-.. warning:: DeerLab is currently in the pre-release stage and under active development. Major changes are likely before the first stable version is released.
+.. warning:: DeerLab is currently in the pre-release stage (version numbers 0.x) and under active development. Major changes are likely before the first stable version (1.0) is released.
 
 DeerLab is a MATLAB toolbox for the analysis of data from dipolar EPR (electron paramagnetic resonance) spectroscopy. Dipolar EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others.
 
-DeerLab consists of a collection of functions that perform single processing or data fitting tasks. They can be combined in scripts to generate custom analysis workflows.
+DeerLab consists of a collection of functions that perform individual tasks. There are functions for generating synthetic signals as well as for processing and fitting experimental data.
 
-DeerLab provides two types of distance distribution models: parameter-free models (as used in Tikhonov regularization) as well as a series of parametrized distance distribution models (multi-Gaussians, worm-like chain, etc.). It also provides a selection of background models . There are functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
+DeerLab provides two types of distance distribution models: parameter-free models (as used in Tikhonov regularization) as well as a series of parametrized distance distribution models (multi-Gaussians, multi-Rice, worm-like chain, etc.). It also provides a selection of background models (homogeneous spin distribution in 3 or fractal dimensions, excluded-volume effects). 
 
 .. toctree::
     :hidden:
@@ -26,19 +24,10 @@ DeerLab provides two types of distance distribution models: parameter-free model
 
     ./firstscript
     ./basics
-    ./models
     ./preprocess
     ./fitting
     ./uncertainty
-
-.. toctree::
-    :hidden:
-    :caption: Examples
-    :maxdepth: 1
-
-    ./examples1
-    ./examples2
-
+    ./examples
 
 .. toctree::
     :hidden:

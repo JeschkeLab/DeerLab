@@ -7,7 +7,7 @@
 % Tikhonov regularization results. The example will cover the use of confidence intervals
 % obtained from curvature matrices and boostrap analysis.
 
-clear,clc,clf 
+clear, clc, clf
 
 %===================
 % Simulate the data
@@ -15,24 +15,24 @@ clear,clc,clf
 
 % Let's start by generating some data.
 
-%Prepare signal components
+% Prepare signal components
 t = linspace(-0.4,3.5,200);
 
-%Use a distance-axis with less points to make analysis faster
+% Use a distance-axis with less points to make analysis faster
 r = linspace(2,5,200);
 
 P = dd_gauss2(r,[3 0.3 3.5 0.4 0.6]);
 B = bg_strexp(t,[0.04,1]);
 lam = 0.32;
 
-%Simulate signal
+% Simulate signal
 V = dipolarsignal(t,r,P,lam,B,'noiselevel',0.01);
 
 % For the sake of simplicity, in this examples we will assume that we know the 
 % background exactly. Our first step is to generate the proper dipolar kernel.
 
-%Generate dipolar kernel with background
-KB = dipolarkernel(t,r,lam,B);
+% Generate dipolar kernel
+K = dipolarkernel(t,r,lam,B);
 
 %=========================================
 % Curvature matrix confidence intervals
@@ -45,12 +45,12 @@ KB = dipolarkernel(t,r,lam,B);
 % By default, fitregmodel returns confidence intervals for the fitted
 % distribution. (see |help fitregmodel|).
 
-%Fit data via regularization
-[Pfit,Pci] = fitregmodel(V,KB,r,'tikh','aic');
-%Obtain time-domain fit
-Vfit = KB*Pfit;
+% Fit data via regularization
+[Pfit,Pci] = fitregmodel(V,K,r,'tikh','aic');
+% Obtain time-domain fit
+Vfit = K*Pfit;
 
-%Plot the fit results
+% Plot the fit results
 subplot(311)
 plot(t,V,'k.',t,Vfit,'r','LineWidth',1)
 grid on, axis tight,box on
@@ -79,7 +79,7 @@ legend('Truth','Fit','95%-CI')
 
 % Launch bootstrapping
 Nsamples = 100;
-booci = bootan(@(V)mybootfcn(V,KB,r),V,Vfit,Nsamples);
+booci = bootan(@(V)mybootfcn(V,K,r),V,Vfit,Nsamples);
 Pci = booci{1}.ci95;
 
 % By plotting the results, one can see that the bootstrapped confidence intervals 
@@ -96,6 +96,6 @@ ylabel('P(r) [nm^{-1}]')
 title('Bootstrapped CI')
 legend('Truth','Fit','95%-CI')
 
-function Pfit = mybootfcn(V,KB,r)
- Pfit = fitregmodel(V,KB,r,'tikh','aic');
+function Pfit = mybootfcn(V,K,r)
+ Pfit = fitregmodel(V,K,r,'tikh','aic');
 end

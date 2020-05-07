@@ -24,4 +24,4 @@ Basic signal processing of experimental 4-pulse DEER data (Regularization)
 	</p>
 
 .. raw:: html
-	:file: ../../../tutorials/basicprocessing_regularization/basicprocessing_regularization.html
+	:file: ../../../examples/basicprocessing_regularization/basicprocessing_regularization.html

@@ -166,20 +166,20 @@ Function                                         Description
 
 ---------------------------
 
-Obsolescent Functions
-""""""""""""""""""""""
+Legacy Functions
+=========================================
 
 
-This class of functions provides tools for reproducing obsolete analysis methods or workflows encountered in older software (e.g. DeerAnalysis). These functions have become obsolete and are not recommended for routine data analysis.
+This group of functions provides tools for reproducing analysis methods or workflows encountered in older software, particularly DeerAnalysis. These functions are not recommended for routine data analysis.
 
 .. rst-class:: func-list
 
 =============================================  ============================================================
 Function                                         Description
 =============================================  ============================================================
-:ref:`time2dist`                                 Time to distance axis converter
+:ref:`time2dist`                                 Heuristic time-to-distance axis converter
 :ref:`backgroundstart`                           Background fit start point optimizer
 :ref:`fitbackground`                             Background fitting engine
+:ref:`apt`                                       Approximate Pake transformation (APT)
 :ref:`aptkernel`                                 APT kernel constructor
-:ref:`apt`                                       Approximate Pake transformation
 =============================================  ============================================================

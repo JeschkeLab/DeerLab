@@ -3,9 +3,9 @@ Uncertainty
 
 After fitting experimental data with a distance distribution, a background, and a modulation depth, it is important to assess the uncertainty (i.e. the error) in the fitted parameters.
 
-DeerLab provides uncertainty estimates for all parameters in the form of confidence intervals (CIs). They can be calculated in two ways: either using the curvature matrix, or using bootstrap. The first method is fast, but is not entirely accurate, whereas bootstrap is much slower, but more robust.
+DeerLab provides uncertainty estimates for all parameters in the form of confidence intervals (CIs). They can be calculated in two ways: either using the covariance matrix, or using bootstrap. The first method is fast, but is not entirely accurate, whereas bootstrap is much slower, but more robust.
 
-Curvature matrix CIs
+Covariance CIs
 ------------------------------------------
 
 Along with every fit, functions like ``fitsignal`` return confidence intervals for the fitted parameters and the fitted distributions. For example,
@@ -14,7 +14,7 @@ Along with every fit, functions like ``fitsignal`` return confidence intervals f
 
    [Vfit,Pfit,Bfit,parfit,parCI] = fitsignal(Vexp,t,r);
 
-The output ``parCI`` contains the 95% confidence interval for all fitted parameters, calculated using the curvature matrix.
+The output ``parCI`` contains the 95% confidence interval for all fitted parameters, calculated using the standard method based on the variance-covariance matrix.
 
 Bootstrap CIs
 ------------------------------------------

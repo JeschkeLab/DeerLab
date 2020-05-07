@@ -88,7 +88,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@bg_exp,tstart,'ModDepth',0.45)
+			B = fitbackground(V,t,@bg_hom3d,tstart,'ModDepth',0.45)
 
 
 - ``'InitialGuess`` - Initial parameter values
@@ -100,7 +100,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@bg_exp,tstart,'InitialGuess',[0.75 3])
+			B = fitbackground(V,t,@bg_hom3d,tstart,'InitialGuess',[0.75 3])
 
 
 - ``'LogFit`` - Fit in log-scale
@@ -112,7 +112,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@bg_exp,tstart,'LogFit',true)
+			B = fitbackground(V,t,@bg_hom3d,tstart,'LogFit',true)
 
 - ``'Solver'`` - Optimization solver
     Specifies the solver used for fitting the background model (``lsqnonlin``, ``fminsearchcon``, ``nlsqbnd``).
@@ -123,4 +123,4 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@bg_exp,tstart,'Solver','nlsqbnd')
+			B = fitbackground(V,t,@bg_hom3d,tstart,'Solver','nlsqbnd')

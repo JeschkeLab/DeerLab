@@ -24,4 +24,4 @@ Bilevel optimization - Fitting background with a model-free distance distributio
 	</p>
 
 .. raw:: html
-	:file: ../../../tutorials/bilevelopt_background/bilevelopt_background.html
+	:file: ../../../examples/bilevelopt_background/bilevelopt_background.html

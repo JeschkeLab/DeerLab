@@ -8,7 +8,7 @@
 % fast, its results can be very rough approximations of the underlying truth and 
 % hence its use its not recomended for routine analysis of experimental data.
 
-clear,clc,clf
+clear, clc, clf
 
 %==============================
 % Simulating a dipolar signal
@@ -20,15 +20,13 @@ clear,clc,clf
 t = linspace(-0.2,4,300);
 r = linspace(2,5,250);
 
-%Generate the distance distribution
+% Generate the distance distribution and signal
 P = dd_gauss(r,[3.5 0.3]);
-%Generate the signal
 D = dipolarsignal(t,r,P,'noiselevel',0.05);
 
-%Plot
+% Plot
 subplot(311)
-plot(t,D,'k','Linewidth',1.5)
-set(gca,'fontsize',12)
+plot(t,D,'k')
 axis tight, grid on
 xlabel('Time [\mus]'),ylabel('V(t)')
 
@@ -52,11 +50,11 @@ Kapt = aptkernel(t);
 
 % Since in this examples we know the ground truth we can compare the results
 
-%Plot results
+% Plot results
 subplot(312)
-plot(r,P,'k',rapt,Papt,'r','Linewidth',1.5)
+plot(r,P,'k',rapt,Papt,'r')
 axis tight, grid on, legend('Truth','APT Fit','Location','eastoutside')
-set(gca,'fontsize',12,'xlim',[2 5])
+xlim([2 5])
 xlabel('Distance [nm]'),ylabel('P(r) [nm^{-1}]')
 
 %================================
@@ -71,14 +69,14 @@ xlabel('Distance [nm]'),ylabel('P(r) [nm^{-1}]')
 % lead to. We can see that increasing the DDS parameter helps supressing the oscillations 
 % at shorter distances at the cost of a considerable broadening of the distribution.
 
-%Compute the APT
+% Compute the APT
 Papt1 = apt(D,Kapt,0.005);
 Papt2 = apt(D,Kapt,0.1);
 Papt3 = apt(D,Kapt,0.5);
 
-%Plot results
+% Plot results
 subplot(313)
-plot(rapt,Papt,'k',rapt,Papt2,'b',rapt,Papt3,'r','Linewidth',1.5)
+plot(rapt,Papt,'k',rapt,Papt2,'b',rapt,Papt3,'r')
 axis tight, grid on, legend('DDS = 0.05','DDS = 0.1','DDS = 0.5','Location','eastoutside')
-set(gca,'fontsize',12,'xlim',[2 5])
+xlim([2 5])
 xlabel('Distance [nm]'),ylabel('P(r) [nm^{-1}]')

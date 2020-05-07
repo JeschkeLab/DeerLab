@@ -142,7 +142,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			P = fitmultimodel(___,'Background',@bg_exp)
+			P = fitmultimodel(___,'Background',@bg_hom3d)
 
 - ``'Upper'`` - Parameters upper bound constraints
     An array of *W*-elements containing the upper bounds for the *W* parameters accepted by the model function ``@dd_model``.

@@ -13,8 +13,8 @@ The theory underlying DeerLab is not fully general and makes a series of assumpt
 1. All spin labels are spin-1/2 or can be treated as such. High-spin systems are not handled by DeerLab.
 2. All spins have essentially isotropic g values very close to 2.00232. Spins with large g shifts and anisotropic g tensors are not handled by DeerLab.
 3. There are no more than two spin labels on a protein (or other cluster). Multi-spin effects are not handled by DeerLab.
-4. There is no exchange coupling between any spins. The only interaction is through-space dipolar coupling.
-5. The unpaired electron spin density on the spin labels is treated as localized in a single point. Delocalized spin systems are not handled by DeerLab.
+4. There is no exchange coupling between any spins. The only interaction is through-space dipolar coupling. DeerLab does not handle exchange coupling.
+5. The unpaired electron spin density on the spin labels can be treated as localized in a single point. Delocalized spin systems are not handled by DeerLab.
 6. There is no orientation selection in the experiment. Orientation-selective DEER is not handled by DeerLab.
 7. All spins relax with the same phase memory time. Systems with rotamer-specific relaxation rates are not handled correctly by DeerLab.
 
@@ -46,18 +46,16 @@ Here, :math:`K(t,r)` is the experiment-specific kernel representing how the sign
 
    K_0(t,r) =
    \int_0^1
-   \cos\left((1-3\cos^2\theta)\omega_\perp t\right)
+   \cos\left((1-3\cos^2\theta) D r^{-3} t\right)
    \mathrm{d}\cos\theta
 
-with the dipolar frequency
+with the dipolar constant
 
 .. math::
 
-   \omega_\perp =
+   D =
    \frac{\mu_0}{4\pi}
-   \frac{\mu_\mathrm{B}^2}{\hbar}
-   g_\mathrm{e}^2
-   \frac{1}{r^3}
+   \frac{(\mu_\mathrm{B}g_\mathrm{e})^2}{\hbar}
    \approx
    2\pi\cdot 52.04\,\mathrm{MHz\,nm^3}
 
@@ -67,7 +65,7 @@ The closed-form expression for :math:`K_0` is
 
    K_0(t,r) = \frac{C(\xi)}{\xi}\cos(\omega_\perp t) + \frac{S(\xi)}{\xi} \sin(\omega_\perp t)
 
-with :math:`\xi = \sqrt{6\omega_\perp t/\pi}` and the Fresnel cosine and sine integrals
+with :math:`\xi = \sqrt{6\omega_\perp t/\pi}` and the Fresnel cosine and sine integral functions
 
 .. math::
 
@@ -84,12 +82,12 @@ Dipolar EPR experiments differ in the number and type of pulses, resulting in di
 with the general kernel
 
 .. math::
-  K(t,r) = \left[\varLambda_0 + \sum_{k=1}^N \lambda_k K_0(t-T_k,r)\right]\cdot\prod_{k=1}^N B(t-T_k,\lambda_k)
+  K(t,r) = \left[\varLambda_0 + \sum_{p=1}^N \lambda_p K_0(n_p(t-T_p),r)\right]\cdot\prod_{p=1}^N B(n_p(t-T_p),\lambda_p)
 
-Here, :math:`\varLambda_0` is the total amplitude of all unmodulated pathways, :math:`N` is the number of modulated pathways, :math:`\lambda_k` is the amplitude of the :math:`k`\ th modulated pathway, and :math:`T_k` is the refocusing time of the :math:`k`\ th modulated pathway. `B` is the background decay function.
+Here, :math:`\varLambda_0` is the total amplitude of all unmodulated pathways, :math:`N` is the number of modulated pathways, :math:`\lambda_p` is the amplitude of the :math:`p`\ th modulated pathway, :math:`T_p` is the refocusing time of the :math:`p`\ th modulated pathway, and :math:`n_p` is the harmonic of the :math:`p`\ th pathway (most often, :math:`n=1`). `B` is the background decay function.
 
 
-The most common model used to analyze 4-pulse DEER data is a special case, with :math:`\varLambda_0 = 1-\lambda`, `N=1`, `\lambda_1=\lambda`, and `T_1 = 0`.
+The most common model used to analyze 4-pulse DEER data is a special case, with :math:`\varLambda_0 = 1-\lambda`, `N=1`, `\lambda_1=\lambda`, `T_1 = 0`, and `n_1=1`.
 
 .. math::
   K(t,r) = \left[(1-\lambda) + \lambda K_0(t,r)\right]\cdot B(t,\lambda)
@@ -105,7 +103,7 @@ In DeerLab, all signals :math:`V` and distributions :math:`P` are represented as
    \qquad
    P_j = P(r_j)
 
-where :math:`\vc{V}_\mr{exp}` indicates the experimental data. Distance distribution vectors must have non-negative elements and are assumed to be normalized such that
+Distance distribution vectors must have non-negative elements and are assumed to be normalized such that
 
 .. math::
    \sum_j P_j \Delta r  = 1 
@@ -128,7 +126,7 @@ A signal is obtained from a distance distribution via
 Least-squares fitting
 -----------------------------
 
-To fit a model with a parameterized distance distribution to an experimental signal, DeerLab solves
+To fit a model with a parametric distance distribution to an experimental signal, DeerLab solves
 
 .. math::
 
@@ -136,7 +134,7 @@ To fit a model with a parameterized distance distribution to an experimental sig
    \argmin_{\vc{\theta}}
    \|\vc{V}_\mr{exp}-\mx{K}[\vc{\theta}]\vc{P}[\vc{\theta}]\|^2
 
-Various constrainable least-squares solvers are available.
+where :math:`\vc{V}_\mr{exp}` indicates the experimental data. Various constrainable least-squares solvers are available.
 
 To fit a model with a parameter-free distribution and no additional fitting parameters to an experimental signal, DeerLab implements several regularization approaches. The most common one is Tikhonov regularization. For this, the minimization problem is
 

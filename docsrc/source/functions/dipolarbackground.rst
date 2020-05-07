@@ -44,12 +44,13 @@ Each row of ``pathinfo`` contains two values: one modulation depth and one refoc
 Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals. If not given, the harmonic is 1 for all pathways.
 
 Example:
-	To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use
+	To calculate the background for the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use
 
 .. code-block:: matlab
 
+    t = linspace(-5,20,501);
     lambda = 0.4; % modulation depth main signal
-    kappa = 0.3;
+    conc = 200;   % spin concentration (uM)
     
     pathinfo = [1-lambda NaN; lambda 0];
     
@@ -57,9 +58,10 @@ Example:
     pathinfo(1,:) = [1-lambda NaN];    % unmodulated part, gives offset
     pathinfo(2,:) = [lambda 0];        % main modulation, refocusing at time zero
     
-    Bmodel = @(t,lambda) bg_exp(t,kappa,lambda)
+    Bmodel = @(t,lambda) bg_hom3d(t,conc,lambda)
     
-    B = dipolarbackground(t,pathinfo,Bmodel)
+    B = dipolarbackground(t,pathinfo,Bmodel);
+    plot(t,B);
 
 
 

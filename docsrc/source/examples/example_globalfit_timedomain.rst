@@ -24,4 +24,4 @@ Global fit of a time-domain parameteric 4-pulse DEER dipolar signal
 	</p>
 
 .. raw:: html
-	:file: ../../../tutorials/globalfit_timedomain/globalfit_timedomain.html
+	:file: ../../../examples/globalfit_timedomain/globalfit_timedomain.html

@@ -13,24 +13,25 @@
 % Let's start by simulating a simple dipolar signal with some background and 
 % noise arising from a Gaussian distance distribution.
 
-clear,clc,clf
+clear, clc, clf
 
-%Prepare the signal components
+% Prepare the signal components
 t = linspace(-0.1,6,200);
 r = linspace(2,8,200);
 B = bg_strexp(t,[0.05 1]);
 P = dd_gauss(r,[4 0.2]);
 lam = 0.3;
 
-%Simulate the signal
+% Simulate the signal
 V = dipolarsignal(t,r,P,lam,B,'noiselevel',0.02);
 
-%Plot
+% Plot
 subplot(211)
 plot(t,V,'k','Linewidth',1.5)
 set(gca,'fontsize',14)
 axis tight, grid on
 xlabel('Time [\mus]'),ylabel('V(t)')
+
 %=========================================
 % Optimizing the regularization parameter
 %=========================================
@@ -50,11 +51,11 @@ xlabel('Time [\mus]'),ylabel('V(t)')
 % to scan the whole L-curve, the grid-search method has to be specified as
 % an option.
 
-%Generate the appropiate dipolar kernel
-KB = dipolarkernel(t,r,lam,B);
+% Generate the appropiate dipolar kernel
+K = dipolarkernel(t,r,lam,B);
 
-%Get the optimal regularization parameters for Tikhonov regularization
-[alpha,~,alphas,Res,Pen] = selregparam(V,KB,'tikh',{'aic','gml','lr'},'Search','Grid');
+% Get the optimal regularization parameters for Tikhonov regularization
+[alpha,~,alphas,Res,Pen] = selregparam(V,K,'tikh',{'aic','gml','lr'},'Search','Grid');
 
 %=============================
 % Constructing the L-curve
@@ -64,17 +65,17 @@ KB = dipolarkernel(t,r,lam,B);
 % is obtained from a log-log plot of the residual vs penalty terms we can easily 
 % construct them from the outputs of |selregparam.|
 
-%Construct the vector of the L-curve
-logRes = log(Res{3}.^2);
-logPen = log(Pen{3}.^2);
+% Construct the vector of the L-curve
+lgRes = log10(Res{3}.^2);
+lgPen = log10(Pen{3}.^2);
 
-%Plot the L-curve
+% Plot the L-curve
 subplot(212)
 cla,hold on
-plot(logRes,logPen,'k.','MarkerSize',15)
+plot(lgRes,lgPen,'k.','MarkerSize',15)
 grid on,axis tight, box on
-xlabel('log(||KP - V||^2)')
-ylabel('log(||LP||^2)')
+xlabel('lg(||KP - V||^2)')
+ylabel('lg(||LP||^2)')
 set(gca,'FontSize',14)
 
 %============================================
@@ -88,14 +89,14 @@ set(gca,'FontSize',14)
 % them on the L-curve.
 
 
-%Find the positions of the different optimal regularizfation parameters 
-%on the L-curve
+% Find the positions of the different optimal regularizfation parameters 
+% on the L-curve
 AICidx = alphas{1}==alpha(1);
 GMLidx = alphas{2}==alpha(2);
 LRidx  = alphas{3}==alpha(3);
 
-%Plot the L-cruve and the optimal parameters
-plot(logRes(AICidx),logPen(AICidx),'.','MarkerSize',25)
-plot(logRes(GMLidx),logPen(GMLidx),'.','MarkerSize',25)
-plot(logRes(LRidx),logPen(LRidx),'.','MarkerSize',25)
+% Plot the L-cruve and the optimal parameters
+plot(lgRes(AICidx),lgPen(AICidx),'.','MarkerSize',25)
+plot(lgRes(GMLidx),lgPen(GMLidx),'.','MarkerSize',25)
+plot(lgRes(LRidx),lgPen(LRidx),'.','MarkerSize',25)
 legend('L-curve','AIC','GML','LR')

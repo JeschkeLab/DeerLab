@@ -15,13 +15,13 @@ Syntax
 
 .. code-block:: matlab
 
-    [t0,pos] = backgroundstart(V,t,model)
+    [t0,pos] = backgroundstart(V,t,bgmodel)
     [t0,pos] = backgroundstart(___,'Property',Value)
 
 Parameters
     *   ``V`` - Signal (*N*-element array)
     *   ``t`` - Time axis (*N*-element array)
-    *   ``model`` - Background model (function handle)
+    *   ``bgmodel`` - Background model (function handle)
 Returns
     *   ``t0`` - Optimal fitting start time (scalar)
     *   ``pos`` - Optimal fitting start index (scalar)
@@ -34,19 +34,9 @@ Description
 
 .. code-block:: matlab
 
-    [t0,pos] = backgroundstart(V,t,model)
+    [t0,pos] = backgroundstart(V,t,bgmodel)
 
-Returns the optimal start time ``t0`` and corresponding array index ``pos`` at which to start fitting the background function corresponding to the model given by ``model``. The pre-defined background models defined by the ``model`` argument are the following:
-
-* ``@bg_exp`` - See :ref:`bg_exp` for details.
-
-* ``@bg_strexp`` -  See :ref:`bg_strexp` for details.
-
-* ``@bg_prodstrexp`` -  See :ref:`bg_prodstrexp` for details.
-
-* ``@bg_sumstrexp`` -  See :ref:`bg_sumstrexp` for details.
-
-*  ``@bg_poly1``, ``@bg_poly2``, ``@bg_poly3`` - See :ref:`bg_poly1`, :ref:`bg_poly2` and :ref:`bg_poly3`  for details.
+Returns the optimal start time ``t0`` and corresponding array index ``pos`` at which to start fitting the background function corresponding to the background model given by ``model`` (such as @bg_hom3d etc - see full list of :ref:`background models<modelsref_bg>`). 
 
 -----------------------------
 
@@ -94,5 +84,5 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 			[t0,pos] = backgroundstart(___,'EndCutOff',6.5)
 
-- For further property-value pair options see :ref:`fitbackground`.
+- For further name-value pair options see :ref:`fitbackground`.
 

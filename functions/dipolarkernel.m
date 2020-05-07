@@ -18,7 +18,7 @@
 %  Inputs:
 %     t         N-element time axis, in microseconds
 %     r         M-element distance axis, in nanometers
-%     lambda    modulation depth (between 0 and 1)
+%     lambda    modulation depth (between 0 and 1) (default 1)
 %               this is equivalent to pathinfo = [1-lambda NaN 0; lambda 0 1]
 %     pathinfo  px2 or px3 array of modulation depths lambda, refocusing points
 %               T0, and harmonics n for multiple pathways, each row contains
@@ -26,10 +26,11 @@
 %               it is assumed to be 1.
 %     B         N-element array with background decay, or a function handle
 %               for a background model: @(t,lambda)bg_model(t,par,lambda)
+%               by default, no background decay is included
 %
 %  Outputs:
 %     K         NxM kernel matrix, such that the time-domain signal for a
-%               Mx1 distance distribution vector P is K*P
+%               Mx1 distance distribution vector P is V = K*P
 %
 %  Name-value pairs:
 %
@@ -195,7 +196,7 @@ end
 muB = 9.2740100783e-24; % Bohr magneton, J/T (CODATA 2018 value);
 mu0 = 1.25663706212e-6; % magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
 h = 6.62607015e-34; % Planck constant, J/Hz (CODATA 2018)
-nu0 = (mu0/4/pi)*muB^2*g(1)*g(2)/h*1e21; % MHz nm^3
+nu0 = (mu0/4/pi)*muB^2*g(1)*g(2)/h*1e21; % Hz m^3 -> MHz nm^3
 w0 = 2*pi*nu0; % Mrad s^-1 nm^3
 
 % Get vector of dipolar frequencies at all distances
@@ -211,23 +212,25 @@ kernelmatrix = @(t)kernelmatrix_(Method,t,wdd,ExcitationBandwidth,nKnots);
 
 % Build dipolar kernel matrix, summing over all pathways
 K = Lambda0;
-Knorm = Lambda0;
 for p = 1:nModPathways
     K = K + lambda(p)*kernelmatrix(n(p)*(t-T0(p)));
-    Knorm = Knorm + lambda(p)*kernelmatrix(-T0(p)*n(p));
 end
+
+% Renormalize if requested
 if Renormalize
+    Knorm = Lambda0;
+    for p = 1:nModPathways
+        Knorm = Knorm + lambda(p)*kernelmatrix(-T0(p)*n(p));
+    end
     K = K./Knorm;
 end
 
-% Multiply by background(s)
-if isa(B,'function_handle')
-    B_ = dipolarbackground(t,pathinfo,B,'OvertoneCoeffs',OvertoneCoeffs,'Renormalize',Renormalize);
-    K = K.*B_;
-else
-    if ~isempty(B)
-        K = K.*B;
+% Multiply by background
+if ~isempty(B)
+    if isa(B,'function_handle')
+        B = dipolarbackground(t,pathinfo,B,'OvertoneCoeffs',OvertoneCoeffs,'Renormalize',Renormalize);
     end
+    K = K.*B;
 end
 
 % Include dr into kernel
@@ -257,7 +260,7 @@ end
 end
 
 %===============================================================================
-% Calculate kernel using Fresnel integrals (fast)
+% Calculate kernel using Fresnel integrals (fast and accurate)
 function K = kernelmatrix_fresnel(t,wdd)
 
 ph = wdd.'.*abs(t);

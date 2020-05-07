@@ -40,8 +40,11 @@ The expression for this model is
 
 .. math::
    B(t) = \mathrm{exp}\left(-\frac{8\pi^2}{9\sqrt{3}}\lambda c D |t|\right)`
-   
-with :math:`D=\frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}`, with the concentration entered in spins/m\ :sup:`3`.
+
+where c is the spin concentration (entered in spins/m\ :sup:`3` into this expression) and D is the dipolar constant
+
+.. math::
+   D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
 
 ============= ============= ========= ============= ============= =============================================
  Variable       Symbol        Default   Lower bound   Upper bound      Description
