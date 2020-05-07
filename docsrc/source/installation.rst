@@ -4,14 +4,7 @@ Installation
 
 Requirements
 ---------------
-The application programming interface (API) of DeerLab requires the following products:
-
-    *  `MATLAB <https://ch.mathworks.com/products/matlab.html>`_
-
-
-To access additional optional functionality, the following products may be required:
-
-    *  `Optimization Toolbox <https://ch.mathworks.com/products/optimization.html>`_
+DeerLab requires `MATLAB <https://ch.mathworks.com/products/matlab.html>`_, version R2017a or later. No additional tooboxes are required, but if the `Optimization Toolbox <https://ch.mathworks.com/products/optimization.html>`_ is installed, DeerLab will make use of it.
 
 
 -----------------------
@@ -45,6 +38,5 @@ Method B) Add DeerLab path at startup
 	 .. code-block:: matlab
 
 		 addpath('mypath/DeerLab/functions')
-		 addpath('mypath/DeerLab/functions/models')
 		 
 	3) Save ``startup.m`` and restart MATLAB.

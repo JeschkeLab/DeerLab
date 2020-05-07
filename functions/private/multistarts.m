@@ -12,7 +12,7 @@
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 function x0 = multistarts(n,x0,lb,ub)
 
@@ -24,15 +24,12 @@ if numel(x0) ~= numel(lb) || numel(x0) ~= numel(ub)
    error('The lower/upper bound size(s) are not compatible with the initial guess vector x0.') 
 end
 
-%Ensure the use of row vectors
+% Ensure the use of row vectors
 x0 = x0(:).';
 lb = lb(:).';
 ub = ub(:).';
 
-%Fix the random number generator
-rng(0)
-
-%Generate n-1 new starting points within the bounds
+% Generate n-1 new starting points within the bounds
 x0 = [x0; (ub-lb).*rand(n-1,numel(x0)) + lb];
 
 end

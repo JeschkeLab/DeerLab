@@ -11,7 +11,7 @@ docsrc/aws_access_keys.txt
 docsrc/__pycache__/
 build/.ssh/
 tutorials/**/*.pdf
-tutorials/**/*.m
+tutorials/**/*.mlx
 tests/_tutorials
 tests/_tutorials/**
 build/__pycache__/multiversedocs.cpython-37.pyc

@@ -4,11 +4,11 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(-1,5,200);
 r = time2dist(t);
-P = dd_onegauss(r,[5,0.2]);
+P = dd_gauss(r,[5,0.2]);
 B = bg_exp(t,0.3);
 scale = 1e8;
 noiselevel = 0.05;
-V = dipolarsignal(t,r,P,'Moddepth',0.25,'Background',B,...
+V = dipolarsignal(t,r,P,0.25,B,...
     'Scale',scale,'noiselevel',noiselevel);
 
 [Vc,scalefit] = correctscale(V,t);

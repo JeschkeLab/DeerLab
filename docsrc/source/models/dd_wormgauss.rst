@@ -33,7 +33,7 @@ Returns
 Example using default parameters:
 
 .. image:: ../images/model_dd_wormgauss.png
-   :width: 40%
+   :width: 650px
 
 
 Description

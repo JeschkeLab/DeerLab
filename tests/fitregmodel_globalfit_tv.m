@@ -5,7 +5,7 @@ function [pass,maxerr] = test(opt)
 
 rng(2)
 r = linspace(1,6,300);
-P = dd_twogauss(r,[2,0.3,4,0.3,0.5]);
+P = dd_gauss2(r,[2,0.3,0.5,4,0.3]);
 
 t1 = linspace(0,0.8,100);
 K1 = dipolarkernel(t1,r);
@@ -19,15 +19,14 @@ t3 = linspace(0,2.4,300);
 K3 = dipolarkernel(t3,r);
 S3 = K3*P + whitegaussnoise(t3,0.1);
 
-regparam = 0.01;
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
+regparam = 0.001;
 
-
-Pglobal = fitregmodel(Ss,Ks,r,'tv',regparam,'Solver','fnnls');
-Plocal1 = fitregmodel(S1,K1,r,'tv',regparam,'Solver','fnnls');
-Plocal2 = fitregmodel(S2,K2,r,'tv',regparam,'Solver','fnnls');
-Plocal3 = fitregmodel(S3,K3,r,'tv',regparam,'Solver','fnnls');
+Pglobal = fitregmodel(Ss,Ks,r,'tv',regparam);
+Plocal1 = fitregmodel(S1,K1,r,'tv',regparam);
+Plocal2 = fitregmodel(S2,K2,r,'tv',regparam);
+Plocal3 = fitregmodel(S3,K3,r,'tv',regparam);
 
 error_global = norm(P - Pglobal);
 error_local1 = norm(P - Plocal1);

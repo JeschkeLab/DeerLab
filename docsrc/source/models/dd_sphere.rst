@@ -47,7 +47,7 @@ Model
 Example using default parameters:
 
 .. image:: ../images/model_dd_sphere.png
-   :width: 40%
+   :width: 650px
 
 
 -----------------------------

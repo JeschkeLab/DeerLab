@@ -4,13 +4,13 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,8,300);
 r = linspace(1,8,300);
 parIn  = [4.5,0.5];
-P = dd_onegauss(r,parIn);
+P = dd_gauss(r,parIn);
 
 K = dipolarkernel(t,r);
 S = K*P;
 
 par0 = [2 0.2];
-[parFit,Pfit,parCI] = fitparamodel(S,@dd_onegauss,r,K,par0,'solver','lsqnonlin');
+[parFit,Pfit,parCI] = fitparamodel(S,@dd_gauss,r,K,par0,'solver','lsqnonlin');
 
 % Pass 1: distance distribution is well fitted
 pass(1) = all(abs(Pfit - P) < 1e-5);

@@ -3,8 +3,8 @@ function [pass,maxerr] = test(opt)
 % Check that longpass() works with negative times
 t = linspace(-3,0,200);
 r = linspace(0,8,200);
-P = dd_twogauss(r,[1.5,0.3,4.5,0.3,0.5]);
-Ptrue = dd_onegauss(r,[4.5,0.3]);
+P = dd_gauss2(r,[1.5,0.3,0.5,4.5,0.3]);
+Ptrue = dd_gauss(r,[4.5,0.3]);
 K = dipolarkernel(t,r);
 S = K*P;
 Sfilt = longpass(t,S,2);

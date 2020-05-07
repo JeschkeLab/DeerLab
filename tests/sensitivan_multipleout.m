@@ -4,8 +4,8 @@ M = 200;
 t = linspace(0,4,M);
 r = time2dist(t);
 B = bg_exp(t,0.3);
-P = dd_onegauss(r,[4,0.3]);
-V = dipolarsignal(t,r,P,'noiselevel',0.05,'ModDepth',0.3,'Background',B);
+P = dd_gauss(r,[4,0.3]);
+V = dipolarsignal(t,r,P,0.3,B,'noiselevel',0.05);
 
 Parameters.regparam = linspace(10,50,2);
 Parameters.validationnoise = linspace(0.01,0.1,2);

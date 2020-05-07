@@ -21,12 +21,12 @@
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 function [FitStartTime,FitStartPos] = backgroundstart(V,t,BckgModel,varargin)
 
 
-%Turn off warnings to avoid ill-conditioned warnings at each iteration
+% Turn off warnings to avoid ill-conditioned warnings at each iteration
 warning('off','all')
 
 
@@ -56,7 +56,7 @@ validateattributes(t,{'numeric'},{'2d','nonempty','increasing'},mfilename,'t')
 %--------------------------------------------------------------------------
 % Parse & Validate Optional Input
 %--------------------------------------------------------------------------
-%Check if user requested some options via name-value input
+% Check if user requested some options via name-value input
 [SearchStart,SearchEnd,EndCutoff] = parseoptional({'RelSearchStart','RelSearchEnd','EndCutoffPos'},varargin);
 
 if isempty(SearchStart)
@@ -91,46 +91,46 @@ end
 t = t(1:EndCutoffPos);
 V = V(1:EndCutoffPos);
 
-%Get APT kernel
+% Get APT kernel
 APTkernel = aptkernel(t);
 
-%Get APT kernel data
+% Get APT kernel data
 K = APTkernel.Base;
 NormConstant = APTkernel.NormalizationFactor;
 APT_t = APTkernel.t(:).';
 Crosstalk = APTkernel.Crosstalk;
 
-%Search for background fit start
+% Search for background fit start
 [~,StartPosMin] = min(abs(t - SearchStart));
 [~,StartPosMax] = min(abs(t - SearchEnd));
 if StartPosMax > EndCutoffPos
    StartPosMax = EndCutoffPos; 
 end
 
-%Preallocate Merit variable
+% Preallocate Merit variable
 Merit = zeros(1,StartPosMax-StartPosMin);
 
 for FitStartPos = StartPosMin:StartPosMax
     
-    %Define data to be fitted according to current background start
+    % Define data to be fitted according to current background start
     FitStart = t(FitStartPos);
     
-    %Fit the background with current start
+    % Fit the background with current start
     [B,lambda] = fitbackground(V,t,BckgModel,FitStart);
 
-    %Correct the background from the from factor
+    % Correct the background from the from factor
     F = V - (1-lambda)*B;
     F = F./(lambda*B);
     F = F/max(F);
     
-    %Perform APT on background-corrected signal
+    % Perform APT on background-corrected signal
     [FreqDimension,~] = size(K);
     FreqP=zeros(1,FreqDimension);
     for k=1:FreqDimension % sum in eqn [21]
         FreqP(k)=FreqP(k)+sum(K(k,:).*F.'.*APT_t)/NormConstant(k);
     end
     APTdistribution = Crosstalk\FreqP';
-    %Get merit value for this background start value
+    % Get merit value for this background start value
     Merit(FitStartPos - StartPosMin + 1) = sum(abs(APTdistribution(1:3)));
 end
 
@@ -138,5 +138,5 @@ end
 FitStartPos = OptStartPos + StartPosMin - 1;
 FitStartTime = t(FitStartPos);
 
-%Turn warnings back on
+% Turn warnings back on
 warning('on','all')

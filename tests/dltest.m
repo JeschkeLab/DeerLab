@@ -11,7 +11,7 @@
 %        -p --perform     Report the maximal error found in the tests
 %        -c --coverage    Run a coverage analysis over the tests
 %        -b --badges      Generate JSON endpoint for badges
-%        -u --tutorials   Run tutorial scripts
+%        -e --examples    Run example scripts
 % 
 %    Either the command syntax as above or the function syntax, e.g.
 %    dltest('asdf','t'), can be used. Any number of options are allowed
@@ -209,7 +209,7 @@ for iTest = 1:numel(TestFileNames)
             if ~isnan(maxerr(iTest))
                 maxerrStr = sprintf('% 0.2e ',maxerr(iTest));
             else
-                maxerrStr = ' --------';
+                maxerrStr = ' -------- ';
             end
         else
             maxerrStr = [];
@@ -257,23 +257,21 @@ if runTutorials
     fprintf(fid,'-----------------------------------------------------------------------\n');
     
     % Get contents of tutorials directory
-    files = dir(fullfile(erase(DeerLabPath,'tests'),'/tutorials/**/*.mlx'));
-    sourcenames = {files.name};
-    mnames = cellfun(@(S)[S(1:end-3) 'm'],sourcenames,'UniformOutput',false);
+    files = dir(fullfile(erase(DeerLabPath,'tests'),'/examples/*.m'));
+    mnames = {files.name};
     
     % Generate full paths
-    paths = {files.folder};
-    sourcefiles = cellfun(@(x,y)fullfile(x,y),paths,sourcenames,'UniformOutput',false);
     path = fullfile(DeerLabPath,'_tutorials');
     if ~exist(path,'dir')
         mkdir(path)
     end
-    addpath(genpath(fullfile(erase(DeerLabPath,'tests'),'/tutorials')));
+    addpath(genpath(fullfile(erase(DeerLabPath,'tests'),'/examples')));
+    sourcepath = fullfile(erase(DeerLabPath,'tests'),'/examples');
+    source = cellfun(@(y)fullfile(sourcepath,y),mnames,'UniformOutput',false);
     mfiles = cellfun(@(y)fullfile(path,y),mnames,'UniformOutput',false);
-    
     for i=1:numel(mfiles)
         % If m-files are not present then compile the mlx files in dummy directory
-        matlab.internal.liveeditor.openAndConvert(sourcefiles{i},mfiles{i});
+        copyfile(source{i},mfiles{i});
         % Read the m-file
         fid2 = fopen(mfiles{i},'r');   
         f = fread(fid2,'*char')';
@@ -325,7 +323,7 @@ if runTutorials
         end
         
         % Print result
-        str = sprintf('% -36s  % -8s %s \n %s',mnames{i},outcomeStr,timeStr,errorStr);
+        str = sprintf('% -46s  % -8s %s \n%s',mnames{i},outcomeStr,timeStr,errorStr);
         str(str=='\') = '/';
         fprintf(fid,str)
     end

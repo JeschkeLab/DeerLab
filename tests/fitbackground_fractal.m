@@ -5,20 +5,24 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,5,100).';
 k = 0.5;
 d = 3;
-bckg = exp(-(k*t).^(d/3));
+lam = 0.3;
+bckg = (1-lam)*exp(-lam*k*(t).^(d/3));
 k = 1;
 d = 2;
-bckg2 = exp(-(k*t).^(d/3));
+bckg2 = (1-lam)*exp(-lam*k*(t).^(d/3));
 k = 1.5;
 d = 4;
-bckg3 = exp(-(k*t).^(d/3));
+bckg3 = (1-lam)*exp(-lam*k*(t).^(d/3));
 data2fit = bckg(1:end);
 data2fit2 = bckg2(1:end);
 data2fit3 = bckg3(1:end);
-fit = fitbackground(data2fit,t,@bg_strexp,[min(t) max(t)]);
-fit2 = fitbackground(data2fit2,t,@bg_strexp,[min(t) max(t)]);
-fit3 = fitbackground(data2fit3,t,@bg_strexp,[min(t) max(t)]);
+[fit,lamfit1] = fitbackground(data2fit,t,@bg_strexp,[min(t) max(t)]);
+[fit2,lamfit2] = fitbackground(data2fit2,t,@bg_strexp,[min(t) max(t)]);
+[fit3,lamfit3] = fitbackground(data2fit3,t,@bg_strexp,[min(t) max(t)]);
 
+fit = (1-lamfit1)*fit;
+fit2 = (1-lamfit2)*fit2;
+fit3 = (1-lamfit3)*fit3;
 
 % Pass 1-3: all background are well fitted
 pass(1) = all(abs(fit - bckg) < 1e-5);

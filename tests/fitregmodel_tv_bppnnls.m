@@ -5,12 +5,11 @@ function [pass,maxerr] = test(opt)
 rng(1)
 t = linspace(0,3,200);
 r = linspace(1,5,100);
-P = dd_onegauss(r,[3,0.2]);
+P = dd_gauss(r,[3,0.2]);
 K = dipolarkernel(t,r);
 S = K*P + whitegaussnoise(t,0.01);
-alpha = 0.01356;
 
-Pfit = fitregmodel(S,K,r,'tv',alpha,'Solver','bppnnls');
+Pfit = fitregmodel(S,K,r,'tv','aic','Solver','bppnnls');
 
 error = abs(Pfit - P);
 

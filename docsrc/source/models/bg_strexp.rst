@@ -6,7 +6,7 @@
 :mod:`bg_strexp`
 ***********************
 
-Stretched exponential background parametric model
+Stretched-exponential background model
 
 -----------------------------
 
@@ -18,13 +18,16 @@ Syntax
 
         info = bg_strexp()
         P = bg_strexp(r,param)
+        P = bg_strexp(r,param,lambda)
 
-Parameters
-    *   ``t`` - Time axis (N-array)
-    *   ``param`` - Model parameters
-Returns
-    *   ``B`` - Model background (N-array)
-    *   ``info`` - Model information (struct)
+Inputs
+    *   ``t`` -- Time axis (N-array)
+    *   ``param`` -- Model parameters
+    *   ``lambda`` -- Modulation amplitude (between 0 and 1)
+
+Outputs
+    *   ``B`` -- Model background (N-array)
+    *   ``info`` -- Model information (struct)
 
 
 -----------------------------
@@ -32,14 +35,18 @@ Returns
 Model
 =========================================
 
-:math:`B(t) = e^{-(kt)^{d/3}}`
+.. math::
 
-========== ========== ========= ============= ============= ========================
- Variable   Symbol     Default   Lower bound   Upper bound      Description
-========== ========== ========= ============= ============= ========================
-param(1)   :math:`k`      3.5      0              200           Decay rate
-param(2)   :math:`d`      3        0              6             Fractal dimension
-========== ========== ========= ============= ============= ========================
+    B(t) = \exp\left(-\lambda \kappa \vert t\vert^{d}\right)
+
+============= ================= ========= ============= ============= ========================
+ Variable       Symbol            Default   Lower bound   Upper bound      Description
+============= ================= ========= ============= ============= ========================
+``param(1)``   :math:`\kappa`      3.5      0              200           decay rate (1/us)
+``param(2)``   :math:`d`           1        0              6             stretch factor
+============= ================= ========= ============= ============= ========================
+
+Although the ``bg_strexp`` model has the same functional form as ``bg_homfractal``, it is distinct since its first parameter is a decay rate constant and not a spin concentration like for ``bg_homfractal``.
 
 -----------------------------
 
@@ -53,9 +60,9 @@ Description
 
 Returns an ``info`` structure containing the specifics of the model:
 
-* ``info.model`` -  Full name of the parametric model.
-* ``info.nparam`` -  Total number of adjustable parameters.
-* ``info.parameters`` - Structure array with information on individual parameters.
+* ``info.model`` -- Full name of the parametric model.
+* ``info.nparam`` -- Total number of adjustable parameters.
+* ``info.parameters`` -- Structure array with information on individual parameters.
 
 -----------------------------
 
@@ -64,5 +71,12 @@ Returns an ``info`` structure containing the specifics of the model:
 
     B = bg_strexp(t,param)
 
-Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
+Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param`` for a modulation amplitude ``lambda=1``. The required parameters can also be found in the ``info`` structure.
 
+-----------------------------
+
+.. code-block:: matlab
+
+    B = bg_strexp(t,param,lambda)
+
+Computes the background model ``B`` for a given modulation amplitude ``lambda``.

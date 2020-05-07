@@ -20,11 +20,14 @@ K = dipolarkernel(t,r,[lambda T0]);
 
 unmodulated = isnan(T0);
 Kref = sum(lambda(unmodulated));
+Krenorm = Kref;
 dr = mean(diff(r));
 for p = 1:numel(lambda)
   if unmodulated(p), continue; end
   Kref = Kref + lambda(p)*dipolarkernel(t-T0(p),r)/dr;
+  Krenorm = Krenorm + lambda(p)*dipolarkernel(-T0(p),r)/dr;
 end
+Kref = Kref./Krenorm;
 Kref = Kref*dr;
 
 maxerr = abs(max(K(:) - Kref(:)));

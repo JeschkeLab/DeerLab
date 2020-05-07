@@ -5,24 +5,24 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,5,200);
 r = linspace(2,6,100);
 
-P = dd_onegauss(r,[3,0.5]);
+P = dd_gauss(r,[3,0.5]);
 B = bg_strexp(t,[0.5,3]);
 K = dipolarkernel(t,r);
 S = K*P;
 
-timemodel = @(t,param)K*dd_onegauss(r,param);
+timemodel = @(t,param)K*dd_gauss(r,param);
 warning('off')
 
 InitialGuess = [2 0.1];
-[~,Pfit1] = fitparamodel(S,@dd_onegauss,r,K,InitialGuess,'Solver','lsqnonlin');
+[~,Pfit1] = fitparamodel(S,@dd_gauss,r,K,InitialGuess,'Solver','lsqnonlin');
 [~,Bfit1] = fitparamodel(B,@bg_strexp,t,InitialGuess,'Solver','lsqnonlin');
 [~,Bfit2] = fitparamodel(B,@bg_strexp,t,'Solver','lsqnonlin');
 fitparam = fitparamodel(S,timemodel,t,InitialGuess,'Solver','lsqnonlin');
-[~,Pfit3] = fitparamodel(S,@dd_onegauss,r,K,'Solver','lsqnonlin');
+[~,Pfit3] = fitparamodel(S,@dd_gauss,r,K,'Solver','lsqnonlin');
 
 warning('on')
 
-Pfit2 = dd_onegauss(r,fitparam);
+Pfit2 = dd_gauss(r,fitparam);
 
 % Pass 1-5: all fits are consistent with the inputs
 pass(1) = all(abs(Pfit1 - P) < 1e-5);

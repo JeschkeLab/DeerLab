@@ -9,7 +9,7 @@ S = {S1,S2,S3};
 levels = [0.1 0.05 0.09];
 
 N = cellfun(@length,S);
-wref = 1./(N.*levels);
+wref = 1./(N.*levels.^2);
 wref = wref.'/sum(wref);
 
 w = globalweights(S,levels);

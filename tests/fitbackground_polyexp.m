@@ -5,17 +5,21 @@ function [pass,maxerr] = test(opt)
 t = linspace(0,5,100).';
 d = 3;
 
+lam = 0.3;
 Bmodel = @(k)exp(-(k*t).^(d/3));
 
 k = [0.5 1 1.5];
 
 for ik = 1:numel(k)
-  Bs{ik} = Bmodel(k(ik));
+  Bs{ik} = (1-lam)*Bmodel(lam*k(ik));
   B = Bs{ik};
   tstart = t(20);
-  Bfit{ik} = fitbackground(B,t,@bg_exp,tstart,'Logfit',true);
+  [Bfit{ik},lamfit] = fitbackground(B,t,@bg_exp,tstart,'Logfit',true);
+  Bfit{ik} = Bfit{ik}*(1-lamfit);
   maxerr(ik) = max(abs(Bfit{ik} - Bs{ik}));
 end
+
+
 
 maxerr = max(maxerr);
 

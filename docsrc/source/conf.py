@@ -13,7 +13,7 @@ from sphinx_rtd_theme import __version__
 
 # Project details
 project = 'DeerLab'
-copyright = '2019, Luis Fabregas Ibanez'
+copyright = '2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others'
 author = 'Fabregas Ibanez'
 language = 'en'
 
@@ -24,13 +24,17 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinxcontrib.httpdomain',
     'sphinx.ext.imgmath',
-    'button'
 ]
 
 # Render Latex math equations as svg instead of rendering with JavaScript
 imgmath_image_format = 'svg'
 imgmath_dvisvgm = 'dvisvgm'
-
+imgmath_latex_preamble = r'''
+\newcommand{\mr}[1]{\mathrm{#1}}
+\newcommand{\mx}[1]{\boldsymbol{#1}}
+\newcommand{\vc}[1]{\boldsymbol{#1}}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+'''
 
 # Setup template stuff
 templates_path = ['_templates']
@@ -49,8 +53,8 @@ html_theme = 'sphinx_rtd_theme'
 # -------------------------------------------------------------
 html_context = {
     "display_github": False, # Integrate GitHub
-    "github_user": "luisfabib", # Username
-    "github_repo": "deerlab", # Repo name
+    "github_user": "JeschkeLab", # Username
+    "github_repo": "DeerLab", # Repo name
     "github_version": "master", # Version
     "conf_py_path": "/source/", # Path in the checkout to the docs root
 }
@@ -60,16 +64,17 @@ html_context = {
 # -------------------------------------------------------------
 html_theme_options = {
     'sticky_navigation': False,
-    'titles_only': True,
+    'titles_only': False,
+    'collapse_navigation': False,
     'logo_only': True,
-    'navigation_depth':0,
+    'navigation_depth':2,
     #'style_nav_header_background': '#2a7bf8'
 }
 html_copy_source = False
 html_theme_path = ["../.."]
 html_logo = "demo/static/logo-wordmark-light.svg"
 html_show_sourcelink = True
-html_favicon = 'favicon.ico'
+html_favicon = '_static/favicon.ico'
 html_static_path = ['_static']
 
 # Extensions to theme docs
@@ -106,8 +111,10 @@ html_static_path = ['_static']
 # Add path to custom CSS file to overwrite some of the default CSS settings
 html_css_files = [
     'custom.css',
+    'table_util.css',
+    'table_main.css',
     'theme_override.css'
-]	
+]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -124,7 +131,7 @@ html_theme_path = ["_themes", ]
 html_static_path = ['_static']
 highlight_language = 'matlab'
 primary_domain = 'mat'
-html_logo = '../source/logo.png'
+html_logo = '_static/logo.png'
 
 
 # Design pygments patch for MATLAB true code highlighting

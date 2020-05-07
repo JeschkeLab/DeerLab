@@ -27,6 +27,8 @@
 %                      dynamically at each iteration. 
 %                      (default = depends on available memory)
 %
+%     'Verbose' - Display information on estimated remaining time
+%
 %   Outputs:
 %     stats     structure array with summary statistics for each variable
 %       .median medians of the output variables
@@ -36,7 +38,7 @@
 %       .p25    25th percentiles of the output variables
 %       .p75    75th percentiles of the output variables
 %       .p98    98th percentiles of the output variables
-
+%
 %     factors   results of factor analysis
 %       .main   main effects
 %       .inter  interactions between factors
@@ -46,7 +48,7 @@
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 function [stats,factors,evals] = sensitivan(fcnHandle,Parameters,varargin)
 
@@ -66,11 +68,16 @@ end
 
 validateattributes(Parameters,{'struct'},{'nonempty'},mfilename,'Parameters');
 
-[AxisHandle,RandPerm,dynamicStats] = ...
-    parseoptional({'AxisHandle','RandPerm','dynamicStats'},varargin);
+[AxisHandle,RandPerm,dynamicStats,Verbose] = ...
+    parseoptional({'AxisHandle','RandPerm','dynamicStats','Verbose'},varargin);
 
 if ~isempty(dynamicStats)
     validateattributes(dynamicStats,{'logical'},{'nonempty'},mfilename,'dynamicStats')
+end
+if isempty(Verbose)
+   Verbose = false;
+else
+    validateattributes(Verbose,{'logical'},{'nonempty'},mfilename,'dynamicStats')
 end
 
 % Get parameter names, generate all parameter combinations
@@ -225,6 +232,20 @@ for i = 1:nCombinations
         %Reset counter
         counter = 0;
     end
+    
+    %If requested, show expected remaining time
+    if Verbose
+        if exist('S','var')
+            fprintf(repmat('\b',1,numel(S)));
+        end
+        remaining = fcntime/i*(nCombinations - i);
+        h = floor(remaining/3600);
+        min = floor(remaining/60-h*60);
+        s = floor(remaining - h*3600 - min*60);
+        perc = 1/nCombinations*100;
+        S = sprintf('Progress: %.2f percentage finished \nEstimated remaining time: %ih% imin %is \n',perc,h,min,s);
+        fprintf(S);
+    end
 end
 
 
@@ -342,62 +363,6 @@ if nout==1
     factors.main = factors.main{1};
     factors.inter = factors.inter{1};
     evals = evals{1};
-end
-
-end
-
-function nout = getmaxnargout(fcnHandle,argin)
-nout = nargout(fcnHandle);
-variableOutputs = nout<0;
-
-if ~variableOutputs
-    return;
-end
-
-% If the functions defines a variable number of outputs, iteratively increase
-% number of requested outputs until the function crashes, to determine maximum
-% number of outputs.
-nout = abs(nout)-1;
-done = false;
-while ~done
-    try
-        nout = nout+1;
-        varargout = cell(1,nout);
-        [varargout{:}] = fcnHandle(argin);
-    catch
-        nout = nout-1;
-        done = true;
-    end
-end
-end
-
-% Calculate percentile (similar to prctile function in Statistics Toolbox)
-function Y = percentile(X,p,dim)
-
-% Set requested dimension as the first dimension
-dimIdx = 1:ndims(X);
-dimIdx = dimIdx(dimIdx~=dim);
-X = permute(X,[dim dimIdx]);
-
-% Get size of data
-sizeX = size(X);
-
-% Vectorize all other dimensions
-if numel(sizeX)>2
-    X = reshape(X,[sizeX(1),prod(sizeX(2:end))]);
-end
-
-N = size(X,1);
-% Sort data about first dimension
-X = sort(X,1);
-% Get list of available percentiles
-pList = 100*(0.5:1:N-0.5)/N;
-% Interpolate from list to requested percentile
-Y = interp1(pList,X,p,'linear','extrap');
-
-if numel(sizeX)>2
-    % Reshape results back to original size
-    Y = reshape(Y,sizeX(2:end));
 end
 
 end

@@ -24,18 +24,15 @@
 %
 %   'ModDepth' - Fixes the modulation depth to a user-defined value instead
 %                of fitting it along the background.
-%
 %   'LogFit' - Specifies whether to fit the log of the signal (default: false)
-%
 %   'InitialGuess' - Array of initial values for the fit parameters
-%
 %   'Solver' - Optimization solver used for the fitting
 %             'lsqnonlin' - Non-linear constrained least-squares (toolbox)
 %             'nlsqbnd'   - Non-linear constrained least-squares (free)
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
-% Copyright(c) 2019: Luis Fabregas, Stefan Stoll, Gunnar Jeschke and other contributors.
+% Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 function [B,ModDepth,FitParam,tFitRange] = fitbackground(V,t,bgmodel,tFitRange,varargin)
 
@@ -84,8 +81,10 @@ if ~isempty(ModDepth)
 end
 fitModDepth = isempty(ModDepth);
 
+OptimizationToolboxInstalled = optimtoolbox_installed();
+
 if isempty(Solver)
-    if license('test','optimization_toolbox')
+    if OptimizationToolboxInstalled 
         Solver = 'lsqnonlin';
     else
         Solver = 'fminsearchcon';
@@ -101,7 +100,7 @@ if strcmp(Solver,'nlsqbnd') && ~ispc
    error('The ''nlsqbnd'' solver is only available for Windows systems.') 
 end
 
-if strcmp(Solver,'lsqnonlin') && ~license('test','optimization_toolbox')
+if strcmp(Solver,'lsqnonlin') && ~OptimizationToolboxInstalled 
     error('The ''lsqnonlin'' solver requires the Optimization Toolbox.')
 end
 
@@ -129,20 +128,20 @@ FitEndTime = tFitRange(2);
 tfit = t(FitStartPos:FitEndPos);
 FitData = V(FitStartPos:FitEndPos);
 
-% Construct cost functional for minimization
-% Fit signal or log(signal);
-Fgmodel = @(p,lambda)(1 - lambda + eps)*bgmodel(tfit,p);
+% Construct objective function for minimization
+% Fit signal or log(signal)
+Fgmodel = @(p,lambda)(1 - lambda + eps)*bgmodel(tfit,p,lambda);
 if LogFit
     residuals = @(p,lambda) sqrt(1/2)*(log(Fgmodel(p,lambda)) - log(FitData));
 else
     residuals = @(p,lambda) sqrt(1/2)*(Fgmodel(p,lambda) - FitData);
 end
 if fitModDepth
-    CostFcnVec = @(param) residuals(param(1:end-1),param(end));
-    CostFcn = @(param) norm(residuals(param(1:end-1),param(end)))^2;
+    ObjFcnVec = @(param) residuals(param(1:end-1),param(end));
+    ObjFcn = @(param) norm(residuals(param(1:end-1),param(end)))^2;
 else
-    CostFcnVec = @(param) residuals(param,ModDepth);
-    CostFcn = @(param) norm(residuals(param,ModDepth))^2;
+    ObjFcnVec = @(param) residuals(param,ModDepth);
+    ObjFcn = @(param) norm(residuals(param,ModDepth))^2;
 end
 
 % Initialize bounds and initial parameter values
@@ -163,6 +162,7 @@ else
         StartParameters(end+1) = 0.5;
     end
 end
+
 % Solve the constrained nonlinear minimization problem
 switch lower(Solver)
     case 'lsqnonlin'
@@ -171,7 +171,7 @@ switch lower(Solver)
             'MaxIter',8000,'MaxFunEvals',8000,...
             'TolFun',1e-10,'DiffMinChange',1e-8,'DiffMaxChange',0.1);
         % Run solver
-        FitParam = lsqnonlin(CostFcnVec,StartParameters,lowerBounds,upperBounds,solveropts);
+        FitParam = lsqnonlin(ObjFcnVec,StartParameters,lowerBounds,upperBounds,solveropts);
     case 'nlsqbnd'
         % Prepare minimization problem solver
         solveropts = optimset('Algorithm','trust-region-reflective','Display','off',...
@@ -179,7 +179,7 @@ switch lower(Solver)
             'TolFun',1e-20,'TolCon',1e-20,...
             'DiffMinChange',1e-8,'DiffMaxChange',0.1);
         % Run solver
-        FitParam = nlsqbnd(CostFcnVec,StartParameters,lowerBounds,upperBounds,solveropts);
+        FitParam = nlsqbnd(ObjFcnVec,StartParameters,lowerBounds,upperBounds,solveropts);
         % nlsqbnd returns a column, transpose to adapt to row-style of MATLAB solvers
         FitParam = FitParam.';
     case 'fminsearchcon'
@@ -189,7 +189,7 @@ switch lower(Solver)
             'TolFun',1e-20,'TolCon',1e-20,...
             'DiffMinChange',1e-8,'DiffMaxChange',0.1);
         % Run solver
-        FitParam = fminsearchcon(CostFcn,StartParameters,lowerBounds,upperBounds,[],[],[],solverOpts);
+        FitParam = fminsearchcon(ObjFcn,StartParameters,lowerBounds,upperBounds,[],[],[],solverOpts);
 end
 
 % Extract the fitted modulation depth
@@ -199,7 +199,7 @@ if fitModDepth
 end
 
 % Extrapolate fitted background to whole time axis
-B = bgmodel(t,FitParam);
+B = bgmodel(t,FitParam,ModDepth);
 
 % Ensure data is real
 B = real(B);

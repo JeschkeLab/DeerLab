@@ -5,7 +5,7 @@ function [pass,maxerr] = test(opt)
 rng(2)
 dt = 0.008;
 r = linspace(1,5,100);
-P = dd_twogauss(r,[2,0.3,4,0.3,0.5]);
+P = dd_gauss2(r,[2,0.3,0.5,4,0.3]);
 
 Ntime1 = 100;
 t1 = linspace(0,dt*Ntime1,Ntime1);
@@ -23,8 +23,8 @@ K3 = dipolarkernel(t3,r);
 S3 = K3*P + whitegaussnoise(Ntime3,0.1);
 
 Ss = {S1,S2,S3};
-info = dd_twogauss();
-mymodel = @(t,param)dipolarkernel(t,r)*dd_twogauss(r,param);
+info = dd_gauss2();
+mymodel = @(t,param)dipolarkernel(t,r)*dd_gauss2(r,param);
 InitialGuess = [2 0.1 5 0.1 0.5];
 range = [info.parameters(:).range];
 upper = range(2:2:end);
@@ -32,8 +32,8 @@ lower = range(1:2:end-1);
 parglobal = fitparamodel(Ss,mymodel,{t1,t2,t3},InitialGuess,'Upper',upper,'lower',lower);
 parlocal = fitparamodel(S3,mymodel,t3,InitialGuess,'Upper',upper,'lower',lower);
 
-Pglobal = dd_twogauss(r,parglobal);
-Plocal = dd_twogauss(r,parlocal);
+Pglobal = dd_gauss2(r,parglobal);
+Plocal = dd_gauss2(r,parlocal);
 
 
 normResult = norm(P - Pglobal);

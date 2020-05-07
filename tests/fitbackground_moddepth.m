@@ -4,8 +4,9 @@ function [pass,maxerr] = test(opt)
 
 t = linspace(0,10,100);
 lam0 = 0.25;
-k = 0.05;
-V = dipolarsignal(t,3,'Background',bg_exp(t,k),'moddepth',lam0);
+k = 0.5;
+B = bg_exp(t,lam0*k);
+V = dipolarsignal(t,3,[],lam0,B);
 
 tstart = 2;
 
