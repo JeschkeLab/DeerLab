@@ -15,18 +15,18 @@
 ### About
 The DeerLab software package is a MATLAB toolbox for the analysis of data from DEER (double electron-electron resonance) spectroscopy and similar dipolar EPR spectroscopy techniques (RIDME, DQC, SIFTER). The main homepage can be found at [jeschkelab.github.io/DeerLab](https://jeschkelab.github.io/DeerLab/). This is the GitHub repository of the DeerLab source code, including instructions for compiling and installing DeerLab.
 
-It consists of a collection of functions that perform modelling, processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows.
+DeerLab consists of a collection of functions that perform modelling, processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows.
 
 To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background and experiment models. There are functions for generating synthetic datasets as well as for fitting and analyzing experimental data sets.
 
 ### Requirements
 DeerLab requires the following products:
 
-  * MATLAB (R2016b or newer) (see <https://ch.mathworks.com/products/matlab.html>)
+  * MATLAB (R2017a or newer) (see <https://www.mathworks.com/products/matlab.html>)
  
- Optional functionality may require the following products:
+DeerLab will use the following product if installed:
  
-  * Optimization Toolbox (see <https://ch.mathworks.com/products/optimization.html>)
+  * Optimization Toolbox (see <https://www.mathworks.com/products/optimization.html>)
 
 ### Setup
 
