@@ -21,6 +21,7 @@ Syntax
     __ = fitsignal(V,t,r,dd,bg)
     __ = fitsignal(V,t,r,dd)
     __ = fitsignal(V,t,r)
+    __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},{ex1,ex2,__},par0)
     __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},{ex1,ex2,__})
     __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},ex)
     __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd)
@@ -136,6 +137,29 @@ Additional settings can be specified via name-value pairs. All property names ar
 .. code-block:: matlab
 
     fitsignal(___,'Property1',Value1,'Property2',Value2,___)
+
+- ``'Lower'`` - Lower bounds of search range
+    Lower bounds for parameter search range. This must be a 3-element cell array of the form ``{lb_dd,lb_bg,lb_ex}``, where the elements are arrays that give the lower bounds for the distance distribution parameters, background parameters, and experiment parameters.
+
+    *Default:* taken from info structure provided by model functions
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			fitsignal(V,t,r,'P',@bg_hom3dex,@ex_4pdeer,'Lower',{[],[10 1],0.1})
+
+
+- ``'Upper'`` - Upper bounds of search range
+    Upper bounds for parameter search range. This must be a 3-element cell array of the form ``{ub_dd,ub_bg,ub_ex}``, where the elements are arrays that give the upper bounds for the distance distribution parameters, background parameters, and experiment parameters.
+
+    *Default:* taken from info structure provided by model functions
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			fitsignal(V,t,r,'P',@bg_hom3dex,@ex_4pdeer,'Upper',{[],[200 3],0.7})
 
 - ``'TolFun'`` - Optimizer tolerance value
     Optimizer function tolerance. The solver stops once the fitting functional evaluation reaches a value lower than this tolerance. Lower values increase the precision of the result, albeit at the cost of longer computation times.

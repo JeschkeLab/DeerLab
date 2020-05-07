@@ -6,6 +6,7 @@
 %   __ = FITSIGNAL(V,t,r,dd,bg)
 %   __ = FITSIGNAL(V,t,r,dd)
 %   __ = FITSIGNAL(V,t,r)
+%   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},{ex1,ex2,__},par0)
 %   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},{ex1,ex2,__})
 %   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},ex)
 %   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r,dd)
@@ -57,6 +58,8 @@
 %
 %  Name-value pairs:
 %
+%   'Lower'         - Lower bounds for parameters, cell array {lb_dd,lb_bg,lb_ex}
+%   'Upper'         - Upper bounds for parameters, cell array {ub_dd,ub_bg,ub_ex}
 %   'TolFun'        - Optimizer function tolerance
 %   'RegType'       - Regularization functional type ('tikh','tv','huber')
 %   'RegParam'      - Regularization parameter selection ('lr','lc','cv','gcv',
@@ -108,8 +111,18 @@ validateattributes(r,{'numeric'},{'vector'},mfilename,'r (3rd input)');
 
 
 % Parse the optional parameters in varargin
-optionalProperties = {'RegParam','RegType','alphaOptThreshold','TolFun'};
-[regparam,regtype,alphaOptThreshold,TolFun] = parseoptional(optionalProperties,varargin);
+%-------------------------------------------------------------------------------
+optionalProperties = {'RegParam','RegType','alphaOptThreshold','TolFun','Lower','Upper'};
+[regparam,regtype,alphaOptThreshold,TolFun,lb,ub] = parseoptional(optionalProperties,varargin);
+
+if isempty(lb)
+    lb = {[],[],[]};
+end
+validateattributes(lb,{'cell'},{'row'},mfilename,'Lower option');
+if isempty(ub)
+    ub = {[],[],[]};
+end
+validateattributes(ub,{'cell'},{'row'},mfilename,'Upper option');
 
 if isempty(TolFun)
     TolFun = 1e-5;
@@ -228,15 +241,24 @@ if any(~includeForeground & ~includeBackground)
     error('Cannot fit anything without distribution model and without background model.')
 end
 
-% Combine all parameters into a single vector
-if isempty(par0), par0 = {[],[],[]}; end
-if isempty(par0{1}), par0{1} = par0_dd; end
-if isempty(par0{2}), par0{2} = par0_bg; end
-if isempty(par0{3}), par0{3} = par0_ex; end
-par0 = [par0{1} cell2mat(par0{2}) cell2mat(par0{3})];
-lower = [lower_dd cell2mat(lower_bg) cell2mat(lower_ex)];
-upper = [upper_dd cell2mat(upper_bg) cell2mat(upper_ex)];
+% Combine all initial, lower and upper bounds of parameters into vectors
+par0 = parcombine(par0,{par0_dd,par0_bg,par0_ex});
+lb = parcombine(lb,{lower_dd,lower_bg,lower_ex});
+ub = parcombine(ub,{upper_dd,upper_bg,upper_ex});
 nParams = numel(par0);
+if numel(lb)~=nParams
+    error('Lower bounds and initial values of parameters must have the same number of elements.');
+end
+if numel(ub)~=nParams
+    error('Lower bounds and initial values of parameters must have the same number of elements.');
+end
+if any(lb>ub)
+    error('Lower bounds cannot be larger than upper bounds.');
+end
+if any(lb>par0 | par0>ub)
+    error('Inital values for parameters must lie between lower and upper bounds.');
+end
+
 
 % Build index vectors for accessing parameter subsets
 ddidx = 1:N_dd;
@@ -247,7 +269,7 @@ for i = 1:nSignals
     exidx{i} = N_dd + sum(N_bg) + sum(N_ex(1:i-1)) + (1:N_ex(i));
 end
 
-%Generate K(theta) and B(theta) for the multi-pathway kernel and background
+% Generate K(theta) and B(theta) for the multi-pathway kernel and background
 Bmodels = cell(nSignals,1);
 Kmodels = cell(nSignals,1);
 for j = 1:nSignals
@@ -301,7 +323,7 @@ else
     B_cached = [];
     
     % Fit the parameters
-    args = {Vexp,@Vmodel,t,par0,'Lower',lower,'Upper',upper,'TolFun',TolFun,'Verbose',verbose};
+    args = {Vexp,@Vmodel,t,par0,'Lower',lb,'Upper',ub,'TolFun',TolFun,'Verbose',verbose};
     [parfit_] = fitparamodel(args{:});
     
     
@@ -316,7 +338,7 @@ else
         covmatrix = 0;
         
         % Compute the jacobian of the signal fit with respect to parameter set
-        for i=1:nSignals
+        for i = 1:nSignals
             
             if parfreeDistribution
                 % Mixed signal - augmented Jacobian
@@ -363,7 +385,7 @@ else
         parci_ = cell(numel(p),1);
         z = zeros(numel(p),1);
         % Get the CI at requested confidence levels
-        for jj=1:numel(p)
+        for jj = 1:numel(p)
             if parfreeDistribution
                 % Get Gaussian critical value
                 z(jj) = norm_inv(p(jj));
@@ -384,18 +406,18 @@ else
                 parci_{jj} = parfit_.' + z(jj)*sqrt(diag(covmatrix)).*[-1 +1];
             end
             % Constrain parameter CIs to model boundaries
-            parci_{jj} = max(parci_{jj},lower.');
-            parci_{jj} = min(parci_{jj},upper.');
+            parci_{jj} = max(parci_{jj},lb.');
+            parci_{jj} = min(parci_{jj},ub.');
         end
         parci_ = parci_{1};
         
         for idx = 1:nSignals
             %Propagate errors in the parameter sets to the signal model
-            VfitCI{idx} = propagate(covmatrix,J,parfit_,Vfit{idx},z(1),t{idx});
+            VfitCI{idx} = propagateCI(covmatrix,J,parfit_,Vfit{idx},z(1),t{idx});
         end
         if ~parfreeDistribution
             for i=1:numel(z)
-                PfitCI{i} = max(propagate(covmatrix(ddidx,ddidx),dd_model,parfit_(ddidx),Pfit,z(i),r),0);
+                PfitCI{i} = max(propagateCI(covmatrix(ddidx,ddidx),dd_model,parfit_(ddidx),Pfit,z(i),r),0);
             end
         end
     else
@@ -457,9 +479,9 @@ if nargout==0
     legend('Fit','95%-CI','50%-CI')
     axis tight,grid on
     drawnow
-    disp('Goodness-of-fit')
+    disp('Goodness of fit')
     for i=1:nSignals
-        fprintf('  V{%i}: %s2 = %.3f  RMSD  = %.3f \n',i,char(hex2dec('3c7')),stats{i}.chi2red,stats{i}.RMSD)
+        fprintf('  V{%i}: %s2 = %.4f  RMSD  = %.4f \n',i,char(hex2dec('3c7')),stats{i}.chi2red,stats{i}.RMSD)
     end
     disp('Fitted parameters and 95%-confidence intervals')
     str = '  %s{%d}(%d):   %.7f  (%.7f, %.7f)  %s (%s)\n';
@@ -599,7 +621,7 @@ end
 
 %===============================================================================
 
-function modelFitCI = propagate(covmatrix,model,param,modelFit,z,ax)
+function modelFitCI = propagateCI(covmatrix,model,param,modelFit,z,ax)
 
 if isnumeric(model)
     jacobian = model;
@@ -612,4 +634,12 @@ lower = modelFit - z*sqrt(modelvariance);
 modelFitCI = [upper lower];
 end
 
+%===============================================================================
 
+function pvec = parcombine(p,def)
+for k = 1:3
+  if isempty(p{k}), p{k} = def{k}; end
+  if iscell(p{k}), p{k} = cell2mat(p{k}); end
+end
+pvec = cell2mat(p);
+end
