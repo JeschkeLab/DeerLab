@@ -3,6 +3,7 @@ import fileinput
 import glob
 import os
 import shutil
+import sys
 
 def formatProcOut(input):
     output = str(input)
@@ -10,7 +11,7 @@ def formatProcOut(input):
     output = output.replace("'","")
     return output
 
-ignoredtags = ['v.0.1-beta','0.1-beta','0.2.beta','0.5.beta','0.6.beta','0.8.beta']
+ignoredtags = ['v.0.1-beta','0.1-beta','0.2.beta','0.5.beta','0.6.beta']
 
 #Get list of all tags in the DeerLab repo
 tags = subprocess.check_output (["git", "tag"])
@@ -35,7 +36,7 @@ mostrecent = subprocess.check_output (["git", "describe", "--tags", "--abbrev=0"
 mostrecent = formatProcOut(mostrecent)
 mostrecent = mostrecent.replace("\\n","")
 
-startbranch = subprocess.check_output (["git", "branch", "--show-current"])
+startbranch = subprocess.check_output (["git", "branch", "--show-current"]) # This requires git 2.2 or newer
 #Format output
 startbranch = formatProcOut(startbranch)
 startbranch = startbranch.replace("\\n","")
@@ -90,16 +91,18 @@ for tag in tags:
     htmlfiles = [f for f in glob.glob(os.path.join(docspath,filterpath), recursive = True)]
 
 
+
     #Loop over all HTML available at that version
     for file in htmlfiles:
-    
-
-        relpath = file.replace(docspath,'.')
         
+        relpath = file.replace(docspath,'.')
+
         print('Processing ' + file + '...                                     ', end='\r')
-        #Go through all files
-        for line in fileinput.FileInput(file,inplace=1):
+        
+        #Go through all lines
+        for line in fileinput.FileInput(file,inplace=True,mode='rb'):
                     
+            line = line.decode('utf-8')
             #Find the place to put the HTML code for the version dropdown menu
             if '<div role="search">' in line:
                 line = line.replace(line,'</div>\n\n\n' + line)
@@ -146,7 +149,7 @@ for tag in tags:
                     line = line.replace('DeerAnalysis','DeerLab')
                     
             #Print line into file
-            print(line,end = '')
+            sys.stdout.buffer.write(line.encode('utf-8'))
             
 
     #Copy current build into collective docs
