@@ -11,7 +11,7 @@ noiselevel = 0.05;
 V = dipolarsignal(t,r,P,0.25,B,...
     'Scale',scale,'noiselevel',noiselevel);
 
-[Vc,scalefit] = correctscale(V,t);
+[Vc,scalefit] = correctscale(V,t,max(t));
 
 % Pass: scale found accurately within noise level
 pass  = abs(scalefit - scale)/scale < noiselevel;
