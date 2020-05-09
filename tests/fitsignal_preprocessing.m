@@ -20,7 +20,7 @@ V = dipolarsignal(t,r,P,pathinfo,Bmodel,'noiselevel',0.01,'scale',1e5,'phase',pi
 
 
 V = correctphase(V);
-V = correctscale(V,t);
+V = correctscale(V,t,0.5);
 
 % Pass 1: signal is well fitted
 pass(1) = all(abs(Vfit - V) < 3e-2);

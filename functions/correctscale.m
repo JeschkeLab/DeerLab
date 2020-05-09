@@ -50,9 +50,6 @@ validateattributes(model,{'char'},{'nonempty'},mfilename,'model')
 V = V(:);
 t = t(:);
 
-% Generate distance axis
-r = time2dist(t);
-
 % Approximate scaling
 Amp0 = max(V);
 V_ = V/Amp0;
@@ -65,12 +62,19 @@ t_ = t(idx);
 switch lower(model)
     case 'deer'
         % DEER model with Gaussian distibution
+        if numel(V_)<5
+            error('Number of points in fit range cannot be smaller than number of model parameters. Increase tmax.');
+        end
+        r = time2dist(t);
         fitmodel = @(tt,p) p(1)*bg_exp(tt,p(5)).*((1-p(2)) + p(2)*dipolarkernel(tt,r)*dd_gauss(r,p(3:4)));
         par0 = [1 0.5 3 0.3 0.2];
         lb = [1e-3 1e-5 0 0 0];
         ub = [10 1 20 5 100];
     case 'gauss'
         % Gaussian function
+        if numel(V_)<3
+            error('Number of points in fit range cannot be smaller than number of model parameters. Increase tmax.');
+        end
         fitmodel = @(t,p) (p(1)-p(2))+p(2)*exp(-t.^2/p(3)^2);
         par0 = [1 1 1];
         lb = [1e-3 1e-3 1e-3];
@@ -80,7 +84,7 @@ switch lower(model)
 end
 
 % Run the parametric model fitting
-parfit = fitparamodel(V_,fitmodel,t_,par0,'Upper',ub,'Lower',lb);
+parfit = fitparamodel(V_,fitmodel,t_,par0,'Upper',ub,'Lower',lb,'Rescale',false);
 
 % Get the fitted signal amplitude and scale the signal
 V0 = Amp0*parfit(1);
@@ -95,7 +99,6 @@ if doPlotting
     yline(V0,'r');
     d = max(V)-min(V);
     axis tight
-    ylim([min(V) max(V)]+[-1 1]*d/20);
     xlabel('time (us)');
     ylabel('V');
     grid on
