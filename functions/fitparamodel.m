@@ -193,9 +193,9 @@ end
 % Parse the optional parameters in varargin
 optionalProperties = {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals',...
     'TolFun','GlobalWeights','Upper','Lower','MultiStart',...
-    'ConfidenceLevel','internal::returncovariancematrix'};
+    'ConfidenceLevel','Rescale','internal::returncovariancematrix'};
 [Solver,Algorithm,maxIter,Verbose,maxFunEvals,TolFun,GlobalWeights,...
-    upperBounds,lowerBounds,MultiStart,ConfidenceLevel,returnCovariance] = ...
+    upperBounds,lowerBounds,MultiStart,ConfidenceLevel,Rescale,returnCovariance] = ...
     parseoptional(optionalProperties,varargin);
 
 % Validate optional inputs
@@ -236,6 +236,11 @@ else
     if any(ConfidenceLevel>1 | ConfidenceLevel<0)
         error('The confidence level option must have values between 0 and 1.')
     end
+end
+if isempty(Rescale)
+    Rescale = true;
+else
+    validateattributes(Rescale,{'logical'},{'scalar'},mfilename,'Rescale')
 end
 
 % Solver
@@ -433,6 +438,14 @@ if computeFittedModel
     modelfit = cell(nAxes,1);
     for i = 1:nAxes
         modelfit{i} = model(ax{i},parfit,Labels{i});
+        if Rescale
+            if isDistanceDomain
+                scale = (K{i}*modelfit{i})\V{i};
+            else
+                scale = modelfit{i}\V{i};
+            end
+            modelfit{i} = scale*modelfit{i};
+        end
     end
 end
 
@@ -491,10 +504,14 @@ warning('on','MATLAB:nearlySingularMatrix'), warning('on','MATLAB:singularMatrix
                 t = ax{iSignal};
             end
             if isDistanceDomain
-                r_{iSignal} = Weights(iSignal)*(V{iSignal}-K{iSignal}*model(t,p,iSignal));
+                sim = K{iSignal}*model(t,p,iSignal);
             else
-                r_{iSignal} = Weights(iSignal)*(V{iSignal}-model(t,p,iSignal));
+                sim = model(t,p,iSignal);
             end
+            if Rescale
+                sim = (sim\V{iSignal})*sim;
+            end
+            r_{iSignal} = Weights(iSignal)*(V{iSignal}-sim);
         end
         r = vertcat(r_{:});
     end
