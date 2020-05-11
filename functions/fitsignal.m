@@ -157,7 +157,9 @@ calculateCI = nargout>=5 || nargout==0;
 computeStats = nargout>4 || nargout==0;
 verbose = 'off';
 
-if ~isempty(par0)
+if isempty(par0)
+    par0 = {[],[],[]};
+else
     if ~iscell(par0) || numel(par0)~=3
         error('Initial parameters (7th input) must be a 3-element cell array.')
     end
@@ -317,7 +319,7 @@ else
     B_cached = [];
     
     % Fit the parameters
-    args = {Vexp,@Vmodel,t,par0,'Lower',lb,'Upper',ub,'TolFun',TolFun,'Verbose',verbose};
+    args = {Vexp,@Vmodel,t,par0,'Lower',lb,'Upper',ub,'TolFun',TolFun,'Verbose',verbose,'Rescale',true};
     [parfit_] = fitparamodel(args{:});
     
     
@@ -555,20 +557,19 @@ end
             
             % Get the distance distribution
             if includeForeground && nargin<4
-                
-                % Use the alpha-search settings by default
-                alpha = regparam;
-                % If the parameter vectors has not changed by much...
-                if ~isempty(par_prev)
-                    if all(abs(par_prev-par)./par < alphaOptThreshold)
-                        % ...use the alpha optimized in the previous iteration
-                        alpha = regparam_prev;
-                    end
-                end
-                par_prev = par;
-                
+                                
                 if parfreeDistribution
-                    [P,~,regparam_prev] = fitregmodel(Vexp,K,r,regtype,alpha,'Verbose',verbose);
+                    % Use the alpha-search settings by default
+                    alpha = regparam;
+                    % If the parameter vectors has not changed by much...
+                    if ~isempty(par_prev)
+                        if all(abs(par_prev-par)./par < alphaOptThreshold)
+                            % ...use the alpha optimized in the previous iteration
+                            alpha = regparam_prev;
+                        end
+                    end
+                    par_prev = par;
+                    [P,~,regparam_prev] = fitregmodel(Vexp,K,r,regtype,alpha,'Verbose',verbose,'NormP',false);
                 else
                     P = dd_model(r,par(ddidx));
                 end
@@ -590,6 +591,11 @@ end
             V = K{idx}*P;
         else
             V = B{idx};
+        end
+        if ~parfreeDistribution
+            scale = V\Vexp{idx};
+            P = scale*P;
+            V = scale*V;
         end
         B = B{idx};
         
