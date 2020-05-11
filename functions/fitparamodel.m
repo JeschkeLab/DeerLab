@@ -452,14 +452,23 @@ end
 computeModelCI = nargout>3;
 if computeModelCI
     modelci = cell(nAxes,1);
+    %Loop over different signals
     for i = 1:nAxes
-        % Compute Jacobian for time/distance-model
-        jacobian = jacobianest(@(par)model(ax{i},par,Labels{i}),parfit);
-        modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax{i})).';
-        upper = modelfit{i} + z*sqrt(modelvariance);
-        lower = modelfit{i} - z*sqrt(modelvariance);
-        modelci{i} = [lower(:) upper(:)];
-    end    
+        cont = cell(numel(z),1);
+        %Loop over different confidence levels requested
+        for j=1:numel(z)
+            % Compute Jacobian for time/distance-model
+            jacobian = jacobianest(@(par)model(ax{i},par,Labels{i}),parfit);
+            modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax{i})).';
+            upper = modelfit{i} + z(j)*sqrt(modelvariance);
+            lower = modelfit{i} - z(j)*sqrt(modelvariance);
+            cont{j} = [lower(:) upper(:)];
+        end
+        if numel(z)==1
+            cont = cont{1};
+        end
+        modelci{i} = cont;
+    end
 end
 
 % Calculate goodness of fit
