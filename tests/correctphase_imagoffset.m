@@ -16,7 +16,7 @@ pass(1) = all(abs(imag(xcorr) - imag(x.')) < 1e-10);
 % Pass 2: the input phase is properly fitted
 pass(2) = abs(phiIn - phiOut) < 1e-10;
 % Pass 3: the input imaginary offset is properly fitted
-pass(2) = abs(ImOffsetIn - ImOffsetOut) < 1e-10;
+pass(3) = abs(ImOffsetIn - ImOffsetOut) < 1e-10;
 
 pass = all(pass);
 

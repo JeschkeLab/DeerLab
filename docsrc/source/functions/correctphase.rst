@@ -24,7 +24,7 @@ Syntax
 
 
 Parameters
-    *   ``V`` - Complex-valued signal (*N*-element array)
+    *   ``V`` - Complex-valued signal (*N*-element array or *NxM*-element array)
     *   ``ph`` - Correction phase (scalar)
     *   ``oc`` - Imaginary offset correction (boolean)
 Returns
@@ -45,6 +45,8 @@ Description
 
 Performs a phase correction of the complex-valued data ``V`` that minimizes the norm of the imaginary component of the data. The phase-corrected data ``Vr`` is returned normalized.
 
+If a two-dimensional complex-valued dataset ``V`` of size *NxM* is provided,the phase correction is performed on each of the *M* columns.  
+
 
 -----------------------------
 
@@ -53,7 +55,7 @@ Performs a phase correction of the complex-valued data ``V`` that minimizes the 
 
      Vr = correctphase(V,ph)
 
-Applied a phase correction with a given phase angle ``ph`` (in radians) to input data vector ``V``.
+Applied a phase correction with a given phase angle ``ph`` (in radians) to input data vector ``V``. If a two-dimensional complex-valued dataset ``V`` is provided, the number of phases must match the number of columns in ``V``.
 
 
 -----------------------------
