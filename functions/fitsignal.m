@@ -71,7 +71,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [Vfit,Pfit,Bfit,parfit,parci,stats] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model,par0,varargin)
+function [Vfit,Pfit,Bfit,parfit,modfitci,parci,stats] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model,par0,varargin)
 
 if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
@@ -304,7 +304,6 @@ if RegularizationOnly
     end
     parfit_ = [];
     parci_ = [];
-    
 else
     
     % Keep track of alpha and parameter vector across iterations, to avoid
@@ -407,9 +406,15 @@ else
         end
         parci_ = parci_{1};
         
+        VfitCI = cell(nSignals,1);
+        BfitCI = cell(nSignals,1);
         for idx = 1:nSignals
-            %Propagate errors in the parameter sets to the signal model
-            VfitCI{idx} = propagateCI(covmatrix,J,parfit_,Vfit{idx},z(1),t{idx});
+            for i=1:numel(z)
+                %Propagate errors in the parameter sets to the signal model
+                VfitCI{idx}{i} = propagateCI(covmatrix,J,parfit_,Vfit{idx},z(i),t{idx});
+                bgidx_ = bgidx{idx};
+                BfitCI{i} = propagateCI(covmatrix(bgidx_,bgidx_),bg_model{idx},parfit_(bgidx_),Bfit{idx},z(i),t{idx});
+            end
         end
         if ~parfreeDistribution
             for i=1:numel(z)
@@ -443,9 +448,12 @@ for i = 1:nSignals
 end
 if calculateCI
     parci.dd = parci_(ddidx,:);
+    modfitci.Pfit = PfitCI;
     for i = 1:nSignals
         parci.bg{i} = parci_(bgidx{i},:);
         parci.ex{i} = parci_(exidx{i},:);
+        modfitci.Vfit{i} = VfitCI;
+        modfitci.Bfit{i} = BfitCI;
     end
 end
 
@@ -456,13 +464,14 @@ if nargout==0
         subplot(2,nSignals,i);
         plot(t{i},Vexp{i},'k.',t{i},Vfit{i},'r','LineWidth',1.5)
         hold on
-        fill([t{i}; flipud(t{i})],[VfitCI{i}(:,1); flipud(VfitCI{i}(:,2))],'r','LineStyle','none','FaceAlpha',0.4)
+        fill([t{i}; flipud(t{i})],[VfitCI{i}{1}(:,1); flipud(VfitCI{i}{1}(:,2))],'r','LineStyle','none','FaceAlpha',0.2)
+        fill([t{i}; flipud(t{i})],[VfitCI{i}{2}(:,1); flipud(VfitCI{i}{2}(:,2))],'r','LineStyle','none','FaceAlpha',0.5)
         hold off
         axis tight
         grid on
         xlabel('Time [\mus]');
         ylabel(sprintf('V\\{%d\\}',i));
-        legend('Data','Fit','95%-CI');
+        legend('Data','Fit','95%-CI','50%-CI');
     end
     subplot(2,1,2);
     plot(r,Pfit,'k','LineWidth',1.5);
