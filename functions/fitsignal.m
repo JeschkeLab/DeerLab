@@ -426,6 +426,23 @@ else
     end
 end
 
+
+% Normalize distribution, scale CIs accordingly
+%-------------------------------------------------------------------------------
+dr = mean(diff(r));
+Pnorm = sum(Pfit)*dr;
+Pfit = Pfit/Pnorm;
+if calculateCI
+    if iscell(PfitCI)
+        for j = 1:numel(PfitCI)
+            PfitCI{j} = PfitCI{j}/Pnorm;
+        end
+    else
+        PfitCI = PfitCI/Pnorm;
+    end
+end
+
+
 % Calculate goodness of fit
 %-------------------------------------------------------------------------------
 if computeStats
