@@ -294,10 +294,6 @@ if runTutorials
 
     % Run all tutorial scripts
     for i=1:numel(mfiles)
-        % Skip the template file
-        if contains(mfiles{i},'template.m')
-            continue
-        end
         % Run turorial, catch errors
         try
             tic
@@ -350,7 +346,7 @@ if runCodeCoverage
         
         Code = fileread(FcnName);
         CodeLines = splitlines(Code);
-        missables = {'error','end','break','plot','fprintf','return','function'};
+        missables = {'error','end','break','plot','fprintf','return','function','else','otherwise'};
         unreachable = cellfun(@(str)contains(str,missables),CodeLines);
         unreachable = find(unreachable).';
         
@@ -378,6 +374,8 @@ if runCodeCoverage
                 Missed(Missed==unreachable(k)) = NaN;
             end
             Missed(isnan(Missed)) = [];
+        else
+            Missed = [];
         end
         if isempty(Missed)
             Missed = [];
@@ -386,7 +384,10 @@ if runCodeCoverage
         % Print to command window
         if (~isempty(TestName) && Coverage~=0) || isempty(TestName)
             if contains(params,'-c')
-                fprintf('%-20s%-18s%8.2f%% %18s%s\n',FcnName,' ',Coverage,'Lines missing:',mat2str(Missed))
+                fprintf('%-20s%-18s%8.2f%% %18s\n',FcnName,' ',Coverage,'Lines missing:')
+                for ii=1:numel(Missed)
+                    fprintf('%i| %s \n',Missed(ii),CodeLines{Missed(ii)});
+                end
             else
                 fprintf('%-20s%-18s%6.2f\n',FcnName,' ',Coverage);
             end
