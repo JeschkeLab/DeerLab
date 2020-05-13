@@ -88,7 +88,8 @@ end
 Phase = mod(Phase,pi);
 
 %Do phase correction and normalize
-Vc = (V - 1i*ImagOffset).*exp(1i*Phase);
+ImagOffset = ImagOffset*1i;
+Vc = (V - ImagOffset).*exp(1i*Phase);
 Vreal = real(Vc);
 Vimag = imag(Vc);
 
@@ -103,10 +104,6 @@ if numel(params)>1
     imoffsets = params(2);
 else
     imoffsets = 0;
-end
-if any(imoffsets<0)
-    ImagNorm = 1e6;
-    return
 end
 
 ImagComponent = imag((V-1i*imoffsets).*exp(1i*phase));
