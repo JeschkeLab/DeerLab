@@ -308,7 +308,10 @@ if isempty(upperBounds)
     upperBounds = Ranges(2:2:end);
 end
 if any(upperBounds==realmax) || any(lowerBounds==-realmax)
+    unboundedparams = true;
     warning('Some model parameters are unbounded. Use ''Lower'' and ''Upper'' options to pass parameter boundaries.')
+else
+    unboundedparams = false;
 end
 if  numel(StartParameters)~=numel(upperBounds) || ...
         numel(StartParameters)~=numel(lowerBounds)
@@ -319,6 +322,9 @@ if any(upperBounds<lowerBounds)
 end
 
 % Preprare multiple start global optimization if requested
+if MultiStart>1 && unboundedparams
+    error('Multistart optimization cannot be used with unconstrained parameters.')
+end
 MultiStartParameters = multistarts(MultiStart,StartParameters,lowerBounds,upperBounds);
 
 
@@ -351,7 +357,9 @@ end
 % Run least-squares fitting
 %-------------------------------------------------------------------------------
 % Disable ill-conditioned matrix warnings
-warning('off','MATLAB:nearlySingularMatrix'), warning('off','MATLAB:singularMatrix')
+warning('off','MATLAB:nearlySingularMatrix')
+warning('off','MATLAB:singularMatrix')
+warning('off','MATLAB:rankDeficientMatrix')
 
 fvals = zeros(1,MultiStart);
 parfits = cell(1,MultiStart);
@@ -501,7 +509,9 @@ if nAxes==1
 end
 
 % Set the warnings back on
-warning('on','MATLAB:nearlySingularMatrix'), warning('on','MATLAB:singularMatrix')
+warning('on','MATLAB:nearlySingularMatrix')
+warning('on','MATLAB:singularMatrix')
+warning('on','MATLAB:rankDeficientMatrix')
     
     % Function that provides vector of residuals, which is the objective
     % function for the least-squares solvers
