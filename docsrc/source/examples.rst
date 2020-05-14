@@ -21,6 +21,8 @@ Here is a collection of example scripts for the use of DeerLab. You can also fin
     ./examples/example_timedomainfitting
     ./examples/example_selectmodel
     ./examples/example_globalfit_regularization
+    ./examples/example_globalfit_localglobal_vars
+
 
 .. raw:: html
 
@@ -116,6 +118,12 @@ The following scripts are more advanced.
 		<div class="row" onclick="window.location='examples/example_globalfit_regularization.html#example_globalfit_regularization'">
 			<div class="cell">
 				Global fit of dipolar evolution functions using fitregmodel
+			</div>
+		</div>
+
+		<div class="row" onclick="window.location='examples/example_globalfit_localglobal_vars.html#example_globalfit_localglobal_vars'">
+			<div class="cell">
+				Global model fits with global, local and fixed parameters
 			</div>
 		</div>
 
