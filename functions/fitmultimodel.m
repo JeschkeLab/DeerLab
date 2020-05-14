@@ -24,12 +24,13 @@
 %   Similarly, time-domain global fitting can be used when passing time-domain
 %   and the model time axes {t1,t2,...} of the corresponding signals.
 %
-%   [P,param,Pci,paramci,opt,metrics,Peval] = FITMULTIMODEL(___)
+%   [P,param,Pci,paramci,opt,metrics,Peval,stats] = FITMULTIMODEL(___)
 %   If requested alongside the distribution (P), the optimal fit model
 %   parameters (param), the optimal number of Gaussians (opt) and
 %   evaluated selection metrics (metrics) are returned. The fitted distance
 %   distributions fitted for ech multigauss model can be requested as a
-%   fifth output argument (Peval).
+%   fifth output argument (Peval). A structure containing different statistical
+%   estimators of goodness of fit for the optimal model is returned as (stats).
 %
 %   P = FITMULTIMODEL(...,'Property',Value)
 %   Additional (optional) arguments can be passed as property-value pairs.
@@ -52,7 +53,7 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [Pfit,param,Pfitci,paramci,nGaussOpt,metrics,Peval] = fitmultimodel(Vs,Ks,r,model,maxModels,method,varargin)
+function [Pfit,param,Pfitci,paramci,nGaussOpt,metrics,Peval,stats] = fitmultimodel(Vs,Ks,r,model,maxModels,method,varargin)
 
 
 % Validate user input (S, K, r, and method are validated in lower-level functions)
@@ -247,9 +248,9 @@ end
 
 % Run fitting and model selection to see which multi-Gauss model is optimal
 if ~isempty(BckgModel)
-    [nGaussOpt,metrics,fitparams,paramcis] = selectmodel(timeMultiGaussModels,Vs,ts,method,param0,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
+    [nGaussOpt,metrics,fitparams,paramcis,stats] = selectmodel(timeMultiGaussModels,Vs,ts,method,param0,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
 else
-    [nGaussOpt,metrics,fitparams,paramcis] = selectmodel(multiModels,Vs,r,Ks,method,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
+    [nGaussOpt,metrics,fitparams,paramcis,stats] = selectmodel(multiModels,Vs,r,Ks,method,'Lower',LowerBounds,'Upper',UpperBounds,varargin);
 end
 
 % Calculate the distance distribution for the optimal multi-Gauss model
@@ -258,7 +259,7 @@ paramci = paramcis{nGaussOpt}{1};
 optModel = multiModels{nGaussOpt};
 info = optModel();
 Pfit = optModel(r,param(1:info.nparam));
-
+stats = stats{nGaussOpt};
 
 % Uncertainty estimation
 %--------------------------------------------------------------

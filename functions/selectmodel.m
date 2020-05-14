@@ -29,10 +29,12 @@
 %   The initial guess values for the parameters of each model can be passed
 %   as a cell array {par1,...parN} of value vectors.
 %
-%   [opt,f,params,paramcis] = SELECTMODEL(...)
+%   [opt,f,params,paramcis,stats] = SELECTMODEL(...)
 %   Returns a cell array the method selector functionals (f) for the
 %   different methods and a cell array (params) with the fitted parameters
 %   for each of the evaluated models as well as their confidence intervals (paramcis).
+%   A cell array of structures (stats) containing the goodness-of-fit statistics 
+%   of the different models are returned as well.
 %
 %   opt = SELECTMODEL(...,'Property',Value)
 %   Additional (optional) arguments can be passed as name-value pairs.
@@ -50,7 +52,7 @@
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
-function [optima,functionals,fitparams,paramcis] = selectmodel(models,Vs,ax,Ks,methods,param0,varargin)
+function [optima,functionals,fitparams,paramcis,stats] = selectmodel(models,Vs,ax,Ks,methods,param0,varargin)
 
 if nargin<4
     error('At least four input arguments required.')
@@ -175,11 +177,12 @@ AIC = zeros(nModels,1);
 RMSD = zeros(nModels,1);
 fitparams = cell(nMethods,1);
 paramcis = cell(nMethods,1);
+stats = cell(nMethods,1);
 for i = 1:nModels
     if isTimeDomain
-        [parfit,fit,parci] = fitparamodel(Vs,models{i},ax,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
+        [parfit,fit,parci,~,stats{i}] = fitparamodel(Vs,models{i},ax,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
     else
-        [parfit,fit,parci] = fitparamodel(Vs,models{i},ax,Ks,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
+        [parfit,fit,parci,~,stats{i}] = fitparamodel(Vs,models{i},ax,Ks,param0{i},'Upper',UpperBounds{i},'Lower',LowerBounds{i},varargin{:});
     end
     fitparams{i} = parfit;
     paramcis{i} = parci;
