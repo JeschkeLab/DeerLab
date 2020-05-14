@@ -30,7 +30,6 @@ Before fitting, experimental DEER data must be preprocessed. Three steps are usu
 
     V = correctphase(V);           % phase correction
     t = correctzerotime(V,t);      % zero-time adjustment
-    V = correctscale(V,t);         % vertical rescaling (optional)
 
 All the ``correct*`` functions determine the corrections via an optimization approach. If that fails, you can provide an explicit phase, time shift, and scale as additional argument.
 
