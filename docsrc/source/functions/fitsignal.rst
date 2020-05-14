@@ -212,3 +212,27 @@ Additional settings can be specified via name-value pairs. All property names ar
 		.. code-block:: matlab
 
 			fitsignal(___,'alphaOptThreshold',1e-4)
+
+- ``'Rescale'`` -  Rescaling of fitted dipolar signal
+    This enables/disables the automatic optimization of the dipolar signal scale. If enabled (``true``) the experimental dipolar signal does not need to fulfill ``V(t=0) = 1``, if disabled (``false``) it needs to be fulfilled.
+
+    *Default:* ``true``
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			V = correctscale(V,t);
+			fitsignal(___,'Rescale',false)
+
+
+- ``'normP'`` -  Renormalization of the distance distribution
+    This enables/disables the re-normalization of the fitted distance distribution such that ``sum(Pfit)*dr = 1``. 
+
+    *Default:* ``true``
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			fitsignal(___,'normP',false)

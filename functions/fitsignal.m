@@ -63,6 +63,9 @@
 %                     'rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl')
 %   'alphaOptThreshold' - relative parameter change threshold for reoptimizing
 %                         the regularization parameter
+%   'Rescale'       - Enable/Disable optimization of the signal scale
+%   'normP'         - Enable/Disable re-normalization of the fitted distribution
+%
 
 % Example:
 %    Vfit = fitsignal(Vexp,t,r,@dd_gauss,@bg_hom3d,@ex_4pdeer)
@@ -106,8 +109,8 @@ validateattributes(r,{'numeric'},{'vector'},mfilename,'r (3rd input)');
 
 % Parse the optional parameters in varargin
 %-------------------------------------------------------------------------------
-optionalProperties = {'RegParam','RegType','alphaOptThreshold','TolFun','Lower','Upper'};
-[regparam,regtype,alphaOptThreshold,TolFun,lb,ub] = parseoptional(optionalProperties,varargin);
+optionalProperties = {'RegParam','RegType','alphaOptThreshold','TolFun','Lower','Upper','Rescale','normP'};
+[regparam,regtype,alphaOptThreshold,TolFun,lb,ub,Rescale,normP] = parseoptional(optionalProperties,varargin);
 
 if isempty(lb)
     lb = {[],[],[]};
@@ -124,6 +127,11 @@ else
     validateattributes(TolFun,{'numeric'},{'scalar','nonnegative'},mfilename,'TolFun option');
 end
 
+if isempty(normP)
+    normP = true;
+else
+    validateattributes(normP,{'logical'},{'nonempty'},mfilename,'normP option');
+end
 % Regularization settings
 if isempty(regtype)
     regtype = 'tikh';
@@ -318,7 +326,7 @@ else
     B_cached = [];
     
     % Fit the parameters
-    args = {Vexp,@Vmodel,t,par0,'Lower',lb,'Upper',ub,'TolFun',TolFun,'Verbose',verbose,'Rescale',true};
+    args = {Vexp,@Vmodel,t,par0,'Lower',lb,'Upper',ub,'TolFun',TolFun,'Verbose',verbose,'Rescale',Rescale};
     [parfit_] = fitparamodel(args{:});
     
     
@@ -429,19 +437,20 @@ end
 
 % Normalize distribution, scale CIs accordingly
 %-------------------------------------------------------------------------------
-dr = mean(diff(r));
-Pnorm = sum(Pfit)*dr;
-Pfit = Pfit/Pnorm;
-if calculateCI
-    if iscell(PfitCI)
-        for j = 1:numel(PfitCI)
-            PfitCI{j} = PfitCI{j}/Pnorm;
+if normP
+    dr = mean(diff(r));
+    Pnorm = sum(Pfit)*dr;
+    Pfit = Pfit/Pnorm;
+    if calculateCI
+        if iscell(PfitCI)
+            for j = 1:numel(PfitCI)
+                PfitCI{j} = PfitCI{j}/Pnorm;
+            end
+        else
+            PfitCI = PfitCI/Pnorm;
         end
-    else
-        PfitCI = PfitCI/Pnorm;
     end
 end
-
 
 % Calculate goodness of fit
 %-------------------------------------------------------------------------------

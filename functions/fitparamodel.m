@@ -49,6 +49,7 @@
 %   'MaxFunEvals' - Maximum number of optimizer function evaluations
 %   'MultiStart' - Number of starting points for global optimization
 %   'ConfidenceLevel' - Confidence level(s) for confidence intervals
+%   'Rescale' - Enable/Disable optimization of the signal scale
 %   'Verbose' - Display options for the solvers:
 %                 'off' - no information displayed
 %                 'final' - display solver exit message

@@ -227,6 +227,18 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 			param = fitparamodel(___,'MaxFunEval',1e10)
 
+- ``'Rescale'`` -  Rescaling of fitted dipolar signal
+    This enables/disables the automatic optimization of the dipolar signal scale. If enabled (``true``) the experimental dipolar signal does not need to fulfill ``V(t=0)=1``, if disabled (``false``) it needs to be fulfilled.
+
+    *Default:* ``true``
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			V = correctscale(V,t);
+			param = fitparamodel(___,'Rescale',false)
+
 - ``'ConfidenceLevel'`` -  Confidence level of confidence intervals
     Confidence level(s) of the confidence intervals computed for each fitted parameter. Must be an array containing values between 0 and 1. If more than one confidence level is requested, the ``paramci`` and ``fitci`` variables are returned as cell arrays containing the confidence intervals at the different requested levels.
 
