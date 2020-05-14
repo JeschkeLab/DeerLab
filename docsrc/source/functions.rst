@@ -101,7 +101,6 @@ Function                                         Description
 =============================================  ============================================================
 :ref:`correctphase`                              IQ Phase correction
 :ref:`correctzerotime`                           Dipolar zero-time correction
-:ref:`correctscale`                              Dipolar signal amplitude rescaling
 :ref:`longpass`                                  Longpass filtering
 :ref:`winlowpass`                                Windowed-lowpass filtering
 =============================================  ============================================================
@@ -178,6 +177,7 @@ This group of functions provides tools for reproducing analysis methods or workf
 Function                                         Description
 =============================================  ============================================================
 :ref:`time2dist`                                 Heuristic time-to-distance axis converter
+:ref:`correctscale`                              Dipolar signal amplitude rescaling
 :ref:`backgroundstart`                           Background fit start point optimizer
 :ref:`fitbackground`                             Background fitting engine
 :ref:`apt`                                       Approximate Pake transformation (APT)
