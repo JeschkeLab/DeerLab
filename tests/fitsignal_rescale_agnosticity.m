@@ -13,12 +13,17 @@ K = dipolarkernel(t,r,0.3,B);
 scale = 1e3;
 V = K*P + whitegaussnoise(t,0.005);
 
-[~,Pfit1] = fitsignal(V*scale,t,r,@dd_gauss,@bg_exp,@ex_4pdeer);
-[~,Pfit2] = fitsignal(V,t,r,@dd_gauss,@bg_exp,@ex_4pdeer);
+[Vfit1,Pfit1] = fitsignal(V*scale,t,r,@dd_gauss,@bg_exp,@ex_4pdeer);
+[Vfit2,Pfit2] = fitsignal(V,t,r,@dd_gauss,@bg_exp,@ex_4pdeer);
 
-%Pass 1: distance distribution is well fitted
+%Pass 1-2: distance distributions are well fitted
 pass(1) = all(abs(Pfit1 - P) < 2e-1);
 pass(2) = all(abs(Pfit2 - Pfit1) < 1e-2);
+
+%Pass 3-4: dipolar signals are well fitted
+pass(3) = all(abs(Vfit1 - V*scale) < scale*2e-2);
+pass(4) = all(abs(Vfit2 - V) < 2e-2);
+
 pass = all(pass);
 
 maxerr = max(abs(Pfit1 - P));

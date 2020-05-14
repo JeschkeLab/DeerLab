@@ -18,15 +18,19 @@ lower = [0 0 1 0.1];
 upper = [1 1 20 5];
 mymodel = @(t,param)dipolarkernel(t,r,param(1),bg_exp(t,param(2)))*dd_gauss(r,param(3:4));
 
-parfit1 = fitparamodel(V*scale,mymodel,t,InitialGuess,'Rescale',true,'MultiStart',5,'Lower',lower,'Upper',upper);
-parfit2 = fitparamodel(V,mymodel,t,InitialGuess,'Rescale',false,'MultiStart',5,'Lower',lower,'Upper',upper);
+[parfit1,Vfit1] = fitparamodel(V*scale,mymodel,t,InitialGuess,'Rescale',true,'MultiStart',5,'Lower',lower,'Upper',upper);
+[parfit2,Vfit2] = fitparamodel(V,mymodel,t,InitialGuess,'Rescale',false,'MultiStart',5,'Lower',lower,'Upper',upper);
 
 Pfit1 = dd_gauss(r,parfit1(3:4));
 Pfit2 = dd_gauss(r,parfit2(3:4));
 
-%Pass 1: distance distribution is well fitted
+%Pass 1-2: distance distributions are well fitted
 pass(1) = all(abs(Pfit1 - P) < 2e-1);
 pass(2) = all(abs(Pfit2 - Pfit1) < 1e-2);
+
+%Pass 3-4: dipolar signals are well fitted
+pass(3) = all(abs(Vfit1 - V*scale) < scale*2e-2);
+pass(4) = all(abs(Vfit2 - V) < 2e-2);
 
 pass = all(pass);
 
