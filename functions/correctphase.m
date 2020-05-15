@@ -8,7 +8,7 @@
 %   Performs a phase optimization on the complex-valued data (V) by
 %   minimization of the imaginary component of the data. The phase can be corrected 
 %   manually by specifying a phase (phase), in radians. A third boolean argument
-%   can be passed to enable/diasable the fitting of a possible offset on the
+%   can be passed to enable/disable the fitting of a possible offset on the
 %   imaginary component of the data. Defaults to false.
 %   The function returns the real (Vr) and imaginary (Vi) parts the phase corrected
 %   data, the optimized phase (ph) and imaginary offset (io) employed for the correction.
@@ -28,10 +28,12 @@
 
 function [Vreal,Vimag,Phase,ImagOffset] = correctphase(V,Phase,fitImagOffset)
 
-%--------------------------------------------------------------------------
-%Input parsing
-%--------------------------------------------------------------------------
+
+% Input parsing
+%-------------------------------------------------------------------------------
 switch nargin
+    case 0
+        error('At least one input (V) is requried.')
     case 1
         Phase = [];
         fitImagOffset = false;
@@ -39,59 +41,73 @@ switch nargin
         fitImagOffset = false;
     case 3
     otherwise
-        error('Wrong number of input arguments.');
+        error('At most three inputs (V, Phase, fitImagOffset) are possible.');
 end
 
-if all(size(V)>1)
-    Ntraces = size(V,2);
-else
+validateattributes(V,{'numeric'},{'2d'},mfilename,'V')
+if isvector(V)
     Ntraces = 1;
-    %Ensure column vector
-    V = V(:);
+    V = V(:); % ensure column vector
+else
+    Ntraces = size(V,2);
 end
+n = size(V,1);
 
-validateattributes(V,{'numeric'},{},mfilename,'PrimaryData')
 if ~isempty(Phase)
     validateattributes(Phase,{'numeric'},{'nonnegative'},mfilename,'Phase')
     if numel(Phase)~=Ntraces
        error('The number of input phases must agree with the number of traces.') 
     end
 end
-validateattributes(fitImagOffset,{'logical'},{'nonempty'},mfilename,'FittedImaginaryOffset')
 
+validateattributes(fitImagOffset,{'logical'},{'nonempty'},mfilename,'FittedImaginaryOffset')
+fitPhase = isempty(Phase);
+
+% Phase/offset fitting
+%-------------------------------------------------------------------------------
 options = optimset('MaxFunEvals',1e5,'MaxIter',1e5);
 
 ImagOffset = zeros(1,Ntraces);
-% If phase is not provided, then fit it (and imag. offset)
-if isempty(Phase)
-    for i=1:Ntraces
-        phi0 = mean(angle(V(:,i))); % use average phase as starting point for fit
-        pars(1) = phi0;
+if fitPhase
+    Phase = zeros(1,Ntraces);
+    
+    for i = 1:Ntraces
+        FitRange = round(n/8):n; % use only last 7/8 of data for phase/offset correction
+        V_ = V(FitRange,i);
+        par0(1) = mean(angle(V_)); % use average phase as initial value
         if fitImagOffset
-            pars(2) = 0;
+            par0(2) = mean(imag(V_)); % use average offset as initial value
         end
-        FitStart = round(size(V,1)/8); % use only last 7/8 of data for phase/offset correction
-        pars = fminsearch(@(par)imaginarynorm(par,V(FitStart:end,i)),pars,options);
+        fun = @(par)imaginarynorm(par,V_);
+        pars = fminsearch(fun,par0,options);
         Phase(i) = pars(1);
         if fitImagOffset
             ImagOffset(i) = pars(2);
         end
     end
 
-elseif ~isempty(Phase) && fitImagOffset
-    for i=1:Ntraces
-        ImagOffset(i) = fminsearch(@(offset)imaginarynorm([Phase offset],V(:,i)),0);
+else
+    if fitImagOffset
+        % Fit only imaginary offset        
+        for i = 1:Ntraces
+            par0 = 0;
+            fun = @(offset)imaginarynorm([Phase offset],V(:,i));
+            ImagOffset(i) = fminsearch(fun,par0);
+        end
     end
 end
 
-%Wrap phases to [0 pi] range
-Phase = mod(Phase,pi);
 
-%Do phase correction and normalize
 ImagOffset = ImagOffset*1i;
-Vc = (V - ImagOffset).*exp(1i*Phase);
+
+% Apply phase/offset correction
+ph = exp(1i*Phase);
+Vc = (V - ImagOffset)./ph;
+
+% Output
 Vreal = real(Vc);
 Vimag = imag(Vc);
+Phase = angle(ph); % map phase angle to [-pi,pi) interval
 
 end
 
@@ -106,7 +122,7 @@ else
     imoffsets = 0;
 end
 
-ImagComponent = imag((V-1i*imoffsets).*exp(1i*phase));
-ImagNorm = norm(ImagComponent);
+Vcorr = (V-1i*imoffsets).*exp(-1i*phase);
+ImagNorm = norm(imag(Vcorr));
 
 end

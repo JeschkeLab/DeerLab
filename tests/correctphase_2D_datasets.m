@@ -4,7 +4,7 @@ function [pass,maxerr] = test(opt)
 
 x = repmat((1:100).',1,20);
 phases = mod(linspace(-3*pi/4,pi/2,20),pi);
-xphased = x.*exp(-1i*phases);
+xphased = x.*exp(1i*phases);
 
 [xcorr,~,phasesfit] = correctphase(xphased);
 

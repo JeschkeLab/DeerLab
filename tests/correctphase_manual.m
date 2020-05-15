@@ -4,7 +4,7 @@ function [pass,maxerr] = test(opt)
 
 x = (1:100).';
 phiIn = pi/4;
-xphased = x.*exp(-1i*phiIn);
+xphased = x.*exp(1i*phiIn);
 [xRe,xIm,phiOut] = correctphase(xphased,phiIn);
 
 % Pass 1: real part is equal to unphased input

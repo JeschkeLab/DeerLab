@@ -5,7 +5,7 @@ function [pass,maxerr] = test(opt)
 x = 1:100;
 phiIn = pi/4;
 ImOffsetIn = 4i;
-xphased = x.*exp(-1i*phiIn) + ImOffsetIn;
+xphased = x.*exp(1i*phiIn) + ImOffsetIn;
 fitImOffset = true;
 
 [xcorr,~,phiOut,ImOffsetOut] = correctphase(xphased,phiIn,fitImOffset);
