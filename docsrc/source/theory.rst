@@ -17,7 +17,8 @@ The theory underlying DeerLab is not fully general and makes a series of assumpt
 5. There is no exchange coupling between any spins. The only interaction is through-space dipolar coupling. Exchange coupling is not handled by DeerLab.
 6. The dipolar coupling between spins is in the weak-coupling regime, i.e. it is weaker than the difference between their resonance frequencies. Intermediate- and strong-coupling regimes are not handled by DeerLab.
 7. All spins relax with the same phase memory time. Systems with rotamer-specific relaxation rates are not handled by DeerLab.
-8. There is no orientation selection in the experiment. Orientation-selective DEER is not handled by DeerLab.
+8. The signal is free of modulations due to hyperfine couplings (ESEEM).
+9. There is no orientation selection in the experiment. Orientation-selective DEER is not handled by DeerLab.
 
 .. warning:: 
    If your sample and experiment do not satisfy all these assumptions, DeerLab will give incorrect results.
