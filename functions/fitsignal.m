@@ -65,6 +65,7 @@
 %                         the regularization parameter
 %   'Rescale'       - Enable/Disable optimization of the signal scale
 %   'normP'         - Enable/Disable re-normalization of the fitted distribution
+%   'MultiStart'    - Number of starting points for global optimization
 %
 
 % Example:
@@ -109,8 +110,8 @@ validateattributes(r,{'numeric'},{'vector'},mfilename,'r (3rd input)');
 
 % Parse the optional parameters in varargin
 %-------------------------------------------------------------------------------
-optionalProperties = {'RegParam','RegType','alphaOptThreshold','TolFun','Lower','Upper','Rescale','normP'};
-[regparam,regtype,alphaOptThreshold,TolFun,lb,ub,Rescale,normP] = parseoptional(optionalProperties,varargin);
+optionalProperties = {'RegParam','RegType','alphaOptThreshold','TolFun','Lower','Upper','Rescale','normP','MultiStart'};
+[regparam,regtype,alphaOptThreshold,TolFun,lb,ub,Rescale,normP,MultiStart] = parseoptional(optionalProperties,varargin);
 
 if isempty(lb)
     lb = {[],[],[]};
@@ -132,6 +133,12 @@ if isempty(normP)
 else
     validateattributes(normP,{'logical'},{'nonempty'},mfilename,'normP option');
 end
+
+if isempty(MultiStart)
+    MultiStart = 1;
+end
+validateattributes(MultiStart,{'numeric'},{'scalar','integer','positive'},mfilename,'MultiStart option');
+
 % Regularization settings
 if isempty(regtype)
     regtype = 'tikh';
@@ -326,7 +333,8 @@ else
     B_cached = [];
     
     % Fit the parameters
-    args = {Vexp,@Vmodel,t,par0,'Lower',lb,'Upper',ub,'TolFun',TolFun,'Verbose',verbose,'Rescale',Rescale};
+    args = {Vexp,@Vmodel,t,par0,'Lower',lb,'Upper',ub,'TolFun',TolFun,...
+        'Verbose',verbose,'Rescale',Rescale,'MultiStart',MultiStart};
     [parfit_] = fitparamodel(args{:});
     
     

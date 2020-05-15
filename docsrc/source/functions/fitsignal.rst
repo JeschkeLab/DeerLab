@@ -213,6 +213,18 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 			fitsignal(___,'alphaOptThreshold',1e-4)
 
+- ``'MultiStart'`` -  Multi-start global optimization
+    Number of initial points to be generated for a global search. For each start point, a local minimum is searched, and the solution with the lowest objective function value is selected as the global optimum.
+
+    *Default:* ``1`` (No global optimization)
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			param = fitsignal(___,'MultiStart',50)
+
+
 - ``'Rescale'`` -  Rescaling of fitted dipolar signal
     This enables/disables the automatic optimization of the dipolar signal scale. If enabled (``true``) the experimental dipolar signal does not need to fulfill ``V(t=0) = 1``, if disabled (``false``) it needs to be fulfilled.
 
