@@ -70,14 +70,11 @@ if length(varargout)>1
     V = varargout{2};
     if iscell(t)
         t = t{1};
-        tmp{1} = V(:,1);
-        tmp{2} = V(:,2);
-        V = tmp;
     end
     
     t = t/1e3; % nanoseconds -> microseconds
     
-    varargout{1} = t;
+    varargout{1} = t(:);
     varargout{2} = V;
 end
 
