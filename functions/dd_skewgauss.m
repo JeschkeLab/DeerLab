@@ -72,9 +72,8 @@ x = (r(:) - r0)/sigma/sqrt(2);
 
 P = 1/sqrt(2*pi)*exp(-x.^2).*(1+erf(alpha*x));
 
-dr = r(2)-r(1);
 if ~all(P==0)
-    P = P/sum(P)/dr;    
+    P = P/trapz(r,P);    
 end
 output = P;
 

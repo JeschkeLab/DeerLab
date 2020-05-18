@@ -14,7 +14,7 @@ Pfit = fitregmodel(S,K,r,RegFunctional,alpha,'Solver','fmincon');
 deltaP = abs(Pfit - P);
 
 % Pass: distribution is well fitted
-pass = all(deltaP < 1e-2);
+pass = all(deltaP < 2e-2);
 
 maxerr = max(deltaP);
 

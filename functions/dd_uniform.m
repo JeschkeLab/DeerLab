@@ -60,7 +60,7 @@ rL = min(abs(param));
 rR = max(abs(param));
 P = zeros(numel(r),1);
 P(r>=rL & r<=rR) = 1;
-P = P/sum(P)/mean(diff(r));
+P = P/trapz(r,P);
 
 output = P;
 

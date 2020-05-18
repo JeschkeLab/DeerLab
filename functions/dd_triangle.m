@@ -78,7 +78,7 @@ if wR>0
 end
 
 if any(P~=0)
-    P = P/sum(P)/mean(diff(r));
+    P = P/trapz(r,P);
 end
 
 output = P;

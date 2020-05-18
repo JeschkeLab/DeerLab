@@ -67,7 +67,7 @@ P = R2^6*pb(r,R2) - R1^6*pb(r,R1) - 2*(R2^3 - R1^3)*pbs(r,R1,R2);
 P = P/(R2^3 - R1^3)^2;
 
 if ~all(P==0)
-P = P/sum(P)/mean(diff(r));
+P = P/trapz(r,P);
 end
 
 output = P;

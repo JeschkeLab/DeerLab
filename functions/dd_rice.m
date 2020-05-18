@@ -60,10 +60,6 @@ sig = param(2);
 a = 1;
 P = multirice3d(r,nu,sig,a);
 
-if ~all(P==0)
-    P = P/sum(P)/mean(diff(r));
-end
-
 output = P;
 
 return

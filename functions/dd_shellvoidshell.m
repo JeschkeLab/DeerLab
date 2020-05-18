@@ -94,7 +94,7 @@ P = (R1^3*(q31 - q41) + R2^3*(q42 - q32))/(delta43*delta21);
 P = round(P,15);
 
 if ~all(P==0)
-P = P/sum(P)/mean(diff(r));
+P = P/trapz(r,P);
 end
 
 output = P;

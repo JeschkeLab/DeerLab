@@ -345,8 +345,7 @@ end
 
 % Normalize distribution, scale CIs accordingly
 if NormP
-    dr = mean(diff(r));
-    Pnorm = sum(P)*dr;
+    Pnorm = trapz(r,P);
     P = P/Pnorm;
     if getConfidenceIntervals
         if iscell(Pci)

@@ -19,5 +19,5 @@ end
 
 % Normalize
 if ~all(P==0)
-  P = P/sum(P)/mean(diff(r));    
+  P = P/trapz(r,P);    
 end

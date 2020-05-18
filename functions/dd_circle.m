@@ -66,7 +66,7 @@ P = zeros(numel(r),1);
 P(idx) = 2/pi./R.^2.*sqrt(dr(idx).^2-R^2);
 
 if any(P~=0)
-    P = P/sum(P)/mean(diff(r));
+    P = P/trapz(r,P);
 end
 
 output = P;

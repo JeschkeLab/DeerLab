@@ -60,7 +60,7 @@ P(idx) = 3*r(idx).^5/(16*R^6) - 9*r(idx).^3/(4*R^4) + 3*r(idx).^2/(R^3);
 
 
 if ~all(P==0)
-P = P/sum(P)/mean(diff(r));
+P = P/trapz(r,P);
 end
 
 output = P;

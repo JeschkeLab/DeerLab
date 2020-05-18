@@ -81,7 +81,7 @@ P = normFact*ShellSurf.*Gaussian;
 
 % Normalize integral
 if ~all(P==0)
-P = P/sum(P)/mean(diff(r));
+P = P/trapz(r,P);
 end
 output = P;
 

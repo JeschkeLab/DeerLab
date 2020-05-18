@@ -8,11 +8,11 @@ All functions in DeerLab use the same units: All distances are in units of **nan
 Distance distributions
 ------------------------------------------
 
-A distance distribution between two spins is represented by a pair of vectors: a distance vector ``r`` (in nanometers) and a vector of densities ``P`` (in inverse nanometers). ``r`` must be a linearly increasing vector, and it cannot have negative values. The elements in ``P`` must be nonnegative. ``P(i)`` is the distribution value at ``r(i)``. Outside the range of ``r``, ``P`` is assumed to be zero, i.e. the distribution is truncated to the range ``r``. ``P`` is normalized such that the integral over the range of the provided ``r`` equals one:
+A distance distribution between two spins is represented by a pair of vectors: a distance vector ``r`` (in nanometers) and a vector of densities ``P`` (in inverse nanometers). ``r`` can be a linearly or non-linearly increasing vector, and it cannot have negative values. The elements in ``P`` must be nonnegative. ``P(i)`` is the distribution value at ``r(i)``. Outside the range of ``r``, ``P`` is assumed to be zero, i.e. the distribution is truncated to the range ``r``. ``P`` is normalized such that the integral over the range of the provided ``r`` equals one:
 
 .. code-block:: matlab
 
-        sum(P)*mean(diff(r))             % integral of P over r, gives 1
+        trapz(r,P)                 % integral of P over r, gives 1
 
 
 DeerLab distinguishes between **parameter-free** and **parametric** distance distributions.
