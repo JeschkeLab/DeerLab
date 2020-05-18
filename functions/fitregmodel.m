@@ -365,7 +365,10 @@ if nargout>3
     stats = cell(numel(V),1);
     for i=1:numel(V)
         Vfit = K{i}*P;
-        Ndof = numel(V{i});
+        % Estimate degrees of freedom from the inlfuence matrix
+        KtKreg = lsqcomponents(V{i},K{i},L,alpha,RegType,HuberParam);
+        H = K{i}*(KtKreg\K{i}.');
+        Ndof = numel(V{i}) - trace(H);
         stats{i} = gof(V{i},Vfit,Ndof);
     end
     
