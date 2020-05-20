@@ -138,9 +138,9 @@ Experiment models
 =========================================== ===============================================================
 Model function                              Description
 =========================================== ===============================================================
-:doc:`ex_4pdeer<models/ex_4pdeer>`          4-pulse DEER (single modulated pathway)
+:doc:`ex_4pdeer<models/ex_4pdeer>`           4-pulse DEER, 3-pulse DEER (single modulated pathway)
 :doc:`ex_ovl4pdeer<models/ex_ovl4pdeer>`     4-pulse DEER (including 2+1 pathway) 
-:doc:`ex_5pdeer<models/ex_5pdeer>`          5-pulse DEER
+:doc:`ex_5pdeer<models/ex_5pdeer>`           5-pulse DEER
 :doc:`ex_7pdeer<models/ex_7pdeer>`           7-pulse DEER
 =========================================== ===============================================================
 

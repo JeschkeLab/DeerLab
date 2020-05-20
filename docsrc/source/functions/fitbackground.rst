@@ -62,7 +62,7 @@ The time at which the background starts to be fitted can be passed as an additio
 
 .. code-block:: matlab
 
-    [B,lambda,param] = fitbackground(S,t,@model,[tstart tend])
+    [B,lambda,param] = fitbackground(V,t,@model,[tstart tend])
 
 The start and end times of the fitting can be specified by passing a two-element array ``[tstart, tend]`` as the argument. If ``tend`` is not specified, the end of the signal is selected as the default.
 
@@ -88,7 +88,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@bg_hom3d,tstart,'ModDepth',0.45)
+			B = fitbackground(___,'ModDepth',0.45)
 
 
 - ``'InitialGuess`` - Initial parameter values
@@ -100,7 +100,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@bg_hom3d,tstart,'InitialGuess',[0.75 3])
+			B = fitbackground(___,'InitialGuess',[0.75 3])
 
 
 - ``'LogFit`` - Fit in log-scale
@@ -112,7 +112,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@bg_hom3d,tstart,'LogFit',true)
+			B = fitbackground(___,tstart,'LogFit',true)
 
 - ``'Solver'`` - Optimization solver
     Specifies the solver used for fitting the background model (``lsqnonlin``, ``fminsearchcon``, ``nlsqbnd``).
@@ -123,4 +123,4 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 		.. code-block:: matlab
 
-			B = fitbackground(V,t,@bg_hom3d,tstart,'Solver','nlsqbnd')
+			B = fitbackground(___,'Solver','nlsqbnd')

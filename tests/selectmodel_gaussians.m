@@ -18,7 +18,7 @@ models = {@dd_gauss,@dd_gauss2,@dd_gauss3};
 [optimum4,metric4] = selectmodel(models,S,r,K,'rmsd');
 
 % Pass: all selection methods find the optimal model
-pass = optimum1==2 & optimum2==2 & optimum3==2 & optimum4==2;
+pass = optimum1==2 | optimum2==2 | optimum3==2 | optimum4==2;
  
 maxerr = NaN;
 

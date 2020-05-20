@@ -61,7 +61,7 @@ Here, ``'P'`` specifies that a parameter-free distribution (defined over ``r``) 
 
 .. code-block:: matlab
 
-    [Vfit,Bfit,Pfit,parfit,parci] = fitsignal(Vexp,t,r,'P',@bg_hom3d,@ex_4pdeer)
+    [Vfit,Pfit,Bfit,parfit,parci] = fitsignal(Vexp,t,r,'P',@bg_hom3d,@ex_4pdeer)
 
 Parametric distributions
 ----------------------------------
@@ -70,7 +70,7 @@ To use a parametric distance distribution model, provide ``fitsignal`` with a fu
 
 .. code-block:: matlab
 
-    [Vfit,Bfit,Pfit,parfit,parci] = fitsignal(Vexp,t,r,@dd_gauss2,@bg_hom3d,@ex_4pdeer)
+    [Vfit,Pfit,Bfit,parfit,parci] = fitsignal(Vexp,t,r,@dd_gauss2,@bg_hom3d,@ex_4pdeer)
 
 This will fit a two-Gauss distribution over ``r``. The fitted distribution parameters are returned in ``parfit``, and the corresponding distribution in ``Pfit``.
 
@@ -84,14 +84,14 @@ To fit a homogeneous 3D background and a modulation amplitude to a dipolar signa
 
 .. code-block:: matlab
 
-   [Bfit,lamfit] = fitbackground(t,V,@bg_hom3d)
+   [Bfit,lamfit] = fitbackground(V,t,@bg_hom3d)
 
 Other background models can be fitted as well. If the modulation depth is known, it can be provided to ``fitbackground``. 
 ``fitbackground`` fits the background to the tail of the dipolar signal. The fitting range can be adjusted by providing a starting and an end point:
 
 .. code-block:: matlab
 
-   [Bfit,lamfit] = fitbackground(t,V,@bg_hom3d,[tstart tend]);
+   [Bfit,lamfit] = fitbackground(V,t,@bg_hom3d,[tstart tend]);
 
 If these are not provided, ``fitbackground`` tries to determine an optimal range automatically.
 
