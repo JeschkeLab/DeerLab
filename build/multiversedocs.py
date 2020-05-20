@@ -164,7 +164,17 @@ for tag in tags:
     if tag == 'develop':
         shutil.copyfile(os.path.join('..','webpage','index.html'), os.path.join('..','multidocs','index.html'))
         shutil.copytree(os.path.join('..','webpage','_static'), os.path.join('..','multidocs','_static'))
-        
+        #Go through all lines of index.html
+        file = os.path.join('..','multidocs','index.html');
+        for line in fileinput.FileInput(file,inplace=True,mode='rb'):
+            line = line.decode('utf-8')
+            
+            #Update the release tag for the HTML links
+            if '$RELEASETAG$' in line:
+                line = line.replace('$RELEASETAG$',mostrecent)
+            #Print into file
+            sys.stdout.buffer.write(line.encode('utf-8'))
+
     print('\n \n VERSION ' + tag + ' COMPLETED                                \n \n', end='\r')
 
     print('\n')
