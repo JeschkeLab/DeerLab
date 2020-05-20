@@ -15,9 +15,16 @@ V = dipolarsignal(t,r,P,lam,B,'noiselevel',0.01);
 [~,Pfit2] = fitsignal(V,t,r,'P');
 [~,Pfit3] = fitsignal(V,t,r,'P',@bg_hom3d);
 [~,Pfit4] = fitsignal(V,t,r,'P',@bg_hom3d,@ex_4pdeer);
+[~,Pfit5] = fitsignal(V,t,r,'RegParam','aic');
+[~,Pfit6] = fitsignal(V,t,r,'P','RegParam','aic');
+[~,Pfit7] = fitsignal(V,t,r,'P',@bg_hom3d,'RegParam','aic');
+[~,Pfit8] = fitsignal(V,t,r,'P',@bg_hom3d,@ex_4pdeer,'RegParam','aic');
+[~,Pfit9] = fitsignal(V,t,r,'P',@bg_hom3d,@ex_4pdeer,[],'RegParam','aic');
+
+
 
 % Pass 1: al input schemes yield the same results
-pass = isequal(Pfit1,Pfit2,Pfit3,Pfit4);
+pass = isequal(Pfit1,Pfit2,Pfit3,Pfit4,Pfit5,Pfit6,Pfit7,Pfit8,Pfit9);
 
 maxerr = NaN;
 

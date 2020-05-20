@@ -75,11 +75,45 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [Vfit,Pfit,Bfit,parfit,modfitci,parci,stats] = fitsignal(Vexp,t,r,dd_model,bg_model,ex_model,par0,varargin)
+function [Vfit,Pfit,Bfit,parfit,modfitci,parci,stats] = fitsignal(Vexp,t,r,varargin)
 
 if nargin<3
     error('At least three inputs (V,t,r) must be specified.');
 end
+
+% Parse input schemes
+%-------------------------------------------------------------------------------
+% Prepare empty containers
+dd_model = [];
+bg_model = [];
+ex_model = [];
+par0 = [];
+% Parse the varargin cell array
+optionstart = numel(varargin);
+for i=1:numel(varargin)
+    if i<4 && ischar(varargin{i}) && ~any(strcmp(varargin{i},{'P','none'})) || ...
+            i>3 && ischar(varargin{i})
+        optionstart = i-1;
+        break
+    end
+    switch i
+        case 1
+            dd_model = varargin{1};
+        case 2
+            bg_model = varargin{2};
+        case 3
+            ex_model = varargin{3};
+        case 4
+            par0 = varargin{4};
+    end
+end
+varargin(1:optionstart) = [];
+
+
+% Parse the optional parameters in varargin
+%-------------------------------------------------------------------------------
+optionalProperties = {'RegParam','RegType','alphaOptThreshold','TolFun','Lower','Upper','Rescale','normP','MultiStart'};
+[regparam,regtype,alphaOptThreshold,TolFun,lb,ub,Rescale,normP,MultiStart] = parseoptional(optionalProperties,varargin);
 
 % Validation of Vexp, t, r
 %-------------------------------------------------------------------------------
@@ -107,11 +141,8 @@ for i = 1:nSignals
 end
 validateattributes(r,{'numeric'},{'vector'},mfilename,'r (3rd input)');
 
-
-% Parse the optional parameters in varargin
+% Validate optional arguments
 %-------------------------------------------------------------------------------
-optionalProperties = {'RegParam','RegType','alphaOptThreshold','TolFun','Lower','Upper','Rescale','normP','MultiStart'};
-[regparam,regtype,alphaOptThreshold,TolFun,lb,ub,Rescale,normP,MultiStart] = parseoptional(optionalProperties,varargin);
 
 if isempty(lb)
     lb = {[],[],[]};
@@ -162,15 +193,17 @@ if isempty(alphaOptThreshold)
 end
 validateattributes(alphaOptThreshold,{'numeric'},{'scalar','nonnegative'},mfilename,'alphaOptThreshold option');
 
+
 % Set defaults
-if nargin<4, dd_model = 'P'; end
-if nargin<5, bg_model = @bg_hom3d; end
-if nargin<6, ex_model = @ex_4pdeer; end
-if nargin<7, par0 = {[],[],[]}; end
+if nargin<4 || isempty(dd_model), dd_model = 'P'; end
+if nargin<5 || isempty(bg_model), bg_model = @bg_hom3d; end
+if nargin<6 || isempty(ex_model), ex_model = @ex_4pdeer; end
+if nargin<7 || isempty(par0), par0 = {[],[],[]}; end
 
 calculateCI = nargout>=5 || nargout==0;
 computeStats = nargout>4 || nargout==0;
 verbose = 'off';
+
 
 if isempty(par0)
     par0 = {[],[],[]};
