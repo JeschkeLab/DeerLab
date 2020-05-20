@@ -82,7 +82,7 @@ P(crit>0 & crit<0.2) = kappa/(4*pi*2*sqrt(pi))*((1./(kappa*(1 - rcrit)).^(3/2).*
 
 %Normalize integral
 if ~all(P==0)
-P = P/trapz(r,P);
+P = P/sum(P)/mean(diff(r));
 end
 output = P;
 

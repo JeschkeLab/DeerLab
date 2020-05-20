@@ -64,7 +64,7 @@ P = (1+cos(phi))/2/fwhm;
 P(r<r0-fwhm | r>r0+fwhm) = 0;
 
 if any(P~=0)
-    P = P/trapz(r,P);
+    P = P/sum(P)/mean(diff(r));
 end
 P = P(:);
 output = P;

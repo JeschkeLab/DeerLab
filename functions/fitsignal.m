@@ -445,8 +445,9 @@ end
 
 % Normalize distribution, scale CIs accordingly
 %-------------------------------------------------------------------------------
-if normP && includeForeground
-    Pnorm = trapz(r,Pfit);
+if normP
+    dr = mean(diff(r));
+    Pnorm = sum(Pfit)*dr;
     Pfit = Pfit/Pnorm;
     if calculateCI
         if iscell(PfitCI)

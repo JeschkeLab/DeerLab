@@ -81,7 +81,7 @@ P = (q31 - q21)/delta32;
 P = round(P,15);
 
 if ~all(P==0)
-P = P/trapz(r,P);
+P = P/sum(P)/mean(diff(r));
 end
 
 output = P;

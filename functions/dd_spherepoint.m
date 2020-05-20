@@ -66,7 +66,7 @@ idx = r >= d - R & r<= d + R;
 P(idx) = 3*r(idx).*(R^2 - (d - r(idx)).^2)./(4*d*R.^3);
 
 if ~all(P==0)
-P = P/trapz(r,P);
+P = P/sum(P)/mean(diff(r));
 end
 
 output = P;

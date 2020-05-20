@@ -94,7 +94,13 @@ validateattributes(Phase,{'numeric'},{'2d','scalar'},mfilename,'Phase')
 if ~isempty(P) && numel(r)~=numel(P)
     error('The lengths of the distance axis (second input) and the distribution (third input) must be equal.')
 end
-P = P(:);
+
+if numel(unique(round(diff(r),6)))~=1 && ~isscalar(r)
+    error('Distance axis must be a monotonically increasing vector.')
+end
+if ~iscolumn(P)
+   P = P.';
+end
 
 % Assemble pathway info
 if numel(pathinfo)==1

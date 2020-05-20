@@ -229,7 +229,7 @@ end
 
 % Normalize distribution
 if ~all(P==0)
-P = P/trapz(r,P);
+P = P/sum(P)/mean(diff(r));
 end
 
 end

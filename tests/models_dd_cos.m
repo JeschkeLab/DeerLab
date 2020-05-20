@@ -32,10 +32,6 @@ fwhm = par0(2);
 pass(6) = all(P1(r<r0-fwhm)==0) && all(P1(r>r0+fwhm)==0);
 % Pass 7: orientation
 pass(7) = iscolumn(P1) & iscolumn(P2);
-% Pass 8: compatible with non-uniform distance vectors
-rnus = sqrt(linspace(1.5,6^2,800));
-P5 = dd_cos(rnus,par0);
-pass(8) = round(trapz(rnus,P5),4) == 1;
 
 pass = all(pass);
 

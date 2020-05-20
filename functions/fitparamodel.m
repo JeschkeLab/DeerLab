@@ -119,6 +119,9 @@ for i = 1:nAxes
     if ~iscolumn(ax{i})
         ax{i} = ax{i}(:);
     end
+    if numel(unique(round(diff(ax{i}),6)))~=1
+        error('Distance/time axis must be a monotonically increasing vector.')
+    end
     % If using distance domain, only one axis must be passed
     if ~isDistanceDomain
         % Is using time-domain,control that same amount of axes as signals are passed

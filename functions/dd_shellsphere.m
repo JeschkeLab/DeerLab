@@ -82,7 +82,7 @@ P(idx) = r(idx).^5 - 6*r(idx).^3*(R2^2 + R1^2) + 8*r(idx).^2*(R2^3 + R1^3) - 3*r
 P = P*3/(16*R1^3*(R2^3 - R1^3));
 
 if ~all(P==0)
-P = P/trapz(r,P);
+P = P/sum(P)/mean(diff(r));
 end
 
 output = P;

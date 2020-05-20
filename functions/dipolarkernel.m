@@ -133,6 +133,9 @@ if numel(g)~=2
 end
 
 validateattributes(r,{'numeric'},{'nonempty','increasing','nonnegative'},mfilename,'r');
+if numel(unique(round(diff(r),6)))~=1 && length(r)~=1
+    error('Distance axis must be a monotonically increasing vector.');
+end
 validateattributes(t,{'numeric'},{'nonempty'},mfilename,'t');
 
 
@@ -230,15 +233,10 @@ if ~isempty(B)
     K = K.*B;
 end
 
-% Include distance-axis normalization (dr) into kernel
+% Include dr into kernel
 if length(r)>1
-    
-    %Vectorized matrix form of trapezoidal integration method
-    dr([1,numel(r)]) = r([2,end]) - r([1,end-1]);
-    dr(2:end-1) = r(3:end) - r(1:end-2);
-    dr = dr/2;
-    
-    K = K.*dr;
+    dr = mean(diff(r));
+    K = K*dr;
 end
 
 end
