@@ -53,7 +53,7 @@
 %  This file is a part of DeerLab. License is MIT (see LICENSE.md).
 %  Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-function [alphaOpt,Functionals,alphaRanges,Residuals,Penalties] = selregparam(V,K,RegType,SelectionMethod,varargin)
+function [alphaOpt,Functionals,alphaRanges,Residuals,Penalties] = selregparam(V,K,r,RegType,SelectionMethod,varargin)
 
 %  Parse & validate required input
 %-------------------------------------------------------------------------------
@@ -208,10 +208,11 @@ end
 %-------------------------------------------------------------------------------
 nr = size(K{1},2);
 % Get regularization operator
-L = regoperator(nr,RegOrder);
+L = regoperator(r,RegOrder);
 % Get range of potential alpha values candidates
 if isempty(alphaRange)
-    alphaRange = regparamrange(K{1},L);
+    alphaRange = regparamrange(K{1},L); %Does not work well with non-uniform r vectors
+    alphaRange = logspace(-10,10,100);
 else
     validateattributes(alphaRange,{'numeric'},{'nonempty','nonnegative'},mfilename,'RegParamRange')
 end

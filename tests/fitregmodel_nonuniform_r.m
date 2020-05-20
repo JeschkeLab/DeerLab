@@ -13,7 +13,7 @@ K = dipolarkernel(t,r);
 sigma = 0.01;
 V = K*P + whitegaussnoise(t,sigma);
 
-[Pfit] = fitregmodel(V,K,r,'tikh','aic');
+Pfit = fitregmodel(V,K,r,'tikh','aic');
 Vfit = K*Pfit;
 
 % Pass 1: non-uniform distribution is well fitted
@@ -25,7 +25,7 @@ pass = all(pass);
 maxerr = max(P - Pfit);
 
 if opt.Display
-   plot(r,P,'ok',r,Pfit,'.-r')
+   plot(r,P,'ok',r,Pfit,'o-r')
    axis tight,grid on, box on
    xlabel('r [nm]'),ylabel('P(r) [nm^{-1}]')
 end

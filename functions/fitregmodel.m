@@ -134,7 +134,7 @@ if ~isempty(GlobalWeights)
 end
 
 if isa(alpha,'char')
-    alpha = selregparam(V,K,RegType,alpha,[{'GlobalWeights'},{GlobalWeights},varargin]);
+    alpha = selregparam(V,K,r,RegType,alpha,[{'GlobalWeights'},{GlobalWeights},varargin]);
 else
     validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 end
@@ -236,7 +236,7 @@ end
 %--------------------------------------------------------------------------
 
 nr = size(K{1},2);
-L = regoperator(nr,RegOrder);
+L = regoperator(r,RegOrder);
 InitialGuess = zeros(nr,1);
 
 % If unconstrained regularization is requested then solve analytically
