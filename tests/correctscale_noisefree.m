@@ -9,7 +9,7 @@ B = bg_exp(t,0.3);
 scale = 1e8;
 V = dipolarsignal(t,r,P,0.25,B,'Scale',scale);
 
-[Vc,scalefit] = correctscale(V,t);
+[Vc,scalefit] = correctscale(V,t,max(t),'deer');
 
 % Pass: scale found accurately
 pass  = abs(scalefit/scale - 1) < 1e-12;

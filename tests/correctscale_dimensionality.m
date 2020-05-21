@@ -3,13 +3,12 @@ function [pass,maxerr] = test(opt)
 % Check indifference of correctscale() towards input dimensionality
 
 t = linspace(-1,4,100);
-S = dipolarsignal(t,3,'scale',1e4);
-t = t + abs(min(t));
+V = dipolarsignal(t,3,'scale',1e4);
 
-V1 = correctscale(S,t);
-V2 = correctscale(S.',t);
-V3 = correctscale(S,t.');
-V4 = correctscale(S.',t.');
+V1 = correctscale(V,t);
+V2 = correctscale(V.',t);
+V3 = correctscale(V,t.');
+V4 = correctscale(V.',t.');
 
 % Pass 1: all signals are equal
 pass(1) = isequal(V1,V2,V3,V4);

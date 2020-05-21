@@ -47,7 +47,8 @@
 %                      'fmincon' - Non-linear constrained minimization
 %                      'bppnnls' -  Block principal pivoting non-negative least-squares solver
 %   'NonNegConstrained' - Enable/disable non-negativity constraint (true/false)
-%   'HuberParam' - Huber parameter used in the 'huber' model (default = 1.35).
+%   'HuberParam' - Huber parameter used in the 'huber' model (default = 1.35)
+%   'NormP' - true/false; whether to normalize Pfit (default = true)
 %   'GlobalWeights' - Array of weighting coefficients for the individual signals in
 %                     global fitting.
 %   'RegOrder' - Order of the regularization operator L (default = 2)
@@ -98,8 +99,8 @@ if ~iscell(K)
 end
 
 % Check if user requested some options via name-value input
-optionalProperties = {'TolFun','Solver','NonNegConstrained','Verbose','MaxFunEvals','MaxIter','HuberParam','GlobalWeights','RegOrder','ConfidenceLevel','internal::parseLater'};
-[TolFun,Solver,NonNegConstrained,Verbose,MaxFunEvals,MaxIter,HuberParam,GlobalWeights,RegOrder,ConfidenceLevel] ...
+optionalProperties = {'TolFun','Solver','NonNegConstrained','Verbose','MaxFunEvals','MaxIter','HuberParam','GlobalWeights','RegOrder','ConfidenceLevel','internal::parseLater','NormP'};
+[TolFun,Solver,NonNegConstrained,Verbose,MaxFunEvals,MaxIter,HuberParam,GlobalWeights,RegOrder,ConfidenceLevel,NormP] ...
     = parseoptional(optionalProperties,varargin);
 
 
@@ -189,6 +190,12 @@ else
     validateattributes(HuberParam,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'MaxFunEvals')
 end
 
+if isempty(NormP)
+    NormP = true;
+end
+validateattributes(NormP,{'logical'},{'scalar'},mfilename,'NormP');
+
+
 if isempty(MaxFunEvals)
     MaxFunEvals = 2e7;
 else
@@ -231,8 +238,6 @@ end
 nr = size(K{1},2);
 L = regoperator(nr,RegOrder);
 InitialGuess = zeros(nr,1);
-
-dr = mean(diff(r));
 
 % If unconstrained regularization is requested then solve analytically
 if ~NonNegConstrained && ~strcmp(Solver,'fmincon')
@@ -295,8 +300,6 @@ switch lower(Solver)
         end
 end
 
-% Normalize distribution
-P = P/sum(P)/dr;
 
 % Calculate confidence intervals
 %-------------------------------------------------------------------------------
@@ -324,8 +327,8 @@ if getConfidenceIntervals
     p = 1 - (1 - ConfidenceLevel)/2;
     
     Pci = cell(numel(p),1);
-    %Get the confidence intervals at the requested confidence levels
-    for j=1:numel(p)
+    % Get the confidence intervals at the requested confidence levels
+    for j = 1:numel(p)
         % Get the critical value of corresponding normal distribution
         z = norm_inv(p(j));
         % Compute the standard confidence intervals, constrained to be nonnegative
@@ -333,18 +336,39 @@ if getConfidenceIntervals
         Pci{j}(:,2) = P + z*sigP;
     end
     
-    %Do not return a cell if only one confidence level is requested
+    % Do not return a cell if only one confidence level is requested
     if numel(p)==1
         Pci = Pci{1};
     end
 end
+
+
+% Normalize distribution, scale CIs accordingly
+if NormP
+    dr = mean(diff(r));
+    Pnorm = sum(P)*dr;
+    P = P/Pnorm;
+    if getConfidenceIntervals
+        if iscell(Pci)
+            for j = 1:numel(Pci)
+                Pci{j} = Pci{j}/Pnorm;
+            end
+        else
+            Pci = Pci/Pnorm;
+        end
+    end
+end
+
 
 % If requested compute Goodness of Fit for all signals
 if nargout>3
     stats = cell(numel(V),1);
     for i=1:numel(V)
         Vfit = K{i}*P;
-        Ndof = numel(V{i});
+        % Estimate degrees of freedom from the inlfuence matrix
+        KtKreg = lsqcomponents(V{i},K{i},L,alpha,RegType,HuberParam);
+        H = K{i}*(KtKreg\K{i}.');
+        Ndof = numel(V{i}) - trace(H);
         stats{i} = gof(V{i},Vfit,Ndof);
     end
     

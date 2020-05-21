@@ -49,6 +49,7 @@
 %   'MaxFunEvals' - Maximum number of optimizer function evaluations
 %   'MultiStart' - Number of starting points for global optimization
 %   'ConfidenceLevel' - Confidence level(s) for confidence intervals
+%   'Rescale' - Enable/Disable optimization of the signal scale
 %   'Verbose' - Display options for the solvers:
 %                 'off' - no information displayed
 %                 'final' - display solver exit message
@@ -193,9 +194,9 @@ end
 % Parse the optional parameters in varargin
 optionalProperties = {'Solver','Algorithm','MaxIter','Verbose','MaxFunEvals',...
     'TolFun','GlobalWeights','Upper','Lower','MultiStart',...
-    'ConfidenceLevel','internal::returncovariancematrix'};
+    'ConfidenceLevel','Rescale','internal::returncovariancematrix'};
 [Solver,Algorithm,maxIter,Verbose,maxFunEvals,TolFun,GlobalWeights,...
-    upperBounds,lowerBounds,MultiStart,ConfidenceLevel,returnCovariance] = ...
+    upperBounds,lowerBounds,MultiStart,ConfidenceLevel,Rescale,returnCovariance] = ...
     parseoptional(optionalProperties,varargin);
 
 % Validate optional inputs
@@ -236,6 +237,11 @@ else
     if any(ConfidenceLevel>1 | ConfidenceLevel<0)
         error('The confidence level option must have values between 0 and 1.')
     end
+end
+if isempty(Rescale)
+    Rescale = true;
+else
+    validateattributes(Rescale,{'logical'},{'scalar'},mfilename,'Rescale')
 end
 
 % Solver
@@ -303,7 +309,10 @@ if isempty(upperBounds)
     upperBounds = Ranges(2:2:end);
 end
 if any(upperBounds==realmax) || any(lowerBounds==-realmax)
+    unboundedparams = true;
     warning('Some model parameters are unbounded. Use ''Lower'' and ''Upper'' options to pass parameter boundaries.')
+else
+    unboundedparams = false;
 end
 if  numel(StartParameters)~=numel(upperBounds) || ...
         numel(StartParameters)~=numel(lowerBounds)
@@ -314,6 +323,9 @@ if any(upperBounds<lowerBounds)
 end
 
 % Preprare multiple start global optimization if requested
+if MultiStart>1 && unboundedparams
+    error('Multistart optimization cannot be used with unconstrained parameters.')
+end
 MultiStartParameters = multistarts(MultiStart,StartParameters,lowerBounds,upperBounds);
 
 
@@ -346,7 +358,9 @@ end
 % Run least-squares fitting
 %-------------------------------------------------------------------------------
 % Disable ill-conditioned matrix warnings
-warning('off','MATLAB:nearlySingularMatrix'), warning('off','MATLAB:singularMatrix')
+warning('off','MATLAB:nearlySingularMatrix')
+warning('off','MATLAB:singularMatrix')
+warning('off','MATLAB:rankDeficientMatrix')
 
 fvals = zeros(1,MultiStart);
 parfits = cell(1,MultiStart);
@@ -433,20 +447,37 @@ if computeFittedModel
     modelfit = cell(nAxes,1);
     for i = 1:nAxes
         modelfit{i} = model(ax{i},parfit,Labels{i});
+        if Rescale
+            if isDistanceDomain
+                scale = (K{i}*modelfit{i})\V{i};
+            else
+                scale = modelfit{i}\V{i};
+            end
+            modelfit{i} = scale*modelfit{i};
+        end
     end
 end
 
 computeModelCI = nargout>3;
 if computeModelCI
     modelci = cell(nAxes,1);
+    %Loop over different signals
     for i = 1:nAxes
-        % Compute Jacobian for time/distance-model
-        jacobian = jacobianest(@(par)model(ax{i},par,Labels{i}),parfit);
-        modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax{i})).';
-        upper = modelfit{i} + z*sqrt(modelvariance);
-        lower = modelfit{i} - z*sqrt(modelvariance);
-        modelci{i} = [lower(:) upper(:)];
-    end    
+        cont = cell(numel(z),1);
+        %Loop over different confidence levels requested
+        for j=1:numel(z)
+            % Compute Jacobian for time/distance-model
+            jacobian = jacobianest(@(par)model(ax{i},par,Labels{i}),parfit);
+            modelvariance = arrayfun(@(idx)full(jacobian(idx,:))*covmatrix*full(jacobian(idx,:)).',1:numel(ax{i})).';
+            upper = modelfit{i} + z(j)*sqrt(modelvariance);
+            lower = modelfit{i} - z(j)*sqrt(modelvariance);
+            cont{j} = [lower(:) upper(:)];
+        end
+        if numel(z)==1
+            cont = cont{1};
+        end
+        modelci{i} = cont;
+    end
 end
 
 % Calculate goodness of fit
@@ -479,7 +510,9 @@ if nAxes==1
 end
 
 % Set the warnings back on
-warning('on','MATLAB:nearlySingularMatrix'), warning('on','MATLAB:singularMatrix')
+warning('on','MATLAB:nearlySingularMatrix')
+warning('on','MATLAB:singularMatrix')
+warning('on','MATLAB:rankDeficientMatrix')
     
     % Function that provides vector of residuals, which is the objective
     % function for the least-squares solvers
@@ -491,10 +524,14 @@ warning('on','MATLAB:nearlySingularMatrix'), warning('on','MATLAB:singularMatrix
                 t = ax{iSignal};
             end
             if isDistanceDomain
-                r_{iSignal} = Weights(iSignal)*(V{iSignal}-K{iSignal}*model(t,p,iSignal));
+                sim = K{iSignal}*model(t,p,iSignal);
             else
-                r_{iSignal} = Weights(iSignal)*(V{iSignal}-model(t,p,iSignal));
+                sim = model(t,p,iSignal);
             end
+            if Rescale
+                sim = (sim\V{iSignal})*sim;
+            end
+            r_{iSignal} = Weights(iSignal)*(V{iSignal}-sim);
         end
         r = vertcat(r_{:});
     end

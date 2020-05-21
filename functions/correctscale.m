@@ -2,52 +2,106 @@
 % CORRECTSCALE Amplitude scale correction
 %
 %       [Vc,V0] = CORRECTSCALE(V,t) 
-%       Fits the amplitude (V0) of the experimental dipolar signal
-%       (V) on a given time axis (t). The experimental signal is then 
-%       normalized with respect to the fitted scale. The normalized signal
-%       is returned a the main output (Vc).
+%       [Vc,V0] = CORRECTSCALE(V,t,tmax) 
+%       [Vc,V0] = CORRECTSCALE(V,t,tmax,model) 
+%
+%  Takes the experimental dipolar signal (V) on a given time axis (t) and
+%  rescales it so that it is 1 at time zero, taking into account the noise.
+%  It fits a model specified in (model) over the interval |t|=<tmax around time zero.
+%  It returns the rescaled signal (Vc) and the scaling factor (V0).
+%
+%  Inputs:
+%    V     experimenal signal (vector)
+%    t     time axis, in microseconds (vector)
+%    tmax  time cutoff for fit range, in microseconds (scalar), default 0.2
+%    model model to fit over |t|<tmax
+%            'deer' DEER model with Gaussian distribution (default)
+%            'gauss'    raised Gaussian
+%
+%  Outputs:
+%    Vc    rescaled signal
+%    V0    rescaling factor, such that Vc = V/V0
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
-function [V,V0] = correctscale(V,t)
+function [Vc,V0] = correctscale(V,t,tmax,model)
 
 if ~isreal(V)
    error('Input signal cannot be complex.') 
 end
 
-%Validate input
-validateattributes(t,{'numeric'},{'nonempty','increasing'},mfilename,'t')
-validateattributes(V,{'numeric'},{'nonempty'},mfilename,'V')
+if nargin<3 || isempty(tmax)
+    tmax = 0.2;
+end
+if nargin<4 || isempty(model)
+    model = 'deer';
+end
 
-%Use column vectors
-t = t(:);
+% Validate input
+validateattributes(V,{'numeric'},{'nonempty','vector'},mfilename,'V')
+validateattributes(t,{'numeric'},{'nonempty','increasing','vector'},mfilename,'t')
+validateattributes(tmax,{'numeric'},{'scalar','positive'},mfilename,'tmax')
+validateattributes(model,{'char'},{'nonempty'},mfilename,'model')
+
+% Use column vectors
 V = V(:);
+t = t(:);
 
-%Convert time to distance axis
-r = time2dist(t);
-
-%Get the maximum value of the signal
+% Approximate scaling
 Amp0 = max(V);
+V_ = V/Amp0;
 
-%Time-domain fitting of Gaussian distribution, exponential background,
-%modulation depth and the overall amplitude
-K = dipolarkernel(t,r);
-fitmodel = @(t,param)param(1)*bg_exp(t,param(5)).*((1-param(2)) + param(2)*K*dd_gauss(r,param(3:4)));
-%Set the initial values for the fitting
-% Amp lam rmean w k
-param0 = [Amp0 0.5 3 0.3 0.2];
-%Run the parametric model fitting
-paramfit = fitparamodel(V,fitmodel,t,param0,...
-    'Upper',[1e100 1 20 5 100],...
-    'Lower',[0 eps 0 0 0]);
+% Limit fit to region around time zero
+idx = abs(t)<=tmax;
+V_ = V_(idx);
+t_ = t(idx);
 
-% Get the fitted signal amplitude
-V0 = paramfit(1);
+switch lower(model)
+    case 'deer'
+        % DEER model with Gaussian distibution
+        if numel(V_)<5
+            error('Number of points in fit range cannot be smaller than number of model parameters. Increase tmax.');
+        end
+        r = time2dist(t);
+        fitmodel = @(tt,p) p(1)*bg_exp(tt,p(5)).*((1-p(2)) + p(2)*dipolarkernel(tt,r)*dd_gauss(r,p(3:4)));
+        par0 = [1 0.5 3 0.3 0.2];
+        lb = [1e-3 1e-5 0 0 0];
+        ub = [10 1 20 5 100];
+    case 'gauss'
+        % Gaussian function
+        if numel(V_)<3
+            error('Number of points in fit range cannot be smaller than number of model parameters. Increase tmax.');
+        end
+        fitmodel = @(t,p) (p(1)-p(2))+p(2)*exp(-t.^2/p(3)^2);
+        par0 = [1 1 1];
+        lb = [1e-3 1e-3 1e-3];
+        ub = [10 1000 10000];
+    otherwise
+        error('Unknown model ''%s''.',modeltype);
+end
 
-% Normalize the signal by the fitted amplitude
-V = V/V0;
+% Run the parametric model fitting
+parfit = fitparamodel(V_,fitmodel,t_,par0,'Upper',ub,'Lower',lb,'Rescale',false);
+
+% Get the fitted signal amplitude and scale the signal
+V0 = Amp0*parfit(1);
+Vc = V/V0;
+
+% Plotting
+doPlotting = nargout==0;
+if doPlotting
+    t_ = linspace(min(t_),max(t_),numel(t_)*4-3);
+    Vfit_ = fitmodel(t_,parfit);
+    plot(t,V,'.',t_,Amp0*Vfit_);
+    yline(V0,'r');
+    d = max(V)-min(V);
+    axis tight
+    xlabel('time (us)');
+    ylabel('V');
+    grid on
+end
 
 end

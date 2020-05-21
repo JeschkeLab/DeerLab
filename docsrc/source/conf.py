@@ -104,6 +104,18 @@ def setup(app):
             ),
         ]
     )
+    # Patch the MATLAB lexer to correct wrong highlighting
+    from sphinx.highlighting import lexers
+    from pygments.lexers import MatlabLexer
+    from pygments.token import Name
+    from pygments.filters import NameHighlightFilter
+    matlab_lexer = MatlabLexer()
+    matlab_lexer.add_filter(NameHighlightFilter(
+            names=['function', 'end', 'if', 'else', 'elseif', 'switch', 'case', 'return', 'otherwise'],
+            tokentype=Name.Function,
+            ))
+    app.add_lexer('matlab', matlab_lexer)
+
 
 # These folders are copied to the documentation's HTML output
 html_static_path = ['_static']
@@ -139,23 +151,22 @@ html_logo = '_static/logo.png'
 
 # Import the pygments python library
 from pygments.style import Style
-from pygments.token import Text, Other, Comment, Whitespace
-from pygments.style import Style
-from pygments.token import Keyword, Name, Comment, String, Error, Number, Operator, Generic
+from pygments.token import Keyword, Name, Comment, String, Error, Number, Operator, Generic, Text, Other, Comment, Whitespace
 
 # Define custom style for the MATLAB highlighting
+
 class MyFancyStyle(Style):
     background_color = "#f7f7f7"
-    default_style = ""
+    default_style = "default"
     styles = {
         Comment:                'italic #22924a',
         Keyword:                '#0000FF',
         Name:                   '#000',
-        Name.Function:          '#000',
-        Name.Class:             '#000',
-        String:                 '#a022f0'
+        Name.Function:          'noinherit #0000FF',
+        Name.Class:             'noinherit #0000FF',
+        String:                 '#a022f0',
     }
-	
+
 # Create patch for applying the style 	
 def pygments_monkeypatch_style(mod_name, cls):
     import sys
@@ -167,6 +178,7 @@ def pygments_monkeypatch_style(mod_name, cls):
     sys.modules["pygments.styles." + mod_name] = mod
     from pygments.styles import STYLE_MAP
     STYLE_MAP[mod_name] = mod_name + "::" + cls_name
+
 pygments_monkeypatch_style("my_fancy_style", MyFancyStyle)
 pygments_style = "my_fancy_style"
 

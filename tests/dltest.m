@@ -294,10 +294,6 @@ if runTutorials
 
     % Run all tutorial scripts
     for i=1:numel(mfiles)
-        % Skip the template file
-        if contains(mfiles{i},'template.m')
-            continue
-        end
         % Run turorial, catch errors
         try
             tic
@@ -347,39 +343,51 @@ if runCodeCoverage
     for n = 1:length(Files)
         FcnName = Files(n).name;
         Path = Files(n).folder;
+        
+        Code = fileread(FcnName);
+        CodeLines = splitlines(Code);
+        missables = {'error','end','break','plot','fprintf','return','function','else','otherwise'};
+        unreachable = cellfun(@(str)contains(str,missables),CodeLines);
+        unreachable = find(unreachable).';
+        
         RunnableLines = callstats('file_lines',fullfile(Path,FcnName));
         Executed = unique(ExecutedLines{n});
+        for k=1:numel(unreachable)
+        Executed(Executed == unreachable(k)) = [];
+        RunnableLines(RunnableLines == unreachable(k)) = [];
+        end
         Covered = length(Executed);
         TotalCovered = TotalCovered + Covered;
         Runnable = length(unique(RunnableLines));
-        Code = fileread(FcnName);
         % Account for lines missed by callstats
         if Covered > Runnable
             TotalRunnable = TotalRunnable + Covered;
         else
             TotalRunnable = TotalRunnable + Runnable;
         end
-
-        fprintf('%i/%i run/total \n',Covered,Runnable)
-        if params =='l'
+        if contains(params,'-l')
             Missed = RunnableLines;
             for k=1:length(Executed)
                 Missed(RunnableLines==Executed(k)) = NaN;
             end
+            for k=1:length(unreachable)
+                Missed(Missed==unreachable(k)) = NaN;
+            end
             Missed(isnan(Missed)) = [];
+        else
+            Missed = [];
         end
-        MissedEnds = length(strfind(Code,'error')) + length(strfind(Code,'return')) ...
-            + length(strfind(Code,'break')) + length(strfind(Code,'fprintf')) + length(strfind(Code,'plot'));
-        % Account for unreachable end-statements or lines
-        if Runnable - Covered <= MissedEnds
-            Covered = Runnable;
+        if isempty(Missed)
             Missed = [];
         end
         Coverage = 100*Covered/Runnable;
         % Print to command window
         if (~isempty(TestName) && Coverage~=0) || isempty(TestName)
-            if params =='c'
-                fprintf('%-20s%-18s%6.2f%18s    %s\n',FcnName,' ',Coverage,'Lines missing:',mat2str(Missed))
+            if contains(params,'-c')
+                fprintf('%-20s%-18s%8.2f%% %18s\n',FcnName,' ',Coverage,'Lines missing:')
+                for ii=1:numel(Missed)
+                    fprintf('%i| %s \n',Missed(ii),CodeLines{Missed(ii)});
+                end
             else
                 fprintf('%-20s%-18s%6.2f\n',FcnName,' ',Coverage);
             end

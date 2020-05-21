@@ -29,7 +29,7 @@ tags = newtags;
 path = os.path.join('..','multidocs')
 if os.path.exists(path):
     shutil.rmtree(path)
-    
+
 #Get tag of most modern version
 mostrecent = subprocess.check_output (["git", "describe", "--tags", "--abbrev=0"])
 #Format output
@@ -42,12 +42,15 @@ startbranch = formatProcOut(startbranch)
 startbranch = startbranch.replace("\\n","")
 
 for tag in tags:
-    
+
     cddir = os.path.join('..','docsrc')
     os.chdir (cddir)
     src = os.path.join('.', 'source')
     dest = os.path.join('..', 'docs')
-    buildcmd = ['sphinx-build', '-E', '-b', 'html',src,dest]
+    #if os.path.exists(dest):
+    #    shutil.rmtree(dest)
+    
+    buildcmd = ['sphinx-build', '-Q','-E', '-b', 'html',src,dest]
     if tag == 'develop':
         subprocess.run (["git", "checkout", "develop"])
         #Build source code in .\docsrc
@@ -73,25 +76,25 @@ for tag in tags:
         shutil.copyfile(src, dest)
         counter = 0
         path = os.path.join('..','docs','index.html')
-        for line in fileinput.input(path, inplace=True):
+        for line in fileinput.input(path, inplace=True,mode='rb'):
+            
+            line = line.decode('utf-8')
             if not counter:
                 if '<div class="select">' in line:
                     counter = 1000
                 else:
-                    print(line,end = '')
+                    sys.stdout.buffer.write(line.encode('utf-8'))
             else:
                 if '<div class="select_arrow">\n' in line:
                     counter = 3
                 counter -= 1
-
+    
     #Get list from all HTML files in the compiled documentation
     docspath = os.path.join('..','docs')
     multidocspath = os.path.join('..','multidocs')
     filterpath = os.path.join('**','*.html')
     htmlfiles = [f for f in glob.glob(os.path.join(docspath,filterpath), recursive = True)]
-
-
-
+    
     #Loop over all HTML available at that version
     for file in htmlfiles:
         
@@ -141,7 +144,6 @@ for tag in tags:
                     line = line.replace(line,'<title>DeerLab Documentation</title>')
             if '<li>DeerLab-development Documentation' in line and tag != 'develop':
                     line = line.replace(line,'<li>DeerLab '+tag+' Documentation</li>')    
-
             if '<h1>DeerLab-development Documentation' in line and tag != 'develop':
                     line = line.replace(line,'<h1>DeerLab '+tag+' Documentation</h1>')  
                     
@@ -162,8 +164,19 @@ for tag in tags:
     if tag == 'develop':
         shutil.copyfile(os.path.join('..','webpage','index.html'), os.path.join('..','multidocs','index.html'))
         shutil.copytree(os.path.join('..','webpage','_static'), os.path.join('..','multidocs','_static'))
-        
-    print('File processing for version ' + tag + ' completed                                \n', end='\r')
+        #Go through all lines of index.html
+        file = os.path.join('..','multidocs','index.html');
+        for line in fileinput.FileInput(file,inplace=True,mode='rb'):
+            line = line.decode('utf-8')
+            
+            #Update the release tag for the HTML links
+            if '$RELEASETAG$' in line:
+                line = line.replace('$RELEASETAG$',mostrecent)
+            #Print into file
+            sys.stdout.buffer.write(line.encode('utf-8'))
+
+    print('\n \n VERSION ' + tag + ' COMPLETED                                \n \n', end='\r')
+
     print('\n')
 
 

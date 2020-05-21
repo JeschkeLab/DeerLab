@@ -1,36 +1,39 @@
 %
 % CORRECTPHASE Phase correction of complex-valued data
-%
-%   Vr = CORRECTPHASE(V)
+
+%   [Vr,Vi,ph,io] = CORRECTPHASE(___)
+%   ___ = CORRECTPHASE(V)
+%   ___ = CORRECTPHASE(V,phase)
+%   ___ = CORRECTPHASE(V,phase,true/false)
 %   Performs a phase optimization on the complex-valued data (V) by
-%   minimization of the imaginary component of the data. The real-part of 
-%   the phase-corrected data (Vr) is returned.
+%   minimization of the imaginary component of the data. The phase can be corrected 
+%   manually by specifying a phase (phase), in radians. A third boolean argument
+%   can be passed to enable/disable the fitting of a possible offset on the
+%   imaginary component of the data. Defaults to false.
+%   The function returns the real (Vr) and imaginary (Vi) parts the phase corrected
+%   data, the optimized phase (ph) and imaginary offset (io) employed for the correction.
 %
-%   Vr = CORRECTPHASE(V,ph)
-%   Corrects the phase of data vector V using user-supplied phase (ph), in
-%   radians.
-%
-%   Vr = CORRECTPHASE(V,ph,true/false)
-%   A third boolean argument can be passed to enable/diasable the fitting
-%   of a possible offset on the imaginary component of the data. Defaults
-%   to false.
-%
-%   [Vr,Vi,ph,io] = CORRECTPHASE(V)
-%   Additional output arguments can be requested to return the imaginary part
-%   (Vi) of the phase corrected data, the optimized phase (ph) and imaginary
-%   offset (io) employed for the correction.
+%   ___ = CORRECTPHASE(V2D)
+%   ___ = CORRECTPHASE(V2D,phases)
+%   ___ = CORRECTPHASE(V2D,phases,true/false)
+%   Two-dimensional datasets (V2D), e.g. from multiple scans measurements,
+%   can be provided, and the phase correction will be done on each trace individually.
+%   The first dimension V2D(:,i) must contain the single traces. An array of phases 
+%   (phases) can be specified to manually correct the traces.
 %
 
-% This file is a part of DeerLab. License is MIT (see LICENSE.md). 
+% This file is a part of DeerLab. License is MIT (see LICENSE.md).
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 
 function [Vreal,Vimag,Phase,ImagOffset] = correctphase(V,Phase,fitImagOffset)
 
-%--------------------------------------------------------------------------
-%Input parsing
-%--------------------------------------------------------------------------
+
+% Input parsing
+%-------------------------------------------------------------------------------
 switch nargin
+    case 0
+        error('At least one input (V) is requried.')
     case 1
         Phase = [];
         fitImagOffset = false;
@@ -38,81 +41,88 @@ switch nargin
         fitImagOffset = false;
     case 3
     otherwise
-        error('Wrong number of input arguments.');
+        error('At most three inputs (V, Phase, fitImagOffset) are possible.');
 end
 
-validateattributes(V,{'numeric'},{},mfilename,'PrimaryData')
+validateattributes(V,{'numeric'},{'2d'},mfilename,'V')
+if isvector(V)
+    Ntraces = 1;
+    V = V(:); % ensure column vector
+else
+    Ntraces = size(V,2);
+end
+n = size(V,1);
+
 if ~isempty(Phase)
-    validateattributes(Phase,{'numeric'},{'scalar','nonnegative'},mfilename,'Phase')
+    validateattributes(Phase,{'numeric'},{'nonnegative'},mfilename,'Phase')
+    if numel(Phase)~=Ntraces
+       error('The number of input phases must agree with the number of traces.') 
+    end
 end
+
 validateattributes(fitImagOffset,{'logical'},{'nonempty'},mfilename,'FittedImaginaryOffset')
+fitPhase = isempty(Phase);
 
-%Ensure column vector
-V = V(:);
+% Phase/offset fitting
+%-------------------------------------------------------------------------------
+options = optimset('MaxFunEvals',1e5,'MaxIter',1e5);
 
-ImagOffset = 0;
+ImagOffset = zeros(1,Ntraces);
+if fitPhase
+    Phase = zeros(1,Ntraces);
+    
+    for i = 1:Ntraces
+        FitRange = round(n/8):n; % use only last 7/8 of data for phase/offset correction
+        V_ = V(FitRange,i);
+        par0(1) = mean(angle(V_)); % use average phase as initial value
+        if fitImagOffset
+            par0(2) = mean(imag(V_)); % use average offset as initial value
+        end
+        fun = @(par)imaginarynorm(par,V_);
+        pars = fminsearch(fun,par0,options);
+        Phase(i) = pars(1);
+        if fitImagOffset
+            ImagOffset(i) = pars(2);
+        end
+    end
 
-% If phase is not provided, then fit it (and imag. offset)
-if isempty(Phase)
-    %phi0 = angle(V(end)); % use phase of last point as starting point for fit
-    phi0 = mean(angle(V)); % use average phase as starting point for fit
-    pars(1) = phi0;
+else
     if fitImagOffset
-        pars(2) = 0;
+        % Fit only imaginary offset        
+        for i = 1:Ntraces
+            par0 = 0;
+            fun = @(offset)imaginarynorm([Phase offset],V(:,i));
+            ImagOffset(i) = fminsearch(fun,par0);
+        end
     end
-    FitStart = round(length(V)/8); % use only last 7/8 of data for phase/offset correction
-    pars = fminsearch(@imaginarynorm,pars,[],V(FitStart:end));
-    Phase = pars(1);
-    if fitImagOffset
-        ImagOffset = pars(2);
-    end
-    % Flip phase if necessary to render signal mostly positive
-    if sum(real(V*exp(1i*Phase)))<0
-        Phase = Phase+pi;
-    end
-elseif ~isempty(Phase) && fitImagOffset
-    offset = 0;
-    FitStart = round(length(V)/8); % use only last 7/8 of data for phase/offset correction
-    ImagOffset = fminsearch(@(offset)imaginarynorm([Phase offset],V(FitStart:end)),offset);
 end
 
-%Do phase correction and normalize
-Vc = (V - 1i*ImagOffset)*exp(1i*Phase);
+
+ImagOffset = ImagOffset*1i;
+
+% Apply phase/offset correction
+ph = exp(1i*Phase);
+Vc = (V - ImagOffset)./ph;
+
+% Output
 Vreal = real(Vc);
 Vimag = imag(Vc);
-
-%Return column vectors
-Vreal = Vreal(:);
-Vimag = Vimag(:);
-
+Phase = angle(ph); % map phase angle to [-pi,pi) interval
 
 end
 
 function ImagNorm = imaginarynorm(params,V)
 % Computes norm of the imaginary part of phase-corrected data from zero before
 % phase correction, an offset can be subtracted from the imaginary part.
-%
-% FitParam(1)  phase correction phi (rad)
-% FitParam(2)  offset
-% V            complex data trace
-%
-% ImagNorm     norm of imaginary part
-%
-% G. Jeschke, 2009, Luis Fabregas 2020
 
 phase = params(1);
 if numel(params)>1
-    imoffset = params(2);
+    imoffsets = params(2);
 else
-    imoffset = 0;
+    imoffsets = 0;
 end
 
-if imoffset<0
-    ImagNorm = 1e6;
-    return
-end
-
-ImagComponent = imag((V-1i*imoffset)*exp(1i*phase));
-ImagNorm = norm(ImagComponent);
+Vcorr = (V-1i*imoffsets).*exp(-1i*phase);
+ImagNorm = norm(imag(Vcorr));
 
 end

@@ -121,6 +121,17 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 			P = fitregmodel(___,'NonNegConstrained',false)
 
+- ``'NormP'`` - Normalize distance distribution
+    Specifies whether the fitted distance distribution should be normalized (``true`` or ``false``). If set to ``true``, ``Pfit`` is normalized such that ``sum(Pfit)*mean(diff(r))==1``.
+
+    *Default:* ``true``
+
+    *Example:*
+
+		.. code-block:: matlab
+
+				P = fitregmodel(___,'NormP',false)
+
 - ``'HuberParam'`` - Huber parameter value
     Value of the super-parameter used in pseudo-Huber regularization.
 
@@ -233,3 +244,13 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 			P = fitregmodel(___,'Verbose','iter-detailed')
 
+- ``'normP'`` -  Renormalization of the distance distribution
+    This enables/disables the re-normalization of the fitted distance distribution such that ``sum(P)*dr=1``. 
+
+    *Default:* ``true``
+
+    *Example:*
+
+		.. code-block:: matlab
+
+			P = fitregmodel(___,'normP',false)

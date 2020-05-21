@@ -33,7 +33,10 @@ Outputs
 Model
 =========================================
 
-This implements a hard-shell excluded-volume model, with spin concentration ``c`` (first parameter, in μM) and distance of closest approach ``R`` (second parameter, in nm).
+.. image:: ../images/model_scheme_bg_hom3dex.png
+   :width: 350px
+
+This implements a hard-shell excluded-volume model, with pumped spin concentration ``c`` (first parameter, in μM) and distance of closest approach ``R`` (second parameter, in nm).
 
 The expression for this model is
 
