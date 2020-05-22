@@ -8,7 +8,7 @@ P = dd_gauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = K*P;
 
-[alphaopt,fcns,alphas] = selregparam(S,K,'tikhonov',{'aic','gcv'},'NonNegConstrained',false);
+[alphaopt,fcns,alphas] = selregparam(S,K,r,'tikhonov',{'aic','gcv'},'NonNegConstrained',false);
 
 % Pass: similar regularization parameter values are found
 pass = all(abs(diff(alphaopt)) < 1e-2);

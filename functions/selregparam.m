@@ -212,7 +212,7 @@ L = regoperator(r,RegOrder);
 % Get range of potential alpha values candidates
 if isempty(alphaRange)
     alphaRange = regparamrange(K{1},L); %Does not work well with non-uniform r vectors
-    alphaRange = logspace(-10,10,100);
+%     alphaRange = logspace(-10,10,100);
 else
     validateattributes(alphaRange,{'numeric'},{'nonempty','nonnegative'},mfilename,'RegParamRange')
 end

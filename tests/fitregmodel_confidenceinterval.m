@@ -8,9 +8,7 @@ r = linspace(2,4,200);
 P = dd_gauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = K*P + whitegaussnoise(t,0.02);
-alpha = 2;
-
-[Pfit,Pci] = fitregmodel(S,K,r,'tikhonov',alpha);
+[Pfit,Pci] = fitregmodel(S,K,r,'tikhonov','aic');
 
 %Pass : fnnls manages to fit the distribution
 pass = all(abs(Pfit - P) < 3e-1);

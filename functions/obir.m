@@ -97,7 +97,7 @@ else
 end
 
 if isa(alpha,'char')
-    alpha = selregparam(V,K,RegType,alpha);
+    alpha = selregparam(V,K,r,RegType,alpha);
 else
     validateattributes(alpha,{'numeric'},{'scalar','nonempty','nonnegative'},mfilename,'RegParam')
 end
@@ -110,7 +110,7 @@ else
     RegType = validatestring(RegType,allowedInput);
 end
 
-L = regoperator(length(r),RegOrder);
+L = regoperator(r,RegOrder);
 
 % Parse & validate optional input
 %-------------------------------------------------------------------------------

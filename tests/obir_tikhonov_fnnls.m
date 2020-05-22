@@ -9,7 +9,6 @@ P = dd_gauss2(r,[2,0.3,0.5,3.5,0.3]);
 K = dipolarkernel(t,r);
 noiselvl = 0.1;
 S = K*P + whitegaussnoise(t,noiselvl);
-alpha = 12;
 
 if opt.Display
     axhandle = axes();
@@ -17,6 +16,7 @@ else
     axhandle = [];
 end
 
+alpha = 0.1;
 Pobir = obir(S,K,r,'tikhonov',alpha,'DivergenceStop',true,'NoiseLevelAim',noiselvl,'Solver','fnnls','axishandle',axhandle);
 Preg = fitregmodel(S,K,r,'tikhonov',alpha);
 

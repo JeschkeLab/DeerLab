@@ -7,8 +7,8 @@ r = linspace(2,6,100);
 P = dd_gauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = K*P;
-alpha = 1;
-Pfit = fitregmodel(S,K,r,'huber',alpha,'Solver','fmincon','HuberParam',1.35);
+
+Pfit = fitregmodel(S,K,r,'huber','aic','Solver','fmincon','HuberParam',1.35);
 
 
 error = abs(Pfit - P);

@@ -11,7 +11,7 @@ lgRes = 0.1;
 alpha = regparamrange(K,L,'Resolution',lgRes);
 
 % Pass: the right number of elements are returned
-pass = length(alpha) == 85;
+pass = length(alpha) == 84;
 
 maxerr = NaN;
  

@@ -9,10 +9,9 @@ K = dipolarkernel(t,r);
 B = bg_exp(t,0.15);
 lam = 0.25;
 V = (1 - lam + lam*K*P).*B;
-alpha = 0.13;
 KB = dipolarkernel(t,r,lam,B);
 
-Pfit = fitregmodel(V,KB,r,'tikhonov',alpha,'Solver','fnnls');
+Pfit = fitregmodel(V,KB,r,'tikhonov','aic','Solver','fnnls');
 
 % Pass: the distribution is well fitted
 pass = all(abs(Pfit - P) < 3e-1);

@@ -20,7 +20,7 @@ S3 = dipolarsignal(t3,r,P,'noiselevel',0.02);
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 
-alpha = selregparam(Ss,Ks,'tv','aicc');
+alpha = selregparam(Ss,Ks,r,'tv','aicc');
 
 Pfit = fitregmodel(Ss,Ks,r,'tv',alpha);
 

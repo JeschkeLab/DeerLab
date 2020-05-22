@@ -19,15 +19,14 @@ t3 = linspace(0,2.4,300);
 K3 = dipolarkernel(t3,r);
 S3 = K3*P + whitegaussnoise(t3,0.1);
 
-regparam = 1;
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 
 
-Pglobal = fitregmodel(Ss,Ks,r,'tikh',regparam,'Solver','fnnls','GlobalWeights',[1 2 1]);
+Pglobal = fitregmodel(Ss,Ks,r,'tikh','aic','Solver','fnnls','GlobalWeights',[1 2 1]);
 
 % Pass: the distribution is somewhat fitted, but it runs
-pass = all(abs(P - Pglobal) < 5.5e-1);
+pass = all(abs(P - Pglobal) < 9e-1);
 
 maxerr = max(abs(P - Pglobal));
 
