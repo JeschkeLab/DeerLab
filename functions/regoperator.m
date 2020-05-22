@@ -10,7 +10,6 @@
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 % Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-
 function L = regoperator(r,d)
 
 if nargin~=2
@@ -19,43 +18,20 @@ end
 
 % Check arguments.
 n = numel(r);
-if numel(d)~=1 || ~any(d==[0 1 2 3])
-    error('The order d (2nd input argument) must be 0, 1, 2, or 3.');
+if ~isvector(r)
+    error('The 1st input (r) must be a vector array of distances.')
 end
 
-% if range(round(diff(r),4)) == 0
+% Construct finite difference matrix
+L = zeros(n-d,n);
 
-% Compute L
-switch d
-    case 0
-        L = eye(n);
-    case 1
-        L = diff(eye(n),1);
-    case 2
-        L = diff(eye(n),2);
-    case 3
-        L = diff(eye(n),3);
-end
-dr = mean(diff(r));
-L = L/dr^d;
-% 
-% else
-% L = zeros(n-d,n);
-% 
-% %Loop over rows
-% for i=1:n-d
-%     cols = max(1,i-d):min(n-d,i+d);
-%     L(i,cols) = fdcoeffF(d,r(i),r(cols));
-% end
-% 
-% L = L/max(max(L(L>0)));
-% L = L*mean(diff(r));
-% L = L*1e15;
-% end
-
+% Compute non-zero finite difference coefficients via Fornberg's method
+for i=1:n-d
+    cols = i:i+d;
+    L(i,cols) = fdcoeffF(d,r(i),r(cols));
 end
 
-
+end
 
 function c = fdcoeffF(k,xbar,x)
 
@@ -103,8 +79,7 @@ if k >= n
     error('*** length(x) must be larger than k')
 end
 
-m = k;   % change to m=n-1 if you want to compute coefficients for all
-% possible derivatives.  Then modify to output all of C.
+m = k;
 c1 = 1;
 c4 = x(1) - xbar;
 C = zeros(n-1,m+1);
@@ -134,6 +109,6 @@ for i=1:n-1
     end
     c1 = c2;
 end
-
-c = C(:,end)';            % last column of c gives desired row vector
+% Last column of c gives desired row vector
+c = C(:,end)';           
 end
