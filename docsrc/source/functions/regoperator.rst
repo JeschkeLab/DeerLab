@@ -29,4 +29,4 @@ The function can be called as follows
 
    L = regoperator(r,d)
 
-Computes the discrete approximation ``L`` to the derivative operator of order ``d`` on an arbitrarily incremented distance vector ``r`` with ``N`` points. All finite difference matrix coefficients are computed via Fernberg's method.
+Computes the discrete approximation ``L`` to the derivative operator of order ``d`` on an arbitrarily incremented distance vector ``r`` with ``N`` points. All finite difference matrix coefficients are computed via Fornberg's method.
