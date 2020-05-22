@@ -2,10 +2,11 @@ function [pass,maxerr] = test(opt)
 
 % Check that regoperator returns correct sizes
 
-n = 30;
-L0 = regoperator(n,0);
-L1 = regoperator(n,1);
-L2 = regoperator(n,2);
+r = 1:30;
+n = numel(r);
+L0 = regoperator(r,0);
+L1 = regoperator(r,1);
+L2 = regoperator(r,2);
 
 % Pass: all operators have the right sizes
 sizeok = @(M,sz)all(size(M)==sz);

@@ -1,12 +1,10 @@
 %
 % REGOPERATOR Compute discrete derivative regularization operators 
-% 
-%   L = REGOPERATOR(n,d)
-%   Computes the discrete approximation L to the derivative operator 
-%   of order d on a regular grid with n points, i.e. L is (n-d)-by-n. 
 %
 %   L = REGOPERATOR(r,d)
-%   Computes the same as above, using the number of element in r as n.
+%  Computes the discrete approximation L to the derivative operator of order d
+%  using the distance axis (r),defined in a uniform or non-uniform spaced grid 
+%  of n points, i.e. L is (n-d)-by-n.
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md). 
@@ -16,25 +14,16 @@
 function L = regoperator(r,d)
 
 if nargin~=2
-    error('regoperator requires 2 input arguments: the dimension and the order.');
+    error('regoperator requires 2 input arguments: r and the order.');
 end
 
 % Check arguments.
-if numel(r)>1
-  if isvector(r)
-    n = numel(r);
-  else
-    error('The first input must be either a positive integer (n) or a vector (r).');
-  end
-else
-    n = r;
-    r = 1:n;
-end
+n = numel(r);
 if numel(d)~=1 || ~any(d==[0 1 2 3])
     error('The order d (2nd input argument) must be 0, 1, 2, or 3.');
 end
 
-if range(round(diff(r),4)) == 0
+% if range(round(diff(r),4)) == 0
 
 % Compute L
 switch d
@@ -47,20 +36,22 @@ switch d
     case 3
         L = diff(eye(n),3);
 end
-
-else
-L = zeros(n-d,n);
-
-%Loop over rows
-for i=1:n-d
-    cols = max(1,i-d):min(n-d,i+d);
-    L(i,cols) = fdcoeffF(d,r(i),r(cols));
-end
-
-L = L/max(max(L(L>0)));
-L = L*mean(diff(r));
-L = L*1e15;
-end
+dr = mean(diff(r));
+L = L/dr^d;
+% 
+% else
+% L = zeros(n-d,n);
+% 
+% %Loop over rows
+% for i=1:n-d
+%     cols = max(1,i-d):min(n-d,i+d);
+%     L(i,cols) = fdcoeffF(d,r(i),r(cols));
+% end
+% 
+% L = L/max(max(L(L>0)));
+% L = L*mean(diff(r));
+% L = L*1e15;
+% end
 
 end
 
