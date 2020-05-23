@@ -18,7 +18,7 @@ t3 = linspace(0,2.4,300);
 K3 = dipolarkernel(t3,r);
 S3 = K3*P + whitegaussnoise(t3,0.1);
 
-regparam = 2;
+regparam = 0.001;
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 

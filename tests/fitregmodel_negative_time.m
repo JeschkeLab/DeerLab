@@ -8,8 +8,7 @@ r = linspace(2,6,100);
 P = dd_gauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = K*P + whitegaussnoise(t,0.01);
-alpha = 0.31;
-Pfit = fitregmodel(S,K,r,'tikhonov',alpha);
+Pfit = fitregmodel(S,K,r,'tikhonov','aic');
 
 error = abs(Pfit - P);
 % Pass: the distribution is well fitted

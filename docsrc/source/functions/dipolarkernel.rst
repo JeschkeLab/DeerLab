@@ -41,7 +41,7 @@ Description
 
    K = dipolarkernel(t,r)
 
-Computes the elementary kernel matrix ``K`` for the time axis ``t`` (in microseconds) and distance axis ``r`` (in nanometers).The dipolar kernel is normalized by `\Delta r`, such that it returns a dipolar signal with amplitude 1 at time zero for a normalized distance distribution (i.e. ``sum(P)*dr==1``).
+Computes the elementary kernel matrix ``K`` for the time axis ``t`` (in microseconds) and distance axis ``r`` (in nanometers).The dipolar kernel is normalized by `\Delta r`, such that it returns a dipolar signal with amplitude 1 at time zero for a normalized distance distribution (i.e. ``trapz(r,P)==1``).
 
 
 -----------------------------

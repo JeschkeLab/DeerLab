@@ -10,14 +10,14 @@ K = dipolarkernel(t,r);
 S = K*P + whitegaussnoise(t,0.02,'rescale');
 
 methods = {'lr','lc','cv','gcv','rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl'};
-alphaopt1 = selregparam(S,K,'tikhonov',methods,'NonNegConstrained',false,'NoiseLevel',0.05,'search','grid');
+alphaopt1 = selregparam(S,K,r,'tikhonov',methods,'NonNegConstrained',false,'NoiseLevel',0.05,'search','grid');
 
-% Values returned by the selregparam function at commit cec7a2b5af55a10739ec7993dd1aee4c25920f6c  (13/04/2020)
-alpharef1 = [0.5012 0.5012   79.4328 0.3162 0.3162 1.5849 0.3162 0.6310 0.3162 1.0000 25.1189 0.7943 0.3162 1.0000];
+% Values returned by the selregparam function (18/05/2020)
+alpharef1 = [0.0005 0.0005 0.0631 0.0003 0.0003 0.0016 0.0003 0.0005 0.0003 0.0008 0.0251 0.0006 0.0003 0.0008];
 
 % Pass: calculated values are equal to reference values (log10 scale)
 threshold = 1e-2;
-pass(1) = all(abs(log10(alpharef1) - log10(alphaopt1)) <= threshold);
+pass(1) = all(abs(alpharef1 - alphaopt1) <= threshold);
 
 pass = all(pass);
 

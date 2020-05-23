@@ -17,10 +17,9 @@ else
     axhandle = [];
 end
 
-alpha = 3;
-Pobir = obir(S,K,r,'tikhonov',alpha,'NoiseLevelAim',noiselvl,'Solver','fmincon','axishandle',axhandle);
+Pobir = obir(S,K,r,'tikhonov','aic','NoiseLevelAim',noiselvl,'Solver','fmincon','axishandle',axhandle);
 
-Preg = fitregmodel(S,K,r,'tikhonov',alpha);
+Preg = fitregmodel(S,K,r,'tikhonov','aic');
 
 pass = mean(abs(Pobir - P)) < mean(abs(Preg - P));
 

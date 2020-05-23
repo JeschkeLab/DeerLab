@@ -8,7 +8,7 @@ P = dd_gauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = K*P;
 
-alphaopt = selregparam(S,K,'huber',{'aic','gcv'});
+alphaopt = selregparam(S,K,r,'huber',{'aic','gcv'});
 
 % Pass: both methods find the same solutions
 pass = abs(diff(alphaopt)) < 1e-2;

@@ -245,7 +245,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 			P = fitregmodel(___,'Verbose','iter-detailed')
 
 - ``'normP'`` -  Renormalization of the distance distribution
-    This enables/disables the re-normalization of the fitted distance distribution such that ``sum(P)*dr=1``. 
+    This enables/disables the re-normalization of the fitted distance distribution such that ``trapz(r,P)==1``. 
 
     *Default:* ``true``
 

@@ -19,7 +19,7 @@ t3 = linspace(0,2.4,300);
 K3 = dipolarkernel(t3,r);
 S3 = K3*P + whitegaussnoise(t3,0.1);
 
-regparam = 1;
+regparam = 0.0002;
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
 
@@ -35,7 +35,9 @@ error_local2 = norm(P - Plocal2);
 error_local3 = norm(P - Plocal3);
 
 % Pass: the global fit is better than the local fits
-pass = all(error_global < [error_local2 error_local3]);
+pass(1) = all(error_global < [error_local2 error_local3]);
+% Pass the global fit is correct
+pass(2) = all(abs(Pglobal - P)<4e-1);
 
 maxerr = max(abs(Pglobal - P));
 

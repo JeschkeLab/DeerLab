@@ -8,10 +8,9 @@ r = linspace(0,5,100);
 P = dd_gauss2(r,[2,0.3,0.5,3.5,0.3]);
 K = dipolarkernel(t,r);
 S = K*P + whitegaussnoise(t,0.05);
-alpha = 0.05;
 
-Pfit1 = obir(S,K,r,'tikh',alpha,'NoiseLevelAim',0.05,'TolFun',1e-1,'MaxFunEvals',100,'MaxOuterIter',100,'MaxIter',100,'RegOrder',2,'HuberParam',1.4);
-Pfit2 = obir(S,K,r,'tikh',alpha,'NoiseLevelAim',0.05,'TolFun',1e-2,'MaxFunEvals',500,'MaxOuterIter',500,'MaxIter',5000,'RegOrder',2,'HuberParam',1.35);
+Pfit1 = obir(S,K,r,'tikh','aic','NoiseLevelAim',0.05,'TolFun',1e-1,'MaxFunEvals',100,'MaxOuterIter',100,'MaxIter',100,'RegOrder',2,'HuberParam',1.4);
+Pfit2 = obir(S,K,r,'tikh','aic','NoiseLevelAim',0.05,'TolFun',1e-2,'MaxFunEvals',500,'MaxOuterIter',500,'MaxIter',5000,'RegOrder',2,'HuberParam',1.35);
 
 % Pass: the fit with the better options is better
 pass = mean(abs(P - Pfit2)) < mean(abs(P - Pfit1));

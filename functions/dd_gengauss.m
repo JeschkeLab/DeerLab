@@ -73,8 +73,7 @@ P = beta/(2*sigma*gamma(1/beta))*exp(-x.^beta);
 
 % Normalize
 if ~all(P==0)
-    dr = mean(diff(r));
-    P = P/sum(P)/dr;    
+    P = P/trapz(r,P);    
 end
 
 output = P;

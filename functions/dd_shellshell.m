@@ -82,7 +82,7 @@ P = R1^3*q21 - R1^3*q31 + R2^3*q32;
 P = P/(delta21*delta32);
 
 if ~all(P==0)
-P = P/sum(P)/mean(diff(r));
+P = P/trapz(r,P);
 end
 
 output = P;

@@ -31,6 +31,11 @@ r0 = par0(1);
 R = par0(2);
 pass(6) = all(P1(r<r0-R)==0) && all(P1(r>r0+R)==0);
 
+% Pass 7: compatible with non-uniform distance vectors
+rnus = sqrt(linspace(1.5,6^2,800));
+P5 = dd_circle(rnus,par0);
+pass(7) = round(trapz(rnus,P5),4) == 1;
+
 pass = all(pass);
 
 maxerr = NaN;

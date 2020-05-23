@@ -12,20 +12,12 @@ catch
   pass(1) = true;
 end
 
-% Pass 2: order exceeds 3
-try
-  regoperator(N,4);
-  pass(2) = false;
-catch 
-  pass(2) = true;
-end
-
 % Pass 3: no order specified
 try
   regoperator(N);
-  pass(3) = false;
+  pass(2) = false;
 catch 
-  pass(3) = true;
+  pass(2) = true;
 end
 
 pass = all(pass);

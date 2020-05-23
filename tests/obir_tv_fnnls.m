@@ -9,7 +9,6 @@ P = dd_gauss2(r,[2,0.3,0.5,3.5,0.3]);
 K = dipolarkernel(t,r);
 noiselvl = 0.1;
 S = K*P + whitegaussnoise(t,noiselvl,'renorm');
-alpha = 0.5;
 
 if opt.Display
     axhandle = axes();
@@ -17,6 +16,7 @@ else
     axhandle = [];
 end
 
+alpha = 0.0005;
 Pobir = obir(S,K,r,'tv',alpha,'DivergenceStop',true,'NoiseLevelAim',noiselvl,'Solver','fnnls','axishandle',axhandle);
 Preg = fitregmodel(S,K,r,'tv',alpha);
 

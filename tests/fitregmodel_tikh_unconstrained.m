@@ -7,9 +7,8 @@ r = linspace(2,5,100);
 P = dd_gauss(r,[3,0.5]);
 K = dipolarkernel(t,r);
 S = K*P;
-alpha = 1;
 
-Pfit = fitregmodel(S,K,r,'tikhonov',alpha,'NonNegConstrained',false);
+Pfit = fitregmodel(S,K,r,'tikhonov','aic','NonNegConstrained',false);
 
 pass = all(abs(Pfit - P) < 4e-1);
 

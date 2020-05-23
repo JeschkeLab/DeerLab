@@ -16,7 +16,7 @@ KB = dipolarkernel(t,r,lam,B);
 V  = KB*P;
 
 maxerr = max(abs(V-V0));
-pass = maxerr < 1e-10;
+pass = maxerr < 1e-5;
 
 if opt.Display
    plot(t,V0,'k',t,V,'r',t,(1-lam)*B,'r--')

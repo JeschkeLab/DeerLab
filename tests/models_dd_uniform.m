@@ -30,6 +30,10 @@ pass(5) = abs(sum(P1)*dr-1)<1e-10;
 rL = par0(1);
 rR = par0(2);
 pass(6) = all(P1(r<rL)==0) && all(P1(r>rR)==0);
+% Pass 7: compatible with non-uniform distance vectors
+rnus = sqrt(linspace(1.5,6^2,800));
+P5 = dd_uniform(rnus,par0);
+pass(7) = round(trapz(rnus,P5),4) == 1;
 
 pass = all(pass);
 
