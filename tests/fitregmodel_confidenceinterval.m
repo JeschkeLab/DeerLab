@@ -17,7 +17,7 @@ maxerr = max(abs(Pfit - P));
 
 if opt.Display
    hold on
-   fill([r fliplr(r)],[Pci(1,:) flipud(Pci(2,:))],'r','linestyle','none','facealpha',0.4)
+   fill([r fliplr(r)],[Pci(:,1); flipud(Pci(:,2))],'r','linestyle','none','facealpha',0.4)
    plot(r,P,'k',r,Pfit,'r')
    hold off
    legend('95% CI','truth','fit')

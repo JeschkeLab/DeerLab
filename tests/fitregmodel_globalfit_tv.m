@@ -21,7 +21,7 @@ S3 = K3*P + whitegaussnoise(t3,0.1);
 
 Ss = {S1,S2,S3};
 Ks = {K1,K2,K3};
-regparam = 0.001;
+regparam = 0.00001;
 
 Pglobal = fitregmodel(Ss,Ks,r,'tv',regparam);
 Plocal1 = fitregmodel(S1,K1,r,'tv',regparam);
