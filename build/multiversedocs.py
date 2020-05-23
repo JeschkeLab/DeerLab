@@ -147,9 +147,6 @@ for tag in tags:
             if '<h1>DeerLab-development Documentation' in line and tag != 'develop':
                     line = line.replace(line,'<h1>DeerLab '+tag+' Documentation</h1>')  
                     
-            if 'DeerAnalysis' in line:
-                    line = line.replace('DeerAnalysis','DeerLab')
-                    
             #Print line into file
             sys.stdout.buffer.write(line.encode('utf-8'))
             
