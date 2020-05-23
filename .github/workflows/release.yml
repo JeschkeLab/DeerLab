@@ -53,6 +53,8 @@ jobs:
           files: 'DeerLab_${{ env.RELEASE_TAG }}.zip'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: ${{ env.RELEASE_TAG }}
+      - name: Fetch history
+        run: git fetch --prune --unshallow
       - name: Build webpage
         if: success()
         run: |
