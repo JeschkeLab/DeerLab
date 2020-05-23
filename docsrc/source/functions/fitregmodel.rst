@@ -4,7 +4,7 @@
 *********************
 :mod:`fitregmodel`
 *********************
-Fits a parameter-free distance distribution to one (or several) signals using regularization.
+Fits a non-parametric distance distribution to one (or several) signals using regularization.
 
 -----------------------------
 

@@ -35,7 +35,7 @@ Parameters
     *   ``dd`` -- Distance distribution model, can be...
 
                  * ``@dd_model`` function handle for parametric distribution model
-                 * ``'P'`` to indicate a parameter-free distribution
+                 * ``'P'`` to indicate a non-parametric distribution
                  * ``'none'`` to indicate no distribution, i.e. only background
 
 
@@ -174,7 +174,7 @@ Additional settings can be specified via name-value pairs. All property names ar
 
 
 - ``'RegType'`` - Regularization functional type
-    Specifies the type of regularization to be used to fit parameter-free distributions
+    Specifies the type of regularization to be used to fit non-parametric distributions
 
         *   ``'tikh'`` -- Tikhonov regularization
         *   ``'tv'`` -- Total variation regularization

@@ -35,7 +35,7 @@ We can look at the result:
 
    plot(t,V,t,Vexp,t,(1-lambda)*B)     % plotting
 
-Now that we have a noisy DEER trace, we fit it (in a single step) with a parameter-free distance distribution and a homogeneous 3D background.
+Now that we have a noisy DEER trace, we fit it (in a single step) with a non-parametric distance distribution and a homogeneous 3D background.
 
 .. code-block:: matlab
 

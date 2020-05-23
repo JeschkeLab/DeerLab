@@ -125,7 +125,7 @@ With this, a signal is obtained from a distance distribution via
 Least-squares fitting
 -----------------------------
 
-DeerLab uses dedicated least-squares solvers to fit models to data. The objective function and the solver depend on whether the distance distribution is parametric or parameter-free, and on whether there are background and experiment parameters to fit alongside the distance distribution.
+DeerLab uses dedicated least-squares solvers to fit models to data. The objective function and the solver depend on whether the distance distribution is parametric or non-parametric, and on whether there are background and experiment parameters to fit alongside the distance distribution.
 
 Parametric distribution
 .......................................
@@ -140,10 +140,10 @@ To fit a model with a parametric distance distribution to an experimental signal
 
 where :math:`\vc{V}_\mr{exp}` indicates the experimental data and :math:`\vc{\theta}` is a vector of all parameters (distribution parameters, background parameters, experiment parameters). Various constrained least-squares solvers are implemented.
 
-Parameter-free distribution
+Non-parametric distribution
 .......................................
 
-To fit a model with a parameter-free distribution and no additional fitting parameters to an experimental signal, DeerLab implements several regularization approaches. The most common one is Tikhonov regularization. For this, the minimization problem is
+To fit a model with a non-parametric distribution and no additional fitting parameters to an experimental signal, DeerLab implements several regularization approaches. The most common one is Tikhonov regularization. For this, the minimization problem is
 
 .. math::
 
@@ -159,7 +159,7 @@ To fit a model with a parameter-free distribution and no additional fitting para
 :math:`\alpha` is the regularization parameter, and :math:`\mx{L}` is the regularization operator matrix. DeerLab implements the linear non-negative least-squares solver FNNLS, as well as a few others. The :math:`\alpha` parameter can be optimized using a range of criteria, including L-curve, Akaike information criterion (AIC), and generalized cross validation (GCV).
 
 
-To fit a  model with a parameter-free distance distribution and other parameters to an experimental signal, DeerLab solves
+To fit a  model with a non-parametric distance distribution and other parameters to an experimental signal, DeerLab solves
 
 .. math::
 

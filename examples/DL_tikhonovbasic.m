@@ -1,6 +1,6 @@
 %============================================================================
 % DeerLab Example:
-% Basic fitting of a 4-pulse DEER signal, parameter-free distribution
+% Basic fitting of a 4-pulse DEER signal, non-parametric distribution
 %============================================================================
 
 % This example shows how to fit a simple 4-pulse DEER signal with a parameter-

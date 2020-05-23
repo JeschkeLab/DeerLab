@@ -1,5 +1,5 @@
 % 
-% FITREGMODEL Fits a parameter-free distance distribution to one (or several)
+% FITREGMODEL Fits a non-parametric distance distribution to one (or several)
 %             time-domain signals, using regularization
 %
 %   P = FITREGMODEL(V,K,r,regtype,alpha)

@@ -33,7 +33,7 @@ Here is an example for a parametric model:
 
 The output ``bootci`` contains calculated bootstrap 50%, 90%, and 95% confidence intervals for all parameters.
 
-Here is an example for a model with a parameter-free distribution:
+Here is an example for a model with a non-parametric distribution:
 
 .. code-block:: matlab
 
@@ -43,7 +43,7 @@ Here is an example for a model with a parameter-free distribution:
            [~,Pfit,~,parfit] = fitsignal(Vin,t,r,'P',@bg_hom3d,@ex_4pdeer,[],'RegParam',1);
     end
 
-To plot the resulting CIs for the parameter-free distance distribution, use
+To plot the resulting CIs for the non-parametric distance distribution, use
 
 .. code-block:: matlab
     

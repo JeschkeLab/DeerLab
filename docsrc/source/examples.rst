@@ -33,7 +33,7 @@ Here is a collection of example scripts for the use of DeerLab. You can also fin
 
 		<div class="row" onclick="window.location='examples/example_basicprocessing.html#example_basicprocessing'">
 			<div class="cell">
-				 Basic fitting of a 4-pulse DEER signal, parameter-free distribution
+				 Basic fitting of a 4-pulse DEER signal, non-parametric distribution
 			</div>
 		</div>
 

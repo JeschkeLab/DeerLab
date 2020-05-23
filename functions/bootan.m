@@ -46,7 +46,7 @@
 %
 %   The .bootdist and .boothist fields are only computed for non-vectorial
 %   variables, e.g. model parameters, but not for vectorial variables, e.g.
-%   parameter-free distance distributions, backgrounds,...
+%   non-parametric distance distributions, backgrounds,...
 %
 
 % This file is a part of DeerLab. License is MIT (see LICENSE.md).

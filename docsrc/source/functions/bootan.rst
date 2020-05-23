@@ -76,7 +76,7 @@ Performs a uncertainty analysis of the output variables of the function ``fcn`` 
 
 From the evaluation of all level-combinations an ensemble of outputs is obtained on which statistical estimators are used. The 99%, 95% and 50% confidence intervals of all output variables are returned in a structure ``bootci``. The summary of these statistics is returned in the ``stats`` structure. This summary contains the mean, median, standard deviation, 99t, 75th, 25th and 1st percentile values for all outputs.
 
-For non-vectorial variables (e.g. parameter-free distributions, background functions,etc.) the ``stats`` structure will contain an histogram of the distribution of values for the different outputs as well as a corresponding probability density function obtained from a kernel densitiy estimation of the histogram data.
+For non-vectorial variables (e.g. non-parametric distributions, background functions,etc.) the ``stats`` structure will contain an histogram of the distribution of values for the different outputs as well as a corresponding probability density function obtained from a kernel densitiy estimation of the histogram data.
 
 ------------------------
 

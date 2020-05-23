@@ -30,7 +30,7 @@
 %    t      time axis, in microseconds (N-element vector)
 %    r      distance axis, in nanometers (M-element vector)
 %    dd     distance distribution model (default 'P')
-%           - 'P' to indicate parameter-free distribution
+%           - 'P' to indicate non-parametric distribution
 %           - function handle to parametric distribution model (e.g. @dd_gauss)
 %           - 'none' to indicate no distribution, i.e. only background
 %    bg     background model (default @bg_hom3d)
@@ -438,7 +438,7 @@ else
                 covmatsub = covmatrix(subidx_theta,subidx_theta);
                 parci_{jj} = parfit_.' + z(jj)*sqrt(diag(covmatsub)).*[-1 +1];
                 
-                % Compute CI for parameter-free distribution
+                % Compute CI for non-parametric distribution
                 covmatsub = covmatrix(subidx_P,subidx_P);
                 PfitCI{jj}(:,1) = Pfit + z(jj)*sqrt(diag(covmatsub));
                 PfitCI{jj}(:,2) = max(0,Pfit - z(jj)*sqrt(diag(covmatsub)));

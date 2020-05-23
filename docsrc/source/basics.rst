@@ -15,9 +15,9 @@ A distance distribution between two spins is represented by a pair of vectors: a
         trapz(r,P)                 % integral of P over r, gives 1
 
 
-DeerLab distinguishes between **parameter-free** and **parametric** distance distributions.
+DeerLab distinguishes between **non-parametric** and **parametric** distance distributions.
 
-**Parameter-free distance distributions** are the more general from. They have no particular shape and are represented by vectors ``P`` and ``r``. For example, you can generate ``P`` and ``r`` by an external program for spin label rotamer modeling. Parameter-free distance distributions are returned in least-squares fitting. In least-squares fitting, parameter-free distance distributions are preferred over parametric distance distributions, since they make fewer assumptions about the distribution and are more flexible. They introduce less bias.
+**Non-parametric distance distributions** are the more general from. They have no particular shape and are represented by vectors ``P`` and ``r``. For example, you can generate ``P`` and ``r`` by an external program for spin label rotamer modeling. Non-parametric distance distributions are returned in least-squares fitting. In least-squares fitting, non-parametric distance distributions are preferred over parametric distance distributions, since they make fewer assumptions about the distribution and are more flexible. They introduce less bias.
 
 **Parametric distance distributions** have specific shapes that depend on a few parameters. DeerLab provides many parametric :ref:`distance distribution model functions <modelsref_dd>`. All these functions start with the prefix ``dd_`` (``dd`` stands for "distance distibution"). They take a distance vector ``r`` and a parameter vector ``param`` as inputs and return the distance distribution as a vector ``P``. Here is an example:
 
