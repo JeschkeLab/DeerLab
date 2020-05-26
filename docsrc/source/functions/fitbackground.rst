@@ -8,6 +8,9 @@
 
 Fit a parametric background model function to a dipolar signal
 
+.. warning:: This is a legacy function. Its use is not recommended for routine or accurate data analysis.
+
+
 -----------------------------
 
 

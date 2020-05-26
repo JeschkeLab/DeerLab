@@ -7,6 +7,10 @@
 
 Amplitude scale correction of dipolar spectroscopy signals
 
+
+.. warning:: This is a legacy function. Its use is not recommended for routine or accurate data analysis.
+
+
 -----------------------------
 
 

@@ -7,6 +7,9 @@
 
 Computes the dipolar interaction kernel and components required for the approximate Pake transformation (APT).
 
+.. warning:: This is a legacy function. Its use is not recommended for routine or accurate data analysis.
+
+
 -----------------------------
 
 

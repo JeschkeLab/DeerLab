@@ -7,6 +7,9 @@
 
 Computes the optimal point for starting the background fit
 
+.. warning:: This is a legacy function. Its use is not recommended for routine or accurate data analysis.
+
+
 -----------------------------
 
 

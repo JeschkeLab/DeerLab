@@ -7,6 +7,10 @@
 
 Approximate Pake transformation (APT) of dipolar spectroscopy data
 
+
+.. warning:: This is a legacy function. Its use is not recommended for routine or accurate data analysis.
+
+
 -----------------------------
 
 
