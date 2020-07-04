@@ -11,7 +11,7 @@ def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
     LcurveMethods = SelectionMethod in ['lr','lc']
     RegOrder = 2
     TolFun = 1e-9
-    HuberParameter = 1.35
+    NoiseLevel = 0
     NonNegConstrained = True
 
     if LcurveMethods:
@@ -22,7 +22,6 @@ def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
 
     #  Preparations
     #-------------------------------------------------------------------------------
-    nr = len(r)
     # Get regularization operator
     L = regoperator(r,RegOrder)
     # Get range of potential alpha values candidates
@@ -42,9 +41,6 @@ def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
             P = np.linalg.solve(KtKreg,KtV)
 
         PseudoInverse = np.linalg.inv(KtKreg)@K.T
-
-        if RegType == 'tikhonov':
-                Penalty = norm(L@P)
         
         Residual = norm(K@P - V)
         InfluenceMatrix = K@PseudoInverse
@@ -58,7 +54,7 @@ def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
         nr = len(V)
         if  SelectionMethod =='cv': # Cross validation (CV)
             InfluenceDiagonal = np.diag(InfluenceMatrix)
-            f_ = sum(abs(V - K*(P)/(ones(nr,1) - InfluenceDiagonal))**2)
+            f_ = sum(abs(V - K*(P)/(np.ones(nr,1) - InfluenceDiagonal))**2)
                 
         elif  SelectionMethod =='gcv': # Generalized Cross Validation (GCV)
             f_ = Residual**2/((1 - np.trace(InfluenceMatrix)/nr)**2)
@@ -76,7 +72,7 @@ def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
             f_ = nr*np.log(Residual**2/nr) + Criterion*np.trace(InfluenceMatrix)
                 
         elif  SelectionMethod =='bic':  # Bayesian information criterion (BIC)
-            Criterion = log(nr)
+            Criterion = np.log(nr)
             f_ = nr*np.log(Residual**2/nr) + Criterion*np.trace(InfluenceMatrix)
                 
         elif  SelectionMethod =='aicc': # Corrected Akaike information criterion (AICC)
@@ -84,18 +80,18 @@ def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
             f_ = nr*np.log(Residual**2/nr) + Criterion*np.trace(InfluenceMatrix)
                 
         elif  SelectionMethod =='rm': # Residual method (RM)
-            Scaling = K.T@(eye(np.shape(InfluenceMatrix)) - InfluenceMatrix)
-            f_ = Residual**2/sqrt(np.trace(Scaling.T@Scaling))
+            Scaling = K.T@(np.eye(np.shape(InfluenceMatrix)) - InfluenceMatrix)
+            f_ = Residual**2/np.sqrt(np.trace(Scaling.T@Scaling))
                 
         elif  SelectionMethod =='ee': # Extrapolated Error (EE)
             f_ = Residual**2/norm(K.T*(K@P - V))
                 
         elif  SelectionMethod =='gml': # Generalized Maximum Likelihood (GML)
             Treshold = 1e-9
-            EigenValues = eig(eye(np.shape(InfluenceMatrix)) - InfluenceMatrix)
+            EigenValues = np.linalg.eig(np.eye(np.shape(InfluenceMatrix)) - InfluenceMatrix)
             EigenValues[EigenValues < Treshold] = 0
-            NonZeroEigenvalues = real(EigenValues[EigenValues!=0])
-            f_ = V.T*(V - K@P)/nthroot(prod(NonZeroEigenvalues),len(NonZeroEigenvalues))
+            NonZeroEigenvalues = np.real(EigenValues[EigenValues!=0])
+            f_ = V.T*(V - K@P)/m.exp(sum(map(np.log,NonZeroEigenvalues)))*(1/len(NonZeroEigenvalues))
                 
         elif  SelectionMethod =='mcl':  # Mallows' C_L (MCL)
             f_ = Residual**2 + 2*NoiseLevel**2*np.trace(InfluenceMatrix) - 2*nr*NoiseLevel**2
