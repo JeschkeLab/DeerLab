@@ -8,5 +8,5 @@ from regoperator import *
 
 from fnnls import *
 from fitregmodel import *
-
+from selregparam import selregparam
 from whitegaussnoise import *
