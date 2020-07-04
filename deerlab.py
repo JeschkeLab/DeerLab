@@ -4,3 +4,8 @@ from bg_models import *
 
 # Elementary dipolar kernel
 from dipolarkernel import *
+from regoperator import *
+
+from fnnls import *
+from fitregmodel import *
+
