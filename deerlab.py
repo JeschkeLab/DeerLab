@@ -9,3 +9,4 @@ from regoperator import *
 from fnnls import *
 from fitregmodel import *
 
+from whitegaussnoise import *
