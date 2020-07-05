@@ -3,10 +3,10 @@ from dd_models import *
 from bg_models import *
 
 # Elementary dipolar kernel
-from dipolarkernel import *
-from regoperator import *
+from dipolarkernel import dipolarkernel
+from regoperator import regoperator
 
-from fnnls import *
-from fitregmodel import *
+from fnnls import fnnls
+from fitregmodel import fitregmodel
 from selregparam import selregparam
-from whitegaussnoise import *
+from whitegaussnoise import whitegaussnoise
