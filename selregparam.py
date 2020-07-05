@@ -112,7 +112,8 @@ def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
 
         fun = lambda lga: evalalpha(10**lga,SelectionMethod)
         # Optimize alpha via the fminbnd function
-        lga_opt = opt.fminbound(fun,lga_min,lga_max)
+        #lga_opt = opt.minimize_scalar(fun,bracket=[lga_min,lga_max],method='Golden',tol=0.1)
+        lga_opt = opt.fminbound(fun,lga_min,lga_max,xtol=0.01)
         alphaOpt = 10**lga_opt
 
     return alphaOpt

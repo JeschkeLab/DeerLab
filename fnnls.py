@@ -1,5 +1,6 @@
 import numpy as np
 import math as m
+import matrixtools as mat
 
 def fnnls(AtA,Atb,tol=-1,verbose=False):
     """
@@ -25,8 +26,8 @@ def fnnls(AtA,Atb,tol=-1,verbose=False):
     count = 0
 
     # Use all-zero starting vector
-    x = np.zeros(np.shape(AtA)[1])
-    
+    x = mat.column(np.zeros(np.shape(AtA)[1]))
+
     # Calculate tolerance if not given.
     if tol==-1:
         eps = 2**-52
@@ -50,11 +51,11 @@ def fnnls(AtA,Atb,tol=-1,verbose=False):
         
         # Solve unconstrained problem for new augmented positive set.
         # This gives a candidate solution with potentially new negative variables.
-        x_ = np.zeros(N)
+        x_ = mat.column(np.zeros(N))
         if np.sum(passive)==1:
-            x_[passive] = Atb[passive]/AtA[passive,passive]
+            x_[passive] = Atb[passive]/AtA[passive[:,0],passive[:,0]]
         else:
-            x_[passive] = np.linalg.solve(AtA[np.ix_(passive,passive)],Atb[passive])
+            x_[passive] = np.linalg.solve(AtA[np.ix_(passive[:,0],passive[:,0])],Atb[passive])
         
         # Inner loop: Iteratively eliminate negative variables from candidate solution.
         iIteration = 0
@@ -70,11 +71,11 @@ def fnnls(AtA,Atb,tol=-1,verbose=False):
             passive[x<tol] = False
             
             # Solve unconstrained problem for reduced positive set.
-            x_ = np.zeros(N)
+            x_ = mat.column(np.zeros(N))
             if np.sum(passive)==1:
-                x_[passive] = Atb[passive]/AtA[passive,passive]
+                x_[passive] = Atb[passive]/AtA[passive[:,0],passive[:,0]]
             else:
-                x_[passive] = np.linalg.solve(AtA[np.ix_(passive,passive)],Atb[passive])
+                x_[passive] = np.linalg.solve(AtA[np.ix_(passive[:,0],passive[:,0])],Atb[passive])
             
         # Accept non-negative candidate solution and calculate w.
         if all(x == x_):
