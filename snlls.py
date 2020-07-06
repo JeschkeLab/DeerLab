@@ -6,10 +6,13 @@ from regoperator import regoperator
 from selregparam import selregparam
 from lsqcomponents import lsqcomponents
 from fnnls import fnnls
+from jacobianest import jacobianest
+from uqst import uqst
+import copy
 
-def snlls(y,Amodel,par0,lb=[],ub=[],ubl=[],lbl=[]):
+def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[]):
 
-    getUncertainty = False
+    getUncertainty = True
     getGoodnessOfFit = False 
 
     # Default optional settings
@@ -31,12 +34,25 @@ def snlls(y,Amodel,par0,lb=[],ub=[],ubl=[],lbl=[]):
     illConditioned = True
     linearConstrained = True
     nonNegativeOnly = True
+
+    Nnonlin = len(par0)
     Nlin = np.shape(Amodel(par0))[1]
     linfit = []
 
-    # Decide whether to include the regularization penalty
-    if not includePenalty and illConditioned:
-        includePenalty = True
+
+    if not any(lb):
+        lb = np.full(Nnonlin, -np.inf)
+
+    if not any(ub):
+        ub = np.full(Nnonlin, np.inf)
+
+    if not any(lbl):
+        ubl = np.full(Nlin, np.inf)
+
+    if not any(ubl):
+        ubl = np.full(Nlin, np.inf)
+
+    includePenalty = True
 
 
     if includePenalty:
@@ -126,13 +142,62 @@ def snlls(y,Amodel,par0,lb=[],ub=[],ubl=[],lbl=[]):
     # Run the non-linear solver
     sol = opt.least_squares(ResidualsFcn,par0,bounds=[lb,ub])
     nonlinfit = sol.x
+
+
+    # Uncertainty quantification
+    # ------------------------------------------------------------------
+    # Function that computes the covariance-based uncertainty quantification
+    # and returns the corresponding uncertainty structure
+    def uncertainty(nonlinfit):
+            
+        # Get full augmented residual vector
+        #====================================
+        res = ResidualsFcn(nonlinfit)
+                
+        # Compute the full augmented Jacobian
+        # =====================================
+        fcn = lambda p: Amodel(p)@linfit
+        Jnonlin,err = jacobianest(fcn,nonlinfit)
+        Jlin = Amodel(nonlinfit)
+        Jreg = np.concatenate((np.zeros((np.shape(L)[0],np.shape(Jnonlin)[1])), regparam_prev*L),1)
+        J = np.concatenate((Jnonlin, Jlin),1)
+        J = np.concatenate((J, Jreg),0)
+    
+        # Estimate the heteroscedasticity-consistent covariance matrix
+        sig = np.std(res)
+        covmatrix = sig**2*np.linalg.pinv(J.T@J)
+        
+        parfit = np.concatenate((nonlinfit, linfit))
+        lbs = np.concatenate((lb, lbl))
+        ubs = np.concatenate((ub, ubl))
+        paramuq_ = uqst('covariance',parfit,covmatrix,lbs,ubs)
+        paramuq = copy.deepcopy(paramuq_)
+
+        # Wrapper around the CI function handle of the uncertainty structure
+        # ------------------------------------------------------------------
+        def ci(coverage,type='full'):
+            # Get requested confidence interval of joined parameter set
+            paramci = paramuq_.ci(coverage)
+            if type == 'nonlin':
+                    # Return only confidence intervals on non-linear parameters
+                    paramci = paramci[range(Nnonlin),:]
+            elif type == 'lin':
+                    # Return only confidence intervals on linear parameters
+                    paramci = paramci[Nnonlin:,:]
+            return paramci
+
+        paramuq.ci = ci
+        return paramuq
+    # -------------------------------------------------------------------
+        
+
     # Uncertainty analysis (if requested)
     if getUncertainty:
-        paramuq = uncertainty(nonlinfit)
+        uq = uncertainty(nonlinfit)
 
     # Goodness of fit (if requested)
     if getGoodnessOfFit:
             Ndof = len(y) - Nlin - Nnonlin
             stats = gof(y,yfit,Ndof)
 
-    return nonlinfit, linfit
+    return nonlinfit, linfit, uq
