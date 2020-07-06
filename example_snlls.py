@@ -21,7 +21,7 @@ def Kmodel(p,t,r):
     # Generate 4pDEER kernel
     dr = r[2] - r[1]
     K = dipolarkernel(t,r)/dr
-    K = np.multiply(1-lam + lam*K,B)*dr
+    K = 1-lam + lam*K*B[:,np.newaxis]*dr
     return K
 
 t = np.linspace(-0.5,5,300)

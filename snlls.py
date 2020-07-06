@@ -123,8 +123,6 @@ def snlls(y,Amodel,par0,lb=[],ub=[],ubl=[],lbl=[]):
             # Augmented residual
             res = np.concatenate((res, penalty))
 
-        res = res[:,0]
-
         return res
     # ------------------------------------------------------------------
         

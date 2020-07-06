@@ -1,11 +1,9 @@
 import numpy as np
 import math as m
-import matrixtools as mat
 
 def bg_exp(t,param,lam=1):
     kappa = param
     B = np.exp(-lam*kappa*np.abs(t))
-    B = mat.column(B)
     return B
 
 def bg_hom3d(t,param,lam=1):
@@ -24,5 +22,4 @@ def bg_hom3d(t,param,lam=1):
     
     # Compute background function
     B = np.exp(-8*m.pi**2/9/m.sqrt(3)*lam*conc*D*np.abs(t*1e-6))
-    B = mat.column(B)
     return B
