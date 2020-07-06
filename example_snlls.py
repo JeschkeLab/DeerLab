@@ -3,11 +3,8 @@
 import numpy as np
 import time
 import math
-from snlls import snlls
 from deerlab import *
 import matplotlib.pyplot as plt
-import time
-
 
 def Kmodel(p,t,r):
 
@@ -21,7 +18,7 @@ def Kmodel(p,t,r):
     # Generate 4pDEER kernel
     dr = r[2] - r[1]
     K = dipolarkernel(t,r)/dr
-    K = 1-lam + lam*K*B[:,np.newaxis]*dr
+    K = (1-lam + lam*K)*B[:,np.newaxis]*dr
     return K
 
 t = np.linspace(-0.5,5,300)
@@ -30,7 +27,7 @@ r = np.linspace(2,6,200)
 # Generate ground truth and input signal
 P = dd_gauss2(r,[3.5, 0.4, 0.4, 4.5, 0.7, 0.6])
 lam = 0.36
-k = 0.1 #uM
+k = 0.5 #uM
 K = Kmodel([lam,k],t,r)
 V = K@P + whitegaussnoise(t,0.01)
 
@@ -39,9 +36,9 @@ V = K@P + whitegaussnoise(t,0.01)
 #--------------------------
 #       lam  c0
 #--------------------------
-par0 = [0.5,  50 ] # Start values
+par0 = [0.5, 0.5 ] # Start values
 lb   = [ 0 , 0.05] # lower bounds
-ub   = [ 1 , 1000] # upper bounds
+ub   = [ 1 ,  1  ] # upper bounds
 
 #--------------------------
 # Linear parameters: 
@@ -69,7 +66,6 @@ plt.plot(t,V,'k.',t,Vfit,'b')
 plt.subplot(2,1,2)
 plt.plot(r,P,'k',r,Pfit,'b')
 plt.show
-
 
 
 # %%

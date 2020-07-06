@@ -63,10 +63,7 @@ def snlls(y,Amodel,par0,lb=[],ub=[],ubl=[],lbl=[]):
     # function for the least-squares solvers
     def ResidualsFcn(p):
         
-        nonlocal par_prev 
-        nonlocal check
-        nonlocal regparam_prev
-        nonlocal linfit
+        nonlocal par_prev, check, regparam_prev, linfit
         # Non-linear model evaluation
         # ===============================
         A = Amodel(p)
