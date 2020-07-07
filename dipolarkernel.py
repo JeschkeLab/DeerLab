@@ -3,10 +3,12 @@ import math as m
 from scipy.special import fresnel
 
 # Fundamental constants (CODATA 2018)
-ge = 2.00231930436256
-hb = 6.62607015e-34/2/m.pi # J rad^-1 s^-1
-muB = 9.2740100783e-24 # J T^-1
-w0 = 1e-7*(muB*ge)**2/hb # rad s^-1
+ge = 2.00231930436256 # free-electron g factor
+muB = 9.2740100783e-24 # Bohr magneton, J/T 
+mu0 = 1.25663706212e-6 # magnetic constant, N A^-2 = T^2 m^3 J^-1 
+h = 6.62607015e-34 # Planck constant, J/Hz
+nu0 = (mu0/4/np.pi)*muB**2*ge*ge/h*1e21 # Hz m^3 -> MHz nm^3
+w0 = 2*np.pi*nu0 # Mrad s^-1 nm^3
 
 def dipolarkernel(t,r):
     """
@@ -15,6 +17,10 @@ def dipolarkernel(t,r):
     Assumes t in microseconds and r in nanometers
     """
     
+    r = np.atleast_1d(r)
+    t = np.atleast_1d(t)
+
+
     if np.any(r<=0):
         raise ValueError("All elements in r must be nonnegative.")
     
@@ -24,9 +30,9 @@ def dipolarkernel(t,r):
     K = np.zeros((nt,nr))
     
     # Calculation using Fresnel integrals
-    wr = w0/(r*1e-9)**3  # rad s^-1
+    wr = w0/(r**3)  # rad s^-1
     for ir in range(nr):
-        ph = wr[ir]*(np.abs(t)*1e-6)
+        ph = wr[ir]*(np.abs(t))
         kappa = np.sqrt(6*ph/m.pi)
         S, C = fresnel(kappa)
         K[:,ir] = (np.cos(ph)*C+np.sin(ph)*S)/kappa

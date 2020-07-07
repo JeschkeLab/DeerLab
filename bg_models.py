@@ -1,12 +1,54 @@
 import numpy as np
 import math as m
 
-def bg_exp(t,param,lam=1):
-    kappa = param
+def bg_exp(*args):
+
+    if not args:
+        info = dict(
+            Parameters = ('Decay Rate'),
+            Units = ('us-1'),
+            Start = np.asarray([0.35]),
+            Lower = np.asarray([0]),
+            Upper = np.asarray([200])
+        )
+        return info
+    elif len(args)!=2 and len(args)!=3:
+        raise TypeError('Two or three input arguments required: bg_model(t,p) or bg_model(r,p,lam)')
+    else:
+        t = args[0]
+        param = args[1]
+
+    if len(args)>2:
+        lam = args[2]
+    else:
+        lam = 1    
+    
+    kappa = param[0]
     B = np.exp(-lam*kappa*np.abs(t))
     return B
 
-def bg_hom3d(t,param,lam=1):
+def bg_hom3d(*args):
+
+    if not args:
+        info = dict(
+            Parameters = ('Spin concentration'),
+            Units = ('uM'),
+            Start = np.asarray([50]),
+            Lower = np.asarray([0.01]),
+            Upper = np.asarray([5000])
+        )
+        return info
+    elif len(args)!=2 and len(args)!=3:
+        raise TypeError('Two or three input arguments required: bg_model(t,p) or bg_model(r,p,lam)')
+    else:
+        t = args[0]
+        param = args[1]
+
+    if len(args)>2:
+        lam = args[2]
+    else:
+        lam = 1  
+
     conc = param            # concentration, uM
     
     NA = 6.02214076e23      # Avogadro constant, mol^-1
