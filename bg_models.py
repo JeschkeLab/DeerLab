@@ -23,6 +23,9 @@ def bg_exp(*args):
     else:
         lam = 1    
     
+    t = np.atleast_1d(t)
+    param = np.atleast_1d(param)
+
     kappa = param[0]
     B = np.exp(-lam*kappa*np.abs(t))
     return B
