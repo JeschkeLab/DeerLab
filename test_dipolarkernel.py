@@ -55,3 +55,16 @@ def test_value_fresnel():
     Kref = 0.024697819895260188
 
     assert abs(K-Kref) < 1e-14
+
+def test_lambda():
+
+    "Check that dipolar kernel with modulation depth works"
+
+    t = np.linspace(0,4,150) # us
+    r = np.linspace(1,5,150) # nm
+    dr = r[1]-r[0]
+    lam = 0.4
+    Kref = ((1-lam) + lam*dipolarkernel(t,r)/dr)*dr
+    K = dipolarkernel(t,r,lam)
+
+    assert np.all(abs(K-Kref) < 1e-14)
