@@ -1,6 +1,8 @@
 import numpy as np
 import math as m
+import types
 import pandas as pd
+from dipolarbackground import dipolarbackground
 from scipy.special import fresnel
 
 # Fundamental constants (CODATA 2018)
@@ -11,21 +13,31 @@ h = 6.62607015e-34 # Planck constant, J/Hz
 nu0 = (mu0/4/np.pi)*muB**2*ge*ge/h*1e21 # Hz m^3 -> MHz nm^3
 w0 = 2*np.pi*nu0 # Mrad s^-1 nm^3
 
-def dipolarkernel(t,r,pathinfo=1):
+def dipolarkernel(t,r,pathinfo=1,B=1):
     """
     K = dipolarkernel(t,r)
     Calculate dipolar kernel matrix.
     Assumes t in microseconds and r in nanometers
     """
     
+    Renormalize = True
+
+    # Ensure that all inputs are numpy arrays
     r = np.atleast_1d(r)
     t = np.atleast_1d(t)
     pathinfo = np.atleast_1d(pathinfo)
 
+    if type(B) is types.LambdaType:
+        ismodelB = True
+    else:
+        ismodelB = False
+        B = np.atleast_1d(B)
+
+
     if np.any(r<0):
         raise ValueError("All elements in r must be nonnegative.")
 
-    if not np.isreal(pathinfo):
+    if not np.isreal(pathinfo).all:
         raise TypeError('lambda/pathinfo must be a numeric array.')
 
     if len(pathinfo)==1:
@@ -45,7 +57,7 @@ def dipolarkernel(t,r,pathinfo=1):
     if np.shape(pathinfo)[1]==2:
         n = np.ones(np.shape(T0))
     else:
-        n = pathinfo[:,2]
+        n = pathinfo[:,1]
     
 
     # Combine all unmodulated components into Lambda0, and eliminate from list
@@ -61,17 +73,28 @@ def dipolarkernel(t,r,pathinfo=1):
 
     # Build dipolar kernel matrix, summing over all pathways
     K = Lambda0
-    print(lam)
     for pathway in range(nModPathways):
         K = K + lam[pathway]*kernelmatrix(n[pathway]*(t-T0[pathway]))
-    
+
+    # Renormalize if requested
+    if Renormalize:
+        Knorm = Lambda0
+        for pathway in range(nModPathways):
+            Knorm = Knorm + lam[pathway]*kernelmatrix(-T0[pathway]*n[pathway])
+        K = K/Knorm
+
+
+    # Multiply by background
+    if ismodelB:
+        B = dipolarbackground(t,pathinfo,B)
+    K = K*B[:,np.newaxis]
+
     # Include delta-r factor for integration
     if len(r)>1:
         dr = np.mean(np.diff(r))
         K = K*dr
     
     return K
-
 
 def calckernelmatrix(method,t,r):
 

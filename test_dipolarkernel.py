@@ -1,6 +1,8 @@
 
 import numpy as np
-from dipolarkernel import dipolarkernel
+import pandas as pd
+from bg_models import *
+from dipolarkernel import dipolarkernel,calckernelmatrix
 
 def test_matrixsize_fresnel():
     "Check non-square kernel matrix construction"
@@ -68,3 +70,88 @@ def test_lambda():
     K = dipolarkernel(t,r,lam)
 
     assert np.all(abs(K-Kref) < 1e-14)
+
+def test_background():
+    t = np.linspace(0,3,80)
+    r = np.linspace(2,6,100)
+    B = bg_exp(t,0.5)
+    dr = np.mean(np.diff(r))
+    
+    lam = 0.25
+    KBref = (1 - lam + lam*dipolarkernel(t,r)/dr)*B[:,np.newaxis]*dr
+    KB = dipolarkernel(t,r,lam,B)
+    
+    assert np.all(abs(KB - KBref) < 1e-5)
+
+def test_multipath():
+
+    "Check that multi-pathway kernels are properly generated"
+
+    r = np.linspace(2,6,50)
+    t1 = np.linspace(0,10,300)
+    t2 = 0.3
+    tau1 = 4.24
+    tau2 = 4.92
+    t = (tau1 + tau2) - (t1 + t2)
+    prob = 0.8
+    lam = np.array([1-prob, prob**2, prob*(1-prob)])
+    T0 = [np.NaN, 0, tau2-t2]
+
+    K = dipolarkernel(t,r,np.array([lam, T0]).T)
+
+    unmodulated = pd.isnull(T0)
+    Kref = sum(lam[unmodulated])
+    Krenorm = Kref
+    dr = np.mean(np.diff(r))
+    for p in range(len(lam)):
+        if not unmodulated[p]:
+            Kref = Kref + lam[p]*calckernelmatrix('fresnel',t-T0[p],r)
+            Krenorm = Krenorm + lam[p]*calckernelmatrix('fresnel',-T0[p],r)
+    Kref = Kref/Krenorm
+    Kref = Kref*dr
+
+    assert np.all(abs(K-Kref) < 1e-3)
+
+def test_multipath_background():
+
+    "Check that multi-pathway kernels are properly generated with background"
+
+    r = np.linspace(2,6,50)
+    t1 = np.linspace(0,10,300)
+    t2 = 0.3
+    tau1 = 4.24
+    tau2 = 4.92
+    t = (tau1 + tau2) - (t1 + t2)
+    prob = 0.8
+    lam = np.array([1-prob, prob**2, prob*(1-prob)])
+    T0 = [np.NaN, 0, tau2-t2]
+    kappa = 0.3
+    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+
+    # Reference
+    unmodulated = pd.isnull(T0)
+    Kref = sum(lam[unmodulated])
+    Krenorm = Kref
+    dr = np.mean(np.diff(r))
+    for p in range(len(lam)):
+        if not unmodulated[p]:
+            Kref = Kref + lam[p]*calckernelmatrix('fresnel',t-T0[p],r)
+            Krenorm = Krenorm + lam[p]*calckernelmatrix('fresnel',-T0[p],r)
+    Kref = Kref/Krenorm
+    Kref = Kref*dr
+    
+    Bref = 1
+    Bnorm = 1
+    for p in range(len(lam)):
+        if not unmodulated[p]:
+            Bref = Bref*Bmodel((t-T0[p]),lam[p])
+            Bnorm = Bnorm*Bmodel(-T0[p],lam[p])
+    Bref = Bref/Bnorm
+
+    KBref = Kref*Bref[:,np.newaxis]
+
+    # Output
+    KB = dipolarkernel(t,r,np.array([lam, T0]).T,Bmodel)
+
+
+    assert np.all(abs(KB - KBref) < 1e-3)
