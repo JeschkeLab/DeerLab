@@ -4,7 +4,11 @@ import math as m
 import types
 import pandas as pd
 
-def dipolarbackground(t,pathinfo,Bmodel):
+def dipolarbackground(
+    t,pathinfo,Bmodel,
+    renormalize = True,
+    overtonecoeff = 1
+    ):
 
     """
     DIPOLARBACKGROUND Multipathway background generator
@@ -32,13 +36,10 @@ def dipolarbackground(t,pathinfo,Bmodel):
     Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
     """
 
-    Renormalize = True
-    OvertoneCoeffs = 1
-
     # Ensure that all inputs are numpy arrays
     t = np.atleast_1d(t)
     pathinfo = np.atleast_1d(pathinfo)
-    OvertoneCoeffs = np.atleast_1d(OvertoneCoeffs)
+    overtonecoeff = np.atleast_1d(overtonecoeff)
 
 
     if type(Bmodel) is not types.LambdaType:
@@ -64,7 +65,7 @@ def dipolarbackground(t,pathinfo,Bmodel):
     if np.shape(pathinfo)[1]==2:
         n = np.ones(np.shape(T0))
     else:
-        n = pathinfo[:,1]
+        n = pathinfo[:,2]
     
 
     # Combine all unmodulated components, and eliminate from list
@@ -74,14 +75,13 @@ def dipolarbackground(t,pathinfo,Bmodel):
     n = np.delete(n,unmodulated)  
 
     # Fold overtones into pathway list
-    nCoeffs = len(OvertoneCoeffs)
+    nCoeffs = len(overtonecoeff)
     lam_,T0_,n_ = (np.empty(0) for _ in range(3))
     for i in range(nCoeffs):
-        lam_ = np.concatenate((lam_, lam*OvertoneCoeffs))
+        lam_ = np.concatenate((lam_, lam*overtonecoeff[i]))
         T0_ = np.concatenate((T0_,T0))
         n_ = np.concatenate((n_,n*(i+1)))
     lam,T0,n = (lam_,T0_,n_)
-
     nModPathways = len(lam)
 
     # Construction of multi-pathway background function 
@@ -92,7 +92,7 @@ def dipolarbackground(t,pathinfo,Bmodel):
         B = B*Bmodel(n[pathway]*(t-T0[pathway]),lam[pathway])
         Bnorm = Bnorm*Bmodel(-T0[pathway]*n[pathway],lam[pathway])
     
-    if Renormalize:
+    if renormalize:
         B = B/Bnorm
 
     return B
