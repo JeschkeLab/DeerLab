@@ -1,4 +1,5 @@
 import numpy as np
+import cvxopt as cvo
 import math as m
 
 def fnnls(AtA,Atb,tol=-1,verbose=False):
@@ -102,3 +103,27 @@ def fnnls(AtA,Atb,tol=-1,verbose=False):
             print('Solution found. \n')
     
     return x
+
+def cvxnnls(AtA, Atb, K, V):
+    """
+    CVXOPT Based NNLS solver modified from Rein et al. 2018 (GloPel) 
+    """
+    m, n = K.shape
+
+    P = np.linalg.inv(AtA) @ K.T @ V
+    P = P.clip(min=0)
+
+    cAtA = cvo.matrix(AtA)
+    cAtb = -cvo.matrix(Atb)
+
+    lb = cvo.matrix(np.zeros(n))
+    I = -cvo.matrix(np.eye(n, n))
+    
+    cvo.solvers.options['show_progress'] = False
+    cvo.solvers.options['abstol'] = 1e-16
+    cvo.solvers.options['reltol'] = 1e-15 
+
+    P = cvo.solvers.qp(cAtA, cAtb, I, lb, initvals=cvo.matrix(P))['x']
+    P = np.asarray(P)
+
+    return P
