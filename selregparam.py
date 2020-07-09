@@ -4,7 +4,7 @@ import math as m
 from numpy.linalg import norm
 from lsqcomponents import lsqcomponents
 from regoperator import regoperator
-from fnnls import fnnls
+from fnnls import fnnls,cvxnnls
 
 def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
 
@@ -36,7 +36,7 @@ def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
         
         KtKreg, KtV = lsqcomponents(V,K,L,alpha)
         if NonNegConstrained:
-            P = fnnls(KtKreg,KtV,TolFun)
+            P = cvxnnls(KtKreg,KtV,K,V)
         else:
             P = np.linalg.solve(KtKreg,KtV)
 

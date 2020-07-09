@@ -5,7 +5,7 @@ import time
 import math
 from deerlab import *
 import matplotlib.pyplot as plt
-
+import scipy
 def Kmodel(p,t,r):
 
     # Unpack parameters
@@ -16,25 +16,24 @@ def Kmodel(p,t,r):
     B = bg_exp(t,k)
 
     # Generate 4pDEER kernel
-    dr = r[2] - r[1]
-    K = dipolarkernel(t,r)/dr
-    K = (1-lam + lam*K)*B[:,np.newaxis]*dr
+    K = dipolarkernel(t,r,lam,B)
     return K
 
-
 M = 20
-N = np.linspace(80,600,M)
-tocs = np.zeros(M)
+N = np.linspace(80,1000,M)
+tocs1 = np.zeros(M)
+tocs2 = np.zeros(M)
+tocs3 = np.zeros(M)
 for ii in range(len(N)):
 
     np.random.seed(1)
-    t = np.linspace(-0.5,5,200)
+    t = np.linspace(-0.5,5,N[ii])
     r = np.linspace(2,6,N[ii])
 
     # Generate ground truth and input signal
     P = dd_gauss2(r,[3.5, 0.4, 0.4, 4.5, 0.7, 0.6])
     lam = 0.36
-    k = 0.5 #uM
+    k = 0.15 #uM
     K = Kmodel([lam,k],t,r)
     V = K@P + whitegaussnoise(t,0.01)
 
@@ -58,23 +57,24 @@ for ii in range(len(N)):
     Amodel = lambda p: Kmodel(p,t,r)
 
     # Run SNLLS optimization
-    tic = time.clock()
-    parfit, Pfit, uq = snlls(V,Amodel,par0,lb,ub,lbl,ubl)
-    toc = time.clock()
+    #tic = time.clock()
+    #parfit1, Pfit1, uq = snlls(V,Amodel,par0,lb,ub,lbl,ubl,linsolver='fnnls')
+    #toc = time.clock()
+    #tocs1[ii] = toc-tic
+    #print('Processing time fnnls: ',toc-tic,'seconds')
 
-    # Get fitted model
-    Vfit = Kmodel(parfit,t,r)@Pfit
-    Pci95 = uq.ci(95,'lin')
-    Pci50 = uq.ci(50,'lin')
+    #tic = time.clock()
+    #parfit2, Pfit2, uq = snlls(V,Amodel,par0,lb,ub,lbl,ubl,linsolver='nnls')
+    #toc = time.clock()
+    #tocs2[ii] = toc-tic
+    #print('Processing time nnls: ',toc-tic,'seconds')
 
-    tocs[ii] = toc-tic
-
-    print('Fit: lambda=',parfit[0],', k =',parfit[1],'us-1')
-    print('Processing time: ',toc-tic,'seconds')
-
-
-
-
-
+    for i in range(5):
+        tic = time.clock()
+        parfit3, Pfit3, uq = snlls(V,Amodel,par0,lb,ub,lbl,ubl,linsolver='cvx')
+        toc = time.clock()
+        tocs3[ii] = tocs3[ii] + (toc-tic)
+    tocs3[ii] = tocs3[ii]/5
+    print('Processing time cvx: ',toc-tic,'seconds')
 
 # %%

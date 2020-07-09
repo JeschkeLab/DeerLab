@@ -109,7 +109,7 @@ def cvxnnls(AtA, Atb, K, V):
     CVXOPT Based NNLS solver modified from Rein et al. 2018 (GloPel) 
     """
     m, n = K.shape
-
+    
     P = np.linalg.inv(AtA) @ K.T @ V
     P = P.clip(min=0)
 
@@ -124,6 +124,5 @@ def cvxnnls(AtA, Atb, K, V):
     cvo.solvers.options['reltol'] = 1e-15 
 
     P = cvo.solvers.qp(cAtA, cAtb, I, lb, initvals=cvo.matrix(P))['x']
-    P = np.asarray(P)
-
+    P = np.squeeze(np.asarray(P))
     return P

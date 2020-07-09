@@ -5,12 +5,13 @@ from numpy.linalg import solve
 from regoperator import regoperator
 from selregparam import selregparam
 from lsqcomponents import lsqcomponents
-from fnnls import fnnls
+from fnnls import fnnls,cvxnnls
 from jacobianest import jacobianest
 from uqst import uqst
+from cvxopt import matrix, solvers
 import copy
 
-def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[]):
+def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],linsolver='fnnls'):
 
     getUncertainty = True
     getGoodnessOfFit = False 
@@ -124,8 +125,17 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[]):
         elif linearConstrained and nonNegativeOnly:
             # Non-negative linear LSQ
             # ====================================
-            linfit = fnnls(AtA,Aty)
-        
+            if linsolver=='fnnls':
+                linfit = fnnls(AtA,Aty)
+            elif linsolver=='nnls':
+                try:
+                    linfit,rnorm = opt.nnls(AtA,Aty,1e5)
+                except:
+                    linfit = np.zeros(np.shape(AtA)[1])
+                    pass
+            elif linsolver=='cvx':
+                linfit =  cvxnnls(AtA, Aty, A, y)
+
         # Evaluate full model residual
         # ===============================
         yfit = A@linfit
