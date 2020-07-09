@@ -124,6 +124,6 @@ def cvxnnls(AtA, Atb, K, V):
     cvo.solvers.options['reltol'] = 1e-15 
 
     P = cvo.solvers.qp(cAtA, cAtb, I, lb, initvals=cvo.matrix(P))['x']
-    P = np.asarray(P).reshape(n)
+    P = np.asarray(P)
 
     return P
