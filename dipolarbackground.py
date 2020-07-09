@@ -1,5 +1,4 @@
 import numpy as np
-import numpy.matlib 
 import math as m
 import types
 import pandas as pd
@@ -50,7 +49,7 @@ def dipolarbackground(
 
     if len(pathinfo)==1:
         lam = pathinfo
-        pathinfo = np.array([[1-lam, np.NaN], [lam, 0]])
+        pathinfo = np.array([[1-lam, np.NaN], [lam, 0]], dtype=object)
 
     if not any(np.shape(pathinfo)[1]!=np.array([2, 3])):
         raise TypeError('pathinfo must be a numeric array with two or three columns.')

@@ -1,6 +1,7 @@
-import numpy as np
 import math as m
+import warnings
 import types
+import numpy as np
 import pandas as pd
 from dipolarbackground import dipolarbackground
 from scipy.special import fresnel
@@ -42,7 +43,7 @@ def dipolarkernel(t,r,pathinfo=1,B=1):
 
     if len(pathinfo)==1:
         lam = pathinfo
-        pathinfo = np.array([[1-lam, np.NaN], [lam, 0]])
+        pathinfo = np.array([[1-lam, np.NaN], [lam, 0]], dtype=object)
 
     if not any(np.shape(pathinfo)[1]!=np.array([2, 3])):
         raise TypeError('pathinfo must be a numeric array with two or three columns.')
@@ -104,15 +105,19 @@ def calckernelmatrix(method,t,r):
     K = np.zeros((nt,nr))
 
     def kernelmatrix_fresnel(t,r):
-
         # Calculation using Fresnel integrals
         wr = w0/(r**3)  # rad s^-1
-        for ir in range(nr):
-            ph = wr[ir]*(np.abs(t))
-            kappa = np.sqrt(6*ph/m.pi)
-            S, C = fresnel(kappa)
-            K[:,ir] = (np.cos(ph)*C+np.sin(ph)*S)/kappa
-        K[t==0,:] = 1   # fix div by zero
+        ph = np.outer(np.abs(t), wr)
+        kappa = np.sqrt(6 * ph / np.pi)
+        
+        # Supress divide by 0 warning        
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            S, C = fresnel(kappa) / kappa
+        
+        K = C * np.cos(ph) + S * np.sin(ph)
+        K[t==0] = 1 
+
         return K
 
     if method=='fresnel':
