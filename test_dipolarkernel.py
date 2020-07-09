@@ -4,7 +4,9 @@ import pandas as pd
 from bg_models import *
 from dipolarkernel import dipolarkernel,calckernelmatrix
 
+
 def test_matrixsize_fresnel():
+    #=======================================================================
     "Check non-square kernel matrix construction"
     Ntime = 50
     Ndist = 70
@@ -12,8 +14,11 @@ def test_matrixsize_fresnel():
     r = np.linspace(2,6,70)
     K = dipolarkernel(t,r)
     assert K.shape == (Ntime, Ndist)
+    #=======================================================================
+
 
 def test_singletime():
+    #=======================================================================
     "Check that one can generate a kernel with one single time-domain point"
 
     t = 0.5
@@ -21,8 +26,11 @@ def test_singletime():
     K = dipolarkernel(t,r)
 
     assert np.shape(K)[0]==1
+    #=======================================================================
     
+
 def test_singledist():
+    #=======================================================================
     "Check that one can generate a kernel with one single distance-domain point"
 
     t = np.linspace(0,5,50)
@@ -30,36 +38,110 @@ def test_singledist():
     K = dipolarkernel(t,r)
 
     assert np.shape(K)[1]==1
+    #=======================================================================
+
 
 def test_negative_time_fresnel():
-    "Check that kernel is constructed properly for negative times using fresnel method"
+    #=======================================================================
+    "Check that kernel is constructed properly for negative times using the fresnel method"
 
     tneg = np.linspace(-5,0,50)
     tpos = np.linspace(0,5,50) 
     r = np.linspace(2,6,70)
-    Kneg = dipolarkernel(tneg,r)
-    Kpos = dipolarkernel(tpos,r)
+    Kneg = dipolarkernel(tneg,r,method='fresnel')
+    Kpos = dipolarkernel(tpos,r,method='fresnel')
 
     delta = abs(Kneg - np.flipud(Kpos))
 
     assert np.all(delta<1e-12)
+    #=======================================================================
+
+
+def test_negative_time_grid():
+    #=======================================================================
+    "Check that kernel is constructed properly for negative times using the grid method"
+
+    tneg = np.linspace(-5,0,50)
+    tpos = np.linspace(0,5,50) 
+    r = np.linspace(2,6,70)
+    Kneg = dipolarkernel(tneg,r,method='grid')
+    Kpos = dipolarkernel(tpos,r,method='grid')
+
+    delta = abs(Kneg - np.flipud(Kpos))
+
+    assert np.all(delta<1e-12)
+    #=======================================================================
+
+
+def test_negative_time_integral():
+    #=======================================================================
+    "Check that kernel is constructed properly for negative times using the integral method"
+
+    tneg = np.linspace(-5,0,50)
+    tpos = np.linspace(0,5,50) 
+    r = np.linspace(2,6,70)
+    Kneg = dipolarkernel(tneg,r,method='integral')
+    Kpos = dipolarkernel(tpos,r,method='integral')
+
+    delta = abs(Kneg - np.flipud(Kpos))
+
+    assert np.all(delta<1e-12)
+    #=======================================================================
 
 
 def test_value_fresnel():
+    #=======================================================================
     "Test whether kernel matrix element (calculated using Fresnel integrals) is correct."
 
     # Generate kernel numerically
     t = 1 # us
     r = 1 # nm
-    K = dipolarkernel(t,r)
+    K = dipolarkernel(t,r,method='fresnel')
 
-    # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) and CODATA 2018 values for ge, muB, mu0, and h.
+    # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
+    # and CODATA 2018 values for ge, muB, mu0, and h.
     Kref = 0.024697819895260188
 
     assert abs(K-Kref) < 1e-14
+    #=======================================================================
+
+
+def test_value_grid():
+    #=======================================================================
+    "Test whether kernel matrix element (calculated using the grid method) is correct."
+
+    # Generate kernel numerically
+    t = 1 # us
+    r = 1 # nm
+    K = dipolarkernel(t,r,method='grid')
+
+    # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
+    # and CODATA 2018 values for ge, muB, mu0, and h.
+    Kref = 0.024697819895260188
+
+    assert abs(K-Kref) < 1e-8
+    #=======================================================================
+
+
+def test_value_integral():
+    #=======================================================================
+    "Test whether kernel matrix element (calculated using the integal method) is correct."
+
+    # Generate kernel numerically
+    t = 1 # us
+    r = 1 # nm
+    K = dipolarkernel(t,r,method='integral')
+
+    # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
+    # and CODATA 2018 values for ge, muB, mu0, and h.
+    Kref = 0.024697819895260188
+
+    assert abs(K-Kref) < 1e-8
+    #=======================================================================
+
 
 def test_lambda():
-
+    #=======================================================================
     "Check that dipolar kernel with modulation depth works"
 
     t = np.linspace(0,4,150) # us
@@ -70,8 +152,11 @@ def test_lambda():
     K = dipolarkernel(t,r,lam)
 
     assert np.all(abs(K-Kref) < 1e-14)
+    #=======================================================================
 
 def test_background():
+    #=======================================================================
+    "Check that dipolar kernel builds with the background included"
     t = np.linspace(0,3,80)
     r = np.linspace(2,6,100)
     B = bg_exp(t,0.5)
@@ -82,9 +167,10 @@ def test_background():
     KB = dipolarkernel(t,r,lam,B)
     
     assert np.all(abs(KB - KBref) < 1e-5)
+    #=======================================================================
 
 def test_multipath():
-
+    #=======================================================================
     "Check that multi-pathway kernels are properly generated"
 
     r = np.linspace(2,6,50)
@@ -105,15 +191,16 @@ def test_multipath():
     dr = np.mean(np.diff(r))
     for p in range(len(lam)):
         if not unmodulated[p]:
-            Kref = Kref + lam[p]*calckernelmatrix('fresnel',t-T0[p],r)
-            Krenorm = Krenorm + lam[p]*calckernelmatrix('fresnel',-T0[p],r)
+            Kref = Kref + lam[p]*calckernelmatrix(t-T0[p],r,'fresnel',[],[])
+            Krenorm = Krenorm + lam[p]*calckernelmatrix(-T0[p],r,'fresnel',[],[])
     Kref = Kref/Krenorm
     Kref = Kref*dr
 
     assert np.all(abs(K-Kref) < 1e-3)
+    #=======================================================================
 
 def test_multipath_background():
-
+    #=======================================================================
     "Check that multi-pathway kernels are properly generated with background"
 
     r = np.linspace(2,6,50)
@@ -135,8 +222,8 @@ def test_multipath_background():
     dr = np.mean(np.diff(r))
     for p in range(len(lam)):
         if not unmodulated[p]:
-            Kref = Kref + lam[p]*calckernelmatrix('fresnel',t-T0[p],r)
-            Krenorm = Krenorm + lam[p]*calckernelmatrix('fresnel',-T0[p],r)
+            Kref = Kref + lam[p]*calckernelmatrix(t-T0[p],r,'fresnel',[],[])
+            Krenorm = Krenorm + lam[p]*calckernelmatrix(-T0[p],r,'fresnel',[],[])
     Kref = Kref/Krenorm
     Kref = Kref*dr
     
@@ -147,11 +234,10 @@ def test_multipath_background():
             Bref = Bref*Bmodel((t-T0[p]),lam[p])
             Bnorm = Bnorm*Bmodel(-T0[p],lam[p])
     Bref = Bref/Bnorm
-
     KBref = Kref*Bref[:,np.newaxis]
 
     # Output
     KB = dipolarkernel(t,r,np.array([lam, T0]).T,Bmodel)
 
-
     assert np.all(abs(KB - KBref) < 1e-3)
+    #=======================================================================
