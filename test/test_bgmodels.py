@@ -1,5 +1,5 @@
 import numpy as np
-from bg_models import *
+from deerlab.bg_models import *
 
 def assert_bgmodel(model):
     "Check basic functionality of a background model"

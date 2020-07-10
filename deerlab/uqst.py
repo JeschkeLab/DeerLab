@@ -1,7 +1,7 @@
 import numpy as np
 import scipy
 from  KDEpy import FFTKDE
-from jacobianest import jacobianest
+from deerlab import jacobianest
 from scipy.stats import norm
 
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).

@@ -1,8 +1,9 @@
 
 import numpy as np
 import pandas as pd
-from bg_models import *
-from dipolarkernel import dipolarkernel,calckernelmatrix
+from deerlab.bg_models import *
+from deerlab.dipolarkernel import dipolarkernel,calckernelmatrix
+from deerlab.dipolarbackground import dipolarbackground
 
 
 def test_matrixsize_fresnel():

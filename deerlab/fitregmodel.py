@@ -1,10 +1,10 @@
 import numpy as np
-from fnnls import fnnls, cvxnnls
+from deerlab import fnnls
 from scipy.optimize import nnls
-from regoperator import regoperator
+import deerlab as dl
 
 def fitregmodel(V,K,r,alpha=1,regorder=2, solver='fnnls'):
-    L = regoperator(r,regorder)
+    L = dl.regoperator(r,regorder)
 
     if solver == 'fnnls':
         KtKreg = np.transpose(K)@K + alpha**2 * np.transpose(L)@L
@@ -13,7 +13,7 @@ def fitregmodel(V,K,r,alpha=1,regorder=2, solver='fnnls'):
     elif solver == 'cvx':
         KtKreg = np.transpose(K)@K + alpha**2 * np.transpose(L)@L
         KtV = np.transpose(K)@V
-        Pfit = cvxnnls(KtKreg, KtV, K, V)
+        Pfit = dl.cvxnnls(KtKreg, KtV, K, V)
     elif solver == 'nnls':
         C = np.concatenate([K, alpha * L])
         d = np.concatenate([V, np.zeros(K.shape[1])])

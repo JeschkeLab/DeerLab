@@ -2,9 +2,7 @@ import numpy as np
 import scipy.optimize as opt
 import math as m
 from numpy.linalg import norm
-from lsqcomponents import lsqcomponents
-from regoperator import regoperator
-from fnnls import fnnls,cvxnnls
+import deerlab as dl
 
 def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
 
@@ -23,7 +21,7 @@ def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
     #  Preparations
     #-------------------------------------------------------------------------------
     # Get regularization operator
-    L = regoperator(r,RegOrder)
+    L = dl.regoperator(r,RegOrder)
     # Get range of potential alpha values candidates
     alphaRange = np.logspace(-4,4,60)
 
@@ -34,9 +32,9 @@ def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
         #  Pseudo-Inverses and Ps
         #-----------------------------------------------------------------------
         
-        KtKreg, KtV = lsqcomponents(V,K,L,alpha)
+        KtKreg, KtV = dl.lsqcomponents(V,K,L,alpha)
         if NonNegConstrained:
-            P = cvxnnls(KtKreg,KtV,K,V)
+            P = dl.cvxnnls(KtKreg,KtV,K,V)
         else:
             P = np.linalg.solve(KtKreg,KtV)
 

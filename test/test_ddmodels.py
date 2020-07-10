@@ -1,11 +1,12 @@
 import numpy as np
-from dd_models import *
+from deerlab.dd_models import *
 
 def assert_ddmodel(model):
+#============================================================================
     "Check dimensionality, non-negativity, and values at boundaries of a distance distribution model"
 
     r = np.linspace(0,20,500)
-    rnus = np.sqrt(np.linspace(1.5,6^2,500))
+    rnus = np.sqrt(np.linspace(1.5,6**2,500))
 
     # Extract model information
     info = model()
@@ -26,7 +27,7 @@ def assert_ddmodel(model):
     passed[1] = all(P1 >= 0)
     passed[2] = all(P1 >= 0) and all(P2 >= 0)
     passed[3] = all(~np.isnan(P1)) and all(~np.isnan(P2)) and all(~np.isnan(P3)) and all(~np.isnan(P4))
-    passed[4] = np.round(np.trapz(P5,rnus),4) == 1
+    passed[4] = np.round(np.trapz(P5,rnus),2) == 1
     errors = []
     if not passed[0]:
         errors.append("Dimensionality is not correct")
@@ -41,7 +42,7 @@ def assert_ddmodel(model):
 
     # assert no error message has been registered, else print messages
     assert not errors, "Errors occured:\n{}".format("\n".join(errors))
- 
+#=============================================================================
 
 def test_dd_gauss():
     assert_ddmodel(dd_gauss)
@@ -51,3 +52,54 @@ def test_dd_gauss2():
 
 def test_dd_gauss3():
     assert_ddmodel(dd_gauss3)
+
+def test_dd_gengauss():
+    assert_ddmodel(dd_gengauss)
+    
+def test_dd_skewgauss():
+    assert_ddmodel(dd_skewgauss)
+
+def test_dd_randcoil():
+    assert_ddmodel(dd_randcoil)
+
+def test_dd_circle():
+    assert_ddmodel(dd_circle)
+
+def test_dd_cos():
+    assert_ddmodel(dd_cos)
+
+def test_dd_sphere():
+    assert_ddmodel(dd_sphere)
+
+def test_dd_shell():
+    assert_ddmodel(dd_shell)
+
+def test_dd_shellshell():
+    assert_ddmodel(dd_shellshell)
+
+def test_dd_shellshpere():
+    assert_ddmodel(dd_shellshpere)
+
+def test_dd_shellvoidsphere():
+    assert_ddmodel(dd_shellvoidsphere)
+
+def test_dd_shellvoidshell():
+    assert_ddmodel(dd_shellvoidshell)
+
+def test_dd_spherepoint():
+    assert_ddmodel(dd_spherepoint)
+
+def test_dd_spheresurf():
+    assert_ddmodel(dd_spheresurf)
+
+def test_dd_triangle():
+    assert_ddmodel(dd_triangle)
+
+def test_dd_uniform():
+    assert_ddmodel(dd_uniform)
+
+def test_dd_wormchain():
+    assert_ddmodel(dd_wormchain)
+
+def test_dd_wormgauss():
+    assert_ddmodel(dd_wormgauss)

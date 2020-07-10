@@ -2,9 +2,10 @@ import numpy as np
 import math as m
 import types
 import pandas as pd
-from dipolarbackground import dipolarbackground
+from deerlab.dipolarbackground import dipolarbackground
 from scipy.integrate import quad
 from scipy.special import fresnel
+import warnings
 from memoization import cached
 
 # Fundamental constants (CODATA 2018)
@@ -119,19 +120,18 @@ def calckernelmatrix(t,r,method,wex,nknots):
     #==========================================================================
         """Calculate kernel using Fresnel integrals (fast and accurate)"""
 
-        # Deactivate numpy warnings
-        np.seterr(divide='ignore', invalid='ignore')
-
-        # Calculation using Fresnel integrals
-        for ir in range(nr):
-            ph = wr[ir]*(np.abs(t))
-            kappa = np.sqrt(6*ph/m.pi)
-            S, C = fresnel(kappa)
-            K[:,ir] = (np.cos(ph)*C+np.sin(ph)*S)/kappa
-        K[t==0,:] = 1   # fix div by zero
-
-        # Reactivate numpy warnings
-        np.seterr(divide='warn', invalid='warn')
+       # Calculation using Fresnel integrals
+        wr = w0/(r**3)  # rad s^-1
+        ph = np.outer(np.abs(t), wr)
+        kappa = np.sqrt(6 * ph / np.pi)
+        
+        # Supress divide by 0 warning        
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            S, C = fresnel(kappa) / kappa
+        
+        K = C * np.cos(ph) + S * np.sin(ph)
+        K[t==0] = 1 
 
         return K
     #==========================================================================

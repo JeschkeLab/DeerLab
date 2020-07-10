@@ -16,18 +16,16 @@ def Kmodel(p,t,r):
     B = bg_exp(t,k)
 
     # Generate 4pDEER kernel
-    dr = r[2] - r[1]
-    K = dipolarkernel(t,r)/dr
-    K = (1-lam + lam*K)*B[:,np.newaxis]*dr
+    K = dipolarkernel(t,r,lam,B)
     return K
 
-t = np.linspace(-0.5,5,100)
-r = np.linspace(2,6,100)
+t = np.linspace(-0.5,5,400)
+r = np.linspace(2,6,400)
 
 # Generate ground truth and input signal
 P = dd_gauss2(r,[3.5, 0.4, 0.4, 4.5, 0.7, 0.6])
 lam = 0.36
-k = 0.5 #uM
+k = 0.15 #uM
 K = Kmodel([lam,k],t,r)
 V = K@P + whitegaussnoise(t,0.01)
 
@@ -52,7 +50,7 @@ Amodel = lambda p: Kmodel(p,t,r)
 
 # Run SNLLS optimization
 tic = time.clock()
-parfit, Pfit, uq = snlls(V,Amodel,par0,lb,ub,lbl,ubl)
+parfit, Pfit, uq = snlls(V,Amodel,par0,lb,ub,lbl,ubl,linsolver='cvx')
 toc = time.clock()
 
 # Get fitted model

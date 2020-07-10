@@ -1,8 +1,8 @@
 
 import numpy as np
 import pandas as pd
-from bg_models import *
-from dipolarbackground import dipolarbackground
+from deerlab.bg_models import *
+from deerlab.dipolarbackground import dipolarbackground
 
 
 def test_basic():
