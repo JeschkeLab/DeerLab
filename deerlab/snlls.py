@@ -2,12 +2,12 @@ import numpy as np
 import math as m
 import scipy.optimize as opt
 from numpy.linalg import solve
-from regoperator import regoperator
-from selregparam import selregparam
-from lsqcomponents import lsqcomponents
-from fnnls import fnnls,cvxnnls
-from jacobianest import jacobianest
-from uqst import uqst
+from .regoperator import regoperator
+from .selregparam import selregparam
+from .lsqcomponents import lsqcomponents
+from .fnnls import fnnls,cvxnnls
+from .jacobianest import jacobianest
+from .uqst import uqst
 from cvxopt import matrix, solvers
 import copy
 
