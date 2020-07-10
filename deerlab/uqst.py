@@ -1,9 +1,7 @@
 import numpy as np
-import scipy
-from  KDEpy import FFTKDE
 from deerlab import jacobianest
 from scipy.stats import norm
-
+from scipy.signal import fftconvolve
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
@@ -54,14 +52,14 @@ class uqst:
         else:
             raise NameError('uqtype not found. Must be: ''covariance'' or ''bootstrap''.')
 
-        #Create confidence intervals structure
+        # Create confidence intervals structure
         if uqtype=='covariance':
             self.mean = parfit
             self.median = parfit
             self.std = np.sqrt(np.diag(covmat))
             self.covmat = covmat
                 
-                #Bootstrap-based CI specific fields
+        # Bootstrap-based CI specific fields
         elif uqtype == 'bootstrap':
             means = np.mean(samples,0)
             covmat = np.squeeze(samples).T@np.squeeze(samples)/np.shape(samples)[0] - means*means.T
@@ -75,26 +73,42 @@ class uqst:
     #--------------------------------------------------------------------------------
     def pardist(self,n):
         
-        if n>nParam or n<0:
+        if n > nParam or n < 0:
             raise ValueError('The input must be a valid integer number.')
         
-        if uqtype=='covariance':
-            #Generate Gaussian distribution based on covariance matrix
+        if uqtype == 'covariance':
+            # Generate Gaussian distribution based on covariance matrix
             sig = np.sqrt(self.covmat[n,n])
             xmean = self.mean[n]
             x = np.linspace(xmean-4*sig,xmean+4*sig,500)
             pdf = 1/sig/np.sqrt(2*np.pi)*np.exp(-((x-xmean)/sig)**2/2)
             
-            #Clip the distributions at outside the boundaries
-            pdf[x<lb[n]] = 0
-            pdf[x>ub[n]] = 0
+            # Clip the distributions at outside the boundaries
+            pdf[x < lb[n]] = 0
+            pdf[x > ub[n]] = 0
 
-        if uqtype=='bootstrap':
-            # Kernel density estimation
-            x, pdf = FFTKDE(kernel='gaussian', bw='silverman').fit(samples[:,n]).evaluate()
-        
-        #Ensure normalization of the probability density function
-        pdf = pdf/np.sum(pdf)
+        if uqtype == 'bootstrap':
+            # Get bw using silverman's rule (1D only)
+            sigma = np.std(samples[:, n], ddof=1)
+            bw = sigma * (len(samples) * 3 / 4.0) ** (-1 / 5)
+
+            # Make histogram
+            bins = np.linspace(lb[n], ub[n], 2 ** 10 + 1)
+            count, edges = np.histogram(samples[:, n], bins=bins)
+
+            # Generate kernel
+            delta = (edges.max() - edges.min()) / (len(edges) - 1)
+            kernel_x = np.arange(-4 * bw, 4 * bw + delta, delta)
+            kernel = norm(0, bw).pdf(kernel_x)
+
+            # Convolve
+            pdf = fftconvolve(count, kernel, mode='same')
+
+            # Set x coordinate of pdf to midpoint of bin
+            x = edges[:-1] + delta
+
+        # Ensure normalization of the probability density function
+        pdf /= np.trapz(pdf, x)
         
         return x, pdf
     #--------------------------------------------------------------------------------
