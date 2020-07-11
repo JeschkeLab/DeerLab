@@ -1,7 +1,5 @@
 import numpy as np
-import math as m
 import types
-import pandas as pd
 from deerlab.dipolarbackground import dipolarbackground
 from scipy.integrate import quad
 from scipy.special import fresnel
@@ -50,36 +48,36 @@ def dipolarkernel(t,r,
     if not np.isreal(pathinfo).all:
         raise TypeError('lambda/pathinfo must be a numeric array.')
 
-    if len(pathinfo)==1:
-        lam = pathinfo
+    if len(pathinfo) == 1:
+        lam = pathinfo[0]
         pathinfo = np.array([[1-lam, np.NaN], [lam, 0]])
 
-    if not any(np.shape(pathinfo)[1]!=np.array([2, 3])):
+    if not np.any(np.shape(pathinfo)[1] != np.array([2, 3])):
         raise TypeError('pathinfo must be a numeric array with two or three columns.')
 
-    if any(pd.isnull(pathinfo[:,0])):
+    if np.any(np.isnan(pathinfo[:, 0])):
         raise ValueError('In pathinfo, NaN can only appear in the second column (refocusing time) e.g. path[1,:] = [Lam0 NaN]')
 
     # Normalize the pathway amplitudes to unity
-    pathinfo[:,0] = pathinfo[:,0]/sum(pathinfo[:,0])
-    lam = pathinfo[:,0]
-    T0 = pathinfo[:,1]
-    if np.shape(pathinfo)[1]==2:
+    pathinfo[:, 0] = pathinfo[:, 0] / sum(pathinfo[:, 0])
+    lam = pathinfo[:, 0]
+    T0 = pathinfo[:, 1]
+    if np.shape(pathinfo)[1] == 2:
         n = np.ones(np.shape(T0))
     else:
-        n = pathinfo[:,1]
+        n = pathinfo[:, 1]
     
 
     # Combine all unmodulated components into Lambda0, and eliminate from list
-    unmodulated = np.where(pd.isnull(T0))
+    unmodulated = np.where(np.isnan(T0))
     Lambda0 = np.sum(lam[unmodulated])
-    lam = np.delete(lam,unmodulated)
-    T0 = np.delete(T0,unmodulated)
-    n = np.delete(n,unmodulated)  
+    lam = np.delete(lam, unmodulated)
+    T0 = np.delete(T0, unmodulated)
+    n = np.delete(n, unmodulated)
 
     nModPathways = len(lam)
 
-    kernelmatrix = lambda t: calckernelmatrix(t,r,'fresnel',excbandwidth,nknots)
+    kernelmatrix = lambda t: calckernelmatrix(t, r, 'fresnel', excbandwidth, nknots)
     
     # Build dipolar kernel matrix, summing over all pathways
     K = Lambda0
