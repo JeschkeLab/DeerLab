@@ -1,8 +1,8 @@
 import numpy as np
-import cvxopt as cvo
+import cvxopt as cvx
 import math as m
 
-def fnnls(AtA,Atb,tol=-1,verbose=False):
+def fnnls(AtA,Atb,tol=-1,maxiter=-1,verbose=False):
     """
     FNNLS   Fast non-negative least-squares algorithm.
     x = fnnls(AtA,Atb) solves the problem min ||b - Ax|| if
@@ -26,15 +26,16 @@ def fnnls(AtA,Atb,tol=-1,verbose=False):
     count = 0
 
     # Use all-zero starting vector
-    x = np.zeros(np.shape(AtA)[1])
+    N = np.shape(AtA)[1]
+    x = np.zeros(N)
 
-    # Calculate tolerance if not given.
+    # Calculate tolerance and maxiter if not given.
     if tol==-1:
         eps = 2**-52
         tol = 10*eps*np.linalg.norm(AtA,1)*max(np.shape(AtA))
-    
-    N = np.size(x)
-    
+    if maxiter==-1:
+        maxiter = 5*N
+        
     passive = x>0       # initial positive/passive set (points where constraint is not active)
     x[~passive] = 0
     w = Atb - AtA @ x     # negative gradient of error functional 0.5*||A*x-y||^2
@@ -104,25 +105,32 @@ def fnnls(AtA,Atb,tol=-1,verbose=False):
     
     return x
 
-def cvxnnls(AtA, Atb, K, V):
+def cvxnnls(AtA, Atb, tol=-1, maxiter=-1):
     """
-    CVXOPT Based NNLS solver modified from Rein et al. 2018 (GloPel) 
+    NNLS problem solved via CVXOPT
     """
-    m, n = K.shape
-    
-    P = np.linalg.inv(AtA) @ K.T @ V
+
+    N = np.shape(AtA)[1]
+    if tol==-1:
+        eps = 2**-52
+        tol = 10*eps*np.linalg.norm(AtA,1)*max(np.shape(AtA))
+    if maxiter==-1:
+        maxiter = 5*N
+
+    P = np.linalg.inv(AtA) @ Atb
     P = P.clip(min=0)
 
-    cAtA = cvo.matrix(AtA)
-    cAtb = -cvo.matrix(Atb)
-
-    lb = cvo.matrix(np.zeros(n))
-    I = -cvo.matrix(np.eye(n, n))
+    cAtA = cvx.matrix(AtA)
+    cAtb = -cvx.matrix(Atb)
+       
+    lb = cvx.matrix(np.zeros(N))
+    I = -cvx.matrix(np.eye(N, N))
     
-    cvo.solvers.options['show_progress'] = False
-    cvo.solvers.options['abstol'] = 1e-16
-    cvo.solvers.options['reltol'] = 1e-15 
+    # Set optimization stop criteria
+    cvx.solvers.options['show_progress'] = False
+    cvx.solvers.options['max_iters'] = maxiter
+    cvx.solvers.options['reltol'] = tol
 
-    P = cvo.solvers.qp(cAtA, cAtb, I, lb, initvals=cvo.matrix(P))['x']
+    P = cvx.solvers.qp(cAtA, cAtb, I, lb, initvals=cvx.matrix(P))['x']
     P = np.squeeze(np.asarray(P))
     return P

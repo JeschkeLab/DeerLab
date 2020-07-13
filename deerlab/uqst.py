@@ -1,9 +1,10 @@
+# uqst.py - Uncertainty quantification structure constructor
+# This file is a part of DeerLab. License is MIT (see LICENSE.md).
+# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 import numpy as np
 from deerlab import jacobianest
 from scipy.stats import norm
 from scipy.signal import fftconvolve
-# This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 class uqst:
     """
@@ -164,7 +165,6 @@ class uqst:
 
     # Error Propagation (covariance-based only)
     #--------------------------------------------------------------------------------
-
     def propagate(self,model,lbm=[],ubm=[]):
         
         # Evaluate model with fit parameters
@@ -181,7 +181,7 @@ class uqst:
             raise IndexError ('The 2nd and 3rd input arguments must have the same number of elements as the model output.')
         
         # Get jacobian of model to be propagated with respect to parameters
-        J,err = jacobianest(model,parfit)
+        J,_ = jacobianest(model,parfit)
         
         # Clip at boundaries
         modelfit = np.maximum(modelfit,lbm)

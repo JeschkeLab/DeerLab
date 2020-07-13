@@ -1,3 +1,7 @@
+# dipolarkernel.py - Dipolar kernel operator
+# This file is a part of DeerLab. License is MIT (see LICENSE.md).
+# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+
 # Numpy + SciPy
 import numpy as np
 from numpy import pi,inf
@@ -20,7 +24,7 @@ def w0(g):
 
 def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
                   integralop = True, nknots = 5001, renormalize = True, clearcache = False):
-#============================================================================== 
+#===================================================================================================
     """
     Dipolar kernel operator
     =========================
@@ -56,7 +60,7 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
     
     Returns:
     K (NxM-array)
-        Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is V = K*P
+        Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is V = K@P
 
     Keyword arguments:
     ------------------
@@ -95,7 +99,6 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
         B = np.atleast_1d(B)
 
     g = np.atleast_1d(g)
-    print(len(g))
     if len(g) == 1:
         g = [g, g]
     elif len(g) != 2:

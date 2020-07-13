@@ -1,17 +1,18 @@
 import numpy as np
 import math as m
-import scipy.optimize as opt
+from scipy.optimize import least_squares, lsq_linear
 from numpy.linalg import solve
-from .regoperator import regoperator
-from .selregparam import selregparam
-from .lsqcomponents import lsqcomponents
-from .fnnls import fnnls,cvxnnls
-from .jacobianest import jacobianest
-from .uqst import uqst
 from cvxopt import matrix, solvers
 import copy
+# Import DeerLab depencies
+from deerlab.regoperator import regoperator
+from deerlab.selregparam import selregparam
+from deerlab.lsqcomponents import lsqcomponents
+from deerlab.fnnls import fnnls,cvxnnls
+from deerlab.jacobianest import jacobianest
+from deerlab.uqst import uqst
 
-def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],linsolver='fnnls'):
+def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],linsolver='cvx'):
 
     getUncertainty = True
     getGoodnessOfFit = False 
@@ -39,8 +40,7 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],linsolver='fnnls'):
     Nnonlin = len(par0)
     Nlin = np.shape(Amodel(par0))[1]
     linfit = []
-
-
+  
     if not any(lb):
         lb = np.full(Nnonlin, -np.inf)
 
@@ -52,19 +52,52 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],linsolver='fnnls'):
 
     if not any(ubl):
         ubl = np.full(Nlin, np.inf)
+    
+    if len(lb) != Nnonlin or len(ub) != Nnonlin:
+        raise TypeError('The lower/upper bounds of the non-linear problem must have #i elements',Nnonlin)
+    if len(lbl) != Nlin or len(ubl) != Nlin:
+        raise TypeError('The lower/upper bounds of the linear problem must have #i elements',Nlin)
+    
+    # Check if the nonlinear and linear problems are constrained
+    nonLinearConstrained = (not np.all(np.isinf(lb))) or (not np.all(np.isinf(ub)))
+    linearConstrained = (not np.all(np.isinf(lbl))) or (not np.all(np.isinf(ubl)))
+    # Check for non-negativity constraints on the linear solution
+    nonNegativeOnly = (np.all(lbl==0)) and (np.all(np.isinf(ubl)))
+    
+    # Check that the boundaries are valid
+    if np.any(ub<lb) or np.any(ubl<lbl):
+        raise ValueError('The upper bounds cannot be larger than the lower bounds.')
+    # Check that the non-linear start values are inside the box constraint
+    if np.any(par0>ub) or np.any(par0<lb):
+        raise ValueError('The start values are outside of the specified bounds.')
+        
 
     includePenalty = True
 
 
     if includePenalty:
         # Use an arbitrary axis
-        ax = list(range(1,Nlin+1))
+        ax = np.arange(1,Nlin+1)
         # Get regularization operator
-        RegOrder = min(Nlin-1,RegOrder)
+        RegOrder = np.minimum(Nlin-1,RegOrder)
         L = regoperator(ax,RegOrder)
     else:
         L = np.eye(Nlin,Nlin)
 
+
+
+    if not linearConstrained:
+        # Unconstrained linear LSQ
+        linSolver = lambda AtA,Aty: solve(AtA,Aty)
+    elif linearConstrained and not nonNegativeOnly:
+        # Constrained linear LSQ
+        linSolver = lambda AtA,Aty: lsq_linear(AtA, Aty, bounds=[lbl,ubl], tol=LinTolFun, max_iter=LinMaxIter)
+    elif linearConstrained and nonNegativeOnly and linsolver=='fnnls':
+        # Non-negative linear LSQ
+        linSolver = lambda AtA,Aty: fnnls(AtA,Aty, tol=LinTolFun, maxiter=LinMaxIter)
+    elif linearConstrained and nonNegativeOnly and linsolver=='cvx':
+        # Non-negative linear LSQ
+        linSolver = lambda AtA,Aty: cvxnnls(AtA, Aty, tol=LinTolFun, maxiter=LinMaxIter)
 
     multiStartPar0 = par0
 
@@ -74,19 +107,20 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],linsolver='fnnls'):
     linfits = []*multiStarts
 
 
-    # Residual vector function
-    # ------------------------------------------------------------------
-    # Function that provides vector of residuals, which is the objective
-    # function for the least-squares solvers
+
     def ResidualsFcn(p):
-        
+    #===========================================================================
+        """ 
+        Residuals function
+        ------------------
+        Provides vector of residuals, which is the objective function for the non-linear least-squares solver. 
+        """
+
         nonlocal par_prev, check, regparam_prev, linfit
         # Non-linear model evaluation
-        # ===============================
         A = Amodel(p)
         
         # Regularization components
-        # ===============================
         if includePenalty:
             if RegParam == 'aic':
                 # If the parameter vector has not changed by much...
@@ -105,39 +139,17 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],linsolver='fnnls'):
             par_prev = p
             regparam_prev = alpha
             
-            # Non-linear operator with penalty
-            AtA,Aty = lsqcomponents(y,A,L,alpha)
-            
         else:
             # Non-linear operator without penalty
-            AtA,Aty = lsqcomponents(y,A,L,0)
-        
-        if not linearConstrained:
-            # Unconstrained linear LSQ
-            # ====================================
-            linfit = solve(AtA,Aty)
-            
-        elif linearConstrained and not nonNegativeOnly:
-            # Constrained linear LSQ
-            # ====================================
-            linfit = linSolverFcn(AtA,Aty,lbl,ubl,linSolverOpts)
-            
-        elif linearConstrained and nonNegativeOnly:
-            # Non-negative linear LSQ
-            # ====================================
-            if linsolver=='fnnls':
-                linfit = fnnls(AtA,Aty)
-            elif linsolver=='nnls':
-                try:
-                    linfit,rnorm = opt.nnls(AtA,Aty,1e5)
-                except:
-                    linfit = np.zeros(np.shape(AtA)[1])
-                    pass
-            elif linsolver=='cvx':
-                linfit =  cvxnnls(AtA, Aty, A, y)
+            alpha = 0
+
+        # Components for linear least-squares        
+        AtA,Aty = lsqcomponents(y,A,L,alpha)
+
+        # Solve the linear least-squares problem
+        linfit = linSolver(AtA,Aty)
 
         # Evaluate full model residual
-        # ===============================
         yfit = A@linfit
         # Compute residual vector
         res = yfit - y
@@ -147,19 +159,20 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],linsolver='fnnls'):
             res = np.concatenate((res, penalty))
 
         return res
-    # ------------------------------------------------------------------
+    #===========================================================================
         
     # Run the non-linear solver
-    sol = opt.least_squares(ResidualsFcn,par0,bounds=[lb,ub])
+    sol = least_squares(ResidualsFcn,par0,bounds=[lb,ub])
     nonlinfit = sol.x
 
-
-    # Uncertainty quantification
-    # ------------------------------------------------------------------
-    # Function that computes the covariance-based uncertainty quantification
-    # and returns the corresponding uncertainty structure
     def uncertainty(nonlinfit):
-            
+    #===========================================================================
+        """ 
+        Uncertainty quantification
+        --------------------------
+        Function that computes the covariance-based uncertainty quantification and returns the corresponding uncertainty structure
+        """
+
         # Get full augmented residual vector
         #====================================
         res = ResidualsFcn(nonlinfit)
@@ -183,9 +196,9 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],linsolver='fnnls'):
         paramuq_ = uqst('covariance',parfit,covmatrix,lbs,ubs)
         paramuq = copy.deepcopy(paramuq_)
 
-        # Wrapper around the CI function handle of the uncertainty structure
-        # ------------------------------------------------------------------
         def ci(coverage,type='full'):
+        #===========================================================================
+            "Wrapper around the CI function handle of the uncertainty structure"
             # Get requested confidence interval of joined parameter set
             paramci = paramuq_.ci(coverage)
             if type == 'nonlin':
@@ -198,9 +211,9 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],linsolver='fnnls'):
 
         paramuq.ci = ci
         return paramuq
-    # -------------------------------------------------------------------
+        #===========================================================================
+    #===========================================================================
         
-
     # Uncertainty analysis (if requested)
     if getUncertainty:
         uq = uncertainty(nonlinfit)
@@ -211,3 +224,4 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],linsolver='fnnls'):
             stats = gof(y,yfit,Ndof)
 
     return nonlinfit, linfit, uq
+

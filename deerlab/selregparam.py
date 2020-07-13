@@ -34,7 +34,7 @@ def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
         
         KtKreg, KtV = dl.lsqcomponents(V,K,L,alpha)
         if NonNegConstrained:
-            P = dl.cvxnnls(KtKreg,KtV,K,V)
+            P = dl.cvxnnls(KtKreg,KtV)
         else:
             P = np.linalg.solve(KtKreg,KtV)
 
