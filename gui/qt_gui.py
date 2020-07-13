@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QLineEdit,QAction, QMainWindow, QApplication, QPushButton, QTextEdit, QGraphicsView, QFileDialog,QTableWidgetItem
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import sys 
-import pyqtgraph as pg
 import numpy as np
+import pyqtgraph as pg
 from deerlab import *
 from deerlab_default import deerlab_default
 import os
@@ -11,11 +11,22 @@ dir = os.path.dirname(__file__)
 pg.setConfigOption('background','w')
 pg.setConfigOptions(antialias=True)
 
+# Define function to import external files when using PyInstaller.
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 class UI(QMainWindow):
     def __init__(self):
     #===============================================
         super(UI, self).__init__()
-        uic.loadUi(os.path.join(dir, 'qt_gui.ui'), self)
+        uic.loadUi(resource_path('qt_gui.ui'), self)
  
         # set the title 
         self.setWindowTitle('DeerLab - Standalone GUI prototype') 
