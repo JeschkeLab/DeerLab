@@ -1,7 +1,8 @@
 import numpy as np
+from numpy import pi,inf
 import types
 from deerlab.dipolarbackground import dipolarbackground
-from scipy.integrate import quad
+import scipy.integrate
 from scipy.special import fresnel
 import warnings
 from memoization import cached
@@ -11,15 +12,15 @@ ge = 2.00231930436256 # free-electron g factor
 muB = 9.2740100783e-24 # Bohr magneton, J/T 
 mu0 = 1.25663706212e-6 # magnetic constant, N A^-2 = T^2 m^3 J^-1 
 h = 6.62607015e-34 # Planck constant, J/Hz
-nu0 = (mu0/4/np.pi)*muB**2*ge*ge/h*1e21 # Hz m^3 -> MHz nm^3
-w0 = 2*np.pi*nu0 # Mrad s^-1 nm^3
+def w0(g):
+    return (mu0/2)*muB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> Mrad s^-1 nm^3
 
 def dipolarkernel(t,r,
         pathinfo=1,
         B=1,
         method = 'fresnel',
-        excbandwidth = float('Inf'),
-        g = ge,
+        excbandwidth = inf,
+        g = [ge, ge],
         nknots = 5001,
         renormalize = True,
         cache = True
@@ -29,7 +30,7 @@ def dipolarkernel(t,r,
     Calculate dipolar kernel matrix.
     Assumes t in microseconds and r in nanometers
     """
-    
+
     # Ensure that all inputs are numpy arrays
     r = np.atleast_1d(r)
     t = np.atleast_1d(t)
@@ -41,6 +42,12 @@ def dipolarkernel(t,r,
         ismodelB = False
         B = np.atleast_1d(B)
 
+    g = np.atleast_1d(g)
+    print(len(g))
+    if len(g) == 1:
+        g = [g, g]
+    elif len(g) != 2:
+        raise TypeError('The g-value must be specified as a scalar or a two-element array.')
 
     if np.any(r<0):
         raise ValueError("All elements in r must be nonnegative.")
@@ -77,7 +84,7 @@ def dipolarkernel(t,r,
 
     nModPathways = len(lam)
 
-    kernelmatrix = lambda t: calckernelmatrix(t, r, 'fresnel', excbandwidth, nknots)
+    kernelmatrix = lambda t: calckernelmatrix(t,r,method,excbandwidth,nknots,g)
     
     # Build dipolar kernel matrix, summing over all pathways
     K = Lambda0
@@ -106,29 +113,32 @@ def dipolarkernel(t,r,
 #==============================================================================
 
 @cached
-def calckernelmatrix(t,r,method,wex,nknots):
+def calckernelmatrix(t,r,method,wex,nknots,g):
 #==============================================================================
+
+    t = np.atleast_1d(t)
+    r = np.atleast_1d(r)
+
     # Pre-allocate K matrix
     nr = np.size(r)
     nt = np.size(t)  
     K = np.zeros((nt,nr))
-    wr = w0/(r**3)  # rad s^-1
+    wr = w0(g)/(r**3)  # rad s^-1
 
     def kernelmatrix_fresnel(t,r):
     #==========================================================================
         """Calculate kernel using Fresnel integrals (fast and accurate)"""
 
        # Calculation using Fresnel integrals
-        wr = w0/(r**3)  # rad s^-1
         ph = np.outer(np.abs(t), wr)
-        kappa = np.sqrt(6 * ph / np.pi)
+        kappa = np.sqrt(6*ph/pi)
         
         # Supress divide by 0 warning        
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            S, C = fresnel(kappa) / kappa
+            S, C = fresnel(kappa)/kappa
         
-        K = C * np.cos(ph) + S * np.sin(ph)
+        K = C*np.cos(ph) + S*np.sin(ph)
         K[t==0] = 1 
 
         return K
@@ -139,35 +149,31 @@ def calckernelmatrix(t,r,method,wex,nknots):
         """Calculate kernel using grid-based powder integration (converges very slowly with nknots)"""
 
         # Orientational grid
-        costheta = np.linspace(0,1,nknots)
+        costheta = np.linspace(0,1,int(nknots))
         q = 1 - 3*costheta**2
-        for ir in range(len(wr)):
-            D_ = 0
-            # Powder averaging
-            for ztheta in q:
-                C = np.cos(wr[ir]*ztheta*abs(t))
-                # If given, include limited excitation bandwidth
-                if not np.isinf(wex):
-                    C = C*np.exp(-(wr[ir]*ztheta)**2/wex**2)
-                D_ = D_ + C
-            K[:,ir] = D_/nknots
+        # Vectorized 3D-grid evaluation (t,r,powder averaging)
+        C = np.cos(wr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:]*abs(t[:,np.newaxis,np.newaxis]))
+        # If given, include limited excitation bandwidth
+        if not np.isinf(wex):
+            C = C*np.exp(-(wr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:])**2/wex**2)
+        K = np.sum(C,2)/nknots
         return K
     #==========================================================================
 
     def kernelmatrix_integral(t,r,wex):
     #==========================================================================
-        """Calculate kernel using grid-based powder integration (converges very slowly with nKnots)"""
-
+        """Calculate kernel using explicit numerical integration """
         for ir in range(len(wr)):
-            #==================================================================
-            def integrand(costheta):
-                integ = np.cos(wr[ir]*abs(t)*(1-3*costheta**2))
-                # If given, include limited excitation bandwidth
-                if not np.isinf(wex):
+            for it in range(len(t)):
+                #==================================================================
+                def integrand(costheta):
+                    integ = np.cos(wr[ir]*abs(t[it])*(1-3*costheta**2))
+                    # If given, include limited excitation bandwidth
+                    if not np.isinf(wex):
                         integ = integ*np.exp(-(wr[ir]*(1-3*costheta**2))**2/wex**2)
-                return integ
-            #==================================================================            
-            K[:,ir] = quad(integrand,0,1,'ArrayValued',True,'AbsTol',1e-6,'RelTol',1e-6)
+                    return integ
+                #==================================================================   
+                K[it,ir],_ = scipy.integrate.quad(integrand,0,1,limit=1000)
         return K
     #==========================================================================
 

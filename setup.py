@@ -12,7 +12,6 @@ setup(
    install_requires=[
        "pytest",
        "numpy",
-       "pandas",
        "scipy"
    ],
 )
