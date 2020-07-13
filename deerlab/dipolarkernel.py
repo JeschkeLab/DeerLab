@@ -1,11 +1,14 @@
+# Numpy + SciPy
 import numpy as np
 from numpy import pi,inf
-import types
-from deerlab.dipolarbackground import dipolarbackground
 import scipy.integrate
 from scipy.special import fresnel
+# Other packages
+import types
 import warnings
 from memoization import cached
+# DeerLab dependencies
+from deerlab.dipolarbackground import dipolarbackground
 
 # Fundamental constants (CODATA 2018)
 ge = 2.00231930436256 # free-electron g factor
@@ -15,21 +18,70 @@ h = 6.62607015e-34 # Planck constant, J/Hz
 def w0(g):
     return (mu0/2)*muB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> Mrad s^-1 nm^3
 
-def dipolarkernel(t,r,
-        pathinfo=1,
-        B=1,
-        method = 'fresnel',
-        excbandwidth = inf,
-        g = [ge, ge],
-        nknots = 5001,
-        renormalize = True,
-        cache = True
-    ):
+def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
+                  integralop = True, nknots = 5001, renormalize = True, clearcache = False):
+#============================================================================== 
     """
-    K = dipolarkernel(t,r)
-    Calculate dipolar kernel matrix.
-    Assumes t in microseconds and r in nanometers
+    Dipolar kernel operator
+    =========================
+
+    Computes the dipolar kernel operator which enables the linear transformation from distance-domain to time-domain data. 
+
+    Usage: 
+    -----------
+        K = dipolarkernel(t,r)
+        K = dipolarkernel(t,r,lambda)
+        K = dipolarkernel(t,r,lambda,B)
+        K = dipolarkernel(t,r,pathinfo)
+        K = dipolarkernel(t,r,pathinfo,Bmodel)
+
+    Arguments: 
+    -----------
+    t (N-element array)  
+        Dipolar time axis, in microseconds
+    r (M-element array) 
+        Distance axis, in nanometers
+    lambda (scalar)
+        Modulation depth (value between 0 and 1) (default=1)
+        This is equivalent to pathinfo = [1-lambda NaN 0; lambda 0 1]
+    pathinfo (px2-array, px3-array)
+        Array of pathway amplitudes (lambda), refocusing points (T0), and harmonics (n) 
+        for multiple (p) dipolar pathways. Each row contains [lambda T0 n] or [lambda T0] 
+        for one pathway. If n is not given it is assumed to be 1.
+    B/Bmodel (lambda-function, N-element array)
+        For a single-pathway model, the numerical background decay can be passed as an array. 
+        For multiple pathways, a lambda-function must be specified with the following structure:
+            Bmodel = lambda par,lambda: bg_model(t,par,lambda)
+        By default, no background decay is included.
+    
+    Returns:
+    K (NxM-array)
+        Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is V = K*P
+
+    Keyword arguments:
+    ------------------
+    method (string, optional)
+        Numerical method for kernel matrix calculation:
+                    'fresnel' - uses Fresnel integrals for the kernel (default)
+                    'integral' - uses explicit integration function (slow, accurate)
+                    'grid' - powder average via explicit grid integration (slow, inaccurate)
+    excbandwidth (scalar, optional)
+        Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth
+    g (scalar, 2-element array, optional)
+        Electron g-values of the spin centers [g1, g2]. If a single g is specified, [g, g] is assumed 
+    integralop (boolean, optional)
+        Whether to return K as an integral operator (i.e K = K*dr) or not (K). Default is True.
+    nknots (scalar, optional)
+        Number of knots for the grid of powder orientations to be used in the 'grid' kernel calculation method.
+    renormalize (boolean, optional)
+        Re-normalization of multi-pathway kernels to ensure the equality K(t=0,r)==1 is satisfied. Default is True.
+    clearcache (boolean, optional)
+        Clear the cached dipolar kernels at the beginning of the function. Default is False.
     """
+
+    # Clear cache of memoized function is requested
+    if clearcache:
+        calckernelmatrix.cache_clear()
 
     # Ensure that all inputs are numpy arrays
     r = np.atleast_1d(r)
@@ -62,26 +114,24 @@ def dipolarkernel(t,r,
     if not np.any(np.shape(pathinfo)[1] != np.array([2, 3])):
         raise TypeError('pathinfo must be a numeric array with two or three columns.')
 
-    if np.any(np.isnan(pathinfo[:, 0])):
+    if np.any(np.isnan(pathinfo[:,0])):
         raise ValueError('In pathinfo, NaN can only appear in the second column (refocusing time) e.g. path[1,:] = [Lam0 NaN]')
 
     # Normalize the pathway amplitudes to unity
-    pathinfo[:, 0] = pathinfo[:, 0] / sum(pathinfo[:, 0])
-    lam = pathinfo[:, 0]
-    T0 = pathinfo[:, 1]
+    pathinfo[:,0] = pathinfo[:,0]/sum(pathinfo[:,0])
+    lam = pathinfo[:,0]
+    T0 = pathinfo[:,1]
     if np.shape(pathinfo)[1] == 2:
         n = np.ones(np.shape(T0))
     else:
-        n = pathinfo[:, 1]
+        n = pathinfo[:,2]
     
-
     # Combine all unmodulated components into Lambda0, and eliminate from list
     unmodulated = np.where(np.isnan(T0))
     Lambda0 = np.sum(lam[unmodulated])
     lam = np.delete(lam, unmodulated)
     T0 = np.delete(T0, unmodulated)
     n = np.delete(n, unmodulated)
-
     nModPathways = len(lam)
 
     kernelmatrix = lambda t: calckernelmatrix(t,r,method,excbandwidth,nknots,g)
@@ -105,7 +155,7 @@ def dipolarkernel(t,r,
     K = K*B[:,np.newaxis]
 
     # Include delta-r factor for integration
-    if len(r)>1:
+    if integralop and len(r)>1:
         dr = np.mean(np.diff(r))
         K = K*dr
     

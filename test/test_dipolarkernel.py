@@ -245,6 +245,38 @@ def test_multipath_background():
     assert np.all(abs(KB - KBref) < 1e-3)
 #=======================================================================
 
+
+def test_multipath_harmonics():
+#=======================================================================
+    "Check that multi-pathway kernels with higher harmonics are properly generated"
+
+    r = np.linspace(2,6,50)
+    t1 = np.linspace(0,10,300)
+    t2 = 0.3
+    tau1 = 4.24
+    tau2 = 4.92
+    t = (tau1 + tau2) - (t1 + t2)
+    prob = 0.8
+    lam = np.array([1-prob, prob**2, prob*(1-prob)])
+    T0 = [np.NaN, 0, tau2-t2]
+    n = [2, 2, 3]
+
+    K = dipolarkernel(t,r,np.array([lam, T0, n]).T)
+
+    unmodulated = pd.isnull(T0)
+    Kref = sum(lam[unmodulated])
+    Krenorm = Kref
+    dr = np.mean(np.diff(r))
+    for p in range(len(lam)):
+        if not unmodulated[p]:
+            Kref = Kref + lam[p]*calckernelmatrix(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge])
+            Krenorm = Krenorm + lam[p]*calckernelmatrix(-n[p]*T0[p],r,'fresnel',[],[],[ge,ge])
+    Kref = Kref/Krenorm
+    Kref = Kref*dr
+
+    assert np.max(K-Kref) < 1e-3
+#=======================================================================
+
 def test_excbandwidth_inf_grid():
 #=======================================================================
     "Check that specifying a bandwidth effectively changes the kernel (grid method)"
@@ -324,7 +356,6 @@ def test_gvalues():
     assert np.max(K1 - K2) < 1e-15
 #=======================================================================
 
-
 def test_r_scaling():
 #=======================================================================
     """Check whether K matrix elements scale properly with t and r"""
@@ -334,7 +365,7 @@ def test_r_scaling():
     c = 1.2 # distance scaling factor
 
     K1 = dipolarkernel(t,r)
-    K2 = dipolarkernel(t*c**3,r**c)
+    K2 = dipolarkernel(t*c**3,r*c)
 
     assert np.max(K1 - K2) < 1e-15
 #=======================================================================
@@ -343,14 +374,26 @@ def test_arbitrary_pathway_amps():
 #=======================================================================
     """Check compatibility with arbitrary pathway amplitudes"""
 
-    t = np.linspace(-5,5,200)
+    t = np.linspace(0,5,201)
     r = 2.5
     pathway = np.zeros((3,2))
     pathway[0,:] = [0.2, NaN]
     pathway[1,:] = [0.8, 0]
     pathway[2,:] = [0.5, 3]
 
-    K = dipolarkernel(t,r,pathway)/np.mean(np.diff(r))
+    K = dipolarkernel(t,r,pathway)
 
-    assert np.round(np.max(K),2) == 1
+    assert np.round(K[0],2) == 1
+#=======================================================================
+
+def test_integralop():
+#=======================================================================
+    """Check that integral operator-nature of kernel can be disabled"""
+
+    t = np.linspace(0,5,101)
+    r = np.linspace(2,5,101)
+    Kref = dipolarkernel(t,r, integralop=True)/np.mean(np.diff(r))
+    K = dipolarkernel(t,r, integralop=False)
+
+    assert np.max(K - Kref) < 1e-15
 #=======================================================================
