@@ -5,11 +5,16 @@ import numpy.matlib
 
 def jacobianest(fun,x0):
     """
-     jacobianest: estimate of the Jacobian matrix of a vector valued function of n variables
-     usage: [jac,err] = jacobianest(fun,x0)
+    Jacobian numerical estimation
+    =============================
+
+    Estimate of the Jacobian matrix of a vector valued function of n variables
+
+    Usage: 
+        [jac,err] = jacobianest(fun,x0)
     
      
-     arguments: (input)
+    Arguments:
       fun - (vector valued) analytical function to differentiate.
             fun must be a function of the vector or array x0.
      
@@ -18,7 +23,7 @@ def jacobianest(fun,x0):
             a function of n*m variables.
     
     
-     arguments: (output)
+    Output:
       jac - array of first partial derivatives of fun.
             Assuming that x0 is a vector of length p
             and fun returns a vector of length n, then
@@ -26,6 +31,13 @@ def jacobianest(fun,x0):
     
       err - vector of error estimates corresponding to
             each partial derivative in jac.
+
+    Source:
+         Adaptive Robust Numerical Differentiation
+         John D'Errico (2020)
+         jacobianest.m version 1.6.1 
+         https://www.mathworks.com/matlabcentral/fileexchange/13490-adaptive-robust-numerical-differentiation)
+         MATLAB Central File Exchange. 
     """
 
     # subfunction - swap vector elements

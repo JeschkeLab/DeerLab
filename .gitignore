@@ -11,3 +11,5 @@ DeerLab.egg-info/requires.txt
 DeerLab.egg-info/dependency_links.txt
 DeerLab.egg-info/SOURCES.txt
 DeerLab.egg-info/PKG-INFO
+*/dist/*
+*/build*
