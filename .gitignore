@@ -13,3 +13,4 @@ DeerLab.egg-info/SOURCES.txt
 DeerLab.egg-info/PKG-INFO
 */dist/*
 */build*
+/.venv/*
