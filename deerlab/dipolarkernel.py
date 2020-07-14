@@ -104,8 +104,8 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
     elif len(g) != 2:
         raise TypeError('The g-value must be specified as a scalar or a two-element array.')
 
-    if np.any(r<0):
-        raise ValueError("All elements in r must be nonnegative.")
+    if np.any(r<=0):
+        raise ValueError("All elements in r must be nonnegative and nonzero.")
 
     if not np.isreal(pathinfo).all:
         raise TypeError('lambda/pathinfo must be a numeric array.')
