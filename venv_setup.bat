@@ -5,6 +5,7 @@
 ::  including Intel MKL libraries linked to 
 ::  Scipy and Numpy. 
 :: ===========================================
+:: REQUIRES: Python 3.6
 ::  Can be executed via the terminal: 
 ::      .\venv_setup.bat
 ::  Afterwards the virtual environment can be
@@ -18,13 +19,15 @@ call python -m venv_prep
 call ./.venv/Scripts/activate
 :: pip manager is crude, upgrade 
 call python -m pip install --upgrade pip
-:: Install package dependencies of DeerLab
-call python -m pip install -r requirements.txt
-:: Due to dependency overlap, some packages might overlap 
-:: with intel-numpy, delete all numpy versions
-call python -m pip uninstall numpy -y
-call python -m pip uninstall numpy -y
-:: Re-install the proper Intel numpy version
-call python -m pip install intel-numpy
+:: Install all packages in the requirements list
+for /f "tokens=*" %%a in (requirements.txt) do (
+    IF "%%a"=="intel-scipy" (
+        :: The intel-scipy distribution includes the intel-numpy package
+        call python -m pip install %%a
+     ) ELSE (
+        :: Install all other dependencies without updating or reinstalling numpy
+        call python -m pip install --upgrade-strategy only-if-needed %%a
+     ) 
+)
 :: Setup DeerLab
 call python setup.py develop
