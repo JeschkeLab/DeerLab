@@ -1,7 +1,6 @@
 
 import numpy as np
 from numpy import pi, inf, NaN
-import pandas as pd
 from deerlab.bg_models import *
 from deerlab.dipolarkernel import dipolarkernel,calckernelmatrix
 from deerlab.dipolarbackground import dipolarbackground
@@ -188,7 +187,7 @@ def test_multipath():
 
     K = dipolarkernel(t,r,np.array([lam, T0]).T)
 
-    unmodulated = pd.isnull(T0)
+    unmodulated = np.isnan(T0)
     Kref = sum(lam[unmodulated])
     Krenorm = Kref
     dr = np.mean(np.diff(r))
@@ -219,7 +218,7 @@ def test_multipath_background():
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
 
     # Reference
-    unmodulated = pd.isnull(T0)
+    unmodulated = np.isnan(T0)
     Kref = sum(lam[unmodulated])
     Krenorm = Kref
     dr = np.mean(np.diff(r))
@@ -263,7 +262,7 @@ def test_multipath_harmonics():
 
     K = dipolarkernel(t,r,np.array([lam, T0, n]).T)
 
-    unmodulated = pd.isnull(T0)
+    unmodulated = np.isnan(T0)
     Kref = sum(lam[unmodulated])
     Krenorm = Kref
     dr = np.mean(np.diff(r))

@@ -1,6 +1,5 @@
 
 import numpy as np
-import pandas as pd
 from deerlab.bg_models import *
 from deerlab.dipolarbackground import dipolarbackground
 
@@ -105,7 +104,7 @@ def test_multipath_renorm():
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
 
     #Reference
-    unmodulated = pd.isnull(T0)
+    unmodulated = np.isnan(T0)
     Bref = 1
     Bnorm = 1
     for p in range(len(lam)):
@@ -135,7 +134,7 @@ def test_multipath_raw():
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
 
     #Reference
-    unmodulated = pd.isnull(T0)
+    unmodulated = np.isnan(T0)
     Bref = 1
     Bnorm = 1
     for p in range(len(lam)):
