@@ -59,6 +59,7 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
         By default, no background decay is included.
     
     Returns:
+    -----------
     K (NxM-array)
         Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is V = K@P
 
