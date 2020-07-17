@@ -14,3 +14,4 @@ DeerLab.egg-info/PKG-INFO
 */dist/*
 */build*
 /.venv/*
+target/

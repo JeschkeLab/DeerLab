@@ -1,3 +1,6 @@
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
+from PyQt5.QtWidgets import QMainWindow
+import sys
 from PyQt5.QtWidgets import QLineEdit,QAction, QMainWindow, QApplication, QPushButton, QTextEdit, QGraphicsView, QFileDialog,QTableWidgetItem
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import sys 
@@ -20,12 +23,13 @@ def resource_path(relative_path):
     except Exception:
         dir = os.path.dirname(__file__)
         base_path = os.path.abspath(dir)
-
+        base_path = os.path.join(base_path, "../resources/base/")
     return os.path.join(base_path, relative_path)
 
 class UI(QMainWindow):
     def __init__(self):
     #===============================================
+        appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
         super(UI, self).__init__()
         uic.loadUi(resource_path('qt_gui.ui'), self)
  
@@ -41,6 +45,8 @@ class UI(QMainWindow):
         self.loadaction.triggered.connect(self.clickedBtn)
 
         self.show()
+        exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
+        sys.exit(exit_code)
     #===============================================
 
     def clickedBtn(self):
@@ -112,6 +118,10 @@ class UI(QMainWindow):
     #===============================================
 
 
-app = QApplication(sys.argv)
-window = UI()
-app.exec_()
+if __name__ == '__main__':
+    appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
+    app = QApplication(sys.argv)
+    window = UI()
+    app.exec_()
+    exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
+    sys.exit(exit_code)

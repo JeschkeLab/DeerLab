@@ -3,3 +3,7 @@ memoization
 cvxopt
 matplotlib
 pytest
+fbs
+PyQt5==5.9.2
+pyqtgraph
+pywin32

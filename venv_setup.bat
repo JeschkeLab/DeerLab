@@ -19,6 +19,7 @@ call python -m venv_prep
 call ./.venv/Scripts/activate
 :: pip manager is crude, upgrade 
 call python -m pip install --upgrade pip
+call python -m pip install --upgrade setuptools
 :: Install all packages in the requirements list
 for /f "tokens=*" %%a in (requirements.txt) do (
     IF "%%a"=="intel-scipy" (
