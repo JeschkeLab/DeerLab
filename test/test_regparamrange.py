@@ -14,7 +14,7 @@ def test_resolution():
 
     alpha = regparamrange(K,L,logres=0.1)
 
-    assert len(alpha)==84
+    assert len(alpha)==85
 #=======================================================================
 
 
