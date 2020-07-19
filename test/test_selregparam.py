@@ -289,7 +289,7 @@ def assert_full_output(method):
     K = dipolarkernel(t,r)
     V = K@P
 
-    alpha,functional,alphas_evaled,residuals,penalties = selregparam(V,K,r,'tikhonov','aic',algorithm=method,full_output=True)
+    alpha,alphas_evaled,functional,residuals,penalties = selregparam(V,K,r,'tikhonov','aic',algorithm=method,full_output=True)
     errors = []
     if np.size(alpha)!=1:
         errors.append("alphaopt is not a scalar")
@@ -324,8 +324,26 @@ def test_unconstrained():
     K = dipolarkernel(t,r)
     V = K@P
 
-    logalpha = np.log10(selregparam(V,K,r,'tikhonov','aic',nonNegConstrained=False))
+    logalpha = np.log10(selregparam(V,K,r,'tikhonov','aic',nonnegativity=False))
     logalpharef = -8.87
 
     assert abs(1 - logalpha/logalpharef) < 0.1
+#=======================================================================
+
+def test_manual_candidates():
+#=======================================================================
+    "Check that the alpha-search range can be manually passed"
+    
+    t = np.linspace(0,5,80)
+    r = np.linspace(2,5,80)
+    P = dd_gauss(r,[3,0.4])
+    K = dipolarkernel(t,r)
+    L = regoperator(r,2)
+    alphas = regparamrange(K,L)
+    V = K@P
+
+    alpha_manual = np.log10(selregparam(V,K,r,'tikhonov','aic',candidates=alphas))
+    alpha_auto = np.log10(selregparam(V,K,r,'tikhonov','aic'))
+
+    assert abs(alpha_manual-alpha_manual)<1e-7
 #=======================================================================

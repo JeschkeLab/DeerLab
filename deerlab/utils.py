@@ -73,6 +73,8 @@ def gsvd(A,B):
 
     if useQB:
         QB,B = scp.linalg.qr(B)
+        B = B[0:p,0:p]
+        QB = QB[:,0:p]
         n = p
 
 

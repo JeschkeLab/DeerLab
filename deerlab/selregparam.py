@@ -3,7 +3,84 @@ import scipy.optimize as opt
 import math as m
 import deerlab as dl
 
-def selregparam(V, K, r, RegType='tikhonov', SelectionMethod='aic', algorithm='brent',nonNegConstrained=True, noiselvl = -1, regOrder=2, weights=1, full_output=False):
+def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
+                nonnegativity=True, noiselvl=-1, regOrder=2, weights=1, full_output=False,
+                huberparam=1.35, candidates=None):
+    """
+    Selection of optimal regularization parameter
+    ===============================================
+
+    Computes the opimal regularization parameter based on a selection criterion.
+
+    Usage: 
+    -----------
+        alphaopt = selregparam(V,K,r)
+        alphaopt = selregparam(V,K,r,regtype,method)
+        alphaopt = selregparam([V1,V2,__],[K1,K2,__],r)
+
+    Arguments: 
+    -----------
+    V (N-element array, list of arrays)  
+        Dipolar signal, multiple datasets can be globally evaluated by passing a list of signals.
+    K (NxM-element array, list of arrays)  
+        Dipolar kernel, if a list of signals is specified, a corresponding list of kernels must be passed as well.
+    r (M-element array)
+        Distance axis, in nanometers.
+     
+    Keyword arguments:
+    ------------------
+    regtype (string)
+        Regularization functional type: 'tikhonov', 'tv', or 'huber'.
+    method (string)    
+        Method for the selection of the optimal regularization parameter.
+            'lr' - L-curve minimum-radius method (LR)
+            'lc' - L-curve maximum-curvature method (LC)
+            'cv' - Cross validation (CV)
+            'gcv' - Generalized Cross Validation (GCV)
+            'rgcv' - Robust Generalized Cross Validation (rGCV)
+            'srgcv' - Strong Robust Generalized Cross Validation (srGCV)
+            'aic' - Akaike information criterion (AIC)
+            'bic' - Bayesian information criterion (BIC)
+            'aicc' - Corrected Akaike information criterion (AICC)
+            'rm' - Residual method (RM)
+            'ee' - Extrapolated Error (EE)          
+            'ncp' - Normalized Cumulative Periodogram (NCP)
+            'gml' - Generalized Maximum Likelihood (GML)
+            'mcl' - Mallows' C_L (MCL)
+    weights (list, optional)
+        List of weights for the weighting of the different datasets in a global fit. 
+        If not specified all datasets are weighted equally.
+    candidates (list, optional)
+        List or array of candidate regularization parameter values to be evaluated. 
+        If not specified, these are automatically computed from the GSVD of the 
+        dipolar kernel and regularization operator.
+    regorder (int scalar, optional)
+        Order of the regularization operator.
+    algorithm (string, optional)
+        Search algorithm: 'grid' (grid-search, slow) or 'brent' (Brent-algorithm, fast).
+    full_output (boolean, optional)
+        If enabled (True) the function will return additional output arguments in a tuple.
+    nonnegativity (boolean, optional)
+        Enforces the non-negativity constraint on computed distance distributions. Default is True.
+    noiselvl (scalar, optional)
+        Estimate of the noise standard deviation, if not specified it is estimated form the fit residuals.
+        Used for the MCL selection method.  
+    huberparam (scalar, optional)
+        Value of the Huber parameter used in Huber regularization (default=1.35)
+
+    Returns:
+    -----------
+    alphaopt (scalar)
+        Optimal regularization parameter.
+    alphas (array, if full_output==True)
+        Regularization parameter values candidates evaluated during the search.
+    functional (array, if full_output==True)
+        Values of the selection functional specified by (method) evaluated during the search.
+    residuals (array, if full_output==True)
+        Values of the residual norms evaluated during the search.
+    residuals (array, if full_output==True)
+        Values of the penalty norms evaluated during the search.
+    """
 #=========================================================           
     # Ensure the use of numpy-arrays
     r = np.atleast_1d(r)
@@ -12,16 +89,19 @@ def selregparam(V, K, r, RegType='tikhonov', SelectionMethod='aic', algorithm='b
     V, K, weights = dl.utils.parse_multidatasets(V, K, weights)
 
     # The L-curve criteria require a grid-evaluation
-    if SelectionMethod == 'lr' or SelectionMethod == 'lc':
+    if method == 'lr' or method == 'lc':
         algorithm = 'grid'
 
     # Get regularization operator
     L = dl.regoperator(r,regOrder)
     # Get range of potential alpha values candidates
-    alphaCandidates = dl.regparamrange(K,L)
+    if candidates is None:
+        alphaCandidates = dl.regparamrange(K,L)
+    else: 
+        alphaCandidates = np.atleast_1d(candidates)
 
     # Create function handle
-    evalalpha = lambda alpha: _evalalpha(alpha, V, K, L, SelectionMethod, nonNegConstrained, noiselvl, RegType, weights)
+    evalalpha = lambda alpha: _evalalpha(alpha, V, K, L, method, nonnegativity, noiselvl, regtype, weights, huberparam)
 
     # Evaluate functional over search range, using specified search method
     if algorithm == 'brent':
@@ -56,14 +136,14 @@ def selregparam(V, K, r, RegType='tikhonov', SelectionMethod='aic', algorithm='b
         # If an L-curve method is requested evaluate it now with the full grid:
         
         # L-curve minimum-radius method (LR)
-        if SelectionMethod == 'lr':
+        if method == 'lr':
             Eta = np.log(penalties)
             Rho = np.log(residuals)
             dd = lambda x: (x-np.min(x))/(np.max(x)-np.min(x))
             functional = dd(Rho)**2 + dd(Eta)**2         
 
         # L-curve maximum-curvature method (LC)
-        elif SelectionMethod == 'lc': 
+        elif method == 'lc': 
             d1Residual = np.gradient(np.log(residuals))
             d2Residual = np.gradient(d1Residual)
             d1Penalty = np.gradient(np.log(penalties))
@@ -77,17 +157,16 @@ def selregparam(V, K, r, RegType='tikhonov', SelectionMethod='aic', algorithm='b
         raise KeyError("Search method not found. Must be either 'brent' or 'grid'.")
 
     if full_output:
-        return alphaOpt,functional,alphas_evaled,residuals,penalties
+        return alphaOpt,alphas_evaled,functional,residuals,penalties
     else:
         return alphaOpt
 #=========================================================
 
 
 #=========================================================
-def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights):
-
-    HuberParameter = 1.35
-
+def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParameter):
+    "Evaluation of the selection functional at a given regularization parameter value"
+    
     # Prepare LSQ components
     KtKreg, KtV = dl.lsqcomponents(V,K,L,alpha,weights, regtype=regtype, huberparam=HuberParameter)
     # Solve linear LSQ problem
