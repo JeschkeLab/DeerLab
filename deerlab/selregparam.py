@@ -4,7 +4,7 @@ import math as m
 import deerlab as dl
 
 def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
-                nonnegativity=True, noiselvl=-1, regOrder=2, weights=1, full_output=False,
+                nonnegativity=True, noiselvl=-1, regorder=2, weights=1, full_output=False,
                 huberparam=1.35, candidates=None):
     """
     Selection of optimal regularization parameter
@@ -93,7 +93,7 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
         algorithm = 'grid'
 
     # Get regularization operator
-    L = dl.regoperator(r,regOrder)
+    L = dl.regoperator(r,regorder)
     # Get range of potential alpha values candidates
     if candidates is None:
         alphaCandidates = dl.regparamrange(K,L)
@@ -166,7 +166,7 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
 #=========================================================
 def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParameter):
     "Evaluation of the selection functional at a given regularization parameter value"
-    
+
     # Prepare LSQ components
     KtKreg, KtV = dl.lsqcomponents(V,K,L,alpha,weights, regtype=regtype, huberparam=HuberParameter)
     # Solve linear LSQ problem

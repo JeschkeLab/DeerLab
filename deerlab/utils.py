@@ -57,6 +57,126 @@ def parse_multidatasets(V,K,weights):
 #===============================================================================
 
 
+def hccm(J,*args):
+    """
+    Heteroscedasticity Consistent Covariance Matrix (HCCM)
+    ======================================================
+
+    Computes the heteroscedasticity consistent covariance matrix (HCCM) of
+    a given LSQ problem given by the Jacobian matrix (J) and the covariance
+    matrix of the data (V). If the residual (res) is specified, the
+    covariance matrix is estimated using some of the methods specified in
+    (mode). The HCCM are valid for both heteroscedasticit and
+    homoscedasticit residual vectors. 
+
+    Usage:
+    ------
+    C = hccm(J,V)
+    C = hccm(J,res,mode)
+
+    Arguments:
+    ----------
+    J (NxM-element array)
+        Jacobian matrix of the residual vector
+    res (N-element array)
+        Vector of residuals
+    mode (string)
+        HCCM estimator, options are:
+            'HC0' - White, H. (1980)
+            'HC1' - MacKinnon and White, (1985)
+            'HC2' - MacKinnon and White, (1985)
+            'HC3' - Davidson and MacKinnon, (1993)
+            'HC4' - Cribari-Neto, (2004)
+            'HC5' - Cribari-Neto, (2007)
+
+    Returns:
+    --------
+    C (MxM-element array) 
+       Heteroscedasticity consistent covariance matrix 
+
+    References:
+    ------------ 
+    [1] 
+    White, H. (1980). A heteroskedasticity-consistent covariance matrix
+    estimator and a direct test for heteroskedasticity. Econometrica, 48(4), 817-838
+    DOI: 10.2307/1912934
+
+    [2] 
+    MacKinnon and White, (1985). Some heteroskedasticity-consistent covariance
+    matrix estimators with improved finite sample properties. Journal of Econometrics, 29 (1985), 
+    pp. 305-325. DOI: 10.1016/0304-4076(85)90158-7
+
+    [3] 
+    Davidson and MacKinnon, (1993). Estimation and Inference in Econometrics
+    Oxford University Press, New York. 
+
+    [4] 
+    Cribari-Neto, F. (2004). Asymptotic inference under heteroskedasticity of
+    unknown form. Computational Statistics & Data Analysis, 45(1), 215-233
+    DOI: 10.1016/s0167-9473(02)00366-3
+
+    [5] 
+    Cribari-Neto, F., Souza, T. C., & Vasconcellos, K. L. P. (2007). Inference
+    under heteroskedasticity and leveraged data. Communications in Statistics –
+    Theory and Methods, 36(10), 1877-1888. DOI: 10.1080/03610920601126589
+    """
+
+    # Unpack inputs
+    if len(args)==2:
+        res,mode = args
+        V = []
+    elif len(args)==1:
+        V = res
+
+    # Hat matrix
+    H = J@np.linalg.pinv(J.T@J)@J.T
+    # Get leverage
+    h = np.diag(H)
+    # Number of parameters (k) & Number of variables (n)
+    n,k = np.shape(J)
+
+    if not V:
+        # Select estimation method using established nomenclature
+        if mode.upper() == 'HC0': # White,(1980),[1]
+            # Estimate the data covariance matrix
+            V = np.diag(res**2)
+            
+        elif mode.upper() == 'HC1': # MacKinnon and White,(1985),[2]
+            # Estimate the data covariance matrix
+            V = n/(n-k)*np.diag(res**2)
+            
+        elif mode.upper() == 'HC2': # MacKinnon and White,(1985),[2]
+            # Estimate the data covariance matrix
+            V = np.diag(res**2/(1-h))
+            
+        elif mode.upper() == 'HC3': # Davidson and MacKinnon,(1993),[3]
+            # Estimate the data covariance matrix
+            V = np.diag(res/(1-h))**2
+            
+        elif mode.upper() == 'HC4': # Cribari-Neto,(2004),[4]
+            # Compute discount factor
+            delta = min(4,n*h/k)
+            # Estimate the data covariance matrix
+            V = np.diag(res**2./((1 - h)**delta))
+            
+        elif mode.upper() == 'HC5': # Cribari-Neto,(2007),[5]
+            # Compute inflation factor
+            k = 0.7
+            alpha = min(max(4,k*max(h)/np.mean(h)),h/np.mean(h))
+            # Estimate the data covariance matrix
+            V = np.diag(res**2./(np.sqrt((1 - h)**alpha)))
+                
+        else:
+            raise KeyError('HCCM estimation mode not found.')
+
+
+    # Heteroscedasticity Consistent Covariance Matrix (HCCM) estimator
+    C = np.linalg.pinv(J.T@J)@J.T@V@J@np.linalg.pinv(J.T@J)
+
+    return C
+#===============================================================================
+
+
 def gsvd(A,B):
 #===============================================================================
     m,p = A.shape

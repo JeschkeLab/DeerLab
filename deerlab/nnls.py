@@ -91,7 +91,7 @@ def fnnls(AtA,Atb,tol=-1,maxiter=-1,verbose=False):
         w = Atb - AtA@x
         w[passive] = -m.inf
         if verbose:
-            print("%10i%15i%20.4e\n" % (outIteration,iIteration,max(w)))
+            print('#10i#15i#20.4e\n' %(outIteration,iIteration,max(w)) )
 
     if verbose:
         if unsolvable:
@@ -99,11 +99,12 @@ def fnnls(AtA,Atb,tol=-1,maxiter=-1,verbose=False):
         elif any(~passive):
             print('Optimization stopped because the active set has been completely emptied. \n')
         elif w>tol:
-            print('Optimization stopped because the gradient (w) is inferior than the tolerance value TolFun = %.6e. \n' % tol)
+            print('Optimization stopped because the gradient (w) is inferior than the tolerance value TolFun = #.6e. \n' %tol)
         else:
             print('Solution found. \n')
     
     return x
+
 
 def cvxnnls(AtA, Atb, tol=-1, maxiter=-1):
     """
@@ -134,3 +135,109 @@ def cvxnnls(AtA, Atb, tol=-1, maxiter=-1):
     P = cvx.solvers.qp(cAtA, cAtb, I, lb, initvals=cvx.matrix(P))['x']
     P = np.squeeze(np.asarray(P))
     return P
+
+def nnlsbpp(AtA,AtB,x0):
+    """
+    Non-Negative Least Squares using Block Principal Pivoting
+    ==========================================================
+
+    Usage:
+    ------
+        x = nnlsbpp(AtA,AtB,x0)
+
+    Arguments: 
+    ----------
+    AtA (NxN-element matrix)
+
+    AtB (Nx1-element array or Nxk matrix)
+    
+    x0  (Nx1 vector or Nxk matrix) 
+        Initial guess(es) vector
+    
+    Returns:
+    --------
+    x (Nx1-element array or Nxk matrix)
+        Solution vector(s)
+
+    References:
+    -----------
+    [1] 
+    Portugal, Judice, Vicente, Mathematics of Computation, 1994, 63, 625-643
+    A comparison of block pivoting and interior-point algorithms for linear
+    least squares problems with nonnegative variables
+    https://doi.org/10.1090/S0025-5718-1994-1250776-4
+    
+    [2]
+    Kim, Park,SIAM J. Sci. Comput. 2011, 33(6), 3261-3281
+    Fast Nonnegative Matrix Factorization: An Active-Set-Like Method and Comparisons
+    https://doi.org/10.1137/110821172
+    """
+
+    # Size checks
+    #-------------------------------------------------------------------------------
+    n1,n2 = np.shape(AtA)
+
+    if n1 is not n2:
+        raise TypeError('AtA must be a square matrix. You gave a ',n1,'x',n2,' matrix.')
+    n = np.size(AtB)
+    k = 1
+    if n is not n1:
+        raise TypeError('AtB must have the same number of rows as AtA. You gave ',n,' instead of ',n1)
+
+    # Loop over multiple right-hand sides
+    #-------------------------------------------------------------------------------
+    if k > 1:
+        x = np.zeros((n1,k))
+        for k_ in reversed(range(k)):
+            x[:,k_] = nnlsbpp(AtA,AtB[:,k_],x0[:,k_])
+        return  x
+
+    # Calculate initial solution
+    #-------------------------------------------------------------------------------
+    x = np.zeros(n)
+    if not np.all(x0):
+        Fset = np.full((n,1),False)
+        y = -AtB
+    else:
+        Fset = x0 > 0
+        x = np.zeros(n)
+        x[Fset] = np.linalg.solve(AtA[np.ix_(Fset,Fset)],AtB[Fset])
+        y = AtA@x - AtB
+ 
+    # Determine infeasible variables ( = variables with negative values)
+    xFnegative = (x < 0) & Fset
+    yGnegative = (y < 0) & ~Fset
+    nInfeasible = sum(xFnegative | yGnegative)
+
+    # Iterative algorithm
+    #-------------------------------------------------------------------------------
+    p = 3
+    t = np.inf
+    while nInfeasible > 0: # iterate until no infeasible variables left
+    
+        # Swap full blocks in/out of F set or swap a single element as backup plan.
+        if nInfeasible < t:
+            t = nInfeasible
+            p = 3
+            Fset[xFnegative] = False
+            Fset[yGnegative] = True
+        else:
+            if p >= 1:
+                p = p - 1
+                Fset[xFnegative] = False
+                Fset[yGnegative] = True
+            else:
+                idx_ = np.where(xFnegative | yGnegative,1)[-1]
+                Fset[idx_] = ~Fset[idx_]
+        
+        # Solve linear system over F set
+        x = np.zeros(n)
+        x[Fset] = np.linalg.solve(AtA[np.ix_(Fset,Fset)],AtB[Fset])
+        y = AtA@x - AtB
+        
+        # Determine infeasible variables
+        xFnegative = (x < 0) & Fset
+        yGnegative = (y < 0) & ~Fset
+        nInfeasible = sum(xFnegative | yGnegative)
+
+    return x

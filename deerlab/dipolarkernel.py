@@ -29,7 +29,8 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
     Dipolar kernel operator
     =========================
 
-    Computes the dipolar kernel operator which enables the linear transformation from distance-domain to time-domain data. 
+    Computes the dipolar kernel operator which enables the linear transformation from
+    distance-domain to time-domain data. 
 
     Usage: 
     -----------
@@ -57,12 +58,7 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
         For multiple pathways, a lambda-function must be specified with the following structure:
             Bmodel = lambda par,lambda: bg_model(t,par,lambda)
         By default, no background decay is included.
-    
-    Returns:
-    -----------
-    K (NxM-array)
-        Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is V = K@P
-
+ 
     Keyword arguments:
     ------------------
     method (string, optional)
@@ -82,6 +78,13 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
         Re-normalization of multi-pathway kernels to ensure the equality K(t=0,r)==1 is satisfied. Default is True.
     clearcache (boolean, optional)
         Clear the cached dipolar kernels at the beginning of the function. Default is False.
+
+    Returns:
+    -----------
+    K (NxM-array)
+        Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is V = K@P
+
+
     """
 
     # Clear cache of memoized function is requested

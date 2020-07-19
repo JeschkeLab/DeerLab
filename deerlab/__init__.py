@@ -3,8 +3,7 @@ from .dd_models import *
 from .bg_models import *
 from .deerload import deerload
 from .selregparam import selregparam
-from .fnnls import fnnls,cvxnnls
-from .snlls import snlls
+from .nnls import fnnls,cvxnnls
 from .regparamrange import regparamrange
 from .dipolarkernel import dipolarkernel
 from .dipolarbackground import dipolarbackground
