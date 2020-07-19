@@ -13,9 +13,52 @@ import scipy as scp
 import random
 from scipy.sparse import coo_matrix
 
+def parse_multidatasets(V,K,weights):
 #===============================================================================
+    # If multiple signals are specified as a list...
+    if type(V) is list and all([type(Vs) is np.ndarray for Vs in V]):
+        nSignals = len(V)
+        Vlist = V
+        V = np.concatenate(V, axis=0) # ...concatenate them along the list 
+    elif type(V) is np.ndarray:
+        nSignals = 1
+    else:
+        raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
+
+    # If multiple kernels are specified as a list...
+    if type(K) is list and all([type(Ks) is np.ndarray for Ks in K]):
+        nKernels = len(K)
+        K = np.concatenate(K, axis=0) # ...concatenate them along the list 
+    elif type(K) is np.ndarray:
+        nKernels = 1
+    else:
+        raise TypeError('The input kernel(s) must be numpy array or a list of numpy arrays.')
+
+    # If multiple weights are specified as a list...
+    if type(weights) is list and all([not hasattr(w, "__len__") for w in weights]):
+        weights = np.asarray(weights)
+        weights = weights/sum(weights)
+        if len(weights)!=nSignals:
+            raise KeyError('If multiple signals are passed, the same number of weights are required.')
+        weights_ = []
+        for i in range(len(weights)):
+            weights_ = np.concatenate((weights_,weights[i]*np.ones(len(Vlist[i]))))
+        weights = weights_
+    elif not hasattr(weights, "__len__"):
+        if weights!=1:
+            raise ValueError('If multiple signals are passed, the same number of weights are required.')
+    else:
+        raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
+
+    if nSignals!=nKernels:
+        raise KeyError('The same number of kernels and signals must be specified as lists.')
+
+    return V,K,weights
 #===============================================================================
+
+
 def gsvd(A,B):
+#===============================================================================
     m,p = A.shape
     n = B.shape[0]
 
@@ -48,11 +91,10 @@ def gsvd(A,B):
 
     return U
 #===============================================================================
-#===============================================================================
 
-#===============================================================================
-#===============================================================================
+
 def csd(Q1,Q2):
+#===============================================================================
     """
     Cosine-Sine Decomposition
 
@@ -175,8 +217,10 @@ def csd(Q1,Q2):
     S = S.real
 
     return U,V,Z,C,S
+#===============================================================================
 
 def diagf(X):
+#===============================================================================
     """
     Diagonal force
 
@@ -184,8 +228,11 @@ def diagf(X):
     """
     X = np.triu(np.tril(X))
     return X
+#===============================================================================
+
 
 def diagp(Y,X,k):
+#===============================================================================
     """
     DIAGP  Diagonal positive.
     Y,X = diagp(Y,X,k) scales the columns of Y and the rows of X by
@@ -198,5 +245,4 @@ def diagp(Y,X,k):
     X[j,:] = D@X[j,:]
     X = X+0 # use "+0" to set possible -0 elements to 0
     return Y,X
-#===============================================================================
 #===============================================================================

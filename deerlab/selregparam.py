@@ -1,121 +1,195 @@
 import numpy as np 
 import scipy.optimize as opt
 import math as m
-from numpy.linalg import norm
 import deerlab as dl
 
-def selregparam(V,K,r,RegType='tikhonov',SelectionMethod='aic'):
+def selregparam(V, K, r, RegType='tikhonov', SelectionMethod='aic', algorithm='brent',nonNegConstrained=True, noiselvl = -1, regOrder=2, weights=1, full_output=False):
+#=========================================================           
+    # Ensure the use of numpy-arrays
+    r = np.atleast_1d(r)
 
-    LcurveMethods = SelectionMethod in ['lr','lc']
-    RegOrder = 2
-    TolFun = 1e-9
-    NoiseLevel = 0
-    NonNegConstrained = True
+    # If multiple datasets are passed, concatenate the signals and kernels
+    V, K, weights = dl.utils.parse_multidatasets(V, K, weights)
 
-    if LcurveMethods:
-        SearchMethod = 'grid'
-    else:
-        SearchMethod = 'fminbnd'
+    # The L-curve criteria require a grid-evaluation
+    if SelectionMethod == 'lr' or SelectionMethod == 'lc':
+        algorithm = 'grid'
 
-
-    #  Preparations
-    #-------------------------------------------------------------------------------
     # Get regularization operator
-    L = dl.regoperator(r,RegOrder)
+    L = dl.regoperator(r,regOrder)
     # Get range of potential alpha values candidates
-    alphaRange = np.logspace(-4,4,60)
+    alphaCandidates = dl.regparamrange(K,L)
 
-#--------------------------------------------------------------------------
-    def evalalpha(alpha,SelectionMethod):
-                
-        #-----------------------------------------------------------------------
-        #  Pseudo-Inverses and Ps
-        #-----------------------------------------------------------------------
-        
-        KtKreg, KtV = dl.lsqcomponents(V,K,L,alpha)
-        if NonNegConstrained:
-            P = dl.cvxnnls(KtKreg,KtV)
-        else:
-            P = np.linalg.solve(KtKreg,KtV)
-
-        PseudoInverse = np.linalg.inv(KtKreg)@K.T
-        
-        Residual = norm(K@P - V)
-        InfluenceMatrix = K@PseudoInverse
-        
-        #-----------------------------------------------------------------------
-        #  Selection methods for optimal regularization parameter
-        #-----------------------------------------------------------------------
-        
-        # If multiple selection methods are requested then process them sequentially
-        Functional = 0
-        nr = len(V)
-        if  SelectionMethod =='cv': # Cross validation (CV)
-            InfluenceDiagonal = np.diag(InfluenceMatrix)
-            f_ = sum(abs(V - K*(P)/(np.ones(nr,1) - InfluenceDiagonal))**2)
-                
-        elif  SelectionMethod =='gcv': # Generalized Cross Validation (GCV)
-            f_ = Residual**2/((1 - np.trace(InfluenceMatrix)/nr)**2)
-                
-        elif  SelectionMethod =='rgcv': # Robust Generalized Cross Validation (rGCV)
-            TuningParameter = 0.9
-            f_ = Residual**2/((1 - np.trace(InfluenceMatrix)/nr)**2)*(TuningParameter + (1 - TuningParameter)*np.trace(InfluenceMatrix**2)/nr)
-                
-        elif  SelectionMethod =='srgcv': # Strong Robust Generalized Cross Validation (srGCV)
-            TuningParameter = 0.8
-            f_ = Residual**2/((1 - np.trace(InfluenceMatrix)/nr)**2)*(TuningParameter + (1 - TuningParameter)*np.trace(PseudoInverse.T*PseudoInverse)/nr)
-                
-        elif  SelectionMethod =='aic': # Akaike information criterion (AIC)
-            Criterion = 2
-            f_ = nr*np.log(Residual**2/nr) + Criterion*np.trace(InfluenceMatrix)
-                
-        elif  SelectionMethod =='bic':  # Bayesian information criterion (BIC)
-            Criterion = np.log(nr)
-            f_ = nr*np.log(Residual**2/nr) + Criterion*np.trace(InfluenceMatrix)
-                
-        elif  SelectionMethod =='aicc': # Corrected Akaike information criterion (AICC)
-            Criterion = 2*nr/(nr-np.trace(InfluenceMatrix)-1)
-            f_ = nr*np.log(Residual**2/nr) + Criterion*np.trace(InfluenceMatrix)
-                
-        elif  SelectionMethod =='rm': # Residual method (RM)
-            Scaling = K.T@(np.eye(np.shape(InfluenceMatrix)) - InfluenceMatrix)
-            f_ = Residual**2/np.sqrt(np.trace(Scaling.T@Scaling))
-                
-        elif  SelectionMethod =='ee': # Extrapolated Error (EE)
-            f_ = Residual**2/norm(K.T*(K@P - V))
-                
-        elif  SelectionMethod =='gml': # Generalized Maximum Likelihood (GML)
-            Treshold = 1e-9
-            EigenValues = np.linalg.eig(np.eye(np.shape(InfluenceMatrix)) - InfluenceMatrix)
-            EigenValues[EigenValues < Treshold] = 0
-            NonZeroEigenvalues = np.real(EigenValues[EigenValues!=0])
-            f_ = V.T*(V - K@P)/m.exp(sum(map(np.log,NonZeroEigenvalues)))*(1/len(NonZeroEigenvalues))
-                
-        elif  SelectionMethod =='mcl':  # Mallows' C_L (MCL)
-            f_ = Residual**2 + 2*NoiseLevel**2*np.trace(InfluenceMatrix) - 2*nr*NoiseLevel**2
-            
-        else:
-            f_ = 0
-        Functional = Functional + f_
-
-        return Functional       
-
+    # Create function handle
+    evalalpha = lambda alpha: _evalalpha(alpha, V, K, L, SelectionMethod, nonNegConstrained, noiselvl, RegType, weights)
 
     # Evaluate functional over search range, using specified search method
-    #-------------------------------------------------------------------------------
-    if SearchMethod == 'fminbnd':
+    if algorithm == 'brent':
                     
-        lga_min = m.log10(min(alphaRange))
-        lga_max = m.log10(max(alphaRange))
+        # Search boundaries
+        lga_min = m.log10(min(alphaCandidates))
+        lga_max = m.log10(max(alphaCandidates))
 
-        fun = lambda lga: evalalpha(10**lga,SelectionMethod)
-        # Optimize alpha via the fminbnd function
-        #lga_opt = opt.minimize_scalar(fun,bracket=[lga_min,lga_max],method='Golden',tol=0.1)
-        lga_opt = opt.fminbound(fun,lga_min,lga_max,xtol=0.01)
+        # Create containers for non-local variables
+        functional,residuals,penalties,alphas_evaled = (np.array(0) for _ in range(4))
+        def register_ouputs(optout):
+        #========================
+            nonlocal functional,residuals,penalties,alphas_evaled
+            # Append the evaluated outpus at a iteration
+            functional = np.append(functional,optout[0])
+            residuals = np.append(residuals,optout[1])
+            penalties = np.append(penalties,optout[2])
+            alphas_evaled = np.append(alphas_evaled,optout[3])
+            # Return the last element, current evaluation
+            return functional[-1]
+        #========================
+
+        # Optimize alpha via Brent's method (implemented in scipy.optimize.fminbound)
+        lga_opt = opt.fminbound(lambda lga: register_ouputs(evalalpha(10**lga)), lga_min, lga_max, xtol=0.01)
         alphaOpt = 10**lga_opt
 
-    return alphaOpt
+    elif algorithm=='grid':
+        
+        # Evaluate the full grid of alpha-candidates 
+        functional,residuals,penalties,alphas_evaled = tuple(zip(*[evalalpha(alpha) for alpha in alphaCandidates]))
 
-         
+        # If an L-curve method is requested evaluate it now with the full grid:
+        
+        # L-curve minimum-radius method (LR)
+        if SelectionMethod == 'lr':
+            Eta = np.log(penalties)
+            Rho = np.log(residuals)
+            dd = lambda x: (x-np.min(x))/(np.max(x)-np.min(x))
+            functional = dd(Rho)**2 + dd(Eta)**2         
+
+        # L-curve maximum-curvature method (LC)
+        elif SelectionMethod == 'lc': 
+            d1Residual = np.gradient(np.log(residuals))
+            d2Residual = np.gradient(d1Residual)
+            d1Penalty = np.gradient(np.log(penalties))
+            d2Penalty = np.gradient(d1Penalty)
+            functional = (d1Residual*d2Penalty - d2Residual*d1Penalty)/(d1Residual**2 + d1Penalty**2)**(3/2)
+
+        # Find minimum of the selection functional              
+        alphaOpt = alphaCandidates[np.argmin(functional)]
+
+    else: 
+        raise KeyError("Search method not found. Must be either 'brent' or 'grid'.")
+
+    if full_output:
+        return alphaOpt,functional,alphas_evaled,residuals,penalties
+    else:
+        return alphaOpt
+#=========================================================
 
 
+#=========================================================
+def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights):
+
+    HuberParameter = 1.35
+
+    # Prepare LSQ components
+    KtKreg, KtV = dl.lsqcomponents(V,K,L,alpha,weights, regtype=regtype, huberparam=HuberParameter)
+    # Solve linear LSQ problem
+    if nonneg:
+        # Non-negative solution
+        P = dl.cvxnnls(KtKreg,KtV)
+    else:
+        # Unconstrained solution
+        P = np.linalg.solve(KtKreg,KtV)
+
+    # Moore-PeNose pseudoinverse
+    pK = np.linalg.inv(KtKreg)@K.T
+    # Influence matrix
+    H = K@pK
+
+    # Residual term
+    Residual = np.linalg.norm(K@P - V)
+    # Regularization penalty term
+    if regtype.lower() == 'tikhonov':
+        Penalty = np.linalg.norm(L@P)
+    elif regtype.lower() == 'tv':
+        Penalty = np.sum(np.sqrt((L@P)**2 + np.finfo(float).eps))
+    elif regtype.lower() == 'huber':
+        Penalty = np.sum(np.sqrt((L@P/HuberParameter)**2 + 1 ) - 1)
+    
+    #-----------------------------------------------------------------------
+    #  Selection methods for optimal regularization parameter
+    #-----------------------------------------------------------------------
+    
+    functional = 0
+    N = len(V)
+
+    # Cross validation (CV)
+    if  selmethod =='cv': 
+        f_ = sum(abs((V - K@P)/(np.ones(N) - np.diag(H)))**2)
+            
+    # Generalized Cross Validation (GCV)
+    elif  selmethod =='gcv': 
+        f_ = Residual**2/((1 - np.trace(H)/N)**2)
+            
+    # Robust Generalized Cross Validation (rGCV)
+    elif  selmethod =='rgcv': 
+        tuning = 0.9
+        f_ = Residual**2/((1 - np.trace(H)/N)**2)*(tuning + (1 - tuning)*np.trace(H**2)/N)
+            
+    # Strong Robust Generalized Cross Validation (srGCV)
+    elif  selmethod =='srgcv':
+        tuning = 0.8
+        f_ = Residual**2/((1 - np.trace(H)/N)**2)*(tuning + (1 - tuning)*np.trace(pK.T@pK)/N)
+            
+    # Akaike information criterion (AIC)
+    elif  selmethod =='aic': 
+        crit = 2
+        f_ = N*np.log(Residual**2/N) + crit*np.trace(H)
+            
+    # Bayesian information criterion (BIC)
+    elif  selmethod =='bic':  
+        crit = np.log(N)
+        f_ = N*np.log(Residual**2/N) + crit*np.trace(H)
+            
+    # Corrected Akaike information criterion (AICC)
+    elif  selmethod =='aicc': 
+        crit = 2*N/(N-np.trace(H)-1)
+        f_ = N*np.log(Residual**2/N) + crit*np.trace(H)
+    
+    # Residual method (RM)
+    elif  selmethod =='rm':
+        scale = K.T@(np.eye(np.shape(H)[0],np.shape(H)[1]) - H)
+        f_ = Residual**2/np.sqrt(np.trace(scale.T@scale))
+
+    # Extrapolated Error (EE)          
+    elif  selmethod =='ee': 
+        f_ = Residual**2/np.linalg.norm(K.T@(K@P - V))
+
+    # Normalized Cumulative Periodogram (NCP)
+    elif selmethod == 'ncp': 
+        resPeriodogram = abs(np.fft.fft(K@P - V))**2
+        wnoisePeriodogram = np.zeros(len(resPeriodogram))
+        respowSpectrum = np.zeros(len(resPeriodogram))
+        for j in range(len(resPeriodogram)-1):
+            respowSpectrum[j]  = np.linalg.norm(resPeriodogram[1:j+1],1)/np.linalg.norm(resPeriodogram[1:-1],1)
+            wnoisePeriodogram[j] = j/(len(resPeriodogram) - 1)
+        f_ = np.linalg.norm(respowSpectrum - wnoisePeriodogram)
+
+    # Generalized Maximum Likelihood (GML)
+    elif  selmethod =='gml': 
+        Treshold = 1e-9
+        eigs,_ = np.linalg.eig(np.eye(np.shape(H)[0],np.shape(H)[1]) - H)
+        eigs[eigs < Treshold] = 0
+        nzeigs = np.real(eigs[eigs!=0])
+        f_ = V.T@(V - K@P)/np.prod(nzeigs)**(1/len(nzeigs))
+
+    # Mallows' C_L (MCL)
+    elif  selmethod =='mcl':  
+        if noiselvl==-1:
+            noiselvl = np.std(V - K@P)
+        f_ = Residual**2 + 2*noiselvl**2*np.trace(H) - 2*N*noiselvl**2
+        
+    else:
+        f_ = 0
+
+    functional = functional + f_
+
+    return functional, Residual, Penalty, alpha  
+#=========================================================           
