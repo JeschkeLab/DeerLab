@@ -2,6 +2,7 @@
 import numpy as np
 from numpy import pi, inf, NaN
 from deerlab.bg_models import *
+from deerlab.dd_models import dd_gauss
 from deerlab.dipolarkernel import dipolarkernel,calckernelmatrix
 from deerlab.dipolarbackground import dipolarbackground
 ge = 2.00231930436256 # free-electron g factor
@@ -148,10 +149,9 @@ def test_lambda():
 
     t = np.linspace(0,4,150) # us
     r = np.linspace(1,5,150) # nm
-    dr = r[1]-r[0]
     lam = 0.4
-    Kref = ((1-lam) + lam*dipolarkernel(t,r)/dr)*dr
-    K = dipolarkernel(t,r,lam)
+    Kref = ((1-lam) + lam*dipolarkernel(t,r, integralop=False))
+    K = dipolarkernel(t,r,lam, integralop=False)
 
     assert np.all(abs(K-Kref) < 1e-14)
 #=======================================================================
@@ -162,11 +162,10 @@ def test_background():
     t = np.linspace(0,3,80)
     r = np.linspace(2,6,100)
     B = bg_exp(t,0.5)
-    dr = np.mean(np.diff(r))
-    
+
     lam = 0.25
-    KBref = (1 - lam + lam*dipolarkernel(t,r)/dr)*B[:,np.newaxis]*dr
-    KB = dipolarkernel(t,r,lam,B)
+    KBref = (1 - lam + lam*dipolarkernel(t,r, integralop=False))*B[:,np.newaxis]
+    KB = dipolarkernel(t,r,lam,B, integralop=False)
     
     assert np.all(abs(KB - KBref) < 1e-5)
 #=======================================================================
@@ -185,18 +184,17 @@ def test_multipath():
     lam = np.array([1-prob, prob**2, prob*(1-prob)])
     T0 = [np.NaN, 0, tau2-t2]
 
-    K = dipolarkernel(t,r,np.array([lam, T0]).T)
+    K = dipolarkernel(t,r,np.array([lam, T0]).T, integralop=False)
 
     unmodulated = np.isnan(T0)
     Kref = sum(lam[unmodulated])
     Krenorm = Kref
-    dr = np.mean(np.diff(r))
     for p in range(len(lam)):
         if not unmodulated[p]:
             Kref = Kref + lam[p]*calckernelmatrix(t-T0[p],r,'fresnel',[],[],[ge,ge])
             Krenorm = Krenorm + lam[p]*calckernelmatrix(-T0[p],r,'fresnel',[],[],[ge,ge])
     Kref = Kref/Krenorm
-    Kref = Kref*dr
+    Kref = Kref
 
     assert np.all(abs(K-Kref) < 1e-3)
 #=======================================================================
@@ -221,13 +219,12 @@ def test_multipath_background():
     unmodulated = np.isnan(T0)
     Kref = sum(lam[unmodulated])
     Krenorm = Kref
-    dr = np.mean(np.diff(r))
     for p in range(len(lam)):
         if not unmodulated[p]:
             Kref = Kref + lam[p]*calckernelmatrix(t-T0[p],r,'fresnel',[],[],[ge,ge])
             Krenorm = Krenorm + lam[p]*calckernelmatrix(-T0[p],r,'fresnel',[],[],[ge,ge])
     Kref = Kref/Krenorm
-    Kref = Kref*dr
+    Kref = Kref
     
     Bref = 1
     Bnorm = 1
@@ -239,7 +236,7 @@ def test_multipath_background():
     KBref = Kref*Bref[:,np.newaxis]
 
     # Output
-    KB = dipolarkernel(t,r,np.array([lam, T0]).T,Bmodel)
+    KB = dipolarkernel(t,r,np.array([lam, T0]).T,Bmodel, integralop=False)
 
     assert np.all(abs(KB - KBref) < 1e-3)
 #=======================================================================
@@ -260,18 +257,17 @@ def test_multipath_harmonics():
     T0 = [np.NaN, 0, tau2-t2]
     n = [2, 2, 3]
 
-    K = dipolarkernel(t,r,np.array([lam, T0, n]).T)
+    K = dipolarkernel(t,r,np.array([lam, T0, n]).T, integralop=False)
 
     unmodulated = np.isnan(T0)
     Kref = sum(lam[unmodulated])
     Krenorm = Kref
-    dr = np.mean(np.diff(r))
     for p in range(len(lam)):
         if not unmodulated[p]:
             Kref = Kref + lam[p]*calckernelmatrix(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge])
             Krenorm = Krenorm + lam[p]*calckernelmatrix(-n[p]*T0[p],r,'fresnel',[],[],[ge,ge])
     Kref = Kref/Krenorm
-    Kref = Kref*dr
+    Kref = Kref
 
     assert np.max(K-Kref) < 1e-3
 #=======================================================================
@@ -391,8 +387,25 @@ def test_integralop():
 
     t = np.linspace(0,5,101)
     r = np.linspace(2,5,101)
-    Kref = dipolarkernel(t,r, integralop=True)/np.mean(np.diff(r))
+    dr = np.ones(len(r))*np.mean(np.diff(r))
+    dr[0] = dr[0]/2
+    dr[-1] = dr[-1]/2
+    Kref = dipolarkernel(t,r, integralop=True)/dr
     K = dipolarkernel(t,r, integralop=False)
 
-    assert np.max(K - Kref) < 1e-15
+    assert np.max(K - Kref) < 1e-14
+#=======================================================================
+
+
+def test_nonuniform_r():
+#=======================================================================
+    "Check that normalization is correct when using a non-uniform distance axis"
+    
+
+    t = 0
+    r = np.sqrt(np.linspace(1,7**2,200))
+    P = dd_gauss(r,[3,0.5])
+    K = dipolarkernel(t,r)
+    V0 = K@P
+    assert V0 == 1
 #=======================================================================

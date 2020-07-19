@@ -160,7 +160,13 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
 
     # Include delta-r factor for integration
     if integralop and len(r)>1:
-        dr = np.mean(np.diff(r))
+            
+        # Vectorized matrix form of trapezoidal integration method
+        dr = np.zeros(len(r))
+        dr[0] = r[1] - r[0]
+        dr[-1] = r[-1] - r[-2]
+        dr[1:-1] = r[2:] - r[0:-2]
+        dr = dr/2
         K = K*dr
     
     return K
