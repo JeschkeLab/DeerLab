@@ -95,18 +95,19 @@ def test_complex():
 #============================================================
     "Check estimation of noiselevel using a complex signal"
 
-    np.random.seed(1)
     t = np.linspace(0,3,200)
     r = np.linspace(2,6,100)
     P = dd_gauss(r,[4, 0.4])
-    K = dipolarkernel(t,r)
     lam = 0.25
     B = bg_exp(t,1.5,lam)
 
+    np.random.seed(1)
     noise = whitegaussnoise(t,0.03)
-    V = dipolarkernel(t,r,lam,B)@P + noise
+    np.random.seed(2)
+    noisec = 1j*whitegaussnoise(t,0.03)
+    V = dipolarkernel(t,r,lam,B)@P
     Vco = V*np.exp(-1j*np.pi/5)
-
+    Vco = Vco + noise + noisec
     truelevel = np.std(noise)
     approxlevel = noiselevel(Vco)
 

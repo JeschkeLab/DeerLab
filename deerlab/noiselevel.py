@@ -5,6 +5,7 @@
 
 from numpy import isreal, std, mean, shape, atleast_1d
 from deerlab.utils import movmean
+from deerlab import correctphase
 from scipy.signal import savgol_filter
 import warnings
 
@@ -124,8 +125,7 @@ def noiselevel(V,*args):
             
     elif estimationMethod is 'complex':
             # Optimize the phase of the signal
-            #_,Vim = correctphase(V)
-            Vim = 0
+            _,Vim,_,_ = correctphase(V,full_output=True)
             # And estimate the noiselevel from the imaginary part
             sigma = std(Vim)
             
