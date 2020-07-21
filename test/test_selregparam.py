@@ -347,3 +347,47 @@ def test_manual_candidates():
 
     assert abs(alpha_manual-alpha_auto)<1e-7
 #=======================================================================
+
+def get_alpha_from_regtype(regtype):
+
+    np.random.seed(1)
+    t = np.linspace(0,5,500)
+    r = np.linspace(2,5,80)
+    P = dd_gauss(r,[3,0.4])
+    K = dipolarkernel(t,r)
+    V = K@P + whitegaussnoise(t,0.01)
+
+    alpha = selregparam(V,K,r,regtype,'aic')
+    return np.log10(alpha)
+
+def test_tikh_value():
+#=======================================================================
+    "Check that the value returned by Tikhonov regularization"
+    
+    loga = get_alpha_from_regtype('tikhonov')
+    logaref = -3.51  # Computed with DeerLab-Matlab (0.9.2)
+
+    assert abs(1-loga/logaref) < 0.02 # less than 2% error
+#=======================================================================
+
+
+def test_tv_value():
+#=======================================================================
+    "Check that the value returned by TV regularization"
+    
+    loga = get_alpha_from_regtype('tv')
+    logaref = -4.6384  # Computed with DeerLab-Matlab (0.9.2)
+
+    assert abs(1-loga/logaref) < 0.02 # less than 2% error
+#=======================================================================
+
+
+def test_huber_value():
+#=======================================================================
+    "Check that the value returned by Huber regularization"
+    
+    loga = get_alpha_from_regtype('huber')
+    logaref = -3.27  # Computed with DeerLab-Matlab (0.9.2)
+
+    assert abs(1-loga/logaref) < 0.02 # less than 2% error
+#=======================================================================

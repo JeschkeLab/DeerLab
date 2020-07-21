@@ -1,3 +1,8 @@
+# selregparam.py - Regularization parameter selection
+# -----------------------------------------------------
+# This file is a part of DeerLab. License is MIT (see LICENSE.md).
+# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+
 import numpy as np 
 import scipy.optimize as opt
 import math as m
@@ -86,7 +91,7 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
     r = np.atleast_1d(r)
 
     # If multiple datasets are passed, concatenate the signals and kernels
-    V, K, weights = dl.utils.parse_multidatasets(V, K, weights)
+    V, K, weights,_ = dl.utils.parse_multidatasets(V, K, weights)
 
     # The L-curve criteria require a grid-evaluation
     if method == 'lr' or method == 'lc':

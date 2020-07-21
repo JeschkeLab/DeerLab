@@ -24,7 +24,7 @@ def calculate_exvolume_redfactor():
         return y
 
     def h(d):
-        t = np.atleast_1d(d)
+        d = np.atleast_1d(d)
         y = np.zeros(np.shape(d))
         for k in range(len(d)):
             y[k],_ = scp.integrate.quad(lambda x:(1-x**2)*Si((1-x**2)*d[k]),0,np.sqrt(3))

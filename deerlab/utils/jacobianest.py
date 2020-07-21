@@ -152,7 +152,7 @@ def jacobianest(fun,x0):
             
             # trim off 3 estimates at each end of the scale
             nest = len(der_romb)
-            trim = [range(3), nest+(np.arange(-2,1))]
+            trim = np.concatenate((np.arange(3), nest+(np.arange(-3,0))))
             der_romb = np.sort(der_romb)
             tags = np.argsort(der_romb)
             der_romb = np.delete(der_romb,trim)

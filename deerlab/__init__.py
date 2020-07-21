@@ -10,7 +10,7 @@ from .dipolarbackground import dipolarbackground
 from .fitregmodel import fitregmodel
 from .regoperator import regoperator
 from .uqst import uqst
+from .noiselevel import noiselevel
 from .whitegaussnoise import whitegaussnoise
 from .lsqcomponents import lsqcomponents
-from .jacobianest import jacobianest
 

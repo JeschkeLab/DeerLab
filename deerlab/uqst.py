@@ -2,7 +2,7 @@
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 import numpy as np
-from deerlab import jacobianest
+from deerlab.utils import jacobianest
 from scipy.stats import norm
 from scipy.signal import fftconvolve
 
@@ -39,10 +39,10 @@ class uqst:
             covmat = covmat_
             lb = lb_
             ub = ub_
-            if not any(lb):
+            if len(lb)==0:
                 lb = np.full(nParam, -np.inf)
             
-            if not any(ub):
+            if len(ub)==0:
                 ub = np.full(nParam, np.inf)
             
         elif uqtype == 'bootstrap':
@@ -128,7 +128,7 @@ class uqst:
             # Compute corresponding CDF
             cdf = np.cumsum(pdf)
             # Eliminate duplicates
-            cdf, index = np.unique(cdf,return_index=True)
+            cdf, index = np.lib.arraysetops.unique(cdf,return_index=True)
             # Interpolate requested percentile
             x[n] = np.interp(p/100,cdf,values[index])
 
@@ -171,10 +171,10 @@ class uqst:
         modelfit = model(parfit)
         
         # Validate input boundaries
-        if not any(lbm):
+        if len(lbm)==0:
             lbm = np.full(len(modelfit), -np.inf)
 
-        if not any(ubm):
+        if len(ubm)==0:
             ubm = np.full(len(modelfit), np.inf)
         
         if len(modelfit)!=len(lbm) or len(modelfit)!=len(ubm):

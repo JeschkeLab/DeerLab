@@ -22,6 +22,7 @@ def parse_multidatasets(V,K,weights):
         V = np.concatenate(V, axis=0) # ...concatenate them along the list 
     elif type(V) is np.ndarray:
         nSignals = 1
+        Vlist = [V]
     else:
         raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
 
@@ -50,10 +51,20 @@ def parse_multidatasets(V,K,weights):
     else:
         raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
 
+    # Get the indices to extract the subsets again
+    Ns = [len(V) for V in Vlist]
+    subset = [None]*nSignals
+    for i in  range(nSignals):
+        if i==0:
+            prev = 0
+        else:
+            prev = subset[i-1][-1]+1
+        subset[i] = np.arange(prev,prev+Ns[i])
+
     if nSignals!=nKernels:
         raise KeyError('The same number of kernels and signals must be specified as lists.')
 
-    return V,K,weights
+    return V,K,weights,subset
 #===============================================================================
 
 
@@ -367,4 +378,64 @@ def diagp(Y,X,k):
     X[j,:] = D@X[j,:]
     X = X+0 # use "+0" to set possible -0 elements to 0
     return Y,X
+#===============================================================================
+
+#===============================================================================
+def movmean(x, N):
+    """
+    Moving mean
+    ===========
+
+    Returns an array of local N-point mean values, where each mean is calculated over a sliding window of length k across neighboring elements of x.
+
+    Usage:
+    ------
+        xfilt = movmean(x,N)
+
+    Arguments:
+    ----------
+    x (array)
+        Array to be filtered
+    N (scalar)
+        Window size
+    
+    Returns:
+    --------
+    xfilt (array)
+        Filtered array
+    
+    """
+    xfilt = np.convolve(x, np.ones(N)/N, mode='same')
+    return xfilt
+#===============================================================================
+
+#===============================================================================
+def ovl(A,B):
+    """
+    Overlap metric
+    ==============
+
+    Returns the overlap between two vectors A and B.
+
+    Usage:
+    ------
+        metric = ovl(A,B)
+
+    Arguments:
+    ----------
+    A (N-element array)
+        First vector
+    B (N-element array)
+        Second vector
+    
+    Returns:
+    --------
+    metric (array)
+        Overlap metric
+
+    """
+    A /= np.sum(A)
+    B /= np.sum(B)
+    metric = np.sum(np.minimum(A,B))
+    return metric
 #===============================================================================
