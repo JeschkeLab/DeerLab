@@ -11,6 +11,7 @@ from .fitregmodel import fitregmodel
 from .regoperator import regoperator
 from .uqst import uqst
 from .correctphase import correctphase
+from .correctzerotime import correctzerotime
 from .noiselevel import noiselevel
 from .whitegaussnoise import whitegaussnoise
 from .lsqcomponents import lsqcomponents
