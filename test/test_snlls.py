@@ -44,7 +44,7 @@ def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
         ubl = []    
 
     # Separable LSQ fit
-    nonlinfit,linfit,_,_ = snlls(V,lambda p: Kmodel(p,t,r),nlpar0,lb,ub,lbl,ubl, penalty=False)
+    nonlinfit,linfit,_,_ = snlls(V,lambda p: Kmodel(p,t,r),nlpar0,lb,ub,lbl,ubl, penalty=False, uqanalysis=False)
     parout = [nonlinfit[0], nonlinfit[1], linfit[0], nonlinfit[2], nonlinfit[3], linfit[1]] 
     parout = np.asarray(parout)
     parin = np.asarray(parin)
@@ -101,7 +101,7 @@ def test_regularized():
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    _,Pfit,_,_ = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl)
+    _,Pfit,_,_ = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uqanalysis=False)
 
     assert  np.max(abs(P - Pfit)) < 1e-2
 #=======================================================================
@@ -223,7 +223,7 @@ def test_regularized_global():
     ubl = []
 
     # Separable LSQ fit
-    _,Pfit,_,_ = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl)
+    _,Pfit,_,_ = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl, uqanalysis=False)
 
     assert  np.max(abs(P - Pfit)) < 5e-2
 #=======================================================================
@@ -249,7 +249,7 @@ def assert_solver(solver):
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    _,Pfit,_,_ = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,nnlsSolver=solver)
+    _,Pfit,_,_ = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,nnlsSolver=solver, uqanalysis=False)
 
     assert  np.max(abs(P - Pfit)) < 1e-2
 
@@ -296,7 +296,7 @@ def test_goodnes_of_fit():
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    _,_,_,stats = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl)
+    _,_,_,stats = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uqanalysis=False)
 
     assert abs(stats['chi2red'] - 1) < 5e-2 and abs(stats['R2'] - 1) < 5e-2
 #============================================================
@@ -320,7 +320,7 @@ def assert_reg_type(regtype):
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    _,Pfit,_,_ = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,regtype = regtype)
+    _,Pfit,_,_ = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,regtype = regtype, uqanalysis=False)
 
     assert  np.max(abs(P - Pfit)) < 2e-2
 

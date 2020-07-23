@@ -7,12 +7,13 @@ import copy
 
 # Import DeerLab depencies
 import deerlab as dl
-from deerlab.utils import jacobianest, goodness_of_fit, lsqnonlin, hccm
+from deerlab.utils import jacobianest, goodness_of_fit, hccm
 from deerlab.nnls import cvxnnls, fnnls, nnlsbpp
 
 def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None, weights=1,
           regtype='tikhonov', regparam='aic', multiStarts = 1, regOrder=2, alphaOptThreshold=1e-3,
-          nonLinTolFun=1e-9, nonLinMaxIter=1e8, linTolFun=1e-15, linMaxIter=1e4, huberparam = 1.35):
+          nonLinTolFun=1e-9, nonLinMaxIter=1e8, linTolFun=1e-15, linMaxIter=1e4, huberparam = 1.35,
+          uqanalysis = True):
     """
     Separable Non-linear Least Squares Solver
     =========================================
@@ -98,6 +99,8 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
         Linear solver maximal number of iterations
     linTolFun (scalar)      
         Linear solver function tolerance
+    uqanalysis (boolean)
+        Enable/disable the uncertainty quantification analysis
     """
     # Ensure that all arrays are numpy.nparray
     par0,lb,ub,lbl,ubl = [np.atleast_1d(var) for var in (par0,lb,ub,lbl,ubl)]
@@ -172,17 +175,17 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
 
     elif linearConstrained and not nonNegativeOnly:
         # Constrained linear LSQ
-        linSolver = lambda AtA,Aty: lsq_linear(AtA, Aty, bounds=(lbl,ubl), tol=linTolFun, max_iter=int(linMaxIter))
+        linSolver = lambda AtA,Aty: lsq_linear(AtA, Aty, bounds=(lbl,ubl))
         parseResult = lambda result: result.x
 
     elif linearConstrained and nonNegativeOnly:
         # Non-negative linear LSQ
         if nnlsSolver is 'fnnls':
-            linSolver = lambda AtA,Aty: fnnls(AtA, Aty, tol=linTolFun, maxiter=int(linMaxIter))
+            linSolver = lambda AtA,Aty: fnnls(AtA, Aty)
         elif nnlsSolver is 'nnlsbpp':
             linSolver = lambda AtA,Aty: nnlsbpp(AtA, Aty,np.linalg.solve(AtA,Aty))
         elif nnlsSolver is 'cvx':
-            linSolver = lambda AtA,Aty: cvxnnls(AtA, Aty, tol=linTolFun, maxiter=int(linMaxIter))
+            linSolver = lambda AtA,Aty: cvxnnls(AtA, Aty)
         parseResult = lambda result: result
     # ----------------------------------------------------------
     
@@ -232,6 +235,7 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
         # Solve the linear least-squares problem
         result = linSolver(AtA,Aty)
         linfit = parseResult(result)
+        linfit = np.atleast_1d(linfit)
         # Evaluate full model residual
         yfit = A@linfit
         # Compute residual vector
@@ -270,47 +274,49 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
 
     # Uncertainty analysis
     #--------------------------------------------------------
-    # Compue the residual vector
-    res = weights*(yfit - y)
+    if uqanalysis:
+        # Compue the residual vector
+        res = weights*(yfit - y)
 
-    # Compute the Jacobian for the linear and non-linear parameters
-    fcn = lambda p: Amodel(p)@linfit
-    Jnonlin,_ = jacobianest(fcn,nonlinfit)
-    Jlin = Afit
-    J = np.concatenate((Jnonlin, Jlin),1)
+        # Compute the Jacobian for the linear and non-linear parameters
+        fcn = lambda p: Amodel(p)@linfit
+        Jnonlin,_ = jacobianest(fcn,nonlinfit)
+        Jlin = Afit
+        J = np.concatenate((Jnonlin, Jlin),1)
 
-    # Augment the residual and Jacobian with the regularization penalty on the linear parameters
-    res,J = _augment(res,J,regtype,regparam_prev,L,linfit,huberparam,Nnonlin)
+        # Augment the residual and Jacobian with the regularization penalty on the linear parameters
+        res,J = _augment(res,J,regtype,regparam_prev,L,linfit,huberparam,Nnonlin)
 
-    # Calculate the heteroscedasticity consistent covariance matrix 
-    covmatrix = hccm(J,res,'HC1')
-    
-    # Get combined parameter sets and boundaries
-    parfit = np.concatenate((nonlinfit, linfit))
-    lbs = np.concatenate((lb, lbl))
-    ubs = np.concatenate((ub, ubl))
+        # Calculate the heteroscedasticity consistent covariance matrix 
+        covmatrix = hccm(J,res,'HC1')
+        
+        # Get combined parameter sets and boundaries
+        parfit = np.concatenate((nonlinfit, linfit))
+        lbs = np.concatenate((lb, lbl))
+        ubs = np.concatenate((ub, ubl))
 
-    # Construct the uncertainty quantification object
-    paramuq_ = dl.uqst('covariance',parfit,covmatrix,lbs,ubs)
-    paramuq = copy.deepcopy(paramuq_)
+        # Construct the uncertainty quantification object
+        paramuq_ = dl.uqst('covariance',parfit,covmatrix,lbs,ubs)
+        paramuq = copy.deepcopy(paramuq_)
 
-    def ci(coverage,type='full'):
-    #===========================================================================
-        "Wrapper around the CI function handle of the uncertainty structure"
-        # Get requested confidence interval of joined parameter set
-        paramci = paramuq_.ci(coverage)
-        if type == 'nonlin':
-                # Return only confidence intervals on non-linear parameters
-                paramci = paramci[range(Nnonlin),:]
-        elif type == 'lin':
-                # Return only confidence intervals on linear parameters
-                paramci = paramci[Nnonlin:,:]
-        return paramci
-    #===========================================================================
+        def ci(coverage,type='full'):
+        #===========================================================================
+            "Wrapper around the CI function handle of the uncertainty structure"
+            # Get requested confidence interval of joined parameter set
+            paramci = paramuq_.ci(coverage)
+            if type == 'nonlin':
+                    # Return only confidence intervals on non-linear parameters
+                    paramci = paramci[range(Nnonlin),:]
+            elif type == 'lin':
+                    # Return only confidence intervals on linear parameters
+                    paramci = paramci[Nnonlin:,:]
+            return paramci
+        #===========================================================================
 
-    # Add the function to the confidence interval function call
-    paramuq.ci = ci
-
+        # Add the function to the confidence interval function call
+        paramuq.ci = ci
+    else:
+        paramuq = []
     # Goodness-of-fit
     # --------------------------------------
     stats = []
