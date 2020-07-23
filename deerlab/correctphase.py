@@ -8,27 +8,35 @@ def correctphase(V, Phase = [], fitImagOffset=False, full_output=False):
     """
     Phase correction of complex-valued data
     =======================================
+    Performs a phase optimization on the complex-valued data ``V`` by minimization of the
+    imaginary component of the data. The phase can be corrected manually by specifying 
+    a phase ``phase``, in radians.
 
-    Usage: 
-    ------
-        correctphase(V, phase = [], fitImagOffset=False, full_output=False)
+    Two-dimensional datasets ``V2D``, e.g. from multiple scans measurements, can be provided, 
+    and the phase correction will be done on each trace individually. The first dimension ``V2D[:,i]``
+    must contain the single traces. An array of phases ``phases`` can be specified to manually correct the traces.
 
+    Arguments:
+    ----------
+    V (Nxk-element array)
+        Complex-valued dataset containing k signals
+    Phase (scalar)
+        Phase shift for manual correction in radians
+    fitImagOffset (boolean)
+        Enables/Disables the fitting and correction of an imaginary offset. 
+    full_output (boolean, optional)
+        If enabled (True) the function will return additional output arguments in a tuple.
 
-    Performs a phase optimization on the complex-valued data (V) by
-    minimization of the imaginary component of the data. The phase can be corrected 
-    manually by specifying a phase (phase), in radians. A third boolean argument
-    can be passed to enable/disable the fitting of a possible offset on the
-    imaginary component of the data. Defaults to false.
-    The function returns the real (Vr) and imaginary (Vi) parts the phase corrected
-    data, the optimized phase (ph) and imaginary offset (io) employed for the correction.
-
-    ___ = CORRECTPHASE(V2D)
-    ___ = CORRECTPHASE(V2D,phases)
-    ___ = CORRECTPHASE(V2D,phases,true/false)
-    Two-dimensional datasets (V2D), e.g. from multiple scans measurements,
-    can be provided, and the phase correction will be done on each trace individually.
-    The first dimension V2D(:,i) must contain the single traces. An array of phases 
-    (phases) can be specified to manually correct the traces.
+    Returns:
+    --------
+    Vr (Nxk-element array)
+        Real part of the phase corrected dataset.
+    Vi (Nxk-element array, if full_output==True)
+        Imaginary part of the phase corrected dataset.
+    Phase (scalar, if full_output==True)
+        Fitted phase used for correction, in radians.    
+    ImOffset (scalar, if full_output==True)
+        Fitted imaginary offset used for correction.
     """
 
     if V.ndim == 1:

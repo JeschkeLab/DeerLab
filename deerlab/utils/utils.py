@@ -26,14 +26,26 @@ def parse_multidatasets(V,K,weights):
     else:
         raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
 
-    # If multiple kernels are specified as a list...
-    if type(K) is list and all([type(Ks) is np.ndarray for Ks in K]):
-        nKernels = len(K)
-        K = np.concatenate(K, axis=0) # ...concatenate them along the list 
-    elif type(K) is np.ndarray:
-        nKernels = 1
+    def prepareKernel(K,nSignals):
+        # If multiple kernels are specified as a list...
+        if type(K) is tuple:
+            K = [Ks for Ks in K]
+        if type(K) is list and all([type(Ks) is np.ndarray for Ks in K]):
+            nKernels = len(K)
+            K = np.concatenate(K, axis=0) # ...concatenate them along the list 
+        elif type(K) is np.ndarray:
+            nKernels = 1
+        else:
+            raise TypeError('The input kernel(s) must be numpy array or a list of numpy arrays.')
+        # Check that the same number of signals and kernel have been passed
+        if nSignals!=nKernels:
+            raise KeyError('The same number of kernels and signals must be specified as lists.')
+        return K
+
+    if callable(K):
+        Kmulti = lambda p: prepareKernel(K(p),nSignals)
     else:
-        raise TypeError('The input kernel(s) must be numpy array or a list of numpy arrays.')
+        Kmulti = prepareKernel(K,nSignals)
 
     # If multiple weights are specified as a list...
     if type(weights) is list and all([not hasattr(w, "__len__") for w in weights]):
@@ -61,10 +73,7 @@ def parse_multidatasets(V,K,weights):
             prev = subset[i-1][-1]+1
         subset[i] = np.arange(prev,prev+Ns[i])
 
-    if nSignals!=nKernels:
-        raise KeyError('The same number of kernels and signals must be specified as lists.')
-
-    return V,K,weights,subset
+    return V,Kmulti,weights,subset
 #===============================================================================
 
 
@@ -446,4 +455,22 @@ def isempty(A):
     A = np.atleast_1d(A)
     boolean = np.size(A)==0
     return boolean
+#===============================================================================
+
+
+def multistarts(n,x0,lb,ub):
+#===============================================================================
+
+    if n<0:
+        raise ValueError('The number of requested starting points must be n>0.') 
+
+    if len(x0) != len(lb) or len(x0) != len(ub):
+        raise ValueError('The lower/upper bound size(s) are not compatible with the initial guess vector x0.') 
+
+    # Generate n-1 new starting points within the bounds
+    if n>1:
+        x0 = np.concatenate(([x0], np.random.uniform(low = lb, high = ub, size=(n-1,len(x0)))), 0)
+    else:
+        x0 = [x0]
+    return x0
 #===============================================================================

@@ -8,6 +8,7 @@ import cvxopt as cvx
 import math as m
 
 def fnnls(AtA,Atb,tol=-1,maxiter=-1,verbose=False):
+#=====================================================================================
     """
     FNNLS   Fast non-negative least-squares algorithm.
     x = fnnls(AtA,Atb) solves the problem min ||b - Ax|| if
@@ -36,7 +37,7 @@ def fnnls(AtA,Atb,tol=-1,maxiter=-1,verbose=False):
 
     # Calculate tolerance and maxiter if not given.
     if tol==-1:
-        eps = 2**-52
+        eps = np.finfo(float).eps
         tol = 10*eps*np.linalg.norm(AtA,1)*max(np.shape(AtA))
     if maxiter==-1:
         maxiter = 5*N
@@ -110,21 +111,25 @@ def fnnls(AtA,Atb,tol=-1,maxiter=-1,verbose=False):
     
     return x
 
+#=====================================================================================
+
+
+
 
 def cvxnnls(AtA, Atb, tol=-1, maxiter=-1):
+#=====================================================================================
     """
     NNLS problem solved via CVXOPT
     """
 
     N = np.shape(AtA)[1]
     if tol==-1:
-        eps = 2**-52
+        eps = np.finfo(float).eps
         tol = 10*eps*np.linalg.norm(AtA,1)*max(np.shape(AtA))
     if maxiter==-1:
         maxiter = 5*N
 
-    P = np.linalg.inv(AtA) @ Atb
-    P = P.clip(min=0)
+    x0 = np.zeros(N)
 
     cAtA = cvx.matrix(AtA)
     cAtb = -cvx.matrix(Atb)
@@ -135,13 +140,17 @@ def cvxnnls(AtA, Atb, tol=-1, maxiter=-1):
     # Set optimization stop criteria
     cvx.solvers.options['show_progress'] = False
     cvx.solvers.options['max_iters'] = maxiter
+    cvx.solvers.options['abstol'] = tol
     cvx.solvers.options['reltol'] = tol
 
-    P = cvx.solvers.qp(cAtA, cAtb, I, lb, initvals=cvx.matrix(P))['x']
+    P = cvx.solvers.qp(cAtA, cAtb, I, lb, initvals=cvx.matrix(x0))['x']
     P = np.squeeze(np.asarray(P))
     return P
+#=====================================================================================
+
 
 def nnlsbpp(AtA,AtB,x0):
+#=====================================================================================
     """
     Non-Negative Least Squares using Block Principal Pivoting
     ==========================================================
@@ -232,7 +241,7 @@ def nnlsbpp(AtA,AtB,x0):
                 Fset[xFnegative] = False
                 Fset[yGnegative] = True
             else:
-                idx_ = np.where(xFnegative | yGnegative,1)[-1]
+                idx_ = np.where(xFnegative | yGnegative)[-1]
                 Fset[idx_] = ~Fset[idx_]
         
         # Solve linear system over F set
@@ -246,3 +255,4 @@ def nnlsbpp(AtA,AtB,x0):
         nInfeasible = sum(xFnegative | yGnegative)
 
     return x
+#=====================================================================================

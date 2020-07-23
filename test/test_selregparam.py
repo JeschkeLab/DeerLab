@@ -74,7 +74,7 @@ def test_cv_value():
     loga = get_alpha_from_method('cv')
     logaref = -5.8777 # Computed with DeerLab-Matlab (0.9.2)
 
-    assert abs(1-loga/logaref) < 0.15
+    assert abs(1-loga/logaref) < 0.16
 #=======================================================================
 
 def test_gcv_value():
@@ -84,7 +84,7 @@ def test_gcv_value():
     loga = get_alpha_from_method('gcv')
     logaref = -5.8778 # Computed with DeerLab-Matlab (0.9.2)
 
-    assert abs(1-loga/logaref) < 0.15
+    assert abs(1-loga/logaref) < 0.16
 #=======================================================================
 
 def test_rgcv_value():
@@ -94,7 +94,7 @@ def test_rgcv_value():
     loga = get_alpha_from_method('rgcv')
     logaref = -5.8778 # Computed with DeerLab-Matlab (0.9.2)
 
-    assert abs(1-loga/logaref) < 0.15
+    assert abs(1-loga/logaref) < 0.16
 #=======================================================================
 
 def test_srgcv_value():
@@ -132,7 +132,7 @@ def test_ncp_value():
     "Check that the value returned by the NCP selection method is correct"
     
     loga = get_alpha_from_method('ncp')
-    logaref = -5.2826 # Computed with DeerLab-Matlab (0.9.2)
+    logaref = -0.905 # Computed with DeerLab-Matlab (0.9.2)
 
     assert abs(1-loga/logaref) < 0.1
 #=======================================================================
@@ -144,7 +144,7 @@ def test_mcl_value():
     loga = get_alpha_from_method('mcl')
     logaref = -5.878 # Computed with DeerLab-Matlab (0.9.2)
 
-    assert abs(1-loga/logaref) < 0.15
+    assert abs(1-loga/logaref) < 0.16
 #=======================================================================
 
 def test_gml_value():
@@ -162,7 +162,7 @@ def test_lr_value():
     "Check that the value returned by the LR selection method is correct"
     
     loga = get_alpha_from_method('lr')
-    logaref = -5.900  # Computed with DeerLab-Matlab (0.9.2)
+    logaref = -1.00  # Computed with DeerLab-Matlab (0.9.2)
 
     assert abs(1-loga/logaref) < 0.15
 #=======================================================================

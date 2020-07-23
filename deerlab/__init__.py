@@ -14,4 +14,4 @@ from .correctphase import correctphase
 from .noiselevel import noiselevel
 from .whitegaussnoise import whitegaussnoise
 from .lsqcomponents import lsqcomponents
-
+from .snlls import snlls

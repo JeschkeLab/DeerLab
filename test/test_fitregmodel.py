@@ -286,7 +286,7 @@ def test_nonuniform_r():
 
     Pfit,_ = fitregmodel(V,K,r,'tikhonov','aic')
     Vfit = K@Pfit
-    assert Vfit[0]==1
+    assert abs(Vfit[0] - 1) < 1e-6
 #============================================================
 
 
