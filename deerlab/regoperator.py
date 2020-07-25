@@ -3,6 +3,8 @@ import numpy as np
 
 def regoperator(r,d=2):
 
+    r = np.atleast_1d(r)
+    
     # Check arguments.
     n = len(r)
 

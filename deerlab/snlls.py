@@ -175,17 +175,17 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
 
     elif linearConstrained and not nonNegativeOnly:
         # Constrained linear LSQ
-        linSolver = lambda AtA,Aty: lsq_linear(AtA, Aty, bounds=(lbl,ubl))
+        linSolver = lambda AtA,Aty: lsq_linear(AtA, Aty, bounds=(lbl,ubl), method='bvls')
         parseResult = lambda result: result.x
 
     elif linearConstrained and nonNegativeOnly:
         # Non-negative linear LSQ
         if nnlsSolver is 'fnnls':
-            linSolver = lambda AtA,Aty: fnnls(AtA, Aty)
+            linSolver = lambda AtA,Aty: fnnls(AtA, Aty,tol = linTolFun)
         elif nnlsSolver is 'nnlsbpp':
             linSolver = lambda AtA,Aty: nnlsbpp(AtA, Aty,np.linalg.solve(AtA,Aty))
         elif nnlsSolver is 'cvx':
-            linSolver = lambda AtA,Aty: cvxnnls(AtA, Aty)
+            linSolver = lambda AtA,Aty: cvxnnls(AtA, Aty, tol = linTolFun)
         parseResult = lambda result: result
     # ----------------------------------------------------------
     

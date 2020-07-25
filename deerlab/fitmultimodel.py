@@ -42,8 +42,7 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1
 
     # Extract information about the model
     info = model()
-    par00 = info['Start']
-    nparam = len(par00)
+    nparam = len(info['Start'])
     if isempty(lb0):
         lb0 = info['Lower']
     if isempty(ub0):
@@ -70,11 +69,12 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1
         of this matrix by a vector of amplitudes. 
         """
         # Get kernel with current non-linear parameters
-        K = Kmodel(par[1:nKparam])
-        subset = np.atleast_1d(nKparam)
+        K = Kmodel(par[np.arange(0,nKparam)])
+        paramsused = nKparam
         Knonlin = np.zeros((K.shape[0],Nmodels))
         for iModel in range(Nmodels):
-            subset = np.arange(subset[-1], subset[-1]+nparam)
+            subset = np.arange(paramsused, paramsused+nparam)
+            paramsused = paramsused + nparam
             # Get basis functions
             Pbasis = model(r,par[subset])
             # Combine all non-linear functions into one
@@ -91,12 +91,13 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1
         non-linear and linear parameters given certain number of components and
         their basis function.
         """
-        subset = np.atleast_1d(nKparam)
+        paramsused = nKparam
         Pfit = 0
-        for iModel in range(len(linpar)):
-            subset = np.arange(subset[-1], subset[-1]+nparam)
-            # Get Gauss basis functions
-            Pfit = Pfit + linpar[iModel]*model(r,nlinpar[subset])
+        for amp in linpar:
+            subset = np.arange(paramsused, paramsused+nparam)
+            paramsused = paramsused + nparam
+            # Add basis functions
+            Pfit = Pfit + amp*model(r,nlinpar[subset])
         return Pfit
     #===============================================================================
 
@@ -144,24 +145,25 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1
         # Box constraints for the model parameters (non-linear parameters)
         nlin_lb = np.matlib.repmat(lb0,1,Nmodels)
         nlin_ub = np.matlib.repmat(ub0,1,Nmodels)
-        nlin_ub = np.matlib.repmat(par00,1,Nmodels)
 
         # Add the box constraints on the non-linear kernel parameters
         nlin_lb = np.concatenate((lbK, nlin_lb),axis=None)
         nlin_ub = np.concatenate((ubK, nlin_ub),axis=None)
         
         # Start values of non-linear parameters
-        np.random.seed(0)
+        np.random.seed(1)
         par0 = np.random.uniform(size=(len(nlin_lb)),low=nlin_lb, high=nlin_ub)
-        
+
         # Box constraints for the components amplitudes (linear parameters)
-        lin_lb = np.zeros(Nmodels)        # Non-negativity constraint
-        lin_ub = np.full(Nmodels, np.inf) # Unbounded
+        lin_lb = np.ones(Nmodels)        
+        lin_ub = np.full(Nmodels,np.inf)
         
         # Separable non-linear least-squares (SNLLS) fit
-        # ===============================================
-        pnonlin,plin,_,stats = dl.snlls(V,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,[], penalty=False, uqanalysis=False,**kwargs)
-
+        scale = 1e2
+        pnonlin,plin,_,stats = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, penalty=False, uqanalysis=False,linTolFun=[], linMaxIter=[],**kwargs)
+        plin = plin/scale
+        print('done')
+        # print('Nonlin:',pnonlin,' lin:',plin)
         # Store the fitted parameters
         pnonlin_.append(pnonlin)
         plin_.append(plin)
