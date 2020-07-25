@@ -7,7 +7,7 @@ import numpy as np
 import cvxopt as cvx
 import math as m
 
-def fnnls(AtA,Atb,tol=-1,maxiter=-1,verbose=False):
+def fnnls(AtA,Atb,tol=[],maxiter=[],verbose=False):
 #=====================================================================================
     """
     FNNLS   Fast non-negative least-squares algorithm.
@@ -36,12 +36,13 @@ def fnnls(AtA,Atb,tol=-1,maxiter=-1,verbose=False):
     x = np.zeros(N)
 
     # Calculate tolerance and maxiter if not given.
-    if tol==-1:
+    if np.size(np.atleast_1d(tol))==0:
         eps = np.finfo(float).eps
         tol = 10*eps*np.linalg.norm(AtA,1)*max(np.shape(AtA))
-    if maxiter==-1:
+    if np.size(np.atleast_1d(maxiter))==0:
         maxiter = 5*N
-        
+
+
     passive = x>0       # initial positive/passive set (points where constraint is not active)
     x[~passive] = 0
     w = Atb - AtA @ x     # negative gradient of error functional 0.5*||A*x-y||^2
@@ -116,17 +117,17 @@ def fnnls(AtA,Atb,tol=-1,maxiter=-1,verbose=False):
 
 
 
-def cvxnnls(AtA, Atb, tol=-1, maxiter=-1):
+def cvxnnls(AtA, Atb, tol=[], maxiter=[]):
 #=====================================================================================
     """
     NNLS problem solved via CVXOPT
     """
 
     N = np.shape(AtA)[1]
-    if tol==-1:
+    if np.size(np.atleast_1d(tol))==0:
         eps = np.finfo(float).eps
         tol = 10*eps*np.linalg.norm(AtA,1)*max(np.shape(AtA))
-    if maxiter==-1:
+    if np.size(np.atleast_1d(maxiter)):
         maxiter = 5*N
 
     x0 = np.zeros(N)
@@ -149,7 +150,7 @@ def cvxnnls(AtA, Atb, tol=-1, maxiter=-1):
 #=====================================================================================
 
 
-def nnlsbpp(AtA,AtB,x0):
+def nnlsbpp(AtA,AtB,x0=None):
 #=====================================================================================
     """
     Non-Negative Least Squares using Block Principal Pivoting
@@ -197,6 +198,9 @@ def nnlsbpp(AtA,AtB,x0):
     k = 1
     if n is not n1:
         raise TypeError('AtB must have the same number of rows as AtA. You gave ',n,' instead of ',n1)
+
+    if x0 is None:
+        x0 = np.linalg.solve(AtA,AtB)
 
     # Loop over multiple right-hand sides
     #-------------------------------------------------------------------------------
