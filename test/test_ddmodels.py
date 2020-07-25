@@ -59,6 +59,15 @@ def test_dd_gengauss():
 def test_dd_skewgauss():
     assert_ddmodel(dd_skewgauss)
 
+def test_dd_rice():
+    assert_ddmodel(dd_rice)
+
+def test_dd_rice2():
+    assert_ddmodel(dd_rice2)
+
+def test_dd_rice3():
+    assert_ddmodel(dd_rice3)
+
 def test_dd_randcoil():
     assert_ddmodel(dd_randcoil)
 

@@ -26,9 +26,24 @@ def _multigaussfun(r,r0,fwhm,a):
     "Compute a distribution with multiple Gaussians"    
     n = len(r0)
     P = np.zeros_like(r)
-    for k in range(0,n):
+    for k in range(n):
         sig = fwhm[k]/2/m.sqrt(2*m.log(2))
         P += a[k]*m.sqrt(1/(2*m.pi))*1/sig*np.exp(-0.5*((r-r0[k])/sig)**2)
+    P = _normalize(r,P)
+    return P
+#=================================================================
+
+def _multirice3dfun(r,nu,sig,a):
+#=================================================================
+    "Compute a distribution with multiple Gaussians"    
+    N = len(nu)
+    n = 3 # degrees of freedom
+    P = np.zeros_like(r)
+    for k in range(N):
+        s2 = sig[k]**2
+        I_scaled = spc.ive(n/2-1, nu[k]*r/s2)
+        P =+ a[k]*nu[k]**(n/2-1)/s2*r**(n/2)*np.exp(-(r**2+nu[k]**2)/(2*s2)+nu[k]*r/s2)*I_scaled
+    P[P<0] = 0
     P = _normalize(r,P)
     return P
 #=================================================================
@@ -97,10 +112,10 @@ def dd_gauss2(*args):
      ---------------------------------------------------------------
       Center of 1st Gaussian        nm        1        20       2.5 
       FWHM of 1st Gaussian          nm       0.2       5        0.5 
-      Amplitude of 1sd Gaussian     nm        0        1        0.5 
+      Amplitude of 1sd Gaussian               0        1        0.5 
       Center of 2nd Gaussian        nm        1        20       3.5 
       FWHM of 2nd Gaussian          nm       0.2       5        0.5 
-      Amplitude of 2nd Gaussian     nm        0        1        0.5 
+      Amplitude of 2nd Gaussian               0        1        0.5 
      --------------------------------------------------------------
     """
 
@@ -146,13 +161,13 @@ def dd_gauss3(*args):
      ---------------------------------------------------------------
       Center of 1st Gaussian        nm        1        20       2.5 
       FWHM of 1st Gaussian          nm       0.2       5        0.5 
-      Amplitude of 1sd Gaussian     nm        0        1        0.3 
+      Amplitude of 1sd Gaussian               0        1        0.3 
       Center of 2nd Gaussian        nm        1        20       3.5 
       FWHM of 2nd Gaussian          nm       0.2       5        0.5 
-      Amplitude of 2nd Gaussian     nm        0        1        0.3 
+      Amplitude of 2nd Gaussian               0        1        0.3 
       Center of 3rd Gaussian        nm        1        20       5.0 
       FWHM of 3rd Gaussian          nm       0.2       5        0.5 
-      Amplitude of 3rd Gaussian     nm        0        1        0.3 
+      Amplitude of 3rd Gaussian               0        1        0.3 
      --------------------------------------------------------------
     """
 
@@ -272,6 +287,149 @@ def dd_skewgauss(*args):
     return P
 #=================================================================
 
+
+def dd_rice(*args):    
+#=================================================================
+    """
+    3D-Rice distribution
+    ====================
+   
+     info = dd_rice()
+     P = dd_rice(r,param)
+
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
+    the paramteres array ``param`. The required parameters can also be found 
+    in the ``info`` structure.
+ 
+    Model parameters:
+    -------------------
+
+     ------------------------------------------------
+      Parameter  Units     Lower    Upper    Start
+     ------------------------------------------------
+      Center       nm        1        10       3.5 
+      Width        nm       0.1       5        0.7 
+     ------------------------------------------------
+    """  
+    if not args:
+        info = dict(
+            Parameters = ('Center','Width'),
+            Units = ('nm','nm'),
+            Start = np.asarray([3.5, 0.7]),
+            Lower = np.asarray([1, 0.1]),
+            Upper = np.asarray([10, 5])
+        )
+        return info
+    r,p = _parsargs(args,npar=2)
+
+    nu = [p[0]]
+    sig = [p[1]]
+    a = [1.0]
+    P = _multirice3dfun(r,nu,sig,a)
+    return P
+#=================================================================
+    
+
+def dd_rice2(*args):
+#=================================================================
+    """
+    Sum of two 3D-Rice distributions
+    ================================
+   
+     info = dd_rice2()
+     P = dd_rice2(r,param)
+
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
+    the paramteres array ``param`. The required parameters can also be found 
+    in the ``info`` structure.
+ 
+    Model parameters:
+    -------------------
+
+     ---------------------------------------------------------------
+      Parameter                    Units     Lower    Upper    Start
+     ---------------------------------------------------------------
+      Center of 1st Gaussian        nm        1        10       2.5 
+      Width of 1st Gaussian         nm       0.1       5        0.7 
+      Amplitude of 1sd Gaussian               0        1        0.5 
+      Center of 2nd Gaussian        nm        1        10       4.0 
+      Width of 2nd Gaussian         nm       0.1       5        0.7 
+      Amplitude of 2nd Gaussian               0        1        0.5 
+     --------------------------------------------------------------
+    """
+
+    if not args:
+        info = dict(
+            Parameters = ('Center of 1st Gaussian', 'Width of 1st Gaussian', 'Amplitude of 1st Gaussian',
+                          'Center of 2nd Gaussian', 'Width of 2nd Gaussian', 'Amplitude of 2nd Gaussian'),
+            Units = ('nm','nm','','nm','nm',''),
+            Start = np.asarray([2.5, 0.7, 0.5, 4.0, 0.7, 0.5]),
+            Lower = np.asarray([1, 0.1, 0, 1, 0.1, 0]),
+            Upper = np.asarray([10, 5, 1, 10, 5, 1])
+        )
+        return info
+    r,p = _parsargs(args,npar=6)
+
+    nu = [p[0], p[3]]
+    sig = [p[1], p[4]]
+    a = [p[2], p[5]]
+    P = _multirice3dfun(r,nu,sig,a)
+
+    return P
+#=================================================================
+    
+
+def dd_rice3(*args):
+#=================================================================
+    """
+    Sum of three 3D-Rice distributions
+    ==================================
+   
+     info = dd_rice3()
+     P = dd_rice3(r,param)
+
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
+    the paramteres array ``param`. The required parameters can also be found 
+    in the ``info`` structure.
+ 
+    Model parameters:
+    -------------------
+
+     ---------------------------------------------------------------
+      Parameter                    Units     Lower    Upper    Start
+     ---------------------------------------------------------------
+      Center of 1st Gaussian        nm        1        10       2.5 
+      Width of 1st Gaussian         nm       0.1       5        0.7 
+      Amplitude of 1sd Gaussian               0        1        0.3 
+      Center of 2nd Gaussian        nm        1        10       3.5 
+      Width of 2nd Gaussian         nm       0.1       5        0.7 
+      Amplitude of 2nd Gaussian               0        1        0.3 
+      Center of 3rd Gaussian        nm        1        10       5.0 
+      Width of 3rd Gaussian         nm       0.1       5        0.7 
+      Amplitude of 3rd Gaussian               0        1        0.3 
+     --------------------------------------------------------------
+    """
+
+    if not args:
+        info = dict(
+            Parameters = ('Center of 1st Gaussian', 'Width of 1st Gaussian', 'Amplitude of 1st Gaussian',
+                          'Center of 2nd Gaussian', 'Width of 2nd Gaussian', 'Amplitude of 2nd Gaussian',
+                          'Center of 3rd Gaussian', 'Width of 3rd Gaussian', 'Amplitude of 3rd Gaussian'),
+            Units = ('nm','nm','','nm','nm','','nm','nm',''),
+            Start = np.asarray([2.5, 0.7, 0.3, 3.5, 0.7, 0.3, 5, 0.7, 0.3]),
+            Lower = np.asarray([1, 0.1, 0, 1, 0.1, 0, 1, 0.1, 0]),
+            Upper = np.asarray([10, 5, 1, 10, 5, 1,  10, 5, 1])
+        )
+        return info
+    r,p = _parsargs(args,npar=9)
+
+    nu = [p[0], p[3], p[6]]
+    sig = [p[1], p[4], p[7]]
+    a = [p[2], p[5], p[8]]
+    P = _multirice3dfun(r,nu,sig,a)
+
+    return P
+#=================================================================
 
 def dd_randcoil(*args):    
 #=================================================================
