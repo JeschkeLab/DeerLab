@@ -1,9 +1,10 @@
 import numpy as np
 import copy
 import deerlab as dl
-from deerlab.utils import isempty, jacobianest, hccm
+from deerlab.utils import isempty, jacobianest, hccm, goodness_of_fit
+from types import FunctionType
 
-def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1, normP = True, uqanalysis=True,**kwargs):
+def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK=[], weights=1, normP = True, uqanalysis=True,**kwargs):
 
     # Ensure that all arrays are numpy.nparray
     lb,ub,r = [np.atleast_1d(var) for var in (lb,ub,r)]
@@ -12,14 +13,14 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1
     V, Kmodel, weights, Vsubsets = dl.utils.parse_multidatasets(V, Kmodel, weights)
 
     # Check kernel model
-    if Kmodel is callable:
+    if type(Kmodel) is FunctionType:
         # If callable, determine how many parameters the model requires
         nKparam = 0
         notEnoughParam = True
         while notEnoughParam:
             nKparam = nKparam + 1
             try:
-                Kmodel(np.random.uniform(nKparam,1))
+                Kmodel(np.random.uniform(size=nKparam))
                 notEnoughParam = False
             except:
                 notEnoughParam = True
@@ -30,13 +31,7 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1
         Kmodel = lambda _: K
     
     # Parse boundaries
-    if isempty(lb):
-        lb = [[],[]]
-    if isempty(ub):
-        ub = [[],[]]
-    # Unpack the two boundaries subsets
-    lbK,lb0 = lb
-    ubK,ub0 = ub
+    lb0, ub0 = (np.atleast_1d(var) for var in [lb,ub])
     if len(lbK) is not nKparam or len(ubK) is not nKparam:
         raise ValueError('The upper/lower bounds of the kernel parameters must be ',nKparam,'-element arrays')
 
@@ -162,8 +157,7 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1
         scale = 1e2
         pnonlin,plin,_,stats = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, penalty=False, uqanalysis=False,linTolFun=[], linMaxIter=[],**kwargs)
         plin = plin/scale
-        print('done')
-        # print('Nonlin:',pnonlin,' lin:',plin)
+
         # Store the fitted parameters
         pnonlin_.append(pnonlin)
         plin_.append(plin)
@@ -187,8 +181,6 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1
         lin_ub_.append(lin_ub)
         lin_lb_.append(lin_lb)
 
-    Peval = Pfit
-
     # Select the optimal model
     # ========================
     fcnals = logest[method]
@@ -207,7 +199,7 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1
     # =============================
     fitparam = [[],[],[]]
     fitparam[0] = pnonlin[0:nKparam] # Kernel parameters
-    fitparam[1] = pnonlin[nKparam:-1] # Components parameters
+    fitparam[1] = pnonlin[nKparam:nKparam+nparam] # Components parameters
     fitparam[2] = plin # Components amplitudes
 
     # Uncertainty quantification analysis (if requested)
@@ -233,10 +225,16 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1
         Puq = paramuq.propagate(lambda p: Pmodel(p[P_subset],p[amps_subset]), np.zeros(len(r)))
     else: 
         Puq = []
+        paramuq = []
+
     # Goodness of fit
     # ===============
-    Ndof = nKparam + nparam + Nopt
-    #stats = cellfun(@(V,Vfit)gof(V,Vfit,Ndof),V,Vfit)
+    stats = []
+    for subset in Vsubsets: 
+        Ndof = len(V[subset]) - (nKparam + nparam + Nopt)
+        stats.append(goodness_of_fit(V[subset],Vfit[subset],Ndof))
+    if len(stats)==1: 
+        stats = stats[0]
 
     # If requested re-normalize the distribution
     if normP:
@@ -246,5 +244,5 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[], weights=1
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
             Puq.ci = lambda p: Puq_.ci(p)/Pnorm
 
-    return Pfit, fitparam
+    return Pfit, fitparam, Puq, paramuq, stats
     # =========================================================================
