@@ -146,7 +146,7 @@ def hccm(J,*args):
         res,mode = args
         V = []
     elif len(args)==1:
-        V = res
+        V = args[0]
 
     # Hat matrix
     H = J@np.linalg.pinv(J.T@J)@J.T
@@ -155,7 +155,7 @@ def hccm(J,*args):
     # Number of parameters (k) & Number of variables (n)
     n,k = np.shape(J)
 
-    if not V:
+    if isempty(V):
         # Select estimation method using established nomenclature
         if mode.upper() == 'HC0': # White,(1980),[1]
             # Estimate the data covariance matrix
