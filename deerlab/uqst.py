@@ -5,6 +5,7 @@ import numpy as np
 from deerlab.utils import jacobianest
 from scipy.stats import norm
 from scipy.signal import fftconvolve
+import copy
 
 class uqst:
     """
@@ -25,20 +26,15 @@ class uqst:
     """
 
 
-    def __init__(self,uqtype_,data,covmat_,lb_,ub_):
+    def __init__(self,uqtype,data,covmat,lb,ub):
 
-        global uqtype, samples, parfit, covmat, lb, ub, nParam
-
-        uqtype = uqtype_
         #Parse inputs schemes
         if uqtype=='covariance':
             
             # Scheme 1: uqst('covariance',parfit,covmat,lb,ub)
             parfit = data
+            self.__parfit = parfit
             nParam = len(parfit)
-            covmat = covmat_
-            lb = lb_
-            ub = ub_
             if len(lb)==0:
                 lb = np.full(nParam, -np.inf)
             
@@ -48,6 +44,7 @@ class uqst:
         elif uqtype == 'bootstrap':
             # Scheme 2: uqst('bootstrap',samples)
             samples = data
+            self.__samples = samples
             nParam = np.shape(samples)[1]
                 
         else:
@@ -70,14 +67,22 @@ class uqst:
             self.covmat = covmat
         self.uqtype = uqtype
 
+        # Set private variables
+        self.__uqtype = uqtype
+        self.__covmat = covmat
+        self.__lb = lb
+        self.__ub = ub
+        self.__nParam = nParam
+
+
     # Parameter distributions
     #--------------------------------------------------------------------------------
     def pardist(self,n):
         
-        if n > nParam or n < 0:
+        if n > self.__nParam or n < 0:
             raise ValueError('The input must be a valid integer number.')
         
-        if uqtype == 'covariance':
+        if self.__uqtype == 'covariance':
             # Generate Gaussian distribution based on covariance matrix
             sig = np.sqrt(self.covmat[n,n])
             xmean = self.mean[n]
@@ -85,17 +90,17 @@ class uqst:
             pdf = 1/sig/np.sqrt(2*np.pi)*np.exp(-((x-xmean)/sig)**2/2)
             
             # Clip the distributions at outside the boundaries
-            pdf[x < lb[n]] = 0
-            pdf[x > ub[n]] = 0
+            pdf[x < self.__lb[n]] = 0
+            pdf[x > self.__ub[n]] = 0
 
-        if uqtype == 'bootstrap':
+        if self.__uqtype == 'bootstrap':
             # Get bw using silverman's rule (1D only)
-            sigma = np.std(samples[:, n], ddof=1)
-            bw = sigma * (len(samples) * 3 / 4.0) ** (-1 / 5)
+            sigma = np.std(self.__samples[:, n], ddof=1)
+            bw = sigma * (len(self.__samples) * 3 / 4.0) ** (-1 / 5)
 
             # Make histogram
-            bins = np.linspace(lb[n], ub[n], 2 ** 10 + 1)
-            count, edges = np.histogram(samples[:, n], bins=bins)
+            bins = np.linspace(self.__lb[n], self.__ub[n], 2 ** 10 + 1)
+            count, edges = np.histogram(self.__samples[:, n], bins=bins)
 
             # Generate kernel
             delta = (edges.max() - edges.min()) / (len(edges) - 1)
@@ -121,8 +126,8 @@ class uqst:
         if p>100 or p<0:
             raise ValueError('The input must be a number between 0 and 100')
  
-        x = np.zeros(nParam)
-        for n in range(nParam):
+        x = np.zeros(self.__nParam)
+        for n in range(self.__nParam):
             # Get parameter PDF
             values,pdf = self.pardist(n)
             # Compute corresponding CDF
@@ -146,27 +151,30 @@ class uqst:
         alpha = 1 - coverage/100
         p = 1 - alpha/2 # percentile
         
-        x = np.zeros((nParam,2))
-        if uqtype=='covariance':
+        x = np.zeros((self.__nParam,2))
+        if self.__uqtype=='covariance':
                 # Compute covariance-based confidence intervals
                 # Clip at specified box boundaries
-                x[:,0] = np.maximum(lb, parfit - norm.ppf(p)*np.sqrt(np.diag(covmat)))
-                x[:,1] = np.minimum(ub, parfit + norm.ppf(p)*np.sqrt(np.diag(covmat)))
+                x[:,0] = np.maximum(self.__lb, self.__parfit - norm.ppf(p)*np.sqrt(np.diag(self.__covmat)))
+                x[:,1] = np.minimum(self.__ub, self.__parfit + norm.ppf(p)*np.sqrt(np.diag(self.__covmat)))
                 
-        elif uqtype=='bootstrap':
+        elif self.__uqtype=='bootstrap':
                 # Compute bootstrap-based confidence intervals
                 # Clip possible artifacts from the percentile estimation
-                x[:,0] = np.minimum(self.percentile(p*100), np.amax(samples))
-                x[:,1] = np.maximum(self.percentile((1-p)*100), np.amin(samples))
+                x[:,0] = np.minimum(self.percentile(p*100), np.amax(self.__samples))
+                x[:,1] = np.maximum(self.percentile((1-p)*100), np.amin(self.__samples))
 
         return x
-    #--------------------------------------------------------------------------------
+
 
 
     # Error Propagation (covariance-based only)
     #--------------------------------------------------------------------------------
     def propagate(self,model,lbm=[],ubm=[]):
         
+        lbm,ubm = (np.atleast_1d(var) for var in [lbm,ubm])
+
+        parfit = self.mean
         # Evaluate model with fit parameters
         modelfit = model(parfit)
         
@@ -188,11 +196,9 @@ class uqst:
         modelfit = np.minimum(modelfit,ubm)
         
         # Error progation
-        modelcovmat = J@covmat@J.T
+        modelcovmat = J@self.__covmat@J.T
         
         # Construct new CI-structure for the model
-        modeluqstruct = uqst('covariance',modelfit,modelcovmat,lbm,ubm)
-        
-        return modeluqstruct
+        return  uqst('covariance',modelfit,modelcovmat,lbm,ubm)
     #--------------------------------------------------------------------------------
 
