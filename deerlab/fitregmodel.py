@@ -11,8 +11,82 @@ import copy
 from deerlab.utils import hccm, goodness_of_fit
 from deerlab.uqst import uqst
 
-def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx', weights=1, huberparam=1.35, nonnegativity=True, obir = False, renormalize=True, noiselevelaim = -1, full_output=False):
+def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx', 
+                weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
+                renormalize=True, noiselevelaim = -1, full_output=False):
+    """  
+    Regularization-based fit
+    ========================
 
+    Computes a non-parametric regularized distance distribution.
+
+    Usage: 
+    -----------
+        Pfit,Puq = fitregmodel(V,K,r)
+        Pfit,Puq = fitregmodel(V,K,r,regtype,method)
+        Pfit,Puq = fitregmodel([V1,V2,__],[K1,K2,__],r)
+
+    Arguments: 
+    -----------
+    V (N-element array, list of arrays)  
+        Dipolar signal, multiple datasets can be globally evaluated by passing a list of signals.
+    K (NxM-element array, list of arrays)  
+        Dipolar kernel, if a list of signals is specified, a corresponding list of kernels must be passed as well.
+    r (M-element array)
+        Distance axis, in nanometers.
+    regtype (string, default='tikhonov')
+        Regularization functional type: 'tikhonov', 'tv', or 'huber'.   
+    method (string, default='aic')    
+        Method for the selection of the optimal regularization parameter.
+            'lr' - L-curve minimum-radius method (LR)
+            'lc' - L-curve maximum-curvature method (LC)
+            'cv' - Cross validation (CV)
+            'gcv' - Generalized Cross Validation (GCV)
+            'rgcv' - Robust Generalized Cross Validation (rGCV)
+            'srgcv' - Strong Robust Generalized Cross Validation (srGCV)
+            'aic' - Akaike information criterion (AIC)
+            'bic' - Bayesian information criterion (BIC)
+            'aicc' - Corrected Akaike information criterion (AICC)
+            'rm' - Residual method (RM)
+            'ee' - Extrapolated Error (EE)          
+            'ncp' - Normalized Cumulative Periodogram (NCP)
+            'gml' - Generalized Maximum Likelihood (GML)
+            'mcl' - Mallows' C_L (MCL)
+
+    Return:
+    -------
+    Pfit (M-element array)
+        Fitted distance distribution
+    Puq (obj)
+        Covariance-based uncertainty quantification of the fitted distance distribution
+    stats (dict, if full_output is True)
+        Goodness of fit statistical estimators
+
+    Keyword arguments:
+    ------------------
+    weights (list, default=1)
+        List of weights for the weighting of the different datasets in a global fit. 
+        If not specified all datasets are weighted equally.
+    regorder (int scalar, default=2)
+        Order of the regularization operator.
+    solver (str, default='cvx')
+        Optimizer used to solve the non-negative least-squares problem: 
+            'cvx' - Optimization of the NNLS problem using cvxopt
+            'fnnls' - Optimization using the fast NNLS algorithm.
+            'nnlsbpp' - Optimization using the block principal pivoting NNLS algorithm.
+    full_output (boolean, default=False)
+        If enabled (True) the function will return additional output arguments in a tuple.
+    nonnegativity (boolean, default=True)
+        Enforces the non-negativity constraint on computed distance distributions.
+    huberparam (scalar, default=1.35)
+        Value of the Huber parameter used in Huber regularization.
+    renormalize (boolean, True)
+        Enable/disable renormalization of the fitted distribution.
+    obir (boolean, default=False)
+        Enable/disable the use of the Osher-Bregman iterated regularization algorithm.
+    noiselevelaim (scalar, default=automatic)
+        Noise level at which to stop the OBIR algorithm. 
+    """
     V, K, weights, subsets = dl.utils.parse_multidatasets(V, K, weights)
 
     # Compute regularization matrix

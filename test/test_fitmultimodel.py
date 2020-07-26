@@ -155,7 +155,7 @@ def test_background_fit():
 
 
 def assert_confidence_intervals(pci50,pci95,pfit,lb,ub):
-    
+#----------------------------------------------------------------------\
     p95lb = pci95[:,0]
     p95ub = pci95[:,1]
     p50lb = pci50[:,0]
@@ -174,6 +174,7 @@ def assert_confidence_intervals(pci50,pci95,pfit,lb,ub):
     if not np.all(np.maximum(ub,p95ub)==ub):
         errors.append("The upper bounds are not satisfied by the confidence intervals.")
     assert not errors, "Errors occured:\n{}".format("\n".join(errors))
+#----------------------------------------------------------------------
 
 
 def test_confinter_Pfit():

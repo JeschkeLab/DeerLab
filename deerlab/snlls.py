@@ -84,23 +84,23 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
         or value of the regularization parameter. By default 'aic' is used.
     alphaOptThreshold (scalar) 
         Relative parameter change threshold for reoptimizing the regularization parameter
-        when using a selection method (default: 1e-3)
+        when using a selection method (default: 1e-3).
     nnlsSolver (str)
         Solver used to solve a non-negative least-squares problem: 'fnnls', 'nnlsbpp', or 'cvx' (default).
     weights (array) 
         Array of weighting coefficients for the individual signals in global fitting.
     multiStarts (scalar)
-        Number of starting points for global optimization
+        Number of starting points for global optimization.
     nonLinMaxIter (scalar) 
-        Non-linear solver maximal number of iterations
+        Non-linear solver maximal number of iterations.
     nonLinTolFun (scalar)   
-        Non-linear solver function tolerance
+        Non-linear solver function tolerance.
     linMaxIter (scalar)     
-        Linear solver maximal number of iterations
+        Linear solver maximal number of iterations.
     linTolFun (scalar)      
-        Linear solver function tolerance
+        Linear solver function tolerance.
     uqanalysis (boolean)
-        Enable/disable the uncertainty quantification analysis
+        Enable/disable the uncertainty quantification analysis.
     """
     # Ensure that all arrays are numpy.nparray
     par0,lb,ub,lbl,ubl = [np.atleast_1d(var) for var in (par0,lb,ub,lbl,ubl)]

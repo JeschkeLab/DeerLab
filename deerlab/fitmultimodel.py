@@ -1,13 +1,94 @@
+# fitmultimodel.py - Multi-component distributions SNNLS fit function
+# --------------------------------------------------------------------
+# This file is a part of DeerLab. License is MIT (see LICENSE.md).
+# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+
 import numpy as np
 import copy
 import deerlab as dl
 from deerlab.utils import isempty, jacobianest, hccm, goodness_of_fit
 from types import FunctionType
 
-def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK=[], weights=1, normP = True, uqanalysis=True,**kwargs):
+def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK=[],
+                 weights=1, normP = True, uqanalysis=True,**kwargs):
+    """  
+    Multi-component distributions SNNLS fit function
+    =================================================
+ 
+    Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
+    non-linear least-squares (SNLLS).
 
+    Usage:
+    ------
+        Pfit,parfit,Puq,paruq,stats = fitmultimodel(___)
+        ___ = fitmultimodel(V,K,r,Pmodel,maxModels,method,lb,ub)
+        ___ = fitmultimodel(V,K,r,Pmodel,maxModels,method)
+        ___ = fitmultimodel(V,Kmodel,r,Pmodel,maxModels,method,lb,ub)
+        ___ = fitmultimodel(V,Kmodel,r,Pmodel,maxModels,method)
+        ___ = fitmultimodel([V1,V2,___],[K1,K2,___],r,Pmodel,maxModels,method,lb,ub)
+        ___ = fitmultimodel([V1,V2,___],Kmodel,r,Pmodel,maxModels,method,lb,ub)
+
+    Arguments:
+    ----------
+    V (array or list of arrays)
+        Dipolar signal(s) to be fitted.
+    K (matrix or list of matrices) 
+        Dipolar kernel(s)
+    Kmodel (callable)
+        Dipolar kernel model, accepts an array of parameters and returns
+        a kernel matrix of a list thereof.
+    r (array) 
+        Distance axis
+    model (callable) 
+        Distance distribution basis function. Must be a DeerLab model function (dd_model).
+    maxModels (scalar) 
+        Maximal number of components in the model.
+    method (string, default='aic')
+        Functional metric used for the selection of the optimal number of components:
+            'aic'  Akaike information criterion
+            'aicc' corrected Akaike information criterion
+            'bic'  Bayesian information criterion
+            'rmsd' Root-mean squared deviation
+    lb (array, default=[])
+        Lower bounds for the distribution basis model parameters.
+    ub (array, default=[])
+        Upper bounds for the distribution basis model parameters.
+    ubK (array, default=[])
+        Lower bounds for the kernel model parameters.
+    ubK (array, default=[])
+        Upper bounds for the kernel model parameters.
+
+    Return:
+    -------
+    Pfit,parfit,Puq,paruq,stats
+    Pfit (array)
+        Fitted distance distribution with optimal number of components
+    parfit (list of arrays)
+        Fitted model parameters. The different subsets can be accessed as follows:
+            parfit[0] - Array of fitted kernel parameters
+            parfit[1] - Array of fitted distance distribution components parameters
+            parfit[2] - Array of fitted components amplitudes
+    Puq (obj)
+        Covariance-based uncertainty quantification of the fitted distance distribution
+    paramuq (obj)
+        Covariance-based uncertainty quantification of the fitted parameters
+    stats (dict)
+        Goodness of fit statistical estimators
+
+    Additional keyword arguments:
+    -----------------------------
+    weights (array, default=1) 
+        Array of weighting coefficients for the individual signals in global fitting.
+    normP (boolean, default=True)
+        Enable/disable renormalization of the fitted distribution
+    uqanalysis (boolean, default=True)
+        Enable/disable the uncertainty quantification analysis.    
+
+    Further keywords corresponding to the snlls() function can be passed as well.
+
+    """
     # Ensure that all arrays are numpy.nparray
-    lb,ub,r = [np.atleast_1d(var) for var in (lb,ub,r)]
+    lb,ub,r = np.atleast_1d(lb,ub,r)
     
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
     V, Kmodel, weights, Vsubsets = dl.utils.parse_multidatasets(V, Kmodel, weights)
@@ -31,7 +112,7 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
         Kmodel = lambda _: K
     
     # Parse boundaries
-    lb0, ub0 = (np.atleast_1d(var) for var in [lb,ub])
+    lb0, ub0 = np.atleast_1d(lb, ub)
     if len(lbK) is not nKparam or len(ubK) is not nKparam:
         raise ValueError('The upper/lower bounds of the kernel parameters must be ',nKparam,'-element arrays')
 
@@ -52,7 +133,7 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
         lb0[areCenterDistances] = min(r)
 
     # Ensure that all arrays are numpy.nparray
-    lb0,ub0,lbK,ubK = [np.atleast_1d(var) for var in (lb0,ub0,lbK,ubK)]
+    lb0,ub0,lbK,ubK = np.atleast_1d(lb0,ub0,lbK,ubK)
 
     def nonlinmodel(par,Nmodels):
     #===============================================================================
@@ -228,7 +309,6 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
         paramuq = []
 
     # Goodness of fit
-    # ===============
     stats = []
     for subset in Vsubsets: 
         Ndof = len(V[subset]) - (nKparam + nparam + Nopt)
