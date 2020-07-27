@@ -18,3 +18,4 @@ from .lsqcomponents import lsqcomponents
 from .snlls import snlls
 from .fitmultimodel import fitmultimodel
 from .fitparamodel import fitparamodel
+from .bootan import bootan

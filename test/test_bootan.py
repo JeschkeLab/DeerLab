@@ -1,0 +1,120 @@
+
+import numpy as np
+from deerlab import dipolarkernel, whitegaussnoise, fitparamodel, bootan
+from deerlab.dd_models import dd_gauss
+
+
+def test_basics():
+# ======================================================================
+    "Check the basic functionality of the bootstrapping"
+
+    t = np.linspace(0,5,200)
+    r = np.linspace(2,6,300)
+    P = dd_gauss(r,[4, 0.8])
+    K = dipolarkernel(t,r)
+    Vexp = K@P + whitegaussnoise(t,0.01)
+
+    par0 = [3, 0.5]
+    Vmodel = lambda par: K@dd_gauss(r,par)
+    parfit,_,_ = fitparamodel(Vexp,Vmodel,par0)
+    Vfit = Vmodel(parfit)
+
+
+    def bootfcn(V):
+        parfit,_,_ = fitparamodel(V,Vmodel,par0)
+        return parfit
+
+    paruq = bootan(bootfcn,Vexp,Vfit,10)
+
+    assert all(abs(paruq.mean - parfit) < 1e-2)
+# ======================================================================
+
+
+def test_resampling():
+# ======================================================================
+    "Check that both bootstrap resampling method yield similar results"
+
+    t = np.linspace(0,5,200)
+    r = np.linspace(2,6,300)
+    P = dd_gauss(r,[4, 0.8])
+    K = dipolarkernel(t,r)
+    Vexp = K@P + whitegaussnoise(t,0.01)
+
+    par0 = [3, 0.5]
+    Vmodel = lambda par: K@dd_gauss(r,par)
+    parfit,_,_ = fitparamodel(Vexp,Vmodel,par0)
+    Vfit = Vmodel(parfit)
+
+
+    def bootfcn(V):
+        parfit,_,_ = fitparamodel(V,Vmodel,par0)
+        return parfit
+
+    paruq1 = bootan(bootfcn,Vexp,Vfit,10,resampling='residual')
+    paruq2 = bootan(bootfcn,Vexp,Vfit,10,resampling='gaussian')
+
+
+    assert all(abs(paruq1.mean - paruq2.mean) < 1e-2)
+# ======================================================================
+
+
+def test_multiple_ouputs():
+# ======================================================================
+    "Check that both bootstrap handles the correct number outputs"
+
+    t = np.linspace(0,5,200)
+    r = np.linspace(2,6,300)
+    P = dd_gauss(r,[4, 0.8])
+    K = dipolarkernel(t,r)
+    Vexp = K@P + whitegaussnoise(t,0.01)
+
+    par0 = [3, 0.5]
+    Vmodel = lambda par: K@dd_gauss(r,par)
+    parfit,_,_ = fitparamodel(Vexp,Vmodel,par0)
+    Vfit = Vmodel(parfit)
+
+
+    def bootfcn(V):
+        parfit,_,_ = fitparamodel(V,Vmodel,par0)
+        Pfit = dd_gauss(r,parfit)
+        return parfit, Pfit
+
+    paruq1 = bootan(bootfcn,Vexp,Vfit,4)
+
+
+    assert len(paruq1)==2
+# ======================================================================
+
+
+def test_multiple_datasets():
+# ======================================================================
+    "Check bootstrapping when using multiple input datasets"
+
+    t1 = np.linspace(0,5,200)
+    t2 = np.linspace(-0.5,3,300)
+    r = np.linspace(2,6,300)
+    P = dd_gauss(r,[4, 0.8])
+    K1 = dipolarkernel(t1,r)
+    K2 = dipolarkernel(t2,r)
+
+    Vexp1 = K1@P + whitegaussnoise(t1,0.01)
+    Vexp2 = K2@P + whitegaussnoise(t2,0.02)
+
+    def Vmodel(par):
+        V1 = K1@dd_gauss(r,par)
+        V2 = K2@dd_gauss(r,par)
+        return [V1,V2]
+
+    par0 = [3, 0.5]
+    parfit,_,_ = fitparamodel([Vexp1,Vexp2],Vmodel,par0)
+    Vfit1,Vfit2 = Vmodel(parfit)
+
+    def bootfcn(V):
+        parfit,_,_ = fitparamodel(V,Vmodel,par0)
+        return parfit
+
+    paruq = bootan(bootfcn,[Vexp1,Vexp2],[Vfit1,Vfit2],10)
+
+    assert all(abs(paruq.mean - parfit) < 1e-2)
+# ======================================================================
+test_multiple_datasets()

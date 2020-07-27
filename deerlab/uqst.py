@@ -26,7 +26,7 @@ class uqst:
     """
 
 
-    def __init__(self,uqtype,data,covmat,lb,ub):
+    def __init__(self,uqtype,data,covmat=[],lb=[],ub=[]):
 
         #Parse inputs schemes
         if uqtype=='covariance':
