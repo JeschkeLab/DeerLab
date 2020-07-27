@@ -1,6 +1,7 @@
 # __init__.py
 from .dd_models import *
 from .bg_models import *
+from .ex_models import *
 from .deerload import deerload
 from .selregparam import selregparam
 from .nnls import fnnls,cvxnnls
@@ -19,3 +20,4 @@ from .snlls import snlls
 from .fitmultimodel import fitmultimodel
 from .fitparamodel import fitparamodel
 from .bootan import bootan
+from .fitsignal import fitsignal

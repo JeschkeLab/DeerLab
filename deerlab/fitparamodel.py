@@ -68,13 +68,8 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
     lb,ub = np.atleast_1d(lb,ub)
     V, model, weights, Vsubsets = parse_multidatasets(V, model, weights)
 
-    # Validate required inputs
-    #-------------------------------------------------------------------------------
     if not np.all(np.isreal(V)):
         raise ValueError('The input signal(s) cannot be complex-valued.')
-
-    # Preparation of objective functions, parameter ranges, etc
-    #-------------------------------------------------------------------------------
 
     if isempty(lb):
         lb = np.full_like(par0, -np.inf)
@@ -94,11 +89,8 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         raise ValueError('Multistart optimization cannot be used with unconstrained parameters.')
     multistarts_par0 = multistarts(MultiStart,par0,lb,ub)
 
-    # Run least-squares fitting
-    #-------------------------------------------------------------------------------
-
-    # ==============================================================================
     def lsqresiduals(p):
+    # -------------------------------------------------------------------------------    
         """
         Residual vector function
         ------------------------------------------------------------------
@@ -121,8 +113,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         res = weights*(V-Vsim)
         
         return res
-    # ==============================================================================
-    
+    # -------------------------------------------------------------------------------    
     fvals = []
     parfits = []
     for par0 in multistarts_par0:
@@ -136,7 +127,6 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
     parfit = parfits[globmin]
 
     # Issue warnings if fitted parameter values are at search range boundaries
-    #-------------------------------------------------------------------------------
     tol = 1e-5
     atLower = abs(parfit-lb)<tol
     atUpper = abs(parfit-ub)<tol
@@ -151,7 +141,6 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
             warnings.warn('The fitted value of parameter #{},  is at the upper bound of the range.'.format(p))
 
     # Calculate parameter confidence intervals
-    #-------------------------------------------------------------------------------
     if uqanalysis:
         
         # Compute residual vector and estimate variance from that
@@ -177,7 +166,6 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
 
 
     # Calculate goodness of fit
-    #-------------------------------------------------------------------------------
     stats = []
     for subset in Vsubsets: 
         Ndof = len(V[subset]) - len(par0)

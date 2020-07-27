@@ -196,7 +196,8 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParame
         Penalty = np.sum(np.sqrt((L@P)**2 + np.finfo(float).eps))
     elif regtype.lower() == 'huber':
         Penalty = np.sum(np.sqrt((L@P/HuberParameter)**2 + 1 ) - 1)
-    
+    else:
+        raise KeyError("Regularization type not valid. Must be 'tikhonov','tv' or 'huber'")
     #-----------------------------------------------------------------------
     #  Selection methods for optimal regularization parameter
     #-----------------------------------------------------------------------
