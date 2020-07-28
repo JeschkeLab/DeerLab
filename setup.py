@@ -4,7 +4,10 @@ from setuptools.command.develop import develop
 import platform
 import subprocess
 
-def install_MKL_dependencies():
+def install_dependencies():
+   subprocess.run(['pip','install','memoization'])
+   subprocess.run(['pip','install','matplotlib'])
+   subprocess.run(['pip','install','pytest'])
    if platform.system() is 'Windows':  
       subprocess.run(['pip','install','pipwin'])
       subprocess.run(['pipwin','install','numpy'])
@@ -15,13 +18,13 @@ class install_routine(install):
    """Customized setuptools install command"""
    def run(self):
       install.run(self)
-      install_MKL_dependencies()
+      install_dependencies()
 
 class develop_routine(develop):
    """Customized setuptools install command"""
    def run(self):
       develop.run(self)
-      install_MKL_dependencies()
+      install_dependencies()
 
 setup(
    name='DeerLab',
@@ -34,11 +37,6 @@ setup(
    license='LICENSE.txt',
    description='',
    long_description=open('README.md').read(),
-   install_requires=[
-      'memoization',
-      'matplotlib',
-      'pytest',
-   ],
    cmdclass={
       'install': install_routine,
       'develop': develop_routine},
