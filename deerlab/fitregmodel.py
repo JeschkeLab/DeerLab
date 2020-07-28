@@ -13,7 +13,7 @@ from deerlab.uqst import uqst
 
 def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx', 
                 weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
-                renormalize=True, noiselevelaim = -1, full_output=False):
+                uqanalysis=True, renormalize=True, noiselevelaim = -1, full_output=False):
     """  
     Regularization-based fit
     ========================
@@ -76,6 +76,8 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
             'nnlsbpp' - Optimization using the block principal pivoting NNLS algorithm.
     full_output (boolean, default=False)
         If enabled (True) the function will return additional output arguments in a tuple.
+    uqanalysis (boolean, default=True)
+        Enable/disable the uncertainty quantification analysis. 
     nonnegativity (boolean, default=True)
         Enforces the non-negativity constraint on computed distance distributions.
     huberparam (scalar, default=1.35)
@@ -128,28 +130,31 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
 
     # Uncertainty quantification
     # ----------------------------------------------------------------
+    if uqanalysis:
+        # Construct residual parts for for the residual and regularization terms
+        res = weights*(V - K@Pfit)
 
-    # Construct residual parts for for the residual and regularization terms
-    res = weights*(V - K@Pfit)
+        # Construct Jacobians for the residual and penalty terms
+        Jres = weights*K
+        res,J = _augment(res,Jres,regtype,alpha,L,Pfit,huberparam)
 
-    # Construct Jacobians for the residual and penalty terms
-    Jres = weights*K
-    res,J = _augment(res,Jres,regtype,alpha,L,Pfit,huberparam)
-
-    # Calculate the heteroscedasticity consistent covariance matrix 
-    covmat = hccm(J,res,'HC1')
+        # Calculate the heteroscedasticity consistent covariance matrix 
+        covmat = hccm(J,res,'HC1')
+        
+        # Construct confidence interval structure for P
+        NonNegConst = np.zeros(len(r))
+        Puq = uqst('covariance',Pfit,covmat,NonNegConst,[])
+    else:
+        Puq = []
     
-    # Construct confidence interval structure for P
-    NonNegConst = np.zeros(len(r))
-    Puq = uqst('covariance',Pfit,covmat,NonNegConst,[])
-
     # Re-normalization of the distributions
     # --------------------------------------
     if renormalize:
         Pnorm = np.trapz(Pfit,r)
         Pfit = Pfit/Pnorm
-        Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
-        Puq.ci = lambda p: Puq_.ci(p)/Pnorm
+        if uqanalysis:
+            Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
+            Puq.ci = lambda p: Puq_.ci(p)/Pnorm
 
 
     # Goodness-of-fit

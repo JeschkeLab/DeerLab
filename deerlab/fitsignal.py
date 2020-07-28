@@ -89,7 +89,7 @@ from deerlab import uqst
 from deerlab.bg_models import bg_hom3d
 from deerlab.utils import isempty, goodness_of_fit, jacobianest
 
-def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=[],par0=[],lb=[],ub=[], uqanalysis=True, display = False):
+def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=[],par0=[],lb=[],ub=[], weights=1, uqanalysis=True, display = False):
 
     # Default optional settings
     regtype = 'tikhonov'
@@ -168,15 +168,13 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=[],par0=[],lb=[],
     _checkbounds(lb,ub,par0)
 
     # Build index vectors for accessing parameter subsets
-    ddidx = np.arange(N_dd)
-    N_bg,N_ex = np.atleast_1d(N_bg,N_ex)
+    ddidx = np.arange(N_dd[0])
     bgidx,exidx = ([],[])
     for ii in range(nSignals):
         bgidx.append(N_dd + sum(N_bg[np.arange(0,ii)]) + np.arange(0,N_bg[ii]) )
         exidx.append(N_dd + sum(N_bg) + sum(N_ex[np.arange(0,ii)]) + np.arange(0,N_ex[ii]) )
 
-    # Fit the dipolar multi-pathway model
-    # -----------------------------------
+
     def multiPathwayModel(par):
     # =========================================================================
         """
@@ -190,10 +188,9 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=[],par0=[],lb=[],
         """
         Bs,Ks =([],[])
         for iSignal in range(nSignals):            
-            # Get parameter subsets for this signal
-            ex_par = par[exidx[iSignal]]
             bg_par = par[bgidx[iSignal]]
-            
+            ex_par = par[exidx[iSignal]]
+
             # Prepared background basis function
             if includeBackground[iSignal]:
                 Bfcn = lambda t,lam: bg_model[iSignal](t,bg_par,lam)
@@ -302,7 +299,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=[],par0=[],lb=[],
         return Vfit_uq,Pfit_uq,Bfit_uq,paruq_bg,paruq_ex,paruq_dd   
     # =========================================================================
 
-    OnlyRegularization = np.any(~includeExperiment & ~includeBackground)
+    OnlyRegularization = np.all(~includeExperiment & ~includeBackground)
     OnlyParametric = not OnlyRegularization and (parametricDistribution or not includeForeground)
 
     if OnlyRegularization:
@@ -311,7 +308,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=[],par0=[],lb=[],
         Ks = [dl.dipolarkernel(ts,r) for ts in t]
         
         # Linear regularization fit
-        Pfit,Pfit_uq = dl.fitregmodel(Vexp,Ks,r,regtype,regparam)
+        Pfit,Pfit_uq = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=uqanalysis)
         
         # Get fitted models
         Vfit = [K@Pfit for K in Ks]
@@ -330,7 +327,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=[],par0=[],lb=[],
         Vmodel =lambda par: [K@Pfcn(par) for K in multiPathwayModel(par)[0]]
 
         # Non-linear parametric fit
-        parfit_,param_uq,_ = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub)
+        parfit_,param_uq,_ = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uqanalysis=uqanalysis)
         
         # Get fitted models
         Vfit = Vmodel(parfit_)
@@ -350,7 +347,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=[],par0=[],lb=[],
         lbl = np.zeros_like(r)
         
         # Separable non-linear least squares (SNNLS) 
-        parfit_, Pfit, snlls_uq,_ = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, regparam=regparam,linMaxIter=[],linTolFun=[])
+        parfit_, Pfit, snlls_uq,_ = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, regparam=regparam,linMaxIter=[],uqanalysis=uqanalysis,linTolFun=[],weights=weights)
 
         # Get the fitted models
         Kfit,Bfit = multiPathwayModel(parfit_)
@@ -392,6 +389,10 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=[],par0=[],lb=[],
         modfituq['Pfit'] = Pfit_uq
         modfituq['Vfit'] = [Vfit_uq[j] for j in range(nSignals)]
         modfituq['Bfit'] = [Bfit_uq[j] for j in range(nSignals)]
+    else:
+        paruq = []
+        modfituq = []
+
 
     def _display_results():
     # =========================================================================
@@ -465,7 +466,13 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=[],par0=[],lb=[],
     # Return numeric arrays and not lists if there is only one signal
     if nSignals==1:
         Vfit,Bfit = (var[0] if type(var) is list else var for var in [Vfit,Bfit])
-
+        for subset in ('ex','bg'):
+            parfit[subset] = parfit[subset][0]
+            if uqanalysis:
+                paruq[subset] = paruq[subset][0]
+        for subset in ('Vfit','Bfit'):
+            if uqanalysis:
+                modfituq[subset] = modfituq[subset][0]
         if not isempty(stats):
             stats = stats[0]
 
@@ -492,11 +499,10 @@ def _getmodelparams(models):
             up.append([])
         N.append(len(par0[-1]))
 
-    if len(models)==1:
-        par0 = par0[0]
-        lo = lo[0]
-        up = up[0]
-        N = N[0]
+    par0 = np.concatenate(par0)
+    lo = np.concatenate(lo)
+    up = np.concatenate(up)
+    N = np.atleast_1d(N)
     return par0,lo,up,N
 # ==============================================================================
 

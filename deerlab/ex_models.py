@@ -7,6 +7,7 @@ from deerlab.utils import isempty
 
 def _parsargs(param,npar):
 #=================================================================
+    param = np.atleast_1d(param)
     if len(param)!=npar:
         raise ValueError('This model requires ',npar,' parameters. A total of ',len(param),' where specified.')
     return param
@@ -45,10 +46,9 @@ def ex_4pdeer(param=[]):
         )
         return info
     param = _parsargs(param,npar=1)
-    param = param[0]
 
     # Dipolar pathways
-    lam = param
+    lam = param[0]
     pathways = np.array([[1-lam, np.NaN], [lam, 0]])
     
     return pathways
