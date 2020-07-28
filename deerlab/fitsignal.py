@@ -16,6 +16,7 @@ import plotly.graph_objects as go
 import deerlab as dl
 from deerlab import uqst
 from deerlab.bg_models import bg_hom3d
+from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit, jacobianest
 
 def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[],lb=[],ub=[], weights=1, uqanalysis=True, display = False):
