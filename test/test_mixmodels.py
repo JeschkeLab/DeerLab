@@ -44,7 +44,7 @@ def test_gaussrice():
 def test_fit():
 # ======================================================================
     "Check the fitting of a mixed model"
-    t = np.linspace(0,3,200)
+    t = np.linspace(-0.5,5,200)
     r = np.linspace(2,6,100)
     mixedModel = mixmodels(dd_gauss,dd_gauss)
     parInMix = [3, 0.5, 0.3, 4, 0.5, 0.7]
@@ -63,4 +63,3 @@ def test_fit():
 
     assert max(abs(Pmix - Pfit)) < 1e-5
 # ======================================================================
-

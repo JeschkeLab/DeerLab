@@ -271,7 +271,7 @@ def test_scale_agnostic():
 
     Pfit,_ = fitregmodel(V,K,r,'tikhonov','aic',renormalize = False)
 
-    assert max(abs(P - Pfit/scale)) < 2e-6
+    assert max(abs(P - Pfit/scale)) < 1e-5
 #============================================================
 
 def test_nonuniform_r():
