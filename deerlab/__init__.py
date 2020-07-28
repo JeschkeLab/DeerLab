@@ -12,6 +12,7 @@ from .fitregmodel import fitregmodel
 from .regoperator import regoperator
 from .uqst import uqst
 from .correctphase import correctphase
+from .mixmodels import mixmodels
 from .correctzerotime import correctzerotime
 from .noiselevel import noiselevel
 from .whitegaussnoise import whitegaussnoise
