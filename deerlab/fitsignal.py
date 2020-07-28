@@ -8,11 +8,6 @@ import types
 import copy
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
-
-
 import deerlab as dl
 from deerlab import uqst
 from deerlab.bg_models import bg_hom3d
