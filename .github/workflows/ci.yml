@@ -16,7 +16,6 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.6
-
     - name: Cache multiple paths
       uses: actions/cache@v2'
       if: startsWith(runner.os, 'Windows')
