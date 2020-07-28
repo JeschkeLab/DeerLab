@@ -22,3 +22,4 @@ from .fitmultimodel import fitmultimodel
 from .fitparamodel import fitparamodel
 from .bootan import bootan
 from .fitsignal import fitsignal
+from .correctscale import correctscale
