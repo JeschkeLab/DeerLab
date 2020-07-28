@@ -1,76 +1,5 @@
-#
-# FITSIGNAL  Fit model to dipolar time-domain trace
-#
-#   [Vfit,Pfit,Bfit,parfit,modfitci,parci,stats] = FITSIGNAL(V,t,r,dd,bg,ex,par0,lb,ub)
-#   __ = FITSIGNAL(V,t,r,dd,bg,ex,par0)
-#   __ = FITSIGNAL(V,t,r,dd,bg,ex)
-#   __ = FITSIGNAL(V,t,r,dd,bg)
-#   __ = FITSIGNAL(V,t,r,dd)
-#   __ = FITSIGNAL(V,t,r)
-#   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},{ex1,ex2,__},par0,lb,ub)
-#   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},{ex1,ex2,__},par0)
-#   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},{ex1,ex2,__})
-#   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},ex)
-#   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r,dd)
-#   __ = FITSIGNAL({V1,V2,__},{t1,t2,__},r)
-#   __ = FITSIGNAL(___,'Property',Values,___)
-#
-#   Fits a dipolar model to the experimental signal V with time axis t, using
-#   distance axis r. The model is specified by the distance distribution (dd),
-#   the background (bg), and the experiment (ex).
-#
-#   If multiple signals (V1,V2,...) and their corresponding time axes (t1,t2,...)
-#   are given, they will be fitted globally with a single distance distribution (dd).
-#   For each signal, a specific background (bg1,bg2,...) and experiment (ex1,ex2)
-#   models can be assigned.
-#
-#   FITSIGNAL can handle both parametric and non-parametric distance
-#   distribution models.
-#
-#  Input:
-#    V      time-domain signal to fit (N-element vector)
-#    t      time axis, in microseconds (N-element vector)
-#    r      distance axis, in nanometers (M-element vector)
-#    dd     distance distribution model (default 'P')
-#           - 'P' to indicate non-parametric distribution
-#           - function handle to parametric distribution model (e.g. @dd_gauss)
-#           - 'none' to indicate no distribution, i.e. only background
-#    bg     background model (default @bg_hom3d)
-#           - function handle to parametric background model (e.g. @bg_hom3d)
-#           - 'none' to indicate no background decay
-#    ex     experiment model (default @ex_4pdeer)
-#           - function handle to experiment model (e.g. @ex_4pdeer)
-#           - 'none' to indicate simple dipolar oscillation (mod.depth = 1)
-#    par0   starting parameters, 3-element cell array {par0_dd,par0_bg,par0_ex}
-#           default: {[],[],[]} (automatic choice)
-#    lb     lower bounds for parameters, 3-element cell array (lb_dd,lb_bg,lb_ex)
-#           default: {[],[],[]} (automatic choice)
-#    ub     upper bounds for parameters, 3-element cell array (ub_dd,ub_bg,ub_ex)
-#           default: {[],[],[]} (automatic choice)
-#
-#  Output:
-#    Vfit     fitted time-domain signal
-#    Pfit     fitted distance distribution
-#    Bfit     fitted background decay
-#    parfit   structure with fitted parameters
-#                .dd  fitted parameters for distance distribution model
-#                .bg  fitted parameters for background model
-#                .ex  fitted parameters for experiment model
-#    modfitci structure with confidence intervals for Vfit, Bfit and Pfit
-#    parci    structure with confidence intervals for parameter, similar to parfit
-#    stats    goodness of fit statistical estimators, N-element structure array
-#
-#  Name-value pairs:
-#
-#   'Rescale'       - Enable/Disable optimization of the signal scale
-#   'normP'         - Enable/Disable re-normalization of the fitted distribution
-#   'Display'       - Enable/Disable plotting and printing of results
-#   See "help snnls" for more options.
-#
-# Example:
-#    Vfit = fitsignal(Vexp,t,r,@dd_gauss,@bg_hom3d,@ex_4pdeer)
-#
-
+# fitsignal.py - Dipolar signal fit function
+# ---------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
@@ -89,8 +18,107 @@ from deerlab import uqst
 from deerlab.bg_models import bg_hom3d
 from deerlab.utils import isempty, goodness_of_fit, jacobianest
 
-def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=[],par0=[],lb=[],ub=[], weights=1, uqanalysis=True, display = False):
+def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[],lb=[],ub=[], weights=1, uqanalysis=True, display = False):
+    """
+    Fit model to dipolar time-domain trace
+    ======================================
 
+    Fits a dipolar model to the experimental signal V with time axis t, using
+    distance axis r. The model is specified by the distance distribution (dd),
+    the background (bg), and the experiment (ex).
+
+    If multiple signals (V1,V2,...) and their corresponding time axes (t1,t2,...)
+    are given, they will be fitted globally with a single distance distribution (dd).
+    For each signal, a specific background (bg1,bg2,...) and experiment (ex1,ex2)
+    models can be assigned.
+
+    fitsignal can handle both parametric and non-parametric distance
+    distribution models.
+
+    Usage:
+    -------
+    Vfit,Pfit,Bfit,parfit,modfituq,paruq,stats = fitsignal(__)
+    __ = fitsignal(V,t,r,dd,bg,ex,par0)
+    __ = fitsignal(V,t,r,dd,bg,ex)
+    __ = fitsignal(V,t,r,dd,bg)
+    __ = fitsignal(V,t,r,dd)
+    __ = fitsignal(V,t,r)
+    __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},{ex1,ex2,__},par0,lb,ub)
+    __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},{ex1,ex2,__},par0)
+    __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},{ex1,ex2,__})
+    __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd,{bg1,bg2,__},ex)
+    __ = fitsignal({V1,V2,__},{t1,t2,__},r,dd)
+    __ = fitsignal({V1,V2,__},{t1,t2,__},r)
+
+    Arguments:
+    ----------
+    V (array or list of arrays)
+        Time-domain signal to fit.
+    t (array or list of arrays) 
+        Time axis, in microseconds. 
+    r (array)
+        Distance axis, in nanometers.
+    dd (callable or string, default='P')
+        Distance distribution model:
+            (1) 'P' to indicate non-parametric distribution
+            (2) A function of a parametric distribution model (e.g. dd_gauss)
+            (3) 'none' to indicate no distribution, i.e. only background
+    bg (callable or string, default=bg_hom3d)
+        Background model:
+            (1) Function handle to parametric background model (e.g. @bg_hom3d)
+            (2) 'none' to indicate no background decay
+    ex (callable or string, default=ex_4pdeer)
+        Experiment model:
+            (1) Function handle to experiment model (e.g. @ex_4pdeer)
+            (2) 'none' to indicate simple dipolar oscillation (mod.depth = 1)
+    par0 (list of arrays)
+        Starting parameters, 3-element list [par0_dd,par0_bg,par0_ex]
+            Default: [[],[],[]] (automatic choice)
+    lb (list of arrays)
+        Lower bounds for parameters, 3-element list [lb_dd,lb_bg,lb_ex]
+            Default: [[],[],[]] (automatic choice)
+    ub (list of arrays)
+        Upper bounds for parameters, 3-element list [ub_dd,ub_bg,ub_ex]
+            Default: [[],[],[]] (automatic choice)
+
+    Returns:
+    --------
+    Vfit (array or list of arrays)
+        Fitted time-domain signal
+    Pfit (array)
+        Fitted distance distribution
+    Bfit (array or list of arrays)
+        Fitted background decay
+    parfit (dict) 
+        Dictionary with fitted parameters:
+            parfit['dd'] - Fitted parameters for distance distribution model
+            parfit['bg'] - Fitted parameters for background model
+            parfit['ex'] - Fitted parameters for experiment model
+    modfituq (dict)
+        Dictionary with the uncertainty quanfitication of the fits:
+            modfituq['Vfit'] - Uncertainty quanfitication for fitted dipolar signal
+            modfituq['Pfit'] - Uncertainty quanfitication for fitted distance distribution
+            modfituq['Bfit'] - Uncertainty quanfitication for fitted background
+    paruq (dict)
+        Dictionary with the uncertainty quanfitication of the parameters:
+            paruq['dd'] - Uncertainty quanfitication for distribution parameters
+            paruq['bg'] - Uncertainty quanfitication for background parameters
+            paruq['ex'] - Uncertainty quanfitication for experiment parameters
+    stats (dict or list of dicts)
+        Dictionary with goodness of fit statistical estimators.
+
+    Name-value pairs:
+    weights (list, default=1)
+        List of weights for the weighting of the different datasets in a global fit. 
+        If not specified all datasets are weighted equally.
+    uqanalysis (boolean, default=True)
+        Enable/disable the uncertainty quantification analysis. 
+    display (boolean, default=False)
+        Enable/Disable plotting and printing of results with matplotlib library
+
+    Example:
+         Vfit,Pfit,Bfit,parfit,modfituq,paruq,stats = fitsignal(Vexp,t,r,dd_gauss,bg_hom3d,ex_4pdeer)
+   """
     # Default optional settings
     regtype = 'tikhonov'
     regparam = 'aic'
