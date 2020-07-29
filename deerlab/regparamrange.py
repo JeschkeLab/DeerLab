@@ -4,37 +4,30 @@ from deerlab.utils import gsvd
 def regparamrange(K,L,noiselvl=0,logres=0.1):
 #===================================================================================================
     """
-    Regularization parameter range estimator
-    ========================================
-
     Estimates an array of regularization parameter candidates from
     the generalized singular value decomposition (GSVD) of the experiment
     dipolar kernel  and regularization operator.
-
-    Usage: 
-    -----------
-    alphas = regparamrange(K,L)
     
-    Arguments: 
-    -----------
-    K (NxM-element array)  
+    Parameters
+    ----------
+    K : array_like with shape(m,n)  
         Dipolar kernel matrix
-    L (M-2xM-element array)  
+    L : array_like with shape(n-2,n)  
         Regularization operator
 
-    Returns:
-    -----------
-    alphas (array)
+    Returns
+    -------
+    alphas : ndarray
         Regularization parameter candidates
 
-    Keyword arguments:
-    ------------------
-    noiselvl (scalar, optional)
-        Standard deviation estimation of the noise in the data. Used for scaling of the singular values.
-        Default is noiseless (noiselvl=0).
-    logres (scalar, optional)
-        Resolution of the array of alpha candidates, on a base-10 logarithmic scale. Default logres=0.1,
-        corresponding to a tenth of a decade).
+    Other parameters
+    ----------------
+    noiselvl : float scalar
+        Standard deviation estimation of the noise in the data. Used for scaling 
+        of the singular values, the default is 0.
+    logres : float scalar
+        Resolution of the array of alpha candidates, on a base-10 logarithmic scale, the default is 0.1 
+        (corresponding to a tenth of a decade).
     """
     # Set alpha range
     minmax_ratio = 16*np.finfo(float).eps*1e6  # ratio of smallest to largest alpha

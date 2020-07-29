@@ -12,79 +12,83 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
                 nonnegativity=True, noiselvl=-1, regorder=2, weights=1, full_output=False,
                 huberparam=1.35, candidates=None):
     """
-    Selection of optimal regularization parameter
-    ===============================================
+    Selection of optimal regularization parameter based on a selection criterion.
 
-    Computes the opimal regularization parameter based on a selection criterion.
-
-    Usage: 
-    -----------
-        alphaopt = selregparam(V,K,r)
-        alphaopt = selregparam(V,K,r,regtype,method)
-        alphaopt = selregparam([V1,V2,__],[K1,K2,__],r)
-
-    Arguments: 
-    -----------
-    V (N-element array, list of arrays)  
+    Parameters 
+    ----------
+    V : array_like or list of array_like
         Dipolar signal, multiple datasets can be globally evaluated by passing a list of signals.
-    K (NxM-element array, list of arrays)  
+    K : 2D-array_like or list of 2D-array_like
         Dipolar kernel, if a list of signals is specified, a corresponding list of kernels must be passed as well.
-    r (M-element array)
+    r : array-like
         Distance axis, in nanometers.
-     
-    Keyword arguments:
-    ------------------
-    regtype (string)
-        Regularization functional type: 'tikhonov', 'tv', or 'huber'.
-    method (string)    
+    regtype : string
+        Regularization functional type: 
+    
+        * 'tikhonov' - Tikhonov regularizaton
+        * 'tv'  - Total variation regularization
+        * 'huber' - Huber regularization
+        The default is 'tikhonov'.
+    method : string
         Method for the selection of the optimal regularization parameter.
-            'lr' - L-curve minimum-radius method (LR)
-            'lc' - L-curve maximum-curvature method (LC)
-            'cv' - Cross validation (CV)
-            'gcv' - Generalized Cross Validation (GCV)
-            'rgcv' - Robust Generalized Cross Validation (rGCV)
-            'srgcv' - Strong Robust Generalized Cross Validation (srGCV)
-            'aic' - Akaike information criterion (AIC)
-            'bic' - Bayesian information criterion (BIC)
-            'aicc' - Corrected Akaike information criterion (AICC)
-            'rm' - Residual method (RM)
-            'ee' - Extrapolated Error (EE)          
-            'ncp' - Normalized Cumulative Periodogram (NCP)
-            'gml' - Generalized Maximum Likelihood (GML)
-            'mcl' - Mallows' C_L (MCL)
-    weights (list, optional)
-        List of weights for the weighting of the different datasets in a global fit. 
-        If not specified all datasets are weighted equally.
-    candidates (list, optional)
+
+        * 'lr' - L-curve minimum-radius method (LR)
+        * 'lc' - L-curve maximum-curvature method (LC)
+        * 'cv' - Cross validation (CV)
+        * 'gcv' - Generalized Cross Validation (GCV)
+        * 'rgcv' - Robust Generalized Cross Validation (rGCV)
+        * 'srgcv' - Strong Robust Generalized Cross Validation (srGCV)
+        * 'aic' - Akaike information criterion (AIC)
+        * 'bic' - Bayesian information criterion (BIC)
+        * 'aicc' - Corrected Akaike information criterion (AICC)
+        * 'rm' - Residual method (RM)
+        * 'ee' - Extrapolated Error (EE)          
+        * 'ncp' - Normalized Cumulative Periodogram (NCP)
+        * 'gml' - Generalized Maximum Likelihood (GML)
+        * 'mcl' - Mallows' C_L (MCL)
+        
+    Other parameters
+    ----------------
+    weights : array_like 
+        Array of weighting coefficients for the individual signals in global fitting, 
+        the default is all weighted equally.
+    candidates : list
         List or array of candidate regularization parameter values to be evaluated. 
         If not specified, these are automatically computed from the GSVD of the 
         dipolar kernel and regularization operator.
-    regorder (int scalar, optional)
-        Order of the regularization operator.
-    algorithm (string, optional)
-        Search algorithm: 'grid' (grid-search, slow) or 'brent' (Brent-algorithm, fast).
-    full_output (boolean, optional)
-        If enabled (True) the function will return additional output arguments in a tuple.
-    nonnegativity (boolean, optional)
-        Enforces the non-negativity constraint on computed distance distributions. Default is True.
-    noiselvl (scalar, optional)
+    regorder : int scalar
+        Order of the regularization operator, the default is 2.
+    algorithm : string
+        Search algorithm: 
+        
+        * 'grid' - Grid-search, slow.
+        * 'brent' - Brent-algorithm, fast.
+    full_output : boolean
+        If enabled the function will return additional output arguments in a tuple, the default is False.
+    nonnegativity : boolean
+        Enforces the non-negativity constraint on computed distance distributions, by default enabled.
+    noiselvl : float scalar
         Estimate of the noise standard deviation, if not specified it is estimated form the fit residuals.
         Used for the MCL selection method.  
-    huberparam (scalar, optional)
-        Value of the Huber parameter used in Huber regularization (default=1.35)
+    huberparam : float scalar
+        Value of the Huber parameter used in Huber regularization, the default is 1.35.
 
-    Returns:
-    -----------
-    alphaopt (scalar)
+    Returns
+    -------
+    alphaopt : scalar
         Optimal regularization parameter.
-    alphas (array, if full_output==True)
-        Regularization parameter values candidates evaluated during the search.
-    functional (array, if full_output==True)
-        Values of the selection functional specified by (method) evaluated during the search.
-    residuals (array, if full_output==True)
-        Values of the residual norms evaluated during the search.
-    residuals (array, if full_output==True)
-        Values of the penalty norms evaluated during the search.
+    alphas : ndarray
+        Regularization parameter values candidates evaluated during the search. 
+        Returned if full_output is True.
+    functional : ndarray
+        Values of the selection functional specified by (method) evaluated during the search. 
+        Returned if full_output is True.
+    residuals : ndarray
+        Values of the residual norms evaluated during the search. 
+        Returned if full_output is True.
+    residuals : ndarray
+        Values of the penalty norms evaluated during the search. 
+        Returned if full_output is True.
     """
 #=========================================================           
     # Ensure the use of numpy-arrays

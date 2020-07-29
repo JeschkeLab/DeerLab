@@ -15,3 +15,8 @@ DeerLab.egg-info/PKG-INFO
 */build*
 /.venv/*
 target/
+docsrc/source/.doctrees
+docs/
+docsrc/cache/
+docsrc/source/__pycache__/
+docsrc/__pycache__/

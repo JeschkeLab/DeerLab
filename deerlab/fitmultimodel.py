@@ -11,11 +11,7 @@ from types import FunctionType
 
 def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK=[],
                  weights=1, normP = True, uqanalysis=True,**kwargs):
-    """  
-    Multi-component distributions SNNLS fit function
-    =================================================
- 
-    Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
+    """ Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
 
     Usage:
@@ -28,63 +24,109 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
         ___ = fitmultimodel([V1,V2,___],[K1,K2,___],r,Pmodel,maxModels,method,lb,ub)
         ___ = fitmultimodel([V1,V2,___],Kmodel,r,Pmodel,maxModels,method,lb,ub)
 
-    Arguments:
+    Parameters
     ----------
-    V (array or list of arrays)
+    V : array_like or list of array_like
         Dipolar signal(s) to be fitted.
-    K (matrix or list of matrices) 
-        Dipolar kernel(s)
-    Kmodel (callable)
-        Dipolar kernel model, accepts an array of parameters and returns
-        a kernel matrix of a list thereof.
-    r (array) 
-        Distance axis
-    model (callable) 
-        Distance distribution basis function. Must be a DeerLab model function (dd_model).
-    maxModels (scalar) 
-        Maximal number of components in the model.
-    method (string, default='aic')
+    Kmodel : callable or 2D-array_like
+        Dipolar kernel model. If no kernel parameters must be fitted, it can be specified as a matrix array 
+        (or a list thereof if multiple signals are globally fitted). 
+        Otherwise, it is a callable function that accepts an array of kernel parameters and returns
+        a kernel matrix array or a list thereof.
+    r : array_like 
+        Distance axis, in nanometers.
+    model : callable 
+        Basis component of the multi-component distance distribution. 
+        Must be a callable DeerLab model function (e.g. dd_gauss or dd_rice).
+    maxModels : scalar 
+        Maximal number of components in the multi-component distance distribution.
+    method : string
         Functional metric used for the selection of the optimal number of components:
-            'aic'  Akaike information criterion
-            'aicc' corrected Akaike information criterion
-            'bic'  Bayesian information criterion
-            'rmsd' Root-mean squared deviation
-    lb (array, default=[])
-        Lower bounds for the distribution basis model parameters.
-    ub (array, default=[])
-        Upper bounds for the distribution basis model parameters.
-    ubK (array, default=[])
-        Lower bounds for the kernel model parameters.
-    ubK (array, default=[])
-        Upper bounds for the kernel model parameters.
 
-    Return:
+        * 'aic'  Akaike information criterion
+        * 'aicc' corrected Akaike information criterion
+        * 'bic'  Bayesian information criterion
+        * 'rmsd' Root-mean squared deviation
+        The default is 'aic'.
+    lb : array_like
+        Lower bounds for the distribution basis model parameters. If not specified, parameters are unbounded.
+    ub : array_like
+        Upper bounds for the distribution basis model parameters. If not specified, parameters are unbounded.
+    ubK : array_like
+        Lower bounds for the kernel model parameters. If not specified, parameters are unbounded.
+    ubK : array_like
+        Upper bounds for the kernel model parameters. If not specified, parameters are unbounded.
+
+    Returns
     -------
-    Pfit,parfit,Puq,paruq,stats
-    Pfit (array)
-        Fitted distance distribution with optimal number of components
-    parfit (list of arrays)
+    Pfit : ndarray
+        Fitted distance distribution with optimal number of components.
+    parfit : list of ndarray
         Fitted model parameters. The different subsets can be accessed as follows:
-            parfit[0] - Array of fitted kernel parameters
-            parfit[1] - Array of fitted distance distribution components parameters
-            parfit[2] - Array of fitted components amplitudes
-    Puq (obj)
+        
+        * parfit[0] - Array of fitted kernel parameters
+        * parfit[1] - Array of fitted distance distribution components parameters
+        * parfit[2] - Array of fitted components amplitudes
+    Puq : obj
         Covariance-based uncertainty quantification of the fitted distance distribution
-    paramuq (obj)
+    paramuq : obj
         Covariance-based uncertainty quantification of the fitted parameters
-    stats (dict)
-        Goodness of fit statistical estimators
+    stats : dict
+        Goodness of fit statistical estimators:
+
+        * stats['chi2red'] - Reduced \chi^2 test
+        * stats['r2'] - R^2 test
+        * stats['rmsd'] - Root-mean squared deviation (RMSD)
+        * stats['aic'] - Akaike information criterion
+        * stats['aicc'] - Corrected Akaike information criterion
+        * stats['bic'] - Bayesian information criterion
 
     Additional keyword arguments:
     -----------------------------
-    weights (array, default=1) 
-        Array of weighting coefficients for the individual signals in global fitting.
-    normP (boolean, default=True)
-        Enable/disable renormalization of the fitted distribution
-    uqanalysis (boolean, default=True)
-        Enable/disable the uncertainty quantification analysis.    
+    weights : array_like 
+        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
+    normP : boolean
+        Enable/disable renormalization of the fitted distribution, by default it is enabled.
+    uqanalysis : boolean
+        Enable/disable the uncertainty quantification analysis, by default it is enabled.    
 
     Further keywords corresponding to the snlls() function can be passed as well.
+
+    Notes
+    -----
+    This function takes advantage of the special structure of a multi-component model, i.e. the separability 
+    of the component amplitudes as linear parameters from the rest of the non-linear parameters. This makes it
+    suitable to be solved as a SNLLS problem.
+
+    Examples
+    --------
+    A classical example involves the fit of a multi-Gauss distance distribution to a 4-pulse DEER dipolar signal. 
+    Since the signal requires additional parameters  (e.g. modulation depth, background parameters,…) a kernel model 
+    can be defined to account for these::
+    
+        def K4pdeer(Kpar):
+            # Unpack parameters
+            lam,conc = Kpar
+            # Construct kernel
+            K = dipolarkernel(t,r,lam,bg_hom3d(t,conc,lam))
+            return K
+        
+        Pfit,parfit,Puq,paruq,stats = fitmultimodel(V,Kmodel,r,dd_model,Nmax,'aicc')
+
+
+    If multiple signals are to be fitted globally the example abova can be easily adapted by passing multiple 
+    signals to the fit function and by returning multiple kernels with the kernel model function::
+    
+        def K4pdeer(Kpar):
+            # Unpack parameters
+            lam,conc = Kpar
+            # Construct kernels for both signals
+            K1 = dipolarkernel(t1,r,lam,bg_hom3d(t1,conc,lam))
+            K2 = dipolarkernel(t2,r,lam,bg_hom3d(t2,conc,lam))
+            return K1,K2
+        
+        Pfit,parfit,Puq,paruq,stats = fitmultimodel([V1,V2],Kmodel,r,dd_model,Nmax,'aicc')
+
 
     """
     # Ensure that all arrays are numpy.nparray

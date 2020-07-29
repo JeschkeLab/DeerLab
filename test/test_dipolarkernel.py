@@ -116,7 +116,7 @@ def test_value_grid():
     # Generate kernel numerically
     t = 1 # us
     r = 1 # nm
-    K = dipolarkernel(t,r,method='grid',nknots=2e6)
+    K = dipolarkernel(t,r,method='grid',nKnots=2e6)
 
     # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
     # and CODATA 2018 values for ge, muB, mu0, and h.

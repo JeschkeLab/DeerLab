@@ -1,0 +1,62 @@
+.. highlight:: matlab
+.. _time2dist:
+
+*********************
+:mod:`time2dist`
+*********************
+
+Conversion from time-axis to distance-axis
+
+.. warning:: This is a legacy function. Its use is not recommended for routine or accurate data analysis.
+
+
+-----------------------------
+
+
+Syntax
+=========================================
+
+.. code-block:: matlab
+
+    r = time2dist(t)
+    [r,rmin,rmax] = time2dist(t)
+
+Parameters
+    *   ``t`` - Signal vector (*N*-element array)
+    *   ``M`` - Output length (scalar)
+
+Returns
+    *   ``r`` - Distance Axis (*M*-element array)
+
+-----------------------------
+
+
+Description
+=========================================
+
+.. code-block:: matlab
+
+    [r,rmin,rmax] = time2dist(t)
+
+Computes the N-point distance axis ``r`` according to the input time axis ``t``. The minimal and maximal distances ``rmin``, ``rmax`` are determined by the empirical approximations derived by Gunnar Jeschke as implemented in the older DeerLab versions.
+
+-----------------------------
+
+
+.. code-block:: matlab
+
+    [r,rmin,rmax] = time2dist(t,M)
+
+The length of the output axis can be specified by the parameter ``M``.
+
+-----------------------------
+
+
+These empirical equation approximate the minimal and maximal detectable distances given a certain time step :math:`\Delta t` and trace length :math:`t_\text{max}`.
+
+.. math:: r_\text{min} = 4\left( \frac{4\Delta t \nu_0}{0.85} \right)^{1/3}
+
+.. math:: r_\text{max} = 6\left( \frac{t_\text{max}}{2} \right)^{1/3}
+
+where :math:`\nu_0` = 52.04 MHz is the dipolar frequency of between two nitroxide electron spins separated by 1 nm.
+

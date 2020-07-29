@@ -1,36 +1,62 @@
+
+# dipolarbackground.py - Multipathway background generator 
+# --------------------------------------------------------
+ # This file is a part of DeerLab. License is MIT (see LICENSE.md).
+ # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+
 import numpy as np
 import types
 
-def dipolarbackground(
-    t,pathinfo,Bmodel,
-    renormalize = True,
-    overtonecoeff = 1
-    ):
+def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
+    """ Constructs background decay functions according to the multi-pathway model.
+    
+    Parameters
+    ----------
+    t : array_like
+        Time axis, in microseconds.
+    pathinfo : array_like with shape (p,2) or (p,3)
+        Array of pathway amplitudes (lambda), refocusing points (T0), and harmonics (n) 
+        for multiple (p) dipolar pathways. Each row contains ``[lambda T0 n]`` or ``[lambda T0]`` 
+        for one pathway. If n is not given it is assumed to be 1. For a pathway with unmodulated contribution, set the refocusing time to ``numpy.nan``.
+    Bmodel : callable
+        Background basis function. A callable function accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``
+     
+    Returns
+    -------
+    B : ndarray
+        Multipathway background decay
 
-    """
-    DIPOLARBACKGROUND Multipathway background generator
-    
-       B = DIPOLARBACKGROUND(t)
-       B = DIPOLARBACKGROUND(t,pathinfo,Bmodel)
-       B = DIPOLARBACKGROUND(___,'Property',value,___)
-    
-    Computes the N-point multipathway background B from a N-point time axis t
-    (in microseconds), the dipolar pathways defined in pathinfo and a basis 
-    function Bmodel.
-    
-      Inputs:
-         t         N-element time axis, in microseconds
-         pathinfo  px2 or px3 array of modulation depths lambda, refocusing points
-                   T0, and harmonics n for multiple pathways, each row contains
-                   [lambda T0 n] or [lambda T0] for one pathway. If n is not given
-                   it is assumed to be 1.
-         Bmodel    Function handle for a background model: @(t)bg_model(t,par)
-    
-      Returns:
-         B         N-element total multipathway background 
+    Other parameters
+    ----------------
+    renormalize : boolean
+        The multi-pathway background does not necessarily satisfy ``V(0) == 1``. This option enables/disables a re-normalization of the background function to ensure that equality is satisfied, by default it is enabled.
+    overtonecoeff : array_like
+        Array containing the overtone coefficients for RIDME experiments. 
 
-    This file is a part of DeerLab. License is MIT (see LICENSE.md).
-    Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+    Notes
+    -----
+    Computes the multipathway background ``B`` for the time axis ``t`` corresponding to the dipolar pathways specified in ``pathinfo``. The total background is computed from the basis background function model specified in ``Bmodel``. For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathinfo`` is a 2D-array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals
+
+    Examples
+    --------
+    To calculate the background for the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use::
+
+        from numpy import linspace
+        from deerlab import dipolarbackground
+
+        t = linspace(-5,20,501) # time axis (us)
+        lam = 0.4 # modulation depth main signal
+        conc = 200   # spin concentration (uM)
+
+        pathinfo = [[],[]]
+        pathinfo[0] = [1-lam, NaN] # unmodulated part, gives offset
+        pathinfo[1] = [lam, 0] # main modulation, refocusing at time zero
+
+        Bmodel = @(t,lam) bg_hom3d(t,conc,lam)
+
+        B = dipolarbackground(t,pathinfo,Bmodel)
+
+
     """
 
     # Ensure that all inputs are numpy arrays

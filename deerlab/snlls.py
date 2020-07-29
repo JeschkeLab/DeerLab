@@ -14,93 +14,143 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
           regtype='tikhonov', regparam='aic', multiStarts = 1, regOrder=2, alphaOptThreshold=1e-3,
           nonLinTolFun=1e-9, nonLinMaxIter=1e8, linTolFun=1e-15, linMaxIter=1e4, huberparam = 1.35,
           uqanalysis = True):
-    """
-    Separable Non-linear Least Squares Solver
-    =========================================
-    
-    Fits a linear set of parameters (x) and non-linear parameters (p)
-    by solving the following non-linear least squares problem:
- 
-            [x,p] = argmin || A(p)*x - y||^2
-                     s.t.   x in [lbl,ubl]
-                            p in [lb,ub]
- 
-    When solving the linear problem: argmin_x ||y - A*x||^2  the solver will
-    identify and adapt automatically to the following scenarios:
-        - Well-conditioned + unconstrained       x = solve(A,y);
-        - Well-conditioned + constrained         x = lsqlin(A,y,lb,ub)
-        - Ill-conditioned  + unconstrained       x = solve(AtA + alpha^2*LtL, Kty)
-        - Ill-conditioned  + constrained         x = lsqlin(AtA + alpha^2*LtL,Kty,lb,ub)
-        - Ill-conditioned  + non-negativity      x = fnnls((AtA + alpha^2*LtL),Kty)
-    By default, for poorly conditioned cases, Tikhonov regularization with
-    automatic AIC-based regularization parameter selection is used.
+    """ Separable Non-linear Least Squares Solver
    
-    Arguments:
+    Parameters
     ----------
-    y (N-element array or list of arrays)
+    y : array_like or list of array_like
         Input data to be fitted.
-    Amodel (callable)
+    Amodel : callable
         Function taking an array of non-linear parameters and 
-        returning a NxM-element matrix or a list of matrices.
-    par0 (W-element array)
+        returning a matrix array or a list thereof.
+    par0 : array_like
         Start values of the non-linear parameters.
-    lb (W-element array)       
+    lb : array_like
         Lower bounds for the non-linear parameters.
-    ub (W-element array)      
+    ub : array_like
         Upper bounds for the non-linear parameters.
-    lbl (M-element array)       
+    lbl : array_like  
         Lower bounds for the linear parameters.
-    ubl (M-element array)       
+    ubl : array_like
         Upper bounds for the linear parameters.
  
     Return:
     -------
-    pnlin (W-element array)
+    pnlin : ndarray
         Fitted non-linear parameters
-    nlin (M-element array)
+    plin : ndarray
         Fitted linear parameters
-    paramuq (obj)
+    paramuq : obj
         Uncertainty quantification of the joined parameter
         set (linear + non-linear parameters). The confidence intervals
         of the individual subsets can be requested via:
-                paramuq.ci(n)           - n%-CI of the full parameter set
-                paramuq.ci(n,'lin')     - n%-CI of the linear parameter set
-                paramuq.ci(n,'nonlin')  - n%-CI of the non-linear parameter set
+
+        * ``paramuq.ci(n)``           - n%-CI of the full parameter set
+        * ``paramuq.ci(n,'lin')``     - n%-CI of the linear parameter set
+        * ``paramuq.ci(n,'nonlin')``  - n%-CI of the non-linear parameter set
+
     stats (dict)
         Goodness of fit statistical estimators
  
-    Additional keyword arguments:
-    -----------------------------
-    penalty (boolean)
+        * stats['chi2red'] - Reduced \chi^2 test
+        * stats['r2'] - R^2 test
+        * stats['rmsd'] - Root-mean squared deviation (RMSD)
+        * stats['aic'] - Akaike information criterion
+        * stats['aicc'] - Corrected Akaike information criterion
+        * stats['bic'] - Bayesian information criterion
+
+    Other parameters
+    ----------------
+    penalty : boolean
         Forces the use of a regularization penalty on the solution of the linear problem.
         If not specified it is determined automatically based con the condition number of the non-linear model ``Amodel``.
-    regType (str) 
-        Regularization penalty type ('tikh','tv','huber')
+    regType : string 
+        Regularization penalty type:
+
+        * 'tikhonov' - Tikhonov regularizaton
+        * 'tv'  - Total variation regularization
+        * 'huber' - Huber regularization
+        The default is 'tikhonov'.   
+
     regOrder (scalar,int)
         Order of the regularization operator
-    regParam (str or scalar) 
-        Regularization parameter selection method ('lr','lc','cv','gcv',
-        'rgcv','srgcv','aic','bic','aicc','rm','ee','ncp','gml','mcl')
-        or value of the regularization parameter. By default 'aic' is used.
-    alphaOptThreshold (scalar) 
+    regParam (str or scalar): 
+        Method for the automatic selection of the optimal regularization parameter:
+    
+        * 'lr' - L-curve minimum-radius method (LR)
+        * 'lc' - L-curve maximum-curvature method (LC)
+        * 'cv' - Cross validation (CV)
+        * 'gcv' - Generalized Cross Validation (GCV)
+        * 'rgcv' - Robust Generalized Cross Validation (rGCV)
+        * 'srgcv' - Strong Robust Generalized Cross Validation (srGCV)
+        * 'aic' - Akaike information criterion (AIC)
+        * 'bic' - Bayesian information criterion (BIC)
+        * 'aicc' - Corrected Akaike information criterion (AICC)
+        * 'rm' - Residual method (RM)
+        * 'ee' - Extrapolated Error (EE)          
+        * 'ncp' - Normalized Cumulative Periodogram (NCP)
+        * 'gml' - Generalized Maximum Likelihood (GML)
+        * 'mcl' - Mallows' C_L (MCL)
+        The regularization parameter can be manually specified by passing a scalar value instead of a string.
+        The default 'aic'.
+
+    alphaOptThreshold : float scalar
         Relative parameter change threshold for reoptimizing the regularization parameter
-        when using a selection method (default: 1e-3).
-    nnlsSolver (str)
-        Solver used to solve a non-negative least-squares problem: 'fnnls', 'nnlsbpp', or 'cvx' (default).
-    weights (array) 
-        Array of weighting coefficients for the individual signals in global fitting.
-    multiStarts (scalar)
-        Number of starting points for global optimization.
-    nonLinMaxIter (scalar) 
-        Non-linear solver maximal number of iterations.
-    nonLinTolFun (scalar)   
-        Non-linear solver function tolerance.
-    linMaxIter (scalar)     
-        Linear solver maximal number of iterations.
-    linTolFun (scalar)      
-        Linear solver function tolerance.
-    uqanalysis (boolean)
-        Enable/disable the uncertainty quantification analysis.
+        when using a selection method, the default is 1e-3.
+    nnlsSolver : string
+        Solver used to solve a non-negative least-squares problem (if applicable): 
+        
+        * 'cvx' - Optimization of the NNLS problem using the cvxopt package.
+        * 'fnnls' - Optimization using the fast NNLS algorithm.
+        * 'nnlsbpp' - Optimization using the block principal pivoting NNLS algorithm.
+        The default is 'cvx'.
+    weights : array_like 
+        Array of weighting coefficients for the individual signals in global fitting,
+        the default is all weighted equally.
+    multiStarts : int scalar
+        Number of starting points for global optimization, the default is 1.
+    nonLinMaxIter : float scalar
+        Non-linear solver maximal number of iterations, the default is 1e8.
+    nonLinTolFun : float scalar   
+        Non-linear solver function tolerance, the default is 1e-9.
+    linMaxIter : float scalar     
+        Linear solver maximal number of iterations, the default is 1e4.
+    linTolFun : float scalar     
+        Linear solver function tolerance, the default is 1e-15.
+    uqanalysis : boolean
+        Enable/disable the uncertainty quantification analysis, by default it is enabled.
+
+    Notes
+    -----
+    Fits a linear set of parameters ``plin`` and non-linear parameters ``pnlin``
+    by solving the following non-linear least squares problem::
+ 
+        [pnlin,plin] = argmin ||Amodel(pnlin)*plin - y||^2
+                    subject to  pnlin in [lb,ub]
+                                plin  in [lbl,ubl]
+
+
+    where the parameter space is composed of a set of non-linear parameters pnlin and linear parameters ``plin``. If the non-linear function Amodel yields an ill-conditioned problem, the solver will include a regularization penalty and solve the following problem::
+
+        [pnlin,plin] = argmin ||Amodel(pnlin)*plin - y||^2 + alpha^2*||L*plin||^2
+                subject to  pnlin in [lb,ub]
+                            plin  in [lbl,ubl]
+    
+
+    where ``alpha`` and ``L`` are the regularization parameter and operator, respectively.
+
+    When solving the linear problem th function will
+    identify and adapt automatically to the following scenarios:
+        
+        * Well-conditioned + unconstrained       ``plin = solve(A,y)``
+        * Well-conditioned + constrained         ``plin = lsqlin(A,y,lb,ub)``
+        * Ill-conditioned  + unconstrained       ``plin = solve(AtA + alpha^2*LtL, Aty)``
+        * Ill-conditioned  + constrained         ``plin = lsqlin(AtA + alpha^2*LtL,Kty,lb,ub)``
+        * Ill-conditioned  + non-negativity      ``plin = fnnls((AtA + alpha^2*LtL),Aty)``
+
+    By default, for poorly conditioned cases, Tikhonov regularization with
+    automatic AIC regularization parameter selection is used.
+
     """
     # Ensure that all arrays are numpy.nparray
     par0,lb,ub,lbl,ubl = [np.atleast_1d(var) for var in (par0,lb,ub,lbl,ubl)]

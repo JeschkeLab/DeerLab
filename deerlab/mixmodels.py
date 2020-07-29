@@ -7,25 +7,31 @@ import numpy as np
 import types
 
 def mixmodels(*models):
-    """
-    Parametric model mixer
-    ======================
+    """ 
+    Combine DeerLab parametric models into a mixed multi-component model::
 
-    Combine DeerLab parametric models into a mixed multi-component model
-    
-    Usage:
-    ------
         newmodel = mixmodels(model1,model2,...,modelN)
     
-    Arguments:
+
+    Parameters
     ----------
-    models (callables)
+    models : callables
         Parametric DeerLab models to be combined.
 
-    Returns:
+    Returns
     --------
-    newmodel (callable)
-        Mixed model.    
+    newmodel : callable
+        Mixed model.   
+
+    Examples
+    --------
+    If one mixes a single Gaussian model (2 parameters) with a WLC model (2 parameters) into a single model::
+
+        newmodel = mixmodels(dd_gauss,dd_wormchain)
+
+
+    the resulting model newmodel will contain 6 parameters in the following order: the 2 single-Gaussian parameters,
+    1 amplitude parameter for the Gaussian model, the 2 WLC parameters, and 1 amplitude parameter for the WLC model.
     """
     if len(models)==0:
         raise KeyError('At least one model must be provided.')

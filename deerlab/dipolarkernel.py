@@ -3,6 +3,18 @@
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
+"""Docstring for the example.py module.
+
+Modules names should have short, all-lowercase names.  The module name may
+have underscores if this improves readability.
+
+Every module should have a docstring at the very top of the file.  The
+module's docstring may extend over multiple lines.  If your docstring does
+extend over multiple lines, the closing three quotation marks must be on
+a line by itself, preferably preceded by a blank line.
+
+"""
+
 # Numpy + SciPy
 import numpy as np
 from numpy import pi,inf
@@ -24,70 +36,98 @@ def w0(g):
     return (mu0/2)*muB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> Mrad s^-1 nm^3
 
 def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
-                  integralop = True, nknots = 5001, renormalize = True, clearcache = False):
+                  integralop = True, nKnots = 5001, renormalize = True, clearcache = False):
 #===================================================================================================
-    """
-    Dipolar kernel operator
-    =========================
-
-    Computes the dipolar kernel operator which enables the linear transformation from
+    """Compute the dipolar kernel operator which enables the linear transformation from
     distance-domain to time-domain data. 
 
-    Usage: 
-    -----------
-        K = dipolarkernel(t,r)
-        K = dipolarkernel(t,r,lambda)
-        K = dipolarkernel(t,r,lambda,B)
-        K = dipolarkernel(t,r,pathinfo)
-        K = dipolarkernel(t,r,pathinfo,Bmodel)
-
-    Arguments: 
-    -----------
-    t (N-element array)  
-        Dipolar time axis, in microseconds
-    r (M-element array) 
-        Distance axis, in nanometers
-    lambda (scalar)
-        Modulation depth (value between 0 and 1) (default=1)
-        This is equivalent to pathinfo = [1-lambda NaN 0; lambda 0 1]
-    pathinfo (px2-array, px3-array)
+    Parameters
+    ----------
+    t : array_like
+        Dipolar time axis, in microseconds.
+    r : array_like
+        Distance axis, in nanometers.
+    pathinfo : array_like with shape (p,2) or (p,3)
         Array of pathway amplitudes (lambda), refocusing points (T0), and harmonics (n) 
-        for multiple (p) dipolar pathways. Each row contains [lambda T0 n] or [lambda T0] 
-        for one pathway. If n is not given it is assumed to be 1.
-    B/Bmodel (lambda-function, N-element array)
+        for multiple (p) dipolar pathways. Each row contains ``[lambda T0 n]`` or ``[lambda T0]`` 
+        for one pathway. If n is not given it is assumed to be 1. For a pathway with unmodulated contribution, set the refocusing time to ``numpy.nan``.
+    B : callable or array_like
         For a single-pathway model, the numerical background decay can be passed as an array. 
-        For multiple pathways, a lambda-function must be specified with the following structure:
-            Bmodel = lambda par,lambda: bg_model(t,par,lambda)
-        By default, no background decay is included.
+        For multiple pathways, a callable function must be passed, accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``
  
-    Keyword arguments:
-    ------------------
-    method (string, optional)
-        Numerical method for kernel matrix calculation:
-                    'fresnel' - uses Fresnel integrals for the kernel (default)
-                    'integral' - uses explicit integration function (slow, accurate)
-                    'grid' - powder average via explicit grid integration (slow, inaccurate)
-    excbandwidth (scalar, optional)
-        Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth
-    g (scalar, 2-element array, optional)
-        Electron g-values of the spin centers [g1, g2]. If a single g is specified, [g, g] is assumed 
-    integralop (boolean, optional)
-        Whether to return K as an integral operator (i.e K = K*dr) or not (K). Default is True.
-    nknots (scalar, optional)
+    Other Parameters
+    ----------------
+    method : string, default=``'fresnel'``
+        Numerical method for kernel matrix calculation: 
+
+            * 'fresnel' - uses Fresnel integrals for the kernel (default)
+            * 'integral' - uses explicit integration function (slow, accurate)
+            * 'grid' - powder average via explicit grid integration (slow, inaccurate)
+    excbandwidth : scalar, optional
+        Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth [4]_.
+    g : scalar, 2-element array, optional
+        Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, [g, g] is assumed 
+    integralop : boolean, optional
+        Whether to return K as an integral operator (i.e ``K = K*dr``) or not (``K``). Usage as an integral operator means that the matrix operation ``V=K@P`` with a normalized distance distribution (i.e. ``trapz(r,P)==1``) leads to a signal ``V`` with ampliude ``V(t=0)=1``. Default is True.
+    nKnots : scalar, optional
         Number of knots for the grid of powder orientations to be used in the 'grid' kernel calculation method.
-    renormalize (boolean, optional)
-        Re-normalization of multi-pathway kernels to ensure the equality K(t=0,r)==1 is satisfied. Default is True.
-    clearcache (boolean, optional)
+    renormalize : boolean, optional
+        Re-normalization of multi-pathway kernels to ensure the equality ``K(t=0,r)==1`` is satisfied. Default is True.
+    clearcache : boolean, optional
         Clear the cached dipolar kernels at the beginning of the function. Default is False.
 
-    Returns:
-    -----------
-    K (NxM-array)
-        Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is V = K@P
+    Returns
+    --------
+    K : ndarray
+        Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is ``V = K@P``
+
+    Notes
+    -----
+    For a multi-pathway DEER [1]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathinfo`` contains a list of modulation depths (amplitudes) and refocusing times (in microseconds).
+    The background function specified as ''B'' is used as basis function, and the actual multipathway background included into the kernel is compued using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [2]_. 
+    Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals [3]_. If not given, the harmonic is 1 for all pathways. 
 
 
+    Examples
+    --------
+    To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use::
+    
+        lam = 0.4  # modulation depth main signal
+        pathinfo = [[1-lam, nan], [lam, 0]]
+
+        K = dipolarkernel(t,r,pathinfo)
+
+
+    A shorthand input syntax equivalent to this input::
+
+        lam = 0.4
+        K = dipolarkernel(t,r,lam)
+
+
+	To specify a more complete 4-pulse DEER model that, e.g includes the 2+1 contribution, use::
+
+        Lam0 = 0.5                     # unmodulated part
+        lam = 0.4                      # modulation depth main signal
+        lam21 = 0.1                    # modulation depth 2+1 contribution
+        tau2 = 4                       # refocusing time of 2+1 contribution
+        pathinfo = [[],[],[]]
+        pathinfo[0] = [Lam0,   nan]    # unmodulated part, gives offset
+        pathinfo[1] = [lama,    0 ]    # main modulation, refocusing at time zero
+        pathinfo[2] = [lam21, tau2]    # 2+1 modulation, refocusing at time tau2
+        
+        K = dipolarkernel(t,r,pathinfo)
+
+
+    References
+    ----------
+    .. [1] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll: "DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data", Magn. Reson. Discuss., 2020
+
+    .. [2] Fábregas Ibáñez, L. and Jeschke, G.: Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.
+
+    .. [3] Keller, K., Mertens, V., Qi, M., Nalepa, A. I., Godt, A., Savitsky, A., Jeschke, G., and Yulikov, M.: Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19
+
+    .. [4] J.E. Banham, C.M. Baker, S. Ceola, I.J. Day, G.H. Grant, E.J.J. Groenen, C.T. Rodgers, G. Jeschke, C.R. Timmel, Distance measurements in the borderline region of applicability of CW EPR and DEER: A model study on a homologous series of spin-labelled peptides, Journal of Magnetic Resonance, 191, 2, 2008, 202-218
     """
-
     # Clear cache of memoized function is requested
     if clearcache:
         calckernelmatrix.cache_clear()
@@ -142,7 +182,7 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
     n = np.delete(n, unmodulated)
     nModPathways = len(lam)
 
-    kernelmatrix = lambda t: calckernelmatrix(t,r,method,excbandwidth,nknots,g)
+    kernelmatrix = lambda t: calckernelmatrix(t,r,method,excbandwidth,nKnots,g)
     
     # Build dipolar kernel matrix, summing over all pathways
     K = Lambda0
@@ -177,7 +217,7 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
 #==============================================================================
 
 @cached
-def calckernelmatrix(t,r,method,wex,nknots,g):
+def calckernelmatrix(t,r,method,wex,nKnots,g):
 #==============================================================================
 
     t = np.atleast_1d(t)
@@ -208,19 +248,19 @@ def calckernelmatrix(t,r,method,wex,nknots,g):
         return K
     #==========================================================================
     
-    def kernelmatrix_grid(t,r,wex,nknots):
+    def kernelmatrix_grid(t,r,wex,nKnots):
     #==========================================================================
-        """Calculate kernel using grid-based powder integration (converges very slowly with nknots)"""
+        """Calculate kernel using grid-based powder integration (converges very slowly with nKnots)"""
 
         # Orientational grid
-        costheta = np.linspace(0,1,int(nknots))
+        costheta = np.linspace(0,1,int(nKnots))
         q = 1 - 3*costheta**2
         # Vectorized 3D-grid evaluation (t,r,powder averaging)
         C = np.cos(wr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:]*abs(t[:,np.newaxis,np.newaxis]))
         # If given, include limited excitation bandwidth
         if not np.isinf(wex):
             C = C*np.exp(-(wr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:])**2/wex**2)
-        K = np.sum(C,2)/nknots
+        K = np.sum(C,2)/nKnots
         return K
     #==========================================================================
 
@@ -246,6 +286,6 @@ def calckernelmatrix(t,r,method,wex,nknots,g):
     elif method=='integral': 
         K = kernelmatrix_integral(t,r,wex)
     elif method=='grid': 
-        K = kernelmatrix_grid(t,r,wex,nknots)
+        K = kernelmatrix_grid(t,r,wex,nKnots)
     return K
 #==============================================================================

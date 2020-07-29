@@ -10,59 +10,95 @@ from scipy.optimize import least_squares
 import warnings
 
 def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFun=1e-10, maxFunEvals=5000, maxIter = 3000, rescale=True, uqanalysis=True, covmatrix=[]):
-    """  
-    Parametric dipolar signal model fit function
-    =============================================
- 
-    Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
+    """ Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
 
-    Usage:
-    ------
-        param,paramuq,stats = fitparamodel(V,@model,par0,lb,ub)
-        param,paramuq,stats = fitparamodel(V,@model,par0)
-        param,paramuq,stats = fitparamodel([V1,V2,__],@model,par0,lb,ub)
-
-    Arguments:
+    Parameters
     ----------
-    V (array or list of arrays)
+    V : array_like or list of array_like
         Dipolar signal(s) to be fitted.
-    Vmodel (callable)
-        Function taking an array of parameters and returning 
-        the dipolar signal(s) as an array or a list of arrays.
-    par0 (array)
+    Vmodel : callable
+        Function taking an array of parameters and returning the dipolar signal(s) as an array or a list of arrays.
+    par0  : array_like
         Start values of the model parameters.
-    lb (array)       
-        Lower bounds for the model parameters.
-    ub (array)      
-        Upper bounds for the model parameters.
+    lb : array_like      
+        Lower bounds for the model parameters. If not specified, it is left unbounded.
+    ub : array_like     
+        Upper bounds for the model parameters. If not specified, it is left unbounded.
 
-    Return:
+    Returns
     -------
-    param (array)
+    param : ndarray
         Fitted model parameters
-    paramuq (obj)
-        Covariance-based uncertainty quantification of the fitted parameters
-    stats (dict)
-        Goodness of fit statistical estimators
+    paramuq : obj
+        Covariance-based uncertainty quantification of the fitted parameters.
+    stats :  dict
+        Goodness of fit statistical estimators:
 
-    Additional keyword arguments:
-    -----------------------------
-    weights (array, default=1) 
-        Array of weighting coefficients for the individual signals in global fitting.
-    rescale (boolean, default=True)
-        Enable/disable optimization of the signal scale
-    multiStarts (scalar, default=1)
-        Number of starting points for global optimization.
-    uqanalysis (boolean, default=True)
-        Enable/disable the uncertainty quantification analysis.    
-    tolFun (scalar, default=1e-10)
-        Optimizer function tolerance.
-    maxFunEvals (scalar, default=5000)
-        Maximum number of optimizer iterations.
-    maxIter (scalar, default=3000)
-        Maximum number of optimizer iterations.
-    covmatrix (2D-array, default=[])
+        * stats['chi2red'] - Reduced \chi^2 test
+        * stats['r2'] - R^2 test
+        * stats['rmsd'] - Root-mean squared deviation (RMSD)
+        * stats['aic'] - Akaike information criterion
+        * stats['aicc'] - Corrected Akaike information criterion
+        * stats['bic'] - Bayesian information criterion
+
+    Other parameters
+    ----------------
+    weights : array_like 
+        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
+    rescale : boolean
+        Enable/disable optimization of the signal scale, by default it is enabled.
+    multiStarts : scalar
+        Number of starting points for global optimization, the default is 1.
+    uqanalysis : boolean
+        Enable/disable the uncertainty quantification analysis, by default it is enabled.    
+    tolFun : scalar
+        Optimizer function tolerance, the default is 1e-10.
+    maxFunEvals : scalar
+        Maximum number of optimizer iterations, the default is 5000.
+    maxIter : scalar
+        Maximum number of optimizer iterations, the default is 3000.
+    covmatrix : array_like with shape(n,n)
         Covariance matrix of the noise in the dataset(s). If not specified it is automatically computed.
+
+    Examples
+    --------
+    A simple example for fitting a fully parametric 4-pulse DEER signal::
+
+        K0 = dipolarkernel(t,r)
+        def Vmodel(par):
+            # Extract parameters
+            rmean,fwhm,lam,conc = par
+            B = bg_hom3d(t,conc)
+            P = dd_gauss(r,[rmean,fwhm])
+            V = (1-lam + lam*K0@P)*B[:,np,newaxis]
+            return V
+        
+        # par: rmean fwhm lam conc
+        par0 = [3.5, 0.5, 0.2, 250] # start values
+        lb   = [ 1,  0.1,  0,  50 ] # lower bounds
+        ub   = [20,   5,   1,  800] # upper bounds
+        parfit,paruq,stats = fitparamodel(V,Vmodel,par0,lb,ub)
+
+
+    If multiple datasets are to be fitted globally, this can be easily achieved by adapting the example above. Differentiating between local and global parameters is also simple. This example shows the definition of a full parametric model of two signals with same underlying distance distribution and background but different modulation depths::
+    
+        K1 = dipolarkernel(t1,r)
+        K1 = dipolarkernel(t2,r)
+        def Vmodel(par):
+            # Extract parameters
+            rmean,fwhm,lam1,lam,2conc = par
+            B = bg_hom3d(t,conc)
+            P = dd_gauss(r,[rmean,fwhm])
+            V1 = (1-lam1 + lam1*K1@P)*B[:,np,newaxis]
+            V2 = (1-lam2 + lam2*K2@P)*B[:,np,newaxis]
+            return V
+        
+        # par: rmean fwhm lam1 lam2 conc
+        par0 = [3.5, 0.5, 0.2, 0.3, 250] # start values
+        lb   = [ 1,  0.1,  0,   0,  50 ] # lower bounds
+        ub   = [20,   5,   1,   1,  800] # upper bounds
+        parfit,paruq,stats = fitparamodel([V1,V2],Vmodel,par0,lb,ub)
+
     """
 
     lb,ub = np.atleast_1d(lb,ub)

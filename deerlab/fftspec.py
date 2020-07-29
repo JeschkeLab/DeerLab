@@ -16,7 +16,7 @@ def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
 
     Usage:
     -------
-    nu,spec = fftspec(t,S)
+        nu,spec = fftspec(t,S)
     
     Arguments:
     ----------

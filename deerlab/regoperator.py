@@ -1,8 +1,36 @@
+
+# regoperator.py - Regularization Operators
+# --------------------------------------------------
+# This file is a part of DeerLab. License is MIT (see LICENSE.md).
+# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+
 import numpy as np
 
-
 def regoperator(r,d=2):
+    """ Computes the discrete approximation to the derivative operators used as regularization operators.
 
+    Parameters
+    ----------
+    r : array_like with shape(n,)
+        Distance axis, in nanometers.
+    d : int scalar
+        Derivative order, the default is 2.
+
+    Returns
+    -------
+    L : ndarray with shape(n-2,n)
+        Regularization operator (or finite-difference derivative operator).
+        
+    Notes
+    -----
+    All finite difference matrix coefficients are computed via Fornberg's method [1]_. Therefore, the 
+    resulting operator is agnostic with respect to the increments in the distance vector, allowing 
+    uniformly as well as non-uniformly spaced distance vectors. 
+
+    References
+    ----------
+    .. [1] B. Fornberg, "Calculation of weights in finite difference formulas", SIAM Review 40 (1998), pp. 685-691.
+    """
     r = np.atleast_1d(r)
     
     # Check arguments.
@@ -14,12 +42,12 @@ def regoperator(r,d=2):
     # Compute non-zero finite difference coefficients via Fornberg's method
     for i in range(n-d):
         cols = np.arange(i,i+d+1,1)
-        L[i,cols] = fdcoeffF(d,r[i],r[cols])
+        L[i,cols] = _fdcoeffF(d,r[i],r[cols])
 
     return L
 
 
-def fdcoeffF(k,xbar,x):
+def _fdcoeffF(k,xbar,x):
     """
     Compute coefficients for finite difference approximation for the
     derivative of order k at xbar based on grid values at points in x.
