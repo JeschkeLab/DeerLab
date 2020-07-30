@@ -345,7 +345,7 @@ def test_manual_candidates():
     alpha_manual = np.log10(selregparam(V,K,r,'tikhonov','aic',candidates=alphas))
     alpha_auto = np.log10(selregparam(V,K,r,'tikhonov','aic'))
 
-    assert abs(alpha_manual-alpha_auto)<1e-5
+    assert abs(alpha_manual-alpha_auto)<1e-4
 #=======================================================================
 
 def get_alpha_from_regtype(regtype):

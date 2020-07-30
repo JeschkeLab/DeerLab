@@ -24,3 +24,4 @@ from .bootan import bootan
 from .fitsignal import fitsignal
 from .correctscale import correctscale
 from .fftspec import fftspec
+from .time2dist import time2dist

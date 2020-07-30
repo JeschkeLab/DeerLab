@@ -40,26 +40,3 @@ def test_gaussrice():
 
     assert max(abs(Pmix - P)) < 1e-8
 # ======================================================================
-
-def test_fit():
-# ======================================================================
-    "Check the fitting of a mixed model"
-    t = np.linspace(-0.5,5,200)
-    r = np.linspace(2,6,100)
-    mixedModel = mixmodels(dd_gauss,dd_gauss)
-    parInMix = [3, 0.5, 0.3, 4, 0.5, 0.7]
-    Pmix = mixedModel(r,parInMix)
-
-    K = dipolarkernel(t,r)
-    V = K@Pmix
-    Vmodel = lambda par: K@mixedModel(r,par)
-    info = mixedModel()
-    par0 = info['Start']
-    lb = info['Lower'] 
-    ub = info['Upper'] 
-    parfit,_,_ = fitparamodel(V,Vmodel,par0,lb,ub)
-
-    Pfit = mixedModel(r,parfit)
-
-    assert max(abs(Pmix - Pfit)) < 1e-4
-# ======================================================================
