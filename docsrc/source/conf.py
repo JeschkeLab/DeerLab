@@ -106,7 +106,17 @@ def setup(app):
             ),
         ]
     )
-
+    # Patch the MATLAB lexer to correct wrong highlighting
+    from sphinx.highlighting import lexers
+    from pygments.lexers import python
+    from pygments.token import Name
+    from pygments.filters import NameHighlightFilter
+    python_lexer = python.PythonLexer()
+    python_lexer.add_filter(NameHighlightFilter(
+            names=[name.replace('.py','') for name in os.listdir('../deerlab')] + ['plot','subplot','linspace','show'],
+            tokentype=Name.Function,
+            ))
+    app.add_lexer('python', python_lexer)
 
 # These folders are copied to the documentation's HTML output
 html_static_path = ['_static']
@@ -154,12 +164,12 @@ class MyFancyStyle(Style):
         Comment:                'italic #8f8f8f',
         Keyword:                '#c074d5',
         Name.Variable:          '#dddee4',
-        Name.Function:          'noinherit #4893e3',
-        Name.Class:             'noinherit #0000FF',
+        Name.Function:          '#75abff',
+        Name.Class:             '#0000FF',
         Name.Builtin:           '#4893e3',
         String:                 '#90d97a',
-        Operator:               '#52b0bf',
-        Number:                 '#c47643',
+        Operator:               '#84e5f5',
+        Number:                 '#db8e5b',
     }
 
 # Create patch for applying the style 	

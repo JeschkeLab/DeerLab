@@ -10,57 +10,43 @@ from scipy.signal import savgol_filter
 import warnings
 
 def noiselevel(V,*args):
-    """ 
-    Estimation of the noise standard deviation in a signal
-    =======================================================
-
-    Usage:
-    ------
-        sigma = noiselevel(V2D)
-        sigma = noiselevel(Vco)
-        sigma = noiselevel(V)
-        sigma = noiselevel(V,filter)
-        sigma = noiselevel(V,Vref)
-
+    """
     Returns the standard deviation estimation of the noise in a given signal using different methods:
 
-    (A) 
-    If ``V2D`` is a 2D-dataset of different scans, the noise standard deviation
-    is estimated from the deviations between scans. The second dimension of
-    ``V2D`` must contain the different scans. The function returns the standard
-    deviation of the averaged signal not of the individual scans.
 
-    (B)
-    If a 1D signal ``V`` is given, the noise level is estimated via filtering
-    of the signal with a moving mean filter. The nature of the filter can
-    be specified by means of a string ``filter``.
+    * ``sigma = noiselevel(V2D)``: If ``V`` is a 2D-dataset of different scans, the noise standard deviation
+      is estimated from the deviations between scans. The second dimension of
+      ``V2D`` must contain the different scans. The function returns the standard
+      deviation of the averaged signal not of the individual scans
 
-    (C)
-    If a reference model signal ``Vref`` is given, the noise level is
-    estimated from the difference between both signals.
+    * ``sigma = noiselevel(V,filter)``: If a 1D signal ``V`` is given, the noise level is estimated via filtering
+      of the signal with a moving mean filter. The nature of the filter can
+      be specified by means of a string ``filter``.
 
-    (D)
-    If the input signal ``Vco`` contains an imaginary component, the noise
-    level is estimated form the imaginary component after phase optimization.
+    * ``sigma = noiselevel(V,Vref)``: If a reference model signal ``Vref`` is given, the noise level is
+      estimated from the difference between both signals.
 
-    Arguments:
+    * ``sigma = noiselevel(Vco)``: If the input signal ``Vco`` contains an imaginary component, the noise
+      level is estimated form the imaginary component after phase optimization.
+
+    Parameters
     ----------
-    V2D (NxM-element array)
+    V2D : 2D-array_like
         Datasets of single scans of a dipolar signal.
-    Vco (N-element array, complex)
-        Complex-valued dipolar signal.
-    V (N-element array) 
+    V : array_like
         Real-valued dipolar signal
-    filter (string) 
+    filter : string
         Filtering method:
             'movmean' - Moving mean filter
             'savgol'  - Savitzky-Golay filter
-    Vref (N-element array)
+    Vref : array_like
         Reference dipolar signal.
-
-    Returns:
-    --------
-    sigma (scalar)
+    Vco : array_like
+        Complex-valued dipolar signal.
+        
+    Returns
+    -------
+    sigma : scalar
         Estimated noise standard deviation
     
     """

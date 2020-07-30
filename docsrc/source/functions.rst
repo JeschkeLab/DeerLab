@@ -19,11 +19,8 @@ This class of functions allows simulation of dipolar signals and their modeling 
     :maxdepth: 1
 
     ./functions/dipolarkernel
-    ./functions/aptkernel
-    ./functions/dipolarsignal
     ./functions/dipolarbackground
     ./functions/whitenoise
-    ./functions/paramodel
     ./functions/mixmodels
 
 .. rst-class:: func-list
@@ -33,7 +30,6 @@ Function                                         Description
 =============================================  ============================================================
 :ref:`dipolarkernel`                           Dipolar kernel constructor
 :ref:`dipolarbackground`                       Multi-pathway background constructor
-:ref:`dipolarsignal`                           Dipolar signal simulator
 :ref:`whitegaussnoise`                         Gaussian white noise generator
 :ref:`mixmodels`                               Parametric model mixer
 =============================================  ============================================================
@@ -50,16 +46,13 @@ This class of functions can be used and/or combined to create fitting routines o
     :maxdepth: 1
 
     ./functions/fitsignal
-    ./functions/apt
     ./functions/backgroundstart
     ./functions/fitbackground
     ./functions/fitmultimodel
     ./functions/fitparamodel
     ./functions/fitregmodel
-    ./functions/obir
     ./functions/regoperator
     ./functions/bootan
-    ./functions/sensitivan
 
 
 .. rst-class:: func-list
@@ -100,8 +93,6 @@ Function                                         Description
 =============================================  ============================================================
 :ref:`correctphase`                              IQ Phase correction
 :ref:`correctzerotime`                           Dipolar zero-time correction
-:ref:`longpass`                                  Longpass filtering
-:ref:`winlowpass`                                Windowed-lowpass filtering
 =============================================  ============================================================
 
 
@@ -126,7 +117,6 @@ This class of functions helps to find an optimal choice of model or model parame
 =============================================  ============================================================
 Function                                         Description
 =============================================  ============================================================
-:ref:`selectmodel`                              Parametric model selector
 :ref:`selregparam`                              Regularization parameter selector
 :ref:`regparamrange`                            Regularization parameter range selector
 =============================================  ============================================================
@@ -157,7 +147,6 @@ This class of functions provides several tools for quick commands typically requ
 Function                                         Description
 =============================================  ============================================================
 :ref:`deerload`                                  Spectrometer data loader
-:ref:`time2freq`                                 Time to frequency axis converter
 :ref:`noiselevel`                                Noise level estimator
 :ref:`fftspec`                                   Fast-Fourier transform spectrum
 =============================================  ============================================================
@@ -179,6 +168,4 @@ Function                                         Description
 :ref:`correctscale`                              Dipolar signal amplitude rescaling
 :ref:`backgroundstart`                           Background fit start point optimizer
 :ref:`fitbackground`                             Background fitting engine
-:ref:`apt`                                       Approximate Pake transformation (APT)
-:ref:`aptkernel`                                 APT kernel constructor
 =============================================  ============================================================

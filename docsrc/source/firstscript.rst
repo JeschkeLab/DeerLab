@@ -7,8 +7,8 @@ We start by importing the required function/libraries:
 
 .. code-block:: python
 
-   from numpy import linspace
-   from matplotlib.pyplot import subplot,plot,show
+   from numpy import np
+   from matplotlib.pyplot import plt
    from deerlab import *
 
 We continue by generating a distance distribution consisting of a single Gaussian:
@@ -16,14 +16,14 @@ We continue by generating a distance distribution consisting of a single Gaussia
 .. code-block:: python
 
    N = 201                            # number of points
-   r = linspace(1.5,7,N)              # distance range, in nanometers
+   r = np.linspace(1.5,7,N)              # distance range, in nanometers
    P = dd_gauss(r,[3.5, 0.4])         # single-Gaussian distance distribution
 
 Next, we calculate the background decay function due to a homogeneus 3D distribution of spins:
 
 .. code-block:: python
 
-   t = linspace(0,3,N)                # time axis, in microseconds
+   t = np.linspace(0,3,N)                # time axis, in microseconds
    conc = 100                         # spin concentration, in micromolar
    lam = 0.4                          # modulation depth
    B = bg_hom3d(t,conc,lam)           # homogeneous 3D background decay function
@@ -41,8 +41,8 @@ We can look at the result:
 
 .. code-block:: python
 
-   plot(t,V,t,Vexp,t,(1-lam)*B)        # plotting
-   show()
+   plt.plot(t,V,t,Vexp,t,(1-lam)*B)        # plotting
+   plt.show()
 
 Now that we have a noisy DEER trace, we fit it (in a single step) with a non-parametric distance distribution and a homogeneous 3D background.
 
@@ -57,8 +57,8 @@ Finally, we plot the results
    lamfit = parfit['ex']                     # fitted modulation depth
    
    # plotting
-   subplot(2,1,1)
-   plot(t,Vexp,t,Vfit,t,(1-lamfit)*Bfit)     # plot fitted model and background
-   subplot(2,1,2)
-   plot(r,P,r,Pfit)                          # plot fitted distribution
-   show()
+   plt.subplot(2,1,1)
+   plt.plot(t,Vexp,t,Vfit,t,(1-lamfit)*Bfit)     # plot fitted model and background
+   plt.subplot(2,1,2)
+   plt.plot(r,P,r,Pfit)                          # plot fitted distribution
+   plt.show()

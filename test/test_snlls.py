@@ -2,6 +2,7 @@ import numpy as np
 import math
 from deerlab import dipolarkernel,dd_gauss,dd_gauss2,snlls,whitegaussnoise
 from deerlab.bg_models import bg_exp
+from deerlab.utils import ovl
 
 def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
     # Prepare test data
@@ -191,7 +192,7 @@ def test_regularized_global():
 #=======================================================================
     "Check global SNLLS of a nonlinear-constrained + linear-regularized problem"
         
-    t1 = np.linspace(0,3,80)
+    t1 = np.linspace(0,3,150)
     t2 = np.linspace(0,4,200)
     r = np.linspace(2.5,5,80)
     P = dd_gauss2(r,[3.7,0.5,0.5,4.3,0.3,0.5])
@@ -200,9 +201,7 @@ def test_regularized_global():
     lam2 = 0.35
     K1 = dipolarkernel(t1,r,lam1,bg_exp(t1,kappa,lam1))
     K2 = dipolarkernel(t2,r,lam2,bg_exp(t2,kappa,lam2))
-    np.random.seed(1)
     V1 = K1@P
-    np.random.seed(2)
     V2 = K2@P
 
     # Global non-linear model
@@ -225,7 +224,7 @@ def test_regularized_global():
     # Separable LSQ fit
     _,Pfit,_,_ = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl, uqanalysis=False)
 
-    assert  np.max(abs(P - Pfit)) < 5e-2
+    assert  ovl(P,Pfit) > 0.9
 #=======================================================================
 
 

@@ -7,12 +7,33 @@ import matplotlib.pyplot as plt
 #-------------------------------------------------------------------------------
 def deerload(fullbasename,Scaling=None,plot=False,*args,**kwargs):
     """
-    x,y,pars = deerload(fullbase,Scaling=None,plot=None)
     Load file in BES3T format (Bruker EPR Standard for Spectrum Storage and Transfer)
-      .DSC: description file
-      .DTA: data file
-    used on Bruker ELEXSYS and EMX machines
-    Code based on BES3T version 1.2 (Xepr >=2.1)
+    
+    * .DSC: description file
+    * .DTA: data file
+    
+    used on Bruker ELEXSYS and EMX machines. 
+
+    Parameters
+    ----------
+    fullbasename : string
+        Full name of data file.
+    
+    Returns
+    -------
+    t : ndarray
+        Time axis.
+    V : ndarray
+        Experimental signal.
+    pars : dict
+        Parameter file entries.
+
+    Notes
+    -----
+    Most commercial spectrometers save their data in nanoseconds. Since the
+    required time unit in DeerLab is microseconds, it is important to check
+    the values of ``t`` returned by ``deerload`` and convert to microseconds if necessary.
+    Code based on BES3T version 1.2 (Xepr >=2.1).
     """
     filename = fullbasename[:-4]
     fileextension = fullbasename[-4:].upper() # case insensitive extension

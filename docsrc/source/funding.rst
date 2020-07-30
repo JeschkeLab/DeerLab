@@ -6,7 +6,7 @@ DeerLab has been funded by:
     
     
 ETH Zurich
------------------------
+------------
  * **Grant:** ETH-35 18-2
  
 .. image:: images/eth_logo.png
@@ -14,7 +14,7 @@ ETH Zurich
    
  
 National Institutes of Health 
---------------------------
+------------------------------
  * **Grant:** GM125753 
  * **Grant:** GM127325
 
@@ -25,7 +25,7 @@ National Institutes of Health
    
    
 National Science Foundation
------------------------
+----------------------------
  * **Grant:** CHE-1452967
 
 .. image:: images/nsf_logo.png

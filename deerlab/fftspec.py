@@ -10,36 +10,29 @@ from numpy.fft import fft, fftshift
 def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
     """
     Fast-Fourier transform spectrum
-    ===============================
-
-    Computes the FFT spectrum of a signal.
-
-    Usage:
-    -------
-        nu,spec = fftspec(t,S)
-    
-    Arguments:
+ 
+    Parameters
     ----------
-    V (array)
+    V : array_like
         Signal to be processed.
-    t (array)
+    t : array_like
         Time axis, in microseconds.
 
-    Returns:
-    --------
-    nu (array)
+    Returns
+    -------
+    nu : ndarray
         Frequency axis, in megahertz
-    spec (array)
+    spec : ndarray
         FFT spectrum.
 
-    Additional keyword arguments:
-    -----------------------------
-    mode (string, default='abs') 
-        Type of spectrum to be returned ('real','imag','abs')
-    zerofilling (scalar, default = 2*len(V) )
-        Number of elements in the output FFT spectrum
-    aposization (boolean, default=True)
-        Use of a Hamming apodization window
+    Other parameters
+    ----------------
+    mode : string 
+        Type of spectrum to be returned ('real','imag','abs'), the default is 'abs'.
+    zerofilling : scalar
+        Number of elements in the output FFT spectrum, the default is ``2*len(V)``.
+    aposization : boolean
+        Use of a Hamming apodization window, the default is True.
     """
     
     if zerofilling is 'auto':

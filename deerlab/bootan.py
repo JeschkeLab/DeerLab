@@ -8,40 +8,50 @@ import types
 from deerlab import uqst
 
 def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
-    """
-    Bootstrap analysis for uncertainty quantification
-    =================================================
-    
-    Bootstrap analysis of for uncertainty quantification.
+    """ Bootstrap analysis for uncertainty quantification
 
-    Usage:
-    ------
-    bootuq = bootan(fcn,V,Vfit,samples)
-
-    Arguments:
+    Parameters
     ----------
-    fcn (callable)
-        Function to be analyzed.
-    V (array or list of arrays)
+    fcn : callable
+        Function to be analyzed. Must be a callable function accepting a signal array as input and returning a tuple with all variables to be analyzed.
+        All variables must be numerical arrays (no strings or booleans) and must preserve shape between calls.
+    V : array_like or list of array_like
         Experimental dataset(s).
-    Vfit (array or list of arrays)
+    Vfit : array or list of array_like
         Fit of the dataset(s).
-    samples (scalar, default=1000)
-        Number of bootstrap samples to analyze.
+    samples : scalar
+        Number of bootstrap samples to analyze. The quality of bootstrapping results improve with the number of boostrap samples evaluated, the default is 1000.
 
-    Returns:
-    --------
-    bootuq (obj)
-        Bootstrap uncertainty quantification object.
+    Returns
+    -------
+    bootuq : obj or list of obj
+        Bootstrap uncertainty quantification object or list thereof for each variable returned by ``fcn``. 
 
-    Additional keyword arguments:
-    ----------------------------- 
-    resampling (string, default='gaussian')
+    Other Parameters
+    ----------------
+    resampling : string
+        Default: 'gaussian'
         Specifies the method employed for re-sampling new bootstrap samples.
-            'gaussian' - Sample noise from a Gaussian distribution
-            'residual' - Sample noise from the fit residuals
-    verbose (boolean, default=False)
-        Specifies whether to print the progress of the bootstrap analysis on the command window.
+
+        * 'gaussian' - Sample noise from a Gaussian distribution
+        * 'residual' - Sample noise from the fit residuals
+    verbose : boolean
+        Specifies whether to print the progress of the bootstrap analysis on the command window, the default is false.
+
+    Examples
+    --------
+    To analyze several variables during the same run, the function must return tuple containing all of them::
+
+        def myfcn(V):
+            Pfit1 = fitparamodel(V,dd_gauss,r,K)
+            Pfit2 = fitparamodel(V,dd_randcoil,r,K)
+            return Pfit1,Pfit2
+
+        bootuq = bootan(@(V)myfcn(p,varargin),V,Vfit)
+        Pfit1_uq = bootuq[0]
+        Pfit2_uq = bootuq[1]
+
+
     """
 
     nSamples = samples
