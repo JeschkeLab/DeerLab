@@ -21,8 +21,7 @@ jobs:
         with:
           python-version: 3.6
 
-      - name: Cache pip and pipwin
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         if: startsWith(runner.os, 'Windows')
         with:
           path: |
@@ -32,7 +31,7 @@ jobs:
           restore-keys: |
             {{ runner.os }}-pip-
 
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         if: startsWith(runner.os, 'macOS')
         with:
           path: |
@@ -41,7 +40,7 @@ jobs:
           restore-keys: |
             {{ runner.os }}-pip-
 
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         if: startsWith(runner.os, 'Linux')
         with:
           path: |
