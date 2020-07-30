@@ -20,3 +20,6 @@ docs/
 docsrc/cache/
 docsrc/source/__pycache__/
 docsrc/__pycache__/
+dist/
+build/
+.debugging.py
