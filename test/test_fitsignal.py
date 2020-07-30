@@ -173,7 +173,7 @@ def test_global_4pdeer():
     
     _,Pfit,_,_,_,_,_ = fitsignal([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
 
-    assert ovl(P,Pfit) > 0.95
+    assert ovl(P,Pfit) > 0.90
 # ======================================================================
 
 def test_global_full_parametric():

@@ -61,5 +61,5 @@ def test_fit():
 
     Pfit = mixedModel(r,parfit)
 
-    assert max(abs(Pmix - Pfit)) < 1e-5
+    assert max(abs(Pmix - Pfit)) < 1e-4
 # ======================================================================

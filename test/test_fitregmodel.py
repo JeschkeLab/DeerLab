@@ -255,7 +255,7 @@ def test_renormalize():
     Praw,_ = fitregmodel(V,K,r,'tikhonov','aic',renormalize = False)
     Prenorm,_ = fitregmodel(V,K,r,'tikhonov','aic',renormalize = True)
 
-    assert max(abs(Praw - Prenorm*np.trapz(Praw,r))) < 1e-10
+    assert max(abs(Praw - Prenorm*np.trapz(Praw,r))) < 1e-8
 #============================================================
 
 def test_scale_agnostic():
@@ -271,7 +271,7 @@ def test_scale_agnostic():
 
     Pfit,_ = fitregmodel(V,K,r,'tikhonov','aic',renormalize = False)
 
-    assert max(abs(P - Pfit/scale)) < 1e-5
+    assert max(abs(P - Pfit/scale)) < 1e-4
 #============================================================
 
 def test_nonuniform_r():
