@@ -37,6 +37,7 @@ def _multirice3dfun(r,nu,sig,a):
 #=================================================================
     "Compute a distribution with multiple Gaussians"    
     N = len(nu)
+    nu = np.maximum(nu,0) # to avoid invalid values
     n = 3 # degrees of freedom
     P = np.zeros_like(r)
     for k in range(N):
