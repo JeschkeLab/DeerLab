@@ -5,7 +5,7 @@
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from numpy.fft import fft, fftshift
+from numpy.fft import fft, fftshift, fftfreq
 
 def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
     """
@@ -51,14 +51,13 @@ def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
     if mode is 'abs':
             spec = np.abs(spec)
     elif mode is 'real':
-            spec  = np.real(spec)
+            spec  = spec.real
     elif mode is 'imag':
-            spec = np.imag(spec)
+            spec = spec.imag
     else:
         raise KeyError("Invalid spectrum mode. Must be 'abs', 'real', or 'imag'. ")
 
-    #Get frequency axis and switch output order
-    dt = np.mean(np.diff(t))
-    nu = np.linspace(-1/(2*dt),1/(2*dt),zerofilling)
 
-    return nu, spec 
+    freq = fftshift(fftfreq(zerofilling,np.mean(np.diff(t))))
+
+    return freq, spec 
