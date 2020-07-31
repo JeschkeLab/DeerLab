@@ -3,7 +3,7 @@ import scipy
 import scipy.optimize as opt
 import numpy.matlib
 
-def jacobianest(fun,x0):
+def jacobianest(fcn_,x0):
     """
     Jacobian numerical estimation
     =============================
@@ -107,6 +107,9 @@ def jacobianest(fun,x0):
     MaxStep = 2
     StepRatio = 2.0000001
 
+    # Patch the input function to handle invalid values in bounded functions
+    fun = lambda args: _detect_invalid_values(fcn_,args)
+
     # Get fun at the center point
     f0 = fun(x0)
     n = len(f0)
@@ -167,3 +170,10 @@ def jacobianest(fun,x0):
 
     return jac, err 
 # ----------------------------------------------------------------------
+
+def _detect_invalid_values(fcn,args):
+    out = fcn(args)
+    out = np.atleast_1d(out)
+    if np.any(np.isnan(out)) or np.any(np.isinf(out)) or not np.all(np.isreal(out)):
+        out = np.zeros_like(out)
+    return out
