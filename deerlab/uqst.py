@@ -35,11 +35,6 @@ class uqst:
             parfit = data
             self.__parfit = parfit
             nParam = len(parfit)
-            if len(lb)==0:
-                lb = np.full(nParam, -np.inf)
-            
-            if len(ub)==0:
-                ub = np.full(nParam, np.inf)
             
         elif uqtype == 'bootstrap':
             # Scheme 2: uqst('bootstrap',samples)
@@ -49,6 +44,12 @@ class uqst:
                 
         else:
             raise NameError('uqtype not found. Must be: ''covariance'' or ''bootstrap''.')
+
+        if len(lb)==0:
+            lb = np.full(nParam, -np.inf)
+        
+        if len(ub)==0:
+            ub = np.full(nParam, np.inf)
 
         # Create confidence intervals structure
         if uqtype=='covariance':
@@ -95,15 +96,18 @@ class uqst:
 
         if self.__uqtype == 'bootstrap':
             # Get bw using silverman's rule (1D only)
-            sigma = np.std(self.__samples[:, n], ddof=1)
-            bw = sigma * (len(self.__samples) * 3 / 4.0) ** (-1 / 5)
+            samplen = self.__samples[:, n]
+            sigma = np.std(samplen, ddof=1)
+            bw = sigma * (len(samplen) * 3 / 4.0) ** (-1 / 5)
 
             # Make histogram
-            bins = np.linspace(self.__lb[n], self.__ub[n], 2 ** 10 + 1)
-            count, edges = np.histogram(self.__samples[:, n], bins=bins)
+            maxbin = np.maximum(np.max(samplen),np.mean(samplen)+3*sigma)
+            minbin = np.minimum(np.min(samplen),np.mean(samplen)-3*sigma)
+            bins = np.linspace(minbin,maxbin, 2**10 + 1)
+            count, edges = np.histogram(samplen, bins=bins)
 
             # Generate kernel
-            delta = (edges.max() - edges.min()) / (len(edges) - 1)
+            delta = np.maximum(np.finfo(float).eps,(edges.max() - edges.min()) / (len(edges) - 1))
             kernel_x = np.arange(-4 * bw, 4 * bw + delta, delta)
             kernel = norm(0, bw).pdf(kernel_x)
 
@@ -132,6 +136,7 @@ class uqst:
             values,pdf = self.pardist(n)
             # Compute corresponding CDF
             cdf = np.cumsum(pdf)
+            cdf /= max(cdf)
             # Eliminate duplicates
             cdf, index = np.lib.arraysetops.unique(cdf,return_index=True)
             # Interpolate requested percentile
