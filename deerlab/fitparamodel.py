@@ -101,6 +101,9 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
 
     """
 
+    if isempty(par0):
+        raise KeyError('The start values par0 of the parameters must be specified')
+
     lb,ub = np.atleast_1d(lb,ub)
     V, model, weights, Vsubsets = parse_multidatasets(V, model, weights)
 

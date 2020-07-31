@@ -111,7 +111,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         * stats['aicc'] - Corrected Akaike information criterion
         * stats['bic'] - Bayesian information criterion
 
-    Other parameters
+    Other Parameters
     ----------------
     weights : array_like 
         Array of weighting coefficients for the individual signals in global fitting,
@@ -147,7 +147,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
     
     
     Fit a 4pDEER form factor (no background) with bimodal Gaussian distribution:: 
-                 
+
         Vfit,Pfit,Bfit,parfit,modfituq,paruq,stats = fitsignal(V,t,r,dd_gauss2,'none',ex_4pdeer)   
    
      
@@ -461,7 +461,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
 
     def _display_results():
     # =========================================================================
-        _,axs = plt.subplots(1, nSignals+1)
+        _,axs = plt.subplots(nSignals+1,1)
         for i in range(nSignals):
             # Get confidence intervals for the signal
             Vci95 = Vfit_uq[i].ci(95)

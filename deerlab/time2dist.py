@@ -3,8 +3,9 @@
 # This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 import numpy as np
+from deerlab.utils import isempty
 
-def time2dist(t, M='auto'):
+def time2dist(t, M=[]):
     """ 
     DeerAnalysis conversion from time-axis to distance-axis
 
@@ -40,7 +41,7 @@ def time2dist(t, M='auto'):
 
     t = np.atleast_1d(t)
 
-    if M is 'auto':
+    if isempty(M):
         M = len(t)
 
     t = np.abs(t)
