@@ -1,4 +1,4 @@
-.. highlight:: matlab
+.. highlight:: python
 .. _fftspec:
 
 

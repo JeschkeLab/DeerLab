@@ -166,6 +166,4 @@ Function                                         Description
 =============================================  ============================================================
 :ref:`time2dist`                                 Heuristic time-to-distance axis converter
 :ref:`correctscale`                              Dipolar signal amplitude rescaling
-:ref:`backgroundstart`                           Background fit start point optimizer
-:ref:`fitbackground`                             Background fitting engine
 =============================================  ============================================================

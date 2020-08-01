@@ -1,4 +1,4 @@
-.. highlight:: matlab
+.. highlight:: python
 .. _dd_circle:
 
 
@@ -6,33 +6,13 @@
 :mod:`dd_circle`
 ***********************
 
-Semi-circle distribution
+.. autofunction:: deerlab.dd_models.dd_circle
 
------------------------------
-
-
-Syntax
-=========================================
-
-.. code-block:: matlab
-
-        info = dd_circle()
-        P = dd_circle(r,param)
-
-Parameters
-    *   ``r`` - Distance axis (N-array)
-    *   ``param`` - Model parameters
-Returns
-    *   ``P`` - Distance distribution (N-array)
-    *   ``info`` - Model information (struct)
-
------------------------------
 
 Model
 =========================================
 
 This provides a `semi-circle distribution <https://en.wikipedia.org/wiki/Wigner_semicircle_distribution>`_, defined by  :math:`P(r) = 2\pi\sqrt{(r-r_0)^2/R^2+1}` for :math:`r_0-R\le r\le r_0+R` and zero otherwise.
-
 
 
 ============== ======================== ========= ============= ============= ========================
@@ -47,32 +27,3 @@ Example using default parameters:
 
 .. image:: ../images/model_dd_circle.png
    :width: 650px
-
-
------------------------------
-
-
-Description
-=========================================
-
-.. code-block:: matlab
-
-        info = dd_circle()
-
-Returns an ``info`` structure containing the information of the model parameters and boundaries.
-
-* ``info(n).Index`` -  Index of the parameter in the ``param`` array.
-* ``info(n).Parameter`` -  Description of the n-th parameter.
-* ``info(n).Lower`` -  Lower bound of the n-th parameter.
-* ``info(n).Upper`` -  Upper bound of the n-th parameter.
-* ``info(n).Start`` -  Start value of the n-th parameter.
-
------------------------------
-
-
-.. code-block:: matlab
-
-    P = dd_circle(r,[3 0.5]])
-
-Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
-

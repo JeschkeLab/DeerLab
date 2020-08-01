@@ -7,7 +7,7 @@ def correctphase(V, Phase = [], fitImagOffset=False, full_output=False):
 # ==========================================================================
     """
     Phase correction of complex-valued data
-    =======================================
+
     Performs a phase optimization on the complex-valued data ``V`` by minimization of the
     imaginary component of the data. The phase can be corrected manually by specifying 
     a phase ``phase``, in radians.
@@ -16,27 +16,31 @@ def correctphase(V, Phase = [], fitImagOffset=False, full_output=False):
     and the phase correction will be done on each trace individually. The first dimension ``V2D[:,i]``
     must contain the single traces. An array of phases ``phases`` can be specified to manually correct the traces.
 
-    Arguments:
+    Parameters
     ----------
-    V (Nxk-element array)
-        Complex-valued dataset containing k signals
-    Phase (scalar)
-        Phase shift for manual correction in radians
-    fitImagOffset (boolean)
-        Enables/Disables the fitting and correction of an imaginary offset. 
-    full_output (boolean, optional)
-        If enabled (True) the function will return additional output arguments in a tuple.
+    V : array_like or list of array_like
+        Complex-valued signals or list thereof.
 
     Returns:
     --------
-    Vr (Nxk-element array)
+    Vr : ndarray
         Real part of the phase corrected dataset.
-    Vi (Nxk-element array, if full_output==True)
+    Vi : ndarray (if full_output==True)
         Imaginary part of the phase corrected dataset.
-    Phase (scalar, if full_output==True)
+    Phase : float scalar (if full_output==True)
         Fitted phase used for correction, in radians.    
-    ImOffset (scalar, if full_output==True)
+    ImOffset : float scalar (if full_output==True)
         Fitted imaginary offset used for correction.
+
+    Other Parameters
+    ----------------
+    Phase  : float scalar
+        Phase shift for manual correction, in radians. 
+    fitImagOffset : boolean
+        Enables/Disables the fitting and correction of an imaginary offset, by default disabled.
+    full_output : boolean
+        If enabled (True) the function will return additional output arguments in a tuple, by default disabled.
+
     """
 
     if V.ndim == 1:

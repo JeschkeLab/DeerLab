@@ -86,8 +86,8 @@ def test_dd_shell():
 def test_dd_shellshell():
     assert_ddmodel(dd_shellshell)
 
-def test_dd_shellshpere():
-    assert_ddmodel(dd_shellshpere)
+def test_dd_shellsphere():
+    assert_ddmodel(dd_shellsphere)
 
 def test_dd_shellvoidsphere():
     assert_ddmodel(dd_shellvoidsphere)

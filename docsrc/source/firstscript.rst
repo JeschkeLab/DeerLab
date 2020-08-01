@@ -16,14 +16,14 @@ We continue by generating a distance distribution consisting of a single Gaussia
 .. code-block:: python
 
    N = 201                            # number of points
-   r = np.linspace(1.5,7,N)              # distance range, in nanometers
+   r = np.linspace(1.5,7,N)           # distance range, in nanometers
    P = dd_gauss(r,[3.5, 0.4])         # single-Gaussian distance distribution
 
 Next, we calculate the background decay function due to a homogeneus 3D distribution of spins:
 
 .. code-block:: python
 
-   t = np.linspace(0,3,N)                # time axis, in microseconds
+   t = np.linspace(0,3,N)             # time axis, in microseconds
    conc = 100                         # spin concentration, in micromolar
    lam = 0.4                          # modulation depth
    B = bg_hom3d(t,conc,lam)           # homogeneous 3D background decay function
@@ -41,7 +41,7 @@ We can look at the result:
 
 .. code-block:: python
 
-   plt.plot(t,V,t,Vexp,t,(1-lam)*B)        # plotting
+   plt.plot(t,V,t,Vexp,t,(1-lam)*B)   # plotting
    plt.show()
 
 Now that we have a noisy DEER trace, we fit it (in a single step) with a non-parametric distance distribution and a homogeneous 3D background.
@@ -54,7 +54,7 @@ Finally, we plot the results
 
 .. code-block:: python
 
-   lamfit = parfit['ex']                     # fitted modulation depth
+   lamfit = parfit['ex']                         # fitted modulation depth
    
    # plotting
    plt.subplot(2,1,1)

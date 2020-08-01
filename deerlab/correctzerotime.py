@@ -10,26 +10,23 @@ import scipy as scp
 # ==============================================================================
 def correctzerotime(V,t):
     """
-    Zero-time correction of dipolar spectroscopy signals
-    =====================================================
+    Determines and corrects the zero-time of a dipolar signal via a first-moment integral analysis [1]_.
     
-    Determines and corrects the zero-time of a dipolar signal via a first-moment integral analysis:
-    See: G. Jeschke, Appl.Magn.Reson. 30, 473-498 (2006) p.485 https://doi.org/10.1007/BF03166213
-    
-    Arguments:
+    Parameters
     ----------
-    V (N-element array)
+    V : array_like
         Dipolar signal.
-    t (N-element array)
-        Time-axis, in microseconds.
+    t : array_like
+        Time axis, in microseconds.
 
-    Returns:
+    Returns
     --------
-    tcorr (N-element array)
+    tcorr : ndarray
         Zero-time corrected time axis, in microseconds.
-    t0 (scalar)
-        Zero-time, in microseconds.
 
+    References
+    ----------
+    .. [1] G. Jeschke, Appl.Magn.Reson. 30, 473-498 (2006) p.485
     """
 
     if len(t)!=len(V):
@@ -75,5 +72,5 @@ def correctzerotime(V,t):
     # Determine index of time axis point closest to t0
     idxt0 = np.argmin(abs(tcorr))
 
-    return tcorr, t0
+    return tcorr
 # ==============================================================================

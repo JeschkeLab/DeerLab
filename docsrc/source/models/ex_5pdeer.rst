@@ -1,4 +1,4 @@
-.. highlight:: matlab
+.. highlight:: python
 .. _ex_5pdeer:
 
 
@@ -6,27 +6,7 @@
 :mod:`ex_5pdeer`
 ***********************
 
-5-pulse DEER experiment 
-
------------------------------
-
-
-Syntax
-=========================================
-
-.. code-block:: matlab
-
-        info = ex_5pdeer()
-        pathways = ex_5pdeer(param)
-
-Parameters
-    *   ``param`` - Model parameters (array)
-Returns
-    *   ``pathways`` - Dipolar pathways (array)
-    *   ``info`` - Model information (struct)
-
-
------------------------------
+.. autofunction:: deerlab.ex_models.ex_5pdeer
 
 Model
 =========================================
@@ -59,32 +39,3 @@ Example of a simulated signal using default parameters:
 
 .. image:: ../images/model_ex_5pdeer.png
    :width: 550px
-
------------------------------
-
-
-Description
-=========================================
-
-.. code-block:: matlab
-
-        info = ex_5pdeer()
-
-Returns an ``info`` structure containing the information of the model parameters and boundaries.
-
-* ``info(n).Index`` -  Index of the n-th parameter in the ``param`` array.
-* ``info(n).Parameter`` -  Description of the n-th parameter.
-* ``info(n).Lower`` -  Lower bound of the n-th parameter.
-* ``info(n).Upper`` -  Upper bound of the n-th parameter.
-* ``info(n).Start`` -  Start value of the n-th parameter.
-
------------------------------
-
-.. code-block:: matlab
-
-        pathways = ex_5pdeer(param)
-
-Generates the dipolar pathways matrix ``pathways`` from the model parameters ``param``. 
-
-
-

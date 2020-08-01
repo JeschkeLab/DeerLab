@@ -1,4 +1,4 @@
-.. highlight:: matlab
+.. highlight:: python
 .. _example_param_error_propagation:
 
 **********************************************************************************

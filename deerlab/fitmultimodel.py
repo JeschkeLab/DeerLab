@@ -14,16 +14,6 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
     """ Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
 
-    Usage:
-    ------
-        Pfit,parfit,Puq,paruq,stats = fitmultimodel(___)
-        ___ = fitmultimodel(V,K,r,Pmodel,maxModels,method,lb,ub)
-        ___ = fitmultimodel(V,K,r,Pmodel,maxModels,method)
-        ___ = fitmultimodel(V,Kmodel,r,Pmodel,maxModels,method,lb,ub)
-        ___ = fitmultimodel(V,Kmodel,r,Pmodel,maxModels,method)
-        ___ = fitmultimodel([V1,V2,___],[K1,K2,___],r,Pmodel,maxModels,method,lb,ub)
-        ___ = fitmultimodel([V1,V2,___],Kmodel,r,Pmodel,maxModels,method,lb,ub)
-
     Parameters
     ----------
     V : array_like or list of array_like
@@ -43,11 +33,12 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
     method : string
         Functional metric used for the selection of the optimal number of components:
 
-        * 'aic'  Akaike information criterion
-        * 'aicc' corrected Akaike information criterion
-        * 'bic'  Bayesian information criterion
-        * 'rmsd' Root-mean squared deviation
-        The default is 'aic'.
+        * ``'aic'``  Akaike information criterion
+        * ``'aicc'`` corrected Akaike information criterion
+        * ``'bic'``  Bayesian information criterion
+        * ``'rmsd'`` Root-mean squared deviation
+        The default is ``'aic'``.
+        
     lb : array_like
         Lower bounds for the distribution basis model parameters. If not specified, parameters are unbounded.
     ub : array_like
@@ -64,22 +55,23 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
     parfit : list of ndarray
         Fitted model parameters. The different subsets can be accessed as follows:
         
-        * parfit[0] - Array of fitted kernel parameters
-        * parfit[1] - Array of fitted distance distribution components parameters
-        * parfit[2] - Array of fitted components amplitudes
-    Puq : obj
+        * ``parfit[0]`` - Array of fitted kernel parameters
+        * ``parfit[1]`` - Array of fitted distance distribution components parameters
+        * ``parfit[2]`` - Array of fitted components amplitudes
+
+    Puq : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted distance distribution
-    paramuq : obj
+    paramuq : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted parameters
     stats : dict
         Goodness of fit statistical estimators:
 
-        * stats['chi2red'] - Reduced \chi^2 test
-        * stats['r2'] - R^2 test
-        * stats['rmsd'] - Root-mean squared deviation (RMSD)
-        * stats['aic'] - Akaike information criterion
-        * stats['aicc'] - Corrected Akaike information criterion
-        * stats['bic'] - Bayesian information criterion
+        * ``stats['chi2red']`` - Reduced \chi^2 test
+        * ``stats['r2']`` - R^2 test
+        * ``stats['rmsd']`` - Root-mean squared deviation (RMSD)
+        * ``stats['aic']`` - Akaike information criterion
+        * ``stats['aicc']`` - Corrected Akaike information criterion
+        * ``stats['bic']`` - Bayesian information criterion
 
     Additional keyword arguments:
     -----------------------------
@@ -306,6 +298,7 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
 
     # Select the optimal model
     # ========================
+    Peval = Pfit
     fcnals = logest[method]
     idx = np.argmin(fcnals)
     Nopt = idx+1
@@ -341,7 +334,7 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
         covmatrix = hccm(J,res,'HC1')
         
         # Construct uncertainty quantification structure for fitted parameters
-        paramuq = dl.uqst('covariance',np.concatenate((pnonlin, plin)),covmatrix,np.concatenate((nlin_lb, lin_lb)),np.concatenate((nlin_ub, lin_ub)))
+        paramuq = dl.UncertQuant('covariance',np.concatenate((pnonlin, plin)),covmatrix,np.concatenate((nlin_lb, lin_lb)),np.concatenate((nlin_ub, lin_ub)))
         
         P_subset = np.arange(0, nKparam+nparam*Nopt)
         amps_subset = np.arange(P_subset[-1]+1, P_subset[-1]+1+Nopt)
@@ -366,5 +359,5 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
             Puq.ci = lambda p: Puq_.ci(p)/Pnorm
 
-    return Pfit, fitparam, Puq, paramuq, stats
+    return Pfit, fitparam, Puq, paramuq, fcnals, Peval, stats
     # =========================================================================

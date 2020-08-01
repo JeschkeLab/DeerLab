@@ -10,7 +10,7 @@ from .dipolarkernel import dipolarkernel
 from .dipolarbackground import dipolarbackground
 from .fitregmodel import fitregmodel
 from .regoperator import regoperator
-from .uqst import uqst
+from .uncertainty import UncertQuant
 from .correctphase import correctphase
 from .mixmodels import mixmodels
 from .correctzerotime import correctzerotime

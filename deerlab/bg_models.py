@@ -27,12 +27,18 @@ def _parsargs(args,npar):
 def bg_exp(*args):
     """
     Exponential background model
-    ============================
    
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. 
-    Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = bg_exp()
+
+
+    Otherwise the function returns to calculated background model::
+    
+
+        B = bg_exp(t,param)
+        B = bg_exp(t,param,lam)
+ 
  
     Model parameters:
     -------------------
@@ -43,28 +49,27 @@ def bg_exp(*args):
       Decay Rate    us-1       0       200      0.35 
      -------------------------------------------------
 
-    Usage:
-    ------
-        info = bg_exp()
-        B = bg_exp(t,param)
 
-    Arguments:
+    Parameters
     ----------
-    t (N-element array)
+    t : array_like
         Time axis, in microseconds.
-    param (1-element array)
+    param : array_like
         List of model parameter values.
+    lam : float scalar
+        Pathway amplitude. If not specified it is set to 1.
 
-    Returns:
-    --------
-    info (dict, if not arguments specified)
+    Returns
+    -------
+    info : dict
         Dictionary containing the built-in information of the model:
-            'Parameters': string list of parameter names
-            'Units': string list of metric units of parameters
-            'Start': list of values used as start values during optimization 
-            'Lower': list of values used as lower bounds during optimization 
-            'Upper': list of values used as upper bounds during optimization 
-    B (N-element array)
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    B : ndarray
         Background decay function. 
     """  
 # ======================================================================
@@ -91,14 +96,18 @@ def bg_exp(*args):
 def bg_hom3d(*args):
     """
     Background from homogeneous distribution of spins in a 3D medium
-    =================================================================
-   
-    Multi-pulse DEER background originating from a homogenous distribution of pumped spins in a 3D homogenous medium.
 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. 
-    Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = bg_hom3d()
+
+
+    Otherwise the function returns to calculated background model::
+    
+
+        B = bg_hom3d(t,param)
+        B = bg_hom3d(t,param,lam)
+ 
  
     Model parameters:
     -------------------
@@ -109,28 +118,26 @@ def bg_hom3d(*args):
       Concentration of pumped spins     uM        0.01    5000      50 
      ----------------------------------------------------------------------
 
-    Usage:
-    ------
-        info = bg_hom3d()
-        B = bg_hom3d(t,param)
-
-    Arguments:
+    Parameters
     ----------
-    t (N-element array)
+    t : array_like
         Time axis, in microseconds.
-    param (1-element array)
+    param : array_like
         List of model parameter values.
+    lam : float scalar
+        Pathway amplitude. If not specified it is set to 1.
 
-    Returns:
-    --------
-    info (dict, if not arguments specified)
+    Returns
+    -------
+    info : dict
         Dictionary containing the built-in information of the model:
-            'Parameters': string list of parameter names
-            'Units': string list of metric units of parameters
-            'Start': list of values used as start values during optimization 
-            'Lower': list of values used as lower bounds during optimization 
-            'Upper': list of values used as upper bounds during optimization 
-    B (N-element array)
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    B : ndarray
         Background decay function. 
     """  
 # ======================================================================
@@ -167,12 +174,18 @@ from deerlab.utils import load_exvolume_redfactor
 def bg_hom3dex(*args):
     """
     Background from homogeneous distribution of spins with excluded-volume effects
-    ===============================================================================
-   
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. 
-    Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = bg_hom3dex()
+
+
+    Otherwise the function returns to calculated background model::
+    
+
+        B = bg_hom3dex(t,param)
+        B = bg_hom3dex(t,param,lam)
+ 
  
     Model parameters:
     -------------------
@@ -184,28 +197,26 @@ def bg_hom3dex(*args):
       Exclusion distance                        nm        0.10     20       1 
      -----------------------------------------------------------------------------
 
-    Usage:
-    ------
-        info = bg_hom3dex()
-        B = bg_hom3dex(t,param)
-
-    Arguments:
+    Parameters
     ----------
-    t (N-element array)
+    t : array_like
         Time axis, in microseconds.
-    param (2-element array)
+    param : array_like
         List of model parameter values.
+    lam : float scalar
+        Pathway amplitude. If not specified it is set to 1.
 
-    Returns:
-    --------
-    info (dict, if not arguments specified)
+    Returns
+    -------
+    info : dict
         Dictionary containing the built-in information of the model:
-            'Parameters': string list of parameter names
-            'Units': string list of metric units of parameters
-            'Start': list of values used as start values during optimization 
-            'Lower': list of values used as lower bounds during optimization 
-            'Upper': list of values used as upper bounds during optimization 
-    B (N-element array)
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    B : ndarray
         Background decay function. 
     """  
 # ======================================================================
@@ -262,14 +273,18 @@ def bg_hom3dex(*args):
 def bg_homfractal(*args):
     """
     Background from homogeneous distribution of spins in a fractal medium
-    ======================================================================
 
-    Multi-pulse DEER background originating from a homogenous distribution of pumped spins in a fractal medium.
-   
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. 
-    Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = bg_homfractal()
+
+
+    Otherwise the function returns to calculated background model::
+    
+
+        B = bg_homfractal(t,param)
+        B = bg_homfractal(t,param,lam)
+ 
  
     Model parameters:
     -------------------
@@ -281,28 +296,26 @@ def bg_homfractal(*args):
       Fractal dimensionality                               0        6       3
      -----------------------------------------------------------------------------
 
-    Usage:
-    ------
-        info = bg_homfractal()
-        B = bg_homfractal(t,param)
-
-    Arguments:
+    Parameters
     ----------
-    t (N-element array)
+    t : array_like
         Time axis, in microseconds.
-    param (2-element array)
+    param : array_like
         List of model parameter values.
+    lam : float scalar
+        Pathway amplitude. If not specified it is set to 1.
 
-    Returns:
-    --------
-    info (dict, if not arguments specified)
+    Returns
+    -------
+    info : dict
         Dictionary containing the built-in information of the model:
-            'Parameters': string list of parameter names
-            'Units': string list of metric units of parameters
-            'Start': list of values used as start values during optimization 
-            'Lower': list of values used as lower bounds during optimization 
-            'Upper': list of values used as upper bounds during optimization 
-    B (N-element array)
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    B : ndarray
         Background decay function. 
     """  
 # ======================================================================
@@ -351,12 +364,18 @@ def bg_homfractal(*args):
 def bg_strexp(*args):
     """
     Stretched exponential background model
-    ======================================
-   
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. 
-    Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = bg_strexp()
+
+
+    Otherwise the function returns to calculated background model::
+    
+
+        B = bg_strexp(t,param)
+        B = bg_strexp(t,param,lam)
+ 
  
     Model parameters:
     -------------------
@@ -368,28 +387,26 @@ def bg_strexp(*args):
       Stretch factor              0        6        1
      ----------------------------------------------------
 
-    Usage:
-    ------
-        info = bg_strexp()
-        B = bg_strexp(t,param)
-
-    Arguments:
+    Parameters
     ----------
-    t (N-element array)
+    t : array_like
         Time axis, in microseconds.
-    param (2-element array)
+    param : array_like
         List of model parameter values.
+    lam : float scalar
+        Pathway amplitude. If not specified it is set to 1.
 
-    Returns:
-    --------
-    info (dict, if not arguments specified)
+    Returns
+    -------
+    info : dict
         Dictionary containing the built-in information of the model:
-            'Parameters': string list of parameter names
-            'Units': string list of metric units of parameters
-            'Start': list of values used as start values during optimization 
-            'Lower': list of values used as lower bounds during optimization 
-            'Upper': list of values used as upper bounds during optimization 
-    B (N-element array)
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    B : ndarray
         Background decay function. 
     """  
 # ======================================================================
@@ -416,12 +433,18 @@ def bg_strexp(*args):
 def bg_prodstrexp(*args):
     """
     Product of two stretched exponentials background model
-    ======================================================
-   
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. 
-    Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = bg_prodstrexp()
+
+
+    Otherwise the function returns to calculated background model::
+    
+
+        B = bg_prodstrexp(t,param)
+        B = bg_prodstrexp(t,param,lam)
+ 
  
     Model parameters:
     -------------------
@@ -435,28 +458,26 @@ def bg_prodstrexp(*args):
       Stretch factor 2nd component             0        6        1
      -----------------------------------------------------------------
 
-    Usage:
-    ------
-        info = bg_prodstrexp()
-        B = bg_prodstrexp(t,param)
-
-    Arguments:
+    Parameters
     ----------
-    t (N-element array)
+    t : array_like
         Time axis, in microseconds.
-    param (4-element array)
+    param : array_like
         List of model parameter values.
+    lam : float scalar
+        Pathway amplitude. If not specified it is set to 1.
 
-    Returns:
-    --------
-    info (dict, if not arguments specified)
+    Returns
+    -------
+    info : dict
         Dictionary containing the built-in information of the model:
-            'Parameters': string list of parameter names
-            'Units': string list of metric units of parameters
-            'Start': list of values used as start values during optimization 
-            'Lower': list of values used as lower bounds during optimization 
-            'Upper': list of values used as upper bounds during optimization 
-    B (N-element array)
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    B : ndarray
         Background decay function. 
     """  
 # ======================================================================
@@ -487,12 +508,18 @@ def bg_prodstrexp(*args):
 def bg_sumstrexp(*args):
     """
     Sum of two stretched exponentials background model
-    ==================================================
-   
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. 
-    Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = bg_sumstrexp()
+
+
+    Otherwise the function returns to calculated background model::
+    
+
+        B = bg_sumstrexp(t,param)
+        B = bg_sumstrexp(t,param,lam)
+ 
  
     Model parameters:
     -------------------
@@ -507,28 +534,26 @@ def bg_sumstrexp(*args):
       Stretch factor 2nd component             0        6        1
      -----------------------------------------------------------------
 
-    Usage:
-    ------
-        info = bg_sumstrexp()
-        B = bg_sumstrexp(t,param)
-
-    Arguments:
+    Parameters
     ----------
-    t (N-element array)
+    t : array_like
         Time axis, in microseconds.
-    param (5-element array)
+    param : array_like
         List of model parameter values.
+    lam : float scalar
+        Pathway amplitude. If not specified it is set to 1.
 
-    Returns:
-    --------
-    info (dict, if not arguments specified)
+    Returns
+    -------
+    info : dict
         Dictionary containing the built-in information of the model:
-            'Parameters': string list of parameter names
-            'Units': string list of metric units of parameters
-            'Start': list of values used as start values during optimization 
-            'Lower': list of values used as lower bounds during optimization 
-            'Upper': list of values used as upper bounds during optimization 
-    B (N-element array)
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    B : ndarray
         Background decay function. 
     """  
 # ======================================================================
@@ -561,12 +586,18 @@ def bg_sumstrexp(*args):
 def bg_poly1(*args):
     """
     Polynomial 1st-order background model
-    =====================================
-   
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. 
-    Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = bg_poly1()
+
+
+    Otherwise the function returns to calculated background model::
+    
+
+        B = bg_poly1(t,param)
+        B = bg_poly1(t,param,lam)
+ 
  
     Model parameters:
     -------------------
@@ -578,29 +609,27 @@ def bg_poly1(*args):
       1st-order coefficient  us^-1    -200      200      -1  
      ----------------------------------------------------------
 
-    Usage:
-    ------
-        info = bg_poly1()
-        B = bg_poly1(t,param)
-
-    Arguments:
+    Parameters
     ----------
-    t (N-element array)
+    t : array_like
         Time axis, in microseconds.
-    param (2-element array)
+    param : array_like
         List of model parameter values.
+    lam : float scalar
+        Pathway amplitude. If not specified it is set to 1.
 
-    Returns:
-    --------
-    info (dict, if not arguments specified)
+    Returns
+    -------
+    info : dict
         Dictionary containing the built-in information of the model:
-            'Parameters': string list of parameter names
-            'Units': string list of metric units of parameters
-            'Start': list of values used as start values during optimization 
-            'Lower': list of values used as lower bounds during optimization 
-            'Upper': list of values used as upper bounds during optimization 
-    B (N-element array)
-        Background decay function. 
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    B : ndarray
+        Background decay function.  
     """  
 # ======================================================================
     if not args:
@@ -629,12 +658,18 @@ def bg_poly1(*args):
 def bg_poly2(*args):
     """
     Polynomial 2nd-order background model
-    =====================================
-   
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. 
-    Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = bg_poly2()
+
+
+    Otherwise the function returns to calculated background model::
+    
+
+        B = bg_poly2(t,param)
+        B = bg_poly2(t,param,lam)
+ 
  
     Model parameters:
     -------------------
@@ -647,29 +682,27 @@ def bg_poly2(*args):
       2nd-order coefficient  us^-2    -200      200      -1 
      ----------------------------------------------------------
 
-    Usage:
-    ------
-        info = bg_poly2()
-        B = bg_poly2(t,param)
-
-    Arguments:
+    Parameters
     ----------
-    t (N-element array)
+    t : array_like
         Time axis, in microseconds.
-    param (3-element array)
+    param : array_like
         List of model parameter values.
+    lam : float scalar
+        Pathway amplitude. If not specified it is set to 1.
 
-    Returns:
-    --------
-    info (dict, if not arguments specified)
+    Returns
+    -------
+    info : dict
         Dictionary containing the built-in information of the model:
-            'Parameters': string list of parameter names
-            'Units': string list of metric units of parameters
-            'Start': list of values used as start values during optimization 
-            'Lower': list of values used as lower bounds during optimization 
-            'Upper': list of values used as upper bounds during optimization 
-    B (N-element array)
-        Background decay function. 
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    B : ndarray
+        Background decay function.  
     """  
 # ======================================================================
     if not args:
@@ -694,12 +727,18 @@ def bg_poly2(*args):
 def bg_poly3(*args):
     """
     Polynomial 3rd-order background model
-    =====================================
-   
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. 
-    Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = bg_poly3()
+
+
+    Otherwise the function returns to calculated background model::
+    
+
+        B = bg_poly3(t,param)
+        B = bg_poly3(t,param,lam)
+ 
  
     Model parameters:
     -------------------
@@ -713,29 +752,27 @@ def bg_poly3(*args):
       3rd-order coefficient  us^-3    -200      200      -1
      ----------------------------------------------------------
 
-    Usage:
-    ------
-        info = bg_poly3()
-        B = bg_poly3(t,param)
-
-    Arguments:
+    Parameters
     ----------
-    t (N-element array)
+    t : array_like
         Time axis, in microseconds.
-    param (4-element array)
+    param : array_like
         List of model parameter values.
+    lam : float scalar
+        Pathway amplitude. If not specified it is set to 1.
 
-    Returns:
-    --------
-    info (dict, if not arguments specified)
+    Returns
+    -------
+    info : dict
         Dictionary containing the built-in information of the model:
-            'Parameters': string list of parameter names
-            'Units': string list of metric units of parameters
-            'Start': list of values used as start values during optimization 
-            'Lower': list of values used as lower bounds during optimization 
-            'Upper': list of values used as upper bounds during optimization 
-    B (N-element array)
-        Background decay function. 
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    B : ndarray
+        Background decay function.  
     """  
 # ======================================================================
     if not args:

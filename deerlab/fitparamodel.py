@@ -5,7 +5,7 @@
 
 import numpy as np
 from deerlab.utils import isempty, multistarts, jacobianest, hccm, parse_multidatasets, goodness_of_fit
-from deerlab import uqst
+from deerlab import UncertQuant
 from scipy.optimize import least_squares
 import warnings
 
@@ -29,17 +29,17 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
     -------
     param : ndarray
         Fitted model parameters
-    paramuq : obj
+    paramuq : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted parameters.
     stats :  dict
         Goodness of fit statistical estimators:
 
-        * stats['chi2red'] - Reduced \chi^2 test
-        * stats['r2'] - R^2 test
-        * stats['rmsd'] - Root-mean squared deviation (RMSD)
-        * stats['aic'] - Akaike information criterion
-        * stats['aicc'] - Corrected Akaike information criterion
-        * stats['bic'] - Bayesian information criterion
+        * ``stats['chi2red']`` - Reduced \chi^2 test
+        * ``stats['r2']`` - R^2 test
+        * ``stats['rmsd']`` - Root-mean squared deviation (RMSD)
+        * ``stats['aic']`` - Akaike information criterion
+        * ``stats['aicc']`` - Corrected Akaike information criterion
+        * ``stats['bic']`` - Bayesian information criterion
 
     Other parameters
     ----------------
@@ -199,7 +199,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
             # Use user-given data covariance matrix
             covmatrix = hccm(J,covmatrix)
         # Construct confidence interval structure
-        paruq = uqst('covariance',parfit,covmatrix,lb,ub)
+        paruq = UncertQuant('covariance',parfit,covmatrix,lb,ub)
     else:
         paruq = []
 

@@ -18,22 +18,43 @@ def ex_4pdeer(param=[]):
 # ===================================================================
     """
     Single-pathway 4-pulse DEER experiment model 
-    =============================================
-   
-     info = ex_4pdeer()
-     P = ex_4pdeer(param)
-
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
  
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = ex_4pdeer()
+
+
+    Otherwise the function returns to calculated experiment dipolar pathways::
+    
+        pathways = ex_4pdeer(param)
+ 
+ 
+    Parameters
+    ----------
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    pathways : ndarray
+        Dipolar pathways of the experiment
+
+
     Model parameters:
     -------------------
-
+    
      -------------------------------------------------------
-      Parameter            Units   Lower    Upper    Start
+     Parameter            Units   Lower    Upper    Start
      -------------------------------------------------------
-      Modulation depth               0        1       0.3 
+     Modulation depth               0        1       0.3 
      -------------------------------------------------------
     """  
     if isempty(param):
@@ -59,15 +80,35 @@ def ex_ovl4pdeer(param=[]):
 # ===================================================================
     """
     4-pulse DEER with band overlap experiment model 
-    ================================================
-   
-     info = ex_ovl4pdeer()
-     P = ex_ovl4pdeer(param)
-
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
  
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = ex_ovl4pdeer()
+
+
+    Otherwise the function returns to calculated experiment dipolar pathways::
+    
+        pathways = ex_ovl4pdeer(param)
+ 
+ 
+    Parameters
+    ----------
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    pathways : ndarray
+        Dipolar pathways of the experiment
+
     Model parameters:
     -------------------
 
@@ -105,14 +146,34 @@ def ex_5pdeer(param=[]):
 # ===================================================================
     """
     5-pulse DEER experiment model
-    ==============================
-   
-     info = ex_5pdeer()
-     P = ex_5pdeer(param)
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+        info = ex_5pdeer()
+
+
+    Otherwise the function returns to calculated experiment dipolar pathways::
+    
+        pathways = ex_5pdeer(param)
+ 
+ 
+    Parameters
+    ----------
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    pathways : ndarray
+        Dipolar pathways of the experiment
  
     Model parameters:
     -------------------
@@ -152,13 +213,34 @@ def ex_7pdeer(param=[]):
     """
     7-pulse DEER experiment model
     ==============================
-   
-     info = ex_7pdeer()
-     P = ex_7pdeer(param)
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries. Otherwise, computes the N-point model ``P`` from the N-point distance axis ``r`` according to 
-    the paramteres array ``param`. The required parameters can also be found 
-    in the ``info`` structure.
+        info = ex_7pdeer()
+
+
+    Otherwise the function returns to calculated experiment dipolar pathways::
+    
+        pathways = ex_7pdeer(param)
+ 
+ 
+    Parameters
+    ----------
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    pathways : ndarray
+        Dipolar pathways of the experiment
  
     Model parameters:
     -------------------

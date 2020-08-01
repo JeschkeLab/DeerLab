@@ -1,26 +1,16 @@
-.. highlight:: matlab
+.. highlight:: python
 .. _dd_wormgauss:
 
 ***********************
 :mod:`dd_wormgauss`
 ***********************
 
-Worm-like chain model near the rigid limit with Gaussian convolution
 
-Syntax
+.. autofunction:: deerlab.dd_models.dd_wormgauss
+
+
+Model
 =========================================
-
-.. code-block:: matlab
-
-        info = dd_wormgauss()
-        P = dd_wormgauss(r,param)
-
-Parameters
-    *   ``r`` - Distance axis (N-array)
-    *   ``param`` - Model parameters
-Returns
-    *   ``P`` - Distance distribution (N-array)
-    *   ``info`` - Model information (struct)
 
 ============== =============== ======== ======== ======== ===============================
  Variable       Symbol         Default   Lower   Upper       Description
@@ -34,28 +24,6 @@ Example using default parameters:
 
 .. image:: ../images/model_dd_wormgauss.png
    :width: 650px
-
-
-Description
-=========================================
-
-.. code-block:: matlab
-
-        info = dd_wormgauss()
-
-Returns an ``info`` structure containing the information of the model parameters and boundaries.
-
-* ``info(n).Index`` -  Index of the parameter in the ``param`` array.
-* ``info(n).Parameter`` -  Description of the n-th parameter.
-* ``info(n).Lower`` -  Lower bound of the n-th parameter.
-* ``info(n).Upper`` -  Upper bound of the n-th parameter.
-* ``info(n).Start`` -  Start value of the n-th parameter.
-
-.. code-block:: matlab
-
-    P = dd_wormgauss(r,param)
-
-Computes the distance distribution model ``P`` from the axis ``r`` according to the parameters array ``param``. The required parameters can also be found in the ``info`` structure.
 
 
 

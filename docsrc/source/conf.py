@@ -24,9 +24,19 @@ extensions = [
     'sphinxcontrib.httpdomain',
     'sphinx.ext.imgmath',
     'numpydoc',
+    'sphinx_gallery.gen_gallery',
     'sphinx.ext.autosummary',
 ]
 
+sphinx_gallery_conf = {
+     'examples_dirs': '../../examples',   # path to your example scripts
+     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+}
+
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning,
+                        message='Matplotlib is currently using agg, which is a'
+                                ' non-GUI backend, so cannot show the figure.')
 
 # Render Latex math equations as svg instead of rendering with JavaScript
 imgmath_image_format = 'svg'
@@ -111,9 +121,20 @@ def setup(app):
     from pygments.lexers import python
     from pygments.token import Name
     from pygments.filters import NameHighlightFilter
+    from deerlab import dd_models, bg_models
+    import matplotlib.pyplot as plt 
+    import deerlab
+    import numpy
+    import inspect
     python_lexer = python.PythonLexer()
+    dd_functions = [o[0] for o in inspect.getmembers(bg_models) if inspect.isfunction(o[1])]
+    bg_functions = [o[0] for o in inspect.getmembers(dd_models) if inspect.isfunction(o[1])]
+    pl_functions = [o[0] for o in inspect.getmembers(plt) if inspect.isfunction(o[1])]
+    dl_functions = [o[0] for o in inspect.getmembers(deerlab) if inspect.isfunction(o[1])]
+    np_functions = [o[0] for o in inspect.getmembers(numpy) if inspect.isfunction(o[1])]
+
     python_lexer.add_filter(NameHighlightFilter(
-            names=[name.replace('.py','') for name in os.listdir('../deerlab')] + ['plot','subplot','linspace','show'],
+            names= dl_functions + dd_functions + bg_functions + pl_functions + np_functions,
             tokentype=Name.Function,
             ))
     app.add_lexer('python', python_lexer)
@@ -163,6 +184,7 @@ class MyFancyStyle(Style):
         Text:                   '#dddee4',
         Comment:                'italic #8f8f8f',
         Keyword:                '#c074d5',
+        Operator.Word:          '#c074d5',
         Name.Variable:          '#dddee4',
         Name.Function:          '#75abff',
         Name.Class:             '#0000FF',

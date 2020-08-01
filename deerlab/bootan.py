@@ -5,7 +5,7 @@
 
 import numpy as np
 import types
-from deerlab import uqst
+from deerlab import UncertQuant
 
 def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
     """ Bootstrap analysis for uncertainty quantification
@@ -24,17 +24,18 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
 
     Returns
     -------
-    bootuq : obj or list of obj
-        Bootstrap uncertainty quantification object or list thereof for each variable returned by ``fcn``. 
+    bootuq : :ref:`UncertQuant` or list of :ref:`UncertQuant`
+        Bootstrap uncertainty quantification for each variable returned by ``fcn``. 
 
     Other Parameters
     ----------------
     resampling : string
-        Default: 'gaussian'
         Specifies the method employed for re-sampling new bootstrap samples.
 
-        * 'gaussian' - Sample noise from a Gaussian distribution
-        * 'residual' - Sample noise from the fit residuals
+        * ``'gaussian'`` - Sample noise from a Gaussian distribution.
+        * ``'residual'`` - Sample noise from the fit residuals.
+        The default is ``'gaussian'``.
+
     verbose : boolean
         Specifies whether to print the progress of the bootstrap analysis on the command window, the default is false.
 
@@ -141,7 +142,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
     #-------------------------------------------------------------------------------
     stats = []
     for bootsamples in evals:
-        stats.append(uqst('bootstrap',bootsamples))
+        stats.append(UncertQuant('bootstrap',bootsamples))
     if len(stats)==1:
         stats = stats[0]
     return stats

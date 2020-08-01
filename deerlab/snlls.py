@@ -40,7 +40,7 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
         Fitted non-linear parameters
     plin : ndarray
         Fitted linear parameters
-    paramuq : obj
+    paramuq : :ref:`UncertQuant`
         Uncertainty quantification of the joined parameter
         set (linear + non-linear parameters). The confidence intervals
         of the individual subsets can be requested via:
@@ -49,15 +49,15 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
         * ``paramuq.ci(n,'lin')``     - n%-CI of the linear parameter set
         * ``paramuq.ci(n,'nonlin')``  - n%-CI of the non-linear parameter set
 
-    stats (dict)
+    stats : dict
         Goodness of fit statistical estimators
  
-        * stats['chi2red'] - Reduced \chi^2 test
-        * stats['r2'] - R^2 test
-        * stats['rmsd'] - Root-mean squared deviation (RMSD)
-        * stats['aic'] - Akaike information criterion
-        * stats['aicc'] - Corrected Akaike information criterion
-        * stats['bic'] - Bayesian information criterion
+        * ``stats['chi2red']`` - Reduced \chi^2 test
+        * ``stats['r2']`` - R^2 test
+        * ``stats['rmsd']`` - Root-mean squared deviation (RMSD)
+        * ``stats['aic']`` - Akaike information criterion
+        * ``stats['aicc']`` - Corrected Akaike information criterion
+        * ``stats['bic']`` - Bayesian information criterion
 
     Other parameters
     ----------------
@@ -67,32 +67,32 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
     regType : string 
         Regularization penalty type:
 
-        * 'tikhonov' - Tikhonov regularizaton
-        * 'tv'  - Total variation regularization
-        * 'huber' - Huber regularization
-        The default is 'tikhonov'.   
+        * ``'tikhonov'`` - Tikhonov regularizaton
+        * ``'tv'``  - Total variation regularization
+        * ``'huber'`` - Huber regularization
+        The default is ``'tikhonov'``.   
 
     regOrder (scalar,int)
         Order of the regularization operator
     regParam (str or scalar): 
         Method for the automatic selection of the optimal regularization parameter:
     
-        * 'lr' - L-curve minimum-radius method (LR)
-        * 'lc' - L-curve maximum-curvature method (LC)
-        * 'cv' - Cross validation (CV)
-        * 'gcv' - Generalized Cross Validation (GCV)
-        * 'rgcv' - Robust Generalized Cross Validation (rGCV)
-        * 'srgcv' - Strong Robust Generalized Cross Validation (srGCV)
-        * 'aic' - Akaike information criterion (AIC)
-        * 'bic' - Bayesian information criterion (BIC)
-        * 'aicc' - Corrected Akaike information criterion (AICC)
-        * 'rm' - Residual method (RM)
-        * 'ee' - Extrapolated Error (EE)          
-        * 'ncp' - Normalized Cumulative Periodogram (NCP)
-        * 'gml' - Generalized Maximum Likelihood (GML)
-        * 'mcl' - Mallows' C_L (MCL)
+        * ``'lr'`` - L-curve minimum-radius method (LR)
+        * ``'lc'`` - L-curve maximum-curvature method (LC)
+        * ``'cv'`` - Cross validation (CV)
+        * ``'gcv'`` - Generalized Cross Validation (GCV)
+        * ``'rgcv'`` - Robust Generalized Cross Validation (rGCV)
+        * ``'srgcv'`` - Strong Robust Generalized Cross Validation (srGCV)
+        * ``'aic'`` - Akaike information criterion (AIC)
+        * ``'bic'`` - Bayesian information criterion (BIC)
+        * ``'aicc'`` - Corrected Akaike information criterion (AICC)
+        * ``'rm'`` - Residual method (RM)
+        * ``'ee'`` - Extrapolated Error (EE)          
+        * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
+        * ``'gml'`` - Generalized Maximum Likelihood (GML)
+        * ``'mcl'`` - Mallows' C_L (MCL)
         The regularization parameter can be manually specified by passing a scalar value instead of a string.
-        The default 'aic'.
+        The default ``'aic'``.
 
     alphaOptThreshold : float scalar
         Relative parameter change threshold for reoptimizing the regularization parameter
@@ -100,10 +100,10 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
     nnlsSolver : string
         Solver used to solve a non-negative least-squares problem (if applicable): 
         
-        * 'cvx' - Optimization of the NNLS problem using the cvxopt package.
-        * 'fnnls' - Optimization using the fast NNLS algorithm.
-        * 'nnlsbpp' - Optimization using the block principal pivoting NNLS algorithm.
-        The default is 'cvx'.
+        * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
+        * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
+        * ``'nnlsbpp'`` - Optimization using the block principal pivoting NNLS algorithm.
+        The default is ``'cvx'``.
     weights : array_like 
         Array of weighting coefficients for the individual signals in global fitting,
         the default is all weighted equally.
@@ -346,7 +346,7 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
         ubs = np.concatenate((ub, ubl))
 
         # Construct the uncertainty quantification object
-        paramuq_ = dl.uqst('covariance',parfit,covmatrix,lbs,ubs)
+        paramuq_ = dl.UncertQuant('covariance',parfit,covmatrix,lbs,ubs)
         paramuq = copy.deepcopy(paramuq_)
 
         def ci(coverage,type='full'):

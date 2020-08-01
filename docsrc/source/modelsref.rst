@@ -21,13 +21,9 @@ This group of distribution models is based on function that can serve as basis f
 :ref:`dd_rice`                  Single 3D-Rice distribution
 :ref:`dd_rice2`                 Two 3D-Rice distributions
 :ref:`dd_rice3`                 Three 3D-Rice distributions
-:ref:`dd_rice4`                 Four 3D-Rice distributions
-:ref:`dd_rice5`                 Five 3D-Rice distributions
 :ref:`dd_gauss`                 Single Gaussian distribution
 :ref:`dd_gauss2`                Two Gaussians distributions
 :ref:`dd_gauss3`                Three Gaussians distributions
-:ref:`dd_gauss4`                Four Gaussians distributions
-:ref:`dd_gauss5`                Five Gaussians distributions
 :ref:`dd_gengauss`              Single generalized Gaussian distribution
 :ref:`dd_skewgauss`             Single skew Gaussian distribution
 :ref:`dd_cos`                   Raised-cosine distribution

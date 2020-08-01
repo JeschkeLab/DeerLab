@@ -280,16 +280,20 @@ html.writer-html4 .rst-content dl:not(.docutils) dl:not(.field-list) > dt, html.
     font-weight: bold
 }
     
+html.writer-html4 .rst-content dl:not(.docutils) > dt:first-child, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) > dt:first-child {
+    margin-top: 0;
+    font-weight: inherit;
+}
 html.writer-html4 .rst-content dl:not(.docutils) > dt, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) > dt {
     display: table;
     margin: 6px 0;
         margin-top: 6px;
+    margin-top: 6px;
     font-size: 90%;
     line-height: normal;
-    background: #fff;
-    color: #366aac;
+    background: #ffde7a;
+    color: #000;
     border-top: 0px solid #333;
-
     padding: 6px;
     position: relative;
 }
@@ -318,3 +322,69 @@ html.writer-html4 .rst-content dl:not(.docutils) code, html.writer-html4 .rst-co
     background-color: rgb(242, 242, 242);
     padding-left: 3px;
 }
+
+
+
+.sphx-glr-script-out .highlight pre{
+    background-color: #313439 !important;
+}
+
+.sphx-glr-thumbcontainer {
+    background: #fff;
+    border: solid #fff 1px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    box-shadow: none;
+    float: left;
+    margin: 5px;
+    min-height: 250px;
+    padding-top: 5px;
+    position: relative;
+    min-width: 225px;
+}
+.sphx-glr-thumbcontainer a.internal{
+    bottom: 0;
+    display: block;
+    left: 0;
+    padding: 150px 10px 0;
+    position: absolute;
+    right: 0;
+    top: 0;   
+    text-align: center;
+    color: #343131;
+} 
+.sphx-glr-thumbcontainer .figure {
+    width: 160px;
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+   
+.py.function span.classifier {
+    font-style: italic;
+    font-size: 14px;
+    font-weight: initial;
+}
+
+.py.method span.classifier {
+    font-style: italic;
+    font-size: 14px;
+    font-weight: initial;
+}
+
+.py.class span.classifier {
+    font-style: italic;
+    font-size: 14px;
+    font-weight: initial;
+}
+
+.py.function li, ul {
+    list-style: disc;
+    margin-left: 24px;
+    margin-bottom: -12px}
+    
+.py.class li, ul {
+    list-style: disc;
+    margin-left: 24px;
+    margin-bottom: -12px

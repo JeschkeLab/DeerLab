@@ -15,8 +15,7 @@ audio: not([controls]) {
 * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    font-size: 13px}
+    box-sizing: border-box;}
 html {
     font-size: 100%;
     -webkit-text-size-adjust: 100%;
@@ -29,7 +28,7 @@ abbr[title] {
     border-bottom: 1px dotted}
 b,strong {
     font-weight: bold;
-    color: #366aac;
+    color: ##333;
     font-size: 14px}
 blockquote {
     margin: 0}
@@ -1774,7 +1773,7 @@ a .fa,a .wy-menu-vertical li span.toctree-expand,.wy-menu-vertical li a span.toc
     color: #404040;
     background: #e1e4e5}
 .wy-alert.wy-alert-neutral a,.rst-content .wy-alert-neutral.note a,.rst-content .wy-alert-neutral.attention a,.rst-content .wy-alert-neutral.caution a,.rst-content .wy-alert-neutral.danger a,.rst-content .wy-alert-neutral.error a,.rst-content .wy-alert-neutral.hint a,.rst-content .wy-alert-neutral.important a,.rst-content .wy-alert-neutral.tip a,.rst-content .wy-alert-neutral.warning a,.rst-content .wy-alert-neutral.seealso a,.rst-content .wy-alert-neutral.admonition-todo a,.rst-content .wy-alert-neutral.admonition a {
-    color: #1430C6}
+    color: #0088cc}
 .wy-alert p: last-child,.rst-content .note p: last-child,.rst-content .attention p: last-child,.rst-content .caution p: last-child,.rst-content .danger p: last-child,.rst-content .error p: last-child,.rst-content .hint p: last-child,.rst-content .important p: last-child,.rst-content .tip p: last-child,.rst-content .warning p: last-child,.rst-content .seealso p: last-child,.rst-content .admonition-todo p: last-child,.rst-content .admonition p: last-child {
     margin-bottom: 0}
 .wy-tray-container {
@@ -1801,7 +1800,7 @@ a .fa,a .wy-menu-vertical li span.toctree-expand,.wy-menu-vertical li a span.toc
 .wy-tray-container li.wy-tray-item-success {
     background: #27AE60}
 .wy-tray-container li.wy-tray-item-info {
-    background: #1430C6}
+    background: #0088cc}
 .wy-tray-container li.wy-tray-item-warning {
     background: #E67E22}
 .wy-tray-container li.wy-tray-item-danger {
@@ -1900,7 +1899,7 @@ button[disabled] {
 .btn-small {
     font-size: 80%}
 .btn-info {
-    background-color: #1430C6 !important}
+    background-color: #0088cc !important}
 .btn-info:hover {
     background-color: #2e8ece !important}
 .btn-neutral {
@@ -1930,7 +1929,7 @@ button[disabled] {
     background-color: #2f2f2f !important}
 .btn-link {
     background-color: transparent !important;
-    color: #1430C6;
+    color: #0088cc;
     box-shadow: none;
     border-color: transparent !important}
 .btn-link:hover {
@@ -1979,7 +1978,7 @@ button[disabled] {
     padding: 0 12px;
     cursor: pointer}
 .wy-dropdown-menu>dd>a:hover {
-    background: #1430C6;
+    background: #0088cc;
     color: #fff}
 .wy-dropdown-menu>dd.divider {
     border-top: solid 1px #cfd7dd;
@@ -2008,7 +2007,7 @@ button[disabled] {
 .wy-dropdown.wy-dropdown-bubble .wy-dropdown-menu a {
     padding: 6px 12px}
 .wy-dropdown.wy-dropdown-bubble .wy-dropdown-menu a:hover {
-    background: #1430C6;
+    background: #0088cc;
     color: #fff}
 .wy-dropdown.wy-dropdown-left .wy-dropdown-menu {
     right: 0;
@@ -2328,7 +2327,7 @@ input[type="radio"][disabled],input[type="checkbox"][disabled] {
 .wy-inline-validate.wy-inline-validate-warning .wy-input-context {
     color: #E67E22}
 .wy-inline-validate.wy-inline-validate-info .wy-input-context {
-    color: #1430C6}
+    color: #0088cc}
 .rotate-90 {
     -webkit-transform: rotate(90deg);
     -moz-transform: rotate(90deg);
@@ -2424,7 +2423,7 @@ input[type="radio"][disabled],input[type="checkbox"][disabled] {
     overflow: visible;
     padding: 8px 16px}
 .wy-table td:first-child,.rst-content table.docutils td:first-child,.rst-content table.field-list td:first-child,.wy-table th:first-child,.rst-content table.docutils th:first-child,.rst-content table.field-list th:first-child {
-    border-left-width: 0; color: #333; font-size: 16px}
+    border-left-width: 0; color: #333; font-size: 16px;}
 .wy-table thead,.rst-content table.docutils thead,.rst-content table.field-list thead {
     color: #000;
     text-align: left;
@@ -2484,20 +2483,20 @@ input[type="radio"][disabled],input[type="checkbox"][disabled] {
 .wy-table-responsive table td,.wy-table-responsive table th {
     white-space: nowrap}
 a {
-    color: #1430C6;
+    color: #0088cc;
     text-decoration: none;
     cursor: pointer}
 a:hover {
-    color: #1430C6}
+    color: #0088cc}
 a:visited {
-    color: #1430C6} /*Fixed color so browser cannot change link color*/
+    color: #0088cc} /*Fixed color so browser cannot change link color*/
 html {
     height: 100%;
     overflow-x: hidden}
 body {
-    font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-weight: normal; /*Font weight of the main text*/
-    color: #404040; /*Color of the main text*/
+    color: #333; /*Color of the main text*/
     min-height: 100%;
     overflow-x: hidden;
     background-size: cover;
@@ -2521,7 +2520,7 @@ body {
 a.wy-text-warning:hover {
     color: #eb9950 !important}
 .wy-text-info {
-    color: #1430C6 !important}
+    color: #0088cc !important}
 a.wy-text-info:hover {
     color: #409ad5 !important}
 .wy-text-success {
@@ -2584,7 +2583,7 @@ code.code-large,.rst-content tt.code-large {
     margin-bottom: 24px}
 .wy-plain-list-disc li,.rst-content .section ul li,.rst-content .toctree-wrapper ul li,article ul li {
     list-style: disc;
-    margin-left: 24px}
+    margin-left: 24px;}
 .wy-plain-list-disc li p: last-child,.rst-content .section ul li p: last-child,.rst-content .toctree-wrapper ul li p: last-child,article ul li p: last-child {
     margin-bottom: 0}
 .wy-plain-list-disc li ul,.rst-content .section ul li ul,.rst-content .toctree-wrapper ul li ul,article ul li ul {
@@ -2601,7 +2600,7 @@ code.code-large,.rst-content tt.code-large {
     margin-bottom: 24px}
 .wy-plain-list-decimal li,.rst-content .section ol li,.rst-content ol.arabic li,article ol li {
     list-style: decimal;
-    margin-left: 24px}
+    margin-left: 24px;}
 .wy-plain-list-decimal li p: last-child,.rst-content .section ol li p: last-child,.rst-content ol.arabic li p: last-child,article ol li p: last-child {
     margin-bottom: 0}
 .wy-plain-list-decimal li ul,.rst-content .section ol li ul,.rst-content ol.arabic li ul,article ol li ul {
@@ -2792,7 +2791,7 @@ display: block}
     padding: .4045em 2.618em;
     display: block;
     position: relative;
-    font-size: 110%;
+    font-size: 90%;
     color: #ffffff}
 .wy-menu-vertical a:hover {
     background-color: #4e4a4a;
@@ -2826,7 +2825,7 @@ display: block}
     margin: auto auto .809em auto;
     height: 45px;
     width: 45px;
-    background-color: #1430C6;
+    background-color: #0088cc;
     padding: 5px;
     border-radius: 100%}
 .wy-side-nav-search>a,.wy-side-nav-search .wy-dropdown>a {
@@ -2854,11 +2853,11 @@ display: block}
     font-weight: normal;
     color: rgba(255,255,255,0.3)}
 .wy-nav .wy-menu-vertical header {
-    color: #1430C6}
+    color: #0088cc}
 .wy-nav .wy-menu-vertical a {
     color: #b3b3b3}
 .wy-nav .wy-menu-vertical a:hover {
-    background-color: #1430C6;
+    background-color: #0088cc;
     color: #fff}
 [data-menu-wrap] {
     -webkit-transition: all .2s ease-in;
@@ -2927,7 +2926,7 @@ display: block}
     margin-right: 12px;
     height: 45px;
     width: 45px;
-    background-color: #1430C6;
+    background-color: #0088cc;
     padding: 5px;
     border-radius: 100%}
 .wy-nav-top i {
@@ -2954,7 +2953,9 @@ display: block}
 .wy-body-mask.on {
     display: block}
 footer {
-    color: gray}
+    color: gray;
+    font-size: 13px;
+}
 footer p {
     margin-bottom: 12px}
 footer span.commit code,footer span.commit .rst-content tt,.rst-content footer span.commit tt {
@@ -3048,7 +3049,7 @@ footer span.commit code,footer span.commit .rst-content tt,.rst-content footer s
     font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
     z-index: 400}
 .rst-versions a {
-    color: #1430C6;
+    color: #0088cc;
     text-decoration: none}
 .rst-versions .rst-badge-small {
     display: none}
@@ -3348,7 +3349,7 @@ footer span.commit code,footer span.commit .rst-content tt,.rst-content footer s
 .rst-content pre,.rst-content kbd,.rst-content samp {
     font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",Courier,monospace}
 .rst-content a tt,.rst-content a tt,.rst-content a code {
-    color: #1430C6}
+    color: #0088cc}
 .rst-content dl {
     margin-bottom: 24px}
 .rst-content dl dt {
@@ -3367,7 +3368,7 @@ footer span.commit code,footer span.commit .rst-content tt,.rst-content footer s
     font-size: 90%;
     line-height: normal;
     background: #e7f2fa;
-    color: #1430C6;
+    color: #0088cc;
     border-top: solid 3px #6ab0de;
     padding: 6px;
     position: relative}

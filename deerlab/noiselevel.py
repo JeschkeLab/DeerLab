@@ -37,8 +37,11 @@ def noiselevel(V,*args):
         Real-valued dipolar signal
     filter : string
         Filtering method:
-            'movmean' - Moving mean filter
-            'savgol'  - Savitzky-Golay filter
+
+        * ``'movmean'`` - Moving mean filter
+        * ``'savgol'``  - Savitzky-Golay filter
+        The default is ``'movmean'``
+        
     Vref : array_like
         Reference dipolar signal.
     Vco : array_like

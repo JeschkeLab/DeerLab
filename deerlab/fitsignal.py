@@ -9,7 +9,7 @@ import copy
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import deerlab as dl
-from deerlab import uqst
+from deerlab import UncertQuant
 from deerlab.bg_models import bg_hom3d
 from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit, jacobianest
@@ -37,25 +37,25 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
     dd : callable or string
         Distance distribution model, the following modes are allowed:
 
-        (1) A string 'P' to indicate a non-parametric distribution
-        (2) A callable function of a DeerLab parametric distribution model (e.g. dd_gauss).
-        (3) A string 'none' to indicate no distribution, i.e. only background.
+        * A string ``'P'`` to indicate a non-parametric distribution
+        * A callable function of a DeerLab parametric distribution model (e.g. ``dd_gauss``).
+        * A string ``'none'`` to indicate no distribution, i.e. only background.
 
         The default is 'P'.
 
     bg : callable or string
         Background model, the following modes are allowed:
 
-        (1) A callable function of a DeerLab parametric background model (e.g. bg_hom3d).
-        (2) A string 'none' to indicate no background decay.
+        * A callable function of a DeerLab parametric background model (e.g. ``bg_hom3d``).
+        * A string ``'none'`` to indicate no background decay.
 
         The default is bg_hom3d.
 
     ex : callable or string
         Experiment model, the following modes are allowed:
 
-        (1) Function handle to experiment model (e.g. @ex_4pdeer)
-        (2) 'none' to indicate simple dipolar oscillation (mod.depth = 1)
+        * Function handle to experiment model (e.g. ``ex_4pdeer``)
+        * ``'none'`` to indicate simple dipolar oscillation (mod.depth = 1)
 
         The default is ex_4pdeer.
 
@@ -86,30 +86,33 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
     parfit : dict
         Fitted parameters:
         
-        * parfit['dd'] - Fitted parameters for distance distribution model
-        * parfit['bg'] - Fitted parameters for background model
-        * parfit['ex'] - Fitted parameters for experiment model
-    modfituq : dict
+        * ``parfit['dd']`` - Fitted parameters for distance distribution model
+        * ``parfit['bg']`` - Fitted parameters for background model
+        * ``parfit['ex']`` - Fitted parameters for experiment model
+
+    modfituq : dict of :ref:`UncertQuant`
         Uncertainty quanfitications of the fits:
         
-        * modfituq['Vfit'] - Uncertainty quanfitication for fitted dipolar signal
-        * modfituq['Pfit'] - Uncertainty quanfitication for fitted distance distribution
-        * modfituq['Bfit'] - Uncertainty quanfitication for fitted background
-    paruq : dict
+        * ``modfituq['Vfit']`` - Uncertainty quanfitication for fitted dipolar signal
+        * ``modfituq['Pfit']`` - Uncertainty quanfitication for fitted distance distribution
+        * ``modfituq['Bfit']`` - Uncertainty quanfitication for fitted background
+
+    paruq : dict of :ref:`UncertQuant`
         Uncertainty quanfitications of the parameters:
         
-        * paruq['dd'] - Uncertainty quanfitication for distribution parameters
-        * paruq['bg'] - Uncertainty quanfitication for background parameters
-        * paruq['ex'] - Uncertainty quanfitication for experiment parameters
+        * ``paruq['dd']`` - Uncertainty quanfitication for distribution parameters
+        * ``paruq['bg']`` - Uncertainty quanfitication for background parameters
+        * ``paruq['ex']`` - Uncertainty quanfitication for experiment parameters
+
     stats : dict or list of dict
         Goodness of fit statistical estimators:
 
-        * stats['chi2red'] - Reduced \chi^2 test
-        * stats['r2'] - R^2 test
-        * stats['rmsd'] - Root-mean squared deviation (RMSD)
-        * stats['aic'] - Akaike information criterion
-        * stats['aicc'] - Corrected Akaike information criterion
-        * stats['bic'] - Bayesian information criterion
+        * ``stats['chi2red']`` - Reduced \chi^2 test
+        * ``stats['r2']`` - R^2 test
+        * ``stats['rmsd']`` - Root-mean squared deviation (RMSD)
+        * ``stats['aic']`` - Akaike information criterion
+        * ``stats['aicc']`` - Corrected Akaike information criterion
+        * ``stats['bic']`` - Bayesian information criterion
 
     Other Parameters
     ----------------
@@ -300,14 +303,14 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         # Full parameter set uncertainty
         # -------------------------------
         subcovmat = covmat[np.ix_(paramidx,paramidx)]
-        paruq = uqst('covariance',parfit_,subcovmat,lb,ub)
+        paruq = UncertQuant('covariance',parfit_,subcovmat,lb,ub)
         
         # Background parameters uncertainty
         # ---------------------------------
         for jj in range(nSignals):
             if includeBackground[jj]:
                 bgsubcovmat  = paruq.covmat[np.ix_(bgidx[jj],bgidx[jj])]
-                paruq_bg.append( uqst('covariance',parfit_[bgidx[jj]],bgsubcovmat,lb[bgidx[jj]],ub[bgidx[jj]]))
+                paruq_bg.append( UncertQuant('covariance',parfit_[bgidx[jj]],bgsubcovmat,lb[bgidx[jj]],ub[bgidx[jj]]))
             else:
                 paruq_bg.append([])
         
@@ -316,7 +319,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         for jj in range(nSignals):
             if includeExperiment[jj]:
                 exsubcovmat  = paruq.covmat[np.ix_(exidx[jj],exidx[jj])]
-                paruq_ex.append( uqst('covariance',parfit_[exidx[jj]],exsubcovmat,lb[exidx[jj]],ub[exidx[jj]]))
+                paruq_ex.append( UncertQuant('covariance',parfit_[exidx[jj]],exsubcovmat,lb[exidx[jj]],ub[exidx[jj]]))
             else:
                 paruq_ex.append([])
             
@@ -324,7 +327,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         # ------------------------------------
         if parametricDistribution:
             ddsubcovmat  = paruq.covmat[np.ix_(ddidx,ddidx)]
-            paruq_dd = uqst('covariance',parfit_[ddidx],ddsubcovmat,lb[ddidx],ub[ddidx])
+            paruq_dd = UncertQuant('covariance',parfit_[ddidx],ddsubcovmat,lb[ddidx],ub[ddidx])
         else:
             paruq_dd = []
         
@@ -335,7 +338,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
             Pfit_uq = paruq.propagate(Pfcn,nonneg,[])
         else:
             subcovmat = covmat[np.ix_(Pfreeidx,Pfreeidx)]
-            Pfit_uq = uqst('covariance',Pfit,subcovmat,nonneg,[])
+            Pfit_uq = UncertQuant('covariance',Pfit,subcovmat,nonneg,[])
         
         # Background uncertainty
         # -----------------------
@@ -357,7 +360,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
                 # parameter-free case instead of .propagate()
                 J = np.concatenate((jacobianest(lambda par: multiPathwayModel(par[paramidx])[0][jj]@Pfit,parfit_)[0], Kfit[jj]),1)
                 Vcovmat = J@covmat@J.T
-                Vfit_uq.append( uqst('covariance',Vfit[jj],Vcovmat,[],[]))
+                Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat,[],[]))
             else:
                 Vfit_uq.append([])
 
@@ -471,7 +474,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
             axs[i].fill_between(t[i],Vci95[:,0], Vci95[:,1],facecolor='r',linestyle='None',alpha=0.2)
             axs[i].fill_between(t[i],Vci50[:,0], Vci50[:,1],facecolor='r',linestyle='None',alpha=0.5)
             plt.tight_layout()
-            axs[i].grid()
+            axs[i].grid(alpha=0.3)
             axs[i].set_xlabel('Time [$\\mu s$]')
             axs[i].set_ylabel('V[{}]'.format(i))
             axs[i].legend(('Data','Fit','95%-CI','50%-CI'))
@@ -487,7 +490,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         axs[nSignals].set_ylabel('P [nm$^{-1}$]')
         axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
         plt.tight_layout()
-        axs[nSignals].grid()
+        axs[nSignals].grid(alpha=0.3)
         
         plt.show(block=False)
         print('----------------------------------------------------------------------------')

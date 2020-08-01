@@ -9,7 +9,7 @@ from scipy.optimize import nnls
 import deerlab as dl
 import copy
 from deerlab.utils import hccm, goodness_of_fit
-from deerlab.uqst import uqst
+from deerlab.uncertainty import UncertQuant
 
 def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx', 
                 weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
@@ -20,35 +20,35 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
     ----------
     V : array_like or list of array_like  
         Dipolar signal, multiple datasets can be globally evaluated by passing a list of signals.
-    K : 2D-array_like array, list of 2D-array_like)  
+    K : 2D-array_like array or list of 2D-array_like
         Dipolar kernel, if a list of signals is specified, a corresponding list of kernels must be passed as well.
     r : array_like
         Distance axis, in nanometers.
     regtype : string
         Regularization functional type: 
     
-        * 'tikhonov' - Tikhonov regularizaton
-        * 'tv'  - Total variation regularization
-        * 'huber' - Huber regularization
-        The default is 'tikhonov'.   
+        * ``'tikhonov'`` - Tikhonov regularizaton
+        * ``'tv'``  - Total variation regularization
+        * ``'huber'`` - Huber regularization
+        The default is ``'tikhonov'``.   
     
     alpha : string or scalar
         Method for the automatic selection of the optimal regularization parameter:
     
-        * 'lr' - L-curve minimum-radius method (LR)
-        * 'lc' - L-curve maximum-curvature method (LC)
-        * 'cv' - Cross validation (CV)
-        * 'gcv' - Generalized Cross Validation (GCV)
-        * 'rgcv' - Robust Generalized Cross Validation (rGCV)
-        * 'srgcv' - Strong Robust Generalized Cross Validation (srGCV)
-        * 'aic' - Akaike information criterion (AIC)
-        * 'bic' - Bayesian information criterion (BIC)
-        * 'aicc' - Corrected Akaike information criterion (AICC)
-        * 'rm' - Residual method (RM)
-        * 'ee' - Extrapolated Error (EE)          
-        * 'ncp' - Normalized Cumulative Periodogram (NCP)
-        * 'gml' - Generalized Maximum Likelihood (GML)
-        * 'mcl' - Mallows' C_L (MCL)
+        * ``'lr'`` - L-curve minimum-radius method (LR)
+        * ``'lc'`` - L-curve maximum-curvature method (LC)
+        * ``'cv'`` - Cross validation (CV)
+        * ``'gcv'`` - Generalized Cross Validation (GCV)
+        * ``'rgcv'`` - Robust Generalized Cross Validation (rGCV)
+        * ``'srgcv'`` - Strong Robust Generalized Cross Validation (srGCV)
+        * ``'aic'`` - Akaike information criterion (AIC)
+        * ``'bic'`` - Bayesian information criterion (BIC)
+        * ``'aicc'`` - Corrected Akaike information criterion (AICC)
+        * ``'rm'`` - Residual method (RM)
+        * ``'ee'`` - Extrapolated Error (EE)          
+        * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
+        * ``'gml'`` - Generalized Maximum Likelihood (GML)
+        * ``'mcl'`` - Mallows' C_L (MCL)
         The regularization parameter can be manually specified by passing a scalar value instead of a string.
         The default 'aic'.
 
@@ -56,17 +56,17 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
     -------
     Pfit : ndarray
         Fitted distance distribution
-    Puq : obj
+    Puq : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted distance distribution
     stats : dict
         Goodness of fit statistical estimators (if full_output=True):
 
-        * stats['chi2red'] - Reduced \chi^2 test
-        * stats['r2'] - R^2 test
-        * stats['rmsd'] - Root-mean squared deviation (RMSD)
-        * stats['aic'] - Akaike information criterion
-        * stats['aicc'] - Corrected Akaike information criterion
-        * stats['bic'] - Bayesian information criterion
+        * ``stats['chi2red']`` - Reduced \chi^2 test
+        * ``stats['r2']`` - R^2 test
+        * ``stats['rmsd']`` - Root-mean squared deviation (RMSD)
+        * ``stats['aic']`` - Akaike information criterion
+        * ``stats['aicc']`` - Corrected Akaike information criterion
+        * ``stats['bic']`` - Bayesian information criterion
 
     Other parameters
     ----------------
@@ -77,10 +77,10 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
     solver : string
         Optimizer used to solve the non-negative least-squares problem: 
 
-        * 'cvx' - Optimization of the NNLS problem using cvxopt
-        * 'fnnls' - Optimization using the fast NNLS algorithm.
-        * 'nnlsbpp' - Optimization using the block principal pivoting NNLS algorithm.
-        The default is 'cvx'.
+        * ``'cvx'`` - Optimization of the NNLS problem using cvxopt
+        * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
+        * ``'nnlsbpp'`` - Optimization using the block principal pivoting NNLS algorithm.
+        The default is ``'cvx'``.
 
     full_output : boolean
         If enabled the function will return additional output arguments in a tuple, by default is is disabled.
@@ -151,7 +151,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
         
         # Construct confidence interval structure for P
         NonNegConst = np.zeros(len(r))
-        Puq = uqst('covariance',Pfit,covmat,NonNegConst,[])
+        Puq = UncertQuant('covariance',Pfit,covmat,NonNegConst,[])
     else:
         Puq = []
     

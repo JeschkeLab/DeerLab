@@ -8,10 +8,7 @@ import types
 
 def mixmodels(*models):
     """ 
-    Combine DeerLab parametric models into a mixed multi-component model::
-
-        newmodel = mixmodels(model1,model2,...,modelN)
-    
+    Combine DeerLab parametric models into a mixed multi-component model.
 
     Parameters
     ----------

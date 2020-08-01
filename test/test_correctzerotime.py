@@ -14,28 +14,10 @@ def test_correction():
     y = y/max(y)
     t = t_truth + abs(min(t_truth))
 
-    t_corr,_ = correctzerotime(y,t)
+    t_corr = correctzerotime(y,t)
 
     assert max(abs(t_corr - t_truth)) < 1e-10
 #=======================================================================
-
-test_correction()
-def test_zerotime():
-#=======================================================================
-    "Check that the zerotime of a simple function is found correctly"
-        
-
-    t_truth = np.arange(-5,80,0.5)
-    y = 3000 - t_truth**2
-    y = y/max(y)
-    t = t_truth + abs(min(t_truth))
-    t0_truth = abs(min(t_truth))
-    
-    _,t0_found = correctzerotime(y,t)
-
-    assert abs(t0_found - t0_truth) < 1e-10
-#=======================================================================
-
 
 def test_late_times():
 #=======================================================================
@@ -49,7 +31,7 @@ def test_late_times():
 
     t = t_truth + tshift
 
-    t_corr,_ = correctzerotime(y,t)
+    t_corr = correctzerotime(y,t)
 
     assert max(abs(t_corr - t_truth)) < 1e-10
 #=======================================================================

@@ -25,27 +25,28 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
     regtype : string
         Regularization functional type: 
     
-        * 'tikhonov' - Tikhonov regularizaton
-        * 'tv'  - Total variation regularization
-        * 'huber' - Huber regularization
-        The default is 'tikhonov'.
+        * ``'tikhonov'`` - Tikhonov regularizaton
+        * ``'tv' `` - Total variation regularization
+        * ``'huber'`` - Huber regularization
+        The default is ``'tikhonov'``.
+
     method : string
         Method for the selection of the optimal regularization parameter.
 
-        * 'lr' - L-curve minimum-radius method (LR)
-        * 'lc' - L-curve maximum-curvature method (LC)
-        * 'cv' - Cross validation (CV)
-        * 'gcv' - Generalized Cross Validation (GCV)
-        * 'rgcv' - Robust Generalized Cross Validation (rGCV)
-        * 'srgcv' - Strong Robust Generalized Cross Validation (srGCV)
-        * 'aic' - Akaike information criterion (AIC)
-        * 'bic' - Bayesian information criterion (BIC)
-        * 'aicc' - Corrected Akaike information criterion (AICC)
-        * 'rm' - Residual method (RM)
-        * 'ee' - Extrapolated Error (EE)          
-        * 'ncp' - Normalized Cumulative Periodogram (NCP)
-        * 'gml' - Generalized Maximum Likelihood (GML)
-        * 'mcl' - Mallows' C_L (MCL)
+        * ``'lr'`` - L-curve minimum-radius method (LR)
+        * ``'lc'`` - L-curve maximum-curvature method (LC)
+        * ``'cv'`` - Cross validation (CV)
+        * ``'gcv'`` - Generalized Cross Validation (GCV)
+        * ``'rgcv'`` - Robust Generalized Cross Validation (rGCV)
+        * ``'srgcv'`` - Strong Robust Generalized Cross Validation (srGCV)
+        * ``'aic'`` - Akaike information criterion (AIC)
+        * ``'bic'`` - Bayesian information criterion (BIC)
+        * ``'aicc'`` - Corrected Akaike information criterion (AICC)
+        * ``'rm'`` - Residual method (RM)
+        * ``'ee'`` - Extrapolated Error (EE)          
+        * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
+        * ``'gml'`` - Generalized Maximum Likelihood (GML)
+        * ``'mcl'`` - Mallows' C_L (MCL)
         
     Other parameters
     ----------------
@@ -61,8 +62,10 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
     algorithm : string
         Search algorithm: 
         
-        * 'grid' - Grid-search, slow.
-        * 'brent' - Brent-algorithm, fast.
+        * ``'grid'`` - Grid-search, slow.
+        * ``'brent'`` - Brent-algorithm, fast.
+        The default is ``'brent'``.
+        
     full_output : boolean
         If enabled the function will return additional output arguments in a tuple, the default is False.
     nonnegativity : boolean

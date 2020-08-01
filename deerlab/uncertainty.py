@@ -1,4 +1,4 @@
-# uqst.py - Uncertainty quantification structure constructor
+# UncertQuant.py - Uncertainty quantification structure constructor
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 import numpy as np
@@ -7,22 +7,31 @@ from scipy.stats import norm
 from scipy.signal import fftconvolve
 import copy
 
-class uqst:
-    """
-    UQST Uncertainty quantification structure constructor
+class UncertQuant:
+    """ Represens the uncertainty quantification of fit results.
 
-    uqstruct = UQST('covariance',parfit,covmat,lb,ub)
-    Constructs the structure for covariance-based uncertainty quantificaton.
+    Attributes
+    ----------
+    type : string
+        Uncertainty quanification approach:
 
-    uqstruct = UQST('bootstrap',samples)
-    Constructs the structure for bootstrapped uncertainty quantificaton.
+            * 'covariance' - Covariance-based uncertainty analysis
+            * 'bootstrap' - Bootstrapped uncertainty analysis
+    
+    mean : ndarray
+        Mean values of the uncertainty distribution of the parameters.
+    median : ndarray
+        Median values of the uncertainty distribution of the parameters.
+    std : ndarray
+        Standard deviations of the uncertainty distribution of the parameters.
+    covmat: ndarray
+        Covariance matrix
+    nparam: int scalar
+        Number of parameters in the analysis.
 
-    Inputs:
-        parfit     N-element array of fitted values used as mean values in covariance-based CI
-        covmat     NxN-element covariance matrix
-        lb         N-element array of lower bounds used for fitting parfit
-        ub         N-element array of upper bounds used for fitting parfit
-        samples    MxN-element matrix of bootstrapped samples results
+    Methods
+    -------
+
     """
 
 
@@ -31,13 +40,13 @@ class uqst:
         #Parse inputs schemes
         if uqtype=='covariance':
             
-            # Scheme 1: uqst('covariance',parfit,covmat,lb,ub)
+            # Scheme 1: UncertQuant('covariance',parfit,covmat,lb,ub)
             parfit = data
             self.__parfit = parfit
             nParam = len(parfit)
             
         elif uqtype == 'bootstrap':
-            # Scheme 2: uqst('bootstrap',samples)
+            # Scheme 2: UncertQuant('bootstrap',samples)
             samples = data
             self.__samples = samples
             nParam = np.shape(samples)[1]
@@ -66,24 +75,36 @@ class uqst:
             self.median = np.squeeze(np.median(samples,0))
             self.std = np.squeeze(np.std(samples,0))
             self.covmat = covmat
-        self.uqtype = uqtype
+        self.type = uqtype
 
         # Set private variables
-        self.__uqtype = uqtype
-        self.__covmat = covmat
         self.__lb = lb
         self.__ub = ub
-        self.__nParam = nParam
+        self.nparam = nParam
 
 
     # Parameter distributions
     #--------------------------------------------------------------------------------
     def pardist(self,n):
+        """
+        Generate the uncertainty distribution of the n-th parameter
+
+        Parameters
+        ----------
+        n : int scalar
+            Index of the parameter 
         
-        if n > self.__nParam or n < 0:
+        Returns
+        -------
+        ax : ndarray
+            Parameter values at which the distribution is evaluated
+        pdf : ndarray
+            Probability density function of the parameter uncertainty.
+        """
+        if n > self.nparam or n < 0:
             raise ValueError('The input must be a valid integer number.')
         
-        if self.__uqtype == 'covariance':
+        if self.type == 'covariance':
             # Generate Gaussian distribution based on covariance matrix
             sig = np.sqrt(self.covmat[n,n])
             xmean = self.mean[n]
@@ -94,7 +115,7 @@ class uqst:
             pdf[x < self.__lb[n]] = 0
             pdf[x > self.__ub[n]] = 0
 
-        if self.__uqtype == 'bootstrap':
+        if self.type == 'bootstrap':
             # Get bw using silverman's rule (1D only)
             samplen = self.__samples[:, n]
             sigma = np.std(samplen, ddof=1)
@@ -127,11 +148,24 @@ class uqst:
     # Parameter percentiles
     #--------------------------------------------------------------------------------
     def percentile(self,p):
+        """
+        Compute the p-th percentiles of the parameters uncertainty distributions
+
+        Parameters
+        ----------
+        p : float scalar
+            Percentile (between 0-100)
+        
+        Returns
+        -------
+        prctiles : ndarray
+            Percentile values of all parameters
+        """
         if p>100 or p<0:
             raise ValueError('The input must be a number between 0 and 100')
  
-        x = np.zeros(self.__nParam)
-        for n in range(self.__nParam):
+        x = np.zeros(self.nparam)
+        for n in range(self.nparam):
             # Get parameter PDF
             values,pdf = self.pardist(n)
             # Compute corresponding CDF
@@ -149,21 +183,36 @@ class uqst:
     # Covariance-based confidence intervals
     #--------------------------------------------------------------------------------
     def ci(self,coverage):
+        """
+        Compute the confidence intervals for the parameters.
+
+        Parameters
+        ----------
+        coverage : float scalar
+            Coverage (confidence level) of the confidence intervals (between 0-100)
         
+        Returns
+        -------
+        cis : 2D-ndarray
+            Confidence intervals for the parameters:
+
+                * ``cis[:,0]`` - Lower confidence intervals
+                * ``cis[:,1]`` - Upper confidence intervals
+        """
         if coverage>100 or coverage<0:
             raise ValueError('The input must be a number between 0 and 100')
         
         alpha = 1 - coverage/100
         p = 1 - alpha/2 # percentile
         
-        x = np.zeros((self.__nParam,2))
-        if self.__uqtype=='covariance':
+        x = np.zeros((self.nparam,2))
+        if self.type=='covariance':
                 # Compute covariance-based confidence intervals
                 # Clip at specified box boundaries
-                x[:,0] = np.maximum(self.__lb, self.__parfit - norm.ppf(p)*np.sqrt(np.diag(self.__covmat)))
-                x[:,1] = np.minimum(self.__ub, self.__parfit + norm.ppf(p)*np.sqrt(np.diag(self.__covmat)))
+                x[:,0] = np.maximum(self.__lb, self.__parfit - norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
+                x[:,1] = np.minimum(self.__ub, self.__parfit + norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
                 
-        elif self.__uqtype=='bootstrap':
+        elif self.type=='bootstrap':
                 # Compute bootstrap-based confidence intervals
                 # Clip possible artifacts from the percentile estimation
                 x[:,0] = np.minimum(self.percentile(p*100), np.amax(self.__samples))
@@ -176,7 +225,28 @@ class uqst:
     # Error Propagation (covariance-based only)
     #--------------------------------------------------------------------------------
     def propagate(self,model,lbm=[],ubm=[]):
-        
+        """
+        Uncertainty propagation. This function takes the uncertainty analysis of the 
+        parameters and propagates it to another functon depending on those parameters.
+
+        Parameters
+        ----------
+        model : callable
+            Callable model function taking an array of ``nparam`` parameters.
+        lbm : ndarray
+            Lower bounds of the values returned by ``model``, by default assumed unconstrained.
+        ubm : ndarray
+            Upper bounds of the values returned by ``model``, by default assumed unconstrained.
+
+        Returns
+        -------
+        modeluq : :ref:`UncertQuant`
+            New uncertainty quantification analysis for the ouputs of ``model``.
+
+        Notes
+        -----
+        Uncertainty propagation is covariance-based and so will be the resulting uncertainty analysis.
+        """
         lbm,ubm = (np.atleast_1d(var) for var in [lbm,ubm])
 
         parfit = self.mean
@@ -201,9 +271,9 @@ class uqst:
         modelfit = np.minimum(modelfit,ubm)
         
         # Error progation
-        modelcovmat = J@self.__covmat@J.T
+        modelcovmat = J@self.covmat@J.T
         
         # Construct new CI-structure for the model
-        return  uqst('covariance',modelfit,modelcovmat,lbm,ubm)
+        return  UncertQuant('covariance',modelfit,modelcovmat,lbm,ubm)
     #--------------------------------------------------------------------------------
 

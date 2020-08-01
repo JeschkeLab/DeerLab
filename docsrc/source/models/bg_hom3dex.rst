@@ -1,34 +1,11 @@
-.. highlight:: matlab
+.. highlight:: python
 .. _bg_hom3dex:
 
 ***********************
 :mod:`bg_hom3dex`
 ***********************
 
-Background due to a homogeneous spin distribution in 3D, with excluded volume
-
------------------------------
-
-Syntax
-=========================================
-
-.. code-block:: matlab
-
-        info = bg_hom3dex()
-        P = bg_hom3dex(t,param)
-        P = bg_hom3dex(t,param,lambda)
-
-Inputs
-    *   ``t`` -- Time axis (N-array)
-    *   ``param`` -- Model parameters
-    *   ``lambda`` -- Modulation amplitude (between 0 and 1)
-
-Outputs
-    *   ``B`` -- Model background (N-array)
-    *   ``info`` -- Model information (struct)
-
-
------------------------------
+.. autofunction:: deerlab.bg_models.bg_hom3dex
 
 Model
 =========================================
@@ -56,36 +33,3 @@ The function :math:`\alpha(R)` of the exclusion distance :math:`R` captures the 
 ``param(1)``    :math:`c`              50         0.01          1000          spin concentration (μM)
 ``param(2)``    :math:`R`              1          0.1            20           exclusion distance (nm)
 ============= =================== ========= ============= ============= ================================================
-
------------------------------
-
-
-Description
-=========================================
-
-.. code-block:: matlab
-
-        info = bg_hom3dex()
-
-Returns an ``info`` table containing the information of the model parameters and boundaries.
-
-* ``info.model`` -- Full name of the parametric model.
-* ``info.nparam`` -- Total number of adjustable parameters.
-* ``info.parameters`` -- Structure array with information on individual parameters.
-
------------------------------
-
-
-.. code-block:: matlab
-
-    B = bg_hom3dex(t,param)
-
-Computes the background model ``B`` from the axis ``t`` according to the parameters array ``param`` for a modulation amplitude ``lambda=1``. The required parameters can also be found in the ``info`` structure.
-
------------------------------
-
-.. code-block:: matlab
-
-    B = bg_hom3dex(t,param,lambda)
-
-Computes the background model ``B`` for a given modulation amplitude ``lambda`` (between 0 and 1).

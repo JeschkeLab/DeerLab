@@ -1,4 +1,4 @@
-.. highlight:: matlab
+.. highlight:: python
 .. _example_multigauss_4pdeer:
 
 **********************************************************************************

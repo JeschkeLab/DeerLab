@@ -12,35 +12,34 @@ from deerlab.utils import isempty
 def correctscale(V,t,tmax=[],model='deer'):
     """ 
     Amplitude scale correction
-    ==========================
 
     Takes the experimental dipolar signal (V) on a given time axis (t) and
     rescales it so that it is 1 at time zero, taking into account the noise.
     It fits a model specified in (model) over the interval |t|=<tmax around time zero.
     It returns the rescaled signal (Vc) and the scaling factor (V0).
 
-    Arguments:
+    Parameters
     ----------
-    V (array)
+    V : array_like
         Experimenal signal.
-    t (array) 
+    t : array_like 
         Time axis, in microseconds. 
     
     Returns:
     --------
-    Vc (array)
+    Vc : ndarray
         Rescaled signal.
-    V0 (scale)
-        Rescaling factor, such that Vc = V/V0.
     
-    Additional arguments:
-    ---------------------
-    tmax (scalar, default=0.2)
+    Other parameters
+    ----------------
+    tmax : scalar
         Time cutoff for fit range, in microseconds.
-    model (string, default='deer')
+    model : string
         Model to fit over |t|<tmax
-            'deer'   - DEER model with Gaussian distribution (default)
-            'gauss'  - Raised Gaussian
+        * ``'deer'``   - DEER model with Gaussian distribution.
+        * ``'gauss'``  - Raised Gaussian.
+        The default is ``'deer'``
+        
     """
     if not all(np.isreal(V)):
         raise ValueError('Input signal cannot be complex.') 
@@ -83,4 +82,4 @@ def correctscale(V,t,tmax=[],model='deer'):
     V0 = Amp0*parfit[0]
     Vc = V/V0
 
-    return Vc,V0 
+    return Vc

@@ -17,7 +17,7 @@ def test_multigauss():
     P = dd_gauss3(r,parin)
     V = K@P
 
-    Pfit,_,_,_,_ = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uqanalysis=False)
+    Pfit,_,_,_,_,_,_ = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uqanalysis=False)
 
     assert ovl(P,Pfit) > 0.95 # more than 99% overlap
 #=======================================================================
@@ -33,7 +33,7 @@ def test_multirice():
     P = dd_rice3(r,parin)
     V = K@P
 
-    Pfit,_,_,_,_ = fitmultimodel(V,K,r,dd_rice,3,'aicc', uqanalysis=False)
+    Pfit,_,_,_,_,_,_ = fitmultimodel(V,K,r,dd_rice,3,'aicc', uqanalysis=False)
 
     assert ovl(P,Pfit) > 0.95 # more than 99% overlap
 #=======================================================================
@@ -50,7 +50,7 @@ def test_multigengauss():
     P /= np.trapz(P,r)
     V = K@P
 
-    Pfit,_,_,_,_ = fitmultimodel(V,K,r,dd_gengauss,3,'aicc', uqanalysis=False)
+    Pfit,_,_,_,_,_,_ = fitmultimodel(V,K,r,dd_gengauss,3,'aicc', uqanalysis=False)
 
     assert ovl(P,Pfit) > 0.95 # more than 99% overlap
 #=======================================================================
@@ -66,7 +66,7 @@ def test_bounds():
     P = dd_gauss3(r,parin)
     V = K@P
 
-    Pfit,_,_,_,_ = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb = [2,0.1],ub=[5.5,1.5], uqanalysis=False)
+    Pfit,_,_,_,_,_,_ = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb = [2,0.1],ub=[5.5,1.5], uqanalysis=False)
 
     assert ovl(P,Pfit) > 0.95 # more than 99% overlap
 #=======================================================================
@@ -82,8 +82,8 @@ def test_rescaling():
     scale = 1e3
     V  = K@P
 
-    Pfit1,_,_,_,_ = fitmultimodel(V*scale,K,r,dd_gauss,3,'aic',normP=True,uqanalysis=False)
-    Pfit2,_,_,_,_ = fitmultimodel(V,K,r,dd_gauss,3,'aic',normP=False,uqanalysis=False)
+    Pfit1,_,_,_,_,_,_ = fitmultimodel(V*scale,K,r,dd_gauss,3,'aic',normP=True,uqanalysis=False)
+    Pfit2,_,_,_,_,_,_ = fitmultimodel(V,K,r,dd_gauss,3,'aic',normP=False,uqanalysis=False)
 
     assert max(abs(Pfit1 - Pfit2)) < 1e-4
 #=======================================================================
@@ -104,7 +104,7 @@ def test_global_multigauss():
     K2 = dipolarkernel(t2,r)
     V2 = K2@P
 
-    Pfit,_,_,_,_ = fitmultimodel([V1,V2],[K1,K2],r,dd_gauss,3,'aicc', uqanalysis=False)
+    Pfit,_,_,_,_,_,_ = fitmultimodel([V1,V2],[K1,K2],r,dd_gauss,3,'aicc', uqanalysis=False)
 
     assert ovl(P,Pfit) > 0.95 # more than 99% overlap
 #=======================================================================
@@ -125,7 +125,7 @@ def test_global_multirice():
     K2 = dipolarkernel(t2,r)
     V2 = K2@P
 
-    Pfit,_,_,_,_ = fitmultimodel([V1,V2],[K1,K2],r,dd_rice,3,'aicc', uqanalysis=False)
+    Pfit,_,_,_,_,_,_ = fitmultimodel([V1,V2],[K1,K2],r,dd_rice,3,'aicc', uqanalysis=False)
 
     assert ovl(P,Pfit) > 0.95 # more than 99% overlap
 #=======================================================================
@@ -148,7 +148,7 @@ def test_background_fit():
         K = dipolarkernel(t,r,lam,B)
         return K
 
-    Pfit,_,_,_,_ = fitmultimodel(V,Kmodel,r,dd_gauss,2,'aicc',lb=[1,0.1],ub=[6,1],lbK=[0.2,0.01],ubK=[0.9,1],uqanalysis=False)
+    Pfit,_,_,_,_,_,_ = fitmultimodel(V,Kmodel,r,dd_gauss,2,'aicc',lb=[1,0.1],ub=[6,1],lbK=[0.2,0.01],ubK=[0.9,1],uqanalysis=False)
 
     assert ovl(P,Pfit) > 0.95 # more than 99% overlap
 #=======================================================================
@@ -188,7 +188,7 @@ def test_confinter_Pfit():
     K = dipolarkernel(t,r)
     V = K@P
 
-    Pfit,_,Puq,_,_ = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb=[1,0.1],ub=[6,1])
+    Pfit,_,Puq,_,_,_,_ = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb=[1,0.1],ub=[6,1])
 
     lbP = np.zeros(len(r))
     ubP = np.full(len(r), np.inf)
@@ -208,7 +208,7 @@ def test_confinter_parfit():
 
     lbPpar = [1,0.1]
     ubPpar = [6,1]
-    _,parfit,_,paruq,_ = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb=[1,0.1],ub=[6,1])
+    _,parfit,_,paruq,_,_,_ = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb=[1,0.1],ub=[6,1])
 
     assert_confidence_intervals(paruq.ci(50)[0:2,:],paruq.ci(95)[0:2,:],parfit[1],lbPpar,ubPpar)
 #=======================================================================
@@ -225,7 +225,7 @@ def test_goodness_of_fit():
     P = dd_gauss3(r,parin)
     V = K@P
 
-    _,_,_,_,stats = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uqanalysis=False)
+    _,_,_,_,_,_,stats = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uqanalysis=False)
 
     assert abs(stats['chi2red'] - 1) < 5e-2 and abs(stats['R2'] - 1) < 5e-2
 #=======================================================================
