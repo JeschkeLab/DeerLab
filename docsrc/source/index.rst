@@ -1,4 +1,4 @@
-﻿DeerLab-development Documentation
+﻿DeerLab 0.10.dev Documentation
 =====================================================
 
 .. warning:: DeerLab is currently in the pre-release stage (version numbers 0.x.x) and under active development. Major changes are likely before the first stable version (1.0.0) is released.

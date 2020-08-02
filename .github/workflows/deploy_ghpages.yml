@@ -1,0 +1,54 @@
+name: Docs Build & Deployment
+
+on: 
+   push:
+      branches:
+      - manual_ghp_update
+      paths:
+      - 'build/**'
+      - 'docsrc/**'
+      
+   schedule:
+        # Run once a week on Sunday at 12:00 PM
+        - cron:  '0 12 * * 0'
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pip
+          key: ${{ runner.os }}-${{ hashFiles('**/make.bat') }}
+          restore-keys: |
+            {{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+           python -m pip install --upgrade pip
+           python -m pip install sphinx==1.8.0
+           python -m pip install sphinx_rtd_theme
+           python -m pip install numpydoc
+           python -m pip install sphinx-gallery
+           python -m pip install sphinxcontrib-httpdomain
+           sudo apt install texlive-extra-utils
+           sudo apt-get install texlive-latex-extra
+           
+    - name: Build multi-version docs
+      run: |
+           cd docsrc
+           ./make.bat clean
+           cd ..
+           
+    - name: Deploy to GH-Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs
