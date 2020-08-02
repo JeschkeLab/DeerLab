@@ -28,7 +28,7 @@ Next, DeerLab and all its dependencies can be installed via::
 
     python -m pip install deerlab
 
-More details on the installation of DeerLab can be found [here](https://jeschkelab.github.io/DeerLab/develop/installation.html).
+More details on the installation of DeerLab can be found [here](https://jeschkelab.github.io/DeerLab/installation.html).
 
 ### Citation
 
