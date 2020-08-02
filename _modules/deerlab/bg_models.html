@@ -1,0 +1,1025 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>deerlab.bg_models &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Loading and preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>deerlab.bg_models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for deerlab.bg_models</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">m</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">scp</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span>
+
+<span class="k">def</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="p">):</span>
+<span class="c1">#=================================================================</span>
+    <span class="c1"># Check the number of input arguments specified</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">t</span><span class="p">,</span><span class="n">p</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">t</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">lam</span> <span class="o">=</span> <span class="n">args</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Two or three input arguments required: bg_model(t,p) or bg_model(r,p,lam)&#39;</span><span class="p">)</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="c1"># Check that the correct number of parmameters have been specified</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">!=</span><span class="n">npar</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;This model requires &#39;</span><span class="p">,</span><span class="n">npar</span><span class="p">,</span><span class="s1">&#39; parameters. Only &#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">),</span><span class="s1">&#39; where specified.&#39;</span><span class="p">)</span>
+ 
+    <span class="k">return</span> <span class="n">t</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">lam</span>
+<span class="c1">#=================================================================</span>
+
+<div class="viewcode-block" id="bg_exp"><a class="viewcode-back" href="../../models/bg_exp.html#deerlab.bg_models.bg_exp">[docs]</a><span class="k">def</span> <span class="nf">bg_exp</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exponential background model</span>
+<span class="sd">   </span>
+<span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
+
+<span class="sd">        info = bg_exp()</span>
+
+
+<span class="sd">    Otherwise the function returns to calculated background model::</span>
+<span class="sd">    </span>
+
+<span class="sd">        B = bg_exp(t,param)</span>
+<span class="sd">        B = bg_exp(t,param,lam)</span>
+<span class="sd"> </span>
+<span class="sd"> </span>
+<span class="sd">    Model parameters:</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">     -------------------------------------------------</span>
+<span class="sd">      Parameter    Units     Lower    Upper    Start</span>
+<span class="sd">     -------------------------------------------------</span>
+<span class="sd">      Decay Rate    us-1       0       200      0.35 </span>
+<span class="sd">     -------------------------------------------------</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">    param : array_like</span>
+<span class="sd">        List of model parameter values.</span>
+<span class="sd">    lam : float scalar</span>
+<span class="sd">        Pathway amplitude. If not specified it is set to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info : dict</span>
+<span class="sd">        Dictionary containing the built-in information of the model:</span>
+<span class="sd">        </span>
+<span class="sd">        * ``info[&#39;Parameters&#39;]`` - string list of parameter names</span>
+<span class="sd">        * ``info[&#39;Units&#39;]`` - string list of metric units of parameters</span>
+<span class="sd">        * ``info[&#39;Start&#39;]`` - list of values used as start values during optimization </span>
+<span class="sd">        * ``info[&#39;Lower&#39;]`` - list of values used as lower bounds during optimization </span>
+<span class="sd">        * ``info[&#39;Upper&#39;]`` - list of values used as upper bounds during optimization </span>
+<span class="sd">    B : ndarray</span>
+<span class="sd">        Background decay function. </span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+<span class="c1"># ======================================================================</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Decay Rate&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;us-1&#39;</span><span class="p">],</span>
+            <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mf">0.35</span><span class="p">]),</span>
+            <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">200</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nf">info</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">lam</span> <span class="o">=</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> 
+    
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">param</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+
+    <span class="n">kappa</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lam</span><span class="o">*</span><span class="n">kappa</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">B</span></div>
+<span class="c1"># ======================================================================</span>
+
+
+<div class="viewcode-block" id="bg_hom3d"><a class="viewcode-back" href="../../models/bg_hom3d.html#deerlab.bg_models.bg_hom3d">[docs]</a><span class="k">def</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Background from homogeneous distribution of spins in a 3D medium</span>
+
+<span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
+
+<span class="sd">        info = bg_hom3d()</span>
+
+
+<span class="sd">    Otherwise the function returns to calculated background model::</span>
+<span class="sd">    </span>
+
+<span class="sd">        B = bg_hom3d(t,param)</span>
+<span class="sd">        B = bg_hom3d(t,param,lam)</span>
+<span class="sd"> </span>
+<span class="sd"> </span>
+<span class="sd">    Model parameters:</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">     ----------------------------------------------------------------------</span>
+<span class="sd">      Parameter                        Units     Lower    Upper    Start</span>
+<span class="sd">     ----------------------------------------------------------------------</span>
+<span class="sd">      Concentration of pumped spins     uM        0.01    5000      50 </span>
+<span class="sd">     ----------------------------------------------------------------------</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">    param : array_like</span>
+<span class="sd">        List of model parameter values.</span>
+<span class="sd">    lam : float scalar</span>
+<span class="sd">        Pathway amplitude. If not specified it is set to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info : dict</span>
+<span class="sd">        Dictionary containing the built-in information of the model:</span>
+<span class="sd">        </span>
+<span class="sd">        * ``info[&#39;Parameters&#39;]`` - string list of parameter names</span>
+<span class="sd">        * ``info[&#39;Units&#39;]`` - string list of metric units of parameters</span>
+<span class="sd">        * ``info[&#39;Start&#39;]`` - list of values used as start values during optimization </span>
+<span class="sd">        * ``info[&#39;Lower&#39;]`` - list of values used as lower bounds during optimization </span>
+<span class="sd">        * ``info[&#39;Upper&#39;]`` - list of values used as upper bounds during optimization </span>
+<span class="sd">    B : ndarray</span>
+<span class="sd">        Background decay function. </span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+<span class="c1"># ======================================================================</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Concentration of pumped spins&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;uM&#39;</span><span class="p">],</span>
+            <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">50</span><span class="p">]),</span>
+            <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mf">0.01</span><span class="p">]),</span>
+            <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">5000</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nf">info</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">lam</span> <span class="o">=</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> 
+
+    <span class="n">conc</span> <span class="o">=</span> <span class="n">param</span>            <span class="c1"># concentration, uM</span>
+    <span class="n">NA</span> <span class="o">=</span> <span class="mf">6.02214076e23</span>      <span class="c1"># Avogadro constant, mol^-1</span>
+    <span class="n">muB</span> <span class="o">=</span> <span class="mf">9.2740100783e-24</span>  <span class="c1"># Bohr magneton, J/T (CODATA 2018 value)</span>
+    <span class="n">mu0</span> <span class="o">=</span> <span class="mf">1.25663706212e-6</span>  <span class="c1"># magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">6.62607015e-34</span>      <span class="c1"># Planck constant, J/Hz (CODATA 2018)</span>
+    <span class="n">ge</span> <span class="o">=</span> <span class="mf">2.00231930436256</span>   <span class="c1"># free-electron g factor (CODATA 2018 value)</span>
+    <span class="n">hbar</span> <span class="o">=</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">pi</span>         <span class="c1"># reduced Planck constant, J/(rad/s)</span>
+
+    <span class="n">D</span> <span class="o">=</span> <span class="p">(</span><span class="n">mu0</span><span class="o">/</span><span class="mi">4</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">muB</span><span class="o">*</span><span class="n">ge</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">hbar</span>   <span class="c1"># dipolar constant, m^3 s^-1</span>
+    
+    <span class="n">conc</span> <span class="o">=</span> <span class="n">conc</span><span class="o">*</span><span class="mf">1e-6</span><span class="o">*</span><span class="mf">1e3</span><span class="o">*</span><span class="n">NA</span> <span class="c1"># umol/L -&gt; mol/L -&gt; mol/m^3 -&gt; spins/m^3</span>
+    
+    <span class="c1"># Compute background function</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="o">*</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">9</span><span class="o">/</span><span class="n">m</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">lam</span><span class="o">*</span><span class="n">conc</span><span class="o">*</span><span class="n">D</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="mf">1e-6</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">B</span></div>
+<span class="c1"># ======================================================================</span>
+
+<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="nf">load_exvolume_redfactor</span>
+
+<div class="viewcode-block" id="bg_hom3dex"><a class="viewcode-back" href="../../models/bg_hom3dex.html#deerlab.bg_models.bg_hom3dex">[docs]</a><span class="k">def</span> <span class="nf">bg_hom3dex</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Background from homogeneous distribution of spins with excluded-volume effects</span>
+
+<span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
+
+<span class="sd">        info = bg_hom3dex()</span>
+
+
+<span class="sd">    Otherwise the function returns to calculated background model::</span>
+<span class="sd">    </span>
+
+<span class="sd">        B = bg_hom3dex(t,param)</span>
+<span class="sd">        B = bg_hom3dex(t,param,lam)</span>
+<span class="sd"> </span>
+<span class="sd"> </span>
+<span class="sd">    Model parameters:</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">     -----------------------------------------------------------------------------</span>
+<span class="sd">      Parameter                                Units     Lower    Upper    Start</span>
+<span class="sd">     -----------------------------------------------------------------------------</span>
+<span class="sd">      Fractal Concentration of pumped spins  umol/dm^d    0.01    5000      50 </span>
+<span class="sd">      Exclusion distance                        nm        0.10     20       1 </span>
+<span class="sd">     -----------------------------------------------------------------------------</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">    param : array_like</span>
+<span class="sd">        List of model parameter values.</span>
+<span class="sd">    lam : float scalar</span>
+<span class="sd">        Pathway amplitude. If not specified it is set to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info : dict</span>
+<span class="sd">        Dictionary containing the built-in information of the model:</span>
+<span class="sd">        </span>
+<span class="sd">        * ``info[&#39;Parameters&#39;]`` - string list of parameter names</span>
+<span class="sd">        * ``info[&#39;Units&#39;]`` - string list of metric units of parameters</span>
+<span class="sd">        * ``info[&#39;Start&#39;]`` - list of values used as start values during optimization </span>
+<span class="sd">        * ``info[&#39;Lower&#39;]`` - list of values used as lower bounds during optimization </span>
+<span class="sd">        * ``info[&#39;Upper&#39;]`` - list of values used as upper bounds during optimization </span>
+<span class="sd">    B : ndarray</span>
+<span class="sd">        Background decay function. </span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+<span class="c1"># ======================================================================</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Fractal Concentration of pumped spins&#39;</span><span class="p">,</span><span class="s1">&#39;Fractal dimensionality&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;umol/dm^d&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+            <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span>   <span class="mi">1</span><span class="p">]),</span>
+            <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">]),</span>
+            <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nf">info</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">lam</span> <span class="o">=</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> 
+
+    <span class="c1"># Load precalculated reduction factor look-up table (Kattnig Eq.(18))</span>
+    <span class="n">dR_tab</span><span class="p">,</span><span class="n">alphas_tab</span> <span class="o">=</span> <span class="nf">load_exvolume_redfactor</span><span class="p">()</span>
+
+    <span class="c1"># Get parameters</span>
+    <span class="n">conc</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># uM</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>    <span class="c1"># nm</span>
+
+    <span class="n">NA</span> <span class="o">=</span> <span class="mf">6.02214076e23</span>      <span class="c1"># Avogadro constant, mol^-1</span>
+    <span class="n">conc</span> <span class="o">=</span> <span class="n">conc</span><span class="o">*</span><span class="mf">1e-6</span><span class="o">*</span><span class="mf">1e3</span><span class="o">*</span><span class="n">NA</span> <span class="c1"># umol/L -&gt; mol/L -&gt; mol/m^3 -&gt; spins/m^3</span>
+    <span class="n">ge</span> <span class="o">=</span> <span class="mf">2.00231930436256</span>   <span class="c1"># free-electron g factor (CODATA 2018 value)</span>
+    <span class="n">mu0</span> <span class="o">=</span> <span class="mf">1.25663706212e-6</span>  <span class="c1"># magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)</span>
+    <span class="n">muB</span> <span class="o">=</span> <span class="mf">9.2740100783e-24</span>  <span class="c1"># Bohr magneton, J/T (CODATA 2018 value)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">6.62607015e-34</span>      <span class="c1"># Planck constant, J/Hz (CODATA 2018)</span>
+    <span class="n">hbar</span> <span class="o">=</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">pi</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">mu0</span><span class="o">/</span><span class="mi">4</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">ge</span><span class="o">*</span><span class="n">muB</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">hbar</span> <span class="c1"># Eq.(6) m^3 s^-1</span>
+
+    <span class="c1"># Calculate reduction factor (Eq.(18))</span>
+    <span class="k">if</span> <span class="n">R</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dR</span> <span class="o">=</span> <span class="n">A</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="mf">1e-6</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="mf">1e-9</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span> <span class="c1"># unitless</span>
+        
+        <span class="c1"># Use interpolation of look-up table for small dR</span>
+        <span class="n">small</span> <span class="o">=</span> <span class="n">dR</span> <span class="o">&lt;</span> <span class="nf">max</span><span class="p">(</span><span class="n">dR_tab</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">dR</span><span class="p">))</span>
+        <span class="n">alpha</span><span class="p">[</span><span class="n">small</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">interp</span><span class="p">(</span><span class="n">dR</span><span class="p">[</span><span class="n">small</span><span class="p">],</span> <span class="n">dR_tab</span><span class="p">,</span> <span class="n">alphas_tab</span><span class="p">)</span>
+        
+        <span class="c1"># For large dR, use limiting dR-&gt;inf expression</span>
+        <span class="n">alpha</span><span class="p">[</span><span class="o">~</span><span class="n">small</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="n">dR</span><span class="p">[</span><span class="o">~</span><span class="n">small</span><span class="p">]</span>
+
+    <span class="n">K</span> <span class="o">=</span> <span class="mi">8</span><span class="o">*</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">9</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">A</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="mf">1e-6</span><span class="p">)</span><span class="o">*</span><span class="n">alpha</span> <span class="c1"># Eq.(17)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lam</span><span class="o">*</span><span class="n">conc</span><span class="o">*</span><span class="n">K</span><span class="p">)</span> <span class="c1"># Eq.(13)</span>
+
+    <span class="k">return</span> <span class="n">B</span></div>
+<span class="c1"># ======================================================================</span>
+
+
+
+<div class="viewcode-block" id="bg_homfractal"><a class="viewcode-back" href="../../models/bg_homfractal.html#deerlab.bg_models.bg_homfractal">[docs]</a><span class="k">def</span> <span class="nf">bg_homfractal</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Background from homogeneous distribution of spins in a fractal medium</span>
+
+<span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
+
+<span class="sd">        info = bg_homfractal()</span>
+
+
+<span class="sd">    Otherwise the function returns to calculated background model::</span>
+<span class="sd">    </span>
+
+<span class="sd">        B = bg_homfractal(t,param)</span>
+<span class="sd">        B = bg_homfractal(t,param,lam)</span>
+<span class="sd"> </span>
+<span class="sd"> </span>
+<span class="sd">    Model parameters:</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">     -----------------------------------------------------------------------------</span>
+<span class="sd">      Parameter                                Units     Lower    Upper    Start</span>
+<span class="sd">     -----------------------------------------------------------------------------</span>
+<span class="sd">      Fractal Concentration of pumped spins  umol/dm^d    0.01    5000      50 </span>
+<span class="sd">      Fractal dimensionality                               0        6       3</span>
+<span class="sd">     -----------------------------------------------------------------------------</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">    param : array_like</span>
+<span class="sd">        List of model parameter values.</span>
+<span class="sd">    lam : float scalar</span>
+<span class="sd">        Pathway amplitude. If not specified it is set to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info : dict</span>
+<span class="sd">        Dictionary containing the built-in information of the model:</span>
+<span class="sd">        </span>
+<span class="sd">        * ``info[&#39;Parameters&#39;]`` - string list of parameter names</span>
+<span class="sd">        * ``info[&#39;Units&#39;]`` - string list of metric units of parameters</span>
+<span class="sd">        * ``info[&#39;Start&#39;]`` - list of values used as start values during optimization </span>
+<span class="sd">        * ``info[&#39;Lower&#39;]`` - list of values used as lower bounds during optimization </span>
+<span class="sd">        * ``info[&#39;Upper&#39;]`` - list of values used as upper bounds during optimization </span>
+<span class="sd">    B : ndarray</span>
+<span class="sd">        Background decay function. </span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+<span class="c1"># ======================================================================</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Fractal Concentration of pumped spins&#39;</span><span class="p">,</span><span class="s1">&#39;Fractal dimensionality&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;umol/dm^d&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+            <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span>   <span class="mi">3</span><span class="p">]),</span>
+            <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">0</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">]),</span>
+            <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">6</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nf">info</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">lam</span> <span class="o">=</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> 
+ 
+
+    <span class="c1"># Unpack model paramters</span>
+    <span class="n">conc</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>         <span class="c1"># concentration, umol/dm^d</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>            <span class="c1"># fractal dimension    </span>
+    <span class="c1"># Natural constants</span>
+    <span class="n">NA</span> <span class="o">=</span> <span class="mf">6.02214076e23</span>      <span class="c1"># Avogadro constant, mol^-1</span>
+    <span class="n">muB</span> <span class="o">=</span> <span class="mf">9.2740100783e-24</span>  <span class="c1"># Bohr magneton, J/T (CODATA 2018 value)</span>
+    <span class="n">mu0</span> <span class="o">=</span> <span class="mf">1.25663706212e-6</span>  <span class="c1"># magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">6.62607015e-34</span>      <span class="c1"># Planck constant, J/Hz (CODATA 2018)</span>
+    <span class="n">ge</span> <span class="o">=</span> <span class="mf">2.00231930436256</span>   <span class="c1"># free-electron g factor (CODATA 2018 value)</span>
+    <span class="n">hbar</span> <span class="o">=</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">pi</span>         <span class="c1"># reduced Planck constant, J/(rad/s)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="p">(</span><span class="n">mu0</span><span class="o">/</span><span class="mi">4</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">muB</span><span class="o">*</span><span class="n">ge</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">hbar</span>   <span class="c1"># dipolar constant, m^3 s^-1</span>
+    <span class="c1"># Units conversion of concentration    </span>
+    <span class="n">conc</span> <span class="o">=</span> <span class="n">conc</span><span class="o">*</span><span class="mf">1e-6</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="n">d</span><span class="p">)</span><span class="o">*</span><span class="n">NA</span> <span class="c1"># umol/dm^d -&gt; mol/m^d -&gt; spins/m^d</span>
+    
+    <span class="c1"># Compute constants</span>
+    <span class="k">if</span> <span class="n">d</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="o">-</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">Lam</span> <span class="o">=</span> <span class="mi">4</span><span class="o">/</span><span class="mi">3</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">d</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">6</span><span class="p">)</span><span class="o">*</span><span class="n">scp</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="o">-</span><span class="n">d</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">integrand</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">Lam</span> <span class="o">=</span> <span class="n">scp</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+    <span class="c1"># Compute background function</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">3</span><span class="o">*</span><span class="n">c</span><span class="o">*</span><span class="n">Lam</span><span class="o">*</span><span class="n">lam</span><span class="o">*</span><span class="n">conc</span><span class="o">*</span><span class="n">D</span><span class="o">**</span><span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="mf">1e-6</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="mi">3</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">B</span></div>
+<span class="c1"># ======================================================================</span>
+
+
+<div class="viewcode-block" id="bg_strexp"><a class="viewcode-back" href="../../models/bg_strexp.html#deerlab.bg_models.bg_strexp">[docs]</a><span class="k">def</span> <span class="nf">bg_strexp</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stretched exponential background model</span>
+<span class="sd"> </span>
+<span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
+
+<span class="sd">        info = bg_strexp()</span>
+
+
+<span class="sd">    Otherwise the function returns to calculated background model::</span>
+<span class="sd">    </span>
+
+<span class="sd">        B = bg_strexp(t,param)</span>
+<span class="sd">        B = bg_strexp(t,param,lam)</span>
+<span class="sd"> </span>
+<span class="sd"> </span>
+<span class="sd">    Model parameters:</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">     ----------------------------------------------------</span>
+<span class="sd">      Parameter        Units     Lower    Upper   Start</span>
+<span class="sd">     ----------------------------------------------------</span>
+<span class="sd">      Decay Rate       us-1       0       200      0.25 </span>
+<span class="sd">      Stretch factor              0        6        1</span>
+<span class="sd">     ----------------------------------------------------</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">    param : array_like</span>
+<span class="sd">        List of model parameter values.</span>
+<span class="sd">    lam : float scalar</span>
+<span class="sd">        Pathway amplitude. If not specified it is set to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info : dict</span>
+<span class="sd">        Dictionary containing the built-in information of the model:</span>
+<span class="sd">        </span>
+<span class="sd">        * ``info[&#39;Parameters&#39;]`` - string list of parameter names</span>
+<span class="sd">        * ``info[&#39;Units&#39;]`` - string list of metric units of parameters</span>
+<span class="sd">        * ``info[&#39;Start&#39;]`` - list of values used as start values during optimization </span>
+<span class="sd">        * ``info[&#39;Lower&#39;]`` - list of values used as lower bounds during optimization </span>
+<span class="sd">        * ``info[&#39;Upper&#39;]`` - list of values used as upper bounds during optimization </span>
+<span class="sd">    B : ndarray</span>
+<span class="sd">        Background decay function. </span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+<span class="c1"># ======================================================================</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Decay Rate&#39;</span><span class="p">,</span><span class="s1">&#39;Stretch factor&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;us-1&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+            <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+            <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">]),</span>
+            <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span>  <span class="mi">6</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nf">info</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">lam</span> <span class="o">=</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> 
+
+    <span class="c1"># Unpack model paramters</span>
+    <span class="n">kappa</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>         <span class="c1"># decay rate, us-1</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>            <span class="c1"># fractal dimension    </span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lam</span><span class="o">*</span><span class="n">kappa</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">B</span></div>
+<span class="c1"># ======================================================================</span>
+
+
+<div class="viewcode-block" id="bg_prodstrexp"><a class="viewcode-back" href="../../models/bg_prodstrexp.html#deerlab.bg_models.bg_prodstrexp">[docs]</a><span class="k">def</span> <span class="nf">bg_prodstrexp</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Product of two stretched exponentials background model</span>
+<span class="sd"> </span>
+<span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
+
+<span class="sd">        info = bg_prodstrexp()</span>
+
+
+<span class="sd">    Otherwise the function returns to calculated background model::</span>
+<span class="sd">    </span>
+
+<span class="sd">        B = bg_prodstrexp(t,param)</span>
+<span class="sd">        B = bg_prodstrexp(t,param,lam)</span>
+<span class="sd"> </span>
+<span class="sd"> </span>
+<span class="sd">    Model parameters:</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">     -----------------------------------------------------------------</span>
+<span class="sd">      Parameter                      Units   Lower    Upper    Start</span>
+<span class="sd">     -----------------------------------------------------------------</span>
+<span class="sd">      Decay Rate of 1st component    us-1      0       200      0.25 </span>
+<span class="sd">      Stretch factor 1st component             0        6        1</span>
+<span class="sd">      Decay Rate of 2nd component    us-1      0       200      0.25 </span>
+<span class="sd">      Stretch factor 2nd component             0        6        1</span>
+<span class="sd">     -----------------------------------------------------------------</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">    param : array_like</span>
+<span class="sd">        List of model parameter values.</span>
+<span class="sd">    lam : float scalar</span>
+<span class="sd">        Pathway amplitude. If not specified it is set to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info : dict</span>
+<span class="sd">        Dictionary containing the built-in information of the model:</span>
+<span class="sd">        </span>
+<span class="sd">        * ``info[&#39;Parameters&#39;]`` - string list of parameter names</span>
+<span class="sd">        * ``info[&#39;Units&#39;]`` - string list of metric units of parameters</span>
+<span class="sd">        * ``info[&#39;Start&#39;]`` - list of values used as start values during optimization </span>
+<span class="sd">        * ``info[&#39;Lower&#39;]`` - list of values used as lower bounds during optimization </span>
+<span class="sd">        * ``info[&#39;Upper&#39;]`` - list of values used as upper bounds during optimization </span>
+<span class="sd">    B : ndarray</span>
+<span class="sd">        Background decay function. </span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+<span class="c1"># ======================================================================</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Decay Rate of 1st component&#39;</span><span class="p">,</span><span class="s1">&#39;Stretch factor of 1st component&#39;</span><span class="p">,</span><span class="s1">&#39;Decay Rate of 2nd component&#39;</span><span class="p">,</span><span class="s1">&#39;Stretch factor of 2nd component&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;us-1&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;us-1&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+            <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+            <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">]),</span>
+            <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span>  <span class="mi">6</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span>  <span class="mi">6</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nf">info</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">lam</span> <span class="o">=</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> 
+
+    <span class="c1"># Unpack model paramters</span>
+    <span class="n">kappa1</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">d1</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">kappa2</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">d2</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">strexp1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lam</span><span class="o">*</span><span class="n">kappa1</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">**</span><span class="n">d1</span><span class="p">)</span>
+    <span class="n">strexp2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lam</span><span class="o">*</span><span class="n">kappa2</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">**</span><span class="n">d2</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">strexp1</span><span class="o">*</span><span class="n">strexp2</span>
+    <span class="k">return</span> <span class="n">B</span></div>
+<span class="c1"># ======================================================================</span>
+
+
+
+<div class="viewcode-block" id="bg_sumstrexp"><a class="viewcode-back" href="../../models/bg_sumstrexp.html#deerlab.bg_models.bg_sumstrexp">[docs]</a><span class="k">def</span> <span class="nf">bg_sumstrexp</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sum of two stretched exponentials background model</span>
+<span class="sd"> </span>
+<span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
+
+<span class="sd">        info = bg_sumstrexp()</span>
+
+
+<span class="sd">    Otherwise the function returns to calculated background model::</span>
+<span class="sd">    </span>
+
+<span class="sd">        B = bg_sumstrexp(t,param)</span>
+<span class="sd">        B = bg_sumstrexp(t,param,lam)</span>
+<span class="sd"> </span>
+<span class="sd"> </span>
+<span class="sd">    Model parameters:</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">     -----------------------------------------------------------------</span>
+<span class="sd">      Parameter                      Units   Lower    Upper    Start</span>
+<span class="sd">     -----------------------------------------------------------------</span>
+<span class="sd">      Decay Rate of 1st component    us-1      0       200      0.25 </span>
+<span class="sd">      Stretch factor 1st component             0        6        1</span>
+<span class="sd">      Amplitude of 1st component               0        1       0.50</span>
+<span class="sd">      Decay Rate of 2nd component    us-1      0       200      0.25 </span>
+<span class="sd">      Stretch factor 2nd component             0        6        1</span>
+<span class="sd">     -----------------------------------------------------------------</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">    param : array_like</span>
+<span class="sd">        List of model parameter values.</span>
+<span class="sd">    lam : float scalar</span>
+<span class="sd">        Pathway amplitude. If not specified it is set to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info : dict</span>
+<span class="sd">        Dictionary containing the built-in information of the model:</span>
+<span class="sd">        </span>
+<span class="sd">        * ``info[&#39;Parameters&#39;]`` - string list of parameter names</span>
+<span class="sd">        * ``info[&#39;Units&#39;]`` - string list of metric units of parameters</span>
+<span class="sd">        * ``info[&#39;Start&#39;]`` - list of values used as start values during optimization </span>
+<span class="sd">        * ``info[&#39;Lower&#39;]`` - list of values used as lower bounds during optimization </span>
+<span class="sd">        * ``info[&#39;Upper&#39;]`` - list of values used as upper bounds during optimization </span>
+<span class="sd">    B : ndarray</span>
+<span class="sd">        Background decay function. </span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+<span class="c1"># ======================================================================</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Decay Rate of 1st component&#39;</span><span class="p">,</span><span class="s1">&#39;Stretch factor of 1st component&#39;</span><span class="p">,</span><span class="s1">&#39;Amplitude of 1st component&#39;</span><span class="p">,</span><span class="s1">&#39;Decay Rate of 2nd component&#39;</span><span class="p">,</span><span class="s1">&#39;Stretch factor of 2nd component&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;us-1&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;us-1&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+            <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+            <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">]),</span>
+            <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span>  <span class="mi">6</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">200</span><span class="p">,</span>  <span class="mi">6</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nf">info</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">lam</span> <span class="o">=</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> 
+
+    <span class="c1"># Unpack model paramters</span>
+    <span class="n">kappa1</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">d1</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">w1</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">kappa2</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">d2</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">strexp1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lam</span><span class="o">*</span><span class="n">kappa1</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">**</span><span class="n">d1</span><span class="p">)</span>
+    <span class="n">strexp2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lam</span><span class="o">*</span><span class="n">kappa2</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">**</span><span class="n">d2</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">strexp1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">w1</span><span class="p">)</span><span class="o">*</span><span class="n">strexp2</span>
+    
+    <span class="k">return</span> <span class="n">B</span></div>
+<span class="c1"># ======================================================================</span>
+
+
+
+<div class="viewcode-block" id="bg_poly1"><a class="viewcode-back" href="../../models/bg_poly1.html#deerlab.bg_models.bg_poly1">[docs]</a><span class="k">def</span> <span class="nf">bg_poly1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Polynomial 1st-order background model</span>
+<span class="sd"> </span>
+<span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
+
+<span class="sd">        info = bg_poly1()</span>
+
+
+<span class="sd">    Otherwise the function returns to calculated background model::</span>
+<span class="sd">    </span>
+
+<span class="sd">        B = bg_poly1(t,param)</span>
+<span class="sd">        B = bg_poly1(t,param,lam)</span>
+<span class="sd"> </span>
+<span class="sd"> </span>
+<span class="sd">    Model parameters:</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">     ----------------------------------------------------------</span>
+<span class="sd">      Parameter              Units    Lower    Upper    Start</span>
+<span class="sd">     ----------------------------------------------------------</span>
+<span class="sd">      Intercept                         0       200       1  </span>
+<span class="sd">      1st-order coefficient  us^-1    -200      200      -1  </span>
+<span class="sd">     ----------------------------------------------------------</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">    param : array_like</span>
+<span class="sd">        List of model parameter values.</span>
+<span class="sd">    lam : float scalar</span>
+<span class="sd">        Pathway amplitude. If not specified it is set to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info : dict</span>
+<span class="sd">        Dictionary containing the built-in information of the model:</span>
+<span class="sd">        </span>
+<span class="sd">        * ``info[&#39;Parameters&#39;]`` - string list of parameter names</span>
+<span class="sd">        * ``info[&#39;Units&#39;]`` - string list of metric units of parameters</span>
+<span class="sd">        * ``info[&#39;Start&#39;]`` - list of values used as start values during optimization </span>
+<span class="sd">        * ``info[&#39;Lower&#39;]`` - list of values used as lower bounds during optimization </span>
+<span class="sd">        * ``info[&#39;Upper&#39;]`` - list of values used as upper bounds during optimization </span>
+<span class="sd">    B : ndarray</span>
+<span class="sd">        Background decay function.  </span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+<span class="c1"># ======================================================================</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Intercept&#39;</span><span class="p">,</span><span class="s1">&#39;1st-order coefficient&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;us-1&#39;</span><span class="p">],</span>
+            <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span> <span class="mi">1</span><span class="p">,</span>   <span class="o">-</span><span class="mi">1</span> <span class="p">]),</span>
+            <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span>  <span class="o">-</span><span class="mi">200</span><span class="p">]),</span>
+            <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span>  <span class="mi">200</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nf">info</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">lam</span> <span class="o">=</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> 
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="c1"># Compute polynomial</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">copy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">flip</span><span class="p">(</span><span class="n">param</span><span class="p">))</span>
+    <span class="n">p</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">lam</span><span class="o">*</span><span class="n">p</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">polyval</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">B</span></div>
+<span class="c1"># ======================================================================</span>
+
+
+<div class="viewcode-block" id="bg_poly2"><a class="viewcode-back" href="../../models/bg_poly2.html#deerlab.bg_models.bg_poly2">[docs]</a><span class="k">def</span> <span class="nf">bg_poly2</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Polynomial 2nd-order background model</span>
+<span class="sd"> </span>
+<span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
+
+<span class="sd">        info = bg_poly2()</span>
+
+
+<span class="sd">    Otherwise the function returns to calculated background model::</span>
+<span class="sd">    </span>
+
+<span class="sd">        B = bg_poly2(t,param)</span>
+<span class="sd">        B = bg_poly2(t,param,lam)</span>
+<span class="sd"> </span>
+<span class="sd"> </span>
+<span class="sd">    Model parameters:</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">     ----------------------------------------------------------</span>
+<span class="sd">      Parameter              Units    Lower    Upper    Start</span>
+<span class="sd">     ----------------------------------------------------------</span>
+<span class="sd">      Intercept                         0       200       1  </span>
+<span class="sd">      1st-order coefficient  us^-1    -200      200      -1  </span>
+<span class="sd">      2nd-order coefficient  us^-2    -200      200      -1 </span>
+<span class="sd">     ----------------------------------------------------------</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">    param : array_like</span>
+<span class="sd">        List of model parameter values.</span>
+<span class="sd">    lam : float scalar</span>
+<span class="sd">        Pathway amplitude. If not specified it is set to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info : dict</span>
+<span class="sd">        Dictionary containing the built-in information of the model:</span>
+<span class="sd">        </span>
+<span class="sd">        * ``info[&#39;Parameters&#39;]`` - string list of parameter names</span>
+<span class="sd">        * ``info[&#39;Units&#39;]`` - string list of metric units of parameters</span>
+<span class="sd">        * ``info[&#39;Start&#39;]`` - list of values used as start values during optimization </span>
+<span class="sd">        * ``info[&#39;Lower&#39;]`` - list of values used as lower bounds during optimization </span>
+<span class="sd">        * ``info[&#39;Upper&#39;]`` - list of values used as upper bounds during optimization </span>
+<span class="sd">    B : ndarray</span>
+<span class="sd">        Background decay function.  </span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+<span class="c1"># ======================================================================</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Intercept&#39;</span><span class="p">,</span><span class="s1">&#39;1st-order coefficient&#39;</span><span class="p">,</span><span class="s1">&#39;2nd-order coefficient&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;us-1&#39;</span><span class="p">,</span><span class="s1">&#39;us-2&#39;</span><span class="p">],</span>
+            <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span> <span class="mi">1</span><span class="p">,</span>   <span class="o">-</span><span class="mi">1</span> <span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span>  <span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="o">-</span><span class="mi">200</span><span class="p">]),</span>
+            <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span>  <span class="mi">200</span><span class="p">,</span>  <span class="mi">200</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nf">info</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">lam</span> <span class="o">=</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> 
+
+    <span class="c1"># Compute polynomial</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">copy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">flip</span><span class="p">(</span><span class="n">param</span><span class="p">))</span>
+    <span class="n">p</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">lam</span><span class="o">*</span><span class="n">p</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">polyval</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">B</span></div>
+<span class="c1"># ======================================================================</span>
+
+
+<div class="viewcode-block" id="bg_poly3"><a class="viewcode-back" href="../../models/bg_poly3.html#deerlab.bg_models.bg_poly3">[docs]</a><span class="k">def</span> <span class="nf">bg_poly3</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Polynomial 3rd-order background model</span>
+<span class="sd"> </span>
+<span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
+
+<span class="sd">        info = bg_poly3()</span>
+
+
+<span class="sd">    Otherwise the function returns to calculated background model::</span>
+<span class="sd">    </span>
+
+<span class="sd">        B = bg_poly3(t,param)</span>
+<span class="sd">        B = bg_poly3(t,param,lam)</span>
+<span class="sd"> </span>
+<span class="sd"> </span>
+<span class="sd">    Model parameters:</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">     ----------------------------------------------------------</span>
+<span class="sd">      Parameter              Units    Lower    Upper    Start</span>
+<span class="sd">     ----------------------------------------------------------</span>
+<span class="sd">      Intercept                         0       200       1  </span>
+<span class="sd">      1st-order coefficient  us^-1    -200      200      -1  </span>
+<span class="sd">      2nd-order coefficient  us^-2    -200      200      -1 </span>
+<span class="sd">      3rd-order coefficient  us^-3    -200      200      -1</span>
+<span class="sd">     ----------------------------------------------------------</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">    param : array_like</span>
+<span class="sd">        List of model parameter values.</span>
+<span class="sd">    lam : float scalar</span>
+<span class="sd">        Pathway amplitude. If not specified it is set to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info : dict</span>
+<span class="sd">        Dictionary containing the built-in information of the model:</span>
+<span class="sd">        </span>
+<span class="sd">        * ``info[&#39;Parameters&#39;]`` - string list of parameter names</span>
+<span class="sd">        * ``info[&#39;Units&#39;]`` - string list of metric units of parameters</span>
+<span class="sd">        * ``info[&#39;Start&#39;]`` - list of values used as start values during optimization </span>
+<span class="sd">        * ``info[&#39;Lower&#39;]`` - list of values used as lower bounds during optimization </span>
+<span class="sd">        * ``info[&#39;Upper&#39;]`` - list of values used as upper bounds during optimization </span>
+<span class="sd">    B : ndarray</span>
+<span class="sd">        Background decay function.  </span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+<span class="c1"># ======================================================================</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Intercept&#39;</span><span class="p">,</span><span class="s1">&#39;1st-order coefficient&#39;</span><span class="p">,</span><span class="s1">&#39;2nd-order coefficient&#39;</span><span class="p">,</span><span class="s1">&#39;3rd-order coefficient&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;us-1&#39;</span><span class="p">,</span><span class="s1">&#39;us-2&#39;</span><span class="p">,</span><span class="s1">&#39;us-3&#39;</span><span class="p">],</span>
+            <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span> <span class="mi">1</span><span class="p">,</span>  <span class="o">-</span><span class="mi">1</span>  <span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>   <span class="o">-</span><span class="mi">1</span>  <span class="p">]),</span>
+            <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span>  <span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="o">-</span><span class="mi">200</span><span class="p">]),</span>
+            <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span>  <span class="mi">200</span><span class="p">,</span>  <span class="mi">200</span><span class="p">,</span>  <span class="mi">200</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nf">info</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">lam</span> <span class="o">=</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> 
+
+    <span class="c1"># Compute polynomial</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">copy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">flip</span><span class="p">(</span><span class="n">param</span><span class="p">))</span>
+    <span class="n">p</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">lam</span><span class="o">*</span><span class="n">p</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">polyval</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">B</span></div>
+<span class="c1"># ======================================================================</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

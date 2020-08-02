@@ -1,0 +1,332 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Uncertainty &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Fitting" href="fitting.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocess.html">Loading and preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fitting.html">Fitting</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Uncertainty</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="uncertainty">
+<h1>Uncertainty<a class="headerlink" href="#uncertainty" title="Permalink to this headline">¶</a></h1>
+<p>After fitting experimental data with a distance distribution, a background, and a modulation depth, it is important to assess the uncertainty in the fitted parameters.</p>
+<p>DeerLab provides uncertainty estimates for all parameters in the form of confidence intervals (CIs). They can be calculated in two ways: either using the covariance matrix, or using bootstrap. The first method is fast, but is not entirely accurate, whereas bootstrap is much slower, but more robust. All confidence intervals provided by DeerLab functions describe the range of values which might contain the ground truth with a ceratin probability.</p>
+<div class="section" id="covariance-uncertainty-quantification">
+<h2>Covariance Uncertainty Quantification<a class="headerlink" href="#covariance-uncertainty-quantification" title="Permalink to this headline">¶</a></h2>
+<p>Along with every fit, functions like <code class="docutils literal notranslate"><span class="pre">fitsignal</span></code> return confidence intervals for the fitted parameters and the fitted distributions. For example,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+<span class="n">Puq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">Puncert</span>            <span class="c1"># Uncertainty quantification of the distance distribution</span>
+<span class="n">Buq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">Buncert</span>            <span class="c1"># Uncertainty quantification of the background</span>
+<span class="n">lamuq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">exparamUncert</span>    <span class="c1"># Uncertainty quantification of the modulation depth</span>
+</pre></div>
+</div>
+<p>The variables <code class="docutils literal notranslate"><span class="pre">Puq</span></code>, <code class="docutils literal notranslate"><span class="pre">Buq</span></code> and <code class="docutils literal notranslate"><span class="pre">lamuq</span></code> are uncertainty quantification objects <a class="reference internal" href="functions/UncertQuant.html#uncertquant"><span class="std std-ref">UncertQuant</span></a> which contain the full uncertainty information of the corresponding variables, calculated using the standard method based on the variance-covariance matrices.</p>
+<p>The confidence intervals (at any confidence level) can be calculated by using the <code class="docutils literal notranslate"><span class="pre">ci()</span></code> method, e.g. for the 50% and 95% confidence intervals of the fitted distance distribution are calculated as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Pfit_ci50</span> <span class="o">=</span> <span class="n">paruq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>    <span class="c1"># 50%-confidence intervals of Pfit</span>
+<span class="n">Pfit_ci95</span> <span class="o">=</span> <span class="n">paruq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>    <span class="c1"># 95%-confidence intervals of Pfit</span>
+</pre></div>
+</div>
+<p>Uncertainty can also be propagated to dependent models. For example, assume that we have fitted a single Gaussian distance distribution with <code class="docutils literal notranslate"><span class="pre">rmean</span></code> and <code class="docutils literal notranslate"><span class="pre">fwhm</span></code> as parameters. Now, we can propagate the uncertainty in the fit of <code class="docutils literal notranslate"><span class="pre">rmean</span></code> and <code class="docutils literal notranslate"><span class="pre">fwhm</span></code> to the resulting Gaussian distance distribution. This can be done via the <code class="docutils literal notranslate"><span class="pre">propagate()</span></code> method, this will create the uncertainty quantification for the fitted distribution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># parfit = [rmean, fwhm]</span>
+<span class="n">ddmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">parfit</span><span class="p">:</span> <span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">parfit</span><span class="p">)</span>
+
+<span class="c1"># Get the fitted model</span>
+<span class="n">Pfit</span> <span class="o">=</span> <span class="n">ddmodel</span><span class="p">(</span><span class="n">parfit</span><span class="p">)</span>
+
+<span class="c1"># Propagate the error in the parameters to the model</span>
+<span class="n">lb</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">numel</span><span class="p">(</span><span class="n">Pfit</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># Non-negativity constraint of the distance distribution</span>
+<span class="n">ub</span> <span class="o">=</span> <span class="p">[]]</span>                    <span class="c1"># No upper bounds</span>
+<span class="n">Puq</span> <span class="o">=</span> <span class="n">paruq</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">ddmodel</span><span class="p">,</span><span class="n">lb</span><span class="p">)</span>
+
+<span class="c1"># Get the 95%-confidence intervals of the fitted distribution</span>
+<span class="n">Pci95</span> <span class="o">=</span> <span class="n">Puq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Theoretical assumptions of covariance-based uncertainty analysis:</dt><dd><ul class="simple">
+<li><p>The uncertainty in the fitted parameters is described by a Gaussian distribution.</p></li>
+<li><p>The mean of this Gaussian is assumed to be the fitted value and its width by the diagonal elements of the covariance matrix.</p></li>
+<li><p>All parameters are assumed to be unconstrained.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="bootstrap-uncertainty-quantification">
+<h2>Bootstrap Uncertainty Quantification<a class="headerlink" href="#bootstrap-uncertainty-quantification" title="Permalink to this headline">¶</a></h2>
+<p>A more thorough way of assessing parameter uncertainty is bootstrap. In this method, many additional synthetic datasets are generated from the given experimental data and the fitted model and are fitted individually. This yields an ensemble of parameter fits that is analyzed statistically to provide information about the scatter.</p>
+<p>Here is an example for a parametric model:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fitfcn</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+    <span class="n">Vmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">K</span><span class="nd">@dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">)</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
+
+<span class="n">bootuq</span> <span class="o">=</span> <span class="nf">bootan</span><span class="p">(</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="n">samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The output <code class="docutils literal notranslate"><span class="pre">bootuq</span></code> is again a <a class="reference internal" href="functions/UncertQuant.html#uncertquant"><span class="std std-ref">UncertQuant</span></a> object that can be used as described above to evaluate confidence intervals at different confidence levels, e.g the 50% and 95% confidence intervals:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parfit_ci50</span> <span class="o">=</span> <span class="n">bootuq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">parfit_ci95</span> <span class="o">=</span> <span class="n">bootuq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The bootstrapped distributions for each parameter can be accessed by using the <code class="docutils literal notranslate"><span class="pre">pardist()</span></code> method, e.g.if the modulation depth is the second fit parameter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">moddepth_dist</span> <span class="o">=</span> <span class="n">bootuq</span><span class="o">.</span><span class="n">pardist</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Here is an example for a model with a non-parametric distribution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fitfcn</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+       <span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="nf">ex_4pdeer</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">bgparam</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">exparam</span>
+
+<span class="n">bootuq</span> <span class="o">=</span> <span class="nf">bootan</span><span class="p">(</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="n">samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To plot the resulting 95% and 50% confidence interval for the non-parametric distance distribution, use</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Pci50</span> <span class="o">=</span> <span class="n">bootuq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">Pci95</span> <span class="o">=</span> <span class="n">bootuq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pci50</span><span class="p">[:,</span><span class="mi">0</span><span class="p">];</span> <span class="n">Pci50</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pci95</span><span class="p">[:,</span><span class="mi">0</span><span class="p">];</span> <span class="n">Pci95</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Assumptions:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Vfit</span></code> is a good fit of the experimental data <code class="docutils literal notranslate"><span class="pre">Vexp</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="fitting.html" class="btn btn-neutral float-left" title="Fitting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

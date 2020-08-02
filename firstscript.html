@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>A first script &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Basics" href="basics.html" />
+    <link rel="prev" title="Installation instructions" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocess.html">Loading and preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>A first script</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="a-first-script">
+<h1>A first script<a class="headerlink" href="#a-first-script" title="Permalink to this headline">¶</a></h1>
+<p>Here is a first script that shows how DeerLab works. It simulates a noisy DEER data trace and then fits it.</p>
+<p>We start by importing the required function/libraries:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<p>We continue by generating a distance distribution consisting of a single Gaussian:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">201</span>                            <span class="c1"># number of points</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>           <span class="c1"># distance range, in nanometers</span>
+<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>         <span class="c1"># single-Gaussian distance distribution</span>
+</pre></div>
+</div>
+<p>Next, we calculate the background decay function due to a homogeneus 3D distribution of spins:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>             <span class="c1"># time axis, in microseconds</span>
+<span class="n">conc</span> <span class="o">=</span> <span class="mi">100</span>                         <span class="c1"># spin concentration, in micromolar</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="mf">0.4</span>                          <span class="c1"># modulation depth</span>
+<span class="n">B</span> <span class="o">=</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>           <span class="c1"># homogeneous 3D background decay function</span>
+</pre></div>
+</div>
+<p>Next, we combine the distance distribution and the background into a full 4-pulse DEER signal and add some noise:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">dipolarsignal</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>     <span class="c1"># DEER signal</span>
+
+<span class="n">sig</span> <span class="o">=</span> <span class="mf">0.01</span>                         <span class="c1"># noise level</span>
+<span class="n">Vexp</span> <span class="o">=</span> <span class="n">V</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">sig</span><span class="p">)</span>  <span class="c1"># add noise</span>
+</pre></div>
+</div>
+<p>We can look at the result:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">,(</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">)</span><span class="o">*</span><span class="n">B</span><span class="p">)</span>   <span class="c1"># plotting</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now that we have a noisy DEER trace, we fit it (in a single step) with a non-parametric distance distribution and a homogeneous 3D background.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="nf">ex_4pdeer</span><span class="p">)</span>  <span class="c1"># fitting</span>
+</pre></div>
+</div>
+<p>Finally, we plot the results</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span>              <span class="c1"># fitted distance distribution</span>
+<span class="n">Bfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">B</span>              <span class="c1"># fitted background</span>
+<span class="n">Vfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">V</span>              <span class="c1"># fitted dipolar signal</span>
+<span class="n">lamfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">exparam</span>      <span class="c1"># fitted modulation depth</span>
+
+<span class="c1"># plotting</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="n">t</span><span class="p">,(</span><span class="mi">1</span><span class="o">-</span><span class="n">lamfit</span><span class="p">)</span><span class="o">*</span><span class="n">Bfit</span><span class="p">)</span>     <span class="c1"># plot fitted model and background</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">)</span>                          <span class="c1"># plot fitted distribution</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="basics.html" class="btn btn-neutral float-right" title="Basics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation instructions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

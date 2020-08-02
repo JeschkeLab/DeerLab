@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Uncertainty propagation from parameter fits using covariance-based uncertainty quantificaion &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Multi-Gauss fit of a 4-pulse DEER signal" href="plot_multigauss_fitting_4pdeer.html" />
+    <link rel="prev" title="Fitting a custom kernel model with a parameter-free distribution" href="plot_fitting_custom_kernel_with_snlls.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Loading and preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../examples.html">Examples</a> &raquo;</li>
+        
+      <li>Uncertainty propagation from parameter fits using covariance-based uncertainty quantificaion</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-plot-param-uncertainty-propagation-py"><span class="std std-ref">here</span></a>     to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="uncertainty-propagation-from-parameter-fits-using-covariance-based-uncertainty-quantificaion">
+<span id="sphx-glr-auto-examples-plot-param-uncertainty-propagation-py"></span><h1>Uncertainty propagation from parameter fits using covariance-based uncertainty quantificaion<a class="headerlink" href="#uncertainty-propagation-from-parameter-fits-using-covariance-based-uncertainty-quantificaion" title="Permalink to this headline">¶</a></h1>
+<p>How to propagate the uncertainty of the fitted parameters to the models which depend on them.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<div class="section" id="generate-data">
+<h2>Generate data<a class="headerlink" href="#generate-data" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">400</span><span class="p">)</span>
+<span class="n">center</span> <span class="o">=</span> <span class="mf">3.5</span> <span class="c1"># [nm] Rician center distance</span>
+<span class="n">width</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># [nm] Rician width</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="c1"># Modulation depth</span>
+<span class="n">conc</span> <span class="o">=</span> <span class="mi">150</span> <span class="c1"># [uM] Spin concentration</span>
+<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_rice</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">center</span><span class="p">,</span> <span class="n">width</span><span class="p">])</span>
+<span class="n">B</span> <span class="o">=</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.03</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fit-the-data">
+<h2>Fit the data<a class="headerlink" href="#fit-the-data" title="Permalink to this headline">¶</a></h2>
+<p>First we define the models for the different elements in our analysis
+(background, distribution and dipolar signal). For simplicity these
+models take the full parameter set</p>
+<p><code class="docutils literal notranslate"><span class="pre">par</span> <span class="pre">=</span> <span class="pre">[lambda</span> <span class="pre">center</span> <span class="pre">width</span> <span class="pre">conc]</span></code></p>
+<p>and select the appropiate elements from the parameter set, i.e.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Pmodel</span> <span class="pre">=</span> <span class="pre">f(center,width)</span> <span class="pre">-&gt;</span> <span class="pre">par[1]</span> <span class="pre">&amp;</span> <span class="pre">par[2]</span></code>
+<code class="docutils literal notranslate"><span class="pre">Bmodel</span> <span class="pre">=</span> <span class="pre">f(conc,lambda)</span>&#160; <span class="pre">-&gt;</span> <span class="pre">par[3]</span> <span class="pre">&amp;</span> <span class="pre">par[0]</span></code>
+<code class="docutils literal notranslate"><span class="pre">Vmodel</span> <span class="pre">=</span> <span class="pre">f(par)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-&gt;</span> <span class="pre">par[0]</span> <span class="pre">&amp;</span> <span class="pre">par[1]</span> <span class="pre">&amp;</span> <span class="pre">par[2]</span> <span class="pre">&amp;</span> <span class="pre">par[3]</span></code></p>
+<p>By defining the models like this, we can spare then the indexing of the
+parameters each time we call one of these model and can pass the full
+parameter set directly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Pre-calculate the elemental dipolar kernel (for speed)</span>
+<span class="n">K0</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+
+<span class="n">Pmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="nf">dd_rice</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">Bmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">Vmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">K0</span><span class="nd">@Pmodel</span><span class="p">(</span><span class="n">par</span><span class="p">))</span><span class="o">*</span><span class="n">Bmodel</span><span class="p">(</span><span class="n">par</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next since we are dealing with a custom-defined model we need to specify
+the start values as well as boundaries of the parameter set:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parameters:[lam center width conc]</span>
+<span class="n">par0</span>  <span class="o">=</span>      <span class="p">[</span><span class="mf">0.35</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span>  <span class="mf">0.4</span><span class="p">,</span> <span class="mi">500</span> <span class="p">]</span> <span class="c1"># start values</span>
+<span class="n">lower</span> <span class="o">=</span>      <span class="p">[</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span>  <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">]</span> <span class="c1"># lower bounds</span>
+<span class="n">upper</span> <span class="o">=</span>      <span class="p">[</span><span class="mf">0.50</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1500</span><span class="p">]</span> <span class="c1"># upper bounds</span>
+
+<span class="c1"># Finally we can run the fit and get the fitted parameters and their uncertainties</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lower</span><span class="p">,</span><span class="n">upper</span><span class="p">)</span>
+
+<span class="n">parfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
+<span class="n">paruq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">uncertainty</span>
+
+<span class="c1"># Forward-calculate the models with the fitted parameters</span>
+<span class="n">Vfit</span> <span class="o">=</span> <span class="n">Vmodel</span><span class="p">(</span><span class="n">parfit</span><span class="p">)</span>
+<span class="n">Pfit</span> <span class="o">=</span> <span class="n">Pmodel</span><span class="p">(</span><span class="n">parfit</span><span class="p">)</span>
+<span class="n">Bfit</span> <span class="o">=</span> <span class="n">Bmodel</span><span class="p">(</span><span class="n">parfit</span><span class="p">)</span>
+<span class="n">lamfit</span> <span class="o">=</span> <span class="n">parfit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="uncertainty-propagation">
+<h2>Uncertainty propagation<a class="headerlink" href="#uncertainty-propagation" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>In DeerLab, all uncertainty quantification objects contain a method
+<code class="docutils literal notranslate"><span class="pre">.propagate()</span></code>, which has all the internal information on the
+covariance matrices required to propagate the uncertainty from
+the parameters to the fits.</p>
+<p>Thus, all we neeed to do is call <code class="docutils literal notranslate"><span class="pre">.propagate`</span></code> and pass the model function
+which we want to propagate the uncertainty to. It is important that if
+the uncertainty quantification structure is defined for N-parameters (N=4
+in this case) the model function must accept all N parameters. Since we
+defined our model function to accept all N parameters already we do not
+need to worry about it.</p>
+</div></blockquote>
+<ol class="arabic simple">
+<li><p>Uncertainty of the dipolar signal fit: This case is easy, we already have the model and it is unconstrained</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Vuq</span> <span class="o">=</span> <span class="n">paruq</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">)</span> <span class="c1"># Uncertainty quantification for Vfit</span>
+<span class="n">Vci95</span> <span class="o">=</span> <span class="n">Vuq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span> <span class="c1"># 95#-confidence intervals for Vfit</span>
+</pre></div>
+</div>
+<p>2. Uncertainty of the distance distribution: In this case, the distribution has a non-negativity constraint which we
+can specify via the lb input.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="c1"># Non-negativity constraint</span>
+<span class="n">Puq</span> <span class="o">=</span> <span class="n">paruq</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">Pmodel</span><span class="p">,</span><span class="n">lb</span><span class="p">)</span> <span class="c1"># Uncertainty quantification for Pfit</span>
+<span class="n">Pci95</span> <span class="o">=</span> <span class="n">Puq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span> <span class="c1"># 95#-confidence intervals for Pfit</span>
+</pre></div>
+</div>
+<p>3. Uncertainty of the background: In this case, since we want to use this for plotting we need to evaluate
+the function (1-lambda)*Bfit instead of just Bfit in order to plot thecorrect function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Buq</span> <span class="o">=</span> <span class="n">paruq</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:(</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="n">Bmodel</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="c1"># Uncertainty quantification for (1-lam)Bfit</span>
+<span class="n">Bci95</span> <span class="o">=</span> <span class="n">Buq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span> <span class="c1"># 95#-confidence intervals for (1-lam)Bfit</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="plots">
+<h2>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+
+<span class="c1"># Time-domain</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="s1">&#39;k.&#39;</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">t</span><span class="p">,(</span><span class="mi">1</span><span class="o">-</span><span class="n">lamfit</span><span class="p">)</span><span class="o">*</span><span class="n">Bfit</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vci95</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Vci95</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Bci95</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Bci95</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t [$\mu s$]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V(t)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;data&#39;</span><span class="p">,</span><span class="s1">&#39;Vfit&#39;</span><span class="p">,</span><span class="s1">&#39;Bfit&#39;</span><span class="p">,</span><span class="s1">&#39;Vfit 95%-CI&#39;</span><span class="p">,</span><span class="s1">&#39;Bfit 95%-CI&#39;</span><span class="p">])</span>
+
+<span class="c1"># Distance-domain</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pci95</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pci95</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;r [nm]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;P(r) [nm$^{-1}$]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;truth&#39;</span><span class="p">,</span><span class="s1">&#39;Pfit&#39;</span><span class="p">,</span><span class="s1">&#39;Pfit 95%-CI&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="plot param uncertainty propagation" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_param_uncertainty_propagation_001.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f53c0917e50&gt;
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  3.029 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-param-uncertainty-propagation-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/5f92924ca2d1139ff4b2c4f584f30d71/plot_param_uncertainty_propagation.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_param_uncertainty_propagation.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/58d532ed3358c76bb3a3053260402b68/plot_param_uncertainty_propagation.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_param_uncertainty_propagation.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plot_multigauss_fitting_4pdeer.html" class="btn btn-neutral float-right" title="Multi-Gauss fit of a 4-pulse DEER signal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plot_fitting_custom_kernel_with_snlls.html" class="btn btn-neutral float-left" title="Fitting a custom kernel model with a parameter-free distribution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

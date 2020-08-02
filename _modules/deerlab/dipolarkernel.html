@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>deerlab.dipolarkernel &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Loading and preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>deerlab.dipolarkernel</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for deerlab.dipolarkernel</h1><div class="highlight"><pre>
+<span></span><span class="c1"># dipolarkernel.py - Dipolar kernel operator</span>
+<span class="c1"># -----------------------------------------------</span>
+<span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md).</span>
+<span class="c1"># Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.</span>
+
+<span class="c1"># Numpy + SciPy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span><span class="n">inf</span>
+<span class="kn">import</span> <span class="nn">scipy.integrate</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">fresnel</span>
+<span class="c1"># Other packages</span>
+<span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">memoization</span> <span class="kn">import</span> <span class="n">cached</span>
+<span class="c1"># DeerLab dependencies</span>
+<span class="kn">from</span> <span class="nn">deerlab.</span><span class="nf">dipolarbackground</span> <span class="kn">import</span> <span class="nf">dipolarbackground</span>
+
+<span class="c1"># Fundamental constants (CODATA 2018)</span>
+<span class="n">ge</span> <span class="o">=</span> <span class="mf">2.00231930436256</span> <span class="c1"># free-electron g factor</span>
+<span class="n">muB</span> <span class="o">=</span> <span class="mf">9.2740100783e-24</span> <span class="c1"># Bohr magneton, J/T </span>
+<span class="n">mu0</span> <span class="o">=</span> <span class="mf">1.25663706212e-6</span> <span class="c1"># magnetic constant, N A^-2 = T^2 m^3 J^-1 </span>
+<span class="n">h</span> <span class="o">=</span> <span class="mf">6.62607015e-34</span> <span class="c1"># Planck constant, J/Hz</span>
+<span class="k">def</span> <span class="nf">w0</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">mu0</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">muB</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">h</span><span class="o">*</span><span class="mf">1e21</span> <span class="c1"># Hz m^3 -&gt; MHz nm^3 -&gt; Mrad s^-1 nm^3</span>
+
+<div class="viewcode-block" id="dipolarkernel"><a class="viewcode-back" href="../../functions/dipolarkernel.html#deerlab.dipolarkernel">[docs]</a><span class="k">def</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">pathinfo</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;fresnel&#39;</span><span class="p">,</span> <span class="n">excbandwidth</span> <span class="o">=</span> <span class="n">inf</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">ge</span><span class="p">,</span> <span class="n">ge</span><span class="p">],</span> 
+                  <span class="n">integralop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">nKnots</span> <span class="o">=</span> <span class="mi">5001</span><span class="p">,</span> <span class="n">renormalize</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">clearcache</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="c1">#===================================================================================================</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the dipolar kernel operator which enables the linear transformation from</span>
+<span class="sd">    distance-domain to time-domain data. </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Dipolar time axis, in microseconds.</span>
+<span class="sd">    r : array_like</span>
+<span class="sd">        Distance axis, in nanometers.</span>
+<span class="sd">    pathinfo : array_like with shape (p,2) or (p,3)</span>
+<span class="sd">        Array of pathway amplitudes (lambda), refocusing points (T0), and harmonics (n) </span>
+<span class="sd">        for multiple (p) dipolar pathways. Each row contains ``[lambda T0 n]`` or ``[lambda T0]`` </span>
+<span class="sd">        for one pathway. If n is not given it is assumed to be 1. For a pathway with unmodulated contribution, set the refocusing time to ``numpy.nan``.</span>
+<span class="sd">    B : callable or array_like</span>
+<span class="sd">        For a single-pathway model, the numerical background decay can be passed as an array. </span>
+<span class="sd">        For multiple pathways, a callable function must be passed, accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``</span>
+<span class="sd"> </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    method : string, default=``&#39;fresnel&#39;``</span>
+<span class="sd">        Numerical method for kernel matrix calculation: </span>
+
+<span class="sd">            * &#39;fresnel&#39; - uses Fresnel integrals for the kernel (default)</span>
+<span class="sd">            * &#39;integral&#39; - uses explicit integration function (slow, accurate)</span>
+<span class="sd">            * &#39;grid&#39; - powder average via explicit grid integration (slow, inaccurate)</span>
+<span class="sd">    excbandwidth : scalar, optional</span>
+<span class="sd">        Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth [4]_.</span>
+<span class="sd">    g : scalar, 2-element array, optional</span>
+<span class="sd">        Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, [g, g] is assumed </span>
+<span class="sd">    integralop : boolean, optional</span>
+<span class="sd">        Whether to return K as an integral operator (i.e ``K = K*dr``) or not (``K``). Usage as an integral operator means that the matrix operation ``V=K@P`` with a normalized distance distribution (i.e. ``trapz(r,P)==1``) leads to a signal ``V`` with ampliude ``V(t=0)=1``. Default is True.</span>
+<span class="sd">    nKnots : scalar, optional</span>
+<span class="sd">        Number of knots for the grid of powder orientations to be used in the &#39;grid&#39; kernel calculation method.</span>
+<span class="sd">    renormalize : boolean, optional</span>
+<span class="sd">        Re-normalization of multi-pathway kernels to ensure the equality ``K(t=0,r)==1`` is satisfied. Default is True.</span>
+<span class="sd">    clearcache : boolean, optional</span>
+<span class="sd">        Clear the cached dipolar kernels at the beginning of the function. Default is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    K : ndarray</span>
+<span class="sd">        Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is ``V = K@P``</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    For a multi-pathway DEER [1]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathinfo`` contains a list of modulation depths (amplitudes) and refocusing times (in microseconds).</span>
+<span class="sd">    The background function specified as &#39;&#39;B&#39;&#39; is used as basis function, and the actual multipathway background included into the kernel is compued using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [2]_. </span>
+<span class="sd">    Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals [3]_. If not given, the harmonic is 1 for all pathways. </span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use::</span>
+<span class="sd">    </span>
+<span class="sd">        lam = 0.4  # modulation depth main signal</span>
+<span class="sd">        pathinfo = [[1-lam, nan], [lam, 0]]</span>
+
+<span class="sd">        K = dipolarkernel(t,r,pathinfo)</span>
+
+
+<span class="sd">    A shorthand input syntax equivalent to this input::</span>
+
+<span class="sd">        lam = 0.4</span>
+<span class="sd">        K = dipolarkernel(t,r,lam)</span>
+
+
+<span class="sd">	To specify a more complete 4-pulse DEER model that, e.g includes the 2+1 contribution, use::</span>
+
+<span class="sd">        Lam0 = 0.5                     # unmodulated part</span>
+<span class="sd">        lam = 0.4                      # modulation depth main signal</span>
+<span class="sd">        lam21 = 0.1                    # modulation depth 2+1 contribution</span>
+<span class="sd">        tau2 = 4                       # refocusing time of 2+1 contribution</span>
+<span class="sd">        pathinfo = [[],[],[]]</span>
+<span class="sd">        pathinfo[0] = [Lam0,   nan]    # unmodulated part, gives offset</span>
+<span class="sd">        pathinfo[1] = [lama,    0 ]    # main modulation, refocusing at time zero</span>
+<span class="sd">        pathinfo[2] = [lam21, tau2]    # 2+1 modulation, refocusing at time tau2</span>
+<span class="sd">        </span>
+<span class="sd">        K = dipolarkernel(t,r,pathinfo)</span>
+
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll: &quot;DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data&quot;, Magn. Reson. Discuss., 2020</span>
+
+<span class="sd">    .. [2] Fábregas Ibáñez, L. and Jeschke, G.: Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.</span>
+
+<span class="sd">    .. [3] Keller, K., Mertens, V., Qi, M., Nalepa, A. I., Godt, A., Savitsky, A., Jeschke, G., and Yulikov, M.: Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19</span>
+
+<span class="sd">    .. [4] J.E. Banham, C.M. Baker, S. Ceola, I.J. Day, G.H. Grant, E.J.J. Groenen, C.T. Rodgers, G. Jeschke, C.R. Timmel, Distance measurements in the borderline region of applicability of CW EPR and DEER: A model study on a homologous series of spin-labelled peptides, Journal of Magnetic Resonance, 191, 2, 2008, 202-218</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Clear cache of memoized function is requested</span>
+    <span class="k">if</span> <span class="n">clearcache</span><span class="p">:</span>
+        <span class="n">calckernelmatrix</span><span class="o">.</span><span class="n">cache_clear</span><span class="p">()</span>
+
+    <span class="c1"># Ensure that all inputs are numpy arrays</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">pathinfo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="ow">is</span> <span class="n">types</span><span class="o">.</span><span class="n">LambdaType</span><span class="p">:</span>
+        <span class="n">ismodelB</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ismodelB</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">,</span> <span class="n">g</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The g-value must be specified as a scalar or a two-element array.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">any</span><span class="p">(</span><span class="n">r</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All elements in r must be nonnegative and nonzero.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="nf">isreal</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">)</span><span class="o">.</span><span class="nf">all</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;lambda/pathinfo must be a numeric array.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="n">pathinfo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pathinfo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">],</span> <span class="p">[</span><span class="n">lam</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="nf">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;pathinfo must be a numeric array with two or three columns.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;In pathinfo, NaN can only appear in the second column (refocusing time) e.g. path[1,:] = [Lam0 NaN]&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Normalize the pathway amplitudes to unity</span>
+    <span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="nf">sum</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">lam</span> <span class="o">=</span> <span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">T0</span> <span class="o">=</span> <span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">T0</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+    
+    <span class="c1"># Combine all unmodulated components into Lambda0, and eliminate from list</span>
+    <span class="n">unmodulated</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">T0</span><span class="p">))</span>
+    <span class="n">Lambda0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">lam</span><span class="p">[</span><span class="n">unmodulated</span><span class="p">])</span>
+    <span class="n">lam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">unmodulated</span><span class="p">)</span>
+    <span class="n">T0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">T0</span><span class="p">,</span> <span class="n">unmodulated</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">unmodulated</span><span class="p">)</span>
+    <span class="n">nModPathways</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span>
+
+    <span class="n">kernelmatrix</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">calckernelmatrix</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="n">excbandwidth</span><span class="p">,</span><span class="n">nKnots</span><span class="p">,</span><span class="n">g</span><span class="p">)</span>
+    
+    <span class="c1"># Build dipolar kernel matrix, summing over all pathways</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">Lambda0</span>
+    <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nModPathways</span><span class="p">):</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">K</span> <span class="o">+</span> <span class="n">lam</span><span class="p">[</span><span class="n">pathway</span><span class="p">]</span><span class="o">*</span><span class="n">kernelmatrix</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">pathway</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">T0</span><span class="p">[</span><span class="n">pathway</span><span class="p">]))</span>
+
+    <span class="c1"># Renormalize if requested</span>
+    <span class="k">if</span> <span class="n">renormalize</span><span class="p">:</span>
+        <span class="n">Knorm</span> <span class="o">=</span> <span class="n">Lambda0</span>
+        <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nModPathways</span><span class="p">):</span>
+            <span class="n">Knorm</span> <span class="o">=</span> <span class="n">Knorm</span> <span class="o">+</span> <span class="n">lam</span><span class="p">[</span><span class="n">pathway</span><span class="p">]</span><span class="o">*</span><span class="n">kernelmatrix</span><span class="p">(</span><span class="o">-</span><span class="n">T0</span><span class="p">[</span><span class="n">pathway</span><span class="p">]</span><span class="o">*</span><span class="n">n</span><span class="p">[</span><span class="n">pathway</span><span class="p">])</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">K</span><span class="o">/</span><span class="n">Knorm</span>
+
+
+    <span class="c1"># Multiply by background</span>
+    <span class="k">if</span> <span class="n">ismodelB</span><span class="p">:</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="nf">dipolarbackground</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">pathinfo</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">K</span><span class="o">*</span><span class="n">B</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+
+    <span class="c1"># Include delta-r factor for integration</span>
+    <span class="k">if</span> <span class="n">integralop</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            
+        <span class="c1"># Vectorized matrix form of trapezoidal integration method</span>
+        <span class="n">dr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+        <span class="n">dr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">r</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">dr</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">dr</span> <span class="o">=</span> <span class="n">dr</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">K</span><span class="o">*</span><span class="n">dr</span>
+    
+    <span class="k">return</span> <span class="n">K</span></div>
+<span class="c1">#==============================================================================</span>
+
+<span class="nd">@cached</span>
+<span class="k">def</span> <span class="nf">calckernelmatrix</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="n">wex</span><span class="p">,</span><span class="n">nKnots</span><span class="p">,</span><span class="n">g</span><span class="p">):</span>
+<span class="c1">#==============================================================================</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+    <span class="c1"># Pre-allocate K matrix</span>
+    <span class="n">nr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">nt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>  
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nt</span><span class="p">,</span><span class="n">nr</span><span class="p">))</span>
+    <span class="n">wr</span> <span class="o">=</span> <span class="n">w0</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># rad s^-1</span>
+
+    <span class="k">def</span> <span class="nf">kernelmatrix_fresnel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">):</span>
+    <span class="c1">#==========================================================================</span>
+        <span class="sd">&quot;&quot;&quot;Calculate kernel using Fresnel integrals (fast and accurate)&quot;&quot;&quot;</span>
+
+       <span class="c1"># Calculation using Fresnel integrals</span>
+        <span class="n">ph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">outer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">wr</span><span class="p">)</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">6</span><span class="o">*</span><span class="n">ph</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span>
+        
+        <span class="c1"># Supress divide by 0 warning        </span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+            <span class="n">S</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">fresnel</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span><span class="o">/</span><span class="n">kappa</span>
+        
+        <span class="n">K</span> <span class="o">=</span> <span class="n">C</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ph</span><span class="p">)</span> <span class="o">+</span> <span class="n">S</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ph</span><span class="p">)</span>
+        <span class="n">K</span><span class="p">[</span><span class="n">t</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+
+        <span class="k">return</span> <span class="n">K</span>
+    <span class="c1">#==========================================================================</span>
+    
+    <span class="k">def</span> <span class="nf">kernelmatrix_grid</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">wex</span><span class="p">,</span><span class="n">nKnots</span><span class="p">):</span>
+    <span class="c1">#==========================================================================</span>
+        <span class="sd">&quot;&quot;&quot;Calculate kernel using grid-based powder integration (converges very slowly with nKnots)&quot;&quot;&quot;</span>
+
+        <span class="c1"># Orientational grid</span>
+        <span class="n">costheta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">nKnots</span><span class="p">))</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="n">costheta</span><span class="o">**</span><span class="mi">2</span>
+        <span class="c1"># Vectorized 3D-grid evaluation (t,r,powder averaging)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">wr</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="n">q</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]))</span>
+        <span class="c1"># If given, include limited excitation bandwidth</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">wex</span><span class="p">):</span>
+            <span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">wr</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="n">q</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:])</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">wex</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">C</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">nKnots</span>
+        <span class="k">return</span> <span class="n">K</span>
+    <span class="c1">#==========================================================================</span>
+
+    <span class="k">def</span> <span class="nf">kernelmatrix_integral</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">wex</span><span class="p">):</span>
+    <span class="c1">#==========================================================================</span>
+        <span class="sd">&quot;&quot;&quot;Calculate kernel using explicit numerical integration &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">ir</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">wr</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)):</span>
+                <span class="c1">#==================================================================</span>
+                <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">costheta</span><span class="p">):</span>
+                    <span class="n">integ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">wr</span><span class="p">[</span><span class="n">ir</span><span class="p">]</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">it</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">costheta</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+                    <span class="c1"># If given, include limited excitation bandwidth</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">wex</span><span class="p">):</span>
+                        <span class="n">integ</span> <span class="o">=</span> <span class="n">integ</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">wr</span><span class="p">[</span><span class="n">ir</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">costheta</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">wex</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">integ</span>
+                <span class="c1">#==================================================================   </span>
+                <span class="n">K</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="n">ir</span><span class="p">],</span><span class="n">_</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">K</span>
+    <span class="c1">#==========================================================================</span>
+
+    <span class="k">if</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;fresnel&#39;</span><span class="p">:</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">kernelmatrix_fresnel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;integral&#39;</span><span class="p">:</span> 
+        <span class="n">K</span> <span class="o">=</span> <span class="n">kernelmatrix_integral</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">wex</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;grid&#39;</span><span class="p">:</span> 
+        <span class="n">K</span> <span class="o">=</span> <span class="n">kernelmatrix_grid</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">wex</span><span class="p">,</span><span class="n">nKnots</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">K</span>
+<span class="c1">#==============================================================================</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

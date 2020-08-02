@@ -1,0 +1,386 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Selecting an optimal parametric model for fitting a dipolar signal &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Extracting Gaussian constraints from a parameter-free distribution fit" href="plot_extracting_gauss_constraints.html" />
+    <link rel="prev" title="Analyzing the Pake pattern of a dipolar signal" href="plot_analyzing_pake_pattern.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Loading and preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../examples.html">Examples</a> &raquo;</li>
+        
+      <li>Selecting an optimal parametric model for fitting a dipolar signal</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-plot-selecting-an-optimal-model-py"><span class="std std-ref">here</span></a>     to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="selecting-an-optimal-parametric-model-for-fitting-a-dipolar-signal">
+<span id="sphx-glr-auto-examples-plot-selecting-an-optimal-model-py"></span><h1>Selecting an optimal parametric model for fitting a dipolar signal<a class="headerlink" href="#selecting-an-optimal-parametric-model-for-fitting-a-dipolar-signal" title="Permalink to this headline">¶</a></h1>
+<p>How to optimally select a parametric model for a given dipolar signal.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<div class="section" id="data-generation">
+<h2>Data Generation<a class="headerlink" href="#data-generation" title="Permalink to this headline">¶</a></h2>
+<p>Let’s start by constructing a simple dipolar signal with some noise arising
+from a bimodal Gaussian distance distribution.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare the signal components</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">3.8</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>
+
+<span class="c1"># Prepare the dipolar kernel and get the signal</span>
+<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="selecting-an-optimal-model">
+<h2>Selecting an optimal model<a class="headerlink" href="#selecting-an-optimal-model" title="Permalink to this headline">¶</a></h2>
+<p>Even though we know the ground truth, in this example we will cosider the
+following set of potential parametric models:</p>
+<ul class="simple">
+<li><p>Unimodal Rician distribution</p></li>
+<li><p>Bimodal Rician distribution</p></li>
+<li><p>Trimodal Rician distribution</p></li>
+<li><p>Unimodal Gaussian distribution</p></li>
+<li><p>Bimodal Gaussian distribution</p></li>
+<li><p>Trimodal Gaussian distribution</p></li>
+<li><p>Mixed bimodal Gaussian/Rician distribution</p></li>
+</ul>
+<p>The first six models have built-in parametric models which we can use directly.
+The last model we can construct from built-in models using the <code class="docutils literal notranslate"><span class="pre">mixmodels</span></code> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare the mixed model</span>
+<span class="n">dd_rice_gauss</span> <span class="o">=</span> <span class="nf">mixmodels</span><span class="p">(</span><span class="nf">dd_rice</span><span class="p">,</span><span class="nf">dd_gauss</span><span class="p">)</span>
+
+<span class="c1"># Prepare list of candidate parametric models</span>
+<span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="nf">dd_rice</span><span class="p">,</span><span class="nf">dd_rice2</span><span class="p">,</span><span class="nf">dd_rice3</span><span class="p">,</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="nf">dd_gauss2</span><span class="p">,</span><span class="nf">dd_gauss3</span><span class="p">,</span><span class="n">dd_rice_gauss</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>In order to make an appropiate choice, we need some liklihood estimator. All fit functions is DeerLab returns a stats
+dictionary which contains (amongst other estimators) likelihood estimators such as the Akaike information criterion (AIC).
+The model with the lowers AIC value can be considered to most likely to be the optimal model.</p>
+<p>To do this, we jus have to evaluate the parametric models with <code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code> while looping over all the distribution models
+we listed above, and collecting the AIC-values for each model.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">aic</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+    <span class="nf">info</span> <span class="o">=</span> <span class="n">model</span><span class="p">()</span>
+    <span class="c1"># Prepare the signal model with the new distance model</span>
+    <span class="n">Vmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">K</span><span class="nd">@model</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">)</span>
+    <span class="c1"># Fit the signal</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">par0</span><span class="o">=</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">],</span><span class="n">lb</span><span class="o">=</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Lower&#39;</span><span class="p">],</span><span class="n">ub</span><span class="o">=</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Upper&#39;</span><span class="p">])</span>
+    <span class="n">parfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
+    <span class="n">stats</span><span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">stats</span>
+    <span class="c1"># Add current AIC value to the list</span>
+    <span class="n">aic</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;aic&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:199: UserWarning: The fitted value of parameter #5,  is at the upper bound of the range.
+  warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound of the range.&#39;.format(p))
+/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:199: UserWarning: The fitted value of parameter #8,  is at the upper bound of the range.
+  warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound of the range.&#39;.format(p))
+/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:197: UserWarning: The fitted value of parameter #2, is at the lower bound of the range.
+  warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound of the range.&#39;.format(p))
+/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:197: UserWarning: The fitted value of parameter #5, is at the lower bound of the range.
+  warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound of the range.&#39;.format(p))
+</pre></div>
+</div>
+<p>Since the absolute AIC values have no meaning, it is standard practice to look at the relative
+changes in AIC values between the evaluated models.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">daic</span> <span class="o">=</span> <span class="n">aic</span> <span class="o">-</span> <span class="nf">min</span><span class="p">(</span><span class="n">aic</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="akaike-weights">
+<h2>Akaike Weights<a class="headerlink" href="#akaike-weights" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>It is often more useful to look at these results from the perspective of
+Akaike weights, i.e. the probabilities of a model being the most optimal.</p>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="mi">100</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">daic</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="nf">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">daic</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="plot-results">
+<h2>Plot results<a class="headerlink" href="#plot-results" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="s1">&#39;k.&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t [$\mu s$]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V(t)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;r [nm]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;P(r) [nm$^{-1}$]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;Ground truth&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="n">modelnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">bar</span><span class="p">(</span><span class="n">modelnames</span><span class="p">,</span><span class="n">daic</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;$\Delta$AIC&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+
+<span class="c1"># Plot the results</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">bar</span><span class="p">(</span><span class="n">modelnames</span><span class="p">,</span><span class="n">weights</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;Akaike Weights [%]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="plot selecting an optimal model" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_selecting_an_optimal_model_001.png" />
+<p>Typically there is not a single optimal model unless the noise level is very
+low. Usually several models have similar probabilities and should therefore be presented together.</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  13.393 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-selecting-an-optimal-model-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/8302ebf5c5b4b9529a3765a5470a2178/plot_selecting_an_optimal_model.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_selecting_an_optimal_model.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/acb8218794c3937c54b27afd433a84dc/plot_selecting_an_optimal_model.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_selecting_an_optimal_model.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plot_extracting_gauss_constraints.html" class="btn btn-neutral float-right" title="Extracting Gaussian constraints from a parameter-free distribution fit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plot_analyzing_pake_pattern.html" class="btn btn-neutral float-left" title="Analyzing the Pake pattern of a dipolar signal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

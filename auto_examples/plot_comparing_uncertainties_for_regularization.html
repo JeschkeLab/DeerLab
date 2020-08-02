@@ -1,0 +1,355 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Comparing confidence intervals for regularization results &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Analyzing the Pake pattern of a dipolar signal" href="plot_analyzing_pake_pattern.html" />
+    <link rel="prev" title="Fitting a mixed distance-distribution model" href="plot_fitting_mixed_model.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Loading and preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../examples.html">Examples</a> &raquo;</li>
+        
+      <li>Comparing confidence intervals for regularization results</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-plot-comparing-uncertainties-for-regularization-py"><span class="std std-ref">here</span></a>     to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="comparing-confidence-intervals-for-regularization-results">
+<span id="sphx-glr-auto-examples-plot-comparing-uncertainties-for-regularization-py"></span><h1>Comparing confidence intervals for regularization results<a class="headerlink" href="#comparing-confidence-intervals-for-regularization-results" title="Permalink to this headline">¶</a></h1>
+<p>A simpe example of uncertainty estimation for Tikhonov regularization
+results. The example will cover the use of confidence intervals
+obtained from curvature matrices and boostrap analysis.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<div class="section" id="simulate-the-data">
+<h2>Simulate the data<a class="headerlink" href="#simulate-the-data" title="Permalink to this headline">¶</a></h2>
+<p>Let’s start by generating some data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare signal components</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.4</span><span class="p">,</span><span class="mf">3.5</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="c1"># Use a distance-axis with less points to make analysis faster</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<span class="n">B</span> <span class="o">=</span> <span class="nf">bg_strexp</span><span class="p">(</span><span class="n">t</span><span class="p">,[</span><span class="mf">0.04</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="mf">0.32</span>
+
+<span class="c1"># Generate the dipolar kernel</span>
+<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="c1"># Simulate signal</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For the sake of simplicity, in this examples we will assume that we know the
+background exactly. Our first step is to generate the proper dipolar kernel.</p>
+</div>
+<div class="section" id="covariance-based-confidence-intervals">
+<h2>Covariance-based confidence intervals<a class="headerlink" href="#covariance-based-confidence-intervals" title="Permalink to this headline">¶</a></h2>
+<p>We now have all the elements required to fit our distance distribution via
+regularization. We will use the AIC to select the regularization parameter in
+the Tikhonov regularization.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit data via regularization</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitregmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;tikhonov&#39;</span><span class="p">,</span><span class="s1">&#39;aic&#39;</span><span class="p">)</span>
+<span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span>
+<span class="n">Puq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">uncertainty</span>
+<span class="c1"># Obtain time-domain fit</span>
+<span class="n">Vfit</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@Pfit</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Pci95</span> <span class="o">=</span> <span class="n">Puq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+<span class="n">Pci50</span> <span class="o">=</span> <span class="n">Puq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pci50</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pci50</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.45</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pci95</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pci95</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;r [nm]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;P(r) [nm$^{-1}$]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">title</span><span class="p">(</span><span class="s1">&#39;Curvature Matrix CI&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;Truth&#39;</span><span class="p">,</span><span class="s1">&#39;Fit&#39;</span><span class="p">,</span><span class="s1">&#39;50%-CI&#39;</span><span class="p">,</span><span class="s1">&#39;95%-CI&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="Curvature Matrix CI" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_comparing_uncertainties_for_regularization_001.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f53c0893e50&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="bootstrapped-confidence-intervals">
+<h2>Bootstrapped confidence intervals<a class="headerlink" href="#bootstrapped-confidence-intervals" title="Permalink to this headline">¶</a></h2>
+<p>Now we are interested in the bootstrap confidence intervals. For this, we
+need to define a boot function e.g. <code class="docutils literal notranslate"><span class="pre">mybootfcn()</span></code> which takes a signal as
+output and returns the outputs of interest (<code class="docutils literal notranslate"><span class="pre">Pfit</span></code> in our example).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mybootfcn</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="nf">fitregmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;tikhonov&#39;</span><span class="p">,</span><span class="s1">&#39;aic&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span>
+
+<span class="c1"># Launch bootstrapping</span>
+<span class="n">Nsamples</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">booci</span> <span class="o">=</span> <span class="nf">bootan</span><span class="p">(</span><span class="n">mybootfcn</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="n">Nsamples</span><span class="p">)</span>
+<span class="n">Pci95</span> <span class="o">=</span> <span class="n">booci</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+<span class="n">Pci50</span> <span class="o">=</span> <span class="n">booci</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By plotting the results, one can see that the bootstrapped confidence intervals
+are narrower in comparison to the ones obtained via the curvature
+matrices. This is due to the inherent accurate nature of bootstrapping.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pci50</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pci50</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.45</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pci95</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pci95</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;r [nm]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;P(r) [nm$^{-1}$]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">title</span><span class="p">(</span><span class="s1">&#39;Bootstrapped CI&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;Truth&#39;</span><span class="p">,</span><span class="s1">&#39;Fit&#39;</span><span class="p">,</span><span class="s1">&#39;50%-CI&#39;</span><span class="p">,</span><span class="s1">&#39;95%-CI&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="Bootstrapped CI" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_comparing_uncertainties_for_regularization_002.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f53c0975350&gt;
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  23.717 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-comparing-uncertainties-for-regularization-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/db32d750b3aed8bff649ab00eae043ec/plot_comparing_uncertainties_for_regularization.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_comparing_uncertainties_for_regularization.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/aa8d2be2e9a052537f22139745f17f18/plot_comparing_uncertainties_for_regularization.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_comparing_uncertainties_for_regularization.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plot_analyzing_pake_pattern.html" class="btn btn-neutral float-right" title="Analyzing the Pake pattern of a dipolar signal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plot_fitting_mixed_model.html" class="btn btn-neutral float-left" title="Fitting a mixed distance-distribution model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

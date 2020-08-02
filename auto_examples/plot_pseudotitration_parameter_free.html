@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Analyzing pseudo-titration (dose-respononse) curves with parameter-free distributions &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Functions" href="../functions.html" />
+    <link rel="prev" title="Bootstrapped distributions of fit parameters" href="plot_bootstrapped_parameter_distributions.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Loading and preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../examples.html">Examples</a> &raquo;</li>
+        
+      <li>Analyzing pseudo-titration (dose-respononse) curves with parameter-free distributions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-plot-pseudotitration-parameter-free-py"><span class="std std-ref">here</span></a>     to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="analyzing-pseudo-titration-dose-respononse-curves-with-parameter-free-distributions">
+<span id="sphx-glr-auto-examples-plot-pseudotitration-parameter-free-py"></span><h1>Analyzing pseudo-titration (dose-respononse) curves with parameter-free distributions<a class="headerlink" href="#analyzing-pseudo-titration-dose-respononse-curves-with-parameter-free-distributions" title="Permalink to this headline">¶</a></h1>
+<p>How to use separable non-linear least squares (SNLLS)
+to fit a pseudo-titration curve to multiple DEER datsets, using
+parameter-free distance distributions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<div class="section" id="generating-multiple-datasets">
+<h2>Generating multiple datasets<a class="headerlink" href="#generating-multiple-datasets" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>First, let’s prepare the chemical desciption of the problem. In this example we will
+simulate a protein system in their states A (natural) and B (changed upon addition
+of a ligand L) given by the chemical equilibrium  A + L &lt;-&gt; B.</p>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">chemicalequilibrium</span><span class="p">(</span><span class="n">Kdis</span><span class="p">,</span><span class="n">L</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Prepare equilibrium of type: A + L &lt;-&gt; B&quot;&quot;&quot;</span>
+    <span class="n">Ctot</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># total protein concentration, uM</span>
+
+    <span class="c1"># # Get fraction of state B</span>
+    <span class="n">Kb</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">Kdis</span>
+    <span class="n">xB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">)):</span>
+        <span class="n">xB_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">roots</span><span class="p">([</span><span class="n">Kb</span><span class="o">*</span><span class="n">Ctot</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">Kb</span><span class="o">*</span><span class="n">L</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">+</span> <span class="n">Kb</span><span class="o">*</span><span class="n">Ctot</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Kb</span><span class="o">*</span><span class="n">L</span><span class="p">[</span><span class="n">q</span><span class="p">]])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">xB</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">xB_</span><span class="p">[(</span><span class="n">xB_</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">xB_</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">xB</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">xB_</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="c1"># Get fraction of state A</span>
+    <span class="n">xA</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">xB</span>
+
+    <span class="k">return</span> <span class="n">xA</span><span class="p">,</span><span class="n">xB</span>
+</pre></div>
+</div>
+<p>Next, we define the dipolar kernel model as the non-linear function of the
+SNLLS problem. This function needs to take the parameters and return a
+cell-array of kernels, each one for the corresponding datasets that we
+have.
+Since we have a total distribution of the form</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">P</span> <span class="pre">=</span> <span class="pre">xA*PA</span> <span class="pre">+</span> <span class="pre">xB*PB</span></code></p>
+</div></blockquote>
+<dl class="simple">
+<dt>we can define an augmented kernel as</dt><dd><p><code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">[xA*KA</span> <span class="pre">xB*KB]</span></code></p>
+</dd>
+<dt>such that</dt><dd><p><code class="docutils literal notranslate"><span class="pre">K&#64;[PA</span> <span class="pre">PB]</span> <span class="pre">=</span> <span class="pre">V</span></code></p>
+</dd>
+</dl>
+<p>and the vector <code class="docutils literal notranslate"><span class="pre">[PA</span> <span class="pre">PB]</span></code> constitutes the linear part fitted by SNLLS.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Kmodel</span><span class="p">(</span><span class="n">par</span><span class="p">,</span><span class="n">ts</span><span class="p">,</span><span class="n">rA</span><span class="p">,</span><span class="n">rB</span><span class="p">,</span><span class="n">L</span><span class="p">):</span>
+
+    <span class="n">Nsignals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+
+    <span class="c1"># Unpack parameters</span>
+    <span class="n">lam</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">Kdis</span> <span class="o">=</span> <span class="n">par</span>
+
+    <span class="c1"># Get fractions for given KD</span>
+    <span class="p">[</span><span class="n">xA</span><span class="p">,</span><span class="n">xB</span><span class="p">]</span> <span class="o">=</span> <span class="n">chemicalequilibrium</span><span class="p">(</span><span class="n">Kdis</span><span class="p">,</span><span class="n">L</span><span class="p">)</span>
+
+    <span class="n">Ks</span> <span class="o">=</span> <span class="p">[[]]</span><span class="o">*</span><span class="n">Nsignals</span>
+    <span class="c1"># General the dipolar kernels</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nsignals</span><span class="p">):</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="nf">bg_exp</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">k</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+        <span class="c1"># Kernel for fraction A</span>
+        <span class="n">KstateA</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">rA</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+        <span class="c1"># Kernel for fraction B</span>
+        <span class="n">KstateB</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">rB</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+        <span class="n">Ks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">xA</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">KstateA</span><span class="p">,</span> <span class="n">xB</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">KstateB</span><span class="p">),</span><span class="nf">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Ks</span>
+</pre></div>
+</div>
+<p>Now, we can simulate multiple signals corresponding to different concentrations
+of added ligand.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Time axes</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="p">[[]]</span><span class="o">*</span><span class="mi">7</span>
+<span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">ts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">ts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">ts</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">ts</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">ts</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">ts</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">Nsignals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+
+<span class="c1"># Distance axes for states A and B</span>
+<span class="n">rA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">rB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Distributions for states A and B</span>
+<span class="n">PstateA</span> <span class="o">=</span> <span class="nf">dd_gauss</span><span class="p">(</span><span class="n">rA</span><span class="p">,[</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<span class="n">PstateB</span> <span class="o">=</span> <span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">rB</span><span class="p">,[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
+
+<span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">]</span> <span class="c1"># total ligand concentration, uM</span>
+<span class="n">Kdis</span> <span class="o">=</span> <span class="mf">5.65</span>  <span class="c1"># dissociation constant, uM</span>
+
+<span class="c1"># Populations of states A and B</span>
+<span class="p">[</span><span class="n">xA</span><span class="p">,</span><span class="n">xB</span><span class="p">]</span> <span class="o">=</span> <span class="n">chemicalequilibrium</span><span class="p">(</span><span class="n">Kdis</span><span class="p">,</span><span class="n">L</span><span class="p">)</span>
+
+<span class="c1"># Global kernel model</span>
+<span class="n">Ks</span> <span class="o">=</span> <span class="n">Kmodel</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">Kdis</span><span class="p">],</span><span class="n">ts</span><span class="p">,</span><span class="n">rA</span><span class="p">,</span><span class="n">rB</span><span class="p">,</span><span class="n">L</span><span class="p">)</span>
+
+<span class="c1"># Simulate dipolar signals</span>
+<span class="n">Vs</span> <span class="o">=</span> <span class="p">[[]]</span><span class="o">*</span><span class="n">Nsignals</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nsignals</span><span class="p">):</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">Vs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="nd">@np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">PstateA</span><span class="p">,</span> <span class="n">PstateB</span><span class="p">))</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="mf">0.005</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="psuedotitration-snlls-analysis">
+<h2>Psuedotitration SNLLS Analysis<a class="headerlink" href="#psuedotitration-snlls-analysis" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>For simplification, we will assume that all DEER traces have the same
+background function and modulation depth. Thus, we will fit the
+modulations depth (lam) and background decay constant (k) globally along
+the dissociation constant (KD).</p>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Non-linear parameters:</span>
+<span class="c1">#       lam  k   KD</span>
+<span class="n">par0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span>  <span class="mi">5</span><span class="p">]</span>  <span class="c1"># start values</span>
+<span class="n">lb</span>   <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">1</span><span class="p">]</span>  <span class="c1"># lower bounds</span>
+<span class="n">ub</span>   <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>  <span class="mi">10</span><span class="p">]</span> <span class="c1"># upper bounds</span>
+
+<span class="c1"># Linear parameters:</span>
+<span class="c1">#     |-------PA--------||--------PB--------|</span>
+<span class="n">lbl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">rA</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">rB</span><span class="p">)))</span> <span class="c1"># Non-negativity constraint</span>
+<span class="n">ubl</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># Unconstrained</span>
+
+<span class="c1"># Run SNLLS optimization</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="nf">snlls</span><span class="p">(</span><span class="n">Vs</span><span class="p">,</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">Kmodel</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">ts</span><span class="p">,</span><span class="n">rA</span><span class="p">,</span><span class="n">rB</span><span class="p">,</span><span class="n">L</span><span class="p">),</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">lbl</span><span class="p">,</span><span class="n">ubl</span><span class="p">)</span>
+<span class="c1"># Extract fit results</span>
+<span class="n">parfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">nonlin</span>
+<span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">lin</span>
+<span class="n">puq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">uncertainty</span>
+
+<span class="c1"># Extract the fitted disociation constant value and its 95#-confidence interval</span>
+<span class="n">Kdisfit</span> <span class="o">=</span> <span class="n">parfit</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">parci</span> <span class="o">=</span> <span class="n">puq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">,</span><span class="s1">&#39;nonlin&#39;</span><span class="p">)</span>
+<span class="n">KDci</span> <span class="o">=</span> <span class="n">parci</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span>
+
+<span class="c1"># Print result</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Kdis = </span><span class="si">{:.2f}</span><span class="s1">(</span><span class="si">{:.2f}</span><span class="s1">-</span><span class="si">{:.2f}</span><span class="s1">)uM&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Kdisfit</span><span class="p">,</span><span class="n">KDci</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">KDci</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/PyDeerLab/PyDeerLab/examples/plot_pseudotitration_parameter_free.py:34: ComplexWarning: Casting complex values to real discards the imaginary part
+  xB[q] = np.minimum(1,np.maximum(0,xB_[0]))
+Kdis = 7.06(6.99-7.13)uM
+</pre></div>
+</div>
+<p>Plot results</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span>
+
+<span class="c1"># Simulate fits</span>
+<span class="n">Ksfit</span> <span class="o">=</span> <span class="n">Kmodel</span><span class="p">(</span><span class="n">parfit</span><span class="p">,</span><span class="n">ts</span><span class="p">,</span><span class="n">rA</span><span class="p">,</span><span class="n">rB</span><span class="p">,</span><span class="n">L</span><span class="p">)</span>
+<span class="n">Vsfit</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nsignals</span><span class="p">):</span>
+    <span class="n">Vsfit</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">Ksfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="nd">@Pfit</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">Vs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">i</span><span class="o">/</span><span class="mi">9</span><span class="p">,</span><span class="s1">&#39;k.&#39;</span><span class="p">,</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">Vsfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">i</span><span class="o">/</span><span class="mi">9</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t [$\mu s$]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V(t) [a.u.]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;data&#39;</span><span class="p">,</span><span class="s1">&#39;fit&#39;</span><span class="p">])</span>
+
+<span class="n">xAfit</span><span class="p">,</span><span class="n">xBfit</span> <span class="o">=</span> <span class="n">chemicalequilibrium</span><span class="p">(</span><span class="n">Kdisfit</span><span class="p">,</span><span class="n">L</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nsignals</span><span class="p">):</span>
+    <span class="n">PAfit</span> <span class="o">=</span> <span class="n">xAfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">Pfit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">rA</span><span class="p">)]</span>
+    <span class="n">PBfit</span> <span class="o">=</span> <span class="n">xBfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">Pfit</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">rA</span><span class="p">):</span><span class="nb">len</span><span class="p">(</span><span class="n">rB</span><span class="p">)</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">rA</span><span class="p">)]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">rA</span><span class="p">,</span><span class="n">PAfit</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">rB</span><span class="p">,</span><span class="n">PBfit</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;r [nm]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;P(r)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;state A&#39;</span><span class="p">,</span><span class="s1">&#39;state B&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlim</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">325</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">L</span><span class="p">),</span><span class="n">xA</span><span class="p">,</span><span class="s1">&#39;r-&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">L</span><span class="p">),</span><span class="n">xB</span><span class="p">,</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">L</span><span class="p">),</span><span class="n">xAfit</span><span class="p">,</span><span class="s1">&#39;ro&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">L</span><span class="p">),</span><span class="n">xBfit</span><span class="p">,</span><span class="s1">&#39;bo&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;log$_</span><span class="si">{10}</span><span class="s1">$([L])&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;Fractions&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;state A&#39;</span><span class="p">,</span><span class="s1">&#39;state B&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="plot pseudotitration parameter free" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_pseudotitration_parameter_free_001.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>(0.0, 1.0)
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  26.790 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-pseudotitration-parameter-free-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/a5d41ff6a9dbdf82be560698c968c7f5/plot_pseudotitration_parameter_free.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_pseudotitration_parameter_free.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/d34b89ddbe4f9e10ad34f11e7dec88fd/plot_pseudotitration_parameter_free.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_pseudotitration_parameter_free.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../functions.html" class="btn btn-neutral float-right" title="Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plot_bootstrapped_parameter_distributions.html" class="btn btn-neutral float-left" title="Bootstrapped distributions of fit parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Extracting Gaussian constraints from a parameter-free distribution fit &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Emulating the DeerAnalysis workflow" href="plot_emulating_deeranalysis_workflow.html" />
+    <link rel="prev" title="Selecting an optimal parametric model for fitting a dipolar signal" href="plot_selecting_an_optimal_model.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Loading and preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../examples.html">Examples</a> &raquo;</li>
+        
+      <li>Extracting Gaussian constraints from a parameter-free distribution fit</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-plot-extracting-gauss-constraints-py"><span class="std std-ref">here</span></a>     to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="extracting-gaussian-constraints-from-a-parameter-free-distribution-fit">
+<span id="sphx-glr-auto-examples-plot-extracting-gauss-constraints-py"></span><h1>Extracting Gaussian constraints from a parameter-free distribution fit<a class="headerlink" href="#extracting-gaussian-constraints-from-a-parameter-free-distribution-fit" title="Permalink to this headline">¶</a></h1>
+<p>How to extract Gaussian constraints from a parameter-free fit.</p>
+<p>While parameter-free distance distributions are the most robust way to
+analyze dipolar signals, many structural biology modelling programs
+accept only estimators such as mean distances or Gaussian constraints.</p>
+<p>This example shows how to extract Gaussian constraints from a
+parameter-free fit of a dipolar signal and how to calculate the
+corresponding uncertainty.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generating a dataset</span>
+<span class="c1"># For this example we will simulate a simple 4pDEER signal</span>
+
+<span class="c1"># Parameters</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">250</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss3</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">conc</span> <span class="o">=</span> <span class="mi">80</span><span class="p">;</span> <span class="c1">#uM</span>
+
+<span class="c1"># Simulate the signal</span>
+<span class="n">Bmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">Bmodel</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="fit-the-dipolar-signal">
+<h2>Fit the dipolar signal<a class="headerlink" href="#fit-the-dipolar-signal" title="Permalink to this headline">¶</a></h2>
+<p>First, we need to fit the parameter-free distance distribution using <code class="docutils literal notranslate"><span class="pre">fitsignal()</span></code>
+We are only interested right now on the fitted distribution and the
+corresponding uncertainty quantification, so we will ignore the rest of
+the outputs.
+%%</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="nf">bg_exp</span><span class="p">,</span><span class="nf">ex_4pdeer</span><span class="p">,</span><span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span>
+</pre></div>
+</div>
+<img alt="plot extracting gauss constraints" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_extracting_gauss_constraints_001.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>----------------------------------------------------------------------------
+Goodness of fit
+  Vexp[0]: chi2 = 1.008065  RMSD  = 0.009473
+----------------------------------------------------------------------------
+Fitted parameters and 95%-confidence intervals
+Vfit[0]:
+  bgparam[0]:   0.0768264  (0.0223431, 0.1313097)  Decay Rate (us-1)
+  exparam[0]:   0.3129041  (0.2837873, 0.3420210)  Modulation depth ()
+----------------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+<div class="section" id="extract-gaussian-constraints-from-the-fit">
+<h2>Extract Gaussian constraints from the fit<a class="headerlink" href="#extract-gaussian-constraints-from-the-fit" title="Permalink to this headline">¶</a></h2>
+<p>Next, we will fit a multi-Gauss distribution to the fitted parameter-free
+distribution. We can do this by using the <code class="docutils literal notranslate"><span class="pre">fitparamodel()</span></code> function (in
+this example, fitting a two-Gauss model).</p>
+<p>However, in order to get the correct uncertainty quantification, we need
+to specify the covariance matrix of the fitted distribution.
+<code class="docutils literal notranslate"><span class="pre">fitparamodel()</span></code> can then use that information to propagate the error in
+<code class="docutils literal notranslate"><span class="pre">Pfit</span></code> to the Gauss constraints that we then fit.</p>
+<p>Extract the uncertainty quantification of the fitted distribution…</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Pfit_uq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">Puncert</span>
+<span class="c1"># ...specifically its covariance matrix</span>
+<span class="n">Pfit_covmat</span> <span class="o">=</span> <span class="n">Pfit_uq</span><span class="o">.</span><span class="n">covmat</span>
+</pre></div>
+</div>
+<p>Fit a 2-Gauss model to the fitted parameter-free distribution:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">parfit`</span></code>: will contain the Gaussian constraints</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PGauss`</span></code>: the corresponding distribution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">paruq`</span></code>: the uncertainty quantification of our constraints</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Pmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
+<span class="c1"># Get information on the model</span>
+<span class="nf">info</span> <span class="o">=</span> <span class="nf">dd_gauss2</span><span class="p">()</span>
+<span class="n">par0</span> <span class="o">=</span> <span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">]</span>
+<span class="n">lb</span> <span class="o">=</span> <span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Lower&#39;</span><span class="p">]</span>
+<span class="n">ub</span> <span class="o">=</span> <span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Upper&#39;</span><span class="p">]</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">Pfit</span><span class="p">,</span><span class="n">Pmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">covmatrix</span><span class="o">=</span><span class="n">Pfit_covmat</span><span class="p">)</span>
+<span class="n">parfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
+<span class="n">paruq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">uncertainty</span>
+<span class="n">PGauss</span> <span class="o">=</span> <span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">parfit</span><span class="p">)</span>
+
+<span class="c1"># Extract the 95#-confidence intervals...</span>
+<span class="n">par95</span> <span class="o">=</span> <span class="n">paruq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+<span class="c1"># ... and print the results of the constraints</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Gaussian constraints:&#39;</span><span class="p">)</span>
+<span class="nf">info</span> <span class="o">=</span> <span class="nf">dd_gauss2</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parfit</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  parfit[</span><span class="si">{}</span><span class="s1">] = </span><span class="si">{:2.2f}</span><span class="s1"> (</span><span class="si">{:2.2f}</span><span class="s1">, </span><span class="si">{:2.2f}</span><span class="s1">) </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">parfit</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">par95</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">par95</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Parameters&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span>
+
+<span class="c1"># Now propagate the error of the constraints on the model</span>
+<span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="c1"># Non-negativity constraint</span>
+<span class="n">PGauss_uq</span> <span class="o">=</span> <span class="n">paruq</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">),</span><span class="n">lb</span><span class="p">)</span>
+<span class="n">PGauss95</span> <span class="o">=</span> <span class="n">PGauss_uq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:199: UserWarning: The fitted value of parameter #5,  is at the upper bound of the range.
+  warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound of the range.&#39;.format(p))
+
+Gaussian constraints:
+  parfit[0] = 3.02 (2.87, 3.16) Center of 1st Gaussian
+  parfit[1] = 0.55 (0.29, 0.81) FWHM of 1st Gaussian
+  parfit[2] = 0.37 (0.26, 0.48) Amplitude of 1st Gaussian
+  parfit[3] = 4.29 (4.22, 4.36) Center of 2nd Gaussian
+  parfit[4] = 0.94 (0.75, 1.13) FWHM of 2nd Gaussian
+  parfit[5] = 1.00 (0.96, 1.00) Amplitude of 2nd Gaussian
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the fitted constraints model on top of the parameter-free case</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit_uq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">Pfit_uq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">PGauss</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">PGauss95</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">PGauss95</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;Distance [nm]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;P [nm$^{-1}$]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;Fit&#39;</span><span class="p">,</span><span class="s1">&#39;95%-CI&#39;</span><span class="p">,</span><span class="s1">&#39;2G-constraints&#39;</span><span class="p">,</span><span class="s1">&#39;95%-CI&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="plot extracting gauss constraints" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_extracting_gauss_constraints_002.png" />
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  7.700 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-extracting-gauss-constraints-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/05783a63aa47e3759db00b2a63415a36/plot_extracting_gauss_constraints.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_extracting_gauss_constraints.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/7cb2f2b53eeaffcac05696786ab6a4ea/plot_extracting_gauss_constraints.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_extracting_gauss_constraints.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plot_emulating_deeranalysis_workflow.html" class="btn btn-neutral float-right" title="Emulating the DeerAnalysis workflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plot_selecting_an_optimal_model.html" class="btn btn-neutral float-left" title="Selecting an optimal parametric model for fitting a dipolar signal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

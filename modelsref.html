@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Models &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="dd_circle" href="models/dd_circle.html" />
+    <link rel="prev" title="fftspec" href="functions/fftspec.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocess.html">Loading and preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="models">
+<span id="modelsref"></span><h1>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="distribution-models">
+<span id="modelsref-dd"></span><h2>Distribution models<a class="headerlink" href="#distribution-models" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="basis-functions">
+<h3>Basis functions<a class="headerlink" href="#basis-functions" title="Permalink to this headline">¶</a></h3>
+<p>This group of distribution models is based on function that can serve as basis functions for modeling general distributions.</p>
+<table class="func-list docutils align-default">
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Model function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_rice.html#dd-rice"><span class="std std-ref">dd_rice</span></a></p></td>
+<td><p>Single 3D-Rice distribution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/dd_rice2.html#dd-rice2"><span class="std std-ref">dd_rice2</span></a></p></td>
+<td><p>Two 3D-Rice distributions</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_rice3.html#dd-rice3"><span class="std std-ref">dd_rice3</span></a></p></td>
+<td><p>Three 3D-Rice distributions</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/dd_gauss.html#dd-gauss"><span class="std std-ref">dd_gauss</span></a></p></td>
+<td><p>Single Gaussian distribution</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_gauss2.html#dd-gauss2"><span class="std std-ref">dd_gauss2</span></a></p></td>
+<td><p>Two Gaussians distributions</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/dd_gauss3.html#dd-gauss3"><span class="std std-ref">dd_gauss3</span></a></p></td>
+<td><p>Three Gaussians distributions</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_gengauss.html#dd-gengauss"><span class="std std-ref">dd_gengauss</span></a></p></td>
+<td><p>Single generalized Gaussian distribution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/dd_skewgauss.html#dd-skewgauss"><span class="std std-ref">dd_skewgauss</span></a></p></td>
+<td><p>Single skew Gaussian distribution</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_cos.html#dd-cos"><span class="std std-ref">dd_cos</span></a></p></td>
+<td><p>Raised-cosine distribution</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="disordered-physical-models">
+<h3>Disordered physical models<a class="headerlink" href="#disordered-physical-models" title="Permalink to this headline">¶</a></h3>
+<p>This group of distribution models represents spin labels attached to disordered macromolecular structures.</p>
+<table class="func-list docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 65%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Model function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_wormchain.html#dd-wormchain"><span class="std std-ref">dd_wormchain</span></a></p></td>
+<td><p>Worm-like chain</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/dd_wormgauss.html#dd-wormgauss"><span class="std std-ref">dd_wormgauss</span></a></p></td>
+<td><p>Worm-like chain with Gaussian convolution</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_randcoil.html#dd-randcoil"><span class="std std-ref">dd_randcoil</span></a></p></td>
+<td><p>Random coil</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="sphere-shell-models">
+<h3>Sphere/shell models<a class="headerlink" href="#sphere-shell-models" title="Permalink to this headline">¶</a></h3>
+<p>This group of distribution models represents spin labels in simple partitions of 3D space.</p>
+<table class="func-list docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Model function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_sphere.html#dd-sphere"><span class="std std-ref">dd_sphere</span></a></p></td>
+<td><p>Labels distributed in a sphere</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/dd_spheresurf.html#dd-spheresurf"><span class="std std-ref">dd_spheresurf</span></a></p></td>
+<td><p>Labels distributed on a sphere’s surface</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_spherepoint.html#dd-spherepoint"><span class="std std-ref">dd_spherepoint</span></a></p></td>
+<td><p>One label fixed, other label distributed in a sphere</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/dd_shell.html#dd-shell"><span class="std std-ref">dd_shell</span></a></p></td>
+<td><p>Labels distributed on a spherical shell</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_shellsphere.html#dd-shellsphere"><span class="std std-ref">dd_shellsphere</span></a></p></td>
+<td><p>Labels distributed on a sphere inside a spherical shell</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/dd_shellshell.html#dd-shellshell"><span class="std std-ref">dd_shellshell</span></a></p></td>
+<td><p>Labels distributed on a spherical shell inside another spherical shell</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_shellvoidshell.html#dd-shellvoidshell"><span class="std std-ref">dd_shellvoidshell</span></a></p></td>
+<td><p>Labels distributed on two spherical shells separated by a void</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/dd_shellvoidsphere.html#dd-shellvoidsphere"><span class="std std-ref">dd_shellvoidsphere</span></a></p></td>
+<td><p>Labels distributed on a sphere inside a spherical shell separated by a void</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="toy-models">
+<h3>Toy models<a class="headerlink" href="#toy-models" title="Permalink to this headline">¶</a></h3>
+<p>This group contains distribution models that have absolutely no physical relevance. They are useful as distributions to test numerical algorithms.</p>
+<table class="func-list docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Model function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_circle.html#dd-circle"><span class="std std-ref">dd_circle</span></a></p></td>
+<td><p>Semi-circle distribution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/dd_triangle.html#dd-triangle"><span class="std std-ref">dd_triangle</span></a></p></td>
+<td><p>Triangle distribution</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/dd_uniform.html#dd-uniform"><span class="std std-ref">dd_uniform</span></a></p></td>
+<td><p>Uniform distribution</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="background-models">
+<span id="modelsref-bg"></span><h2>Background models<a class="headerlink" href="#background-models" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="physical-models">
+<h3>Physical models<a class="headerlink" href="#physical-models" title="Permalink to this headline">¶</a></h3>
+<p>This category involves models that describe particular distributions of spin labels in space. These models depend on physical parameters such as spin concentration, exclusion distances, and dimensionality.</p>
+<table class="func-list docutils align-default">
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Model function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="models/bg_hom3d.html"><span class="doc">bg_hom3d</span></a></p></td>
+<td><p>Homogeneous distribution in 3D</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/bg_hom3dex.html"><span class="doc">bg_hom3dex</span></a></p></td>
+<td><p>Homogeneous distribution in 3D with hard-shell excluded volume</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/bg_homfractal.html"><span class="doc">bg_homfractal</span></a></p></td>
+<td><p>Homogeneous distribution in fractal dimensions</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="phenomenological-models">
+<h3>Phenomenological models<a class="headerlink" href="#phenomenological-models" title="Permalink to this headline">¶</a></h3>
+<p>This category comprises phenomenological models that represent various mathematical functions that are intended to mimick the background decay, without reference to a particular spatial distribution of spins. The parameters of these models do no have direct physical meaning.</p>
+<table class="func-list docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Model function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="models/bg_exp.html"><span class="doc">bg_exp</span></a></p></td>
+<td><p>Exponential decay</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/bg_strexp.html"><span class="doc">bg_strexp</span></a></p></td>
+<td><p>Stretched exponential decay</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/bg_sumstrexp.html"><span class="doc">bg_sumstrexp</span></a></p></td>
+<td><p>Sum of two stretched exponential decays</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/bg_prodstrexp.html"><span class="doc">bg_prodstrexp</span></a></p></td>
+<td><p>Product of two stretched exponential decays</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/bg_poly1.html"><span class="doc">bg_poly1</span></a></p></td>
+<td><p>Linear polynomial</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/bg_poly2.html"><span class="doc">bg_poly2</span></a></p></td>
+<td><p>Quadratic polynomial</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/bg_poly3.html"><span class="doc">bg_poly3</span></a></p></td>
+<td><p>Cubic polynomial</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="experiment-models">
+<span id="modelsref-ex"></span><h2>Experiment models<a class="headerlink" href="#experiment-models" title="Permalink to this headline">¶</a></h2>
+<table class="func-list docutils align-default">
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 59%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Model function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="models/ex_4pdeer.html"><span class="doc">ex_4pdeer</span></a></p></td>
+<td><p>4-pulse DEER, 3-pulse DEER (single modulated pathway)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/ex_ovl4pdeer.html"><span class="doc">ex_ovl4pdeer</span></a></p></td>
+<td><p>4-pulse DEER (including 2+1 pathway)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="models/ex_5pdeer.html"><span class="doc">ex_5pdeer</span></a></p></td>
+<td><p>5-pulse DEER</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="models/ex_7pdeer.html"><span class="doc">ex_7pdeer</span></a></p></td>
+<td><p>7-pulse DEER</p></td>
+</tr>
+</tbody>
+</table>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="models/dd_circle.html" class="btn btn-neutral float-right" title="dd_circle" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="functions/fftspec.html" class="btn btn-neutral float-left" title="fftspec" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
