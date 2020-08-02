@@ -40,7 +40,7 @@ jobs:
            python -m pip install sphinxcontrib-httpdomain
            sudo apt install texlive-extra-utils
            sudo apt-get install texlive-latex-extra
-           
+           python -m pip install .
     - name: Build with Sphinx
       run: |
            sphinx-build -E -b html ./docsrc/source ./docs
