@@ -71,8 +71,8 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         List of all fitted multi-component distance distributions. 
     selfun : ndarray
         Selection functional values (as specified as ``method``) for the all fitted multi-component models.
-    scale : float int
-        Amplitude scale of the dipolar signal.
+    scale : float int or list of float int
+        Amplitude scale(s) of the dipolar signal(s).
     stats : dict
         Goodness of fit statistical estimators:
 
@@ -139,7 +139,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     r = np.atleast_1d(r)
     
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
-    V, Kmodel, weights, Vsubsets = dl.utils.parse_multidatasets(V, Kmodel, weights)
+    V, Kmodel, weights, Vsubsets, prescales = dl.utils.parse_multidatasets(V, Kmodel, weights,precondition=True)
 
     # Check kernel model
     if type(Kmodel) is FunctionType:
@@ -367,15 +367,22 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         stats = stats[0]
 
     # If requested re-normalize the distribution
-    scale = np.trapz(Pfit,r)
+    postscale = np.trapz(Pfit,r)
     if normP:
-        Pfit = Pfit/scale
+        Pfit = Pfit/postscale
         fitparam_amp = fitparam_amp/sum(fitparam_amp)
         if uqanalysis:
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
-            Puq.ci = lambda p: Puq_.ci(p)/scale
+            Puq.ci = lambda p: Puq_.ci(p)/postscale
+
+    # Dataset scales
+    scales = []
+    for i in range(len(Vsubsets)): 
+        scales.append(prescales[i]*postscale)
+    if len(scales)==1:
+        scales = scales[0]
 
     return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, Puncert=Puq, 
-                    paramUncert=paramuq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scale, 
+                    paramUncert=paramuq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, 
                     stats=stats, cost=fit.cost, residuals=fit.residuals, success=fit.success)
     # =========================================================================

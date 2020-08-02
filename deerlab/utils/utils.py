@@ -13,32 +13,37 @@ import scipy as scp
 import random
 from scipy.sparse import coo_matrix
 from types import FunctionType 
-def parse_multidatasets(V,K,weights):
+def parse_multidatasets(V,K,weights,precondition=False):
 #===============================================================================
     
     # Identify if the signals have already been processed by this function
     if type(V) is not list:
         if V.size == np.atleast_1d(weights).size:
             # If so, just return without doing anything
-            return V,K,weights,[np.arange(0,len(V))]
+            if precondition:
+                return V,K,weights,[np.arange(0,len(V))],[1]
+            else:
+                return V,K,weights,[np.arange(0,len(V))]
 
     # If multiple signals are specified as a list...
     if type(V) is list and all([type(Vs) is np.ndarray for Vs in V]):
         nSignals = len(V)
-        Vlist = V
-        V = np.concatenate(V, axis=0) # ...concatenate them along the list 
+        prescales = np.zeros(nSignals)
+        Vlist = []
+        # Pre-scale the signals, important for fitregmodel when using global fits with arbitrary scales
+        for i in range(nSignals):
+            if precondition:
+                prescales[i] = max(V[i])
+                Vlist.append(V[i]/prescales[i])
+            else:
+                Vlist.append(V[i])
+        V = np.concatenate(Vlist, axis=0) # ...concatenate them along the list 
     elif type(V) is np.ndarray:
         nSignals = 1
+        prescales = [1]
         Vlist = [V]
     else:
         raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
-
-    rescale = np.zeros(len(Vlist))
-    for i in range(len(Vlist)):
-        if i==0:
-            rescale[i] = 1
-        else:
-            rescale[i] = max(Vlist[i])/max(Vlist[0])
     
     def prepareKernel(K,nSignals):
         # If multiple kernels are specified as a list...
@@ -85,7 +90,11 @@ def parse_multidatasets(V,K,weights):
         else:
             prev = subset[i-1][-1]+1
         subset[i] = np.arange(prev,prev+Ns[i])
-    return V,Kmulti,weights,subset
+
+    if precondition:
+        return V,Kmulti,weights,subset,prescales
+    else:
+        return V,Kmulti,weights,subset
 #===============================================================================
 
 

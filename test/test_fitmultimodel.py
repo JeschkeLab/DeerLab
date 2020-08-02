@@ -231,6 +231,25 @@ def test_goodness_of_fit():
 #=======================================================================
 
 
+def test_globalfit_scales():
+#=======================================================================
+    "Check that the global fit of a multi-Gauss model works"
+        
+    r = np.linspace(2,6,300)
+    parin = [4, 0.2, 0.4, 4, 1, 0.4, 3, 0.4, 0.2]
+    P = dd_gauss3(r,parin)
+    scales = [1e3, 1e9]
 
+    t1 = np.linspace(-0.5,6,500)
+    K1 = dipolarkernel(t1,r)
+    V1 = scales[0]*K1@P
+    
+    t2 = np.linspace(0,5,300)
+    K2 = dipolarkernel(t2,r)
+    V2 = scales[1]*K2@P
 
+    fit = fitmultimodel([V1,V2],[K1,K2],r,dd_gauss,3,'aicc', weights=[1,1], uqanalysis=False)
+
+    assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
+#=======================================================================
 

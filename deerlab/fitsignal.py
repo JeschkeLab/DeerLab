@@ -104,8 +104,8 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Uncertainty quanfitication for background(s) parameters
     exparamUncert : :ref:`UncertQuant` or list thereof
         Uncertainty quanfitication for experiment(s) parameters
-    scale : float int
-        Amplitude scale of the dipolar signal.
+    scale : float int or list of float int
+        Amplitude scale(s) of the dipolar signal(s).
     stats :  dict
         Goodness of fit statistical estimators:
 
@@ -384,13 +384,14 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=uqanalysis)
         Pfit = fit.P
         Pfit_uq = fit.uncertainty
+        scales = fit.scale
 
         # Get fitted models
         Vfit = [K@Pfit for K in Ks]
         Bfit = [np.ones_like(V) for V in Vexp]
         
         # No parameters
-        parfit_,Vfit_uq,Bfit_uq,paruq_bg,paruq_dd,paruq_ex = np.atleast_1d([[[]] for _ in range(6)])
+        parfit_,Vfit_uq,Bfit_uq,paruq_bg,paruq_dd,paruq_ex = np.atleast_1d([[None]*nSignals for _ in range(6)])
         
     elif OnlyParametric:
         
@@ -405,6 +406,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uqanalysis=uqanalysis)
         parfit_ = fit.param
         param_uq = fit.uncertainty
+        scales = fit.scale
 
         # Get fitted models
         Vfit = Vmodel(parfit_)
@@ -423,16 +425,20 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # Non-negativity constraint on distributions
         lbl = np.zeros_like(r)
         
+        prescales = [max(V) for V in Vexp]
+        Vexp = [Vexp[i]/prescales[i] for i in range(nSignals)]
+
         # Separable non-linear least squares (SNNLS) 
         fit = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, regparam=regparam,linMaxIter=[],uqanalysis=uqanalysis,linTolFun=[],weights=weights)
         parfit_ = fit.nonlin
         Pfit = fit.lin
         snlls_uq = fit.uncertainty
+        scales = [prescales[i]*np.trapz(Pfit,r) for i in range(nSignals)]
 
         # Get the fitted models
         Kfit,Bfit = multiPathwayModel(parfit_)
         Vfit = [K@Pfit for K in Kfit]
-        
+
         if uqanalysis:
             Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq)
     
@@ -528,19 +534,20 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         for i in range(nSignals):
             print('Vfit[{}]:'.format(i))
-            if len(parfit['bg'])>0:
-                info = bg_model[i]()
-                ci = paruq['bg'][i].ci(95)
-                for j in range(len(parfit['bg'][i])):
-                    c = parfit['bg'][i][j]
-                    print(pstr.format('bgparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
-
-            if len(parfit['ex'])>0:
-                info = ex_model[i]()
-                ci = paruq['ex'][i].ci(95)
-                for j in range(len(parfit['ex'][i])):
-                    c = parfit['ex'][i][j]
-                    print(pstr.format('exparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
+            if includeBackground[i]:
+                if len(parfit['bg'])>0:
+                    info = bg_model[i]()
+                    ci = paruq['bg'][i].ci(95)
+                    for j in range(len(parfit['bg'][i])):
+                        c = parfit['bg'][i][j]
+                        print(pstr.format('bgparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
+            if includeExperiment[i]:
+                if len(parfit['ex'])>0:
+                    info = ex_model[i]()
+                    ci = paruq['ex'][i].ci(95)
+                    for j in range(len(parfit['ex'][i])):
+                        c = parfit['ex'][i][j]
+                        print(pstr.format('exparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
         print('----------------------------------------------------------------------------')
     # =========================================================================
 
@@ -566,7 +573,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     return FitResult(V=Vfit, P=Pfit, B=Bfit, exparam=parfit['ex'], bgparam=parfit['bg'],
                       ddparam=parfit['dd'], Vuncert = modfituq['Vfit'], Puncert = modfituq['Pfit'],
                       Buncert = modfituq['Bfit'], exparamUncert = paruq['ex'], bgparamUncert = paruq['bg'],
-                      ddparamUncert = paruq['dd'], scale=scale,  stats=stats, cost=fit.cost,
+                      ddparamUncert = paruq['dd'], scale=scales,  stats=stats, cost=fit.cost,
                       residuals=fit.residuals, success=fit.success)
 
             

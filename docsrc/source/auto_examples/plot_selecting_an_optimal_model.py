@@ -122,3 +122,6 @@ plt.grid(alpha=0.2)
 # %% [markdown]
 # Typically there is not a single optimal model unless the noise level is very
 # low. Usually several models have similar probabilities and should therefore be presented together. 
+
+
+# %%

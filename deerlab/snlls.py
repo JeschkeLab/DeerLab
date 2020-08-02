@@ -170,7 +170,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     par0 = np.atleast_1d(par0)
 
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
-    y, Amodel, weights, subsets = dl.utils.parse_multidatasets(y, Amodel, weights)
+    y, Amodel, weights, subsets, prescales = dl.utils.parse_multidatasets(y, Amodel, weights, precondition=True)
 
     # Get info on the problem parameters and non-linear operator
     A0 = Amodel(par0)
@@ -306,7 +306,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         # Evaluate full model residual
         yfit = A@linfit
         # Compute residual vector
-        res = yfit - y
+        res = weights*(yfit - y)
         if includePenalty:
             penalty = alpha*L@linfit
             # Augmented residual
@@ -386,7 +386,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         paramuq.ci = ci
     else:
         paramuq = []
-        
+
     # Goodness-of-fit
     # --------------------------------------
     stats = []
@@ -396,7 +396,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     if len(stats) == 1: 
         stats = stats[0]
 
-    return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq, 
+    return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq,
                      stats=stats, cost=fvals, residuals=sol.fun, success=sol.success)
 # ===========================================================================================
 

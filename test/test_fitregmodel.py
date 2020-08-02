@@ -373,3 +373,21 @@ def test_goodnes_of_fit_global():
 
     assert (abs(stats[0]['R2'] - 1) < 5e-2) and (abs(stats[1]['R2'] - 1) < 5e-2)
 #============================================================
+
+def test_globalfit_scales():
+#============================================================
+    "Check that the global fit with arbitrary amplitudes works."
+    t1 = np.linspace(0,5,300)
+    t2 = np.linspace(0,2,300)
+    r = np.linspace(3,5,100)
+    P = dd_gauss(r,[4,0.6])
+    K1 = dipolarkernel(t1,r) 
+    K2 = dipolarkernel(t2,r)
+    scales = [1e3, 1e9]
+    V1 = scales[0]*K1@P
+    V2 = scales[1]*K2@P
+
+    fit = fitregmodel([V1,V2],[K1,K2],r,'tikhonov','aic',weights=[1,1],renormalize=False)
+
+    assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
+#============================================================

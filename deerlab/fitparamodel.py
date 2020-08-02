@@ -32,8 +32,8 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         Fitted model parameters
     paramuq : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted parameters.
-    scale : float int
-        Amplitude scale of the dipolar signal.
+    scale : float int or list of float int
+        Amplitude scale(s) of the dipolar signal(s).
     stats :  dict
         Goodness of fit statistical estimators:
 
@@ -115,6 +115,8 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
 
     lb,ub = np.atleast_1d(lb,ub)
     V, model, weights, Vsubsets = parse_multidatasets(V, model, weights)
+    Nsignals = len(Vsubsets)
+    scales = [1]*Nsignals
 
     if not np.all(np.isreal(V)):
         raise ValueError('The input signal(s) cannot be complex-valued.')
@@ -131,7 +133,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         raise ValueError('The inital guess and upper/lower boundaries must have equal length.')
     if np.any(ub<lb):
         raise ValueError('Lower bound values cannot be larger than upper bound values.')
-    scale = 1
+
     # Preprare multiple start global optimization if requested
     if MultiStart>1 and unboundedparams:
         raise ValueError('Multistart optimization cannot be used with unconstrained parameters.')
@@ -145,7 +147,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         Function that provides vector of residuals, which is the objective
         function for the least-squares solvers
         """
-        nonlocal scale
+        nonlocal scales
 
         Vsim = model(p)
 
@@ -156,9 +158,13 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
 
         # Otherwise if requested, compute the scale of the signal via linear LSQ   
         if rescale:
-            scale = np.squeeze(np.linalg.lstsq(np.atleast_2d(Vsim).T,np.atleast_2d(V).T,rcond=None)[0])
-            Vsim = scale*Vsim
-        
+            scales = []
+            for subset in Vsubsets:
+                Vsim_,V_ = (V[subset] for V in [Vsim, V]) # Rescale the subsets corresponding to each signal
+                scale = np.squeeze(np.linalg.lstsq(np.atleast_2d(Vsim_).T,np.atleast_2d(V_).T,rcond=None)[0])
+                Vsim[subset] = scale*Vsim_  
+                scales.append(scale) # Store the optimized scales of each signal
+
         # Compute the residual
         res = weights*(V-Vsim)
         
@@ -222,11 +228,11 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
     for subset in Vsubsets: 
         Ndof = len(V[subset]) - len(par0)
         stats.append(goodness_of_fit(V[subset],model(parfit)[subset],Ndof))
-    if len(stats)==1: 
+    if Nsignals==1: 
         stats = stats[0]
+        scales = scales[0]
 
     return FitResult(
-            param=parfit, uncertainty=paruq, scale=scale, stats=stats, cost=fvals,
-            residuals=sol.fun, success=sol.success
-            )
+            param=parfit, uncertainty=paruq, scale=scales, stats=stats, cost=fvals,
+            residuals=sol.fun, success=sol.success)
 

@@ -386,3 +386,26 @@ def test_confinter_Bfit():
     "Check that the confidence inervals for fitted distribution is correct"
     assert_confinter_models('Bfit')
 # ======================================================================
+
+def test_global_scale_4pdeer():
+# ======================================================================
+    "Check the correct fit of two 4-DEER signals"
+    r = np.linspace(2,6,90)
+    P = dd_gauss(r,[4.5, 0.6])
+
+    info = ex_4pdeer()
+    parIn = info['Start']
+    pathinfo = ex_4pdeer(parIn)
+
+    kappa = 0.4
+    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+    scales = [1e3,1e9]
+    t1 = np.linspace(0,5,100)
+    V1 = scales[0]*dipolarkernel(t1,r,pathinfo,Bmodel)@P
+    t2 = np.linspace(0,5,250)
+    V2 = scales[1]*dipolarkernel(t2,r,pathinfo,Bmodel)@P
+    
+    fit = fitsignal([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
+
+    assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
+# ======================================================================

@@ -24,7 +24,7 @@ Before fitting, experimental DEER data must be preprocessed. Three steps are usu
 
 - In common commercial spectrometers, the time-axes are measured in absolute values. This step aims to optimally determine and correct for the zero-time of the time axis.
 
-- The intensity of the signal is fiven in some arbitrary units (usually some kind voltage). All functions in DeerAnalysis are agnostic with respect to this scaling and do not require the dipolar signal to be scaled such that V(0)=1. This scale is optimized by all fit functions in DeerLab, yet it can still be corrected by pre-processing.
+- The intensity of the signal is fiven in some arbitrary units (usually some kind voltage). All functions in DeerLab are agnostic with respect to this scaling and do not require the dipolar signal to be scaled such that V(0)=1. This scale is automatically optimized by all fit functions in DeerLab, yet it can still be corrected by pre-processing (although it is not recommended).
 
 .. code-block:: python
 

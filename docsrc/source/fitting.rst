@@ -31,13 +31,15 @@ To fit a signal with a non-parametric distance distribution, the simplest possib
 
     fit = fitsignal(Vexp,t,r)
 
-This fits the signal in ``Vexp`` (defined over the time axis ``t``) with a non-parametric distance distribution defined over distance vector ``r``, a homogeneous 3D spin distribution for the background, and a modulation depth (assuming a standard 4-pulse DEER).
+This fits the signal in ``Vexp`` (defined over the time axis ``t``) with a non-parametric distance distribution defined over distance vector ``r``, a homogeneous 3D spin distribution for the background, and a modulation depth (assuming a standard 4-pulse DEER). 
 
 To obtain the fitted signal, use
 
 .. code-block:: python
 
     fit = fitsignal(Vexp,t,r)
+
+Since all fit functions in DeerLab are agnostic with respect to the absolute scale of the signal amplitude (does not need to statisfy ``V(t=0)==1``), the pre-processed signals can be passed directly to the fit functions and the corresponding scale will be automatically fitted and returned as the output ``fit.scale``.
 
 With additional inputs, you can specify which :ref:`distance distribution model <modelsref_dd>`, :ref:`background model <modelsref_bg>`, and :ref:`experiment model <modelsref_ex>` to use for fitting:
 

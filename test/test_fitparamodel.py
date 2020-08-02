@@ -202,3 +202,30 @@ def test_globalfit():
 
     assert all(abs(par - fit.param) < 1e-2)
 # ======================================================================
+
+def test_globalfit_scales():
+#============================================================
+    "Check that the global fit with arbitrary amplitudes works."
+    t1 = np.linspace(0,5,300)
+    t2 = np.linspace(0,2,300)
+    r = np.linspace(3,5,100)
+    P = dd_gauss(r,[4,0.6])
+    K1 = dipolarkernel(t1,r) 
+    K2 = dipolarkernel(t2,r)
+    scales = [1e3, 1e9]
+    V1 = scales[0]*K1@P
+    V2 = scales[1]*K2@P
+
+    def Vmodel(par):
+        Pfit = dd_gauss(r,par)
+        V1 = K1@Pfit
+        V2 = K2@Pfit
+        return [V1,V2]
+
+    par0 = [5, 0.5]
+    lb = [1, 0.1]
+    ub = [20, 1]
+    fit = fitparamodel([V1,V2],Vmodel,par0,lb,ub,weights=[1,1])
+
+    assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
+#============================================================

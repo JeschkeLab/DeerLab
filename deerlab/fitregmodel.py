@@ -62,8 +62,8 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
         Covariance-based uncertainty quantification of the fitted distance distribution
     alpha : float int
         Regularization parameter used in the optimization
-    scale : float int
-        Amplitude scale of the dipolar signal.
+    scale : float int or list of float int
+        Amplitude scale(s) of the dipolar signal(s).
     stats : dict
         Goodness of fit statistical estimators (if full_output=True):
 
@@ -107,7 +107,9 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
     noiselevelaim : scalar
         Noise level at which to stop the OBIR algorithm. If not specified it is automatically estimated from the fit residuals.
     """
-    V, K, weights, subsets = dl.utils.parse_multidatasets(V, K, weights)
+    # Prepare signals, kernels and weights if multiple are passed
+    V, K, weights, subsets, prescales = dl.utils.parse_multidatasets(V, K, weights,precondition=True)
+
 
     # Compute regularization matrix
     L = dl.regoperator(r,regorder)
@@ -173,12 +175,12 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
     
     # Re-normalization of the distributions
     # --------------------------------------
-    scale = np.trapz(Pfit,r)
+    postscale = np.trapz(Pfit,r)
     if renormalize:
-        Pfit = Pfit/scale
+        Pfit = Pfit/postscale
         if uqanalysis:
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
-            Puq.ci = lambda p: Puq_.ci(p)/scale
+            Puq.ci = lambda p: Puq_.ci(p)/postscale
 
 
     # Goodness-of-fit
@@ -191,7 +193,13 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
     if len(stats)==1: 
         stats = stats[0]
 
-    return FitResult(P=Pfit,uncertainty=Puq,alpha=alpha,scale=scale,stats=stats,cost=fval,residuals=res, success=success)
+    scales = []
+    for i in range(len(subsets)): 
+        scales.append(prescales[i]*postscale)
+    if len(scales)==1:
+        scales = scales[0]
+       
+    return FitResult(P=Pfit,uncertainty=Puq,alpha=alpha,scale=scales,stats=stats,cost=fval,residuals=res, success=success)
 # ===========================================================================================
 
 
