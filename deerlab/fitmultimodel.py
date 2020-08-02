@@ -243,10 +243,10 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         nParams = len(pnonlin) + len(plin)
         Q = nParams + 1
         N = len(V)
-        SquaredSumRes = np.sum((V - Vfit)**2)
-        logprob = weights*N*np.log(SquaredSumRes/N)
+        SquaredSumRes = np.sum((weights*(V - Vfit))**2)
+        logprob = N*np.log(SquaredSumRes/N)
         # Compute the estimators
-        rmsd = weights*np.sqrt(1/N*SquaredSumRes)
+        rmsd = np.sqrt(1/N*SquaredSumRes)
         aic = logprob + 2*Q
         aicc = logprob + 2*Q + 2*Q*(Q+1)/(N-Q-1)
         bic =  logprob + Q*np.log(N)
@@ -289,7 +289,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         
         # Separable non-linear least-squares (SNLLS) fit
         scale = 1e2
-        fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, penalty=False, uqanalysis=False,linTolFun=[], linMaxIter=[],**kwargs)
+        fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, weights=weights, penalty=False, uqanalysis=False,linTolFun=[], linMaxIter=[],**kwargs)
         pnonlin = fit.nonlin
         plin = fit.lin
 
@@ -341,8 +341,8 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         res = weights*(Vfit - V)
 
         # Compute the Jacobian
-        Jnonlin,_ = jacobianest(lambda p: weights*Knonlin(p)@plin, pnonlin)
-        Jlin = weights*Knonlin(pnonlin)
+        Jnonlin,_ = jacobianest(lambda p: weights*(Knonlin(p)@plin), pnonlin)
+        Jlin = weights[:,np.newaxis]*Knonlin(pnonlin)
         J = np.concatenate((Jnonlin, Jlin),1)
         
         # Estimate the heteroscedasticity-consistent covariance matrix

@@ -20,7 +20,7 @@ def test_multigauss():
     
     assert ovl(P,fit.P) > 0.95 # more than 99% overlap
 #=======================================================================
-
+test_multigauss()
 def test_multirice():
 #=======================================================================
     "Check that the fit of a multi-Rician model works"

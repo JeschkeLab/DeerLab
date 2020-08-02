@@ -159,7 +159,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
         res = weights*(V - K@Pfit)
 
         # Construct Jacobians for the residual and penalty terms
-        Jres = weights*K
+        Jres = K*weights[:,np.newaxis]
         res,J = _augment(res,Jres,regtype,alpha,L,Pfit,huberparam)
 
         # Calculate the heteroscedasticity consistent covariance matrix 

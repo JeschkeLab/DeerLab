@@ -12,9 +12,16 @@ import cmath as math
 import scipy as scp
 import random
 from scipy.sparse import coo_matrix
-
+from types import FunctionType 
 def parse_multidatasets(V,K,weights):
 #===============================================================================
+    
+    # Identify if the signals have already been processed by this function
+    if type(V) is not list:
+        if V.size == np.atleast_1d(weights).size:
+            # If so, just return without doing anything
+            return V,K,weights,[np.arange(0,len(V))]
+
     # If multiple signals are specified as a list...
     if type(V) is list and all([type(Vs) is np.ndarray for Vs in V]):
         nSignals = len(V)
@@ -26,6 +33,13 @@ def parse_multidatasets(V,K,weights):
     else:
         raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
 
+    rescale = np.zeros(len(Vlist))
+    for i in range(len(Vlist)):
+        if i==0:
+            rescale[i] = 1
+        else:
+            rescale[i] = max(Vlist[i])/max(Vlist[0])
+    
     def prepareKernel(K,nSignals):
         # If multiple kernels are specified as a list...
         if type(K) is tuple:
@@ -42,14 +56,16 @@ def parse_multidatasets(V,K,weights):
             raise KeyError('The same number of kernels and signals must be specified as lists.')
         return K
 
-    if callable(K):
+    if type(K) is FunctionType:
         Kmulti = lambda p: prepareKernel(K(p),nSignals)
     else:
         Kmulti = prepareKernel(K,nSignals)
 
     # If multiple weights are specified as a list...
-    if type(weights) is list and all([not hasattr(w, "__len__") for w in weights]):
-        weights = np.asarray(weights)
+    if type(weights) is list or not hasattr(weights, "__len__"):
+        weights = np.atleast_1d(weights)
+        if len(weights)==1:
+                weights = np.repeat(weights,nSignals)
         weights = weights/sum(weights)
         if len(weights)!=nSignals:
             raise KeyError('If multiple signals are passed, the same number of weights are required.')
@@ -57,11 +73,8 @@ def parse_multidatasets(V,K,weights):
         for i in range(len(weights)):
             weights_ = np.concatenate((weights_,weights[i]*np.ones(len(Vlist[i]))))
         weights = weights_
-    elif not hasattr(weights, "__len__"):
-        if weights!=1:
-            raise ValueError('If multiple signals are passed, the same number of weights are required.')
     else:
-        raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
+        raise TypeError('The input weights(s) must be numpy array or a list of numpy arrays.')
 
     # Get the indices to extract the subsets again
     Ns = [len(V) for V in Vlist]
@@ -72,7 +85,6 @@ def parse_multidatasets(V,K,weights):
         else:
             prev = subset[i-1][-1]+1
         subset[i] = np.arange(prev,prev+Ns[i])
-
     return V,Kmulti,weights,subset
 #===============================================================================
 
