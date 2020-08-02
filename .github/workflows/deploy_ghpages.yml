@@ -24,12 +24,12 @@ jobs:
       with:
         python-version: 3.7
     - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cache/pip
-          key: ${{ runner.os }}-${{ hashFiles('**/make.bat') }}
-          restore-keys: |
-            {{ runner.os }}-pip-
+      with:
+        path: |
+          ~/.cache/pip
+        key: ${{ runner.os }}-${{ hashFiles('**/make.bat') }}
+        restore-keys: |
+          {{ runner.os }}-pip-
     - name: Install dependencies
       run: |
            python -m pip install --upgrade pip
