@@ -7,7 +7,7 @@ DeerLab is a free software package for the analysis of dipolar EPR (electron par
 
 DeerLab consists of a collection of functions that perform modelling, processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows. To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background and experiment models. 
 
-When you use DeerLab in your work, please cite
+When you use DeerLab in your work, please cite the following publication
 
 .. code-block:: text
 
