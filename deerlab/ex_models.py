@@ -16,7 +16,7 @@ def _parsargs(param,npar):
 
 def ex_4pdeer(param=[]):
 # ===================================================================
-    """
+    r"""
     Single-pathway 4-pulse DEER experiment model 
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -78,7 +78,7 @@ def ex_4pdeer(param=[]):
 
 def ex_ovl4pdeer(param=[]):
 # ===================================================================
-    """
+    r"""
     4-pulse DEER with band overlap experiment model 
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -144,7 +144,7 @@ def ex_ovl4pdeer(param=[]):
 
 def ex_5pdeer(param=[]):
 # ===================================================================
-    """
+    r"""
     5-pulse DEER experiment model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -210,7 +210,7 @@ def ex_5pdeer(param=[]):
 
 def ex_7pdeer(param=[]):
 # ===================================================================
-    """
+    r"""
     7-pulse DEER experiment model
     ==============================
  

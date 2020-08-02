@@ -3,18 +3,6 @@
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-"""Docstring for the example.py module.
-
-Modules names should have short, all-lowercase names.  The module name may
-have underscores if this improves readability.
-
-Every module should have a docstring at the very top of the file.  The
-module's docstring may extend over multiple lines.  If your docstring does
-extend over multiple lines, the closing three quotation marks must be on
-a line by itself, preferably preceded by a blank line.
-
-"""
-
 # Numpy + SciPy
 import numpy as np
 from numpy import pi,inf
@@ -38,7 +26,7 @@ def w0(g):
 def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
                   integralop = True, nKnots = 5001, renormalize = True, clearcache = False):
 #===================================================================================================
-    """Compute the dipolar kernel operator which enables the linear transformation from
+    r"""Compute the dipolar kernel operator which enables the linear transformation from
     distance-domain to time-domain data. 
 
     Parameters

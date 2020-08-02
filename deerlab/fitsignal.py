@@ -15,7 +15,7 @@ from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit, jacobianest
 
 def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[],lb=[],ub=[], weights=1, uqanalysis=True, display = False):
-    """Fits a dipolar model to the experimental signal V with time axis t, using
+    r"""Fits a dipolar model to the experimental signal V with time axis t, using
     distance axis r. The model is specified by the distance distribution (dd),
     the background (bg), and the experiment (ex).
 

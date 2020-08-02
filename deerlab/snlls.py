@@ -14,7 +14,7 @@ def snlls(y,Amodel,par0,lb=[],ub=[],lbl=[],ubl=[],nnlsSolver='cvx', penalty=None
           regtype='tikhonov', regparam='aic', multiStarts = 1, regOrder=2, alphaOptThreshold=1e-3,
           nonLinTolFun=1e-9, nonLinMaxIter=1e8, linTolFun=1e-15, linMaxIter=1e4, huberparam = 1.35,
           uqanalysis = True):
-    """ Separable Non-linear Least Squares Solver
+    r""" Separable Non-linear Least Squares Solver
    
     Parameters
     ----------

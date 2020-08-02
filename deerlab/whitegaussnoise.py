@@ -1,7 +1,7 @@
 import numpy as np
 
 def whitegaussnoise(t,level,rescale=False):
-    """White Gaussian noise generator
+    r"""White Gaussian noise generator
 
     Parameters
     ----------

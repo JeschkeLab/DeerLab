@@ -13,8 +13,9 @@ from deerlab.uncertainty import UncertQuant
 
 def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx', 
                 weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
-                uqanalysis=True, renormalize=True, noiselevelaim = -1, full_output=False):
-    """Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches.
+                uqanalysis=True, renormalize=True, noiselevelaim = -1):
+    r"""
+    Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches.
 
     Parameters 
     ----------

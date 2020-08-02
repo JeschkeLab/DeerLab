@@ -52,7 +52,7 @@ def _multirice3dfun(r,nu,sig,a):
 
 def dd_gauss(*args):    
 #=================================================================
-    """
+    r"""
     Gaussian distribution
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -116,7 +116,7 @@ def dd_gauss(*args):
 
 def dd_gauss2(*args):
 #=================================================================
-    """
+    r"""
     Sum of two Gaussian distributions
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -184,7 +184,7 @@ def dd_gauss2(*args):
 
 def dd_gauss3(*args):
 #=================================================================
-    """
+    r"""
     Sum of three Gaussian distributions
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -258,7 +258,7 @@ def dd_gauss3(*args):
 
 def dd_gengauss(*args):    
 #=================================================================
-    """
+    r"""
     Generalized Gaussian distribution model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -327,7 +327,7 @@ def dd_gengauss(*args):
 
 def dd_skewgauss(*args):    
 #=================================================================
-    """
+    r"""
     Skew Gaussian distribution model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -397,7 +397,7 @@ def dd_skewgauss(*args):
 
 def dd_rice(*args):    
 #=================================================================
-    """
+    r"""
     3D-Rice distribution
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -461,7 +461,7 @@ def dd_rice(*args):
 
 def dd_rice2(*args):
 #=================================================================
-    """
+    r"""
     Sum of two 3D-Rice distributions
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -532,7 +532,7 @@ def dd_rice2(*args):
 
 def dd_rice3(*args):
 #=================================================================
-    """
+    r"""
     Sum of three 3D-Rice distributions
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -605,7 +605,7 @@ def dd_rice3(*args):
 
 def dd_randcoil(*args):    
 #=================================================================
-    """
+    r"""
     Random-coil model for an unfolded peptide/protein
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -677,7 +677,7 @@ def dd_randcoil(*args):
 
 def dd_circle(*args):    
 #=================================================================
-    """
+    r"""
     Semicircle distribution model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -748,7 +748,7 @@ def dd_circle(*args):
 
 def dd_cos(*args):    
 #=================================================================
-    """
+    r"""
     Raised-cosine parametric model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -852,7 +852,7 @@ def _pbs(r,R1,R2):
 
 def dd_shell(*args):    
 #=================================================================
-    """
+    r"""
     Uniform spherical shell
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -928,7 +928,7 @@ def dd_shell(*args):
 
 def dd_spherepoint(*args):    
 #=================================================================
-    """
+    r"""
     One particle distanced from particles distributed on a sphere
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -1001,7 +1001,7 @@ def dd_spherepoint(*args):
 
 def dd_spheresurf(*args):    
 #=================================================================
-    """
+    r"""
     Particles distributed on a sphere's surface
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -1072,7 +1072,7 @@ def dd_spheresurf(*args):
 
 def dd_shellshell(*args):    
 #=================================================================
-    """
+    r"""
     Uniform spherical shell inside another spherical shell
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -1158,7 +1158,7 @@ def dd_shellshell(*args):
 
 def dd_shellsphere(*args):    
 #=================================================================
-    """
+    r"""
     Particles distributed on a sphere inside a spherical shell
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -1229,7 +1229,7 @@ def dd_shellsphere(*args):
 
 def dd_shellvoidshell(*args):    
 #=================================================================
-    """
+    r"""
     Particles distributed on a spherical shell inside another spherical shell separated by a void 
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -1321,7 +1321,7 @@ def dd_shellvoidshell(*args):
 
 def dd_shellvoidsphere(*args):    
 #=================================================================
-    """
+    r"""
     Particles distributed on a sphere inside a spherical shell separated by a void 
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -1405,7 +1405,7 @@ def dd_shellvoidsphere(*args):
 
 def dd_sphere(*args):    
 #=================================================================
-    """
+    r"""
     Particles distributed on a sphere
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -1476,7 +1476,7 @@ def dd_sphere(*args):
 
 def dd_triangle(*args):    
 #=================================================================
-    """
+    r"""
     Triangle distribution model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -1554,7 +1554,7 @@ def dd_triangle(*args):
 
 def dd_uniform(*args):    
 #=================================================================
-    """
+    r"""
     Uniform distribution model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -1641,7 +1641,7 @@ def wlc(r,L,Lp):
 
 def dd_wormchain(*args):    
 #=================================================================
-    """
+    r"""
     Worm-like chain model near the rigid limit
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -1712,7 +1712,7 @@ def dd_wormchain(*args):
 
 def dd_wormgauss(*args):    
 #=================================================================
-    """
+    r"""
     Worm-like chain model near the rigid limit with Gaussian convolution
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::

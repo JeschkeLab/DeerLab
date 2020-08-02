@@ -9,7 +9,7 @@ import math as m
 
 def fnnls(AtA,Atb,tol=[],maxiter=[],verbose=False):
 #=====================================================================================
-    """
+    r"""
     FNNLS   Fast non-negative least-squares algorithm.
     x = fnnls(AtA,Atb) solves the problem min ||b - Ax|| if
         AtA = A'*A and Atb = A'*b.
@@ -98,7 +98,7 @@ def fnnls(AtA,Atb,tol=[],maxiter=[],verbose=False):
         w = Atb - AtA@x
         w[passive] = -m.inf
         if verbose:
-            print('#10i#15i#20.4e\n' %(outIteration,iIteration,max(w)) )
+            print('{:10.0f}{:15.0f}{:20.4e}\n'.format(outIteration,iIteration,max(w)) )
 
     if verbose:
         if unsolvable:

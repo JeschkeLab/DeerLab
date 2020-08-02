@@ -3,7 +3,7 @@ from deerlab.utils import gsvd
 
 def regparamrange(K,L,noiselvl=0,logres=0.1):
 #===================================================================================================
-    """
+    r"""
     Estimates an array of regularization parameter candidates from
     the generalized singular value decomposition (GSVD) of the experiment
     dipolar kernel  and regularization operator.

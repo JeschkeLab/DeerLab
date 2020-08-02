@@ -11,7 +11,7 @@ import deerlab as dl
 def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
                 nonnegativity=True, noiselvl=-1, regorder=2, weights=1, full_output=False,
                 huberparam=1.35, candidates=None):
-    """
+    r"""
     Selection of optimal regularization parameter based on a selection criterion.
 
     Parameters 

@@ -10,7 +10,7 @@ from scipy.signal import savgol_filter
 import warnings
 
 def noiselevel(V,*args):
-    """
+    r"""
     Returns the standard deviation estimation of the noise in a given signal using different methods:
 
 

@@ -10,7 +10,7 @@ from scipy.optimize import least_squares
 import warnings
 
 def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFun=1e-10, maxFunEvals=5000, maxIter = 3000, rescale=True, uqanalysis=True, covmatrix=[]):
-    """ Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
+    r""" Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
 
     Parameters
     ----------

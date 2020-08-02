@@ -25,7 +25,7 @@ def _parsargs(args,npar):
 #=================================================================
 
 def bg_exp(*args):
-    """
+    r"""
     Exponential background model
    
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -94,7 +94,7 @@ def bg_exp(*args):
 
 
 def bg_hom3d(*args):
-    """
+    r"""
     Background from homogeneous distribution of spins in a 3D medium
 
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -172,7 +172,7 @@ def bg_hom3d(*args):
 from deerlab.utils import load_exvolume_redfactor
 
 def bg_hom3dex(*args):
-    """
+    r"""
     Background from homogeneous distribution of spins with excluded-volume effects
 
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -271,7 +271,7 @@ def bg_hom3dex(*args):
 
 
 def bg_homfractal(*args):
-    """
+    r"""
     Background from homogeneous distribution of spins in a fractal medium
 
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -362,7 +362,7 @@ def bg_homfractal(*args):
 
 
 def bg_strexp(*args):
-    """
+    r"""
     Stretched exponential background model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -431,7 +431,7 @@ def bg_strexp(*args):
 
 
 def bg_prodstrexp(*args):
-    """
+    r"""
     Product of two stretched exponentials background model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -506,7 +506,7 @@ def bg_prodstrexp(*args):
 
 
 def bg_sumstrexp(*args):
-    """
+    r"""
     Sum of two stretched exponentials background model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -584,7 +584,7 @@ def bg_sumstrexp(*args):
 
 
 def bg_poly1(*args):
-    """
+    r"""
     Polynomial 1st-order background model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -656,7 +656,7 @@ def bg_poly1(*args):
 
 
 def bg_poly2(*args):
-    """
+    r"""
     Polynomial 2nd-order background model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
@@ -725,7 +725,7 @@ def bg_poly2(*args):
 
 
 def bg_poly3(*args):
-    """
+    r"""
     Polynomial 3rd-order background model
  
     If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::

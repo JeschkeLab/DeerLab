@@ -7,7 +7,7 @@ import numpy as np
 import types
 
 def mixmodels(*models):
-    """ 
+    r""" 
     Combine DeerLab parametric models into a mixed multi-component model.
 
     Parameters

@@ -9,7 +9,7 @@ import scipy as scp
 
 # ==============================================================================
 def correctzerotime(V,t):
-    """
+    r"""
     Determines and corrects the zero-time of a dipolar signal via a first-moment integral analysis [1]_.
     
     Parameters

@@ -5,7 +5,7 @@ from deerlab.utils import isempty
 
 def correctphase(V, Phase = [], fitImagOffset=False, full_output=False):
 # ==========================================================================
-    """
+    r"""
     Phase correction of complex-valued data
 
     Performs a phase optimization on the complex-valued data ``V`` by minimization of the

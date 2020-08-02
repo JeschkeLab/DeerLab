@@ -4,7 +4,7 @@ import scipy.optimize as opt
 import numpy.matlib
 
 def jacobianest(fcn_,x0):
-    """
+    r"""
     Jacobian numerical estimation
     =============================
 

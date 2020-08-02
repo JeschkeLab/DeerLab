@@ -7,7 +7,7 @@
 import numpy as np
 
 def regoperator(r,d=2):
-    """ Computes the discrete approximation to the derivative operators used as regularization operators.
+    r""" Computes the discrete approximation to the derivative operators used as regularization operators.
 
     Parameters
     ----------

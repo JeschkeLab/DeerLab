@@ -11,7 +11,7 @@ from types import FunctionType
 
 def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK=[],
                  weights=1, normP = True, uqanalysis=True,**kwargs):
-    """ Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
+    r""" Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
 
     Parameters

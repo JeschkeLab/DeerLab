@@ -8,7 +8,7 @@ import types
 from deerlab import UncertQuant
 
 def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
-    """ Bootstrap analysis for uncertainty quantification
+    r""" Bootstrap analysis for uncertainty quantification
 
     Parameters
     ----------

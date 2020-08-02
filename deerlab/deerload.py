@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 #-------------------------------------------------------------------------------
 def deerload(fullbasename,Scaling=None,plot=False,*args,**kwargs):
-    """
+    r"""
     Load file in BES3T format (Bruker EPR Standard for Spectrum Storage and Transfer)
     
     * .DSC: description file

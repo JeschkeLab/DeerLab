@@ -8,7 +8,7 @@ import numpy as np
 from numpy.fft import fft, fftshift, fftfreq
 
 def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
-    """
+    r"""
     Fast-Fourier transform spectrum
  
     Parameters

@@ -6,7 +6,7 @@
 import numpy as np
 
 def goodness_of_fit(x,xfit,Ndof,sigma='auto'):
-    """ 
+    r""" 
     Goodness of Fit statistics
     ==========================
 

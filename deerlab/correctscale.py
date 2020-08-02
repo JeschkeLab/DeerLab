@@ -10,7 +10,7 @@ from deerlab.bg_models import bg_exp
 from deerlab.utils import isempty
 
 def correctscale(V,t,tmax=[],model='deer'):
-    """ 
+    r""" 
     Amplitude scale correction
 
     Takes the experimental dipolar signal (V) on a given time axis (t) and

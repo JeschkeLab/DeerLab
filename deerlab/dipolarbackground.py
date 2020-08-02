@@ -8,7 +8,7 @@ import numpy as np
 import types
 
 def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
-    """ Constructs background decay functions according to the multi-pathway model.
+    r""" Constructs background decay functions according to the multi-pathway model.
     
     Parameters
     ----------
