@@ -7,7 +7,7 @@ on:
       paths:
       - 'build/**'
       - 'docsrc/**'
-      
+      - '.github/workflows/**'
    schedule:
         # Run once a week on Sunday at 12:00 PM
         - cron:  '0 12 * * 0'
@@ -41,11 +41,9 @@ jobs:
            sudo apt install texlive-extra-utils
            sudo apt-get install texlive-latex-extra
            
-    - name: Build multi-version docs
+    - name: Build with Sphinx
       run: |
-           cd docsrc
-           ./make.bat clean
-           cd ..
+           sphinx-build -E -b html ./docsrc/source ./docs
            
     - name: Deploy to GH-Pages
       uses: peaceiris/actions-gh-pages@v3
