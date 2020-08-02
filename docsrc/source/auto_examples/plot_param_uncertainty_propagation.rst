@@ -45,6 +45,7 @@ Generate data
     P = dd_rice(r,[center, width])
     B = bg_hom3d(t,conc,lam)
     K = dipolarkernel(t,r,lam,B)
+    np.random.seed(0)
     V = K@P + whitegaussnoise(t,0.03)
 
 
@@ -103,7 +104,10 @@ the start values as well as boundaries of the parameter set:
     upper =      [0.50, 7.0,  0.5, 1500] # upper bounds
 
     # Finally we can run the fit and get the fitted parameters and their uncertainties
-    parfit,paruq,_ = fitparamodel(V,Vmodel,par0,lower,upper)
+    fit = fitparamodel(V,Vmodel,par0,lower,upper)
+
+    parfit = fit.param
+    paruq = fit.uncertainty
 
     # Forward-calculate the models with the fitted parameters
     Vfit = Vmodel(parfit)
@@ -225,14 +229,14 @@ Plots
  .. code-block:: none
 
 
-    <matplotlib.legend.Legend object at 0x0000022605DAF518>
+    <matplotlib.legend.Legend object at 0x0000023D40816EB8>
 
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  2.631 seconds)
+   **Total running time of the script:** ( 0 minutes  2.902 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_param_uncertainty_propagation.py:

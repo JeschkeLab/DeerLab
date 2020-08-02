@@ -18,6 +18,7 @@ How to fit a simple 4-pulse DEER signal with a parameter-free distribution.
 .. code-block:: python
 
     import numpy as np
+    import matplotlib.pyplot as plt
     from deerlab import *
 
 
@@ -57,7 +58,9 @@ Run fit
 
 .. code-block:: python
 
-    Vfit,Pfit,Bfit,parfit,paruq,moduq,stats = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_4pdeer,display=True)
+    fit = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_4pdeer,display=True)
+    plt.show()
+
 
 
 
@@ -77,8 +80,9 @@ Run fit
       Vexp[0]: chi2 = 1.008066  RMSD  = 0.009758
     ----------------------------------------------------------------------------
     Fitted parameters and 95%-confidence intervals
-      parfit['bg'][0][0]:   295.8674273  (242.7909664, 348.9440294)  Concentration of pumped spins (uM)
-      parfit['ex'][0][0]:   0.5049229  (0.4828209, 0.5270251)  Modulation depth ()
+    Vfit[0]:
+      bgparam[0]:   295.8674273  (242.7909664, 348.9440294)  Concentration of pumped spins (uM)
+      exparam[0]:   0.5049229  (0.4828209, 0.5270251)  Modulation depth ()
     ----------------------------------------------------------------------------
 
 
@@ -87,7 +91,7 @@ Run fit
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  5.463 seconds)
+   **Total running time of the script:** ( 0 minutes  5.652 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_fitting_4pdeer.py:

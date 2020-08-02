@@ -182,7 +182,11 @@ Psuedotitration SNLLS Analysis
     ubl = [] # Unconstrained
 
     # Run SNLLS optimization
-    parfit,Pfit,puq,stats = snlls(Vs,lambda p: Kmodel(p,ts,rA,rB,L),par0,lb,ub,lbl,ubl)
+    fit = snlls(Vs,lambda p: Kmodel(p,ts,rA,rB,L),par0,lb,ub,lbl,ubl)
+    # Extract fit results
+    parfit = fit.nonlin
+    Pfit = fit.lin
+    puq = fit.uncertainty
 
     # Extract the fitted disociation constant value and its 95#-confidence interval
     Kdisfit = parfit[2]
@@ -274,7 +278,7 @@ Plot results
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  27.296 seconds)
+   **Total running time of the script:** ( 0 minutes  26.262 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_pseudotitration_parameter_free.py:

@@ -55,9 +55,10 @@ def Bmodel(par):
     return B
 
 # Fit the background function
-_,_,Bfit,parfit,_,_,_ = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
-lam = parfit['ex']
-kappa = parfit['bg']
+fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
+Bfit = fit.B
+lam = fit.exparam
+kappa = fit.bgparam
 
 # %% [markdown]
 # Now we can use these fitted variables to isolate the dipolar evolution function 

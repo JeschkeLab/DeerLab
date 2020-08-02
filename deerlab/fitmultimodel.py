@@ -3,15 +3,17 @@
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
-import numpy as np
 import copy
-import deerlab as dl
-from deerlab.utils import isempty, jacobianest, hccm, goodness_of_fit
+import numpy as np
 from types import FunctionType
+import deerlab as dl
+from deerlab.utils import jacobianest, hccm, goodness_of_fit
+from deerlab.classes import FitResult
 
-def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK=[],
-                 weights=1, normP = True, uqanalysis=True,**kwargs):
-    r""" Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
+def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
+                 weights=1, normP = True, uqanalysis=True, **kwargs):
+    r""" 
+    Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
 
     Parameters
@@ -50,19 +52,27 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
 
     Returns
     -------
-    Pfit : ndarray
+    :ref:`FitResult` with the following fields defined:
+    P : ndarray
         Fitted distance distribution with optimal number of components.
-    parfit : list of ndarray
-        Fitted model parameters. The different subsets can be accessed as follows:
-        
-        * ``parfit[0]`` - Array of fitted kernel parameters
-        * ``parfit[1]`` - Array of fitted distance distribution components parameters
-        * ``parfit[2]`` - Array of fitted components amplitudes
-
-    Puq : :ref:`UncertQuant`
+    Pparam : ndarray
+        Fitted distance distribution components parameters
+    amps : ndarray
+        Fitted components amplitudes
+    Kparam : ndarray
+        Fitted kernel parameters.
+    Puncert : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted distance distribution
-    paramuq : :ref:`UncertQuant`
+    paramUncert : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted parameters
+    Nopt : int scalar
+        Optimized number of components in model.
+    Pn : list of ndarrays
+        List of all fitted multi-component distance distributions. 
+    selfun : ndarray
+        Selection functional values (as specified as ``method``) for the all fitted multi-component models.
+    scale : float int
+        Amplitude scale of the dipolar signal.
     stats : dict
         Goodness of fit statistical estimators:
 
@@ -72,28 +82,32 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
         * ``stats['aic']`` - Akaike information criterion
         * ``stats['aicc']`` - Corrected Akaike information criterion
         * ``stats['bic']`` - Bayesian information criterion
+    success : bool
+        Whether or not the optimizer exited successfully.
+    cost : float
+        Value of the cost function at the solution.
+    residuals : ndarray
+        Vector of residuals at the solution.
 
-    Additional keyword arguments:
-    -----------------------------
-    weights : array_like 
+    Other parameters
+    ----------------
+    weights : array_like
         Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
     normP : boolean
         Enable/disable renormalization of the fitted distribution, by default it is enabled.
     uqanalysis : boolean
         Enable/disable the uncertainty quantification analysis, by default it is enabled.    
 
-    Further keywords corresponding to the snlls() function can be passed as well.
-
     Notes
     -----
-    This function takes advantage of the special structure of a multi-component model, i.e. the separability 
+    This function takes advantage of the special structure of a multi-component model, i.e. the separability
     of the component amplitudes as linear parameters from the rest of the non-linear parameters. This makes it
     suitable to be solved as a SNLLS problem.
 
     Examples
     --------
     A classical example involves the fit of a multi-Gauss distance distribution to a 4-pulse DEER dipolar signal. 
-    Since the signal requires additional parameters  (e.g. modulation depth, background parameters,…) a kernel model 
+    Since the signal requires additional parameters  (e.g. modulation depth, background parameters,…) a kernel model
     can be defined to account for these::
     
         def K4pdeer(Kpar):
@@ -103,10 +117,10 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
             K = dipolarkernel(t,r,lam,bg_hom3d(t,conc,lam))
             return K
         
-        Pfit,parfit,Puq,paruq,stats = fitmultimodel(V,Kmodel,r,dd_model,Nmax,'aicc')
+        fit = fitmultimodel(V,Kmodel,r,dd_model,Nmax,'aicc')
 
 
-    If multiple signals are to be fitted globally the example abova can be easily adapted by passing multiple 
+    If multiple signals are to be fitted globally the example abova can be easily adapted by passing multiple
     signals to the fit function and by returning multiple kernels with the kernel model function::
     
         def K4pdeer(Kpar):
@@ -117,12 +131,12 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
             K2 = dipolarkernel(t2,r,lam,bg_hom3d(t2,conc,lam))
             return K1,K2
         
-        Pfit,parfit,Puq,paruq,stats = fitmultimodel([V1,V2],Kmodel,r,dd_model,Nmax,'aicc')
+        fit = fitmultimodel([V1,V2],Kmodel,r,dd_model,Nmax,'aicc')
 
 
     """
     # Ensure that all arrays are numpy.nparray
-    lb,ub,r = np.atleast_1d(lb,ub,r)
+    r = np.atleast_1d(r)
     
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
     V, Kmodel, weights, Vsubsets = dl.utils.parse_multidatasets(V, Kmodel, weights)
@@ -137,7 +151,7 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
             try:
                 Kmodel(np.random.uniform(size=nKparam))
                 notEnoughParam = False
-            except:
+            except ValueError:
                 notEnoughParam = True
     else:
         # If the kernel is just a matrix make it a callable without parameters
@@ -145,29 +159,34 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
         K = copy.deepcopy(Kmodel) # need a copy to avoid infite recursion on next step
         Kmodel = lambda _: K
     
-    # Parse boundaries
-    lb0, ub0 = np.atleast_1d(lb, ub)
-    if len(lbK) is not nKparam or len(ubK) is not nKparam:
-        raise ValueError('The upper/lower bounds of the kernel parameters must be ',nKparam,'-element arrays')
-
     # Extract information about the model
     info = model()
     nparam = len(info['Start'])
-    if isempty(lb0):
-        lb0 = info['Lower']
-    if isempty(ub0):
-        ub0 = info['Upper']
+    if lb is None:
+        lb = info['Lower']
+    if ub is None:
+        ub = info['Upper']
     paramnames = info['Parameters']
+
+    if lbK is None:
+        lbK = []
+    if ubK is None:
+        ubK = []
+
+    # Ensure that all arrays are numpy.nparray
+    lb,ub,lbK,ubK = np.atleast_1d(lb,ub,lbK,ubK)
+
+    if len(lbK) is not nKparam or len(ubK) is not nKparam:
+        raise ValueError('The upper/lower bounds of the kernel parameters must be ',nKparam,'-element arrays')
 
     areCenterDistances = [str in ['Center','Location'] for str in paramnames]
     if any(areCenterDistances):
         # If the center of the basis function is a parameter limit it 
         # to the distance axis range (stabilizes parameter search)
-        ub0[areCenterDistances] = max(r)
-        lb0[areCenterDistances] = min(r)
+        ub[areCenterDistances] = max(r)
+        lb[areCenterDistances] = min(r)
 
-    # Ensure that all arrays are numpy.nparray
-    lb0,ub0,lbK,ubK = np.atleast_1d(lb0,ub0,lbK,ubK)
+
 
     def nonlinmodel(par,Nmodels):
     #===============================================================================
@@ -241,7 +260,7 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
     #===============================================================================
 
     # Pre-allocate containers
-    Vfit,Pfit,plin_,pnonlin_,nlin_ub_,nlin_lb_,lin_ub_,lin_lb_ = ([] for _ in range(8))
+    fits,Vfit,Pfit,plin_,pnonlin_,nlin_ub_,nlin_lb_,lin_ub_,lin_lb_ = ([] for _ in range(9))
     logest = []
 
     # Loop over number of components in model
@@ -253,8 +272,8 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
         Knonlin = lambda par: nonlinmodel(par,Nmodels)
         
         # Box constraints for the model parameters (non-linear parameters)
-        nlin_lb = np.matlib.repmat(lb0,1,Nmodels)
-        nlin_ub = np.matlib.repmat(ub0,1,Nmodels)
+        nlin_lb = np.matlib.repmat(lb,1,Nmodels)
+        nlin_ub = np.matlib.repmat(ub,1,Nmodels)
 
         # Add the box constraints on the non-linear kernel parameters
         nlin_lb = np.concatenate((lbK, nlin_lb),axis=None)
@@ -270,7 +289,10 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
         
         # Separable non-linear least-squares (SNLLS) fit
         scale = 1e2
-        pnonlin,plin,_,stats = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, penalty=False, uqanalysis=False,linTolFun=[], linMaxIter=[],**kwargs)
+        fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, penalty=False, uqanalysis=False,linTolFun=[], linMaxIter=[],**kwargs)
+        pnonlin = fit.nonlin
+        plin = fit.lin
+
         plin = plin/scale
 
         # Store the fitted parameters
@@ -295,28 +317,21 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
         nlin_lb_.append(nlin_lb)   
         lin_ub_.append(lin_ub)
         lin_lb_.append(lin_lb)
-
+        fits.append(fit)
     # Select the optimal model
     # ========================
     Peval = Pfit
     fcnals = logest[method]
     idx = np.argmin(fcnals)
     Nopt = idx+1
-    Pfit = Pfit[idx]
-    Vfit = Vfit[idx]
-    pnonlin = pnonlin_[idx]
-    plin = plin_[idx]
-    nlin_lb = nlin_lb_[idx]
-    nlin_ub = nlin_ub_[idx]
-    lin_lb = lin_lb_[idx]
-    lin_ub = lin_ub_[idx]
+    fit,Pfit,Vfit,pnonlin,plin = (var[idx] for var in [fits,Pfit,Vfit,pnonlin_,plin_])
+    nlin_lb,nlin_ub,lin_lb,lin_ub = (var[idx] for var in [nlin_lb_,nlin_ub_,lin_lb_,lin_ub_])
 
     # Package the fitted parameters
     # =============================
-    fitparam = [[],[],[]]
-    fitparam[0] = pnonlin[0:nKparam] # Kernel parameters
-    fitparam[1] = pnonlin[nKparam:nKparam+nparam] # Components parameters
-    fitparam[2] = plin # Components amplitudes
+    fitparam_K = pnonlin[0:nKparam] # Kernel parameters
+    fitparam_P = pnonlin[nKparam:nKparam+nparam] # Components parameters
+    fitparam_amp = plin # Components amplitudes
 
     # Uncertainty quantification analysis (if requested)
     # ==================================================
@@ -352,12 +367,15 @@ def fitmultimodel(V,Kmodel,r,model,maxModels,method='aic',lb=[],ub=[],lbK=[],ubK
         stats = stats[0]
 
     # If requested re-normalize the distribution
+    scale = np.trapz(Pfit,r)
     if normP:
-        Pnorm = np.trapz(Pfit,r)
-        Pfit = Pfit/Pnorm
+        Pfit = Pfit/scale
+        fitparam_amp = fitparam_amp/sum(fitparam_amp)
         if uqanalysis:
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
-            Puq.ci = lambda p: Puq_.ci(p)/Pnorm
+            Puq.ci = lambda p: Puq_.ci(p)/scale
 
-    return Pfit, fitparam, Puq, paramuq, fcnals, Peval, stats
+    return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, Puncert=Puq, 
+                    paramUncert=paramuq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scale, 
+                    stats=stats, cost=fit.cost, residuals=fit.residuals, success=fit.success)
     # =========================================================================

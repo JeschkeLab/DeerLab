@@ -41,7 +41,7 @@ Generating a dataset
 
 
     # Parameters
-    t = np.linspace(0,3,250)
+    t = np.linspace(-0.1,3,250)
     rtrue = np.linspace(1,7,200)
     Ptrue = dd_gauss3(rtrue,[4.5, 0.6, 0.4, 3, 0.4, 0.3, 4, 0.7, 0.5])
     lam = 0.3
@@ -51,7 +51,9 @@ Generating a dataset
     Bmodel = lambda t, lam: bg_hom3d(t,conc,lam)
     K = dipolarkernel(t,rtrue,lam,Bmodel)
     V = K@Ptrue*np.exp(1j*np.pi/16) # add a phase shift 
+    np.random.seed(1)
     rnoise = whitegaussnoise(t,0.01) # real-component noise 
+    np.random.seed(2)
     inoise = 1j*whitegaussnoise(t,0.01) # imaginary-component noise 
     V = V + rnoise + inoise # complex-valued noisy signal
     V = V*3e6 # add an arbitrary amplitude scale
@@ -59,6 +61,7 @@ Generating a dataset
     plt.plot(t,V.real,'.',t,V.imag,'.'),
     plt.xlabel('t [$\mu s$]')
     plt.ylabel('V(t)')
+    plt.grid(alpha=0.3)
     plt.legend(['real','imag'])
 
 
@@ -76,7 +79,7 @@ Generating a dataset
  .. code-block:: none
 
 
-    <matplotlib.legend.Legend object at 0x000001A89D5178D0>
+    <matplotlib.legend.Legend object at 0x000001ED9886D198>
 
 
 
@@ -90,14 +93,14 @@ DeerAnalysis workflow
 
     # Pre-processing
     V = correctphase(V)
-    t,_ = correctzerotime(V,t)
+    t = correctzerotime(V,t)
     V = V/max(V)
 
     # Distance axis estimation
     r = time2dist(t)
 
     # Background fit
-    tstart = 2.0 # background fit start, in us
+    tstart = 1.0 # background fit start, in us
     mask = t>tstart
     def Bmodel(par):
         lam,kappa,d = par # unpack parameters
@@ -108,9 +111,9 @@ DeerAnalysis workflow
     par0 = [0.5,   0.5, 3]
     lb   = [0.1,   0.1, 1]
     ub   = [1,      5,  6]
-    parfit,_,_ = fitparamodel(V[mask],Bmodel,par0,lb,ub,rescale=False)
+    fit = fitparamodel(V[mask],Bmodel,par0,lb,ub,rescale=False)
 
-    lamfit,kappa,d = parfit
+    lamfit,kappa,d = fit.param
     Bfit = bg_strexp(t,[kappa,d],lamfit)
 
     # Background "correction" by division
@@ -118,7 +121,8 @@ DeerAnalysis workflow
 
     # Tikhonov regularization using the L-curve criterion
     K = dipolarkernel(t,r)
-    Pfit,_ = fitregmodel(Vcorr,K,r,'tikhonov','lr',)
+    fit = fitregmodel(Vcorr,K,r,'tikhonov','lr',)
+    Pfit = fit.P
 
 
 
@@ -130,7 +134,7 @@ DeerAnalysis workflow
 
  .. code-block:: none
 
-    d:\lufa\projects\deerlab\deerlab\deerlab\fitparamodel.py:178: UserWarning: The fitted value of parameter #2, is at the lower bound of the range.
+    d:\lufa\projects\deerlab\deerlab\deerlab\fitparamodel.py:191: UserWarning: The fitted value of parameter #1, is at the lower bound of the range.
       warnings.warn('The fitted value of parameter #{}, is at the lower bound of the range.'.format(p))
 
 
@@ -177,14 +181,14 @@ Plots
  .. code-block:: none
 
 
-    <matplotlib.legend.Legend object at 0x000001A89DE5DB00>
+    <matplotlib.legend.Legend object at 0x000001ED98A3D160>
 
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  2.257 seconds)
+   **Total running time of the script:** ( 0 minutes  1.979 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_emulating_deeranalysis_workflow.py:

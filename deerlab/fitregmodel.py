@@ -9,7 +9,7 @@ from scipy.optimize import nnls
 import deerlab as dl
 import copy
 from deerlab.utils import hccm, goodness_of_fit
-from deerlab.uncertainty import UncertQuant
+from deerlab.classes import UncertQuant, FitResult
 
 def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx', 
                 weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
@@ -55,10 +55,15 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
 
     Returns
     -------
-    Pfit : ndarray
+    :ref:`FitResult` with the following fields defined:
+    P : ndarray
         Fitted distance distribution
-    Puq : :ref:`UncertQuant`
+    uncertainty : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted distance distribution
+    alpha : float int
+        Regularization parameter used in the optimization
+    scale : float int
+        Amplitude scale of the dipolar signal.
     stats : dict
         Goodness of fit statistical estimators (if full_output=True):
 
@@ -68,6 +73,12 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
         * ``stats['aic']`` - Akaike information criterion
         * ``stats['aicc']`` - Corrected Akaike information criterion
         * ``stats['bic']`` - Bayesian information criterion
+    success : bool
+        Whether or not the optimizer exited successfully.
+    cost : float
+        Value of the cost function at the solution.
+    residuals : ndarray
+        Vector of residuals at the solution.
 
     Other parameters
     ----------------
@@ -83,8 +94,6 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
         * ``'nnlsbpp'`` - Optimization using the block principal pivoting NNLS algorithm.
         The default is ``'cvx'``.
 
-    full_output : boolean
-        If enabled the function will return additional output arguments in a tuple, by default is is disabled.
     uqanalysis : boolean
         Enable/disable the uncertainty quantification analysis, by default it is enabled. 
     nonnegativity : boolean
@@ -137,6 +146,12 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
         else:
             raise KeyError(f'{solver} is not a known non-negative least squares solver')
 
+    # Get fit final status
+    Vfit = K@Pfit
+    success = ~np.all(Pfit==0)
+    res = V - Vfit
+    fval = np.linalg.norm(V - Vfit)**2 + alpha**2*np.linalg.norm(L@Pfit)**2
+        
     # Uncertainty quantification
     # ----------------------------------------------------------------
     if uqanalysis:
@@ -158,17 +173,16 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
     
     # Re-normalization of the distributions
     # --------------------------------------
+    scale = np.trapz(Pfit,r)
     if renormalize:
-        Pnorm = np.trapz(Pfit,r)
-        Pfit = Pfit/Pnorm
+        Pfit = Pfit/scale
         if uqanalysis:
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
-            Puq.ci = lambda p: Puq_.ci(p)/Pnorm
+            Puq.ci = lambda p: Puq_.ci(p)/scale
 
 
     # Goodness-of-fit
     # --------------------------------------
-    Vfit = K@Pfit
     H = K@(np.linalg.pinv(KtKreg)@K.T)
     stats = []
     for subset in subsets: 
@@ -177,11 +191,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
     if len(stats)==1: 
         stats = stats[0]
 
-        
-    if full_output:
-        return Pfit,Puq,stats
-    else:
-        return Pfit,Puq
+    return FitResult(P=Pfit,uncertainty=Puq,alpha=alpha,scale=scale,stats=stats,cost=fval,residuals=res, success=success)
 # ===========================================================================================
 
 

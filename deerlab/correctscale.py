@@ -25,8 +25,8 @@ def correctscale(V,t,tmax=[],model='deer'):
     t : array_like 
         Time axis, in microseconds. 
     
-    Returns:
-    --------
+    Returns
+    -------
     Vc : ndarray
         Rescaled signal.
     
@@ -76,10 +76,10 @@ def correctscale(V,t,tmax=[],model='deer'):
         raise KeyError("Unknown model '{}'".format(model))
 
     # Run the parametric model fitting
-    parfit,_,_ = fitparamodel(V_,fitmodel,par0,lb,ub,rescale=False,uqanalysis=False)
+    fit = fitparamodel(V_,fitmodel,par0,lb,ub,rescale=False,uqanalysis=False)
 
     # Get the fitted signal amplitude and scale the signal
-    V0 = Amp0*parfit[0]
+    V0 = Amp0*fit.param[0]
     Vc = V/V0
 
     return Vc

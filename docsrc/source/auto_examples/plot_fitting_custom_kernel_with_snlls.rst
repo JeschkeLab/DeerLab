@@ -114,14 +114,17 @@ the two sets need (or can) be specified.
     ubl = [] # Unconstrained upper boundary
 
     # Run SNLLS optimization
-    parfit,Pfit,puq,stats = snlls(V,Kmodel,par0,lb,ub,lbl,ubl)
+    fit = snlls(V,Kmodel,par0,lb,ub,lbl,ubl)
+    parfit = fit.nonlin
+    Pfit = fit.lin
+    paruq = fit.uncertainty
 
     # Get non-linear parameters uncertainty
-    param95 = puq.ci(95,'nonlin')  #  95#-confidence interval
+    param95 = paruq.ci(95,'nonlin')  #  95#-confidence interval
 
     # Get linear parameters (distribution) uncertainty
-    Pci50 = puq.ci(50,'lin') #  50#-confidence interval
-    Pci95 = puq.ci(95,'lin') #  95#-confidence interval
+    Pci50 = paruq.ci(50,'lin') #  50#-confidence interval
+    Pci95 = paruq.ci(95,'lin') #  95#-confidence interval
 
     # Print result
     print('lambda = {:.2f}({:.2f}-{:.2f})'.format(parfit[0],param95[0,0],param95[0,1]))
@@ -141,8 +144,8 @@ the two sets need (or can) be specified.
 
  .. code-block:: none
 
-    lambda = 0.36(0.35-0.38)
-    c0 = 245.90(232.84-258.97)uM
+    lambda = 0.36(0.36-0.37)
+    c0 = 254.67(243.34-266.00)uM
 
 
 
@@ -189,14 +192,14 @@ Plots
  .. code-block:: none
 
 
-    <matplotlib.legend.Legend object at 0x0000022605C8EF60>
+    <matplotlib.legend.Legend object at 0x000001ED98BB1518>
 
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  2.731 seconds)
+   **Total running time of the script:** ( 0 minutes  2.488 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_fitting_custom_kernel_with_snlls.py:

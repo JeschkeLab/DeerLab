@@ -78,13 +78,15 @@ the Tikhonov regularization.
 
 
     # Fit data via regularization
-    [Pfit,Pci] = fitregmodel(V,K,r,'tikhonov','aic')
+    fit = fitregmodel(V,K,r,'tikhonov','aic')
+    Pfit = fit.P
+    Puq = fit.uncertainty
     # Obtain time-domain fit
     Vfit = K@Pfit
 
     plt.plot(r,P,'k',r,Pfit,'r',linewidth=1)
-    Pci95 = Pci.ci(95)
-    Pci50 = Pci.ci(50)
+    Pci95 = Puq.ci(95)
+    Pci50 = Puq.ci(50)
     plt.fill_between(r,Pci50[:,0],Pci50[:,1],color='r',linestyle='None',alpha=0.45)
     plt.fill_between(r,Pci95[:,0],Pci95[:,1],color='r',linestyle='None',alpha=0.25)
     plt.grid()
@@ -108,7 +110,7 @@ the Tikhonov regularization.
  .. code-block:: none
 
 
-    <matplotlib.legend.Legend object at 0x00000226059F09B0>
+    <matplotlib.legend.Legend object at 0x000001ED98A3DF28>
 
 
 
@@ -125,8 +127,8 @@ output and returns the outputs of interest (``Pfit`` in our example).
 
 
     def mybootfcn(V):
-        Pfit,_ = fitregmodel(V,K,r,'tikhonov','aic')
-        return Pfit
+        fit = fitregmodel(V,K,r,'tikhonov','aic')
+        return fit.P
 
     # Launch bootstrapping
     Nsamples = 50
@@ -174,14 +176,14 @@ matrices. This is due to the inherent accurate nature of bootstrapping.
  .. code-block:: none
 
 
-    <matplotlib.legend.Legend object at 0x0000022605C66160>
+    <matplotlib.legend.Legend object at 0x000001ED98B64710>
 
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  11.255 seconds)
+   **Total running time of the script:** ( 0 minutes  10.482 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_comparing_uncertainties_for_regularization.py:

@@ -7,6 +7,7 @@ How to fit a simple 4-pulse DEER signal with a parameter-free distribution.
 """ 
 # %%
 import numpy as np
+import matplotlib.pyplot as plt
 from deerlab import *
 
 # %% [markdown]
@@ -30,4 +31,7 @@ Vexp = K@P + whitegaussnoise(t,0.01)
 #---------
 
 # %%
-Vfit,Pfit,Bfit,parfit,paruq,moduq,stats = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_4pdeer,display=True)
+fit = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_4pdeer,display=True)
+plt.show()
+
+# %%

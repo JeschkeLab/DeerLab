@@ -95,9 +95,10 @@ the fitted modulation depth.
         return B
 
     # Fit the background function
-    _,_,Bfit,parfit,_,_,_ = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
-    lam = parfit['ex']
-    kappa = parfit['bg']
+    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
+    Bfit = fit.B
+    lam = fit.exparam
+    kappa = fit.bgparam
 
 
 
@@ -199,7 +200,7 @@ Compute spectrum with apodization
  .. code-block:: none
 
 
-    <matplotlib.legend.Legend object at 0x0000022605C79CF8>
+    <matplotlib.legend.Legend object at 0x000001ED98BDE198>
 
 
 
@@ -212,7 +213,7 @@ from additional zero-filling.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.128 seconds)
+   **Total running time of the script:** ( 0 minutes  1.026 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_analyzing_pake_pattern.py:

@@ -141,8 +141,8 @@ a very basic dipolar kernel.
     par0 = info['Start'] # built-in start values
     lb = info['Lower'] # built-in lower bounds
     ub = info['Upper'] # built-in upper bounds
-    fitpar,_,_ = fitparamodel(V,Vmodel,par0,lb,ub,MultiStart=10)
-
+    fit = fitparamodel(V,Vmodel,par0,lb,ub,MultiStart=10)
+    fitpar = fit.param
 
 
 
@@ -204,14 +204,14 @@ dipolar signal, let's see how our fit turned out.
  .. code-block:: none
 
 
-    <matplotlib.legend.Legend object at 0x000002405A89DA90>
+    <matplotlib.legend.Legend object at 0x000001ED98887518>
 
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  28.794 seconds)
+   **Total running time of the script:** ( 0 minutes  26.163 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_fitting_mixed_model.py:

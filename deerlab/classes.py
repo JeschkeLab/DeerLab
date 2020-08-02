@@ -1,6 +1,83 @@
-# UncertQuant.py - Uncertainty quantification structure constructor
+class FitResult(dict):
+    r""" Represents the results of a fit.
+ 
+    Attributes
+    ----------
+    x : ndarray
+        The solution of the optimization.
+    success : bool
+        Whether or not the optimizer exited successfully.
+    cost : float
+        Value of the cost function at the solution.
+    residuals : ndarray
+        Vector of residuals at the solution.
+    stats : dict
+        Goodness of fit statistical estimators:
+
+        * ``stats['chi2red']`` - Reduced \chi^2 test
+        * ``stats['r2']`` - R^2 test
+        * ``stats['rmsd']`` - Root-mean squared deviation (RMSD)
+        * ``stats['aic']`` - Akaike information criterion
+        * ``stats['aicc']`` - Corrected Akaike information criterion
+        * ``stats['bic']`` - Bayesian information criterion
+
+    Notes
+    -----
+    There may be additional attributes not listed above depending of the
+    specific fit function. Since this class is essentially a subclass of dict
+    with attribute accessors, one can see which attributes are available
+    using the `keys()` method. 
+    """
+
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError(name)
+
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+    def __repr__(self):
+        if self.keys():
+            m = max(map(len, list(self.keys()))) + 1
+            return '\n'.join([k.rjust(m) + ': ' + repr(v)
+                              for k, v in sorted(self.items())])
+        else:
+            return self.__class__.__name__ + "()"
+
+    def __dir__(self):
+        return list(self.keys())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+
 import numpy as np
 from deerlab.utils import jacobianest
 from scipy.stats import norm
@@ -8,7 +85,7 @@ from scipy.signal import fftconvolve
 import copy
 
 class UncertQuant:
-    """ Represens the uncertainty quantification of fit results.
+    r""" Represens the uncertainty quantification of fit results.
 
     Attributes
     ----------

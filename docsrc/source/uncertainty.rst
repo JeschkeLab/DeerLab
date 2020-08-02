@@ -12,38 +12,41 @@ Along with every fit, functions like ``fitsignal`` return confidence intervals f
 
 .. code-block:: python
 
-   Vfit,Pfit,Bfit,parfit,paruq,_,_ = fitsignal(Vexp,t,r);
+   fit = fitsignal(Vexp,t,r)
+   Puq = fit.Puncert            # Uncertainty quantification of the distance distribution
+   Buq = fit.Buncert            # Uncertainty quantification of the background 
+   lamuq = fit.exparamUncert    # Uncertainty quantification of the modulation depth
+   
 
-The variable ``paruq`` is a uncertainty quantification object :ref:`UncertQuant` which contains the uncertainty information for all fitted parameters, calculated using the standard method based on the variance-covariance matrix.
+The variables ``Puq``, ``Buq`` and ``lamuq`` are uncertainty quantification objects :ref:`UncertQuant` which contain the full uncertainty information of the corresponding variables, calculated using the standard method based on the variance-covariance matrices.
 
-The confidence intervals (at any confidence level) can be calculated by using the ``paruq.ci()`` method, e.g. the 50%, 75% and 95% confidence intervals: 
-
-.. code-block:: python
-
-    parfit_ci50 = paruq.ci(50)
-    parfit_ci75 = paruq.ci(75)
-    parfit_ci95 = paruq.ci(95)
-
-Uncertainty can be propagated to dependent models, e.g. propagating the uncertainty in the fit of ``rmean`` and ``fwhm`` to the resulting Gaussian distance distribution. This can be done via the ``paruq.propagate()`` method: 
+The confidence intervals (at any confidence level) can be calculated by using the ``ci()`` method, e.g. for the 50% and 95% confidence intervals of the fitted distance distribution are calculated as: 
 
 .. code-block:: python
 
-    # parfit = [rmean fwhm]
+    Pfit_ci50 = paruq.ci(50)    # 50%-confidence intervals of Pfit
+    Pfit_ci95 = paruq.ci(95)    # 95%-confidence intervals of Pfit
+
+Uncertainty can also be propagated to dependent models. For example, assume that we have fitted a single Gaussian distance distribution with ``rmean`` and ``fwhm`` as parameters. Now, we can propagate the uncertainty in the fit of ``rmean`` and ``fwhm`` to the resulting Gaussian distance distribution. This can be done via the ``propagate()`` method, this will create the uncertainty quantification for the fitted distribution: 
+
+.. code-block:: python
+
+    # parfit = [rmean, fwhm]
     ddmodel = lambda parfit: dd_gauss(r,parfit)
     
     # Get the fitted model
     Pfit = ddmodel(parfit)
     
     # Propagate the error in the parameters to the model
-    lb = zeros(numel(Pfit),1)
-    ub = []
-    Pci = paruq.propagate(ddmodel,lb,ub)
+    lb = zeros(numel(Pfit),1)   # Non-negativity constraint of the distance distribution
+    ub = []]                    # No upper bounds
+    Puq = paruq.propagate(ddmodel,lb) 
 
     # Get the 95%-confidence intervals of the fitted distribution
-    Pci95 = Pci.ci(95)
+    Pci95 = Puq.ci(95)
 
 
-Assumptions:
+Theoretical assumptions of covariance-based uncertainty analysis:
    - The uncertainty in the fitted parameters is described by a Gaussian distribution.
    - The mean of this Gaussian is assumed to be the fitted value and its width by the diagonal elements of the covariance matrix.
    - All parameters are assumed to be unconstrained.
@@ -60,20 +63,19 @@ Here is an example for a parametric model:
 
     def fitfcn(V):
         Vmodel = lambda par: K@dd_gauss(r,par)
-        parfit,_,_ = fitparamodel(V,Vmodel,r,K)
-        return parfit
+        fit = fitparamodel(V,Vmodel,r,K)
+        return fit.param
 
     bootuq = bootan(fitfcn,Vexp,Vfit,samples=1000,verbose=True);
 
-The output ``bootuq`` is again a :ref:`UncertQuant` object that can be used as described above to evaluate confidence intervals at different confidence levels, e.g the 50%, 75% and 95% confidence intervals: 
+The output ``bootuq`` is again a :ref:`UncertQuant` object that can be used as described above to evaluate confidence intervals at different confidence levels, e.g the 50% and 95% confidence intervals: 
 
 .. code-block:: python
 
     parfit_ci50 = bootuq.ci(50)
-    parfit_ci75 = bootuq.ci(75)
     parfit_ci95 = bootuq.ci(95)
 
-The bootstrapped distributions for each parameter can be accessed by using the ``paruq.pardist()`` method, e.g.if the modulation depth is the second fit parameter:
+The bootstrapped distributions for each parameter can be accessed by using the ``pardist()`` method, e.g.if the modulation depth is the second fit parameter:
 
 .. code-block:: python
 
@@ -86,8 +88,8 @@ Here is an example for a model with a non-parametric distribution:
 
 
     def fitfcn(V):
-           _,Pfit,_,parfit,_,_,_ = fitsignal(V,t,r,'P',bg_hom3d,ex_4pdeer)
-        return Pfit, parfit.bg, parfit.ex
+           fit = fitsignal(V,t,r,'P',bg_hom3d,ex_4pdeer)
+        return fit.P, fit.bgparam, fit.exparam
 
     bootuq = bootan(fitfcn,Vexp,Vfit,samples=100,verbose=True)
 

@@ -32,7 +32,7 @@ Vexp = K@P + whitegaussnoise(t,0.01)
 # --------
 #
 
-def fit(V):
+def fitroutine(V):
 
     # Set boundaries for the fit parameters (see DL_fitting_5pdeer.m)
     ex_lb   = [ 0,   0,   0,  max(t)/2-1] # lower bounds
@@ -44,22 +44,20 @@ def fit(V):
     # When running the fit, since we are only interested in the parameters we'll ignore
     # the rest (otherwise the ``Bfit``,``Pfit``,etc. could be bootstrapped as well) 
     # We need the Vfit to pass it to bootan as well, so we'll request that one too.
-    Vfit,_,_,parfit,_,_,_ = fitsignal(V,t,r,'P',bg_hom3d,ex_5pdeer,par0,lb,ub,uqanalysis=False)
-
-    # Unpack the parameters, since bootan() requires the outputs to be arrays
-    # of numerical values, not structures
-    exparam = parfit['ex']
+    fit = fitsignal(V,t,r,'P',bg_hom3d,ex_5pdeer,par0,lb,ub,uqanalysis=False)
+    Vfit = fit.V
+    exparam = fit.exparam
     exparam[0:3] /=sum(exparam[0:3])
-    bgparam = parfit['bg']
+    bgparam = fit.bgparam
 
     return exparam,bgparam,Vfit
 
 
 # Run the fit once as usual, to check that the model fits the data
-exparfit,bgparfit,Vfit = fit(Vexp)
+exparfit,bgparfit,Vfit = fitroutine(Vexp)
 
 # Bootstrapping with 100 samples
-bootuq = bootan(fit,Vexp,Vfit,50)
+bootuq = bootan(fitroutine,Vexp,Vfit,100)
 
 # Extract the uncertainty quantification for the parameters
 exparam_uq = bootuq[0]
@@ -116,3 +114,6 @@ plt.vlines(300,0,max(conc_pdf),colors='r',linestyles='dashed',linewidth=2)
 plt.xlabel('Spin conc. [$\mu M$]')
 plt.ylabel('PDF')
 
+
+
+# %%

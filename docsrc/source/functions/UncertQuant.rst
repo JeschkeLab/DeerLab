@@ -4,5 +4,5 @@
 :mod:`UncertQuant`
 *********************
 
-.. autoclass:: deerlab.uncertainty.UncertQuant
+.. autoclass:: deerlab.classes.UncertQuant
     :members:

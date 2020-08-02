@@ -22,9 +22,9 @@ def test_gaussian():
     lb = [1, 0.1]
     ub = [20, 1]
     model = lambda p: K@dd_gauss(r,p)
-    parfit,_,_ = fitparamodel(V,model,par0,lb,ub)
+    fit = fitparamodel(V,model,par0,lb,ub)
 
-    assert all(abs(par - parfit) < 1e-2)
+    assert all(abs(par - fit.param) < 1e-2)
 # ======================================================================
 
 
@@ -45,9 +45,9 @@ def test_rice():
     lb = info['Lower']
     ub = info['Upper']
     model = lambda p: K@dd_rice(r,p)
-    parfit,_,_ = fitparamodel(V,model,par0,lb,ub)
+    fit = fitparamodel(V,model,par0,lb,ub)
 
-    assert all(abs(par - parfit) < 1e-2)
+    assert all(abs(par - fit.param) < 1e-2)
 # ======================================================================
 
 
@@ -65,9 +65,9 @@ def test_unconstrained():
 
     par0 = [5, 0.5]
     model = lambda p: K@dd_gauss(r,p)
-    parfit,_,_ = fitparamodel(V,model,par0)
+    fit = fitparamodel(V,model,par0)
 
-    assert all(abs(par - parfit) < 1e-2)
+    assert all(abs(par - fit.param) < 1e-2)
 # =======================================================================
 
 
@@ -87,10 +87,10 @@ def test_rescaling():
     ub = [20, 5]
     mymodel = lambda param: dipolarkernel(t,r)@dd_gauss(r,param)
 
-    parfit1,_,_ = fitparamodel(V*scale,mymodel,par0,lb,ub,rescale=True)
-    parfit2,_,_ = fitparamodel(V,mymodel,par0,lb,ub,rescale=False)
+    fit1 = fitparamodel(V*scale,mymodel,par0,lb,ub,rescale=True)
+    fit2 = fitparamodel(V,mymodel,par0,lb,ub,rescale=False)
 
-    assert all(abs(parfit1 - parfit2) < 1e-2)
+    assert all(abs(fit1.param - fit2.param) < 1e-2)
 # =======================================================================
 
  
@@ -134,7 +134,9 @@ def test_confinter_Pfit():
     lb = [1, 0.1]
     ub = [20, 1]
     model = lambda p: K@dd_gauss(r,p)
-    parfit,paruq,_ = fitparamodel(V,model,par0,lb,ub)
+    fit = fitparamodel(V,model,par0,lb,ub)
+    paruq = fit.uncertainty
+    parfit = fit.param
 
     assert_confidence_intervals(paruq.ci(50),paruq.ci(95),parfit,lb,ub)
 # ======================================================================
@@ -159,8 +161,11 @@ def test_manual_covmatrix():
     lb = [2, 0.3]
     ub = [5, 0.7]
     model = lambda p: K@dd_gauss(r,p)
-    _,paruq_manual,_ = fitparamodel(V,model,par0,lb,ub,covmatrix = covmat)
-    _,paruq_auto,_ = fitparamodel(V,model,par0,lb,ub)
+    fitmanual = fitparamodel(V,model,par0,lb,ub, covmatrix = covmat)
+    fitauto = fitparamodel(V,model,par0,lb,ub)
+
+    paruq_manual = fitmanual.uncertainty
+    paruq_auto = fitauto.uncertainty
 
     ci_manual = paruq_manual.ci(95)
     ci_auto = paruq_auto.ci(95)
@@ -193,7 +198,7 @@ def test_globalfit():
     par0 = [5, 0.5]
     lb = [1, 0.1]
     ub = [20, 1]
-    parfit,_,_ = fitparamodel([V1,V2],Vmodel,par0,lb,ub)
+    fit = fitparamodel([V1,V2],Vmodel,par0,lb,ub)
 
-    assert all(abs(par - parfit) < 1e-2)
+    assert all(abs(par - fit.param) < 1e-2)
 # ======================================================================

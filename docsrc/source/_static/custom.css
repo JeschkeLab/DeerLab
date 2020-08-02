@@ -277,7 +277,8 @@ html.writer-html4 .rst-content dl:not(.docutils) dl:not(.field-list) > dt, html.
     border-left: 0px solid #ccc;
     background: #fff;
     color: #404040;
-    font-weight: bold
+    font-weight: bold;
+    font-size: 15px;
 }
     
 html.writer-html4 .rst-content dl:not(.docutils) > dt:first-child, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) > dt:first-child {

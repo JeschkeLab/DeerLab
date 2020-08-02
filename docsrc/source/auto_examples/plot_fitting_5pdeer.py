@@ -35,7 +35,7 @@ Vexp = K@P + whitegaussnoise(t,0.005)
 # This pathway ususally refocuses at around ``t = max(t)/2``, and usually can
 # be even estimated from simple visual inspection of the signal. 
 # Thus, we can strongly constraint this parameters while leaving the
-# pathway amplitudes pretty unconstrained.
+# pathway amplitudes pretty much unconstrained.
 # 
 
 # %%
@@ -57,5 +57,5 @@ par0 = [[],[],ex_par0]
 # Run the fit with a 5-pulse DEER signal model
 
 # %%
-Vfit,Pfit,Bfit,parfit,paruq,moduq,stats = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_5pdeer,par0,lb,ub,display=True)
+fit = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_5pdeer,par0,lb,ub,display=True)
 plt.show()

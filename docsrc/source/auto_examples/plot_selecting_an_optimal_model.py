@@ -64,7 +64,9 @@ for model in models:
     # Prepare the signal model with the new distance model
     Vmodel = lambda par: K@model(r,par)
     # Fit the signal
-    parfit,_,stats = fitparamodel(V,Vmodel,par0=info['Start'],lb=info['Lower'],ub=info['Upper'])
+    fit = fitparamodel(V,Vmodel,par0=info['Start'],lb=info['Lower'],ub=info['Upper'])
+    parfit = fit.param
+    stats= fit.stats
     # Add current AIC value to the list
     aic.append(stats['aic'])
 

@@ -1,6 +1,5 @@
 import numpy as np
-import math
-from deerlab import dipolarkernel,dd_gauss,dd_gauss2,snlls,whitegaussnoise
+from deerlab import dipolarkernel,dd_gauss,dd_gauss2,snlls
 from deerlab.bg_models import bg_exp
 from deerlab.utils import ovl
 
@@ -45,7 +44,9 @@ def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
         ubl = []    
 
     # Separable LSQ fit
-    nonlinfit,linfit,_,_ = snlls(V,lambda p: Kmodel(p,t,r),nlpar0,lb,ub,lbl,ubl, penalty=False, uqanalysis=False)
+    fit = snlls(V,lambda p: Kmodel(p,t,r),nlpar0,lb,ub,lbl,ubl, penalty=False, uqanalysis=False)
+    nonlinfit = fit.nonlin
+    linfit = fit.lin
     parout = [nonlinfit[0], nonlinfit[1], linfit[0], nonlinfit[2], nonlinfit[3], linfit[1]] 
     parout = np.asarray(parout)
     parin = np.asarray(parin)
@@ -102,7 +103,8 @@ def test_regularized():
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    _,Pfit,_,_ = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uqanalysis=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uqanalysis=False)
+    Pfit = fit.lin
 
     assert  np.max(abs(P - Pfit)) < 1e-2
 #=======================================================================
@@ -151,7 +153,9 @@ def test_confinter_linear():
     lbl = np.zeros(len(r))
     ubl = np.full(len(r), np.inf)
     # Separable LSQ fit
-    _,Pfit,uq,_ = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl)
+    Pfit = fit.lin
+    uq = fit.uncertainty
     Pci50 = uq.ci(50,'lin')
     Pci95 = uq.ci(95,'lin')
 
@@ -181,7 +185,9 @@ def test_confinter_nonlinear():
     ubl = np.full(len(r), np.inf)
     # Separable LSQ fit
 
-    parfit,_,uq,_ = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl)
+    parfit = fit.nonlin
+    uq = fit.uncertainty
     parci50 = uq.ci(50,'nonlin')
     parci95 = uq.ci(95,'nonlin')
 
@@ -222,7 +228,8 @@ def test_regularized_global():
     ubl = []
 
     # Separable LSQ fit
-    _,Pfit,_,_ = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl, uqanalysis=False)
+    fit = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl, uqanalysis=False)
+    Pfit = fit.lin
 
     assert  ovl(P,Pfit) > 0.9
 #=======================================================================
@@ -248,7 +255,8 @@ def assert_solver(solver):
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    _,Pfit,_,_ = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,nnlsSolver=solver, uqanalysis=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,nnlsSolver=solver, uqanalysis=False)
+    Pfit = fit.lin
 
     assert  np.max(abs(P - Pfit)) < 1e-2
 
@@ -295,7 +303,8 @@ def test_goodnes_of_fit():
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    _,_,_,stats = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uqanalysis=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uqanalysis=False)
+    stats = fit.stats
 
     assert abs(stats['chi2red'] - 1) < 5e-2 and abs(stats['R2'] - 1) < 5e-2
 #============================================================
@@ -319,8 +328,9 @@ def assert_reg_type(regtype):
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    _,Pfit,_,_ = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,regtype = regtype, uqanalysis=False)
-
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,regtype = regtype, uqanalysis=False)
+    Pfit = fit.lin
+    
     assert  np.max(abs(P - Pfit)) < 2e-2
 
 def test_reg_tikh():

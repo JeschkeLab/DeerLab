@@ -46,13 +46,15 @@ V = K@P + whitegaussnoise(t,0.01)
 # the Tikhonov regularization.
 
 # Fit data via regularization
-[Pfit,Pci] = fitregmodel(V,K,r,'tikhonov','aic')
+fit = fitregmodel(V,K,r,'tikhonov','aic')
+Pfit = fit.P
+Puq = fit.uncertainty
 # Obtain time-domain fit
 Vfit = K@Pfit
 
 plt.plot(r,P,'k',r,Pfit,'r',linewidth=1)
-Pci95 = Pci.ci(95)
-Pci50 = Pci.ci(50)
+Pci95 = Puq.ci(95)
+Pci50 = Puq.ci(50)
 plt.fill_between(r,Pci50[:,0],Pci50[:,1],color='r',linestyle='None',alpha=0.45)
 plt.fill_between(r,Pci95[:,0],Pci95[:,1],color='r',linestyle='None',alpha=0.25)
 plt.grid()
@@ -71,8 +73,8 @@ plt.legend(['Truth','Fit','50%-CI','95%-CI'])
 
 
 def mybootfcn(V):
-    Pfit,_ = fitregmodel(V,K,r,'tikhonov','aic')
-    return Pfit
+    fit = fitregmodel(V,K,r,'tikhonov','aic')
+    return fit.P
 
 # Launch bootstrapping
 Nsamples = 50

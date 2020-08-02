@@ -47,8 +47,8 @@ V = K@P + whitegaussnoise(t,0.01)
 # corresponding uncertainty quantification, so we will ignore the rest of
 # the outputs.
 # %%
-_,Pfit,_,_,fituq,_,_ = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,display=True)
-
+fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,display=True)
+Pfit = fit.P
 # %% [markdown]
 # Extract Gaussian constraints from the fit
 # -----------------------------------------
@@ -63,7 +63,7 @@ _,Pfit,_,_,fituq,_,_ = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,display=True)
 
 # %%
 # Extract the uncertainty quantification of the fitted distribution...
-Pfit_uq = fituq['Pfit']
+Pfit_uq = fit.Puncert
 # ...specifically its covariance matrix
 Pfit_covmat = Pfit_uq.covmat
 
@@ -82,7 +82,9 @@ info = dd_gauss2()
 par0 = info['Start']
 lb = info['Lower']
 ub = info['Upper']
-parfit,paruq,_ = fitparamodel(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat)
+fit = fitparamodel(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat)
+parfit = fit.param
+paruq = fit.uncertainty
 PGauss = dd_gauss2(r,parfit)
 
 # Extract the 95#-confidence intervals...
@@ -113,3 +115,6 @@ plt.tight_layout()
 plt.grid(alpha=0.3)
 plt.legend(['Fit','95%-CI','2G-constraints','95%-CI'])
 plt.show()
+
+
+# %%

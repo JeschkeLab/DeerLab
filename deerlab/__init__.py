@@ -10,7 +10,6 @@ from .dipolarkernel import dipolarkernel
 from .dipolarbackground import dipolarbackground
 from .fitregmodel import fitregmodel
 from .regoperator import regoperator
-from .uncertainty import UncertQuant
 from .correctphase import correctphase
 from .mixmodels import mixmodels
 from .correctzerotime import correctzerotime
@@ -25,3 +24,4 @@ from .fitsignal import fitsignal
 from .correctscale import correctscale
 from .fftspec import fftspec
 from .time2dist import time2dist
+from .classes import FitResult, UncertQuant

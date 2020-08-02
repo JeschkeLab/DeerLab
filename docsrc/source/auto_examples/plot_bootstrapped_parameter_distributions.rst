@@ -64,7 +64,7 @@ Analysis
 .. code-block:: python
 
 
-    def fit(V):
+    def fitroutine(V):
 
         # Set boundaries for the fit parameters (see DL_fitting_5pdeer.m)
         ex_lb   = [ 0,   0,   0,  max(t)/2-1] # lower bounds
@@ -76,22 +76,20 @@ Analysis
         # When running the fit, since we are only interested in the parameters we'll ignore
         # the rest (otherwise the ``Bfit``,``Pfit``,etc. could be bootstrapped as well) 
         # We need the Vfit to pass it to bootan as well, so we'll request that one too.
-        Vfit,_,_,parfit,_,_,_ = fitsignal(V,t,r,'P',bg_hom3d,ex_5pdeer,par0,lb,ub,uqanalysis=False)
-
-        # Unpack the parameters, since bootan() requires the outputs to be arrays
-        # of numerical values, not structures
-        exparam = parfit['ex']
+        fit = fitsignal(V,t,r,'P',bg_hom3d,ex_5pdeer,par0,lb,ub,uqanalysis=False)
+        Vfit = fit.V
+        exparam = fit.exparam
         exparam[0:3] /=sum(exparam[0:3])
-        bgparam = parfit['bg']
+        bgparam = fit.bgparam
 
         return exparam,bgparam,Vfit
 
 
     # Run the fit once as usual, to check that the model fits the data
-    exparfit,bgparfit,Vfit = fit(Vexp)
+    exparfit,bgparfit,Vfit = fitroutine(Vexp)
 
     # Bootstrapping with 100 samples
-    bootuq = bootan(fit,Vexp,Vfit,50)
+    bootuq = bootan(fitroutine,Vexp,Vfit,100)
 
     # Extract the uncertainty quantification for the parameters
     exparam_uq = bootuq[0]
@@ -109,115 +107,6 @@ Analysis
 
 
 
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
 
 
 
@@ -270,6 +159,8 @@ Plot
 
 
 
+
+
 .. image:: /auto_examples/images/sphx_glr_plot_bootstrapped_parameter_distributions_001.png
     :alt: plot bootstrapped parameter distributions
     :class: sphx-glr-single-img
@@ -289,7 +180,7 @@ Plot
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  31.304 seconds)
+   **Total running time of the script:** ( 3 minutes  16.161 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_bootstrapped_parameter_distributions.py:

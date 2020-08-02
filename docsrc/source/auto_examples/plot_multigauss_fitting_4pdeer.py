@@ -33,7 +33,6 @@ def K4pdeer(par,t,r):
 # Generating a dataset
 # ---------------------
 
-# %%
 t = np.linspace(-0.25,4,300) # time axis, us
 r = np.linspace(2.5,4.5,300) # distance axis, nm
 param0 = [3, 0.3, 0.2, 3.5, 0.3, 0.45, 3.9, 0.2, 0.20] # parameters for three-Gaussian model
@@ -62,13 +61,17 @@ Kmodel = lambda par: K4pdeer(par,t,r)
 NGauss = 5 # maximum number of Gaussians
 
 # Fit the kernel parameters with an optimized multi-Gauss distribution
-Pfit,param,Puq,paramuq, metrics, Peval, stats = fitmultimodel(V,Kmodel,r,dd_gauss,NGauss,'aic',lb,ub,lbK,ubK)
-
-# Extract the parameters
-Kparfit = param[0]
+fit = fitmultimodel(V,Kmodel,r,dd_gauss,NGauss,'aic',lb,ub,lbK,ubK)
+#Extract results
+Pfit = fit.P
+Kparfit = fit.Kparam
+Puq = fit.Puncert
+paramuq = fit.paramUncert
+metrics = fit.selfun
+Peval = fit.Pn
 
 # Get the time-domain fit
-K = Kmodel(param[0])
+K = Kmodel(Kparfit)
 Vfit = K@Pfit
 
 # Confidence intervals of the fitted distance distribution
@@ -133,3 +136,6 @@ plt.grid(alpha=0.3)
 plt.xlabel('r [nm]')
 plt.ylabel('Number of Gaussians')
 plt.legend(['truth','fit'])
+
+
+# %%

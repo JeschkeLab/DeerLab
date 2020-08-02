@@ -106,7 +106,9 @@ we listed above, and collecting the AIC-values for each model.
         # Prepare the signal model with the new distance model
         Vmodel = lambda par: K@model(r,par)
         # Fit the signal
-        parfit,_,stats = fitparamodel(V,Vmodel,par0=info['Start'],lb=info['Lower'],ub=info['Upper'])
+        fit = fitparamodel(V,Vmodel,par0=info['Start'],lb=info['Lower'],ub=info['Upper'])
+        parfit = fit.param
+        stats= fit.stats
         # Add current AIC value to the list
         aic.append(stats['aic'])
 
@@ -120,17 +122,17 @@ we listed above, and collecting the AIC-values for each model.
 
  .. code-block:: none
 
-    d:\lufa\projects\deerlab\deerlab\deerlab\fitparamodel.py:180: UserWarning: The fitted value of parameter #5,  is at the upper bound of the range.
-      warnings.warn('The fitted value of parameter #{},  is at the upper bound of the range.'.format(p))
-    d:\lufa\projects\deerlab\deerlab\deerlab\fitparamodel.py:178: UserWarning: The fitted value of parameter #8, is at the lower bound of the range.
+    d:\lufa\projects\deerlab\deerlab\deerlab\fitparamodel.py:191: UserWarning: The fitted value of parameter #5, is at the lower bound of the range.
       warnings.warn('The fitted value of parameter #{}, is at the lower bound of the range.'.format(p))
     d:\lufa\projects\deerlab\deerlab\deerlab\utils\gof.py:54: RuntimeWarning: divide by zero encountered in double_scalars
       R2 = 1 - np.sum((x-xfit)**2)/np.sum((xfit-np.mean(xfit))**2)
-    d:\lufa\projects\deerlab\deerlab\deerlab\fitparamodel.py:178: UserWarning: The fitted value of parameter #2, is at the lower bound of the range.
+    d:\lufa\projects\deerlab\deerlab\deerlab\fitparamodel.py:191: UserWarning: The fitted value of parameter #8, is at the lower bound of the range.
       warnings.warn('The fitted value of parameter #{}, is at the lower bound of the range.'.format(p))
-    d:\lufa\projects\deerlab\deerlab\deerlab\fitparamodel.py:180: UserWarning: The fitted value of parameter #5,  is at the upper bound of the range.
-      warnings.warn('The fitted value of parameter #{},  is at the upper bound of the range.'.format(p))
-    d:\lufa\projects\deerlab\deerlab\deerlab\fitparamodel.py:178: UserWarning: The fitted value of parameter #5, is at the lower bound of the range.
+    d:\lufa\projects\deerlab\deerlab\deerlab\utils\gof.py:54: RuntimeWarning: divide by zero encountered in double_scalars
+      R2 = 1 - np.sum((x-xfit)**2)/np.sum((xfit-np.mean(xfit))**2)
+    d:\lufa\projects\deerlab\deerlab\deerlab\fitparamodel.py:191: UserWarning: The fitted value of parameter #2, is at the lower bound of the range.
+      warnings.warn('The fitted value of parameter #{}, is at the lower bound of the range.'.format(p))
+    d:\lufa\projects\deerlab\deerlab\deerlab\fitparamodel.py:191: UserWarning: The fitted value of parameter #5, is at the lower bound of the range.
       warnings.warn('The fitted value of parameter #{}, is at the lower bound of the range.'.format(p))
 
 
@@ -225,7 +227,7 @@ low. Usually several models have similar probabilities and should therefore be p
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  7.342 seconds)
+   **Total running time of the script:** ( 0 minutes  13.259 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_selecting_an_optimal_model.py:

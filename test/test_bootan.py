@@ -16,17 +16,17 @@ def test_basics():
 
     par0 = [3, 0.5]
     Vmodel = lambda par: K@dd_gauss(r,par)
-    parfit,_,_ = fitparamodel(Vexp,Vmodel,par0)
-    Vfit = Vmodel(parfit)
+    fit = fitparamodel(Vexp,Vmodel,par0)
+    Vfit = Vmodel(fit.param)
 
 
     def bootfcn(V):
-        parfit,_,_ = fitparamodel(V,Vmodel,par0)
-        return parfit
+        fit = fitparamodel(V,Vmodel,par0)
+        return fit.param
 
     paruq = bootan(bootfcn,Vexp,Vfit,10)
 
-    assert all(abs(paruq.mean - parfit) < 1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1e-2)
 # ======================================================================
 
 
@@ -42,13 +42,13 @@ def test_resampling():
 
     par0 = [3, 0.5]
     Vmodel = lambda par: K@dd_gauss(r,par)
-    parfit,_,_ = fitparamodel(Vexp,Vmodel,par0)
-    Vfit = Vmodel(parfit)
+    fit = fitparamodel(Vexp,Vmodel,par0)
+    Vfit = Vmodel(fit.param)
 
 
     def bootfcn(V):
-        parfit,_,_ = fitparamodel(V,Vmodel,par0)
-        return parfit
+        fit = fitparamodel(V,Vmodel,par0)
+        return fit.param
 
     paruq1 = bootan(bootfcn,Vexp,Vfit,10,resampling='residual')
     paruq2 = bootan(bootfcn,Vexp,Vfit,10,resampling='gaussian')
@@ -70,14 +70,14 @@ def test_multiple_ouputs():
 
     par0 = [3, 0.5]
     Vmodel = lambda par: K@dd_gauss(r,par)
-    parfit,_,_ = fitparamodel(Vexp,Vmodel,par0)
-    Vfit = Vmodel(parfit)
+    fit = fitparamodel(Vexp,Vmodel,par0)
+    Vfit = Vmodel(fit.param)
 
 
     def bootfcn(V):
-        parfit,_,_ = fitparamodel(V,Vmodel,par0)
-        Pfit = dd_gauss(r,parfit)
-        return parfit, Pfit
+        fit = fitparamodel(V,Vmodel,par0)
+        Pfit = dd_gauss(r,fit.param)
+        return fit.param, Pfit
 
     paruq1 = bootan(bootfcn,Vexp,Vfit,4)
 
@@ -106,15 +106,15 @@ def test_multiple_datasets():
         return [V1,V2]
 
     par0 = [3, 0.5]
-    parfit,_,_ = fitparamodel([Vexp1,Vexp2],Vmodel,par0)
-    Vfit1,Vfit2 = Vmodel(parfit)
+    fit = fitparamodel([Vexp1,Vexp2],Vmodel,par0)
+    Vfit1,Vfit2 = Vmodel(fit.param)
 
     def bootfcn(V):
-        parfit,_,_ = fitparamodel(V,Vmodel,par0)
-        return parfit
+        fit = fitparamodel(V,Vmodel,par0)
+        return fit.param
 
     paruq = bootan(bootfcn,[Vexp1,Vexp2],[Vfit1,Vfit2],10)
 
-    assert all(abs(paruq.mean - parfit) < 1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1e-2)
 # ======================================================================
 test_multiple_datasets()

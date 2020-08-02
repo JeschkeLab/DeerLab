@@ -64,6 +64,7 @@ Generating a dataset
 
 .. code-block:: python
 
+
     t = np.linspace(-0.25,4,300) # time axis, us
     r = np.linspace(2.5,4.5,300) # distance axis, nm
     param0 = [3, 0.3, 0.2, 3.5, 0.3, 0.45, 3.9, 0.2, 0.20] # parameters for three-Gaussian model
@@ -102,13 +103,17 @@ Multi-Gauss fitting
     NGauss = 5 # maximum number of Gaussians
 
     # Fit the kernel parameters with an optimized multi-Gauss distribution
-    Pfit,param,Puq,paramuq, metrics, Peval, stats = fitmultimodel(V,Kmodel,r,dd_gauss,NGauss,'aic',lb,ub,lbK,ubK)
-
-    # Extract the parameters
-    Kparfit = param[0]
+    fit = fitmultimodel(V,Kmodel,r,dd_gauss,NGauss,'aic',lb,ub,lbK,ubK)
+    #Extract results
+    Pfit = fit.P
+    Kparfit = fit.Kparam
+    Puq = fit.Puncert
+    paramuq = fit.paramUncert
+    metrics = fit.selfun
+    Peval = fit.Pn
 
     # Get the time-domain fit
-    K = Kmodel(param[0])
+    K = Kmodel(Kparfit)
     Vfit = K@Pfit
 
     # Confidence intervals of the fitted distance distribution
@@ -196,6 +201,8 @@ Plots
 
 
 
+
+
 .. image:: /auto_examples/images/sphx_glr_plot_multigauss_fitting_4pdeer_001.png
     :alt: plot multigauss fitting 4pdeer
     :class: sphx-glr-single-img
@@ -208,14 +215,14 @@ Plots
  .. code-block:: none
 
 
-    <matplotlib.legend.Legend object at 0x00000187787F0860>
+    <matplotlib.legend.Legend object at 0x000001B601394C18>
 
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  19.209 seconds)
+   **Total running time of the script:** ( 0 minutes  16.126 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_multigauss_fitting_4pdeer.py:

@@ -89,8 +89,8 @@ info = gausswlc()
 par0 = info['Start'] # built-in start values
 lb = info['Lower'] # built-in lower bounds
 ub = info['Upper'] # built-in upper bounds
-fitpar,_,_ = fitparamodel(V,Vmodel,par0,lb,ub,MultiStart=10)
-
+fit = fitparamodel(V,Vmodel,par0,lb,ub,MultiStart=10)
+fitpar = fit.param
 # %% [markdown]
 # From the fitted parameter set ``fitpar`` we can now generate our fitted distance 
 # distribution and the corresponding time-domain fit.

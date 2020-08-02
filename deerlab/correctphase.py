@@ -21,8 +21,8 @@ def correctphase(V, Phase = [], fitImagOffset=False, full_output=False):
     V : array_like or list of array_like
         Complex-valued signals or list thereof.
 
-    Returns:
-    --------
+    Returns
+    -------
     Vr : ndarray
         Real part of the phase corrected dataset.
     Vi : ndarray (if full_output==True)
@@ -39,7 +39,7 @@ def correctphase(V, Phase = [], fitImagOffset=False, full_output=False):
     fitImagOffset : boolean
         Enables/Disables the fitting and correction of an imaginary offset, by default disabled.
     full_output : boolean
-        If enabled (True) the function will return additional output arguments in a tuple, by default disabled.
+        If enabled the function will return additional output arguments in a tuple, by default disabled.
 
     """
 

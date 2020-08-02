@@ -7,15 +7,17 @@ import numpy as np
 import types
 import copy
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 import deerlab as dl
-from deerlab import UncertQuant
+from deerlab.classes import UncertQuant, FitResult
 from deerlab.bg_models import bg_hom3d
 from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit, jacobianest
 
-def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[],lb=[],ub=[], weights=1, uqanalysis=True, display = False):
-    r"""Fits a dipolar model to the experimental signal V with time axis t, using
+def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
+              par0=[None,None,None], lb=[None,None,None], ub=[None,None,None],
+              weights=1, uqanalysis=True, display = False):
+    r"""
+    Fits a dipolar model to the experimental signal V with time axis t, using
     distance axis r. The model is specified by the distance distribution (dd),
     the background (bg), and the experiment (ex).
 
@@ -39,7 +41,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
 
         * A string ``'P'`` to indicate a non-parametric distribution
         * A callable function of a DeerLab parametric distribution model (e.g. ``dd_gauss``).
-        * A string ``'none'`` to indicate no distribution, i.e. only background.
+        * A string ``None`` to indicate no distribution, i.e. only background.
 
         The default is 'P'.
 
@@ -47,7 +49,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         Background model, the following modes are allowed:
 
         * A callable function of a DeerLab parametric background model (e.g. ``bg_hom3d``).
-        * A string ``'none'`` to indicate no background decay.
+        * ``None`` to indicate no background decay.
 
         The default is bg_hom3d.
 
@@ -55,7 +57,7 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         Experiment model, the following modes are allowed:
 
         * Function handle to experiment model (e.g. ``ex_4pdeer``)
-        * ``'none'`` to indicate simple dipolar oscillation (mod.depth = 1)
+        * ``None`` to indicate simple dipolar oscillation (mod.depth = 1)
 
         The default is ex_4pdeer.
 
@@ -77,34 +79,34 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
 
     Returns
     -------
-    Vfit :  ndarray or list of ndarrays
+    :ref:`FitResult` with the following fields defined:
+    V :  ndarray or list thereof
         Fitted time-domain signal(s).
-    Pfit : ndarray
+    P : ndarray
         Fitted distance distribution.
-    Bfit : ndarray or list of ndarrays
+    B : ndarray or list thereof
         Fitted background decay(s).
-    parfit : dict
-        Fitted parameters:
-        
-        * ``parfit['dd']`` - Fitted parameters for distance distribution model
-        * ``parfit['bg']`` - Fitted parameters for background model
-        * ``parfit['ex']`` - Fitted parameters for experiment model
-
-    modfituq : dict of :ref:`UncertQuant`
-        Uncertainty quanfitications of the fits:
-        
-        * ``modfituq['Vfit']`` - Uncertainty quanfitication for fitted dipolar signal
-        * ``modfituq['Pfit']`` - Uncertainty quanfitication for fitted distance distribution
-        * ``modfituq['Bfit']`` - Uncertainty quanfitication for fitted background
-
-    paruq : dict of :ref:`UncertQuant`
-        Uncertainty quanfitications of the parameters:
-        
-        * ``paruq['dd']`` - Uncertainty quanfitication for distribution parameters
-        * ``paruq['bg']`` - Uncertainty quanfitication for background parameters
-        * ``paruq['ex']`` - Uncertainty quanfitication for experiment parameters
-
-    stats : dict or list of dict
+    ddparam : ndarray
+        Fitted parameters for distance distribution model.
+    bgparam : ndarray or list thereof
+        Fitted parameters for background model(s).
+    exparam : ndarray or list thereof
+        Fitted parameters for experiment model(s).
+    Vuncert : :ref:`UncertQuant` or list thereof
+        Uncertainty quanfitication for fitted dipolar signal(s).
+    Puncert : :ref:`UncertQuant`
+        Uncertainty quanfitication for fitted distance distribution.
+    Buncert : :ref:`UncertQuant` or list thereof
+        Uncertainty quanfitication for fitted background(s).
+    ddparamUncert : :ref:`UncertQuant` 
+        Uncertainty quanfitication for distribution parameters
+    bgparamUncert : :ref:`UncertQuant` or list thereof
+        Uncertainty quanfitication for background(s) parameters
+    exparamUncert : :ref:`UncertQuant` or list thereof
+        Uncertainty quanfitication for experiment(s) parameters
+    scale : float int
+        Amplitude scale of the dipolar signal.
+    stats :  dict
         Goodness of fit statistical estimators:
 
         * ``stats['chi2red']`` - Reduced \chi^2 test
@@ -113,6 +115,12 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         * ``stats['aic']`` - Akaike information criterion
         * ``stats['aicc']`` - Corrected Akaike information criterion
         * ``stats['bic']`` - Bayesian information criterion
+    success : bool
+        Whether or not the optimizer exited successfully.
+    cost : float
+        Value of the cost function at the solution.
+    residuals : ndarray
+        Vector of residuals at the solution.
 
     Other Parameters
     ----------------
@@ -131,32 +139,32 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
     --------
     Fit a 4pDEER signal with homogenous 3D background with Gaussian distribution::
 
-        Vfit,Pfit,Bfit,parfit,modfituq,paruq,stats = fitsignal(V,t,r,dd_gauss,bg_hom3d,ex_4pdeer)  
+        fit = fitsignal(V,t,r,dd_gauss,bg_hom3d,ex_4pdeer)  
 
 
     Fit a 5pDEER signal with exponential background and Tikhonov regularization::
 
-        Vfit,Pfit,Bfit,parfit,modfituq,paruq,stats = fitsignal(V,t,r,'P',bg_hom3d,ex_5pdeer)        
+        fit = fitsignal(V,t,r,'P',bg_hom3d,ex_5pdeer)        
     
     
     Fit a 4pDEER stretched exponential background (no foreground)::
     
-        Vfit,Pfit,Bfit,parfit,modfituq,paruq,stats = fitsignal(V,t,r,'none',bg_strexp,ex_4pdeer)  
+        fit = fitsignal(V,t,r,None,bg_strexp,ex_4pdeer)  
     
     
     Fit a dipolar evolution function with Rician distribution::
     
-        Vfit,Pfit,Bfit,parfit,modfituq,paruq,stats = fitsignal(V,t,r,dd_rice,'none','none')          
+        fit = fitsignal(V,t,r,dd_rice,None,None)          
     
     
     Fit a 4pDEER form factor (no background) with bimodal Gaussian distribution:: 
 
-        Vfit,Pfit,Bfit,parfit,modfituq,paruq,stats = fitsignal(V,t,r,dd_gauss2,'none',ex_4pdeer)   
+        fit = fitsignal(V,t,r,dd_gauss2,None,ex_4pdeer)   
    
      
     Fit a 4pDEER signal and a 5pDEER signal with same type of background::
     
-        Vfit,Pfit,Bfit,parfit,modfituq,paruq,stats = fitsignal([V1,V2],t,r,'P',bg_hom3d,[ex_4pdeer,ex_5pdeer])    
+        fit = fitsignal([V1,V2],t,r,'P',bg_hom3d,[ex_4pdeer,ex_5pdeer])    
     """
 
     # Default optional settings
@@ -183,45 +191,42 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
     if len(ex_model)!=nSignals:
         ex_model = ex_model*nSignals
 
-    if isempty(lb):
-        lb = [[],[],[]]
-    if isempty(ub):
-        ub = [[],[],[]]
-    if isempty(par0):
-        par0 = [[],[],[]]
-    elif type(par0) is not list or len(par0)!=3:
+    par0 = [[] if par0_i is None else par0_i for par0_i in par0]
+    lb = [[] if lb_i is None else lb_i for lb_i in lb]
+    ub = [[] if ub_i is None else ub_i for ub_i in ub]
+    if type(par0) is not list or len(par0)!=3:
         raise TypeError('Initial parameters (7th input) must be a 3-element cell array.')
      
     # Get information about distance distribution parameters
     # ------------------------------------------------------
     parametricDistribution  = type(dd_model) is types.FunctionType
     parfreeDistribution = dd_model is 'P'
-    includeForeground = np.array(dd_model is not 'none')
+    includeForeground = np.array(dd_model is not None)
 
     par0_dd, lower_dd, upper_dd, N_dd = _getmodelparams(dd_model)
 
     if includeForeground and not parametricDistribution and not parfreeDistribution:
-        raise TypeError('Distribution model (4th input) must either be a function handle, ''P'', or ''none''.')
+        raise TypeError('Distribution model (4th input) must either be a function handle, ''P'', or None.')
 
     # Get information about background parameters
     # ------------------------------------------------------
     isparamodel = np.array([type(model) is types.FunctionType for model in bg_model])
-    includeBackground = np.array([model is not 'none' for model in bg_model])
+    includeBackground = np.array([model is not None for model in bg_model])
 
     par0_bg, lower_bg, upper_bg, N_bg = _getmodelparams(bg_model)
 
     if np.any(~isparamodel & includeBackground):
-        raise TypeError('Background model (5th input) must either be a function handle, or ''none''.')
+        raise TypeError('Background model (5th input) must either be a function handle, or None.')
     
     # Get information about experiment parameters
     # ------------------------------------------------------
     isparamodel = np.array([type(model) is types.FunctionType for model in ex_model])
-    includeExperiment = np.array([model is not 'none' for model in ex_model])
+    includeExperiment = np.array([model is not None for model in ex_model])
 
     par0_ex, lower_ex, upper_ex, N_ex = _getmodelparams(ex_model)
 
     if np.any(~isparamodel & includeExperiment):
-        raise TypeError('Experiment models must either be a function handle, or ''none''.')
+        raise TypeError('Experiment models must either be a function handle, or None.')
 
     # Catch nonsensical situation
     if np.any(~includeForeground & ~includeExperiment):
@@ -376,8 +381,10 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         Ks = [dl.dipolarkernel(ts,r) for ts in t]
         
         # Linear regularization fit
-        Pfit,Pfit_uq = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=uqanalysis)
-        
+        fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=uqanalysis)
+        Pfit = fit.P
+        Pfit_uq = fit.uncertainty
+
         # Get fitted models
         Vfit = [K@Pfit for K in Ks]
         Bfit = [np.ones_like(V) for V in Vexp]
@@ -395,8 +402,10 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         Vmodel =lambda par: [K@Pfcn(par) for K in multiPathwayModel(par)[0]]
 
         # Non-linear parametric fit
-        parfit_,param_uq,_ = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uqanalysis=uqanalysis)
-        
+        fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uqanalysis=uqanalysis)
+        parfit_ = fit.param
+        param_uq = fit.uncertainty
+
         # Get fitted models
         Vfit = Vmodel(parfit_)
         _,Bfit = multiPathwayModel(parfit_)
@@ -415,7 +424,10 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         lbl = np.zeros_like(r)
         
         # Separable non-linear least squares (SNNLS) 
-        parfit_, Pfit, snlls_uq,_ = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, regparam=regparam,linMaxIter=[],uqanalysis=uqanalysis,linTolFun=[],weights=weights)
+        fit = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, regparam=regparam,linMaxIter=[],uqanalysis=uqanalysis,linTolFun=[],weights=weights)
+        parfit_ = fit.nonlin
+        Pfit = fit.lin
+        snlls_uq = fit.uncertainty
 
         # Get the fitted models
         Kfit,Bfit = multiPathwayModel(parfit_)
@@ -426,13 +438,14 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
     
     # Normalize distribution
     # -----------------------
+    scale = 1
     if normP and includeForeground:
-        Pnorm = np.trapz(Pfit,r)
-        Pfit /= Pnorm
+        scale = np.trapz(Pfit,r)
+        Pfit /= scale
         if uqanalysis:
             # scale CIs accordingly
             Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
-            Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/Pnorm
+            Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/scale
 
     # Calculate goodness of fit
     # -------------------------
@@ -458,8 +471,14 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         modfituq['Vfit'] = [Vfit_uq[j] for j in range(nSignals)]
         modfituq['Bfit'] = [Bfit_uq[j] for j in range(nSignals)]
     else:
-        paruq = []
-        modfituq = []
+        paruq = dict()
+        paruq['dd'] = []
+        paruq['bg'] = []
+        paruq['ex'] = []
+        modfituq = dict()
+        modfituq['Pfit'] = []
+        modfituq['Vfit'] = []
+        modfituq['Bfit'] = []
 
 
     def _display_results():
@@ -473,7 +492,6 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
             axs[i].plot(t[i],Vexp[i],'k.',t[i],Vfit[i],'r')
             axs[i].fill_between(t[i],Vci95[:,0], Vci95[:,1],facecolor='r',linestyle='None',alpha=0.2)
             axs[i].fill_between(t[i],Vci50[:,0], Vci50[:,1],facecolor='r',linestyle='None',alpha=0.5)
-            plt.tight_layout()
             axs[i].grid(alpha=0.3)
             axs[i].set_xlabel('Time [$\\mu s$]')
             axs[i].set_ylabel('V[{}]'.format(i))
@@ -489,9 +507,9 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         axs[nSignals].set_xlabel('Distance [nm]')
         axs[nSignals].set_ylabel('P [nm$^{-1}$]')
         axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
-        plt.tight_layout()
         axs[nSignals].grid(alpha=0.3)
-        
+        plt.tight_layout()
+
         plt.show(block=False)
         print('----------------------------------------------------------------------------')
         print('Goodness of fit')
@@ -499,29 +517,30 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
             print('  Vexp[{}]: chi2 = {:4f}  RMSD  = {:4f}'.format(i,stats[i]['chi2red'],stats[i]['rmsd']))
         print('----------------------------------------------------------------------------')
         print('Fitted parameters and 95%-confidence intervals')
-        str = "  parfit['{}'][{:d}][{:d}]:   {:.7f}  ({:.7f}, {:.7f})  {} ({})"
+        pstr = "  {}[{:d}]:   {:5.7f}  ({:.7f}, {:.7f})  {} ({})"
         if len(parfit['dd'])>0:
+            print()
             info = dd_model()
             ci = paruq['dd'].ci(95)
             for j in range(len(parfit['dd'])):
                 c = parfit['dd'][j]
-                print(str.format('dd',1,j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
+                print(pstr.format('ddparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
 
-        if len(parfit['bg'])>0:
-            for i in range(nSignals):
+        for i in range(nSignals):
+            print('Vfit[{}]:'.format(i))
+            if len(parfit['bg'])>0:
                 info = bg_model[i]()
                 ci = paruq['bg'][i].ci(95)
                 for j in range(len(parfit['bg'][i])):
                     c = parfit['bg'][i][j]
-                    print(str.format('bg',i,j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
+                    print(pstr.format('bgparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
 
-        if len(parfit['ex'])>0:
-            for i in range(nSignals):
+            if len(parfit['ex'])>0:
                 info = ex_model[i]()
                 ci = paruq['ex'][i].ci(95)
                 for j in range(len(parfit['ex'][i])):
                     c = parfit['ex'][i][j]
-                    print(str.format('ex',i,j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
+                    print(pstr.format('exparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
         print('----------------------------------------------------------------------------')
     # =========================================================================
 
@@ -544,8 +563,11 @@ def fitsignal(Vexp,t,r,dd_model='P',bg_model=bg_hom3d,ex_model=ex_4pdeer,par0=[]
         if not isempty(stats):
             stats = stats[0]
 
-    return Vfit, Pfit, Bfit, parfit, modfituq, paruq, stats
-
+    return FitResult(V=Vfit, P=Pfit, B=Bfit, exparam=parfit['ex'], bgparam=parfit['bg'],
+                      ddparam=parfit['dd'], Vuncert = modfituq['Vfit'], Puncert = modfituq['Pfit'],
+                      Buncert = modfituq['Bfit'], exparamUncert = paruq['ex'], bgparamUncert = paruq['bg'],
+                      ddparamUncert = paruq['dd'], scale=scale,  stats=stats, cost=fit.cost,
+                      residuals=fit.residuals, success=fit.success)
 
             
 def _getmodelparams(models):
@@ -582,7 +604,7 @@ def _parcombine(p,d):
         p[k] = np.atleast_1d(p[k])
         d[k] = np.atleast_1d(d[k])
         if isempty(p[k]):
-                p[k] = d[k].flatten()
+            p[k] = d[k].flatten()
         if type(p[k]) is list:
             p[k] = p[k].flatten()
     pvec = np.concatenate(p,axis=0)

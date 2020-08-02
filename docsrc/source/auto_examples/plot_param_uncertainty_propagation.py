@@ -24,6 +24,7 @@ conc = 150 # [uM] Spin concentration
 P = dd_rice(r,[center, width])
 B = bg_hom3d(t,conc,lam)
 K = dipolarkernel(t,r,lam,B)
+np.random.seed(0)
 V = K@P + whitegaussnoise(t,0.03)
 
 # %% [markdown]
@@ -62,7 +63,10 @@ lower =      [0.10, 2.0,  0.1, 0.1 ] # lower bounds
 upper =      [0.50, 7.0,  0.5, 1500] # upper bounds
 
 # Finally we can run the fit and get the fitted parameters and their uncertainties
-parfit,paruq,_ = fitparamodel(V,Vmodel,par0,lower,upper)
+fit = fitparamodel(V,Vmodel,par0,lower,upper)
+
+parfit = fit.param
+paruq = fit.uncertainty
 
 # Forward-calculate the models with the fitted parameters
 Vfit = Vmodel(parfit)

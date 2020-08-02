@@ -5,7 +5,7 @@
 
 import numpy as np
 import types
-from deerlab import UncertQuant
+from deerlab.classes import UncertQuant
 
 def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
     r""" Bootstrap analysis for uncertainty quantification

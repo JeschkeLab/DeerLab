@@ -62,7 +62,7 @@ and strongly helps stabilizing the fit.
 This pathway ususally refocuses at around ``t = max(t)/2``, and usually can
 be even estimated from simple visual inspection of the signal. 
 Thus, we can strongly constraint this parameters while leaving the
-pathway amplitudes pretty unconstrained.
+pathway amplitudes pretty much unconstrained.
 
 
 
@@ -102,7 +102,7 @@ Run the fit with a 5-pulse DEER signal model
 
 .. code-block:: python
 
-    Vfit,Pfit,Bfit,parfit,paruq,moduq,stats = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_5pdeer,par0,lb,ub,display=True)
+    fit = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_5pdeer,par0,lb,ub,display=True)
     plt.show()
 
 
@@ -117,18 +117,17 @@ Run the fit with a 5-pulse DEER signal model
 
  .. code-block:: none
 
-    c:\users\luis\appdata\local\programs\python\python36\lib\site-packages\numpy\core\_asarray.py:136: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      return array(a, dtype, copy=False, order=order, subok=True)
     ----------------------------------------------------------------------------
     Goodness of fit
       Vexp[0]: chi2 = 1.025641  RMSD  = 0.004493
     ----------------------------------------------------------------------------
     Fitted parameters and 95%-confidence intervals
-      parfit['bg'][0][0]:   298.4495821  (290.9010012, 305.9983053)  Concentration of pumped spins (uM)
-      parfit['ex'][0][0]:   2.6414233  (2.6217640, 2.6610838)  Amplitude of unmodulated components ()
-      parfit['ex'][0][1]:   1.3196682  (1.2848191, 1.3545179)  Amplitude of 1st modulated pathway ()
-      parfit['ex'][0][2]:   0.4406813  (0.4220567, 0.4593060)  Amplitude of 2nd modulated pathway ()
-      parfit['ex'][0][3]:   3.2043365  (3.1985290, 3.2101455)  Refocusing time of 2nd modulated pathway (us)
+    Vfit[0]:
+      bgparam[0]:   298.4495821  (290.9010012, 305.9983053)  Concentration of pumped spins (uM)
+      exparam[0]:   2.6414233  (2.6217640, 2.6610838)  Amplitude of unmodulated components ()
+      exparam[1]:   1.3196682  (1.2848191, 1.3545179)  Amplitude of 1st modulated pathway ()
+      exparam[2]:   0.4406813  (0.4220567, 0.4593060)  Amplitude of 2nd modulated pathway ()
+      exparam[3]:   3.2043365  (3.1985290, 3.2101455)  Refocusing time of 2nd modulated pathway (us)
     ----------------------------------------------------------------------------
 
 
@@ -137,7 +136,7 @@ Run the fit with a 5-pulse DEER signal model
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  10.227 seconds)
+   **Total running time of the script:** ( 0 minutes  9.454 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_fitting_5pdeer.py:

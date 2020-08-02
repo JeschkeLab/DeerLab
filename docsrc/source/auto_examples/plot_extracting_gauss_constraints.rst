@@ -75,8 +75,8 @@ the outputs.
 
 .. code-block:: python
 
-    _,Pfit,_,_,fituq,_,_ = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,display=True)
-
+    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,display=True)
+    Pfit = fit.P
 
 
 
@@ -119,7 +119,7 @@ Extract the uncertainty quantification of the fitted distribution...
 
 .. code-block:: python
 
-    Pfit_uq = fituq['Pfit']
+    Pfit_uq = fit.Puncert
     # ...specifically its covariance matrix
     Pfit_covmat = Pfit_uq.covmat
 
@@ -145,7 +145,9 @@ Fit a 2-Gauss model to the fitted parameter-free distribution:
     par0 = info['Start']
     lb = info['Lower']
     ub = info['Upper']
-    parfit,paruq,_ = fitparamodel(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat)
+    fit = fitparamodel(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat)
+    parfit = fit.param
+    paruq = fit.uncertainty
     PGauss = dd_gauss2(r,parfit)
 
     # Extract the 95#-confidence intervals...
@@ -203,6 +205,8 @@ Fit a 2-Gauss model to the fitted parameter-free distribution:
 
 
 
+
+
 .. image:: /auto_examples/images/sphx_glr_plot_extracting_gauss_constraints_002.png
     :alt: plot extracting gauss constraints
     :class: sphx-glr-single-img
@@ -214,7 +218,7 @@ Fit a 2-Gauss model to the fitted parameter-free distribution:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  5.805 seconds)
+   **Total running time of the script:** ( 0 minutes  5.704 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_extracting_gauss_constraints.py:

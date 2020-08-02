@@ -14,9 +14,9 @@ def assert_solver(regtype,solver):
     P = dd_gauss(r,[3,0.5])
     K = dipolarkernel(t,r)
     V = K@P + whitegaussnoise(t,0.01)
-    Pfit,_ = fitregmodel(V,K,r,regtype,'aic',solver=solver)
+    fit = fitregmodel(V,K,r,regtype,'aic',solver=solver)
 
-    assert ovl(P,Pfit) > 0.95 # more than 95% overlap
+    assert ovl(P,fit.P) > 0.95 # more than 95% overlap
 #============================================================
 
 def test_tikh_solver_fnnls():
@@ -94,9 +94,9 @@ def test_tikh_with_noise():
     K = dipolarkernel(t,r)
     V = K@P + whitegaussnoise(t,0.01)
 
-    Pfit,_ = fitregmodel(V,K,r,'tikhonov','aic')
+    fit = fitregmodel(V,K,r,'tikhonov','aic')
     
-    assert ovl(P,Pfit) > 0.95 # more than 95% overlap
+    assert ovl(P,fit.P) > 0.95 # more than 95% overlap
 #============================================================
 
 def test_tv_with_noise():
@@ -110,9 +110,9 @@ def test_tv_with_noise():
     K = dipolarkernel(t,r)
     V = K@P + whitegaussnoise(t,0.01)
 
-    Pfit,_ = fitregmodel(V,K,r,'tv','aic')
+    fit = fitregmodel(V,K,r,'tv','aic')
     
-    assert ovl(P,Pfit) > 0.95 # more than 95% overlap
+    assert ovl(P,fit.P) > 0.95 # more than 95% overlap
 #============================================================
 
 def test_huber_with_noise():
@@ -126,9 +126,9 @@ def test_huber_with_noise():
     K = dipolarkernel(t,r)
     V = K@P + whitegaussnoise(t,0.01)
 
-    Pfit,_ = fitregmodel(V,K,r,'huber','aic')
+    fit = fitregmodel(V,K,r,'huber','aic')
     
-    assert ovl(P,Pfit) > 0.95 # more than 95% overlap
+    assert ovl(P,fit.P) > 0.95 # more than 95% overlap
 #============================================================
 
 
@@ -143,10 +143,10 @@ def test_unconstrained():
     L = regoperator(r,2)
     V = K@P
 
-    Pfit,_ = fitregmodel(V,K,r,'tikhonov',alpha=0.05,nonnegativity=False,renormalize=False)
+    fit = fitregmodel(V,K,r,'tikhonov',alpha=0.05,nonnegativity=False,renormalize=False)
     Pfit_ref = np.linalg.solve(K.T@K + 0.05**2*L.T@L, K.T@V)
 
-    assert ovl(Pfit_ref,Pfit) > 0.99 # more than 99% overlap
+    assert ovl(Pfit_ref,fit.P) > 0.99 # more than 99% overlap
 #============================================================
 
 def generate_global_dataset():
@@ -195,9 +195,9 @@ def test_confinter_tikh():
     K = dipolarkernel(t,r)
     V = K@P
 
-    Pfit,Puq = fitregmodel(V,K,r,'tikhonov','aic')
+    fit = fitregmodel(V,K,r,'tikhonov','aic')
 
-    assert_confidence_intervals(Puq,Pfit)
+    assert_confidence_intervals(fit.uncertainty,fit.P)
 #============================================================
 
 def test_confinter_tv():
@@ -210,9 +210,9 @@ def test_confinter_tv():
     K = dipolarkernel(t,r)
     V = K@P
 
-    Pfit,Puq = fitregmodel(V,K,r,'tv','aic')
+    fit = fitregmodel(V,K,r,'tv','aic')
 
-    assert_confidence_intervals(Puq,Pfit)
+    assert_confidence_intervals(fit.uncertainty,fit.P)
 #============================================================
 
 
@@ -226,9 +226,9 @@ def test_confinter_huber():
     K = dipolarkernel(t,r)
     V = K@P
 
-    Pfit,Puq = fitregmodel(V,K,r,'huber','aic')
+    fit = fitregmodel(V,K,r,'huber','aic')
 
-    assert_confidence_intervals(Puq,Pfit)
+    assert_confidence_intervals(fit.uncertainty,fit.P)
 #============================================================
 
 def test_confinter_global():
@@ -237,9 +237,9 @@ def test_confinter_global():
 
     r,_,V1,V2,K1,K2 = generate_global_dataset()
 
-    Pfit,Puq = fitregmodel([V1,V2],[K1,K2],r,'tikhonov','aic')
+    fit = fitregmodel([V1,V2],[K1,K2],r,'tikhonov','aic')
 
-    assert_confidence_intervals(Puq,Pfit)
+    assert_confidence_intervals(fit.uncertainty,fit.P)
 #============================================================
 
 def test_renormalize():
@@ -252,10 +252,10 @@ def test_renormalize():
     K = dipolarkernel(t,r)
     V = K@P
 
-    Praw,_ = fitregmodel(V,K,r,'tikhonov','aic',renormalize = False)
-    Prenorm,_ = fitregmodel(V,K,r,'tikhonov','aic',renormalize = True)
+    fitraw = fitregmodel(V,K,r,'tikhonov','aic',renormalize = False)
+    fitrenorm = fitregmodel(V,K,r,'tikhonov','aic',renormalize = True)
 
-    assert max(abs(Praw - Prenorm*np.trapz(Praw,r))) < 1e-8
+    assert max(abs(fitraw.P - fitrenorm.P*np.trapz(fitraw.P,r))) < 1e-8
 #============================================================
 
 def test_scale_agnostic():
@@ -269,9 +269,25 @@ def test_scale_agnostic():
     scale = 1e8
     V = scale*K@P
 
-    Pfit,_ = fitregmodel(V,K,r,'tikhonov','aic',renormalize = False)
+    fit = fitregmodel(V,K,r,'tikhonov','aic',renormalize = False)
 
-    assert max(abs(P - Pfit/scale)) < 1e-4
+    assert max(abs(P - fit.P/scale)) < 1e-4
+#============================================================
+
+def test_scale_fit():
+#============================================================
+    "Check agnosticity of the w.r.t. an arbitrary scale of dipolar signal"
+
+    t = np.linspace(-2,4,300)
+    r = np.linspace(2,6,100)
+    P = dd_gauss(r,[3,0.5])
+    K = dipolarkernel(t,r)
+    scale = 1e8
+    V = scale*K@P
+
+    fit = fitregmodel(V,K,r,'tikhonov','aic',renormalize = False)
+
+    assert abs(1 - scale/fit.scale) < 1e-4
 #============================================================
 
 def test_nonuniform_r():
@@ -284,8 +300,8 @@ def test_nonuniform_r():
     K = dipolarkernel(t,r)
     V = K@P
 
-    Pfit,_ = fitregmodel(V,K,r,'tikhonov','aic')
-    Vfit = K@Pfit
+    fit = fitregmodel(V,K,r,'tikhonov','aic')
+    Vfit = K@fit.P
     assert abs(Vfit[0] - 1) < 1e-6
 #============================================================
 
@@ -302,9 +318,9 @@ def test_obir():
 
     V = K@P + whitegaussnoise(t,0.05)
 
-    Pfit,_ = fitregmodel(V,K,r,'tikhonov','aic',obir=True)
+    fit = fitregmodel(V,K,r,'tikhonov','aic',obir=True)
     
-    assert ovl(P,Pfit) > 0.80 # more than 80% overlap
+    assert ovl(P,fit.P) > 0.80 # more than 80% overlap
 #============================================================
 
 def test_obir_global():
@@ -313,9 +329,9 @@ def test_obir_global():
 
     r,P,V1,V2,K1,K2 = generate_global_dataset()
 
-    Pfit,_ = fitregmodel([V1,V2],[K1,K2],r,'tikhonov','aic',obir=True)
+    fit = fitregmodel([V1,V2],[K1,K2],r,'tikhonov','aic',obir=True)
     
-    assert ovl(P,Pfit) > 0.80 # more than 80% overlap
+    assert ovl(P,fit.P) > 0.80 # more than 80% overlap
 #============================================================
 
 
@@ -330,7 +346,8 @@ def test_goodnes_of_fit():
     K = dipolarkernel(t,r)
     V = K@P + whitegaussnoise(t,0.01)
 
-    _,_,stats = fitregmodel(V,K,r,'tikhonov','aic',full_output=True)
+    fit = fitregmodel(V,K,r,'tikhonov','aic')
+    stats = fit.stats
 
     assert abs(stats['chi2red'] - 1) < 5e-2 and abs(stats['R2'] - 1) < 5e-2
 #============================================================
@@ -351,7 +368,8 @@ def test_goodnes_of_fit_global():
     np.random.seed(2)
     V2 = K2@P + whitegaussnoise(t2,0.01)
 
-    _,_,stats = fitregmodel([V1,V2],[K1,K2],r,'tikhonov','aic',full_output=True)
+    fit = fitregmodel([V1,V2],[K1,K2],r,'tikhonov','aic')
+    stats = fit.stats
 
     assert (abs(stats[0]['R2'] - 1) < 5e-2) and (abs(stats[1]['R2'] - 1) < 5e-2)
 #============================================================

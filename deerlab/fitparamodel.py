@@ -5,7 +5,7 @@
 
 import numpy as np
 from deerlab.utils import isempty, multistarts, jacobianest, hccm, parse_multidatasets, goodness_of_fit
-from deerlab import UncertQuant
+from deerlab.classes import UncertQuant, FitResult
 from scipy.optimize import least_squares
 import warnings
 
@@ -27,10 +27,13 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
 
     Returns
     -------
+    :ref:`FitResult` with the following fields defined:
     param : ndarray
         Fitted model parameters
     paramuq : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted parameters.
+    scale : float int
+        Amplitude scale of the dipolar signal.
     stats :  dict
         Goodness of fit statistical estimators:
 
@@ -40,6 +43,12 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         * ``stats['aic']`` - Akaike information criterion
         * ``stats['aicc']`` - Corrected Akaike information criterion
         * ``stats['bic']`` - Bayesian information criterion
+    success : bool
+        Whether or not the optimizer exited successfully.
+    cost : float
+        Value of the cost function at the solution.
+    residuals : ndarray
+        Vector of residuals at the solution.
 
     Other parameters
     ----------------
@@ -77,7 +86,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         par0 = [3.5, 0.5, 0.2, 250] # start values
         lb   = [ 1,  0.1,  0,  50 ] # lower bounds
         ub   = [20,   5,   1,  800] # upper bounds
-        parfit,paruq,stats = fitparamodel(V,Vmodel,par0,lb,ub)
+        fit = fitparamodel(V,Vmodel,par0,lb,ub)
 
 
     If multiple datasets are to be fitted globally, this can be easily achieved by adapting the example above. Differentiating between local and global parameters is also simple. This example shows the definition of a full parametric model of two signals with same underlying distance distribution and background but different modulation depths::
@@ -97,7 +106,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         par0 = [3.5, 0.5, 0.2, 0.3, 250] # start values
         lb   = [ 1,  0.1,  0,   0,  50 ] # lower bounds
         ub   = [20,   5,   1,   1,  800] # upper bounds
-        parfit,paruq,stats = fitparamodel([V1,V2],Vmodel,par0,lb,ub)
+        fit = fitparamodel([V1,V2],Vmodel,par0,lb,ub)
 
     """
 
@@ -122,7 +131,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         raise ValueError('The inital guess and upper/lower boundaries must have equal length.')
     if np.any(ub<lb):
         raise ValueError('Lower bound values cannot be larger than upper bound values.')
-
+    scale = 1
     # Preprare multiple start global optimization if requested
     if MultiStart>1 and unboundedparams:
         raise ValueError('Multistart optimization cannot be used with unconstrained parameters.')
@@ -136,6 +145,8 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         Function that provides vector of residuals, which is the objective
         function for the least-squares solvers
         """
+        nonlocal scale
+
         Vsim = model(p)
 
         # Check if there are invalid values...
@@ -155,16 +166,18 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
     # -------------------------------------------------------------------------------    
     fvals = []
     parfits = []
+    sols = []
     for par0 in multistarts_par0:
         # Solve the non-linear least squares (NLLS) problem 
         sol = least_squares(lsqresiduals ,par0, bounds=(lb,ub), max_nfev=int(maxIter), ftol=tolFun, method='dogbox')
+        sols.append(sol)
         parfits.append(sol.x)
         fvals.append(sol.cost)        
 
     # Find global minimum from multiple runs
     globmin = np.argmin(fvals)
     parfit = parfits[globmin]
-
+    sol = sols[globmin]
     # Issue warnings if fitted parameter values are at search range boundaries
     tol = 1e-5
     atLower = abs(parfit-lb)<tol
@@ -212,5 +225,8 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
     if len(stats)==1: 
         stats = stats[0]
 
-    return parfit, paruq, stats
+    return FitResult(
+            param=parfit, uncertainty=paruq, scale=scale, stats=stats, cost=fvals,
+            residuals=sol.fun, success=sol.success
+            )
 

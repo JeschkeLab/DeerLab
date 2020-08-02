@@ -28,7 +28,7 @@ Next, we calculate the background decay function due to a homogeneus 3D distribu
    lam = 0.4                          # modulation depth
    B = bg_hom3d(t,conc,lam)           # homogeneous 3D background decay function
 
-Next, we combine the distance distribution and the background into a full DEER signal and add some noise:
+Next, we combine the distance distribution and the background into a full 4-pulse DEER signal and add some noise:
 
 .. code-block:: python
 
@@ -48,13 +48,16 @@ Now that we have a noisy DEER trace, we fit it (in a single step) with a non-par
 
 .. code-block:: python
 
-   Vfit,Pfit,Bfit,parfit,modeluq,stats = fitsignal(Vexp,t,r,'P',bg_hom3d)  # fitting
+   fit = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_4pdeer)  # fitting
 
 Finally, we plot the results
 
 .. code-block:: python
 
-   lamfit = parfit['ex']                         # fitted modulation depth
+   Pfit = fit.P              # fitted distance distribution
+   Bfit = fit.B              # fitted background
+   Vfit = fit.V              # fitted dipolar signal
+   lamfit = fit.exparam      # fitted modulation depth
    
    # plotting
    plt.subplot(2,1,1)
