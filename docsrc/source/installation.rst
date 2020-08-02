@@ -48,12 +48,12 @@ Any DeerLab >0.10.0 release can be installed via pip using the following command
 		python -m pip install deerlab==x.x.x
 
 
-Older DeerLab 0.9.x versions, written for MATLAB are available from an `archived repository <https://github.com/JeschkeLab/DeerLab>`_. Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.
+Older DeerLab 0.9.x versions, written for MATLAB are available from an `archived repository <https://github.com/JeschkeLab/DeerLab-Matlab>`_. Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.
 
 Installing from source
 ----------------------
 
-To install DeerLab from the source, first it must be downloaded or cloned from the `DeerLab repository <https://github.com/JeschkeLab/PyDeerLab>`_. DeerLab and its dependencies can be installed by running the following command on a terminal window to install DeerLab as a static Python package::
+To install DeerLab from the source, first it must be downloaded or cloned from the `DeerLab repository <https://github.com/JeschkeLab/DeerLab>`_. DeerLab and its dependencies can be installed by running the following command on a terminal window to install DeerLab as a static Python package::
 
 		python setup.py install
 
