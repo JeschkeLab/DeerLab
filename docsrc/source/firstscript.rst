@@ -32,8 +32,8 @@ Next, we combine the distance distribution and the background into a full 4-puls
 
 .. code-block:: python
 
-   V = dipolarsignal(t,r,P,lam,B)     # DEER signal
-
+   K = dipolarkernel(t,r,lam,B)       # DEER kernel
+   V = K@P                            # DEER signal
    sig = 0.01                         # noise level
    Vexp = V + whitegaussnoise(V,sig)  # add noise
 
