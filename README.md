@@ -1,12 +1,10 @@
-# DeerLab
-
 <p align="center">
-<img src="./docsrc/source/_static/logo_dark.png" alt="DeerLab Logo" width="60%"></img>
+<img src="https://raw.githubusercontent.com/JeschkeLab/DeerLab/master/docsrc/source/_static/logo_dark.png" alt="DeerLab Logo" width="40%"></img>
 </p>
 </div>
 
 ### About
-DeerLab is a free software package for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy data based on the Python programming language. Dipolar EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others. The main homepage can be found [here](https://jeschkelab.github.io/DeerLab/index.html). This is the GitHub repository of the DeerLab source code, including instructions for compiling and installing DeerLab.
+DeerLab is a free software package for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy data based on the Python programming language. Dipolar EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others. The documentation can be found [here](https://jeschkelab.github.io/DeerLab/index.html).
 
 DeerLab consists of a collection of functions that perform modelling, processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows. To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background and experiment models.
 
