@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 from setuptools.command.install import install
 from setuptools.command.develop import develop
 import platform
@@ -20,6 +20,7 @@ def install_dependencies():
       subprocess.run(['pip','install','numpy'])
       subprocess.run(['pip','install','scipy'])
       subprocess.run(['pip','install','cvxopt'])
+   subprocess.run(['pip','install','numdifftools'])
 
 
 class install_routine(install):

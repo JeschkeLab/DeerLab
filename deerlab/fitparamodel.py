@@ -4,7 +4,8 @@
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from deerlab.utils import isempty, multistarts, jacobianest, hccm, parse_multidatasets, goodness_of_fit
+import numdifftools as nd
+from deerlab.utils import isempty, multistarts, hccm, parse_multidatasets, goodness_of_fit
 from deerlab.classes import UncertQuant, FitResult
 from scipy.optimize import least_squares
 import warnings
@@ -153,7 +154,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
 
         # Check if there are invalid values...
         if any(np.isnan(Vsim)) or any(np.isinf(Vsim)):
-            res = np.zeros_like(Vsim) # ...can happen when jacobianest() evaluates outside of bounds
+            res = np.zeros_like(Vsim) # ...can happen when Jacobian is evaluated outside of bounds
             return res
 
         # Otherwise if requested, compute the scale of the signal via linear LSQ   
@@ -208,7 +209,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         # of the negative log-likelihood
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            J,_ = jacobianest(lsqresiduals,parfit)
+            J = np.reshape(nd.Jacobian(lsqresiduals)(parfit),(-1,parfit.size))
         
         # Estimate the heteroscedasticity-consistent covariance matrix
         if isempty(covmatrix):

@@ -5,9 +5,10 @@
 
 import copy
 import numpy as np
+import numdifftools as nd
 from types import FunctionType
 import deerlab as dl
-from deerlab.utils import jacobianest, hccm, goodness_of_fit
+from deerlab.utils import hccm, goodness_of_fit
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
@@ -341,7 +342,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         res = weights*(Vfit - V)
 
         # Compute the Jacobian
-        Jnonlin,_ = jacobianest(lambda p: weights*(Knonlin(p)@plin), pnonlin)
+        Jnonlin = np.reshape(nd.Jacobian(lambda p: weights*(Knonlin(p)@plin))(pnonlin),(-1,pnonlin.size))
         Jlin = weights[:,np.newaxis]*Knonlin(pnonlin)
         J = np.concatenate((Jnonlin, Jlin),1)
         

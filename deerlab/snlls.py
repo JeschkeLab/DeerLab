@@ -1,12 +1,13 @@
 
 import copy
 import numpy as np
+import numdifftools as nd
 from scipy.optimize import least_squares, lsq_linear
 from numpy.linalg import solve
 
 # Import DeerLab depencies
 import deerlab as dl
-from deerlab.utils import jacobianest, goodness_of_fit, hccm, isempty
+from deerlab.utils import goodness_of_fit, hccm, isempty
 from deerlab.nnls import cvxnnls, fnnls, nnlsbpp
 from deerlab.classes import UncertQuant, FitResult
 
@@ -349,7 +350,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
         # Compute the Jacobian for the linear and non-linear parameters
         fcn = lambda p: Amodel(p)@linfit
-        Jnonlin, _ = jacobianest(fcn,nonlinfit)
+        Jnonlin = np.reshape(nd.Jacobian(fcn)(nonlinfit),(-1,nonlinfit.size))
         Jlin = Afit
         J = np.concatenate((Jnonlin, Jlin),1)
 
