@@ -15,7 +15,7 @@ from deerlab.utils import isempty, goodness_of_fit, jacobianest
 
 def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
               par0=[None,None,None], lb=[None,None,None], ub=[None,None,None],
-              weights=1, uqanalysis=True, display = False, regparam='aic'):
+              weights=1, uqanalysis=True, display = False, regparam='aic', regtype = 'tikhonov'):
     r"""
     Fits a dipolar model to the experimental signal V with time axis t, using
     distance axis r. The model is specified by the distance distribution (dd),
@@ -148,6 +148,14 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         The regularization parameter can be manually specified by passing a scalar value
         instead of a string. The default ``'aic'``.
 
+    regtype : string
+        Regularization functional type: 
+    
+        * ``'tikhonov'`` - Tikhonov regularizaton
+        * ``'tv'``  - Total variation regularization
+        * ``'huber'`` - Huber regularization
+        The default is ``'tikhonov'``.  
+
     uqanalysis : boolean
         Enable/disable the uncertainty quantification analysis, by default it is enabled.  
     display : boolean
@@ -188,8 +196,6 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     """
 
     # Default optional settings
-    regtype = 'tikhonov'
-    DisplayResults = display
     normP = True
 
     # Make inputs into a list if just a singal is passed
@@ -336,7 +342,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 bgsubcovmat  = paruq.covmat[np.ix_(bgidx[jj],bgidx[jj])]
                 paruq_bg.append( UncertQuant('covariance',parfit_[bgidx[jj]],bgsubcovmat,lb[bgidx[jj]],ub[bgidx[jj]]))
             else:
-                paruq_bg.append([])
+                paruq_bg.append([None])
         
         # Experiment parameters uncertainty
         # ----------------------------------
@@ -345,7 +351,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 exsubcovmat  = paruq.covmat[np.ix_(exidx[jj],exidx[jj])]
                 paruq_ex.append( UncertQuant('covariance',parfit_[exidx[jj]],exsubcovmat,lb[exidx[jj]],ub[exidx[jj]]))
             else:
-                paruq_ex.append([])
+                paruq_ex.append([None])
             
         # Distribution parameters uncertainty
         # ------------------------------------
@@ -353,7 +359,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             ddsubcovmat  = paruq.covmat[np.ix_(ddidx,ddidx)]
             paruq_dd = UncertQuant('covariance',parfit_[ddidx],ddsubcovmat,lb[ddidx],ub[ddidx])
         else:
-            paruq_dd = []
+            paruq_dd = [None]
         
         # Distance distribution uncertainty
         # ----------------------------------
@@ -370,23 +376,27 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             if includeExperiment[jj]:
                 Bfit_uq.append( paruq.propagate(lambda par:multiPathwayModel(par)[1][jj]))
             else:
-                Bfit_uq.append([])
+                Bfit_uq.append([None])
         
         # Dipolar signal uncertainty
         # --------------------------
         for jj in range(nSignals):
             if includeForeground and parametricDistribution:
-                # Simple parametric model error propagation
+                # Full parametric signal
                 Vmodel = lambda par: multiPathwayModel(par)[0][jj]@Pfcn(par[ddidx])
                 Vfit_uq.append( paruq.propagate(Vmodel))
+            elif includeForeground and np.all(~includeExperiment & ~includeBackground):
+                # Dipola evolution function
+                J = Ks[jj]
+                Vcovmat = J@covmat@J.T
+                Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat,[],[]))
             elif includeForeground:
-                # Use special structure to speed up propagation for
-                # parameter-free case instead of .propagate()
+                # Parametric signal with parameter-free distribution
                 J = np.concatenate((jacobianest(lambda par: multiPathwayModel(par[paramidx])[0][jj]@Pfit,parfit_)[0], Kfit[jj]),1)
                 Vcovmat = J@covmat@J.T
                 Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat,[],[]))
             else:
-                Vfit_uq.append([])
+                Vfit_uq.append([None])
 
         return Vfit_uq,Pfit_uq,Bfit_uq,paruq_bg,paruq_ex,paruq_dd   
     # =========================================================================
@@ -400,7 +410,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Ks = [dl.dipolarkernel(ts,r) for ts in t]
         
         # Linear regularization fit
-        fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=uqanalysis)
+        fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=False)
         Pfit = fit.P
         Pfit_uq = fit.uncertainty
         scales = fit.scale
@@ -410,8 +420,10 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Bfit = [np.ones_like(V) for V in Vexp]
         
         # No parameters
-        parfit_,Vfit_uq,Bfit_uq,paruq_bg,paruq_dd,paruq_ex = np.atleast_1d([[None]*nSignals for _ in range(6)])
-        
+        parfit_ = np.asarray([None])
+        if uqanalysis:
+            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(Pfit_uq)
+
     elif OnlyParametric:
         
         # Prepare the full-parametric model
@@ -573,7 +585,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     # Plotting
     # --------
-    if DisplayResults:
+    if display:
         _display_results()
 
     # Return numeric arrays and not lists if there is only one signal
