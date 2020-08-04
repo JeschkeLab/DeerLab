@@ -273,8 +273,8 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         Knonlin = lambda par: nonlinmodel(par,Nmodels)
         
         # Box constraints for the model parameters (non-linear parameters)
-        nlin_lb = np.matlib.repmat(lb,1,Nmodels)
-        nlin_ub = np.matlib.repmat(ub,1,Nmodels)
+        nlin_lb = np.tile(lb,(1,Nmodels))
+        nlin_ub = np.tile(ub,(1,Nmodels))
 
         # Add the box constraints on the non-linear kernel parameters
         nlin_lb = np.concatenate((lbK, nlin_lb),axis=None)
