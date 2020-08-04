@@ -15,7 +15,7 @@ from deerlab.utils import isempty, goodness_of_fit, jacobianest
 
 def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
               par0=[None,None,None], lb=[None,None,None], ub=[None,None,None],
-              weights=1, uqanalysis=True, display = False):
+              weights=1, uqanalysis=True, display = False, regparam='aic'):
     r"""
     Fits a dipolar model to the experimental signal V with time axis t, using
     distance axis r. The model is specified by the distance distribution (dd),
@@ -128,6 +128,26 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Array of weighting coefficients for the individual signals in global fitting,
         the default is all weighted equally.
         If not specified all datasets are weighted equally.
+    regParam (str or scalar):
+        Method for the automatic selection of the optimal regularization parameter:
+
+        * ``'lr'`` - L-curve minimum-radius method (LR)
+        * ``'lc'`` - L-curve maximum-curvature method (LC)
+        * ``'cv'`` - Cross validation (CV)
+        * ``'gcv'`` - Generalized Cross Validation (GCV)
+        * ``'rgcv'`` - Robust Generalized Cross Validation (rGCV)
+        * ``'srgcv'`` - Strong Robust Generalized Cross Validation (srGCV)
+        * ``'aic'`` - Akaike information criterion (AIC)
+        * ``'bic'`` - Bayesian information criterion (BIC)
+        * ``'aicc'`` - Corrected Akaike information criterion (AICC)
+        * ``'rm'`` - Residual method (RM)
+        * ``'ee'`` - Extrapolated Error (EE)
+        * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
+        * ``'gml'`` - Generalized Maximum Likelihood (GML)
+        * ``'mcl'`` - Mallows' C_L (MCL)
+        The regularization parameter can be manually specified by passing a scalar value
+        instead of a string. The default ``'aic'``.
+
     uqanalysis : boolean
         Enable/disable the uncertainty quantification analysis, by default it is enabled.  
     display : boolean
@@ -169,7 +189,6 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     # Default optional settings
     regtype = 'tikhonov'
-    regparam = 'aic'
     DisplayResults = display
     normP = True
 
