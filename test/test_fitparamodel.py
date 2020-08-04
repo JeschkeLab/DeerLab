@@ -141,7 +141,6 @@ def test_confinter_Pfit():
     assert_confidence_intervals(paruq.ci(50),paruq.ci(95),parfit,lb,ub)
 # ======================================================================
 
-
 def test_manual_covmatrix():
 # ======================================================================
     "Check that covariance matrix can be manually specified"
