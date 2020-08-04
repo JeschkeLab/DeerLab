@@ -1,9 +1,6 @@
 
 import numpy as np
-from numpy import pi, inf, NaN
 from deerlab import correctzerotime
-from deerlab.dd_models import dd_gauss,dd_gauss3
-from deerlab.utils import ovl
 
 def test_correction():
 #=======================================================================

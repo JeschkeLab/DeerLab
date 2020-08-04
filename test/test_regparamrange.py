@@ -1,6 +1,5 @@
 
 import numpy as np
-from numpy import pi, inf, NaN
 from deerlab import dipolarkernel, regoperator, regparamrange
 
 def test_resolution():

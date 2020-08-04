@@ -4,7 +4,6 @@ from numpy import pi, inf, NaN
 from deerlab.bg_models import bg_exp
 from deerlab.dd_models import dd_gauss
 from deerlab.dipolarkernel import dipolarkernel,calckernelmatrix
-from deerlab.dipolarbackground import dipolarbackground
 ge = 2.00231930436256 # free-electron g factor
 
 

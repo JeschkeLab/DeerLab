@@ -1,8 +1,6 @@
 import numpy as np
 from numpy import pi
 from deerlab import correctphase
-from deerlab.dd_models import dd_gauss,dd_gauss2
-from deerlab.bg_models import bg_exp
 
 
 def test_basics():

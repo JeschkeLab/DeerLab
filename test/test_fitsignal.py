@@ -156,6 +156,7 @@ def test_boundaries():
 def test_global_4pdeer():
 # ======================================================================
     "Check the correct fit of two 4-DEER signals"
+
     r = np.linspace(2,6,90)
     P = dd_gauss(r,[4.5, 0.6])
 
@@ -271,6 +272,7 @@ def assert_confinter_param(subset):
     Bmodel = lambda t,lam: bgmodel(t,kappa,lam)
 
     t = np.linspace(0,5,100)
+    np.random.seed(0)
     V = dipolarkernel(t,r,pathinfo,Bmodel)@P + whitegaussnoise(t,0.01)
     
     fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
@@ -336,6 +338,7 @@ def assert_confinter_models(subset):
     Bmodel = lambda t,lam: bgmodel(t,kappa,lam)
 
     t = np.linspace(0,5,100)
+    np.random.seed(0)
     V = dipolarkernel(t,r,pathinfo,Bmodel)@P + whitegaussnoise(t,0.03)
     
     fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
@@ -391,6 +394,7 @@ def assert_confinter_noforeground():
     "Check that the confidence inervals for a pure background fit are correct"
 
     bgmodel = bg_exp
+    t = np.linspace(0,5,100)
     r = np.linspace(2,6,90)
     P = dd_gauss(r,[4.5, 0.6])
 
@@ -398,7 +402,6 @@ def assert_confinter_noforeground():
     lam = 0.3
     Bmodel = bgmodel(t,kappa,lam)
 
-    t = np.linspace(0,5,100)
     np.random.seed(0)
     V = dipolarkernel(t,r,lam,Bmodel)@P + whitegaussnoise(t,0.01)
     
@@ -422,6 +425,7 @@ def assert_confinter_dipevofun():
     P = dd_gauss(r,[4.5, 0.6])
 
     t = np.linspace(0,5,100)
+    np.random.seed(0)
     V = dipolarkernel(t,r)@P + whitegaussnoise(t,0.01)
     
     fit = fitsignal(V,t,r,'P',None,None,uqanalysis=True)

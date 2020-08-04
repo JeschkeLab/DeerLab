@@ -1,7 +1,6 @@
 import numpy as np
-from numpy import pi, inf, NaN
 from deerlab.nnls import fnnls, cvxnnls, nnlsbpp
-from deerlab import lsqcomponents, dipolarkernel, regoperator, whitegaussnoise
+from deerlab import lsqcomponents, dipolarkernel, regoperator
 from deerlab.dd_models import dd_gauss,dd_gauss2
 
 

@@ -1,12 +1,11 @@
 import numpy as np
-from deerlab import mixmodels, dipolarkernel, fitparamodel
+from deerlab import mixmodels
 from deerlab.dd_models import dd_gauss, dd_rice
 
 def test_gaussgauss():
 # ======================================================================
     "Check the construction of a mixed model of Gaussian-Gaussian"
 
-    t = np.linspace(0,3,200)
     r = np.linspace(2,6,100)
     parIn1 = [3, 0.5]
     P1 = dd_gauss(r,parIn1)
@@ -26,7 +25,6 @@ def test_gaussrice():
 # ======================================================================
     "Check the construction of a mixed model of Gaussian-Gaussian"
 
-    t = np.linspace(0,3,200)
     r = np.linspace(2,6,100)
     parIn1 = [3, 0.5]
     P1 = dd_gauss(r,parIn1)

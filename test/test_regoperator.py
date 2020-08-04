@@ -1,6 +1,6 @@
 
 import numpy as np
-from numpy import pi, inf, NaN
+from numpy import pi
 from deerlab import regoperator
 
 def test_L0shape():
