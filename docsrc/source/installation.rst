@@ -11,7 +11,11 @@ DeerLab requires one of the following versions of the Python interpreter
 
 which can be downloaded from the `official Python distribution <https://www.python.org/>`_.
 
-For Windows systems it is imporant to ensure that the **Install launcher for all users (recommended)** and the **Add Python 3.7 to PATH** checkboxes at the bottom are checked. 
+For Windows systems it is imporant to ensure that the **Install launcher for all users (recommended)** and the **Add Python 3.x to PATH** checkboxes at the bottom are checked. To test if python has been succesfully installed, open a terminal window and run the command::
+
+	python
+
+wihch should open the Python interface as well as display the installed Python version. To exit use the ``exit()`` command.
 
 Installing pre-built DeerLab
 -----------------------------
@@ -40,6 +44,9 @@ The installed numerical packages (numpy, scipy, cvxopt) are linked against diffe
 	* Windows: linked against the Intel Matrix Kernel Library (MKL)
 	* Linux: linked against OpenBLAS
 	* Mac: linked against BLAS/LAPACK from the Accelerate framework
+
+If an error occurs during or after the installation please consult `this section <./installation_failed.html>`_ for a possible solution.
+
 
 Installing older versions
 -------------------------
