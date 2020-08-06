@@ -47,7 +47,6 @@ This class of functions can be used and/or combined to create fitting routines o
 
     ./functions/fitsignal
     ./functions/backgroundstart
-    ./functions/fitbackground
     ./functions/fitmultimodel
     ./functions/fitparamodel
     ./functions/fitregmodel
@@ -157,7 +156,7 @@ Legacy Functions
 =========================================
 
 
-This group of functions provides tools for reproducing analysis methods or workflows encountered in older software, particularly DeerAnalysis. These functions are not recommended for routine data analysis.
+This group of functions provides tools for reproducing analysis methods or workflows encountered in older software. These functions are not recommended for routine data analysis.
 
 .. rst-class:: func-list
 

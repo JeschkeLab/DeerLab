@@ -49,7 +49,7 @@ When you use DeerLab in your work, please cite the following publication
     :maxdepth: 1
 
     ./funding
-
+    ./changelog
 
 .. Indices and tables
 .. ==================
