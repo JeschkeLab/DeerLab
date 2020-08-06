@@ -119,7 +119,7 @@ model = lambda par: myABmodel(par)[0] # call myABmodel with par and take the fir
 Vs = [V1,V2]
 
 # Fit the global parametric model to both signals
-fit = fitparamodel(Vs,model,par0,lower,upper,MultiStart=40)
+fit = fitparamodel(Vs,model,par0,lower,upper,multistart=40)
 
 # The use of the option 'multistart' will help the solver to find the
 # global minimum and not to get stuck at local minima.
