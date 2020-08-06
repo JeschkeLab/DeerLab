@@ -31,7 +31,7 @@ def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
         Type of spectrum to be returned ('real','imag','abs'), the default is 'abs'.
     zerofilling : scalar
         Number of elements in the output FFT spectrum, the default is ``2*len(V)``.
-    aposization : boolean
+    apodization : boolean
         Use of a Hamming apodization window, the default is True.
     """
     

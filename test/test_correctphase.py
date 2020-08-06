@@ -50,7 +50,7 @@ def test_fit_imag_offset():
     ImOffsetIn = 40j
     Vphased = V*np.exp(1j*phiIn) + ImOffsetIn
 
-    _,_,_,ImOffsetOut = correctphase(Vphased,[],fitImagOffset=True,full_output=True)
+    _,_,_,ImOffsetOut = correctphase(Vphased,[],imagoffset=True,full_output=True)
 
     assert abs(ImOffsetIn - ImOffsetOut) < 1e-4
 #============================================================

@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
-                 weights=1, normP = True, uqanalysis=True, **kwargs):
+                 weights=1, renormalize = True, uqanalysis=True, **kwargs):
     r""" 
     Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
@@ -94,7 +94,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     ----------------
     weights : array_like
         Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
-    normP : boolean
+    renormalize : boolean
         Enable/disable renormalization of the fitted distribution, by default it is enabled.
     uqanalysis : boolean
         Enable/disable the uncertainty quantification analysis, by default it is enabled.    
@@ -290,7 +290,8 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         
         # Separable non-linear least-squares (SNLLS) fit
         scale = 1e2
-        fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, weights=weights, penalty=False, uqanalysis=False,linTolFun=[], linMaxIter=[],**kwargs)
+        fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, 
+                        weights=weights, penalty=False, uqanalysis=False, lin_tol=[], lin_maxiter=[],**kwargs)
         pnonlin = fit.nonlin
         plin = fit.lin
 
@@ -369,7 +370,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
 
     # If requested re-normalize the distribution
     postscale = np.trapz(Pfit,r)
-    if normP:
+    if renormalize:
         Pfit = Pfit/postscale
         fitparam_amp = fitparam_amp/sum(fitparam_amp)
         if uqanalysis:

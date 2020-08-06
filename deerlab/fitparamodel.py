@@ -10,7 +10,9 @@ from deerlab.classes import UncertQuant, FitResult
 from scipy.optimize import least_squares
 import warnings
 
-def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFun=1e-10, maxFunEvals=5000, maxIter = 3000, rescale=True, uqanalysis=True, covmatrix=[]):
+def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
+                 multistart=1, tol=1e-10, maxeval=5000, maxiter = 3000,
+                 rescale=True, uqanalysis=True, covmatrix=[]):
     r""" Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
 
     Parameters
@@ -61,11 +63,11 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         Number of starting points for global optimization, the default is 1.
     uqanalysis : boolean
         Enable/disable the uncertainty quantification analysis, by default it is enabled.    
-    tolFun : scalar
+    tol : scalar
         Optimizer function tolerance, the default is 1e-10.
-    maxFunEvals : scalar
+    maxeval : scalar
         Maximum number of optimizer iterations, the default is 5000.
-    maxIter : scalar
+    maxiter : scalar
         Maximum number of optimizer iterations, the default is 3000.
     covmatrix : array_like with shape(n,n)
         Covariance matrix of the noise in the dataset(s). If not specified it is automatically computed.
@@ -136,9 +138,9 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         raise ValueError('Lower bound values cannot be larger than upper bound values.')
 
     # Preprare multiple start global optimization if requested
-    if MultiStart>1 and unboundedparams:
-        raise ValueError('Multistart optimization cannot be used with unconstrained parameters.')
-    multistarts_par0 = multistarts(MultiStart,par0,lb,ub)
+    if multistart>1 and unboundedparams:
+        raise ValueError('multistart optimization cannot be used with unconstrained parameters.')
+    multistarts_par0 = multistarts(multistart,par0,lb,ub)
 
     def lsqresiduals(p):
     # -------------------------------------------------------------------------------    
@@ -176,7 +178,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
     sols = []
     for par0 in multistarts_par0:
         # Solve the non-linear least squares (NLLS) problem 
-        sol = least_squares(lsqresiduals ,par0, bounds=(lb,ub), max_nfev=int(maxIter), ftol=tolFun, method='dogbox')
+        sol = least_squares(lsqresiduals ,par0, bounds=(lb,ub), max_nfev=int(maxiter), ftol=tol, method='dogbox')
         sols.append(sol)
         parfits.append(sol.x)
         fvals.append(sol.cost)        

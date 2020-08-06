@@ -462,7 +462,8 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vexp = [Vexp[i]/prescales[i] for i in range(nSignals)]
 
         # Separable non-linear least squares (SNNLS) 
-        fit = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, regparam=regparam,linMaxIter=[],uqanalysis=uqanalysis,linTolFun=[],weights=weights)
+        fit = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, 
+                            regparam=regparam, lin_maxiter=[], uqanalysis=uqanalysis, lin_tol=[], weights=weights)
         parfit_ = fit.nonlin
         Pfit = fit.lin
         snlls_uq = fit.uncertainty
