@@ -270,7 +270,7 @@ def test_scale_agnostic():
 
     fit = fitregmodel(V,K,r,'tikhonov','aic',renormalize = False)
 
-    assert max(abs(P - fit.P/scale)) < 1e-4
+    assert max(abs(P - fit.P/scale)) < 1e-3
 #============================================================
 
 def test_scale_fit():

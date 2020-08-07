@@ -153,7 +153,7 @@ def test_gml_value():
     loga = get_alpha_from_method('gml')
     logaref = -7.89  # Computed with DeerLab-Matlab (0.9.2)
 
-    assert abs(1-loga/logaref) < 0.15
+    assert abs(1-loga/logaref) < 0.16
 #=======================================================================
 
 def test_lr_value():
