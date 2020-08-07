@@ -81,8 +81,8 @@ def test_rescaling():
     scale = 1e3
     V  = K@P
 
-    fit1 = fitmultimodel(V*scale,K,r,dd_gauss,3,'aic',normP=True,uqanalysis=False)
-    fit2 = fitmultimodel(V,K,r,dd_gauss,3,'aic',normP=False,uqanalysis=False)
+    fit1 = fitmultimodel(V*scale,K,r,dd_gauss,3,'aic',renormalize=True,uqanalysis=False)
+    fit2 = fitmultimodel(V,K,r,dd_gauss,3,'aic',renormalize=False,uqanalysis=False)
 
     assert max(abs(fit1.P - fit2.P)) < 1e-4
 #=======================================================================

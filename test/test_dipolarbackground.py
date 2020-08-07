@@ -1,6 +1,6 @@
 
 import numpy as np
-from deerlab.bg_models import *
+from deerlab.bg_models import bg_exp
 from deerlab.dipolarbackground import dipolarbackground
 
 

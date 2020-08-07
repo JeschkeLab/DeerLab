@@ -3,7 +3,7 @@ import numpy as np
 import scipy.optimize as opt
 from deerlab.utils import isempty
 
-def correctphase(V, Phase = [], fitImagOffset=False, full_output=False):
+def correctphase(V, phase = [], imagoffset=False, full_output=False):
 # ==========================================================================
     r"""
     Phase correction of complex-valued data
@@ -27,16 +27,16 @@ def correctphase(V, Phase = [], fitImagOffset=False, full_output=False):
         Real part of the phase corrected dataset.
     Vi : ndarray (if full_output==True)
         Imaginary part of the phase corrected dataset.
-    Phase : float scalar (if full_output==True)
+    phase : float scalar (if full_output==True)
         Fitted phase used for correction, in radians.    
-    ImOffset : float scalar (if full_output==True)
+    imoffset : float scalar (if full_output==True)
         Fitted imaginary offset used for correction.
 
     Other Parameters
     ----------------
-    Phase  : float scalar
+    phase  : float scalar
         Phase shift for manual correction, in radians. 
-    fitImagOffset : boolean
+    imagoffset : boolean
         Enables/Disables the fitting and correction of an imaginary offset, by default disabled.
     full_output : boolean
         If enabled the function will return additional output arguments in a tuple, by default disabled.
@@ -51,34 +51,34 @@ def correctphase(V, Phase = [], fitImagOffset=False, full_output=False):
     n = V.shape[0]
 
     # Determine if phase must be fitted or has been passed
-    if isempty(Phase):
+    if isempty(phase):
         fitPhase = True
     else: 
         fitPhase = False
-        Phase = np.atleast_1d(Phase)
-        if len(Phase) != Ntraces:
+        phase = np.atleast_1d(phase)
+        if len(phase) != Ntraces:
             raise ValueError('The number of input phases must agree with the number of traces.') 
 
     # Phase/offset fitting
     #-------------------------------------------------------------------------------
     ImagOffset = np.zeros(Ntraces)
     if fitPhase:
-        Phase = np.zeros(Ntraces)
+        phase = np.zeros(Ntraces)
         for i in range(Ntraces):
             par0 = []
             FitRange = np.arange(round(n/8),n) # use only last 7/8 of data for phase/offset correction
             V_ = V[FitRange,i]
             par0.append(np.mean(np.angle(V_))) # use average phase as initial value
-            if fitImagOffset:
+            if imagoffset:
                 par0.append(np.mean(np.imag(V_))) # use average offset as initial value
             fun = lambda par: _imaginarynorm(par,V_)
 
             pars = opt.fmin(fun,par0,maxfun=1e5,maxiter=1e5,disp=False)
-            Phase[i] = pars[0]
-            if fitImagOffset:
+            phase[i] = pars[0]
+            if imagoffset:
                 ImagOffset[i] = pars[1]
     else:
-        if fitImagOffset:
+        if imagoffset:
             # Fit only imaginary offset        
             for i in range(Ntraces):
                 par0 = 0
@@ -88,7 +88,7 @@ def correctphase(V, Phase = [], fitImagOffset=False, full_output=False):
     ImagOffset = ImagOffset*1j
 
     # Apply phase/offset correction
-    ph = np.exp(1j*Phase)
+    ph = np.exp(1j*phase)
     Vc = (V - ImagOffset)/ph
 
     if Ntraces==1:
@@ -97,10 +97,10 @@ def correctphase(V, Phase = [], fitImagOffset=False, full_output=False):
     # Output
     Vreal = np.real(Vc)
     Vimag = np.imag(Vc)
-    Phase = np.angle(ph) # map phase angle to [-pi,pi) interval
+    phase = np.angle(ph) # map phase angle to [-pi,pi) interval
 
     if full_output:
-        return Vreal,Vimag,Phase,ImagOffset
+        return Vreal,Vimag,phase,ImagOffset
     else:
         return Vreal
 

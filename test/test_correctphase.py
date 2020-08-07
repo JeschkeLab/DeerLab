@@ -1,8 +1,6 @@
 import numpy as np
 from numpy import pi
 from deerlab import correctphase
-from deerlab.dd_models import dd_gauss,dd_gauss2
-from deerlab.bg_models import bg_exp
 
 
 def test_basics():
@@ -52,7 +50,7 @@ def test_fit_imag_offset():
     ImOffsetIn = 40j
     Vphased = V*np.exp(1j*phiIn) + ImOffsetIn
 
-    _,_,_,ImOffsetOut = correctphase(Vphased,[],fitImagOffset=True,full_output=True)
+    _,_,_,ImOffsetOut = correctphase(Vphased,[],imagoffset=True,full_output=True)
 
     assert abs(ImOffsetIn - ImOffsetOut) < 1e-4
 #============================================================
@@ -62,7 +60,7 @@ def test_multiple_datasets():
 #============================================================
     "Check that the phase correcion works when passing multiple datasets"
 
-    V = np.matlib.repmat(np.arange(100),20,1).T
+    V = np.tile(np.arange(100),(20,1)).T
     phases = np.mod(np.linspace(-3*pi/4,pi/2,20),pi)
     Vphased = V*np.exp(1j*phases)
 
@@ -76,7 +74,7 @@ def test_multiple_datasets_manual():
 #============================================================
     "Check that manual phase correcion works when passing multiple datasets"
 
-    V = np.matlib.repmat(np.arange(100),20,1).T
+    V = np.tile(np.arange(100),(20,1)).T
     phases = np.mod(np.linspace(-3*pi/4,pi/2,20),pi)
     Vphased = V*np.exp(1j*phases)
 

@@ -102,7 +102,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
 
         # Inform of progress if requested
         if verbose:
-            print('\r Bootstrapping: #{}/#{} samples finished'.format(iSample,nSamples))
+            print('Bootstrapping: #{}/#{} samples finished'.format(iSample+1,nSamples), end='\r', flush=True)
             
         for i in range(nSignals):
 

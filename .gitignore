@@ -23,3 +23,5 @@ docsrc/__pycache__/
 dist/
 build/
 .debugging.py
+multidocs/**/*
+docsrc/source/auto_examples/**/*

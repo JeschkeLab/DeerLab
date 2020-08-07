@@ -1,18 +1,19 @@
 
 import copy
 import numpy as np
+import numdifftools as nd
 from scipy.optimize import least_squares, lsq_linear
 from numpy.linalg import solve
 
 # Import DeerLab depencies
 import deerlab as dl
-from deerlab.utils import jacobianest, goodness_of_fit, hccm, isempty
+from deerlab.utils import goodness_of_fit, hccm, isempty
 from deerlab.nnls import cvxnnls, fnnls, nnlsbpp
 from deerlab.classes import UncertQuant, FitResult
 
 def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', penalty=None, weights=1,
-          regtype='tikhonov', regparam='aic', multiStarts=1, regOrder=2, alphaOptThreshold=1e-3,
-          nonLinTolFun=1e-9, nonLinMaxIter=1e8, linTolFun=1e-15, linMaxIter=1e4, huberparam=1.35,
+          regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3,
+          nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, huberparam=1.35,
           uqanalysis=True):
     r""" Separable Non-linear Least Squares Solver
 
@@ -79,7 +80,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         * ``'huber'`` - Huber regularization
         The default is ``'tikhonov'``.
 
-    regOrder (scalar,int)
+    regorder (scalar,int)
         Order of the regularization operator
     regParam (str or scalar):
         Method for the automatic selection of the optimal regularization parameter:
@@ -101,7 +102,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         The regularization parameter can be manually specified by passing a scalar value
         instead of a string. The default ``'aic'``.
 
-    alphaOptThreshold : float scalar
+    alphareopt : float scalar
         Relative parameter change threshold for reoptimizing the regularization parameter
         when using a selection method, the default is 1e-3.
     nnlsSolver : string
@@ -114,15 +115,15 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     weights : array_like
         Array of weighting coefficients for the individual signals in global fitting,
         the default is all weighted equally.
-    multiStarts : int scalar
+    multistart : int scalar
         Number of starting points for global optimization, the default is 1.
-    nonLinMaxIter : float scalar
+    nonlin_maxiter : float scalar
         Non-linear solver maximal number of iterations, the default is 1e8.
-    nonLinTolFun : float scalar
+    nonlin_tol : float scalar
         Non-linear solver function tolerance, the default is 1e-9.
-    linMaxIter : float scalar
+    lin_maxiter : float scalar
         Linear solver maximal number of iterations, the default is 1e4.
-    linTolFun : float scalar
+    lin_tol : float scalar
         Linear solver function tolerance, the default is 1e-15.
     uqanalysis : boolean
         Enable/disable the uncertainty quantification analysis, by default it is enabled.
@@ -227,8 +228,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         # Use an arbitrary axis
         ax = np.arange(1, Nlin+1)
         # Get regularization operator
-        regOrder = np.minimum(Nlin-1, regOrder)
-        L = dl.regoperator(ax, regOrder)
+        regorder = np.minimum(Nlin-1, regorder)
+        L = dl.regoperator(ax, regorder)
     else:
         L = np.eye(Nlin, Nlin)
 
@@ -247,11 +248,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     elif linearConstrained and nonNegativeOnly:
         # Non-negative linear LSQ
         if nnlsSolver is 'fnnls':
-            linSolver = lambda AtA, Aty: fnnls(AtA, Aty, tol=linTolFun, maxiter=linMaxIter)
+            linSolver = lambda AtA, Aty: fnnls(AtA, Aty, tol=lin_tol, maxiter=lin_maxiter)
         elif nnlsSolver is 'nnlsbpp':
             linSolver = lambda AtA, Aty: nnlsbpp(AtA, Aty, np.linalg.solve(AtA, Aty))
         elif nnlsSolver is 'cvx':
-            linSolver = lambda AtA, Aty: cvxnnls(AtA, Aty, tol=linTolFun, maxiter=linMaxIter)
+            linSolver = lambda AtA, Aty: cvxnnls(AtA, Aty, tol=lin_tol, maxiter=lin_maxiter)
         parseResult = lambda result: result
     # ----------------------------------------------------------
 
@@ -277,12 +278,12 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         if includePenalty:
             if type(regparam) is str:
                 # If the parameter vector has not changed by much...
-                if check and all(abs(par_prev-p)/p < alphaOptThreshold):
+                if check and all(abs(par_prev-p)/p < alphareopt):
                     # ...use the alpha optimized in the previous iteration
                     alpha = regparam_prev
                 else:
                     # ...otherwise optimize with current settings
-                    alpha = dl.selregparam(y, A, ax, regtype, regparam, regorder=regOrder)
+                    alpha = dl.selregparam(y, A, ax, regtype, regparam, regorder=regorder)
                     check = True
             else:
                 # Fixed regularization parameter
@@ -318,9 +319,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
 
     # Preprare multiple start global optimization if requested
-    if multiStarts > 1 and not nonLinearConstrained:
+    if multistart > 1 and not nonLinearConstrained:
         raise TypeError('Multistart optimization cannot be used with unconstrained non-linear parameters.')
-    multiStartPar0 = dl.utils.multistarts(multiStarts, par0, lb, ub)
+    multiStartPar0 = dl.utils.multistarts(multistart, par0, lb, ub)
 
     # Pre-allocate containers for multi-start run
     fvals, nonlinfits, linfits, sols = ([] for _ in range(4))
@@ -328,7 +329,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     # Multi-start global optimization
     for par0 in multiStartPar0:
         # Run the non-linear solver
-        sol = least_squares(ResidualsFcn, par0, bounds=(lb, ub), max_nfev=int(nonLinMaxIter), ftol=nonLinTolFun)
+        sol = least_squares(ResidualsFcn, par0, bounds=(lb, ub), max_nfev=int(nonlin_maxiter), ftol=nonlin_tol)
         nonlinfits.append(sol.x)
         linfits.append(linfit)
         fvals.append(sol.cost)
@@ -349,7 +350,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
         # Compute the Jacobian for the linear and non-linear parameters
         fcn = lambda p: Amodel(p)@linfit
-        Jnonlin, _ = jacobianest(fcn,nonlinfit)
+        Jnonlin = np.reshape(nd.Jacobian(fcn)(nonlinfit),(-1,nonlinfit.size))
         Jlin = Afit
         J = np.concatenate((Jnonlin, Jlin),1)
 

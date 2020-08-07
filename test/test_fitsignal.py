@@ -1,8 +1,8 @@
 
 import numpy as np
-from numpy import pi, inf, NaN
+from numpy import inf
 from deerlab import dipolarkernel, whitegaussnoise, fitsignal
-from deerlab.dd_models import dd_gauss, dd_rice
+from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp
 from deerlab.ex_models import ex_4pdeer, ex_5pdeer, ex_7pdeer, ex_ovl4pdeer
 from deerlab.utils import ovl
@@ -34,7 +34,6 @@ def test_4pdeer():
         
     assert_experiment_model(ex_4pdeer)
 # ======================================================================
-test_4pdeer()
 
 def test_5pdeer():
 # ======================================================================
@@ -157,6 +156,7 @@ def test_boundaries():
 def test_global_4pdeer():
 # ======================================================================
     "Check the correct fit of two 4-DEER signals"
+
     r = np.linspace(2,6,90)
     P = dd_gauss(r,[4.5, 0.6])
 
@@ -272,6 +272,7 @@ def assert_confinter_param(subset):
     Bmodel = lambda t,lam: bgmodel(t,kappa,lam)
 
     t = np.linspace(0,5,100)
+    np.random.seed(0)
     V = dipolarkernel(t,r,pathinfo,Bmodel)@P + whitegaussnoise(t,0.01)
     
     fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
@@ -337,6 +338,7 @@ def assert_confinter_models(subset):
     Bmodel = lambda t,lam: bgmodel(t,kappa,lam)
 
     t = np.linspace(0,5,100)
+    np.random.seed(0)
     V = dipolarkernel(t,r,pathinfo,Bmodel)@P + whitegaussnoise(t,0.03)
     
     fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
@@ -365,26 +367,77 @@ def assert_confinter_models(subset):
 
 def test_confinter_Pfit():
 # ======================================================================
-    "Check that the confidence inervals for fitted parametric distribution is correct"
+    "Check that the confidence inervals for fitted parametric distribution are correct"
     assert_confinter_models('Pfit')
 # ======================================================================
 
 def test_confinter_Pfitfree():
 # ======================================================================
-    "Check that the confidence inervals for fitted distribution is correct"
+    "Check that the confidence inervals for fitted distribution are correct"
     assert_confinter_models('Pfitfree')
 # ======================================================================
 
 def test_confinter_Vfit():
 # ======================================================================
-    "Check that the confidence inervals for fitted distribution is correct"
+    "Check that the confidence inervals for fitted distribution are correct"
     assert_confinter_models('Vfit')
 # ======================================================================
 
 def test_confinter_Bfit():
 # ======================================================================
-    "Check that the confidence inervals for fitted distribution is correct"
+    "Check that the confidence inervals for fitted distribution are correct"
     assert_confinter_models('Bfit')
+# ======================================================================
+
+def assert_confinter_noforeground():
+# ======================================================================
+    "Check that the confidence inervals for a pure background fit are correct"
+
+    bgmodel = bg_exp
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,90)
+    P = dd_gauss(r,[4.5, 0.6])
+
+    kappa = 0.4
+    lam = 0.3
+    Bmodel = bgmodel(t,kappa,lam)
+
+    np.random.seed(0)
+    V = dipolarkernel(t,r,lam,Bmodel)@P + whitegaussnoise(t,0.01)
+    
+    fit = fitsignal(V,t,r,None,bgmodel,ex_4pdeer,uqanalysis=True)
+
+    Bfit = fit.B
+    Buq = fit.Buncert
+    Bci50 = Buq.ci(50)
+    Bci95 = Buq.ci(95)
+    lb = np.full_like(t,-inf)
+    ub = np.full_like(t,inf)
+
+    assert_confidence_intervals(Bci50,Bci95,Bfit,lb,ub)
+# ======================================================================
+
+def assert_confinter_dipevofun():
+# ======================================================================
+    "Check that the confidence inervals for a dipolar evolution function fit are correct"
+
+    r = np.linspace(2,6,90)
+    P = dd_gauss(r,[4.5, 0.6])
+
+    t = np.linspace(0,5,100)
+    np.random.seed(0)
+    V = dipolarkernel(t,r)@P + whitegaussnoise(t,0.01)
+    
+    fit = fitsignal(V,t,r,'P',None,None,uqanalysis=True)
+
+    Pfit = fit.P
+    Puq = fit.Puncert
+    Pci50 = Puq.ci(50)
+    Pci95 = Puq.ci(95)
+    lb = np.zeros_like(r,0)
+    ub = np.full_like(r,inf)
+
+    assert_confidence_intervals(Pci50,Pci95,Pfit,lb,ub)
 # ======================================================================
 
 def test_global_scale_4pdeer():

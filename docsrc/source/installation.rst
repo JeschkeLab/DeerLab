@@ -11,7 +11,11 @@ DeerLab requires one of the following versions of the Python interpreter
 
 which can be downloaded from the `official Python distribution <https://www.python.org/>`_.
 
-For Windows systems it is imporant to ensure that the **Install launcher for all users (recommended)** and the **Add Python 3.7 to PATH** checkboxes at the bottom are checked. 
+For Windows systems it is imporant to ensure that the **Install launcher for all users (recommended)** and the **Add Python 3.x to PATH** checkboxes at the bottom are checked. To test if python has been succesfully installed, open a terminal window and run the command::
+
+	python
+
+wihch should open the Python interface as well as display the installed Python version. To exit use the ``exit()`` command.
 
 Installing pre-built DeerLab
 -----------------------------
@@ -33,12 +37,16 @@ DeerLab will install the following packages:
 	* `cvxopt <https://cvxopt.org/index.html>`_ - Free software package for convex optimization
 	* `numpy <https://numpy.org/>`_ -  Base N-dimensional array package 
 	* `scipy <https://www.scipy.org/>`_ - Fundamental library for scientific computing
+	* `numdifftools <https://numdifftools.readthedocs.io/en/latest/index.html>`_ - Tools to solve automatic numerical differentiation problems in one or more variables.
 
 The installed numerical packages (numpy, scipy, cvxopt) are linked against different BLAS libraries depending on the OS:
 
 	* Windows: linked against the Intel Matrix Kernel Library (MKL)
 	* Linux: linked against OpenBLAS
 	* Mac: linked against BLAS/LAPACK from the Accelerate framework
+
+If an error occurs during or after the installation please consult `this section <./installation_failed.html>`_ for a possible solution.
+
 
 Installing older versions
 -------------------------
@@ -48,12 +56,12 @@ Any DeerLab >0.10.0 release can be installed via pip using the following command
 		python -m pip install deerlab==x.x.x
 
 
-Older DeerLab 0.9.x versions, written for MATLAB are available from an `archived repository <https://github.com/JeschkeLab/DeerLab>`_. Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.
+Older DeerLab 0.9.x versions, written for MATLAB are available from an `archived repository <https://github.com/JeschkeLab/DeerLab-Matlab>`_. Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.
 
 Installing from source
 ----------------------
 
-To install DeerLab from the source, first it must be downloaded or cloned from the `DeerLab repository <https://github.com/JeschkeLab/PyDeerLab>`_. DeerLab and its dependencies can be installed by running the following command on a terminal window to install DeerLab as a static Python package::
+To install DeerLab from the source, first it must be downloaded or cloned from the `DeerLab repository <https://github.com/JeschkeLab/DeerLab>`_. DeerLab and its dependencies can be installed by running the following command on a terminal window to install DeerLab as a static Python package::
 
 		python setup.py install
 

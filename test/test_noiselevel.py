@@ -1,6 +1,6 @@
 import numpy as np
 from deerlab import noiselevel, whitegaussnoise, dipolarkernel
-from deerlab.dd_models import dd_gauss,dd_gauss2
+from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp
 
 

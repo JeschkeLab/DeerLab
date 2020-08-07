@@ -1,9 +1,7 @@
 
 import numpy as np
-from numpy import pi, inf, NaN
 from deerlab import dipolarkernel, whitegaussnoise, fitparamodel
 from deerlab.dd_models import dd_gauss, dd_rice
-from deerlab.utils import ovl
 
 
 def test_gaussian():
@@ -140,7 +138,6 @@ def test_confinter_Pfit():
 
     assert_confidence_intervals(paruq.ci(50),paruq.ci(95),parfit,lb,ub)
 # ======================================================================
-
 
 def test_manual_covmatrix():
 # ======================================================================

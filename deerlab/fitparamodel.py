@@ -4,12 +4,15 @@
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from deerlab.utils import isempty, multistarts, jacobianest, hccm, parse_multidatasets, goodness_of_fit
+import numdifftools as nd
+from deerlab.utils import isempty, multistarts, hccm, parse_multidatasets, goodness_of_fit
 from deerlab.classes import UncertQuant, FitResult
 from scipy.optimize import least_squares
 import warnings
 
-def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFun=1e-10, maxFunEvals=5000, maxIter = 3000, rescale=True, uqanalysis=True, covmatrix=[]):
+def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
+                 multistart=1, tol=1e-10, maxeval=5000, maxiter = 3000,
+                 rescale=True, uqanalysis=True, covmatrix=[]):
     r""" Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
 
     Parameters
@@ -60,11 +63,11 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         Number of starting points for global optimization, the default is 1.
     uqanalysis : boolean
         Enable/disable the uncertainty quantification analysis, by default it is enabled.    
-    tolFun : scalar
+    tol : scalar
         Optimizer function tolerance, the default is 1e-10.
-    maxFunEvals : scalar
+    maxeval : scalar
         Maximum number of optimizer iterations, the default is 5000.
-    maxIter : scalar
+    maxiter : scalar
         Maximum number of optimizer iterations, the default is 3000.
     covmatrix : array_like with shape(n,n)
         Covariance matrix of the noise in the dataset(s). If not specified it is automatically computed.
@@ -135,9 +138,9 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         raise ValueError('Lower bound values cannot be larger than upper bound values.')
 
     # Preprare multiple start global optimization if requested
-    if MultiStart>1 and unboundedparams:
-        raise ValueError('Multistart optimization cannot be used with unconstrained parameters.')
-    multistarts_par0 = multistarts(MultiStart,par0,lb,ub)
+    if multistart>1 and unboundedparams:
+        raise ValueError('multistart optimization cannot be used with unconstrained parameters.')
+    multistarts_par0 = multistarts(multistart,par0,lb,ub)
 
     def lsqresiduals(p):
     # -------------------------------------------------------------------------------    
@@ -153,7 +156,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
 
         # Check if there are invalid values...
         if any(np.isnan(Vsim)) or any(np.isinf(Vsim)):
-            res = np.zeros_like(Vsim) # ...can happen when jacobianest() evaluates outside of bounds
+            res = np.zeros_like(Vsim) # ...can happen when Jacobian is evaluated outside of bounds
             return res
 
         # Otherwise if requested, compute the scale of the signal via linear LSQ   
@@ -175,7 +178,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
     sols = []
     for par0 in multistarts_par0:
         # Solve the non-linear least squares (NLLS) problem 
-        sol = least_squares(lsqresiduals ,par0, bounds=(lb,ub), max_nfev=int(maxIter), ftol=tolFun, method='dogbox')
+        sol = least_squares(lsqresiduals ,par0, bounds=(lb,ub), max_nfev=int(maxiter), ftol=tol, method='dogbox')
         sols.append(sol)
         parfits.append(sol.x)
         fvals.append(sol.cost)        
@@ -208,7 +211,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1, MultiStart=1, tolFu
         # of the negative log-likelihood
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            J,_ = jacobianest(lsqresiduals,parfit)
+            J = np.reshape(nd.Jacobian(lsqresiduals)(parfit),(-1,parfit.size))
         
         # Estimate the heteroscedasticity-consistent covariance matrix
         if isempty(covmatrix):

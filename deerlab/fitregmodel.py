@@ -5,7 +5,6 @@
 
 import numpy as np
 from deerlab.nnls import fnnls, cvxnnls, nnlsbpp
-from scipy.optimize import nnls
 import deerlab as dl
 import copy
 from deerlab.utils import hccm, goodness_of_fit

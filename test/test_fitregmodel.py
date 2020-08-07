@@ -1,7 +1,6 @@
 
 import numpy as np
-from numpy import pi, inf, NaN
-from deerlab import fitregmodel,dipolarkernel, regoperator, regparamrange, selregparam, whitegaussnoise
+from deerlab import fitregmodel,dipolarkernel, regoperator, whitegaussnoise
 from deerlab.dd_models import dd_gauss,dd_gauss2
 from deerlab.utils import ovl
 
@@ -271,7 +270,7 @@ def test_scale_agnostic():
 
     fit = fitregmodel(V,K,r,'tikhonov','aic',renormalize = False)
 
-    assert max(abs(P - fit.P/scale)) < 1e-4
+    assert max(abs(P - fit.P/scale)) < 1e-3
 #============================================================
 
 def test_scale_fit():

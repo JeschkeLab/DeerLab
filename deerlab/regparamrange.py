@@ -40,6 +40,7 @@ def regparamrange(K,L,noiselvl=0,logres=0.1):
     DerivativeOrder = L.shape[1] - L.shape[0] # get order of derivative (=number of inf in singval)
     singularValues = singularValues[0:len(singularValues)-DerivativeOrder] # remove inf 
     singularValues = singularValues[::-1] # sort in decreasing order
+    singularValues = singularValues[singularValues>0] # remove zeros
     lgsingularValues = np.log10(singularValues)
 
     # Calculate range based on singular values

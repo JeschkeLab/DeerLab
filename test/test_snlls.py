@@ -331,7 +331,7 @@ def assert_reg_type(regtype):
     fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,regtype = regtype, uqanalysis=False)
     Pfit = fit.lin
     
-    assert  np.max(abs(P - Pfit)) < 2e-2
+    assert  np.max(abs(P - Pfit)) < 4e-2
 
 def test_reg_tikh():
 #=======================================================================
