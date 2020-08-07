@@ -4,27 +4,27 @@
 </div>
 
 ### About
-DeerLab is a free software package for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy data based on the Python programming language. Dipolar EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others. The documentation can be found [here](https://jeschkelab.github.io/DeerLab/index.html).
+DeerLab is a Python package for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy data. Dipolar EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others. The documentation can be found [here](https://jeschkelab.github.io/DeerLab/index.html).
 
-DeerLab consists of a collection of functions that perform modelling, processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows. To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background and experiment models.
+DeerLab consists of a collection of functions for modelling, data processing, and least-squares fitting. They can be combined in scripts to build custom data analysis workflows. DeerLab supports both classes of distance distribution models: non-parametric (Tikhonov regularization and related) and parametric (multi-Gaussians etc). It also provides a selection of background and experiment models.
 
-Prior to version 0.10, DeerLab was written in MATLAB. The old MATLAB codebase is archived and can be found [here](https://github.com/JeschkeLab/DeerLab-Matlab).
+The early versions of DeerLab (up to version 0.9) are written in MATLAB. The old MATLAB codebase is archived and can be found [here](https://github.com/JeschkeLab/DeerLab-Matlab).
 
 ### Requirements
 
-DeerLab requires **Python 3.6-3.8** and is available for Windows, Mac and Linux systems.
+DeerLab is available for Windows, Mac and Linux systems and requires **Python 3.6**, **3.7**, or **3.8**.
 
-All additional dependencies will be automatically downloaded and installed during the setup.
+All additional dependencies are automatically downloaded and installed during the setup.
  
 ### Setup
 
-A pre-built distribution can be installed using pip, which is already installed in Python 3.4 or newer versions.
+A pre-built distribution can be installed using `pip`.
 
-First it is important to ensure that pip is up-to-date. From a terminal (preferably with administrative privileges) use the following command::
+First, ensure that `pip` is up-to-date. From a terminal (preferably with administrative privileges) use the following command:
 
     python -m pip install --upgrade pip
 
-Next, DeerLab and all its dependencies can be installed via::
+Next, install DeerLab with
 
     python -m pip install deerlab
 
@@ -32,14 +32,14 @@ More details on the installation of DeerLab can be found [here](https://jeschkel
 
 ### Citation
 
-A publication about DeerLab is [available here](https://doi.org/10.5194/mr-2020-13). When you use DeerLab in your work, please cite 
+A paper about DeerLab is currently submitted for publication. When you use DeerLab in your work, for now, please cite the preprint
 
-> Fábregas Ibáñez, L., Jeschke, G., and Stoll, S.: DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson. Discuss., https://doi.org/10.5194/mr-2020-13, 2020
+> Fábregas Ibáñez, L., Jeschke, G., and Stoll, S.: DeerLab: A comprehensive software package for analyzing dipolar EPR spectroscopy data, Magn. Reson. Discuss., https://doi.org/10.5194/mr-2020-13, 2020
 
 Please check back frequently for updated publication information.
 
 ### License
 
-The DeerLab toolbox is licensed under the MIT License.
+The DeerLab toolbox is licensed under the [MIT License](LICENSE).
 
 Copyright (c) 2019-2020: Luis Fábregas Ibáñez, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).
