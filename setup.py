@@ -8,7 +8,6 @@ import subprocess
 def install_dependencies():
     subprocess.run(['pip','install','memoization'],check=True)
     subprocess.run(['pip','install','matplotlib'],check=True)
-    subprocess.run(['pip','install','pytest'],check=True)
     # Dependencies with OS-specific BLAS
     if platform.system() is 'Windows':  
         # Install Numpy,SciPy, CVXopt linked to MKL
@@ -35,6 +34,8 @@ class develop_routine(develop):
     def run(self):
         develop.run(self)
         install_dependencies()
+        subprocess.run(['pip','install','pytest'],check=True) # Install only on development version
+
 
 setup(
    name='DeerLab',
