@@ -116,6 +116,7 @@
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -182,18 +183,19 @@
   <h1>Source code for deerlab.snlls</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nf">copy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numdifftools</span> <span class="k">as</span> <span class="nn">nd</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">least_squares</span><span class="p">,</span> <span class="n">lsq_linear</span>
 <span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">solve</span>
 
 <span class="c1"># Import DeerLab depencies</span>
 <span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
-<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">jacobianest</span><span class="p">,</span> <span class="n">goodness_of_fit</span><span class="p">,</span> <span class="n">hccm</span><span class="p">,</span> <span class="nf">isempty</span>
+<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">goodness_of_fit</span><span class="p">,</span> <span class="n">hccm</span><span class="p">,</span> <span class="nf">isempty</span>
 <span class="kn">from</span> <span class="nn">deerlab.nnls</span> <span class="kn">import</span> <span class="nf">cvxnnls</span><span class="p">,</span> <span class="nf">fnnls</span><span class="p">,</span> <span class="n">nnlsbpp</span>
 <span class="kn">from</span> <span class="nn">deerlab.classes</span> <span class="kn">import</span> <span class="n">UncertQuant</span><span class="p">,</span> <span class="n">FitResult</span>
 
 <span class="k">def</span> <span class="nf">snlls</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Amodel</span><span class="p">,</span> <span class="n">par0</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ubl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnlsSolver</span><span class="o">=</span><span class="s1">&#39;cvx&#39;</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<div class="viewcode-block" id="snlls"><a class="viewcode-back" href="../../functions/snlls.html#deerlab.snlls">[docs]</a>          <span class="n">regtype</span><span class="o">=</span><span class="s1">&#39;tikhonov&#39;</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span> <span class="n">multiStarts</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">regOrder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alphaOptThreshold</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
-          <span class="n">nonLinTolFun</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">nonLinMaxIter</span><span class="o">=</span><span class="mf">1e8</span><span class="p">,</span> <span class="n">linTolFun</span><span class="o">=</span><span class="mf">1e-15</span><span class="p">,</span> <span class="n">linMaxIter</span><span class="o">=</span><span class="mf">1e4</span><span class="p">,</span> <span class="n">huberparam</span><span class="o">=</span><span class="mf">1.35</span><span class="p">,</span>
+<div class="viewcode-block" id="snlls"><a class="viewcode-back" href="../../functions/snlls.html#deerlab.snlls">[docs]</a>          <span class="n">regtype</span><span class="o">=</span><span class="s1">&#39;tikhonov&#39;</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span> <span class="n">multistart</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">regorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alphareopt</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+          <span class="n">nonlin_tol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">nonlin_maxiter</span><span class="o">=</span><span class="mf">1e8</span><span class="p">,</span> <span class="n">lin_tol</span><span class="o">=</span><span class="mf">1e-15</span><span class="p">,</span> <span class="n">lin_maxiter</span><span class="o">=</span><span class="mf">1e4</span><span class="p">,</span> <span class="n">huberparam</span><span class="o">=</span><span class="mf">1.35</span><span class="p">,</span>
           <span class="n">uqanalysis</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Separable Non-linear Least Squares Solver</span>
 
@@ -260,7 +262,7 @@
 <span class="sd">        * ``&#39;huber&#39;`` - Huber regularization</span>
 <span class="sd">        The default is ``&#39;tikhonov&#39;``.</span>
 
-<span class="sd">    regOrder (scalar,int)</span>
+<span class="sd">    regorder (scalar,int)</span>
 <span class="sd">        Order of the regularization operator</span>
 <span class="sd">    regParam (str or scalar):</span>
 <span class="sd">        Method for the automatic selection of the optimal regularization parameter:</span>
@@ -282,7 +284,7 @@
 <span class="sd">        The regularization parameter can be manually specified by passing a scalar value</span>
 <span class="sd">        instead of a string. The default ``&#39;aic&#39;``.</span>
 
-<span class="sd">    alphaOptThreshold : float scalar</span>
+<span class="sd">    alphareopt : float scalar</span>
 <span class="sd">        Relative parameter change threshold for reoptimizing the regularization parameter</span>
 <span class="sd">        when using a selection method, the default is 1e-3.</span>
 <span class="sd">    nnlsSolver : string</span>
@@ -295,15 +297,15 @@
 <span class="sd">    weights : array_like</span>
 <span class="sd">        Array of weighting coefficients for the individual signals in global fitting,</span>
 <span class="sd">        the default is all weighted equally.</span>
-<span class="sd">    multiStarts : int scalar</span>
+<span class="sd">    multistart : int scalar</span>
 <span class="sd">        Number of starting points for global optimization, the default is 1.</span>
-<span class="sd">    nonLinMaxIter : float scalar</span>
+<span class="sd">    nonlin_maxiter : float scalar</span>
 <span class="sd">        Non-linear solver maximal number of iterations, the default is 1e8.</span>
-<span class="sd">    nonLinTolFun : float scalar</span>
+<span class="sd">    nonlin_tol : float scalar</span>
 <span class="sd">        Non-linear solver function tolerance, the default is 1e-9.</span>
-<span class="sd">    linMaxIter : float scalar</span>
+<span class="sd">    lin_maxiter : float scalar</span>
 <span class="sd">        Linear solver maximal number of iterations, the default is 1e4.</span>
-<span class="sd">    linTolFun : float scalar</span>
+<span class="sd">    lin_tol : float scalar</span>
 <span class="sd">        Linear solver function tolerance, the default is 1e-15.</span>
 <span class="sd">    uqanalysis : boolean</span>
 <span class="sd">        Enable/disable the uncertainty quantification analysis, by default it is enabled.</span>
@@ -408,8 +410,8 @@
         <span class="c1"># Use an arbitrary axis</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Nlin</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
         <span class="c1"># Get regularization operator</span>
-        <span class="n">regOrder</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">Nlin</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">regOrder</span><span class="p">)</span>
-        <span class="n">L</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">regoperator</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">regOrder</span><span class="p">)</span>
+        <span class="n">regorder</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">Nlin</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">regorder</span><span class="p">)</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">regoperator</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">regorder</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">eye</span><span class="p">(</span><span class="n">Nlin</span><span class="p">,</span> <span class="n">Nlin</span><span class="p">)</span>
 
@@ -428,11 +430,11 @@
     <span class="k">elif</span> <span class="n">linearConstrained</span> <span class="ow">and</span> <span class="n">nonNegativeOnly</span><span class="p">:</span>
         <span class="c1"># Non-negative linear LSQ</span>
         <span class="k">if</span> <span class="n">nnlsSolver</span> <span class="ow">is</span> <span class="s1">&#39;fnnls&#39;</span><span class="p">:</span>
-            <span class="n">linSolver</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">:</span> <span class="nf">fnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">linTolFun</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="n">linMaxIter</span><span class="p">)</span>
+            <span class="n">linSolver</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">:</span> <span class="nf">fnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">lin_tol</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="n">lin_maxiter</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">nnlsSolver</span> <span class="ow">is</span> <span class="s1">&#39;nnlsbpp&#39;</span><span class="p">:</span>
             <span class="n">linSolver</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">:</span> <span class="n">nnlsbpp</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">nnlsSolver</span> <span class="ow">is</span> <span class="s1">&#39;cvx&#39;</span><span class="p">:</span>
-            <span class="n">linSolver</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">:</span> <span class="nf">cvxnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">linTolFun</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="n">linMaxIter</span><span class="p">)</span>
+            <span class="n">linSolver</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">:</span> <span class="nf">cvxnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">lin_tol</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="n">lin_maxiter</span><span class="p">)</span>
         <span class="n">parseResult</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">result</span><span class="p">:</span> <span class="n">result</span>
     <span class="c1"># ----------------------------------------------------------</span>
 
@@ -458,12 +460,12 @@
         <span class="k">if</span> <span class="n">includePenalty</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">regparam</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
                 <span class="c1"># If the parameter vector has not changed by much...</span>
-                <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="nf">all</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">par_prev</span><span class="o">-</span><span class="n">p</span><span class="p">)</span><span class="o">/</span><span class="n">p</span> <span class="o">&lt;</span> <span class="n">alphaOptThreshold</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="nf">all</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">par_prev</span><span class="o">-</span><span class="n">p</span><span class="p">)</span><span class="o">/</span><span class="n">p</span> <span class="o">&lt;</span> <span class="n">alphareopt</span><span class="p">):</span>
                     <span class="c1"># ...use the alpha optimized in the previous iteration</span>
                     <span class="n">alpha</span> <span class="o">=</span> <span class="n">regparam_prev</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># ...otherwise optimize with current settings</span>
-                    <span class="n">alpha</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">selregparam</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">regtype</span><span class="p">,</span> <span class="n">regparam</span><span class="p">,</span> <span class="n">regorder</span><span class="o">=</span><span class="n">regOrder</span><span class="p">)</span>
+                    <span class="n">alpha</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">selregparam</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">regtype</span><span class="p">,</span> <span class="n">regparam</span><span class="p">,</span> <span class="n">regorder</span><span class="o">=</span><span class="n">regorder</span><span class="p">)</span>
                     <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Fixed regularization parameter</span>
@@ -499,9 +501,9 @@
 
 
     <span class="c1"># Preprare multiple start global optimization if requested</span>
-    <span class="k">if</span> <span class="n">multiStarts</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">nonLinearConstrained</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">multistart</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">nonLinearConstrained</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Multistart optimization cannot be used with unconstrained non-linear parameters.&#39;</span><span class="p">)</span>
-    <span class="n">multiStartPar0</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multistarts</span><span class="p">(</span><span class="n">multiStarts</span><span class="p">,</span> <span class="n">par0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
+    <span class="n">multiStartPar0</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">multistarts</span><span class="p">(</span><span class="n">multistart</span><span class="p">,</span> <span class="n">par0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
 
     <span class="c1"># Pre-allocate containers for multi-start run</span>
     <span class="n">fvals</span><span class="p">,</span> <span class="n">nonlinfits</span><span class="p">,</span> <span class="n">linfits</span><span class="p">,</span> <span class="n">sols</span> <span class="o">=</span> <span class="p">([]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
@@ -509,7 +511,7 @@
     <span class="c1"># Multi-start global optimization</span>
     <span class="k">for</span> <span class="n">par0</span> <span class="ow">in</span> <span class="n">multiStartPar0</span><span class="p">:</span>
         <span class="c1"># Run the non-linear solver</span>
-        <span class="n">sol</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span><span class="n">ResidualsFcn</span><span class="p">,</span> <span class="n">par0</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">),</span> <span class="n">max_nfev</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">nonLinMaxIter</span><span class="p">),</span> <span class="n">ftol</span><span class="o">=</span><span class="n">nonLinTolFun</span><span class="p">)</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span><span class="n">ResidualsFcn</span><span class="p">,</span> <span class="n">par0</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">),</span> <span class="n">max_nfev</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">nonlin_maxiter</span><span class="p">),</span> <span class="n">ftol</span><span class="o">=</span><span class="n">nonlin_tol</span><span class="p">)</span>
         <span class="n">nonlinfits</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
         <span class="n">linfits</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">linfit</span><span class="p">)</span>
         <span class="n">fvals</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">cost</span><span class="p">)</span>
@@ -530,7 +532,7 @@
 
         <span class="c1"># Compute the Jacobian for the linear and non-linear parameters</span>
         <span class="n">fcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">Amodel</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="nd">@linfit</span>
-        <span class="n">Jnonlin</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">jacobianest</span><span class="p">(</span><span class="n">fcn</span><span class="p">,</span><span class="n">nonlinfit</span><span class="p">)</span>
+        <span class="n">Jnonlin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">reshape</span><span class="p">(</span><span class="n">nd</span><span class="o">.</span><span class="n">Jacobian</span><span class="p">(</span><span class="n">fcn</span><span class="p">)(</span><span class="n">nonlinfit</span><span class="p">),(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">nonlinfit</span><span class="o">.</span><span class="nf">size</span><span class="p">))</span>
         <span class="n">Jlin</span> <span class="o">=</span> <span class="n">Afit</span>
         <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">Jnonlin</span><span class="p">,</span> <span class="n">Jlin</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>
 

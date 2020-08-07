@@ -48,7 +48,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="A first script" href="firstscript.html" />
-    <link rel="prev" title="DeerLab 0.10.dev Documentation" href="index.html" /> 
+    <link rel="prev" title="DeerLab 0.10.0 Documentation" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -118,6 +118,7 @@
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -194,7 +195,11 @@
 </ul>
 </div></blockquote>
 <p>which can be downloaded from the <a class="reference external" href="https://www.python.org/">official Python distribution</a>.</p>
-<p>For Windows systems it is imporant to ensure that the <strong>Install launcher for all users (recommended)</strong> and the <strong>Add Python 3.7 to PATH</strong> checkboxes at the bottom are checked.</p>
+<p>For Windows systems it is imporant to ensure that the <strong>Install launcher for all users (recommended)</strong> and the <strong>Add Python 3.x to PATH</strong> checkboxes at the bottom are checked. To test if python has been succesfully installed, open a terminal window and run the command:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span>
+</pre></div>
+</div>
+<p>wihch should open the Python interface as well as display the installed Python version. To exit use the <code class="docutils literal notranslate"><span class="pre">exit()</span></code> command.</p>
 </div>
 <div class="section" id="installing-pre-built-deerlab">
 <h2>Installing pre-built DeerLab<a class="headerlink" href="#installing-pre-built-deerlab" title="Permalink to this headline">¶</a></h2>
@@ -216,6 +221,7 @@
 <li><p><a class="reference external" href="https://cvxopt.org/index.html">cvxopt</a> - Free software package for convex optimization</p></li>
 <li><p><a class="reference external" href="https://numpy.org/">numpy</a> -  Base N-dimensional array package</p></li>
 <li><p><a class="reference external" href="https://www.scipy.org/">scipy</a> - Fundamental library for scientific computing</p></li>
+<li><p><a class="reference external" href="https://numdifftools.readthedocs.io/en/latest/index.html">numdifftools</a> - Tools to solve automatic numerical differentiation problems in one or more variables.</p></li>
 </ul>
 </div></blockquote>
 <p>The installed numerical packages (numpy, scipy, cvxopt) are linked against different BLAS libraries depending on the OS:</p>
@@ -226,6 +232,7 @@
 <li><p>Mac: linked against BLAS/LAPACK from the Accelerate framework</p></li>
 </ul>
 </div></blockquote>
+<p>If an error occurs during or after the installation please consult <a class="reference external" href="./installation_failed.html">this section</a> for a possible solution.</p>
 </div>
 <div class="section" id="installing-older-versions">
 <h2>Installing older versions<a class="headerlink" href="#installing-older-versions" title="Permalink to this headline">¶</a></h2>
@@ -233,11 +240,11 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">deerlab</span><span class="o">==</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">x</span>
 </pre></div>
 </div>
-<p>Older DeerLab 0.9.x versions, written for MATLAB are available from an <a class="reference external" href="https://github.com/JeschkeLab/DeerLab">archived repository</a>. Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.</p>
+<p>Older DeerLab 0.9.x versions, written for MATLAB are available from an <a class="reference external" href="https://github.com/JeschkeLab/DeerLab-Matlab">archived repository</a>. Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.</p>
 </div>
 <div class="section" id="installing-from-source">
 <h2>Installing from source<a class="headerlink" href="#installing-from-source" title="Permalink to this headline">¶</a></h2>
-<p>To install DeerLab from the source, first it must be downloaded or cloned from the <a class="reference external" href="https://github.com/JeschkeLab/PyDeerLab">DeerLab repository</a>. DeerLab and its dependencies can be installed by running the following command on a terminal window to install DeerLab as a static Python package:</p>
+<p>To install DeerLab from the source, first it must be downloaded or cloned from the <a class="reference external" href="https://github.com/JeschkeLab/DeerLab">DeerLab repository</a>. DeerLab and its dependencies can be installed by running the following command on a terminal window to install DeerLab as a static Python package:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
 </pre></div>
 </div>
@@ -260,7 +267,7 @@
         <a href="firstscript.html" class="btn btn-neutral float-right" title="A first script" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="DeerLab 0.10.dev Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="DeerLab 0.10.0 Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

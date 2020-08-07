@@ -118,6 +118,7 @@
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -204,8 +205,8 @@
 </pre></div>
 </div>
 <p>Next, we combine the distance distribution and the background into a full 4-pulse DEER signal and add some noise:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">dipolarsignal</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>     <span class="c1"># DEER signal</span>
-
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>       <span class="c1"># DEER kernel</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span>                            <span class="c1"># DEER signal</span>
 <span class="n">sig</span> <span class="o">=</span> <span class="mf">0.01</span>                         <span class="c1"># noise level</span>
 <span class="n">Vexp</span> <span class="o">=</span> <span class="n">V</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">sig</span><span class="p">)</span>  <span class="c1"># add noise</span>
 </pre></div>

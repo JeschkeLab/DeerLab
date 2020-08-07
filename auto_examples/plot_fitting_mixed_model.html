@@ -118,6 +118,7 @@
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -265,8 +266,13 @@ a very basic dipolar kernel.</p>
 <span class="n">par0</span> <span class="o">=</span> <span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">]</span> <span class="c1"># built-in start values</span>
 <span class="n">lb</span> <span class="o">=</span> <span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Lower&#39;</span><span class="p">]</span> <span class="c1"># built-in lower bounds</span>
 <span class="n">ub</span> <span class="o">=</span> <span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Upper&#39;</span><span class="p">]</span> <span class="c1"># built-in upper bounds</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">MultiStart</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">multistart</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">fitpar</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:202: UserWarning: The fitted value of parameter #5,  is at the upper bound of the range.
+  warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound of the range.&#39;.format(p))
 </pre></div>
 </div>
 <p>From the fitted parameter set <code class="docutils literal notranslate"><span class="pre">fitpar</span></code> we can now generate our fitted distance
@@ -294,10 +300,10 @@ dipolar signal, let’s see how our fit turned out.</p>
 </div>
 <img alt="plot fitting mixed model" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_fitting_mixed_model_001.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f53c09ad050&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f3a71f0b490&gt;
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  4.561 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  30.573 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-fitting-mixed-model-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/132319a4b3041544836bda4add340a8a/plot_fitting_mixed_model.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_fitting_mixed_model.py</span></code></a></p>

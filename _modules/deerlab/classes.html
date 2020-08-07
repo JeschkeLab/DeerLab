@@ -116,6 +116,7 @@
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -261,7 +262,7 @@
 <span class="c1"># Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">jacobianest</span>
+<span class="kn">import</span> <span class="nn">numdifftools</span> <span class="k">as</span> <span class="nn">nd</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">fftconvolve</span>
 <span class="kn">import</span> <span class="nf">copy</span>
@@ -523,7 +524,7 @@
             <span class="k">raise</span> <span class="ne">IndexError</span> <span class="p">(</span><span class="s1">&#39;The 2nd and 3rd input arguments must have the same number of elements as the model output.&#39;</span><span class="p">)</span>
         
         <span class="c1"># Get jacobian of model to be propagated with respect to parameters</span>
-        <span class="n">J</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">jacobianest</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">parfit</span><span class="p">)</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">reshape</span><span class="p">(</span><span class="n">nd</span><span class="o">.</span><span class="n">Jacobian</span><span class="p">(</span><span class="n">model</span><span class="p">)(</span><span class="n">parfit</span><span class="p">),(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">parfit</span><span class="o">.</span><span class="nf">size</span><span class="p">))</span>
         
         <span class="c1"># Clip at boundaries</span>
         <span class="n">modelfit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">modelfit</span><span class="p">,</span><span class="n">lbm</span><span class="p">)</span>

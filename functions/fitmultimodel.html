@@ -48,7 +48,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="fitparamodel" href="fitparamodel.html" />
-    <link rel="prev" title="fitbackground" href="fitbackground.html" /> 
+    <link rel="prev" title="backgroundstart" href="backgroundstart.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -118,6 +118,7 @@
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -187,7 +188,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitmultimodel</span></code><a class="headerlink" href="#fitmultimodel" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="deerlab.fitmultimodel">
-<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">fitmultimodel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">Kmodel</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">maxModels</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'aic'</span></em>, <em class="sig-param"><span class="n">lb</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ub</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lbK</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ubK</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">normP</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">uqanalysis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitmultimodel.html#fitmultimodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitmultimodel" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">fitmultimodel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">Kmodel</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">maxModels</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'aic'</span></em>, <em class="sig-param"><span class="n">lb</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ub</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lbK</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ubK</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">renormalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">uqanalysis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitmultimodel.html#fitmultimodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitmultimodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
 non-linear least-squares (SNLLS).</p>
 <dl class="field-list">
@@ -271,7 +272,7 @@ Must be a callable DeerLab model function (e.g. dd_gauss or dd_rice).</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>weights</strong><span class="classifier">array_like</span></dt><dd><p>Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</p>
 </dd>
-<dt><strong>normP</strong><span class="classifier">boolean</span></dt><dd><p>Enable/disable renormalization of the fitted distribution, by default it is enabled.</p>
+<dt><strong>renormalize</strong><span class="classifier">boolean</span></dt><dd><p>Enable/disable renormalization of the fitted distribution, by default it is enabled.</p>
 </dd>
 <dt><strong>uqanalysis</strong><span class="classifier">boolean</span></dt><dd><p>Enable/disable the uncertainty quantification analysis, by default it is enabled.</p>
 </dd>
@@ -324,7 +325,7 @@ signals to the fit function and by returning multiple kernels with the kernel mo
         <a href="fitparamodel.html" class="btn btn-neutral float-right" title="fitparamodel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="fitbackground.html" class="btn btn-neutral float-left" title="fitbackground" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="backgroundstart.html" class="btn btn-neutral float-left" title="backgroundstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

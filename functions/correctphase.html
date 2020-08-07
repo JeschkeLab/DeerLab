@@ -118,6 +118,7 @@
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -187,7 +188,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">correctphase</span></code><a class="headerlink" href="#correctphase" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="deerlab.correctphase">
-<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">correctphase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">Phase</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">fitImagOffset</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">full_output</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/correctphase.html#correctphase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.correctphase" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">correctphase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">phase</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">imagoffset</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">full_output</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/correctphase.html#correctphase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.correctphase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Phase correction of complex-valued data</p>
 <p>Performs a phase optimization on the complex-valued data <code class="docutils literal notranslate"><span class="pre">V</span></code> by minimization of the
 imaginary component of the data. The phase can be corrected manually by specifying 
@@ -208,17 +209,17 @@ must contain the single traces. An array of phases <code class="docutils literal
 </dd>
 <dt><strong>Vi</strong><span class="classifier">ndarray (if full_output==True)</span></dt><dd><p>Imaginary part of the phase corrected dataset.</p>
 </dd>
-<dt><strong>Phase</strong><span class="classifier">float scalar (if full_output==True)</span></dt><dd><p>Fitted phase used for correction, in radians.</p>
+<dt><strong>phase</strong><span class="classifier">float scalar (if full_output==True)</span></dt><dd><p>Fitted phase used for correction, in radians.</p>
 </dd>
-<dt><strong>ImOffset</strong><span class="classifier">float scalar (if full_output==True)</span></dt><dd><p>Fitted imaginary offset used for correction.</p>
+<dt><strong>imoffset</strong><span class="classifier">float scalar (if full_output==True)</span></dt><dd><p>Fitted imaginary offset used for correction.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-odd">Other Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>Phase</strong><span class="classifier">float scalar</span></dt><dd><p>Phase shift for manual correction, in radians.</p>
+<dt><strong>phase</strong><span class="classifier">float scalar</span></dt><dd><p>Phase shift for manual correction, in radians.</p>
 </dd>
-<dt><strong>fitImagOffset</strong><span class="classifier">boolean</span></dt><dd><p>Enables/Disables the fitting and correction of an imaginary offset, by default disabled.</p>
+<dt><strong>imagoffset</strong><span class="classifier">boolean</span></dt><dd><p>Enables/Disables the fitting and correction of an imaginary offset, by default disabled.</p>
 </dd>
 <dt><strong>full_output</strong><span class="classifier">boolean</span></dt><dd><p>If enabled the function will return additional output arguments in a tuple, by default disabled.</p>
 </dd>

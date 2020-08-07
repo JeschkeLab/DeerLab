@@ -116,6 +116,7 @@
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -184,7 +185,7 @@
 <span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="k">as</span> <span class="nn">opt</span>
 <span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="nf">isempty</span>
 
-<span class="k">def</span> <span class="nf">correctphase</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">Phase</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">fitImagOffset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">correctphase</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">phase</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">imagoffset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <div class="viewcode-block" id="correctphase"><a class="viewcode-back" href="../../functions/correctphase.html#deerlab.correctphase">[docs]</a><span class="c1"># ==========================================================================</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Phase correction of complex-valued data</span>
@@ -208,16 +209,16 @@
 <span class="sd">        Real part of the phase corrected dataset.</span>
 <span class="sd">    Vi : ndarray (if full_output==True)</span>
 <span class="sd">        Imaginary part of the phase corrected dataset.</span>
-<span class="sd">    Phase : float scalar (if full_output==True)</span>
+<span class="sd">    phase : float scalar (if full_output==True)</span>
 <span class="sd">        Fitted phase used for correction, in radians.    </span>
-<span class="sd">    ImOffset : float scalar (if full_output==True)</span>
+<span class="sd">    imoffset : float scalar (if full_output==True)</span>
 <span class="sd">        Fitted imaginary offset used for correction.</span>
 
 <span class="sd">    Other Parameters</span>
 <span class="sd">    ----------------</span>
-<span class="sd">    Phase  : float scalar</span>
+<span class="sd">    phase  : float scalar</span>
 <span class="sd">        Phase shift for manual correction, in radians. </span>
-<span class="sd">    fitImagOffset : boolean</span>
+<span class="sd">    imagoffset : boolean</span>
 <span class="sd">        Enables/Disables the fitting and correction of an imaginary offset, by default disabled.</span>
 <span class="sd">    full_output : boolean</span>
 <span class="sd">        If enabled the function will return additional output arguments in a tuple, by default disabled.</span>
@@ -232,34 +233,34 @@
     <span class="n">n</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="nf">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># Determine if phase must be fitted or has been passed</span>
-    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">Phase</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">phase</span><span class="p">):</span>
         <span class="n">fitPhase</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">else</span><span class="p">:</span> 
         <span class="n">fitPhase</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">Phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">Phase</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Phase</span><span class="p">)</span> <span class="o">!=</span> <span class="n">Ntraces</span><span class="p">:</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span> <span class="o">!=</span> <span class="n">Ntraces</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of input phases must agree with the number of traces.&#39;</span><span class="p">)</span> 
 
     <span class="c1"># Phase/offset fitting</span>
     <span class="c1">#-------------------------------------------------------------------------------</span>
     <span class="n">ImagOffset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Ntraces</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">fitPhase</span><span class="p">:</span>
-        <span class="n">Phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Ntraces</span><span class="p">)</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Ntraces</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ntraces</span><span class="p">):</span>
             <span class="n">par0</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">FitRange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nf">round</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="mi">8</span><span class="p">),</span><span class="n">n</span><span class="p">)</span> <span class="c1"># use only last 7/8 of data for phase/offset correction</span>
             <span class="n">V_</span> <span class="o">=</span> <span class="n">V</span><span class="p">[</span><span class="n">FitRange</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
             <span class="n">par0</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">angle</span><span class="p">(</span><span class="n">V_</span><span class="p">)))</span> <span class="c1"># use average phase as initial value</span>
-            <span class="k">if</span> <span class="n">fitImagOffset</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">imagoffset</span><span class="p">:</span>
                 <span class="n">par0</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">imag</span><span class="p">(</span><span class="n">V_</span><span class="p">)))</span> <span class="c1"># use average offset as initial value</span>
             <span class="n">fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">_imaginarynorm</span><span class="p">(</span><span class="n">par</span><span class="p">,</span><span class="n">V_</span><span class="p">)</span>
 
             <span class="n">pars</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">fmin</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">maxfun</span><span class="o">=</span><span class="mf">1e5</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="mf">1e5</span><span class="p">,</span><span class="nf">disp</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">Phase</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">fitImagOffset</span><span class="p">:</span>
+            <span class="n">phase</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">imagoffset</span><span class="p">:</span>
                 <span class="n">ImagOffset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pars</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">fitImagOffset</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">imagoffset</span><span class="p">:</span>
             <span class="c1"># Fit only imaginary offset        </span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ntraces</span><span class="p">):</span>
                 <span class="n">par0</span> <span class="o">=</span> <span class="mi">0</span>
@@ -269,7 +270,7 @@
     <span class="n">ImagOffset</span> <span class="o">=</span> <span class="n">ImagOffset</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span>
 
     <span class="c1"># Apply phase/offset correction</span>
-    <span class="n">ph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">Phase</span><span class="p">)</span>
+    <span class="n">ph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">phase</span><span class="p">)</span>
     <span class="n">Vc</span> <span class="o">=</span> <span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="n">ImagOffset</span><span class="p">)</span><span class="o">/</span><span class="n">ph</span>
 
     <span class="k">if</span> <span class="n">Ntraces</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
@@ -278,10 +279,10 @@
     <span class="c1"># Output</span>
     <span class="n">Vreal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">real</span><span class="p">(</span><span class="n">Vc</span><span class="p">)</span>
     <span class="n">Vimag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">imag</span><span class="p">(</span><span class="n">Vc</span><span class="p">)</span>
-    <span class="n">Phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">angle</span><span class="p">(</span><span class="n">ph</span><span class="p">)</span> <span class="c1"># map phase angle to [-pi,pi) interval</span>
+    <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">angle</span><span class="p">(</span><span class="n">ph</span><span class="p">)</span> <span class="c1"># map phase angle to [-pi,pi) interval</span>
 
     <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Vreal</span><span class="p">,</span><span class="n">Vimag</span><span class="p">,</span><span class="n">Phase</span><span class="p">,</span><span class="n">ImagOffset</span>
+        <span class="k">return</span> <span class="n">Vreal</span><span class="p">,</span><span class="n">Vimag</span><span class="p">,</span><span class="n">phase</span><span class="p">,</span><span class="n">ImagOffset</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Vreal</span>
 </div>

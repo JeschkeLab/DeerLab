@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Download &mdash; DeerLab  documentation</title>
+  <title>Installation failed &mdash; DeerLab  documentation</title>
   
 
   
@@ -116,6 +116,7 @@
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -162,7 +163,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Download</li>
+      <li>Installation failed</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -179,72 +180,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="download">
-<h1>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h1>
-<p>DeerLab is distributed in two different formats:</p>
-<blockquote>
-<div><ul>
-<li><dl>
-<dt>Releases</dt><dd><p>Releases are the official packages of DeerLab containing the essentials for the full-functionality of the program. They contain:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>All DeerLab functions</p></li>
-<li><p>A compiled offline version of this web page and documentation</p></li>
-<li><p>All tutorial scripts</p></li>
-</ul>
-</div></blockquote>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>Source code</dt><dd><p>The source code contains all code used in the development of DeerLab, including:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>All DeerLab functions</p></li>
-<li><p>All source files for compiling the web page and documentation</p></li>
-<li><p>The full test suite</p></li>
-<li><p>All tutorial scripts</p></li>
-<li><p>All build and CI scripts</p></li>
-<li><p>No built documentation</p></li>
-</ul>
-</div></blockquote>
-</dd>
-</dl>
-</li>
-</ul>
-</div></blockquote>
-<hr class="docutils" />
-<div class="section" id="downloading-releases">
-<h2>Downloading Releases<a class="headerlink" href="#downloading-releases" title="Permalink to this headline">¶</a></h2>
-<p>All releases (including previous versions) are available in the official DeerLab <a class="reference external" href="https://github.com/JeschkeLab/DeerLab">GitHub repository</a>.</p>
-<ol class="arabic">
-<li><p>From the main page, select the <code class="docutils literal notranslate"><span class="pre">releases</span></code> tab</p>
-<blockquote>
-<div><img alt="_images/downloads1.png" src="_images/downloads1.png" />
-</div></blockquote>
-</li>
-<li><p>Select the release you want to download</p>
-<blockquote>
-<div><img alt="_images/downloads2.png" src="_images/downloads2.png" />
-</div></blockquote>
-</li>
-<li><p>Download the <code class="docutils literal notranslate"><span class="pre">DeerLab_x.y.zip</span></code> file. Extract the files on your desired location and follow the Installation page instructions.</p>
-<blockquote>
-<div><img alt="_images/downloads3.png" src="_images/downloads3.png" />
-</div></blockquote>
-</li>
-</ol>
+  <div class="section" id="installation-failed">
+<h1>Installation failed<a class="headerlink" href="#installation-failed" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="known-issues-1-dll-load-failed">
+<h2>Known Issues #1: DLL load failed<a class="headerlink" href="#known-issues-1-dll-load-failed" title="Permalink to this headline">¶</a></h2>
+<p>On a <strong>Windows</strong> computer, if when trying to run a DeerLab function you the following message:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ImportError: DLL load failed: The specified module could not be found.
+</pre></div>
 </div>
-<div class="section" id="downloading-the-source-code">
-<h2>Downloading the source code<a class="headerlink" href="#downloading-the-source-code" title="Permalink to this headline">¶</a></h2>
-<p>The source code is easily available in the official DeerLab <a class="reference external" href="https://github.com/JeschkeLab/DeerLab">GitHub repository</a> either by downloading or cloning the repository.</p>
-<ol class="arabic">
-<li><p>From the main page, select the <code class="docutils literal notranslate"><span class="pre">Clone</span> <span class="pre">or</span> <span class="pre">download</span></code> tab</p>
-<blockquote>
-<div><img alt="_images/downloads4.png" src="_images/downloads4.png" />
-</div></blockquote>
-</li>
+<p>This happens when the MKL libraries have not been properly linked in <code class="docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="docutils literal notranslate"><span class="pre">scipy</span></code> or <code class="docutils literal notranslate"><span class="pre">cvxopt</span></code> installations (typically <code class="docutils literal notranslate"><span class="pre">numpy</span></code>). This can happen due to firewall restrictions, user rights, or internet connection issues during the DeerLab installation. To solve this the best solution is to manually install as follows.</p>
+<ol class="arabic simple">
+<li><p>Access <a class="reference external" href="https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy">https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy</a></p></li>
+<li><p>There download the appropiate <code class="docutils literal notranslate"><span class="pre">numpy</span></code> wheels file according to your installed Python version and Windows system:</p></li>
 </ol>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>            Python version (3.x)
+Package name          |         Windows architecture (32-64 bit)
+   |                  |          |
+   v                  v          v
+numpy-1.19.1+mkl-cp36-cp36m-win_amd64.whl
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Once downloaded, open a terminal at the location of the <code class="docutils literal notranslate"><span class="pre">.whl</span></code> file and run the command:</p></li>
+</ol>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>python -m pip install &quot;numpy-1.19.1+mkl-cp36-cp36m-win_amd64.whl&quot;
+</pre></div>
+</div>
+<p>making sure that the name of the <code class="docutils literal notranslate"><span class="pre">.whl</span></code> file matches the one you have downloaded.</p>
+<p>This will install <code class="docutils literal notranslate"><span class="pre">numpy</span></code> and properly link all MKL DLL files. DeerLab can be used again. Should the error persists, repeat this process for the <code class="docutils literal notranslate"><span class="pre">scipy</span></code> and <code class="docutils literal notranslate"><span class="pre">cvxopt</span></code> packages (in that order).</p>
 </div>
 </div>
 

@@ -118,6 +118,7 @@
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -187,7 +188,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitparamodel</span></code><a class="headerlink" href="#fitparamodel" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="deerlab.fitparamodel">
-<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">fitparamodel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">par0</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lb</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">ub</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">MultiStart</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">tolFun</span><span class="o">=</span><span class="default_value">1e-10</span></em>, <em class="sig-param"><span class="n">maxFunEvals</span><span class="o">=</span><span class="default_value">5000</span></em>, <em class="sig-param"><span class="n">maxIter</span><span class="o">=</span><span class="default_value">3000</span></em>, <em class="sig-param"><span class="n">rescale</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">uqanalysis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">covmatrix</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitparamodel.html#fitparamodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitparamodel" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">fitparamodel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">par0</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lb</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">ub</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">multistart</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">1e-10</span></em>, <em class="sig-param"><span class="n">maxeval</span><span class="o">=</span><span class="default_value">5000</span></em>, <em class="sig-param"><span class="n">maxiter</span><span class="o">=</span><span class="default_value">3000</span></em>, <em class="sig-param"><span class="n">rescale</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">uqanalysis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">covmatrix</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitparamodel.html#fitparamodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitparamodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits the dipolar signal(s) to a parametric model using non-linear least-squares.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -241,11 +242,11 @@
 </dd>
 <dt><strong>uqanalysis</strong><span class="classifier">boolean</span></dt><dd><p>Enable/disable the uncertainty quantification analysis, by default it is enabled.</p>
 </dd>
-<dt><strong>tolFun</strong><span class="classifier">scalar</span></dt><dd><p>Optimizer function tolerance, the default is 1e-10.</p>
+<dt><strong>tol</strong><span class="classifier">scalar</span></dt><dd><p>Optimizer function tolerance, the default is 1e-10.</p>
 </dd>
-<dt><strong>maxFunEvals</strong><span class="classifier">scalar</span></dt><dd><p>Maximum number of optimizer iterations, the default is 5000.</p>
+<dt><strong>maxeval</strong><span class="classifier">scalar</span></dt><dd><p>Maximum number of optimizer iterations, the default is 5000.</p>
 </dd>
-<dt><strong>maxIter</strong><span class="classifier">scalar</span></dt><dd><p>Maximum number of optimizer iterations, the default is 3000.</p>
+<dt><strong>maxiter</strong><span class="classifier">scalar</span></dt><dd><p>Maximum number of optimizer iterations, the default is 3000.</p>
 </dd>
 <dt><strong>covmatrix</strong><span class="classifier">array_like with shape(n,n)</span></dt><dd><p>Covariance matrix of the noise in the dataset(s). If not specified it is automatically computed.</p>
 </dd>

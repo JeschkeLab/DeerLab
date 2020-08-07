@@ -118,6 +118,7 @@
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -187,7 +188,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitsignal</span></code><a class="headerlink" href="#fitsignal" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="deerlab.fitsignal">
-<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">fitsignal</code><span class="sig-paren">(</span><em class="sig-param">Vexp, t, r, dd_model='P', bg_model=&lt;function bg_hom3d&gt;, ex_model=&lt;function ex_4pdeer&gt;, par0=[None, None, None], lb=[None, None, None], ub=[None, None, None], weights=1, uqanalysis=True, display=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitsignal.html#fitsignal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitsignal" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">fitsignal</code><span class="sig-paren">(</span><em class="sig-param">Vexp, t, r, dd_model='P', bg_model=&lt;function bg_hom3d&gt;, ex_model=&lt;function ex_4pdeer&gt;, par0=[None, None, None], lb=[None, None, None], ub=[None, None, None], weights=1, uqanalysis=True, display=False, regparam='aic', regtype='tikhonov'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitsignal.html#fitsignal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitsignal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits a dipolar model to the experimental signal V with time axis t, using
 distance axis r. The model is specified by the distance distribution (dd),
 the background (bg), and the experiment (ex).</p>
@@ -292,10 +293,38 @@ as an empty list <code class="docutils literal notranslate"><span class="pre">[]
 </dl>
 </dd>
 <dt class="field-odd">Other Parameters</dt>
-<dd class="field-odd"><dl class="simple">
+<dd class="field-odd"><dl>
 <dt><strong>weights</strong><span class="classifier">array_like</span></dt><dd><p>Array of weighting coefficients for the individual signals in global fitting,
 the default is all weighted equally.
 If not specified all datasets are weighted equally.</p>
+</dd>
+<dt><strong>regParam (str or scalar):</strong></dt><dd><p>Method for the automatic selection of the optimal regularization parameter:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'lr'</span></code> - L-curve minimum-radius method (LR)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'lc'</span></code> - L-curve maximum-curvature method (LC)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'cv'</span></code> - Cross validation (CV)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'gcv'</span></code> - Generalized Cross Validation (GCV)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'rgcv'</span></code> - Robust Generalized Cross Validation (rGCV)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'srgcv'</span></code> - Strong Robust Generalized Cross Validation (srGCV)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'aic'</span></code> - Akaike information criterion (AIC)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'bic'</span></code> - Bayesian information criterion (BIC)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'aicc'</span></code> - Corrected Akaike information criterion (AICC)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'rm'</span></code> - Residual method (RM)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'ee'</span></code> - Extrapolated Error (EE)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'ncp'</span></code> - Normalized Cumulative Periodogram (NCP)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'gml'</span></code> - Generalized Maximum Likelihood (GML)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'mcl'</span></code> - Mallows’ C_L (MCL)</p></li>
+</ul>
+<p>The regularization parameter can be manually specified by passing a scalar value
+instead of a string. The default <code class="docutils literal notranslate"><span class="pre">'aic'</span></code>.</p>
+</dd>
+<dt><strong>regtype</strong><span class="classifier">string</span></dt><dd><p>Regularization functional type:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code> - Tikhonov regularizaton</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'tv'</span></code>  - Total variation regularization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'huber'</span></code> - Huber regularization</p></li>
+</ul>
+<p>The default is <code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code>.</p>
 </dd>
 <dt><strong>uqanalysis</strong><span class="classifier">boolean</span></dt><dd><p>Enable/disable the uncertainty quantification analysis, by default it is enabled.</p>
 </dd>
