@@ -121,6 +121,14 @@ def cvxnnls(AtA, Atb, tol=[], maxiter=[]):
 #=====================================================================================
     """
     NNLS problem solved via CVXOPT
+    
+        
+    References:
+    -----------
+    [1] 
+    Rein, Lewe, Andrade, Kacprzak and Weber. J. Magn. Reson., 295 (2018) 17–26.
+    Global analysis of complex PELDOR time traces
+    https://doi.org/10.1016/j.jmr.2018.07.015
     """
 
     N = np.shape(AtA)[1]
