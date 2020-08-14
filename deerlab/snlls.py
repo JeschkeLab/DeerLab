@@ -247,11 +247,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     elif linearConstrained and nonNegativeOnly:
         # Non-negative linear LSQ
-        if nnlsSolver is 'fnnls':
+        if nnlsSolver == 'fnnls':
             linSolver = lambda AtA, Aty: fnnls(AtA, Aty, tol=lin_tol, maxiter=lin_maxiter)
-        elif nnlsSolver is 'nnlsbpp':
+        elif nnlsSolver == 'nnlsbpp':
             linSolver = lambda AtA, Aty: nnlsbpp(AtA, Aty, np.linalg.solve(AtA, Aty))
-        elif nnlsSolver is 'cvx':
+        elif nnlsSolver == 'cvx':
             linSolver = lambda AtA, Aty: cvxnnls(AtA, Aty, tol=lin_tol, maxiter=lin_maxiter)
         parseResult = lambda result: result
     # ----------------------------------------------------------
