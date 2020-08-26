@@ -11,7 +11,7 @@ from deerlab.utils import goodness_of_fit, hccm, isempty
 from deerlab.nnls import cvxnnls, fnnls, nnlsbpp
 from deerlab.classes import UncertQuant, FitResult
 
-def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', penalty='auto', weights=1,
+def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=1,
           regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3,
           nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, huberparam=1.35,
           uqanalysis=True):
@@ -68,12 +68,12 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     Other parameters
     ----------------
-    penalty : boolean or string
-        Determines the use of a regularization penalty on the solution of the linear problem.
+    reg : boolean or string
+        Determines the use of regularization on the solution of the linear problem.
         
         * ``'auto'`` - Automatic decision based con the condition number of the non-linear model ``Amodel``.
-        * ``True`` - Forces the regularization penalty regardless of the condition number
-        * ``False`` - Disables the regularization penalty regardless of the condition number
+        * ``True`` - Forces regularization regardless of the condition number
+        * ``False`` - Disables regularization regardless of the condition number
         The default is ``'auto'``.
 
     regType : string
@@ -185,10 +185,10 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     # Determine whether to use regularization penalty
     illConditioned = np.linalg.cond(A0) > 10
-    if penalty is 'auto':
+    if reg is 'auto':
         includePenalty = illConditioned
     else:
-        includePenalty = penalty
+        includePenalty = reg
 
     # Checks for bounds constraints
     # ----------------------------------------------------------

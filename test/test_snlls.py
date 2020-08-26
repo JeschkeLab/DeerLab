@@ -44,7 +44,7 @@ def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
         ubl = []    
 
     # Separable LSQ fit
-    fit = snlls(V,lambda p: Kmodel(p,t,r),nlpar0,lb,ub,lbl,ubl, penalty=False, uqanalysis=False)
+    fit = snlls(V,lambda p: Kmodel(p,t,r),nlpar0,lb,ub,lbl,ubl, reg=False, uqanalysis=False)
     nonlinfit = fit.nonlin
     linfit = fit.lin
     parout = [nonlinfit[0], nonlinfit[1], linfit[0], nonlinfit[2], nonlinfit[3], linfit[1]] 

@@ -291,7 +291,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         # Separable non-linear least-squares (SNLLS) fit
         scale = 1e2
         fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, 
-                        weights=weights, penalty=False, uqanalysis=False, lin_tol=[], lin_maxiter=[],**kwargs)
+                        weights=weights, reg=False, uqanalysis=False, lin_tol=[], lin_maxiter=[],**kwargs)
         pnonlin = fit.nonlin
         plin = fit.lin
 
