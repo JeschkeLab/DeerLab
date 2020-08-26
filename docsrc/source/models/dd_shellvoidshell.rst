@@ -31,17 +31,17 @@ and
 
 :math:`R_4 = R + w_1 + d + w_2`
 
-================ ============== ========= ======== ========= ===================================
- Variable         Symbol         Default   Lower    Upper       Description
-================ ============== ========= ======== ========= ===================================
-``param(1)``     :math:`R`       0.75       0.1        20        Sphere radius
-``param(2)``     :math:`w_1`       1.00       0.1        20        1st Shell thickness
-``param(3)``     :math:`w_2`       1.00       0.1        20        2nd Shell thickness
-``param(4)``     :math:`d`       0.50       0.1        20        Shell-Shell separation
-================ ============== ========= ======== ========= ===================================
+============== ============== ============= ============= ============= =============================
+ Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =============================
+``param[0]``     :math:`R`       0.75             0.1           20        Sphere radius (nm)
+``param[1]``     :math:`w_1`     1.00             0.1           20        1st Shell thickness (nm)
+``param[2]``     :math:`w_2`     1.00             0.1           20        2nd Shell thickness (nm)
+``param[3]``     :math:`d`       0.50             0.1           20        Shell-Shell separation (nm)
+============== ============== ============= ============= ============= =============================
 
 
-Example using default parameters:
+Example using start values:
 
 .. image:: ../images/model_dd_shellvoidshell.png
    :width: 650px

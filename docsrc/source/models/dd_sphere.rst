@@ -17,14 +17,14 @@ Model
 :math:`P(r) = \begin{cases} \frac{3r^5}{16R^6} - \frac{9r^3}{4R^4} + \frac{3r^2}{R^3} \quad \text{for} \quad 0 \leq r < 2R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
 
 
-================ ============== ========= ======== ========= ===================================
- Variable         Symbol         Default   Lower    Upper       Description
-================ ============== ========= ======== ========= ===================================
-``param(1)``     :math:`R`       2.5       0.1        20         Sphere radius
-================ ============== ========= ======== ========= ===================================
+============== ============== ============= ============= ============= =========================
+ Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =========================
+``param[0]``     :math:`R`       2.5            0.1            20         Sphere radius (nm)
+============== ============== ============= ============= ============= =========================
 
 
-Example using default parameters:
+Example using start values:
 
 .. image:: ../images/model_dd_sphere.png
    :width: 650px

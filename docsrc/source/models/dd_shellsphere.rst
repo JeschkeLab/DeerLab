@@ -23,15 +23,15 @@ with
 :math:`R_2 = R + w_1`
 
 
-================ ============== ========= ======== ========= ===================================
- Variable         Symbol         Default   Lower    Upper       Description
-================ ============== ========= ======== ========= ===================================
-``param(1)``     :math:`R`       1.5       0.1        20         Sphere radius
-``param(2)``     :math:`w`       0.5       0.1        20         Shell thickness
-================ ============== ========= ======== ========= ===================================
+============== ============== ============= ============= ============= =========================
+ Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =========================
+``param[0]``     :math:`R`       1.5             0.1            20         Sphere radius (nm)
+``param[1]``     :math:`w`       0.5             0.1            20         Shell thickness (nm)
+============== ============== ============= ============= ============= =========================
 
 
-Example using default parameters:
+Example using start values:
 
 .. image:: ../images/model_dd_shellsphere.png
    :width: 650px

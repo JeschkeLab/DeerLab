@@ -15,11 +15,11 @@ Model
 
     B(t) = \exp\left(-\lambda \kappa \vert t\vert^{d}\right)
 
-============= ================= ========= ============= ============= ========================
- Variable       Symbol            Default   Lower bound   Upper bound      Description
-============= ================= ========= ============= ============= ========================
-``param(1)``   :math:`\kappa`      3.5      0              200           decay rate (1/us)
-``param(2)``   :math:`d`           1        0              6             stretch factor
-============= ================= ========= ============= ============= ========================
+============== ================= ============= ============= ============= =================================
+ Variable         Symbol          Start Value   Lower bound   Upper bound      Description
+============== ================= ============= ============= ============= =================================
+``param[0]``   :math:`\kappa`      3.5               0              200           decay rate (1/us)
+``param[1]``   :math:`d`           1                 0              6             stretch factor
+============== ================= ============= ============= ============= =================================
 
 Although the ``bg_strexp`` model has the same functional form as ``bg_homfractal``, it is distinct since its first parameter is a decay rate constant and not a spin concentration like for ``bg_homfractal``.

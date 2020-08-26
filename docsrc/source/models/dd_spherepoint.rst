@@ -17,15 +17,15 @@ Model
 :math:`P(r) = \begin{cases} \frac{3r(R^2-(d-r)^2)}{4dR^3} \quad \text{for} \quad d-R \leq r < d+R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
 
 
-================ ============== ========= ======== ========= ===================================
- Variable         Symbol         Default   Lower    Upper       Description
-================ ============== ========= ======== ========= ===================================
-``param(1)``     :math:`R`       1.5       0.1        20        Sphere radius
-``param(2)``     :math:`d`       3.5       0.1        20        Distance to point
-================ ============== ========= ======== ========= ===================================
+============== ============== ============= ============= ============= =========================
+ Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =========================
+``param[0]``     :math:`R`       1.5            0.1            20        Sphere radius (nm)
+``param[1]``     :math:`d`       3.5            0.1            20        Distance to point (nm)
+============== ============== ============= ============= ============= =========================
 
 
-Example using default parameters:
+Example using start values:
 
 .. image:: ../images/model_dd_spherepoint.png
    :width: 650px

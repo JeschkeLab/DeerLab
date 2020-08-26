@@ -31,16 +31,16 @@ and
 
 
 
-================ ============== ========= ======== ========= ===================================
- Variable         Symbol         Default   Lower    Upper       Description
-================ ============== ========= ======== ========= ===================================
-``param(1)``     :math:`R`       1.5       0.1        20         Inner shell radius
-``param(2)``     :math:`w_1`     0.5       0.1        20         1st Shell thickness
-``param(3)``     :math:`w_2`     0.5       0.1        20         2nd Shell thickness
-================ ============== ========= ======== ========= ===================================
+============== ============== ============= ============= ============= =======================================
+ Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =======================================
+``param[0]``     :math:`R`       1.5             0.1           20         Inner shell radius (nm)
+``param[1]``     :math:`w_1`     0.5             0.1           20         1st Shell thickness (nm)
+``param[2]``     :math:`w_2`     0.5             0.1           20         2nd Shell thickness (nm)
+============== ============== ============= ============= ============= =======================================
 
 
-Example using default parameters:
+Example using start values:
 
 .. image:: ../images/model_dd_shellshell.png
    :width: 650px

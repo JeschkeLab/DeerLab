@@ -24,14 +24,14 @@ This experiment model has one modulated pathway and an unmodulated contribution.
 where :math:`T_0^{(1)}=0` is the refocusing time of the modulated dipolar pathway.
 
 
-============== ================ ============ ============ ============ ================================================
- Variable        Symbol           Default       Lower        Upper                Description
-============== ================ ============ ============ ============ ================================================
-``param(1)``   :math:`\lambda`     0.3           0            1          modulated pathway amplitude (modulation depth)
-============== ================ ============ ============ ============ ================================================
+============== ================ ============= ============ ============ ================================================
+ Variable        Symbol         Start Values     Lower        Upper                Description
+============== ================ ============= ============ ============ ================================================
+``param[0]``   :math:`\lambda`     0.3           0            1          Modulated pathway amplitude (modulation depth)
+============== ================ ============= ============ ============ ================================================
 
 
-Example of a simulated signal using default parameters:
+Example of a simulated signal using start values:
 
 .. image:: ../images/model_ex_4pdeer.png
    :width: 550px
