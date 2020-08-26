@@ -12,7 +12,7 @@ def assert_experiment_model(model):
 # --------------------------------------------------------------------
     t = np.linspace(0,5,100)
     r = np.linspace(2,6,150)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.255])
 
     info = model()
     parIn = info['Start']
@@ -62,7 +62,7 @@ def test_dipevo_function():
 
     t = np.linspace(0,5,100)
     r = np.linspace(2,6,150)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
     K = dipolarkernel(t,r)
     V = K@P
     fit = fitsignal(V,t,r,'P',None,None,uqanalysis=False)
@@ -75,7 +75,7 @@ def test_form_factor():
 
     t = np.linspace(0,5,100)
     r = np.linspace(2,6,150)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
     K = dipolarkernel(t,r,0.3)
     V = K@P
     fit = fitsignal(V,t,r,'P',None,ex_4pdeer,uqanalysis=False)
@@ -88,7 +88,7 @@ def test_full_parametric():
 
     t = np.linspace(0,5,100)
     r = np.linspace(2,6,200)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
     lam = 0.3
     kappa = 0.2
     B = bg_exp(t,lam*kappa)
@@ -118,7 +118,7 @@ def test_start_values():
 
     t = np.linspace(0,5,100)
     r = np.linspace(2,6,150)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
 
     lam = 0.4
     Bmodel = lambda t,lam: bg_exp(t,0.4,lam)
@@ -137,7 +137,7 @@ def test_boundaries():
 
     t = np.linspace(0,5,100)
     r = np.linspace(2,6,150)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
 
     lam = 0.4
     Bmodel = lambda t,lam: bg_exp(t,0.4,lam)
@@ -158,7 +158,7 @@ def test_global_4pdeer():
     "Check the correct fit of two 4-DEER signals"
 
     r = np.linspace(2,6,90)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.3])
 
     info = ex_4pdeer()
     parIn = info['Start']
@@ -182,7 +182,7 @@ def test_global_full_parametric():
     "Check global fitting with fully parametric models"
 
     r = np.linspace(2,6,200)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
     lam = 0.3
     kappa = 0.4
     B = lambda t,lam: bg_exp(t,lam*kappa,lam)
@@ -201,7 +201,7 @@ def test_global_mixed_backgrounds():
     "Check global fitting with different background models"
 
     r = np.linspace(2,6,200)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
     lam = 0.3
     kappa = 0.4
     B = lambda t,lam: bg_exp(t,lam*kappa,lam)
@@ -220,7 +220,7 @@ def test_global_mixed_experiments():
     "Check global fitting with different experiment models"
 
     r = np.linspace(2,6,200)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
     lam = 0.3
     t1 = np.linspace(0,5,100)
     t2 = np.linspace(0,3,200)
@@ -262,7 +262,7 @@ def assert_confinter_param(subset):
     bgmodel = bg_exp
 
     r = np.linspace(2,6,90)
-    P = ddmodel(r,[4.5, 0.6])
+    P = ddmodel(r,[4.5, 0.25])
 
     info = exmodel()
     parIn = info['Start']
@@ -328,7 +328,7 @@ def assert_confinter_models(subset):
     bgmodel = bg_exp
 
     r = np.linspace(2,6,90)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
 
     info = exmodel()
     parIn = info['Start']
@@ -396,7 +396,7 @@ def assert_confinter_noforeground():
     bgmodel = bg_exp
     t = np.linspace(0,5,100)
     r = np.linspace(2,6,90)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
 
     kappa = 0.4
     lam = 0.3
@@ -422,7 +422,7 @@ def assert_confinter_dipevofun():
     "Check that the confidence inervals for a dipolar evolution function fit are correct"
 
     r = np.linspace(2,6,90)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
 
     t = np.linspace(0,5,100)
     np.random.seed(0)
@@ -444,7 +444,7 @@ def test_global_scale_4pdeer():
 # ======================================================================
     "Check the correct fit of two 4-DEER signals"
     r = np.linspace(2,6,90)
-    P = dd_gauss(r,[4.5, 0.6])
+    P = dd_gauss(r,[4.5, 0.25])
 
     info = ex_4pdeer()
     parIn = info['Start']

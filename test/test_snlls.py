@@ -290,7 +290,7 @@ def test_goodnes_of_fit():
     t = np.linspace(0,4,200)
     lam = 0.25
     K = dipolarkernel(t,r,lam)
-    parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
+    parin = [3.5, 0.15, 0.6, 4.5, 0.2, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P
 

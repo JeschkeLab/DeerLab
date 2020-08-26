@@ -10,7 +10,7 @@ def test_gaussian():
         
     t = np.linspace(0,3,300)
     r = np.linspace(2,5,200)
-    par = np.array([3,0.5])
+    par = np.array([3,0.2])
     P = dd_gauss(r,par)
 
     K = dipolarkernel(t,r)
@@ -32,7 +32,7 @@ def test_rice():
         
     t = np.linspace(0,3,400)
     r = np.linspace(1,6,150)
-    par = np.array([4, 0.4])
+    par = np.array([4, 0.17])
     P = dd_rice(r,par)
 
     K = dipolarkernel(t,r)
@@ -55,7 +55,7 @@ def test_unconstrained():
         
     t = np.linspace(0,3,300)
     r = np.linspace(2,5,200)
-    par = np.array([3,0.5])
+    par = np.array([3,0.2])
     P = dd_gauss(r,par)
 
     K = dipolarkernel(t,r)
@@ -75,7 +75,7 @@ def test_rescaling():
 
     t = np.linspace(0,5,100)
     r = np.linspace(2,6,100)
-    P = dd_gauss(r,[4, 0.5])
+    P = dd_gauss(r,[4, 0.2])
     K = dipolarkernel(t,r)
 
     scale = 1e9
@@ -122,7 +122,7 @@ def test_confinter_Pfit():
     
     t = np.linspace(0,3,300)
     r = np.linspace(2,5,200)
-    par = np.array([3,0.5])
+    par = np.array([3,0.2])
     P = dd_gauss(r,par)
 
     K = dipolarkernel(t,r)
@@ -145,7 +145,7 @@ def test_manual_covmatrix():
     
     t = np.linspace(0,3,300)
     r = np.linspace(2,5,200)
-    par = np.array([3,0.5])
+    par = np.array([3,0.2])
     P = dd_gauss(r,par)
 
     K = dipolarkernel(t,r)
@@ -154,9 +154,9 @@ def test_manual_covmatrix():
     V = K@P + whitegaussnoise(t,sig)
     covmat = sig**2*np.eye(len(t))
 
-    par0 = [5, 0.5]
-    lb = [2, 0.3]
-    ub = [5, 0.7]
+    par0 = [5, 0.50]
+    lb   = [2, 0.05]
+    ub   = [5, 0.70]
     model = lambda p: K@dd_gauss(r,p)
     fitmanual = fitparamodel(V,model,par0,lb,ub, covmatrix = covmat)
     fitauto = fitparamodel(V,model,par0,lb,ub)
@@ -175,7 +175,7 @@ def test_globalfit():
     "Check that global fitting yields correct results"
         
     r = np.linspace(2,5,200)
-    par = np.array([3,0.5])
+    par = np.array([3,0.2])
     P = dd_gauss(r,par)
 
     t1 = np.linspace(0,3,300)
@@ -206,7 +206,7 @@ def test_globalfit_scales():
     t1 = np.linspace(0,5,300)
     t2 = np.linspace(0,2,300)
     r = np.linspace(3,5,100)
-    P = dd_gauss(r,[4,0.6])
+    P = dd_gauss(r,[4,0.25])
     K1 = dipolarkernel(t1,r) 
     K2 = dipolarkernel(t2,r)
     scales = [1e3, 1e9]

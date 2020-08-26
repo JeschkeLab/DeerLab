@@ -12,7 +12,7 @@ def test_multigauss():
     r = np.linspace(2,6,300)
     t = np.linspace(-0.5,6,500)
     K = dipolarkernel(t,r)
-    parin = [4, 0.2, 0.4, 4, 1, 0.4, 3, 0.4, 0.2]
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
     P = dd_gauss3(r,parin)
     V = K@P
 
@@ -28,7 +28,7 @@ def test_multirice():
     r = np.linspace(2,6,300)
     t = np.linspace(0,6,500)
     K = dipolarkernel(t,r)
-    parin = [4, 0.2, 0.4, 4, 1, 0.4, 3, 0.4, 0.4]
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
     P = dd_rice3(r,parin)
     V = K@P
 
@@ -61,11 +61,11 @@ def test_bounds():
     r = np.linspace(2,6,300)
     t = np.linspace(0,6,500)
     K = dipolarkernel(t,r)
-    parin = [4, 0.2, 0.4, 4, 1, 0.4, 3, 0.4, 0.2]
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
     P = dd_gauss3(r,parin)
     V = K@P
 
-    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb = [2,0.1],ub=[5.5,1.5], uqanalysis=False)
+    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb = [2,0.02],ub=[5.5,1.5], uqanalysis=False)
 
     assert ovl(P,fit.P) > 0.95 # more than 99% overlap
 #=======================================================================
@@ -92,7 +92,7 @@ def test_global_multigauss():
     "Check that the global fit of a multi-Gauss model works"
         
     r = np.linspace(2,6,300)
-    parin = [4, 0.2, 0.4, 4, 1, 0.4, 3, 0.4, 0.2]
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
     P = dd_gauss3(r,parin)
     
     t1 = np.linspace(-0.5,6,500)
@@ -113,7 +113,7 @@ def test_global_multirice():
     "Check that the global fit of a multi-Rician model works"
         
     r = np.linspace(2,6,300)
-    parin = [4, 0.2, 0.4, 4, 1, 0.4, 3, 0.4, 0.4]
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
     P = dd_rice3(r,parin)
 
     t1 = np.linspace(-0.5,6,500)
@@ -136,7 +136,7 @@ def test_background_fit():
     
     t = np.linspace(-0.3,4,100)
     r = np.linspace(3,6,200)
-    InputParam = [4, 0.2, 0.5, 4.3, 0.3, 0.4]
+    InputParam = [4, 0.15, 0.5, 4.3, 0.1, 0.4]
     P = dd_gauss2(r,InputParam)
     B = bg_exp(t,0.15)
     V = dipolarkernel(t,r,0.25,B)@P
@@ -147,7 +147,7 @@ def test_background_fit():
         K = dipolarkernel(t,r,lam,B)
         return K
 
-    fit = fitmultimodel(V,Kmodel,r,dd_gauss,2,'aicc',lb=[1,0.1],ub=[6,1],lbK=[0.2,0.01],ubK=[0.9,1],uqanalysis=False)
+    fit = fitmultimodel(V,Kmodel,r,dd_gauss,2,'aicc',lb=[1,0.02],ub=[6,1],lbK=[0.2,0.01],ubK=[0.9,1],uqanalysis=False)
 
     assert ovl(P,fit.P) > 0.95 # more than 99% overlap
 #=======================================================================
@@ -182,12 +182,12 @@ def test_confinter_Pfit():
     
     t = np.linspace(-0.3,4,100)
     r = np.linspace(3,6,200)
-    InputParam = [4, 0.2, 0.5, 4.3, 0.3, 0.4]
+    InputParam = [4, 0.05, 0.5, 4.3, 0.1, 0.4]
     P = dd_gauss2(r,InputParam)
     K = dipolarkernel(t,r)
     V = K@P
 
-    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb=[1,0.1],ub=[6,1])
+    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb=[1,0.02],ub=[6,1])
 
     lbP = np.zeros(len(r))
     ubP = np.full(len(r), np.inf)
@@ -200,14 +200,14 @@ def test_confinter_parfit():
     
     t = np.linspace(-0.3,4,100)
     r = np.linspace(3,6,200)
-    InputParam = [4, 0.2, 0.5, 4.3, 0.3, 0.4]
+    InputParam = [4, 0.05, 0.5, 4.3, 0.1, 0.4]
     P = dd_gauss2(r,InputParam)
     K = dipolarkernel(t,r)
     V = K@P
 
-    lbPpar = [1,0.1]
+    lbPpar = [1,0.02]
     ubPpar = [6,1]
-    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb=[1,0.1],ub=[6,1])
+    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb=lbPpar,ub=ubPpar)
     paruq = fit.paramUncert
     parfit = fit.Pparam
     assert_confidence_intervals(paruq.ci(50)[0:2,:],paruq.ci(95)[0:2,:],parfit,lbPpar,ubPpar)
@@ -221,7 +221,7 @@ def test_goodness_of_fit():
     r = np.linspace(2,6,300)
     t = np.linspace(-0.5,6,500)
     K = dipolarkernel(t,r)
-    parin = [4, 0.2, 0.4, 4, 1, 0.4, 3, 0.4, 0.2]
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
     P = dd_gauss3(r,parin)
     V = K@P
 
@@ -236,7 +236,7 @@ def test_globalfit_scales():
     "Check that the global fit of a multi-Gauss model works"
         
     r = np.linspace(2,6,300)
-    parin = [4, 0.2, 0.4, 4, 1, 0.4, 3, 0.4, 0.2]
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
     P = dd_gauss3(r,parin)
     scales = [1e3, 1e9]
 
