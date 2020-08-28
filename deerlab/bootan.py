@@ -97,9 +97,6 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
     Vresample = [0]*nSignals
     for iSample in range(nSamples-1):
         
-        # Change the random seed each iteration, but keeping reproducibility between runs
-        np.random.seed(iSample)
-
         # Inform of progress if requested
         if verbose:
             print('Bootstrapping: #{}/#{} samples finished'.format(iSample+1,nSamples), end='\r', flush=True)

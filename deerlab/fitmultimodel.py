@@ -281,7 +281,6 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         nlin_ub = np.concatenate((ubK, nlin_ub),axis=None)
         
         # Start values of non-linear parameters
-        np.random.seed(1)
         par0 = np.random.uniform(size=(len(nlin_lb)),low=nlin_lb, high=nlin_ub)
 
         # Box constraints for the components amplitudes (linear parameters)
