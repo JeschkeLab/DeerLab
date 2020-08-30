@@ -228,83 +228,82 @@
 <div class="section" id="model">
 <h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
 <p><img class="math" src="../_images/math/7302c61b9a7f298fb29c997b4221475965ad2cd2.svg" alt="P(r) = a_1\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_1}\exp\left(-\frac{(r-\left&lt;r_1\right&gt;)^2}{\sigma_1^2}\right) + a_2\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_2}\exp\left(-\frac{(r-\left&lt;r_2\right&gt;)^2}{\sigma_2^2}\right) + a_3\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_3}\exp\left(-\frac{(r-\left&lt;r_3\right&gt;)^2}{\sigma_3^2}\right)"/></p>
-<p>with <img class="math" src="../_images/math/dec756e5fe160c347f1f14082356c9d797380621.svg" alt="\sigma_i = \mathrm{FWHM}_i/\sqrt{2ln(2)}"/></p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 16%" />
-<col style="width: 24%" />
-<col style="width: 9%" />
-<col style="width: 8%" />
-<col style="width: 9%" />
-<col style="width: 35%" />
+<col style="width: 12%" />
+<col style="width: 22%" />
+<col style="width: 11%" />
+<col style="width: 11%" />
+<col style="width: 11%" />
+<col style="width: 33%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Variable</p></th>
 <th class="head"><p>Symbol</p></th>
-<th class="head"><p>Default</p></th>
-<th class="head"><p>Lower</p></th>
-<th class="head"><p>Upper</p></th>
+<th class="head"><p>Start Value</p></th>
+<th class="head"><p>Lower bound</p></th>
+<th class="head"><p>Upper bound</p></th>
 <th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param(1)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param[0]</span></code></p></td>
 <td><p><img class="math" src="../_images/math/cbe035b73417df3153e26edae1cbc01fe0505c53.svg" alt="\left&lt;r_1\right&gt;"/></p></td>
 <td><p>2.5</p></td>
 <td><p>1.0</p></td>
 <td><p>20</p></td>
-<td><p>1st Gaussian center distance</p></td>
+<td><p>1st Gaussian mean distance (nm)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param(2)</span></code></p></td>
-<td><p><img class="math" src="../_images/math/85281a31ef5b554a3613ea4c5fe8fe6a6ffc5f32.svg" alt="\mathrm{FWHM}_1"/></p></td>
-<td><p>0.5</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param[1]</span></code></p></td>
+<td><p><img class="math" src="../_images/math/bfe0c189d46979b607454598b3877b329810e135.svg" alt="\sigma_1"/></p></td>
 <td><p>0.2</p></td>
-<td><p>5</p></td>
-<td><p>1st Gaussian FWHM</p></td>
+<td><p>0.05</p></td>
+<td><p>2.5</p></td>
+<td><p>1st Gaussian standard deviation (nm)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param(3)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param[2]</span></code></p></td>
 <td><p><img class="math" src="../_images/math/a2eb069e091c3b1d2a5262e1eec64c7a2d112384.svg" alt="a_1"/></p></td>
 <td><p>0.3</p></td>
 <td><p>0</p></td>
 <td><p>1</p></td>
 <td><p>1st Gaussian amplitude</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param(4)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param[3]</span></code></p></td>
 <td><p><img class="math" src="../_images/math/eacaeb4663c9c3a5d05af3d37cb7c95c9e4f771f.svg" alt="\left&lt;r_2\right&gt;"/></p></td>
 <td><p>3.5</p></td>
 <td><p>1.0</p></td>
 <td><p>20</p></td>
-<td><p>2nd Gaussian center distance</p></td>
+<td><p>2nd Gaussian mean distance (nm)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param(5)</span></code></p></td>
-<td><p><img class="math" src="../_images/math/ebcd9143205fcad476cb1ef2693b2c9d4ae9bb9b.svg" alt="\mathrm{FWHM}_2"/></p></td>
-<td><p>0.5</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param[4]</span></code></p></td>
+<td><p><img class="math" src="../_images/math/e31e984cea99e347e7e78fff62531ec0b1d63b78.svg" alt="\sigma_2"/></p></td>
 <td><p>0.2</p></td>
-<td><p>5</p></td>
-<td><p>2nd Gaussian FWHM</p></td>
+<td><p>0.05</p></td>
+<td><p>2.5</p></td>
+<td><p>2nd Gaussian standard deviation (nm)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param(6)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param[5]</span></code></p></td>
 <td><p><img class="math" src="../_images/math/8a01a88ce503cf160babfcd5955943ede0be2203.svg" alt="a_2"/></p></td>
 <td><p>0.3</p></td>
 <td><p>0</p></td>
 <td><p>1</p></td>
 <td><p>2nd Gaussian amplitude</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param(7)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param[6]</span></code></p></td>
 <td><p><img class="math" src="../_images/math/2fb768341988b6d2342d41895b3e41136fdb4cd6.svg" alt="\left&lt;r_3\right&gt;"/></p></td>
 <td><p>5.0</p></td>
 <td><p>1.0</p></td>
 <td><p>20</p></td>
-<td><p>3rd Gaussian center distance</p></td>
+<td><p>3rd Gaussian mean distance (nm)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param(8)</span></code></p></td>
-<td><p><img class="math" src="../_images/math/f23dd6a9b3e5e5efeb9c7bc682655b3f7ccbcaf0.svg" alt="\mathrm{FWHM}_3"/></p></td>
-<td><p>0.5</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param[7]</span></code></p></td>
+<td><p><img class="math" src="../_images/math/8a7f741ea773df4205a5a3c2dbbee203a7122624.svg" alt="\sigma_3"/></p></td>
 <td><p>0.2</p></td>
-<td><p>5</p></td>
-<td><p>3rd Gaussian FWHM</p></td>
+<td><p>0.05</p></td>
+<td><p>2.5</p></td>
+<td><p>3rd Gaussian standard deviation (nm)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param(9)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param[8]</span></code></p></td>
 <td><p><img class="math" src="../_images/math/ed03c831dfec14c795bd4134927800b07a7184b8.svg" alt="a_3"/></p></td>
 <td><p>0.3</p></td>
 <td><p>0</p></td>
@@ -313,7 +312,7 @@
 </tr>
 </tbody>
 </table>
-<p>Example using default parameters:</p>
+<p>Example using the start values:</p>
 <a class="reference internal image-reference" href="../_images/model_dd_gauss3.png"><img alt="../_images/model_dd_gauss3.png" src="../_images/model_dd_gauss3.png" style="width: 650px;" /></a>
 </div>
 </div>

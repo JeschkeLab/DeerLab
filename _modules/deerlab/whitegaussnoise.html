@@ -183,39 +183,50 @@
   <h1>Source code for deerlab.whitegaussnoise</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<div class="viewcode-block" id="whitegaussnoise"><a class="viewcode-back" href="../../functions/whitenoise.html#deerlab.whitegaussnoise">[docs]</a><span class="k">def</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">level</span><span class="p">,</span><span class="n">rescale</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;White Gaussian noise generator</span>
-
+<div class="viewcode-block" id="whitegaussnoise"><a class="viewcode-back" href="../../functions/whitenoise.html#deerlab.whitegaussnoise">[docs]</a><span class="k">def</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">rescale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a vector of white Gaussian (normal) noise</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    t : array_like</span>
 <span class="sd">        Time axis.</span>
 <span class="sd">    level : float scalar</span>
-<span class="sd">        Noise level (standard deviation of noise vector)</span>
+<span class="sd">        Noise level, i.e. standard deviation of underlying Gaussian distribution.</span>
 <span class="sd">    rescale : boolean</span>
-<span class="sd">        Enable/disable rescaling of noise vector to enforce the exact noise level.</span>
-
+<span class="sd">        If true, rescales the noise vector such that its standard deviation is exactly equal</span>
+<span class="sd">        to ``level``. If false (default), the standard deviation of the noise vector can deviate</span>
+<span class="sd">        slightly from ``level``, particularly for short vectors.</span>
+<span class="sd">    seed : None or integer scalar</span>
+<span class="sd">        If None (default), do not seed the random number generator. If an integer scalar is</span>
+<span class="sd">        given (e.g. ``seed=137``), seed the random number generator with this number.</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    noise : ndarray</span>
 <span class="sd">        Noise vector.</span>
-
+<span class="sd">    </span>
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    The noise vector is generated from a vector of pseudo-random numbers generated with numpy. </span>
-<span class="sd">    Each call of ``whitegaussnoise`` will return a different realization of the noise vector. To set the output </span>
-<span class="sd">    to a fixed noise realization, the random number generator must be fixed by calling ``numpy.random.seed(k)`` </span>
-<span class="sd">    before ``whitegaussnoise``, where ``k`` is some integer number.</span>
-
+<span class="sd">    The noise vector is generated using pseudo-random numbers generated with NumPy. </span>
+<span class="sd">    Without seeding the random number generator, subsequent calls of ``whitegaussnoise`` return</span>
+<span class="sd">    different realizations of the noise vector. To obtain a reproducible noise realization, seed</span>
+<span class="sd">    the random number generator by using the ``seed`` kewyword arguement, or call ``numpy.random.seed(k)``</span>
+<span class="sd">    with some integer number ``k`` before calling ``whitegaussnoise``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
- 
+    
+    <span class="c1"># Seed RNG if wanted</span>
+    <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    
+    <span class="c1"># Draw from standard normal distribution</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
     <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">level</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
-
+    
+    <span class="c1"># Rescale to sample std if wanted</span>
     <span class="k">if</span> <span class="n">rescale</span><span class="p">:</span>
-      <span class="n">noise</span> <span class="o">=</span> <span class="n">level</span><span class="o">*</span><span class="n">noise</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="nf">std</span><span class="p">(</span><span class="n">noise</span><span class="p">)</span>
-
+        <span class="n">noise</span> <span class="o">=</span> <span class="n">level</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="nf">std</span><span class="p">(</span><span class="n">noise</span><span class="p">)</span><span class="o">*</span><span class="n">noise</span>
+    
     <span class="k">return</span> <span class="n">noise</span></div>
 </pre></div>
 

@@ -188,16 +188,21 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">whitegaussnoise</span></code><a class="headerlink" href="#whitegaussnoise" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="deerlab.whitegaussnoise">
-<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">whitegaussnoise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">level</span></em>, <em class="sig-param"><span class="n">rescale</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/whitegaussnoise.html#whitegaussnoise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.whitegaussnoise" title="Permalink to this definition">¶</a></dt>
-<dd><p>White Gaussian noise generator</p>
+<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">whitegaussnoise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">level</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">rescale</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/whitegaussnoise.html#whitegaussnoise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.whitegaussnoise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a vector of white Gaussian (normal) noise</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>t</strong><span class="classifier">array_like</span></dt><dd><p>Time axis.</p>
 </dd>
-<dt><strong>level</strong><span class="classifier">float scalar</span></dt><dd><p>Noise level (standard deviation of noise vector)</p>
+<dt><strong>level</strong><span class="classifier">float scalar</span></dt><dd><p>Noise level, i.e. standard deviation of underlying Gaussian distribution.</p>
 </dd>
-<dt><strong>rescale</strong><span class="classifier">boolean</span></dt><dd><p>Enable/disable rescaling of noise vector to enforce the exact noise level.</p>
+<dt><strong>rescale</strong><span class="classifier">boolean</span></dt><dd><p>If true, rescales the noise vector such that its standard deviation is exactly equal
+to <code class="docutils literal notranslate"><span class="pre">level</span></code>. If false (default), the standard deviation of the noise vector can deviate
+slightly from <code class="docutils literal notranslate"><span class="pre">level</span></code>, particularly for short vectors.</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">None or integer scalar</span></dt><dd><p>If None (default), do not seed the random number generator. If an integer scalar is
+given (e.g. <code class="docutils literal notranslate"><span class="pre">seed=137</span></code>), seed the random number generator with this number.</p>
 </dd>
 </dl>
 </dd>
@@ -209,10 +214,11 @@
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>The noise vector is generated from a vector of pseudo-random numbers generated with numpy. 
-Each call of <code class="docutils literal notranslate"><span class="pre">whitegaussnoise</span></code> will return a different realization of the noise vector. To set the output 
-to a fixed noise realization, the random number generator must be fixed by calling <code class="docutils literal notranslate"><span class="pre">numpy.random.seed(k)</span></code> 
-before <code class="docutils literal notranslate"><span class="pre">whitegaussnoise</span></code>, where <code class="docutils literal notranslate"><span class="pre">k</span></code> is some integer number.</p>
+<p>The noise vector is generated using pseudo-random numbers generated with NumPy. 
+Without seeding the random number generator, subsequent calls of <code class="docutils literal notranslate"><span class="pre">whitegaussnoise</span></code> return
+different realizations of the noise vector. To obtain a reproducible noise realization, seed
+the random number generator by using the <code class="docutils literal notranslate"><span class="pre">seed</span></code> kewyword arguement, or call <code class="docutils literal notranslate"><span class="pre">numpy.random.seed(k)</span></code>
+with some integer number <code class="docutils literal notranslate"><span class="pre">k</span></code> before calling <code class="docutils literal notranslate"><span class="pre">whitegaussnoise</span></code>.</p>
 </dd></dl>
 
 </div>

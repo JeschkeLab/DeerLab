@@ -252,20 +252,18 @@ we listed above, and collecting the AIC-values for each model.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:202: UserWarning: The fitted value of parameter #5,  is at the upper bound of the range.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:202: UserWarning: The fitted value of parameter #8,  is at the upper bound of the range.
   warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound of the range.&#39;.format(p))
 /opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/classes.py:144: RuntimeWarning: invalid value encountered in sqrt
   self.std = np.sqrt(np.diag(covmat))
-/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:202: UserWarning: The fitted value of parameter #8,  is at the upper bound of the range.
-  warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound of the range.&#39;.format(p))
-/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/classes.py:144: RuntimeWarning: invalid value encountered in sqrt
-  self.std = np.sqrt(np.diag(covmat))
+/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:200: UserWarning: The fitted value of parameter #0, is at the lower bound of the range.
+  warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound of the range.&#39;.format(p))
 /opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:200: UserWarning: The fitted value of parameter #2, is at the lower bound of the range.
   warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound of the range.&#39;.format(p))
 /opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:200: UserWarning: The fitted value of parameter #5, is at the lower bound of the range.
   warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound of the range.&#39;.format(p))
-/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/classes.py:144: RuntimeWarning: invalid value encountered in sqrt
-  self.std = np.sqrt(np.diag(covmat))
+/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/utils/gof.py:54: RuntimeWarning: divide by zero encountered in double_scalars
+  R2 = 1 - np.sum((x-xfit)**2)/np.sum((xfit-np.mean(xfit))**2)
 </pre></div>
 </div>
 <p>Since the absolute AIC values have no meaning, it is standard practice to look at the relative
@@ -321,7 +319,7 @@ Akaike weights, i.e. the probabilities of a model being the most optimal.</p>
 <img alt="plot selecting an optimal model" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_selecting_an_optimal_model_001.png" />
 <p>Typically there is not a single optimal model unless the noise level is very
 low. Usually several models have similar probabilities and should therefore be presented together.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  8.076 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  11.383 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-selecting-an-optimal-model-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/8302ebf5c5b4b9529a3765a5470a2178/plot_selecting_an_optimal_model.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_selecting_an_optimal_model.py</span></code></a></p>

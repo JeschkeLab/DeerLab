@@ -234,12 +234,12 @@ the outputs.
 <p class="sphx-glr-script-out">Out:</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>----------------------------------------------------------------------------
 Goodness of fit
-  Vexp[0]: chi2 = 1.008065  RMSD  = 0.009473
+  Vexp[0]: chi2 = 1.008065  RMSD  = 0.009360
 ----------------------------------------------------------------------------
 Fitted parameters and 95%-confidence intervals
 Vfit[0]:
-  bgparam[0]:   0.0768264  (0.0223431, 0.1313097)  Decay Rate (us-1)
-  exparam[0]:   0.3129042  (0.2837874, 0.3420211)  Modulation depth ()
+  bgparam[0]:   0.0790795  (0.0584736, 0.0996855)  Decay Rate (us-1)
+  exparam[0]:   0.3102364  (0.2991542, 0.3213185)  Modulation depth ()
 ----------------------------------------------------------------------------
 </pre></div>
 </div>
@@ -293,16 +293,13 @@ to specify the covariance matrix of the fitted distribution.
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:202: UserWarning: The fitted value of parameter #5,  is at the upper bound of the range.
-  warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound of the range.&#39;.format(p))
-
-Gaussian constraints:
-  parfit[0] = 3.02 (2.87, 3.16) Center of 1st Gaussian
-  parfit[1] = 0.55 (0.29, 0.81) FWHM of 1st Gaussian
-  parfit[2] = 0.37 (0.26, 0.48) Amplitude of 1st Gaussian
-  parfit[3] = 4.29 (4.22, 4.36) Center of 2nd Gaussian
-  parfit[4] = 0.94 (0.75, 1.13) FWHM of 2nd Gaussian
-  parfit[5] = 1.00 (0.96, 1.00) Amplitude of 2nd Gaussian
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Gaussian constraints:
+  parfit[0] = 3.24 (2.89, 3.59) Mean of 1st Gaussian
+  parfit[1] = 0.59 (0.24, 0.94) Standard deviation of 1st Gaussian
+  parfit[2] = 0.40 (0.20, 0.60) Amplitude of 1st Gaussian
+  parfit[3] = 4.56 (4.32, 4.79) Mean of 2nd Gaussian
+  parfit[4] = 0.46 (0.32, 0.61) Standard deviation of 2nd Gaussian
+  parfit[5] = 0.37 (0.16, 0.59) Amplitude of 2nd Gaussian
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the fitted constraints model on top of the parameter-free case</span>
@@ -321,7 +318,7 @@ Gaussian constraints:
 </pre></div>
 </div>
 <img alt="plot extracting gauss constraints" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_extracting_gauss_constraints_002.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  5.200 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  7.444 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-extracting-gauss-constraints-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/05783a63aa47e3759db00b2a63415a36/plot_extracting_gauss_constraints.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_extracting_gauss_constraints.py</span></code></a></p>

@@ -228,43 +228,42 @@
 <div class="section" id="model">
 <h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
 <p><img class="math" src="../_images/math/e8ddf279a6c8fa0c6e075e596860f8703ea6f0b4.svg" alt="P(r) = \sqrt{\frac{2}{\pi}}\frac{1}{\sigma}\exp\left(-\frac{(r-\left&lt;r\right&gt;)^2}{\sigma^2}\right)"/></p>
-<p>with <img class="math" src="../_images/math/919535b72b4c04c9f24f97e4b6d3ee28411ccfb2.svg" alt="\sigma = \mathrm{FWHM}/\sqrt{2ln(2)}"/></p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 14%" />
-<col style="width: 25%" />
-<col style="width: 9%" />
+<col style="width: 13%" />
+<col style="width: 23%" />
 <col style="width: 13%" />
 <col style="width: 13%" />
-<col style="width: 25%" />
+<col style="width: 13%" />
+<col style="width: 26%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Variable</p></th>
 <th class="head"><p>Symbol</p></th>
-<th class="head"><p>Default</p></th>
+<th class="head"><p>Start value</p></th>
 <th class="head"><p>Lower bound</p></th>
 <th class="head"><p>Upper bound</p></th>
 <th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param(1)</span></code></p></td>
-<td><p><img class="math" src="../_images/math/5375ee4b12f23817c64fc01cec447d2801d5c6d3.svg" alt="r0"/></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param[0]</span></code></p></td>
+<td><p><img class="math" src="../_images/math/d5d21c23e617b5713ede9e5bf320628cb8216393.svg" alt="\left&lt;r\right&gt;"/></p></td>
 <td><p>3.5</p></td>
 <td><p>1.0</p></td>
 <td><p>20</p></td>
-<td><p>center distance (nm)</p></td>
+<td><p>Mean (nm)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param(2)</span></code></p></td>
-<td><p><img class="math" src="../_images/math/a5a6290639bef800a8acdd47a679fd0b418d80a9.svg" alt="\mathrm{FWHM}"/></p></td>
-<td><p>0.5</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param[1]</span></code></p></td>
+<td><p><img class="math" src="../_images/math/503f728986c7765b711583ae8d27fc42398e310f.svg" alt="\sigma"/></p></td>
 <td><p>0.2</p></td>
-<td><p>5</p></td>
-<td><p>FWHM (nm)</p></td>
+<td><p>0.05</p></td>
+<td><p>2.5</p></td>
+<td><p>Standard deviation (nm)</p></td>
 </tr>
 </tbody>
 </table>
-<p>Example using default parameters:</p>
+<p>Example using the start values:</p>
 <a class="reference internal image-reference" href="../_images/model_dd_gauss.png"><img alt="../_images/model_dd_gauss.png" src="../_images/model_dd_gauss.png" style="width: 650px;" /></a>
 </div>
 </div>
