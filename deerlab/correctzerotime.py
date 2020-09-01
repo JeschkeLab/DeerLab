@@ -41,8 +41,7 @@ def correctzerotime(V,t):
 
     # Determine location of maximum
     idxmax = np.argmax(V_)
-
-    if idxmax!=1 and idxmax!=len(V):
+    if idxmax!=0 and idxmax!=len(V_)-1:
         # If maximum is not the first or last point, then do moment analysis
         # (i.e. minimize the magntitude of the first-moment integral)
         
