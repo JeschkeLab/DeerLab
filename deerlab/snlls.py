@@ -50,6 +50,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         * ``paramuq.ci(n)``           - n%-CI of the full parameter set
         * ``paramuq.ci(n,'lin')``     - n%-CI of the linear parameter set
         * ``paramuq.ci(n,'nonlin')``  - n%-CI of the non-linear parameter set
+    alpha : scalar
+        Regularization parameter value used for the regularization of the linear parameters.
     stats : dict
         Goodness of fit statistical estimators
 
@@ -182,6 +184,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     Nnonlin = len(par0)
     Nlin = np.shape(A0)[1]
     linfit = np.zeros(Nlin)
+    alpha = 0
 
     # Determine whether to use regularization penalty
     illConditioned = np.linalg.cond(A0) > 10
@@ -401,7 +404,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     if len(stats) == 1: 
         stats = stats[0]
 
-    return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq,
+    return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq, alpha=alpha,
                      stats=stats, cost=fvals, residuals=sol.fun, success=sol.success)
 # ===========================================================================================
 

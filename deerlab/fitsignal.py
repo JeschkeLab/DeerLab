@@ -107,6 +107,8 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Uncertainty quanfitication for experiment(s) parameters
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
+    alpha : scalar
+        Optimal regularization parameter value
     stats :  dict
         Goodness of fit statistical estimators:
 
@@ -416,6 +418,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Pfit = fit.P
         Pfit_uq = fit.uncertainty
         scales = fit.scale
+        alphaopt = fit.alpha
 
         # Get fitted models
         Vfit = [K@Pfit for K in Ks]
@@ -440,6 +443,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         parfit_ = fit.param
         param_uq = fit.uncertainty
         scales = fit.scale
+        alphaopt = None
 
         # Get fitted models
         Vfit = Vmodel(parfit_)
@@ -467,6 +471,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         parfit_ = fit.nonlin
         Pfit = fit.lin
         snlls_uq = fit.uncertainty
+        alphaopt = fit.alpha
         scales = [prescales[i]*np.trapz(Pfit,r) for i in range(nSignals)]
 
         # Get the fitted models
@@ -607,7 +612,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     return FitResult(V=Vfit, P=Pfit, B=Bfit, exparam=parfit['ex'], bgparam=parfit['bg'],
                       ddparam=parfit['dd'], Vuncert = modfituq['Vfit'], Puncert = modfituq['Pfit'],
                       Buncert = modfituq['Bfit'], exparamUncert = paruq['ex'], bgparamUncert = paruq['bg'],
-                      ddparamUncert = paruq['dd'], scale=scales,  stats=stats, cost=fit.cost,
+                      ddparamUncert = paruq['dd'], alpha = alphaopt, scale=scales,  stats=stats, cost=fit.cost,
                       residuals=fit.residuals, success=fit.success)
 
             
