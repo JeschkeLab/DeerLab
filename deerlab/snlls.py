@@ -277,7 +277,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         non-linear least-squares solver. 
         """
 
-        nonlocal par_prev, check, regparam_prev, linfit
+        nonlocal par_prev, check, regparam_prev, linfit, alpha
         # Non-linear model evaluation
         A = Amodel(p)
 
