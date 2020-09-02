@@ -180,7 +180,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     if len(lbK) is not nKparam or len(ubK) is not nKparam:
         raise ValueError('The upper/lower bounds of the kernel parameters must be ',nKparam,'-element arrays')
 
-    areCenterDistances = [str in ['Center','Location'] for str in paramnames]
+    areCenterDistances = [str in ['Mean','Location'] for str in paramnames]
     if any(areCenterDistances):
         # If the center of the basis function is a parameter limit it 
         # to the distance axis range (stabilizes parameter search)
@@ -234,7 +234,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     def logestimators(V,Vfit,plin,pnonlin,functionals):
     #===============================================================================
         """
-            Log-Likelihood Estimators
+        Log-Likelihood Estimators
         ---------------------------
         Computes the estimated likelihood of a multi-component model being the
         optimal choice.
@@ -260,6 +260,25 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         return functionals
     #===============================================================================
 
+    def spread_within_box(lb,ub,Nmodels):
+    #===============================================================================
+        """
+        Start values within boundary box
+        ---------------------------------
+        Computes the start values of the parameters of the multiple basis functions
+        spread equally within the box constraints.
+        """
+        Npar = np.size(lb)
+        par = []
+        for lbi,ubi in zip(lb,ub):
+            par.append(np.linspace(lbi,ubi,Nmodels+2)[1:-1])
+        par0 = []        
+        for i in range(Nmodels):
+            for pari in par:
+                par0.append(pari[i])
+        return par0
+    #===============================================================================
+
     # Pre-allocate containers
     fits,Vfit,Pfit,plin_,pnonlin_,nlin_ub_,nlin_lb_,lin_ub_,lin_lb_ = ([] for _ in range(9))
     logest = []
@@ -272,6 +291,11 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         # ===========================================
         Knonlin = lambda par: nonlinmodel(par,Nmodels)
         
+        # Start values of non-linear parameters
+        par0_K = (ubK - lbK)/2 # start in the middle
+        par0_P = spread_within_box(lb,ub,Nmodels) # start spread within boundaries
+        par0 = np.concatenate((par0_K, par0_P),axis=None)
+
         # Box constraints for the model parameters (non-linear parameters)
         nlin_lb = np.tile(lb,(1,Nmodels))
         nlin_ub = np.tile(ub,(1,Nmodels))
@@ -280,9 +304,6 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         nlin_lb = np.concatenate((lbK, nlin_lb),axis=None)
         nlin_ub = np.concatenate((ubK, nlin_ub),axis=None)
         
-        # Start values of non-linear parameters
-        par0 = np.random.uniform(size=(len(nlin_lb)),low=nlin_lb, high=nlin_ub)
-
         # Box constraints for the components amplitudes (linear parameters)
         lin_lb = np.ones(Nmodels)        
         lin_ub = np.full(Nmodels,np.inf)

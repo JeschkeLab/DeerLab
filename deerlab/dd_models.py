@@ -364,7 +364,7 @@ def dd_skewgauss(*args):
      -------------------------------------------
       Parameter   Units   Lower   Upper   Start
      -------------------------------------------
-      Location     nm       1      20      3.5 
+      Center       nm       1      20      3.5 
       Spread       nm      0.05    2.5     0.2 
       Skewness             -25     25      5 
      --------------------------------------------

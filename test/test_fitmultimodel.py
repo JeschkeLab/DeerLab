@@ -20,7 +20,8 @@ def test_multigauss():
     
     assert ovl(P,fit.P) > 0.95 # more than 99% overlap
 #=======================================================================
-test_multigauss()
+
+
 def test_multirice():
 #=======================================================================
     "Check that the fit of a multi-Rician model works"
@@ -45,7 +46,7 @@ def test_multigengauss():
     r = np.linspace(2,6,300)
     t = np.linspace(0,6,500)
     K = dipolarkernel(t,r)
-    P = dd_gengauss(r,[2.5, 0.5, 5]) + 0.8*dd_gengauss(r,[3, 0.7, 2])
+    P = dd_gengauss(r,[2.5, 0.2, 5]) + 0.8*dd_gengauss(r,[3, 0.7, 2])
     P /= np.trapz(P,r)
     V = K@P
 
