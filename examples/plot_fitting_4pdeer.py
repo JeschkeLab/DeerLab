@@ -16,7 +16,7 @@ from deerlab import *
 
 t = np.linspace(-0.1,4,250)      # time axis, us
 r = np.linspace(1.5,6,len(t))    # distance axis, ns
-param = [3, 0.3, 0.2, 3.5, 0.3, 0.65, 3.8, 0.2, 0.15] # parameters for three-Gaussian model
+param = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Gaussian model
 P = dd_gauss3(r,param)          # model distance distribution
 lam = 0.5                        # modulation depth
 B = bg_hom3d(t,300,lam)          # background decay
@@ -28,4 +28,6 @@ Vexp = K@P + whitegaussnoise(t,0.01)
 # %% [markdown]
 # Run fit
 #---------
-fit = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_4pdeer,display=True)
+fit = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_4pdeer)
+fit.plot()
+

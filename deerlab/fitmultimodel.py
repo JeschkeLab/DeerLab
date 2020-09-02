@@ -6,6 +6,7 @@
 import copy
 import numpy as np
 import numdifftools as nd
+import matplotlib.pyplot as plt
 from types import FunctionType
 import deerlab as dl
 from deerlab.utils import hccm, goodness_of_fit
@@ -74,6 +75,11 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         Selection functional values (as specified as ``method``) for the all fitted multi-component models.
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
+    plot : callable
+        Function to display the results. It will display the 
+        fitted signals, the distance distribution with confidence intervals, 
+        and the values of the selection functional. If requested, the function
+        returns the `matplotlib.axes` object as output. 
     stats : dict
         Goodness of fit statistical estimators:
 
@@ -404,7 +410,54 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     if len(scales)==1:
         scales = scales[0]
 
+    # Results display function
+    plotfcn = lambda: _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method)
+
     return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, Puncert=Puq, 
-                    paramUncert=paramuq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, 
+                    paramUncert=paramuq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
                     stats=stats, cost=fit.cost, residuals=fit.residuals, success=fit.success)
-    # =========================================================================
+# =========================================================================
+
+
+def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
+# =========================================================================
+    nSignals = len(Vsubsets)
+    _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
+    for i in range(nSignals): 
+        subset = Vsubsets[i]
+        # Plot the experimental signal and fit
+        axs[i].plot(V[subset],'.',color='grey',alpha=0.5)
+        axs[i].plot(Vfit[subset],'tab:blue')
+        axs[i].grid(alpha=0.3)
+        axs[i].set_xlabel('Array Elements')
+        axs[i].set_ylabel('V[{}]'.format(i))
+        axs[i].legend(('Data','Fit'))
+
+    # Confidence intervals of the fitted distance distribution
+    Pci95 = Puq.ci(95) # 95#-confidence interval
+    Pci50 = Puq.ci(50) # 50#-confidence interval
+
+    ax = plt.subplot(nSignals+1,2,2*(nSignals+1)-1)
+    ax.plot(r,Pfit,color='tab:blue',linewidth=1.5)
+    ax.fill_between(r,Pci50[:,0],Pci50[:,1],color='tab:blue',linestyle='None',alpha=0.45)
+    ax.fill_between(r,Pci95[:,0],Pci95[:,1],color='tab:blue',linestyle='None',alpha=0.25)
+    ax.grid(alpha=0.3)
+    ax.legend(['truth','optimal fit','95%-CI'])
+    ax.set_xlabel('r [nm]')
+    ax.set_ylabel('P(r)')
+    axs = np.append(axs,ax)
+
+    # Compute the Akaike weights
+    dfcnals = fcnals - min(fcnals)
+    ax = plt.subplot(nSignals+1,2,2*(nSignals+1))
+    ax.bar(np.arange(maxModels)+1,dfcnals + abs(min(dfcnals)),facecolor='tab:blue',alpha=0.6)
+    ax.grid(alpha=0.3)
+    ax.set_ylabel('$\Delta${}'.format(method.upper()))
+    ax.set_xlabel('Number of components')
+    axs = np.append(axs,ax)
+
+    plt.tight_layout()
+    plt.show()
+    return axs
+# =========================================================================
+

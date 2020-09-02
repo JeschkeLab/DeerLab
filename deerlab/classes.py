@@ -21,6 +21,13 @@ class FitResult(dict):
         * ``stats['aicc']`` - Corrected Akaike information criterion
         * ``stats['bic']`` - Bayesian information criterion
 
+    Methods
+    -------
+    plot()
+        Display the fit results on a Matplotlib window. The script returns a 
+        `matplotlib.axes <https://matplotlib.org/api/axes_api.html>`_ object.
+        All graphical parameters can be adjusted from this object.
+
     Notes
     -----
     There may be additional attributes not listed above depending of the
@@ -48,9 +55,6 @@ class FitResult(dict):
 
     def __dir__(self):
         return list(self.keys())
-
-
-
 
 
 

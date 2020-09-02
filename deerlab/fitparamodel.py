@@ -7,6 +7,7 @@ import numpy as np
 import numdifftools as nd
 from deerlab.utils import isempty, multistarts, hccm, parse_multidatasets, goodness_of_fit
 from deerlab.classes import UncertQuant, FitResult
+import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 import warnings
 
@@ -37,6 +38,10 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
         Covariance-based uncertainty quantification of the fitted parameters.
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
+    plot : callable
+        Function to display the results. It will 
+        display the fitted signals. If requested, the function returns 
+        the `matplotlib.axes` object as output. 
     stats :  dict
         Goodness of fit statistical estimators:
 
@@ -225,17 +230,37 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
     else:
         paruq = []
 
-
     # Calculate goodness of fit
     stats = []
+    Vfit = model(parfit)
     for subset in Vsubsets: 
         Ndof = len(V[subset]) - len(par0)
-        stats.append(goodness_of_fit(V[subset],model(parfit)[subset],Ndof))
+        stats.append(goodness_of_fit(V[subset],Vfit[subset],Ndof))
     if Nsignals==1: 
         stats = stats[0]
         scales = scales[0]
 
+    # Get plot function
+    plotfcn = lambda: _plot(Vsubsets,V,Vfit)
+
     return FitResult(
             param=parfit, uncertainty=paruq, scale=scales, stats=stats, cost=fvals,
-            residuals=sol.fun, success=sol.success)
+            plot=plotfcn, residuals=sol.fun, success=sol.success)
 
+def _plot(Vsubsets,V,Vfit):
+    nSignals = len(Vsubsets)
+    _,axs = plt.subplots(nSignals,figsize=[7,3*nSignals])
+    axs = np.atleast_1d(axs)
+    for i in range(nSignals): 
+        subset = Vsubsets[i]
+        # Plot the experimental signal and fit
+        axs[i].plot(V[subset],'.',color='grey',alpha=0.5)
+        axs[i].plot(Vfit[subset],'tab:blue')
+        axs[i].grid(alpha=0.3)
+        axs[i].set_xlabel('Array Elements')
+        axs[i].set_ylabel('V[{}]'.format(i))
+        axs[i].legend(('Data','Fit'))
+
+    plt.tight_layout()
+    plt.show()
+    return axs
