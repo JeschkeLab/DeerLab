@@ -7,8 +7,8 @@ We start by importing the required function/libraries:
 
 .. code-block:: python
 
-   from numpy import np
-   from matplotlib.pyplot import plt
+   import numpy as np
+   import matplotlib.pyplot as plt
    from deerlab import *
 
 We continue by generating a distance distribution consisting of a single Gaussian:
