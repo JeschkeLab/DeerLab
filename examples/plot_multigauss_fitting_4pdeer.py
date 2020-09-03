@@ -35,7 +35,7 @@ def K4pdeer(par,t,r):
 
 t = np.linspace(-0.25,4,300) # time axis, us
 r = np.linspace(2.5,4.5,300) # distance axis, nm
-param0 = [3, 0.3, 0.2, 3.5, 0.3, 0.45, 3.9, 0.2, 0.20] # parameters for three-Gaussian model
+param0 = [3, 0.1, 0.2, 3.5, 0.1, 0.45, 3.9, 0.05, 0.20] # parameters for three-Gaussian model
 P = dd_gauss3(r,param0) # ground truth distance distribution
 lam = 0.3 # modulation depth
 conc = 250 # spin concentration, uM
@@ -50,9 +50,9 @@ V = K4pdeer([lam,conc],t,r)@P + whitegaussnoise(t,noiselvl)
 # -------------------
 
 # Parameter bounds:
-#     lambda conc   rmean fwhm 
+#     lambda conc   rmean sigma 
 lb = [1,  0.05] # distribution basis function lower bounds
-ub = [20, 5] # distribution basis function upper bounds
+ub = [20,  2.5] # distribution basis function upper bounds
 lbK = [0, 0.05] # kernel parameters lower bounds
 ubK = [1, 1500] # kernel parameters upper bounds
 

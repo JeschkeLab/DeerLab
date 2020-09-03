@@ -24,13 +24,13 @@ r = np.linspace(2,6,200)
 
 # Distribution parameters
 rmean = 4.5
-width = 0.3
+sigma = 0.2
 chain = 4.3
 pers = 10
 amp = 0.35
 
 # Generate distribution
-P = dd_gauss(r,[rmean, width])
+P = dd_gauss(r,[rmean, sigma])
 P = amp*P + (1 - amp)*dd_wormchain(r,[chain, pers])
 # Normalize distribution
 P = P/sum(P)/np.mean(np.diff(r))

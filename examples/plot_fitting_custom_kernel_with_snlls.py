@@ -19,7 +19,7 @@ t = np.linspace(-0.5,5,300)
 r = np.linspace(2,6,200)
 
 # Generate ground truth and input signal
-P = dd_gauss2(r,[3.5, 0.4, 0.4, 4.5, 0.7, 0.6])
+P = dd_gauss2(r,[3.5, 0.25, 0.4, 4.5, 0.4, 0.6])
 lam = 0.36
 c0 = 250 #uM
 B = bg_hom3d(t,c0,lam)

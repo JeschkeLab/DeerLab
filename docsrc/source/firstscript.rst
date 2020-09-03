@@ -17,7 +17,7 @@ We continue by generating a distance distribution consisting of a single Gaussia
 
    N = 201                            # number of points
    r = np.linspace(1.5,7,N)           # distance range, in nanometers
-   P = dd_gauss(r,[3.5, 0.4])         # single-Gaussian distance distribution
+   P = dd_gauss(r,[3.5, 0.15])         # single-Gaussian distance distribution
 
 Next, we calculate the background decay function due to a homogeneus 3D distribution of spins:
 
@@ -41,7 +41,7 @@ We can look at the result:
 
 .. code-block:: python
 
-   plt.plot(t,V,t,Vexp,t,(1-lam)*B)   # plotting
+   plt.plot(t,V,t,Vexp)   # plotting
    plt.show()
 
 Now that we have a noisy DEER trace, we fit it (in a single step) with a non-parametric distance distribution and a homogeneous 3D background.
@@ -54,14 +54,5 @@ Finally, we plot the results
 
 .. code-block:: python
 
-   Pfit = fit.P              # fitted distance distribution
-   Bfit = fit.B              # fitted background
-   Vfit = fit.V              # fitted dipolar signal
-   lamfit = fit.exparam      # fitted modulation depth
-   
-   # plotting
-   plt.subplot(2,1,1)
-   plt.plot(t,Vexp,t,Vfit,t,(1-lamfit)*Bfit)     # plot fitted model and background
-   plt.subplot(2,1,2)
-   plt.plot(r,P,r,Pfit)                          # plot fitted distribution
-   plt.show()
+   # Plotting
+   fit.plot()

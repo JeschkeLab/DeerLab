@@ -25,7 +25,7 @@ t = np.linspace(-0.4,3.5,200)
 # Use a distance-axis with less points to make analysis faster
 r = np.linspace(2,5,200)
 
-P = dd_gauss2(r,[3, 0.3, 0.6, 3.5, 0.4, 0.4])
+P = dd_gauss2(r,[3, 0.1, 0.6, 3.5, 0.2, 0.4])
 B = bg_strexp(t,[0.04,1])
 lam = 0.32
 

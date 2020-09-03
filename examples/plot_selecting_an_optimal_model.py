@@ -18,13 +18,13 @@ from deerlab import *
 # from a bimodal Gaussian distance distribution.
 
 # Prepare the signal components
-t = np.linspace(-0.3,6,300)
+t = np.linspace(-0.3,3.5,300)
 r = np.linspace(2,6,200)
-P = dd_gauss2(r,[3.8, 0.7, 0.7, 4.5, 0.3, 0.7])
+P = dd_gauss2(r,[3.8, 0.4, 0.7, 4.5, 0.2, 0.7])
 
 # Prepare the dipolar kernel and get the signal
 K = dipolarkernel(t,r)
-V = K@P + whitegaussnoise(t,0.01)
+V = K@P + whitegaussnoise(t,0.02)
 
 # %% [markdown]
 # Selecting an optimal model
@@ -55,7 +55,7 @@ models = [dd_rice,dd_rice2,dd_rice3,dd_gauss,dd_gauss2,dd_gauss3,dd_rice_gauss]
 # dictionary which contains (amongst other estimators) likelihood estimators such as the Akaike information criterion (AIC).
 # The model with the lowers AIC value can be considered to most likely to be the optimal model.
 #
-# To do this, we jus have to evaluate the parametric models with ``fitparamodel`` while looping over all the distribution models
+# To do this, we just have to evaluate the parametric models with ``fitparamodel`` while looping over all the distribution models
 # we listed above, and collecting the AIC-values for each model.
  
 aic = []

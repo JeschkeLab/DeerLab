@@ -17,7 +17,7 @@ from deerlab import *
 
 t = np.linspace(-0.1,6.5,100)      # time axis, us
 r = np.linspace(1.5,6,100)         # distance axis, ns
-param0 = [3, 0.3, 0.2, 3.5, 0.3, 0.65, 3.8, 0.2, 0.15] # parameters for three-Gaussian model
+param0 = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Gaussian model
 P = dd_gauss3(r,param0)         # model distance distribution
 B = lambda t,lam: bg_hom3d(t,300,lam) # background decay
 exparam = [0.6, 0.3, 0.1, 3.2]     # parameters for 5pDEER experiment

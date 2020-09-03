@@ -24,7 +24,7 @@ DeerLab distinguishes between **non-parametric** and **parametric** distance dis
 .. code-block:: python
    
         r = np.linspace(1.5,6,201)   # distance, in nanometers
-        P = dd_gauss(r,[3 0.5])      # Gaussian distribution, center 3 nm, fwhm 0.5 nm
+        P = dd_gauss(r,[3 0.2])      # Gaussian distribution, center 3 nm, fwhm 0.5 nm
         plt.plot(r,P)
 
 The first line generates a distance axis ``r`` as a row vector. The second line generates the distance distribution ``P`` as a vector defined over ``r``. The function ``dd_gauss`` is a distance distribution model function provided by DeerLab. It takes as inputs the distance axis and a two-element parameter array (center and full width at half maximum) and returns the calculated distance distribution consisting of one Gaussian, truncated to the range of ``r`` and normalized.

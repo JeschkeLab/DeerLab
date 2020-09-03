@@ -19,7 +19,7 @@ from deerlab import *
 # Prepare components
 t = np.linspace(0,5,400)
 r = np.linspace(2,5,100)
-P = dd_gauss2(r,[3.5, 0.3, 0.2, 4, 0.2, 0.8])
+P = dd_gauss2(r,[3.5, 0.1, 0.2, 4, 0.05, 0.8])
 B = bg_exp(t,0.2)
 lam = 0.3
 K = dipolarkernel(t,r,lam,B)
@@ -114,3 +114,5 @@ plt.legend(['Raw','Apodized'])
 # The improvement will only be visual as no further information can be gained 
 # from additional zero-filling.
 
+
+# %%

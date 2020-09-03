@@ -92,8 +92,8 @@ rA = np.linspace(1,8,100)
 rB = np.linspace(1,8,100)
 
 # Distributions for states A and B
-PstateA = dd_gauss(rA,[5.5, 0.4])
-PstateB = dd_gauss2(rB,[4.5, 0.7, 0.4, 3.5, 0.6, 0.6])
+PstateA = dd_gauss(rA,[5.5, 0.25])
+PstateB = dd_gauss2(rB,[4.5, 0.4, 0.4, 3.5, 0.35, 0.6])
 
 L = [0.3, 1, 3, 10, 30, 100, 300] # total ligand concentration, uM
 Kdis = 5.65  # dissociation constant, uM

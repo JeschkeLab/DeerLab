@@ -27,7 +27,7 @@ from deerlab import *
 # Parameters
 t = np.linspace(0,5,250)
 r = np.linspace(1,7,200)
-P = dd_gauss3(r,[4.5, 0.6, 0.4, 3, 0.4, 0.3, 4, 0.7, 0.5])
+P = dd_gauss3(r,[4.5, 0.35, 0.4, 3, 0.25, 0.3, 4, 0.4, 0.5])
 lam = 0.3
 conc = 80; #uM
 
@@ -37,8 +37,6 @@ K = dipolarkernel(t,r,lam,Bmodel)
 np.random.seed(0)
 V = K@P + whitegaussnoise(t,0.01)
 
-# %%
-
 # %% [markdown]
 # Fit the dipolar signal
 # ----------------------
@@ -47,7 +45,8 @@ V = K@P + whitegaussnoise(t,0.01)
 # corresponding uncertainty quantification, so we will ignore the rest of
 # the outputs.
 # %%
-fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,display=True)
+fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer)
+fit.plot()
 Pfit = fit.P
 # %% [markdown]
 # Extract Gaussian constraints from the fit
@@ -82,7 +81,11 @@ info = dd_gauss2()
 par0 = info['Start']
 lb = info['Lower']
 ub = info['Upper']
-fit = fitparamodel(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat)
+
+# Fit the Gaussians
+fit = fitparamodel(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat,rescale=False)
+
+# Extract the fit results
 parfit = fit.param
 paruq = fit.uncertainty
 PGauss = dd_gauss2(r,parfit)

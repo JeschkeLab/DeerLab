@@ -21,7 +21,7 @@ from deerlab import *
 # Parameters
 t = np.linspace(-0.1,3,250)
 rtrue = np.linspace(1,7,200)
-Ptrue = dd_gauss3(rtrue,[4.5, 0.6, 0.4, 3, 0.4, 0.3, 4, 0.7, 0.5])
+Ptrue = dd_gauss3(rtrue,[4.5, 0.35, 0.4, 3, 0.25, 0.3, 4, 0.4, 0.5])
 lam = 0.3
 conc = 180 #uM
 

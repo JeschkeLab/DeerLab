@@ -59,4 +59,3 @@ par0 = [[],[],ex_par0]
 # %%
 fit = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_5pdeer,par0,lb,ub)
 fit.plot()
-# %%
