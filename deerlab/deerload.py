@@ -22,7 +22,7 @@ def deerload(fullbasename,Scaling=None,plot=False,*args,**kwargs):
     Returns
     -------
     t : ndarray
-        Time axis.
+        Time axis in microseconds.
     V : ndarray
         Experimental signal.
     pars : dict
@@ -30,9 +30,6 @@ def deerload(fullbasename,Scaling=None,plot=False,*args,**kwargs):
 
     Notes
     -----
-    Most commercial spectrometers save their data in nanoseconds. Since the
-    required time unit in DeerLab is microseconds, it is important to check
-    the values of ``t`` returned by ``deerload`` and convert to microseconds if necessary.
     Code based on BES3T version 1.2 (Xepr >=2.1).
     """
     filename = fullbasename[:-4]
@@ -258,6 +255,8 @@ def deerload(fullbasename,Scaling=None,plot=False,*args,**kwargs):
             else:
                 warn('Cannot scale by temperature, since STMP in the DSC file is missing.')
     
+     # ns -> us converesion
+    abscissa /= 1e3
     if plot:
         plt.plot(abscissa/1e3,np.real(data),abscissa/1e3,np.imag(data))
         plt.xlabel("time (μs)")
