@@ -274,7 +274,6 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         Computes the start values of the parameters of the multiple basis functions
         spread equally within the box constraints.
         """
-        Npar = np.size(lb)
         par = []
         for lbi,ubi in zip(lb,ub):
             par.append(np.linspace(lbi,ubi,Nmodels+2)[1:-1])
@@ -443,8 +442,8 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
     ax.fill_between(r,Pci95[:,0],Pci95[:,1],color='tab:blue',linestyle='None',alpha=0.25)
     ax.grid(alpha=0.3)
     ax.legend(['truth','optimal fit','95%-CI'])
-    ax.set_xlabel('r [nm]')
-    ax.set_ylabel('P(r)')
+    ax.set_xlabel('Distance [nm]')
+    ax.set_ylabel('P [nm⁻¹]')
     axs = np.append(axs,ax)
 
     # Compute the Akaike weights
@@ -452,7 +451,7 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
     ax = plt.subplot(nSignals+1,2,2*(nSignals+1))
     ax.bar(np.arange(maxModels)+1,dfcnals + abs(min(dfcnals)),facecolor='tab:blue',alpha=0.6)
     ax.grid(alpha=0.3)
-    ax.set_ylabel('$\Delta${}'.format(method.upper()))
+    ax.set_ylabel('Δ{}'.format(method.upper()))
     ax.set_xlabel('Number of components')
     axs = np.append(axs,ax)
 

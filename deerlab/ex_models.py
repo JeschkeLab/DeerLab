@@ -1,9 +1,10 @@
-
-
-import numpy as np
-from deerlab.utils import isempty
+# ex_models.py - Experiment parametric models
+# ---------------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+
+import numpy as np
+
 
 def _parsargs(param,npar):
 #=================================================================
@@ -14,7 +15,7 @@ def _parsargs(param,npar):
 #=================================================================
 
 
-def ex_4pdeer(param=[]):
+def ex_4pdeer(param=None):
 # ===================================================================
     r"""
     Single-pathway 4-pulse DEER experiment model 
@@ -57,7 +58,7 @@ def ex_4pdeer(param=[]):
      Modulation depth               0        1       0.3 
      -------------------------------------------------------
     """  
-    if isempty(param):
+    if param is None:
         info = dict(
             Parameters = ['Modulation depth'],
             Units = [''],
@@ -76,7 +77,7 @@ def ex_4pdeer(param=[]):
 # ===================================================================
 
 
-def ex_ovl4pdeer(param=[]):
+def ex_ovl4pdeer(param=None):
 # ===================================================================
     r"""
     4-pulse DEER with band overlap experiment model 
@@ -118,13 +119,14 @@ def ex_ovl4pdeer(param=[]):
       Amplitude of unmodulated components                0       1        0.3
       Amplitude of 1st modulated pathway                 0       1        0.3
       Amplitude of 2nd modulated pathway                 0       1        0.3
-      Refocusing time of 2nd modulated pathway   us      0       20        5        
+      Refocusing time of 2nd modulated pathway   μs      0       20        5        
      ---------------------------------------------------------------------------
     """  
-    if isempty(param):
+    if param is None:
         info = dict(
-            Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway','Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
-            Units = ['','','','us'],
+            Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway',
+                          'Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
+            Units = ['','','','μs'],
             Start = np.asarray([0.3, 0.3, 0.3,5]),
             Lower = np.asarray([0, 0, 0, 0]),
             Upper = np.asarray([1, 1, 1, 20])
@@ -142,7 +144,7 @@ def ex_ovl4pdeer(param=[]):
 
 
 
-def ex_5pdeer(param=[]):
+def ex_5pdeer(param=None):
 # ===================================================================
     r"""
     5-pulse DEER experiment model
@@ -184,13 +186,13 @@ def ex_5pdeer(param=[]):
       Amplitude of unmodulated components                0       1        0.3
       Amplitude of 1st modulated pathway                 0       1        0.3
       Amplitude of 2nd modulated pathway                 0       1        0.3
-      Refocusing time of 2nd modulated pathway   us      0       20        5        
+      Refocusing time of 2nd modulated pathway   μs      0       20        5        
      ---------------------------------------------------------------------------
     """  
-    if isempty(param):
+    if param is None:
         info = dict(
             Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway','Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
-            Units = ['','','','us'],
+            Units = ['','','','μs'],
             Start = np.asarray([0.3, 0.3, 0.3,5]),
             Lower = np.asarray([0, 0, 0, 0]),
             Upper = np.asarray([1, 1, 1, 20])
@@ -208,7 +210,7 @@ def ex_5pdeer(param=[]):
 
 
 
-def ex_7pdeer(param=[]):
+def ex_7pdeer(param=None):
 # ===================================================================
     r"""
     7-pulse DEER experiment model
@@ -252,14 +254,16 @@ def ex_7pdeer(param=[]):
       Amplitude of 1st modulated pathway                 0       1        0.5
       Amplitude of 2nd modulated pathway                 0       1        0.3
       Amplitude of 3rd modulated pathway                 0       1        0.2 
-      Refocusing time of 2nd modulated pathway   us      0       20       1.5        
-      Refocusing time of 3rd modulated pathway   us      0       20       3.5 
+      Refocusing time of 2nd modulated pathway   μs      0       20       1.5        
+      Refocusing time of 3rd modulated pathway   μs      0       20       3.5 
      ---------------------------------------------------------------------------
     """  
-    if isempty(param):
+    if param is None:
         info = dict(
-            Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway','Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
-            Units = ['','','','us'],
+            Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway',
+                          'Amplitude of 2nd modulated pathway','Amplitude of 3rd modulated pathway',
+                          'Refocusing time of 2nd modulated pathway','Refocusing time of 3rd modulated pathway'],
+            Units = ['','','','','μs','μs'],
             Start = np.asarray([0.3, 0.5, 0.3, 0.2, 1.5, 3.5]),
             Lower = np.asarray([0, 0, 0, 0, 0, 0]),
             Upper = np.asarray([1, 1, 1, 1, 20, 20])

@@ -373,7 +373,7 @@ def _plot(subsets,Vexp,Vfit,r,Pfit,Puq):
     axs[nSignals].fill_between(r,Pci95[:,0], Pci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
     axs[nSignals].fill_between(r,Pci50[:,0], Pci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
     axs[nSignals].set_xlabel('Distance [nm]')
-    axs[nSignals].set_ylabel('P [nm$^{-1}$]')
+    axs[nSignals].set_ylabel('P [nm⁻¹]')
     axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
     axs[nSignals].grid(alpha=0.3)
     plt.tight_layout()

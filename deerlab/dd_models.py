@@ -1,8 +1,11 @@
+# dd_models.py - Distance distribtion parametric models
+# ---------------------------------------------------------------------------
+# This file is a part of DeerLab. License is MIT (see LICENSE.md). 
+# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+
 import math as m
 import numpy as np
 import scipy.special as spc
-__docformat__ = 'reStructuredText'
-
 
 def _parsargs(args,npar):
 #=================================================================
