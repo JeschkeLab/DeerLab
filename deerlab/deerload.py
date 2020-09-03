@@ -5,7 +5,7 @@ import os
 import matplotlib.pyplot as plt
 
 #-------------------------------------------------------------------------------
-def deerload(fullbasename,Scaling=None,plot=False,*args,**kwargs):
+def deerload(fullbasename,Scaling=None,plot=False,full_output=False,*args,**kwargs):
     r"""
     Load file in BES3T format (Bruker EPR Standard for Spectrum Storage and Transfer)
     
@@ -26,7 +26,7 @@ def deerload(fullbasename,Scaling=None,plot=False,*args,**kwargs):
     V : ndarray
         Experimental signal.
     pars : dict
-        Parameter file entries.
+        Parameter file entries, returned if ``full_output`` is ``True``.
 
     Notes
     -----
@@ -106,7 +106,7 @@ def deerload(fullbasename,Scaling=None,plot=False,*args,**kwargs):
         if  parDESC["IIFMT"] != parDESC["IRFMT"]:
             raise ValueError("IRFMT and IIFMT in DSC file must be identical.")
     
-    # Preallocation of theabscissa
+    # Preallocation of the abscissa
     maxlen = max(nx,ny,nz)
     abscissa = np.full((maxlen,3),np.nan)
     # Construct abscissa vectors
@@ -257,6 +257,12 @@ def deerload(fullbasename,Scaling=None,plot=False,*args,**kwargs):
     
      # ns -> us converesion
     abscissa /= 1e3
+
+    # Ensue proper numpy formatting
+    abscissa,data = np.atleast_1d(abscissa,data)
+    abscissa = np.squeeze(abscissa)
+    data = np.squeeze(data)
+
     if plot:
         plt.plot(abscissa/1e3,np.real(data),abscissa/1e3,np.imag(data))
         plt.xlabel("time (μs)")
@@ -264,8 +270,11 @@ def deerload(fullbasename,Scaling=None,plot=False,*args,**kwargs):
         plt.grid()
         plt.show()
     
-    return abscissa, data, parameters
-    
+    if full_output:
+        return abscissa, data, parameters
+    else:
+        return abscissa, data
+
 
 def read_description_file(DSCFileName):
     """
