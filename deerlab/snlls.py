@@ -1,8 +1,13 @@
+# snlls.py - Separable non-linear least-squares solver
+# ---------------------------------------------------------------
+# This file is a part of DeerLab. License is MIT (see LICENSE.md).
+# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import copy
 import numpy as np
 import numdifftools as nd
 from scipy.optimize import least_squares, lsq_linear
+import matplotlib.pyplot as plt
 from numpy.linalg import solve
 
 # Import DeerLab depencies
@@ -52,6 +57,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         * ``paramuq.ci(n,'nonlin')``  - n%-CI of the non-linear parameter set
     alpha : scalar
         Regularization parameter value used for the regularization of the linear parameters.
+    plot : callable
+        Function to display the results. It will display the fitted data.
+        If requested, the function returns the `matplotlib.axes` object as output. 
     stats : dict
         Goodness of fit statistical estimators
 
@@ -177,7 +185,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     par0 = np.atleast_1d(par0)
 
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
-    y, Amodel, weights, subsets, prescales = dl.utils.parse_multidatasets(y, Amodel, weights, precondition=True)
+    y, Amodel, weights, subsets, _ = dl.utils.parse_multidatasets(y, Amodel, weights, precondition=True)
 
     # Get info on the problem parameters and non-linear operator
     A0 = Amodel(par0)
@@ -404,7 +412,10 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     if len(stats) == 1: 
         stats = stats[0]
 
-    return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq, alpha=alpha,
+    # Display function
+    plotfcn = lambda: _plot(subsets,y,yfit)
+
+    return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq, alpha=alpha, plot=plotfcn,
                      stats=stats, cost=fvals, residuals=sol.fun, success=sol.success)
 # ===========================================================================================
 
@@ -443,3 +454,23 @@ def _augment(res, J, regtype, alpha, L, x, eta, Nnonlin):
 
     return res, J
 # ===========================================================================================
+
+
+def _plot(subsets,y,yfit):
+# ===========================================================================================
+    nSignals = len(subsets)
+    _,axs = plt.subplots(nSignals+1,figsize=[7,3*nSignals])
+    for i in range(nSignals): 
+        subset = subsets[i]
+        # Plot the experimental signal and fit
+        axs[i].plot(y[subset],'.',color='grey',alpha=0.5)
+        axs[i].plot(yfit[subset],'tab:blue')
+        axs[i].grid(alpha=0.3)
+        axs[i].set_xlabel('Array elements')
+        axs[i].set_ylabel('Data #{}'.format(i))
+        axs[i].legend(('Data','Fit'))
+    plt.tight_layout()
+    plt.show()
+    return axs
+# ===========================================================================================
+
