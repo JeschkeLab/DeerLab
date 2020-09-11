@@ -107,11 +107,11 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
             if iSample>0:
                 
                 #Determine requested re-sampling method
-                if resampling is 'gaussian':
+                if resampling == 'gaussian':
                     # Resample from a Gaussian distribution with variance estimated from the residuals
                     Vresample[i] = Vfit[i] + np.random.normal(0, sigma[i], len(Vfit[i]))
 
-                elif resampling is 'residual':
+                elif resampling == 'residual':
                     # Resample from the residual directly
                     Vresample[i] =  Vfit[i] + residuals[i][np.random.permutation(len(Vfit[i]))]
                 else:

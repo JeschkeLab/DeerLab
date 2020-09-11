@@ -196,7 +196,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     # Determine whether to use regularization penalty
     illConditioned = np.linalg.cond(A0) > 10
-    if reg is 'auto':
+    if reg == 'auto':
         includePenalty = illConditioned
     else:
         includePenalty = reg
@@ -432,13 +432,13 @@ def _augment(res, J, regtype, alpha, L, x, eta, Nnonlin):
     """
     eps = np.finfo(float).eps
     # Compute the regularization penalty augmentation for the residual and the Jacobian
-    if regtype is 'tikhonov':
+    if regtype == 'tikhonov':
         resreg = L@x
         Jreg = L
-    elif regtype is 'tv':
+    elif regtype == 'tv':
         resreg =((L@x)**2 + eps)**(1/4)
         Jreg = 2/4*((( ( (L@x)**2 + eps)**(-3/4) )*(L@x))[:, np.newaxis]*L)
-    elif regtype is 'huber':
+    elif regtype == 'huber':
         resreg = np.sqrt(np.sqrt((L@x/eta)**2 + 1) - 1)
         Jreg = 0.5/(eta**2)*((((np.sqrt((L@x/eta)**2 + 1) - 1 + eps)**(-1/2)*(((L@x/eta)**2 + 1+ eps)**(-1/2)))*(L@x))[:, np.newaxis]*L)
 

@@ -92,18 +92,18 @@ def noiselevel(V,*args):
     # Estimation of the noise level
     # -----------------------------
 
-    if estimationMethod is '2D':
+    if estimationMethod == '2D':
             # Estimate standard deviations for all time point, and average over scans
             if shape(V)[1] < 10:
                 raise Warning('Only a few scans are given. Noise standard deviation estimate will be inaccurate.')
             sigma = std(V,1)
             sigma = mean(sigma)
             
-    elif estimationMethod is 'filtering':
+    elif estimationMethod == 'filtering':
         # Filter the noise in the signal    
-        if filterType is 'movmean':
+        if filterType == 'movmean':
                 Vfilt = movmean(V,3)
-        elif filterType is 'savgol':
+        elif filterType == 'savgol':
             with warnings.catch_warnings():
                 warnings.simplefilter('ignore')
                 Vfilt = savgol_filter(V,11,3)
@@ -112,13 +112,13 @@ def noiselevel(V,*args):
         # And estimate the noiselevel from the resulting residual
         sigma = std(V - Vfilt)
             
-    elif estimationMethod is 'complex':
+    elif estimationMethod == 'complex':
             # Optimize the phase of the signal
             _,Vim,_,_ = correctphase(V,full_output=True)
             # And estimate the noiselevel from the imaginary part
             sigma = std(Vim)
             
-    elif estimationMethod is 'reference':
+    elif estimationMethod == 'reference':
             sigma = std(V - Vref)
 
     return sigma

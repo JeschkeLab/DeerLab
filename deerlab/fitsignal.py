@@ -230,7 +230,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     # Get information about distance distribution parameters
     # ------------------------------------------------------
     parametricDistribution  = type(dd_model) is types.FunctionType
-    parfreeDistribution = dd_model is 'P'
+    parfreeDistribution = dd_model == 'P'
     includeForeground = np.array(dd_model is not None)
 
     par0_dd, lower_dd, upper_dd, N_dd = _getmodelparams(dd_model)

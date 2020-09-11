@@ -227,13 +227,13 @@ def _augment(res,J,regtype,alpha,L,P,eta):
     """
     eps = np.finfo(float).eps
     # Compute the regularization penalty augmentation for the residual and the Jacobian
-    if regtype is 'tikhonov':
+    if regtype == 'tikhonov':
         resreg = L@P
         Jreg = L
-    elif regtype is 'tv':
+    elif regtype == 'tv':
         resreg =((L@P)**2 + eps)**(1/4)
         Jreg = 2/4*((( ( (L@P)**2 + eps)**(-3/4) )*(L@P))[:, np.newaxis]*L)
-    elif regtype is 'huber':
+    elif regtype == 'huber':
         resreg = np.sqrt(np.sqrt((L@P/eta)**2 + 1) - 1)
         Jreg = 0.5/(eta**2)*( (((np.sqrt((L@P/eta)**2 + 1) - 1 + eps)**(-1/2)*(((L@P/eta)**2 + 1+ eps)**(-1/2)))*(L@P))[:, np.newaxis]*L )
 
