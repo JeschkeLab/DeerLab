@@ -427,7 +427,7 @@ def bg_strexp(*args):
     t,param,lam = _parsargs(args,npar=2) 
 
     # Unpack model paramters
-    kappa = param[0]         # decay rate, us-1
+    kappa = param[0]         # decay rate, µs^-1
     d = param[1]            # fractal dimension    
     B = np.exp(-lam*kappa*abs(t)**d)
     
@@ -489,7 +489,7 @@ def bg_prodstrexp(*args):
     if not args:
         info = dict(
             Parameters = ['Decay Rate of 1st component','Stretch factor of 1st component','Decay Rate of 2nd component','Stretch factor of 2nd component'],
-            Units = ['us-1','','us-1',''],
+            Units = ['µs^-1','','µs^-1',''],
             Start = np.asarray([0.25, 1, 0.25, 1]),
             Lower = np.asarray([ 0,   0,  0,   0]),
             Upper = np.asarray([200,  6, 200,  6])

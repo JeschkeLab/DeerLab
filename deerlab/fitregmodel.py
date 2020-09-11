@@ -11,7 +11,7 @@ import copy
 from deerlab.utils import hccm, goodness_of_fit
 from deerlab.classes import UncertQuant, FitResult
 
-def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx', 
+def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
                 weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
                 uqanalysis=True, renormalize=True, noiselevelaim = -1):
     r"""
@@ -33,7 +33,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
         * ``'huber'`` - Huber regularization
         The default is ``'tikhonov'``.   
     
-    alpha : string or scalar
+    regparam : string or scalar
         Method for the automatic selection of the optimal regularization parameter:
     
         * ``'lr'`` - L-curve minimum-radius method (LR)
@@ -127,8 +127,10 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
         problem = 'unconstrained'
 
     # If the regularization parameter is not specified, get the optimal choice
-    if type(alpha) is str:
-        alpha = dl.selregparam(V,K,r,regtype,alpha,regorder=regorder,weights=weights, nonnegativity=nonnegativity,huberparam=huberparam)
+    if type(regparam) is str:
+        alpha = dl.selregparam(V,K,r,regtype,regparam,regorder=regorder,weights=weights, nonnegativity=nonnegativity,huberparam=huberparam)
+    else:
+        alpha = regparam
 
     # Prepare components of the LSQ-problem
     [KtKreg, KtV] = dl.lsqcomponents(V,K,L,alpha,weights, regtype=regtype, huberparam=huberparam)
@@ -210,7 +212,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
     # ---------------------------------------
     plotfcn = lambda: _plot(subsets,V,Vfit,r,Pfit,Puq)
 
-    return FitResult(P=Pfit, uncertainty=Puq, alpha=alpha, scale=scales, stats=stats, 
+    return FitResult(P=Pfit, uncertainty=Puq, regparam=alpha, scale=scales, stats=stats, 
                      plot=plotfcn, cost=fval, residuals=res, success=success)
 # ===========================================================================================
 

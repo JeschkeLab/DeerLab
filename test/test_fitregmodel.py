@@ -142,7 +142,7 @@ def test_unconstrained():
     L = regoperator(r,2)
     V = K@P
 
-    fit = fitregmodel(V,K,r,'tikhonov',alpha=0.05,nonnegativity=False,renormalize=False)
+    fit = fitregmodel(V,K,r,'tikhonov',regparam=0.05,nonnegativity=False,renormalize=False)
     Pfit_ref = np.linalg.solve(K.T@K + 0.05**2*L.T@L, K.T@V)
 
     assert ovl(Pfit_ref,fit.P) > 0.99 # more than 99% overlap
