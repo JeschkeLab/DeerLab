@@ -4,13 +4,12 @@ Multi-Gauss fit of a 4-pulse DEER signal
 ========================================
 
 This example showcases how to fit a simple 4-pulse DEER signal with
-background using a multi-Gauss model, i.e automatically optimizing the
-number of Gaussians in the model.
+background using a multi-Gauss distance distribution model, determining
+the optimal number of Gaussians.
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from deerlab import *
-
+import deerlab as dl
 
 # %% [markdown]
 # Model function for a 4pDEER dipolar kernel 
@@ -23,9 +22,9 @@ def K4pdeer(par,t,r):
     # Unpack parameters
     lam,conc = par
     # Simualte background
-    B = bg_hom3d(t,conc,lam)
+    B = dl.bg_hom3d(t,conc,lam)
     # Generate dipolar kernel
-    K = dipolarkernel(t,r,lam,B)
+    K = dl.dipolarkernel(t,r,lam,B)
 
     return K
 
@@ -36,14 +35,14 @@ def K4pdeer(par,t,r):
 t = np.linspace(-0.25,4,300) # time axis, us
 r = np.linspace(2.5,4.5,300) # distance axis, nm
 param0 = [3, 0.1, 0.2, 3.5, 0.1, 0.45, 3.9, 0.05, 0.20] # parameters for three-Gaussian model
-P = dd_gauss3(r,param0) # ground truth distance distribution
+P = dl.dd_gauss3(r,param0) # ground truth distance distribution
 lam = 0.3 # modulation depth
 conc = 250 # spin concentration, uM
 noiselvl = 0.005 # noise level
 
 # Generate 4pDEER dipolar signal with noise
-np.random.seed(0)
-V = K4pdeer([lam,conc],t,r)@P + whitegaussnoise(t,noiselvl)
+K = K4pdeer([lam,conc],t,r)
+V = K @ P + dl.whitegaussnoise(t,noiselvl,seed=0)
 
 # %% [markdown]
 # Multi-Gauss fitting
@@ -61,7 +60,7 @@ Kmodel = lambda par: K4pdeer(par,t,r)
 NGauss = 5 # maximum number of Gaussians
 
 # Fit the kernel parameters with an optimized multi-Gauss distribution
-fit = fitmultimodel(V,Kmodel,r,dd_gauss,NGauss,'aic',lb,ub,lbK,ubK)
+fit = dl.fitmultimodel(V,Kmodel,r,dl.dd_gauss,NGauss,'aic',lb,ub,lbK,ubK)
 #Extract results
 Pfit = fit.P
 Kparfit = fit.Kparam
@@ -96,11 +95,11 @@ plt.figure(figsize=(10,5))
 plt.subplot(3,2,1)
 plt.plot(t,V,'k.')
 plt.plot(t,Vfit,'b',linewidth=1.5)
-plt.plot(t,(1-Kparfit[0])*bg_hom3d(t,Kparfit[1],Kparfit[0]),'b--',linewidth=1.5)
+plt.plot(t,(1-Kparfit[0])*dl.bg_hom3d(t,Kparfit[1],Kparfit[0]),'b--',linewidth=1.5)
 plt.tight_layout()
 plt.grid(alpha=0.3)
 plt.legend(['data','Vfit','Bfit'])
-plt.xlabel('t [$\mu s$]')
+plt.xlabel('t [µs]')
 plt.ylabel('V(t)')
 
 plt.subplot(322)

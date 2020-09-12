@@ -10,7 +10,7 @@ parameter-free distance distributions.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from deerlab import *
+import deerlab as dl
 
 # %% [markdown]
 # Generating multiple datasets
@@ -63,11 +63,11 @@ def Kmodel(par,ts,rA,rB,L):
     Ks = [[]]*Nsignals
     # General the dipolar kernels
     for i in range(Nsignals):
-        B = bg_exp(ts[i],k,lam)
+        B = dl.bg_exp(ts[i],k,lam)
         # Kernel for fraction A
-        KstateA = dipolarkernel(ts[i],rA,lam,B)
+        KstateA = dl.dipolarkernel(ts[i],rA,lam,B)
         # Kernel for fraction B
-        KstateB = dipolarkernel(ts[i],rB,lam,B)
+        KstateB = dl.dipolarkernel(ts[i],rB,lam,B)
         Ks[i] = np.concatenate((xA[i]*KstateA, xB[i]*KstateB),axis=1)
 
     return Ks
@@ -92,8 +92,8 @@ rA = np.linspace(1,8,100)
 rB = np.linspace(1,8,100)
 
 # Distributions for states A and B
-PstateA = dd_gauss(rA,[5.5, 0.25])
-PstateB = dd_gauss2(rB,[4.5, 0.4, 0.4, 3.5, 0.35, 0.6])
+PstateA = dl.dd_gauss(rA,[5.5, 0.25])
+PstateB = dl.dd_gauss2(rB,[4.5, 0.4, 0.4, 3.5, 0.35, 0.6])
 
 L = [0.3, 1, 3, 10, 30, 100, 300] # total ligand concentration, uM
 Kdis = 5.65  # dissociation constant, uM
@@ -107,8 +107,7 @@ Ks = Kmodel([0.25, 0.1, Kdis],ts,rA,rB,L)
 # Simulate dipolar signals
 Vs = [[]]*Nsignals
 for i in range(Nsignals):
-    np.random.seed(i)
-    Vs[i] = Ks[i]@np.concatenate((PstateA, PstateB)) + whitegaussnoise(ts[i],0.005)
+    Vs[i] = Ks[i]@np.concatenate((PstateA, PstateB)) + dl.whitegaussnoise(ts[i],0.005,seed=i)
 
 # %% [markdown]
 # Psuedotitration SNLLS Analysis
@@ -130,7 +129,7 @@ lbl = np.concatenate((np.zeros_like(rA), np.zeros_like(rB))) # Non-negativity co
 ubl = [] # Unconstrained
 
 # Run SNLLS optimization
-fit = snlls(Vs,lambda p: Kmodel(p,ts,rA,rB,L),par0,lb,ub,lbl,ubl)
+fit = dl.snlls(Vs,lambda p: Kmodel(p,ts,rA,rB,L),par0,lb,ub,lbl,ubl)
 # Extract fit results
 parfit = fit.nonlin
 Pfit = fit.lin
@@ -181,7 +180,3 @@ plt.xlabel('log$_{10}$([L])')
 plt.ylabel('Fractions')
 plt.legend(['state A','state B'])
 plt.ylim([0,1])
-
-
-
-# %%

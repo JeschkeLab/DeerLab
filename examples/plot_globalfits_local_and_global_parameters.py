@@ -11,7 +11,7 @@ locally and some might be fixed and not fitted.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from deerlab import *
+import deerlab as dl
 
 # %% [markdown]
 # Generate two datasets
@@ -37,18 +37,16 @@ fracA2 = 0.2 # Molar fraction of state A under conditions 2
 # The molar fraction of state B is not required as it follows fracB = 1 - fracA
 
 # Generate the two distributions for conditions 1 & 2
-P1 = dd_gauss2(r,[rmeanA, sigmaA, fracA1, rmeanB, sigmaB, 1-fracA1])
-P2 = dd_gauss2(r,[rmeanA, sigmaA, fracA2, rmeanB, sigmaB, 1-fracA2])
+P1 = dl.dd_gauss2(r,[rmeanA, sigmaA, fracA1, rmeanB, sigmaB, 1-fracA1])
+P2 = dl.dd_gauss2(r,[rmeanA, sigmaA, fracA2, rmeanB, sigmaB, 1-fracA2])
 
 # Generate the corresponding dipolar kernels
-K1 = dipolarkernel(t1,r)
-K2 = dipolarkernel(t2,r)
+K1 = dl.dipolarkernel(t1,r)
+K2 = dl.dipolarkernel(t2,r)
 
 # ...and the two corresponding signals
-np.random.seed(0)
-V1 = K1@P1 + whitegaussnoise(t1,0.01)
-np.random.seed(1)
-V2 = K2@P2 + whitegaussnoise(t2,0.02)
+V1 = K1@P1 + dl.whitegaussnoise(t1,0.01,seed=0)
+V2 = K2@P2 + dl.whitegaussnoise(t2,0.02,seed=1)
 # (for the sake of simplicity no background and 100# modulation depth are assumed)
 
 # %% [markdown]
@@ -84,13 +82,13 @@ def myABmodel(par):
     fracA2 = par[3]
     
     # Generate the signal-specific distribution
-    Pfit1 = dd_gauss2(r,[rmeanA, sigmaA, fracA1, rmeanB, sigmaB, max(1-fracA1,0)])
-    Pfit2 = dd_gauss2(r,[rmeanA, sigmaA, fracA2, rmeanB, sigmaB, max(1-fracA2,0)])
+    Pfit1 = dl.dd_gauss2(r,[rmeanA, sigmaA, fracA1, rmeanB, sigmaB, max(1-fracA1,0)])
+    Pfit2 = dl.dd_gauss2(r,[rmeanA, sigmaA, fracA2, rmeanB, sigmaB, max(1-fracA2,0)])
 
     # Generate signal #1
-    V1fit = K1@Pfit1
+    V1fit = K1 @ Pfit1
     # Generate signal #2
-    V2fit = K2@Pfit2
+    V2fit = K2 @ Pfit2
     # Return as a list
     Vfits = [V1fit,V2fit]
 
@@ -119,7 +117,7 @@ model = lambda par: myABmodel(par)[0] # call myABmodel with par and take the fir
 Vs = [V1,V2]
 
 # Fit the global parametric model to both signals
-fit = fitparamodel(Vs,model,par0,lower,upper,multistart=40)
+fit = dl.fitparamodel(Vs,model,par0,lower,upper,multistart=40)
 
 # The use of the option 'multistart' will help the solver to find the
 # global minimum and not to get stuck at local minima.

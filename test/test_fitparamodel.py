@@ -149,9 +149,8 @@ def test_manual_covmatrix():
     P = dd_gauss(r,par)
 
     K = dipolarkernel(t,r)
-    np.random.seed(1)
     sig = 0.01
-    V = K@P + whitegaussnoise(t,sig)
+    V = K@P + whitegaussnoise(t,sig,seed=1)
     covmat = sig**2*np.eye(len(t))
 
     par0 = [5, 0.50]

@@ -1,5 +1,5 @@
 import numpy as np
-from deerlab.bg_models import *
+import deerlab as dl
 
 def assert_bgmodel(model,Bref):
     "Check the correct behaviour of the core functionality of a background model"
@@ -46,36 +46,36 @@ def assert_bgmodel(model,Bref):
 
 def test_bg_exp():
     Bref = 0.416862019678508 # Reference from DeerLab 0.9.2 on MATLAB
-    assert_bgmodel(bg_exp,Bref)
+    assert_bgmodel(dl.bg_exp,Bref)
 
 def test_bg_hom3d():
     Bref = 0.882785339742350 # Reference from DeerLab 0.9.2 on MATLAB
-    assert_bgmodel(bg_hom3d,Bref)
+    assert_bgmodel(dl.bg_hom3d,Bref)
 
 def test_bg_hom3dex():
     Bref = 0.882896490000000 # Reference from DeerLab 0.9.2 on MATLAB
-    assert_bgmodel(bg_hom3dex,Bref)
+    assert_bgmodel(dl.bg_hom3dex,Bref)
 
 def test_bg_strexp():
     Bref = 0.535261428518990 # Reference from DeerLab 0.9.2 on MATLAB
-    assert_bgmodel(bg_strexp,Bref)
+    assert_bgmodel(dl.bg_strexp,Bref)
 
 def test_bg_prodstrexp():
     Bref = 0.286504796860190 # Reference from DeerLab 0.9.2 on MATLAB
-    assert_bgmodel(bg_prodstrexp,Bref)
+    assert_bgmodel(dl.bg_prodstrexp,Bref)
 
 def test_bg_sumstrexp():
     Bref = 0.535261428518990 # Reference from DeerLab 0.9.2 on MATLAB
-    assert_bgmodel(bg_sumstrexp,Bref)
+    assert_bgmodel(dl.bg_sumstrexp,Bref)
 
 def test_bg_poly1():
     Bref = -1.500000000000000 # Reference from DeerLab 0.9.2 on MATLAB
-    assert_bgmodel(bg_poly1,Bref)
+    assert_bgmodel(dl.bg_poly1,Bref)
 
 def test_bg_poly2():
     Bref = -7.750000000000000 # Reference from DeerLab 0.9.2 on MATLAB
-    assert_bgmodel(bg_poly2,Bref)
+    assert_bgmodel(dl.bg_poly2,Bref)
 
 def test_bg_poly3():
     Bref = -23.37500000000000 # Reference from DeerLab 0.9.2 on MATLAB
-    assert_bgmodel(bg_poly3,Bref)
+    assert_bgmodel(dl.bg_poly3,Bref)

@@ -1,3 +1,12 @@
+# This file is a part of DeerLab. License is MIT (see LICENSE.md).
+# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+
+import numpy as np
+import numdifftools as nd
+from scipy.stats import norm
+from scipy.signal import fftconvolve
+import copy
+
 class FitResult(dict):
     r""" Represents the results of a fit.
  
@@ -55,38 +64,6 @@ class FitResult(dict):
 
     def __dir__(self):
         return list(self.keys())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
-
-import numpy as np
-import numdifftools as nd
-from scipy.stats import norm
-from scipy.signal import fftconvolve
-import copy
 
 class UncertQuant:
     r""" Represens the uncertainty quantification of fit results.
