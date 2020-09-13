@@ -212,7 +212,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
     # ---------------------------------------
     plotfcn = lambda: _plot(subsets,V,Vfit,r,Pfit,Puq)
 
-    return FitResult(P=Pfit, uncertainty=Puq, regparam=alpha, scale=scales, stats=stats, 
+    return FitResult(P=Pfit, V=Vfit, uncertainty=Puq, regparam=alpha, scale=scales, stats=stats, 
                      plot=plotfcn, cost=fval, residuals=res, success=success)
 # ===========================================================================================
 

@@ -36,7 +36,7 @@ V = K@P + dl.whitegaussnoise(t,0.01)    # signal with added noise
 # Fit a Tikhonov model to the data, using AIC to select the regularization parameter
 fit = dl.fitregmodel(V,K,r,'tikhonov','aic')
 Pfit = fit.P        # fitted distribution
-Vfit = K@Pfit       # fitted DEER trace
+Vfit = fit.V        # fitted DEER trace
 
 # curvature matrix confidence intervals for distribution
 Pci95_cm = fit.uncertainty.ci(95)

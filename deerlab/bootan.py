@@ -15,7 +15,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
     fcn : callable
         Function to be analyzed. Must be a callable function accepting a signal array as input and returning a tuple with all variables to be analyzed.
         All variables must be numerical arrays (no strings or booleans) and must preserve shape between calls.
-    V : array_like or list of array_like
+    Vexp : array_like or list of array_like
         Experimental dataset(s).
     Vfit : array or list of array_like
         Fit of the dataset(s).
