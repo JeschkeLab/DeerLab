@@ -277,17 +277,17 @@ def assert_confinter_param(subset):
     
     fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
 
-    if subset is 'ex':
+    if subset == 'ex':
         info = exmodel()
         pfit = fit.exparam
         ci50 = fit.exparamUncert.ci(50)
         ci95 = fit.exparamUncert.ci(95)
-    if subset is 'dd':
+    if subset == 'dd':
         info = ddmodel()
         pfit = fit.ddparam
         ci50 = fit.ddparamUncert.ci(50)
         ci95 = fit.ddparamUncert.ci(95)
-    if subset is 'bg':
+    if subset == 'bg':
         info = bgmodel()
         pfit = fit.bgparam
         ci50 = fit.bgparamUncert.ci(50)
@@ -320,7 +320,7 @@ def test_confinter_ddparam():
 def assert_confinter_models(subset):
 #----------------------------------------------------------------------
     exmodel = ex_4pdeer
-    if subset is 'Pfitfree':
+    if subset == 'Pfitfree':
         ddmodel = 'P'
         subset = 'Pfit'
     else:
@@ -343,19 +343,19 @@ def assert_confinter_models(subset):
     
     fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
 
-    if subset is 'Pfit':
+    if subset == 'Pfit':
         modelfit = fit.P
         lb = np.zeros_like(r)
         ub = np.full_like(r,inf)
         ci50 = fit.Puncert.ci(50)
         ci95 = fit.Puncert.ci(95)
-    if subset is 'Bfit':
+    if subset == 'Bfit':
         modelfit = fit.B
         lb = np.full_like(t,-inf)
         ub = np.full_like(t,inf)
         ci50 = fit.Buncert.ci(50)
         ci95 = fit.Buncert.ci(95)
-    if subset is 'Vfit':
+    if subset == 'Vfit':
         modelfit = fit.V
         lb = np.full_like(t,-inf)
         ub = np.full_like(t,inf)

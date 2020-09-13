@@ -66,12 +66,12 @@ class FitResult(dict):
         return list(self.keys())
 
 class UncertQuant:
-    r""" Represens the uncertainty quantification of fit results.
+    r""" Represents the uncertainty quantification of fit results.
 
     Attributes
     ----------
     type : string
-        Uncertainty quanification approach:
+        Uncertainty quantification approach:
 
             * 'covariance' - Covariance-based uncertainty analysis
             * 'bootstrap' - Bootstrapped uncertainty analysis
@@ -82,9 +82,9 @@ class UncertQuant:
         Median values of the uncertainty distribution of the parameters.
     std : ndarray
         Standard deviations of the uncertainty distribution of the parameters.
-    covmat: ndarray
+    covmat : ndarray
         Covariance matrix
-    nparam: int scalar
+    nparam : int scalar
         Number of parameters in the analysis.
 
     Methods
@@ -106,7 +106,7 @@ class UncertQuant:
         elif uqtype == 'bootstrap':
             # Scheme 2: UncertQuant('bootstrap',samples)
             samples = data
-            self.__samples = samples
+            self.samples = samples
             nParam = np.shape(samples)[1]
                 
         else:
@@ -175,7 +175,7 @@ class UncertQuant:
 
         if self.type == 'bootstrap':
             # Get bw using silverman's rule (1D only)
-            samplen = self.__samples[:, n]
+            samplen = self.samples[:, n]
             sigma = np.std(samplen, ddof=1)
             bw = sigma * (len(samplen) * 3 / 4.0) ** (-1 / 5)
 
@@ -273,8 +273,8 @@ class UncertQuant:
         elif self.type=='bootstrap':
                 # Compute bootstrap-based confidence intervals
                 # Clip possible artifacts from the percentile estimation
-                x[:,0] = np.minimum(self.percentile(p*100), np.amax(self.__samples))
-                x[:,1] = np.maximum(self.percentile((1-p)*100), np.amin(self.__samples))
+                x[:,0] = np.minimum(self.percentile(p*100), np.amax(self.samples))
+                x[:,1] = np.maximum(self.percentile((1-p)*100), np.amin(self.samples))
 
         return x
 
