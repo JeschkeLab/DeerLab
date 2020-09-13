@@ -198,13 +198,13 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
     atUpper = abs(parfit-ub)<tol
     fixedPar = lb==ub
     for p in range(len(parfit)):
-        # Skip if parameter is fixed
         if fixedPar[p]:
+            # Skip if parameter is fixed
             continue
         if atLower[p]:
-            warnings.warn('The fitted value of parameter #{}, is at the lower bound of the range.'.format(p))
+            warnings.warn('The fitted value of parameter #{}, is at the lower bound ({}).'.format(p,lb[p]))
         if atUpper[p]:
-            warnings.warn('The fitted value of parameter #{},  is at the upper bound of the range.'.format(p))
+            warnings.warn('The fitted value of parameter #{},  is at the upper bound ({}).'.format(p,ub[p]))
 
     # Calculate parameter confidence intervals
     if uqanalysis:

@@ -5,7 +5,7 @@ from deerlab.bg_models import bg_exp
 
 def test_correction():
 # ======================================================================
-    "Check that scale correction works properly"
+    "Check that scale correction using DEER model works"
 
     t = np.linspace(-1,5,300)
     r = np.linspace(3,7,200)
@@ -14,14 +14,14 @@ def test_correction():
     scale = 1e8
     V = dipolarkernel(t,r,0.25,B)@P
     
-    Vc = correctscale(V*scale,t)
+    Vc = correctscale(V*scale,t,model='deer')
 
     assert max(abs(Vc-V)) < 1.5e-1
 # ======================================================================
 
 def test_model_gauss():
 # ======================================================================
-    "Check scale correction using the gauss model works"
+    "Check scale correction using the Gauss model works"
 
     t = np.linspace(-1,5,300)
     r = np.linspace(3,7,200)

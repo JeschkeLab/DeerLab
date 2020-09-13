@@ -61,8 +61,9 @@ def correctscale(V,t,tmax=[],model='deer'):
             raise KeyError('Number of points in fit range cannot be smaller than number of model parameters. Increase tmax.')
         r = np.linspace(0.5,20,300)
         fitmodel = lambda p: p[0]*(dipolarkernel(t_,r,p[1],bg_exp(t_,p[4]))@dd_gauss(r,p[[2,3]]))
+        # parameters: amplitude, mod depth,Gauss position, Gauss std, conc
         par0 = [1, 0.5, 3, 0.3, 0.2]
-        lb = [1e-3, 0.5, 0, 0, 0]
+        lb = [1e-3, 0.01, 0, 0.01, 0]
         ub = [10, 1, 20, 5, 100]
     elif model == 'gauss':
         # Gaussian function
