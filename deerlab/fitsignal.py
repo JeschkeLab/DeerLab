@@ -407,7 +407,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         return Vfit_uq,Pfit_uq,Bfit_uq,paruq_bg,paruq_ex,paruq_dd   
     # =========================================================================
 
-    OnlyRegularization = np.all(~includeExperiment & ~includeBackground)
+    OnlyRegularization = np.all(~parametricDistribution & ~includeExperiment & ~includeBackground)
     OnlyParametric = not OnlyRegularization and (parametricDistribution or not includeForeground)
 
     if OnlyRegularization:
@@ -532,26 +532,28 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     # =========================================================================
         _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
         for i in range(nSignals):
-            # Get confidence intervals for the signal
-            Vci95 = Vfit_uq[i].ci(95)
-            Vci50 = Vfit_uq[i].ci(50)
             # Plot the signal
             axs[i].plot(t[i],Vexp[i],'.',color='grey',alpha=0.5)
             axs[i].plot(t[i],Vfit_[i],'tab:blue')
-            axs[i].fill_between(t[i],Vci95[:,0], Vci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
-            axs[i].fill_between(t[i],Vci50[:,0], Vci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
+            if uqanalysis:
+                # Get confidence intervals for the signal
+                Vci95 = Vfit_uq[i].ci(95)
+                Vci50 = Vfit_uq[i].ci(50)
+                axs[i].fill_between(t[i],Vci95[:,0], Vci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
+                axs[i].fill_between(t[i],Vci50[:,0], Vci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
             axs[i].grid(alpha=0.3)
             axs[i].set_xlabel('Time [μs]')
             axs[i].set_ylabel('V[{}]'.format(i))
             axs[i].legend(('Data','Fit','95%-CI','50%-CI'))
 
-        # Get confidence intervals for the distance distribution
-        Pci95 = Pfit_uq.ci(95)
-        Pci50 = Pfit_uq.ci(50)
         # Plot the distribution
         axs[nSignals].plot(r,Pfit,'tab:blue')
-        axs[nSignals].fill_between(r,Pci95[:,0], Pci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
-        axs[nSignals].fill_between(r,Pci50[:,0], Pci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
+        if uqanalysis:
+            # Get confidence intervals for the distance distribution
+            Pci95 = Pfit_uq.ci(95)
+            Pci50 = Pfit_uq.ci(50)
+            axs[nSignals].fill_between(r,Pci95[:,0], Pci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
+            axs[nSignals].fill_between(r,Pci50[:,0], Pci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
         axs[nSignals].set_xlabel('Distance [nm]')
         axs[nSignals].set_ylabel('P [nm⁻¹]')
         axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
