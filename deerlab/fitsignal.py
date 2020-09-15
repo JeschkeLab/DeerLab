@@ -575,7 +575,10 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         if len(parfit['dd'])>0:
             print()
             info = dd_model()
-            ci = paruq['dd'].ci(95)
+            if uqanalysis:
+                ci = paruq['dd'].ci(95)
+            else:
+                ci = np.full((len(parfit['dd']),2),np.nan)
             for j in range(len(parfit['dd'])):
                 c = parfit['dd'][j]
                 print(pstr.format('ddparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
@@ -585,14 +588,20 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             if includeBackground[i]:
                 if len(parfit['bg'])>0:
                     info = bg_model[i]()
+                if uqanalysis:
                     ci = paruq['bg'][i].ci(95)
-                    for j in range(len(parfit['bg'][i])):
+                else:
+                    ci = np.full((len(parfit['bg'][i]),2),np.nan)
+                for j in range(len(parfit['bg'][i])):
                         c = parfit['bg'][i][j]
                         print(pstr.format('bgparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
             if includeExperiment[i]:
                 if len(parfit['ex'])>0:
                     info = ex_model[i]()
+                if uqanalysis:
                     ci = paruq['ex'][i].ci(95)
+                else:
+                    ci = np.full((len(parfit['ex'][i]),2),np.nan)
                     for j in range(len(parfit['ex'][i])):
                         c = parfit['ex'][i][j]
                         print(pstr.format('exparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
