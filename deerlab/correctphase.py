@@ -82,7 +82,7 @@ def correctphase(V, phase = [], imagoffset=False, full_output=False):
             # Fit only imaginary offset        
             for i in range(Ntraces):
                 par0 = 0
-                fun = lambda offset: _imaginarynorm([Phase, offset],V[:,i])
+                fun = lambda offset: _imaginarynorm([phase, offset],V[:,i])
                 ImagOffset[i] = opt.fmin(fun,par0)
 
     ImagOffset = ImagOffset*1j
