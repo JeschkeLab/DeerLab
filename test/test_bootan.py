@@ -54,7 +54,7 @@ def test_resampling():
     paruq2 = bootan(bootfcn,Vexp,Vfit,10,resampling='gaussian')
 
 
-    assert all(abs(paruq1.mean - paruq2.mean) < 1e-2)
+    assert all(abs(paruq1.mean - paruq2.mean) < 1.5e-2)
 # ======================================================================
 
 
