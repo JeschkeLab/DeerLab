@@ -8,7 +8,7 @@ How to optimally select a parametric model for a given dipolar signal.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from deerlab import *
+import deerlab as dl
 
 # %% [markdown]
 # Data Generation
@@ -18,13 +18,11 @@ from deerlab import *
 # from a bimodal Gaussian distance distribution.
 
 # Prepare the signal components
-t = np.linspace(-0.3,6,300)
-r = np.linspace(2,6,200)
-P = dd_gauss2(r,[3.8, 0.7, 0.7, 4.5, 0.3, 0.7])
-
-# Prepare the dipolar kernel and get the signal
-K = dipolarkernel(t,r)
-V = K@P + whitegaussnoise(t,0.01)
+t = np.linspace(-0.3,3.5,300)                # time axis, µs
+r = np.linspace(2,6,200)                     # distance axis, nm
+P = dl.dd_gauss2(r,[3.8, 0.4, 0.7, 4.5, 0.2, 0.7])   # distance distribution
+K = dl.dipolarkernel(t,r)                    # dipolar kernel matrix
+V = K@P + dl.whitegaussnoise(t,0.02)         # DEER signal, with added noise
 
 # %% [markdown]
 # Selecting an optimal model
@@ -45,17 +43,17 @@ V = K@P + whitegaussnoise(t,0.01)
 # The last model we can construct from built-in models using the ``mixmodels`` function.
 
 # Prepare the mixed model
-dd_rice_gauss = mixmodels(dd_rice,dd_gauss)
+dd_rice_gauss = dl.mixmodels(dl.dd_rice,dl.dd_gauss)
  
 # Prepare list of candidate parametric models
-models = [dd_rice,dd_rice2,dd_rice3,dd_gauss,dd_gauss2,dd_gauss3,dd_rice_gauss]
+models = [dl.dd_rice,dl.dd_rice2,dl.dd_rice3,dl.dd_gauss,dl.dd_gauss2,dl.dd_gauss3,dd_rice_gauss]
 
 # %% [markdown]
 # In order to make an appropiate choice, we need some liklihood estimator. All fit functions is DeerLab returns a stats 
 # dictionary which contains (amongst other estimators) likelihood estimators such as the Akaike information criterion (AIC).
 # The model with the lowers AIC value can be considered to most likely to be the optimal model.
 #
-# To do this, we jus have to evaluate the parametric models with ``fitparamodel`` while looping over all the distribution models
+# To do this, we just have to evaluate the parametric models with ``fitparamodel`` while looping over all the distribution models
 # we listed above, and collecting the AIC-values for each model.
  
 aic = []
@@ -64,7 +62,7 @@ for model in models:
     # Prepare the signal model with the new distance model
     Vmodel = lambda par: K@model(r,par)
     # Fit the signal
-    fit = fitparamodel(V,Vmodel,par0=info['Start'],lb=info['Lower'],ub=info['Upper'])
+    fit = dl.fitparamodel(V,Vmodel,par0=info['Start'],lb=info['Lower'],ub=info['Upper'])
     parfit = fit.param
     stats= fit.stats
     # Add current AIC value to the list
@@ -93,8 +91,7 @@ plt.figure(figsize=(9,8))
 plt.subplot(2,2,1)
 plt.plot(t,V,'k.')
 plt.grid(alpha=0.2)
-plt.xlabel('t [$\mu s$]')
-plt.ylabel('V(t)')
+plt.xlabel('t [µs]')
 plt.legend(['data'])
 
 plt.subplot(2,2,2)

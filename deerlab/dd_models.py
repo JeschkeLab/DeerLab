@@ -1,8 +1,11 @@
+# dd_models.py - Distance distribtion parametric models
+# ---------------------------------------------------------------------------
+# This file is a part of DeerLab. License is MIT (see LICENSE.md). 
+# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+
 import math as m
 import numpy as np
 import scipy.special as spc
-__docformat__ = 'reStructuredText'
-
 
 def _parsargs(args,npar):
 #=================================================================
@@ -21,14 +24,13 @@ def _normalize(r,P):
     return P
 #=================================================================
 
-def _multigaussfun(r,r0,fwhm,a):
+def _multigaussfun(r,r0,sig,a):
 #=================================================================
     "Compute a distribution with multiple Gaussians"    
     n = len(r0)
     P = np.zeros_like(r)
     for k in range(n):
-        sig = fwhm[k]/2/m.sqrt(2*m.log(2))
-        P += a[k]*m.sqrt(1/(2*m.pi))*1/sig*np.exp(-0.5*((r-r0[k])/sig)**2)
+        P += a[k]*m.sqrt(1/(2*m.pi))*1/sig[k]*np.exp(-0.5*((r-r0[k])/sig[k])**2)
     P = _normalize(r,P)
     return P
 #=================================================================
@@ -88,28 +90,28 @@ def dd_gauss(*args):
     Model parameters:
     -------------------
 
-     ------------------------------------------------
-      Parameter  Units     Lower    Upper    Start
-     ------------------------------------------------
-      Center       nm        1        20       3.5 
-      FWHM         nm       0.2       5        0.5 
-     ------------------------------------------------
+     -------------------------------------------------------------
+      Parameter                 Units     Lower    Upper    Start
+     -------------------------------------------------------------
+      Mean                       nm        1        20       3.5 
+      Standard deviation         nm       0.05      2.5      0.2 
+     -------------------------------------------------------------
     """  
     if not args:
         info = dict(
-            Parameters = ('Center','FWHM'),
+            Parameters = ('Mean','Standard deviation'),
             Units = ('nm','nm'),
-            Start = np.asarray([3.5, 0.5]),
-            Lower = np.asarray([1, 0.2]),
-            Upper = np.asarray([20, 5])
+            Start = np.asarray([3.5, 0.2]),
+            Lower = np.asarray([1, 0.05]),
+            Upper = np.asarray([20, 2.5])
         )
         return info
     r,p = _parsargs(args,npar=2)
 
     r0 = [p[0]]
-    fwhm = [p[1]]
+    sigma = [p[1]]
     a = [1.0]
-    P = _multigaussfun(r,r0,fwhm,a)
+    P = _multigaussfun(r,r0,sigma,a)
     return P
 #=================================================================
     
@@ -149,34 +151,34 @@ def dd_gauss2(*args):
     P : ndarray
         Distance distribution.
  
-     ---------------------------------------------------------------
-      Parameter                    Units     Lower    Upper    Start
-     ---------------------------------------------------------------
-      Center of 1st Gaussian        nm        1        20       2.5 
-      FWHM of 1st Gaussian          nm       0.2       5        0.5 
-      Amplitude of 1sd Gaussian               0        1        0.5 
-      Center of 2nd Gaussian        nm        1        20       3.5 
-      FWHM of 2nd Gaussian          nm       0.2       5        0.5 
-      Amplitude of 2nd Gaussian               0        1        0.5 
-     --------------------------------------------------------------
+     -------------------------------------------------------------------------
+      Parameter                             Units     Lower    Upper    Start
+     -------------------------------------------------------------------------
+      Mean of 1st Gaussian                   nm        1        20       2.5 
+      Standard deviation of 1st Gaussian     nm       0.05      2.5      0.2 
+      Amplitude of 1st Gaussian                        0        1        0.5 
+      Mean of 2nd Gaussian                   nm        1        20       3.5 
+      Standard deviation of 2nd Gaussian     nm       0.05      2.5      0.2 
+      Amplitude of 2nd Gaussian                        0        1        0.5 
+     -------------------------------------------------------------------------
     """
 
     if not args:
         info = dict(
-            Parameters = ('Center of 1st Gaussian', 'FWHM of 1st Gaussian', 'Amplitude of 1st Gaussian',
-                          'Center of 2nd Gaussian', 'FWHM of 2nd Gaussian', 'Amplitude of 2nd Gaussian'),
+            Parameters = ('Mean of 1st Gaussian', 'Standard deviation of 1st Gaussian', 'Amplitude of 1st Gaussian',
+                          'Mean of 2nd Gaussian', 'Standard deviation of 2nd Gaussian', 'Amplitude of 2nd Gaussian'),
             Units = ('nm','nm','','nm','nm',''),
-            Start = np.asarray([2.5, 0.5, 0.5, 3.5, 0.5, 0.5]),
-            Lower = np.asarray([1, 0.2, 0, 1, 0.2, 0]),
-            Upper = np.asarray([20, 5, 1, 20, 5, 1])
+            Start = np.asarray([2.5, 0.2, 0.5, 3.5, 0.2, 0.5]),
+            Lower = np.asarray([1, 0.05, 0, 1, 0.05, 0]),
+            Upper = np.asarray([20, 2.5, 1, 20, 2.5, 1])
         )
         return info
     r,p = _parsargs(args,npar=6)
 
     r0 = [p[0], p[3]]
-    fwhm = [p[1], p[4]]
+    sigma = [p[1], p[4]]
     a = [p[2], p[5]]
-    P = _multigaussfun(r,r0,fwhm,a)
+    P = _multigaussfun(r,r0,sigma,a)
 
     return P
 #=================================================================
@@ -220,38 +222,38 @@ def dd_gauss3(*args):
     Model parameters:
     -------------------
 
-     ---------------------------------------------------------------
-      Parameter                    Units     Lower    Upper    Start
-     ---------------------------------------------------------------
-      Center of 1st Gaussian        nm        1        20       2.5 
-      FWHM of 1st Gaussian          nm       0.2       5        0.5 
-      Amplitude of 1sd Gaussian               0        1        0.3 
-      Center of 2nd Gaussian        nm        1        20       3.5 
-      FWHM of 2nd Gaussian          nm       0.2       5        0.5 
-      Amplitude of 2nd Gaussian               0        1        0.3 
-      Center of 3rd Gaussian        nm        1        20       5.0 
-      FWHM of 3rd Gaussian          nm       0.2       5        0.5 
-      Amplitude of 3rd Gaussian               0        1        0.3 
-     --------------------------------------------------------------
+     -------------------------------------------------------------------------
+      Parameter                            Units     Lower    Upper    Start
+     -------------------------------------------------------------------------
+      Mean of 1st Gaussian                  nm        1        20       2.5 
+      Standard deviation of 1st Gaussian    nm       0.05      2.5      0.2 
+      Amplitude of 1sd Gaussian                       0        1        0.3 
+      Mean of 2nd Gaussian                  nm        1        20       3.5 
+      Standard deviation of 2nd Gaussian    nm       0.05      2.5      0.2 
+      Amplitude of 2nd Gaussian                       0        1        0.3 
+      Mean of 3rd Gaussian                  nm        1        20       5.0 
+      Standard deviation of 3rd Gaussian    nm       0.05      2.5      0.2 
+      Amplitude of 3rd Gaussian                       0        1        0.3 
+     -------------------------------------------------------------------------
     """
 
     if not args:
         info = dict(
-            Parameters = ('Center of 1st Gaussian', 'FWHM of 1st Gaussian', 'Amplitude of 1st Gaussian',
-                          'Center of 2nd Gaussian', 'FWHM of 2nd Gaussian', 'Amplitude of 2nd Gaussian',
-                          'Center of 3rd Gaussian', 'FWHM of 3rd Gaussian', 'Amplitude of 3rd Gaussian'),
+            Parameters = ('Mean of 1st Gaussian', 'Standard deviation of 1st Gaussian', 'Amplitude of 1st Gaussian',
+                          'Mean of 2nd Gaussian', 'Standard deviation of 2nd Gaussian', 'Amplitude of 2nd Gaussian',
+                          'Mean of 3rd Gaussian', 'Standard deviation of 3rd Gaussian', 'Amplitude of 3rd Gaussian'),
             Units = ('nm','nm','','nm','nm','','nm','nm',''),
-            Start = np.asarray([2.5, 0.5, 0.3, 3.5, 0.5, 0.3, 5, 0.5, 0.3]),
-            Lower = np.asarray([1, 0.2, 0, 1, 0.2, 0, 1, 0.2, 0]),
-            Upper = np.asarray([20, 5, 1, 20, 5, 1,  20, 5, 1])
+            Start = np.asarray([2.5, 0.2, 0.3, 3.5, 0.2, 0.3, 5, 0.2, 0.3]),
+            Lower = np.asarray([1, 0.05, 0, 1, 0.05, 0, 1, 0.05, 0]),
+            Upper = np.asarray([20, 2.5, 1, 20, 2.5, 1,  20, 2.5, 1])
         )
         return info
     r,p = _parsargs(args,npar=9)
 
     r0 = [p[0], p[3], p[6]]
-    fwhm = [p[1], p[4], p[7]]
+    sigma = [p[1], p[4], p[7]]
     a = [p[2], p[5], p[8]]
-    P = _multigaussfun(r,r0,fwhm,a)
+    P = _multigaussfun(r,r0,sigma,a)
 
     return P
 #=================================================================
@@ -296,14 +298,14 @@ def dd_gengauss(*args):
      -------------------------------------------
       Parameter   Units   Lower   Upper   Start
      -------------------------------------------
-      Center     nm       1      20      3.5 
-      FWHM       nm      0.2      5      0.5 
-      Kurtosis           0.25    15       5 
+      Mean         nm       1      20      3.5 
+      Spread       nm      0.05   2.5      0.2 
+      Kurtosis             0.25    15       5 
      --------------------------------------------
     """  
     if not args:
         info = dict(
-            Parameters = ('Center','FWHM','Kurtosis'),
+            Parameters = ('Mean','Spread','Kurtosis'),
             Units = ('nm','nm',''),
             Start = np.asarray([3.5, 0.5,0.5]),
             Lower = np.asarray([1, 0.2, 0.25]),
@@ -314,9 +316,8 @@ def dd_gengauss(*args):
     
     # Compute the model distance distribution
     r0 = p[0]
-    width = p[1]
+    sigma = p[1]
     beta = p[2]
-    sigma = width/(2*np.sqrt(2*np.log(2)))
     x = abs(r-r0)/sigma
     P = beta/(2*sigma*spc.gamma(1/beta))*np.exp(-x**beta)
     P = _normalize(r,P)
@@ -366,14 +367,14 @@ def dd_skewgauss(*args):
      -------------------------------------------
       Parameter   Units   Lower   Upper   Start
      -------------------------------------------
-      Location     nm       1      20      3.5 
-      FWHM         nm      0.2      5      0.5 
+      Center       nm       1      20      3.5 
+      Spread       nm      0.05    2.5     0.2 
       Skewness             -25     25      5 
      --------------------------------------------
     """  
     if not args:
         info = dict(
-            Parameters = ('Center','FWHM','Kurtosis'),
+            Parameters = ('Center','Spread','Kurtosis'),
             Units = ('nm','nm',''),
             Start = np.asarray([3.5, 0.5, 5]),
             Lower = np.asarray([1, 0.2, -25]),
@@ -384,9 +385,8 @@ def dd_skewgauss(*args):
     
     # Compute the model distance distribution
     r0 = p[0]
-    width = p[1]
+    sigma = p[1]
     alpha = p[2]
-    sigma = width/(2*np.sqrt(2*np.log(2)))
     x = abs(r-r0)/sigma/np.sqrt(2)
     P = 1/np.sqrt(2*np.pi)*np.exp(-x**2)*(1 + spc.erf(alpha*x))
     P = _normalize(r,P)
@@ -436,13 +436,13 @@ def dd_rice(*args):
      ------------------------------------------------
       Parameter  Units     Lower    Upper    Start
      ------------------------------------------------
-      Center       nm        1        10       3.5 
-      Width        nm       0.1       5        0.7 
+      Location       nm        1        10       3.5 
+      Spread         nm       0.1       5        0.7 
      ------------------------------------------------
     """  
     if not args:
         info = dict(
-            Parameters = ('Center','Width'),
+            Parameters = ('Location','Spread'),
             Units = ('nm','nm'),
             Start = np.asarray([3.5, 0.7]),
             Lower = np.asarray([1, 0.1]),
@@ -500,19 +500,19 @@ def dd_rice2(*args):
      ---------------------------------------------------------------
       Parameter                    Units     Lower    Upper    Start
      ---------------------------------------------------------------
-      Center of 1st Gaussian        nm        1        10       2.5 
-      Width of 1st Gaussian         nm       0.1       5        0.7 
-      Amplitude of 1sd Gaussian               0        1        0.5 
-      Center of 2nd Gaussian        nm        1        10       4.0 
-      Width of 2nd Gaussian         nm       0.1       5        0.7 
-      Amplitude of 2nd Gaussian               0        1        0.5 
+      Location of 1st Rician        nm        1        10       2.5 
+      Spread of 1st Rician          nm       0.1       5        0.7 
+      Amplitude of 1sd Rician                 0        1        0.5 
+      Location of 2nd Rician        nm        1        10       4.0 
+      Spread of 2nd Rician          nm       0.1       5        0.7 
+      Amplitude of 2nd Rician                 0        1        0.5 
      --------------------------------------------------------------
     """
 
     if not args:
         info = dict(
-            Parameters = ('Center of 1st Gaussian', 'Width of 1st Gaussian', 'Amplitude of 1st Gaussian',
-                          'Center of 2nd Gaussian', 'Width of 2nd Gaussian', 'Amplitude of 2nd Gaussian'),
+            Parameters = ('Location of 1st Rician', 'Spread of 1st Rician', 'Amplitude of 1st Rician',
+                          'Location of 2nd Rician', 'Spread of 2nd Rician', 'Amplitude of 2nd Rician'),
             Units = ('nm','nm','','nm','nm',''),
             Start = np.asarray([2.5, 0.7, 0.5, 4.0, 0.7, 0.5]),
             Lower = np.asarray([1, 0.1, 0, 1, 0.1, 0]),
@@ -570,23 +570,23 @@ def dd_rice3(*args):
      ---------------------------------------------------------------
       Parameter                    Units     Lower    Upper    Start
      ---------------------------------------------------------------
-      Center of 1st Gaussian        nm        1        10       2.5 
-      Width of 1st Gaussian         nm       0.1       5        0.7 
-      Amplitude of 1sd Gaussian               0        1        0.3 
-      Center of 2nd Gaussian        nm        1        10       3.5 
-      Width of 2nd Gaussian         nm       0.1       5        0.7 
-      Amplitude of 2nd Gaussian               0        1        0.3 
-      Center of 3rd Gaussian        nm        1        10       5.0 
-      Width of 3rd Gaussian         nm       0.1       5        0.7 
-      Amplitude of 3rd Gaussian               0        1        0.3 
+      Location of 1st Rician        nm        1        10       2.5 
+      Spread of 1st Rician         nm       0.1       5        0.7 
+      Amplitude of 1sd Rician               0        1        0.3 
+      Location of 2nd Rician        nm        1        10       3.5 
+      Spread of 2nd Rician         nm       0.1       5        0.7 
+      Amplitude of 2nd Rician               0        1        0.3 
+      Location of 3rd Rician        nm        1        10       5.0 
+      Spread of 3rd Rician         nm       0.1       5        0.7 
+      Amplitude of 3rd Rician               0        1        0.3 
      --------------------------------------------------------------
     """
 
     if not args:
         info = dict(
-            Parameters = ('Center of 1st Gaussian', 'Width of 1st Gaussian', 'Amplitude of 1st Gaussian',
-                          'Center of 2nd Gaussian', 'Width of 2nd Gaussian', 'Amplitude of 2nd Gaussian',
-                          'Center of 3rd Gaussian', 'Width of 3rd Gaussian', 'Amplitude of 3rd Gaussian'),
+            Parameters = ('Location of 1st Rician', 'Spread of 1st Rician', 'Amplitude of 1st Rician',
+                          'Location of 2nd Rician', 'Spread of 2nd Rician', 'Amplitude of 2nd Rician',
+                          'Location of 3rd Rician', 'Spread of 3rd Rician', 'Amplitude of 3rd Rician'),
             Units = ('nm','nm','','nm','nm','','nm','nm',''),
             Start = np.asarray([2.5, 0.7, 0.3, 3.5, 0.7, 0.3, 5, 0.7, 0.3]),
             Lower = np.asarray([1, 0.1, 0, 1, 0.1, 0, 1, 0.1, 0]),

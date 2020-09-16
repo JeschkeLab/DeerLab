@@ -15,8 +15,8 @@ from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit
 
 def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
-              par0=[None,None,None], lb=[None,None,None], ub=[None,None,None],
-              weights=1, uqanalysis=True, display = False, regparam='aic', regtype = 'tikhonov'):
+              par0=[None,None,None], lb=[None,None,None], ub=[None,None,None], verbose= False,
+              weights=1, uqanalysis=True, regparam='aic', regtype = 'tikhonov'):
     r"""
     Fits a dipolar model to the experimental signal V with time axis t, using
     distance axis r. The model is specified by the distance distribution (dd),
@@ -107,6 +107,13 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Uncertainty quanfitication for experiment(s) parameters
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
+    regparam : scalar
+        Optimal regularization parameter value
+    plot : callable
+        Function to display the results. It will 
+        display the fitted signals and distance distributions with
+        confidence intervals. If requested, the function returns 
+        the `matplotlib.axes` object as output. 
     stats :  dict
         Goodness of fit statistical estimators:
 
@@ -156,13 +163,10 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * ``'tv'``  - Total variation regularization
         * ``'huber'`` - Huber regularization
         The default is ``'tikhonov'``.  
-
+    verbose : boolean
+        Enable/disable printing a table of fit results, by default is disabled
     uqanalysis : boolean
         Enable/disable the uncertainty quantification analysis, by default it is enabled.  
-    display : boolean
-        Enable/Disable plotting and printing of results with matplotlib library, by default it is disabled. 
-        If enabled the command ``matlplotlib.pyplot.show()`` must be added to the script calling fitsignal 
-        at the end to show the figure containing the plot.
 
     Examples
     --------
@@ -226,7 +230,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     # Get information about distance distribution parameters
     # ------------------------------------------------------
     parametricDistribution  = type(dd_model) is types.FunctionType
-    parfreeDistribution = dd_model is 'P'
+    parfreeDistribution = dd_model == 'P'
     includeForeground = np.array(dd_model is not None)
 
     par0_dd, lower_dd, upper_dd, N_dd = _getmodelparams(dd_model)
@@ -403,7 +407,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         return Vfit_uq,Pfit_uq,Bfit_uq,paruq_bg,paruq_ex,paruq_dd   
     # =========================================================================
 
-    OnlyRegularization = np.all(~includeExperiment & ~includeBackground)
+    OnlyRegularization = np.all(~parametricDistribution & ~includeExperiment & ~includeBackground)
     OnlyParametric = not OnlyRegularization and (parametricDistribution or not includeForeground)
 
     if OnlyRegularization:
@@ -416,6 +420,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Pfit = fit.P
         Pfit_uq = fit.uncertainty
         scales = fit.scale
+        alphaopt = fit.regparam
 
         # Get fitted models
         Vfit = [K@Pfit for K in Ks]
@@ -440,6 +445,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         parfit_ = fit.param
         param_uq = fit.uncertainty
         scales = fit.scale
+        alphaopt = None
 
         # Get fitted models
         Vfit = Vmodel(parfit_)
@@ -462,11 +468,12 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vexp = [Vexp[i]/prescales[i] for i in range(nSignals)]
 
         # Separable non-linear least squares (SNNLS) 
-        fit = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, 
+        fit = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
                             regparam=regparam, lin_maxiter=[], uqanalysis=uqanalysis, lin_tol=[], weights=weights)
         parfit_ = fit.nonlin
         Pfit = fit.lin
         snlls_uq = fit.uncertainty
+        alphaopt = fit.regparam
         scales = [prescales[i]*np.trapz(Pfit,r) for i in range(nSignals)]
 
         # Get the fitted models
@@ -520,37 +527,44 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         modfituq['Vfit'] = []
         modfituq['Bfit'] = []
 
-
+    Vfit_ = Vfit
     def _display_results():
     # =========================================================================
-        _,axs = plt.subplots(nSignals+1,1)
+        _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
         for i in range(nSignals):
-            # Get confidence intervals for the signal
-            Vci95 = Vfit_uq[i].ci(95)
-            Vci50 = Vfit_uq[i].ci(50)
             # Plot the signal
-            axs[i].plot(t[i],Vexp[i],'k.',t[i],Vfit[i],'r')
-            axs[i].fill_between(t[i],Vci95[:,0], Vci95[:,1],facecolor='r',linestyle='None',alpha=0.2)
-            axs[i].fill_between(t[i],Vci50[:,0], Vci50[:,1],facecolor='r',linestyle='None',alpha=0.5)
+            axs[i].plot(t[i],Vexp[i],'.',color='grey',alpha=0.5)
+            axs[i].plot(t[i],Vfit_[i],'tab:blue')
+            if uqanalysis:
+                # Get confidence intervals for the signal
+                Vci95 = Vfit_uq[i].ci(95)
+                Vci50 = Vfit_uq[i].ci(50)
+                axs[i].fill_between(t[i],Vci95[:,0], Vci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
+                axs[i].fill_between(t[i],Vci50[:,0], Vci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
             axs[i].grid(alpha=0.3)
-            axs[i].set_xlabel('Time [$\\mu s$]')
+            axs[i].set_xlabel('Time [μs]')
             axs[i].set_ylabel('V[{}]'.format(i))
             axs[i].legend(('Data','Fit','95%-CI','50%-CI'))
 
-        # Get confidence intervals for the distance distribution
-        Pci95 = Pfit_uq.ci(95)
-        Pci50 = Pfit_uq.ci(50)
         # Plot the distribution
-        axs[nSignals].plot(r,Pfit,'k')
-        axs[nSignals].fill_between(r,Pci95[:,0], Pci95[:,1],facecolor='r',linestyle='None',alpha=0.2)
-        axs[nSignals].fill_between(r,Pci50[:,0], Pci50[:,1],facecolor='r',linestyle='None',alpha=0.5)
+        axs[nSignals].plot(r,Pfit,'tab:blue')
+        if uqanalysis:
+            # Get confidence intervals for the distance distribution
+            Pci95 = Pfit_uq.ci(95)
+            Pci50 = Pfit_uq.ci(50)
+            axs[nSignals].fill_between(r,Pci95[:,0], Pci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
+            axs[nSignals].fill_between(r,Pci50[:,0], Pci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
         axs[nSignals].set_xlabel('Distance [nm]')
-        axs[nSignals].set_ylabel('P [nm$^{-1}$]')
+        axs[nSignals].set_ylabel('P [nm⁻¹]')
         axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
         axs[nSignals].grid(alpha=0.3)
         plt.tight_layout()
+        plt.show()
+        return axs
+    # =========================================================================
 
-        plt.show(block=False)
+
+    if verbose:
         print('----------------------------------------------------------------------------')
         print('Goodness of fit')
         for i in range(nSignals):
@@ -561,7 +575,10 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         if len(parfit['dd'])>0:
             print()
             info = dd_model()
-            ci = paruq['dd'].ci(95)
+            if uqanalysis:
+                ci = paruq['dd'].ci(95)
+            else:
+                ci = np.full((len(parfit['dd']),2),np.nan)
             for j in range(len(parfit['dd'])):
                 c = parfit['dd'][j]
                 print(pstr.format('ddparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
@@ -571,25 +588,25 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             if includeBackground[i]:
                 if len(parfit['bg'])>0:
                     info = bg_model[i]()
+                if uqanalysis:
                     ci = paruq['bg'][i].ci(95)
-                    for j in range(len(parfit['bg'][i])):
+                else:
+                    ci = np.full((len(parfit['bg'][i]),2),np.nan)
+                for j in range(len(parfit['bg'][i])):
                         c = parfit['bg'][i][j]
                         print(pstr.format('bgparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
             if includeExperiment[i]:
                 if len(parfit['ex'])>0:
                     info = ex_model[i]()
+                if uqanalysis:
                     ci = paruq['ex'][i].ci(95)
+                else:
+                    ci = np.full((len(parfit['ex'][i]),2),np.nan)
                     for j in range(len(parfit['ex'][i])):
                         c = parfit['ex'][i][j]
                         print(pstr.format('exparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
         print('----------------------------------------------------------------------------')
-    # =========================================================================
 
-
-    # Plotting
-    # --------
-    if display:
-        _display_results()
 
     # Return numeric arrays and not lists if there is only one signal
     if nSignals==1:
@@ -607,7 +624,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     return FitResult(V=Vfit, P=Pfit, B=Bfit, exparam=parfit['ex'], bgparam=parfit['bg'],
                       ddparam=parfit['dd'], Vuncert = modfituq['Vfit'], Puncert = modfituq['Pfit'],
                       Buncert = modfituq['Bfit'], exparamUncert = paruq['ex'], bgparamUncert = paruq['bg'],
-                      ddparamUncert = paruq['dd'], scale=scales,  stats=stats, cost=fit.cost,
+                      ddparamUncert = paruq['dd'], regparam = alphaopt, plot=_display_results, scale=scales,  stats=stats, cost=fit.cost,
                       residuals=fit.residuals, success=fit.success)
 
             

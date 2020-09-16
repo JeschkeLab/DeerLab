@@ -3,12 +3,12 @@
 Analyzing the Pake pattern of a dipolar signal
 ============================================================================
 
-A very basic example for displaying the Pake pattern of a given dipolar signal.
+A very basic example for displaying the dipolar spectrum (Pake pattern) of a given dipolar signal.
 """ 
 # %%
 import numpy as np
 import matplotlib.pyplot as plt
-from deerlab import *
+import deerlab as dl
 
 # %% [markdown]
 # Generate a dipolar signal
@@ -17,14 +17,13 @@ from deerlab import *
 
 # %%
 # Prepare components
-t = np.linspace(0,5,400)
-r = np.linspace(2,5,100)
-P = dd_gauss2(r,[3.5, 0.3, 0.2, 4, 0.2, 0.8])
-B = bg_exp(t,0.2)
+t = np.linspace(0,5,400)   # µs
+r = np.linspace(2,5,100)   # nm
+P = dl.dd_gauss2(r,[3.5, 0.1, 0.2, 4, 0.05, 0.8])
+B = dl.bg_exp(t,0.2)
 lam = 0.3
-K = dipolarkernel(t,r,lam,B)
-np.random.seed(0)
-V = K@P + whitegaussnoise(t,0.005)
+K = dl.dipolarkernel(t,r,lam,B)
+V = K@P + dl.whitegaussnoise(t,0.005,seed=0)
 
 # Plot
 plt.plot(t,V,'k.')
@@ -46,22 +45,22 @@ plt.ylabel('V(t)')
 
 # %%
 
-tstart = 3 # Time to start fitting background, in us
+tstart = 3 # Time to start fitting background, in µs
 mask = t>tstart
 # Model for the background component (1-lambda)*B
 def Bmodel(par):
     lam,kappa = par 
-    B = (1 - lam)*bg_exp(t[mask],kappa)
+    B = (1 - lam)*dl.bg_exp(t[mask],kappa)
     return B
 
 # Fit the background function
-fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
+fit = dl.fitsignal(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer,uqanalysis=False)
 Bfit = fit.B
 lam = fit.exparam
 kappa = fit.bgparam
 
 # %% [markdown]
-# Now we can use these fitted variables to isolate the dipolar evolution function 
+# Now we can use these fitted parameters to isolate the dipolar evolution function 
 # from the primary data. Removal of the background via division leads to a noise 
 # increase at later times and thus to an approximation ``Vcorr`` of the real dipolar 
 # evolution function.
@@ -78,16 +77,16 @@ plt.xlabel('Time [$\\mu s$]')
 plt.ylabel('V(t)')
 
 # %% [markdown]
-# Computing the Pake pattern
-# ---------------------------
+# Computing the dipolar spectrum
+# --------------------------------
 #
 # Now that the signal has the appropiate structure for Fourier transform it, 
-# we can call the ``fftspec`` function to obtained the Pake pattern.
+# we can call the ``fftspec`` function to obtain the dipolar spectrum.
 
 # %%
 
 # Compute spectrum
-nu,pake = fftspec(Vcorr,t,apodization=False)
+nu,pake = dl.fftspec(Vcorr,t,apodization=False)
  
  # %% [markdown]
 # In order to avoid truncation ripples in the Fourier spectrum and at the same 
@@ -96,7 +95,7 @@ nu,pake = fftspec(Vcorr,t,apodization=False)
 
 # %%
 # Compute spectrum with apodization
-nuapo,pakeapo = fftspec(Vcorr,t,apodization=False,mode='real')
+nuapo,pakeapo = dl.fftspec(Vcorr,t,apodization=False,mode='real')
 
 # Plot results
 plt.plot(nu,pake,'k',nuapo,pakeapo,'b',linewidth=1.5)
@@ -114,3 +113,5 @@ plt.legend(['Raw','Apodized'])
 # The improvement will only be visual as no further information can be gained 
 # from additional zero-filling.
 
+
+# %%

@@ -4,13 +4,14 @@
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
+import matplotlib.pyplot as plt
 from deerlab.nnls import fnnls, cvxnnls, nnlsbpp
 import deerlab as dl
 import copy
 from deerlab.utils import hccm, goodness_of_fit
 from deerlab.classes import UncertQuant, FitResult
 
-def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx', 
+def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
                 weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
                 uqanalysis=True, renormalize=True, noiselevelaim = -1):
     r"""
@@ -32,7 +33,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
         * ``'huber'`` - Huber regularization
         The default is ``'tikhonov'``.   
     
-    alpha : string or scalar
+    regparam : string or scalar
         Method for the automatic selection of the optimal regularization parameter:
     
         * ``'lr'`` - L-curve minimum-radius method (LR)
@@ -63,6 +64,11 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
         Regularization parameter used in the optimization
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
+    plot : callable
+        Function to display the results. It will 
+        display the fitted signals and distance distributions with
+        confidence intervals. If requested, the function returns 
+        the `matplotlib.axes` object as output. 
     stats : dict
         Goodness of fit statistical estimators (if full_output=True):
 
@@ -109,7 +115,6 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
     # Prepare signals, kernels and weights if multiple are passed
     V, K, weights, subsets, prescales = dl.utils.parse_multidatasets(V, K, weights,precondition=True)
 
-
     # Compute regularization matrix
     L = dl.regoperator(r,regorder)
 
@@ -122,8 +127,10 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
         problem = 'unconstrained'
 
     # If the regularization parameter is not specified, get the optimal choice
-    if type(alpha) is str:
-        alpha = dl.selregparam(V,K,r,regtype,alpha,regorder=regorder,weights=weights, nonnegativity=nonnegativity,huberparam=huberparam)
+    if type(regparam) is str:
+        alpha = dl.selregparam(V,K,r,regtype,regparam,regorder=regorder,weights=weights, nonnegativity=nonnegativity,huberparam=huberparam)
+    else:
+        alpha = regparam
 
     # Prepare components of the LSQ-problem
     [KtKreg, KtV] = dl.lsqcomponents(V,K,L,alpha,weights, regtype=regtype, huberparam=huberparam)
@@ -192,13 +199,21 @@ def fitregmodel(V,K,r, regtype='tikhonov', alpha='aic', regorder=2, solver='cvx'
     if len(stats)==1: 
         stats = stats[0]
 
+
+    # Signal amplitude scales
+    # ---------------------------------------
     scales = []
     for i in range(len(subsets)): 
         scales.append(prescales[i]*postscale)
     if len(scales)==1:
         scales = scales[0]
-       
-    return FitResult(P=Pfit,uncertainty=Puq,alpha=alpha,scale=scales,stats=stats,cost=fval,residuals=res, success=success)
+
+    # Results display
+    # ---------------------------------------
+    plotfcn = lambda: _plot(subsets,V,Vfit,r,Pfit,Puq)
+
+    return FitResult(P=Pfit, V=Vfit, uncertainty=Puq, regparam=alpha, scale=scales, stats=stats, 
+                     plot=plotfcn, cost=fval, residuals=res, success=success)
 # ===========================================================================================
 
 
@@ -214,13 +229,13 @@ def _augment(res,J,regtype,alpha,L,P,eta):
     """
     eps = np.finfo(float).eps
     # Compute the regularization penalty augmentation for the residual and the Jacobian
-    if regtype is 'tikhonov':
+    if regtype == 'tikhonov':
         resreg = L@P
         Jreg = L
-    elif regtype is 'tv':
+    elif regtype == 'tv':
         resreg =((L@P)**2 + eps)**(1/4)
         Jreg = 2/4*((( ( (L@P)**2 + eps)**(-3/4) )*(L@P))[:, np.newaxis]*L)
-    elif regtype is 'huber':
+    elif regtype == 'huber':
         resreg = np.sqrt(np.sqrt((L@P/eta)**2 + 1) - 1)
         Jreg = 0.5/(eta**2)*( (((np.sqrt((L@P/eta)**2 + 1) - 1 + eps)**(-1/2)*(((L@P/eta)**2 + 1+ eps)**(-1/2)))*(L@P))[:, np.newaxis]*L )
 
@@ -337,4 +352,36 @@ def _obir(V,K,L, regtype, alpha, weights, noiselevelaim=-1, huberparam=1.35 , so
 
     return Pfit
 # ===========================================================================================
+
+def _plot(subsets,Vexp,Vfit,r,Pfit,Puq):
+# ===========================================================================================
+    nSignals = len(subsets)
+    _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
+    for i in range(nSignals): 
+        subset = subsets[i]
+        # Plot the experimental signal and fit
+        axs[i].plot(Vexp[subset],'.',color='grey',alpha=0.5)
+        axs[i].plot(Vfit[subset],'tab:blue')
+        axs[i].grid(alpha=0.3)
+        axs[i].set_xlabel('Array Elements')
+        axs[i].set_ylabel('V[{}]'.format(i))
+        axs[i].legend(('Data','Fit'))
+
+    # Get confidence intervals for the distance distribution
+    Pci95 = Puq.ci(95)
+    Pci50 = Puq.ci(50)
+    # Plot the distribution
+    axs[nSignals].plot(r,Pfit,'tab:blue')
+    axs[nSignals].fill_between(r,Pci95[:,0], Pci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
+    axs[nSignals].fill_between(r,Pci50[:,0], Pci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
+    axs[nSignals].set_xlabel('Distance [nm]')
+    axs[nSignals].set_ylabel('P [nm⁻¹]')
+    axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
+    axs[nSignals].grid(alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+    return axs
+# ===========================================================================================
+
+
 

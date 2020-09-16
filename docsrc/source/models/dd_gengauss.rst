@@ -17,18 +17,16 @@ Model
 
 :math:`P(r) = \frac{\beta}{2\sigma\Gamma(1/\beta)}\exp\left(-\left(\frac{(r-\left<r\right>)}{\sigma}\right)^\beta \right)`
 
-with :math:`\sigma = w/(2\sqrt{2ln(2)})`
-
-============== ======================== ========= ============= ============= ========================
- Variable       Symbol                    Default   Lower bound   Upper bound      Description
-============== ======================== ========= ============= ============= ========================
-``param(1)``   :math:`r_0`                3.5     1.0              20         center distance (nm)
-``param(2)``   :math:`w`                  0.5     0.2              5          FWHM (nm)
-``param(2)``   :math:`\beta`              5.0     0.25             15         kurtosis
-============== ======================== ========= ============= ============= ========================
+============== ========================== ============= ============= ============= =======================================
+ Variable         Symbol                   Start Value   Lower bound   Upper bound      Description
+============== ========================== ============= ============= ============= =======================================
+``param[0]``   :math:`r_0`                     3.5          1.0              20         Mean (nm)
+``param[1]``   :math:`\sigma`                  0.2          0.05             2.5        Spread (nm)
+``param[2]``   :math:`\beta`                   5.0          0.25             15         kurtosis
+============== ========================== ============= ============= ============= =======================================
 
 
-Example using default parameters:
+Example using start values:
 
 .. image:: ../images/model_dd_gengauss.png
    :width: 650px

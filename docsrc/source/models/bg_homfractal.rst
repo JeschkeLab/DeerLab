@@ -14,9 +14,9 @@ Model
 This implements the background due to a homogeneous distribution of spins in a d-dimensional space, with d-dimensional spin concentration ``c_d``.
 
 
-============= ============= ========= ============= ============= ==========================================================
- Variable       Symbol        Default   Lower bound   Upper bound      Description
-============= ============= ========= ============= ============= ==========================================================
-``param(1)``   :math:`c_d`     50          0.01          5000          Pumped spin fractal concentration (μmol/dm\ :sup:`d`)
-``param(2)``   :math:`d`       3           0                6          Fractal dimension
-============= ============= ========= ============= ============= ==========================================================
+============= ============= ============= ============= ============= ==========================================================
+ Variable       Symbol       Start Value   Lower bound   Upper bound      Description
+============= ============= ============= ============= ============= ==========================================================
+``param[0]``   :math:`c_d`     50          0.01          5000          Pumped spin fractal concentration (μmol/dm\ :sup:`d`)
+``param[1]``   :math:`d`       3           0                6          Fractal dimension
+============= ============= ============= ============= ============= ==========================================================

@@ -25,19 +25,19 @@ In order to reduce the parameter space, only the dipolar pathways refocusing at 
 where :math:`T_0^{(1)}=0\;\mu s`, :math:`T_0^{(2)}`, and :math:`T_0^{(3)}` are the refocusing times of the three modulated dipolar pathways at positive evolution times.
 
 
-============== ======================== ================= ==================== ==================== =============================================
- Variable        Symbol                   Default          Lower                Upper                Description
-============== ======================== ================= ==================== ==================== =============================================
-``param(1)``   :math:`\varLambda_0`     0.4                0                    1                     unmodulated pathways, amplitude
-``param(2)``   :math:`\lambda_1`        0.4                0                    1                     1st modulated pathway, amplitude
-``param(3)``   :math:`\lambda_2`        0.2                0                    1                     2nd modulated pathway, amplitude
-``param(4)``   :math:`\lambda_3`        0.2                0                    1                     3rd modulated pathway, amplitude
-``param(5)``   :math:`T_0^{(2)}`        1.5                0                    20                    2nd modulated pathway, refocusing time (us)
-``param(6)``   :math:`T_0^{(3)}`        3.5                0                    20                    3rd modulated pathway, refocusing time (us)
-============== ======================== ================= ==================== ==================== =============================================
+============== ======================== ============= ============ ============ ================================================
+ Variable        Symbol                  Start Values     Lower        Upper                Description
+============== ======================== ============= ============ ============ ================================================
+``param[0]``   :math:`\varLambda_0`        0.4                0       1          Unmodulated pathways, amplitude
+``param[1]``   :math:`\lambda_1`           0.4                0       1          1st modulated pathway, amplitude
+``param[2]``   :math:`\lambda_2`           0.2                0       1          2nd modulated pathway, amplitude
+``param[3]``   :math:`\lambda_3`           0.2                0       1          3rd modulated pathway, amplitude
+``param[4]``   :math:`T_0^{(2)}`           1.5                0       20         2nd modulated pathway, refocusing time (μs)
+``param[5]``   :math:`T_0^{(3)}`           3.5                0       20         3rd modulated pathway, refocusing time (μs)
+============== ======================== ============= ============ ============ ================================================
 
 
-Example of a simulated signal using default parameters:
+Example of a simulated signal using start values:
 
 .. image:: ../images/model_ex_7pdeer.png
    :width: 550px

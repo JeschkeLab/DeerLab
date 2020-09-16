@@ -102,7 +102,7 @@ To plot the resulting 95% and 50% confidence interval for the non-parametric dis
     
     import matplotlib.pyplot as plt
     plt.plot(r,Pfit,'k')
-    plt.fill_between(r,Pci50[:,0]; Pci50[:,1],color='r',alpha=,0.5)
+    plt.fill_between(r,Pci50[:,0]; Pci50[:,1],color='r',alpha=0.5)
     plt.fill_between(r,Pci95[:,0]; Pci95[:,1],color='r',alpha=0.2)
 
 Assumptions:

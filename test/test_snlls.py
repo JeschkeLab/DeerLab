@@ -44,7 +44,7 @@ def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
         ubl = []    
 
     # Separable LSQ fit
-    fit = snlls(V,lambda p: Kmodel(p,t,r),nlpar0,lb,ub,lbl,ubl, penalty=False, uqanalysis=False)
+    fit = snlls(V,lambda p: Kmodel(p,t,r),nlpar0,lb,ub,lbl,ubl, reg=False, uqanalysis=False)
     nonlinfit = fit.nonlin
     linfit = fit.lin
     parout = [nonlinfit[0], nonlinfit[1], linfit[0], nonlinfit[2], nonlinfit[3], linfit[1]] 
@@ -290,7 +290,7 @@ def test_goodnes_of_fit():
     t = np.linspace(0,4,200)
     lam = 0.25
     K = dipolarkernel(t,r,lam)
-    parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
+    parin = [3.5, 0.15, 0.6, 4.5, 0.2, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P
 

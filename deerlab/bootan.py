@@ -15,7 +15,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
     fcn : callable
         Function to be analyzed. Must be a callable function accepting a signal array as input and returning a tuple with all variables to be analyzed.
         All variables must be numerical arrays (no strings or booleans) and must preserve shape between calls.
-    V : array_like or list of array_like
+    Vexp : array_like or list of array_like
         Experimental dataset(s).
     Vfit : array or list of array_like
         Fit of the dataset(s).
@@ -97,9 +97,6 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
     Vresample = [0]*nSignals
     for iSample in range(nSamples-1):
         
-        # Change the random seed each iteration, but keeping reproducibility between runs
-        np.random.seed(iSample)
-
         # Inform of progress if requested
         if verbose:
             print('Bootstrapping: #{}/#{} samples finished'.format(iSample+1,nSamples), end='\r', flush=True)
@@ -110,11 +107,11 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
             if iSample>0:
                 
                 #Determine requested re-sampling method
-                if resampling is 'gaussian':
+                if resampling == 'gaussian':
                     # Resample from a Gaussian distribution with variance estimated from the residuals
                     Vresample[i] = Vfit[i] + np.random.normal(0, sigma[i], len(Vfit[i]))
 
-                elif resampling is 'residual':
+                elif resampling == 'residual':
                     # Resample from the residual directly
                     Vresample[i] =  Vfit[i] + residuals[i][np.random.permutation(len(Vfit[i]))]
                 else:

@@ -9,7 +9,7 @@ How to propagate the uncertainty of the fitted parameters to the models which de
 
 import numpy as np
 import matplotlib.pyplot as plt
-from deerlab import *
+import deerlab as dl
 
 # %% [markdown]
 # Generate data
@@ -21,11 +21,10 @@ center = 3.5 # [nm] Rician center distance
 width = 0.3 # [nm] Rician width
 lam = 0.27 # Modulation depth
 conc = 150 # [uM] Spin concentration
-P = dd_rice(r,[center, width])
-B = bg_hom3d(t,conc,lam)
-K = dipolarkernel(t,r,lam,B)
-np.random.seed(0)
-V = K@P + whitegaussnoise(t,0.03)
+P = dl.dd_rice(r,[center, width])
+B = dl.bg_hom3d(t,conc,lam)
+K = dl.dipolarkernel(t,r,lam,B)
+V = K@P + dl.whitegaussnoise(t,0.03,seed=0)
 
 # %% [markdown]
 # Fit the data
@@ -47,10 +46,10 @@ V = K@P + whitegaussnoise(t,0.03)
 # parameter set directly.
 
 # Pre-calculate the elemental dipolar kernel (for speed)
-K0 = dipolarkernel(t,r)
+K0 = dl.dipolarkernel(t,r)
 
-Pmodel = lambda par: dd_rice(r,par[1:3])
-Bmodel = lambda par: bg_hom3d(t,par[3],par[0])
+Pmodel = lambda par: dl.dd_rice(r,par[1:3])
+Bmodel = lambda par: dl.bg_hom3d(t,par[3],par[0])
 Vmodel = lambda par: (1 - par[0] + par[0]*K0@Pmodel(par))*Bmodel(par)
 
 # %% [markdown]
@@ -63,7 +62,7 @@ lower =      [0.10, 2.0,  0.1, 0.1 ] # lower bounds
 upper =      [0.50, 7.0,  0.5, 1500] # upper bounds
 
 # Finally we can run the fit and get the fitted parameters and their uncertainties
-fit = fitparamodel(V,Vmodel,par0,lower,upper)
+fit = dl.fitparamodel(V,Vmodel,par0,lower,upper)
 
 parfit = fit.param
 paruq = fit.uncertainty

@@ -13,17 +13,15 @@ Model
 
 :math:`P(r) = \sqrt{\frac{2}{\pi}}\frac{1}{\sigma}\exp\left(-\frac{(r-\left<r\right>)^2}{\sigma^2}\right)`
 
-with :math:`\sigma = \mathrm{FWHM}/\sqrt{2ln(2)}`
-
-============== ======================== ========= ============= ============= ========================
- Variable       Symbol                    Default   Lower bound   Upper bound      Description
-============== ======================== ========= ============= ============= ========================
-``param(1)``   :math:`r0`                 3.5         1.0              20         center distance (nm)
-``param(2)``   :math:`\mathrm{FWHM}`      0.5         0.2              5          FWHM (nm)
-============== ======================== ========= ============= ============= ========================
+============== ======================== ============= ============= ============= ===========================
+ Variable       Symbol                   Start value   Lower bound   Upper bound      Description
+============== ======================== ============= ============= ============= ===========================
+``param[0]``   :math:`\left<r\right>`     3.5            1.0              20        Mean (nm)
+``param[1]``   :math:`\sigma`             0.2            0.05             2.5       Standard deviation (nm)
+============== ======================== ============= ============= ============= ===========================
 
 
-Example using default parameters:
+Example using the start values:
 
 .. image:: ../images/model_dd_gauss.png
    :width: 650px

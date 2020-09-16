@@ -1,5 +1,5 @@
 import numpy as np
-from deerlab.dd_models import *
+import deerlab as dl
 
 def assert_ddmodel(model):
 #============================================================================
@@ -45,70 +45,70 @@ def assert_ddmodel(model):
 #=============================================================================
 
 def test_dd_gauss():
-    assert_ddmodel(dd_gauss)
+    assert_ddmodel(dl.dd_gauss)
 
 def test_dd_gauss2():
-    assert_ddmodel(dd_gauss2)
+    assert_ddmodel(dl.dd_gauss2)
 
 def test_dd_gauss3():
-    assert_ddmodel(dd_gauss3)
+    assert_ddmodel(dl.dd_gauss3)
 
 def test_dd_gengauss():
-    assert_ddmodel(dd_gengauss)
+    assert_ddmodel(dl.dd_gengauss)
     
 def test_dd_skewgauss():
-    assert_ddmodel(dd_skewgauss)
+    assert_ddmodel(dl.dd_skewgauss)
 
 def test_dd_rice():
-    assert_ddmodel(dd_rice)
+    assert_ddmodel(dl.dd_rice)
 
 def test_dd_rice2():
-    assert_ddmodel(dd_rice2)
+    assert_ddmodel(dl.dd_rice2)
 
 def test_dd_rice3():
-    assert_ddmodel(dd_rice3)
+    assert_ddmodel(dl.dd_rice3)
 
 def test_dd_randcoil():
-    assert_ddmodel(dd_randcoil)
+    assert_ddmodel(dl.dd_randcoil)
 
 def test_dd_circle():
-    assert_ddmodel(dd_circle)
+    assert_ddmodel(dl.dd_circle)
 
 def test_dd_cos():
-    assert_ddmodel(dd_cos)
+    assert_ddmodel(dl.dd_cos)
 
 def test_dd_sphere():
-    assert_ddmodel(dd_sphere)
+    assert_ddmodel(dl.dd_sphere)
 
 def test_dd_shell():
-    assert_ddmodel(dd_shell)
+    assert_ddmodel(dl.dd_shell)
 
 def test_dd_shellshell():
-    assert_ddmodel(dd_shellshell)
+    assert_ddmodel(dl.dd_shellshell)
 
 def test_dd_shellsphere():
-    assert_ddmodel(dd_shellsphere)
+    assert_ddmodel(dl.dd_shellsphere)
 
 def test_dd_shellvoidsphere():
-    assert_ddmodel(dd_shellvoidsphere)
+    assert_ddmodel(dl.dd_shellvoidsphere)
 
 def test_dd_shellvoidshell():
-    assert_ddmodel(dd_shellvoidshell)
+    assert_ddmodel(dl.dd_shellvoidshell)
 
 def test_dd_spherepoint():
-    assert_ddmodel(dd_spherepoint)
+    assert_ddmodel(dl.dd_spherepoint)
 
 def test_dd_spheresurf():
-    assert_ddmodel(dd_spheresurf)
+    assert_ddmodel(dl.dd_spheresurf)
 
 def test_dd_triangle():
-    assert_ddmodel(dd_triangle)
+    assert_ddmodel(dl.dd_triangle)
 
 def test_dd_uniform():
-    assert_ddmodel(dd_uniform)
+    assert_ddmodel(dl.dd_uniform)
 
 def test_dd_wormchain():
-    assert_ddmodel(dd_wormchain)
+    assert_ddmodel(dl.dd_wormchain)
 
 def test_dd_wormgauss():
-    assert_ddmodel(dd_wormgauss)
+    assert_ddmodel(dl.dd_wormgauss)

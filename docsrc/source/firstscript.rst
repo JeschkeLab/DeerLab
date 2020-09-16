@@ -7,9 +7,9 @@ We start by importing the required function/libraries:
 
 .. code-block:: python
 
-   from numpy import np
-   from matplotlib.pyplot import plt
-   from deerlab import *
+   import numpy as np
+   import matplotlib.pyplot as plt
+   import deerlab as dl
 
 We continue by generating a distance distribution consisting of a single Gaussian:
 
@@ -17,7 +17,7 @@ We continue by generating a distance distribution consisting of a single Gaussia
 
    N = 201                            # number of points
    r = np.linspace(1.5,7,N)           # distance range, in nanometers
-   P = dd_gauss(r,[3.5, 0.4])         # single-Gaussian distance distribution
+   P = dl.dd_gauss(r,[3.5, 0.15])     # single-Gaussian distance distribution
 
 Next, we calculate the background decay function due to a homogeneus 3D distribution of spins:
 
@@ -26,42 +26,33 @@ Next, we calculate the background decay function due to a homogeneus 3D distribu
    t = np.linspace(0,3,N)             # time axis, in microseconds
    conc = 100                         # spin concentration, in micromolar
    lam = 0.4                          # modulation depth
-   B = bg_hom3d(t,conc,lam)           # homogeneous 3D background decay function
+   B = dl.bg_hom3d(t,conc,lam)        # homogeneous 3D background decay function
 
 Next, we combine the distance distribution and the background into a full 4-pulse DEER signal and add some noise:
 
 .. code-block:: python
 
-   K = dipolarkernel(t,r,lam,B)       # DEER kernel
-   V = K@P                            # DEER signal
-   sig = 0.01                         # noise level
-   Vexp = V + whitegaussnoise(V,sig)  # add noise
+   K = dl.dipolarkernel(t,r,lam,B)       # DEER kernel
+   V = K@P                               # DEER signal
+   sig = 0.01                            # noise level
+   Vexp = V + dl.whitegaussnoise(V,sig)  # add noise
 
 We can look at the result:
 
 .. code-block:: python
 
-   plt.plot(t,V,t,Vexp,t,(1-lam)*B)   # plotting
+   plt.plot(t,V,t,Vexp)   # plotting
    plt.show()
 
 Now that we have a noisy DEER trace, we fit it (in a single step) with a non-parametric distance distribution and a homogeneous 3D background.
 
 .. code-block:: python
 
-   fit = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_4pdeer)  # fitting
+   fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)  # fitting
 
 Finally, we plot the results
 
 .. code-block:: python
 
-   Pfit = fit.P              # fitted distance distribution
-   Bfit = fit.B              # fitted background
-   Vfit = fit.V              # fitted dipolar signal
-   lamfit = fit.exparam      # fitted modulation depth
-   
-   # plotting
-   plt.subplot(2,1,1)
-   plt.plot(t,Vexp,t,Vfit,t,(1-lamfit)*Bfit)     # plot fitted model and background
-   plt.subplot(2,1,2)
-   plt.plot(r,P,r,Pfit)                          # plot fitted distribution
-   plt.show()
+   # Plotting
+   fit.plot()

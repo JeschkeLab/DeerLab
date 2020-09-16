@@ -27,9 +27,9 @@ where :math:`c` is the spin concentration (entered in spins/m\ :sup:`3` into thi
 
 The function :math:`\alpha(R)` of the exclusion distance :math:`R` captures the excluded-volume effect. It is a smooth function, but doesn't have an analytical representation. For details, see `Kattnig et al, J.Phys.Chem.B 2013, 117, 16542 <https://pubs.acs.org/doi/abs/10.1021/jp408338q>`_.
 
-============= =================== ========= ============= ============= ================================================
- Variable      Symbol              Default   Lower bound   Upper bound      Description
-============= =================== ========= ============= ============= ================================================
-``param(1)``    :math:`c`              50         0.01          1000          spin concentration (μM)
-``param(2)``    :math:`R`              1          0.1            20           exclusion distance (nm)
-============= =================== ========= ============= ============= ================================================
+============== =============== ============= ============= ============= =================================
+ Variable         Symbol        Start Value   Lower bound   Upper bound      Description
+============== =============== ============= ============= ============= =================================
+``param[0]``    :math:`c`              50         0.01          1000          Spin concentration (μM)
+``param[1]``    :math:`R`              1          0.1            20           Exclusion distance (nm)
+============== =============== ============= ============= ============= =================================

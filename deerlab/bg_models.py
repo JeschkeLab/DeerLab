@@ -1,3 +1,8 @@
+# bg_models.py - Background parametric models
+# ---------------------------------------------------------------------------
+# This file is a part of DeerLab. License is MIT (see LICENSE.md). 
+# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+ 
 import numpy as np
 import math as m
 import scipy as scp
@@ -46,7 +51,7 @@ def bg_exp(*args):
      -------------------------------------------------
       Parameter    Units     Lower    Upper    Start
      -------------------------------------------------
-      Decay Rate    us-1       0       200      0.35 
+      Decay Rate    μs⁻¹       0       200      0.35 
      -------------------------------------------------
 
 
@@ -76,7 +81,7 @@ def bg_exp(*args):
     if not args:
         info = dict(
             Parameters = ['Decay Rate'],
-            Units = ['us-1'],
+            Units = ['μs⁻¹'],
             Start = np.asarray([0.35]),
             Lower = np.asarray([0]),
             Upper = np.asarray([200])
@@ -115,7 +120,7 @@ def bg_hom3d(*args):
      ----------------------------------------------------------------------
       Parameter                        Units     Lower    Upper    Start
      ----------------------------------------------------------------------
-      Concentration of pumped spins     uM        0.01    5000      50 
+      Concentration of pumped spins     μM        0.01    5000      50 
      ----------------------------------------------------------------------
 
     Parameters
@@ -144,7 +149,7 @@ def bg_hom3d(*args):
     if not args:
         info = dict(
             Parameters = ['Concentration of pumped spins'],
-            Units = ['uM'],
+            Units = ['μM'],
             Start = np.asarray([50]),
             Lower = np.asarray([0.01]),
             Upper = np.asarray([5000])
@@ -193,7 +198,7 @@ def bg_hom3dex(*args):
      -----------------------------------------------------------------------------
       Parameter                                Units     Lower    Upper    Start
      -----------------------------------------------------------------------------
-      Fractal Concentration of pumped spins  umol/dm^d    0.01    5000      50 
+      Fractal Concentration of pumped spins   μmol/dmᵈ    0.01    5000      50 
       Exclusion distance                        nm        0.10     20       1 
      -----------------------------------------------------------------------------
 
@@ -223,7 +228,7 @@ def bg_hom3dex(*args):
     if not args:
         info = dict(
             Parameters = ['Fractal Concentration of pumped spins','Fractal dimensionality'],
-            Units = ['umol/dm^d',''],
+            Units = ['μmol/dmᵈ',''],
             Start = np.asarray([50,   1]),
             Lower = np.asarray([0.01, 0.01]),
             Upper = np.asarray([5000, 20])
@@ -292,7 +297,7 @@ def bg_homfractal(*args):
      -----------------------------------------------------------------------------
       Parameter                                Units     Lower    Upper    Start
      -----------------------------------------------------------------------------
-      Fractal Concentration of pumped spins  umol/dm^d    0.01    5000      50 
+      Fractal Concentration of pumped spins   μmol/dmᵈ    0.01    5000      50 
       Fractal dimensionality                               0        6       3
      -----------------------------------------------------------------------------
 
@@ -322,7 +327,7 @@ def bg_homfractal(*args):
     if not args:
         info = dict(
             Parameters = ['Fractal Concentration of pumped spins','Fractal dimensionality'],
-            Units = ['umol/dm^d',''],
+            Units = ['μmol/dmᵈ',''],
             Start = np.asarray([50,   3]),
             Lower = np.asarray([0.01, 0+np.finfo(float).eps]),
             Upper = np.asarray([5000, 6-np.finfo(float).eps])
@@ -383,7 +388,7 @@ def bg_strexp(*args):
      ----------------------------------------------------
       Parameter        Units     Lower    Upper   Start
      ----------------------------------------------------
-      Decay Rate       us-1       0       200      0.25 
+      Decay Rate       μs⁻¹       0       200      0.25 
       Stretch factor              0        6        1
      ----------------------------------------------------
 
@@ -413,7 +418,7 @@ def bg_strexp(*args):
     if not args:
         info = dict(
             Parameters = ['Decay Rate','Stretch factor'],
-            Units = ['us-1',''],
+            Units = ['μs⁻¹',''],
             Start = np.asarray([0.25, 1]),
             Lower = np.asarray([0,    0]),
             Upper = np.asarray([200,  6])
@@ -422,7 +427,7 @@ def bg_strexp(*args):
     t,param,lam = _parsargs(args,npar=2) 
 
     # Unpack model paramters
-    kappa = param[0]         # decay rate, us-1
+    kappa = param[0]         # decay rate, µs^-1
     d = param[1]            # fractal dimension    
     B = np.exp(-lam*kappa*abs(t)**d)
     
@@ -452,9 +457,9 @@ def bg_prodstrexp(*args):
      -----------------------------------------------------------------
       Parameter                      Units   Lower    Upper    Start
      -----------------------------------------------------------------
-      Decay Rate of 1st component    us-1      0       200      0.25 
+      Decay Rate of 1st component    μs⁻¹      0       200      0.25 
       Stretch factor 1st component             0        6        1
-      Decay Rate of 2nd component    us-1      0       200      0.25 
+      Decay Rate of 2nd component    μs⁻¹      0       200      0.25 
       Stretch factor 2nd component             0        6        1
      -----------------------------------------------------------------
 
@@ -484,7 +489,7 @@ def bg_prodstrexp(*args):
     if not args:
         info = dict(
             Parameters = ['Decay Rate of 1st component','Stretch factor of 1st component','Decay Rate of 2nd component','Stretch factor of 2nd component'],
-            Units = ['us-1','','us-1',''],
+            Units = ['µs^-1','','µs^-1',''],
             Start = np.asarray([0.25, 1, 0.25, 1]),
             Lower = np.asarray([ 0,   0,  0,   0]),
             Upper = np.asarray([200,  6, 200,  6])
@@ -527,10 +532,10 @@ def bg_sumstrexp(*args):
      -----------------------------------------------------------------
       Parameter                      Units   Lower    Upper    Start
      -----------------------------------------------------------------
-      Decay Rate of 1st component    us-1      0       200      0.25 
+      Decay Rate of 1st component    μs⁻¹      0       200      0.25 
       Stretch factor 1st component             0        6        1
       Amplitude of 1st component               0        1       0.50
-      Decay Rate of 2nd component    us-1      0       200      0.25 
+      Decay Rate of 2nd component    μs⁻¹      0       200      0.25 
       Stretch factor 2nd component             0        6        1
      -----------------------------------------------------------------
 
@@ -560,7 +565,7 @@ def bg_sumstrexp(*args):
     if not args:
         info = dict(
             Parameters = ['Decay Rate of 1st component','Stretch factor of 1st component','Amplitude of 1st component','Decay Rate of 2nd component','Stretch factor of 2nd component'],
-            Units = ['us-1','','','us-1',''],
+            Units = ['μs⁻¹','','','μs⁻¹',''],
             Start = np.asarray([0.25, 1, 0.5, 0.25, 1]),
             Lower = np.asarray([ 0,   0,  0,   0,   0]),
             Upper = np.asarray([200,  6,  1,  200,  6])
@@ -606,7 +611,7 @@ def bg_poly1(*args):
       Parameter              Units    Lower    Upper    Start
      ----------------------------------------------------------
       Intercept                         0       200       1  
-      1st-order coefficient  us^-1    -200      200      -1  
+      1st-order coefficient  μs⁻¹    -200      200      -1  
      ----------------------------------------------------------
 
     Parameters
@@ -635,7 +640,7 @@ def bg_poly1(*args):
     if not args:
         info = dict(
             Parameters = ['Intercept','1st-order coefficient'],
-            Units = ['','us-1'],
+            Units = ['','μs⁻¹'],
             Start = np.asarray([ 1,   -1 ]),
             Lower = np.asarray([ 0,  -200]),
             Upper = np.asarray([200,  200])
@@ -678,8 +683,8 @@ def bg_poly2(*args):
       Parameter              Units    Lower    Upper    Start
      ----------------------------------------------------------
       Intercept                         0       200       1  
-      1st-order coefficient  us^-1    -200      200      -1  
-      2nd-order coefficient  us^-2    -200      200      -1 
+      1st-order coefficient  μs⁻¹    -200      200      -1  
+      2nd-order coefficient  μs⁻²    -200      200      -1 
      ----------------------------------------------------------
 
     Parameters
@@ -708,7 +713,7 @@ def bg_poly2(*args):
     if not args:
         info = dict(
             Parameters = ['Intercept','1st-order coefficient','2nd-order coefficient'],
-            Units = ['','us-1','us-2'],
+            Units = ['','μs⁻¹','μs⁻²'],
             Start = np.asarray([ 1,   -1 , -1]),
             Lower = np.asarray([ 0,  -200, -200]),
             Upper = np.asarray([200,  200,  200])
@@ -747,9 +752,9 @@ def bg_poly3(*args):
       Parameter              Units    Lower    Upper    Start
      ----------------------------------------------------------
       Intercept                         0       200       1  
-      1st-order coefficient  us^-1    -200      200      -1  
-      2nd-order coefficient  us^-2    -200      200      -1 
-      3rd-order coefficient  us^-3    -200      200      -1
+      1st-order coefficient   μs⁻¹    -200      200      -1  
+      2nd-order coefficient   μs⁻²    -200      200      -1 
+      3rd-order coefficient   μs⁻³    -200      200      -1
      ----------------------------------------------------------
 
     Parameters
@@ -778,7 +783,7 @@ def bg_poly3(*args):
     if not args:
         info = dict(
             Parameters = ['Intercept','1st-order coefficient','2nd-order coefficient','3rd-order coefficient'],
-            Units = ['','us-1','us-2','us-3'],
+            Units = ['','μs⁻¹','μs⁻²','μs⁻³'],
             Start = np.asarray([ 1,  -1  , -1,   -1  ]),
             Lower = np.asarray([ 0,  -200, -200, -200]),
             Upper = np.asarray([200,  200,  200,  200])

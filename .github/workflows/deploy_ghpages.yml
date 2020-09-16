@@ -7,9 +7,6 @@ on:
       - master
       paths:
       - 'docsrc/**'
-   schedule:
-        # Run once a week on Sunday at 12:00 PM
-        - cron:  '0 12 * * 0'
 
 jobs:
 

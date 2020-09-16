@@ -12,15 +12,15 @@
 Model
 =========================================
 
-============== =============== ======== ======== ======== ===============================
- Variable       Symbol         Default   Lower   Upper       Description
-============== =============== ======== ======== ======== ===============================
-``param(1)``   :math:`L`       3.7      1.5       10        Contour length
-``param(2)``   :math:`L_p`     10       2         100       Persistence length
-``param(3)``   :math:`\sigma`  0.2      0.01      2         Gaussian standard deviation
-============== =============== ======== ======== ======== ===============================
+============== ============== ============= ============= ============= ==================================
+ Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= ==================================
+``param[0]``   :math:`L`         3.7            1.5           10         Contour length (nm)
+``param[1]``   :math:`L_p`       10              2            100        Persistence length (nm)
+``param[2]``   :math:`\sigma`    0.2            0.01           2         Gaussian standard deviation (nm)
+============== ============== ============= ============= ============= ==================================
 
-Example using default parameters:
+Example using start values:
 
 .. image:: ../images/model_dd_wormgauss.png
    :width: 650px

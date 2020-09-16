@@ -17,15 +17,15 @@ Model
 
 where :math:`n=3` and :math:`I_{n/2-1}(x)` is the modified Bessel function of the first kind with order :math:`n/2-1`. This is a three-dimensional non-central chi distribution, the 3D generalization of the 2D Rice distribution.
 
-============== ======================== ========= ============= ============= ========================
- Variable       Symbol                    Default   Lower bound   Upper bound      Description
-============== ======================== ========= ============= ============= ========================
-``param(1)``   :math:`\nu`                3.5     1.0              10         Center
-``param(2)``   :math:`\sigma`             0.7     0.1              5          Width
-============== ======================== ========= ============= ============= ========================
+============== ======================== ============= ============= ============= =======================================
+ Variable         Symbol                 Start Value   Lower bound   Upper bound      Description
+============== ======================== ============= ============= ============= =======================================
+``param[0]``     :math:`\nu`                3.5           1.0              10          Location (nm)
+``param[1]``     :math:`\sigma`             0.7           0.1              5           Spread (nm)
+============== ======================== ============= ============= ============= =======================================
 
 
-Example using default parameters:
+Example using start values:
 
 .. image:: ../images/model_dd_rice.png
    :width: 650px

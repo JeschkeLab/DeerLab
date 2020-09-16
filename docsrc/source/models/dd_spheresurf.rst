@@ -18,14 +18,14 @@ Model
 :math:`P(r) = \begin{cases} \frac{r}{2R^2} \quad \text{for} \quad 0 \leq r < 2R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
 
 
-================ ============== ========= ======== ========= ===================================
- Variable         Symbol         Default   Lower    Upper       Description
-================ ============== ========= ======== ========= ===================================
-``param(1)``     :math:`R`       2.5       0.1        20        Sphere radius
-================ ============== ========= ======== ========= ===================================
+============== ============== ============= ============= ============= =========================
+ Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =========================
+``param[0]`     :math:`R`       2.5               0.1          20        Sphere radius (nm)
+============== ============== ============= ============= ============= =========================
 
 
-Example using default parameters:
+Example using start values:
 
 .. image:: ../images/model_dd_spheresurf.png
    :width: 650px

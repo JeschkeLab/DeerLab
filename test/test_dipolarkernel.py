@@ -406,5 +406,5 @@ def test_nonuniform_r():
     P = dd_gauss(r,[3,0.5])
     K = dipolarkernel(t,r)
     V0 = K@P
-    assert V0 == 1
+    assert np.round(V0,3) == 1
 #=======================================================================

@@ -35,7 +35,7 @@ def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
         Use of a Hamming apodization window, the default is True.
     """
     
-    if zerofilling is 'auto':
+    if zerofilling == 'auto':
         zerofilling = 2*len(V)
 
     #If requested apply Hamming apodization window
@@ -48,11 +48,11 @@ def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
     spec = fftshift(fft(V,zerofilling))
 
     #Get the requested component/type of spectrum
-    if mode is 'abs':
+    if mode == 'abs':
             spec = np.abs(spec)
-    elif mode is 'real':
+    elif mode == 'real':
             spec  = spec.real
-    elif mode is 'imag':
+    elif mode == 'imag':
             spec = spec.imag
     else:
         raise KeyError("Invalid spectrum mode. Must be 'abs', 'real', or 'imag'. ")

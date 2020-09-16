@@ -6,6 +6,7 @@
 import copy
 import numpy as np
 import numdifftools as nd
+import matplotlib.pyplot as plt
 from types import FunctionType
 import deerlab as dl
 from deerlab.utils import hccm, goodness_of_fit
@@ -74,6 +75,11 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         Selection functional values (as specified as ``method``) for the all fitted multi-component models.
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
+    plot : callable
+        Function to display the results. It will display the 
+        fitted signals, the distance distribution with confidence intervals, 
+        and the values of the selection functional. If requested, the function
+        returns the `matplotlib.axes` object as output. 
     stats : dict
         Goodness of fit statistical estimators:
 
@@ -180,7 +186,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     if len(lbK) is not nKparam or len(ubK) is not nKparam:
         raise ValueError('The upper/lower bounds of the kernel parameters must be ',nKparam,'-element arrays')
 
-    areCenterDistances = [str in ['Center','Location'] for str in paramnames]
+    areCenterDistances = [str in ['Mean','Location'] for str in paramnames]
     if any(areCenterDistances):
         # If the center of the basis function is a parameter limit it 
         # to the distance axis range (stabilizes parameter search)
@@ -234,7 +240,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     def logestimators(V,Vfit,plin,pnonlin,functionals):
     #===============================================================================
         """
-            Log-Likelihood Estimators
+        Log-Likelihood Estimators
         ---------------------------
         Computes the estimated likelihood of a multi-component model being the
         optimal choice.
@@ -260,6 +266,24 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         return functionals
     #===============================================================================
 
+    def spread_within_box(lb,ub,Nmodels):
+    #===============================================================================
+        """
+        Start values within boundary box
+        ---------------------------------
+        Computes the start values of the parameters of the multiple basis functions
+        spread equally within the box constraints.
+        """
+        par = []
+        for lbi,ubi in zip(lb,ub):
+            par.append(np.linspace(lbi,ubi,Nmodels+2)[1:-1])
+        par0 = []        
+        for i in range(Nmodels):
+            for pari in par:
+                par0.append(pari[i])
+        return par0
+    #===============================================================================
+
     # Pre-allocate containers
     fits,Vfit,Pfit,plin_,pnonlin_,nlin_ub_,nlin_lb_,lin_ub_,lin_lb_ = ([] for _ in range(9))
     logest = []
@@ -272,6 +296,11 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         # ===========================================
         Knonlin = lambda par: nonlinmodel(par,Nmodels)
         
+        # Start values of non-linear parameters
+        par0_K = (ubK - lbK)/2 # start in the middle
+        par0_P = spread_within_box(lb,ub,Nmodels) # start spread within boundaries
+        par0 = np.concatenate((par0_K, par0_P),axis=None)
+
         # Box constraints for the model parameters (non-linear parameters)
         nlin_lb = np.tile(lb,(1,Nmodels))
         nlin_ub = np.tile(ub,(1,Nmodels))
@@ -280,10 +309,6 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         nlin_lb = np.concatenate((lbK, nlin_lb),axis=None)
         nlin_ub = np.concatenate((ubK, nlin_ub),axis=None)
         
-        # Start values of non-linear parameters
-        np.random.seed(1)
-        par0 = np.random.uniform(size=(len(nlin_lb)),low=nlin_lb, high=nlin_ub)
-
         # Box constraints for the components amplitudes (linear parameters)
         lin_lb = np.ones(Nmodels)        
         lin_ub = np.full(Nmodels,np.inf)
@@ -291,7 +316,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         # Separable non-linear least-squares (SNLLS) fit
         scale = 1e2
         fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, 
-                        weights=weights, penalty=False, uqanalysis=False, lin_tol=[], lin_maxiter=[],**kwargs)
+                        weights=weights, reg=False, uqanalysis=False, lin_tol=[], lin_maxiter=[],**kwargs)
         pnonlin = fit.nonlin
         plin = fit.lin
 
@@ -384,7 +409,54 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     if len(scales)==1:
         scales = scales[0]
 
+    # Results display function
+    plotfcn = lambda: _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method)
+
     return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, Puncert=Puq, 
-                    paramUncert=paramuq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, 
+                    paramUncert=paramuq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
                     stats=stats, cost=fit.cost, residuals=fit.residuals, success=fit.success)
-    # =========================================================================
+# =========================================================================
+
+
+def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
+# =========================================================================
+    nSignals = len(Vsubsets)
+    _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
+    for i in range(nSignals): 
+        subset = Vsubsets[i]
+        # Plot the experimental signal and fit
+        axs[i].plot(V[subset],'.',color='grey',alpha=0.5)
+        axs[i].plot(Vfit[subset],'tab:blue')
+        axs[i].grid(alpha=0.3)
+        axs[i].set_xlabel('Array Elements')
+        axs[i].set_ylabel('V[{}]'.format(i))
+        axs[i].legend(('Data','Fit'))
+
+    # Confidence intervals of the fitted distance distribution
+    Pci95 = Puq.ci(95) # 95#-confidence interval
+    Pci50 = Puq.ci(50) # 50#-confidence interval
+
+    ax = plt.subplot(nSignals+1,2,2*(nSignals+1)-1)
+    ax.plot(r,Pfit,color='tab:blue',linewidth=1.5)
+    ax.fill_between(r,Pci50[:,0],Pci50[:,1],color='tab:blue',linestyle='None',alpha=0.45)
+    ax.fill_between(r,Pci95[:,0],Pci95[:,1],color='tab:blue',linestyle='None',alpha=0.25)
+    ax.grid(alpha=0.3)
+    ax.legend(['truth','optimal fit','95%-CI'])
+    ax.set_xlabel('Distance [nm]')
+    ax.set_ylabel('P [nm⁻¹]')
+    axs = np.append(axs,ax)
+
+    # Compute the Akaike weights
+    dfcnals = fcnals - min(fcnals)
+    ax = plt.subplot(nSignals+1,2,2*(nSignals+1))
+    ax.bar(np.arange(maxModels)+1,dfcnals + abs(min(dfcnals)),facecolor='tab:blue',alpha=0.6)
+    ax.grid(alpha=0.3)
+    ax.set_ylabel('Δ{}'.format(method.upper()))
+    ax.set_xlabel('Number of components')
+    axs = np.append(axs,ax)
+
+    plt.tight_layout()
+    plt.show()
+    return axs
+# =========================================================================
+

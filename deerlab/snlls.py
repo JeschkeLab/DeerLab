@@ -1,8 +1,13 @@
+# snlls.py - Separable non-linear least-squares solver
+# ---------------------------------------------------------------
+# This file is a part of DeerLab. License is MIT (see LICENSE.md).
+# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import copy
 import numpy as np
 import numdifftools as nd
 from scipy.optimize import least_squares, lsq_linear
+import matplotlib.pyplot as plt
 from numpy.linalg import solve
 
 # Import DeerLab depencies
@@ -11,7 +16,7 @@ from deerlab.utils import goodness_of_fit, hccm, isempty
 from deerlab.nnls import cvxnnls, fnnls, nnlsbpp
 from deerlab.classes import UncertQuant, FitResult
 
-def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', penalty=None, weights=1,
+def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=1,
           regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3,
           nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, huberparam=1.35,
           uqanalysis=True):
@@ -50,6 +55,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         * ``paramuq.ci(n)``           - n%-CI of the full parameter set
         * ``paramuq.ci(n,'lin')``     - n%-CI of the linear parameter set
         * ``paramuq.ci(n,'nonlin')``  - n%-CI of the non-linear parameter set
+    regparam : scalar
+        Regularization parameter value used for the regularization of the linear parameters.
+    plot : callable
+        Function to display the results. It will display the fitted data.
+        If requested, the function returns the `matplotlib.axes` object as output. 
     stats : dict
         Goodness of fit statistical estimators
 
@@ -68,10 +78,14 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     Other parameters
     ----------------
-    penalty : boolean
-        Forces the use of a regularization penalty on the solution of the linear problem.
-        If not specified it is determined automatically based con the condition number of
-        the non-linear model ``Amodel``.
+    reg : boolean or string
+        Determines the use of regularization on the solution of the linear problem.
+        
+        * ``'auto'`` - Automatic decision based con the condition number of the non-linear model ``Amodel``.
+        * ``True`` - Forces regularization regardless of the condition number
+        * ``False`` - Disables regularization regardless of the condition number
+        The default is ``'auto'``.
+
     regType : string
         Regularization penalty type:
 
@@ -171,20 +185,21 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     par0 = np.atleast_1d(par0)
 
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
-    y, Amodel, weights, subsets, prescales = dl.utils.parse_multidatasets(y, Amodel, weights, precondition=True)
+    y, Amodel, weights, subsets, _ = dl.utils.parse_multidatasets(y, Amodel, weights, precondition=True)
 
     # Get info on the problem parameters and non-linear operator
     A0 = Amodel(par0)
     Nnonlin = len(par0)
     Nlin = np.shape(A0)[1]
     linfit = np.zeros(Nlin)
+    alpha = 0
 
     # Determine whether to use regularization penalty
     illConditioned = np.linalg.cond(A0) > 10
-    if illConditioned and penalty is None:
-        includePenalty = True
+    if reg == 'auto':
+        includePenalty = illConditioned
     else:
-        includePenalty = penalty
+        includePenalty = reg
 
     # Checks for bounds constraints
     # ----------------------------------------------------------
@@ -247,11 +262,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     elif linearConstrained and nonNegativeOnly:
         # Non-negative linear LSQ
-        if nnlsSolver is 'fnnls':
+        if nnlsSolver == 'fnnls':
             linSolver = lambda AtA, Aty: fnnls(AtA, Aty, tol=lin_tol, maxiter=lin_maxiter)
-        elif nnlsSolver is 'nnlsbpp':
+        elif nnlsSolver == 'nnlsbpp':
             linSolver = lambda AtA, Aty: nnlsbpp(AtA, Aty, np.linalg.solve(AtA, Aty))
-        elif nnlsSolver is 'cvx':
+        elif nnlsSolver == 'cvx':
             linSolver = lambda AtA, Aty: cvxnnls(AtA, Aty, tol=lin_tol, maxiter=lin_maxiter)
         parseResult = lambda result: result
     # ----------------------------------------------------------
@@ -270,7 +285,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         non-linear least-squares solver. 
         """
 
-        nonlocal par_prev, check, regparam_prev, linfit
+        nonlocal par_prev, check, regparam_prev, linfit, alpha
         # Non-linear model evaluation
         A = Amodel(p)
 
@@ -397,7 +412,10 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     if len(stats) == 1: 
         stats = stats[0]
 
-    return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq,
+    # Display function
+    plotfcn = lambda: _plot(subsets,y,yfit)
+
+    return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq, regparam=alpha, plot=plotfcn,
                      stats=stats, cost=fvals, residuals=sol.fun, success=sol.success)
 # ===========================================================================================
 
@@ -414,13 +432,13 @@ def _augment(res, J, regtype, alpha, L, x, eta, Nnonlin):
     """
     eps = np.finfo(float).eps
     # Compute the regularization penalty augmentation for the residual and the Jacobian
-    if regtype is 'tikhonov':
+    if regtype == 'tikhonov':
         resreg = L@x
         Jreg = L
-    elif regtype is 'tv':
+    elif regtype == 'tv':
         resreg =((L@x)**2 + eps)**(1/4)
         Jreg = 2/4*((( ( (L@x)**2 + eps)**(-3/4) )*(L@x))[:, np.newaxis]*L)
-    elif regtype is 'huber':
+    elif regtype == 'huber':
         resreg = np.sqrt(np.sqrt((L@x/eta)**2 + 1) - 1)
         Jreg = 0.5/(eta**2)*((((np.sqrt((L@x/eta)**2 + 1) - 1 + eps)**(-1/2)*(((L@x/eta)**2 + 1+ eps)**(-1/2)))*(L@x))[:, np.newaxis]*L)
 
@@ -436,3 +454,23 @@ def _augment(res, J, regtype, alpha, L, x, eta, Nnonlin):
 
     return res, J
 # ===========================================================================================
+
+
+def _plot(subsets,y,yfit):
+# ===========================================================================================
+    nSignals = len(subsets)
+    _,axs = plt.subplots(nSignals+1,figsize=[7,3*nSignals])
+    for i in range(nSignals): 
+        subset = subsets[i]
+        # Plot the experimental signal and fit
+        axs[i].plot(y[subset],'.',color='grey',alpha=0.5)
+        axs[i].plot(yfit[subset],'tab:blue')
+        axs[i].grid(alpha=0.3)
+        axs[i].set_xlabel('Array elements')
+        axs[i].set_ylabel('Data #{}'.format(i))
+        axs[i].legend(('Data','Fit'))
+    plt.tight_layout()
+    plt.show()
+    return axs
+# ===========================================================================================
+

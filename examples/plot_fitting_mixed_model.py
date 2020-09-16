@@ -9,7 +9,7 @@ for fitting distance distributions.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from deerlab import *
+import deerlab as dl
 
 # %% [markdown]
 # Simulate the data
@@ -24,20 +24,19 @@ r = np.linspace(2,6,200)
 
 # Distribution parameters
 rmean = 4.5
-width = 0.3
+sigma = 0.2
 chain = 4.3
 pers = 10
 amp = 0.35
 
 # Generate distribution
-P = dd_gauss(r,[rmean, width])
-P = amp*P + (1 - amp)*dd_wormchain(r,[chain, pers])
+P = dl.dd_gauss(r,[rmean, sigma])
+P = amp*P + (1 - amp)*dl.dd_wormchain(r,[chain, pers])
 # Normalize distribution
 P = P/sum(P)/np.mean(np.diff(r))
 # Generate dipolar evolution function
-np.random.seed(0)
-K = dipolarkernel(t,r)
-V = K@P + whitegaussnoise(t,0.02)
+K = dl.dipolarkernel(t,r)
+V = K @ P + dl.whitegaussnoise(t,0.02,seed=0)
 
 # %%
 # Generating a mixed parametric model
@@ -53,7 +52,7 @@ V = K@P + whitegaussnoise(t,0.02)
 # parametric models as lambda functions. 
 
 #Mix the models into new one
-gausswlc = mixmodels(dd_gauss,dd_wormchain)
+gausswlc = dl.mixmodels(dl.dd_gauss,dl.dd_wormchain)
 
 # %% [markdown]
 # Our new model ``gausswlc`` will now describe our sought linear combination of 
@@ -81,15 +80,15 @@ info = gausswlc()
 # a very basic dipolar kernel.
 
 #Generate the dipolar evolution function kernel
-K = dipolarkernel(t,r)
+K = dl.dipolarkernel(t,r)
 
 #Fit the model to the data
-Vmodel = lambda par: K@gausswlc(r,par)
+Vmodel = lambda par: K @ gausswlc(r,par)
 info = gausswlc()
 par0 = info['Start'] # built-in start values
 lb = info['Lower'] # built-in lower bounds
 ub = info['Upper'] # built-in upper bounds
-fit = fitparamodel(V,Vmodel,par0,lb,ub,multistart=10)
+fit = dl.fitparamodel(V,Vmodel,par0,lb,ub,multistart=10)
 fitpar = fit.param
 # %% [markdown]
 # From the fitted parameter set ``fitpar`` we can now generate our fitted distance 
@@ -115,6 +114,5 @@ plt.plot(r,P,'k',r,Pfit,'r',linewidth=1.5)
 plt.xlabel('r [nm]')
 plt.ylabel('P(r) [nm$^{-1}$]')
 plt.legend(['truth','fit'])
-
 
 # %%
