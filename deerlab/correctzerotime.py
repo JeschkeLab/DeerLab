@@ -32,12 +32,14 @@ def correctzerotime(V,t):
     if len(t)!=len(V):
         raise TypeError('The dipolar signal (V) and time axis (t) must have the size.')
 
-    # Rescale to avoid overflow during integration later
-    V /= max(V)
+
     # Generate finely-grained interpolated signal and time axis
     resolution = 10
     t_ = np.linspace(min(t), max(t), (len(t)-1)*resolution+1)
     V_ = scp.interpolate.interp1d(t, np.real(V), kind='cubic')(t_)
+
+    # Rescale to avoid overflow during integration later
+    V_ /= max(V_)
 
     # Determine location of maximum
     idxmax = np.argmax(V_)
