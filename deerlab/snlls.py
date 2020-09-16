@@ -55,7 +55,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         * ``paramuq.ci(n)``           - n%-CI of the full parameter set
         * ``paramuq.ci(n,'lin')``     - n%-CI of the linear parameter set
         * ``paramuq.ci(n,'nonlin')``  - n%-CI of the non-linear parameter set
-    alpha : scalar
+    regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
     plot : callable
         Function to display the results. It will display the fitted data.
@@ -415,7 +415,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     # Display function
     plotfcn = lambda: _plot(subsets,y,yfit)
 
-    return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq, alpha=alpha, plot=plotfcn,
+    return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq, regparam=alpha, plot=plotfcn,
                      stats=stats, cost=fvals, residuals=sol.fun, success=sol.success)
 # ===========================================================================================
 

@@ -107,7 +107,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Uncertainty quanfitication for experiment(s) parameters
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
-    alpha : scalar
+    regparam : scalar
         Optimal regularization parameter value
     plot : callable
         Function to display the results. It will 
