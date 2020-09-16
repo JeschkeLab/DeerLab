@@ -473,7 +473,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         parfit_ = fit.nonlin
         Pfit = fit.lin
         snlls_uq = fit.uncertainty
-        alphaopt = fit.alpha
+        alphaopt = fit.regparam
         scales = [prescales[i]*np.trapz(Pfit,r) for i in range(nSignals)]
 
         # Get the fitted models
