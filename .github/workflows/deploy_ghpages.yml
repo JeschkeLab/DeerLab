@@ -6,6 +6,7 @@ on:
       - manual_ghp_update
       - master
       paths:
+      - '.github/workflows**'
       - 'docsrc/**'
 
 jobs:
