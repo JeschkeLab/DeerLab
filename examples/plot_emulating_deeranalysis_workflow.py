@@ -30,7 +30,7 @@ Bmodel = lambda t, lam: dl.bg_hom3d(t,conc,lam)
 K = dl.dipolarkernel(t,rtrue,lam,Bmodel)
 V = K@Ptrue*np.exp(1j*np.pi/16) # add a phase shift 
 rnoise = dl.whitegaussnoise(t,0.01,seed=1) # real-component noise 
-inoise = 1j*dl.whitegaussnoise(t,0.01,see=2) # imaginary-component noise 
+inoise = 1j*dl.whitegaussnoise(t,0.01,seed=2) # imaginary-component noise 
 V = V + rnoise + inoise # complex-valued noisy signal
 V = V*3e6 # add an arbitrary amplitude scale
 
