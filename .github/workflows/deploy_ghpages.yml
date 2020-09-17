@@ -13,7 +13,6 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
     - name: Checkout
       uses: actions/checkout@v1
@@ -42,8 +41,8 @@ jobs:
     - name: Build with Sphinx
       run: |
            sphinx-build -E -b html ./docsrc/source ./docs
-           
     - name: Deploy to GH-Pages
+      if: always()
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}

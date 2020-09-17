@@ -17,6 +17,10 @@ copyright = '2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others'
 author = 'Fabregas Ibanez'
 language = 'en'
 
+
+version = open('..\..\VERSION').read().splitlines()[0]
+rst_epilog = '.. |version| replace:: {}'.format(version)
+
 # Add sphinx extensions
 extensions = [
     'sphinx.ext.intersphinx',
