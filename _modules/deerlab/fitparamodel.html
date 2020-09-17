@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -188,8 +192,9 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numdifftools</span> <span class="k">as</span> <span class="nn">nd</span>
-<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="nf">isempty</span><span class="p">,</span> <span class="n">multistarts</span><span class="p">,</span> <span class="n">hccm</span><span class="p">,</span> <span class="n">parse_multidatasets</span><span class="p">,</span> <span class="n">goodness_of_fit</span>
+<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">isempty</span><span class="p">,</span> <span class="n">multistarts</span><span class="p">,</span> <span class="n">hccm</span><span class="p">,</span> <span class="n">parse_multidatasets</span><span class="p">,</span> <span class="n">goodness_of_fit</span>
 <span class="kn">from</span> <span class="nn">deerlab.classes</span> <span class="kn">import</span> <span class="n">UncertQuant</span><span class="p">,</span> <span class="n">FitResult</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">least_squares</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
@@ -220,6 +225,10 @@
 <span class="sd">        Covariance-based uncertainty quantification of the fitted parameters.</span>
 <span class="sd">    scale : float int or list of float int</span>
 <span class="sd">        Amplitude scale(s) of the dipolar signal(s).</span>
+<span class="sd">    plot : callable</span>
+<span class="sd">        Function to display the results. It will </span>
+<span class="sd">        display the fitted signals. If requested, the function returns </span>
+<span class="sd">        the `matplotlib.axes` object as output. </span>
 <span class="sd">    stats :  dict</span>
 <span class="sd">        Goodness of fit statistical estimators:</span>
 
@@ -296,7 +305,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">par0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">isempty</span><span class="p">(</span><span class="n">par0</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;The start values par0 of the parameters must be specified&#39;</span><span class="p">)</span>
 
     <span class="n">lb</span><span class="p">,</span><span class="n">ub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">)</span>
@@ -307,9 +316,9 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">isreal</span><span class="p">(</span><span class="n">V</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The input signal(s) cannot be complex-valued.&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">lb</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">isempty</span><span class="p">(</span><span class="n">lb</span><span class="p">):</span>
         <span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full_like</span><span class="p">(</span><span class="n">par0</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">ub</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">isempty</span><span class="p">(</span><span class="n">ub</span><span class="p">):</span>
         <span class="n">ub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full_like</span><span class="p">(</span><span class="n">par0</span><span class="p">,</span> <span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
 
     <span class="c1"># Prepare upper/lower bounds on parameter search range</span>
@@ -376,13 +385,13 @@
     <span class="n">atUpper</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">parfit</span><span class="o">-</span><span class="n">ub</span><span class="p">)</span><span class="o">&lt;</span><span class="n">tol</span>
     <span class="n">fixedPar</span> <span class="o">=</span> <span class="n">lb</span><span class="o">==</span><span class="n">ub</span>
     <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parfit</span><span class="p">)):</span>
-        <span class="c1"># Skip if parameter is fixed</span>
         <span class="k">if</span> <span class="n">fixedPar</span><span class="p">[</span><span class="n">p</span><span class="p">]:</span>
+            <span class="c1"># Skip if parameter is fixed</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">atLower</span><span class="p">[</span><span class="n">p</span><span class="p">]:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;The fitted value of parameter #</span><span class="si">{}</span><span class="s1">, is at the lower bound of the range.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;The fitted value of parameter #</span><span class="si">{}</span><span class="s1">, is at the lower bound (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">lb</span><span class="p">[</span><span class="n">p</span><span class="p">]))</span>
         <span class="k">if</span> <span class="n">atUpper</span><span class="p">[</span><span class="n">p</span><span class="p">]:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;The fitted value of parameter #</span><span class="si">{}</span><span class="s1">,  is at the upper bound of the range.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;The fitted value of parameter #</span><span class="si">{}</span><span class="s1">,  is at the upper bound (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">ub</span><span class="p">[</span><span class="n">p</span><span class="p">]))</span>
 
     <span class="c1"># Calculate parameter confidence intervals</span>
     <span class="k">if</span> <span class="n">uqanalysis</span><span class="p">:</span>
@@ -397,7 +406,7 @@
             <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">reshape</span><span class="p">(</span><span class="n">nd</span><span class="o">.</span><span class="n">Jacobian</span><span class="p">(</span><span class="n">lsqresiduals</span><span class="p">)(</span><span class="n">parfit</span><span class="p">),(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">parfit</span><span class="o">.</span><span class="nf">size</span><span class="p">))</span>
         
         <span class="c1"># Estimate the heteroscedasticity-consistent covariance matrix</span>
-        <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">covmatrix</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">isempty</span><span class="p">(</span><span class="n">covmatrix</span><span class="p">):</span>
             <span class="c1"># Use estimated data covariance matrix</span>
             <span class="n">covmatrix</span> <span class="o">=</span> <span class="n">hccm</span><span class="p">(</span><span class="n">J</span><span class="p">,</span><span class="n">residuals</span><span class="p">,</span><span class="s1">&#39;HC1&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -408,19 +417,40 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">paruq</span> <span class="o">=</span> <span class="p">[]</span>
 
-
     <span class="c1"># Calculate goodness of fit</span>
     <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">Vfit</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">parfit</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">Vsubsets</span><span class="p">:</span> 
         <span class="n">Ndof</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">subset</span><span class="p">])</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">par0</span><span class="p">)</span>
-        <span class="n">stats</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">goodness_of_fit</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">subset</span><span class="p">],</span><span class="n">model</span><span class="p">(</span><span class="n">parfit</span><span class="p">)[</span><span class="n">subset</span><span class="p">],</span><span class="n">Ndof</span><span class="p">))</span>
+        <span class="n">stats</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">goodness_of_fit</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">subset</span><span class="p">],</span><span class="n">Vfit</span><span class="p">[</span><span class="n">subset</span><span class="p">],</span><span class="n">Ndof</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">Nsignals</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> 
         <span class="n">stats</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">scales</span> <span class="o">=</span> <span class="n">scales</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
+    <span class="c1"># Get plot function</span>
+    <span class="n">plotfcn</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">_plot</span><span class="p">(</span><span class="n">Vsubsets</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">Vfit</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">FitResult</span><span class="p">(</span>
             <span class="n">param</span><span class="o">=</span><span class="n">parfit</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="n">paruq</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scales</span><span class="p">,</span> <span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">,</span> <span class="n">cost</span><span class="o">=</span><span class="n">fvals</span><span class="p">,</span>
-            <span class="n">residuals</span><span class="o">=</span><span class="n">sol</span><span class="o">.</span><span class="n">fun</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="n">sol</span><span class="o">.</span><span class="n">success</span><span class="p">)</span></div>
+            <span class="nf">plot</span><span class="o">=</span><span class="n">plotfcn</span><span class="p">,</span> <span class="n">residuals</span><span class="o">=</span><span class="n">sol</span><span class="o">.</span><span class="n">fun</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="n">sol</span><span class="o">.</span><span class="n">success</span><span class="p">)</span></div>
+
+<span class="k">def</span> <span class="nf">_plot</span><span class="p">(</span><span class="n">Vsubsets</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">Vfit</span><span class="p">):</span>
+    <span class="n">nSignals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Vsubsets</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span><span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="nf">subplots</span><span class="p">(</span><span class="n">nSignals</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="n">nSignals</span><span class="p">])</span>
+    <span class="n">axs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">axs</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nSignals</span><span class="p">):</span> 
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">Vsubsets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="c1"># Plot the experimental signal and fit</span>
+        <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">subset</span><span class="p">],</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">Vfit</span><span class="p">[</span><span class="n">subset</span><span class="p">],</span><span class="s1">&#39;tab:blue&#39;</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Array Elements&#39;</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;V[</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="nf">legend</span><span class="p">((</span><span class="s1">&#39;Data&#39;</span><span class="p">,</span><span class="s1">&#39;Fit&#39;</span><span class="p">))</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">axs</span>
 </pre></div>
 
            </div>

@@ -73,6 +73,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -184,21 +188,69 @@
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <hr class="docutils" />
+<div class="section" id="version-0-11-0-september-2020">
+<h2>Version 0.11.0 - September 2020<a class="headerlink" href="#version-0-11-0-september-2020" title="Permalink to this headline">¶</a></h2>
+<p>#### Overall changes</p>
+<ul class="simple">
+<li><p>All Gauss models (<code class="docutils literal notranslate"><span class="pre">dd_gauss</span></code>,etc.) now use the standard deviation <code class="docutils literal notranslate"><span class="pre">sigma</span></code> instead of the FWHM as the width parameter for consistency with other method such as Rice distributions. (#19)</p></li>
+<li><p>All hard-wired random seeds have been removed.</p></li>
+<li><p>A new method <code class="docutils literal notranslate"><span class="pre">plot()</span></code> has been added to the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> class returned by all fit functions. This will create a basic plot of the fit results. (#7)</p></li>
+</ul>
+<p>#### Specific changes
+* <code class="docutils literal notranslate"><span class="pre">snlls</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Renamed option <code class="docutils literal notranslate"><span class="pre">penalty</span></code> as <code class="docutils literal notranslate"><span class="pre">reg</span></code> and improved its interface (#13).</p></li>
+<li><p>The regularization parameter of the optimal solution is returned now (#20).</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">whitegaussnoise</span></code>: Added a <code class="docutils literal notranslate"><span class="pre">seed</span></code> option to select static noise realizations.</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">correctzerotime</span></code>:</dt><dd><ul>
+<li><p>Fixed bug when zero-time is at start/end of array (#24).</p></li>
+<li><p>Function no longer rescales the experimental data passed on to the function.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">fitsignal</span></code>:</dt><dd><ul>
+<li><p>The regularization parameter of the optimal solution is returned now (#20).</p></li>
+<li><p>Bug fixed when fitting dipolar evolution functions (no background and no experiment models) with a parametric distance distribution.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code>: Start points are now spread over constrained parameter space grid instead of being randomble initiated (#22).</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">deerload</span></code>:</dt><dd><ul>
+<li><p>Now returns the time axis in microseconds instead of nanoseconds (#21).</p></li>
+<li><p>The bug appearing when loading certain BES3T files has been fixed (#14).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fitregmodel</span></code>: Now returns the fitted dipolar signal in the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> output</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">correctscale</span></code>: The parameter fit ranges have been adjusted.</p></li>
+</ul>
+</div>
+<hr class="docutils" />
 <div class="section" id="version-0-10-0-august-2020">
 <h2>Version 0.10.0 - August 2020<a class="headerlink" href="#version-0-10-0-august-2020" title="Permalink to this headline">¶</a></h2>
 <p>As of this version, DeerLab is written in Python in contrast to older versions based on MATLAB.</p>
-<dl class="simple">
-<dt>Deprecated functions</dt><dd><p>The following functions have been deprecated due to limited usability or due to functionality overlap with other DeerLab functions: <code class="docutils literal notranslate"><span class="pre">aptkernel</span></code>, <code class="docutils literal notranslate"><span class="pre">backgroundstart</span></code>, <code class="docutils literal notranslate"><span class="pre">fitbackground</span></code>, <code class="docutils literal notranslate"><span class="pre">paramodel</span></code>, and <code class="docutils literal notranslate"><span class="pre">time2freq</span></code>.</p>
-</dd>
-<dt>Overall changes</dt><dd><ul class="simple">
-<li><p>All fit functions now return a single <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> output which will contain all results.</p></li>
+<p>#### Deprecated functions
+The following functions have been deprecated due to limited usability or due to functionality overlap with other DeerLab functions: <code class="docutils literal notranslate"><span class="pre">aptkernel</span></code>, <code class="docutils literal notranslate"><span class="pre">backgroundstart</span></code>, <code class="docutils literal notranslate"><span class="pre">fitbackground</span></code>, <code class="docutils literal notranslate"><span class="pre">paramodel</span></code>, and <code class="docutils literal notranslate"><span class="pre">time2freq</span></code>.</p>
+<p>#### Overall changes
+* All fit functions now return a single <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> output which will contain all results.</p>
+<ul class="simple">
 <li><p>All functions are now compatible with non-uniformly increasing distance axes.</p></li>
 <li><p>All fit functions are completely agnostic with respect of the abolute values of the signal amplitude. This is automatically fitted by all function and return as part of the results.</p></li>
 <li><p>Uncertainty quantification for all fit functions is returned as a <code class="docutils literal notranslate"><span class="pre">UncertQuant</span></code> object from which confidence intervals, parameter distributions, etc. can be generated generalizing the uncertainty interface for all DeerLab. Uncertainty can now be propagated to arbitrary functions.</p></li>
 </ul>
-</dd>
-<dt>Specific changes</dt><dd><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code>: the functionality has been streamlined. Function now fits arbitrary parametric models using non-linear leas-squares without consideration of whether it is a time-domain or distance-domain model. The models no longer need to take two inputs (axis+parameters) and now only tk the parameters as input.</p></li>
+<p>#### Specific changes
+* <code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code>: the functionality has been streamlined. Function now fits arbitrary parametric models using non-linear leas-squares without consideration of whether it is a time-domain or distance-domain model. The models no longer need to take two inputs (axis+parameters) and now only tk the parameters as input.</p>
+<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">fitregmodel</span></code>: goodness-of-fit estimators are now computed using the proper estimation the degrees of freedom.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code>: added internal measures to avoid situations where one or several components are suppressed by fitting zero-amplitudes making the method more stable.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">uqst</span></code>: the uncertainty distributions of the parameters are now returned as properly normalized probability density functions.</p></li>
@@ -206,8 +258,6 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">regoperator</span></code>: now calculates the numerically exact finite-difference matrix using Fornberg’s method.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">correctphase</span></code>: now can handle 2D-datasets.</p></li>
 </ul>
-</dd>
-</dl>
 <hr class="docutils" />
 </div>
 </div>

@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -181,11 +185,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for deerlab.dd_models</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">m</span>
+<span></span><span class="c1"># dd_models.py - Distance distribtion parametric models</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md). </span>
+<span class="c1"># Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.</span>
+
+<span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">m</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.special</span> <span class="k">as</span> <span class="nn">spc</span>
-<span class="n">__docformat__</span> <span class="o">=</span> <span class="s1">&#39;reStructuredText&#39;</span>
-
 
 <span class="k">def</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">npar</span><span class="p">):</span>
 <span class="c1">#=================================================================</span>
@@ -547,7 +554,7 @@
 <span class="sd">     -------------------------------------------</span>
 <span class="sd">      Parameter   Units   Lower   Upper   Start</span>
 <span class="sd">     -------------------------------------------</span>
-<span class="sd">      Location     nm       1      20      3.5 </span>
+<span class="sd">      Center       nm       1      20      3.5 </span>
 <span class="sd">      Spread       nm      0.05    2.5     0.2 </span>
 <span class="sd">      Skewness             -25     25      5 </span>
 <span class="sd">     --------------------------------------------</span>

@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -217,7 +221,7 @@
 <span class="sd">        Use of a Hamming apodization window, the default is True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">if</span> <span class="n">zerofilling</span> <span class="ow">is</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">zerofilling</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
         <span class="n">zerofilling</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
 
     <span class="c1">#If requested apply Hamming apodization window</span>
@@ -230,11 +234,11 @@
     <span class="n">spec</span> <span class="o">=</span> <span class="n">fftshift</span><span class="p">(</span><span class="n">fft</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">zerofilling</span><span class="p">))</span>
 
     <span class="c1">#Get the requested component/type of spectrum</span>
-    <span class="k">if</span> <span class="n">mode</span> <span class="ow">is</span> <span class="s1">&#39;abs&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;abs&#39;</span><span class="p">:</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">mode</span> <span class="ow">is</span> <span class="s1">&#39;real&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;real&#39;</span><span class="p">:</span>
             <span class="n">spec</span>  <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="nf">real</span>
-    <span class="k">elif</span> <span class="n">mode</span> <span class="ow">is</span> <span class="s1">&#39;imag&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;imag&#39;</span><span class="p">:</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="nf">imag</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Invalid spectrum mode. Must be &#39;abs&#39;, &#39;real&#39;, or &#39;imag&#39;. &quot;</span><span class="p">)</span>

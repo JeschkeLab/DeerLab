@@ -74,6 +74,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -249,6 +253,11 @@ Must be a callable DeerLab model function (e.g. dd_gauss or dd_rice).</p>
 <dt><strong>selfun</strong><span class="classifier">ndarray</span></dt><dd><p>Selection functional values (as specified as <code class="docutils literal notranslate"><span class="pre">method</span></code>) for the all fitted multi-component models.</p>
 </dd>
 <dt><strong>scale</strong><span class="classifier">float int or list of float int</span></dt><dd><p>Amplitude scale(s) of the dipolar signal(s).</p>
+</dd>
+<dt><strong>plot</strong><span class="classifier">callable</span></dt><dd><p>Function to display the results. It will display the 
+fitted signals, the distance distribution with confidence intervals, 
+and the values of the selection functional. If requested, the function
+returns the <img class="math" src="../_images/math/16c4c942de76cc6e45264a49a6db76284d6f8c3b.svg" alt="matplotlib.axes"/> object as output.</p>
 </dd>
 <dt><strong>stats</strong><span class="classifier">dict</span></dt><dd><p>Goodness of fit statistical estimators:</p>
 <ul class="simple">

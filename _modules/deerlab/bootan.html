@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -198,7 +202,7 @@
 <span class="sd">    fcn : callable</span>
 <span class="sd">        Function to be analyzed. Must be a callable function accepting a signal array as input and returning a tuple with all variables to be analyzed.</span>
 <span class="sd">        All variables must be numerical arrays (no strings or booleans) and must preserve shape between calls.</span>
-<span class="sd">    V : array_like or list of array_like</span>
+<span class="sd">    Vexp : array_like or list of array_like</span>
 <span class="sd">        Experimental dataset(s).</span>
 <span class="sd">    Vfit : array or list of array_like</span>
 <span class="sd">        Fit of the dataset(s).</span>
@@ -290,11 +294,11 @@
             <span class="k">if</span> <span class="n">iSample</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
                 
                 <span class="c1">#Determine requested re-sampling method</span>
-                <span class="k">if</span> <span class="n">resampling</span> <span class="ow">is</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">resampling</span> <span class="o">==</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
                     <span class="c1"># Resample from a Gaussian distribution with variance estimated from the residuals</span>
                     <span class="n">Vresample</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
 
-                <span class="k">elif</span> <span class="n">resampling</span> <span class="ow">is</span> <span class="s1">&#39;residual&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">resampling</span> <span class="o">==</span> <span class="s1">&#39;residual&#39;</span><span class="p">:</span>
                     <span class="c1"># Resample from the residual directly</span>
                     <span class="n">Vresample</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span>  <span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">residuals</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]))]</span>
                 <span class="k">else</span><span class="p">:</span>

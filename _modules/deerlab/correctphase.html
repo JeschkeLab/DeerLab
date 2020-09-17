@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -183,7 +187,7 @@
   <h1>Source code for deerlab.correctphase</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="k">as</span> <span class="nn">opt</span>
-<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="nf">isempty</span>
+<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">isempty</span>
 
 <span class="k">def</span> <span class="nf">correctphase</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">phase</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">imagoffset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <div class="viewcode-block" id="correctphase"><a class="viewcode-back" href="../../functions/correctphase.html#deerlab.correctphase">[docs]</a><span class="c1"># ==========================================================================</span>
@@ -233,7 +237,7 @@
     <span class="n">n</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="nf">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># Determine if phase must be fitted or has been passed</span>
-    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">phase</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">isempty</span><span class="p">(</span><span class="n">phase</span><span class="p">):</span>
         <span class="n">fitPhase</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">else</span><span class="p">:</span> 
         <span class="n">fitPhase</span> <span class="o">=</span> <span class="kc">False</span>
@@ -264,7 +268,7 @@
             <span class="c1"># Fit only imaginary offset        </span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ntraces</span><span class="p">):</span>
                 <span class="n">par0</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">offset</span><span class="p">:</span> <span class="n">_imaginarynorm</span><span class="p">([</span><span class="n">Phase</span><span class="p">,</span> <span class="n">offset</span><span class="p">],</span><span class="n">V</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">offset</span><span class="p">:</span> <span class="n">_imaginarynorm</span><span class="p">([</span><span class="n">phase</span><span class="p">,</span> <span class="n">offset</span><span class="p">],</span><span class="n">V</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span>
                 <span class="n">ImagOffset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">fmin</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span><span class="n">par0</span><span class="p">)</span>
 
     <span class="n">ImagOffset</span> <span class="o">=</span> <span class="n">ImagOffset</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span>

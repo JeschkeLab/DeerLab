@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -188,7 +192,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="c1">#-------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="deerload"><a class="viewcode-back" href="../../functions/deerload.html#deerlab.deerload">[docs]</a><span class="k">def</span> <span class="nf">deerload</span><span class="p">(</span><span class="n">fullbasename</span><span class="p">,</span><span class="n">Scaling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="nf">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="deerload"><a class="viewcode-back" href="../../functions/deerload.html#deerlab.deerload">[docs]</a><span class="k">def</span> <span class="nf">deerload</span><span class="p">(</span><span class="n">fullbasename</span><span class="p">,</span><span class="n">Scaling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="nf">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load file in BES3T format (Bruker EPR Standard for Spectrum Storage and Transfer)</span>
 <span class="sd">    </span>
@@ -205,17 +209,14 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    t : ndarray</span>
-<span class="sd">        Time axis.</span>
+<span class="sd">        Time axis in microseconds.</span>
 <span class="sd">    V : ndarray</span>
 <span class="sd">        Experimental signal.</span>
 <span class="sd">    pars : dict</span>
-<span class="sd">        Parameter file entries.</span>
+<span class="sd">        Parameter file entries, returned if ``full_output`` is ``True``.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Most commercial spectrometers save their data in nanoseconds. Since the</span>
-<span class="sd">    required time unit in DeerLab is microseconds, it is important to check</span>
-<span class="sd">    the values of ``t`` returned by ``deerload`` and convert to microseconds if necessary.</span>
 <span class="sd">    Code based on BES3T version 1.2 (Xepr &gt;=2.1).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">filename</span> <span class="o">=</span> <span class="n">fullbasename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
@@ -292,7 +293,7 @@
         <span class="k">if</span>  <span class="n">parDESC</span><span class="p">[</span><span class="s2">&quot;IIFMT&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">parDESC</span><span class="p">[</span><span class="s2">&quot;IRFMT&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;IRFMT and IIFMT in DSC file must be identical.&quot;</span><span class="p">)</span>
     
-    <span class="c1"># Preallocation of theabscissa</span>
+    <span class="c1"># Preallocation of the abscissa</span>
     <span class="n">maxlen</span> <span class="o">=</span> <span class="nf">max</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span><span class="p">)</span>
     <span class="n">abscissa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full</span><span class="p">((</span><span class="n">maxlen</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
     <span class="c1"># Construct abscissa vectors</span>
@@ -441,6 +442,14 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Cannot scale by temperature, since STMP in the DSC file is missing.&#39;</span><span class="p">)</span>
     
+     <span class="c1"># ns -&gt; us converesion</span>
+    <span class="n">abscissa</span> <span class="o">/=</span> <span class="mf">1e3</span>
+
+    <span class="c1"># Ensue proper numpy formatting</span>
+    <span class="n">abscissa</span><span class="p">,</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">abscissa</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">abscissa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">squeeze</span><span class="p">(</span><span class="n">abscissa</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">squeeze</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="nf">plot</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">abscissa</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="nf">real</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="n">abscissa</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="nf">imag</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
         <span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s2">&quot;time (μs)&quot;</span><span class="p">)</span>
@@ -448,8 +457,11 @@
         <span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
     
-    <span class="k">return</span> <span class="n">abscissa</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">parameters</span></div>
-    
+    <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abscissa</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">parameters</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abscissa</span><span class="p">,</span> <span class="n">data</span></div>
+
 
 <span class="k">def</span> <span class="nf">read_description_file</span><span class="p">(</span><span class="n">DSCFileName</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

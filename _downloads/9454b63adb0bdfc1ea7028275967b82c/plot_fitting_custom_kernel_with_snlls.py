@@ -8,7 +8,7 @@ distribution to a dipolar signal.
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from deerlab import *
+import deerlab as dl
 
 # %% [markdown]
 # Generating a dataset
@@ -19,12 +19,12 @@ t = np.linspace(-0.5,5,300)
 r = np.linspace(2,6,200)
 
 # Generate ground truth and input signal
-P = dd_gauss2(r,[3.5, 0.4, 0.4, 4.5, 0.7, 0.6])
+P = dl.dd_gauss2(r,[3.5, 0.25, 0.4, 4.5, 0.4, 0.6])
 lam = 0.36
 c0 = 250 #uM
-B = bg_hom3d(t,c0,lam)
-K = dipolarkernel(t,r,lam,B)
-V = K@P  + whitegaussnoise(t,0.01)
+B = dl.bg_hom3d(t,c0,lam)
+K = dl.dipolarkernel(t,r,lam,B)
+V = K@P  + dl.whitegaussnoise(t,0.01)
 
 # %% [markdown]
 # Fitting via SNLLS
@@ -43,9 +43,9 @@ def Kmodel(p):
     # Unpack parameters
     lam,c0 = p
     # Get background
-    B = bg_hom3d(t,c0,lam)
+    B = dl.bg_hom3d(t,c0,lam)
     # Generate 4pDEER kernel
-    K = dipolarkernel(t,r,lam,B)
+    K = dl.dipolarkernel(t,r,lam,B)
 
     return K
 
@@ -72,7 +72,7 @@ lbl = np.zeros_like(r) # Non-negativity constraint of P
 ubl = [] # Unconstrained upper boundary
 
 # Run SNLLS optimization
-fit = snlls(V,Kmodel,par0,lb,ub,lbl,ubl)
+fit = dl.snlls(V,Kmodel,par0,lb,ub,lbl,ubl)
 parfit = fit.nonlin
 Pfit = fit.lin
 paruq = fit.uncertainty
@@ -111,9 +111,5 @@ plt.grid(alpha=0.3)
 plt.xlabel('r [nm]')
 plt.ylabel('P(r) [nm$^{-1}$]')
 plt.legend(['truth','fit','50%-CI','95%-CI'])
-
-
-
-
 
 # %%

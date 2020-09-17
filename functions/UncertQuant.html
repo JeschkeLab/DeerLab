@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -185,11 +189,11 @@
 <dl class="py class">
 <dt id="deerlab.classes.UncertQuant">
 <em class="property">class </em><code class="sig-prename descclassname">deerlab.classes.</code><code class="sig-name descname">UncertQuant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uqtype</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">covmat</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lb</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">ub</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/classes.html#UncertQuant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.classes.UncertQuant" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represens the uncertainty quantification of fit results.</p>
+<dd><p>Represents the uncertainty quantification of fit results.</p>
 <dl class="field-list">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl>
-<dt><strong>type</strong><span class="classifier">string</span></dt><dd><p>Uncertainty quanification approach:</p>
+<dt><strong>type</strong><span class="classifier">string</span></dt><dd><p>Uncertainty quantification approach:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>‘covariance’ - Covariance-based uncertainty analysis</p></li>
@@ -203,9 +207,9 @@
 </dd>
 <dt><strong>std</strong><span class="classifier">ndarray</span></dt><dd><p>Standard deviations of the uncertainty distribution of the parameters.</p>
 </dd>
-<dt><strong>covmat: ndarray</strong></dt><dd><p>Covariance matrix</p>
+<dt><strong>covmat</strong><span class="classifier">ndarray</span></dt><dd><p>Covariance matrix</p>
 </dd>
-<dt><strong>nparam: int scalar</strong></dt><dd><p>Number of parameters in the analysis.</p>
+<dt><strong>nparam</strong><span class="classifier">int scalar</span></dt><dd><p>Number of parameters in the analysis.</p>
 </dd>
 </dl>
 </dd>

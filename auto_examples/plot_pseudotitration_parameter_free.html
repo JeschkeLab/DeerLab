@@ -74,6 +74,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -195,7 +199,7 @@ to fit a pseudo-titration curve to multiple DEER datsets, using
 parameter-free distance distributions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
 <div class="section" id="generating-multiple-datasets">
@@ -252,11 +256,11 @@ Since we have a total distribution of the form</p>
     <span class="n">Ks</span> <span class="o">=</span> <span class="p">[[]]</span><span class="o">*</span><span class="n">Nsignals</span>
     <span class="c1"># General the dipolar kernels</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nsignals</span><span class="p">):</span>
-        <span class="n">B</span> <span class="o">=</span> <span class="nf">bg_exp</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">k</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_exp</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">k</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
         <span class="c1"># Kernel for fraction A</span>
-        <span class="n">KstateA</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">rA</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+        <span class="n">KstateA</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">rA</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
         <span class="c1"># Kernel for fraction B</span>
-        <span class="n">KstateB</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">rB</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+        <span class="n">KstateB</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">rB</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
         <span class="n">Ks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">xA</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">KstateA</span><span class="p">,</span> <span class="n">xB</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">KstateB</span><span class="p">),</span><span class="nf">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">Ks</span>
@@ -280,8 +284,8 @@ of added ligand.</p>
 <span class="n">rB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
 
 <span class="c1"># Distributions for states A and B</span>
-<span class="n">PstateA</span> <span class="o">=</span> <span class="nf">dd_gauss</span><span class="p">(</span><span class="n">rA</span><span class="p">,[</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
-<span class="n">PstateB</span> <span class="o">=</span> <span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">rB</span><span class="p">,[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
+<span class="n">PstateA</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">(</span><span class="n">rA</span><span class="p">,[</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">])</span>
+<span class="n">PstateB</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">rB</span><span class="p">,[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
 
 <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">]</span> <span class="c1"># total ligand concentration, uM</span>
 <span class="n">Kdis</span> <span class="o">=</span> <span class="mf">5.65</span>  <span class="c1"># dissociation constant, uM</span>
@@ -295,8 +299,7 @@ of added ligand.</p>
 <span class="c1"># Simulate dipolar signals</span>
 <span class="n">Vs</span> <span class="o">=</span> <span class="p">[[]]</span><span class="o">*</span><span class="n">Nsignals</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nsignals</span><span class="p">):</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-    <span class="n">Vs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="nd">@np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">PstateA</span><span class="p">,</span> <span class="n">PstateB</span><span class="p">))</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="mf">0.005</span><span class="p">)</span>
+    <span class="n">Vs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="nd">@np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">PstateA</span><span class="p">,</span> <span class="n">PstateB</span><span class="p">))</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="mf">0.005</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -320,7 +323,7 @@ the dissociation constant (KD).</p>
 <span class="n">ubl</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># Unconstrained</span>
 
 <span class="c1"># Run SNLLS optimization</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="nf">snlls</span><span class="p">(</span><span class="n">Vs</span><span class="p">,</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">Kmodel</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">ts</span><span class="p">,</span><span class="n">rA</span><span class="p">,</span><span class="n">rB</span><span class="p">,</span><span class="n">L</span><span class="p">),</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">lbl</span><span class="p">,</span><span class="n">ubl</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">snlls</span><span class="p">(</span><span class="n">Vs</span><span class="p">,</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">Kmodel</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">ts</span><span class="p">,</span><span class="n">rA</span><span class="p">,</span><span class="n">rB</span><span class="p">,</span><span class="n">L</span><span class="p">),</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">lbl</span><span class="p">,</span><span class="n">ubl</span><span class="p">)</span>
 <span class="c1"># Extract fit results</span>
 <span class="n">parfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">nonlin</span>
 <span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">lin</span>
@@ -336,7 +339,7 @@ the dissociation constant (KD).</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Kdis = 6.77(6.70-6.84)uM
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Kdis = 6.92(6.85-6.99)uM
 </pre></div>
 </div>
 <p>Plot results</p>
@@ -382,7 +385,7 @@ the dissociation constant (KD).</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>(0.0, 1.0)
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  23.478 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  27.408 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-pseudotitration-parameter-free-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a5d41ff6a9dbdf82be560698c968c7f5/plot_pseudotitration_parameter_free.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_pseudotitration_parameter_free.py</span></code></a></p>

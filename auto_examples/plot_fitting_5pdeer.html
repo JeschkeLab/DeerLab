@@ -74,6 +74,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -194,21 +198,20 @@
 free distribution, a background, and all pathways parameters</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
 <p>Generate data</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">6.5</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>    <span class="c1"># time axis, us</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>          <span class="c1"># distance axis, ns</span>
-<span class="n">param0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">]</span> <span class="c1"># parameters for three-Gaussian model</span>
-<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss3</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">param0</span><span class="p">)</span>         <span class="c1"># model distance distribution</span>
-<span class="n">B</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span> <span class="c1"># background decay</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">6.5</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>    <span class="c1"># time axis, µs</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>          <span class="c1"># distance axis, nm</span>
+<span class="n">param0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">]</span> <span class="c1"># parameters for three-Gaussian model</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss3</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">param0</span><span class="p">)</span>         <span class="c1"># model distance distribution</span>
+<span class="n">B</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span> <span class="c1"># background decay</span>
 <span class="n">exparam</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">]</span>     <span class="c1"># parameters for 5pDEER experiment</span>
-<span class="n">pathinfo</span> <span class="o">=</span> <span class="nf">ex_5pdeer</span><span class="p">(</span><span class="n">exparam</span><span class="p">)</span>   <span class="c1"># pathways information</span>
+<span class="n">pathinfo</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">ex_5pdeer</span><span class="p">(</span><span class="n">exparam</span><span class="p">)</span>   <span class="c1"># pathways information</span>
 
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">pathinfo</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
-<span class="n">Vexp</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.005</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">pathinfo</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="n">Vexp</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.005</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now, 5pDEER data contain 3 additional parameters compared to 4pDEER (due
@@ -232,27 +235,18 @@ parameters, so we can leave the rest empty:</p>
 </pre></div>
 </div>
 <p>Run the fit with a 5-pulse DEER signal model</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="nf">ex_5pdeer</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitsignal</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_5pdeer</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="nf">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 <img alt="plot fitting 5pdeer" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_fitting_5pdeer_001.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>----------------------------------------------------------------------------
-Goodness of fit
-  Vexp[0]: chi2 = 1.025641  RMSD  = 0.004517
-----------------------------------------------------------------------------
-Fitted parameters and 95%-confidence intervals
-Vfit[0]:
-  bgparam[0]:   298.4865010  (291.8138903, 305.1591116)  Concentration of pumped spins (uM)
-  exparam[0]:   2.6319225  (2.6157711, 2.6480740)  Amplitude of unmodulated components ()
-  exparam[1]:   1.3117182  (1.2830996, 1.3403367)  Amplitude of 1st modulated pathway ()
-  exparam[2]:   0.4376730  (0.4218516, 0.4534944)  Amplitude of 2nd modulated pathway ()
-  exparam[3]:   3.2004544  (3.1949795, 3.2059293)  Refocusing time of 2nd modulated pathway (us)
-----------------------------------------------------------------------------
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>array([&lt;AxesSubplot:xlabel=&#39;Time [μs]&#39;, ylabel=&#39;V[0]&#39;&gt;,
+       &lt;AxesSubplot:xlabel=&#39;Distance [nm]&#39;, ylabel=&#39;P [nm⁻¹]&#39;&gt;],
+      dtype=object)
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  6.924 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  11.057 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-fitting-5pdeer-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/50344f4de15649b8348a5a4811eaeac0/plot_fitting_5pdeer.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_fitting_5pdeer.py</span></code></a></p>

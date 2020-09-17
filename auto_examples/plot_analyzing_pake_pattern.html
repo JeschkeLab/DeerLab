@@ -47,8 +47,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Selecting an optimal parametric model for fitting a dipolar signal" href="plot_selecting_an_optimal_model.html" />
-    <link rel="prev" title="Comparing confidence intervals for regularization results" href="plot_comparing_uncertainties_for_regularization.html" /> 
+    <link rel="next" title="Comparing confidence intervals for regularization results" href="plot_comparing_uncertainties_for_regularization.html" />
+    <link rel="prev" title="Fitting a mixed distance-distribution model" href="plot_fitting_mixed_model.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -73,6 +73,10 @@
 
           
             
+            
+              <div class="version">
+                v0.11.0
+              </div>
             
           
 
@@ -190,24 +194,23 @@
 </div>
 <div class="sphx-glr-example-title section" id="analyzing-the-pake-pattern-of-a-dipolar-signal">
 <span id="sphx-glr-auto-examples-plot-analyzing-pake-pattern-py"></span><h1>Analyzing the Pake pattern of a dipolar signal<a class="headerlink" href="#analyzing-the-pake-pattern-of-a-dipolar-signal" title="Permalink to this headline">¶</a></h1>
-<p>A very basic example for displaying the Pake pattern of a given dipolar signal.</p>
+<p>A very basic example for displaying the dipolar spectrum (Pake pattern) of a given dipolar signal.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
 <div class="section" id="generate-a-dipolar-signal">
 <h2>Generate a dipolar signal<a class="headerlink" href="#generate-a-dipolar-signal" title="Permalink to this headline">¶</a></h2>
 <p>Let’s start by simulating a dipolar signal with some background and noise.</p>
 <p>Prepare components</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">400</span><span class="p">)</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">])</span>
-<span class="n">B</span> <span class="o">=</span> <span class="nf">bg_exp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.2</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">400</span><span class="p">)</span>   <span class="c1"># µs</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>   <span class="c1"># nm</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">])</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_exp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.2</span><span class="p">)</span>
 <span class="n">lam</span> <span class="o">=</span> <span class="mf">0.3</span>
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.005</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.005</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="c1"># Plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="s1">&#39;k.&#39;</span><span class="p">)</span>
@@ -219,7 +222,7 @@
 </div>
 <img alt="plot analyzing pake pattern" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_analyzing_pake_pattern_001.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Text(42.722222222222214, 0.5, &#39;V(t)&#39;)
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Text(9.444444444444452, 0.5, &#39;V(t)&#39;)
 </pre></div>
 </div>
 </div>
@@ -231,22 +234,22 @@ removed prior to Fourier transform.</p>
 model. In this example we will use an exponential function (<code class="docutils literal notranslate"><span class="pre">bg_exp</span></code>).
 Using the <code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code> function we obtain the fitted background as well as
 the fitted modulation depth.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tstart</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1"># Time to start fitting background, in us</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tstart</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1"># Time to start fitting background, in µs</span>
 <span class="n">mask</span> <span class="o">=</span> <span class="n">t</span><span class="o">&gt;</span><span class="n">tstart</span>
 <span class="c1"># Model for the background component (1-lambda)*B</span>
 <span class="k">def</span> <span class="nf">Bmodel</span><span class="p">(</span><span class="n">par</span><span class="p">):</span>
     <span class="n">lam</span><span class="p">,</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">par</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lam</span><span class="p">)</span><span class="o">*</span><span class="nf">bg_exp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span><span class="n">kappa</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lam</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_exp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span><span class="n">kappa</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">B</span>
 
 <span class="c1"># Fit the background function</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="nf">bg_exp</span><span class="p">,</span><span class="nf">ex_4pdeer</span><span class="p">,</span><span class="n">uqanalysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_exp</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">,</span><span class="n">uqanalysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">Bfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">B</span>
 <span class="n">lam</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">exparam</span>
 <span class="n">kappa</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">bgparam</span>
 </pre></div>
 </div>
-<p>Now we can use these fitted variables to isolate the dipolar evolution function
+<p>Now we can use these fitted parameters to isolate the dipolar evolution function
 from the primary data. Removal of the background via division leads to a noise
 increase at later times and thus to an approximation <code class="docutils literal notranslate"><span class="pre">Vcorr</span></code> of the real dipolar
 evolution function.</p>
@@ -262,16 +265,16 @@ evolution function.</p>
 </div>
 <img alt="plot analyzing pake pattern" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_analyzing_pake_pattern_002.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Text(31.222222222222214, 0.5, &#39;V(t)&#39;)
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Text(9.444444444444452, 0.5, &#39;V(t)&#39;)
 </pre></div>
 </div>
 </div>
-<div class="section" id="computing-the-pake-pattern">
-<h2>Computing the Pake pattern<a class="headerlink" href="#computing-the-pake-pattern" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="computing-the-dipolar-spectrum">
+<h2>Computing the dipolar spectrum<a class="headerlink" href="#computing-the-dipolar-spectrum" title="Permalink to this headline">¶</a></h2>
 <p>Now that the signal has the appropiate structure for Fourier transform it,
-we can call the <code class="docutils literal notranslate"><span class="pre">fftspec</span></code> function to obtained the Pake pattern.</p>
+we can call the <code class="docutils literal notranslate"><span class="pre">fftspec</span></code> function to obtain the dipolar spectrum.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute spectrum</span>
-<span class="n">nu</span><span class="p">,</span><span class="n">pake</span> <span class="o">=</span> <span class="nf">fftspec</span><span class="p">(</span><span class="n">Vcorr</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">apodization</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">nu</span><span class="p">,</span><span class="n">pake</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fftspec</span><span class="p">(</span><span class="n">Vcorr</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">apodization</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
  <span class="c1"># %% [markdown]</span>
 <span class="c1"># In order to avoid truncation ripples in the Fourier spectrum and at the same</span>
@@ -280,7 +283,7 @@ we can call the <code class="docutils literal notranslate"><span class="pre">fft
 </pre></div>
 </div>
 <p>Compute spectrum with apodization</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nuapo</span><span class="p">,</span><span class="n">pakeapo</span> <span class="o">=</span> <span class="nf">fftspec</span><span class="p">(</span><span class="n">Vcorr</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">apodization</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;real&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nuapo</span><span class="p">,</span><span class="n">pakeapo</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fftspec</span><span class="p">(</span><span class="n">Vcorr</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">apodization</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;real&#39;</span><span class="p">)</span>
 
 <span class="c1"># Plot results</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span><span class="n">pake</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">nuapo</span><span class="p">,</span><span class="n">pakeapo</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
@@ -294,7 +297,7 @@ we can call the <code class="docutils literal notranslate"><span class="pre">fft
 </div>
 <img alt="plot analyzing pake pattern" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_analyzing_pake_pattern_003.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7ff155c74c50&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f5974e114d0&gt;
 </pre></div>
 </div>
 <p>We do not need to worry about the zero-filling since <code class="docutils literal notranslate"><span class="pre">fftspec</span></code> takes care
@@ -302,7 +305,7 @@ of setting it to twice the amount of points in the signal, to preserve all infor
 Adding more points will artificially increase the resolution of the Pake pattern.
 The improvement will only be visual as no further information can be gained
 from additional zero-filling.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.914 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  2.924 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-analyzing-pake-pattern-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/990802fc88d753641dbbef85b9eb8cb9/plot_analyzing_pake_pattern.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_analyzing_pake_pattern.py</span></code></a></p>
@@ -323,10 +326,10 @@ from additional zero-filling.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="plot_selecting_an_optimal_model.html" class="btn btn-neutral float-right" title="Selecting an optimal parametric model for fitting a dipolar signal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="plot_comparing_uncertainties_for_regularization.html" class="btn btn-neutral float-right" title="Comparing confidence intervals for regularization results" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="plot_comparing_uncertainties_for_regularization.html" class="btn btn-neutral float-left" title="Comparing confidence intervals for regularization results" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="plot_fitting_mixed_model.html" class="btn btn-neutral float-left" title="Fitting a mixed distance-distribution model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

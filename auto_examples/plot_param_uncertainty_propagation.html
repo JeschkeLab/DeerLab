@@ -48,7 +48,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Multi-Gauss fit of a 4-pulse DEER signal" href="plot_multigauss_fitting_4pdeer.html" />
-    <link rel="prev" title="Fitting a custom kernel model with a parameter-free distribution" href="plot_fitting_custom_kernel_with_snlls.html" /> 
+    <link rel="prev" title="Fitting Gaussians to a non-parametric distance distribution" href="plot_extracting_gauss_constraints.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -73,6 +73,10 @@
 
           
             
+            
+              <div class="version">
+                v0.11.0
+              </div>
             
           
 
@@ -193,7 +197,7 @@
 <p>How to propagate the uncertainty of the fitted parameters to the models which depend on them.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
 <div class="section" id="generate-data">
@@ -204,11 +208,10 @@
 <span class="n">width</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># [nm] Rician width</span>
 <span class="n">lam</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="c1"># Modulation depth</span>
 <span class="n">conc</span> <span class="o">=</span> <span class="mi">150</span> <span class="c1"># [uM] Spin concentration</span>
-<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_rice</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">center</span><span class="p">,</span> <span class="n">width</span><span class="p">])</span>
-<span class="n">B</span> <span class="o">=</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.03</span><span class="p">)</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_rice</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">center</span><span class="p">,</span> <span class="n">width</span><span class="p">])</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.03</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -226,10 +229,10 @@ models take the full parameter set</p>
 parameters each time we call one of these model and can pass the full
 parameter set directly.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Pre-calculate the elemental dipolar kernel (for speed)</span>
-<span class="n">K0</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+<span class="n">K0</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
 
-<span class="n">Pmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="nf">dd_rice</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
-<span class="n">Bmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">Pmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_rice</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">Bmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">Vmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">K0</span><span class="nd">@Pmodel</span><span class="p">(</span><span class="n">par</span><span class="p">))</span><span class="o">*</span><span class="n">Bmodel</span><span class="p">(</span><span class="n">par</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -241,7 +244,7 @@ the start values as well as boundaries of the parameter set:</p>
 <span class="n">upper</span> <span class="o">=</span>      <span class="p">[</span><span class="mf">0.50</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1500</span><span class="p">]</span> <span class="c1"># upper bounds</span>
 
 <span class="c1"># Finally we can run the fit and get the fitted parameters and their uncertainties</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lower</span><span class="p">,</span><span class="n">upper</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lower</span><span class="p">,</span><span class="n">upper</span><span class="p">)</span>
 
 <span class="n">parfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
 <span class="n">paruq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">uncertainty</span>
@@ -315,10 +318,10 @@ the function (1-lambda)*Bfit instead of just Bfit in order to plot thecorrect fu
 </div>
 <img alt="plot param uncertainty propagation" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_param_uncertainty_propagation_001.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7ff155d3dad0&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f5974edb8d0&gt;
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.528 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.843 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-param-uncertainty-propagation-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/5f92924ca2d1139ff4b2c4f584f30d71/plot_param_uncertainty_propagation.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_param_uncertainty_propagation.py</span></code></a></p>
@@ -342,7 +345,7 @@ the function (1-lambda)*Bfit instead of just Bfit in order to plot thecorrect fu
         <a href="plot_multigauss_fitting_4pdeer.html" class="btn btn-neutral float-right" title="Multi-Gauss fit of a 4-pulse DEER signal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="plot_fitting_custom_kernel_with_snlls.html" class="btn btn-neutral float-left" title="Fitting a custom kernel model with a parameter-free distribution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="plot_extracting_gauss_constraints.html" class="btn btn-neutral float-left" title="Fitting Gaussians to a non-parametric distance distribution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

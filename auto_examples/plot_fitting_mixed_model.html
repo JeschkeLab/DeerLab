@@ -47,7 +47,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Comparing confidence intervals for regularization results" href="plot_comparing_uncertainties_for_regularization.html" />
+    <link rel="next" title="Analyzing the Pake pattern of a dipolar signal" href="plot_analyzing_pake_pattern.html" />
     <link rel="prev" title="Fitting a 5-pulse DEER signal with a parameter-free distribution" href="plot_fitting_5pdeer.html" /> 
 </head>
 
@@ -73,6 +73,10 @@
 
           
             
+            
+              <div class="version">
+                v0.11.0
+              </div>
             
           
 
@@ -194,7 +198,7 @@
 for fitting distance distributions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
 <div class="section" id="simulate-the-data">
@@ -207,20 +211,19 @@ and full modulation depth) corresponding to a simple 4-pulse DEER signal.</p>
 
 <span class="c1"># Distribution parameters</span>
 <span class="n">rmean</span> <span class="o">=</span> <span class="mf">4.5</span>
-<span class="n">width</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.2</span>
 <span class="n">chain</span> <span class="o">=</span> <span class="mf">4.3</span>
 <span class="n">pers</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">amp</span> <span class="o">=</span> <span class="mf">0.35</span>
 
 <span class="c1"># Generate distribution</span>
-<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">rmean</span><span class="p">,</span> <span class="n">width</span><span class="p">])</span>
-<span class="n">P</span> <span class="o">=</span> <span class="n">amp</span><span class="o">*</span><span class="n">P</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">amp</span><span class="p">)</span><span class="o">*</span><span class="nf">dd_wormchain</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">chain</span><span class="p">,</span> <span class="n">pers</span><span class="p">])</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">rmean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">])</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">amp</span><span class="o">*</span><span class="n">P</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">amp</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_wormchain</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">chain</span><span class="p">,</span> <span class="n">pers</span><span class="p">])</span>
 <span class="c1"># Normalize distribution</span>
 <span class="n">P</span> <span class="o">=</span> <span class="n">P</span><span class="o">/</span><span class="nf">sum</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">diff</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
 <span class="c1"># Generate dipolar evolution function</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.02</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span> <span class="o">@</span> <span class="n">P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.02</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -234,7 +237,7 @@ parametric models for both models, we require a combination of both.</p>
 parametric model. It’s syntax is rather simple, we just have to pass the desired
 parametric models as lambda functions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Mix the models into new one</span>
-<span class="n">gausswlc</span> <span class="o">=</span> <span class="nf">mixmodels</span><span class="p">(</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="nf">dd_wormchain</span><span class="p">)</span>
+<span class="n">gausswlc</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">mixmodels</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_wormchain</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Our new model <code class="docutils literal notranslate"><span class="pre">gausswlc</span></code> will now describe our sought linear combination of
@@ -258,15 +261,15 @@ to transform our model into time-domain. Remember that our signal in this exampl
 is a dipolar evolution function, therefore we do not require anything else than
 a very basic dipolar kernel.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Generate the dipolar evolution function kernel</span>
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
 
 <span class="c1">#Fit the model to the data</span>
-<span class="n">Vmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">K</span><span class="nd">@gausswlc</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">)</span>
+<span class="n">Vmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">K</span> <span class="o">@</span> <span class="n">gausswlc</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">)</span>
 <span class="nf">info</span> <span class="o">=</span> <span class="n">gausswlc</span><span class="p">()</span>
 <span class="n">par0</span> <span class="o">=</span> <span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">]</span> <span class="c1"># built-in start values</span>
 <span class="n">lb</span> <span class="o">=</span> <span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Lower&#39;</span><span class="p">]</span> <span class="c1"># built-in lower bounds</span>
 <span class="n">ub</span> <span class="o">=</span> <span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Upper&#39;</span><span class="p">]</span> <span class="c1"># built-in upper bounds</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">multistart</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">multistart</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">fitpar</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
 </pre></div>
 </div>
@@ -295,10 +298,10 @@ dipolar signal, let’s see how our fit turned out.</p>
 </div>
 <img alt="plot fitting mixed model" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_fitting_mixed_model_001.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7ff155df3310&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f5974d8d150&gt;
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.452 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  5.649 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-fitting-mixed-model-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/132319a4b3041544836bda4add340a8a/plot_fitting_mixed_model.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_fitting_mixed_model.py</span></code></a></p>
@@ -319,7 +322,7 @@ dipolar signal, let’s see how our fit turned out.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="plot_comparing_uncertainties_for_regularization.html" class="btn btn-neutral float-right" title="Comparing confidence intervals for regularization results" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="plot_analyzing_pake_pattern.html" class="btn btn-neutral float-right" title="Analyzing the Pake pattern of a dipolar signal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="plot_fitting_5pdeer.html" class="btn btn-neutral float-left" title="Fitting a 5-pulse DEER signal with a parameter-free distribution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

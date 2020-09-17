@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -214,17 +218,18 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The dipolar signal (V) and time axis (t) must have the size.&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Rescale to avoid overflow during integration later</span>
-    <span class="n">V</span> <span class="o">/=</span> <span class="nf">max</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+
     <span class="c1"># Generate finely-grained interpolated signal and time axis</span>
     <span class="n">resolution</span> <span class="o">=</span> <span class="mi">10</span>
     <span class="n">t_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="nf">min</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="nf">max</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">resolution</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">V_</span> <span class="o">=</span> <span class="n">scp</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="nf">real</span><span class="p">(</span><span class="n">V</span><span class="p">),</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">)(</span><span class="n">t_</span><span class="p">)</span>
 
+    <span class="c1"># Rescale to avoid overflow during integration later</span>
+    <span class="n">V_</span> <span class="o">/=</span> <span class="nf">max</span><span class="p">(</span><span class="n">V_</span><span class="p">)</span>
+
     <span class="c1"># Determine location of maximum</span>
     <span class="n">idxmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">argmax</span><span class="p">(</span><span class="n">V_</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">idxmax</span><span class="o">!=</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">idxmax</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">idxmax</span><span class="o">!=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">idxmax</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">V_</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
         <span class="c1"># If maximum is not the first or last point, then do moment analysis</span>
         <span class="c1"># (i.e. minimize the magntitude of the first-moment integral)</span>
         

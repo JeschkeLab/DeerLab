@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -181,10 +185,13 @@
            <div itemprop="articleBody">
             
   <h1>Source code for deerlab.ex_models</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="nf">isempty</span>
+<span></span><span class="c1"># ex_models.py - Experiment parametric models</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
 <span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md). </span>
 <span class="c1"># Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 
 <span class="k">def</span> <span class="nf">_parsargs</span><span class="p">(</span><span class="n">param</span><span class="p">,</span><span class="n">npar</span><span class="p">):</span>
 <span class="c1">#=================================================================</span>
@@ -195,9 +202,9 @@
 <span class="c1">#=================================================================</span>
 
 
-<span class="k">def</span> <span class="nf">ex_4pdeer</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="ex_4pdeer"><a class="viewcode-back" href="../../models/ex_4pdeer.html#deerlab.ex_models.ex_4pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_4pdeer</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="c1"># ===================================================================</span>
-<div class="viewcode-block" id="ex_4pdeer"><a class="viewcode-back" href="../../models/ex_4pdeer.html#deerlab.ex_models.ex_4pdeer">[docs]</a>    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Single-pathway 4-pulse DEER experiment model </span>
 <span class="sd"> </span>
 <span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
@@ -238,7 +245,7 @@
 <span class="sd">     Modulation depth               0        1       0.3 </span>
 <span class="sd">     -------------------------------------------------------</span>
 <span class="sd">    &quot;&quot;&quot;</span>  
-    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">param</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Modulation depth&#39;</span><span class="p">],</span>
             <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
@@ -253,13 +260,13 @@
     <span class="n">lam</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">pathways</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">],</span> <span class="p">[</span><span class="n">lam</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
     
-    <span class="k">return</span> <span class="n">pathways</span>
+    <span class="k">return</span> <span class="n">pathways</span></div>
 <span class="c1"># ===================================================================</span>
-</div>
 
-<span class="k">def</span> <span class="nf">ex_ovl4pdeer</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="p">[]):</span>
+
+<div class="viewcode-block" id="ex_ovl4pdeer"><a class="viewcode-back" href="../../models/ex_ovl4pdeer.html#deerlab.ex_models.ex_ovl4pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_ovl4pdeer</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="c1"># ===================================================================</span>
-<div class="viewcode-block" id="ex_ovl4pdeer"><a class="viewcode-back" href="../../models/ex_ovl4pdeer.html#deerlab.ex_models.ex_ovl4pdeer">[docs]</a>    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    4-pulse DEER with band overlap experiment model </span>
 <span class="sd"> </span>
 <span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
@@ -299,13 +306,14 @@
 <span class="sd">      Amplitude of unmodulated components                0       1        0.3</span>
 <span class="sd">      Amplitude of 1st modulated pathway                 0       1        0.3</span>
 <span class="sd">      Amplitude of 2nd modulated pathway                 0       1        0.3</span>
-<span class="sd">      Refocusing time of 2nd modulated pathway   us      0       20        5        </span>
+<span class="sd">      Refocusing time of 2nd modulated pathway   μs      0       20        5        </span>
 <span class="sd">     ---------------------------------------------------------------------------</span>
 <span class="sd">    &quot;&quot;&quot;</span>  
-    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">param</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Amplitude of unmodulated components&#39;</span><span class="p">,</span><span class="s1">&#39;Amplitude of 1st modulated pathway&#39;</span><span class="p">,</span><span class="s1">&#39;Amplitude of 2nd modulated pathway&#39;</span><span class="p">,</span><span class="s1">&#39;Refocusing time of 2nd modulated pathway&#39;</span><span class="p">],</span>
-            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;us&#39;</span><span class="p">],</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Amplitude of unmodulated components&#39;</span><span class="p">,</span><span class="s1">&#39;Amplitude of 1st modulated pathway&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Amplitude of 2nd modulated pathway&#39;</span><span class="p">,</span><span class="s1">&#39;Refocusing time of 2nd modulated pathway&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;μs&#39;</span><span class="p">],</span>
             <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span><span class="mi">5</span><span class="p">]),</span>
             <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
             <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
@@ -318,14 +326,14 @@
     <span class="n">T02</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">pathways</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">lam</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">],</span> <span class="p">[</span><span class="n">lam</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">lam</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">T02</span><span class="p">]])</span>
     
-    <span class="k">return</span> <span class="n">pathways</span>
+    <span class="k">return</span> <span class="n">pathways</span></div>
 <span class="c1"># ===================================================================</span>
-</div>
 
 
-<span class="k">def</span> <span class="nf">ex_5pdeer</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="p">[]):</span>
+
+<div class="viewcode-block" id="ex_5pdeer"><a class="viewcode-back" href="../../models/ex_5pdeer.html#deerlab.ex_models.ex_5pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_5pdeer</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="c1"># ===================================================================</span>
-<div class="viewcode-block" id="ex_5pdeer"><a class="viewcode-back" href="../../models/ex_5pdeer.html#deerlab.ex_models.ex_5pdeer">[docs]</a>    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    5-pulse DEER experiment model</span>
 <span class="sd"> </span>
 <span class="sd">    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::</span>
@@ -365,13 +373,13 @@
 <span class="sd">      Amplitude of unmodulated components                0       1        0.3</span>
 <span class="sd">      Amplitude of 1st modulated pathway                 0       1        0.3</span>
 <span class="sd">      Amplitude of 2nd modulated pathway                 0       1        0.3</span>
-<span class="sd">      Refocusing time of 2nd modulated pathway   us      0       20        5        </span>
+<span class="sd">      Refocusing time of 2nd modulated pathway   μs      0       20        5        </span>
 <span class="sd">     ---------------------------------------------------------------------------</span>
 <span class="sd">    &quot;&quot;&quot;</span>  
-    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">param</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Amplitude of unmodulated components&#39;</span><span class="p">,</span><span class="s1">&#39;Amplitude of 1st modulated pathway&#39;</span><span class="p">,</span><span class="s1">&#39;Amplitude of 2nd modulated pathway&#39;</span><span class="p">,</span><span class="s1">&#39;Refocusing time of 2nd modulated pathway&#39;</span><span class="p">],</span>
-            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;us&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;μs&#39;</span><span class="p">],</span>
             <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span><span class="mi">5</span><span class="p">]),</span>
             <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
             <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
@@ -384,14 +392,14 @@
     <span class="n">T02</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">pathways</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">lam</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">],</span> <span class="p">[</span><span class="n">lam</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">lam</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">T02</span><span class="p">]])</span>
     
-    <span class="k">return</span> <span class="n">pathways</span>
+    <span class="k">return</span> <span class="n">pathways</span></div>
 <span class="c1"># ===================================================================</span>
-</div>
 
 
-<span class="k">def</span> <span class="nf">ex_7pdeer</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="p">[]):</span>
+
+<div class="viewcode-block" id="ex_7pdeer"><a class="viewcode-back" href="../../models/ex_7pdeer.html#deerlab.ex_models.ex_7pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_7pdeer</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="c1"># ===================================================================</span>
-<div class="viewcode-block" id="ex_7pdeer"><a class="viewcode-back" href="../../models/ex_7pdeer.html#deerlab.ex_models.ex_7pdeer">[docs]</a>    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    7-pulse DEER experiment model</span>
 <span class="sd">    ==============================</span>
 <span class="sd"> </span>
@@ -433,14 +441,16 @@
 <span class="sd">      Amplitude of 1st modulated pathway                 0       1        0.5</span>
 <span class="sd">      Amplitude of 2nd modulated pathway                 0       1        0.3</span>
 <span class="sd">      Amplitude of 3rd modulated pathway                 0       1        0.2 </span>
-<span class="sd">      Refocusing time of 2nd modulated pathway   us      0       20       1.5        </span>
-<span class="sd">      Refocusing time of 3rd modulated pathway   us      0       20       3.5 </span>
+<span class="sd">      Refocusing time of 2nd modulated pathway   μs      0       20       1.5        </span>
+<span class="sd">      Refocusing time of 3rd modulated pathway   μs      0       20       3.5 </span>
 <span class="sd">     ---------------------------------------------------------------------------</span>
 <span class="sd">    &quot;&quot;&quot;</span>  
-    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">param</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nf">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Amplitude of unmodulated components&#39;</span><span class="p">,</span><span class="s1">&#39;Amplitude of 1st modulated pathway&#39;</span><span class="p">,</span><span class="s1">&#39;Amplitude of 2nd modulated pathway&#39;</span><span class="p">,</span><span class="s1">&#39;Refocusing time of 2nd modulated pathway&#39;</span><span class="p">],</span>
-            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;us&#39;</span><span class="p">],</span>
+            <span class="n">Parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Amplitude of unmodulated components&#39;</span><span class="p">,</span><span class="s1">&#39;Amplitude of 1st modulated pathway&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Amplitude of 2nd modulated pathway&#39;</span><span class="p">,</span><span class="s1">&#39;Amplitude of 3rd modulated pathway&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Refocusing time of 2nd modulated pathway&#39;</span><span class="p">,</span><span class="s1">&#39;Refocusing time of 3rd modulated pathway&#39;</span><span class="p">],</span>
+            <span class="n">Units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;μs&#39;</span><span class="p">,</span><span class="s1">&#39;μs&#39;</span><span class="p">],</span>
             <span class="n">Start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">]),</span>
             <span class="n">Lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
             <span class="n">Upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
@@ -455,9 +465,9 @@
 
     <span class="n">pathways</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">lam</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">],</span> <span class="p">[</span><span class="n">lam</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">lam</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">T02</span><span class="p">],</span> <span class="p">[</span><span class="n">lam</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">T03</span><span class="p">]])</span>
     
-    <span class="k">return</span> <span class="n">pathways</span>
+    <span class="k">return</span> <span class="n">pathways</span></div>
 <span class="c1"># ===================================================================</span>
-</pre></div></div>
+</pre></div>
 
            </div>
            

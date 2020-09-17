@@ -74,6 +74,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -191,25 +195,24 @@
 <div class="sphx-glr-example-title section" id="bootstrapped-distributions-of-fit-parameters">
 <span id="sphx-glr-auto-examples-plot-bootstrapped-parameter-distributions-py"></span><h1>Bootstrapped distributions of fit parameters<a class="headerlink" href="#bootstrapped-distributions-of-fit-parameters" title="Permalink to this headline">¶</a></h1>
 <p>This example shows how to generate probability density functions of
-values for fit parameters using bootstrapping, showcased for 5pDEER.</p>
+values for fit parameters using bootstrapping, using 5pDEER as an example.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
 <div class="section" id="generate-data">
 <h2>Generate data<a class="headerlink" href="#generate-data" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">6.5</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>      <span class="c1"># time axis, us</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>         <span class="c1"># distance axis, ns</span>
-<span class="n">param0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">]</span> <span class="c1"># parameters for three-Gaussian model</span>
-<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss3</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">param0</span><span class="p">)</span>         <span class="c1"># model distance distribution</span>
-<span class="n">B</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span> <span class="c1"># background decay</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">6.5</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>      <span class="c1"># time axis, µs</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>         <span class="c1"># distance axis, nm</span>
+<span class="n">param0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">]</span> <span class="c1"># parameters for three-Gaussian model</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss3</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">param0</span><span class="p">)</span>         <span class="c1"># model distance distribution</span>
+<span class="n">B</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span> <span class="c1"># background decay</span>
 <span class="n">exparam</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">]</span>     <span class="c1"># parameters for 5pDEER experiment</span>
-<span class="n">pathinfo</span> <span class="o">=</span> <span class="nf">ex_5pdeer</span><span class="p">(</span><span class="n">exparam</span><span class="p">)</span>   <span class="c1"># pathways information</span>
+<span class="n">pathinfo</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">ex_5pdeer</span><span class="p">(</span><span class="n">exparam</span><span class="p">)</span>   <span class="c1"># pathways information</span>
 
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">pathinfo</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
-<span class="n">Vexp</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">pathinfo</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="n">Vexp</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -227,7 +230,7 @@ values for fit parameters using bootstrapping, showcased for 5pDEER.</p>
     <span class="c1"># When running the fit, since we are only interested in the parameters we&#39;ll ignore</span>
     <span class="c1"># the rest (otherwise the ``Bfit``,``Pfit``,etc. could be bootstrapped as well)</span>
     <span class="c1"># We need the Vfit to pass it to bootan as well, so we&#39;ll request that one too.</span>
-    <span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="nf">ex_5pdeer</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">uqanalysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_5pdeer</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">uqanalysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">Vfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">V</span>
     <span class="n">exparam</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">exparam</span>
     <span class="n">exparam</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">/=</span><span class="nf">sum</span><span class="p">(</span><span class="n">exparam</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
@@ -240,7 +243,7 @@ values for fit parameters using bootstrapping, showcased for 5pDEER.</p>
 <span class="n">exparfit</span><span class="p">,</span><span class="n">bgparfit</span><span class="p">,</span><span class="n">Vfit</span> <span class="o">=</span> <span class="n">fitroutine</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>
 
 <span class="c1"># Bootstrapping with 100 samples</span>
-<span class="n">bootuq</span> <span class="o">=</span> <span class="nf">bootan</span><span class="p">(</span><span class="n">fitroutine</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">bootuq</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bootan</span><span class="p">(</span><span class="n">fitroutine</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
 
 <span class="c1"># Extract the uncertainty quantification for the parameters</span>
 <span class="n">exparam_uq</span> <span class="o">=</span> <span class="n">bootuq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -250,7 +253,7 @@ values for fit parameters using bootstrapping, showcased for 5pDEER.</p>
 <span class="n">Lam0_values</span><span class="p">,</span><span class="n">Lam0_pdf</span> <span class="o">=</span> <span class="n">exparam_uq</span><span class="o">.</span><span class="n">pardist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">lam1_values</span><span class="p">,</span><span class="n">lam1_pdf</span> <span class="o">=</span> <span class="n">exparam_uq</span><span class="o">.</span><span class="n">pardist</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">lam2_values</span><span class="p">,</span><span class="n">lam2_pdf</span> <span class="o">=</span> <span class="n">exparam_uq</span><span class="o">.</span><span class="n">pardist</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">T02_values</span><span class="p">,</span><span class="n">T02_pdf</span>     <span class="o">=</span> <span class="n">exparam_uq</span><span class="o">.</span><span class="n">pardist</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">T02_values</span><span class="p">,</span><span class="n">T02_pdf</span>   <span class="o">=</span> <span class="n">exparam_uq</span><span class="o">.</span><span class="n">pardist</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="c1"># Extract distributions for the background parameters</span>
 <span class="n">conc_values</span><span class="p">,</span><span class="n">conc_pdf</span> <span class="o">=</span> <span class="n">bgparam_uq</span><span class="o">.</span><span class="n">pardist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -300,10 +303,10 @@ values for fit parameters using bootstrapping, showcased for 5pDEER.</p>
 </div>
 <img alt="plot bootstrapped parameter distributions" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_bootstrapped_parameter_distributions_001.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;PDF&#39;)
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Text(123.97222222222221, 0.5, &#39;PDF&#39;)
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 5 minutes  13.969 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 6 minutes  43.571 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-bootstrapped-parameter-distributions-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/03f8f78d797bad1dc15301d368dbeed6/plot_bootstrapped_parameter_distributions.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_bootstrapped_parameter_distributions.py</span></code></a></p>

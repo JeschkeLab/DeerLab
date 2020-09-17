@@ -47,7 +47,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Uncertainty propagation from parameter fits using covariance-based uncertainty quantificaion" href="plot_param_uncertainty_propagation.html" />
+    <link rel="next" title="Fitting Gaussians to a non-parametric distance distribution" href="plot_extracting_gauss_constraints.html" />
     <link rel="prev" title="Emulating the DeerAnalysis workflow" href="plot_emulating_deeranalysis_workflow.html" /> 
 </head>
 
@@ -73,6 +73,10 @@
 
           
             
+            
+              <div class="version">
+                v0.11.0
+              </div>
             
           
 
@@ -194,7 +198,7 @@
 distribution to a dipolar signal.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
 <div class="section" id="generating-a-dataset">
@@ -206,12 +210,12 @@ distribution to a dipolar signal.</p>
 <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
 
 <span class="c1"># Generate ground truth and input signal</span>
-<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
 <span class="n">lam</span> <span class="o">=</span> <span class="mf">0.36</span>
 <span class="n">c0</span> <span class="o">=</span> <span class="mi">250</span> <span class="c1">#uM</span>
-<span class="n">B</span> <span class="o">=</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">c0</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span>  <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">c0</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span>  <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -231,9 +235,9 @@ computed by solving a Tikhonov-regularized linear LSQ problem automatically in t
     <span class="c1"># Unpack parameters</span>
     <span class="n">lam</span><span class="p">,</span><span class="n">c0</span> <span class="o">=</span> <span class="n">p</span>
     <span class="c1"># Get background</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">c0</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">c0</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
     <span class="c1"># Generate 4pDEER kernel</span>
-    <span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">K</span>
 </pre></div>
@@ -259,7 +263,7 @@ the two sets need (or can) be specified.</p>
 <span class="n">ubl</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># Unconstrained upper boundary</span>
 
 <span class="c1"># Run SNLLS optimization</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="nf">snlls</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Kmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">lbl</span><span class="p">,</span><span class="n">ubl</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">snlls</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Kmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">lbl</span><span class="p">,</span><span class="n">ubl</span><span class="p">)</span>
 <span class="n">parfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">nonlin</span>
 <span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">lin</span>
 <span class="n">paruq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">uncertainty</span>
@@ -281,8 +285,8 @@ the two sets need (or can) be specified.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>lambda = 0.36(0.35-0.37)
-c0 = 258.47(247.32-269.62)uM
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>lambda = 0.36(0.36-0.37)
+c0 = 256.53(245.43-267.63)uM
 </pre></div>
 </div>
 </div>
@@ -307,10 +311,10 @@ c0 = 258.47(247.32-269.62)uM
 </div>
 <img alt="plot fitting custom kernel with snlls" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_fitting_custom_kernel_with_snlls_001.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7ff155cdaf50&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f5974cf7850&gt;
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  3.655 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  5.088 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-fitting-custom-kernel-with-snlls-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/9454b63adb0bdfc1ea7028275967b82c/plot_fitting_custom_kernel_with_snlls.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_fitting_custom_kernel_with_snlls.py</span></code></a></p>
@@ -331,7 +335,7 @@ c0 = 258.47(247.32-269.62)uM
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="plot_param_uncertainty_propagation.html" class="btn btn-neutral float-right" title="Uncertainty propagation from parameter fits using covariance-based uncertainty quantificaion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="plot_extracting_gauss_constraints.html" class="btn btn-neutral float-right" title="Fitting Gaussians to a non-parametric distance distribution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="plot_emulating_deeranalysis_workflow.html" class="btn btn-neutral float-left" title="Emulating the DeerAnalysis workflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

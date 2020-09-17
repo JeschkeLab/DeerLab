@@ -48,7 +48,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Fitting a custom kernel model with a parameter-free distribution" href="plot_fitting_custom_kernel_with_snlls.html" />
-    <link rel="prev" title="Extracting Gaussian constraints from a parameter-free distribution fit" href="plot_extracting_gauss_constraints.html" /> 
+    <link rel="prev" title="Selecting an optimal parametric model for fitting a dipolar signal" href="plot_selecting_an_optimal_model.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -73,6 +73,10 @@
 
           
             
+            
+              <div class="version">
+                v0.11.0
+              </div>
             
           
 
@@ -195,7 +199,7 @@ DeerAnalysis, using DeerLab functions. This kind of analysis workflow is
 outdated and not recommended for routine or accurate data analysis.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
 <div class="section" id="generating-a-dataset">
@@ -206,23 +210,21 @@ outdated and not recommended for routine or accurate data analysis.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parameters</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">250</span><span class="p">)</span>
 <span class="n">rtrue</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
-<span class="n">Ptrue</span> <span class="o">=</span> <span class="nf">dd_gauss3</span><span class="p">(</span><span class="n">rtrue</span><span class="p">,[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">Ptrue</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss3</span><span class="p">(</span><span class="n">rtrue</span><span class="p">,[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
 <span class="n">lam</span> <span class="o">=</span> <span class="mf">0.3</span>
 <span class="n">conc</span> <span class="o">=</span> <span class="mi">180</span> <span class="c1">#uM</span>
 
 <span class="c1"># Simulate an experimental signal with some a.u. and phase offset</span>
-<span class="n">Bmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">lam</span><span class="p">:</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">rtrue</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">Bmodel</span><span class="p">)</span>
+<span class="n">Bmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">lam</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">rtrue</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">Bmodel</span><span class="p">)</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@Ptrue</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">16</span><span class="p">)</span> <span class="c1"># add a phase shift</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">rnoise</span> <span class="o">=</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span> <span class="c1"># real-component noise</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">inoise</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span> <span class="c1"># imaginary-component noise</span>
+<span class="n">rnoise</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># real-component noise</span>
+<span class="n">inoise</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># imaginary-component noise</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">V</span> <span class="o">+</span> <span class="n">rnoise</span> <span class="o">+</span> <span class="n">inoise</span> <span class="c1"># complex-valued noisy signal</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">*</span><span class="mf">3e6</span> <span class="c1"># add an arbitrary amplitude scale</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="o">.</span><span class="nf">real</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="o">.</span><span class="nf">imag</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">),</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t [$\mu s$]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t [µs]&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V(t)&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;real&#39;</span><span class="p">,</span><span class="s1">&#39;imag&#39;</span><span class="p">])</span>
@@ -230,49 +232,49 @@ outdated and not recommended for routine or accurate data analysis.</p>
 </div>
 <img alt="plot emulating deeranalysis workflow" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_emulating_deeranalysis_workflow_001.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7ff155dde750&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f5974c512d0&gt;
 </pre></div>
 </div>
 </div>
 <div class="section" id="deeranalysis-workflow">
 <h2>DeerAnalysis workflow<a class="headerlink" href="#deeranalysis-workflow" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Pre-processing</span>
-<span class="n">V</span> <span class="o">=</span> <span class="nf">correctphase</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-<span class="n">t</span> <span class="o">=</span> <span class="nf">correctzerotime</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctphase</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctzerotime</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">/</span><span class="nf">max</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
 
 <span class="c1"># Distance axis estimation</span>
-<span class="n">r</span> <span class="o">=</span> <span class="nf">time2dist</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">time2dist</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
 <span class="c1"># Background fit</span>
-<span class="n">tstart</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># background fit start, in us</span>
+<span class="n">tstart</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># background fit start, in µs</span>
 <span class="n">mask</span> <span class="o">=</span> <span class="n">t</span><span class="o">&gt;</span><span class="n">tstart</span>
 <span class="k">def</span> <span class="nf">Bmodel</span><span class="p">(</span><span class="n">par</span><span class="p">):</span>
     <span class="n">lam</span><span class="p">,</span><span class="n">kappa</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">par</span> <span class="c1"># unpack parameters</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">)</span><span class="o">*</span><span class="nf">bg_strexp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">mask</span><span class="p">],[</span><span class="n">kappa</span><span class="p">,</span><span class="n">d</span><span class="p">],</span><span class="n">lam</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_strexp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">mask</span><span class="p">],[</span><span class="n">kappa</span><span class="p">,</span><span class="n">d</span><span class="p">],</span><span class="n">lam</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">B</span>
 
 <span class="c1">#       lam     k   d</span>
 <span class="n">par0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span>   <span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">lb</span>   <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span>   <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="n">ub</span>   <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span>      <span class="mi">5</span><span class="p">,</span>  <span class="mi">6</span><span class="p">]</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span><span class="n">Bmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">rescale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span><span class="n">Bmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">rescale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">lamfit</span><span class="p">,</span><span class="n">kappa</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
-<span class="n">Bfit</span> <span class="o">=</span> <span class="nf">bg_strexp</span><span class="p">(</span><span class="n">t</span><span class="p">,[</span><span class="n">kappa</span><span class="p">,</span><span class="n">d</span><span class="p">],</span><span class="n">lamfit</span><span class="p">)</span>
+<span class="n">Bfit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_strexp</span><span class="p">(</span><span class="n">t</span><span class="p">,[</span><span class="n">kappa</span><span class="p">,</span><span class="n">d</span><span class="p">],</span><span class="n">lamfit</span><span class="p">)</span>
 
 <span class="c1"># Background &quot;correction&quot; by division</span>
 <span class="n">Vcorr</span> <span class="o">=</span> <span class="p">(</span><span class="n">V</span><span class="o">/</span><span class="n">Bfit</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">lamfit</span><span class="p">)</span><span class="o">/</span><span class="n">lamfit</span>
 
 <span class="c1"># Tikhonov regularization using the L-curve criterion</span>
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitregmodel</span><span class="p">(</span><span class="n">Vcorr</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;tikhonov&#39;</span><span class="p">,</span><span class="s1">&#39;lr&#39;</span><span class="p">,)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitregmodel</span><span class="p">(</span><span class="n">Vcorr</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;tikhonov&#39;</span><span class="p">,</span><span class="s1">&#39;lr&#39;</span><span class="p">,)</span>
 <span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:200: UserWarning: The fitted value of parameter #1, is at the lower bound of the range.
-  warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound of the range.&#39;.format(p))
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:205: UserWarning: The fitted value of parameter #1, is at the lower bound (0.1).
+  warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound ({}).&#39;.format(p,lb[p]))
 </pre></div>
 </div>
 </div>
@@ -299,10 +301,10 @@ outdated and not recommended for routine or accurate data analysis.</p>
 </div>
 <img alt="plot emulating deeranalysis workflow" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_emulating_deeranalysis_workflow_002.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7ff155c51950&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f5974f2f350&gt;
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  4.203 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  5.549 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-emulating-deeranalysis-workflow-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/22ae3cb4e6c5834e793aef30bc089d04/plot_emulating_deeranalysis_workflow.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_emulating_deeranalysis_workflow.py</span></code></a></p>
@@ -326,7 +328,7 @@ outdated and not recommended for routine or accurate data analysis.</p>
         <a href="plot_fitting_custom_kernel_with_snlls.html" class="btn btn-neutral float-right" title="Fitting a custom kernel model with a parameter-free distribution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="plot_extracting_gauss_constraints.html" class="btn btn-neutral float-left" title="Extracting Gaussian constraints from a parameter-free distribution fit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="plot_selecting_an_optimal_model.html" class="btn btn-neutral float-left" title="Selecting an optimal parametric model for fitting a dipolar signal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

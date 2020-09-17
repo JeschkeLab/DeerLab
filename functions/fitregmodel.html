@@ -74,6 +74,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -188,7 +192,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitregmodel</span></code><a class="headerlink" href="#fitregmodel" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="deerlab.fitregmodel">
-<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">fitregmodel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">K</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">regtype</span><span class="o">=</span><span class="default_value">'tikhonov'</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">'aic'</span></em>, <em class="sig-param"><span class="n">regorder</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">solver</span><span class="o">=</span><span class="default_value">'cvx'</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">huberparam</span><span class="o">=</span><span class="default_value">1.35</span></em>, <em class="sig-param"><span class="n">nonnegativity</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">obir</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">uqanalysis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">renormalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">noiselevelaim</span><span class="o">=</span><span class="default_value">- 1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitregmodel.html#fitregmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitregmodel" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">fitregmodel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">K</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">regtype</span><span class="o">=</span><span class="default_value">'tikhonov'</span></em>, <em class="sig-param"><span class="n">regparam</span><span class="o">=</span><span class="default_value">'aic'</span></em>, <em class="sig-param"><span class="n">regorder</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">solver</span><span class="o">=</span><span class="default_value">'cvx'</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">huberparam</span><span class="o">=</span><span class="default_value">1.35</span></em>, <em class="sig-param"><span class="n">nonnegativity</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">obir</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">uqanalysis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">renormalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">noiselevelaim</span><span class="o">=</span><span class="default_value">- 1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitregmodel.html#fitregmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitregmodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -207,7 +211,7 @@
 </ul>
 <p>The default is <code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code>.</p>
 </dd>
-<dt><strong>alpha</strong><span class="classifier">string or scalar</span></dt><dd><p>Method for the automatic selection of the optimal regularization parameter:</p>
+<dt><strong>regparam</strong><span class="classifier">string or scalar</span></dt><dd><p>Method for the automatic selection of the optimal regularization parameter:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">'lr'</span></code> - L-curve minimum-radius method (LR)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'lc'</span></code> - L-curve maximum-curvature method (LC)</p></li>
@@ -239,6 +243,11 @@ The default ‘aic’.</p>
 <dt><strong>alpha</strong><span class="classifier">float int</span></dt><dd><p>Regularization parameter used in the optimization</p>
 </dd>
 <dt><strong>scale</strong><span class="classifier">float int or list of float int</span></dt><dd><p>Amplitude scale(s) of the dipolar signal(s).</p>
+</dd>
+<dt><strong>plot</strong><span class="classifier">callable</span></dt><dd><p>Function to display the results. It will 
+display the fitted signals and distance distributions with
+confidence intervals. If requested, the function returns 
+the <img class="math" src="../_images/math/16c4c942de76cc6e45264a49a6db76284d6f8c3b.svg" alt="matplotlib.axes"/> object as output.</p>
 </dd>
 <dt><strong>stats</strong><span class="classifier">dict</span></dt><dd><p>Goodness of fit statistical estimators (if full_output=True):</p>
 <ul class="simple">

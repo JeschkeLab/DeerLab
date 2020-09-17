@@ -47,8 +47,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Extracting Gaussian constraints from a parameter-free distribution fit" href="plot_extracting_gauss_constraints.html" />
-    <link rel="prev" title="Analyzing the Pake pattern of a dipolar signal" href="plot_analyzing_pake_pattern.html" /> 
+    <link rel="next" title="Emulating the DeerAnalysis workflow" href="plot_emulating_deeranalysis_workflow.html" />
+    <link rel="prev" title="Comparing confidence intervals for regularization results" href="plot_comparing_uncertainties_for_regularization.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -73,6 +73,10 @@
 
           
             
+            
+              <div class="version">
+                v0.11.0
+              </div>
             
           
 
@@ -193,7 +197,7 @@
 <p>How to optimally select a parametric model for a given dipolar signal.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
 <div class="section" id="data-generation">
@@ -201,13 +205,11 @@
 <p>Let’s start by constructing a simple dipolar signal with some noise arising
 from a bimodal Gaussian distance distribution.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare the signal components</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
-<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">3.8</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>
-
-<span class="c1"># Prepare the dipolar kernel and get the signal</span>
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">3.5</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>                <span class="c1"># time axis, µs</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>                     <span class="c1"># distance axis, nm</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">3.8</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>   <span class="c1"># distance distribution</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>                    <span class="c1"># dipolar kernel matrix</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.02</span><span class="p">)</span>         <span class="c1"># DEER signal, with added noise</span>
 </pre></div>
 </div>
 </div>
@@ -227,16 +229,16 @@ following set of potential parametric models:</p>
 <p>The first six models have built-in parametric models which we can use directly.
 The last model we can construct from built-in models using the <code class="docutils literal notranslate"><span class="pre">mixmodels</span></code> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare the mixed model</span>
-<span class="n">dd_rice_gauss</span> <span class="o">=</span> <span class="nf">mixmodels</span><span class="p">(</span><span class="nf">dd_rice</span><span class="p">,</span><span class="nf">dd_gauss</span><span class="p">)</span>
+<span class="n">dd_rice_gauss</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">mixmodels</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_rice</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">)</span>
 
 <span class="c1"># Prepare list of candidate parametric models</span>
-<span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="nf">dd_rice</span><span class="p">,</span><span class="nf">dd_rice2</span><span class="p">,</span><span class="nf">dd_rice3</span><span class="p">,</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="nf">dd_gauss2</span><span class="p">,</span><span class="nf">dd_gauss3</span><span class="p">,</span><span class="n">dd_rice_gauss</span><span class="p">]</span>
+<span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_rice</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_rice2</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_rice3</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss3</span><span class="p">,</span><span class="n">dd_rice_gauss</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>In order to make an appropiate choice, we need some liklihood estimator. All fit functions is DeerLab returns a stats
 dictionary which contains (amongst other estimators) likelihood estimators such as the Akaike information criterion (AIC).
 The model with the lowers AIC value can be considered to most likely to be the optimal model.</p>
-<p>To do this, we jus have to evaluate the parametric models with <code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code> while looping over all the distribution models
+<p>To do this, we just have to evaluate the parametric models with <code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code> while looping over all the distribution models
 we listed above, and collecting the AIC-values for each model.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">aic</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
@@ -244,7 +246,7 @@ we listed above, and collecting the AIC-values for each model.</p>
     <span class="c1"># Prepare the signal model with the new distance model</span>
     <span class="n">Vmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">K</span><span class="nd">@model</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">)</span>
     <span class="c1"># Fit the signal</span>
-    <span class="n">fit</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">par0</span><span class="o">=</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">],</span><span class="n">lb</span><span class="o">=</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Lower&#39;</span><span class="p">],</span><span class="n">ub</span><span class="o">=</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Upper&#39;</span><span class="p">])</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">par0</span><span class="o">=</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">],</span><span class="n">lb</span><span class="o">=</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Lower&#39;</span><span class="p">],</span><span class="n">ub</span><span class="o">=</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Upper&#39;</span><span class="p">])</span>
     <span class="n">parfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
     <span class="n">stats</span><span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">stats</span>
     <span class="c1"># Add current AIC value to the list</span>
@@ -252,18 +254,14 @@ we listed above, and collecting the AIC-values for each model.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:202: UserWarning: The fitted value of parameter #8,  is at the upper bound of the range.
-  warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound of the range.&#39;.format(p))
-/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/classes.py:144: RuntimeWarning: invalid value encountered in sqrt
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:207: UserWarning: The fitted value of parameter #5,  is at the upper bound (1).
+  warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound ({}).&#39;.format(p,ub[p]))
+/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/classes.py:125: RuntimeWarning: invalid value encountered in sqrt
   self.std = np.sqrt(np.diag(covmat))
-/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:200: UserWarning: The fitted value of parameter #0, is at the lower bound of the range.
-  warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound of the range.&#39;.format(p))
-/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:200: UserWarning: The fitted value of parameter #2, is at the lower bound of the range.
-  warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound of the range.&#39;.format(p))
-/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:200: UserWarning: The fitted value of parameter #5, is at the lower bound of the range.
-  warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound of the range.&#39;.format(p))
-/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/utils/gof.py:54: RuntimeWarning: divide by zero encountered in double_scalars
-  R2 = 1 - np.sum((x-xfit)**2)/np.sum((xfit-np.mean(xfit))**2)
+/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:207: UserWarning: The fitted value of parameter #1,  is at the upper bound (2.5).
+  warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound ({}).&#39;.format(p,ub[p]))
+/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:207: UserWarning: The fitted value of parameter #2,  is at the upper bound (1.0).
+  warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound ({}).&#39;.format(p,ub[p]))
 </pre></div>
 </div>
 <p>Since the absolute AIC values have no meaning, it is standard practice to look at the relative
@@ -289,8 +287,7 @@ Akaike weights, i.e. the probabilities of a model being the most optimal.</p>
 <span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="s1">&#39;k.&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t [$\mu s$]&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V(t)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t [µs]&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
@@ -319,7 +316,7 @@ Akaike weights, i.e. the probabilities of a model being the most optimal.</p>
 <img alt="plot selecting an optimal model" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_selecting_an_optimal_model_001.png" />
 <p>Typically there is not a single optimal model unless the noise level is very
 low. Usually several models have similar probabilities and should therefore be presented together.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  11.383 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  9.620 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-selecting-an-optimal-model-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/8302ebf5c5b4b9529a3765a5470a2178/plot_selecting_an_optimal_model.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_selecting_an_optimal_model.py</span></code></a></p>
@@ -340,10 +337,10 @@ low. Usually several models have similar probabilities and should therefore be p
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="plot_extracting_gauss_constraints.html" class="btn btn-neutral float-right" title="Extracting Gaussian constraints from a parameter-free distribution fit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="plot_emulating_deeranalysis_workflow.html" class="btn btn-neutral float-right" title="Emulating the DeerAnalysis workflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="plot_analyzing_pake_pattern.html" class="btn btn-neutral float-left" title="Analyzing the Pake pattern of a dipolar signal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="plot_comparing_uncertainties_for_regularization.html" class="btn btn-neutral float-left" title="Comparing confidence intervals for regularization results" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -74,6 +74,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -191,11 +195,11 @@
 <div class="sphx-glr-example-title section" id="multi-gauss-fit-of-a-4-pulse-deer-signal">
 <span id="sphx-glr-auto-examples-plot-multigauss-fitting-4pdeer-py"></span><h1>Multi-Gauss fit of a 4-pulse DEER signal<a class="headerlink" href="#multi-gauss-fit-of-a-4-pulse-deer-signal" title="Permalink to this headline">¶</a></h1>
 <p>This example showcases how to fit a simple 4-pulse DEER signal with
-background using a multi-Gauss model, i.e automatically optimizing the
-number of Gaussians in the model.</p>
+background using a multi-Gauss distance distribution model, determining
+the optimal number of Gaussians.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
 <div class="section" id="model-function-for-a-4pdeer-dipolar-kernel">
@@ -207,9 +211,9 @@ for the description of a 4-pulse DEER experiment.</p>
     <span class="c1"># Unpack parameters</span>
     <span class="n">lam</span><span class="p">,</span><span class="n">conc</span> <span class="o">=</span> <span class="n">par</span>
     <span class="c1"># Simualte background</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
     <span class="c1"># Generate dipolar kernel</span>
-    <span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">K</span>
 </pre></div>
@@ -219,24 +223,24 @@ for the description of a 4-pulse DEER experiment.</p>
 <h2>Generating a dataset<a class="headerlink" href="#generating-a-dataset" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.25</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span> <span class="c1"># time axis, us</span>
 <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span><span class="mf">4.5</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span> <span class="c1"># distance axis, nm</span>
-<span class="n">param0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">,</span> <span class="mf">3.9</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">]</span> <span class="c1"># parameters for three-Gaussian model</span>
-<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss3</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">param0</span><span class="p">)</span> <span class="c1"># ground truth distance distribution</span>
+<span class="n">param0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">,</span> <span class="mf">3.9</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">]</span> <span class="c1"># parameters for three-Gaussian model</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss3</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">param0</span><span class="p">)</span> <span class="c1"># ground truth distance distribution</span>
 <span class="n">lam</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># modulation depth</span>
 <span class="n">conc</span> <span class="o">=</span> <span class="mi">250</span> <span class="c1"># spin concentration, uM</span>
 <span class="n">noiselvl</span> <span class="o">=</span> <span class="mf">0.005</span> <span class="c1"># noise level</span>
 
 <span class="c1"># Generate 4pDEER dipolar signal with noise</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">K4pdeer</span><span class="p">([</span><span class="n">lam</span><span class="p">,</span><span class="n">conc</span><span class="p">],</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">K4pdeer</span><span class="p">([</span><span class="n">lam</span><span class="p">,</span><span class="n">conc</span><span class="p">],</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span> <span class="o">@</span> <span class="n">P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="multi-gauss-fitting">
 <h2>Multi-Gauss fitting<a class="headerlink" href="#multi-gauss-fitting" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parameter bounds:</span>
-<span class="c1">#     lambda conc   rmean fwhm</span>
+<span class="c1">#     lambda conc   rmean sigma</span>
 <span class="n">lb</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span>  <span class="mf">0.05</span><span class="p">]</span> <span class="c1"># distribution basis function lower bounds</span>
-<span class="n">ub</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1"># distribution basis function upper bounds</span>
+<span class="n">ub</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span>  <span class="mf">2.5</span><span class="p">]</span> <span class="c1"># distribution basis function upper bounds</span>
 <span class="n">lbK</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">]</span> <span class="c1"># kernel parameters lower bounds</span>
 <span class="n">ubK</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1500</span><span class="p">]</span> <span class="c1"># kernel parameters upper bounds</span>
 
@@ -245,7 +249,7 @@ for the description of a 4-pulse DEER experiment.</p>
 <span class="n">NGauss</span> <span class="o">=</span> <span class="mi">5</span> <span class="c1"># maximum number of Gaussians</span>
 
 <span class="c1"># Fit the kernel parameters with an optimized multi-Gauss distribution</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitmultimodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Kmodel</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="n">NGauss</span><span class="p">,</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">lbK</span><span class="p">,</span><span class="n">ubK</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmultimodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Kmodel</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="n">NGauss</span><span class="p">,</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">lbK</span><span class="p">,</span><span class="n">ubK</span><span class="p">)</span>
 <span class="c1">#Extract results</span>
 <span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span>
 <span class="n">Kparfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">Kparam</span>
@@ -261,11 +265,6 @@ for the description of a 4-pulse DEER experiment.</p>
 <span class="c1"># Confidence intervals of the fitted distance distribution</span>
 <span class="n">Pci95</span> <span class="o">=</span> <span class="n">Puq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span> <span class="c1"># 95#-confidence interval</span>
 <span class="n">Pci50</span> <span class="o">=</span> <span class="n">Puq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span> <span class="c1"># 50#-confidence interval</span>
-</pre></div>
-</div>
-<p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.8/x64/lib/python3.7/site-packages/deerlab/utils/gof.py:54: RuntimeWarning: divide by zero encountered in double_scalars
-  R2 = 1 - np.sum((x-xfit)**2)/np.sum((xfit-np.mean(xfit))**2)
 </pre></div>
 </div>
 </div>
@@ -287,11 +286,11 @@ probability of a model being the most optimal choice.</p>
 <span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="s1">&#39;k.&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,(</span><span class="mi">1</span><span class="o">-</span><span class="n">Kparfit</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Kparfit</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">Kparfit</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="s1">&#39;b--&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,(</span><span class="mi">1</span><span class="o">-</span><span class="n">Kparfit</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Kparfit</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">Kparfit</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="s1">&#39;b--&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;data&#39;</span><span class="p">,</span><span class="s1">&#39;Vfit&#39;</span><span class="p">,</span><span class="s1">&#39;Bfit&#39;</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t [$\mu s$]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t [µs]&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V(t)&#39;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">322</span><span class="p">)</span>
@@ -331,10 +330,10 @@ probability of a model being the most optimal choice.</p>
 </div>
 <img alt="plot multigauss fitting 4pdeer" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_multigauss_fitting_4pdeer_001.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7ff155b89cd0&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f5974e1b9d0&gt;
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  54.774 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  28.705 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-multigauss-fitting-4pdeer-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/481eb78d07b9dbc14f9420edb15157fa/plot_multigauss_fitting_4pdeer.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_multigauss_fitting_4pdeer.py</span></code></a></p>

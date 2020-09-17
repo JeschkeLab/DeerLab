@@ -74,6 +74,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -196,7 +200,7 @@
 <p><strong>Non-parametric distance distributions</strong> are the more general from. They have no particular shape and are represented by vectors <code class="docutils literal notranslate"><span class="pre">P</span></code> and <code class="docutils literal notranslate"><span class="pre">r</span></code>. For example, you can generate <code class="docutils literal notranslate"><span class="pre">P</span></code> and <code class="docutils literal notranslate"><span class="pre">r</span></code> by an external program for spin label rotamer modeling. Non-parametric distance distributions are returned in least-squares fitting. In least-squares fitting, non-parametric distance distributions are preferred over parametric distance distributions, since they make fewer assumptions about the distribution and are more flexible. They introduce less bias.</p>
 <p><strong>Parametric distance distributions</strong> have specific shapes that depend on a few parameters. DeerLab provides many parametric <a class="reference internal" href="modelsref.html#modelsref-dd"><span class="std std-ref">distance distribution model functions</span></a>. All these functions start with the prefix <code class="docutils literal notranslate"><span class="pre">dd_</span></code> (<code class="docutils literal notranslate"><span class="pre">dd</span></code> stands for “distance distibution”). They take a distance vector <code class="docutils literal notranslate"><span class="pre">r</span></code> and a parameter vector <code class="docutils literal notranslate"><span class="pre">param</span></code> as inputs and return the distance distribution as a vector <code class="docutils literal notranslate"><span class="pre">P</span></code>. Here is an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">201</span><span class="p">)</span>   <span class="c1"># distance, in nanometers</span>
-<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mi">3</span> <span class="mf">0.5</span><span class="p">])</span>      <span class="c1"># Gaussian distribution, center 3 nm, fwhm 0.5 nm</span>
+<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mi">3</span> <span class="mf">0.2</span><span class="p">])</span>      <span class="c1"># Gaussian distribution, center 3 nm, fwhm 0.5 nm</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">)</span>
 </pre></div>
 </div>

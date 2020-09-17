@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -186,7 +190,7 @@
 <span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md). </span>
 <span class="c1"># Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="nf">isempty</span>
+<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">isempty</span>
 
 <div class="viewcode-block" id="time2dist"><a class="viewcode-back" href="../../functions/time2dist.html#deerlab.time2dist">[docs]</a><span class="k">def</span> <span class="nf">time2dist</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="p">[]):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; </span>
@@ -224,7 +228,7 @@
 
     <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">isempty</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
         <span class="n">M</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
     <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>

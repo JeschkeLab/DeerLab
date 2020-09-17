@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -190,7 +194,7 @@
 <span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="nf">fitparamodel</span><span class="p">,</span> <span class="nf">dipolarkernel</span>
 <span class="kn">from</span> <span class="nn">deerlab.dd_models</span> <span class="kn">import</span> <span class="nf">dd_gauss</span>
 <span class="kn">from</span> <span class="nn">deerlab.bg_models</span> <span class="kn">import</span> <span class="nf">bg_exp</span>
-<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="nf">isempty</span>
+<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">isempty</span>
 
 <div class="viewcode-block" id="correctscale"><a class="viewcode-back" href="../../functions/correctscale.html#deerlab.correctscale">[docs]</a><span class="k">def</span> <span class="nf">correctscale</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">tmax</span><span class="o">=</span><span class="p">[],</span><span class="n">model</span><span class="o">=</span><span class="s1">&#39;deer&#39;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; </span>
@@ -227,7 +231,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nf">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">isreal</span><span class="p">(</span><span class="n">V</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input signal cannot be complex.&#39;</span><span class="p">)</span> 
 
-    <span class="k">if</span> <span class="nf">isempty</span><span class="p">(</span><span class="n">tmax</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">isempty</span><span class="p">(</span><span class="n">tmax</span><span class="p">):</span>
         <span class="n">tmax</span> <span class="o">=</span> <span class="nf">max</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
     <span class="c1"># Approximate scaling</span>
     <span class="n">Amp0</span> <span class="o">=</span> <span class="nf">max</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
@@ -238,16 +242,17 @@
     <span class="n">V_</span> <span class="o">=</span> <span class="n">V_</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
     <span class="n">t_</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span> <span class="n">idx</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="s1">&#39;deer&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;deer&#39;</span><span class="p">:</span>
         <span class="c1"># DEER model with Gaussian distibution</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">V_</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;Number of points in fit range cannot be smaller than number of model parameters. Increase tmax.&#39;</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
         <span class="n">fitmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t_</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="nf">bg_exp</span><span class="p">(</span><span class="n">t_</span><span class="p">,</span><span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span><span class="nd">@dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">p</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]]))</span>
+        <span class="c1"># parameters: amplitude, mod depth,Gauss position, Gauss std, conc</span>
         <span class="n">par0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]</span>
-        <span class="n">lb</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">lb</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="n">ub</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">model</span> <span class="ow">is</span> <span class="s1">&#39;gauss&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;gauss&#39;</span><span class="p">:</span>
         <span class="c1"># Gaussian function</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">V_</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;Number of points in fit range cannot be smaller than number of model parameters. Increase tmax.&#39;</span><span class="p">)</span>

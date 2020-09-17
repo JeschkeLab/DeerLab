@@ -72,6 +72,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -275,18 +279,18 @@
     <span class="c1"># Estimation of the noise level</span>
     <span class="c1"># -----------------------------</span>
 
-    <span class="k">if</span> <span class="n">estimationMethod</span> <span class="ow">is</span> <span class="s1">&#39;2D&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">estimationMethod</span> <span class="o">==</span> <span class="s1">&#39;2D&#39;</span><span class="p">:</span>
             <span class="c1"># Estimate standard deviations for all time point, and average over scans</span>
             <span class="k">if</span> <span class="nf">shape</span><span class="p">(</span><span class="n">V</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s1">&#39;Only a few scans are given. Noise standard deviation estimate will be inaccurate.&#39;</span><span class="p">)</span>
             <span class="n">sigma</span> <span class="o">=</span> <span class="nf">std</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">sigma</span> <span class="o">=</span> <span class="nf">mean</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
             
-    <span class="k">elif</span> <span class="n">estimationMethod</span> <span class="ow">is</span> <span class="s1">&#39;filtering&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">estimationMethod</span> <span class="o">==</span> <span class="s1">&#39;filtering&#39;</span><span class="p">:</span>
         <span class="c1"># Filter the noise in the signal    </span>
-        <span class="k">if</span> <span class="n">filterType</span> <span class="ow">is</span> <span class="s1">&#39;movmean&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">filterType</span> <span class="o">==</span> <span class="s1">&#39;movmean&#39;</span><span class="p">:</span>
                 <span class="n">Vfilt</span> <span class="o">=</span> <span class="n">movmean</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">filterType</span> <span class="ow">is</span> <span class="s1">&#39;savgol&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">filterType</span> <span class="o">==</span> <span class="s1">&#39;savgol&#39;</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
                 <span class="n">Vfilt</span> <span class="o">=</span> <span class="n">savgol_filter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
@@ -295,13 +299,13 @@
         <span class="c1"># And estimate the noiselevel from the resulting residual</span>
         <span class="n">sigma</span> <span class="o">=</span> <span class="nf">std</span><span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="n">Vfilt</span><span class="p">)</span>
             
-    <span class="k">elif</span> <span class="n">estimationMethod</span> <span class="ow">is</span> <span class="s1">&#39;complex&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">estimationMethod</span> <span class="o">==</span> <span class="s1">&#39;complex&#39;</span><span class="p">:</span>
             <span class="c1"># Optimize the phase of the signal</span>
             <span class="n">_</span><span class="p">,</span><span class="n">Vim</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="nf">correctphase</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="c1"># And estimate the noiselevel from the imaginary part</span>
             <span class="n">sigma</span> <span class="o">=</span> <span class="nf">std</span><span class="p">(</span><span class="n">Vim</span><span class="p">)</span>
             
-    <span class="k">elif</span> <span class="n">estimationMethod</span> <span class="ow">is</span> <span class="s1">&#39;reference&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">estimationMethod</span> <span class="o">==</span> <span class="s1">&#39;reference&#39;</span><span class="p">:</span>
             <span class="n">sigma</span> <span class="o">=</span> <span class="nf">std</span><span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="n">Vref</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">sigma</span></div>

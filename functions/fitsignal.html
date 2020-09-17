@@ -74,6 +74,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -188,7 +192,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitsignal</span></code><a class="headerlink" href="#fitsignal" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="deerlab.fitsignal">
-<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">fitsignal</code><span class="sig-paren">(</span><em class="sig-param">Vexp, t, r, dd_model='P', bg_model=&lt;function bg_hom3d&gt;, ex_model=&lt;function ex_4pdeer&gt;, par0=[None, None, None], lb=[None, None, None], ub=[None, None, None], weights=1, uqanalysis=True, display=False, regparam='aic', regtype='tikhonov'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitsignal.html#fitsignal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitsignal" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">fitsignal</code><span class="sig-paren">(</span><em class="sig-param">Vexp, t, r, dd_model='P', bg_model=&lt;function bg_hom3d&gt;, ex_model=&lt;function ex_4pdeer&gt;, par0=[None, None, None], lb=[None, None, None], ub=[None, None, None], verbose=False, weights=1, uqanalysis=True, regparam='aic', regtype='tikhonov'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitsignal.html#fitsignal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitsignal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits a dipolar model to the experimental signal V with time axis t, using
 distance axis r. The model is specified by the distance distribution (dd),
 the background (bg), and the experiment (ex).</p>
@@ -274,6 +278,13 @@ as an empty list <code class="docutils literal notranslate"><span class="pre">[]
 </dd>
 <dt><strong>scale</strong><span class="classifier">float int or list of float int</span></dt><dd><p>Amplitude scale(s) of the dipolar signal(s).</p>
 </dd>
+<dt><strong>regparam</strong><span class="classifier">scalar</span></dt><dd><p>Optimal regularization parameter value</p>
+</dd>
+<dt><strong>plot</strong><span class="classifier">callable</span></dt><dd><p>Function to display the results. It will 
+display the fitted signals and distance distributions with
+confidence intervals. If requested, the function returns 
+the <img class="math" src="../_images/math/16c4c942de76cc6e45264a49a6db76284d6f8c3b.svg" alt="matplotlib.axes"/> object as output.</p>
+</dd>
 <dt><strong>stats</strong><span class="classifier">dict</span></dt><dd><p>Goodness of fit statistical estimators:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">stats['chi2red']</span></code> - Reduced chi^2 test</p></li>
@@ -326,11 +337,9 @@ instead of a string. The default <code class="docutils literal notranslate"><spa
 </ul>
 <p>The default is <code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code>.</p>
 </dd>
-<dt><strong>uqanalysis</strong><span class="classifier">boolean</span></dt><dd><p>Enable/disable the uncertainty quantification analysis, by default it is enabled.</p>
+<dt><strong>verbose</strong><span class="classifier">boolean</span></dt><dd><p>Enable/disable printing a table of fit results, by default is disabled</p>
 </dd>
-<dt><strong>display</strong><span class="classifier">boolean</span></dt><dd><p>Enable/Disable plotting and printing of results with matplotlib library, by default it is disabled. 
-If enabled the command <code class="docutils literal notranslate"><span class="pre">matlplotlib.pyplot.show()</span></code> must be added to the script calling fitsignal 
-at the end to show the figure containing the plot.</p>
+<dt><strong>uqanalysis</strong><span class="classifier">boolean</span></dt><dd><p>Enable/disable the uncertainty quantification analysis, by default it is enabled.</p>
 </dd>
 </dl>
 </dd>

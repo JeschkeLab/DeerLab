@@ -74,6 +74,10 @@
           
             
             
+              <div class="version">
+                v0.11.0
+              </div>
+            
           
 
           
@@ -186,52 +190,43 @@
 <h1>A first script<a class="headerlink" href="#a-first-script" title="Permalink to this headline">¶</a></h1>
 <p>Here is a first script that shows how DeerLab works. It simulates a noisy DEER data trace and then fits it.</p>
 <p>We start by importing the required function/libraries:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">np</span>
-<span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
 <p>We continue by generating a distance distribution consisting of a single Gaussian:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">201</span>                            <span class="c1"># number of points</span>
 <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>           <span class="c1"># distance range, in nanometers</span>
-<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>         <span class="c1"># single-Gaussian distance distribution</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">])</span>     <span class="c1"># single-Gaussian distance distribution</span>
 </pre></div>
 </div>
 <p>Next, we calculate the background decay function due to a homogeneus 3D distribution of spins:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>             <span class="c1"># time axis, in microseconds</span>
 <span class="n">conc</span> <span class="o">=</span> <span class="mi">100</span>                         <span class="c1"># spin concentration, in micromolar</span>
 <span class="n">lam</span> <span class="o">=</span> <span class="mf">0.4</span>                          <span class="c1"># modulation depth</span>
-<span class="n">B</span> <span class="o">=</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>           <span class="c1"># homogeneous 3D background decay function</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>        <span class="c1"># homogeneous 3D background decay function</span>
 </pre></div>
 </div>
 <p>Next, we combine the distance distribution and the background into a full 4-pulse DEER signal and add some noise:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>       <span class="c1"># DEER kernel</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span>                            <span class="c1"># DEER signal</span>
-<span class="n">sig</span> <span class="o">=</span> <span class="mf">0.01</span>                         <span class="c1"># noise level</span>
-<span class="n">Vexp</span> <span class="o">=</span> <span class="n">V</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">sig</span><span class="p">)</span>  <span class="c1"># add noise</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>       <span class="c1"># DEER kernel</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span>                               <span class="c1"># DEER signal</span>
+<span class="n">sig</span> <span class="o">=</span> <span class="mf">0.01</span>                            <span class="c1"># noise level</span>
+<span class="n">Vexp</span> <span class="o">=</span> <span class="n">V</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">sig</span><span class="p">)</span>  <span class="c1"># add noise</span>
 </pre></div>
 </div>
 <p>We can look at the result:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">,(</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">)</span><span class="o">*</span><span class="n">B</span><span class="p">)</span>   <span class="c1"># plotting</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">Vexp</span><span class="p">)</span>   <span class="c1"># plotting</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Now that we have a noisy DEER trace, we fit it (in a single step) with a non-parametric distance distribution and a homogeneous 3D background.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="nf">ex_4pdeer</span><span class="p">)</span>  <span class="c1"># fitting</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitsignal</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">)</span>  <span class="c1"># fitting</span>
 </pre></div>
 </div>
 <p>Finally, we plot the results</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span>              <span class="c1"># fitted distance distribution</span>
-<span class="n">Bfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">B</span>              <span class="c1"># fitted background</span>
-<span class="n">Vfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">V</span>              <span class="c1"># fitted dipolar signal</span>
-<span class="n">lamfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">exparam</span>      <span class="c1"># fitted modulation depth</span>
-
-<span class="c1"># plotting</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="n">t</span><span class="p">,(</span><span class="mi">1</span><span class="o">-</span><span class="n">lamfit</span><span class="p">)</span><span class="o">*</span><span class="n">Bfit</span><span class="p">)</span>     <span class="c1"># plot fitted model and background</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">)</span>                          <span class="c1"># plot fitted distribution</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plotting</span>
+<span class="n">fit</span><span class="o">.</span><span class="nf">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
