@@ -18,7 +18,7 @@ author = 'Fabregas Ibanez'
 language = 'en'
 
 
-version = open('..\..\VERSION').read().splitlines()[0]
+version = open(os.path.join('..','..','VERSION')).read().splitlines()[0]
 rst_epilog = '.. |version| replace:: {}'.format(version)
 
 # Add sphinx extensions
