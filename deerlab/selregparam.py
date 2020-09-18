@@ -279,7 +279,7 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParame
         f_ = Residual**2 + 2*noiselvl**2*np.trace(H) - 2*N*noiselvl**2
         
     else:
-        f_ = 0
+        raise ValueError('Selection method \'{}\' is not known.'.format(selmethod))
 
     functional = functional + f_
 
