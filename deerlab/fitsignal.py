@@ -437,7 +437,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         if includeForeground:
             Pfcn = lambda par: dd_model(r,par[ddidx])
         else:
-            Pfcn = lambda _: np.ones_like(r)
+            Pfcn = lambda _: np.ones_like(r)/np.trapz(np.ones_like(r),r)
         Vmodel =lambda par: [K@Pfcn(par) for K in multiPathwayModel(par)[0]]
 
         # Non-linear parametric fit
