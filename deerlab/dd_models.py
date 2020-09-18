@@ -6,14 +6,16 @@
 import math as m
 import numpy as np
 import scipy.special as spc
+import inspect
 
 def _parsargs(args,npar):
 #=================================================================
+    name = inspect.stack()[1][3]
     if len(args)!=2:
-        raise KeyError('Two input arguments required dd_model(r,p)')
+        raise KeyError('The model function {} requires two input arguments: {}(r,params)'.format(name,name))
     r,p = args
     if len(p)!=npar:
-        raise ValueError('This model requires ',npar,' parameters. Only ',len(p),' where specified.')
+        raise ValueError('The model function {} requires {} parameters, but {} are provided.'.format(name,npar,len(p)))
     return r,p
 #=================================================================
 
