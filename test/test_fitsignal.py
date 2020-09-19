@@ -105,11 +105,12 @@ def test_no_foreground():
 
     t = np.linspace(0,5,100)
     r = np.linspace(2,6,200)
-    B = bg_exp(t,0.2)
+    k = 0.2
+    B = bg_exp(t,k)
 
     fit = fitsignal(B,t,r,None,bg_exp,ex_4pdeer,uqanalysis=False)
 
-    assert max(abs(B - fit.B)) < 1e-2
+    assert max(abs(B - fit.B)) < 1e-3 and abs(k-fit.bgparam[0])/k <1e-6
 # ======================================================================
 
 def test_start_values():
