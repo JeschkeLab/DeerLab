@@ -1,12 +1,11 @@
 name: Docs Build & Deployment
 
 on: 
-   push:
-      branches:
-      - manual_ghp_update
-      paths:
-      - '.github/workflows**'
-      - 'docsrc/**'
+  push:
+    branches:
+    - manual_ghp_update
+    paths:
+    - 'docsrc/**'
   release:
     types: [published]
 
