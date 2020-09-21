@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/JeschkeLab/DeerLab/master/docsrc/source/_static/logo_dark.png" alt="DeerLab Logo" width="40%"></img>
+<img src="https://raw.githubusercontent.com/JeschkeLab/DeerLab/main/docsrc/source/_static/logo_dark.png" alt="DeerLab Logo" width="40%"></img>
 </p>
 </div>
 
