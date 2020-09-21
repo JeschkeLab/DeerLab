@@ -4,11 +4,12 @@
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from joblib import Parallel, delayed
 import types
+from tqdm.auto import tqdm
+from joblib import Parallel, delayed
 from deerlab.classes import UncertQuant
 
-def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose=False, cores=1):
+def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, cores=1):
     r""" Bootstrap analysis for uncertainty quantification
 
     Parameters
@@ -29,7 +30,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose=False, co
         Number of bootstrap samples to analyze. The quality of bootstrapping 
         results improve with the number of boostrap samples evaluated, the 
         default is 1000.
-        
+
     Returns
     -------
     bootuq : :ref:`UncertQuant` or list of :ref:`UncertQuant`
@@ -70,6 +71,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose=False, co
 
     """
 
+    # Catch invalid sample sizes
     if samples<2:
         raise ValueError('At least two bootstrap samples are required.')
     nSamples = int(samples)
@@ -102,6 +104,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose=False, co
         if not all((isinstance(x,(float,int)) for x in var)):
             raise ValueError('Non-numeric output arguments by the analyzed function are not accepted.')
     
+    # Get ndarray shapes of all outputs
     shapeout = []
     evals = []
     for j in range(nout):
@@ -111,12 +114,8 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose=False, co
 
     # Generate all bootstrap samples
     Vsamples = []
-    for iSample in range(nSamples-1):
+    for _ in range(nSamples):
         sample = [0]*nSignals
-        # Inform of progress if requested
-        if verbose:
-            print('Bootstrapping: #{}/#{} samples finished'.format(iSample+1,nSamples), end='\r', flush=True)
-        
         for i in range(nSignals):
             #Determine requested re-sampling method
             if resampling == 'gaussian':
@@ -129,10 +128,11 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose=False, co
             else:
                 raise KeyError("Resampling method not found. Must be either 'gaussian' or 'residual'.")
         Vsamples.append(sample)
-        
-    # Run analysis function on each sample in series (cores==1) or in parallel (cores>1)    
-    out = Parallel(n_jobs=cores)(delayed(fcn)(Vsample) for Vsample in Vsamples)
 
+    # Run the model function for all samples 
+    if verbose : print('Bootstrap analysis with {0} cores:'.format(cores))          
+    out = _ProgressParallel(n_jobs=cores,total=nSamples,use_tqdm=verbose)(delayed(fcn)(Vsample) for Vsample in Vsamples)
+    
     # Post-process the outputs
     for varargout in out:
         if type(varargout) is not tuple:
@@ -143,7 +143,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose=False, co
         for j in range(nout):
             out = np.atleast_1d(varargout[j])
             if np.shape(out)!=shapeout[j]: 
-                raise TypeError('Inconsistent output variable size. One of the outputs of the analyzed function is changing its size in between runs. To solve this, fix the axis of the output and interpolate the result.')
+                raise TypeError('Inconsistent output variable shape. One of the outputs of the analyzed function is changing its size/shape in between runs.')
             # Store outputs in an N-dimensional array
             evals[j] = np.concatenate((evals[j],out[np.newaxis,:]),0)
             
@@ -151,8 +151,33 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose=False, co
     # Compile statistics for all parameters from bootstrap samples
     #-------------------------------------------------------------------------------
     stats = []
-    for bootsamples in evals:
-        stats.append(UncertQuant('bootstrap',bootsamples))
+    for variables in evals:
+        stats.append(UncertQuant('bootstrap',variables))
     if len(stats)==1:
         stats = stats[0]
     return stats
+
+
+#-------------------------------------------------------------------------------
+class _ProgressParallel(Parallel):
+    """
+    Patch for joblib.Parallel
+
+    Overrides the print_progress() method to enable the synchronous use of the TQDM bar
+    even for parallel processing.  
+    """
+    def __init__(self, use_tqdm=True, total=None, *args, **kwargs):
+        self._use_tqdm = use_tqdm
+        self._total = total
+        super().__init__(*args, **kwargs)
+
+    def __call__(self, *args, **kwargs):
+        with tqdm(disable=not self._use_tqdm, total=self._total) as self._pbar:
+            return Parallel.__call__(self, *args, **kwargs)
+
+    def print_progress(self):
+        if self._total is None:
+            self._pbar.total = self.n_dispatched_tasks
+        self._pbar.n = self.n_completed_tasks
+        self._pbar.refresh()
+#-------------------------------------------------------------------------------
