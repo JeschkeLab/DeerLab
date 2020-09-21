@@ -281,7 +281,7 @@ def read_description_file(DSCFileName):
     Parameters = readDSCfile(DSCFileName)
     Reads a Bruker BES3T .DSC file DSCFileName and returns a dictionary in Parameters.
     """
-    with open(DSCFileName,"r") as f:
+    with open(DSCFileName,'r',encoding='utf-8',errors='ignore') as f:
         allLines = f.readlines()
     
     # Remove lines with comments

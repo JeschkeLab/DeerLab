@@ -55,6 +55,8 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
 
     """
 
+    if samples<2:
+        raise ValueError('At least two bootstrap samples are required.')
     nSamples = samples
 
     Vexp,Vfit = ( [V] if type(V) is np.ndarray else V for V in [Vexp,Vfit])

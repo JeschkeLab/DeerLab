@@ -316,7 +316,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         return Ks, Bs     
     # =========================================================================
 
-    def splituq(full_uq):
+    def splituq(full_uq,scales=1):
     # =========================================================================
         """ 
         Uncertainty quantification
@@ -388,7 +388,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         for jj in range(nSignals):
             if includeForeground and parametricDistribution:
                 # Full parametric signal
-                Vmodel = lambda par: multiPathwayModel(par)[0][jj]@Pfcn(par[ddidx])
+                Vmodel = lambda par: scales[jj]*multiPathwayModel(par)[0][jj]@Pfcn(par[ddidx])
                 Vfit_uq.append( paruq.propagate(Vmodel))
             elif includeForeground and np.all(~includeExperiment & ~includeBackground):
                 # Dipola evolution function
@@ -437,7 +437,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         if includeForeground:
             Pfcn = lambda par: dd_model(r,par[ddidx])
         else:
-            Pfcn = lambda _: np.ones_like(r)
+            Pfcn = lambda _: np.ones_like(r)/np.trapz(np.ones_like(r),r)
         Vmodel =lambda par: [K@Pfcn(par) for K in multiPathwayModel(par)[0]]
 
         # Non-linear parametric fit
@@ -456,8 +456,12 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             Pfit = []
         if type(Vfit) is not list:
             Vfit = [Vfit]
+        if type(scales) is not list:
+            scales = [scales]
+        Vfit = [V*scale for scale,V in zip(scales,Vfit) ]
+
         if uqanalysis:
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq)
+            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,scales)
         
     else:
         

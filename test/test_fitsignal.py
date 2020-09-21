@@ -240,6 +240,7 @@ def assert_confidence_intervals(pci50,pci95,pfit,lb,ub):
     p95ub = pci95[:,1]
     p50lb = pci50[:,0]
     p50ub = pci50[:,1]
+    p95lb,p95ub,p50lb,p50ub,pfit = [np.round(x,5) for x in (p95lb,p95ub,p50lb,p50ub,pfit)]
     errors = []
     if not np.all(p95lb <= pfit) and not np.all(p50lb <= pfit):
         errors.append("Some fitted values are below the lower bound of the confidence intervals.")
