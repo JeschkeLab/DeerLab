@@ -38,6 +38,7 @@ DeerLab will install the following packages:
 	* `numpy <https://numpy.org/>`_ -  Base N-dimensional array package 
 	* `scipy <https://www.scipy.org/>`_ - Fundamental library for scientific computing
 	* `numdifftools <https://numdifftools.readthedocs.io/en/latest/index.html>`_ - Tools to solve automatic numerical differentiation problems in one or more variables.
+	* `joblib <https://joblib.readthedocs.io/en/latest/>`_ - Library lightweight pipelining and parallelization.
 
 The installed numerical packages (numpy, scipy, cvxopt) are linked against different BLAS libraries depending on the OS:
 

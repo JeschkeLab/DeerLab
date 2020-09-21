@@ -6,8 +6,10 @@ import subprocess
 
 # Custom OS-specific installation script
 def install_dependencies():
+#-----------------------------------------------------------------------
     subprocess.run(['pip','install','memoization'],check=True)
     subprocess.run(['pip','install','matplotlib'],check=True)
+
     # Dependencies with OS-specific BLAS
     if platform.system() == 'Windows':  
         # Install Numpy,SciPy, CVXopt linked to MKL
@@ -20,21 +22,28 @@ def install_dependencies():
         subprocess.run(['pip','install','numpy'],check=True)
         subprocess.run(['pip','install','scipy'],check=True)
         subprocess.run(['pip','install','cvxopt'],check=True)
-    subprocess.run(['pip','install','numdifftools'],check=True)
 
+    subprocess.run(['pip','install','numdifftools'],check=True)
+    subprocess.run(['pip','install','tqdm'],check=True)
+    subprocess.run(['pip','install','joblib'],check=True)
+#-----------------------------------------------------------------------    
 
 class install_routine(install):
+#-----------------------------------------------------------------------
     """Customized setuptools install command"""
     def run(self):
         install.run(self)
         install_dependencies()
+#-----------------------------------------------------------------------
 
 class develop_routine(develop):
+#-----------------------------------------------------------------------
     """Customized setuptools install command"""
     def run(self):
         develop.run(self)
         install_dependencies()
         subprocess.run(['pip','install','pytest'],check=True) # Install only on development version
+#-----------------------------------------------------------------------
 
 
 setup(
