@@ -93,6 +93,21 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, 
         residuals.append(Vfit[i] - Vexp[i])
         sigma.append(np.std(residuals[i]))
 
+    # Prepare bootstrap sampler (reduced I/O-stream when parallelized) 
+    def sample():
+        Vsample = [0]*nSignals
+        for i in range(nSignals):
+            #Determine requested re-sampling method
+            if resampling == 'gaussian':
+                # Resample from a Gaussian distribution with variance estimated from the residuals
+                Vsample[i] = Vfit[i] + np.random.normal(0, sigma[i], len(Vfit[i]))
+            elif resampling == 'residual':
+                # Resample from the residual directly
+                Vsample[i] =  Vfit[i] + residuals[i][np.random.permutation(len(Vfit[i]))]
+            else:
+                raise KeyError("Resampling method not found. Must be either 'gaussian' or 'residual'.")
+        return Vsample       
+
     # Use original data on the first run
     varargout = fcn(Vexp)
     if type(varargout) is not tuple:
@@ -112,26 +127,17 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, 
         shapeout.append(np.shape(out))
         evals.append(out[np.newaxis,:])
 
-    # Generate all bootstrap samples
-    Vsamples = []
-    for _ in range(nSamples):
-        sample = [0]*nSignals
-        for i in range(nSignals):
-            #Determine requested re-sampling method
-            if resampling == 'gaussian':
-                # Resample from a Gaussian distribution with variance estimated from the residuals
-                sample[i] = Vfit[i] + np.random.normal(0, sigma[i], len(Vfit[i]))
+    # Main bootstrap function
+    def bootsample():
+        # Get bootstrap sample
+        Vsample = sample()
+        # Run the analysis function
+        out = fcn(Vsample)
+        return out
 
-            elif resampling == 'residual':
-                # Resample from the residual directly
-                sample[i] =  Vfit[i] + residuals[i][np.random.permutation(len(Vfit[i]))]
-            else:
-                raise KeyError("Resampling method not found. Must be either 'gaussian' or 'residual'.")
-        Vsamples.append(sample)
-
-    # Run the model function for all samples 
+    # Run bootsample() for all samples in series (cores=1) or in parallel (cores>1)
     if verbose : print('Bootstrap analysis with {0} cores:'.format(cores))          
-    out = _ProgressParallel(n_jobs=cores,total=nSamples,use_tqdm=verbose)(delayed(fcn)(Vsample) for Vsample in Vsamples)
+    out = _ProgressParallel(n_jobs=cores,total=nSamples,use_tqdm=verbose)(delayed(bootsample)() for _ in range(nSamples))
     
     # Post-process the outputs
     for varargout in out:
