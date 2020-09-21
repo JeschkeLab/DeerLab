@@ -117,4 +117,28 @@ def test_multiple_datasets():
 
     assert all(abs(paruq.mean - fit.param) < 1e-2)
 # ======================================================================
-test_multiple_datasets()
+
+
+def test_parallelization():
+# ======================================================================
+    "Check that bootan can run with multiple cores"
+
+    t = np.linspace(0,5,200)
+    r = np.linspace(2,6,300)
+    P = dd_gauss(r,[4, 0.8])
+    K = dipolarkernel(t,r)
+    Vexp = K@P + whitegaussnoise(t,0.01)
+
+    par0 = [3, 0.5]
+    Vmodel = lambda par: K@dd_gauss(r,par)
+    fit = fitparamodel(Vexp,Vmodel,par0)
+    Vfit = Vmodel(fit.param)
+
+    def bootfcn(V):
+        fit = fitparamodel(V,Vmodel,par0)
+        return fit.param
+
+    paruq = bootan(bootfcn,Vexp,Vfit,10,cores=-1)
+
+    assert all(abs(paruq.mean - fit.param) < 1e-2)
+# ======================================================================

@@ -4,24 +4,32 @@
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
+from joblib import Parallel, delayed
 import types
 from deerlab.classes import UncertQuant
 
-def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
+def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose=False, cores=1):
     r""" Bootstrap analysis for uncertainty quantification
 
     Parameters
     ----------
     fcn : callable
-        Function to be analyzed. Must be a callable function accepting a signal array as input and returning a tuple with all variables to be analyzed.
-        All variables must be numerical arrays (no strings or booleans) and must preserve shape between calls.
+        Function to be analyzed. Must be a callable function accepting a signal
+        array as input and returning a tuple with all variables to be analyzed.
+        All variables must be numerical arrays (no strings or booleans) and 
+        must preserve shape between calls.
+
     Vexp : array_like or list of array_like
         Experimental dataset(s).
+
     Vfit : array or list of array_like
         Fit of the dataset(s).
-    samples : scalar
-        Number of bootstrap samples to analyze. The quality of bootstrapping results improve with the number of boostrap samples evaluated, the default is 1000.
 
+    samples : scalar
+        Number of bootstrap samples to analyze. The quality of bootstrapping 
+        results improve with the number of boostrap samples evaluated, the 
+        default is 1000.
+        
     Returns
     -------
     bootuq : :ref:`UncertQuant` or list of :ref:`UncertQuant`
@@ -36,12 +44,19 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
         * ``'residual'`` - Sample noise from the fit residuals.
         The default is ``'gaussian'``.
 
+    cores : scalar
+        Number of CPU cores/processes for parallel computing. If ``cores=1`` no parallel 
+        computing is used. If ``cores=-1`` all available CPUs are used. The default is 
+        one core (no parallelization).
+
     verbose : boolean
-        Specifies whether to print the progress of the bootstrap analysis on the command window, the default is false.
+        Specifies whether to print the progress of the bootstrap analysis on the 
+        command window, the default is false.
 
     Examples
     --------
-    To analyze several variables during the same run, the function must return tuple containing all of them::
+    To analyze several variables during the same run, the function must return tuple 
+    containing all of them::
 
         def myfcn(V):
             Pfit1 = fitparamodel(V,dd_gauss,r,K)
@@ -57,8 +72,9 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
 
     if samples<2:
         raise ValueError('At least two bootstrap samples are required.')
-    nSamples = samples
+    nSamples = int(samples)
 
+    # Validation of input signals
     Vexp,Vfit = ( [V] if type(V) is np.ndarray else V for V in [Vexp,Vfit])
     if len(Vexp)!=len(Vfit):
         raise KeyError('The same number of signals V and fits Vfit must be provided.')
@@ -93,37 +109,32 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
         shapeout.append(np.shape(out))
         evals.append(out[np.newaxis,:])
 
-
-    # Bootsrap analysis
-    #-------------------------------------------------------------------------------
-    Vresample = [0]*nSignals
+    # Generate all bootstrap samples
+    Vsamples = []
     for iSample in range(nSamples-1):
-        
+        sample = [0]*nSignals
         # Inform of progress if requested
         if verbose:
             print('Bootstrapping: #{}/#{} samples finished'.format(iSample+1,nSamples), end='\r', flush=True)
-            
+        
         for i in range(nSignals):
+            #Determine requested re-sampling method
+            if resampling == 'gaussian':
+                # Resample from a Gaussian distribution with variance estimated from the residuals
+                sample[i] = Vfit[i] + np.random.normal(0, sigma[i], len(Vfit[i]))
 
-            # Get a bootstrap sample
-            if iSample>0:
-                
-                #Determine requested re-sampling method
-                if resampling == 'gaussian':
-                    # Resample from a Gaussian distribution with variance estimated from the residuals
-                    Vresample[i] = Vfit[i] + np.random.normal(0, sigma[i], len(Vfit[i]))
-
-                elif resampling == 'residual':
-                    # Resample from the residual directly
-                    Vresample[i] =  Vfit[i] + residuals[i][np.random.permutation(len(Vfit[i]))]
-                else:
-                    raise KeyError("Resampling method not found. Must be either 'gaussian' or 'residual'.")
+            elif resampling == 'residual':
+                # Resample from the residual directly
+                sample[i] =  Vfit[i] + residuals[i][np.random.permutation(len(Vfit[i]))]
             else:
-                # Use original data on the first run
-                Vresample[i] = Vexp[i]
+                raise KeyError("Resampling method not found. Must be either 'gaussian' or 'residual'.")
+        Vsamples.append(sample)
+        
+    # Run analysis function on each sample in series (cores==1) or in parallel (cores>1)    
+    out = Parallel(n_jobs=cores)(delayed(fcn)(Vsample) for Vsample in Vsamples)
 
-        # Run the model function with bootstrap sample
-        varargout = fcn(Vresample)
+    # Post-process the outputs
+    for varargout in out:
         if type(varargout) is not tuple:
             varargout = (varargout,)
         nout = len(varargout)
@@ -135,7 +146,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
                 raise TypeError('Inconsistent output variable size. One of the outputs of the analyzed function is changing its size in between runs. To solve this, fix the axis of the output and interpolate the result.')
             # Store outputs in an N-dimensional array
             evals[j] = np.concatenate((evals[j],out[np.newaxis,:]),0)
-        
+            
         
     # Compile statistics for all parameters from bootstrap samples
     #-------------------------------------------------------------------------------
