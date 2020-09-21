@@ -44,11 +44,11 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False):
     To analyze several variables during the same run, the function must return tuple containing all of them::
 
         def myfcn(V):
-            Pfit1 = fitparamodel(V,dd_gauss,r,K)
-            Pfit2 = fitparamodel(V,dd_randcoil,r,K)
+            Pfit1 = dl.fitparamodel(V,dl.dd_gauss,r,K)
+            Pfit2 = dl.fitparamodel(V,dl.dd_randcoil,r,K)
             return Pfit1,Pfit2
 
-        bootuq = bootan(@(V)myfcn(p,varargin),V,Vfit)
+        bootuq = bootan(myfcn,V,Vfit)
         Pfit1_uq = bootuq[0]
         Pfit2_uq = bootuq[1]
 

@@ -12,10 +12,10 @@ Along with every fit, functions like ``fitsignal`` return confidence intervals f
 
 .. code-block:: python
 
-   fit = fitsignal(Vexp,t,r)
-   Puq = fit.Puncert            # Uncertainty quantification of the distance distribution
-   Buq = fit.Buncert            # Uncertainty quantification of the background 
-   lamuq = fit.exparamUncert    # Uncertainty quantification of the modulation depth
+   fit = dl.fitsignal(Vexp,t,r)
+   Puq = fit.Puncert            # uncertainty information about the distance distribution
+   Buq = fit.Buncert            # Uncertainty information about the background 
+   lamuq = fit.exparamUncert    # Uncertainty information about the modulation depth
    
 
 The variables ``Puq``, ``Buq`` and ``lamuq`` are uncertainty quantification objects :ref:`UncertQuant` which contain the full uncertainty information of the corresponding variables, calculated using the standard method based on the variance-covariance matrices.
@@ -24,15 +24,15 @@ The confidence intervals (at any confidence level) can be calculated by using th
 
 .. code-block:: python
 
-    Pfit_ci50 = paruq.ci(50)    # 50%-confidence intervals of Pfit
-    Pfit_ci95 = paruq.ci(95)    # 95%-confidence intervals of Pfit
+    Pfit_ci50 = Puq.ci(50)    # 50%-confidence intervals of Pfit
+    Pfit_ci95 = Puq.ci(95)    # 95%-confidence intervals of Pfit
 
 Uncertainty can also be propagated to dependent models. For example, assume that we have fitted a single Gaussian distance distribution with ``rmean`` and ``fwhm`` as parameters. Now, we can propagate the uncertainty in the fit of ``rmean`` and ``fwhm`` to the resulting Gaussian distance distribution. This can be done via the ``propagate()`` method, this will create the uncertainty quantification for the fitted distribution: 
 
 .. code-block:: python
 
     # parfit = [rmean, fwhm]
-    ddmodel = lambda parfit: dd_gauss(r,parfit)
+    ddmodel = lambda parfit: dl.dd_gauss(r,parfit)
     
     # Get the fitted model
     Pfit = ddmodel(parfit)
@@ -47,7 +47,7 @@ Uncertainty can also be propagated to dependent models. For example, assume that
 
 
 Theoretical assumptions of covariance-based uncertainty analysis:
-   - The uncertainty in the fitted parameters is described by a Gaussian distribution.
+   - The uncertainty in the fitted parameters is approximated by a Gaussian distribution.
    - The mean of this Gaussian is assumed to be the fitted value and its width by the diagonal elements of the covariance matrix.
    - All parameters are assumed to be unconstrained.
 
@@ -62,11 +62,11 @@ Here is an example for a parametric model:
 .. code-block:: python
 
     def fitfcn(V):
-        Vmodel = lambda par: K@dd_gauss(r,par)
-        fit = fitparamodel(V,Vmodel,r,K)
+        Vmodel = lambda par: K@dl.dd_gauss(r,par)
+        fit = dl.fitparamodel(V,Vmodel,r,K)
         return fit.param
 
-    bootuq = bootan(fitfcn,Vexp,Vfit,samples=1000,verbose=True);
+    bootuq = dl.bootan(fitfcn,Vexp,Vfit,samples=1000,verbose=True);
 
 The output ``bootuq`` is again a :ref:`UncertQuant` object that can be used as described above to evaluate confidence intervals at different confidence levels, e.g the 50% and 95% confidence intervals: 
 
@@ -88,10 +88,10 @@ Here is an example for a model with a non-parametric distribution:
 
 
     def fitfcn(V):
-           fit = fitsignal(V,t,r,'P',bg_hom3d,ex_4pdeer)
+        fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
         return fit.P, fit.bgparam, fit.exparam
 
-    bootuq = bootan(fitfcn,Vexp,Vfit,samples=100,verbose=True)
+    bootuq = dl.bootan(fitfcn,Vexp,Vfit,samples=100,verbose=True)
 
 To plot the resulting 95% and 50% confidence interval for the non-parametric distance distribution, use
 

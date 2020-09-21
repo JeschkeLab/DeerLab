@@ -29,7 +29,7 @@ To fit a signal with a non-parametric distance distribution, the simplest possib
 
 .. code-block:: python
 
-    fit = fitsignal(Vexp,t,r)
+    fit = dl.fitsignal(Vexp,t,r)
 
 This fits the signal in ``Vexp`` (defined over the time axis ``t``) with a non-parametric distance distribution defined over distance vector ``r``, a homogeneous 3D spin distribution for the background, and a modulation depth (assuming a standard 4-pulse DEER). 
 
@@ -37,7 +37,7 @@ To obtain the fitted signal, use
 
 .. code-block:: python
 
-    fit = fitsignal(Vexp,t,r)
+    fit = dl.fitsignal(Vexp,t,r)
 
 Since all fit functions in DeerLab are agnostic with respect to the absolute scale of the signal amplitude (does not need to statisfy ``V(t=0)==1``), the pre-processed signals can be passed directly to the fit functions and the corresponding scale will be automatically fitted and returned as the output ``fit.scale``.
 
@@ -45,7 +45,7 @@ With additional inputs, you can specify which :ref:`distance distribution model 
 
 .. code-block:: python
 
-    fit = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_4pdeer)
+    fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
 
 Here, ``'P'`` specifies that a non-parametric distribution (defined over ``r``) should be fitted. ``bg_hom3d`` is a function handle to the background model function. If you want to fit a signal that doesn't have a background, use  ``None`` instead.  ``ex_4pdeer`` is a function handle to the particular experiment model. ``ex_4pdeer`` consists of the main dipolar modulation function centered at time zero with an ampltitude ``lambda`` plus a constant offset of amplitude ``1-lambda``. If you want to fit a simple dipolar evolution function with 100% modulation depth, use ``None`` as the experiment model.
 
@@ -55,7 +55,7 @@ Here, ``'P'`` specifies that a non-parametric distribution (defined over ``r``) 
 
    regtype = 'tv'  # use total variation instead of Tikhonov regularization
    alpha = 0.8     # manually set regularization parameter
-   fit = fitsignal(Vexp,t,r,'P',bg_hom3d,ex_4pdeer,regtype=regtype,regparam=alpha)
+   fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,regtype=regtype,regparam=alpha)
 
 ``fitsignal`` returns a variable ``fit`` which contains all the required results from the fit: the fitted distance distribution, background and signal, all the fitted parameters as well as uncertainties for all of them. A full list of ``fitsignal`` outputs can be found `here <./functions/fitsignal.html>`_.
 
@@ -66,6 +66,6 @@ To use a parametric distance distribution model, provide ``fitsignal`` with a fu
 
 .. code-block:: python
 
-    fit = fitsignal(Vexp,t,r,dd_gauss2,bg_hom3d,ex_4pdeer)
+    fit = dl.fitsignal(Vexp,t,r,dl.dd_gauss2,dl.bg_hom3d,dl.ex_4pdeer)
 
 This will fit a two-Gauss distribution over ``r``. The fitted distribution parameters are returned in ``parfit``, and the corresponding distribution in ``Pfit``.

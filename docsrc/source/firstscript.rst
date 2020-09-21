@@ -3,15 +3,20 @@ A first script
 
 Here is a first script that shows how DeerLab works. It simulates a noisy DEER data trace and then fits it.
 
-We start by importing the required function/libraries:
+We start by importing DeerLab
 
 .. code-block:: python
 
-   import numpy as np
-   import matplotlib.pyplot as plt
-   import deerlab as dl
+   import deerlab as dl              # we always use 'dl' as the local name for DeerLab
 
-We continue by generating a distance distribution consisting of a single Gaussian:
+and other needed packages:
+
+.. code-block:: python
+
+   import numpy as np                # NumPy: vectors, matrices, linear algebra
+   import matplotlib.pyplot as plt   # MatPlotLib: plotting
+
+Then, we generate a distance distribution consisting of a single Gaussian:
 
 .. code-block:: python
 
@@ -44,13 +49,13 @@ We can look at the result:
    plt.plot(t,V,t,Vexp)   # plotting
    plt.show()
 
-Now that we have a noisy DEER trace, we fit it (in a single step) with a non-parametric distance distribution and a homogeneous 3D background.
+Now that we have a noisy DEER trace, we fit itto it (in a single step) a model with a non-parametric distance distribution and a homogeneous 3D background.
 
 .. code-block:: python
 
    fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)  # fitting
 
-Finally, we plot the results
+Finally, we plot the results:
 
 .. code-block:: python
 

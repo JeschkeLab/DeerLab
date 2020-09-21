@@ -172,32 +172,32 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     --------
     Fit a 4pDEER signal with homogenous 3D background with Gaussian distribution::
 
-        fit = fitsignal(V,t,r,dd_gauss,bg_hom3d,ex_4pdeer)  
+        fit = dl.fitsignal(V,t,r,dl.dd_gauss,dl.bg_hom3d,dl.ex_4pdeer)  
 
 
     Fit a 5pDEER signal with exponential background and Tikhonov regularization::
 
-        fit = fitsignal(V,t,r,'P',bg_hom3d,ex_5pdeer)        
+        fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer)
     
     
     Fit a 4pDEER stretched exponential background (no foreground)::
     
-        fit = fitsignal(V,t,r,None,bg_strexp,ex_4pdeer)  
+        fit = dl.fitsignal(V,t,r,None,dl.bg_strexp,dl.ex_4pdeer)  
     
     
     Fit a dipolar evolution function with Rician distribution::
     
-        fit = fitsignal(V,t,r,dd_rice,None,None)          
+        fit = dl.fitsignal(V,t,r,dl.dd_rice,None,None)
     
     
     Fit a 4pDEER form factor (no background) with bimodal Gaussian distribution:: 
 
-        fit = fitsignal(V,t,r,dd_gauss2,None,ex_4pdeer)   
+        fit = dl.fitsignal(V,t,r,dl.dd_gauss2,None,dl.ex_4pdeer)   
    
      
     Fit a 4pDEER signal and a 5pDEER signal with same type of background::
     
-        fit = fitsignal([V1,V2],t,r,'P',bg_hom3d,[ex_4pdeer,ex_5pdeer])    
+        fit = fitsignal([V1,V2],t,r,'P',dl.bg_hom3d,[dl.ex_4pdeer,dl.ex_5pdeer])    
     """
 
     # Default optional settings

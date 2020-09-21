@@ -41,10 +41,10 @@ def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
     --------
     To calculate the background for the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use::
 
-        from numpy import linspace
-        from deerlab import dipolarbackground
+        import numpy as np
+        import deerlab as dl
 
-        t = linspace(-5,20,501) # time axis (us)
+        t = np.linspace(-5,20,501) # time axis (us)
         lam = 0.4 # modulation depth main signal
         conc = 200   # spin concentration (uM)
 
@@ -52,9 +52,10 @@ def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
         pathinfo[0] = [1-lam, NaN] # unmodulated part, gives offset
         pathinfo[1] = [lam, 0] # main modulation, refocusing at time zero
 
-        Bmodel = @(t,lam) bg_hom3d(t,conc,lam)
+        def Bmodel(t,lam):
+            return dl.bg_hom3d(t,conc,lam)
 
-        B = dipolarbackground(t,pathinfo,Bmodel)
+        B = dl.dipolarbackground(t,pathinfo,Bmodel)
 
 
     """

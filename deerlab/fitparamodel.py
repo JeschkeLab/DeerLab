@@ -81,12 +81,12 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
     --------
     A simple example for fitting a fully parametric 4-pulse DEER signal::
 
-        K0 = dipolarkernel(t,r)
+        K0 = dl.dipolarkernel(t,r)
         def Vmodel(par):
             # Extract parameters
             rmean,fwhm,lam,conc = par
-            B = bg_hom3d(t,conc)
-            P = dd_gauss(r,[rmean,fwhm])
+            B = dl.bg_hom3d(t,conc)
+            P = dl.dd_gauss(r,[rmean,fwhm])
             V = (1-lam + lam*K0@P)*B[:,np,newaxis]
             return V
         
@@ -94,18 +94,18 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
         par0 = [3.5, 0.5, 0.2, 250] # start values
         lb   = [ 1,  0.1,  0,  50 ] # lower bounds
         ub   = [20,   5,   1,  800] # upper bounds
-        fit = fitparamodel(V,Vmodel,par0,lb,ub)
+        fit = dl.fitparamodel(V,Vmodel,par0,lb,ub)
 
 
     If multiple datasets are to be fitted globally, this can be easily achieved by adapting the example above. Differentiating between local and global parameters is also simple. This example shows the definition of a full parametric model of two signals with same underlying distance distribution and background but different modulation depths::
     
-        K1 = dipolarkernel(t1,r)
-        K1 = dipolarkernel(t2,r)
+        K1 = dl.dipolarkernel(t1,r)
+        K1 = dl.dipolarkernel(t2,r)
         def Vmodel(par):
             # Extract parameters
             rmean,fwhm,lam1,lam,2conc = par
-            B = bg_hom3d(t,conc)
-            P = dd_gauss(r,[rmean,fwhm])
+            B = dl.bg_hom3d(t,conc)
+            P = dl.dd_gauss(r,[rmean,fwhm])
             V1 = (1-lam1 + lam1*K1@P)*B[:,np,newaxis]
             V2 = (1-lam2 + lam2*K2@P)*B[:,np,newaxis]
             return V
@@ -114,7 +114,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
         par0 = [3.5, 0.5, 0.2, 0.3, 250] # start values
         lb   = [ 1,  0.1,  0,   0,  50 ] # lower bounds
         ub   = [20,   5,   1,   1,  800] # upper bounds
-        fit = fitparamodel([V1,V2],Vmodel,par0,lb,ub)
+        fit = dl.fitparamodel([V1,V2],Vmodel,par0,lb,ub)
 
     """
 

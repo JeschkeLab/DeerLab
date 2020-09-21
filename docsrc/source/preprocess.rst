@@ -11,7 +11,7 @@ To load an experimental time-domain trace, use the function ``deerload``. It sup
 
 .. code-block:: python
    
-    t,V,_ = deerload('myfile.DSC')    # load DEER trace and time axis
+    t,V,_ = dl.deerload('myfile.DSC')    # load DEER trace and time axis
 
 ``deerload`` attempts to return the the time vector ``t`` in correct units (microseconds), but it might not be able to do so for all file formats.
 
@@ -28,8 +28,8 @@ Before fitting, experimental DEER data must be preprocessed. Three steps are usu
 
 .. code-block:: python
 
-    V = correctphase(V)           # phase correction
-    t = correctzerotime(V,t)      # zero-time adjustment
+    V = dl.correctphase(V)           # phase correction
+    t = dl.correctzerotime(V,t)      # zero-time adjustment
 
 All the ``correct*`` functions determine the corrections via an optimization approach. If that fails, you can provide an explicit phase, time shift, and scale as additional argument.
 
@@ -41,7 +41,7 @@ It can be useful to estimate the level of noise present in the data before actua
 
 .. code-block:: python
 
-   sigma = noiselevel(V)
+   sigma = dl.noiselevel(V)
 
 This returns an estimate of the noise standard deviation in the signal ``V``. If the signal is 1D, it estimates the noise level from the imaginary part, and if the signal is 2D (containing many scans), it gets from the standard deviation across scans.
 
