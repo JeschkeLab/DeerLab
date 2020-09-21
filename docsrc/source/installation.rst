@@ -52,9 +52,9 @@ If an error occurs during or after the installation please consult `this section
 Installing older versions
 -------------------------
 
-Any DeerLab >0.10.0 release can be installed via pip using the following command matching the x.x.x to the desired version::
+Any DeerLab >=0.10.0 release can be installed via pip using the following command matching the x.y.z to the desired version::
 
-		python -m pip install deerlab==x.x.x
+		python -m pip install deerlab==x.y.z
 
 
 Older DeerLab 0.9.x versions, written for MATLAB are available from an `archived repository <https://github.com/JeschkeLab/DeerLab-Matlab>`_. Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.

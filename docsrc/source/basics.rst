@@ -23,8 +23,8 @@ DeerLab distinguishes between **non-parametric** and **parametric** distance dis
 
 .. code-block:: python
    
-        r = np.linspace(1.5,6,201)   # distance, in nanometers
-        P = dd_gauss(r,[3 0.2])      # Gaussian distribution, center 3 nm, fwhm 0.5 nm
+        r = np.linspace(1.5,6,201)      # distance, in nanometers
+        P = dl.dd_gauss(r,[3 0.2])      # Gaussian distribution, center 3 nm, fwhm 0.5 nm
         plt.plot(r,P)
 
 The first line generates a distance axis ``r`` as a row vector. The second line generates the distance distribution ``P`` as a vector defined over ``r``. The function ``dd_gauss`` is a distance distribution model function provided by DeerLab. It takes as inputs the distance axis and a two-element parameter array (center and full width at half maximum) and returns the calculated distance distribution consisting of one Gaussian, truncated to the range of ``r`` and normalized.
@@ -33,7 +33,7 @@ To programmatically get information on a particular :ref:`distance distribution 
 
 .. code-block:: python
 
-        info = dd_gauss()        # obtain information on model and parameters
+        info = dl.dd_gauss()        # obtain information on model and parameters
 
 DeerLab provides a wide range of :ref:`parametric distribution models<modelsref_dd>` that fall into several groups. There are models that are based on basis functions and linear combinations thereof. Gaussian and 3D-Rice functions are the most important ones. To use a single Gaussian distribution, use :ref:`dd_gauss`. To combine 2, 3, etc. Gaussians distributions, use :ref:`dd_gauss2`, :ref:`dd_gauss3`, etc. Similarly, for 3D-Rice distributions, use :ref:`dd_rice`, :ref:`dd_rice2`, etc. A second group of distance distribution models represent three-dimensional disordered segmented objects such as proteins and other polymers: :ref:`dd_wormchain`, :ref:`dd_wormgauss`, :ref:`dd_randcoil`. A third group provides models for distributions of labels in simple confined spaces such as spheres and spherical shells. Finally, DeerLab provides a series of distance distribution models that represent simple geometric shapes. These models are worthless for practical purposes, but are useful as toy distributions for methods development: :ref:`dd_circle`, :ref:`dd_triangle`, and :ref:`dd_uniform`.
 
@@ -50,10 +50,10 @@ Here is an example:
 
 .. code-block:: python
 
-        t = np.linspace(-0.1,3,201) # time, in microseconds
-        lam = 0.4                   # modulation depth
-        conc = 200                  # spin concentration, in uM
-        B = bg_hom3d(t,conc,lam)    # homogeneous 3D background
+        t = np.linspace(-0.1,3,201)    # time, in microseconds
+        lam = 0.4                      # modulation depth
+        conc = 200                     # spin concentration, in uM
+        B = dl.bg_hom3d(t,conc,lam)    # homogeneous 3D background
         plt.plot(t,B)
 
 The first line generate the desired time axis. The second line gives the modulation depth, and the third gives the spin concentration (in micromolar). Both are inputs to the background function ``bg_hom3d``, which calculates a decay due to a homogeneous three-dimensional distribution of spins and returns it in ``B``. 
@@ -62,7 +62,7 @@ To get information on the model and its parameters, call the function without in
 
 .. code-block:: python
 
-        info = bg_hom3d()        # obtain information on model and parameters
+        info = dl.bg_hom3d()        # obtain information on model and parameters
 
 
 DeerLab's :ref:`background models<modelsref_bg>` fall into two categories, physical and phenomenological. **Physical models** describe particular distributions of spin labels in space. These models depend on physical parameters such as spin concentration, exclusion distances, and dimensionality. The most common one is :ref:`bg_hom3d`, which describes the signal due to a homogeneous three-dimensional distribution of spins of a given concentration. A homogeneous distribution in a fractal dimensions is available with :ref:`bg_homfractal`, and excluded-volume effects can be modelled using :ref:`bg_hom3dex`. **Phenomenological models** represent various mathematical functions that are intended to mimick the background decay, without reference to a particular spatial distribution of spins. The parameters of these models do no have direct physical meaning. In general, it is preferable to use the physical instead of phenomenological models.
@@ -81,7 +81,7 @@ For example, the model function representing the typical model for a 4-pulse DEE
 
         t = np.linspace(0,3,151)
         lam = 0.3;
-        pathways = ex_4pdeer(t,lam)
+        pathways = dl.ex_4pdeer(t,lam)
 
 The returned output is
 
@@ -99,9 +99,9 @@ One of the core functions of DeerLab is ``dipolarkernel``. It provides the kerne
 
 .. code-block:: python
 
-    t = np.linspace(0,3,301)     # time axis, in us
-    r = np.linspace(2,7,301)     # distance axis, in nm
-    K0 = dipolarkernel(t,r)      # dipolar kernel matrix
+    t = np.linspace(0,3,301)        # time axis, in us
+    r = np.linspace(2,7,301)        # distance axis, in nm
+    K0 = dl.dipolarkernel(t,r)      # dipolar kernel matrix
 
 To obtain the time-domain signal due to a distribution ``P``, use
 
@@ -116,8 +116,8 @@ The kernel can also include the background and the modulation depth. Then, the m
 .. code-block:: python
 
     lam = 0.4
-    B = bg_hom3d(t,200,lam)
-    K = dipolarkernel(t,r,lam,B)
+    B = dl.bg_hom3d(t,200,lam)
+    K = dl.dipolarkernel(t,r,lam,B)
     V = K@P
 
 The function ``dipolarkernel`` also has options to add an excitation bandwidth limitation, to select the internal calculation method, and more.
@@ -126,8 +126,8 @@ It is not necessary to precompute the background decay. Instead, provide ``dipol
 
 .. code-block:: python
     
-    bg = lambda t,lam: bg_hom3d(t,200,lam)   # define function for background
-    K = dipolarkernel(t,r,lam,bg)
+    bg = lambda t,lam: dl.bg_hom3d(t,200,lam)   # define function for background
+    K = dl.dipolarkernel(t,r,lam,bg)
 
 The use of function handles is central to DeerLab, especially when fitting experimental data.
 
@@ -139,24 +139,24 @@ To generate complete time-domain signals from a distance distribution and a back
 
 .. code-block:: python
 
-        K = dipolarkernel(t,r,lam,B)   # generate dipolar kernel
-        V = K@P                        # generate dipolar signal
+        K = dl.dipolarkernel(t,r,lam,B)   # generate dipolar kernel
+        V = K@P                           # generate dipolar signal
         plt.plot(t,V)
 
 It is possible to add noise to simulated data by using the ``whitegaussnoise`` function:
 
 .. code-block:: python
 
-        sigma = 0.05                        # noise level
-        V = K@P + whitegaussnoise(t,sigma)  # add some noise
+        sigma = 0.05                           # noise level
+        V = K@P + dl.whitegaussnoise(t,sigma)  # add some noise
 
 With this, uncorrelated Gaussian noise with standard deviation given as ``sigma`` is added to the noise-free signal.
 
 Adding a phase rotation is also possible, yielding a complex-valued signal with non-zero imaginary component. The phase shift on the noise has to be taken into account too:
 
-        phase = np.pi/4                   # phase shift, radians
-        V = K@P*exp(-1j*phase)            # add a phase shift
-        rnoise = whitegaussnoise(t,sigma) # real-component noise
-        inoise = whitegaussnoise(t,sigma) # imaginary-component noise
-        V = V + rnoise + inoise           # complex-valued noisy signal
+        phase = np.pi/4                      # phase shift, radians
+        V = K@P*exp(-1j*phase)               # add a phase shift
+        rnoise = dl.whitegaussnoise(t,sigma) # real-component noise
+        inoise = dl.whitegaussnoise(t,sigma) # imaginary-component noise
+        V = V + rnoise + inoise              # complex-valued noisy signal
 

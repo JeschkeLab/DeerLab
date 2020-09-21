@@ -117,28 +117,28 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     Since the signal requires additional parameters  (e.g. modulation depth, background parameters,…) a kernel model
     can be defined to account for these::
     
-        def K4pdeer(Kpar):
+        def Kmodel(Kpar):
             # Unpack parameters
             lam,conc = Kpar
             # Construct kernel
-            K = dipolarkernel(t,r,lam,bg_hom3d(t,conc,lam))
+            K = dl.dipolarkernel(t,r,lam,dl.bg_hom3d(t,conc,lam))
             return K
         
-        fit = fitmultimodel(V,Kmodel,r,dd_model,Nmax,'aicc')
+        fit = dl.fitmultimodel(V,Kmodel,r,dd_model,Nmax,'aicc')
 
 
     If multiple signals are to be fitted globally the example abova can be easily adapted by passing multiple
     signals to the fit function and by returning multiple kernels with the kernel model function::
     
-        def K4pdeer(Kpar):
+        def Kmodel(Kpar):
             # Unpack parameters
             lam,conc = Kpar
             # Construct kernels for both signals
-            K1 = dipolarkernel(t1,r,lam,bg_hom3d(t1,conc,lam))
-            K2 = dipolarkernel(t2,r,lam,bg_hom3d(t2,conc,lam))
+            K1 = dl.dipolarkernel(t1,r,lam,bg_hom3d(t1,conc,lam))
+            K2 = dl.dipolarkernel(t2,r,lam,bg_hom3d(t2,conc,lam))
             return K1,K2
         
-        fit = fitmultimodel([V1,V2],Kmodel,r,dd_model,Nmax,'aicc')
+        fit = dl.fitmultimodel([V1,V2],Kmodel,r,dd_model,Nmax,'aicc')
 
 
     """

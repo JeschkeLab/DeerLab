@@ -118,7 +118,6 @@ def test_multiple_datasets():
     assert all(abs(paruq.mean - fit.param) < 1e-2)
 # ======================================================================
 
-
 def test_parallelization():
 # ======================================================================
     "Check that bootan can run with multiple cores"
@@ -142,3 +141,4 @@ def test_parallelization():
 
     assert all(abs(paruq.mean - fit.param) < 1e-2)
 # ======================================================================
+
