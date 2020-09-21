@@ -4,10 +4,11 @@ on:
    push:
       branches:
       - manual_ghp_update
-      - master
       paths:
       - '.github/workflows**'
       - 'docsrc/**'
+  release:
+    types: [published]
 
 jobs:
 
