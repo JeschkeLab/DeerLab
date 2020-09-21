@@ -265,7 +265,7 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParame
         f_ = np.linalg.norm(respowSpectrum - wnoisePeriodogram)
 
     # Generalized Maximum Likelihood (GML)
-    elif  selmethod =='gml': 
+    elif  selmethod == 'gml': 
         Treshold = 1e-9
         eigs,_ = np.linalg.eig(np.eye(np.shape(H)[0],np.shape(H)[1]) - H)
         eigs[eigs < Treshold] = 0
@@ -273,11 +273,13 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParame
         f_ = V.T@(V - K@P)/np.prod(nzeigs)**(1/len(nzeigs))
 
     # Mallows' C_L (MCL)
-    elif  selmethod =='mcl':  
+    elif  selmethod == 'mcl':  
         if noiselvl==-1:
             noiselvl = np.std(V - K@P)
         f_ = Residual**2 + 2*noiselvl**2*np.trace(H) - 2*N*noiselvl**2
         
+    elif selmethod == 'lr' or selmethod == 'lc':
+        f_ = 0
     else:
         raise ValueError('Selection method \'{}\' is not known.'.format(selmethod))
 
