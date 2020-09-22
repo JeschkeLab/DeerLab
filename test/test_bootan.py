@@ -117,4 +117,3 @@ def test_multiple_datasets():
 
     assert all(abs(paruq.mean - fit.param) < 1e-2)
 # ======================================================================
-test_multiple_datasets()
