@@ -45,6 +45,7 @@ This class of functions can be used and/or combined to create fitting routines o
     :glob:
     :maxdepth: 1
 
+    ./functions/snlls
     ./functions/fitsignal
     ./functions/backgroundstart
     ./functions/fitmultimodel
@@ -82,8 +83,6 @@ This class of functions provide tools for preparing experimental data for analys
     ./functions/correctphase
     ./functions/correctzerotime
     ./functions/correctscale
-    ./functions/longpass
-    ./functions/winlowpass
 
 .. rst-class:: func-list
 
@@ -106,7 +105,6 @@ This class of functions helps to find an optimal choice of model or model parame
     :glob:
     :maxdepth: 1
 
-    ./functions/selectmodel
     ./functions/selregparam
     ./functions/regparamrange
 
@@ -133,11 +131,10 @@ This class of functions provides several tools for quick commands typically requ
     :maxdepth: 1
 
     ./functions/deerload
-    ./functions/time2freq
-    ./functions/time2dist
     ./functions/noiselevel
     ./functions/fftspec
-    ./functions/prepvalidation
+    ./functions/distdesc
+
 
 
 .. rst-class:: func-list
@@ -148,6 +145,7 @@ Function                                         Description
 :ref:`deerload`                                  Spectrometer data loader
 :ref:`noiselevel`                                Noise level estimator
 :ref:`fftspec`                                   Fast-Fourier transform spectrum
+:ref:`distdesc`                                  Distance distribution descriptors
 =============================================  ============================================================
 
 ---------------------------

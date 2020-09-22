@@ -327,7 +327,7 @@ class UncertQuant:
         # Clip at boundaries
         modelfit = np.maximum(modelfit,lbm)
         modelfit = np.minimum(modelfit,ubm)
-        
+
         # Error progation
         modelcovmat = J@self.covmat@J.T
         
