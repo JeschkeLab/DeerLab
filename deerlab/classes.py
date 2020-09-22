@@ -312,13 +312,13 @@ class UncertQuant:
         modelfit = model(parfit)
         
         # Validate input boundaries
-        if len(lbm)==0:
-            lbm = np.full(len(modelfit), -np.inf)
+        if np.size(lbm)==0:
+            lbm = np.full(np.size(modelfit), -np.inf)
 
-        if len(ubm)==0:
-            ubm = np.full(len(modelfit), np.inf)
+        if np.size(ubm)==0:
+            ubm = np.full(np.size(modelfit), np.inf)
         
-        if len(modelfit)!=len(lbm) or len(modelfit)!=len(ubm):
+        if np.size(modelfit)!=np.size(lbm) or np.size(modelfit)!=np.size(ubm):
             raise IndexError ('The 2nd and 3rd input arguments must have the same number of elements as the model output.')
         
         # Get jacobian of model to be propagated with respect to parameters
