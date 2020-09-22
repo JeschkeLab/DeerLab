@@ -52,7 +52,7 @@ def distdesc(P,r,Puq=None,verbose=False):
     
     uq : dict of :ref:`UncertQuant`
         Dictionary of the parameters covariance-based uncertainty quantifications. 
-        See above for the dictionary keys. Only returned if ``Puq`` is specified
+        See above for the dictionary keys. Only calculated if ``Puq`` is specified.
 
     Other Parameters
     ----------------
@@ -121,104 +121,106 @@ def distdesc(P,r,Puq=None,verbose=False):
     # 4th moment - Kurtosis
     kurtosisfcn = lambda P: E(((r - meanfcn(P))/stdfcn(P))**4,P)
 
-    # Ignore warnings when evaluating Jacobians outside of reasonable bounds
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
+    # Calculate distribution estimators
+    estimators = {
+        'mean': meanfcn(P),
+        'median': medianfcn(P),
+        'mode': modefcn(P),
+        'iqm': iqmfcn(P),
+        'mad': madfcn(P),
+        'var': variancefcn(P),
+        'std': stdfcn(P),
+        'iqr': iqrfcn(P),
+        'modality': modalityfcn(P),
+        'skewness': skewnessfcn(P),
+        'kurtosis': kurtosisfcn(P)
+    }
 
-        # Construct dict of distribution estimators
-        estimators = {
-            'mean': meanfcn(P),
-            'median': medianfcn(P),
-            'mode': modefcn(P),
-            'iqm': iqmfcn(P),
-            'mad': madfcn(P),
-            'var': variancefcn(P),
-            'std': stdfcn(P),
-            'iqr': iqrfcn(P),
-            'modality': modalityfcn(P),
-            'skewness': skewnessfcn(P),
-            'kurtosis': kurtosisfcn(P)
+    # Calculate distribution estimator uncertainties if uncertainty of P is given
+    uq = None
+    if Puq is not None:
+        uq = {
+            'mean': _propagation(Puq,meanfcn),
+            'median': _propagation(Puq,medianfcn),
+            'mode': None,
+            'iqm': _propagation(Puq,iqmfcn),
+            'mad': _propagation(Puq,madfcn),
+            'var': _propagation(Puq,variancefcn),
+            'std': _propagation(Puq,stdfcn),
+            'iqr': _propagation(Puq,iqrfcn),
+            'modality': None,
+            'skewness': _propagation(Puq,skewnessfcn),
+            'kurtosis': _propagation(Puq,kurtosisfcn)
         }
 
-        # If the uncertainty of the distance distribution is not provided....
-        if Puq is None:            
-            # Print summary of estimators if requested
-            if verbose:
-                print('-------------------------------------------------')
-                print('Location')
-                print('-------------------------------------------------')
-                print('Range                    {:.2f}-{:.2f} nm'.format(min(r),max(r)))
-                print('Mean                     {:.2f} nm'.format(estimators['mean']))
-                print('Median                   {:.2f} nm'.format(estimators['median']))
-                print('Interquartile mean       {:.2f} nm'.format(estimators['iqm']))
-                print('Mode                     {:.2f} nm'.format(estimators['mode']))
-                print('-------------------------------------------------')
-                print('Spread')
-                print('-------------------------------------------------')
-                print('Standard deviation       {:.2f} nm'.format(estimators['std']))
-                print('Mean absolute deviation  {:.2f} nm'.format(estimators['mad']))
-                print('Interquartile range      {:.2f} nm'.format(estimators['iqr']))
-                print('Variance                 {:.2f} nm²'.format(estimators['var']))
-                print('-------------------------------------------------')
-                print('Shape')
-                print('-------------------------------------------------')
-                print('Modality                 {0}    '.format(estimators['modality']))
-                print('Skewness                 {:.2f} '.format(estimators['skewness']))
-                print('Kurtosis                 {:.2f} '.format(estimators['kurtosis']))
-                print('-------------------------------------------------')
-            return estimators
+    # Print if requested
+    if verbose:
+        _print_estimators(r,estimators,uq)
+        
+    return estimators,uq
 
-        else:
 
-            def propagation(Puq,fcn):
-                # Propagate the uncertainty to the function
-                uq_ = Puq.propagate(fcn)
-                uq = copy.deepcopy(uq_)
-                def ci(p):
-                    paramci = uq_.ci(p)
-                    return [paramci[:,0][0],paramci[:,1][0]]
-                # Wrap the ci() method to simplify array
-                uq.ci = ci
-                return uq
+def _propagation(Puq,fcn):
+    # Propagate the uncertainty to the function
+    with warnings.catch_warnings():
+        # Ignore warnings when evaluating Jacobians outside of reasonable bounds
+        warnings.simplefilter('ignore')
+        uq_ = Puq.propagate(fcn)
+    
+    uq = copy.deepcopy(uq_)
+    def ci(p):
+        paramci = uq_.ci(p)
+        return [paramci[:,0][0],paramci[:,1][0]]
+    # Wrap the ci() method to simplify array
+    uq.ci = ci
+    return uq
 
-            # Construct dict of their respective uncertainties
-            uq = {
-                'mean': propagation(Puq,meanfcn),
-                'median': propagation(Puq,medianfcn),
-                'mode': None,
-                'iqm': propagation(Puq,iqmfcn),
-                'mad': propagation(Puq,madfcn),
-                'var': propagation(Puq,variancefcn),
-                'std': propagation(Puq,stdfcn),
-                'iqr': propagation(Puq,iqrfcn),
-                'modality': None,
-                'skewness': propagation(Puq,skewnessfcn),
-                'kurtosis': propagation(Puq,kurtosisfcn)
-            }
 
-        # Print summary of estimators with 95%-confidence intervals if requested
-        if verbose:
-            print('-------------------------------------------------')
-            print('Location')
-            print('-------------------------------------------------')
-            print('Range                    {:.2f}-{:.2f} nm'.format(min(r),max(r)))
-            print('Mean                     {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['mean'],uq['mean'].ci(95)[0],uq['mean'].ci(95)[1]))
-            print('Median                   {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['median'],uq['median'].ci(95)[0],uq['median'].ci(95)[1]))
-            print('Interquartile mean       {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['iqm'],uq['iqm'].ci(95)[0],uq['iqm'].ci(95)[1]))
-            print('Mode                     {:.2f} nm'.format(estimators['mode']))
-            print('-------------------------------------------------')
-            print('Spread')
-            print('-------------------------------------------------')
-            print('Standard deviation       {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['std'],uq['std'].ci(95)[0],uq['std'].ci(95)[1]))
-            print('Mean absolute deviation  {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['mad'],uq['mad'].ci(95)[0],uq['mad'].ci(95)[1]))
-            print('Interquartile range      {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['iqr'],uq['iqr'].ci(95)[0],uq['iqr'].ci(95)[1]))
-            print('Variance                 {:.2f} ({:.2f},{:.2f}) nm²'.format(estimators['var'],uq['var'].ci(95)[0],uq['var'].ci(95)[1]))
-            print('-------------------------------------------------')
-            print('Shape')
-            print('-------------------------------------------------')
-            print('Modality                 {0}                    '.format(estimators['modality']))
-            print('Skewness                 {:.2f} ({:.2f},{:.2f}) '.format(estimators['skewness'],uq['skewness'].ci(95)[0],uq['skewness'].ci(95)[1]))
-            print('Kurtosis                 {:.2f} ({:.2f},{:.2f}) '.format(estimators['kurtosis'],uq['kurtosis'].ci(95)[0],uq['kurtosis'].ci(95)[1]))
-            print('-------------------------------------------------')
-
-        return estimators,uq
+def _print_estimators(r,estimators,uq):
+    # Print summary of estimators if requested
+    if uq is None:
+        print('-------------------------------------------------')
+        print('Location')
+        print('-------------------------------------------------')
+        print('Range                    {:.2f}-{:.2f} nm'.format(min(r),max(r)))
+        print('Mean                     {:.2f} nm'.format(estimators['mean']))
+        print('Median                   {:.2f} nm'.format(estimators['median']))
+        print('Interquartile mean       {:.2f} nm'.format(estimators['iqm']))
+        print('Mode                     {:.2f} nm'.format(estimators['mode']))
+        print('-------------------------------------------------')
+        print('Spread')
+        print('-------------------------------------------------')
+        print('Standard deviation       {:.2f} nm'.format(estimators['std']))
+        print('Mean absolute deviation  {:.2f} nm'.format(estimators['mad']))
+        print('Interquartile range      {:.2f} nm'.format(estimators['iqr']))
+        print('Variance                 {:.2f} nm²'.format(estimators['var']))
+        print('-------------------------------------------------')
+        print('Shape')
+        print('-------------------------------------------------')
+        print('Modality                 {0}    '.format(estimators['modality']))
+        print('Skewness                 {:.2f} '.format(estimators['skewness']))
+        print('Kurtosis                 {:.2f} '.format(estimators['kurtosis']))
+        print('-------------------------------------------------')
+    else:
+        print('-------------------------------------------------')
+        print('Location')
+        print('-------------------------------------------------')
+        print('Range                    {:.2f}-{:.2f} nm'.format(min(r),max(r)))
+        print('Mean                     {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['mean'],uq['mean'].ci(95)[0],uq['mean'].ci(95)[1]))
+        print('Median                   {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['median'],uq['median'].ci(95)[0],uq['median'].ci(95)[1]))
+        print('Interquartile mean       {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['iqm'],uq['iqm'].ci(95)[0],uq['iqm'].ci(95)[1]))
+        print('Mode                     {:.2f} nm'.format(estimators['mode']))
+        print('-------------------------------------------------')
+        print('Spread')
+        print('-------------------------------------------------')
+        print('Standard deviation       {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['std'],uq['std'].ci(95)[0],uq['std'].ci(95)[1]))
+        print('Mean absolute deviation  {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['mad'],uq['mad'].ci(95)[0],uq['mad'].ci(95)[1]))
+        print('Interquartile range      {:.2f} ({:.2f},{:.2f}) nm'.format(estimators['iqr'],uq['iqr'].ci(95)[0],uq['iqr'].ci(95)[1]))
+        print('Variance                 {:.2f} ({:.2f},{:.2f}) nm²'.format(estimators['var'],uq['var'].ci(95)[0],uq['var'].ci(95)[1]))
+        print('-------------------------------------------------')
+        print('Shape')
+        print('-------------------------------------------------')
+        print('Modality                 {0}                    '.format(estimators['modality']))
+        print('Skewness                 {:.2f} ({:.2f},{:.2f}) '.format(estimators['skewness'],uq['skewness'].ci(95)[0],uq['skewness'].ci(95)[1]))
+        print('Kurtosis                 {:.2f} ({:.2f},{:.2f}) '.format(estimators['kurtosis'],uq['kurtosis'].ci(95)[0],uq['kurtosis'].ci(95)[1]))
+        print('-------------------------------------------------')
