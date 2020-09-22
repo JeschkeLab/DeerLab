@@ -12,7 +12,7 @@ def _parsargs(args,npar):
 #=================================================================
     name = inspect.stack()[1][3]
     if len(args)!=2:
-        raise KeyError('The model function {} requires two input arguments: {}(r,params)'.format(name,name))
+        raise KeyError('The model function {} requires two input arguments: {}(r,params).'.format(name,name))
     r,p = args
     if len(p)!=npar:
         raise ValueError('The model function {} requires {} parameters, but {} are provided.'.format(name,npar,len(p)))

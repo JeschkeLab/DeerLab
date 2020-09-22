@@ -7,9 +7,12 @@ import numpy as np
 import math as m
 import scipy as scp
 from numpy import pi
+import inspect
 
 def _parsargs(args,npar):
 #=================================================================
+    name = inspect.stack()[1][3]
+    
     # Check the number of input arguments specified
     if len(args)==2:
         t,p = args
@@ -17,15 +20,15 @@ def _parsargs(args,npar):
     elif len(args)==3:
         t,p,lam = args
     else:
-        raise TypeError('Two or three input arguments required: bg_model(t,p) or bg_model(r,p,lam)')
+        raise KeyError('The model function {} requires two or three input arguments: {}(r,params) or {}(r,params,lambda).'.format(name,name,name))
 
     t = np.atleast_1d(t)
     p = np.atleast_1d(p)
 
     # Check that the correct number of parmameters have been specified
     if len(p)!=npar:
-        raise ValueError('This model requires ',npar,' parameters. Only ',len(p),' where specified.')
- 
+        raise ValueError('The model function {} requires {} parameters, but {} are provided.'.format(name,npar,len(p)))
+
     return t,p,lam
 #=================================================================
 
