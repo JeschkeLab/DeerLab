@@ -15,7 +15,7 @@ def assert_descriptor(key,truth):
     # Gaussian distribution
     P = dd_gauss(r,[Pmean, Psigma])
     
-    descriptor = distdesc(P,r)[key]
+    descriptor = distdesc(P,r)[0][key]
     
     assert abs(descriptor - truth) < dr
 # ----------------------------------------------------------------------

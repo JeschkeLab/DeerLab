@@ -68,7 +68,7 @@ def distdesc(P,r,Puq=None,verbose=False):
 
         def analyze_rmode(V):
             fit = dl.fitsignal(V,t,r)
-            rmode = dl.descdist(fit.P,r)['mode']
+            rmode = dl.descdist(fit.P,r)[0]['mode']
             return rmode
         # Bootstrap analysis of distance mode    
         rmode_uq = dl.bootan(V,Vfit,analyze_r_mode)
