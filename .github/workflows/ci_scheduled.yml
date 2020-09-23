@@ -1,11 +1,8 @@
-name: DeerLab testsuite
+name: Scheduled DeerLab tests
 on:
   schedule:
-    # Run every 2rd day at 6:30 AM
-    - cron:  '30 6 * * 1/2'
-  pull_request:
-    branches:
-    - main
+    # Run once a week on Monday at 6:30 AM
+    - cron:  '30 6 * * 1'
 
 jobs:
   build:
