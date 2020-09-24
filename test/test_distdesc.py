@@ -124,6 +124,37 @@ def test_kurtosis():
     assert_descriptor('kurtosis',truth)
 # ======================================================================
 
+def test_moment1():
+# ======================================================================
+    "Check that the 1st moment is correctly computed"
+
+    truth = Pmean
+    assert_descriptor('moment1',truth)
+# ======================================================================
+
+def test_moment2():
+# ======================================================================
+    "Check that the 2nd moment is correctly computed"
+
+    truth = Psigma**2
+    assert_descriptor('moment2',truth)
+# ======================================================================
+
+def test_moment3():
+# ======================================================================
+    "Check that the 3rd moment is correctly computed"
+
+    truth = 0
+    assert_descriptor('moment3',truth)
+# ======================================================================
+
+def test_moment4():
+# ======================================================================
+    "Check that the 4th moment is correctly computed"
+
+    truth = 3
+    assert_descriptor('moment4',truth)
+# ======================================================================
 
 t = np.linspace(0,5,200)
 r = np.linspace(2,6,100)
@@ -187,7 +218,7 @@ def test_entropy_uncertainty():
     "Check that the entropy confidence intervals are correct."
     assert_uncertainty('entropy')
 # ======================================================================
-test_entropy_uncertainty()
+
 def test_skewness_uncertainty():
 # ======================================================================
     "Check that the skewness confidence intervals are correct."
@@ -198,4 +229,28 @@ def test_kurtosis_uncertainty():
 # ======================================================================
     "Check that the kurtosis confidence intervals are correct."
     assert_uncertainty('kurtosis')
+# ======================================================================
+
+def test_moment1_uncertainty():
+# ======================================================================
+    "Check that the 1st moment confidence intervals are correct."
+    assert_uncertainty('moment1')
+# ======================================================================
+
+def test_moment2_uncertainty():
+# ======================================================================
+    "Check that the 2nd moment confidence intervals are correct."
+    assert_uncertainty('moment2')
+# ======================================================================
+
+def test_moment3_uncertainty():
+# ======================================================================
+    "Check that the 3rd moment confidence intervals are correct."
+    assert_uncertainty('moment3')
+# ======================================================================
+
+def test_moment4_uncertainty():
+# ======================================================================
+    "Check that the 4th moment confidence intervals are correct."
+    assert_uncertainty('moment4')
 # ======================================================================

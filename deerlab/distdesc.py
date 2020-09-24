@@ -32,7 +32,7 @@ def distdesc(r, P, Puq=None, verbose=False, threshold=None):
         
         Location parameters
 
-            * ``'mean'`` - Mean distance in nm (see `more <https://en.wikipedia.org/wiki/Mean>`_)
+            * ``'mean'`` or ``'moment1'`` - Mean distance in nm (see `more <https://en.wikipedia.org/wiki/Mean>`_)
             * ``'median'`` - Median distance in nm (see `more <https://en.wikipedia.org/wiki/Median>`_)
             * ``'iqm'`` - Interquartile mean (IQM) distance in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_mean>`_)
             * ``'mode'`` - First modal distance in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`_)
@@ -43,15 +43,16 @@ def distdesc(r, P, Puq=None, verbose=False, threshold=None):
             * ``'iqr'`` - Interquartile range in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_range>`_)
             * ``'mad'`` - Mean absolute deviation (MAD)  in nm (see `more <https://en.wikipedia.org/wiki/Average_absolute_deviation>`_)
             * ``'std'`` - Standard deviation  in nm (see `more <https://en.wikipedia.org/wiki/Standard_deviation>`_)
-            * ``'var'`` - Variance in nm² (see `more <https://en.wikipedia.org/wiki/Variance>`_)
+            * ``'var'`` or ``'moment2'`` - Variance in nm² (see `more <https://en.wikipedia.org/wiki/Variance>`_)
             * ``'entropy'`` - Shannon entropy (see `more <https://en.wikipedia.org/wiki/Entropy_(information_theory)>`_)
 
         Shape parameters
 
             * ``'modality'`` - Modality (number of peaks)
-            * ``'skewness'`` - Skewness (see `more <https://en.wikipedia.org/wiki/Skewness>`_)
-            * ``'kurtosis'`` - Kurtosis (see `more <https://en.wikipedia.org/wiki/Kurtosis>`_)
-    
+            * ``'skewness'`` or ``'moment3'`` - Skewness (see `more <https://en.wikipedia.org/wiki/Skewness>`_)
+            * ``'kurtosis'`` - Excess kurtosis (see `more <https://en.wikipedia.org/wiki/Kurtosis>`_)
+            * ``'moment4'`` - 4th moment (kurtosis) (see `more <https://en.wikipedia.org/wiki/Kurtosis>`_)
+
     uq : dict of :ref:`UncertQuant`
         Dictionary of the parameters covariance-based uncertainty quantifications. 
         See above for the dictionary keys. Only calculated if ``Puq`` is specified.
@@ -130,7 +131,9 @@ def distdesc(r, P, Puq=None, verbose=False, threshold=None):
     # 3rd moment - Skewness
     skewnessfcn = lambda P: E(((r - meanfcn(P))/stdfcn(P))**3,P)
     # 4th moment - Kurtosis
-    kurtosisfcn = lambda P: 3 - E(((r - meanfcn(P))/stdfcn(P))**4,P)
+    kurtosisfcn = lambda P: E(((r - meanfcn(P))/stdfcn(P))**4,P)
+    # Excess kurtosis 
+    exkurtosisfcn = lambda P: 3 - E(((r - meanfcn(P))/stdfcn(P))**4,P)
 
     # Calculate distribution estimators
     estimators = {
@@ -146,7 +149,11 @@ def distdesc(r, P, Puq=None, verbose=False, threshold=None):
         'entropy': entropyfcn(P),
         'modality': modalityfcn(P),
         'skewness': skewnessfcn(P),
-        'kurtosis': kurtosisfcn(P)
+        'kurtosis': exkurtosisfcn(P),
+        'moment1': meanfcn(P),
+        'moment2': variancefcn(P),
+        'moment3': skewnessfcn(P),
+        'moment4': kurtosisfcn(P),
     }
 
     # Calculate distribution estimator uncertainties if uncertainty of P is given
@@ -165,7 +172,11 @@ def distdesc(r, P, Puq=None, verbose=False, threshold=None):
             'entropy': _propagation(Puq,entropyfcn),
             'modality': None,
             'skewness': _propagation(Puq,skewnessfcn),
-            'kurtosis': _propagation(Puq,kurtosisfcn)
+            'kurtosis': _propagation(Puq,exkurtosisfcn),
+            'moment1': _propagation(Puq,meanfcn),
+            'moment2': _propagation(Puq,variancefcn),
+            'moment3': _propagation(Puq,skewnessfcn),
+            'moment4': _propagation(Puq,kurtosisfcn),
         }
 
     # Print if requested
