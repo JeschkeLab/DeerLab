@@ -8,16 +8,16 @@ import warnings
 import copy
 from scipy.signal import find_peaks
 
-def distdesc(P,r,Puq=None,verbose=False):
+def distdesc(r,P,Puq=None,verbose=False):
     r""" Computes descriptors/estimators for the location, spread and shape 
     of a distance distribution with or without their corresponding uncertainties..
 
     Parameters
     ----------
-    P : array_like
-        Distance distribution.
     r : array_like
         Distance axis in nm. 
+    P : array_like
+        Distance distribution.
     Puq : :ref:`UncertQuant`
         Uncertainty quantification of the distance distribution. If not 
         specified, the one single output is returned without any uncertainty 
@@ -199,7 +199,7 @@ def _print_estimators(r,estimators,uq):
         print('-------------------------------------------------')
         print('Modality                 {0}    '.format(estimators['modality']))
         print('Skewness                 {:.2f} '.format(estimators['skewness']))
-        print('Kurtosis                 {:.2f} '.format(estimators['kurtosis']))
+        print('Excess kurtosis          {:.2f} '.format(estimators['kurtosis']))
         print('-------------------------------------------------')
     else:
         print('-------------------------------------------------')

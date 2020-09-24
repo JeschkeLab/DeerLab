@@ -15,7 +15,7 @@ def assert_descriptor(key,truth):
     # Gaussian distribution
     P = dd_gauss(r,[Pmean, Psigma])
     
-    descriptor = distdesc(P,r)[0][key]
+    descriptor = distdesc(r,P)[0][key]
     
     assert abs(descriptor - truth) < dr
 # ----------------------------------------------------------------------
@@ -102,9 +102,9 @@ def test_skewness():
 
 def test_kurtosis():
 # ======================================================================
-    "Check that the kurtosis is correctly computed"
+    "Check that the excess kurtosis is correctly computed"
 
-    truth = 3
+    truth = 0
     assert_descriptor('kurtosis',truth)
 # ======================================================================
 
@@ -118,7 +118,7 @@ fit = fitregmodel(K@P,K,r)
 
 def assert_uncertainty(key):
 # ----------------------------------------------------------------------
-    desc,uq = distdesc(fit.P,r,fit.uncertainty)
+    desc,uq = distdesc(r,fit.P,fit.uncertainty)
     desc = desc[key]
     ci = uq[key].ci(95)
     assert (desc >= ci[0]) & (desc <= ci[1])
