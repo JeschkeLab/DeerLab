@@ -44,6 +44,14 @@ def test_mode():
     assert_descriptor('mode',truth)
 # ======================================================================
 
+def test_modes():
+# ======================================================================
+    "Check that the modes are correctly computed"
+
+    truth = Pmean
+    assert_descriptor('modes',truth)
+# ======================================================================
+
 def test_iqm():
 # ======================================================================
     "Check that the interquartile mean is correctly computed"

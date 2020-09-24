@@ -8,7 +8,7 @@ import warnings
 import copy
 from scipy.signal import find_peaks
 
-def distdesc(r,P,Puq=None,verbose=False):
+def distdesc(r, P, Puq=None, verbose=False, threshold=None):
     r""" Computes descriptors/estimators for the location, spread and shape 
     of a distance distribution with or without their corresponding uncertainties..
 
@@ -35,7 +35,8 @@ def distdesc(r,P,Puq=None,verbose=False):
             * ``'mean'`` - Mean distance in nm (see `more <https://en.wikipedia.org/wiki/Mean>`_)
             * ``'median'`` - Median distance in nm (see `more <https://en.wikipedia.org/wiki/Median>`_)
             * ``'iqm'`` - Interquartile mean (IQM) distance in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_mean>`_)
-            * ``'mode'`` - Modal distance in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`_)
+            * ``'mode'`` - First modal distance in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`_)
+            * ``'modes'`` - All modal distances in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`_)
 
         Spread parameters
 
@@ -60,10 +61,12 @@ def distdesc(r,P,Puq=None,verbose=False):
     verbose : boolean
         Enable to print a summary of all distribution descriptors along 
         with their corresponding 95% confidence intervals. Disabled by default.
+    threshold : scalar
+        Required minimal height of peaks. Either a number or ``None``.
 
     Notes
     -----
-    Both the ``'mode'`` and ``'modality'`` parameters have no corresponding covariance-based
+    The ``'mode'``, ``'modes'`` and ``'modality'`` parameters have no corresponding covariance-based
     uncertainty quantification since they are mathematically not defined. These can, however, be 
     calculated via bootsrapping of these quantities, e.g. ::
 
@@ -77,6 +80,9 @@ def distdesc(r,P,Puq=None,verbose=False):
     """
 
     P,r = np.atleast_1d(P,r)
+
+    if threshold is None:
+        threshold = np.max(P)/10
 
     # Auxiliary functions
     # -------------------
@@ -101,6 +107,8 @@ def distdesc(r,P,Puq=None,verbose=False):
     iqmfcn = lambda P: E(r[(r>pctile(P,25)) & (r<pctile(P,75))],P[(r>pctile(P,25)) & (r<pctile(P,75))]) 
     # Mode
     modefcn = lambda P: r[np.argmax(P/np.sum(P))]
+    # Modes
+    modesfcn = lambda P: r[find_peaks(P,height=threshold)[0]]
 
     # Spread estimators
     # -----------------
@@ -118,7 +126,7 @@ def distdesc(r,P,Puq=None,verbose=False):
     # Shape estimators
     # ----------------
     # Modality
-    modalityfcn = lambda P:  np.size(find_peaks(P, [np.max(P)/10])[0])
+    modalityfcn = lambda P:  np.size(modesfcn(P))
     # 3rd moment - Skewness
     skewnessfcn = lambda P: E(((r - meanfcn(P))/stdfcn(P))**3,P)
     # 4th moment - Kurtosis
@@ -129,6 +137,7 @@ def distdesc(r,P,Puq=None,verbose=False):
         'mean': meanfcn(P),
         'median': medianfcn(P),
         'mode': modefcn(P),
+        'modes': modesfcn(P),
         'iqm': iqmfcn(P),
         'mad': madfcn(P),
         'var': variancefcn(P),
@@ -147,6 +156,7 @@ def distdesc(r,P,Puq=None,verbose=False):
             'mean': _propagation(Puq,meanfcn),
             'median': _propagation(Puq,medianfcn),
             'mode': None,
+            'modes': None,
             'iqm': _propagation(Puq,iqmfcn),
             'mad': _propagation(Puq,madfcn),
             'var': _propagation(Puq,variancefcn),
