@@ -43,6 +43,7 @@ def distdesc(r,P,Puq=None,verbose=False):
             * ``'mad'`` - Mean absolute deviation (MAD)  in nm (see `more <https://en.wikipedia.org/wiki/Average_absolute_deviation>`_)
             * ``'std'`` - Standard deviation  in nm (see `more <https://en.wikipedia.org/wiki/Standard_deviation>`_)
             * ``'var'`` - Variance in nm² (see `more <https://en.wikipedia.org/wiki/Variance>`_)
+            * ``'entropy'`` - Shannon entropy (see `more <https://en.wikipedia.org/wiki/Entropy_(information_theory)>`_)
 
         Shape parameters
 
@@ -111,6 +112,8 @@ def distdesc(r,P,Puq=None,verbose=False):
     variancefcn = lambda P: E(r**2 - meanfcn(P)**2,P)
     # 2nd moment - Standard deviation
     stdfcn = lambda P: np.sqrt(variancefcn(P))
+    # Entropy (information theory)
+    entropyfcn = lambda P: -E(np.log(np.maximum(np.finfo(float).eps,P)),P)
 
     # Shape estimators
     # ----------------
@@ -119,7 +122,7 @@ def distdesc(r,P,Puq=None,verbose=False):
     # 3rd moment - Skewness
     skewnessfcn = lambda P: E(((r - meanfcn(P))/stdfcn(P))**3,P)
     # 4th moment - Kurtosis
-    kurtosisfcn = lambda P: E(((r - meanfcn(P))/stdfcn(P))**4,P)
+    kurtosisfcn = lambda P: 3 - E(((r - meanfcn(P))/stdfcn(P))**4,P)
 
     # Calculate distribution estimators
     estimators = {
@@ -131,6 +134,7 @@ def distdesc(r,P,Puq=None,verbose=False):
         'var': variancefcn(P),
         'std': stdfcn(P),
         'iqr': iqrfcn(P),
+        'entropy': entropyfcn(P),
         'modality': modalityfcn(P),
         'skewness': skewnessfcn(P),
         'kurtosis': kurtosisfcn(P)
@@ -148,6 +152,7 @@ def distdesc(r,P,Puq=None,verbose=False):
             'var': _propagation(Puq,variancefcn),
             'std': _propagation(Puq,stdfcn),
             'iqr': _propagation(Puq,iqrfcn),
+            'entropy': _propagation(Puq,entropyfcn),
             'modality': None,
             'skewness': _propagation(Puq,skewnessfcn),
             'kurtosis': _propagation(Puq,kurtosisfcn)

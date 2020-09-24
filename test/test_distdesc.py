@@ -76,6 +76,14 @@ def test_variance():
     assert_descriptor('var',truth)
 # ======================================================================
 
+def test_entropy():
+# ======================================================================
+    "Check that the entropy is correctly computed"
+
+    truth = 1/2*np.log(2*np.pi*np.e*Psigma**2)
+    assert_descriptor('entropy',truth)
+# ======================================================================
+
 def test_mad():
 # ======================================================================
     "Check that the mean absolute deviation is correctly computed"
@@ -166,6 +174,12 @@ def test_var_uncertainty():
     assert_uncertainty('var')
 # ======================================================================
 
+def test_entropy_uncertainty():
+# ======================================================================
+    "Check that the entropy confidence intervals are correct."
+    assert_uncertainty('entropy')
+# ======================================================================
+test_entropy_uncertainty()
 def test_skewness_uncertainty():
 # ======================================================================
     "Check that the skewness confidence intervals are correct."
