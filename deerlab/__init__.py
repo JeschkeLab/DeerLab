@@ -25,4 +25,4 @@ from .correctscale import correctscale
 from .fftspec import fftspec
 from .time2dist import time2dist
 from .classes import FitResult, UncertQuant
-from .distdesc import distdesc
+from .diststats import diststats

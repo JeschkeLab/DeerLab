@@ -1,8 +1,8 @@
 .. highlight:: python
-.. _distdesc:
+.. _diststats:
 
 ***********************
-:mod:`distdesc`
+:mod:`diststats`
 ***********************
 
-.. autofunction:: deerlab.distdesc
+.. autofunction:: deerlab.diststats

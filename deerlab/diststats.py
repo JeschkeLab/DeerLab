@@ -1,4 +1,4 @@
-# distdesc.py - Distance distribution descriptors
+# diststats.py - Distance distribution descriptors
 # -----------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
@@ -8,7 +8,7 @@ import warnings
 import copy
 from scipy.signal import find_peaks
 
-def distdesc(r, P, Puq=None, verbose=False, threshold=None):
+def diststats(r, P, Puq=None, verbose=False, threshold=None):
     r""" Computes descriptors/estimators for the location, spread and shape 
     of a distance distribution with or without their corresponding uncertainties..
 
@@ -73,7 +73,7 @@ def distdesc(r, P, Puq=None, verbose=False, threshold=None):
 
         def analyze_rmode(V):
             fit = dl.fitsignal(V,t,r)
-            rmode = dl.descdist(fit.P,r)[0]['mode']
+            rmode = dl.diststats(fit.P,r)[0]['mode']
             return rmode
         # Bootstrap analysis of distance mode    
         rmode_uq = dl.bootan(V,Vfit,analyze_r_mode)

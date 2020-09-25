@@ -1,6 +1,6 @@
 
 import numpy as np
-from deerlab import dipolarkernel, distdesc, fitregmodel
+from deerlab import dipolarkernel, diststats, fitregmodel
 from deerlab.dd_models import dd_gauss
 
 # Gaussian distribution parameters
@@ -15,7 +15,7 @@ def assert_descriptor(key,truth):
     # Gaussian distribution
     P = dd_gauss(r,[Pmean, Psigma])
     
-    descriptor = distdesc(r,P)[0][key]
+    descriptor = diststats(r,P)[0][key]
     
     assert abs(descriptor - truth) < dr
 # ----------------------------------------------------------------------
@@ -165,7 +165,7 @@ fit = fitregmodel(K@P,K,r)
 
 def assert_uncertainty(key):
 # ----------------------------------------------------------------------
-    desc,uq = distdesc(r,fit.P,fit.uncertainty)
+    desc,uq = diststats(r,fit.P,fit.uncertainty)
     desc = desc[key]
     ci = uq[key].ci(95)
     assert (desc >= ci[0]) & (desc <= ci[1])

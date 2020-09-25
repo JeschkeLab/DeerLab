@@ -145,7 +145,7 @@ Function                                         Description
 :ref:`deerload`                                  Spectrometer data loader
 :ref:`noiselevel`                                Noise level estimator
 :ref:`fftspec`                                   Fast-Fourier transform spectrum
-:ref:`distdesc`                                  Distance distribution descriptors
+:ref:`diststats`                                 Distance distribution statistics
 =============================================  ============================================================
 
 ---------------------------
