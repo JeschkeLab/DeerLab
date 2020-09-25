@@ -341,7 +341,8 @@ def bg_homfractal(*args):
 
     # Unpack model paramters
     conc = param[0]         # concentration, umol/dm^d
-    d = param[1]            # fractal dimension    
+    d = float(param[1])     # fractal dimension    
+
     # Natural constants
     NA = 6.02214076e23      # Avogadro constant, mol^-1
     muB = 9.2740100783e-24  # Bohr magneton, J/T (CODATA 2018 value)
@@ -351,8 +352,9 @@ def bg_homfractal(*args):
     hbar = h/2/pi         # reduced Planck constant, J/(rad/s)
     D = (mu0/4/pi)*(muB*ge)**2/hbar   # dipolar constant, m^3 s^-1
     # Units conversion of concentration    
-    conc = conc*1e-6*(10**-d)*NA # umol/dm^d -> mol/m^d -> spins/m^d
+    conc = conc*1e-6*(np.power(10,d))*NA # umol/dm^d -> mol/m^d -> spins/m^d
     
+
     # Compute constants
     if d==3:
         c = -pi/2
@@ -360,7 +362,7 @@ def bg_homfractal(*args):
     else:
         c = np.cos(d*pi/6)*scp.special.gamma(-d/3)
         integrand = lambda z: abs(1-3*z**2)**(d/3)
-        Lam = scp.integrate.quad(integrand,0,1,limit=1000)
+        Lam,_ = scp.integrate.quad(integrand,0,1,limit=1000)
 
     # Compute background function
     B = np.exp(4*pi/3*c*Lam*lam*conc*D**(d/3)*abs(t*1e-6)**(d/3))
