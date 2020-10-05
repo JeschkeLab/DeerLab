@@ -61,7 +61,7 @@ def test_dipevo_function():
     "Check that the fit of a dipolar evolution function is correct"
 
     t = np.linspace(0,5,100)
-    r = np.linspace(2,6,150)
+    r = np.linspace(2,7,150)
     P = dd_gauss(r,[4.5, 0.25])
     K = dipolarkernel(t,r)
     V = K@P

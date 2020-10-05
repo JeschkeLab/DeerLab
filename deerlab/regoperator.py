@@ -32,17 +32,23 @@ def regoperator(r,d=2):
     .. [1] B. Fornberg, "Calculation of weights in finite difference formulas", SIAM Review 40 (1998), pp. 685-691.
     """
     r = np.atleast_1d(r)
-    
-    # Check arguments.
+
+    # Length of axis
     n = len(r)
 
     # Construct finite difference matrix
     L = np.zeros((n-d,n))
 
-    # Compute non-zero finite difference coefficients via Fornberg's method
+    # Compute non-zero finite forward difference coefficients via Fornberg's method
     for i in range(n-d):
         cols = np.arange(i,i+d+1,1)
         L[i,cols] = _fdcoeffF(d,r[i],r[cols])
+
+    # Introduce missing rows to account for edges of axis
+    for __ in range(int(np.ceil(d/2))):
+        L = np.concatenate([np.atleast_2d(np.append(L[0,1:],0)), L])
+    for __ in range(int(np.floor(d/2))):
+        L = np.concatenate([L, np.atleast_2d(np.insert(L[-1,:-1],0,0))])
 
     return L
 

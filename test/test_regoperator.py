@@ -22,7 +22,7 @@ def test_L1shape():
     r = np.linspace(2,6,n)
     L = regoperator(r,1)
 
-    assert L.shape==(n-1, n)
+    assert L.shape==(n, n)
 #=======================================================================
 
 def test_L2shape():
@@ -33,7 +33,19 @@ def test_L2shape():
     r = np.linspace(2,6,n)
     L = regoperator(r,2)
 
-    assert L.shape==(n-2, n)
+    assert L.shape==(n, n)
+#=======================================================================
+
+def test_edge_smoothing():
+#=======================================================================
+    "Check that L applies to edges and is NxN"
+
+    r = np.arange(5)
+    n = len(r)
+    L = regoperator(r,2)
+    Lref = (np.eye(n, n)*(-2) + np.eye(n, n, k=-1) + np.eye(n, n, k=1))
+
+    assert np.max(np.abs(L - Lref)) < 1e-10
 #=======================================================================
 
 def compare_analytical_derivative(n,nonuniform=False):
@@ -49,11 +61,11 @@ def compare_analytical_derivative(n,nonuniform=False):
     if n==0:
         rn = r
     elif n==1:
-        rn = r[1:len(r)] - dr/2
+        rn = r - dr/2
     elif n==2:
-        rn = r[2:len(r)] - dr
+        rn = r 
     elif n==3:
-        rn = r[3:len(r)] - 3*dr/2
+        rn = r - dr/2
 
     # Test function
     sig = 0.2
@@ -75,6 +87,10 @@ def compare_analytical_derivative(n,nonuniform=False):
 
     # Estimated derivatives of the Gaussian function
     dPn = Ln@P
+
+    if nonuniform:
+        dPn = dPn[:-1]
+        dPnref = dPnref[:-1]
 
     if nonuniform and n==0:
         accuracy = 1e-5

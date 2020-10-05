@@ -41,7 +41,7 @@ def test_aic_value():
     "Check that the value returned by the AIC selection method is correct"
     
     loga = get_alpha_from_method('aic')
-    logaref = -6.1289 # Computed with DeerLab-Matlab (0.9.2)
+    logaref = -6.8108 # Computed with DeerLab (0.11.0)
 
     assert abs(1-loga/logaref) < 0.1
 #=======================================================================
@@ -51,7 +51,7 @@ def test_bic_value():
     "Check that the value returned by the BIC selection method is correct"
     
     loga = get_alpha_from_method('bic')
-    logaref = -6.1334 # Computed with DeerLab-Matlab (0.9.2)
+    logaref = -6.8089 # Computed with DeerLab (0.11.0)
 
     assert abs(1-loga/logaref) < 0.1
 #=======================================================================
@@ -61,7 +61,7 @@ def test_aicc_value():
     "Check that the value returned by the AICc selection method is correct"
     
     loga = get_alpha_from_method('aicc')
-    logaref = -6.1339 # Computed with DeerLab-Matlab (0.9.2)
+    logaref = -6.8075 # Computed with DeerLab (0.11.0)
 
     assert abs(1-loga/logaref) < 0.1
 #=======================================================================
@@ -131,7 +131,7 @@ def test_ncp_value():
     "Check that the value returned by the NCP selection method is correct"
     
     loga = get_alpha_from_method('ncp')
-    logaref = -0.905 # Computed with DeerLab-Matlab (0.9.2)
+    logaref = -1.7574 # Computed with DeerLab-Matlab (0.9.2)
 
     assert abs(1-loga/logaref) < 0.1
 #=======================================================================
@@ -161,7 +161,7 @@ def test_lr_value():
     "Check that the value returned by the LR selection method is correct"
     
     loga = get_alpha_from_method('lr')
-    logaref = -1.00  # Computed with DeerLab-Matlab (0.9.2)
+    logaref = -0.50  # Computed with DeerLab (0.11.0)
 
     assert abs(1-loga/logaref) < 0.15
 #=======================================================================
@@ -369,17 +369,15 @@ def test_tikh_value():
     assert abs(1-loga/logaref) < 0.02 # less than 2% error
 #=======================================================================
 
-
 def test_tv_value():
 #=======================================================================
     "Check that the value returned by TV regularization"
     
     loga = get_alpha_from_regtype('tv')
-    logaref = -4.6384  # Computed with DeerLab-Matlab (0.9.2)
+    logaref = -4.3632  # Computed with DeerLab (0.11.0)
 
     assert abs(1-loga/logaref) < 0.02 # less than 2% error
 #=======================================================================
-
 
 def test_huber_value():
 #=======================================================================
