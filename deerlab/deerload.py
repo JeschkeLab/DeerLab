@@ -18,6 +18,8 @@ def deerload(fullbasename,Scaling=None,plot=False,full_output=False,*args,**kwar
     ----------
     fullbasename : string
         Full name of data file.
+    full_output : boolean
+        Enable/Disable returning parameter file entries as third output. Disabled by default.
     
     Returns
     -------

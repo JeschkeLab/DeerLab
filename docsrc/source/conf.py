@@ -30,6 +30,7 @@ extensions = [
     'numpydoc',
     'sphinx_gallery.gen_gallery',
     'sphinx.ext.autosummary',
+    'm2r2'
 ]
 
 sphinx_gallery_conf = {

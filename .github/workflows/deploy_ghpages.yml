@@ -35,6 +35,7 @@ jobs:
            python -m pip install numpydoc
            python -m pip install sphinx-gallery
            python -m pip install sphinxcontrib-httpdomain
+           python -m pip install m2r2
            sudo apt install texlive-extra-utils
            sudo apt-get install texlive-latex-extra
            python -m pip install .

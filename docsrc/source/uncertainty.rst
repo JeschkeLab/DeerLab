@@ -39,7 +39,7 @@ Uncertainty can also be propagated to dependent models. For example, assume that
     
     # Propagate the error in the parameters to the model
     lb = zeros(numel(Pfit),1)   # Non-negativity constraint of the distance distribution
-    ub = []]                    # No upper bounds
+    ub = []                    # No upper bounds
     Puq = paruq.propagate(ddmodel,lb) 
 
     # Get the 95%-confidence intervals of the fitted distribution

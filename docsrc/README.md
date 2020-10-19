@@ -38,8 +38,12 @@ In order to compile the documentation the following steps must be followed:
 7) Install Sphinx-Gallery
     
         pip install sphinx-gallery
+        
+8) Install M2R-2
+    
+        pip install m2r2
 
-8) Download and install dvissvgm from https://dvisvgm.de/Downloads/
+9) Download and install dvissvgm from https://dvisvgm.de/Downloads/
 		
 ### Runnning the Sphinx builder
 

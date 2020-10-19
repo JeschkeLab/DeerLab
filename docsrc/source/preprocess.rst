@@ -11,7 +11,7 @@ To load an experimental time-domain trace, use the function ``deerload``. It sup
 
 .. code-block:: python
    
-    t,V,_ = dl.deerload('myfile.DSC')    # load DEER trace and time axis
+    t,V = dl.deerload('myfile.DSC')    # load DEER trace and time axis
 
 ``deerload`` attempts to return the the time vector ``t`` in correct units (microseconds), but it might not be able to do so for all file formats.
 

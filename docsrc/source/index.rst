@@ -7,13 +7,22 @@ DeerLab is a free software package for the analysis of dipolar EPR (electron par
 
 DeerLab consists of a collection of functions that perform modelling, processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows. To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background and experiment models. 
 
-When you use DeerLab in your work, please cite the following publication
+When you use DeerLab in your work, please cite the following publication:
 
-.. code-block:: text
 
-    Luis Fábregas Ibáñez, Gunnar Jeschke, Stefan Stoll
-    DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data
-    Magn. Reson. Discuss., https://doi.org/10.5194/mr-2020-13, 2020
+.. raw:: html 
+
+    <div style="height:100px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
+        <div style="height:100%;">
+            <img src='https://www.magnetic-resonance-ampere.net/graphic_journal_cover_normal.png', style="margin-top:1%; margin-bottom:1%;height:96%;">
+        </div>
+        <div style="margin-left:1%; font-size:14px">
+            <h3 style="font-size:110%">  DeerLab: a comprehensive software package for analyzing dipolar electron paramagnetic resonance spectroscopy data </h3> 
+            Luis Fábregas Ibáñez, Gunnar Jeschke, Stefan Stoll <br>
+            Magn. Reson., 1, 209–224, 2020 <br>
+            <a> doi.org/10.5194/mr-1-209-2020</a>
+        </div>
+    </div>
 
 .. toctree::
     :hidden:
