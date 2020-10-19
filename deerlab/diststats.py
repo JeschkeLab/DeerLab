@@ -137,6 +137,8 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
 
     # Calculate distribution estimators
     estimators = {
+        'rmin': min(r),
+        'rmax': max(r),
         'mean': meanfcn(P),
         'median': medianfcn(P),
         'mode': modefcn(P),
@@ -160,6 +162,8 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     uq = None
     if Puq is not None:
         uq = {
+            'rmin': None,
+            'rmax': None,
             'mean': _propagation(Puq,meanfcn),
             'median': _propagation(Puq,medianfcn),
             'mode': None,

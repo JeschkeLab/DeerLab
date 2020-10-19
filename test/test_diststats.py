@@ -20,6 +20,22 @@ def assert_descriptor(key,truth):
     assert abs(descriptor - truth) < dr
 # ----------------------------------------------------------------------
 
+def test_rmin():
+# ======================================================================
+    "Check that the minimal distribution distance is correctly computed"
+
+    truth = min(r)
+    assert_descriptor('rmin',truth)
+# ======================================================================
+
+def test_rmax():
+# ======================================================================
+    "Check that the maximal distribution distance is correctly computed"
+
+    truth = max(r)
+    assert_descriptor('rmax',truth)
+# ======================================================================
+
 def test_mean():
 # ======================================================================
     "Check that the mean is correctly computed"
