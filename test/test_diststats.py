@@ -36,6 +36,14 @@ def test_rmax():
     assert_descriptor('rmax',truth)
 # ======================================================================
 
+def test_int():
+# ======================================================================
+    "Check that the distribution integral is correctly computed"
+
+    truth = 1
+    assert_descriptor('int',truth)
+# ======================================================================
+
 def test_mean():
 # ======================================================================
     "Check that the mean is correctly computed"

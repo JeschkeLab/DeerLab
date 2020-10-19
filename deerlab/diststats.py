@@ -30,6 +30,12 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
         Dictionary of shape, location and spread descriptors of 
         the input distance distribution:
         
+        General parameters
+
+            * ``'rmin'`` - Minimum distance in the distribution range in nm
+            * ``'rmax'`` - Maximum distance in the distribution range in nm
+            * ``'int'`` - Integral of the distance distribution
+
         Location parameters
 
             * ``'mean'`` or ``'moment1'`` - Mean distance in nm (see `more <https://en.wikipedia.org/wiki/Mean>`_)
@@ -98,6 +104,9 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     def E(x,P):
         return np.sum(x*P/np.sum(P))
         
+    # 0th moment  - Integral 
+    intfcn = lambda P: np.trapz(P,r)
+
     # Location estimators
     # -------------------
     # 1st moment  - Mean 
@@ -139,6 +148,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     estimators = {
         'rmin': min(r),
         'rmax': max(r),
+        'int': intfcn(P),
         'mean': meanfcn(P),
         'median': medianfcn(P),
         'mode': modefcn(P),
@@ -164,6 +174,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
         uq = {
             'rmin': None,
             'rmax': None,
+            'int': None,
             'mean': _propagation(Puq,meanfcn),
             'median': _propagation(Puq,medianfcn),
             'mode': None,
@@ -209,10 +220,15 @@ def _propagation(Puq,fcn):
 def _print_estimators(r,estimators,uq):
     # Print summary of estimators if requested
     if uq is None:
+        
+        print('-------------------------------------------------')
+        print('Distribution Statistics')
+        print('-------------------------------------------------')
+        print('Range                    {:.2f}-{:.2f} nm'.format(min(r),max(r)))
+        print('Integral                 {:.2f}'.format(estimators['int']))
         print('-------------------------------------------------')
         print('Location')
         print('-------------------------------------------------')
-        print('Range                    {:.2f}-{:.2f} nm'.format(min(r),max(r)))
         print('Mean                     {:.2f} nm'.format(estimators['mean']))
         print('Median                   {:.2f} nm'.format(estimators['median']))
         print('Interquartile mean       {:.2f} nm'.format(estimators['iqm']))
@@ -232,6 +248,11 @@ def _print_estimators(r,estimators,uq):
         print('Excess kurtosis          {:.2f} '.format(estimators['kurtosis']))
         print('-------------------------------------------------')
     else:
+        print('-------------------------------------------------')
+        print('Distribution Statistics')
+        print('-------------------------------------------------')
+        print('Range                    {:.2f}-{:.2f} nm'.format(min(r),max(r)))
+        print('Integral                 {:.2f}'.format(estimators['int']))
         print('-------------------------------------------------')
         print('Location')
         print('-------------------------------------------------')
