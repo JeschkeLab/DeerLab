@@ -9,8 +9,8 @@ import copy
 from scipy.signal import find_peaks
 
 def diststats(r, P, Puq=None, verbose=False, threshold=None):
-    r""" Computes descriptors/estimators for the location, spread and shape 
-    of a distance distribution with or without their corresponding uncertainties..
+    r""" Computes statistical quantities for the location, spread and shape 
+    of a distance distribution with or without their corresponding uncertainties.
 
     Parameters
     ----------
@@ -23,7 +23,11 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
         specified, the one single output is returned without any uncertainty 
         estimation. If specified, two outputs are returned containing the 
         uncertainty estimation.
-
+    verbose : boolean
+        Enables printing a summary of all statistical quantities and their uncertainties if calculated.
+    threshold : float
+        Peak detection threshold for the calculation of modes of a distribution. The default is max(P)/10.
+    
     Returns
     -------
     estimators : dict
