@@ -12,7 +12,7 @@ def test_basics():
     r = np.linspace(2,6,300)
     P = dd_gauss(r,[4, 0.8])
     K = dipolarkernel(t,r)
-    Vexp = K@P + whitegaussnoise(t,0.01)
+    Vexp = K@P + whitegaussnoise(t,0.01,seed=1)
 
     par0 = [3, 0.5]
     Vmodel = lambda par: K@dd_gauss(r,par)
@@ -26,7 +26,7 @@ def test_basics():
 
     paruq = bootan(bootfcn,Vexp,Vfit,10)
 
-    assert all(abs(paruq.mean - fit.param) < 1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1.1e-2)
 # ======================================================================
 
 
@@ -38,7 +38,7 @@ def test_resampling():
     r = np.linspace(2,6,300)
     P = dd_gauss(r,[4, 0.8])
     K = dipolarkernel(t,r)
-    Vexp = K@P + whitegaussnoise(t,0.01)
+    Vexp = K@P + whitegaussnoise(t,0.01,seed=1)
 
     par0 = [3, 0.5]
     Vmodel = lambda par: K@dd_gauss(r,par)
@@ -54,7 +54,7 @@ def test_resampling():
     paruq2 = bootan(bootfcn,Vexp,Vfit,10,resampling='gaussian')
 
 
-    assert all(abs(paruq1.mean - paruq2.mean) < 1.5e-2)
+    assert all(abs(paruq1.mean - paruq2.mean) < 1.6e-2)
 # ======================================================================
 
 
@@ -66,7 +66,7 @@ def test_multiple_ouputs():
     r = np.linspace(2,6,300)
     P = dd_gauss(r,[4, 0.8])
     K = dipolarkernel(t,r)
-    Vexp = K@P + whitegaussnoise(t,0.01)
+    Vexp = K@P + whitegaussnoise(t,0.01,seed=1)
 
     par0 = [3, 0.5]
     Vmodel = lambda par: K@dd_gauss(r,par)
@@ -97,8 +97,8 @@ def test_multiple_datasets():
     K1 = dipolarkernel(t1,r)
     K2 = dipolarkernel(t2,r)
 
-    Vexp1 = K1@P + whitegaussnoise(t1,0.01)
-    Vexp2 = K2@P + whitegaussnoise(t2,0.02)
+    Vexp1 = K1@P + whitegaussnoise(t1,0.01,seed=1)
+    Vexp2 = K2@P + whitegaussnoise(t2,0.02,seed=2)
 
     def Vmodel(par):
         V1 = K1@dd_gauss(r,par)
@@ -115,7 +115,7 @@ def test_multiple_datasets():
 
     paruq = bootan(bootfcn,[Vexp1,Vexp2],[Vfit1,Vfit2],10)
 
-    assert all(abs(paruq.mean - fit.param) < 1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1.1e-2)
 # ======================================================================
 
 def test_parallelization():
