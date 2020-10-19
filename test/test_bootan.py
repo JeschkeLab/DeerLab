@@ -26,7 +26,7 @@ def test_basics():
 
     paruq = bootan(bootfcn,Vexp,Vfit,10)
 
-    assert all(abs(paruq.mean - fit.param) < 1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1.1e-2)
 # ======================================================================
 
 
@@ -115,5 +115,5 @@ def test_multiple_datasets():
 
     paruq = bootan(bootfcn,[Vexp1,Vexp2],[Vfit1,Vfit2],10)
 
-    assert all(abs(paruq.mean - fit.param) < 1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1.1e-2)
 # ======================================================================
