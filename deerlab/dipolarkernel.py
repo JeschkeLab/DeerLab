@@ -24,7 +24,7 @@ def w0(g):
     return (mu0/2)*muB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> Mrad s^-1 nm^3
 
 def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
-                  integralop = True, nKnots = 5001, renormalize = True, clearcache = False):
+                  integralop = True, nKnots = 5001, renormalize = True, renormpaths=True, clearcache = False):
 #===================================================================================================
     r"""Compute the dipolar kernel operator which enables the linear transformation from
     distance-domain to time-domain data. 
@@ -61,9 +61,11 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
     nKnots : scalar, optional
         Number of knots for the grid of powder orientations to be used in the 'grid' kernel calculation method.
     renormalize : boolean, optional
-        Re-normalization of multi-pathway kernels to ensure the equality ``K(t=0,r)==1`` is satisfied. Default is True.
+        Re-normalization of multi-pathway kernels to ensure the equality ``K(t=0,r)==1`` is satisfied. Enabled by default.
+    renormpaths: boolean, optional
+        Normalization of the pathway amplitudes such that ``Lam0 + lam1 + ... + lamN = 1``. Enabled by default. 
     clearcache : boolean, optional
-        Clear the cached dipolar kernels at the beginning of the function. Default is False.
+        Clear the cached dipolar kernels at the beginning of the function. Disabled by default.
 
     Returns
     --------
@@ -164,10 +166,11 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
             raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i))
 
     # Normalize the pathway amplitudes to unity
-    lamsum = Lambda0 + sum([path[0] for path in paths])
-    Lambda0 /= lamsum
-    for i in range(len(paths)):
-        paths[i][0] /= lamsum 
+    if renormpaths:
+        lamsum = Lambda0 + sum([path[0] for path in paths])
+        Lambda0 /= lamsum
+        for i in range(len(paths)):
+            paths[i][0] /= lamsum 
 
     # Define kernel matrix auxiliary function
     kernelmatrix = lambda t: calckernelmatrix(t,r,method,excbandwidth,nKnots,g)

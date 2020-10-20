@@ -6,7 +6,7 @@
 import numpy as np
 import types
 
-def dipolarbackground(t, pathinfo, Bmodel, renormalize=True):
+def dipolarbackground(t, pathinfo, Bmodel, renormalize=True, renormpaths=True):
     r""" Constructs background decay functions according to the multi-pathway model.
     
     Parameters
@@ -20,7 +20,11 @@ def dipolarbackground(t, pathinfo, Bmodel, renormalize=True):
         If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  
     Bmodel : callable
         Background basis function. A callable function accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``
-     
+    renormalize : boolean, optional
+        Re-normalization of the multi-pathway background to ensure the equality ``B(t=0)==1`` is satisfied. Enabled by default.
+    renormpaths: boolean, optional
+        Normalization of the pathway amplitudes such that ``Lam0 + lam1 + ... + lamN = 1``. Enabled by default.  
+
     Returns
     -------
     B : ndarray
@@ -84,10 +88,11 @@ def dipolarbackground(t, pathinfo, Bmodel, renormalize=True):
             raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i))
 
     # Normalize the pathway amplitudes to unity
-    lamsum = Lambda0 + sum([path[0] for path in pathinfo])
-    Lambda0 /= lamsum
-    for i in range(len(pathinfo)):
-        pathinfo[i][0] /= lamsum 
+    if renormpaths:
+        lamsum = Lambda0 + sum([path[0] for path in pathinfo])
+        Lambda0 /= lamsum
+        for i in range(len(pathinfo)):
+            pathinfo[i][0] /= lamsum 
 
     # Construction of multi-pathway background function 
     #-------------------------------------------------------------------------------
