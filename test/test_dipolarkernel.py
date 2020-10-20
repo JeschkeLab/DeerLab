@@ -1,7 +1,7 @@
 
 import numpy as np
 from numpy import pi, inf, NaN
-from deerlab.bg_models import bg_exp
+from deerlab.bg_models import bg_hom3d,bg_exp
 from deerlab.dd_models import dd_gauss
 from deerlab.dipolarkernel import dipolarkernel,calckernelmatrix
 ge = 2.00231930436256 # free-electron g factor
@@ -180,16 +180,19 @@ def test_multipath():
     tau2 = 4.92
     t = (tau1 + tau2) - (t1 + t2)
     prob = 0.8
-    lam = np.array([1-prob, prob**2, prob*(1-prob)])
-    T0 = [np.NaN, 0, tau2-t2]
+    lam = [prob**2, prob*(1-prob)]
+    T0 = [0, tau2-t2]
 
-    K = dipolarkernel(t,r,np.array([lam, T0]).T, integralop=False)
+    paths = []
+    paths.append([1-prob])
+    paths.append([prob**2, 0])
+    paths.append([prob*(1-prob), tau2-t2])
 
-    unmodulated = np.isnan(T0)
-    Kref = sum(lam[unmodulated])
+    K = dipolarkernel(t,r,paths, integralop=False)
+
+    Kref = 1-prob
     Krenorm = Kref
     for p in range(len(lam)):
-        if not unmodulated[p]:
             Kref = Kref + lam[p]*calckernelmatrix(t-T0[p],r,'fresnel',[],[],[ge,ge])
             Krenorm = Krenorm + lam[p]*calckernelmatrix(-T0[p],r,'fresnel',[],[],[ge,ge])
     Kref = Kref/Krenorm
@@ -209,17 +212,15 @@ def test_multipath_background():
     tau2 = 4.92
     t = (tau1 + tau2) - (t1 + t2)
     prob = 0.8
-    lam = np.array([1-prob, prob**2, prob*(1-prob)])
-    T0 = [np.NaN, 0, tau2-t2]
-    kappa = 0.3
-    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+    lam = [prob**2, prob*(1-prob)]
+    T0 = [0, tau2-t2]
+    conc = 50
+    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
 
     # Reference
-    unmodulated = np.isnan(T0)
-    Kref = sum(lam[unmodulated])
+    Kref = 1-prob
     Krenorm = Kref
     for p in range(len(lam)):
-        if not unmodulated[p]:
             Kref = Kref + lam[p]*calckernelmatrix(t-T0[p],r,'fresnel',[],[],[ge,ge])
             Krenorm = Krenorm + lam[p]*calckernelmatrix(-T0[p],r,'fresnel',[],[],[ge,ge])
     Kref = Kref/Krenorm
@@ -228,14 +229,18 @@ def test_multipath_background():
     Bref = 1
     Bnorm = 1
     for p in range(len(lam)):
-        if not unmodulated[p]:
             Bref = Bref*Bmodel((t-T0[p]),lam[p])
             Bnorm = Bnorm*Bmodel(-T0[p],lam[p])
     Bref = Bref/Bnorm
     KBref = Kref*Bref[:,np.newaxis]
 
+    paths = []
+    paths.append([1-prob])
+    paths.append([prob**2, 0])
+    paths.append([prob*(1-prob), tau2-t2])
+
     # Output
-    KB = dipolarkernel(t,r,np.array([lam, T0]).T,Bmodel, integralop=False)
+    KB = dipolarkernel(t,r,paths,Bmodel, integralop=False)
 
     assert np.all(abs(KB - KBref) < 1e-3)
 #=======================================================================
@@ -252,17 +257,20 @@ def test_multipath_harmonics():
     tau2 = 4.92
     t = (tau1 + tau2) - (t1 + t2)
     prob = 0.8
-    lam = np.array([1-prob, prob**2, prob*(1-prob)])
-    T0 = [np.NaN, 0, tau2-t2]
-    n = [2, 2, 3]
+    lam = [prob**2, prob*(1-prob)]
+    T0 = [0, tau2-t2]
+    n = [2, 3]
 
-    K = dipolarkernel(t,r,np.array([lam, T0, n]).T, integralop=False)
+    paths = []
+    paths.append([1-prob])
+    paths.append([prob**2, 0, 2])
+    paths.append([prob*(1-prob), tau2-t2,3])
 
-    unmodulated = np.isnan(T0)
-    Kref = sum(lam[unmodulated])
+    K = dipolarkernel(t,r,paths, integralop=False)
+
+    Kref = 1-prob
     Krenorm = Kref
     for p in range(len(lam)):
-        if not unmodulated[p]:
             Kref = Kref + lam[p]*calckernelmatrix(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge])
             Krenorm = Krenorm + lam[p]*calckernelmatrix(-n[p]*T0[p],r,'fresnel',[],[],[ge,ge])
     Kref = Kref/Krenorm
@@ -370,10 +378,10 @@ def test_arbitrary_pathway_amps():
 
     t = np.linspace(0,5,201)
     r = 2.5
-    pathway = np.zeros((3,2))
-    pathway[0,:] = [0.2, NaN]
-    pathway[1,:] = [0.8, 0]
-    pathway[2,:] = [0.5, 3]
+    pathway=[]
+    pathway.append([0.2])
+    pathway.append([0.8, 0])
+    pathway.append([0.5, 3])
 
     K = dipolarkernel(t,r,pathway)
 
