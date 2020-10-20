@@ -1,4 +1,3 @@
-
 # dipolarbackground.py - Multipathway background generator 
 # --------------------------------------------------------
  # This file is a part of DeerLab. License is MIT (see LICENSE.md).
@@ -7,7 +6,7 @@
 import numpy as np
 import types
 
-def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
+def dipolarbackground(t, pathinfo, Bmodel, renormalize=True):
     r""" Constructs background decay functions according to the multi-pathway model.
     
     Parameters
@@ -31,8 +30,6 @@ def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
     ----------------
     renormalize : boolean
         The multi-pathway background does not necessarily satisfy ``V(0) == 1``. This option enables/disables a re-normalization of the background function to ensure that equality is satisfied, by default it is enabled.
-    overtonecoeff : array_like
-        Array containing the overtone coefficients for RIDME experiments. 
 
     Notes
     -----
@@ -61,7 +58,6 @@ def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
 
     # Ensure that all inputs are numpy arrays
     t = np.atleast_1d(t)
-    overtonecoeff = np.atleast_1d(overtonecoeff)
 
     if type(Bmodel) is not types.LambdaType:
         raise TypeError('For a model with multiple modulated pathways, B must be a function handle of the type: @(t,lambda) bg_model(t,par,lambda)')
