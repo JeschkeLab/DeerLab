@@ -87,10 +87,9 @@ The returned output is
 
 .. code-block:: python
 
-    pathways =[[0.7,  NaN],
-               [0.3,   0 ]]
+    pathways =[[0.7], [0.3,   0 ]]
 
-Each row of this array holds information about one pathway. The first column is modulation amplitude, and the second column is the refocusing point. In the above example, the first row shows a pathway with amplitude 0.7 and no refocusing time, indicating that it represents the unmodulated contribution. The pathway of the second row shows amplitude of 0.3 and refocusing time 0, i.e. this is the primary dipolar pathway.
+Each nested list holds information about one pathway. The first element is modulation amplitude, and the second element is the refocusing point. In the above example, the first list shows a pathway with amplitude 0.7 and no refocusing time, indicating that it represents the unmodulated contribution. The pathway of the second list shows amplitude of 0.3 and refocusing time 0, i.e. this is the primary dipolar pathway.
 
 Kernel matrices
 --------------------------------------------

@@ -1,4 +1,3 @@
-
 # dipolarbackground.py - Multipathway background generator 
 # --------------------------------------------------------
  # This file is a part of DeerLab. License is MIT (see LICENSE.md).
@@ -7,20 +6,25 @@
 import numpy as np
 import types
 
-def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
+def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
     r""" Constructs background decay functions according to the multi-pathway model.
     
     Parameters
     ----------
     t : array_like
         Time axis, in microseconds.
-    pathinfo : array_like with shape (p,2) or (p,3)
-        Array of pathway amplitudes (lambda), refocusing points (T0), and harmonics (n) 
-        for multiple (p) dipolar pathways. Each row contains ``[lambda T0 n]`` or ``[lambda T0]`` 
-        for one pathway. If n is not given it is assumed to be 1. For a pathway with unmodulated contribution, set the refocusing time to ``numpy.nan``.
+    pathways : list of lists or scalar
+        List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time (T0), 
+        and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]`` for one pathway. If n is not given it is assumed to be 1. 
+        For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``.
+        If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  
     Bmodel : callable
         Background basis function. A callable function accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``
-     
+    renormalize : boolean, optional
+        Re-normalization of the multi-pathway background to ensure the equality ``B(t=0)==1`` is satisfied. Enabled by default.
+    renormpaths: boolean, optional
+        Normalization of the pathway amplitudes such that ``Lam0 + lam1 + ... + lamN = 1``. Enabled by default.  
+
     Returns
     -------
     B : ndarray
@@ -30,12 +34,10 @@ def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
     ----------------
     renormalize : boolean
         The multi-pathway background does not necessarily satisfy ``V(0) == 1``. This option enables/disables a re-normalization of the background function to ensure that equality is satisfied, by default it is enabled.
-    overtonecoeff : array_like
-        Array containing the overtone coefficients for RIDME experiments. 
 
     Notes
     -----
-    Computes the multipathway background ``B`` for the time axis ``t`` corresponding to the dipolar pathways specified in ``pathinfo``. The total background is computed from the basis background function model specified in ``Bmodel``. For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathinfo`` is a 2D-array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals
+    Computes the multipathway background ``B`` for the time axis ``t`` corresponding to the dipolar pathways specified in ``pathways``. The total background is computed from the basis background function model specified in ``Bmodel``. For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` is a 2D-array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals
 
     Examples
     --------
@@ -48,73 +50,59 @@ def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
         lam = 0.4 # modulation depth main signal
         conc = 200   # spin concentration (uM)
 
-        pathinfo = [[],[]]
-        pathinfo[0] = [1-lam, NaN] # unmodulated part, gives offset
-        pathinfo[1] = [lam, 0] # main modulation, refocusing at time zero
+        pathways = []
+        path0 = [1-lam]             # unmodulated part, gives offset
+        path1 = [lam, 0]            # main modulation, refocusing at time zero
+        pathways = [path0, path1]
 
         def Bmodel(t,lam):
             return dl.bg_hom3d(t,conc,lam)
 
-        B = dl.dipolarbackground(t,pathinfo,Bmodel)
-
-
+        B = dl.dipolarbackground(t,pathways,Bmodel)
     """
 
     # Ensure that all inputs are numpy arrays
     t = np.atleast_1d(t)
-    pathinfo = np.atleast_1d(pathinfo)
-    overtonecoeff = np.atleast_1d(overtonecoeff)
-
 
     if type(Bmodel) is not types.LambdaType:
         raise TypeError('For a model with multiple modulated pathways, B must be a function handle of the type: @(t,lambda) bg_model(t,par,lambda)')
 
-    if not np.isreal(pathinfo).all:
-        raise TypeError('lambda/pathinfo must be a numeric array.')
+    if not isinstance(pathways,list): pathways = [pathways] 
+    if len(pathways) == 1:
+        lam = pathways[0]
+        pathways = [[1-lam], [lam, 0]]
 
-    if len(pathinfo) == 1:
-        lam = pathinfo[0]
-        pathinfo = np.array([[1-lam, np.NaN], [lam, 0]])
+    pathways = [np.atleast_1d(path) for path in pathways]
+    
+    # Get unmodulated pathways    
+    unmodulated = [pathways.pop(i) for i,path in enumerate(pathways) if len(path)==1]
+    # Combine all unmodulated contributions
+    Lambda0 = sum(np.concatenate([path for path in unmodulated]))
 
-    if not np.any(np.shape(pathinfo)[1] != np.array([2, 3])):
-        raise TypeError('pathinfo must be a numeric array with two or three columns.')
-
-    if np.any(np.isnan(pathinfo[:, 0])):
-        raise ValueError('In pathinfo, NaN can only appear in the second column (refocusing time) e.g. path[1,:] = [Lam0 NaN]')
+    # Check structure of pathways
+    for i,path in enumerate(pathways):
+        if len(path) == 2:
+            # If harmonic is not defined, append default n=1
+            pathways[i] = np.append(path,1) 
+        elif len(path) != 3:
+            # Otherwise paths are not correctly defined
+            raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i))
 
     # Normalize the pathway amplitudes to unity
-    pathinfo[:, 0] = pathinfo[:, 0]/sum(pathinfo[:, 0])
-    lam = pathinfo[:, 0]
-    T0 = pathinfo[:, 1]
-    if np.shape(pathinfo)[1] == 2:
-        n = np.ones(np.shape(T0))
-    else:
-        n = pathinfo[:, 2]
-    
-
-    # Combine all unmodulated components, and eliminate from list
-    unmodulated = np.where(np.isnan(T0))
-    lam = np.delete(lam, unmodulated)
-    T0 = np.delete(T0, unmodulated)
-    n = np.delete(n, unmodulated)
-
-    # Fold overtones into pathway list
-    nCoeffs = len(overtonecoeff)
-    lam_,T0_,n_ = (np.empty(0) for _ in range(3))
-    for i in range(nCoeffs):
-        lam_ = np.concatenate((lam_, lam*overtonecoeff[i]))
-        T0_ = np.concatenate((T0_,T0))
-        n_ = np.concatenate((n_,n*(i+1)))
-    lam,T0,n = (lam_,T0_,n_)
-    nModPathways = len(lam)
+    if renormpaths:
+        lamsum = Lambda0 + sum([path[0] for path in pathways])
+        Lambda0 /= lamsum
+        for i in range(len(pathways)):
+            pathways[i][0] /= lamsum 
 
     # Construction of multi-pathway background function 
     #-------------------------------------------------------------------------------
     Bnorm = 1
     B = 1
-    for pathway in range(nModPathways):        
-        B = B*Bmodel(n[pathway]*(t-T0[pathway]),lam[pathway])
-        Bnorm = Bnorm*Bmodel(-T0[pathway]*n[pathway],lam[pathway])
+    for pathway in pathways:        
+        n,T0,lam = pathway
+        B = B*Bmodel(n*(t-T0),lam)
+        Bnorm = Bnorm*Bmodel(-T0*n,lam)
     
     if renormalize:
         B = B/Bnorm
