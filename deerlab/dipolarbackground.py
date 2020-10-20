@@ -14,10 +14,11 @@ def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
     ----------
     t : array_like
         Time axis, in microseconds.
-    pathinfo : array_like with shape (p,2) or (p,3)
-        Array of pathway amplitudes (lambda), refocusing points (T0), and harmonics (n) 
-        for multiple (p) dipolar pathways. Each row contains ``[lambda T0 n]`` or ``[lambda T0]`` 
-        for one pathway. If n is not given it is assumed to be 1. For a pathway with unmodulated contribution, set the refocusing time to ``numpy.nan``.
+    pathinfo : list of lists or scalar
+        List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time (T0), 
+        and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]`` for one pathway. If n is not given it is assumed to be 1. 
+        For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``.
+        If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  
     Bmodel : callable
         Background basis function. A callable function accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``
      
