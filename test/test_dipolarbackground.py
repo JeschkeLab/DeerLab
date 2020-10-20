@@ -17,9 +17,9 @@ def test_basic():
 
     #Output
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
-    path = np.zeros((2,2))
-    path[0,:] = [1-lam, np.NaN]
-    path[1,:] = [lam, 0]
+    path = [[],[]]
+    path[0] = [1-lam]
+    path[1] = [lam, 0]
     B = dipolarbackground(t,path,Bmodel)
 
     assert max(abs(B-Bref) < 1e-8)
@@ -39,9 +39,9 @@ def test_singletime():
 
     #Output
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
-    path = np.zeros((2,2))
-    path[0,:] = [1-lam, np.NaN]
-    path[1,:] = [lam, 0]
+    path = [[],[]]
+    path[0] = [1-lam]
+    path[1] = [lam, 0]
     B = dipolarbackground(t,path,Bmodel)
 
     assert max(abs(B-Bref) < 1e-8)
@@ -61,9 +61,9 @@ def test_harmonics():
 
     #Output
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
-    path = np.zeros((2,3))
-    path[0,:] = [1-lam, np.NaN, 1]
-    path[1,:] = [lam, 0, n]
+    path = [[],[]]
+    path[0] = [1-lam]
+    path[1] = [lam, 0,2]
     B = dipolarbackground(t,path,Bmodel)
 
     assert max(abs(B-Bref)) < 1e-8
@@ -99,21 +99,24 @@ def test_multipath_renorm():
     tau2 = 4.92
     t = (tau1 + tau2) - (t1 + t2)
     prob = 0.8
-    lam = np.array([1-prob, prob**2, prob*(1-prob)])
-    T0 = [np.NaN, 0, tau2-t2]
+    lam = [prob**2, prob*(1-prob)]
+    T0 = [0, tau2-t2]
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
 
     #Reference
-    unmodulated = np.isnan(T0)
     Bref = 1
     Bnorm = 1
     for p in range(len(lam)):
-        if not unmodulated[p]:
             Bref = Bref*Bmodel((t-T0[p]),lam[p])
             Bnorm = Bnorm*Bmodel(-T0[p],lam[p])
     
+    paths = []
+    paths.append(1-prob)
+    paths.append([prob**2,0])
+    paths.append([prob*(1-prob),tau2-t2])
+
     #Output
-    B = dipolarbackground(t,np.array([lam, T0]).T,Bmodel,renormalize=False)
+    B = dipolarbackground(t,paths,Bmodel,renormalize=False)
 
     assert max(abs(B-Bref)) < 1e-8
 #==================================================================================
@@ -129,28 +132,31 @@ def test_multipath_raw():
     tau2 = 4.92
     t = (tau1 + tau2) - (t1 + t2)
     prob = 0.8
-    lam = np.array([1-prob, prob**2, prob*(1-prob)])
-    T0 = [np.NaN, 0, tau2-t2]
+    lam = [prob**2, prob*(1-prob)]
+    T0 = [0, tau2-t2]
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
 
     #Reference
-    unmodulated = np.isnan(T0)
     Bref = 1
     Bnorm = 1
     for p in range(len(lam)):
-        if not unmodulated[p]:
             Bref = Bref*Bmodel((t-T0[p]),lam[p])
             Bnorm = Bnorm*Bmodel(-T0[p],lam[p])
     Bref = Bref/Bnorm
     
+    paths = []
+    paths.append(1-prob)
+    paths.append([prob**2,0])
+    paths.append([prob*(1-prob),tau2-t2])
+
     #Output
-    B = dipolarbackground(t,np.array([lam, T0]).T,Bmodel)
+    B = dipolarbackground(t,paths,Bmodel)
 
     assert max(abs(B-Bref)) < 1e-8
 #==================================================================================
 
 def test_overtones():
-
+#==================================================================================
     t = np.linspace(0,5,150)
     kappa = 0.3
     lam = 0.5
@@ -163,10 +169,13 @@ def test_overtones():
     
     # Output
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
-    path = np.zeros((2,2))
-    path[0,:] = [1-lam, np.NaN]
-    path[1,:] = [lam, 0]
+    path = []
+    path.append([1-lam])
+    path.append([overtones[0]*lam, 0, 1])
+    path.append([overtones[1]*lam, 0, 2])
+    path.append([overtones[2]*lam, 0, 3])
 
-    B = dipolarbackground(t,path,Bmodel,overtonecoeff=overtones)
+    B = dipolarbackground(t,path,Bmodel)
 
     assert max(abs(B-Bref)) < 1e-8
+#==================================================================================

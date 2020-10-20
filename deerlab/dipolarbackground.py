@@ -48,73 +48,55 @@ def dipolarbackground(t,pathinfo,Bmodel,renormalize = True,overtonecoeff = 1):
         lam = 0.4 # modulation depth main signal
         conc = 200   # spin concentration (uM)
 
-        pathinfo = [[],[]]
-        pathinfo[0] = [1-lam, NaN] # unmodulated part, gives offset
-        pathinfo[1] = [lam, 0] # main modulation, refocusing at time zero
+        pathinfo = []
+        pathinfo.append([1-lam]) # unmodulated part, gives offset
+        pathinfo.append([lam, 0]) # main modulation, refocusing at time zero
 
         def Bmodel(t,lam):
             return dl.bg_hom3d(t,conc,lam)
 
         B = dl.dipolarbackground(t,pathinfo,Bmodel)
-
-
     """
 
     # Ensure that all inputs are numpy arrays
     t = np.atleast_1d(t)
-    pathinfo = np.atleast_1d(pathinfo)
     overtonecoeff = np.atleast_1d(overtonecoeff)
-
 
     if type(Bmodel) is not types.LambdaType:
         raise TypeError('For a model with multiple modulated pathways, B must be a function handle of the type: @(t,lambda) bg_model(t,par,lambda)')
 
-    if not np.isreal(pathinfo).all:
-        raise TypeError('lambda/pathinfo must be a numeric array.')
-
+    if not isinstance(pathinfo,list): pathinfo = [pathinfo] 
     if len(pathinfo) == 1:
         lam = pathinfo[0]
-        pathinfo = np.array([[1-lam, np.NaN], [lam, 0]])
-
-    if not np.any(np.shape(pathinfo)[1] != np.array([2, 3])):
-        raise TypeError('pathinfo must be a numeric array with two or three columns.')
-
-    if np.any(np.isnan(pathinfo[:, 0])):
-        raise ValueError('In pathinfo, NaN can only appear in the second column (refocusing time) e.g. path[1,:] = [Lam0 NaN]')
+        pathinfo = [[1-lam], [lam, 0]]
 
     # Normalize the pathway amplitudes to unity
-    pathinfo[:, 0] = pathinfo[:, 0]/sum(pathinfo[:, 0])
-    lam = pathinfo[:, 0]
-    T0 = pathinfo[:, 1]
-    if np.shape(pathinfo)[1] == 2:
-        n = np.ones(np.shape(T0))
-    else:
-        n = pathinfo[:, 2]
+    #pathinfo[:,0] = pathinfo[:,0]/sum(pathinfo[:,0])
+
+    pathinfo = [np.atleast_1d(path) for path in pathinfo]
     
+    # Get unmodulated pathways    
+    unmodulated = [pathinfo.pop(i) for i,path in enumerate(pathinfo) if len(path)==1]
+    # Combine all unmodulated contributions
+    Lambda0 = sum(np.concatenate([path for path in unmodulated]))
 
-    # Combine all unmodulated components, and eliminate from list
-    unmodulated = np.where(np.isnan(T0))
-    lam = np.delete(lam, unmodulated)
-    T0 = np.delete(T0, unmodulated)
-    n = np.delete(n, unmodulated)
-
-    # Fold overtones into pathway list
-    nCoeffs = len(overtonecoeff)
-    lam_,T0_,n_ = (np.empty(0) for _ in range(3))
-    for i in range(nCoeffs):
-        lam_ = np.concatenate((lam_, lam*overtonecoeff[i]))
-        T0_ = np.concatenate((T0_,T0))
-        n_ = np.concatenate((n_,n*(i+1)))
-    lam,T0,n = (lam_,T0_,n_)
-    nModPathways = len(lam)
+    # Check structure of pathways
+    for i,path in enumerate(pathinfo):
+        if len(path) == 2:
+            # If harmonic is not defined, append default n=1
+            pathinfo[i] = np.append(path,1) 
+        elif len(path) != 3:
+            # Otherwise paths are not correctly defined
+            raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i))
 
     # Construction of multi-pathway background function 
     #-------------------------------------------------------------------------------
     Bnorm = 1
     B = 1
-    for pathway in range(nModPathways):        
-        B = B*Bmodel(n[pathway]*(t-T0[pathway]),lam[pathway])
-        Bnorm = Bnorm*Bmodel(-T0[pathway]*n[pathway],lam[pathway])
+    for pathway in pathinfo:        
+        n,T0,lam = pathway
+        B = B*Bmodel(n*(t-T0),lam)
+        Bnorm = Bnorm*Bmodel(-T0*n,lam)
     
     if renormalize:
         B = B/Bnorm
