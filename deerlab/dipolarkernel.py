@@ -147,9 +147,6 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
         lam = pathinfo[0]
         pathinfo = [[1-lam], [lam, 0]]
 
-    # Normalize the pathway amplitudes to unity
-    #pathinfo[:,0] = pathinfo[:,0]/sum(pathinfo[:,0])
-
     paths = [np.atleast_1d(path) for path in pathinfo]
 
     # Get unmodulated pathways    
@@ -165,6 +162,12 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
         elif len(path) != 3:
             # Otherwise paths are not correctly defined
             raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i))
+
+    # Normalize the pathway amplitudes to unity
+    lamsum = Lambda0 + sum([path[0] for path in paths])
+    Lambda0 /= lamsum
+    for i in range(len(paths)):
+        paths[i][0] /= lamsum 
 
     # Define kernel matrix auxiliary function
     kernelmatrix = lambda t: calckernelmatrix(t,r,method,excbandwidth,nKnots,g)

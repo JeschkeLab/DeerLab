@@ -67,9 +67,6 @@ def dipolarbackground(t, pathinfo, Bmodel, renormalize=True):
         lam = pathinfo[0]
         pathinfo = [[1-lam], [lam, 0]]
 
-    # Normalize the pathway amplitudes to unity
-    #pathinfo[:,0] = pathinfo[:,0]/sum(pathinfo[:,0])
-
     pathinfo = [np.atleast_1d(path) for path in pathinfo]
     
     # Get unmodulated pathways    
@@ -85,6 +82,12 @@ def dipolarbackground(t, pathinfo, Bmodel, renormalize=True):
         elif len(path) != 3:
             # Otherwise paths are not correctly defined
             raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i))
+
+    # Normalize the pathway amplitudes to unity
+    lamsum = Lambda0 + sum([path[0] for path in pathinfo])
+    Lambda0 /= lamsum
+    for i in range(len(pathinfo)):
+        pathinfo[i][0] /= lamsum 
 
     # Construction of multi-pathway background function 
     #-------------------------------------------------------------------------------
