@@ -84,9 +84,7 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
     To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use::
     
         lam = 0.4  # modulation depth main signal
-        pathinfo = []
-        pathinfo.append([1-lam])      # unmodulated part, gives offset
-        pathinfo.append([lam, 0])     # main modulation, refocusing at time zero
+        pathways = [[1-lam], [lam, 0]]
         
         K = dl.dipolarkernel(t,r,pathinfo)
 
@@ -103,12 +101,13 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
         lam = 0.4                      # modulation depth main signal
         lam21 = 0.1                    # modulation depth 2+1 contribution
         tau2 = 4                       # refocusing time (us) of 2+1 contribution
-        pathinfo = []
-        pathinfo.append([Lam0])           # unmodulated part, gives offset
-        pathinfo.append([lam1,   0  ])    # main modulation, refocusing at time zero
-        pathinfo.append([lam2,  tau2])    # 2+1 modulation, refocusing at time tau2 
+
+        path0 = Lam0            # unmodulated pathway
+        path1 = [lam1, 0]       # main dipolar pathway, refocusing at time zero
+        path1 = [lam2, tau2]    # 2+1 dipolar pathway, refocusing at time tau2
+        pathways = [path0, path1, path2]  
         
-        K = dl.dipolarkernel(t,r,pathinfo)
+        K = dl.dipolarkernel(t,r,pathways)
 
 
     References

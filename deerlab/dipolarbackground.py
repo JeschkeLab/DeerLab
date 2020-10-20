@@ -51,13 +51,14 @@ def dipolarbackground(t, pathinfo, Bmodel, renormalize=True, renormpaths=True):
         conc = 200   # spin concentration (uM)
 
         pathinfo = []
-        pathinfo.append([1-lam]) # unmodulated part, gives offset
-        pathinfo.append([lam, 0]) # main modulation, refocusing at time zero
+        path0 = [1-lam]             # unmodulated part, gives offset
+        path1 = [lam, 0]            # main modulation, refocusing at time zero
+        pathways = [path0, path1]
 
         def Bmodel(t,lam):
             return dl.bg_hom3d(t,conc,lam)
 
-        B = dl.dipolarbackground(t,pathinfo,Bmodel)
+        B = dl.dipolarbackground(t,pathways,Bmodel)
     """
 
     # Ensure that all inputs are numpy arrays
