@@ -71,7 +71,7 @@ def ex_4pdeer(param=None):
 
     # Dipolar pathways
     lam = param[0]
-    pathways = np.array([[1-lam, np.NaN], [lam, 0]])
+    pathways = [[1-lam], [lam, 0]]
     
     return pathways
 # ===================================================================
@@ -137,7 +137,7 @@ def ex_ovl4pdeer(param=None):
     # Dipolar pathways
     lam = param[[0,1,2]]
     T02 = param[3]
-    pathways = np.array([[lam[0], np.NaN], [lam[1], 0], [lam[2], T02]])
+    pathways = [[lam[0]], [lam[1], 0], [lam[2], T02]]
     
     return pathways
 # ===================================================================
@@ -203,7 +203,7 @@ def ex_5pdeer(param=None):
     # Dipolar pathways
     lam = param[[0,1,2]]
     T02 = param[3]
-    pathways = np.array([[lam[0], np.NaN], [lam[1], 0], [lam[2], T02]])
+    pathways = [[lam[0]], [lam[1], 0], [lam[2], T02]]
     
     return pathways
 # ===================================================================
@@ -276,7 +276,7 @@ def ex_7pdeer(param=None):
     T02 = param[4]
     T03 = param[5]
 
-    pathways = np.array([[lam[0], np.NaN], [lam[1], 0], [lam[2], T02], [lam[3], T03]])
+    pathways = [[lam[0]], [lam[1], 0], [lam[2], T02], [lam[3], T03]]
     
     return pathways
 # ===================================================================
