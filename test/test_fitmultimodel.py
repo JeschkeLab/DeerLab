@@ -43,14 +43,14 @@ def test_multigengauss():
 #=======================================================================
     "Check that the fit of a multi-generalized-Gaussian model works"
         
-    r = np.linspace(2,6,300)
-    t = np.linspace(0,6,500)
+    r = np.linspace(2,6,200)
+    t = np.linspace(0,6,400)
     K = dipolarkernel(t,r)
     P = dd_gengauss(r,[2.5, 0.2, 5]) + 0.8*dd_gengauss(r,[3, 0.7, 2])
     P /= np.trapz(P,r)
     V = K@P
 
-    fit = fitmultimodel(V,K,r,dd_gengauss,3,'aicc', uqanalysis=False)
+    fit = fitmultimodel(V,K,r,dd_gengauss,2,'aicc', uqanalysis=False)
 
     assert ovl(P,fit.P) > 0.95 # more than 99% overlap
 #=======================================================================
@@ -82,8 +82,8 @@ def test_rescaling():
     scale = 1e3
     V  = K@P
 
-    fit1 = fitmultimodel(V*scale,K,r,dd_gauss,3,'aic',renormalize=True,uqanalysis=False)
-    fit2 = fitmultimodel(V,K,r,dd_gauss,3,'aic',renormalize=False,uqanalysis=False)
+    fit1 = fitmultimodel(V*scale,K,r,dd_gauss,2,'aic',renormalize=True,uqanalysis=False)
+    fit2 = fitmultimodel(V,K,r,dd_gauss,2,'aic',renormalize=False,uqanalysis=False)
 
     assert max(abs(fit1.P - fit2.P)) < 1e-4
 #=======================================================================
@@ -113,15 +113,15 @@ def test_global_multirice():
 #=======================================================================
     "Check that the global fit of a multi-Rician model works"
         
-    r = np.linspace(2,6,300)
+    r = np.linspace(2,6,100)
     parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
     P = dd_rice3(r,parin)
 
-    t1 = np.linspace(-0.5,6,500)
+    t1 = np.linspace(-0.5,6,200)
     K1 = dipolarkernel(t1,r)
     V1 = K1@P
     
-    t2 = np.linspace(0,5,300)
+    t2 = np.linspace(0,5,100)
     K2 = dipolarkernel(t2,r)
     V2 = K2@P
 
@@ -188,7 +188,7 @@ def test_confinter_Pfit():
     K = dipolarkernel(t,r)
     V = K@P
 
-    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb=[1,0.02],ub=[6,1])
+    fit = fitmultimodel(V,K,r,dd_gauss,2,'aicc',lb=[1,0.02],ub=[6,1])
 
     lbP = np.zeros(len(r))
     ubP = np.full(len(r), np.inf)
@@ -208,7 +208,7 @@ def test_confinter_parfit():
 
     lbPpar = [1,0.02]
     ubPpar = [6,1]
-    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc',lb=lbPpar,ub=ubPpar)
+    fit = fitmultimodel(V,K,r,dd_gauss,2,'aicc',lb=lbPpar,ub=ubPpar)
     paruq = fit.paramUncert
     parfit = fit.Pparam
     assert_confidence_intervals(paruq.ci(50)[0:2,:],paruq.ci(95)[0:2,:],parfit,lbPpar,ubPpar)
