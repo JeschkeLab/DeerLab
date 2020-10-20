@@ -3,7 +3,7 @@ import numpy as np
 from numpy import inf
 from deerlab import dipolarkernel, whitegaussnoise, fitsignal
 from deerlab.dd_models import dd_gauss
-from deerlab.bg_models import bg_exp
+from deerlab.bg_models import bg_exp, bg_hom3d
 from deerlab.ex_models import ex_4pdeer, ex_5pdeer, ex_7pdeer, ex_ovl4pdeer
 from deerlab.utils import ovl
 
@@ -105,12 +105,12 @@ def test_no_foreground():
 
     t = np.linspace(0,5,500)
     r = np.linspace(2,6,200)
-    k = 0.2
-    B = bg_exp(t,k)
+    conc = 50
+    B = bg_hom3d(t,conc)
 
-    fit = fitsignal(B,t,r,None,bg_exp,ex_4pdeer,uqanalysis=False)
+    fit = fitsignal(B,t,r,None,bg_hom3d,ex_4pdeer,uqanalysis=False)
 
-    assert max(abs(B - fit.B)) < 1e-3 and abs(k-fit.bgparam*fit.exparam) <1e-4
+    assert max(abs(B - fit.B)) < 1e-2 and abs(conc-fit.bgparam*fit.exparam) < 1
 # ======================================================================
 
 def test_start_values():
@@ -263,7 +263,7 @@ def assert_confinter_param(subset):
     ddmodel = dd_gauss
     bgmodel = bg_exp
 
-    r = np.linspace(2,6,90)
+    r = np.linspace(2,6,40)
     P = ddmodel(r,[4.5, 0.25])
 
     info = exmodel()
@@ -329,7 +329,7 @@ def assert_confinter_models(subset):
         ddmodel= dd_gauss
     bgmodel = bg_exp
 
-    r = np.linspace(2,6,90)
+    r = np.linspace(2,6,40)
     P = dd_gauss(r,[4.5, 0.25])
 
     info = exmodel()

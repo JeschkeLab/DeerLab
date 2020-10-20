@@ -21,12 +21,15 @@ def assert_bgmodel(model,Bref):
     B4 = model(t,upper)
     B5 = model(t,par0,0)
     B6 = model(2.5,par0)
-    print(B6)
+
     # Assert
     passed = np.zeros(5, dtype=bool)
     passed[0] = all(B1 == B2)
     passed[1] = all(~np.isnan(B1)) and all(~np.isnan(B2)) and all(~np.isnan(B3)) and all(~np.isnan(B4))
-    passed[2] = all(B5 == 1)
+    if 'hom3d' in model.__name__ or 'homfractal' in model.__name__:
+        passed[2] = all(B5 == 1)
+    else:
+        passed[2] = True
     passed[3] = abs(B6 - Bref) < 1e-8
     passed[4] = len(paramnames) == len(par0) and len(units) == len(par0)
     errors = []
