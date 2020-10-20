@@ -23,7 +23,7 @@ h = 6.62607015e-34 # Planck constant, J/Hz
 def w0(g):
     return (mu0/2)*muB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> Mrad s^-1 nm^3
 
-def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
+def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
                   integralop = True, nKnots = 5001, renormalize = True, renormpaths=True, clearcache = False):
 #===================================================================================================
     r"""Compute the dipolar kernel operator which enables the linear transformation from
@@ -35,7 +35,7 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
         Dipolar time axis, in microseconds.
     r : array_like
         Distance axis, in nanometers.
-    pathinfo : list of lists or scalar
+    pathways : list of lists or scalar
         List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time (T0), 
         and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]`` for one pathway. If n is not given it is assumed to be 1. 
         For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``.
@@ -74,7 +74,7 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
 
     Notes
     -----
-    For a multi-pathway DEER [1]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathinfo`` contains a list of modulation depths (amplitudes) and refocusing times (in microseconds).
+    For a multi-pathway DEER [1]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` contains a list of modulation depths (amplitudes) and refocusing times (in microseconds).
     The background function specified as ''B'' is used as basis function, and the actual multipathway background included into the kernel is compued using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [2]_. 
     Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals [3]_. If not given, the harmonic is 1 for all pathways. 
 
@@ -86,7 +86,7 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
         lam = 0.4  # modulation depth main signal
         pathways = [[1-lam], [lam, 0]]
         
-        K = dl.dipolarkernel(t,r,pathinfo)
+        K = dl.dipolarkernel(t,r,pathways)
 
 
     A shorthand input syntax equivalent to this input::
@@ -143,12 +143,12 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
     if np.any(r<=0):
         raise ValueError("All elements in r must be nonnegative and nonzero.")
 
-    if not isinstance(pathinfo,list): pathinfo = [pathinfo] 
-    if len(pathinfo) == 1:
-        lam = pathinfo[0]
-        pathinfo = [[1-lam], [lam, 0]]
+    if not isinstance(pathways,list): pathways = [pathways] 
+    if len(pathways) == 1:
+        lam = pathways[0]
+        pathways = [[1-lam], [lam, 0]]
 
-    paths = [np.atleast_1d(path) for path in pathinfo]
+    paths = [np.atleast_1d(path) for path in pathways]
 
     # Get unmodulated pathways    
     unmodulated = [paths.pop(i) for i,path in enumerate(paths) if len(path)==1]
@@ -190,7 +190,7 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
 
     # Multiply by background
     if ismodelB:
-        B = dipolarbackground(t,pathinfo,B)
+        B = dipolarbackground(t,pathways,B)
     K = K*B[:,np.newaxis]
 
     # Include delta-r factor for integration

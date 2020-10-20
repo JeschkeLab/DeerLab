@@ -16,11 +16,11 @@ def assert_experiment_model(model):
 
     info = model()
     parIn = info['Start']
-    pathinfo = model(parIn)
+    pathways = model(parIn)
 
     kappa = 0.4
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
-    K = dipolarkernel(t,r,pathinfo,Bmodel)
+    K = dipolarkernel(t,r,pathways,Bmodel)
     V = K@P
 
     fit = fitsignal(V,t,r,'P',bg_exp,model,uqanalysis=False)
@@ -163,15 +163,15 @@ def test_global_4pdeer():
 
     info = ex_4pdeer()
     parIn = info['Start']
-    pathinfo = ex_4pdeer(parIn)
+    pathways = ex_4pdeer(parIn)
 
     kappa = 0.4
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
 
     t1 = np.linspace(0,5,100)
-    V1 = dipolarkernel(t1,r,pathinfo,Bmodel)@P
+    V1 = dipolarkernel(t1,r,pathways,Bmodel)@P
     t2 = np.linspace(0,5,250)
-    V2 = dipolarkernel(t2,r,pathinfo,Bmodel)@P
+    V2 = dipolarkernel(t2,r,pathways,Bmodel)@P
     
     fit = fitsignal([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
 
@@ -268,14 +268,14 @@ def assert_confinter_param(subset):
 
     info = exmodel()
     parIn = info['Start']
-    pathinfo = exmodel(parIn)
+    pathways = exmodel(parIn)
 
     kappa = 0.4
     Bmodel = lambda t,lam: bgmodel(t,kappa,lam)
 
     t = np.linspace(0,5,100)
     np.random.seed(0)
-    V = dipolarkernel(t,r,pathinfo,Bmodel)@P + whitegaussnoise(t,0.01)
+    V = dipolarkernel(t,r,pathways,Bmodel)@P + whitegaussnoise(t,0.01)
     
     fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
 
@@ -334,14 +334,14 @@ def assert_confinter_models(subset):
 
     info = exmodel()
     parIn = info['Start']
-    pathinfo = exmodel(parIn)
+    pathways = exmodel(parIn)
 
     kappa = 0.4
     Bmodel = lambda t,lam: bgmodel(t,kappa,lam)
 
     t = np.linspace(0,5,100)
     np.random.seed(0)
-    V = dipolarkernel(t,r,pathinfo,Bmodel)@P + whitegaussnoise(t,0.03)
+    V = dipolarkernel(t,r,pathways,Bmodel)@P + whitegaussnoise(t,0.03)
     
     fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
 
@@ -450,15 +450,15 @@ def test_global_scale_4pdeer():
 
     info = ex_4pdeer()
     parIn = info['Start']
-    pathinfo = ex_4pdeer(parIn)
+    pathways = ex_4pdeer(parIn)
 
     kappa = 0.4
     Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
     scales = [1e3,1e9]
     t1 = np.linspace(0,5,100)
-    V1 = scales[0]*dipolarkernel(t1,r,pathinfo,Bmodel)@P
+    V1 = scales[0]*dipolarkernel(t1,r,pathways,Bmodel)@P
     t2 = np.linspace(0,5,250)
-    V2 = scales[1]*dipolarkernel(t2,r,pathinfo,Bmodel)@P
+    V2 = scales[1]*dipolarkernel(t2,r,pathways,Bmodel)@P
     
     fit = fitsignal([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
 
