@@ -26,7 +26,7 @@ def test_basics():
 
     paruq = bootan(bootfcn,Vexp,Vfit,10)
 
-    assert all(abs(paruq.mean - fit.param) < 1.1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1.5e-2)
 # ======================================================================
 
 
@@ -115,7 +115,7 @@ def test_multiple_datasets():
 
     paruq = bootan(bootfcn,[Vexp1,Vexp2],[Vfit1,Vfit2],5)
 
-    assert all(abs(paruq.mean - fit.param) < 1.1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1.5e-2)
 # ======================================================================
 
 def test_parallelization():
@@ -139,6 +139,6 @@ def test_parallelization():
 
     paruq = bootan(bootfcn,Vexp,Vfit,10,cores=-1)
 
-    assert all(abs(paruq.mean - fit.param) < 1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1.5e-2)
 # ======================================================================
 
