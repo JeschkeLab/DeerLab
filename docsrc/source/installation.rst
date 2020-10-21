@@ -1,4 +1,6 @@
-Installation instructions
+.. _installation:
+
+Installation
 =========================
 
 Requirements

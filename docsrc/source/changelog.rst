@@ -1,6 +1,7 @@
+.. _changelog:
 
-----------
-Changelog
-----------
+--------------
+Release Notes
+--------------
 
 .. mdinclude:: ../../CHANGELOG.md
