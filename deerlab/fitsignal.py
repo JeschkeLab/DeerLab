@@ -136,7 +136,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Array of weighting coefficients for the individual signals in global fitting,
         the default is all weighted equally.
         If not specified all datasets are weighted equally.
-    regParam (str or scalar):
+    regparam (str or scalar):
         Method for the automatic selection of the optimal regularization parameter:
 
         * ``'lr'`` - L-curve minimum-radius method (LR)
@@ -302,14 +302,14 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             
             # Get pathway information
             if includeExperiment[iSignal]:
-                pathinfo = ex_model[iSignal](ex_par)
+                pathways = ex_model[iSignal](ex_par)
             else:
-                pathinfo = 1
+                pathways = 1
             
             # Compute the multipathway-background
-            B_ = dl.dipolarbackground(t[iSignal],pathinfo,Bfcn)
+            B_ = dl.dipolarbackground(t[iSignal],pathways,Bfcn)
             # Compute the multipathway-kernel
-            K_ = dl.dipolarkernel(t[iSignal],r,pathinfo)
+            K_ = dl.dipolarkernel(t[iSignal],r,pathways)
             Ks.append(K_*B_[:,np.newaxis])
             Bs.append(B_)
             
@@ -606,9 +606,9 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                     ci = paruq['ex'][i].ci(95)
                 else:
                     ci = np.full((len(parfit['ex'][i]),2),np.nan)
-                    for j in range(len(parfit['ex'][i])):
-                        c = parfit['ex'][i][j]
-                        print(pstr.format('exparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
+                for j in range(len(parfit['ex'][i])):
+                    c = parfit['ex'][i][j]
+                    print(pstr.format('exparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
         print('----------------------------------------------------------------------------')
 
 
