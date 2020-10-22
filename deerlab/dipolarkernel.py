@@ -23,8 +23,8 @@ h = 6.62607015e-34 # Planck constant, J/Hz
 def w0(g):
     return (mu0/2)*muB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> Mrad s^-1 nm^3
 
-def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
-                  integralop = True, nKnots = 5001, renormalize = True, clearcache = False):
+def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
+                  integralop = True, nKnots = 5001, renormalize = True, renormpaths=True, clearcache = False):
 #===================================================================================================
     r"""Compute the dipolar kernel operator which enables the linear transformation from
     distance-domain to time-domain data. 
@@ -35,10 +35,11 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
         Dipolar time axis, in microseconds.
     r : array_like
         Distance axis, in nanometers.
-    pathinfo : array_like with shape (p,2) or (p,3)
-        Array of pathway amplitudes (lambda), refocusing points (T0), and harmonics (n) 
-        for multiple (p) dipolar pathways. Each row contains ``[lambda T0 n]`` or ``[lambda T0]`` 
-        for one pathway. If n is not given it is assumed to be 1. For a pathway with unmodulated contribution, set the refocusing time to ``numpy.nan``.
+    pathways : list of lists or scalar
+        List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time (T0), 
+        and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]`` for one pathway. If n is not given it is assumed to be 1. 
+        For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``.
+        If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  
     B : callable or array_like
         For a single-pathway model, the numerical background decay can be passed as an array. 
         For multiple pathways, a callable function must be passed, accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``
@@ -60,9 +61,11 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
     nKnots : scalar, optional
         Number of knots for the grid of powder orientations to be used in the 'grid' kernel calculation method.
     renormalize : boolean, optional
-        Re-normalization of multi-pathway kernels to ensure the equality ``K(t=0,r)==1`` is satisfied. Default is True.
+        Re-normalization of multi-pathway kernels to ensure the equality ``K(t=0,r)==1`` is satisfied. Enabled by default.
+    renormpaths: boolean, optional
+        Normalization of the pathway amplitudes such that ``Lam0 + lam1 + ... + lamN = 1``. Enabled by default. 
     clearcache : boolean, optional
-        Clear the cached dipolar kernels at the beginning of the function. Default is False.
+        Clear the cached dipolar kernels at the beginning of the function. Disabled by default.
 
     Returns
     --------
@@ -71,7 +74,7 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
 
     Notes
     -----
-    For a multi-pathway DEER [1]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathinfo`` contains a list of modulation depths (amplitudes) and refocusing times (in microseconds).
+    For a multi-pathway DEER [1]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` contains a list of modulation depths (amplitudes) and refocusing times (in microseconds).
     The background function specified as ''B'' is used as basis function, and the actual multipathway background included into the kernel is compued using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [2]_. 
     Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals [3]_. If not given, the harmonic is 1 for all pathways. 
 
@@ -81,9 +84,9 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
     To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use::
     
         lam = 0.4  # modulation depth main signal
-        pathinfo = [[1-lam, nan], [lam, 0]]
-
-        K = dl.dipolarkernel(t,r,pathinfo)
+        pathways = [[1-lam], [lam, 0]]
+        
+        K = dl.dipolarkernel(t,r,pathways)
 
 
     A shorthand input syntax equivalent to this input::
@@ -97,22 +100,23 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
         Lam0 = 0.5                     # unmodulated part
         lam = 0.4                      # modulation depth main signal
         lam21 = 0.1                    # modulation depth 2+1 contribution
-        tau2 = 4                       # refocusing time of 2+1 contribution
-        pathinfo = [[],[],[]]
-        pathinfo[0] = [Lam0,   nan]    # unmodulated part, gives offset
-        pathinfo[1] = [lama,    0 ]    # main modulation, refocusing at time zero
-        pathinfo[2] = [lam21, tau2]    # 2+1 modulation, refocusing at time tau2
+        tau2 = 4                       # refocusing time (us) of 2+1 contribution
+
+        path0 = Lam0            # unmodulated pathway
+        path1 = [lam1, 0]       # main dipolar pathway, refocusing at time zero
+        path1 = [lam2, tau2]    # 2+1 dipolar pathway, refocusing at time tau2
+        pathways = [path0, path1, path2]  
         
-        K = dl.dipolarkernel(t,r,pathinfo)
+        K = dl.dipolarkernel(t,r,pathways)
 
 
     References
     ----------
-    .. [1] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll: "DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data", Magn. Reson. Discuss., 2020
+    .. [1] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson., 1, 209–224, 2020 
 
-    .. [2] Fábregas Ibáñez, L. and Jeschke, G.: Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.
+    .. [2] L. Fábregas Ibáñez, and G. Jeschke: Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.
 
-    .. [3] Keller, K., Mertens, V., Qi, M., Nalepa, A. I., Godt, A., Savitsky, A., Jeschke, G., and Yulikov, M.: Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19
+    .. [3] K. Keller, V. Mertens, M. Qi, A. I. Nalepa, A. Godt, A. Savitsky, G. Jeschke, and M. Yulikov: Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19
 
     .. [4] J.E. Banham, C.M. Baker, S. Ceola, I.J. Day, G.H. Grant, E.J.J. Groenen, C.T. Rodgers, G. Jeschke, C.R. Timmel, Distance measurements in the borderline region of applicability of CW EPR and DEER: A model study on a homologous series of spin-labelled peptides, Journal of Magnetic Resonance, 191, 2, 2008, 202-218
     """
@@ -123,7 +127,6 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
     # Ensure that all inputs are numpy arrays
     r = np.atleast_1d(r)
     t = np.atleast_1d(t)
-    pathinfo = np.atleast_1d(pathinfo)
 
     if type(B) is types.LambdaType:
         ismodelB = True
@@ -140,54 +143,54 @@ def dipolarkernel(t,r,pathinfo = 1, B = 1, method = 'fresnel', excbandwidth = in
     if np.any(r<=0):
         raise ValueError("All elements in r must be nonnegative and nonzero.")
 
-    if not np.isreal(pathinfo).all:
-        raise TypeError('lambda/pathinfo must be a numeric array.')
+    if not isinstance(pathways,list): pathways = [pathways] 
+    if len(pathways) == 1:
+        lam = pathways[0]
+        pathways = [[1-lam], [lam, 0]]
 
-    if len(pathinfo) == 1:
-        lam = pathinfo[0]
-        pathinfo = np.array([[1-lam, np.NaN], [lam, 0]])
+    paths = [np.atleast_1d(path) for path in pathways]
 
-    if not np.any(np.shape(pathinfo)[1] != np.array([2, 3])):
-        raise TypeError('pathinfo must be a numeric array with two or three columns.')
+    # Get unmodulated pathways    
+    unmodulated = [paths.pop(i) for i,path in enumerate(paths) if len(path)==1]
+    # Combine all unmodulated contributions
+    Lambda0 = sum(np.concatenate([path for path in unmodulated]))
 
-    if np.any(np.isnan(pathinfo[:,0])):
-        raise ValueError('In pathinfo, NaN can only appear in the second column (refocusing time) e.g. path[1,:] = [Lam0 NaN]')
+    # Check structure of pathways
+    for i,path in enumerate(paths):
+        if len(path) == 2:
+            # If harmonic is not defined, append default n=1
+            paths[i] = np.append(path,1) 
+        elif len(path) != 3:
+            # Otherwise paths are not correctly defined
+            raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i))
 
     # Normalize the pathway amplitudes to unity
-    pathinfo[:,0] = pathinfo[:,0]/sum(pathinfo[:,0])
-    lam = pathinfo[:,0]
-    T0 = pathinfo[:,1]
-    if np.shape(pathinfo)[1] == 2:
-        n = np.ones(np.shape(T0))
-    else:
-        n = pathinfo[:,2]
-    
-    # Combine all unmodulated components into Lambda0, and eliminate from list
-    unmodulated = np.where(np.isnan(T0))
-    Lambda0 = np.sum(lam[unmodulated])
-    lam = np.delete(lam, unmodulated)
-    T0 = np.delete(T0, unmodulated)
-    n = np.delete(n, unmodulated)
-    nModPathways = len(lam)
+    if renormpaths:
+        lamsum = Lambda0 + sum([path[0] for path in paths])
+        Lambda0 /= lamsum
+        for i in range(len(paths)):
+            paths[i][0] /= lamsum 
 
+    # Define kernel matrix auxiliary function
     kernelmatrix = lambda t: calckernelmatrix(t,r,method,excbandwidth,nKnots,g)
-    
+
     # Build dipolar kernel matrix, summing over all pathways
     K = Lambda0
-    for pathway in range(nModPathways):
-        K = K + lam[pathway]*kernelmatrix(n[pathway]*(t-T0[pathway]))
+    for pathway in paths:
+        lam,T0,n = pathway
+        K = K + lam*kernelmatrix(n*(t-T0))
 
     # Renormalize if requested
     if renormalize:
         Knorm = Lambda0
-        for pathway in range(nModPathways):
-            Knorm = Knorm + lam[pathway]*kernelmatrix(-T0[pathway]*n[pathway])
+        for pathway in paths:
+            lam,T0,n = pathway
+            Knorm = Knorm + lam*kernelmatrix(-T0*n)
         K = K/Knorm
-
 
     # Multiply by background
     if ismodelB:
-        B = dipolarbackground(t,pathinfo,B)
+        B = dipolarbackground(t,pathways,B)
     K = K*B[:,np.newaxis]
 
     # Include delta-r factor for integration
