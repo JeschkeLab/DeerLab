@@ -10,7 +10,7 @@ DeerLab consists of a collection of functions that perform modelling, processing
 -------
 
 Documentation
-    To get started read the :ref:`Beginner's Tutorial <beginners_guide>`. 
+    To get started read the :ref:`beginners_guide` tutorial. 
 
     Looking for a specific topic? Look at the :ref:`selection of examples <examples>` or at :ref:`reference <functions>` for specific DeerLab functions. 
 
@@ -67,9 +67,8 @@ Contributing
     :maxdepth: 0
 
     ./installation
-    ./beginners_guide
-    ./firstscript
     ./basics
+    ./beginners_guide
     ./uncertainty
     ./examples
 

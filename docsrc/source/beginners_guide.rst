@@ -1,9 +1,9 @@
 .. _beginners_guide:
 
-Beginners Tutorial
+Getting Started
 ============================================================
 
-This is the DeerLab guide for beginner’s. If you have comments or suggestions, please don’t hesitate to reach out!
+This is the introductory guide to DeerLab. If you have comments or suggestions, please don’t hesitate to reach out!
 
 --------
 
