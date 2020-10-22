@@ -16,7 +16,7 @@ def test_basic():
     Bref = bg_hom3d(t,lam*conc)
 
     #Output
-    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
     path = [[],[]]
     path[0] = [1-lam]
     path[1] = [lam, 0]
@@ -38,7 +38,7 @@ def test_singletime():
     Bref = bg_hom3d(t,lam*conc)
 
     #Output
-    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
     path = [[],[]]
     path[0] = [1-lam]
     path[1] = [lam, 0]
@@ -60,7 +60,7 @@ def test_harmonics():
     Bref = bg_hom3d(n*t,lam*conc)
 
     #Output
-    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
     path = [[],[]]
     path[0] = [1-lam]
     path[1] = [lam, 0,2]
@@ -101,7 +101,7 @@ def test_multipath_renorm():
     prob = 0.8
     lam = [prob**2, prob*(1-prob)]
     T0 = [0, tau2-t2]
-    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
 
     #Reference
     Bref = 1
@@ -134,7 +134,7 @@ def test_multipath_raw():
     prob = 0.8
     lam = [prob**2, prob*(1-prob)]
     T0 = [0, tau2-t2]
-    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
 
     #Reference
     Bref = 1
@@ -168,7 +168,7 @@ def test_overtones():
         Bref = Bref*bg_hom3d(t,n*overtones[i]*lam*conc)
     
     # Output
-    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
     path = []
     path.append([1-lam])
     path.append([overtones[0]*lam, 0, 1])
