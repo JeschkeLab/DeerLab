@@ -24,14 +24,19 @@ If you want more detailed instructions for installing DeerLab on your operating 
 Importing DeerLab
 -------------------
 
-Everytime you want to use a package, library, or module in your code or script, you first need to make it accessible.
+Every time you want to use a package, library, or module in your code or script, you first need to make it accessible.
 In order to start using all the functions available in DeerLab, you need to import it. This can be easily done with this import statement: ::
 
     import deerlab as dl
 
-We usually shorten DeerLab as ``dl`` in order to keep the code standarized so that everybody knows that these are DeerLab functions by
+We usually shorten DeerLab as ``dl`` in order to keep the code standardized so that everybody knows that these are DeerLab functions by
 looking at your code, it also shortens the amount of text you need to type. 
 
+Other packages need to be imported as well, typically used in scientific work are ::
+
+   import numpy as np                # NumPy: vectors, matrices, linear algebra
+   import matplotlib.pyplot as plt   # MatPlotLib: plotting
+   
 --------
 
 Getting to know Numpy
@@ -43,7 +48,7 @@ assortment of routines for fast operations on arrays, including mathematical, lo
 discrete Fourier transforms, basic linear algebra, basic statistical operations,
 random simulation and much more.
 
-Most mathemtical operations in DeerLab are based on Numpy, and all numerical outputs returned by DeerLab functions are Numpy data types.
+Most mathematical operations in DeerLab are based on Numpy, and all numerical outputs returned by DeerLab functions are Numpy data types.
 It is recommendable, to invest a short amount of time to familiarize yourself 
 with some `basic Numpy concepts <https://numpy.org/doc/stable/user/basics.html>`_.
 
@@ -118,7 +123,7 @@ Raw experimental dipolar EPR spectroscopy data comes in a crude state and must b
 
 Phase correction
     Experimental dipolar signals are usually complex, the first step if to perform a phase correction which will minimize the imaginary component and maximize the real component. 
-    If the signal is not complex-valued this step can be omited. The phase correction function ``correctphase`` takes the complex-valued dipolar signal, and returns the real-valued
+    If the signal is not complex-valued this step can be omitted. The phase correction function ``correctphase`` takes the complex-valued dipolar signal, and returns the real-valued
     dipolar signal, whose real-part has been optimized: ::
 
         V = dl.correctphase(V)  # phase correction of experimental data
@@ -127,7 +132,7 @@ Phase correction
     complex-valued. 
 
 Zero-time correction
-    Dependending on the file format and the spectrometer, the values of the experiment time-axis might be defined differently. Frequently, in commercial spectrometers these are defined
+    Depending on the file format and the spectrometer, the values of the experiment time-axis might be defined differently. Frequently, in commercial spectrometers these are defined
     as absolute timings, with the zero-time corresponding to the first element ``t[0]=0``. In dipolar EPR spectroscopy models, we define the zero-time as that time, where the dipolar 
     signal has its largest contribution or amplitude. 
     The function ``correctzerotime`` takes the time-axis ``t`` and dipolar signal ``V`` and optimizes the timing that corresponds to the signal's maximum (taking into account noise in
@@ -165,7 +170,7 @@ Now you must decide for a model. As described above, there are four separate cho
 
 (1) **Choosing a distance range**
 
-    The distance range :math:`[r_\mathrm{min},r_\mathrm{max}]` is an important choice, as any distance distibution is truncated to this range, i.e. :math:`P(r)=0` for
+    The distance range :math:`[r_\mathrm{min},r_\mathrm{max}]` is an important choice, as any distance distribution is truncated to this range, i.e. :math:`P(r)=0` for
     :math:`r<r_\mathrm{min}` and :math:`r>r_\mathrm{max}`. The lower limit of the distance range is determined by the bandwidth of the pulses, and also on the time increment. 
     Typically, 1.5 nm is a reasonable choice. The upper limit depends on the length of the experimental time trace and on the distances in your sample. The number of points 
     in ``r`` is usually set equal to the number of time points. Such a distance-axis is usually defined as ``r`` is most easily defined using the ``linspace`` function from NumPy: ::
@@ -176,7 +181,7 @@ Now you must decide for a model. As described above, there are four separate cho
 
     Generally, a non-parametric distribution is preferred (specified using the string ``'P'`` in ``fitsignal``), i.e. a distribution where each element :math:`P_i` of the distribution is a parameter. 
     Non-parametric distributions are obtained via methods such as Tikhonov regularization. If there are reasons to believe that the distance distribution has a 
-    specific shape (e.g. Gaussian, Rice, random-coil, etc.), use the associated parametric distance distibution model from the :ref:`list of available models<modelsref_dd>`.
+    specific shape (e.g. Gaussian, Rice, random-coil, etc.), use the associated parametric distance distribution model from the :ref:`list of available models<modelsref_dd>`.
 
 (3) **Choosing a background model**
 
@@ -232,12 +237,12 @@ Dipolar evolution function with a random-coil distribution                   ``f
 
 fitsignal uses a least-squares fitting algorithm to determine the optimal distance distribution, background parameters, and experiment parameters that fit the experiment data. To determine the non-parametric 
 distribution, it internally uses Tikhnonov regularization with a regularization parameter optimized using the Akaike Information Criterion (AIC). All settings related to the fit can be adjusted by using the 
-appropiate keywords, see the :ref:`reference documentation <fitsignal>` for details. For example, the regularization parameter used in the Tikhonov regularization could be manually adjusted by using the ``regparam``
+appropriate keywords, see the :ref:`reference documentation <fitsignal>` for details. For example, the regularization parameter used in the Tikhonov regularization could be manually adjusted by using the ``regparam``
 keyword: ::
 
     fit1 = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam='aic') # regularization with Akaike information criterion
     fit2 = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam='gcv') # regularization with Generalized Cross-Validation
-    fit3 = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam=0.05)  # regularization with fixed regularizaton parameter
+    fit3 = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam=0.05)  # regularization with fixed regularization parameter
 
 After the function has found a solution if will return a variable ``fit``. This fit is an object with different fields containing all quantities of interest with the fit results.
 A detailed list of these quantities can be found again in the :ref:`reference` for ``fitsignal``.
@@ -246,7 +251,7 @@ A detailed list of these quantities can be found again in the :ref:`reference` f
 Displaying the results
 **********************
 
-For just a quick display of the results, you can use the ``plot()`` method of the ``fit`` object that will display a figure with you experimental data, the corresponding fit, and the fit of the distance distributon
+For just a quick display of the results, you can use the ``plot()`` method of the ``fit`` object that will display a figure with you experimental data, the corresponding fit, and the fit of the distance distribution
 including confidence bands. :: 
 
     fit.plot() # display results
@@ -284,6 +289,7 @@ and fitted parameters with uncertainties, for example
     exparam[0]:   0.5097663  (0.4809968, 0.5385358)  Modulation depth ()
     -----------------------------------------------------------------------------------
 
+where there are no distribution parameters ``ddparam`` due to the distribution model being non-parametric. 
 
 ------------
 
@@ -291,6 +297,9 @@ Summary
 --------
 
 Summarizing, this would be an example script to load experimental data, pre-process the signal, and fit a 4-pulse DEER model with a non-parametric distance distribution:  ::
+
+    import numpy as np
+    import deerlab as dl
 
     # Data import
     filepath = '/home/experiments/DEERexperiment.DTA'  # file path
