@@ -11,7 +11,7 @@
 Model
 =========================================
 
-:math:`B(t) = p_0 + p_1(\lambda t) + p_2(\lambda t)^2 + p_3(\lambda t)^3`
+:math:`B(t) = p_0 + p_1t + p_2t^2 + p_3t^3`
 
 ============== =============== ============= ============= ============= ===================================
  Variable         Symbol        Start Value   Lower bound   Upper bound      Description

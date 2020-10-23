@@ -10,7 +10,7 @@
 Model
 =========================================
 
-:math:`B(t) = A_1\exp \left(-\lambda\kappa_1 \vert t \vert^{d_1}\right) + (1-A_1)\exp\left(-\lambda\kappa_2 \vert t \vert^{d_2}\right)`
+:math:`B(t) = A_1\exp \left(-\kappa_1 \vert t \vert^{d_1}\right) + (1-A_1)\exp\left(-\kappa_2 \vert t \vert^{d_2}\right)`
 
 ============== ================= ============= ============= ============= ========================================
  Variable         Symbol          Start Value   Lower bound   Upper bound      Description
