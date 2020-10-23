@@ -26,9 +26,9 @@ Citing DeerLab
 
     .. raw:: html 
 
-        <div style="height:100px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
-            <div style="height:100%;">
-                <img src='https://www.magnetic-resonance-ampere.net/graphic_journal_cover_normal.png', style="margin-top:1%; margin-bottom:1%;height:96%;">
+        <div style="height:2%px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
+            <div style="width:7%;">
+                <img src='https://www.magnetic-resonance-ampere.net/graphic_journal_cover_normal.png', style="margin-top:1%; margin-bottom:1%; width=50% !important ; ">
             </div>
             <div style="margin-left:1%; font-size:14px">
                 <h3 style="font-size:110%">  DeerLab: a comprehensive software package for analyzing dipolar electron paramagnetic resonance spectroscopy data </h3> 
@@ -44,9 +44,9 @@ Citing DeerLab
 Contributing
     .. raw:: html 
 
-        <div style="height:50px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
-            <div style="height:100%;">
-                <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png', style="margin-top:1%; margin-bottom:1%;height:96%;">
+        <div style="height:3%; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
+            <div style="width:5%;">
+                <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png', style="margin-top:1%; margin-bottom:1%;height:60%;">
             </div>
             <div style="margin-left:1%; font-size:14px">
                 DeerLab is hosted on <a href="https://github.com/JeschkeLab/DeerLab"> Github </a>:
