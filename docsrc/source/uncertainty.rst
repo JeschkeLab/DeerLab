@@ -1,109 +1,132 @@
 Uncertainty
 =========================================
 
-After fitting experimental data with a distance distribution, a background, and a modulation depth, it is important to assess the uncertainty in the fitted parameters.
+The presence of any level of noise in the data will result in uncertainty of any fitted quantities based on 
+that data. This means that despite the fit returning single values for these quantities, there is a distributions
+of values for each quantity which can describe the data. 
 
-DeerLab provides uncertainty estimates for all parameters in the form of confidence intervals (CIs). They can be calculated in two ways: either using the covariance matrix, or using bootstrap. The first method is fast, but is not entirely accurate, whereas bootstrap is much slower, but more robust. All confidence intervals provided by DeerLab functions describe the range of values which might contain the ground truth with a ceratin probability.
+These so-called uncertainty distributions are important to determine the accuracy of the results. DeerLab provides a 
+complete framework to calculate them for any kind of fitted quantity and to derive related quantities such as confidence
+intervals. Confidence intervals (CI) provide a simple mean to report on the uncertainty, by defining a range of values within 
+which the true solution might reside with a given probability.
+
+DeerLab provides two means to estimate the uncertainty of fitted quantities: **covariance-matrix uncertainty**; a fast method, but not entirely accurate, and **bootstrapped uncertainty**; a much slower method, but more robust and accurate. 
+
+The ``UncertQuant`` Object
+---------------------------
+
+The uncertainty estimation framework in DeerLab is contained into :ref:`UncertQuant` (Uncertainty Quantification) objects. 
+These objects are variables returned by any function which calculates some kind of uncertainty estimate, and contain different 
+fields with all quantities of interested related to uncertainty (see details :ref:`here <UncertQuant>`). Some of the most basic
+attributes is ``UncertQuant.type``, which identifies whether the uncertainty was estimated by 
+covariance-based or bootstrap methods. 
+
+One ``UncertQuant`` can contain the uncertainty of multiple parameters and information on their correlations. For example, if ``fitsignal`` is used to fit a 
+4-pulse DEER signal without background ::
+
+    fit = dl.fitsignal(Vexp,t,r,'P',None,ex_4pdeer)  # Fit a 4-DEER form factor
+    Puq = fit.Puncert           # Uncertainty quantification of fitted distance distribution
+    lamuq = fit.exparamUncert   # Uncertainty quantification of fitted modulation depth
+
+it will return a fit with a non-parametric distribution of N-points ``fit.P``, and the fitted modulation depth as ``fit.exparam``, then the output ``fit.Puncert`` will be a ``UncertQuant`` object with the information on all 
+N-distribution elements and the output ``fit.exparamUncert`` will contain just the uncertainty of the modulation depth.
+
+Confidence intervals
+    As mentioned above, confidence intervals are the most practical quantities to report uncertainty of fit results. The ``UncertQuant.ci()`` is a method
+    that takes the coverage or probability to be covered, and generates the confidence intervals. For the example above, if you want to generate the 95%-confidence 
+    intervals you need to call ::
+
+        P_ci = Puq.ci(95)       # 95%-confidence intervals of the distance distribution
+        lam_ci = lamuq.ci(95)   # 95%-confidence intervals of the modulation depth parameter
+
+    With this method you can calculate different confidence intervals for the same quantity, for example ::
+
+        P_ci95 = Puq.ci(95) # 95%-confidence intervals of the distance distribution
+        P_ci75 = Puq.ci(75) # 75%-confidence intervals of the distance distribution
+        P_ci50 = Puq.ci(50) # 50%-confidence intervals of the distance distribution
+
+    The confidence intervals are always returned as a ``Nx2``-array, where each one of the ``N`` parameters has two values, the lower and upper boundaries of the confidence interval. ::
+
+        P_ci[:,0] # lower bound of the 95%-CI of the distance distribution
+        P_ci[:,1] # upper bound of the 95%-CI of the distance distribution
+        lam_ci[0] # lower bound of the 95%-CI of the modulation depth
+        lam_ci[1] # upper bound of the 95%-CI of the modulation depth
+
+Uncertainty distributions 
+    A more complete description of the uncertainty are the uncertainty distributions for the fit parameter. These can be requested from the
+    the ``UncertQuant.pardist`` method. Using ``UncertQuant.pardist(n)`` will return the parameter uncertainty probability density function 
+    corresponding to the fit parameter with index ``n`` and its corresponding abscissa values. For example, ::
+
+      P5_dist,P5_vals = Puq.pardit(5)       # Uncertainty distribution of fit.P[5] values
+      lam_dist,lam_vals = lamuq.pardist(0)  # Uncertainty distribution of modulation depth values
+
+Uncertainty Propagation
+    Sometimes you might fit some parameters and get their corresponding uncertainty analysis, but you might be interested in knowing what the uncertainty
+    is of a model that depends on those parameters. Analyzing the effect that the uncertainty of a set of parameters has on a dependent function is called 
+    uncertainty or error propagation. 
+    
+    The ``UncertQuant.propagate`` method provides a simple interface for propagation uncertainty to dependent models or functions. The method just takes as input the function or model to which you 
+    want to propagate the uncertainty. Additionally if the model has some boundaries (e.g. a distance distribution with non-negative values) you can specify the lower and upper bounds as additional inputs. 
+    
+    For example, if you fitted a Gaussian distribution with ``fitparamodel`` and obtained the uncertainty quantification for its parameters ::
+
+        model  = lambda p: K@dl.dd_gauss(r,p) # Parametric model depending on p=[rmean,sigma] 
+        fit = dl.fitparamodel(V,model) # Fit dipolar signal with parametric model 
+        Pfit = dl.dd_gauss(r,fit.param) # Fitted distance distribution
+
+        paramuq = fit.paramuq # Uncertainty quantification for fitted parameters
+
+    you can propagate the uncertainty to the model ``dd_gauss`` as follows ::
+
+        lb = np.zeros_like(Pfit)            # Non-negativity constraint of the distance distribution
+        Puq = paruq.propagate(ddmodel,lb)   # Uncertainty quantification of fitted distribution
+
+        Pci95 = Puq.ci(95) # 95%-confidence intervals of fitted distance distribution
+
+
 
 Covariance Uncertainty Quantification
 ------------------------------------------
 
-Along with every fit, functions like ``fitsignal`` return confidence intervals for the fitted parameters and the fitted distributions. For example,
+Covariance-baed uncertainty is the fastest method for uncertainty quantification available in DeerLab. Due to its readiness all fit functions 
+in DeerLab return covariance-based ``UncertQuant`` objects for all quantities fitted.
 
-.. code-block:: python
+This method estimates the uncertainty based on the curvature of the optimization surface. During optimization, when a minimum is found, the curvature
+of the parameter hypersurface at that point is measured. A very sharp minimum means that there is less uncertainty in the found result, whereas a shallow
+minimum will indicate a larger uncertainty in the results. 
+This curvature is determined via the Jacobian of the optimization objective function and the corresponding covariance matrix. The method then assumes the uncertainty
+distributions of all parameters to be normally distributed, to be centered at the fitted values, and their variance to be given by the diagonal elements of the covariance matrix.
+In addition, the method does not take into consideration boundaries of the parameters, i.e. they are assumed to be unconstrained. However, in DeerLab confidence intervals and
+uncertainty distributions are clipped at the boundaries as it is common practice. 
 
-   fit = dl.fitsignal(Vexp,t,r)
-   Puq = fit.Puncert            # uncertainty information about the distance distribution
-   Buq = fit.Buncert            # Uncertainty information about the background 
-   lamuq = fit.exparamUncert    # Uncertainty information about the modulation depth
-   
-
-The variables ``Puq``, ``Buq`` and ``lamuq`` are uncertainty quantification objects :ref:`UncertQuant` which contain the full uncertainty information of the corresponding variables, calculated using the standard method based on the variance-covariance matrices.
-
-The confidence intervals (at any confidence level) can be calculated by using the ``ci()`` method, e.g. for the 50% and 95% confidence intervals of the fitted distance distribution are calculated as: 
-
-.. code-block:: python
-
-    Pfit_ci50 = Puq.ci(50)    # 50%-confidence intervals of Pfit
-    Pfit_ci95 = Puq.ci(95)    # 95%-confidence intervals of Pfit
-
-Uncertainty can also be propagated to dependent models. For example, assume that we have fitted a single Gaussian distance distribution with ``rmean`` and ``fwhm`` as parameters. Now, we can propagate the uncertainty in the fit of ``rmean`` and ``fwhm`` to the resulting Gaussian distance distribution. This can be done via the ``propagate()`` method, this will create the uncertainty quantification for the fitted distribution: 
-
-.. code-block:: python
-
-    # parfit = [rmean, fwhm]
-    ddmodel = lambda parfit: dl.dd_gauss(r,parfit)
-    
-    # Get the fitted model
-    Pfit = ddmodel(parfit)
-    
-    # Propagate the error in the parameters to the model
-    lb = zeros(numel(Pfit),1)   # Non-negativity constraint of the distance distribution
-    ub = []                    # No upper bounds
-    Puq = paruq.propagate(ddmodel,lb) 
-
-    # Get the 95%-confidence intervals of the fitted distribution
-    Pci95 = Puq.ci(95)
-
-
-Theoretical assumptions of covariance-based uncertainty analysis:
-   - The uncertainty in the fitted parameters is approximated by a Gaussian distribution.
-   - The mean of this Gaussian is assumed to be the fitted value and its width by the diagonal elements of the covariance matrix.
-   - All parameters are assumed to be unconstrained.
-
+All these assumptions and approximation can lead to a less accurate estimate of the uncertainty. It is common for covariance-based confidence intervals to be overestimated and broader
+than the bootstrapped equivalents.  However, their cheap computation cost makes them ideal for immediate estimations of uncertainty. 
 
 Bootstrap Uncertainty Quantification
 ------------------------------------------
 
-A more thorough way of assessing parameter uncertainty is bootstrap. In this method, many additional synthetic datasets are generated from the given experimental data and the fitted model and are fitted individually. This yields an ensemble of parameter fits that is analyzed statistically to provide information about the scatter.
+A more thorough way of assessing parameter uncertainty is bootstrap. In this method, many additional synthetic datasets (called bootstrap samples) are generated from the given experimental data 
+and fitted in the same way as the original data. This means that the method samples the uncertainty arising when the same analysis is repeated for multiple noise realizations. 
+When all  bootstrap samples have been analyzed, for each fitted quantity a distribution of values are obtained, which are taken as the uncertainty distributions for that quantity. 
 
-Here is an example for a parametric model:
+Due to the need of repeating the fit for multiple bootstrap samples, this method can take long to estimate the uncertainty. However, since this method does not rely on 
+any assumptions, the bootstrap uncertainty estimation are considered some of the most accurate, provided that enough bootstrap samples are taken. While a reduced number of
+samples (50-100) can be used when testing workflows or new scripts, for conclusive analysis the minimum standard is to use at least about 1000 bootstrap samples. 
 
-.. code-block:: python
+In DeerLab you can calculate bootstrap uncertainty estimates using the :ref:`bootan` function. The function takes the experimental data, the fit, and the analysis function. This analysis 
+function must be a function that takes the experimental data and returns the quantities whose uncertainties are to be calculated. For examples, to bootstrap the distance distribution and 
+parameters obtained from a 4-pulse DEER fit using ``fitsignal`` you could use the following ::
 
-    def fitfcn(V):
-        Vmodel = lambda par: K@dl.dd_gauss(r,par)
-        fit = dl.fitparamodel(V,Vmodel,r,K)
-        return fit.param
-
-    bootuq = dl.bootan(fitfcn,Vexp,Vfit,samples=1000,verbose=True);
-
-The output ``bootuq`` is again a :ref:`UncertQuant` object that can be used as described above to evaluate confidence intervals at different confidence levels, e.g the 50% and 95% confidence intervals: 
-
-.. code-block:: python
-
-    parfit_ci50 = bootuq.ci(50)
-    parfit_ci95 = bootuq.ci(95)
-
-The bootstrapped distributions for each parameter can be accessed by using the ``pardist()`` method, e.g.if the modulation depth is the second fit parameter:
-
-.. code-block:: python
-
-    moddepth_dist = bootuq.pardist(2);
-
-
-Here is an example for a model with a non-parametric distribution:
-
-.. code-block:: python
-
-
-    def fitfcn(V):
-        fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
-        return fit.P, fit.bgparam, fit.exparam
-
-    bootuq = dl.bootan(fitfcn,Vexp,Vfit,samples=100,verbose=True)
-
-To plot the resulting 95% and 50% confidence interval for the non-parametric distance distribution, use
-
-.. code-block:: python
+    fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
+    Vfit = fit.V # Fitted signal
     
-    Pci50 = bootuq.ci(50)
-    Pci95 = bootuq.ci(95)
-    
-    import matplotlib.pyplot as plt
-    plt.plot(r,Pfit,'k')
-    plt.fill_between(r,Pci50[:,0]; Pci50[:,1],color='r',alpha=0.5)
-    plt.fill_between(r,Pci95[:,0]; Pci95[:,1],color='r',alpha=0.2)
+    # Define the function to be bootstrapped
+    def fitfcn(Vexp):
+        fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
+        return fit.P, fit.exparam, fit.bgparam  # bootstrap the fitted distance distribution, modulation depth and spin concentration
 
-Assumptions:
-   - ``Vfit`` is a good fit of the experimental data ``Vexp``.
+    bootuq = dl.bootan(fitfcn,Vexp,Vfit,samples=1000,verbose=True) # Bootstrap uncertainty quantification
+
+The output of ``bootuq`` is an ``UncertQuant`` object equivalent to the ones obtained for covariance-based uncertainty analysis. If the fit procedure is slow or
+costly, it is very recommendable to use the ``cores`` option to assign multiple CPU cores to the bootstrapping, in order to run different bootstrap samples in parallel, speeding
+up the uncertainty estimation.

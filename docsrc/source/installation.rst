@@ -1,4 +1,6 @@
-Installation instructions
+.. _installation:
+
+Installation
 =========================
 
 Requirements
@@ -11,11 +13,11 @@ DeerLab requires one of the following versions of the Python interpreter
 
 which can be downloaded from the `official Python distribution <https://www.python.org/>`_.
 
-For Windows systems it is imporant to ensure that the **Install launcher for all users (recommended)** and the **Add Python 3.x to PATH** checkboxes at the bottom are checked. To test if python has been succesfully installed, open a terminal window and run the command::
+For Windows systems it is important to ensure that the **Install launcher for all users (recommended)** and the **Add Python 3.x to PATH** checkboxes at the bottom are checked. To test if python has been successfully installed, open a terminal window and run the command::
 
 	python
 
-wihch should open the Python interface as well as display the installed Python version. To exit use the ``exit()`` command.
+which should open the Python interface as well as display the installed Python version. To exit use the ``exit()`` command.
 
 Installing pre-built DeerLab
 -----------------------------

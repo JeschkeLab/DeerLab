@@ -10,7 +10,7 @@
 Model
 =========================================
 
-:math:`B(t) = p_0 + p_1(\lambda t)`
+:math:`B(t) = p_0 + p_1 t`
 
 ============== =============== ============= ============= ============= ====================================
  Variable         Symbol        Start Value   Lower bound   Upper bound      Description

@@ -87,7 +87,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
             rmean,fwhm,lam,conc = par
             B = dl.bg_hom3d(t,conc)
             P = dl.dd_gauss(r,[rmean,fwhm])
-            V = (1-lam + lam*K0@P)*B[:,np,newaxis]
+            V = (1-lam + lam*K0@P)*B
             return V
         
         # par: rmean fwhm lam conc
@@ -106,8 +106,8 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
             rmean,fwhm,lam1,lam,2conc = par
             B = dl.bg_hom3d(t,conc)
             P = dl.dd_gauss(r,[rmean,fwhm])
-            V1 = (1-lam1 + lam1*K1@P)*B[:,np,newaxis]
-            V2 = (1-lam2 + lam2*K2@P)*B[:,np,newaxis]
+            V1 = (1-lam1 + lam1*K1@P)*B
+            V2 = (1-lam2 + lam2*K2@P)*B
             return V
         
         # par: rmean fwhm lam1 lam2 conc

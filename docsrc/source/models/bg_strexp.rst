@@ -13,7 +13,7 @@ Model
 
 .. math::
 
-    B(t) = \exp\left(-\lambda \kappa \vert t\vert^{d}\right)
+    B(t) = \exp\left(-\kappa \vert t\vert^{d}\right)
 
 ============== ================= ============= ============= ============= =================================
  Variable         Symbol          Start Value   Lower bound   Upper bound      Description
