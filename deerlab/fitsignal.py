@@ -7,6 +7,7 @@ import numpy as np
 import numdifftools as nd
 import types
 import copy
+import inspect
 import matplotlib.pyplot as plt
 import deerlab as dl
 from deerlab.classes import UncertQuant, FitResult
@@ -245,6 +246,9 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     par0_bg, lower_bg, upper_bg, N_bg = _getmodelparams(bg_model)
 
+    isphenomenological = [_iserror(model,t,par0,1) for model,par0 in zip(bg_model,par0_bg)]
+
+
     if np.any(~isparamodel & includeBackground):
         raise TypeError('Background model (5th input) must either be a function handle, or None.')
     
@@ -294,9 +298,12 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             bg_par = par[bgidx[iSignal]]
             ex_par = par[exidx[iSignal]]
 
-            # Prepared background basis function
+            # Prepare background basis function
             if includeBackground[iSignal]:
-                Bfcn = lambda t,lam: bg_model[iSignal](t,bg_par,lam)
+                if isphenomenological[iSignal]:
+                    Bfcn = lambda t: bg_model[iSignal](t,bg_par)
+                else:
+                    Bfcn = lambda t,lam: bg_model[iSignal](t,bg_par,lam)
             else:
                 Bfcn = lambda _,__: np.ones_like(Vexp[iSignal])
             
@@ -685,4 +692,13 @@ def _checkbounds(lb,ub,par0):
         raise ValueError('Lower bounds cannot be larger than upper bounds.')
     if np.any(lb>par0) or np.any(par0>ub):
         raise ValueError('Inital values for parameters must lie between lower and upper bounds.')
+# ==============================================================================
+
+def _iserror(func, *args, **kw):
+# ==============================================================================
+    try:
+        func(*args, **kw)
+        return False
+    except Exception:
+        return True
 # ==============================================================================

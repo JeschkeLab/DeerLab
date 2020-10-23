@@ -4,6 +4,7 @@
  # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
+import inspect
 import types
 
 def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
@@ -19,7 +20,11 @@ def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
         For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``.
         If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  
     Bmodel : callable
-        Background basis function. A callable function accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``
+        Background basis function. Its use depends on the type of background model. 
+
+        * Physical background models: A callable function accepting a time-axis array as first input and a pathway amplitude as a second, e.g. ``B = lambda t,lam: bg_hom3d(t,par,lam)``
+        * Phenomenological background models: A callable function accepting a time-axis array as input, e.g. ``B = lambda t: bg_exp(t,par)``
+
     renormalize : boolean, optional
         Re-normalization of the multi-pathway background to ensure the equality ``B(t=0)==1`` is satisfied. Enabled by default.
     renormpaths: boolean, optional
@@ -67,6 +72,12 @@ def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
     if type(Bmodel) is not types.LambdaType:
         raise TypeError('For a model with multiple modulated pathways, B must be a function handle of the type: @(t,lambda) bg_model(t,par,lambda)')
 
+    # Identify phenomenological background models
+    takes_lambda = len(inspect.signature(Bmodel).parameters)>1
+    if not takes_lambda:
+        _Bmodel = Bmodel
+        Bmodel = lambda t,_: _Bmodel(t)
+  
     if not isinstance(pathways,list): pathways = [pathways] 
     if len(pathways) == 1:
         lam = pathways[0]

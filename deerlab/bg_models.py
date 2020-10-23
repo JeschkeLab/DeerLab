@@ -9,18 +9,24 @@ import scipy as scp
 from numpy import pi
 import inspect
 
-def _parsargs(args,npar):
+def _parsargs(args,npar,takes_lambda=False):
 #=================================================================
     name = inspect.stack()[1][3]
     
     # Check the number of input arguments specified
-    if len(args)==2:
-        t,p = args
-        lam = 1
-    elif len(args)==3:
-        t,p,lam = args
-    else:
-        raise KeyError('The model function {} requires two or three input arguments: {}(r,params) or {}(r,params,lambda).'.format(name,name,name))
+    if not takes_lambda:
+        if len(args)==2:
+            t,p = args
+        else:
+            raise KeyError('The model function {} requires two input arguments: {}(t,params).'.format(name,name))
+    if takes_lambda:
+        if len(args)==3:
+            t,p,lam = args
+        elif len(args)==2:
+            t,p = args
+            lam = 1
+        else:
+            raise KeyError('The model function {} requires two or three input arguments: {}(t,params) or {}(t,params,lambda).'.format(name,name,name))
 
     t = np.atleast_1d(t)
     p = np.atleast_1d(p)
@@ -29,77 +35,11 @@ def _parsargs(args,npar):
     if len(p)!=npar:
         raise ValueError('The model function {} requires {} parameters, but {} are provided.'.format(name,npar,len(p)))
 
-    return t,p,lam
+    if takes_lambda:
+        return t,p,lam
+    else:   
+        return t,p
 #=================================================================
-
-def bg_exp(*args):
-    r"""
-    Exponential background model
-   
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = bg_exp()
-
-
-    Otherwise the function returns to calculated background model::
-    
-
-        B = bg_exp(t,param)
-        B = bg_exp(t,param,lam)
- 
- 
-    Model parameters:
-    -------------------
-
-     -------------------------------------------------
-      Parameter    Units     Lower    Upper    Start
-     -------------------------------------------------
-      Decay Rate    μs⁻¹       0       200      0.35 
-     -------------------------------------------------
-
-
-    Parameters
-    ----------
-    t : array_like
-        Time axis, in microseconds.
-    param : array_like
-        List of model parameter values.
-    lam : float scalar
-        Pathway amplitude. If not specified it is set to 1.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    B : ndarray
-        Background decay function. 
-    """  
-# ======================================================================
-    if not args:
-        info = dict(
-            Parameters = ['Decay Rate'],
-            Units = ['μs⁻¹'],
-            Start = np.asarray([0.35]),
-            Lower = np.asarray([0]),
-            Upper = np.asarray([200])
-        )
-        return info
-    t,param,lam = _parsargs(args,npar=1) 
-    
-    t = np.atleast_1d(t)
-    param = np.atleast_1d(param)
-
-    kappa = param[0]
-    B = np.exp(-lam*kappa*np.abs(t))
-    return B
-# ======================================================================
-
 
 def bg_hom3d(*args):
     r"""
@@ -158,7 +98,7 @@ def bg_hom3d(*args):
             Upper = np.asarray([5000])
         )
         return info
-    t,param,lam = _parsargs(args,npar=1) 
+    t,param,lam = _parsargs(args, npar=1, takes_lambda=True) 
 
     conc = param            # concentration, uM
     NA = 6.02214076e23      # Avogadro constant, mol^-1
@@ -237,7 +177,7 @@ def bg_hom3dex(*args):
             Upper = np.asarray([5000, 20])
         )
         return info
-    t,param,lam = _parsargs(args,npar=2) 
+    t,param,lam = _parsargs(args, npar=2, takes_lambda=True) 
 
     # Load precalculated reduction factor look-up table (Kattnig Eq.(18))
     dR_tab,alphas_tab = load_exvolume_redfactor()
@@ -336,7 +276,7 @@ def bg_homfractal(*args):
             Upper = np.asarray([5000, 6-np.finfo(float).eps])
         )
         return info
-    t,param,lam = _parsargs(args,npar=2) 
+    t,param,lam = _parsargs(args, npar=2, takes_lambda=True)
  
 
     # Unpack model paramters
@@ -371,6 +311,70 @@ def bg_homfractal(*args):
 # ======================================================================
 
 
+def bg_exp(*args):
+    r"""
+    Exponential background model
+   
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = bg_exp()
+
+
+    Otherwise the function returns to calculated background model::
+    
+        B = bg_exp(t,param)
+ 
+ 
+    Model parameters:
+    -------------------
+
+     -------------------------------------------------
+      Parameter    Units     Lower    Upper    Start
+     -------------------------------------------------
+      Decay Rate    μs⁻¹       0       200      0.35 
+     -------------------------------------------------
+
+
+    Parameters
+    ----------
+    t : array_like
+        Time axis, in microseconds.
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    B : ndarray
+        Background decay function. 
+    """  
+# ======================================================================
+    if not args:
+        info = dict(
+            Parameters = ['Decay Rate'],
+            Units = ['μs⁻¹'],
+            Start = np.asarray([0.35]),
+            Lower = np.asarray([0]),
+            Upper = np.asarray([200])
+        )
+        return info
+    t,param = _parsargs(args, npar=1) 
+    
+    t = np.atleast_1d(t)
+    param = np.atleast_1d(param)
+
+    kappa = param[0]
+    B = np.exp(-kappa*np.abs(t))
+    return B
+# ======================================================================
+
 def bg_strexp(*args):
     r"""
     Stretched exponential background model
@@ -381,10 +385,8 @@ def bg_strexp(*args):
 
 
     Otherwise the function returns to calculated background model::
-    
 
         B = bg_strexp(t,param)
-        B = bg_strexp(t,param,lam)
  
  
     Model parameters:
@@ -393,7 +395,7 @@ def bg_strexp(*args):
      ----------------------------------------------------
       Parameter        Units     Lower    Upper   Start
      ----------------------------------------------------
-      Decay Rate       μs⁻¹       0       200      0.25 
+      Decay Rate       μs⁻ᵈ       0       200      0.25 
       Stretch factor              0        6        1
      ----------------------------------------------------
 
@@ -403,8 +405,6 @@ def bg_strexp(*args):
         Time axis, in microseconds.
     param : array_like
         List of model parameter values.
-    lam : float scalar
-        Pathway amplitude. If not specified it is set to 1.
 
     Returns
     -------
@@ -429,12 +429,12 @@ def bg_strexp(*args):
             Upper = np.asarray([200,  6])
         )
         return info
-    t,param,lam = _parsargs(args,npar=2) 
+    t,param = _parsargs(args, npar=2) 
 
     # Unpack model paramters
     kappa = param[0]         # decay rate, µs^-1
     d = param[1]            # fractal dimension    
-    B = np.exp(-lam*kappa*abs(t)**d)
+    B = np.exp(-kappa*abs(t)**d)
     
     return B
 # ======================================================================
@@ -451,9 +451,7 @@ def bg_prodstrexp(*args):
 
     Otherwise the function returns to calculated background model::
     
-
         B = bg_prodstrexp(t,param)
-        B = bg_prodstrexp(t,param,lam)
  
  
     Model parameters:
@@ -474,8 +472,6 @@ def bg_prodstrexp(*args):
         Time axis, in microseconds.
     param : array_like
         List of model parameter values.
-    lam : float scalar
-        Pathway amplitude. If not specified it is set to 1.
 
     Returns
     -------
@@ -500,15 +496,15 @@ def bg_prodstrexp(*args):
             Upper = np.asarray([200,  6, 200,  6])
         )
         return info
-    t,param,lam = _parsargs(args,npar=4) 
+    t,param = _parsargs(args, npar=4) 
 
     # Unpack model paramters
     kappa1 = param[0]
     d1 = param[1]
     kappa2 = param[2]
     d2 = param[3]
-    strexp1 = np.exp(-lam*kappa1*abs(t)**d1)
-    strexp2 = np.exp(-lam*kappa2*abs(t)**d2)
+    strexp1 = np.exp(-kappa1*abs(t)**d1)
+    strexp2 = np.exp(-kappa2*abs(t)**d2)
     B = strexp1*strexp2
     return B
 # ======================================================================
@@ -526,9 +522,7 @@ def bg_sumstrexp(*args):
 
     Otherwise the function returns to calculated background model::
     
-
         B = bg_sumstrexp(t,param)
-        B = bg_sumstrexp(t,param,lam)
  
  
     Model parameters:
@@ -550,8 +544,6 @@ def bg_sumstrexp(*args):
         Time axis, in microseconds.
     param : array_like
         List of model parameter values.
-    lam : float scalar
-        Pathway amplitude. If not specified it is set to 1.
 
     Returns
     -------
@@ -576,7 +568,7 @@ def bg_sumstrexp(*args):
             Upper = np.asarray([200,  6,  1,  200,  6])
         )
         return info
-    t,param,lam = _parsargs(args,npar=5) 
+    t,param = _parsargs(args, npar=5) 
 
     # Unpack model paramters
     kappa1 = param[0]
@@ -584,8 +576,8 @@ def bg_sumstrexp(*args):
     w1 = param[2]
     kappa2 = param[3]
     d2 = param[4]
-    strexp1 = np.exp(-lam*kappa1*abs(t)**d1)
-    strexp2 = np.exp(-lam*kappa2*abs(t)**d2)
+    strexp1 = np.exp(-kappa1*abs(t)**d1)
+    strexp2 = np.exp(-kappa2*abs(t)**d2)
     B = w1*strexp1 + (1-w1)*strexp2
     
     return B
@@ -603,10 +595,8 @@ def bg_poly1(*args):
 
 
     Otherwise the function returns to calculated background model::
-    
 
         B = bg_poly1(t,param)
-        B = bg_poly1(t,param,lam)
  
  
     Model parameters:
@@ -625,8 +615,6 @@ def bg_poly1(*args):
         Time axis, in microseconds.
     param : array_like
         List of model parameter values.
-    lam : float scalar
-        Pathway amplitude. If not specified it is set to 1.
 
     Returns
     -------
@@ -651,12 +639,12 @@ def bg_poly1(*args):
             Upper = np.asarray([200,  200])
         )
         return info
-    t,param,lam = _parsargs(args,npar=2) 
+    t,param = _parsargs(args, npar=2) 
 
     print(param)
     # Compute polynomial
     p = np.copy(np.flip(param))
-    p[:-1] = lam*p[:-1]
+    p[:-1] = p[:-1]
     B = np.polyval(p,abs(t))
 
     print(param)
@@ -676,9 +664,7 @@ def bg_poly2(*args):
 
     Otherwise the function returns to calculated background model::
     
-
         B = bg_poly2(t,param)
-        B = bg_poly2(t,param,lam)
  
  
     Model parameters:
@@ -698,8 +684,6 @@ def bg_poly2(*args):
         Time axis, in microseconds.
     param : array_like
         List of model parameter values.
-    lam : float scalar
-        Pathway amplitude. If not specified it is set to 1.
 
     Returns
     -------
@@ -724,11 +708,11 @@ def bg_poly2(*args):
             Upper = np.asarray([200,  200,  200])
         )
         return info
-    t,param,lam = _parsargs(args,npar=3) 
+    t,param = _parsargs(args, npar=3) 
 
     # Compute polynomial
     p = np.copy(np.flip(param))
-    p[:-1] = lam*p[:-1]
+    p[:-1] = p[:-1]
     B = np.polyval(p,abs(t))
     return B
 # ======================================================================
@@ -744,10 +728,8 @@ def bg_poly3(*args):
 
 
     Otherwise the function returns to calculated background model::
-    
 
         B = bg_poly3(t,param)
-        B = bg_poly3(t,param,lam)
  
  
     Model parameters:
@@ -768,8 +750,6 @@ def bg_poly3(*args):
         Time axis, in microseconds.
     param : array_like
         List of model parameter values.
-    lam : float scalar
-        Pathway amplitude. If not specified it is set to 1.
 
     Returns
     -------
@@ -794,11 +774,11 @@ def bg_poly3(*args):
             Upper = np.asarray([200,  200,  200,  200])
         )
         return info
-    t,param,lam = _parsargs(args,npar=4) 
+    t,param = _parsargs(args, npar=4) 
 
     # Compute polynomial
     p = np.copy(np.flip(param))
-    p[:-1] = lam*p[:-1]
+    p[:-1] = p[:-1]
     B = np.polyval(p,abs(t))
     return B
 # ======================================================================

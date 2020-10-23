@@ -26,7 +26,7 @@ def test_basics():
 
     paruq = bootan(bootfcn,Vexp,Vfit,10)
 
-    assert all(abs(paruq.mean - fit.param) < 1.1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1.5e-2)
 # ======================================================================
 
 
@@ -50,8 +50,8 @@ def test_resampling():
         fit = fitparamodel(V,Vmodel,par0)
         return fit.param
 
-    paruq1 = bootan(bootfcn,Vexp,Vfit,10,resampling='residual')
-    paruq2 = bootan(bootfcn,Vexp,Vfit,10,resampling='gaussian')
+    paruq1 = bootan(bootfcn,Vexp,Vfit,5,resampling='residual')
+    paruq2 = bootan(bootfcn,Vexp,Vfit,5,resampling='gaussian')
 
 
     assert all(abs(paruq1.mean - paruq2.mean) < 1.6e-2)
@@ -113,9 +113,9 @@ def test_multiple_datasets():
         fit = fitparamodel(V,Vmodel,par0)
         return fit.param
 
-    paruq = bootan(bootfcn,[Vexp1,Vexp2],[Vfit1,Vfit2],10)
+    paruq = bootan(bootfcn,[Vexp1,Vexp2],[Vfit1,Vfit2],5)
 
-    assert all(abs(paruq.mean - fit.param) < 1.1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1.5e-2)
 # ======================================================================
 
 def test_parallelization():
@@ -139,6 +139,6 @@ def test_parallelization():
 
     paruq = bootan(bootfcn,Vexp,Vfit,10,cores=-1)
 
-    assert all(abs(paruq.mean - fit.param) < 1e-2)
+    assert all(abs(paruq.mean - fit.param) < 1.5e-2)
 # ======================================================================
 
