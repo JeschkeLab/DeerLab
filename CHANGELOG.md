@@ -1,8 +1,51 @@
 
 -------------------------------
 
-Version 0.11.0 - September 2020
------------------------------
+Release Notes v0.12.0 - October 2020
+---------------------------------
+
+#### Overall changes
+
+* The regularization operator matrices ``regoperator`` now include the edges of the distribution (#38). Now the smoothness penalty is imposed on the distribution edges avoiding the accumulation of distribution mass at the edges of ``r``. 
+
+* The interface for defining dipolar pathways has been simplified (#41). For example, a signal with two dipolar pathways had to be defined as ``pathways = [[Lam0,np.nan], [lam1,T0]]``. Now the unmodulated pathway can just be defined by its amplitude and does not require the use of ``np.nan``, e.g. ``pathways = [Lam0, [lam1,T0]]``.
+
+* The project version control has been switched from the Git-flow to the GitHub-flow design. The default branch has been switched from ``master`` to ``main``, which is now always production-ready. All new contributions are merged into ``main`` exclusively by pull requests.
+
+* The dependency on the ``lambda`` parameter has been removed from all phenomenological background models, and kept only for physical models (#43). Their interface with ``dipolarbackground`` and ``dipolarkernel`` have been updated accordingly. 
+
+#### New features: 
+
+* ``diststats``: New function to calculate different statistical quantities of the distance distribution and their corresponding uncertainties (#38).
+
+* ``bootan``: Introduced the option ``cores`` to parallelize the bootstrapping using multiple CPU. 
+
+#### Specific changes
+
+* ``bg_homfractal``: 
+    -  Corrected behavior of the model. For ``d=3`` the model returned wrong values, and for ``d~=3`` the model resulted in an error.
+
+* ``UncertQuant``: 
+    - Fixed bug when propagating uncertainty to scalar functions.
+
+* ``deerload``: 
+    - Fixed UTF-8 error when loading certain spectrometer files in MacOS (#30)
+
+* ``fitsignal``:
+    - The fitted scale of the signal is now properly calculated when fitting fully parametric signals. 
+    - Fixed error occuring when fitting a dipolar evolution function with a non-parametric distribution.
+
+* ``selregparam``:
+    - Fixed bug occuring when requesting the ``lc`` or ``lr`` selection methods.
+
+* ``regparamange``: 
+    - An error occuring at the BLAS/LAPLACK error ocurring under certain conditions in MacOS and Ubuntu is now handled to avoid a crash. 
+
+-------------------------------
+
+
+Release Notes v0.11.0 - September 2020
+---------------------------------
 
 #### Overall changes
 
@@ -40,7 +83,7 @@ Version 0.11.0 - September 2020
 
 -------------------------------
 
-Version 0.10.0 - August 2020
+Release Notes v0.10.0 - August 2020
 -----------------------------
 
 As of this version, DeerLab is written in Python in contrast to older versions based on MATLAB.
