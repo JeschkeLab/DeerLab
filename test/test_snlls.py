@@ -205,8 +205,8 @@ def test_regularized_global():
     kappa = 0.50
     lam1 = 0.25
     lam2 = 0.35
-    K1 = dipolarkernel(t1,r,lam1,bg_exp(t1,kappa,lam1))
-    K2 = dipolarkernel(t2,r,lam2,bg_exp(t2,kappa,lam2))
+    K1 = dipolarkernel(t1,r,lam1,bg_exp(t1,kappa))
+    K2 = dipolarkernel(t2,r,lam2,bg_exp(t2,kappa))
     V1 = K1@P
     V2 = K2@P
 
@@ -214,8 +214,8 @@ def test_regularized_global():
     def globalKmodel(par):
         # Unpack parameters
         kappa,lam1,lam2 = par
-        K1 = dipolarkernel(t1,r,lam1,bg_exp(t1,kappa,lam1))
-        K2 = dipolarkernel(t2,r,lam2,bg_exp(t2,kappa,lam2))
+        K1 = dipolarkernel(t1,r,lam1,bg_exp(t1,kappa))
+        K2 = dipolarkernel(t2,r,lam2,bg_exp(t2,kappa))
         return K1, K2
 
     # Non-linear parameters

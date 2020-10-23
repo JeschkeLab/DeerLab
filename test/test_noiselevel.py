@@ -13,7 +13,7 @@ def test_filtered_movmean():
     r = np.linspace(2,6,100)
     P = dd_gauss(r,[3, 0.5])
     lam = 0.25
-    B = bg_exp(t,1.5,lam)
+    B = bg_exp(t,1.5)
     noise = whitegaussnoise(t,0.03)
     V = dipolarkernel(t,r,lam,B)@P + noise
 
@@ -35,7 +35,7 @@ def test_reference():
     r = np.linspace(2,6,100)
     P = dd_gauss(r,[3, 0.5])
     lam = 0.25
-    B = bg_exp(t,1.5,lam)
+    B = bg_exp(t,1.5)
     Vref = dipolarkernel(t,r,lam,B)@P
     noise = whitegaussnoise(t,0.03)
     V = Vref + noise
@@ -57,7 +57,7 @@ def test_filtered_savgol():
     r = np.linspace(2,6,100)
     P = dd_gauss(r,[3, 0.5])
     lam = 0.25
-    B = bg_exp(t,1.5,lam)
+    B = bg_exp(t,1.5)
     noise = whitegaussnoise(t,0.03)
     V = dipolarkernel(t,r,lam,B)@P + noise
 
@@ -99,7 +99,7 @@ def test_complex():
     r = np.linspace(2,6,100)
     P = dd_gauss(r,[4, 0.4])
     lam = 0.25
-    B = bg_exp(t,1.5,lam)
+    B = bg_exp(t,1.5)
 
     np.random.seed(1)
     noise = whitegaussnoise(t,0.03)
