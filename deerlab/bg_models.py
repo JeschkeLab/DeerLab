@@ -9,18 +9,24 @@ import scipy as scp
 from numpy import pi
 import inspect
 
-def _parsargs(args,npar):
+def _parsargs(args,npar,takes_lambda=False):
 #=================================================================
     name = inspect.stack()[1][3]
     
     # Check the number of input arguments specified
-    if len(args)==2:
-        t,p = args
-        lam = 1
-    elif len(args)==3:
-        t,p,lam = args
-    else:
-        raise KeyError('The model function {} requires two or three input arguments: {}(r,params) or {}(r,params,lambda).'.format(name,name,name))
+    if not takes_lambda:
+        if len(args)==2:
+            t,p = args
+        else:
+            raise KeyError('The model function {} requires two input arguments: {}(t,params).'.format(name,name))
+    if takes_lambda:
+        if len(args)==3:
+            t,p,lam = args
+        elif len(args)==2:
+            t,p = args
+            lam = 1
+        else:
+            raise KeyError('The model function {} requires two or three input arguments: {}(t,params) or {}(t,params,lambda).'.format(name,name,name))
 
     t = np.atleast_1d(t)
     p = np.atleast_1d(p)
@@ -29,7 +35,10 @@ def _parsargs(args,npar):
     if len(p)!=npar:
         raise ValueError('The model function {} requires {} parameters, but {} are provided.'.format(name,npar,len(p)))
 
-    return t,p,lam
+    if takes_lambda:
+        return t,p,lam
+    else:   
+        return t,p
 #=================================================================
 
 def bg_hom3d(*args):
@@ -89,7 +98,7 @@ def bg_hom3d(*args):
             Upper = np.asarray([5000])
         )
         return info
-    t,param,lam = _parsargs(args,npar=1) 
+    t,param,lam = _parsargs(args, npar=1, takes_lambda=True) 
 
     conc = param            # concentration, uM
     NA = 6.02214076e23      # Avogadro constant, mol^-1
@@ -168,7 +177,7 @@ def bg_hom3dex(*args):
             Upper = np.asarray([5000, 20])
         )
         return info
-    t,param,lam = _parsargs(args,npar=2) 
+    t,param,lam = _parsargs(args, npar=2, takes_lambda=True) 
 
     # Load precalculated reduction factor look-up table (Kattnig Eq.(18))
     dR_tab,alphas_tab = load_exvolume_redfactor()
@@ -267,7 +276,7 @@ def bg_homfractal(*args):
             Upper = np.asarray([5000, 6-np.finfo(float).eps])
         )
         return info
-    t,param,lam = _parsargs(args,npar=2) 
+    t,param,lam = _parsargs(args, npar=2, takes_lambda=True)
  
 
     # Unpack model paramters
@@ -356,7 +365,7 @@ def bg_exp(*args):
             Upper = np.asarray([200])
         )
         return info
-    t,param,lam = _parsargs(args,npar=1) 
+    t,param = _parsargs(args, npar=1) 
     
     t = np.atleast_1d(t)
     param = np.atleast_1d(param)
@@ -420,7 +429,7 @@ def bg_strexp(*args):
             Upper = np.asarray([200,  6])
         )
         return info
-    t,param,_ = _parsargs(args,npar=2) 
+    t,param = _parsargs(args, npar=2) 
 
     # Unpack model paramters
     kappa = param[0]         # decay rate, µs^-1
@@ -487,7 +496,7 @@ def bg_prodstrexp(*args):
             Upper = np.asarray([200,  6, 200,  6])
         )
         return info
-    t,param,_ = _parsargs(args,npar=4) 
+    t,param = _parsargs(args, npar=4) 
 
     # Unpack model paramters
     kappa1 = param[0]
@@ -559,7 +568,7 @@ def bg_sumstrexp(*args):
             Upper = np.asarray([200,  6,  1,  200,  6])
         )
         return info
-    t,param,_ = _parsargs(args,npar=5) 
+    t,param = _parsargs(args, npar=5) 
 
     # Unpack model paramters
     kappa1 = param[0]
@@ -630,7 +639,7 @@ def bg_poly1(*args):
             Upper = np.asarray([200,  200])
         )
         return info
-    t,param,_ = _parsargs(args,npar=2) 
+    t,param = _parsargs(args, npar=2) 
 
     print(param)
     # Compute polynomial
@@ -699,7 +708,7 @@ def bg_poly2(*args):
             Upper = np.asarray([200,  200,  200])
         )
         return info
-    t,param,_ = _parsargs(args,npar=3) 
+    t,param = _parsargs(args, npar=3) 
 
     # Compute polynomial
     p = np.copy(np.flip(param))
@@ -765,7 +774,7 @@ def bg_poly3(*args):
             Upper = np.asarray([200,  200,  200,  200])
         )
         return info
-    t,param,_ = _parsargs(args,npar=4) 
+    t,param = _parsargs(args, npar=4) 
 
     # Compute polynomial
     p = np.copy(np.flip(param))

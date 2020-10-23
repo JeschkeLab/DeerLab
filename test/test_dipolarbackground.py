@@ -1,6 +1,6 @@
 
 import numpy as np
-from deerlab.bg_models import bg_hom3d
+from deerlab.bg_models import bg_hom3d, bg_exp
 from deerlab.dipolarbackground import dipolarbackground
 
 
@@ -155,27 +155,45 @@ def test_multipath_raw():
     assert max(abs(B-Bref)) < 1e-8
 #==================================================================================
 
-def test_overtones():
+def test_physical():
 #==================================================================================
+    "Check that physical background models are propely used"
+
     t = np.linspace(0,5,150)
     conc = 50
     lam = 0.5
-    overtones = [0.6, 0.3, 0.1]
-    # Reference
-    Bref = 1
-    for i in range(len(overtones)):
-        n = i+1
-        Bref = Bref*bg_hom3d(t,n*overtones[i]*lam*conc)
-    
-    # Output
-    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
-    path = []
-    path.append([1-lam])
-    path.append([overtones[0]*lam, 0, 1])
-    path.append([overtones[1]*lam, 0, 2])
-    path.append([overtones[2]*lam, 0, 3])
 
+    #Reference
+    Bref = bg_hom3d(t,conc,lam)
+
+    #Output
+    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
+    path = [[],[]]
+    path[0] = [1-lam]
+    path[1] = [lam, 0]
     B = dipolarbackground(t,path,Bmodel)
 
-    assert max(abs(B-Bref)) < 1e-8
+    assert max(abs(B-Bref) < 1e-8)
 #==================================================================================
+
+def test_phenomenological():
+#==================================================================================
+    "Check that phenomenological background models are propely used"
+
+    t = np.linspace(0,5,150)
+    kappa = 0.3
+    lam = 0.5
+
+    #Reference
+    Bref = bg_exp(t,0.3)
+
+    #Output
+    Bmodel = lambda t: bg_hom3d(t,kappa)
+    path = [[],[]]
+    path[0] = [1-lam]
+    path[1] = [lam, 0]
+    B = dipolarbackground(t,path,Bmodel)
+
+    assert max(abs(B-Bref) < 1e-8)
+#==================================================================================
+test_phenomenological()

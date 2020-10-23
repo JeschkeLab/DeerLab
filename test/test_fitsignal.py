@@ -19,7 +19,7 @@ def assert_experiment_model(model):
     pathways = model(parIn)
 
     kappa = 0.4
-    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+    Bmodel = lambda t: bg_exp(t,kappa)
     K = dipolarkernel(t,r,pathways,Bmodel)
     V = K@P
 
@@ -34,6 +34,7 @@ def test_4pdeer():
         
     assert_experiment_model(ex_4pdeer)
 # ======================================================================
+test_4pdeer()
 
 def test_5pdeer():
 # ======================================================================
@@ -122,7 +123,7 @@ def test_start_values():
     P = dd_gauss(r,[4.5, 0.25])
 
     lam = 0.4
-    Bmodel = lambda t,lam: bg_exp(t,0.4,lam)
+    Bmodel = lambda t: bg_exp(t,0.4)
     K = dipolarkernel(t,r,lam,Bmodel)
     V = K@P
 
@@ -141,7 +142,7 @@ def test_boundaries():
     P = dd_gauss(r,[4.5, 0.25])
 
     lam = 0.4
-    Bmodel = lambda t,lam: bg_exp(t,0.4,lam)
+    Bmodel = lambda t: bg_exp(t,0.4)
     K = dipolarkernel(t,r,lam,Bmodel)
     V = K@P 
 
@@ -166,7 +167,7 @@ def test_global_4pdeer():
     pathways = ex_4pdeer(parIn)
 
     kappa = 0.4
-    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+    Bmodel = lambda t: bg_exp(t,kappa)
 
     t1 = np.linspace(0,5,100)
     V1 = dipolarkernel(t1,r,pathways,Bmodel)@P
@@ -186,7 +187,7 @@ def test_global_full_parametric():
     P = dd_gauss(r,[4.5, 0.25])
     lam = 0.3
     kappa = 0.4
-    B = lambda t,lam: bg_exp(t,lam*kappa,lam)
+    B = lambda t: bg_exp(t,kappa)
     t1 = np.linspace(0,5,100)
     t2 = np.linspace(0,3,200)
     V1 = dipolarkernel(t1,r,lam,B)@P
@@ -205,7 +206,7 @@ def test_global_mixed_backgrounds():
     P = dd_gauss(r,[4.5, 0.25])
     lam = 0.3
     kappa = 0.4
-    B = lambda t,lam: bg_exp(t,lam*kappa,lam)
+    B = lambda t: bg_exp(t,kappa)
     t1 = np.linspace(0,5,100)
     t2 = np.linspace(0,3,200)
     V1 = dipolarkernel(t1,r,lam,B)@P
@@ -271,7 +272,7 @@ def assert_confinter_param(subset):
     pathways = exmodel(parIn)
 
     kappa = 0.4
-    Bmodel = lambda t,lam: bgmodel(t,kappa,lam)
+    Bmodel = lambda t,lam: bgmodel(t,kappa)
 
     t = np.linspace(0,5,100)
     np.random.seed(0)
@@ -337,7 +338,7 @@ def assert_confinter_models(subset):
     pathways = exmodel(parIn)
 
     kappa = 0.4
-    Bmodel = lambda t,lam: bgmodel(t,kappa,lam)
+    Bmodel = lambda t: bgmodel(t,kappa)
 
     t = np.linspace(0,5,100)
     np.random.seed(0)
@@ -402,7 +403,7 @@ def assert_confinter_noforeground():
 
     kappa = 0.4
     lam = 0.3
-    Bmodel = bgmodel(t,kappa,lam)
+    Bmodel = bgmodel(t,kappa)
 
     np.random.seed(0)
     V = dipolarkernel(t,r,lam,Bmodel)@P + whitegaussnoise(t,0.01)
@@ -453,7 +454,7 @@ def test_global_scale_4pdeer():
     pathways = ex_4pdeer(parIn)
 
     kappa = 0.4
-    Bmodel = lambda t,lam: bg_exp(t,kappa,lam)
+    Bmodel = lambda t: bg_exp(t,kappa)
     scales = [1e3,1e9]
     t1 = np.linspace(0,5,100)
     V1 = scales[0]*dipolarkernel(t1,r,pathways,Bmodel)@P
