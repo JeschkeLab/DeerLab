@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -98,16 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
 </ul>
@@ -119,8 +114,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -194,6 +190,7 @@
 <span class="kn">import</span> <span class="nn">numdifftools</span> <span class="k">as</span> <span class="nn">nd</span>
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nf">copy</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 <span class="kn">from</span> <span class="nn">deerlab.classes</span> <span class="kn">import</span> <span class="n">UncertQuant</span><span class="p">,</span> <span class="n">FitResult</span>
@@ -323,7 +320,7 @@
 <span class="sd">        Array of weighting coefficients for the individual signals in global fitting,</span>
 <span class="sd">        the default is all weighted equally.</span>
 <span class="sd">        If not specified all datasets are weighted equally.</span>
-<span class="sd">    regParam (str or scalar):</span>
+<span class="sd">    regparam (str or scalar):</span>
 <span class="sd">        Method for the automatic selection of the optimal regularization parameter:</span>
 
 <span class="sd">        * ``&#39;lr&#39;`` - L-curve minimum-radius method (LR)</span>
@@ -359,32 +356,32 @@
 <span class="sd">    --------</span>
 <span class="sd">    Fit a 4pDEER signal with homogenous 3D background with Gaussian distribution::</span>
 
-<span class="sd">        fit = fitsignal(V,t,r,dd_gauss,bg_hom3d,ex_4pdeer)  </span>
+<span class="sd">        fit = dl.fitsignal(V,t,r,dl.dd_gauss,dl.bg_hom3d,dl.ex_4pdeer)  </span>
 
 
 <span class="sd">    Fit a 5pDEER signal with exponential background and Tikhonov regularization::</span>
 
-<span class="sd">        fit = fitsignal(V,t,r,&#39;P&#39;,bg_hom3d,ex_5pdeer)        </span>
+<span class="sd">        fit = dl.fitsignal(V,t,r,&#39;P&#39;,dl.bg_hom3d,dl.ex_5pdeer)</span>
 <span class="sd">    </span>
 <span class="sd">    </span>
 <span class="sd">    Fit a 4pDEER stretched exponential background (no foreground)::</span>
 <span class="sd">    </span>
-<span class="sd">        fit = fitsignal(V,t,r,None,bg_strexp,ex_4pdeer)  </span>
+<span class="sd">        fit = dl.fitsignal(V,t,r,None,dl.bg_strexp,dl.ex_4pdeer)  </span>
 <span class="sd">    </span>
 <span class="sd">    </span>
 <span class="sd">    Fit a dipolar evolution function with Rician distribution::</span>
 <span class="sd">    </span>
-<span class="sd">        fit = fitsignal(V,t,r,dd_rice,None,None)          </span>
+<span class="sd">        fit = dl.fitsignal(V,t,r,dl.dd_rice,None,None)</span>
 <span class="sd">    </span>
 <span class="sd">    </span>
 <span class="sd">    Fit a 4pDEER form factor (no background) with bimodal Gaussian distribution:: </span>
 
-<span class="sd">        fit = fitsignal(V,t,r,dd_gauss2,None,ex_4pdeer)   </span>
+<span class="sd">        fit = dl.fitsignal(V,t,r,dl.dd_gauss2,None,dl.ex_4pdeer)   </span>
 <span class="sd">   </span>
 <span class="sd">     </span>
 <span class="sd">    Fit a 4pDEER signal and a 5pDEER signal with same type of background::</span>
 <span class="sd">    </span>
-<span class="sd">        fit = fitsignal([V1,V2],t,r,&#39;P&#39;,bg_hom3d,[ex_4pdeer,ex_5pdeer])    </span>
+<span class="sd">        fit = fitsignal([V1,V2],t,r,&#39;P&#39;,dl.bg_hom3d,[dl.ex_4pdeer,dl.ex_5pdeer])    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Default optional settings</span>
@@ -431,6 +428,9 @@
     <span class="n">includeBackground</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">bg_model</span><span class="p">])</span>
 
     <span class="n">par0_bg</span><span class="p">,</span> <span class="n">lower_bg</span><span class="p">,</span> <span class="n">upper_bg</span><span class="p">,</span> <span class="n">N_bg</span> <span class="o">=</span> <span class="n">_getmodelparams</span><span class="p">(</span><span class="n">bg_model</span><span class="p">)</span>
+
+    <span class="n">isphenomenological</span> <span class="o">=</span> <span class="p">[</span><span class="n">_iserror</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">model</span><span class="p">,</span><span class="n">par0</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bg_model</span><span class="p">,</span><span class="n">par0_bg</span><span class="p">)]</span>
+
 
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">any</span><span class="p">(</span><span class="o">~</span><span class="n">isparamodel</span> <span class="o">&amp;</span> <span class="n">includeBackground</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Background model (5th input) must either be a function handle, or None.&#39;</span><span class="p">)</span>
@@ -481,29 +481,32 @@
             <span class="n">bg_par</span> <span class="o">=</span> <span class="n">par</span><span class="p">[</span><span class="n">bgidx</span><span class="p">[</span><span class="n">iSignal</span><span class="p">]]</span>
             <span class="n">ex_par</span> <span class="o">=</span> <span class="n">par</span><span class="p">[</span><span class="n">exidx</span><span class="p">[</span><span class="n">iSignal</span><span class="p">]]</span>
 
-            <span class="c1"># Prepared background basis function</span>
+            <span class="c1"># Prepare background basis function</span>
             <span class="k">if</span> <span class="n">includeBackground</span><span class="p">[</span><span class="n">iSignal</span><span class="p">]:</span>
-                <span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="n">bg_model</span><span class="p">[</span><span class="n">iSignal</span><span class="p">](</span><span class="n">t</span><span class="p">,</span><span class="n">bg_par</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">isphenomenological</span><span class="p">[</span><span class="n">iSignal</span><span class="p">]:</span>
+                    <span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">bg_model</span><span class="p">[</span><span class="n">iSignal</span><span class="p">](</span><span class="n">t</span><span class="p">,</span><span class="n">bg_par</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="n">bg_model</span><span class="p">[</span><span class="n">iSignal</span><span class="p">](</span><span class="n">t</span><span class="p">,</span><span class="n">bg_par</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">,</span><span class="n">__</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="nf">ones_like</span><span class="p">(</span><span class="n">Vexp</span><span class="p">[</span><span class="n">iSignal</span><span class="p">])</span>
             
             <span class="c1"># Get pathway information</span>
             <span class="k">if</span> <span class="n">includeExperiment</span><span class="p">[</span><span class="n">iSignal</span><span class="p">]:</span>
-                <span class="n">pathinfo</span> <span class="o">=</span> <span class="n">ex_model</span><span class="p">[</span><span class="n">iSignal</span><span class="p">](</span><span class="n">ex_par</span><span class="p">)</span>
+                <span class="n">pathways</span> <span class="o">=</span> <span class="n">ex_model</span><span class="p">[</span><span class="n">iSignal</span><span class="p">](</span><span class="n">ex_par</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">pathinfo</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">pathways</span> <span class="o">=</span> <span class="mi">1</span>
             
             <span class="c1"># Compute the multipathway-background</span>
-            <span class="n">B_</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarbackground</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">iSignal</span><span class="p">],</span><span class="n">pathinfo</span><span class="p">,</span><span class="n">Bfcn</span><span class="p">)</span>
+            <span class="n">B_</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarbackground</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">iSignal</span><span class="p">],</span><span class="n">pathways</span><span class="p">,</span><span class="n">Bfcn</span><span class="p">)</span>
             <span class="c1"># Compute the multipathway-kernel</span>
-            <span class="n">K_</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">iSignal</span><span class="p">],</span><span class="n">r</span><span class="p">,</span><span class="n">pathinfo</span><span class="p">)</span>
+            <span class="n">K_</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">iSignal</span><span class="p">],</span><span class="n">r</span><span class="p">,</span><span class="n">pathways</span><span class="p">)</span>
             <span class="n">Ks</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">K_</span><span class="o">*</span><span class="n">B_</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">])</span>
             <span class="n">Bs</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">B_</span><span class="p">)</span>
             
         <span class="k">return</span> <span class="n">Ks</span><span class="p">,</span> <span class="n">Bs</span>     
     <span class="c1"># =========================================================================</span>
 
-    <span class="k">def</span> <span class="nf">splituq</span><span class="p">(</span><span class="n">full_uq</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">splituq</span><span class="p">(</span><span class="n">full_uq</span><span class="p">,</span><span class="n">scales</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="c1"># =========================================================================</span>
         <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">        Uncertainty quantification</span>
@@ -575,7 +578,7 @@
         <span class="k">for</span> <span class="n">jj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nSignals</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">includeForeground</span> <span class="ow">and</span> <span class="n">parametricDistribution</span><span class="p">:</span>
                 <span class="c1"># Full parametric signal</span>
-                <span class="n">Vmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">multiPathwayModel</span><span class="p">(</span><span class="n">par</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="n">jj</span><span class="p">]</span><span class="nd">@Pfcn</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="n">ddidx</span><span class="p">])</span>
+                <span class="n">Vmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">scales</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span><span class="o">*</span><span class="n">multiPathwayModel</span><span class="p">(</span><span class="n">par</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="n">jj</span><span class="p">]</span><span class="nd">@Pfcn</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="n">ddidx</span><span class="p">])</span>
                 <span class="n">Vfit_uq</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span> <span class="n">paruq</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">includeForeground</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="o">~</span><span class="n">includeExperiment</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">includeBackground</span><span class="p">):</span>
                 <span class="c1"># Dipola evolution function</span>
@@ -603,7 +606,7 @@
         <span class="n">Ks</span> <span class="o">=</span> <span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
         
         <span class="c1"># Linear regularization fit</span>
-        <span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitregmodel</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">Ks</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">regtype</span><span class="p">,</span><span class="n">regparam</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span><span class="n">uqanalysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitregmodel</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">Ks</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">regtype</span><span class="p">,</span><span class="n">regparam</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span><span class="n">uqanalysis</span><span class="o">=</span><span class="n">uqanalysis</span><span class="p">)</span>
         <span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span>
         <span class="n">Pfit_uq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">uncertainty</span>
         <span class="n">scales</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">scale</span>
@@ -624,7 +627,7 @@
         <span class="k">if</span> <span class="n">includeForeground</span><span class="p">:</span>
             <span class="n">Pfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">dd_model</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">[</span><span class="n">ddidx</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">Pfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="nf">ones_like</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="n">Pfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="nf">ones_like</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="nf">trapz</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">ones_like</span><span class="p">(</span><span class="n">r</span><span class="p">),</span><span class="n">r</span><span class="p">)</span>
         <span class="n">Vmodel</span> <span class="o">=</span><span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="p">[</span><span class="n">K</span><span class="nd">@Pfcn</span><span class="p">(</span><span class="n">par</span><span class="p">)</span> <span class="k">for</span> <span class="n">K</span> <span class="ow">in</span> <span class="n">multiPathwayModel</span><span class="p">(</span><span class="n">par</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
 
         <span class="c1"># Non-linear parametric fit</span>
@@ -643,8 +646,12 @@
             <span class="n">Pfit</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Vfit</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span><span class="p">:</span>
             <span class="n">Vfit</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vfit</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">scales</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="n">scales</span> <span class="o">=</span> <span class="p">[</span><span class="n">scales</span><span class="p">]</span>
+        <span class="n">Vfit</span> <span class="o">=</span> <span class="p">[</span><span class="n">V</span><span class="o">*</span><span class="n">scale</span> <span class="k">for</span> <span class="n">scale</span><span class="p">,</span><span class="n">V</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">scales</span><span class="p">,</span><span class="n">Vfit</span><span class="p">)</span> <span class="p">]</span>
+
         <span class="k">if</span> <span class="n">uqanalysis</span><span class="p">:</span>
-            <span class="n">Vfit_uq</span><span class="p">,</span> <span class="n">Pfit_uq</span><span class="p">,</span> <span class="n">Bfit_uq</span><span class="p">,</span> <span class="n">paruq_bg</span><span class="p">,</span> <span class="n">paruq_ex</span><span class="p">,</span> <span class="n">paruq_dd</span> <span class="o">=</span> <span class="n">splituq</span><span class="p">(</span><span class="n">param_uq</span><span class="p">)</span>
+            <span class="n">Vfit_uq</span><span class="p">,</span> <span class="n">Pfit_uq</span><span class="p">,</span> <span class="n">Bfit_uq</span><span class="p">,</span> <span class="n">paruq_bg</span><span class="p">,</span> <span class="n">paruq_ex</span><span class="p">,</span> <span class="n">paruq_dd</span> <span class="o">=</span> <span class="n">splituq</span><span class="p">(</span><span class="n">param_uq</span><span class="p">,</span><span class="n">scales</span><span class="p">)</span>
         
     <span class="k">else</span><span class="p">:</span>
         
@@ -789,9 +796,9 @@
                     <span class="n">ci</span> <span class="o">=</span> <span class="n">paruq</span><span class="p">[</span><span class="s1">&#39;ex&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">ci</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">parfit</span><span class="p">[</span><span class="s1">&#39;ex&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span><span class="mi">2</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parfit</span><span class="p">[</span><span class="s1">&#39;ex&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])):</span>
-                        <span class="n">c</span> <span class="o">=</span> <span class="n">parfit</span><span class="p">[</span><span class="s1">&#39;ex&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="n">pstr</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;exparam&#39;</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">ci</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">ci</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Parameters&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">],</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Units&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parfit</span><span class="p">[</span><span class="s1">&#39;ex&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])):</span>
+                    <span class="n">c</span> <span class="o">=</span> <span class="n">parfit</span><span class="p">[</span><span class="s1">&#39;ex&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">pstr</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;exparam&#39;</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">ci</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">ci</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Parameters&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">],</span><span class="nf">info</span><span class="p">[</span><span class="s1">&#39;Units&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----------------------------------------------------------------------------&#39;</span><span class="p">)</span>
 
 
@@ -868,6 +875,15 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Lower bounds cannot be larger than upper bounds.&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">any</span><span class="p">(</span><span class="n">lb</span><span class="o">&gt;</span><span class="n">par0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="nf">any</span><span class="p">(</span><span class="n">par0</span><span class="o">&gt;</span><span class="n">ub</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Inital values for parameters must lie between lower and upper bounds.&#39;</span><span class="p">)</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="k">def</span> <span class="nf">_iserror</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+<span class="c1"># ==============================================================================</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
 <span class="c1"># ==============================================================================</span>
 </pre></div>
 

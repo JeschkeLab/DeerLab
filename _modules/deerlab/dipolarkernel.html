@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -98,16 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
 </ul>
@@ -119,8 +114,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -210,8 +206,8 @@
 <span class="k">def</span> <span class="nf">w0</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">mu0</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">muB</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">h</span><span class="o">*</span><span class="mf">1e21</span> <span class="c1"># Hz m^3 -&gt; MHz nm^3 -&gt; Mrad s^-1 nm^3</span>
 
-<div class="viewcode-block" id="dipolarkernel"><a class="viewcode-back" href="../../functions/dipolarkernel.html#deerlab.dipolarkernel">[docs]</a><span class="k">def</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">pathinfo</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;fresnel&#39;</span><span class="p">,</span> <span class="n">excbandwidth</span> <span class="o">=</span> <span class="n">inf</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">ge</span><span class="p">,</span> <span class="n">ge</span><span class="p">],</span> 
-                  <span class="n">integralop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">nKnots</span> <span class="o">=</span> <span class="mi">5001</span><span class="p">,</span> <span class="n">renormalize</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">clearcache</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dipolarkernel"><a class="viewcode-back" href="../../functions/dipolarkernel.html#deerlab.dipolarkernel">[docs]</a><span class="k">def</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">pathways</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;fresnel&#39;</span><span class="p">,</span> <span class="n">excbandwidth</span> <span class="o">=</span> <span class="n">inf</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">ge</span><span class="p">,</span> <span class="n">ge</span><span class="p">],</span> 
+                  <span class="n">integralop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">nKnots</span> <span class="o">=</span> <span class="mi">5001</span><span class="p">,</span> <span class="n">renormalize</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">renormpaths</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clearcache</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="c1">#===================================================================================================</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the dipolar kernel operator which enables the linear transformation from</span>
 <span class="sd">    distance-domain to time-domain data. </span>
@@ -222,10 +218,11 @@
 <span class="sd">        Dipolar time axis, in microseconds.</span>
 <span class="sd">    r : array_like</span>
 <span class="sd">        Distance axis, in nanometers.</span>
-<span class="sd">    pathinfo : array_like with shape (p,2) or (p,3)</span>
-<span class="sd">        Array of pathway amplitudes (lambda), refocusing points (T0), and harmonics (n) </span>
-<span class="sd">        for multiple (p) dipolar pathways. Each row contains ``[lambda T0 n]`` or ``[lambda T0]`` </span>
-<span class="sd">        for one pathway. If n is not given it is assumed to be 1. For a pathway with unmodulated contribution, set the refocusing time to ``numpy.nan``.</span>
+<span class="sd">    pathways : list of lists or scalar</span>
+<span class="sd">        List of pathways. Each pathway is defined as a list of the pathway&#39;s amplitude (lambda), refocusing time (T0), </span>
+<span class="sd">        and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]`` for one pathway. If n is not given it is assumed to be 1. </span>
+<span class="sd">        For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``.</span>
+<span class="sd">        If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  </span>
 <span class="sd">    B : callable or array_like</span>
 <span class="sd">        For a single-pathway model, the numerical background decay can be passed as an array. </span>
 <span class="sd">        For multiple pathways, a callable function must be passed, accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``</span>
@@ -247,9 +244,11 @@
 <span class="sd">    nKnots : scalar, optional</span>
 <span class="sd">        Number of knots for the grid of powder orientations to be used in the &#39;grid&#39; kernel calculation method.</span>
 <span class="sd">    renormalize : boolean, optional</span>
-<span class="sd">        Re-normalization of multi-pathway kernels to ensure the equality ``K(t=0,r)==1`` is satisfied. Default is True.</span>
+<span class="sd">        Re-normalization of multi-pathway kernels to ensure the equality ``K(t=0,r)==1`` is satisfied. Enabled by default.</span>
+<span class="sd">    renormpaths: boolean, optional</span>
+<span class="sd">        Normalization of the pathway amplitudes such that ``Lam0 + lam1 + ... + lamN = 1``. Enabled by default. </span>
 <span class="sd">    clearcache : boolean, optional</span>
-<span class="sd">        Clear the cached dipolar kernels at the beginning of the function. Default is False.</span>
+<span class="sd">        Clear the cached dipolar kernels at the beginning of the function. Disabled by default.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    --------</span>
@@ -258,7 +257,7 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    For a multi-pathway DEER [1]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathinfo`` contains a list of modulation depths (amplitudes) and refocusing times (in microseconds).</span>
+<span class="sd">    For a multi-pathway DEER [1]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` contains a list of modulation depths (amplitudes) and refocusing times (in microseconds).</span>
 <span class="sd">    The background function specified as &#39;&#39;B&#39;&#39; is used as basis function, and the actual multipathway background included into the kernel is compued using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [2]_. </span>
 <span class="sd">    Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals [3]_. If not given, the harmonic is 1 for all pathways. </span>
 
@@ -268,15 +267,15 @@
 <span class="sd">    To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use::</span>
 <span class="sd">    </span>
 <span class="sd">        lam = 0.4  # modulation depth main signal</span>
-<span class="sd">        pathinfo = [[1-lam, nan], [lam, 0]]</span>
-
-<span class="sd">        K = dipolarkernel(t,r,pathinfo)</span>
+<span class="sd">        pathways = [[1-lam], [lam, 0]]</span>
+<span class="sd">        </span>
+<span class="sd">        K = dl.dipolarkernel(t,r,pathways)</span>
 
 
 <span class="sd">    A shorthand input syntax equivalent to this input::</span>
 
 <span class="sd">        lam = 0.4</span>
-<span class="sd">        K = dipolarkernel(t,r,lam)</span>
+<span class="sd">        K = dl.dipolarkernel(t,r,lam)</span>
 
 
 <span class="sd">	To specify a more complete 4-pulse DEER model that, e.g includes the 2+1 contribution, use::</span>
@@ -284,22 +283,23 @@
 <span class="sd">        Lam0 = 0.5                     # unmodulated part</span>
 <span class="sd">        lam = 0.4                      # modulation depth main signal</span>
 <span class="sd">        lam21 = 0.1                    # modulation depth 2+1 contribution</span>
-<span class="sd">        tau2 = 4                       # refocusing time of 2+1 contribution</span>
-<span class="sd">        pathinfo = [[],[],[]]</span>
-<span class="sd">        pathinfo[0] = [Lam0,   nan]    # unmodulated part, gives offset</span>
-<span class="sd">        pathinfo[1] = [lama,    0 ]    # main modulation, refocusing at time zero</span>
-<span class="sd">        pathinfo[2] = [lam21, tau2]    # 2+1 modulation, refocusing at time tau2</span>
+<span class="sd">        tau2 = 4                       # refocusing time (us) of 2+1 contribution</span>
+
+<span class="sd">        path0 = Lam0            # unmodulated pathway</span>
+<span class="sd">        path1 = [lam1, 0]       # main dipolar pathway, refocusing at time zero</span>
+<span class="sd">        path1 = [lam2, tau2]    # 2+1 dipolar pathway, refocusing at time tau2</span>
+<span class="sd">        pathways = [path0, path1, path2]  </span>
 <span class="sd">        </span>
-<span class="sd">        K = dipolarkernel(t,r,pathinfo)</span>
+<span class="sd">        K = dl.dipolarkernel(t,r,pathways)</span>
 
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    .. [1] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll: &quot;DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data&quot;, Magn. Reson. Discuss., 2020</span>
+<span class="sd">    .. [1] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson., 1, 209–224, 2020 </span>
 
-<span class="sd">    .. [2] Fábregas Ibáñez, L. and Jeschke, G.: Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.</span>
+<span class="sd">    .. [2] L. Fábregas Ibáñez, and G. Jeschke: Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.</span>
 
-<span class="sd">    .. [3] Keller, K., Mertens, V., Qi, M., Nalepa, A. I., Godt, A., Savitsky, A., Jeschke, G., and Yulikov, M.: Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19</span>
+<span class="sd">    .. [3] K. Keller, V. Mertens, M. Qi, A. I. Nalepa, A. Godt, A. Savitsky, G. Jeschke, and M. Yulikov: Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19</span>
 
 <span class="sd">    .. [4] J.E. Banham, C.M. Baker, S. Ceola, I.J. Day, G.H. Grant, E.J.J. Groenen, C.T. Rodgers, G. Jeschke, C.R. Timmel, Distance measurements in the borderline region of applicability of CW EPR and DEER: A model study on a homologous series of spin-labelled peptides, Journal of Magnetic Resonance, 191, 2, 2008, 202-218</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -310,7 +310,6 @@
     <span class="c1"># Ensure that all inputs are numpy arrays</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-    <span class="n">pathinfo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="ow">is</span> <span class="n">types</span><span class="o">.</span><span class="n">LambdaType</span><span class="p">:</span>
         <span class="n">ismodelB</span> <span class="o">=</span> <span class="kc">True</span>
@@ -327,54 +326,54 @@
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">any</span><span class="p">(</span><span class="n">r</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All elements in r must be nonnegative and nonzero.&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="nf">isreal</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">)</span><span class="o">.</span><span class="nf">all</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;lambda/pathinfo must be a numeric array.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pathways</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span> <span class="n">pathways</span> <span class="o">=</span> <span class="p">[</span><span class="n">pathways</span><span class="p">]</span> 
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pathways</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="n">pathways</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pathways</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">],</span> <span class="p">[</span><span class="n">lam</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">lam</span> <span class="o">=</span> <span class="n">pathinfo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">pathinfo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">],</span> <span class="p">[</span><span class="n">lam</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="nf">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;pathinfo must be a numeric array with two or three columns.&#39;</span><span class="p">)</span>
+    <span class="c1"># Get unmodulated pathways    </span>
+    <span class="n">unmodulated</span> <span class="o">=</span> <span class="p">[</span><span class="n">paths</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Combine all unmodulated contributions</span>
+    <span class="n">Lambda0</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">([</span><span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">unmodulated</span><span class="p">]))</span>
 
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;In pathinfo, NaN can only appear in the second column (refocusing time) e.g. path[1,:] = [Lam0 NaN]&#39;</span><span class="p">)</span>
+    <span class="c1"># Check structure of pathways</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># If harmonic is not defined, append default n=1</span>
+            <span class="n">paths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> 
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="c1"># Otherwise paths are not correctly defined</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;The pathway #</span><span class="si">{}</span><span class="s1"> must be a list of two or three elements [lam, T0] or [lam, T0, n]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
 
     <span class="c1"># Normalize the pathway amplitudes to unity</span>
-    <span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="nf">sum</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">lam</span> <span class="o">=</span> <span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">T0</span> <span class="o">=</span> <span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">pathinfo</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">T0</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">pathinfo</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
-    
-    <span class="c1"># Combine all unmodulated components into Lambda0, and eliminate from list</span>
-    <span class="n">unmodulated</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">T0</span><span class="p">))</span>
-    <span class="n">Lambda0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">lam</span><span class="p">[</span><span class="n">unmodulated</span><span class="p">])</span>
-    <span class="n">lam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">unmodulated</span><span class="p">)</span>
-    <span class="n">T0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">T0</span><span class="p">,</span> <span class="n">unmodulated</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">unmodulated</span><span class="p">)</span>
-    <span class="n">nModPathways</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">renormpaths</span><span class="p">:</span>
+        <span class="n">lamsum</span> <span class="o">=</span> <span class="n">Lambda0</span> <span class="o">+</span> <span class="nf">sum</span><span class="p">([</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">])</span>
+        <span class="n">Lambda0</span> <span class="o">/=</span> <span class="n">lamsum</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">)):</span>
+            <span class="n">paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/=</span> <span class="n">lamsum</span> 
 
+    <span class="c1"># Define kernel matrix auxiliary function</span>
     <span class="n">kernelmatrix</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">calckernelmatrix</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="n">excbandwidth</span><span class="p">,</span><span class="n">nKnots</span><span class="p">,</span><span class="n">g</span><span class="p">)</span>
-    
+
     <span class="c1"># Build dipolar kernel matrix, summing over all pathways</span>
     <span class="n">K</span> <span class="o">=</span> <span class="n">Lambda0</span>
-    <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nModPathways</span><span class="p">):</span>
-        <span class="n">K</span> <span class="o">=</span> <span class="n">K</span> <span class="o">+</span> <span class="n">lam</span><span class="p">[</span><span class="n">pathway</span><span class="p">]</span><span class="o">*</span><span class="n">kernelmatrix</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">pathway</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">T0</span><span class="p">[</span><span class="n">pathway</span><span class="p">]))</span>
+    <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">lam</span><span class="p">,</span><span class="n">T0</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="n">pathway</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">K</span> <span class="o">+</span> <span class="n">lam</span><span class="o">*</span><span class="n">kernelmatrix</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">T0</span><span class="p">))</span>
 
     <span class="c1"># Renormalize if requested</span>
     <span class="k">if</span> <span class="n">renormalize</span><span class="p">:</span>
         <span class="n">Knorm</span> <span class="o">=</span> <span class="n">Lambda0</span>
-        <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nModPathways</span><span class="p">):</span>
-            <span class="n">Knorm</span> <span class="o">=</span> <span class="n">Knorm</span> <span class="o">+</span> <span class="n">lam</span><span class="p">[</span><span class="n">pathway</span><span class="p">]</span><span class="o">*</span><span class="n">kernelmatrix</span><span class="p">(</span><span class="o">-</span><span class="n">T0</span><span class="p">[</span><span class="n">pathway</span><span class="p">]</span><span class="o">*</span><span class="n">n</span><span class="p">[</span><span class="n">pathway</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+            <span class="n">lam</span><span class="p">,</span><span class="n">T0</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="n">pathway</span>
+            <span class="n">Knorm</span> <span class="o">=</span> <span class="n">Knorm</span> <span class="o">+</span> <span class="n">lam</span><span class="o">*</span><span class="n">kernelmatrix</span><span class="p">(</span><span class="o">-</span><span class="n">T0</span><span class="o">*</span><span class="n">n</span><span class="p">)</span>
         <span class="n">K</span> <span class="o">=</span> <span class="n">K</span><span class="o">/</span><span class="n">Knorm</span>
-
 
     <span class="c1"># Multiply by background</span>
     <span class="k">if</span> <span class="n">ismodelB</span><span class="p">:</span>
-        <span class="n">B</span> <span class="o">=</span> <span class="nf">dipolarbackground</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">pathinfo</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="nf">dipolarbackground</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">pathways</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
     <span class="n">K</span> <span class="o">=</span> <span class="n">K</span><span class="o">*</span><span class="n">B</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
 
     <span class="c1"># Include delta-r factor for integration</span>

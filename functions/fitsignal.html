@@ -48,7 +48,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="backgroundstart" href="backgroundstart.html" />
-    <link rel="prev" title="mixmodels" href="mixmodels.html" /> 
+    <link rel="prev" title="snlls" href="snlls.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -100,16 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
 </ul>
@@ -121,8 +116,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -309,7 +305,7 @@ the <img class="math" src="../_images/math/16c4c942de76cc6e45264a49a6db76284d6f8
 the default is all weighted equally.
 If not specified all datasets are weighted equally.</p>
 </dd>
-<dt><strong>regParam (str or scalar):</strong></dt><dd><p>Method for the automatic selection of the optimal regularization parameter:</p>
+<dt><strong>regparam (str or scalar):</strong></dt><dd><p>Method for the automatic selection of the optimal regularization parameter:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">'lr'</span></code> - L-curve minimum-radius method (LR)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'lc'</span></code> - L-curve maximum-curvature method (LC)</p></li>
@@ -346,27 +342,27 @@ instead of a string. The default <code class="docutils literal notranslate"><spa
 </dl>
 <p class="rubric">Examples</p>
 <p>Fit a 4pDEER signal with homogenous 3D background with Gaussian distribution:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="nf">ex_4pdeer</span><span class="p">)</span>  
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">)</span>  
 </pre></div>
 </div>
 <p>Fit a 5pDEER signal with exponential background and Tikhonov regularization:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="nf">ex_5pdeer</span><span class="p">)</span>        
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_5pdeer</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Fit a 4pDEER stretched exponential background (no foreground):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="nf">bg_strexp</span><span class="p">,</span><span class="nf">ex_4pdeer</span><span class="p">)</span>  
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_strexp</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">)</span>  
 </pre></div>
 </div>
 <p>Fit a dipolar evolution function with Rician distribution:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="nf">dd_rice</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>          
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_rice</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Fit a 4pDEER form factor (no background) with bimodal Gaussian distribution:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="nf">dd_gauss2</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="nf">ex_4pdeer</span><span class="p">)</span>   
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitsignal</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">)</span>   
 </pre></div>
 </div>
 <p>Fit a 4pDEER signal and a 5pDEER signal with same type of background:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">([</span><span class="n">V1</span><span class="p">,</span><span class="n">V2</span><span class="p">],</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">,[</span><span class="nf">ex_4pdeer</span><span class="p">,</span><span class="nf">ex_5pdeer</span><span class="p">])</span>    
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="nf">fitsignal</span><span class="p">([</span><span class="n">V1</span><span class="p">,</span><span class="n">V2</span><span class="p">],</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,[</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_5pdeer</span><span class="p">])</span>    
 </pre></div>
 </div>
 </dd></dl>
@@ -384,7 +380,7 @@ instead of a string. The default <code class="docutils literal notranslate"><spa
         <a href="backgroundstart.html" class="btn btn-neutral float-right" title="backgroundstart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="mixmodels.html" class="btn btn-neutral float-left" title="mixmodels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="snlls.html" class="btn btn-neutral float-left" title="snlls" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

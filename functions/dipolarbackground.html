@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -100,16 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
 </ul>
@@ -121,8 +116,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -192,18 +188,27 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">dipolarbackground</span></code><a class="headerlink" href="#dipolarbackground" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="deerlab.dipolarbackground">
-<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">dipolarbackground</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">pathinfo</span></em>, <em class="sig-param"><span class="n">Bmodel</span></em>, <em class="sig-param"><span class="n">renormalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">overtonecoeff</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/dipolarbackground.html#dipolarbackground"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.dipolarbackground" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">dipolarbackground</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">pathways</span></em>, <em class="sig-param"><span class="n">Bmodel</span></em>, <em class="sig-param"><span class="n">renormalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">renormpaths</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/dipolarbackground.html#dipolarbackground"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.dipolarbackground" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs background decay functions according to the multi-pathway model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>t</strong><span class="classifier">array_like</span></dt><dd><p>Time axis, in microseconds.</p>
 </dd>
-<dt><strong>pathinfo</strong><span class="classifier">array_like with shape (p,2) or (p,3)</span></dt><dd><p>Array of pathway amplitudes (lambda), refocusing points (T0), and harmonics (n) 
-for multiple (p) dipolar pathways. Each row contains <code class="docutils literal notranslate"><span class="pre">[lambda</span> <span class="pre">T0</span> <span class="pre">n]</span></code> or <code class="docutils literal notranslate"><span class="pre">[lambda</span> <span class="pre">T0]</span></code> 
-for one pathway. If n is not given it is assumed to be 1. For a pathway with unmodulated contribution, set the refocusing time to <code class="docutils literal notranslate"><span class="pre">numpy.nan</span></code>.</p>
+<dt><strong>pathways</strong><span class="classifier">list of lists or scalar</span></dt><dd><p>List of pathways. Each pathway is defined as a list of the pathway’s amplitude (lambda), refocusing time (T0), 
+and harmonic (n), i.e. <code class="docutils literal notranslate"><span class="pre">[lambda,</span> <span class="pre">T0,</span> <span class="pre">n]</span></code> or <code class="docutils literal notranslate"><span class="pre">[lambda,</span> <span class="pre">T0]</span></code> for one pathway. If n is not given it is assumed to be 1. 
+For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. <code class="docutils literal notranslate"><span class="pre">[Lambda0]</span></code>.
+If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).</p>
 </dd>
-<dt><strong>Bmodel</strong><span class="classifier">callable</span></dt><dd><p>Background basis function. A callable function accepting a time-axis array as first input and a pathway amplitude as a second, i.e. <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">=</span> <span class="pre">lambda</span> <span class="pre">t,lam:</span> <span class="pre">bg_model(t,par,lam)</span></code></p>
+<dt><strong>Bmodel</strong><span class="classifier">callable</span></dt><dd><p>Background basis function. Its use depends on the type of background model.</p>
+<ul class="simple">
+<li><p>Physical background models: A callable function accepting a time-axis array as first input and a pathway amplitude as a second, e.g. <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">=</span> <span class="pre">lambda</span> <span class="pre">t,lam:</span> <span class="pre">bg_hom3d(t,par,lam)</span></code></p></li>
+<li><p>Phenomenological background models: A callable function accepting a time-axis array as input, e.g. <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">=</span> <span class="pre">lambda</span> <span class="pre">t:</span> <span class="pre">bg_exp(t,par)</span></code></p></li>
+</ul>
+</dd>
+<dt><strong>renormalize</strong><span class="classifier">boolean, optional</span></dt><dd><p>Re-normalization of the multi-pathway background to ensure the equality <code class="docutils literal notranslate"><span class="pre">B(t=0)==1</span></code> is satisfied. Enabled by default.</p>
+</dd>
+<dt><strong>renormpaths: boolean, optional</strong></dt><dd><p>Normalization of the pathway amplitudes such that <code class="docutils literal notranslate"><span class="pre">Lam0</span> <span class="pre">+</span> <span class="pre">lam1</span> <span class="pre">+</span> <span class="pre">...</span> <span class="pre">+</span> <span class="pre">lamN</span> <span class="pre">=</span> <span class="pre">1</span></code>. Enabled by default.</p>
 </dd>
 </dl>
 </dd>
@@ -217,29 +222,29 @@ for one pathway. If n is not given it is assumed to be 1. For a pathway with unm
 <dd class="field-odd"><dl class="simple">
 <dt><strong>renormalize</strong><span class="classifier">boolean</span></dt><dd><p>The multi-pathway background does not necessarily satisfy <code class="docutils literal notranslate"><span class="pre">V(0)</span> <span class="pre">==</span> <span class="pre">1</span></code>. This option enables/disables a re-normalization of the background function to ensure that equality is satisfied, by default it is enabled.</p>
 </dd>
-<dt><strong>overtonecoeff</strong><span class="classifier">array_like</span></dt><dd><p>Array containing the overtone coefficients for RIDME experiments.</p>
-</dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>Computes the multipathway background <code class="docutils literal notranslate"><span class="pre">B</span></code> for the time axis <code class="docutils literal notranslate"><span class="pre">t</span></code> corresponding to the dipolar pathways specified in <code class="docutils literal notranslate"><span class="pre">pathinfo</span></code>. The total background is computed from the basis background function model specified in <code class="docutils literal notranslate"><span class="pre">Bmodel</span></code>. For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), <code class="docutils literal notranslate"><span class="pre">pathinfo</span></code> is a 2D-array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals</p>
+<p>Computes the multipathway background <code class="docutils literal notranslate"><span class="pre">B</span></code> for the time axis <code class="docutils literal notranslate"><span class="pre">t</span></code> corresponding to the dipolar pathways specified in <code class="docutils literal notranslate"><span class="pre">pathways</span></code>. The total background is computed from the basis background function model specified in <code class="docutils literal notranslate"><span class="pre">Bmodel</span></code>. For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), <code class="docutils literal notranslate"><span class="pre">pathways</span></code> is a 2D-array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals</p>
 <p class="rubric">Examples</p>
 <p>To calculate the background for the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="nf">linspace</span>
-<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="nf">dipolarbackground</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 
-<span class="n">t</span> <span class="o">=</span> <span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">501</span><span class="p">)</span> <span class="c1"># time axis (us)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">501</span><span class="p">)</span> <span class="c1"># time axis (us)</span>
 <span class="n">lam</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="c1"># modulation depth main signal</span>
 <span class="n">conc</span> <span class="o">=</span> <span class="mi">200</span>   <span class="c1"># spin concentration (uM)</span>
 
-<span class="n">pathinfo</span> <span class="o">=</span> <span class="p">[[],[]]</span>
-<span class="n">pathinfo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">,</span> <span class="n">NaN</span><span class="p">]</span> <span class="c1"># unmodulated part, gives offset</span>
-<span class="n">pathinfo</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">lam</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="c1"># main modulation, refocusing at time zero</span>
+<span class="n">pathways</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">path0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">]</span>             <span class="c1"># unmodulated part, gives offset</span>
+<span class="n">path1</span> <span class="o">=</span> <span class="p">[</span><span class="n">lam</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>            <span class="c1"># main modulation, refocusing at time zero</span>
+<span class="n">pathways</span> <span class="o">=</span> <span class="p">[</span><span class="n">path0</span><span class="p">,</span> <span class="n">path1</span><span class="p">]</span>
 
-<span class="n">Bmodel</span> <span class="o">=</span> <span class="o">@</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">Bmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
 
-<span class="n">B</span> <span class="o">=</span> <span class="nf">dipolarbackground</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">pathinfo</span><span class="p">,</span><span class="n">Bmodel</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarbackground</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">pathways</span><span class="p">,</span><span class="n">Bmodel</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

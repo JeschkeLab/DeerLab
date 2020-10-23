@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -100,16 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a></li>
 </ul>
@@ -121,8 +116,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -318,22 +314,6 @@ of <code class="docutils literal notranslate"><span class="pre">myABmodel</span>
 <span class="n">Vfit2</span> <span class="o">=</span> <span class="n">Vfits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;/home/runner/work/DeerLab/DeerLab/examples/plot_globalfits_local_and_global_parameters.py&quot;</span>, line <span class="m">120</span>, in <span class="n">&lt;module&gt;</span>
-    <span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fitparamodel</span><span class="p">(</span><span class="n">Vs</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lower</span><span class="p">,</span><span class="n">upper</span><span class="p">,</span><span class="n">multistart</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py&quot;</span>, line <span class="m">186</span>, in <span class="n">fitparamodel</span>
-    <span class="n">sol</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span><span class="n">lsqresiduals</span> <span class="p">,</span><span class="n">par0</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">),</span> <span class="n">max_nfev</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">maxiter</span><span class="p">),</span> <span class="n">ftol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;dogbox&#39;</span><span class="p">)</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/scipy/optimize/_lsq/least_squares.py&quot;</span>, line <span class="m">928</span>, in <span class="n">least_squares</span>
-    <span class="n">tr_solver</span><span class="p">,</span> <span class="n">tr_options</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/scipy/optimize/_lsq/dogbox.py&quot;</span>, line <span class="m">307</span>, in <span class="n">dogbox</span>
-    <span class="n">J</span> <span class="o">=</span> <span class="n">jac</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/scipy/optimize/_lsq/least_squares.py&quot;</span>, line <span class="m">875</span>, in <span class="n">jac_wrapped</span>
-    <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">sparsity</span><span class="o">=</span><span class="n">jac_sparsity</span><span class="p">)</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/scipy/optimize/_numdiff.py&quot;</span>, line <span class="m">391</span>, in <span class="n">approx_derivative</span>
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`x0` violates bound constraints.&quot;</span><span class="p">)</span>
-<span class="gr">ValueError</span>: <span class="n">`x0` violates bound constraints.</span>
-</pre></div>
-</div>
 </div>
 <div class="section" id="plot-results">
 <h2>Plot results<a class="headerlink" href="#plot-results" title="Permalink to this headline">¶</a></h2>
@@ -368,7 +348,8 @@ of <code class="docutils literal notranslate"><span class="pre">myABmodel</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.954 seconds)</p>
+<img alt="Conditions #1, Conditions #2" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_globalfits_local_and_global_parameters_001.png" />
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  31.578 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-globalfits-local-and-global-parameters-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/2899f2ebe9727c679a63906f55c80383/plot_globalfits_local_and_global_parameters.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_globalfits_local_and_global_parameters.py</span></code></a></p>

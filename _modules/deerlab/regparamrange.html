@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -98,16 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
 </ul>
@@ -119,8 +114,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -186,6 +182,7 @@
             
   <h1>Source code for deerlab.regparamrange</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">svd</span>
 <span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">gsvd</span>
 
 <div class="viewcode-block" id="regparamrange"><a class="viewcode-back" href="../../functions/regparamrange.html#deerlab.regparamrange">[docs]</a><span class="k">def</span> <span class="nf">regparamrange</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">noiselvl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">logres</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
@@ -222,8 +219,18 @@
     <span class="c1"># Scaling by noise. This improves L curve corner detection for DEER.</span>
     <span class="n">minmax_ratio</span> <span class="o">=</span> <span class="n">minmax_ratio</span><span class="o">*</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">noiselvl</span><span class="o">/</span><span class="mf">0.0025</span><span class="p">)</span>
 
-    <span class="c1"># Get generalized singular values of K and L</span>
-    <span class="n">singularValues</span> <span class="o">=</span> <span class="n">gsvd</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">L</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Get generalized singular values of K and L</span>
+        <span class="n">singularValues</span> <span class="o">=</span> <span class="n">gsvd</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">L</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># ATLAS&#39;s and OPENBLAS&#39;s LAPACK qr library can crash under unknown circumstances</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;illegal value in&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="c1"># Raise error if not a LAPACK error</span>
+            <span class="k">raise</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Otherwise just estimate via the SVD from the dipolar kernel to avoid crash</span>
+            <span class="n">_</span><span class="p">,</span><span class="n">singularValues</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">svd</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+
     <span class="n">DerivativeOrder</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="nf">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="o">.</span><span class="nf">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># get order of derivative (=number of inf in singval)</span>
     <span class="n">singularValues</span> <span class="o">=</span> <span class="n">singularValues</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">singularValues</span><span class="p">)</span><span class="o">-</span><span class="n">DerivativeOrder</span><span class="p">]</span> <span class="c1"># remove inf </span>
     <span class="n">singularValues</span> <span class="o">=</span> <span class="n">singularValues</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># sort in decreasing order</span>

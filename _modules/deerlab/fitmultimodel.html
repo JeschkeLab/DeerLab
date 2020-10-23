@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -98,16 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
 </ul>
@@ -119,8 +114,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -304,28 +300,28 @@
 <span class="sd">    Since the signal requires additional parameters  (e.g. modulation depth, background parameters,…) a kernel model</span>
 <span class="sd">    can be defined to account for these::</span>
 <span class="sd">    </span>
-<span class="sd">        def K4pdeer(Kpar):</span>
+<span class="sd">        def Kmodel(Kpar):</span>
 <span class="sd">            # Unpack parameters</span>
 <span class="sd">            lam,conc = Kpar</span>
 <span class="sd">            # Construct kernel</span>
-<span class="sd">            K = dipolarkernel(t,r,lam,bg_hom3d(t,conc,lam))</span>
+<span class="sd">            K = dl.dipolarkernel(t,r,lam,dl.bg_hom3d(t,conc,lam))</span>
 <span class="sd">            return K</span>
 <span class="sd">        </span>
-<span class="sd">        fit = fitmultimodel(V,Kmodel,r,dd_model,Nmax,&#39;aicc&#39;)</span>
+<span class="sd">        fit = dl.fitmultimodel(V,Kmodel,r,dd_model,Nmax,&#39;aicc&#39;)</span>
 
 
 <span class="sd">    If multiple signals are to be fitted globally the example abova can be easily adapted by passing multiple</span>
 <span class="sd">    signals to the fit function and by returning multiple kernels with the kernel model function::</span>
 <span class="sd">    </span>
-<span class="sd">        def K4pdeer(Kpar):</span>
+<span class="sd">        def Kmodel(Kpar):</span>
 <span class="sd">            # Unpack parameters</span>
 <span class="sd">            lam,conc = Kpar</span>
 <span class="sd">            # Construct kernels for both signals</span>
-<span class="sd">            K1 = dipolarkernel(t1,r,lam,bg_hom3d(t1,conc,lam))</span>
-<span class="sd">            K2 = dipolarkernel(t2,r,lam,bg_hom3d(t2,conc,lam))</span>
+<span class="sd">            K1 = dl.dipolarkernel(t1,r,lam,bg_hom3d(t1,conc,lam))</span>
+<span class="sd">            K2 = dl.dipolarkernel(t2,r,lam,bg_hom3d(t2,conc,lam))</span>
 <span class="sd">            return K1,K2</span>
 <span class="sd">        </span>
-<span class="sd">        fit = fitmultimodel([V1,V2],Kmodel,r,dd_model,Nmax,&#39;aicc&#39;)</span>
+<span class="sd">        fit = dl.fitmultimodel([V1,V2],Kmodel,r,dd_model,Nmax,&#39;aicc&#39;)</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>

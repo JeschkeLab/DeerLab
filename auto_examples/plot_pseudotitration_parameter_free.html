@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -100,16 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a></li>
 </ul>
@@ -121,8 +116,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -302,6 +298,18 @@ of added ligand.</p>
     <span class="n">Vs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="nd">@np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">PstateA</span><span class="p">,</span> <span class="n">PstateB</span><span class="p">))</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="mf">0.005</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;/home/runner/work/DeerLab/DeerLab/examples/plot_pseudotitration_parameter_free.py&quot;</span>, line <span class="m">105</span>, in <span class="n">&lt;module&gt;</span>
+    <span class="n">Ks</span> <span class="o">=</span> <span class="n">Kmodel</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">Kdis</span><span class="p">],</span><span class="n">ts</span><span class="p">,</span><span class="n">rA</span><span class="p">,</span><span class="n">rB</span><span class="p">,</span><span class="n">L</span><span class="p">)</span>
+  File <span class="nb">&quot;/home/runner/work/DeerLab/DeerLab/examples/plot_pseudotitration_parameter_free.py&quot;</span>, line <span class="m">66</span>, in <span class="n">Kmodel</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">bg_exp</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">k</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/bg_models.py&quot;</span>, line <span class="m">368</span>, in <span class="n">bg_exp</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">param</span> <span class="o">=</span> <span class="n">_parsargs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">npar</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/bg_models.py&quot;</span>, line <span class="m">21</span>, in <span class="n">_parsargs</span>
+    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;The model function </span><span class="si">{}</span><span class="s1"> requires two input arguments: </span><span class="si">{}</span><span class="s1">(t,params).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">name</span><span class="p">))</span>
+<span class="gr">KeyError</span>: <span class="n">&#39;The model function bg_exp requires two input arguments: bg_exp(t,params).&#39;</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="psuedotitration-snlls-analysis">
 <h2>Psuedotitration SNLLS Analysis<a class="headerlink" href="#psuedotitration-snlls-analysis" title="Permalink to this headline">¶</a></h2>
@@ -336,10 +344,6 @@ the dissociation constant (KD).</p>
 
 <span class="c1"># Print result</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Kdis = </span><span class="si">{:.2f}</span><span class="s1">(</span><span class="si">{:.2f}</span><span class="s1">-</span><span class="si">{:.2f}</span><span class="s1">)uM&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Kdisfit</span><span class="p">,</span><span class="n">KDci</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">KDci</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-</pre></div>
-</div>
-<p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Kdis = 6.92(6.85-6.99)uM
 </pre></div>
 </div>
 <p>Plot results</p>
@@ -380,12 +384,7 @@ the dissociation constant (KD).</p>
 <span class="n">plt</span><span class="o">.</span><span class="nf">ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 </div>
-<img alt="plot pseudotitration parameter free" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_pseudotitration_parameter_free_001.png" />
-<p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>(0.0, 1.0)
-</pre></div>
-</div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  27.408 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.012 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-pseudotitration-parameter-free-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a5d41ff6a9dbdf82be560698c968c7f5/plot_pseudotitration_parameter_free.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_pseudotitration_parameter_free.py</span></code></a></p>

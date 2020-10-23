@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>DeerLab v0.11.0 Documentation &mdash; DeerLab  documentation</title>
+  <title>DeerLab v0.12.0 &mdash; DeerLab  documentation</title>
   
 
   
@@ -47,7 +47,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation instructions" href="installation.html" /> 
+    <link rel="next" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -99,16 +99,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
@@ -120,8 +115,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -168,7 +164,7 @@
     
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
         
-      <li>DeerLab v0.11.0 Documentation</li>
+      <li>DeerLab v0.12.0</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -185,22 +181,55 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="deerlab-version-documentation">
-<h1>DeerLab v0.11.0 Documentation<a class="headerlink" href="#deerlab-version-documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="deerlab-version">
+<h1>DeerLab v0.12.0<a class="headerlink" href="#deerlab-version" title="Permalink to this headline">¶</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>DeerLab is currently in the pre-release stage (version numbers 0.x.x) and under active development. Major changes are likely before the first stable version (1.0.0) is released.</p>
 </div>
 <p>DeerLab is a free software package for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy data based on the Python programming language. Dipolar EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others.</p>
-<p>DeerLab consists of a collection of functions that perform modelling, processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows. To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (mutli-Gaussians etc). It also provides a selection of background and experiment models.</p>
-<p>When you use DeerLab in your work, please cite the following publication</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Luis Fábregas Ibáñez, Gunnar Jeschke, Stefan Stoll
-DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data
-Magn. Reson. Discuss., https://doi.org/10.5194/mr-2020-13, 2020
-</pre></div>
-</div>
-<div class="toctree-wrapper compound">
-</div>
+<p>DeerLab consists of a collection of functions that perform modelling, processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows. To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (multi-Gaussians etc). It also provides a selection of background and experiment models.</p>
+<hr class="docutils" />
+<dl>
+<dt>Documentation</dt><dd><p>To get started read the <a class="reference internal" href="beginners_guide.html#beginners-guide"><span class="std std-ref">Getting Started</span></a> tutorial.</p>
+<p>Looking for a specific topic? Look at the <a class="reference internal" href="examples.html#examples"><span class="std std-ref">selection of examples</span></a> or at <a class="reference internal" href="functions.html#functions"><span class="std std-ref">reference</span></a> for specific DeerLab functions.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>What’s new?</dt><dd><p>Check the <a class="reference internal" href="changelog.html#changelog"><span class="std std-ref">Release Notes</span></a> for the changes introduced in the latest releases.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl>
+<dt>Citing DeerLab</dt><dd><p>When you use DeerLab in your work, please cite the following publication:</p>
+<div style="height:2%px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
+    <div style="width:7%;">
+        <img src='https://www.magnetic-resonance-ampere.net/graphic_journal_cover_normal.png', style="margin-top:1%; margin-bottom:1%; width=50% !important ; ">
+    </div>
+    <div style="margin-left:1%; font-size:14px">
+        <h3 style="font-size:110%">  DeerLab: a comprehensive software package for analyzing dipolar electron paramagnetic resonance spectroscopy data </h3>
+        Luis Fábregas Ibáñez, Gunnar Jeschke, Stefan Stoll <br>
+        Magn. Reson., 1, 209–224, 2020 <br>
+        <a href="https://doi.org/10.5194/mr-1-209-2020"> doi.org/10.5194/mr-1-209-2020</a>
+    </div>
+</div></dd>
+</dl>
+<hr class="docutils" />
+<dl>
+<dt>Contributing</dt><dd><div style="height:3%; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
+    <div style="width:5%;">
+        <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png', style="margin-top:1%; margin-bottom:1%;height:60%;">
+    </div>
+    <div style="margin-left:1%; font-size:14px">
+        DeerLab is hosted on <a href="https://github.com/JeschkeLab/DeerLab"> Github </a>:
+        <ul style="font-size:14px">
+        <li> Bugs and feature requests can be reported on the <a href="https://github.com/JeschkeLab/DeerLab/issues"> issue tracker </a>.
+        <li> Any contributions in the form of <a href="https://github.com/JeschkeLab/DeerLab/pulls"> pull requests</a>  are very welcome.
+        </ul>
+    </div>
+</div></dd>
+</dl>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
@@ -217,7 +246,7 @@ Magn. Reson. Discuss., https://doi.org/10.5194/mr-2020-13, 2020
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="installation.html" class="btn btn-neutral float-right" title="Installation instructions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>

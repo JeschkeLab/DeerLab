@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation instructions &mdash; DeerLab  documentation</title>
+  <title>Installation &mdash; DeerLab  documentation</title>
   
 
   
@@ -47,8 +47,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="A first script" href="firstscript.html" />
-    <link rel="prev" title="DeerLab v0.11.0 Documentation" href="index.html" /> 
+    <link rel="next" title="Basics" href="basics.html" />
+    <link rel="prev" title="DeerLab v0.12.0" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -100,16 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="firstscript.html">A first script</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
@@ -121,8 +116,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -169,7 +165,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Installation instructions</li>
+      <li>Installation</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -186,8 +182,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installation-instructions">
-<h1>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="installation">
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>DeerLab requires one of the following versions of the Python interpreter</p>
@@ -199,11 +195,11 @@
 </ul>
 </div></blockquote>
 <p>which can be downloaded from the <a class="reference external" href="https://www.python.org/">official Python distribution</a>.</p>
-<p>For Windows systems it is imporant to ensure that the <strong>Install launcher for all users (recommended)</strong> and the <strong>Add Python 3.x to PATH</strong> checkboxes at the bottom are checked. To test if python has been succesfully installed, open a terminal window and run the command:</p>
+<p>For Windows systems it is important to ensure that the <strong>Install launcher for all users (recommended)</strong> and the <strong>Add Python 3.x to PATH</strong> checkboxes at the bottom are checked. To test if python has been successfully installed, open a terminal window and run the command:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span>
 </pre></div>
 </div>
-<p>wihch should open the Python interface as well as display the installed Python version. To exit use the <code class="docutils literal notranslate"><span class="pre">exit()</span></code> command.</p>
+<p>which should open the Python interface as well as display the installed Python version. To exit use the <code class="docutils literal notranslate"><span class="pre">exit()</span></code> command.</p>
 </div>
 <div class="section" id="installing-pre-built-deerlab">
 <h2>Installing pre-built DeerLab<a class="headerlink" href="#installing-pre-built-deerlab" title="Permalink to this headline">¶</a></h2>
@@ -226,6 +222,7 @@
 <li><p><a class="reference external" href="https://numpy.org/">numpy</a> -  Base N-dimensional array package</p></li>
 <li><p><a class="reference external" href="https://www.scipy.org/">scipy</a> - Fundamental library for scientific computing</p></li>
 <li><p><a class="reference external" href="https://numdifftools.readthedocs.io/en/latest/index.html">numdifftools</a> - Tools to solve automatic numerical differentiation problems in one or more variables.</p></li>
+<li><p><a class="reference external" href="https://joblib.readthedocs.io/en/latest/">joblib</a> - Library lightweight pipelining and parallelization.</p></li>
 </ul>
 </div></blockquote>
 <p>The installed numerical packages (numpy, scipy, cvxopt) are linked against different BLAS libraries depending on the OS:</p>
@@ -240,8 +237,8 @@
 </div>
 <div class="section" id="installing-older-versions">
 <h2>Installing older versions<a class="headerlink" href="#installing-older-versions" title="Permalink to this headline">¶</a></h2>
-<p>Any DeerLab &gt;0.10.0 release can be installed via pip using the following command matching the x.x.x to the desired version:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">deerlab</span><span class="o">==</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">x</span>
+<p>Any DeerLab &gt;=0.10.0 release can be installed via pip using the following command matching the x.y.z to the desired version:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">deerlab</span><span class="o">==</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span>
 </pre></div>
 </div>
 <p>Older DeerLab 0.9.x versions, written for MATLAB are available from an <a class="reference external" href="https://github.com/JeschkeLab/DeerLab-Matlab">archived repository</a>. Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.</p>
@@ -268,10 +265,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="firstscript.html" class="btn btn-neutral float-right" title="A first script" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="basics.html" class="btn btn-neutral float-right" title="Basics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="DeerLab v0.11.0 Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="DeerLab v0.12.0" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

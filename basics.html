@@ -47,8 +47,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Loading and preprocessing" href="preprocess.html" />
-    <link rel="prev" title="A first script" href="firstscript.html" /> 
+    <link rel="next" title="Getting Started" href="beginners_guide.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -100,16 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
@@ -121,8 +116,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -189,113 +185,162 @@
   <div class="section" id="basics">
 <h1>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h1>
 <p>DeerLab relies on a few central quantities. They include distance distributions and model functions, background and their model functions, time-domain signals, and kernels. They are described in this section.</p>
-<p>All functions in DeerLab use the same units: All distances are in units of <strong>nanometers</strong>, and all times in units of <strong>microseconds</strong>.</p>
-<div class="section" id="distance-distributions">
-<h2>Distance distributions<a class="headerlink" href="#distance-distributions" title="Permalink to this headline">¶</a></h2>
-<p>A distance distribution between two spins is represented by a pair of vectors: a distance vector <code class="docutils literal notranslate"><span class="pre">r</span></code> (in nanometers) and a vector of densities <code class="docutils literal notranslate"><span class="pre">P</span></code> (in inverse nanometers). <code class="docutils literal notranslate"><span class="pre">r</span></code> can be a linearly or non-linearly increasing vector, and it cannot have negative values. The elements in <code class="docutils literal notranslate"><span class="pre">P</span></code> must be nonnegative. <code class="docutils literal notranslate"><span class="pre">P[i]</span></code> is the distribution value at <code class="docutils literal notranslate"><span class="pre">r[i]</span></code>. Outside the range of <code class="docutils literal notranslate"><span class="pre">r</span></code>, <code class="docutils literal notranslate"><span class="pre">P</span></code> is assumed to be zero, i.e. the distribution is truncated to the range <code class="docutils literal notranslate"><span class="pre">r</span></code>. <code class="docutils literal notranslate"><span class="pre">P</span></code> is normalized such that the integral over the range of the provided <code class="docutils literal notranslate"><span class="pre">r</span></code> equals one:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="nf">trapz</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>                 <span class="c1"># integral of P over r, gives 1</span>
-</pre></div>
-</div>
-<p>DeerLab distinguishes between <strong>non-parametric</strong> and <strong>parametric</strong> distance distributions.</p>
-<p><strong>Non-parametric distance distributions</strong> are the more general from. They have no particular shape and are represented by vectors <code class="docutils literal notranslate"><span class="pre">P</span></code> and <code class="docutils literal notranslate"><span class="pre">r</span></code>. For example, you can generate <code class="docutils literal notranslate"><span class="pre">P</span></code> and <code class="docutils literal notranslate"><span class="pre">r</span></code> by an external program for spin label rotamer modeling. Non-parametric distance distributions are returned in least-squares fitting. In least-squares fitting, non-parametric distance distributions are preferred over parametric distance distributions, since they make fewer assumptions about the distribution and are more flexible. They introduce less bias.</p>
-<p><strong>Parametric distance distributions</strong> have specific shapes that depend on a few parameters. DeerLab provides many parametric <a class="reference internal" href="modelsref.html#modelsref-dd"><span class="std std-ref">distance distribution model functions</span></a>. All these functions start with the prefix <code class="docutils literal notranslate"><span class="pre">dd_</span></code> (<code class="docutils literal notranslate"><span class="pre">dd</span></code> stands for “distance distibution”). They take a distance vector <code class="docutils literal notranslate"><span class="pre">r</span></code> and a parameter vector <code class="docutils literal notranslate"><span class="pre">param</span></code> as inputs and return the distance distribution as a vector <code class="docutils literal notranslate"><span class="pre">P</span></code>. Here is an example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">201</span><span class="p">)</span>   <span class="c1"># distance, in nanometers</span>
-<span class="n">P</span> <span class="o">=</span> <span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mi">3</span> <span class="mf">0.2</span><span class="p">])</span>      <span class="c1"># Gaussian distribution, center 3 nm, fwhm 0.5 nm</span>
+<p>All functions in DeerLab use the same units: all distances are in units of <strong>nanometers</strong>, and all times in units of <strong>microseconds</strong>.</p>
+<dl>
+<dt>Distance distributions</dt><dd><p>A distance distribution <img class="math" src="_images/math/865be106fc6ff8e698763f3b1bfb8777c311e175.svg" alt="P(r)"/> between two spins is represented by a pair of vectors: a distance vector <code class="docutils literal notranslate"><span class="pre">r</span></code> (in nanometers) and a vector of densities <code class="docutils literal notranslate"><span class="pre">P</span></code>
+(in inverse nanometers). The distance-vector <code class="docutils literal notranslate"><span class="pre">r</span></code> can be a linearly or non-linearly increasing vector, and it cannot have negative values.
+The elements <code class="docutils literal notranslate"><span class="pre">P[i]</span></code> are the distance distribution values at <code class="docutils literal notranslate"><span class="pre">r[i]</span></code> and are all strictly non-negative. Outside of the range defined by <code class="docutils literal notranslate"><span class="pre">r</span></code>,
+the distribution <code class="docutils literal notranslate"><span class="pre">P</span></code> is assumed to be zero, i.e. the distribution is truncated to the range <code class="docutils literal notranslate"><span class="pre">r</span></code>.
+The distance distribution <code class="docutils literal notranslate"><span class="pre">P</span></code> is normalized such that the integral over the range of the provided <code class="docutils literal notranslate"><span class="pre">r</span></code> equals one:</p>
+<div class="math">
+<p><img src="_images/math/116f818ebce55f3b596661442fb1646507c50c9a.svg" alt="\int P(r) \mathrm{d}r = 1"/></p>
+</div><p>Furthermore, DeerLab distinguishes between <em>non-parametric</em> and <em>parametric</em> distance distributions.</p>
+<dl>
+<dt>Non-parametric distance distributions</dt><dd><p>These provide the more general definition of distance distributions. They have no particular shape and are represented by the vectors <code class="docutils literal notranslate"><span class="pre">P</span></code> and <code class="docutils literal notranslate"><span class="pre">r</span></code>.
+For example, you can generate <code class="docutils literal notranslate"><span class="pre">P</span></code> and <code class="docutils literal notranslate"><span class="pre">r</span></code> by an external program for spin label rotamer modeling.</p>
+<p>In least-squares fitting, non-parametric distance distributions are preferred over parametric distance distributions, since
+they make fewer assumptions about the distribution and are more flexible. They introduce less bias.</p>
+</dd>
+<dt>Parametric distance distributions</dt><dd><p>These have specific shapes that depend on a few parameters. DeerLab provides many parametric distance distribution <a class="reference internal" href="modelsref.html#modelsref-dd"><span class="std std-ref">model functions</span></a>. All
+these functions start with the prefix <code class="docutils literal notranslate"><span class="pre">dd_</span></code> (<code class="docutils literal notranslate"><span class="pre">dd</span></code> stands for “distance distribution”). They take a distance vector <code class="docutils literal notranslate"><span class="pre">r</span></code> and a parameter vector <code class="docutils literal notranslate"><span class="pre">param</span></code>
+as inputs and return the distance distribution as a vector <code class="docutils literal notranslate"><span class="pre">P</span></code>. Here is an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span> <span class="c1"># distance-vector, in nm</span>
+<span class="n">rmean</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1"># nm, Gaussian mean distance</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="c1"># nm, Gaussian standard deviation</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">rmean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">])</span> <span class="c1"># Parametric Gaussian distribution</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The first line generates a distance axis <code class="docutils literal notranslate"><span class="pre">r</span></code> as a row vector. The second line generates the distance distribution <code class="docutils literal notranslate"><span class="pre">P</span></code> as a vector defined over <code class="docutils literal notranslate"><span class="pre">r</span></code>. The function <code class="docutils literal notranslate"><span class="pre">dd_gauss</span></code> is a distance distribution model function provided by DeerLab. It takes as inputs the distance axis and a two-element parameter array (center and full width at half maximum) and returns the calculated distance distribution consisting of one Gaussian, truncated to the range of <code class="docutils literal notranslate"><span class="pre">r</span></code> and normalized.</p>
-<p>To programmatically get information on a particular <a class="reference internal" href="modelsref.html#modelsref-dd"><span class="std std-ref">distance distribution model functions</span></a> and its parameters, call the function without input arguments</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nf">info</span> <span class="o">=</span> <span class="nf">dd_gauss</span><span class="p">()</span>        <span class="c1"># obtain information on model and parameters</span>
+<p>To programmatically get information on a particular distance distribution <a class="reference internal" href="modelsref.html#modelsref-dd"><span class="std std-ref">model functions</span></a> and its parameters, call the function without input arguments</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nf">info</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">()</span>        <span class="c1"># obtain information on model and parameters</span>
 </pre></div>
 </div>
-<p>DeerLab provides a wide range of <a class="reference internal" href="modelsref.html#modelsref-dd"><span class="std std-ref">parametric distribution models</span></a> that fall into several groups. There are models that are based on basis functions and linear combinations thereof. Gaussian and 3D-Rice functions are the most important ones. To use a single Gaussian distribution, use <a class="reference internal" href="models/dd_gauss.html#dd-gauss"><span class="std std-ref">dd_gauss</span></a>. To combine 2, 3, etc. Gaussians distributions, use <a class="reference internal" href="models/dd_gauss2.html#dd-gauss2"><span class="std std-ref">dd_gauss2</span></a>, <a class="reference internal" href="models/dd_gauss3.html#dd-gauss3"><span class="std std-ref">dd_gauss3</span></a>, etc. Similarly, for 3D-Rice distributions, use <a class="reference internal" href="models/dd_rice.html#dd-rice"><span class="std std-ref">dd_rice</span></a>, <a class="reference internal" href="models/dd_rice2.html#dd-rice2"><span class="std std-ref">dd_rice2</span></a>, etc. A second group of distance distribution models represent three-dimensional disordered segmented objects such as proteins and other polymers: <a class="reference internal" href="models/dd_wormchain.html#dd-wormchain"><span class="std std-ref">dd_wormchain</span></a>, <a class="reference internal" href="models/dd_wormgauss.html#dd-wormgauss"><span class="std std-ref">dd_wormgauss</span></a>, <a class="reference internal" href="models/dd_randcoil.html#dd-randcoil"><span class="std std-ref">dd_randcoil</span></a>. A third group provides models for distributions of labels in simple confined spaces such as spheres and spherical shells. Finally, DeerLab provides a series of distance distribution models that represent simple geometric shapes. These models are worthless for practical purposes, but are useful as toy distributions for methods development: <a class="reference internal" href="models/dd_circle.html#dd-circle"><span class="std std-ref">dd_circle</span></a>, <a class="reference internal" href="models/dd_triangle.html#dd-triangle"><span class="std std-ref">dd_triangle</span></a>, and <a class="reference internal" href="models/dd_uniform.html#dd-uniform"><span class="std std-ref">dd_uniform</span></a>.</p>
+<p>which returns a dictionary <code class="docutils literal notranslate"><span class="pre">info</span></code> containing the the names of the model parameters, and other quantities such as their built-in lower and upper boundaries.</p>
+<p>DeerLab provides a wide range of <a class="reference internal" href="modelsref.html#modelsref-dd"><span class="std std-ref">parametric distribution models</span></a> that fall into several groups.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl id="bgmodels">
+<dt>Dipolar background</dt><dd><p>In DeerLab, all inter-molecular contributions to the dipolar signal (i.e. the signal due to randomly distributed spins in the sample that are not part of the
+spin-labeled protein or object) are referred to as the dipolar background. There is a wide collection of parametric models that can be used to model the background.
+All these background <a class="reference internal" href="modelsref.html#modelsref-bg"><span class="std std-ref">model functions</span></a> start with the prefix <code class="docutils literal notranslate"><span class="pre">bg_</span></code>, they take the time axis vector <code class="docutils literal notranslate"><span class="pre">t</span></code> (in microseconds), and a parameter vector <code class="docutils literal notranslate"><span class="pre">param</span></code>.
+as inputs. The output is a background vector <code class="docutils literal notranslate"><span class="pre">B</span></code> defined over <code class="docutils literal notranslate"><span class="pre">t</span></code>. To get information on the model and its parameters, call the function without inputs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nf">info</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">()</span>        <span class="c1"># obtain information on model and parameters</span>
+</pre></div>
 </div>
-<div class="section" id="backgrounds">
-<span id="bgmodels"></span><h2>Backgrounds<a class="headerlink" href="#backgrounds" title="Permalink to this headline">¶</a></h2>
-<p>DeerLab includes a collection of parametric models that can be used to model the background or inter-molecular signal, i.e. the signal due to randomly distributed spins in the sample that are not part of the spin-labeled protein or object. All these <a class="reference internal" href="modelsref.html#modelsref-bg"><span class="std std-ref">background model functions</span></a> start with the prefix <code class="docutils literal notranslate"><span class="pre">bg_</span></code> and have the same calling syntax. The inputs a time axis vector <code class="docutils literal notranslate"><span class="pre">t</span></code> (in microseconds), a parameter vector <code class="docutils literal notranslate"><span class="pre">param</span></code>, and a modulation amplitude <code class="docutils literal notranslate"><span class="pre">lambda</span></code> (between 0 and 1) . The length of <code class="docutils literal notranslate"><span class="pre">param</span></code>, and the meaning of the elements, depends on the particular model. If <code class="docutils literal notranslate"><span class="pre">lambda</span></code> is not provided, it is set to one. The output is a background decay vector <code class="docutils literal notranslate"><span class="pre">B</span></code>, defined over <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
-<p>Here is an example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">201</span><span class="p">)</span> <span class="c1"># time, in microseconds</span>
-<span class="n">lam</span> <span class="o">=</span> <span class="mf">0.4</span>                   <span class="c1"># modulation depth</span>
-<span class="n">conc</span> <span class="o">=</span> <span class="mi">200</span>                  <span class="c1"># spin concentration, in uM</span>
-<span class="n">B</span> <span class="o">=</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>    <span class="c1"># homogeneous 3D background</span>
+<p>DeerLab’s <a class="reference internal" href="modelsref.html#modelsref-bg"><span class="std std-ref">background models</span></a> fall into two categories, physical and phenomenological:</p>
+<dl>
+<dt>Physical background models</dt><dd><p>Describe particular distributions of spin labels in space and depend on physical parameters such as spin concentration, exclusion distances, and fractal dimensionality.
+The most common background model is <a class="reference internal" href="models/bg_hom3d.html#bg-hom3d"><span class="std std-ref">bg_hom3d</span></a>, which describes the signal due to a homogeneous three-dimensional distribution of spins of a given concentration.
+A background due to a homogeneous distribution of spins in fractal dimensions is available with <a class="reference internal" href="models/bg_homfractal.html#bg-homfractal"><span class="std std-ref">bg_homfractal</span></a>, and excluded-volume effects can be accounted for using
+<a class="reference internal" href="models/bg_hom3dex.html#bg-hom3dex"><span class="std std-ref">bg_hom3dex</span></a> to model the background.</p>
+<p>In addition to <code class="docutils literal notranslate"><span class="pre">t</span></code> and the model parameters <code class="docutils literal notranslate"><span class="pre">param</span></code> physical background model functions take the dipolar pathway amplitude <code class="docutils literal notranslate"><span class="pre">lambda</span></code> as a third input, for example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>    <span class="c1"># time, in microseconds</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="mf">0.4</span>                      <span class="c1"># modulation depth</span>
+<span class="n">conc</span> <span class="o">=</span> <span class="mi">70</span>                      <span class="c1"># spin concentration, in uM</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>    <span class="c1"># homogeneous 3D background</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The first line generate the desired time axis. The second line gives the modulation depth, and the third gives the spin concentration (in micromolar). Both are inputs to the background function <code class="docutils literal notranslate"><span class="pre">bg_hom3d</span></code>, which calculates a decay due to a homogeneous three-dimensional distribution of spins and returns it in <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
-<p>To get information on the model and its parameters, call the function without inputs:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nf">info</span> <span class="o">=</span> <span class="nf">bg_hom3d</span><span class="p">()</span>        <span class="c1"># obtain information on model and parameters</span>
+</dd>
+<dt>Phenomenological background models</dt><dd><p>Represent various mathematical functions that are intended to <em>mimic</em> the background decay, without reference to a particular spatial distribution of spins. The parameters
+of these models do no have a direct physical meaning. Some examples include <a class="reference internal" href="models/bg_exp.html#bg-exp"><span class="std std-ref">bg_exp</span></a>, which models the background decay as a simple exponential function, or <a class="reference internal" href="models/bg_strexp.html#bg-strexp"><span class="std std-ref">bg_strexp</span></a>
+which model the background decay as a stretched exponential function.</p>
+<p>Phenomenological background model functions just take <code class="docutils literal notranslate"><span class="pre">t</span></code> and the model parameters <code class="docutils literal notranslate"><span class="pre">param</span></code>  as input, for example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>    <span class="c1"># time, in microseconds</span>
+<span class="n">kappa</span> <span class="o">=</span> <span class="mf">0.35</span>                   <span class="c1"># decay rate, in inverse microseconds</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_exp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">kappa</span><span class="p">)</span>         <span class="c1"># exponential background</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>DeerLab’s <a class="reference internal" href="modelsref.html#modelsref-bg"><span class="std std-ref">background models</span></a> fall into two categories, physical and phenomenological. <strong>Physical models</strong> describe particular distributions of spin labels in space. These models depend on physical parameters such as spin concentration, exclusion distances, and dimensionality. The most common one is <a class="reference internal" href="models/bg_hom3d.html#bg-hom3d"><span class="std std-ref">bg_hom3d</span></a>, which describes the signal due to a homogeneous three-dimensional distribution of spins of a given concentration. A homogeneous distribution in a fractal dimensions is available with <a class="reference internal" href="models/bg_homfractal.html#bg-homfractal"><span class="std std-ref">bg_homfractal</span></a>, and excluded-volume effects can be modelled using <a class="reference internal" href="models/bg_hom3dex.html#bg-hom3dex"><span class="std std-ref">bg_hom3dex</span></a>. <strong>Phenomenological models</strong> represent various mathematical functions that are intended to mimick the background decay, without reference to a particular spatial distribution of spins. The parameters of these models do no have direct physical meaning. In general, it is preferable to use the physical instead of phenomenological models.</p>
-</div>
-<div class="section" id="experiments">
-<span id="exmodels"></span><h2>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h2>
-<p>DeerLab supports a wide range of dipolar EPR experiments. Experiments differ in the number of dipolar modulation components and their refocusing times. For each type of supported dipolar EPR experiment, there is a dedicated <a class="reference internal" href="modelsref.html#modelsref-ex"><span class="std std-ref">experiment model function</span></a> starting with <code class="docutils literal notranslate"><span class="pre">ex_</span></code>. These functions take as inputs the time axis <code class="docutils literal notranslate"><span class="pre">t</span></code> and an array of parameters characterizing the experiment. As output, they return an array containing information about the dipolar pathways of the experiment model.</p>
+</dd>
+</dl>
+<p>In general, it is preferable to use the physical instead of phenomenological models.</p>
+</dd>
+</dl>
+<dl id="exmodels">
+<dt>Experiments</dt><dd><p>DeerLab supports a wide range of dipolar EPR experiments. Different experiments differ in their modulated dipolar pathways. Each of these pathways leads to a dipolar modulation
+contribution to the dipolar signal, with a certain amplitude and refocusing times. A dipolar signal can be defined as a combination of an unmodulated contribution of and a contribution
+from all modulated pathways, which can de defined by their amplitude, refocusing time, and harmonic. For each type of supported dipolar EPR experiment, there is a dedicated experiment
+:ref:` model function&lt;modelsref_ex&gt;` starting with <code class="docutils literal notranslate"><span class="pre">ex_</span></code>, which models the dipolar pathways for that specific experiment. These functions take an array of parameters characterizing
+the experiment. As output, they return an array containing information about the dipolar pathways of the experiment model.</p>
 <p>For example, the model function representing the typical model for a 4-pulse DEER signal is <code class="docutils literal notranslate"><span class="pre">ex_4pdeer</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">151</span><span class="p">)</span>
 <span class="n">lam</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">;</span>
-<span class="n">pathways</span> <span class="o">=</span> <span class="nf">ex_4pdeer</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+<span class="n">pathways</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The returned output is</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pathways</span> <span class="o">=</span><span class="p">[[</span><span class="mf">0.7</span><span class="p">,</span>  <span class="n">NaN</span><span class="p">],</span>
-           <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span>   <span class="mi">0</span> <span class="p">]]</span>
+<p>The returned output <code class="docutils literal notranslate"><span class="pre">pathways</span></code> is a list of pathways information</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pathways</span> <span class="o">=</span><span class="p">[[</span><span class="mf">0.7</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 </pre></div>
 </div>
-<p>Each row of this array holds information about one pathway. The first column is modulation amplitude, and the second column is the refocusing point. In the above example, the first row shows a pathway with amplitude 0.7 and no refocusing time, indicating that it represents the unmodulated contribution. The pathway of the second row shows amplitude of 0.3 and refocusing time 0, i.e. this is the primary dipolar pathway.</p>
-</div>
-<div class="section" id="kernel-matrices">
-<h2>Kernel matrices<a class="headerlink" href="#kernel-matrices" title="Permalink to this headline">¶</a></h2>
-<p>One of the core functions of DeerLab is <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code>. It provides the kernel that provides the connection between the distance distribution and the time-domain signal.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">301</span><span class="p">)</span>     <span class="c1"># time axis, in us</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">301</span><span class="p">)</span>     <span class="c1"># distance axis, in nm</span>
-<span class="n">K0</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>      <span class="c1"># dipolar kernel matrix</span>
+<p>Each nested list holds information about one pathway. The first element is modulation amplitude, and the second element is the refocusing point.
+In the above example, the first list shows a pathway with amplitude 0.7 and no refocusing time, indicating that it represents the unmodulated contribution.
+The pathway of the second list shows amplitude of 0.3 and refocusing time 0, i.e. this is the primary dipolar pathway.</p>
+</dd>
+<dt>Dipolar Kernel</dt><dd><p>One of the core functions of DeerLab is <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code>. It constructs the kernel that provides the connection between the distance distribution and the time-domain dipolar signal
+via the Fredholm integral equation</p>
+<div class="math">
+<p><img src="_images/math/d782fd11836a84cd933640472d4e60e61d91cf41.svg" alt="V(t) = \int K(t,r)P(r) \mathrm{d}r"/></p>
+</div><p>The most simple dipolar kernel just requires the time-vector <code class="docutils literal notranslate"><span class="pre">t</span></code> and distance-vector <code class="docutils literal notranslate"><span class="pre">r</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>        <span class="c1"># time axis, in us</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>        <span class="c1"># distance axis, in nm</span>
+<span class="n">K0</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>      <span class="c1"># dipolar kernel matrix</span>
 </pre></div>
 </div>
-<p>To obtain the time-domain signal due to a distribution <code class="docutils literal notranslate"><span class="pre">P</span></code>, use</p>
+<p>To calculate the dipolar signal corresponding to a distance distribution <code class="docutils literal notranslate"><span class="pre">P</span></code> according to the equation above, use</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">K0</span><span class="nd">@P</span>
 </pre></div>
 </div>
-<p>The above is the most elementary kernel, giving a time-domain signal without any background decay, and with a single dipolar evolution function centered at time zero and with modulation depth of 1.</p>
-<p>The kernel can also include the background and the modulation depth. Then, the multiplication of <code class="docutils literal notranslate"><span class="pre">P</span></code> by <code class="docutils literal notranslate"><span class="pre">K</span></code> will return the complete time-domain signal. Here is an example:</p>
+<p>The above <code class="docutils literal notranslate"><span class="pre">K0</span></code> is the most elementary kernel, giving a dipolar signal without any background decay, and with a single dipolar evolution function centered at time zero and with modulation depth of 1.</p>
+<p>The kernel can also account for the background and the dipolar pathways. Then, operation  <code class="docutils literal notranslate"><span class="pre">V=K&#64;P</span></code> will return the complete time-domain dipolar signal. Here is an example for a 4-pulse DEER signal</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lam</span> <span class="o">=</span> <span class="mf">0.4</span>
-<span class="n">B</span> <span class="o">=</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The function <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> also has options to add an excitation bandwidth limitation, to select the internal calculation method, and more.</p>
-<p>It is not necessary to precompute the background decay. Instead, provide <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> with a lambda-callable to a function that takes only time and modulation depth and encapsulates all other parameters.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bg</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>   <span class="c1"># define function for background</span>
-<span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">bg</span><span class="p">)</span>
+<p>When accounting for more than one dipolar pathway, the different refocusing times and modulation amplitudes must be provided to <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code>. Additionally, the background must be provided as a callable
+function that takes only time and modulation amplitude and encapsulates all other parameters. For example, for a 5-pulse DEER signal</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Lam0</span> <span class="o">=</span> <span class="mf">0.5</span>      <span class="c1"># amplitude of unmodulated component</span>
+<span class="n">lam1</span> <span class="o">=</span> <span class="mf">0.4</span>      <span class="c1"># amplitude of primary pathway</span>
+<span class="n">lam2</span> <span class="o">=</span> <span class="mf">0.1</span>      <span class="c1"># amplitude of secondary pathway</span>
+<span class="n">T02</span> <span class="o">=</span> <span class="mf">3.1</span>       <span class="c1"># refocusing time of secondary pathway, in us</span>
+<span class="n">pathways</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">ex_5pdeer</span><span class="p">([</span><span class="n">Lam0</span><span class="p">,</span><span class="n">lam1</span><span class="p">,</span><span class="n">lam2</span><span class="p">,</span><span class="n">T02</span><span class="p">])</span> <span class="c1"># dipolar pathways of 5-pulse DEER experiment</span>
+<span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>   <span class="c1"># define function for background</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">pathways</span><span class="p">,</span><span class="n">Bfcn</span><span class="p">)</span> <span class="c1"># 5-pulse DEER dipolar kernel</span>
 </pre></div>
 </div>
-<p>The use of function handles is central to DeerLab, especially when fitting experimental data.</p>
-</div>
-<div class="section" id="time-domain-signals">
-<h2>Time-domain signals<a class="headerlink" href="#time-domain-signals" title="Permalink to this headline">¶</a></h2>
-<p>To generate complete time-domain signals from a distance distribution and a background decay, use the function <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> and apply it to the distance distribution.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>   <span class="c1"># generate dipolar kernel</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span>                        <span class="c1"># generate dipolar signal</span>
+<p>The function <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> also has <a class="reference internal" href="functions/dipolarkernel.html#dipolarkernel"><span class="std std-ref">options</span></a> to add an excitation bandwidth limitation, to select the internal calculation method, and more.</p>
+</dd>
+<dt>Dipolar signals</dt><dd><p>Dipolar signals are the results of the many different dipolar EPR spectroscopy experiments. They represent the data from which distance distributions can be infered.
+DeerLab provides the tools for simulating dipolar signals originating from different experiments. Note that these simulations are not based on spin dynamics simulations,
+but rather on theoretical analytical treatments of such problems.</p>
+<p>Simulations in DeerLab can be easily achieved, as mentioned above, via a Fredholm integral using the correct dipolar kernel. To generate complete time-domain signals from
+a distance distribution and a background decay, use the function <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> and apply it to the distance distribution.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>   <span class="c1"># generate dipolar kernel</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span>                           <span class="c1"># generate dipolar signal</span>
 <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>It is possible to add noise to simulated data by using the <code class="docutils literal notranslate"><span class="pre">whitegaussnoise</span></code> function:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.05</span>                        <span class="c1"># noise level</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span>  <span class="c1"># add some noise</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.05</span>                           <span class="c1"># noise level</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span>  <span class="c1"># add some noise</span>
 </pre></div>
 </div>
 <p>With this, uncorrelated Gaussian noise with standard deviation given as <code class="docutils literal notranslate"><span class="pre">sigma</span></code> is added to the noise-free signal.</p>
 <p>Adding a phase rotation is also possible, yielding a complex-valued signal with non-zero imaginary component. The phase shift on the noise has to be taken into account too:</p>
-<blockquote>
-<div><p>phase = np.pi/4                   # phase shift, radians
-V = K&#64;P*exp(-1j*phase)            # add a phase shift
-rnoise = whitegaussnoise(t,sigma) # real-component noise
-inoise = whitegaussnoise(t,sigma) # imaginary-component noise
-V = V + rnoise + inoise           # complex-valued noisy signal</p>
-</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span>                      <span class="c1"># phase shift, radians</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">phase</span><span class="p">)</span>               <span class="c1"># add a phase shift</span>
+<span class="n">rnoise</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span> <span class="c1"># real-component noise</span>
+<span class="n">inoise</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span> <span class="c1"># imaginary-component noise</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">V</span> <span class="o">+</span> <span class="n">rnoise</span> <span class="o">+</span> <span class="n">inoise</span>              <span class="c1"># complex-valued noisy signal</span>
+</pre></div>
 </div>
+</dd>
+</dl>
 </div>
 
 
@@ -306,10 +351,10 @@ V = V + rnoise + inoise           # complex-valued noisy signal</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="preprocess.html" class="btn btn-neutral float-right" title="Loading and preprocessing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="beginners_guide.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="firstscript.html" class="btn btn-neutral float-left" title="A first script" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

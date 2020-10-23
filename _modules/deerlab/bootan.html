@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -98,16 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
 </ul>
@@ -119,8 +114,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -192,22 +188,31 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
 <span class="kn">from</span> <span class="nn">deerlab.classes</span> <span class="kn">import</span> <span class="n">UncertQuant</span>
 
-<div class="viewcode-block" id="bootan"><a class="viewcode-back" href="../../functions/bootan.html#deerlab.bootan">[docs]</a><span class="k">def</span> <span class="nf">bootan</span><span class="p">(</span><span class="n">fcn</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="bootan"><a class="viewcode-back" href="../../functions/bootan.html#deerlab.bootan">[docs]</a><span class="k">def</span> <span class="nf">bootan</span><span class="p">(</span><span class="n">fcn</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">cores</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Bootstrap analysis for uncertainty quantification</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    fcn : callable</span>
-<span class="sd">        Function to be analyzed. Must be a callable function accepting a signal array as input and returning a tuple with all variables to be analyzed.</span>
-<span class="sd">        All variables must be numerical arrays (no strings or booleans) and must preserve shape between calls.</span>
+<span class="sd">        Function to be analyzed. Must be a callable function accepting a signal</span>
+<span class="sd">        array as input and returning a tuple with all variables to be analyzed.</span>
+<span class="sd">        All variables must be numerical arrays (no strings or booleans) and </span>
+<span class="sd">        must preserve shape between calls.</span>
+
 <span class="sd">    Vexp : array_like or list of array_like</span>
 <span class="sd">        Experimental dataset(s).</span>
+
 <span class="sd">    Vfit : array or list of array_like</span>
 <span class="sd">        Fit of the dataset(s).</span>
+
 <span class="sd">    samples : scalar</span>
-<span class="sd">        Number of bootstrap samples to analyze. The quality of bootstrapping results improve with the number of boostrap samples evaluated, the default is 1000.</span>
+<span class="sd">        Number of bootstrap samples to analyze. The quality of bootstrapping </span>
+<span class="sd">        results improve with the number of boostrap samples evaluated, the </span>
+<span class="sd">        default is 1000.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -223,27 +228,38 @@
 <span class="sd">        * ``&#39;residual&#39;`` - Sample noise from the fit residuals.</span>
 <span class="sd">        The default is ``&#39;gaussian&#39;``.</span>
 
+<span class="sd">    cores : scalar</span>
+<span class="sd">        Number of CPU cores/processes for parallel computing. If ``cores=1`` no parallel </span>
+<span class="sd">        computing is used. If ``cores=-1`` all available CPUs are used. The default is </span>
+<span class="sd">        one core (no parallelization).</span>
+
 <span class="sd">    verbose : boolean</span>
-<span class="sd">        Specifies whether to print the progress of the bootstrap analysis on the command window, the default is false.</span>
+<span class="sd">        Specifies whether to print the progress of the bootstrap analysis on the </span>
+<span class="sd">        command window, the default is false.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    To analyze several variables during the same run, the function must return tuple containing all of them::</span>
+<span class="sd">    To analyze several variables during the same run, the function must return tuple </span>
+<span class="sd">    containing all of them::</span>
 
 <span class="sd">        def myfcn(V):</span>
-<span class="sd">            Pfit1 = fitparamodel(V,dd_gauss,r,K)</span>
-<span class="sd">            Pfit2 = fitparamodel(V,dd_randcoil,r,K)</span>
+<span class="sd">            Pfit1 = dl.fitparamodel(V,dl.dd_gauss,r,K)</span>
+<span class="sd">            Pfit2 = dl.fitparamodel(V,dl.dd_randcoil,r,K)</span>
 <span class="sd">            return Pfit1,Pfit2</span>
 
-<span class="sd">        bootuq = bootan(@(V)myfcn(p,varargin),V,Vfit)</span>
+<span class="sd">        bootuq = bootan(myfcn,V,Vfit)</span>
 <span class="sd">        Pfit1_uq = bootuq[0]</span>
 <span class="sd">        Pfit2_uq = bootuq[1]</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">nSamples</span> <span class="o">=</span> <span class="n">samples</span>
+    <span class="c1"># Catch invalid sample sizes</span>
+    <span class="k">if</span> <span class="n">samples</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least two bootstrap samples are required.&#39;</span><span class="p">)</span>
+    <span class="n">nSamples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
 
+    <span class="c1"># Validation of input signals</span>
     <span class="n">Vexp</span><span class="p">,</span><span class="n">Vfit</span> <span class="o">=</span> <span class="p">(</span> <span class="p">[</span><span class="n">V</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">V</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="k">else</span> <span class="n">V</span> <span class="k">for</span> <span class="n">V</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Vexp</span><span class="p">,</span><span class="n">Vfit</span><span class="p">])</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">Vfit</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;The same number of signals V and fits Vfit must be provided.&#39;</span><span class="p">)</span>
@@ -260,6 +276,21 @@
         <span class="n">residuals</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">Vexp</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="n">sigma</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">std</span><span class="p">(</span><span class="n">residuals</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
 
+    <span class="c1"># Prepare bootstrap sampler (reduced I/O-stream when parallelized) </span>
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">():</span>
+        <span class="n">Vsample</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">nSignals</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nSignals</span><span class="p">):</span>
+            <span class="c1">#Determine requested re-sampling method</span>
+            <span class="k">if</span> <span class="n">resampling</span> <span class="o">==</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
+                <span class="c1"># Resample from a Gaussian distribution with variance estimated from the residuals</span>
+                <span class="n">Vsample</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="k">elif</span> <span class="n">resampling</span> <span class="o">==</span> <span class="s1">&#39;residual&#39;</span><span class="p">:</span>
+                <span class="c1"># Resample from the residual directly</span>
+                <span class="n">Vsample</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span>  <span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">residuals</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]))]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Resampling method not found. Must be either &#39;gaussian&#39; or &#39;residual&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Vsample</span>       
+
     <span class="c1"># Use original data on the first run</span>
     <span class="n">varargout</span> <span class="o">=</span> <span class="n">fcn</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">varargout</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">tuple</span><span class="p">:</span>
@@ -271,6 +302,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nf">all</span><span class="p">((</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,(</span><span class="nb">float</span><span class="p">,</span><span class="nb">int</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nf">var</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Non-numeric output arguments by the analyzed function are not accepted.&#39;</span><span class="p">)</span>
     
+    <span class="c1"># Get ndarray shapes of all outputs</span>
     <span class="n">shapeout</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">evals</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nout</span><span class="p">):</span>
@@ -278,37 +310,20 @@
         <span class="n">shapeout</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
         <span class="n">evals</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:])</span>
 
+    <span class="c1"># Main bootstrap function</span>
+    <span class="k">def</span> <span class="nf">bootsample</span><span class="p">():</span>
+        <span class="c1"># Get bootstrap sample</span>
+        <span class="n">Vsample</span> <span class="o">=</span> <span class="n">sample</span><span class="p">()</span>
+        <span class="c1"># Run the analysis function</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">fcn</span><span class="p">(</span><span class="n">Vsample</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
 
-    <span class="c1"># Bootsrap analysis</span>
-    <span class="c1">#-------------------------------------------------------------------------------</span>
-    <span class="n">Vresample</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">nSignals</span>
-    <span class="k">for</span> <span class="n">iSample</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nSamples</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-        
-        <span class="c1"># Inform of progress if requested</span>
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Bootstrapping: #</span><span class="si">{}</span><span class="s1">/#</span><span class="si">{}</span><span class="s1"> samples finished&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iSample</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">nSamples</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nSignals</span><span class="p">):</span>
-
-            <span class="c1"># Get a bootstrap sample</span>
-            <span class="k">if</span> <span class="n">iSample</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-                
-                <span class="c1">#Determine requested re-sampling method</span>
-                <span class="k">if</span> <span class="n">resampling</span> <span class="o">==</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
-                    <span class="c1"># Resample from a Gaussian distribution with variance estimated from the residuals</span>
-                    <span class="n">Vresample</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-
-                <span class="k">elif</span> <span class="n">resampling</span> <span class="o">==</span> <span class="s1">&#39;residual&#39;</span><span class="p">:</span>
-                    <span class="c1"># Resample from the residual directly</span>
-                    <span class="n">Vresample</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span>  <span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">residuals</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">]))]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Resampling method not found. Must be either &#39;gaussian&#39; or &#39;residual&#39;.&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Use original data on the first run</span>
-                <span class="n">Vresample</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Vexp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-        <span class="c1"># Run the model function with bootstrap sample</span>
-        <span class="n">varargout</span> <span class="o">=</span> <span class="n">fcn</span><span class="p">(</span><span class="n">Vresample</span><span class="p">)</span>
+    <span class="c1"># Run bootsample() for all samples in series (cores=1) or in parallel (cores&gt;1)</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Bootstrap analysis with </span><span class="si">{0}</span><span class="s1"> cores:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cores</span><span class="p">))</span>          
+    <span class="n">out</span> <span class="o">=</span> <span class="n">_ProgressParallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">cores</span><span class="p">,</span><span class="n">total</span><span class="o">=</span><span class="n">nSamples</span><span class="p">,</span><span class="n">use_tqdm</span><span class="o">=</span><span class="n">verbose</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">bootsample</span><span class="p">)()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nSamples</span><span class="p">))</span>
+    
+    <span class="c1"># Post-process the outputs</span>
+    <span class="k">for</span> <span class="n">varargout</span> <span class="ow">in</span> <span class="n">out</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">varargout</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">tuple</span><span class="p">:</span>
             <span class="n">varargout</span> <span class="o">=</span> <span class="p">(</span><span class="n">varargout</span><span class="p">,)</span>
         <span class="n">nout</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">varargout</span><span class="p">)</span>
@@ -317,19 +332,44 @@
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nout</span><span class="p">):</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">varargout</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="o">!=</span><span class="n">shapeout</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span> 
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Inconsistent output variable size. One of the outputs of the analyzed function is changing its size in between runs. To solve this, fix the axis of the output and interpolate the result.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Inconsistent output variable shape. One of the outputs of the analyzed function is changing its size/shape in between runs.&#39;</span><span class="p">)</span>
             <span class="c1"># Store outputs in an N-dimensional array</span>
             <span class="n">evals</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">evals</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="n">out</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]),</span><span class="mi">0</span><span class="p">)</span>
-        
+            
         
     <span class="c1"># Compile statistics for all parameters from bootstrap samples</span>
     <span class="c1">#-------------------------------------------------------------------------------</span>
     <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">bootsamples</span> <span class="ow">in</span> <span class="n">evals</span><span class="p">:</span>
-        <span class="n">stats</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">UncertQuant</span><span class="p">(</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">,</span><span class="n">bootsamples</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">variables</span> <span class="ow">in</span> <span class="n">evals</span><span class="p">:</span>
+        <span class="n">stats</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">UncertQuant</span><span class="p">(</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">,</span><span class="n">variables</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
         <span class="n">stats</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">stats</span></div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="k">class</span> <span class="nc">_ProgressParallel</span><span class="p">(</span><span class="n">Parallel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Patch for joblib.Parallel</span>
+
+<span class="sd">    Overrides the print_progress() method to enable the synchronous use of the TQDM bar</span>
+<span class="sd">    even for parallel processing.  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_tqdm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_use_tqdm</span> <span class="o">=</span> <span class="n">use_tqdm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total</span> <span class="o">=</span> <span class="n">total</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_tqdm</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_total</span><span class="p">)</span> <span class="k">as</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pbar</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Parallel</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">print_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pbar</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_dispatched_tasks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pbar</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_completed_tasks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pbar</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
 </pre></div>
 
            </div>

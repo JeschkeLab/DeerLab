@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -100,16 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
 </ul>
@@ -121,8 +116,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -192,19 +188,23 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">bootan</span></code><a class="headerlink" href="#bootan" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="deerlab.bootan">
-<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">bootan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fcn</span></em>, <em class="sig-param"><span class="n">Vexp</span></em>, <em class="sig-param"><span class="n">Vfit</span></em>, <em class="sig-param"><span class="n">samples</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">resampling</span><span class="o">=</span><span class="default_value">'gaussian'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/bootan.html#bootan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.bootan" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">deerlab.</code><code class="sig-name descname">bootan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fcn</span></em>, <em class="sig-param"><span class="n">Vexp</span></em>, <em class="sig-param"><span class="n">Vfit</span></em>, <em class="sig-param"><span class="n">samples</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">resampling</span><span class="o">=</span><span class="default_value">'gaussian'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">cores</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/bootan.html#bootan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.bootan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bootstrap analysis for uncertainty quantification</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>fcn</strong><span class="classifier">callable</span></dt><dd><p>Function to be analyzed. Must be a callable function accepting a signal array as input and returning a tuple with all variables to be analyzed.
-All variables must be numerical arrays (no strings or booleans) and must preserve shape between calls.</p>
+<dt><strong>fcn</strong><span class="classifier">callable</span></dt><dd><p>Function to be analyzed. Must be a callable function accepting a signal
+array as input and returning a tuple with all variables to be analyzed.
+All variables must be numerical arrays (no strings or booleans) and 
+must preserve shape between calls.</p>
 </dd>
 <dt><strong>Vexp</strong><span class="classifier">array_like or list of array_like</span></dt><dd><p>Experimental dataset(s).</p>
 </dd>
 <dt><strong>Vfit</strong><span class="classifier">array or list of array_like</span></dt><dd><p>Fit of the dataset(s).</p>
 </dd>
-<dt><strong>samples</strong><span class="classifier">scalar</span></dt><dd><p>Number of bootstrap samples to analyze. The quality of bootstrapping results improve with the number of boostrap samples evaluated, the default is 1000.</p>
+<dt><strong>samples</strong><span class="classifier">scalar</span></dt><dd><p>Number of bootstrap samples to analyze. The quality of bootstrapping 
+results improve with the number of boostrap samples evaluated, the 
+default is 1000.</p>
 </dd>
 </dl>
 </dd>
@@ -223,19 +223,25 @@ All variables must be numerical arrays (no strings or booleans) and must preserv
 </ul>
 <p>The default is <code class="docutils literal notranslate"><span class="pre">'gaussian'</span></code>.</p>
 </dd>
-<dt><strong>verbose</strong><span class="classifier">boolean</span></dt><dd><p>Specifies whether to print the progress of the bootstrap analysis on the command window, the default is false.</p>
+<dt><strong>cores</strong><span class="classifier">scalar</span></dt><dd><p>Number of CPU cores/processes for parallel computing. If <code class="docutils literal notranslate"><span class="pre">cores=1</span></code> no parallel 
+computing is used. If <code class="docutils literal notranslate"><span class="pre">cores=-1</span></code> all available CPUs are used. The default is 
+one core (no parallelization).</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier">boolean</span></dt><dd><p>Specifies whether to print the progress of the bootstrap analysis on the 
+command window, the default is false.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>To analyze several variables during the same run, the function must return tuple containing all of them:</p>
+<p>To analyze several variables during the same run, the function must return tuple 
+containing all of them:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">myfcn</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
-    <span class="n">Pfit1</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>
-    <span class="n">Pfit2</span> <span class="o">=</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="nf">dd_randcoil</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>
+    <span class="n">Pfit1</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>
+    <span class="n">Pfit2</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_randcoil</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Pfit1</span><span class="p">,</span><span class="n">Pfit2</span>
 
-<span class="n">bootuq</span> <span class="o">=</span> <span class="nf">bootan</span><span class="p">(</span><span class="o">@</span><span class="p">(</span><span class="n">V</span><span class="p">)</span><span class="n">myfcn</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">varargin</span><span class="p">),</span><span class="n">V</span><span class="p">,</span><span class="n">Vfit</span><span class="p">)</span>
+<span class="n">bootuq</span> <span class="o">=</span> <span class="nf">bootan</span><span class="p">(</span><span class="n">myfcn</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">Vfit</span><span class="p">)</span>
 <span class="n">Pfit1_uq</span> <span class="o">=</span> <span class="n">bootuq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">Pfit2_uq</span> <span class="o">=</span> <span class="n">bootuq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>

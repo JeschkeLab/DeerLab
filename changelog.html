@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Changelog &mdash; DeerLab  documentation</title>
+  <title>Release Notes &mdash; DeerLab  documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -99,16 +99,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
@@ -120,8 +115,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a></li>
 </ul>
 
             
@@ -168,7 +164,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Changelog</li>
+      <li>Release Notes</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -185,72 +181,130 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="changelog">
-<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="release-notes">
+<span id="changelog"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h1>
 <hr class="docutils" />
-<div class="section" id="version-0-11-0-september-2020">
-<h2>Version 0.11.0 - September 2020<a class="headerlink" href="#version-0-11-0-september-2020" title="Permalink to this headline">¶</a></h2>
-<p>#### Overall changes</p>
+<div class="section" id="release-notes-v0-12-0-october-2020">
+<h2>Release Notes v0.12.0 - October 2020<a class="headerlink" href="#release-notes-v0-12-0-october-2020" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="overall-changes">
+<h3>Overall changes<a class="headerlink" href="#overall-changes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>The regularization operator matrices <code class="docutils literal notranslate"><span class="pre">regoperator</span></code> now include the edges of the distribution (#38). Now the smoothness penalty is imposed on the distribution edges avoiding the accumulation of distribution mass at the edges of <code class="docutils literal notranslate"><span class="pre">r</span></code>.</p></li>
+<li><p>The interface for defining dipolar pathways has been simplified (#41). For example, a signal with two dipolar pathways had to be defined as <code class="docutils literal notranslate"><span class="pre">pathways</span> <span class="pre">=</span> <span class="pre">[[Lam0,np.nan],</span> <span class="pre">[lam1,T0]]</span></code>. Now the unmodulated pathway can just be defined by its amplitude and does not require the use of <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">pathways</span> <span class="pre">=</span> <span class="pre">[Lam0,</span> <span class="pre">[lam1,T0]]</span></code>.</p></li>
+<li><p>The project version control has been switched from the Git-flow to the GitHub-flow design. The default branch has been switched from <code class="docutils literal notranslate"><span class="pre">master</span></code> to <code class="docutils literal notranslate"><span class="pre">main</span></code>, which is now always production-ready. All new contributions are merged into <code class="docutils literal notranslate"><span class="pre">main</span></code> exclusively by pull requests.</p></li>
+<li><p>The dependency on the <code class="docutils literal notranslate"><span class="pre">lambda</span></code> parameter has been removed from all phenomenological background models, and kept only for physical models (#43). Their interface with <code class="docutils literal notranslate"><span class="pre">dipolarbackground</span></code> and <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> have been updated accordingly.</p></li>
+</ul>
+</div>
+<div class="section" id="new-features">
+<h3>New features:<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">diststats</span></code>: New function to calculate different statistical quantities of the distance distribution and their corresponding uncertainties (#38).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bootan</span></code>: Introduced the option <code class="docutils literal notranslate"><span class="pre">cores</span></code> to parallelize the bootstrapping using multiple CPU.</p></li>
+</ul>
+</div>
+<div class="section" id="specific-changes">
+<h3>Specific changes<a class="headerlink" href="#specific-changes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bg_homfractal</span></code>:</p>
+<ul>
+<li><p>Corrected behavior of the model. For <code class="docutils literal notranslate"><span class="pre">d=3</span></code> the model returned wrong values, and for <code class="docutils literal notranslate"><span class="pre">d~=3</span></code> the model resulted in an error.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">UncertQuant</span></code>:</p>
+<ul>
+<li><p>Fixed bug when propagating uncertainty to scalar functions.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deerload</span></code>:</p>
+<ul>
+<li><p>Fixed UTF-8 error when loading certain spectrometer files in MacOS (#30)</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fitsignal</span></code>:</p>
+<ul>
+<li><p>The fitted scale of the signal is now properly calculated when fitting fully parametric signals.</p></li>
+<li><p>Fixed error occuring when fitting a dipolar evolution function with a non-parametric distribution.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">selregparam</span></code>:</p>
+<ul>
+<li><p>Fixed bug occuring when requesting the <code class="docutils literal notranslate"><span class="pre">lc</span></code> or <code class="docutils literal notranslate"><span class="pre">lr</span></code> selection methods.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">regparamange</span></code>:</p>
+<ul>
+<li><p>An error occuring at the BLAS/LAPLACK error ocurring under certain conditions in MacOS and Ubuntu is now handled to avoid a crash.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="release-notes-v0-11-0-september-2020">
+<h2>Release Notes v0.11.0 - September 2020<a class="headerlink" href="#release-notes-v0-11-0-september-2020" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Overall changes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>All Gauss models (<code class="docutils literal notranslate"><span class="pre">dd_gauss</span></code>,etc.) now use the standard deviation <code class="docutils literal notranslate"><span class="pre">sigma</span></code> instead of the FWHM as the width parameter for consistency with other method such as Rice distributions. (#19)</p></li>
 <li><p>All hard-wired random seeds have been removed.</p></li>
 <li><p>A new method <code class="docutils literal notranslate"><span class="pre">plot()</span></code> has been added to the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> class returned by all fit functions. This will create a basic plot of the fit results. (#7)</p></li>
 </ul>
-<p>#### Specific changes
-* <code class="docutils literal notranslate"><span class="pre">snlls</span></code>:</p>
-<blockquote>
-<div><ul class="simple">
+</div>
+<div class="section" id="id2">
+<h3>Specific changes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">snlls</span></code>:</p>
+<ul>
 <li><p>Renamed option <code class="docutils literal notranslate"><span class="pre">penalty</span></code> as <code class="docutils literal notranslate"><span class="pre">reg</span></code> and improved its interface (#13).</p></li>
 <li><p>The regularization parameter of the optimal solution is returned now (#20).</p></li>
 </ul>
-</div></blockquote>
-<ul class="simple">
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">whitegaussnoise</span></code>: Added a <code class="docutils literal notranslate"><span class="pre">seed</span></code> option to select static noise realizations.</p></li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">correctzerotime</span></code>:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">correctzerotime</span></code>:</p>
+<ul>
 <li><p>Fixed bug when zero-time is at start/end of array (#24).</p></li>
 <li><p>Function no longer rescales the experimental data passed on to the function.</p></li>
 </ul>
-</dd>
-</dl>
 </li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">fitsignal</span></code>:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">fitsignal</span></code>:</p>
+<ul>
 <li><p>The regularization parameter of the optimal solution is returned now (#20).</p></li>
 <li><p>Bug fixed when fitting dipolar evolution functions (no background and no experiment models) with a parametric distance distribution.</p></li>
 </ul>
-</dd>
-</dl>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code>: Start points are now spread over constrained parameter space grid instead of being randomble initiated (#22).</p></li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">deerload</span></code>:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">deerload</span></code>:</p>
+<ul>
 <li><p>Now returns the time axis in microseconds instead of nanoseconds (#21).</p></li>
 <li><p>The bug appearing when loading certain BES3T files has been fixed (#14).</p></li>
 </ul>
-</dd>
-</dl>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">fitregmodel</span></code>: Now returns the fitted dipolar signal in the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> output</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">correctscale</span></code>: The parameter fit ranges have been adjusted.</p></li>
 </ul>
 </div>
+</div>
 <hr class="docutils" />
-<div class="section" id="version-0-10-0-august-2020">
-<h2>Version 0.10.0 - August 2020<a class="headerlink" href="#version-0-10-0-august-2020" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="release-notes-v0-10-0-august-2020">
+<h2>Release Notes v0.10.0 - August 2020<a class="headerlink" href="#release-notes-v0-10-0-august-2020" title="Permalink to this headline">¶</a></h2>
 <p>As of this version, DeerLab is written in Python in contrast to older versions based on MATLAB.</p>
-<p>#### Deprecated functions
-The following functions have been deprecated due to limited usability or due to functionality overlap with other DeerLab functions: <code class="docutils literal notranslate"><span class="pre">aptkernel</span></code>, <code class="docutils literal notranslate"><span class="pre">backgroundstart</span></code>, <code class="docutils literal notranslate"><span class="pre">fitbackground</span></code>, <code class="docutils literal notranslate"><span class="pre">paramodel</span></code>, and <code class="docutils literal notranslate"><span class="pre">time2freq</span></code>.</p>
-<p>#### Overall changes
-* All fit functions now return a single <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> output which will contain all results.</p>
+<div class="section" id="deprecated-functions">
+<h3>Deprecated functions<a class="headerlink" href="#deprecated-functions" title="Permalink to this headline">¶</a></h3>
+<p>The following functions have been deprecated due to limited usability or due to functionality overlap with other DeerLab functions: <code class="docutils literal notranslate"><span class="pre">aptkernel</span></code>, <code class="docutils literal notranslate"><span class="pre">backgroundstart</span></code>, <code class="docutils literal notranslate"><span class="pre">fitbackground</span></code>, <code class="docutils literal notranslate"><span class="pre">paramodel</span></code>, and <code class="docutils literal notranslate"><span class="pre">time2freq</span></code>.</p>
+</div>
+<div class="section" id="id3">
+<h3>Overall changes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
+<li><p>All fit functions now return a single <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> output which will contain all results.</p></li>
 <li><p>All functions are now compatible with non-uniformly increasing distance axes.</p></li>
 <li><p>All fit functions are completely agnostic with respect of the abolute values of the signal amplitude. This is automatically fitted by all function and return as part of the results.</p></li>
 <li><p>Uncertainty quantification for all fit functions is returned as a <code class="docutils literal notranslate"><span class="pre">UncertQuant</span></code> object from which confidence intervals, parameter distributions, etc. can be generated generalizing the uncertainty interface for all DeerLab. Uncertainty can now be propagated to arbitrary functions.</p></li>
 </ul>
-<p>#### Specific changes
-* <code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code>: the functionality has been streamlined. Function now fits arbitrary parametric models using non-linear leas-squares without consideration of whether it is a time-domain or distance-domain model. The models no longer need to take two inputs (axis+parameters) and now only tk the parameters as input.</p>
+</div>
+<div class="section" id="id4">
+<h3>Specific changes<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code>: the functionality has been streamlined. Function now fits arbitrary parametric models using non-linear leas-squares without consideration of whether it is a time-domain or distance-domain model. The models no longer need to take two inputs (axis+parameters) and now only tk the parameters as input.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">fitregmodel</span></code>: goodness-of-fit estimators are now computed using the proper estimation the degrees of freedom.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code>: added internal measures to avoid situations where one or several components are suppressed by fitting zero-amplitudes making the method more stable.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">uqst</span></code>: the uncertainty distributions of the parameters are now returned as properly normalized probability density functions.</p></li>
@@ -259,6 +313,7 @@ The following functions have been deprecated due to limited usability or due to 
 <li><p><code class="docutils literal notranslate"><span class="pre">correctphase</span></code>: now can handle 2D-datasets.</p></li>
 </ul>
 <hr class="docutils" />
+</div>
 </div>
 </div>
 

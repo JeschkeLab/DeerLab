@@ -3288,7 +3288,7 @@ footer span.commit code,footer span.commit .rst-content tt,.rst-content footer s
     background: #F1C40F;
     display: inline-block;
     font-weight: bold;
-    padding: 0 6px}
+    padding: 0 0px}
 .rst-content .footnote-reference,.rst-content .citation-reference {
     vertical-align: baseline;
     position: relative;

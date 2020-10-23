@@ -46,9 +46,7 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Fitting" href="fitting.html" />
-    <link rel="prev" title="Basics" href="basics.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -75,7 +73,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -100,16 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
@@ -121,8 +114,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -192,7 +186,7 @@
 <div class="section" id="loading">
 <h2>Loading<a class="headerlink" href="#loading" title="Permalink to this headline">¶</a></h2>
 <p>To load an experimental time-domain trace, use the function <code class="docutils literal notranslate"><span class="pre">deerload</span></code>. It supports a variety of spectrometer formats, and it can read in both 1D and 2D data, real- or complex-valued. Here is an example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="nf">deerload</span><span class="p">(</span><span class="s1">&#39;myfile.DSC&#39;</span><span class="p">)</span>    <span class="c1"># load DEER trace and time axis</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">deerload</span><span class="p">(</span><span class="s1">&#39;myfile.DSC&#39;</span><span class="p">)</span>    <span class="c1"># load DEER trace and time axis</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">deerload</span></code> attempts to return the the time vector <code class="docutils literal notranslate"><span class="pre">t</span></code> in correct units (microseconds), but it might not be able to do so for all file formats.</p>
@@ -205,8 +199,8 @@
 <li><p>In common commercial spectrometers, the time-axes are measured in absolute values. This step aims to optimally determine and correct for the zero-time of the time axis.</p></li>
 <li><p>The intensity of the signal is fiven in some arbitrary units (usually some kind voltage). All functions in DeerLab are agnostic with respect to this scaling and do not require the dipolar signal to be scaled such that V(0)=1. This scale is automatically optimized by all fit functions in DeerLab, yet it can still be corrected by pre-processing (although it is not recommended).</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="nf">correctphase</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>           <span class="c1"># phase correction</span>
-<span class="n">t</span> <span class="o">=</span> <span class="nf">correctzerotime</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>      <span class="c1"># zero-time adjustment</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctphase</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>           <span class="c1"># phase correction</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctzerotime</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>      <span class="c1"># zero-time adjustment</span>
 </pre></div>
 </div>
 <p>All the <code class="docutils literal notranslate"><span class="pre">correct*</span></code> functions determine the corrections via an optimization approach. If that fails, you can provide an explicit phase, time shift, and scale as additional argument.</p>
@@ -214,7 +208,7 @@
 <div class="section" id="noise-levels">
 <h2>Noise levels<a class="headerlink" href="#noise-levels" title="Permalink to this headline">¶</a></h2>
 <p>It can be useful to estimate the level of noise present in the data before actually fitting the data. Use the function <code class="docutils literal notranslate"><span class="pre">noiselevel</span></code> for this.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sigma</span> <span class="o">=</span> <span class="nf">noiselevel</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sigma</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">noiselevel</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This returns an estimate of the noise standard deviation in the signal <code class="docutils literal notranslate"><span class="pre">V</span></code>. If the signal is 1D, it estimates the noise level from the imaginary part, and if the signal is 2D (containing many scans), it gets from the standard deviation across scans.</p>
@@ -226,15 +220,6 @@
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="fitting.html" class="btn btn-neutral float-right" title="Fitting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="basics.html" class="btn btn-neutral float-left" title="Basics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

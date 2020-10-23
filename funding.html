@@ -47,8 +47,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Changelog" href="changelog.html" />
-    <link rel="prev" title="Theory" href="theory.html" /> 
+    <link rel="next" title="Release Notes" href="changelog.html" />
+    <link rel="prev" title="License" href="license.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -100,16 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
@@ -121,8 +116,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -188,36 +184,33 @@
             
   <div class="section" id="funding">
 <h1>Funding<a class="headerlink" href="#funding" title="Permalink to this headline">¶</a></h1>
-<p>DeerLab has been funded by:</p>
-<div class="section" id="eth-zurich">
-<h2>ETH Zurich<a class="headerlink" href="#eth-zurich" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>Grant:</strong> ETH-35 18-2</p></li>
-</ul>
-</div></blockquote>
-<a class="reference internal image-reference" href="_images/eth_logo.png"><img alt="_images/eth_logo.png" src="_images/eth_logo.png" style="width: 15%;" /></a>
-</div>
-<div class="section" id="national-institutes-of-health">
-<h2>National Institutes of Health<a class="headerlink" href="#national-institutes-of-health" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>Grant:</strong> GM125753</p></li>
-<li><p><strong>Grant:</strong> GM127325</p></li>
-</ul>
-</div></blockquote>
-<a class="reference internal image-reference" href="_images/nih_logo.png"><img alt="_images/nih_logo.png" src="_images/nih_logo.png" style="width: 20%;" /></a>
-</div>
-<div class="section" id="national-science-foundation">
-<h2>National Science Foundation<a class="headerlink" href="#national-science-foundation" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>Grant:</strong> CHE-1452967</p></li>
-</ul>
-</div></blockquote>
-<a class="reference internal image-reference" href="_images/nsf_logo.png"><img alt="_images/nsf_logo.png" src="_images/nsf_logo.png" style="width: 10%;" /></a>
-</div>
-</div>
+<p>DeerLab is a project that has been funded by the following sources:</p>
+<div style="height:100px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
+     <div style="width=40%; margin-right:8%; font-size:14px">
+        <h3 style="font-size:110%">  ETH Zurich </h3>
+        Grant ETH-35 18-2
+    </div>
+    <div style="height:70%; width=30%">
+        <img src="./_images/eth_logo.png", style="margin-top:1%; margin-bottom:1%;height:96%;">
+    </div>
+</div><div style="height:100px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
+     <div style="margin-right:2%; font-size:14px">
+     <h3 style="font-size:110%">  National Institutes of Health </h3>
+        Grant GM125753 <br>
+        Grant GM127325
+    </div>
+    <div style="height:70%; width=30%">
+        <img src="./_images/nih_logo.png", style="margin-top:1%; margin-bottom:1%;height:96%;">
+    </div>
+</div><div style="height:100px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
+    <div style="margin-right:2%; font-size:14px">
+        <h3 style="font-size:110%">  National Science Foundation </h3>
+        Grant CHE-1452967
+    </div>
+    <div style="height:70%; width=30%">
+        <img src="./_images/nsf_logo.png", style="margin-top:1%; margin-bottom:1%;height:96%;">
+    </div>
+</div></div>
 
 
            </div>
@@ -227,10 +220,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Release Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="theory.html" class="btn btn-neutral float-left" title="Theory" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="license.html" class="btn btn-neutral float-left" title="License" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

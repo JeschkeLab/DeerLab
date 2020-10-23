@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.12.0
               </div>
             
           
@@ -100,16 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Installation</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation instructions</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../firstscript.html">A first script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Loading and preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../fitting.html">Fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../beginners_guide.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
 </ul>
@@ -121,8 +116,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Release Notes</a></li>
 </ul>
 
             
@@ -296,27 +292,27 @@ suitable to be solved as a SNLLS problem.</p>
 <p>A classical example involves the fit of a multi-Gauss distance distribution to a 4-pulse DEER dipolar signal. 
 Since the signal requires additional parameters  (e.g. modulation depth, background parameters,…) a kernel model
 can be defined to account for these:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">K4pdeer</span><span class="p">(</span><span class="n">Kpar</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Kmodel</span><span class="p">(</span><span class="n">Kpar</span><span class="p">):</span>
     <span class="c1"># Unpack parameters</span>
     <span class="n">lam</span><span class="p">,</span><span class="n">conc</span> <span class="o">=</span> <span class="n">Kpar</span>
     <span class="c1"># Construct kernel</span>
-    <span class="n">K</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">))</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">K</span>
 
-<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitmultimodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Kmodel</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">dd_model</span><span class="p">,</span><span class="n">Nmax</span><span class="p">,</span><span class="s1">&#39;aicc&#39;</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmultimodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Kmodel</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">dd_model</span><span class="p">,</span><span class="n">Nmax</span><span class="p">,</span><span class="s1">&#39;aicc&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If multiple signals are to be fitted globally the example abova can be easily adapted by passing multiple
 signals to the fit function and by returning multiple kernels with the kernel model function:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">K4pdeer</span><span class="p">(</span><span class="n">Kpar</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Kmodel</span><span class="p">(</span><span class="n">Kpar</span><span class="p">):</span>
     <span class="c1"># Unpack parameters</span>
     <span class="n">lam</span><span class="p">,</span><span class="n">conc</span> <span class="o">=</span> <span class="n">Kpar</span>
     <span class="c1"># Construct kernels for both signals</span>
-    <span class="n">K1</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">))</span>
-    <span class="n">K2</span> <span class="o">=</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">))</span>
+    <span class="n">K1</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">))</span>
+    <span class="n">K2</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">lam</span><span class="p">,</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">K1</span><span class="p">,</span><span class="n">K2</span>
 
-<span class="n">fit</span> <span class="o">=</span> <span class="nf">fitmultimodel</span><span class="p">([</span><span class="n">V1</span><span class="p">,</span><span class="n">V2</span><span class="p">],</span><span class="n">Kmodel</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">dd_model</span><span class="p">,</span><span class="n">Nmax</span><span class="p">,</span><span class="s1">&#39;aicc&#39;</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmultimodel</span><span class="p">([</span><span class="n">V1</span><span class="p">,</span><span class="n">V2</span><span class="p">],</span><span class="n">Kmodel</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">dd_model</span><span class="p">,</span><span class="n">Nmax</span><span class="p">,</span><span class="s1">&#39;aicc&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
