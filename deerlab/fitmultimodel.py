@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from types import FunctionType
 import deerlab as dl
-from deerlab.utils import hccm, goodness_of_fit
+from deerlab.utils import hccm, goodness_of_fit, fdJacobian
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
