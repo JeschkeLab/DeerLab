@@ -97,8 +97,6 @@ class UncertQuant:
 
     def __init__(self,uqtype,data=[],covmat=[],lb=[],ub=[]):
 
-        global _uqtype
-
         #Parse inputs schemes
         if uqtype=='covariance':
             # Scheme 1: UncertQuant('covariance',parfit,covmat,lb,ub)
@@ -200,7 +198,7 @@ class UncertQuant:
             # Get bw using silverman's rule (1D only)
             samplen = self.samples[:, n]
             sigma = np.std(samplen, ddof=1)
-            bw = sigma * (len(samplen) * 3 / 4.0) ** (-1 / 5)
+            bw = sigma*(len(samplen)*3/4.0)**(-1/5)
 
             # Make histogram
             maxbin = np.maximum(np.max(samplen),np.mean(samplen)+3*sigma)
@@ -274,11 +272,11 @@ class UncertQuant:
         
         Returns
         -------
-        cis : 2D-ndarray
+        ci : 2D-ndarray
             Confidence intervals for the parameters:
 
-                * ``cis[:,0]`` - Lower confidence intervals
-                * ``cis[:,1]`` - Upper confidence intervals
+                * ``ci[:,0]`` - Lower confidence intervals
+                * ``ci[:,1]`` - Upper confidence intervals
         """
         if coverage>100 or coverage<0:
             raise ValueError('The input must be a number between 0 and 100')
