@@ -152,11 +152,11 @@ class UncertQuant:
     # Gets called when an attribute is accessed
     #--------------------------------------------------------------------------------
     def __getattribute__(self, attr):
-        # Calling the super class to avoid recursion
         try:
-            # Check if the uncertainty quantification has been done, if not report that there is nothing in the object
+            # Calling the super class to avoid recursion
             if super(UncertQuant, self).__getattribute__('type') == 'void':
-                raise ValueError('The requested attribute is not available. Uncertainty quantification has not been calculated during the fit by using the `uqanalysis=False` keyword.')
+                # Check if the uncertainty quantification has been done, if not report that there is nothing in the object
+                raise ValueError('The requested attribute/method is not available. Uncertainty quantification has not been calculated during the fit by using the `uqanalysis=False` keyword.')
         except AttributeError:
             # Catch cases where 'type' attribute has still not been defined (e.g. when using copy.deepcopy)
             pass
