@@ -34,7 +34,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
     :ref:`FitResult` with the following fields defined:
     param : ndarray
         Fitted model parameters
-    paramuq : :ref:`UncertQuant`
+    uncertainty : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted parameters.
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
