@@ -228,7 +228,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
         # Construct confidence interval structure
         paruq = UncertQuant('covariance',parfit,covmatrix,lb,ub)
     else:
-        paruq = []
+        paruq = UncertQuant('void')
 
     # Calculate goodness of fit
     stats = []
