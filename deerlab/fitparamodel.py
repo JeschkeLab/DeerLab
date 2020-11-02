@@ -4,8 +4,7 @@
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-import numdifftools as nd
-from deerlab.utils import isempty, multistarts, hccm, parse_multidatasets, goodness_of_fit
+from deerlab.utils import isempty, multistarts, hccm, parse_multidatasets, goodness_of_fit, fdJacobian
 from deerlab.classes import UncertQuant, FitResult
 import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
@@ -34,7 +33,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
     :ref:`FitResult` with the following fields defined:
     param : ndarray
         Fitted model parameters
-    paramuq : :ref:`UncertQuant`
+    uncertainty : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted parameters.
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
@@ -216,8 +215,8 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
         # of the negative log-likelihood
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            J = np.reshape(nd.Jacobian(lsqresiduals)(parfit),(-1,parfit.size))
-        
+            J = fdJacobian(lsqresiduals,parfit)
+
         # Estimate the heteroscedasticity-consistent covariance matrix
         if isempty(covmatrix):
             # Use estimated data covariance matrix

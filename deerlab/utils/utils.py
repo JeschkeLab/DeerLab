@@ -382,8 +382,8 @@ def csd(Q1,Q2):
     return U,V,Z,C,S
 #===============================================================================
 
-def diagf(X):
 #===============================================================================
+def diagf(X):
     """
     Diagonal force
 
@@ -393,9 +393,8 @@ def diagf(X):
     return X
 #===============================================================================
 
-
-def diagp(Y,X,k):
 #===============================================================================
+def diagp(Y,X,k):
     """
     DIAGP  Diagonal positive.
     Y,X = diagp(Y,X,k) scales the columns of Y and the rows of X by
@@ -408,6 +407,29 @@ def diagp(Y,X,k):
     X[j,:] = D@X[j,:]
     X = X+0 # use "+0" to set possible -0 elements to 0
     return Y,X
+#===============================================================================
+
+#===============================================================================
+def fdJacobian(fcn, param):
+    """ 
+    Finite difference Jacobian
+    Estimates the Jacobian matrix of a function ``fcn`` at the point defined by ``param``. 
+
+    """
+    param = np.atleast_1d(param)
+    # Step size
+    h = 1e-5
+    # Central value
+    f0 = fcn(param)
+    f0 = np.atleast_1d(f0)
+    # Loop over parameters
+    J = np.zeros((len(f0),len(param)))
+    for i in range(len(param)):
+        rise = np.copy(param)
+        rise[i] = rise[i] + h
+        # Finite difference derivative of i-th parameter
+        J[:,i] = (fcn(rise) - f0)/h
+    return J
 #===============================================================================
 
 #===============================================================================

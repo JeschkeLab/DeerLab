@@ -32,6 +32,9 @@ which in matrix form reads
 
 .. math:: \boldsymbol{V} = \boldsymbol{K}\boldsymbol{P} 
 
+Simulating a distance distribution
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 To simulate a dipolar signal you need first to define a distance distribution. This distribution can be the result of a fit, come 
 from molecular dynamics simulations, etc. or you can assume a certain shape for the distribution and use one of the parametric models 
 available in DeerLab. For example, to simulate a Gaussian distance distribution use the ``dd_gauss`` model function
@@ -42,6 +45,10 @@ available in DeerLab. For example, to simulate a Gaussian distance distribution 
    rmean = 3.5 # nm
    sigma = 0.3 # nm
    P = dl.dd_gauss(r,[rmean, sigma])  # single-Gaussian distance distribution
+
+
+Simulating a dipolar background
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Next, we calculate the background decay function due to a homogeneus 3D distribution of spins:
 

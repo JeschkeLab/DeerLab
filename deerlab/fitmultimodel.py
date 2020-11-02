@@ -5,11 +5,10 @@
 
 import copy
 import numpy as np
-import numdifftools as nd
 import matplotlib.pyplot as plt
 from types import FunctionType
 import deerlab as dl
-from deerlab.utils import hccm, goodness_of_fit
+from deerlab.utils import hccm, goodness_of_fit, fdJacobian
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
@@ -368,10 +367,10 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         res = weights*(Vfit - V)
 
         # Compute the Jacobian
-        Jnonlin = np.reshape(nd.Jacobian(lambda p: weights*(Knonlin(p)@plin))(pnonlin),(-1,pnonlin.size))
+        Jnonlin = fdJacobian(lambda p: weights*(Knonlin(p)@plin),pnonlin)
         Jlin = weights[:,np.newaxis]*Knonlin(pnonlin)
         J = np.concatenate((Jnonlin, Jlin),1)
-        
+
         # Estimate the heteroscedasticity-consistent covariance matrix
         covmatrix = hccm(J,res,'HC1')
         

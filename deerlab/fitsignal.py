@@ -4,7 +4,6 @@
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-import numdifftools as nd
 import types
 import copy
 import inspect
@@ -13,7 +12,7 @@ import deerlab as dl
 from deerlab.classes import UncertQuant, FitResult
 from deerlab.bg_models import bg_hom3d
 from deerlab.ex_models import ex_4pdeer
-from deerlab.utils import isempty, goodness_of_fit
+from deerlab.utils import isempty, goodness_of_fit, fdJacobian
 
 def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
               par0=[None,None,None], lb=[None,None,None], ub=[None,None,None], verbose= False,
@@ -404,7 +403,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat,[],[]))
             elif includeForeground:
                 # Parametric signal with parameter-free distribution
-                Jnonlin = np.reshape(nd.Jacobian(lambda par: multiPathwayModel(par[paramidx])[0][jj]@Pfit)(parfit_),(-1,parfit_.size))
+                Jnonlin = fdJacobian(lambda par: multiPathwayModel(par[paramidx])[0][jj]@Pfit,parfit_)
                 J = np.concatenate((Jnonlin, Kfit[jj]),1)
                 Vcovmat = J@covmat@J.T
                 Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat,[],[]))
