@@ -66,12 +66,12 @@ Installing from source
 
 To install DeerLab from the source, first it must be downloaded or cloned from the `DeerLab repository <https://github.com/JeschkeLab/DeerLab>`_. DeerLab and its dependencies can be installed by running the following command on a terminal window to install DeerLab as a static Python package::
 
-		python setup.py install
+		python -m setup.py install
 
 
 For developers, in order to install DeerLab but be able to frequently edit the code without having to re-install the package every time use the command::
 
-		python setup.py develop
+		python -m setup.py develop
 
 
 any further changes made to the source code will then immediate effect.
