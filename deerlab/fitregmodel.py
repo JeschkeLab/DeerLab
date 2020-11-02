@@ -177,7 +177,8 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         NonNegConst = np.zeros(len(r))
         Puq = UncertQuant('covariance',Pfit,covmat,NonNegConst,[])
     else:
-        Puq = []
+        Puq = UncertQuant('void')
+
     
     # Re-normalization of the distributions
     # --------------------------------------

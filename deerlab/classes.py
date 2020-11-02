@@ -8,6 +8,7 @@ from scipy.signal import fftconvolve
 import copy
 
 class FitResult(dict):
+# ========================================================================
     r""" Represents the results of a fit.
  
     Attributes
@@ -64,8 +65,10 @@ class FitResult(dict):
 
     def __dir__(self):
         return list(self.keys())
+# =========================================================================
 
 class UncertQuant:
+# =========================================================================
     r""" Represents the uncertainty quantification of fit results.
 
     Attributes
@@ -92,25 +95,30 @@ class UncertQuant:
 
     """
 
-
-    def __init__(self,uqtype,data,covmat=[],lb=[],ub=[]):
+    def __init__(self,uqtype,data=[],covmat=[],lb=[],ub=[]):
 
         #Parse inputs schemes
         if uqtype=='covariance':
-            
             # Scheme 1: UncertQuant('covariance',parfit,covmat,lb,ub)
+            self.type = uqtype
             parfit = data
             self.__parfit = parfit
             nParam = len(parfit)
             
         elif uqtype == 'bootstrap':
             # Scheme 2: UncertQuant('bootstrap',samples)
+            self.type = uqtype
             samples = data
             self.samples = samples
             nParam = np.shape(samples)[1]
-                
+
+        elif uqtype=='void':
+            # Scheme 2: UncertQuant('void')
+            self.type = uqtype
+            self.mean, self.median, self.std, self.covmat, self.nparam = ([] for _ in range(5))
+            return
         else:
-            raise NameError('uqtype not found. Must be: ''covariance'' or ''bootstrap''.')
+            raise NameError('uqtype not found. Must be: ''covariance'', ''bootstrap'' or ''void''.')
 
         if len(lb)==0:
             lb = np.full(nParam, -np.inf)
@@ -133,13 +141,26 @@ class UncertQuant:
             self.median = np.squeeze(np.median(samples,0))
             self.std = np.squeeze(np.std(samples,0))
             self.covmat = covmat
-        self.type = uqtype
 
         # Set private variables
         self.__lb = lb
         self.__ub = ub
         self.nparam = nParam
 
+    # Gets called when an attribute is accessed
+    #--------------------------------------------------------------------------------
+    def __getattribute__(self, attr):
+        try:
+            # Calling the super class to avoid recursion
+            if super(UncertQuant, self).__getattribute__('type') == 'void':
+                # Check if the uncertainty quantification has been done, if not report that there is nothing in the object
+                raise ValueError('The requested attribute/method is not available. Uncertainty quantification has not been calculated during the fit by using the `uqanalysis=False` keyword.')
+        except AttributeError:
+            # Catch cases where 'type' attribute has still not been defined (e.g. when using copy.deepcopy)
+            pass
+        # Otherwise return requested attribute
+        return super(UncertQuant, self).__getattribute__(attr)
+    #--------------------------------------------------------------------------------
 
     # Parameter distributions
     #--------------------------------------------------------------------------------
@@ -177,7 +198,7 @@ class UncertQuant:
             # Get bw using silverman's rule (1D only)
             samplen = self.samples[:, n]
             sigma = np.std(samplen, ddof=1)
-            bw = sigma * (len(samplen) * 3 / 4.0) ** (-1 / 5)
+            bw = sigma*(len(samplen)*3/4.0)**(-1/5)
 
             # Make histogram
             maxbin = np.maximum(np.max(samplen),np.mean(samplen)+3*sigma)
@@ -251,11 +272,11 @@ class UncertQuant:
         
         Returns
         -------
-        cis : 2D-ndarray
+        ci : 2D-ndarray
             Confidence intervals for the parameters:
 
-                * ``cis[:,0]`` - Lower confidence intervals
-                * ``cis[:,1]`` - Upper confidence intervals
+                * ``ci[:,0]`` - Lower confidence intervals
+                * ``ci[:,1]`` - Upper confidence intervals
         """
         if coverage>100 or coverage<0:
             raise ValueError('The input must be a number between 0 and 100')
@@ -335,3 +356,4 @@ class UncertQuant:
         return  UncertQuant('covariance',modelfit,modelcovmat,lbm,ubm)
     #--------------------------------------------------------------------------------
 
+# =========================================================================

@@ -530,13 +530,13 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         modfituq['Bfit'] = [Bfit_uq[j] for j in range(nSignals)]
     else:
         paruq = dict()
-        paruq['dd'] = []
-        paruq['bg'] = []
-        paruq['ex'] = []
+        paruq['dd'] = UncertQuant('void')
+        paruq['bg'] = UncertQuant('void')
+        paruq['ex'] = UncertQuant('void')
         modfituq = dict()
-        modfituq['Pfit'] = []
-        modfituq['Vfit'] = []
-        modfituq['Bfit'] = []
+        modfituq['Pfit'] = UncertQuant('void')
+        modfituq['Vfit'] = UncertQuant('void')
+        modfituq['Bfit'] = UncertQuant('void')
 
     Vfit_ = Vfit
     def _display_results():

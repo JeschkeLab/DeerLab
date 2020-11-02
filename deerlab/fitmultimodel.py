@@ -382,8 +382,8 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         amps_subset = np.arange(P_subset[-1]+1, P_subset[-1]+1+Nopt)
         Puq = paramuq.propagate(lambda p: Pmodel(p[P_subset],p[amps_subset]), np.zeros(len(r)))
     else: 
-        Puq = []
-        paramuq = []
+        Puq = dl.UncertQuant('void')
+        paramuq = dl.UncertQuant('void')
 
     # Goodness of fit
     stats = []
