@@ -2,7 +2,7 @@
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-import numdifftools as nd
+from deerlab.utils import fdJacobian
 from scipy.stats import norm
 from scipy.signal import fftconvolve
 import copy
@@ -322,8 +322,8 @@ class UncertQuant:
             raise IndexError ('The 2nd and 3rd input arguments must have the same number of elements as the model output.')
         
         # Get jacobian of model to be propagated with respect to parameters
-        J = np.reshape(nd.Jacobian(model)(parfit),(-1,parfit.size))
-        
+        J = fdJacobian(model,parfit)
+
         # Clip at boundaries
         modelfit = np.maximum(modelfit,lbm)
         modelfit = np.minimum(modelfit,ubm)

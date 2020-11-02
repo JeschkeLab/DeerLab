@@ -23,7 +23,6 @@ def install_dependencies():
         subprocess.run(['pip','install','scipy'],check=True)
         subprocess.run(['pip','install','cvxopt'],check=True)
 
-    subprocess.run(['pip','install','numdifftools'],check=True)
     subprocess.run(['pip','install','tqdm'],check=True)
     subprocess.run(['pip','install','joblib'],check=True)
 #-----------------------------------------------------------------------    
