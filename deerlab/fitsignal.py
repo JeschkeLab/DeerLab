@@ -425,11 +425,12 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=uqanalysis)
         Pfit = fit.P
         Pfit_uq = fit.uncertainty
-        scales = fit.scale
+        scales = np.atleast_1d(fit.scale)
+
         alphaopt = fit.regparam
 
         # Get fitted models
-        Vfit = [K@Pfit for K in Ks]
+        Vfit = [scale*K@Pfit for K,scale in zip(Ks,scales)]
         Bfit = [np.ones_like(V) for V in Vexp]
         
         # No parameters
@@ -488,7 +489,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         # Get the fitted models
         Kfit,Bfit = multiPathwayModel(parfit_)
-        Vfit = [K@Pfit for K in Kfit]
+        Vfit = [scale*K@Pfit for K,scale in zip(Kfit,scales)]
 
         if uqanalysis:
             Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq)

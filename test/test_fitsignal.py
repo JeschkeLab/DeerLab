@@ -464,3 +464,51 @@ def test_global_scale_4pdeer():
 
     assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
 # ======================================================================
+
+
+def test_V_scale_parametric():
+# ======================================================================
+    "Check that the signal is properly scaled in fully parametric mode"
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,150)
+    P = dd_gauss(r,[4.5, 0.2])
+    Bmodel = lambda t: bg_exp(t,0.4)
+    K = dipolarkernel(t,r,0.3,Bmodel)
+    scale = 1.54e6
+    V = scale*(K@P)
+
+    fit = fitsignal(V,t,r,dd_gauss,bg_exp,ex_4pdeer,uqanalysis=False)
+
+    assert max(abs(1 - V/fit.V)) < 1e-4
+# ======================================================================
+
+def test_V_scale():
+# ======================================================================
+    "Check that the signal is properly scaled in SNLLS mode"
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,150)
+    P = dd_gauss(r,[4.5, 0.2])
+    Bmodel = lambda t: bg_exp(t,0.4)
+    K = dipolarkernel(t,r,0.3,Bmodel)
+    scale =1.54e6
+    V = scale*(K@P)
+
+    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
+
+    assert max(abs(1 - V/fit.V)) < 1e-4
+# ======================================================================
+
+def test_V_scale_regularized():
+# ======================================================================
+    "Check that the signal is properly scaled in regularization mode"
+    t = np.linspace(0,5,200)
+    r = np.linspace(2,6,200)
+    P = dd_gauss(r,[4.5, 0.2])
+    K = dipolarkernel(t,r)
+    scale = 1.54e6
+    V = scale*(K@P)
+
+    fit = fitsignal(V,t,r,'P',None,None,uqanalysis=False)
+
+    assert max(abs(1 - V/fit.V)) < 1e-4
+# ======================================================================
