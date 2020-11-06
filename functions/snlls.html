@@ -1,0 +1,447 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>snlls &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="fitsignal" href="fitsignal.html" />
+    <link rel="prev" title="mixmodels" href="mixmodels.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.13.0-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../beginners_guide.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../functions.html">Functions</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">snlls</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="snlls">
+<span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">snlls</span></code><a class="headerlink" href="#snlls" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="deerlab.snlls">
+<code class="descclassname">deerlab.</code><code class="descname">snlls</code><span class="sig-paren">(</span><em>y</em>, <em>Amodel</em>, <em>par0</em>, <em>lb=None</em>, <em>ub=None</em>, <em>lbl=None</em>, <em>ubl=None</em>, <em>nnlsSolver='cvx'</em>, <em>reg='auto'</em>, <em>weights=1</em>, <em>regtype='tikhonov'</em>, <em>regparam='aic'</em>, <em>multistart=1</em>, <em>regorder=2</em>, <em>alphareopt=0.001</em>, <em>nonlin_tol=1e-09</em>, <em>nonlin_maxiter=100000000.0</em>, <em>lin_tol=1e-15</em>, <em>lin_maxiter=10000.0</em>, <em>huberparam=1.35</em>, <em>uqanalysis=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/snlls.html#snlls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.snlls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Separable Non-linear Least Squares Solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like or list of array_like</span></dt>
+<dd><p class="first last">Input data to be fitted.</p>
+</dd>
+<dt><strong>Amodel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">callable</span></dt>
+<dd><p class="first last">Function taking an array of non-linear parameters and
+returning a matrix array or a list thereof.</p>
+</dd>
+<dt><strong>par0</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd><p class="first last">Start values of the non-linear parameters.</p>
+</dd>
+<dt><strong>lb</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd><p class="first last">Lower bounds for the non-linear parameters, assumed unconstrained if not specified.</p>
+</dd>
+<dt><strong>ub</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd><p class="first last">Upper bounds for the non-linear parameters, assumed unconstrained if not specified.</p>
+</dd>
+<dt><strong>lbl</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd><p class="first last">Lower bounds for the linear parameters, assumed unconstrained if not specified.</p>
+</dd>
+<dt><strong>ubl</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd><p class="first last">Upper bounds for the linear parameters, assumed unconstrained if not specified.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
+<dt><a class="reference internal" href="FitResult.html#fitresult"><span class="std std-ref">FitResult</span></a> with the following fields defined:</dt>
+<dd></dd>
+<dt><strong>nlin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd><p class="first last">Fitted non-linear parameters</p>
+</dd>
+<dt><strong>lin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd><p class="first last">Fitted linear parameters</p>
+</dd>
+<dt><strong>paramuq</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference internal" href="UncertQuant.html#uncertquant"><span class="std std-ref">UncertQuant</span></a></span></dt>
+<dd><p class="first">Uncertainty quantification of the joined parameter
+set (linear + non-linear parameters). The confidence intervals
+of the individual subsets can be requested via:</p>
+<ul class="last simple">
+<li><code class="docutils literal notranslate"><span class="pre">paramuq.ci(n)</span></code>           - n%-CI of the full parameter set</li>
+<li><code class="docutils literal notranslate"><span class="pre">paramuq.ci(n,'lin')</span></code>     - n%-CI of the linear parameter set</li>
+<li><code class="docutils literal notranslate"><span class="pre">paramuq.ci(n,'nonlin')</span></code>  - n%-CI of the non-linear parameter set</li>
+</ul>
+</dd>
+<dt><strong>regparam</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar</span></dt>
+<dd><p class="first last">Regularization parameter value used for the regularization of the linear parameters.</p>
+</dd>
+<dt><strong>plot</strong> <span class="classifier-delimiter">:</span> <span class="classifier">callable</span></dt>
+<dd><p class="first last">Function to display the results. It will display the fitted data.
+If requested, the function returns the <img class="math" src="../_images/math/b45ce4d1ac365b560ee03f9a632470303825db6c.svg" alt="matplotlib.axes"/> object as output.</p>
+</dd>
+<dt><strong>stats</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first">Goodness of fit statistical estimators</p>
+<ul class="last simple">
+<li><code class="docutils literal notranslate"><span class="pre">stats['chi2red']</span></code> - Reduced chi^2 test</li>
+<li><code class="docutils literal notranslate"><span class="pre">stats['r2']</span></code> - R^2 test</li>
+<li><code class="docutils literal notranslate"><span class="pre">stats['rmsd']</span></code> - Root-mean squared deviation (RMSD)</li>
+<li><code class="docutils literal notranslate"><span class="pre">stats['aic']</span></code> - Akaike information criterion</li>
+<li><code class="docutils literal notranslate"><span class="pre">stats['aicc']</span></code> - Corrected Akaike information criterion</li>
+<li><code class="docutils literal notranslate"><span class="pre">stats['bic']</span></code> - Bayesian information criterion</li>
+</ul>
+</dd>
+<dt><strong>success</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">Whether or not the optimizer exited successfully.</p>
+</dd>
+<dt><strong>cost</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Value of the cost function at the solution.</p>
+</dd>
+<dt><strong>residuals</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd><p class="first last">Vector of residuals at the solution.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
+<dt><strong>reg</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean or string</span></dt>
+<dd><p class="first">Determines the use of regularization on the solution of the linear problem.</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'auto'</span></code> - Automatic decision based con the condition number of the non-linear model <code class="docutils literal notranslate"><span class="pre">Amodel</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">True</span></code> - Forces regularization regardless of the condition number</li>
+<li><code class="docutils literal notranslate"><span class="pre">False</span></code> - Disables regularization regardless of the condition number</li>
+</ul>
+<p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>.</p>
+</dd>
+<dt><strong>regType</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first">Regularization penalty type:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code> - Tikhonov regularizaton</li>
+<li><code class="docutils literal notranslate"><span class="pre">'tv'</span></code>  - Total variation regularization</li>
+<li><code class="docutils literal notranslate"><span class="pre">'huber'</span></code> - Huber regularization</li>
+</ul>
+<p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code>.</p>
+</dd>
+<dt><strong>regorder (scalar,int)</strong></dt>
+<dd><p class="first last">Order of the regularization operator</p>
+</dd>
+<dt><strong>regParam (str or scalar):</strong></dt>
+<dd><p class="first">Method for the automatic selection of the optimal regularization parameter:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'lr'</span></code> - L-curve minimum-radius method (LR)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'lc'</span></code> - L-curve maximum-curvature method (LC)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'cv'</span></code> - Cross validation (CV)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'gcv'</span></code> - Generalized Cross Validation (GCV)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'rgcv'</span></code> - Robust Generalized Cross Validation (rGCV)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'srgcv'</span></code> - Strong Robust Generalized Cross Validation (srGCV)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'aic'</span></code> - Akaike information criterion (AIC)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'bic'</span></code> - Bayesian information criterion (BIC)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'aicc'</span></code> - Corrected Akaike information criterion (AICC)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'rm'</span></code> - Residual method (RM)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'ee'</span></code> - Extrapolated Error (EE)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'ncp'</span></code> - Normalized Cumulative Periodogram (NCP)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'gml'</span></code> - Generalized Maximum Likelihood (GML)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'mcl'</span></code> - Mallows’ C_L (MCL)</li>
+</ul>
+<p class="last">The regularization parameter can be manually specified by passing a scalar value
+instead of a string. The default <code class="docutils literal notranslate"><span class="pre">'aic'</span></code>.</p>
+</dd>
+<dt><strong>alphareopt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar</span></dt>
+<dd><p class="first last">Relative parameter change threshold for reoptimizing the regularization parameter
+when using a selection method, the default is 1e-3.</p>
+</dd>
+<dt><strong>nnlsSolver</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first">Solver used to solve a non-negative least-squares problem (if applicable):</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'cvx'</span></code> - Optimization of the NNLS problem using the cvxopt package.</li>
+<li><code class="docutils literal notranslate"><span class="pre">'fnnls'</span></code> - Optimization using the fast NNLS algorithm.</li>
+<li><code class="docutils literal notranslate"><span class="pre">'nnlsbpp'</span></code> - Optimization using the block principal pivoting NNLS algorithm.</li>
+</ul>
+<p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'cvx'</span></code>.</p>
+</dd>
+<dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting,
+the default is all weighted equally.</p>
+</dd>
+<dt><strong>multistart</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int scalar</span></dt>
+<dd><p class="first last">Number of starting points for global optimization, the default is 1.</p>
+</dd>
+<dt><strong>nonlin_maxiter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar</span></dt>
+<dd><p class="first last">Non-linear solver maximal number of iterations, the default is 1e8.</p>
+</dd>
+<dt><strong>nonlin_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar</span></dt>
+<dd><p class="first last">Non-linear solver function tolerance, the default is 1e-9.</p>
+</dd>
+<dt><strong>lin_maxiter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar</span></dt>
+<dd><p class="first last">Linear solver maximal number of iterations, the default is 1e4.</p>
+</dd>
+<dt><strong>lin_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar</span></dt>
+<dd><p class="first last">Linear solver function tolerance, the default is 1e-15.</p>
+</dd>
+<dt><strong>uqanalysis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">Enable/disable the uncertainty quantification analysis, by default it is enabled.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Fits a linear set of parameters <code class="docutils literal notranslate"><span class="pre">plin</span></code> and non-linear parameters <code class="docutils literal notranslate"><span class="pre">pnlin</span></code>
+by solving the following non-linear least squares problem</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[pnlin,plin] = argmin ||Amodel(pnlin)*plin - y||^2
+               subject to  pnlin in [lb,ub]
+                           plin  in [lbl,ubl]
+</pre></div>
+</div>
+<p>where the parameter space is composed of a set of non-linear parameters pnlin
+and linear parameters <code class="docutils literal notranslate"><span class="pre">plin</span></code>. If the non-linear function Amodel yields an
+ill-conditioned problem, the solver will include a regularization penalty
+(Tikhonov by default) and solve in the Tikhonov case the following problem</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[pnlin,plin] = argmin ||Amodel(pnlin)*plin - y||^2 + alpha^2*||L*plin||^2
+               subject to  pnlin in [lb,ub]
+                           plin  in [lbl,ubl]
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">alpha</span></code> and <code class="docutils literal notranslate"><span class="pre">L</span></code> are the regularization parameter and operator, respectively.</p>
+<p>When solving the linear problem th function will
+identify and adapt automatically to the following scenarios:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Well-conditioned + unconstrained       <code class="docutils literal notranslate"><span class="pre">plin</span> <span class="pre">=</span> <span class="pre">solve(A,y)</span></code></li>
+<li>Well-conditioned + constrained         <code class="docutils literal notranslate"><span class="pre">plin</span> <span class="pre">=</span> <span class="pre">lsqlin(A,y,lb,ub)</span></code></li>
+<li>Ill-conditioned  + unconstrained       <code class="docutils literal notranslate"><span class="pre">plin</span> <span class="pre">=</span> <span class="pre">solve(AtA</span> <span class="pre">+</span> <span class="pre">alpha^2*LtL,</span> <span class="pre">Aty)</span></code></li>
+<li>Ill-conditioned  + constrained         <code class="docutils literal notranslate"><span class="pre">plin</span> <span class="pre">=</span> <span class="pre">lsqlin(AtA</span> <span class="pre">+</span> <span class="pre">alpha^2*LtL,Kty,lb,ub)</span></code></li>
+<li>Ill-conditioned  + non-negativity      <code class="docutils literal notranslate"><span class="pre">plin</span> <span class="pre">=</span> <span class="pre">fnnls((AtA</span> <span class="pre">+</span> <span class="pre">alpha^2*LtL),Aty)</span></code></li>
+</ul>
+</div></blockquote>
+<p>By default, for poorly conditioned cases, Tikhonov regularization with
+automatic AIC regularization parameter selection is used.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="fitsignal.html" class="btn btn-neutral float-right" title="fitsignal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="mixmodels.html" class="btn btn-neutral float-left" title="mixmodels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

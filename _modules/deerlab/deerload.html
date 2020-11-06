@@ -1,0 +1,592 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>deerlab.deerload &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.13.0-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>deerlab.deerload</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for deerlab.deerload</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="deerload"><a class="viewcode-back" href="../../functions/deerload.html#deerlab.deerload">[docs]</a><span class="k">def</span> <span class="nf">deerload</span><span class="p">(</span><span class="n">fullbasename</span><span class="p">,</span><span class="n">Scaling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="nf">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load file in BES3T format (Bruker EPR Standard for Spectrum Storage and Transfer)</span>
+<span class="sd">    </span>
+<span class="sd">    * .DSC: description file</span>
+<span class="sd">    * .DTA: data file</span>
+<span class="sd">    </span>
+<span class="sd">    used on Bruker ELEXSYS and EMX machines. </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fullbasename : string</span>
+<span class="sd">        Full name of data file.</span>
+<span class="sd">    full_output : boolean</span>
+<span class="sd">        Enable/Disable returning parameter file entries as third output. Disabled by default.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    t : ndarray</span>
+<span class="sd">        Time axis in microseconds.</span>
+<span class="sd">    V : ndarray</span>
+<span class="sd">        Experimental signal.</span>
+<span class="sd">    pars : dict</span>
+<span class="sd">        Parameter file entries, returned if ``full_output`` is ``True``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Code based on BES3T version 1.2 (Xepr &gt;=2.1).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">fullbasename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">fileextension</span> <span class="o">=</span> <span class="n">fullbasename</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="c1"># case insensitive extension</span>
+    <span class="k">if</span> <span class="n">fileextension</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;.DSC&#39;</span><span class="p">,</span><span class="s1">&#39;.DTA&#39;</span><span class="p">]:</span>
+        <span class="n">filename_dsc</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.DSC&#39;</span>
+        <span class="n">filename_dta</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.DTA&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only Bruker BES3T files with extensions .DSC or .DTA are supported.&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename_dta</span><span class="p">):</span>
+        <span class="n">filename_dta</span> <span class="o">=</span> <span class="n">filename_dta</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">filename_dta</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">filename_dsc</span> <span class="o">=</span> <span class="n">filename_dsc</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">filename_dsc</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    
+    <span class="c1"># Read descriptor file (contains key-value pairs)</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">read_description_file</span><span class="p">(</span><span class="n">filename_dsc</span><span class="p">)</span>
+    <span class="n">parDESC</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;DESC&quot;</span><span class="p">]</span>
+    <span class="n">parSPL</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;SPL&quot;</span><span class="p">]</span>
+    
+    <span class="c1"># XPTS, YPTS, ZPTS specify the number of data points along x, y and z.</span>
+    <span class="k">if</span> <span class="s1">&#39;XPTS&#39;</span> <span class="ow">in</span> <span class="n">parDESC</span><span class="p">:</span>
+        <span class="n">nx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parDESC</span><span class="p">[</span><span class="s1">&#39;XPTS&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No XPTS in DSC file.&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="s1">&#39;YPTS&#39;</span> <span class="ow">in</span> <span class="n">parDESC</span><span class="p">:</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parDESC</span><span class="p">[</span><span class="s1">&#39;YPTS&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="s1">&#39;ZPTS&#39;</span> <span class="ow">in</span> <span class="n">parDESC</span><span class="p">:</span>
+        <span class="n">nz</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parDESC</span><span class="p">[</span><span class="s1">&#39;ZPTS&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nz</span> <span class="o">=</span> <span class="mi">1</span>
+    
+    <span class="c1"># BSEQ: Byte Sequence</span>
+    <span class="c1"># BSEQ describes the byte order of the data, big-endian (BIG, encoding = &#39;&gt;&#39;) or little-endian (LIT, encoding = &#39;&lt;&#39;).</span>
+    <span class="k">if</span> <span class="s1">&#39;BSEQ&#39;</span> <span class="ow">in</span> <span class="n">parDESC</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;BIG&#39;</span> <span class="o">==</span> <span class="n">parDESC</span><span class="p">[</span><span class="s1">&#39;BSEQ&#39;</span><span class="p">]:</span>
+            <span class="n">byteorder</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span> 
+        <span class="k">elif</span> <span class="s1">&#39;LIT&#39;</span> <span class="o">==</span> <span class="n">parDESC</span><span class="p">[</span><span class="s1">&#39;BSEQ&#39;</span><span class="p">]:</span>
+            <span class="n">byteorder</span> <span class="o">=</span> <span class="s1">&#39;&lt;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown value for keyword BSEQ in .DSC file!&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Keyword BSEQ not found in .DSC file! Assuming BSEQ=BIG.&#39;</span><span class="p">)</span>
+        <span class="n">byteorder</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span>
+    
+    <span class="c1"># IRFMT: Item Real Format</span>
+    <span class="c1"># IIFMT: Item Imaginary Format</span>
+    <span class="c1"># Data format tag of BES3T is IRFMT for the real part and IIFMT for the imaginary part.</span>
+    <span class="k">if</span> <span class="s1">&#39;IRFMT&#39;</span> <span class="ow">in</span> <span class="n">parDESC</span><span class="p">:</span>
+        <span class="n">IRFTM</span> <span class="o">=</span> <span class="n">parDESC</span><span class="p">[</span><span class="s2">&quot;IRFMT&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;C&#39;</span> <span class="o">==</span> <span class="n">IRFTM</span><span class="p">:</span>
+            <span class="n">dt_spc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int8&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;S&#39;</span> <span class="o">==</span> <span class="n">IRFTM</span><span class="p">:</span>
+            <span class="n">dt_spc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int16&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;I&#39;</span> <span class="o">==</span> <span class="n">IRFTM</span><span class="p">:</span>
+            <span class="n">dt_spc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;F&#39;</span> <span class="o">==</span> <span class="n">IRFTM</span><span class="p">:</span>
+            <span class="n">dt_spc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;D&#39;</span> <span class="o">==</span> <span class="n">IRFTM</span><span class="p">:</span>
+            <span class="n">dt_spc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;A&#39;</span> <span class="o">==</span> <span class="n">IRFTM</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Cannot read BES3T data in ASCII format!&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="s1">&#39;0&#39;</span> <span class="ow">or</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">IRFTM</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No BES3T data!&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown value for keyword IRFMT in .DSC file!&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Keyword IRFMT not found in .DSC file!&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># IRFMT and IIFMT must be identical.</span>
+    <span class="k">if</span> <span class="s2">&quot;IIFMT&quot;</span> <span class="ow">in</span> <span class="n">parDESC</span><span class="p">:</span>
+        <span class="k">if</span>  <span class="n">parDESC</span><span class="p">[</span><span class="s2">&quot;IIFMT&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">parDESC</span><span class="p">[</span><span class="s2">&quot;IRFMT&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;IRFMT and IIFMT in DSC file must be identical.&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Preallocation of the abscissa</span>
+    <span class="n">maxlen</span> <span class="o">=</span> <span class="nf">max</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span><span class="p">)</span>
+    <span class="n">abscissa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full</span><span class="p">((</span><span class="n">maxlen</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+    <span class="c1"># Construct abscissa vectors</span>
+    <span class="n">AxisNames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span>
+    <span class="n">Dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">AxisNames</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">AxisNames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">axisname</span> <span class="o">=</span> <span class="n">a</span><span class="o">+</span><span class="s1">&#39;TYP&#39;</span>
+        <span class="n">axistype</span> <span class="o">=</span> <span class="n">parDESC</span><span class="p">[</span><span class="n">axisname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">Dimensions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;IGD&#39;</span><span class="o">==</span> <span class="n">axistype</span><span class="p">:</span>
+                <span class="c1"># Nonlinear axis -&gt; Try to read companion file (.XGF, .YGF, .ZGF)</span>
+                <span class="n">companionfilename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="s1">&#39;GF&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;D&#39;</span> <span class="o">==</span> <span class="n">parDESC</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="s1">&#39;FMT&#39;</span><span class="p">)]:</span>
+                    <span class="n">dt_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s1">&#39;F&#39;</span> <span class="o">==</span> <span class="n">parDESC</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="s1">&#39;FMT&#39;</span><span class="p">)]:</span>
+                    <span class="n">dt_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s1">&#39;I&#39;</span> <span class="o">==</span> <span class="n">parDESC</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="s1">&#39;FMT&#39;</span><span class="p">)]:</span>
+                    <span class="n">dt_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s1">&#39;S&#39;</span> <span class="o">==</span> <span class="n">parDESC</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="s1">&#39;FMT&#39;</span><span class="p">)]:</span>
+                    <span class="n">dt_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int16&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot read data format </span><span class="si">{0}</span><span class="s1"> for companion file </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="s1">&#39;FMT&#39;</span><span class="p">),</span><span class="n">companionfilename</span><span class="p">))</span>
+
+                <span class="n">dt_axis</span> <span class="o">=</span> <span class="n">dt_axis</span><span class="o">.</span><span class="n">newbyteorder</span><span class="p">(</span><span class="n">byteorder</span><span class="p">)</span>
+                <span class="c1"># Open and read companion file</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">companionfilename</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">fp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">abscissa</span><span class="p">[:</span><span class="n">Dimensions</span><span class="p">[</span><span class="n">index</span><span class="p">],</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span><span class="n">dtype</span><span class="o">=</span><span class="n">dt_axis</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Could not read companion file </span><span class="si">{0}</span><span class="s1"> for nonlinear axis. Assuming linear axis.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">companionfilename</span><span class="p">))</span>
+                <span class="n">axistype</span><span class="o">=</span><span class="s1">&#39;IDX&#39;</span>
+        <span class="k">if</span> <span class="n">axistype</span> <span class="o">==</span> <span class="s1">&#39;IDX&#39;</span><span class="p">:</span>
+            <span class="n">minimum</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parDESC</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="s1">&#39;MIN&#39;</span><span class="p">)])</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parDESC</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="s1">&#39;WID&#39;</span><span class="p">)])</span>
+            <span class="n">npts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parDESC</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="s1">&#39;PTS&#39;</span><span class="p">)])</span>
+            <span class="k">if</span> <span class="n">width</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Warning: </span><span class="si">{0}</span><span class="s1"> range has zero width.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+                <span class="n">minimum</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span>
+            <span class="n">abscissa</span><span class="p">[:</span><span class="n">Dimensions</span><span class="p">[</span><span class="n">index</span><span class="p">],</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="n">minimum</span><span class="p">,</span><span class="n">minimum</span><span class="o">+</span><span class="n">width</span><span class="p">,</span><span class="n">npts</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">axistype</span> <span class="o">==</span> <span class="s1">&#39;NTUP&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot read data with NTUP axes.&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># In case of column filled with NaN, erase the column in the array</span>
+    <span class="n">abscissa</span> <span class="o">=</span> <span class="n">abscissa</span><span class="p">[:,</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">abscissa</span><span class="p">)</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="nf">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)]</span>
+    <span class="n">dt_data</span> <span class="o">=</span> <span class="n">dt_spc</span>
+    <span class="n">dt_spc</span> <span class="o">=</span> <span class="n">dt_spc</span><span class="o">.</span><span class="n">newbyteorder</span><span class="p">(</span><span class="n">byteorder</span><span class="p">)</span>
+
+    <span class="c1"># Read data matrix and separate complex case from real case.</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full</span><span class="p">((</span><span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+    <span class="c1"># reorganize the data in a &quot;complex&quot; way as the real part and the imaginary part are separated</span>
+    <span class="c1"># IKKF: Complex-data Flag</span>
+    <span class="c1"># CPLX indicates complex data, REAL indicates real data.</span>
+    <span class="k">if</span> <span class="s1">&#39;IKKF&#39;</span> <span class="ow">in</span> <span class="n">parDESC</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">parDESC</span><span class="p">[</span><span class="s1">&#39;IKKF&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;REAL&#39;</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full</span><span class="p">((</span><span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span> 
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_dta</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                 <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span><span class="n">dtype</span><span class="o">=</span><span class="n">dt_spc</span><span class="p">)</span><span class="o">.</span><span class="nf">reshape</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">copy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">parDESC</span><span class="p">[</span><span class="s1">&#39;IKKF&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CPLX&#39;</span><span class="p">:</span>
+            <span class="n">dt_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;complex&#39;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">nx</span><span class="o">*</span><span class="n">ny</span><span class="o">*</span><span class="n">nz</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_dta</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span><span class="n">dtype</span><span class="o">=</span><span class="n">dt_spc</span><span class="p">)</span>
+                <span class="c1"># Check if there is multiple harmonics (High field ESR quadrature detection)</span>
+                <span class="n">harmonics</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># outer dimension for the 90 degree phase</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">jval</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;1st&#39;</span><span class="p">,</span><span class="s1">&#39;2nd&#39;</span><span class="p">,</span><span class="s1">&#39;3rd&#39;</span><span class="p">,</span><span class="s1">&#39;4th&#39;</span><span class="p">,</span><span class="s1">&#39;5th&#39;</span><span class="p">]):</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">kval</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;90&#39;</span><span class="p">]):</span>
+                        <span class="n">thiskey</span> <span class="o">=</span> <span class="s1">&#39;Enable&#39;</span><span class="o">+</span><span class="n">jval</span><span class="o">+</span><span class="s1">&#39;Harm&#39;</span><span class="o">+</span><span class="n">kval</span>
+                        <span class="k">if</span> <span class="n">thiskey</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">parameters</span><span class="p">[</span><span class="n">thiskey</span><span class="p">]:</span>
+                            <span class="n">harmonics</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">n_harmonics</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="n">harmonics</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">n_harmonics</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ny</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">/</span><span class="n">nx</span><span class="o">/</span><span class="n">n_harmonics</span><span class="p">)</span>
+            
+            <span class="c1"># copy the data to a writable numpy array</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">copy</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">dt_data</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">dt_new</span><span class="p">)</span><span class="o">.</span><span class="nf">reshape</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown value for keyword IKKF in .DSC file!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Keyword IKKF not found in .DSC file! Assuming IKKF=REAL.&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">nz</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="nf">reshape</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Averaging over the number of scans</span>
+        <span class="k">if</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span>
+            <span class="c1">#Check if the experiments was already averaged</span>
+            <span class="c1"># Number of scans  </span>
+            <span class="k">if</span> <span class="s1">&#39;AVGS&#39;</span> <span class="ow">in</span> <span class="n">parSPL</span><span class="p">:</span>
+                <span class="n">nAverages</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parSPL</span><span class="p">[</span><span class="s1">&#39;AVGS&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="s1">&#39;SctNorm&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;DSL&quot;</span><span class="p">][</span><span class="s2">&quot;signalChannel&quot;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;DSL&quot;</span><span class="p">][</span><span class="s2">&quot;signalChannel&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span><span class="p">:</span>
+                        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Scaling by number of scans not possible,</span><span class="se">\n</span><span class="s1">since data in DSC/DTA are already averaged&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Missing SctNorm field in the DSC file. Cannot determine whether data is already scaled, assuming it isn&#39;t...&quot;</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">/</span><span class="n">nAverages</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Missing AVGS field in the DSC file.&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Receiver gain</span>
+        <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;EXPT&#39;</span><span class="p">]</span> <span class="o">==</span><span class="s1">&#39;CW&#39;</span> <span class="ow">and</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span>
+            <span class="c1">#SPL/RCAG: Receiver Gain in dB</span>
+            <span class="k">if</span> <span class="s1">&#39;RCAG&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                <span class="n">ReceiverGaindB</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;RCAG&#39;</span><span class="p">])</span>
+                <span class="n">ReceiverGain</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">ReceiverGaindB</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">/=</span> <span class="n">ReceiverGain</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Cannot scale by receiver gain, since RCAG in the DSC file is missing.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Conversion/sampling time</span>
+        <span class="k">elif</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;EXPT&#39;</span><span class="p">]</span> <span class="o">==</span><span class="s1">&#39;CW&#39;</span> <span class="ow">and</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
+            <span class="c1">#SPL/SPTP: sampling time in seconds</span>
+            <span class="k">if</span> <span class="s1">&#39;STPT&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                <span class="c1"># Xenon (according to Feb 2011 manual) already scaled data by ConvTime if</span>
+                <span class="c1"># normalization is specified (SctNorm=True). Question: which units are used?</span>
+                <span class="c1"># Xepr (2.6b.2) scales by conversion time even if data normalization is</span>
+                <span class="c1"># switched off!</span>
+                <span class="n">ConversionTime</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;SPTP&#39;</span><span class="p">])</span>
+                <span class="n">data</span> <span class="o">/=</span> <span class="n">ConversionTime</span><span class="o">*</span><span class="mi">1000</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Cannot scale by sampling time, since SPTP in the DSC file is missing.&#39;</span><span class="p">)</span>
+        <span class="c1"># Microwave power</span>
+        <span class="k">elif</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;EXPT&#39;</span><span class="p">]</span> <span class="o">==</span><span class="s1">&#39;CW&#39;</span> <span class="ow">and</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span>
+            <span class="c1">#SPL/MWPW: microwave power in watt</span>
+            <span class="k">if</span> <span class="s1">&#39;MWPW&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                <span class="n">mwPower</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;MWPW&#39;</span><span class="p">])</span><span class="o">*</span><span class="mi">1000</span>
+                <span class="n">data</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mwPower</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Cannot scale by power, since MWPW is absent in parameter file.&#39;</span><span class="p">)</span>
+        <span class="c1">#else:</span>
+        <span class="c1">#    warn(&#39;Cannot scale by microwave power, since these are not CW-EPR data.&#39;)</span>
+        
+        <span class="c1"># Temperature</span>
+        <span class="k">if</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+            <span class="c1">##SPL/STMP: temperature in kelvin</span>
+            <span class="k">if</span> <span class="s1">&#39;STMP&#39;</span><span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                <span class="n">Temperature</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;STMP&#39;</span><span class="p">])</span>
+                <span class="n">data</span> <span class="o">*=</span> <span class="n">Temperature</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Cannot scale by temperature, since STMP in the DSC file is missing.&#39;</span><span class="p">)</span>
+    
+     <span class="c1"># ns -&gt; us converesion</span>
+    <span class="n">abscissa</span> <span class="o">/=</span> <span class="mf">1e3</span>
+
+    <span class="c1"># Ensue proper numpy formatting</span>
+    <span class="n">abscissa</span><span class="p">,</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">abscissa</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">abscissa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">squeeze</span><span class="p">(</span><span class="n">abscissa</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">squeeze</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nf">plot</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">abscissa</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="nf">real</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="n">abscissa</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="nf">imag</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s2">&quot;time (μs)&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s2">&quot;intensity&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abscissa</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">parameters</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abscissa</span><span class="p">,</span> <span class="n">data</span></div>
+
+
+<span class="k">def</span> <span class="nf">read_description_file</span><span class="p">(</span><span class="n">DSCFileName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters = readDSCfile(DSCFileName)</span>
+<span class="sd">    Reads a Bruker BES3T .DSC file DSCFileName and returns a dictionary in Parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">DSCFileName</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span><span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">allLines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    
+    <span class="c1"># Remove lines with comments</span>
+    <span class="n">allLines</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">allLines</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)]</span>
+
+    <span class="c1"># Remove newlines</span>
+    <span class="n">allLines</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">allLines</span><span class="p">]</span>
+    
+    <span class="c1"># Remove empty lines</span>
+    <span class="n">allLines</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">allLines</span> <span class="k">if</span> <span class="n">l</span><span class="p">]</span>
+    
+    <span class="c1"># Merge any line ending in \n\ with the subsequent one</span>
+    <span class="n">allLines2</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">allLines</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">val</span><span class="p">,</span> <span class="n">line</span><span class="p">])</span>    
+        <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">allLines2</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">allLines</span> <span class="o">=</span> <span class="n">allLines2</span>
+    
+    <span class="n">Parameters</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">SectionName</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">DeviceName</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Regular expressions to match layer/section headers, device block headers, and key-value lines</span>
+    <span class="n">reSectionHeader</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;#(\w+)\W+(\d+.\d+)&quot;</span><span class="p">)</span>
+    <span class="n">reDeviceHeader</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\.DVC\W+(\w+),\W+(\d+\.\d+)&quot;</span><span class="p">)</span>
+    <span class="n">reKeyValue</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\w+)\W+(.*)&quot;</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">allLines</span><span class="p">:</span>
+        
+        <span class="c1"># Layer/section header (possible values: #DESC, #SPL, #DSL, #MHL)</span>
+        <span class="n">mo1</span> <span class="o">=</span> <span class="n">reSectionHeader</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> 
+        <span class="k">if</span> <span class="n">mo1</span><span class="p">:</span>
+            <span class="n">SectionName</span> <span class="o">=</span> <span class="n">mo1</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">SectionVersion</span> <span class="o">=</span> <span class="n">mo1</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">SectionName</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;DESC&quot;</span><span class="p">,</span><span class="s2">&quot;SPL&quot;</span><span class="p">,</span><span class="s2">&quot;DSL&quot;</span><span class="p">,</span><span class="s2">&quot;MHL&quot;</span><span class="p">}:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Found unrecognized section &quot;</span> <span class="o">+</span> <span class="n">SectionName</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="n">Parameters</span><span class="p">[</span><span class="n">SectionName</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="n">SectionVersion</span><span class="p">}</span>
+            <span class="n">DeviceName</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">continue</span>
+        
+        <span class="c1"># Device block header (starts with .DVC)</span>
+        <span class="n">mo2</span> <span class="o">=</span> <span class="n">reDeviceHeader</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mo2</span><span class="p">:</span>
+            <span class="n">DeviceName</span> <span class="o">=</span> <span class="n">mo2</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">DeviceVersion</span> <span class="o">=</span> <span class="n">mo2</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">Parameters</span><span class="p">[</span><span class="n">SectionName</span><span class="p">][</span><span class="n">DeviceName</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_version&quot;</span><span class="p">:</span> <span class="n">DeviceVersion</span><span class="p">}</span>
+            <span class="k">continue</span>
+        
+        <span class="c1"># Key/value entry</span>
+        <span class="n">mo3</span> <span class="o">=</span> <span class="n">reKeyValue</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mo3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Key/value pair expected.&quot;</span><span class="p">)</span>        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">SectionName</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Found a line with key/value pair outside any layer.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">SectionName</span><span class="o">==</span><span class="s2">&quot;DSL&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">DeviceName</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Found a line with key-value pair outside .DVC in #DSL layer.&quot;</span><span class="p">)</span>
+        
+        <span class="n">Key</span> <span class="o">=</span> <span class="n">mo3</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">Value</span> <span class="o">=</span> <span class="n">mo3</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">DeviceName</span><span class="p">:</span>
+            <span class="n">Parameters</span><span class="p">[</span><span class="n">SectionName</span><span class="p">][</span><span class="n">DeviceName</span><span class="p">][</span><span class="n">Key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Parameters</span><span class="p">[</span><span class="n">SectionName</span><span class="p">][</span><span class="n">Key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Value</span>
+    
+        <span class="c1"># Assert DESC section is present</span>
+        <span class="k">if</span> <span class="s2">&quot;DESC&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Parameters</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing DESC section in .DSC file.&quot;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">Parameters</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

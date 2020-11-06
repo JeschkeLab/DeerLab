@@ -1,0 +1,591 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>deerlab.classes &mdash; DeerLab  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.13.0-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>deerlab.classes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for deerlab.classes</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md).</span>
+<span class="c1"># Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">Jacobian</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">fftconvolve</span>
+<span class="kn">import</span> <span class="nf">copy</span>
+
+<div class="viewcode-block" id="FitResult"><a class="viewcode-back" href="../../functions/FitResult.html#deerlab.classes.FitResult">[docs]</a><span class="k">class</span> <span class="nc">FitResult</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="c1"># ========================================================================</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Represents the results of a fit.</span>
+<span class="sd"> </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : ndarray</span>
+<span class="sd">        The solution of the optimization.</span>
+<span class="sd">    success : bool</span>
+<span class="sd">        Whether or not the optimizer exited successfully.</span>
+<span class="sd">    cost : float</span>
+<span class="sd">        Value of the cost function at the solution.</span>
+<span class="sd">    residuals : ndarray</span>
+<span class="sd">        Vector of residuals at the solution.</span>
+<span class="sd">    stats : dict</span>
+<span class="sd">        Goodness of fit statistical estimators:</span>
+
+<span class="sd">        * ``stats[&#39;chi2red&#39;]`` - Reduced \chi^2 test</span>
+<span class="sd">        * ``stats[&#39;r2&#39;]`` - R^2 test</span>
+<span class="sd">        * ``stats[&#39;rmsd&#39;]`` - Root-mean squared deviation (RMSD)</span>
+<span class="sd">        * ``stats[&#39;aic&#39;]`` - Akaike information criterion</span>
+<span class="sd">        * ``stats[&#39;aicc&#39;]`` - Corrected Akaike information criterion</span>
+<span class="sd">        * ``stats[&#39;bic&#39;]`` - Bayesian information criterion</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    plot()</span>
+<span class="sd">        Display the fit results on a Matplotlib window. The script returns a </span>
+<span class="sd">        `matplotlib.axes &lt;https://matplotlib.org/api/axes_api.html&gt;`_ object.</span>
+<span class="sd">        All graphical parameters can be adjusted from this object.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    There may be additional attributes not listed above depending of the</span>
+<span class="sd">    specific fit function. Since this class is essentially a subclass of dict</span>
+<span class="sd">    with attribute accessors, one can see which attributes are available</span>
+<span class="sd">    using the `keys()` method. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="fm">__setattr__</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__setitem__</span>
+    <span class="fm">__delattr__</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__delitem__</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="nf">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">k</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                              <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;()&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+<span class="c1"># =========================================================================</span>
+
+<div class="viewcode-block" id="UncertQuant"><a class="viewcode-back" href="../../functions/UncertQuant.html#deerlab.classes.UncertQuant">[docs]</a><span class="k">class</span> <span class="nc">UncertQuant</span><span class="p">:</span>
+<span class="c1"># =========================================================================</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Represents the uncertainty quantification of fit results.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    type : string</span>
+<span class="sd">        Uncertainty quantification approach:</span>
+
+<span class="sd">            * &#39;covariance&#39; - Covariance-based uncertainty analysis</span>
+<span class="sd">            * &#39;bootstrap&#39; - Bootstrapped uncertainty analysis</span>
+<span class="sd">    </span>
+<span class="sd">    mean : ndarray</span>
+<span class="sd">        Mean values of the uncertainty distribution of the parameters.</span>
+<span class="sd">    median : ndarray</span>
+<span class="sd">        Median values of the uncertainty distribution of the parameters.</span>
+<span class="sd">    std : ndarray</span>
+<span class="sd">        Standard deviations of the uncertainty distribution of the parameters.</span>
+<span class="sd">    covmat : ndarray</span>
+<span class="sd">        Covariance matrix</span>
+<span class="sd">    nparam : int scalar</span>
+<span class="sd">        Number of parameters in the analysis.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">uqtype</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="p">[],</span><span class="n">covmat</span><span class="o">=</span><span class="p">[],</span><span class="n">lb</span><span class="o">=</span><span class="p">[],</span><span class="n">ub</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="c1">#Parse inputs schemes</span>
+        <span class="k">if</span> <span class="n">uqtype</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+            <span class="c1"># Scheme 1: UncertQuant(&#39;covariance&#39;,parfit,covmat,lb,ub)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">uqtype</span>
+            <span class="n">parfit</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__parfit</span> <span class="o">=</span> <span class="n">parfit</span>
+            <span class="n">nParam</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parfit</span><span class="p">)</span>
+            
+        <span class="k">elif</span> <span class="n">uqtype</span> <span class="o">==</span> <span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span>
+            <span class="c1"># Scheme 2: UncertQuant(&#39;bootstrap&#39;,samples)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">uqtype</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span>
+            <span class="n">nParam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">samples</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">uqtype</span><span class="o">==</span><span class="s1">&#39;void&#39;</span><span class="p">:</span>
+            <span class="c1"># Scheme 2: UncertQuant(&#39;void&#39;)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">uqtype</span>
+            <span class="bp">self</span><span class="o">.</span><span class="nf">mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="nf">median</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="nf">std</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covmat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nparam</span> <span class="o">=</span> <span class="p">([]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;uqtype not found. Must be: &#39;&#39;covariance&#39;&#39;, &#39;&#39;bootstrap&#39;&#39; or &#39;&#39;void&#39;&#39;.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full</span><span class="p">(</span><span class="n">nParam</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ub</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">ub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full</span><span class="p">(</span><span class="n">nParam</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+
+        <span class="c1"># Create confidence intervals structure</span>
+        <span class="k">if</span> <span class="n">uqtype</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="nf">mean</span> <span class="o">=</span> <span class="n">parfit</span>
+            <span class="bp">self</span><span class="o">.</span><span class="nf">median</span> <span class="o">=</span> <span class="n">parfit</span>
+            <span class="bp">self</span><span class="o">.</span><span class="nf">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">diag</span><span class="p">(</span><span class="n">covmat</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">covmat</span> <span class="o">=</span> <span class="n">covmat</span>
+                
+        <span class="c1"># Bootstrap-based CI specific fields</span>
+        <span class="k">elif</span> <span class="n">uqtype</span> <span class="o">==</span> <span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span>
+            <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">covmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">squeeze</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="nd">@np</span><span class="o">.</span><span class="nf">squeeze</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">samples</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">means</span><span class="o">*</span><span class="n">means</span><span class="o">.</span><span class="n">T</span>
+            <span class="bp">self</span><span class="o">.</span><span class="nf">mean</span> <span class="o">=</span> <span class="n">means</span>
+            <span class="bp">self</span><span class="o">.</span><span class="nf">median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">median</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="nf">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">std</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">covmat</span> <span class="o">=</span> <span class="n">covmat</span>
+
+        <span class="c1"># Set private variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__lb</span> <span class="o">=</span> <span class="n">lb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__ub</span> <span class="o">=</span> <span class="n">ub</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nparam</span> <span class="o">=</span> <span class="n">nParam</span>
+
+    <span class="c1"># Gets called when an attribute is accessed</span>
+    <span class="c1">#--------------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Calling the super class to avoid recursion</span>
+            <span class="k">if</span> <span class="nb">super</span><span class="p">(</span><span class="n">UncertQuant</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;void&#39;</span><span class="p">:</span>
+                <span class="c1"># Check if the uncertainty quantification has been done, if not report that there is nothing in the object</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The requested attribute/method is not available. Uncertainty quantification has not been calculated during the fit by using the `uqanalysis=False` keyword.&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="c1"># Catch cases where &#39;type&#39; attribute has still not been defined (e.g. when using copy.deepcopy)</span>
+            <span class="k">pass</span>
+        <span class="c1"># Otherwise return requested attribute</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">UncertQuant</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+    <span class="c1">#--------------------------------------------------------------------------------</span>
+
+    <span class="c1"># Parameter distributions</span>
+    <span class="c1">#--------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="UncertQuant.pardist"><a class="viewcode-back" href="../../functions/UncertQuant.html#deerlab.classes.UncertQuant.pardist">[docs]</a>    <span class="k">def</span> <span class="nf">pardist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate the uncertainty distribution of the n-th parameter</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n : int scalar</span>
+<span class="sd">            Index of the parameter </span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ax : ndarray</span>
+<span class="sd">            Parameter values at which the distribution is evaluated</span>
+<span class="sd">        pdf : ndarray</span>
+<span class="sd">            Probability density function of the parameter uncertainty.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nparam</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The input must be a valid integer number.&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+            <span class="c1"># Generate Gaussian distribution based on covariance matrix</span>
+            <span class="n">sig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covmat</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">])</span>
+            <span class="n">xmean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="nf">mean</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="n">xmean</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">sig</span><span class="p">,</span><span class="n">xmean</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">sig</span><span class="p">,</span><span class="mi">500</span><span class="p">)</span>
+            <span class="n">pdf</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">sig</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">xmean</span><span class="p">)</span><span class="o">/</span><span class="n">sig</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            
+            <span class="c1"># Clip the distributions at outside the boundaries</span>
+            <span class="n">pdf</span><span class="p">[</span><span class="n">x</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__lb</span><span class="p">[</span><span class="n">n</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">pdf</span><span class="p">[</span><span class="n">x</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ub</span><span class="p">[</span><span class="n">n</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span>
+            <span class="c1"># Get bw using silverman&#39;s rule (1D only)</span>
+            <span class="n">samplen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">std</span><span class="p">(</span><span class="n">samplen</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">bw</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samplen</span><span class="p">)</span><span class="o">*</span><span class="mi">3</span><span class="o">/</span><span class="mf">4.0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span>
+
+            <span class="c1"># Make histogram</span>
+            <span class="n">maxbin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">max</span><span class="p">(</span><span class="n">samplen</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">samplen</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">sigma</span><span class="p">)</span>
+            <span class="n">minbin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">min</span><span class="p">(</span><span class="n">samplen</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">samplen</span><span class="p">)</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">sigma</span><span class="p">)</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="n">minbin</span><span class="p">,</span><span class="n">maxbin</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">10</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">count</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">histogram</span><span class="p">(</span><span class="n">samplen</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
+
+            <span class="c1"># Generate kernel</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">,(</span><span class="n">edges</span><span class="o">.</span><span class="nf">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">edges</span><span class="o">.</span><span class="nf">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">kernel_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span> <span class="o">*</span> <span class="n">bw</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">bw</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="n">delta</span><span class="p">)</span>
+            <span class="n">kernel</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">bw</span><span class="p">)</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">kernel_x</span><span class="p">)</span>
+
+            <span class="c1"># Convolve</span>
+            <span class="n">pdf</span> <span class="o">=</span> <span class="n">fftconvolve</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Set x coordinate of pdf to midpoint of bin</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">delta</span>
+
+        <span class="c1"># Ensure normalization of the probability density function</span>
+        <span class="n">pdf</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="nf">trapz</span><span class="p">(</span><span class="n">pdf</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">pdf</span></div>
+    <span class="c1">#--------------------------------------------------------------------------------</span>
+
+
+    <span class="c1"># Parameter percentiles</span>
+    <span class="c1">#--------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="UncertQuant.percentile"><a class="viewcode-back" href="../../functions/UncertQuant.html#deerlab.classes.UncertQuant.percentile">[docs]</a>    <span class="k">def</span> <span class="nf">percentile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the p-th percentiles of the parameters uncertainty distributions</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        p : float scalar</span>
+<span class="sd">            Percentile (between 0-100)</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        prctiles : ndarray</span>
+<span class="sd">            Percentile values of all parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">&gt;</span><span class="mi">100</span> <span class="ow">or</span> <span class="n">p</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The input must be a number between 0 and 100&#39;</span><span class="p">)</span>
+ 
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nparam</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nparam</span><span class="p">):</span>
+            <span class="c1"># Get parameter PDF</span>
+            <span class="n">values</span><span class="p">,</span><span class="n">pdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pardist</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="c1"># Compute corresponding CDF</span>
+            <span class="n">cdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">cumsum</span><span class="p">(</span><span class="n">pdf</span><span class="p">)</span>
+            <span class="n">cdf</span> <span class="o">/=</span> <span class="nf">max</span><span class="p">(</span><span class="n">cdf</span><span class="p">)</span>
+            <span class="c1"># Eliminate duplicates</span>
+            <span class="n">cdf</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">arraysetops</span><span class="o">.</span><span class="nf">unique</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># Interpolate requested percentile</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">interp</span><span class="p">(</span><span class="n">p</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span><span class="n">cdf</span><span class="p">,</span><span class="n">values</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">x</span></div>
+    <span class="c1">#--------------------------------------------------------------------------------</span>
+
+
+    <span class="c1"># Covariance-based confidence intervals</span>
+    <span class="c1">#--------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="UncertQuant.ci"><a class="viewcode-back" href="../../functions/UncertQuant.html#deerlab.classes.UncertQuant.ci">[docs]</a>    <span class="k">def</span> <span class="nf">ci</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">coverage</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the confidence intervals for the parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coverage : float scalar</span>
+<span class="sd">            Coverage (confidence level) of the confidence intervals (between 0-100)</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ci : 2D-ndarray</span>
+<span class="sd">            Confidence intervals for the parameters:</span>
+
+<span class="sd">                * ``ci[:,0]`` - Lower confidence intervals</span>
+<span class="sd">                * ``ci[:,1]`` - Upper confidence intervals</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">coverage</span><span class="o">&gt;</span><span class="mi">100</span> <span class="ow">or</span> <span class="n">coverage</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The input must be a number between 0 and 100&#39;</span><span class="p">)</span>
+        
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">coverage</span><span class="o">/</span><span class="mi">100</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">/</span><span class="mi">2</span> <span class="c1"># percentile</span>
+        
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nparam</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+                <span class="c1"># Compute covariance-based confidence intervals</span>
+                <span class="c1"># Clip at specified box boundaries</span>
+                <span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__lb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parfit</span> <span class="o">-</span> <span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covmat</span><span class="p">)))</span>
+                <span class="n">x</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parfit</span> <span class="o">+</span> <span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covmat</span><span class="p">)))</span>
+                
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span>
+                <span class="c1"># Compute bootstrap-based confidence intervals</span>
+                <span class="c1"># Clip possible artifacts from the percentile estimation</span>
+                <span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="nf">percentile</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="mi">100</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="nf">amax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">))</span>
+                <span class="n">x</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="nf">percentile</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="nf">amin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">x</span></div>
+
+
+
+    <span class="c1"># Error Propagation (covariance-based only)</span>
+    <span class="c1">#--------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="UncertQuant.propagate"><a class="viewcode-back" href="../../functions/UncertQuant.html#deerlab.classes.UncertQuant.propagate">[docs]</a>    <span class="k">def</span> <span class="nf">propagate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">lbm</span><span class="o">=</span><span class="p">[],</span><span class="n">ubm</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uncertainty propagation. This function takes the uncertainty analysis of the </span>
+<span class="sd">        parameters and propagates it to another functon depending on those parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : callable</span>
+<span class="sd">            Callable model function taking an array of ``nparam`` parameters.</span>
+<span class="sd">        lbm : ndarray</span>
+<span class="sd">            Lower bounds of the values returned by ``model``, by default assumed unconstrained.</span>
+<span class="sd">        ubm : ndarray</span>
+<span class="sd">            Upper bounds of the values returned by ``model``, by default assumed unconstrained.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        modeluq : :ref:`UncertQuant`</span>
+<span class="sd">            New uncertainty quantification analysis for the ouputs of ``model``.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Uncertainty propagation is covariance-based and so will be the resulting uncertainty analysis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lbm</span><span class="p">,</span><span class="n">ubm</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="nf">var</span><span class="p">)</span> <span class="k">for</span> <span class="nf">var</span> <span class="ow">in</span> <span class="p">[</span><span class="n">lbm</span><span class="p">,</span><span class="n">ubm</span><span class="p">])</span>
+
+        <span class="n">parfit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="nf">mean</span>
+        <span class="c1"># Evaluate model with fit parameters</span>
+        <span class="n">modelfit</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">parfit</span><span class="p">)</span>
+        
+        <span class="c1"># Validate input boundaries</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">lbm</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">lbm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">modelfit</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">ubm</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">ubm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">full</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">modelfit</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">modelfit</span><span class="p">)</span><span class="o">!=</span><span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">lbm</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">modelfit</span><span class="p">)</span><span class="o">!=</span><span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">ubm</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span> <span class="p">(</span><span class="s1">&#39;The 2nd and 3rd input arguments must have the same number of elements as the model output.&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Get jacobian of model to be propagated with respect to parameters</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">Jacobian</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">parfit</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">__lb</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">__ub</span><span class="p">)</span>
+
+        <span class="c1"># Clip at boundaries</span>
+        <span class="n">modelfit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">modelfit</span><span class="p">,</span><span class="n">lbm</span><span class="p">)</span>
+        <span class="n">modelfit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">modelfit</span><span class="p">,</span><span class="n">ubm</span><span class="p">)</span>
+
+        <span class="c1"># Error progation</span>
+        <span class="n">modelcovmat</span> <span class="o">=</span> <span class="n">J</span><span class="nd">@self</span><span class="o">.</span><span class="n">covmat</span><span class="nd">@J</span><span class="o">.</span><span class="n">T</span>
+        
+        <span class="c1"># Construct new CI-structure for the model</span>
+        <span class="k">return</span>  <span class="n">UncertQuant</span><span class="p">(</span><span class="s1">&#39;covariance&#39;</span><span class="p">,</span><span class="n">modelfit</span><span class="p">,</span><span class="n">modelcovmat</span><span class="p">,</span><span class="n">lbm</span><span class="p">,</span><span class="n">ubm</span><span class="p">)</span></div></div>
+    <span class="c1">#--------------------------------------------------------------------------------</span>
+
+<span class="c1"># =========================================================================</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
