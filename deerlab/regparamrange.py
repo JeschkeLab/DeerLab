@@ -40,13 +40,8 @@ def regparamrange(K,L,noiselvl=0,logres=0.1):
         # Get generalized singular values of K and L
         singularValues = gsvd(K,L)
     except ValueError as e:
-        # ATLAS's and OPENBLAS's LAPACK qr library can crash under unknown circumstances
-        if not 'illegal value in' in str(e):
-            # Raise error if not a LAPACK error
-            raise
-        else:
-            # Otherwise just estimate via the SVD from the dipolar kernel to avoid crash
-            _,singularValues,_ = svd(K)
+        # Otherwise just estimate via the SVD from the dipolar kernel to avoid crash
+        _,singularValues,_ = svd(K)
 
     DerivativeOrder = L.shape[1] - L.shape[0] # get order of derivative (=number of inf in singval)
     singularValues = singularValues[0:len(singularValues)-DerivativeOrder] # remove inf 
