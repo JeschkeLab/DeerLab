@@ -1,6 +1,23 @@
 
 -------------------------------
 
+Patch Notes v0.12.1 - October 2020
+---------------------------------
+
+#### Overall changes
+
+* The calculation of the Jacobian for covariance-bsaed uncertainty analysis has been simplified providing a significant boost in performance for all fit functions (#55). 
+
+* Broken examples in the documentation have been fixed (#57) 
+
+* When requesting attributes or method of a UncertQuant object under disabled uncertainty analysis (``uqanalysis=False``) now it will prompt an explanatory error instead of just crashing (#56). 
+
+#### Specific changes
+
+* ``fitsignal``: corected the behaviour of the scaling output (``fit.scale``). Now all fitted dipolar signals (``fit.V``)) have the same scaling as the input signal (#53). 
+
+* ``regparamrange``: relaxed the exception handling to catch errors occuring under certain conditions. The function seems to crash due to LAPACK or SVD non-convergence errors during the GSVD, now these are catched and the alpha-range is estimated using simple SVD as an approximation. This function might be deprecated in a future release (#42).   
+
 Release Notes v0.12.0 - October 2020
 ---------------------------------
 
