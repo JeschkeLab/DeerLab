@@ -1,9 +1,9 @@
 name: Docs Build & Deployment
 
 on: 
-  push:
+  pull_request:
     branches:
-    - manual_ghp_update
+    - main
     paths:
     - 'docsrc/**'
     - '.github/workflows/deploy_ghpages.yml'
