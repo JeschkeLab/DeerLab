@@ -32,11 +32,16 @@ More details on the installation of DeerLab can be found [here](https://jeschkel
 
 ### Citation
 
-A paper about DeerLab is currently submitted for publication. When you use DeerLab in your work, for now, please cite the preprint
+When you use DeerLab in your work, please cite the following publication:
 
-> Fábregas Ibáñez, L., Jeschke, G., and Stoll, S.: a comprehensive software package for analyzing dipolar electron paramagnetic resonance spectroscopy data, Magn. Reson., 1, 209–224, 2020, doi.org/10.5194/mr-1-209-2020
-
-Please check back frequently for updated publication information.
+<div style="height:6%px; width:100%; display:flex; flex-wrap:wrap; align-items:center; border-style:solid">
+    <div style="margin-left:2%; margin-bottom:2%; font-size:14px">
+        <h3 style="font-size:110%">  DeerLab: a comprehensive software package for analyzing dipolar electron paramagnetic resonance spectroscopy data </h3> 
+        Luis Fábregas Ibáñez, Gunnar Jeschke, Stefan Stoll <br>
+        Magn. Reson., 1, 209–224, 2020 <br>
+        <a href="https://doi.org/10.5194/mr-1-209-2020"> doi.org/10.5194/mr-1-209-2020</a>
+    </div>
+</div>
 
 ### License
 

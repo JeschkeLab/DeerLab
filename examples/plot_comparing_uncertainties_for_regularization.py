@@ -22,7 +22,7 @@ t = np.linspace(-0.4,3.5,160)           # time axis, µs
 r = np.linspace(2,5,160)                # distance axis, nm
 P = dl.dd_gauss2(r,[3, 0.1, 0.6, 3.5, 0.2, 0.4]) # model distribution
 lam = 0.32                              # modulatio depth
-B = dl.bg_strexp(t,[0.04,1],lam)        # background decay
+B = dl.bg_strexp(t,[0.04,1])        # background decay
 K = dl.dipolarkernel(t,r,lam,B)         # dipolar kernel matrix
 V = K@P + dl.whitegaussnoise(t,0.01)    # signal with added noise
 
@@ -66,7 +66,7 @@ Pci50_bs = booci.ci(50)
 # matrices. This is because bootstrapping takes the nonnegativity constraint of P into
 # account, whereas the curvature matrix CIs do not. 
 
-fig, ax = plt.subplots(1,2,sharey=True)
+fig, ax = plt.subplots(2,1,sharey=True)
 ax[0].plot(r,P,'k',r,Pfit,'r',linewidth=1)
 ax[0].fill_between(r,Pci50_cm[:,0],Pci50_cm[:,1],color='r',linestyle='None',alpha=0.45)
 ax[0].fill_between(r,Pci95_cm[:,0],Pci95_cm[:,1],color='r',linestyle='None',alpha=0.25)
@@ -85,5 +85,6 @@ ax[1].grid(alpha=0.5)
 ax[1].set_xlabel('r [nm]')
 ax[1].set_title('Bootstrapped CI')
 ax[1].legend(['Truth','Fit','50%-CI','95%-CI'])
-
+plt.tight_layout()
+plt.show()
 # %%

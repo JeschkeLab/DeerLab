@@ -11,7 +11,7 @@ DeerLab is a project that has been funded by the following sources:
             Grant ETH-35 18-2
         </div>
         <div style="height:70%; width=30%">
-            <img src="./_images/eth_logo.png", style="margin-top:1%; margin-bottom:1%;height:96%;">
+            <img src="https://raw.githubusercontent.com/JeschkeLab/DeerLab/main/docsrc/source/images/eth_logo.png", style="margin-top:1%; margin-bottom:1%;height:96%;">
         </div>
     </div>    
     
@@ -25,7 +25,7 @@ DeerLab is a project that has been funded by the following sources:
             Grant GM127325
         </div>
         <div style="height:70%; width=30%">
-            <img src="./_images/nih_logo.png", style="margin-top:1%; margin-bottom:1%;height:96%;">
+            <img src="https://raw.githubusercontent.com/JeschkeLab/DeerLab/main/docsrc/source/images/nih_logo.png", style="margin-top:1%; margin-bottom:1%;height:96%;">
         </div>
     </div>    
     
@@ -38,7 +38,7 @@ DeerLab is a project that has been funded by the following sources:
             Grant CHE-1452967
         </div>
         <div style="height:70%; width=30%">
-            <img src="./_images/nsf_logo.png", style="margin-top:1%; margin-bottom:1%;height:96%;">
+            <img src="https://raw.githubusercontent.com/JeschkeLab/DeerLab/main/docsrc/source/images/nsf_logo.png", style="margin-top:1%; margin-bottom:1%;height:96%;">
         </div>
     </div>    
     

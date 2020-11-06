@@ -27,11 +27,11 @@ V = K@P + dl.whitegaussnoise(t,0.005,seed=0)
 
 # Plot
 plt.plot(t,V,'k.')
-plt.tight_layout()
-plt.grid()
+plt.grid(alpha=0.3)
 plt.xlabel('Time [$\\mu s$]')
 plt.ylabel('V(t)')
-
+plt.tight_layout()
+plt.show()
 # %% [markdown]
 # Prepare the signal
 # ------------------
@@ -71,11 +71,11 @@ kappa = fit.bgparam
 Vcorr = (V/Bfit - (1 - lam))/lam
 
 plt.plot(t,Vcorr,'k.')
-plt.tight_layout()
 plt.grid(alpha=0.3)
 plt.xlabel('Time [$\\mu s$]')
 plt.ylabel('V(t)')
-
+plt.tight_layout()
+plt.show()
 # %% [markdown]
 # Computing the dipolar spectrum
 # --------------------------------
@@ -99,13 +99,13 @@ nuapo,pakeapo = dl.fftspec(Vcorr,t,apodization=False,mode='real')
 
 # Plot results
 plt.plot(nu,pake,'k',nuapo,pakeapo,'b',linewidth=1.5)
-plt.tight_layout()
 plt.grid(alpha=0.3)
 plt.xlim([-10, 10])
 plt.xlabel('Frequency [MHz]')
 plt.ylabel('Intensity [a.u.]')
 plt.legend(['Raw','Apodized'])
-
+plt.tight_layout()
+plt.show()
 # %% [markdown]
 # We do not need to worry about the zero-filling since ``fftspec`` takes care 
 # of setting it to twice the amount of points in the signal, to preserve all information. 

@@ -39,7 +39,8 @@ plt.xlabel('t [µs]')
 plt.ylabel('V(t)')
 plt.grid(alpha=0.3)
 plt.legend(['real','imag'])
-
+plt.tight_layout()
+plt.show()
 # %% [markdown]
 # DeerAnalysis workflow
 # ---------------------
@@ -58,17 +59,17 @@ tstart = 1.0 # background fit start, in µs
 mask = t>tstart
 def Bmodel(par):
     lam,kappa,d = par # unpack parameters
-    B = (1-lam)*dl.bg_strexp(t[mask],[kappa,d],lam)
+    B = (1-lam)*dl.bg_strexp(t[mask],[kappa,d])
     return B
 
 #       lam     k   d
 par0 = [0.5,   0.5, 3]
-lb   = [0.1,   0.1, 1]
+lb   = [0.1,    0,  1]
 ub   = [1,      5,  6]
 fit = dl.fitparamodel(V[mask],Bmodel,par0,lb,ub,rescale=False)
 
 lamfit,kappa,d = fit.param
-Bfit = dl.bg_strexp(t,[kappa,d],lamfit)
+Bfit = dl.bg_strexp(t,[kappa,d])
 
 # Background "correction" by division
 Vcorr = (V/Bfit - 1 + lamfit)/lamfit
@@ -99,6 +100,7 @@ plt.plot(rtrue,Ptrue,'k',r,Pfit,'r',linewidth=1.5)
 plt.xlabel('r [nm]')
 plt.ylabel('P [nm^{-1}]')
 plt.legend(['truth','fit'])
-
+plt.tight_layout()
+plt.show()
 
 # %%
