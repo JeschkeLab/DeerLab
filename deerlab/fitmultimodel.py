@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from types import FunctionType
 import deerlab as dl
-from deerlab.utils import hccm, goodness_of_fit, fdJacobian
+from deerlab.utils import hccm, goodness_of_fit, Jacobian
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
@@ -366,8 +366,11 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         Knonlin = lambda par: nonlinmodel(par,Nopt)
         res = weights*(Vfit - V)
 
+        lb_full = np.concatenate((nlin_lb, lin_lb))
+        ub_full = np.concatenate((nlin_ub, lin_ub))
+
         # Compute the Jacobian
-        Jnonlin = fdJacobian(lambda p: weights*(Knonlin(p)@plin),pnonlin)
+        Jnonlin = Jacobian(lambda p: weights*(Knonlin(p)@plin),pnonlin,nlin_lb,nlin_ub)
         Jlin = weights[:,np.newaxis]*Knonlin(pnonlin)
         J = np.concatenate((Jnonlin, Jlin),1)
 
@@ -375,7 +378,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         covmatrix = hccm(J,res,'HC1')
         
         # Construct uncertainty quantification structure for fitted parameters
-        paramuq = dl.UncertQuant('covariance',np.concatenate((pnonlin, plin)),covmatrix,np.concatenate((nlin_lb, lin_lb)),np.concatenate((nlin_ub, lin_ub)))
+        paramuq = dl.UncertQuant('covariance',np.concatenate((pnonlin, plin)),covmatrix,lb_full,ub_full)
         
         P_subset = np.arange(0, nKparam+nparam*Nopt)
         amps_subset = np.arange(P_subset[-1]+1, P_subset[-1]+1+Nopt)

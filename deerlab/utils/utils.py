@@ -1,18 +1,12 @@
-from builtins import str
-
-def isstring(x):
-    bool = isinstance(x,str)
-    return bool
-
-
 import warnings
-import matplotlib.pyplot as plt
 import numpy as np
 import cmath as math
 import scipy as scp
-import random
-from scipy.sparse import coo_matrix
+import scipy.optimize as opt
+
 from types import FunctionType 
+
+
 def parse_multidatasets(V,K,weights,precondition=False):
 #===============================================================================
     
@@ -410,25 +404,18 @@ def diagp(Y,X,k):
 #===============================================================================
 
 #===============================================================================
-def fdJacobian(fcn, param):
+def Jacobian(fcn, x0, lb, ub):
     """ 
-    Finite difference Jacobian
-    Estimates the Jacobian matrix of a function ``fcn`` at the point defined by ``param``. 
+    Finite difference Jacobian estimation 
+    Estimates the Jacobian matrix of a vector-valued function ``fcn`` at the 
+    point ``x0`` taking into consideration box-constraints defined by the lower
+    and upper bounds ``lb`` and ``ub``.
+
+    This is a wrapper around the ``scipy.optimize._numdiff.approx_derivative`` function.
 
     """
-    param = np.atleast_1d(param)
-    # Step size
-    h = 1e-5
-    # Central value
-    f0 = fcn(param)
-    f0 = np.atleast_1d(f0)
-    # Loop over parameters
-    J = np.zeros((len(f0),len(param)))
-    for i in range(len(param)):
-        rise = np.copy(param)
-        rise[i] = rise[i] + h
-        # Finite difference derivative of i-th parameter
-        J[:,i] = (fcn(rise) - f0)/h
+    J = opt._numdiff.approx_derivative(fcn,x0,method='2-point',bounds=(lb,ub))
+    J = np.atleast_2d(J)
     return J
 #===============================================================================
 
