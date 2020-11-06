@@ -4,7 +4,7 @@
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from deerlab.utils import isempty, multistarts, hccm, parse_multidatasets, goodness_of_fit, fdJacobian
+from deerlab.utils import isempty, multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian
 from deerlab.classes import UncertQuant, FitResult
 import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
@@ -215,7 +215,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
         # of the negative log-likelihood
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            J = fdJacobian(lsqresiduals,parfit)
+            J = Jacobian(lsqresiduals,parfit,lb,ub)
 
         # Estimate the heteroscedasticity-consistent covariance matrix
         if isempty(covmatrix):
