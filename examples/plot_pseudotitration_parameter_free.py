@@ -63,7 +63,7 @@ def Kmodel(par,ts,rA,rB,L):
     Ks = [[]]*Nsignals
     # General the dipolar kernels
     for i in range(Nsignals):
-        B = dl.bg_exp(ts[i],k,lam)
+        B = dl.bg_exp(ts[i],k)
         # Kernel for fraction A
         KstateA = dl.dipolarkernel(ts[i],rA,lam,B)
         # Kernel for fraction B
@@ -153,7 +153,7 @@ Vsfit = []
 plt.subplot(3,2,(1,3))
 for i in range(Nsignals):
     Vsfit.append(Ksfit[i]@Pfit)
-    plt.plot(ts[i],Vs[i]+i/9,'k.',ts[i],Vsfit[i]+i/9,'r',linewidth=1.5)
+    plt.plot(ts[i],Vs[i]+i/9,'k.',ts[i],Vsfit[i]+i/9,'tab:blue',linewidth=1.5)
 plt.grid(alpha =0.3)
 plt.xlabel('t [$\mu s$]')
 plt.ylabel('V(t) [a.u.]')
@@ -164,7 +164,7 @@ plt.subplot(2,2,(2,4))
 for i in range(Nsignals):
     PAfit = xAfit[i]*Pfit[0:len(rA)]
     PBfit = xBfit[i]*Pfit[len(rA):len(rB)+len(rA)]
-    plt.plot(rA,PAfit+2*i,'r',rB,PBfit+2*i,'b',linewidth=1.5)
+    plt.plot(rA,PAfit+1.2*i,'tab:red',rB,PBfit+1.2*i,'tab:blue',linewidth=1.5)
 
 plt.grid(alpha =0.3)
 plt.xlabel('r [nm]')
@@ -173,10 +173,15 @@ plt.legend(['state A','state B'])
 plt.xlim([2,7])
 
 plt.subplot(325)
-plt.plot(np.log10(L),xA,'r-',np.log10(L),xB,'b-')
-plt.plot(np.log10(L),xAfit,'ro',np.log10(L),xBfit,'bo',linewidth=1.5)
+plt.plot(np.log10(L),xA,'tab:red',np.log10(L),xB,'tab:blue')
+plt.plot(np.log10(L),xAfit,'o',color='tab:red')
+plt.plot(np.log10(L),xBfit,'o',color='tab:blue')
 plt.grid(alpha =0.3)
 plt.xlabel('log$_{10}$([L])')
 plt.ylabel('Fractions')
 plt.legend(['state A','state B'])
 plt.ylim([0,1])
+
+plt.tight_layout()
+plt.show()
+# %%
