@@ -342,7 +342,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         nlin_ub_.append(nlin_ub)
         nlin_lb_.append(nlin_lb)   
         lin_ub_.append(lin_ub)
-        lin_lb_.append(lin_lb)
+        lin_lb_.append(lin_lb-1) # rescale to zero
         fits.append(fit)
     # Select the optimal model
     # ========================
