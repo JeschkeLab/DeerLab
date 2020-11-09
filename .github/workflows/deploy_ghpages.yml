@@ -1,12 +1,7 @@
 name: Docs Build & Deployment
 
 on: 
-  pull_request:
-    branches:
-    - main
-    paths:
-    - 'docsrc/**'
-    - '.github/workflows/deploy_ghpages.yml'
+  workflow_dispatch:
   release:
     types: [published]
 
