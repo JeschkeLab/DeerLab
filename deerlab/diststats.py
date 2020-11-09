@@ -16,18 +16,22 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     ----------
     r : array_like
         Distance axis in nm. 
+    
     P : array_like
         Distance distribution.
+    
     Puq : :ref:`UncertQuant`
         Uncertainty quantification of the distance distribution. If not 
         specified, the one single output is returned without any uncertainty 
         estimation. If specified, two outputs are returned containing the 
         uncertainty estimation.
-    verbose : boolean
-        Enables printing a summary of all statistical quantities and their uncertainties if calculated.
-    threshold : float
-        Peak detection threshold for the calculation of modes of a distribution. The default is max(P)/10.
     
+    verbose : boolean, optional
+        Enables printing a summary of all statistical quantities and their uncertainties if calculated.
+    
+    threshold : float, optional
+        Peak detection threshold for the calculation of modes of a distribution. The default is ``max(P)/10``.
+
     Returns
     -------
     estimators : dict
@@ -66,14 +70,6 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     uq : dict of :ref:`UncertQuant`
         Dictionary of the parameters covariance-based uncertainty quantifications. 
         See above for the dictionary keys. Only calculated if ``Puq`` is specified.
-
-    Other Parameters
-    ----------------
-    verbose : boolean
-        Enable to print a summary of all distribution descriptors along 
-        with their corresponding 95% confidence intervals. Disabled by default.
-    threshold : scalar
-        Required minimal height of peaks. Either a number or ``None``.
 
     Notes
     -----

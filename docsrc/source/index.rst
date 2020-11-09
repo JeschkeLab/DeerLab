@@ -1,17 +1,20 @@
 ﻿
-
-DeerLab
------------
-
-.. warning:: DeerLab is currently in the pre-release stage (version numbers 0.x.x) and under active development. Major changes are likely before the first stable version (1.0.0) is released.
+.. warning:: DeerLab is currently in the pre-release stage (version numbers v0.x.x) and under active development. Major changes are likely before the first stable version (v1.0.0) is released.
 
 
 .. raw:: html 
 
-    <h1 style="font-size:300%">DeerLab<span style="color:#556cd6">Docs</span></h1> 
-    
+    <style>
+    .blueish {color:#556cd6; margin-left:-1%} 
+    </style> 
+
+.. role:: blueish
+
+DeerLab :blueish:`Docs`
+---------------------------------
+
 |version|
----------
+""""""""""
 
 .. raw:: html 
 

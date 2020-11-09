@@ -24,22 +24,19 @@ def correctscale(V,t,tmax=[],model='deer'):
         Experimenal signal.
     t : array_like 
         Time axis, in microseconds. 
-    
+    tmax : scalar, optional
+        Time cutoff for fit range, in microseconds.
+    model : string, optional
+        Model to fit over |t|<tmax
+        * ``'deer'``   - DEER model with Gaussian distribution.
+        * ``'gauss'``  - Raised Gaussian.
+        The default is ``'deer'``
+
     Returns
     -------
     Vc : ndarray
         Rescaled signal.
     
-    Other parameters
-    ----------------
-    tmax : scalar
-        Time cutoff for fit range, in microseconds.
-    model : string
-        Model to fit over |t|<tmax
-        * ``'deer'``   - DEER model with Gaussian distribution.
-        * ``'gauss'``  - Raised Gaussian.
-        The default is ``'deer'``
-        
     """
     if not all(np.isreal(V)):
         raise ValueError('Input signal cannot be complex.') 

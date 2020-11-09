@@ -47,33 +47,30 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
         * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
         * ``'gml'`` - Generalized Maximum Likelihood (GML)
         * ``'mcl'`` - Mallows' C_L (MCL)
-        
-    Other parameters
-    ----------------
-    weights : array_like 
+    weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting, 
         the default is all weighted equally.
-    candidates : list
+    candidates : list, optional
         List or array of candidate regularization parameter values to be evaluated. 
         If not specified, these are automatically computed from the GSVD of the 
         dipolar kernel and regularization operator.
-    regorder : int scalar
+    regorder : int scalar, optional
         Order of the regularization operator, the default is 2.
-    algorithm : string
+    algorithm : string, optional
         Search algorithm: 
         
         * ``'grid'`` - Grid-search, slow.
         * ``'brent'`` - Brent-algorithm, fast.
         The default is ``'brent'``.
         
-    full_output : boolean
+    full_output : boolean, optional
         If enabled the function will return additional output arguments in a tuple, the default is False.
-    nonnegativity : boolean
+    nonnegativity : boolean, optional
         Enforces the non-negativity constraint on computed distance distributions, by default enabled.
-    noiselvl : float scalar
+    noiselvl : float scalar, optional
         Estimate of the noise standard deviation, if not specified it is estimated form the fit residuals.
         Used for the MCL selection method.  
-    huberparam : float scalar
+    huberparam : float scalar, optional
         Value of the Huber parameter used in Huber regularization, the default is 1.35.
 
     Returns

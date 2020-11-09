@@ -21,11 +21,14 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
     ----------
     V : array_like or list of array_like  
         Dipolar signal, multiple datasets can be globally evaluated by passing a list of signals.
+    
     K : 2D-array_like array or list of 2D-array_like
         Dipolar kernel, if a list of signals is specified, a corresponding list of kernels must be passed as well.
+    
     r : array_like
         Distance axis, in nanometers.
-    regtype : string
+    
+    regtype : string, optional
         Regularization functional type: 
     
         * ``'tikhonov'`` - Tikhonov regularizaton
@@ -33,7 +36,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         * ``'huber'`` - Huber regularization
         The default is ``'tikhonov'``.   
     
-    regparam : string or scalar
+    regparam : string or scalar, optional
         Method for the automatic selection of the optimal regularization parameter:
     
         * ``'lr'`` - L-curve minimum-radius method (LR)
@@ -51,47 +54,15 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         * ``'gml'`` - Generalized Maximum Likelihood (GML)
         * ``'mcl'`` - Mallows' C_L (MCL)
         The regularization parameter can be manually specified by passing a scalar value instead of a string.
-        The default 'aic'.
-
-    Returns
-    -------
-    :ref:`FitResult` with the following fields defined:
-    P : ndarray
-        Fitted distance distribution
-    uncertainty : :ref:`UncertQuant`
-        Covariance-based uncertainty quantification of the fitted distance distribution
-    alpha : float int
-        Regularization parameter used in the optimization
-    scale : float int or list of float int
-        Amplitude scale(s) of the dipolar signal(s).
-    plot : callable
-        Function to display the results. It will 
-        display the fitted signals and distance distributions with
-        confidence intervals. If requested, the function returns 
-        the `matplotlib.axes` object as output. 
-    stats : dict
-        Goodness of fit statistical estimators (if full_output=True):
-
-        * ``stats['chi2red']`` - Reduced \chi^2 test
-        * ``stats['r2']`` - R^2 test
-        * ``stats['rmsd']`` - Root-mean squared deviation (RMSD)
-        * ``stats['aic']`` - Akaike information criterion
-        * ``stats['aicc']`` - Corrected Akaike information criterion
-        * ``stats['bic']`` - Bayesian information criterion
-    success : bool
-        Whether or not the optimizer exited successfully.
-    cost : float
-        Value of the cost function at the solution.
-    residuals : ndarray
-        Vector of residuals at the solution.
-
-    Other parameters
-    ----------------
-    weights : array_like 
+        The default ``'aic'``.
+    
+    weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
-    regorder : int scalar
+    
+    regorder : int scalar, optional
         Order of the regularization operator, the default is 2.
-    solver : string
+    
+    solver : string, optional
         Optimizer used to solve the non-negative least-squares problem: 
 
         * ``'cvx'`` - Optimization of the NNLS problem using cvxopt
@@ -99,18 +70,65 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         * ``'nnlsbpp'`` - Optimization using the block principal pivoting NNLS algorithm.
         The default is ``'cvx'``.
 
-    uqanalysis : boolean
+    uqanalysis : boolean, optional
         Enable/disable the uncertainty quantification analysis, by default it is enabled. 
-    nonnegativity : boolean
+    
+    nonnegativity : boolean, optional
         Enforces the non-negativity constraint on computed distance distributions, by default it is enabled.
-    huberparam : scalar
+    
+    huberparam : scalar, optional
         Value of the Huber parameter used in Huber regularization, the default is 1.35.
-    renormalize : boolean
+    
+    renormalize : boolean, optional
         Enable/disable renormalization of the fitted distribution, by default it is enabled.
-    obir : boolean
+    
+    obir : boolean, optional
         Enable/disable the use of the Osher-Bregman iterated regularization algorithm, by default it is disabled.
-    noiselevelaim : scalar
+    
+    noiselevelaim : scalar, optional
         Noise level at which to stop the OBIR algorithm. If not specified it is automatically estimated from the fit residuals.
+
+
+    Returns
+    -------
+    :ref:`FitResult` with the following fields defined:
+    P : ndarray
+        Fitted distance distribution
+    
+    uncertainty : :ref:`UncertQuant`
+        Covariance-based uncertainty quantification of the fitted distance distribution
+    
+    alpha : float int
+        Regularization parameter used in the optimization
+    
+    scale : float int or list of float int
+        Amplitude scale(s) of the dipolar signal(s).
+    
+    plot : callable
+        Function to display the results. It will 
+        display the fitted signals and distance distributions with
+        confidence intervals. If requested, the function returns 
+        the `matplotlib.axes` object as output. 
+    
+    stats : dict
+        Goodness of fit statistical estimators (if ``full_output=True``):
+
+        * ``stats['chi2red']`` - Reduced \chi^2 test
+        * ``stats['r2']`` - R^2 test
+        * ``stats['rmsd']`` - Root-mean squared deviation (RMSD)
+        * ``stats['aic']`` - Akaike information criterion
+        * ``stats['aicc']`` - Corrected Akaike information criterion
+        * ``stats['bic']`` - Bayesian information criterion
+    
+    success : bool
+        Whether or not the optimizer exited successfully.
+    
+    cost : float
+        Value of the cost function at the solution.
+    
+    residuals : ndarray
+        Vector of residuals at the solution.
+
     """
     # Prepare signals, kernels and weights if multiple are passed
     V, K, weights, subsets, prescales = dl.utils.parse_multidatasets(V, K, weights,precondition=True)

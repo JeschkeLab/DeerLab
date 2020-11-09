@@ -20,6 +20,12 @@ def correctphase(V, phase = [], imagoffset=False, full_output=False):
     ----------
     V : array_like or list of array_like
         Complex-valued signals or list thereof.
+    phase  : float scalar, optional
+        Phase shift for manual correction, in radians. 
+    imagoffset : boolean, optional
+        Enables/Disables the fitting and correction of an imaginary offset, by default disabled.
+    full_output : boolean, optional
+        If enabled the function will return additional output arguments in a tuple, by default disabled.
 
     Returns
     -------
@@ -31,15 +37,6 @@ def correctphase(V, phase = [], imagoffset=False, full_output=False):
         Fitted phase used for correction, in radians.    
     imoffset : float scalar (if full_output==True)
         Fitted imaginary offset used for correction.
-
-    Other Parameters
-    ----------------
-    phase  : float scalar
-        Phase shift for manual correction, in radians. 
-    imagoffset : boolean
-        Enables/Disables the fitting and correction of an imaginary offset, by default disabled.
-    full_output : boolean
-        If enabled the function will return additional output arguments in a tuple, by default disabled.
 
     """
 
