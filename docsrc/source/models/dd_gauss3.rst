@@ -28,7 +28,26 @@ Model
 ============== ========================== ============= ============= ============= =======================================
 
 
-Example using the start values:
+Example
+=========================================
 
-.. image:: ../images/model_dd_gauss3.png
-   :width: 650px
+Example of the model evaluated at the start values of the parameters:
+
+.. plot::
+
+   import deerlab as dl
+   import matplotlib.pyplot as plt 
+   import numpy as np 
+   model = dl.dd_gauss3
+   r = np.linspace(2,8,400)
+   info = model() 
+   par0 = info['Start']
+   P = model(r,par0)
+   plt.figure(figsize=[6,3])
+   plt.plot(r,P)
+   plt.xlabel('r [nm]',fontsize=13)
+   plt.ylabel('P(r) [nm$^{-1}$]',fontsize=13)
+   plt.grid(alpha=0.4)
+   plt.tick_params(labelsize=12)
+   plt.tick_params(labelsize=12)
+   plt.tight_layout()
