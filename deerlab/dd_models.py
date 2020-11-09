@@ -310,7 +310,7 @@ def dd_gengauss(*args):
             Parameters = ('Mean','Spread','Kurtosis'),
             Units = ('nm','nm',''),
             Start = np.asarray([3.5, 0.5,0.5]),
-            Lower = np.asarray([1, 0.2, 0.25]),
+            Lower = np.asarray([1, 0.05, 0.25]),
             Upper = np.asarray([20, 5, 15])
         )
         return info
@@ -378,8 +378,8 @@ def dd_skewgauss(*args):
         info = dict(
             Parameters = ('Center','Spread','Kurtosis'),
             Units = ('nm','nm',''),
-            Start = np.asarray([3.5, 0.5, 5]),
-            Lower = np.asarray([1, 0.2, -25]),
+            Start = np.asarray([3.5, 0.2, 5]),
+            Lower = np.asarray([1, 0.05, -25]),
             Upper = np.asarray([20, 5, 25])
         )
         return info
@@ -389,7 +389,7 @@ def dd_skewgauss(*args):
     r0 = p[0]
     sigma = p[1]
     alpha = p[2]
-    x = abs(r-r0)/sigma/np.sqrt(2)
+    x = (r-r0)/sigma/np.sqrt(2)
     P = 1/np.sqrt(2*np.pi)*np.exp(-x**2)*(1 + spc.erf(alpha*x))
     P = _normalize(r,P)
 
@@ -1529,7 +1529,7 @@ def dd_triangle(*args):
             Units = ('nm','nm'),
             Lower = np.asarray([1, 0.1, 0.1]),
             Upper = np.asarray([20,  20, 20]),
-            Start = np.asarray([1.5, 1, 0.5]),
+            Start = np.asarray([3.5, 1, 0.5]),
         )
         return info
     r,p = _parsargs(args,npar=3)
