@@ -168,6 +168,7 @@ default_role = 'math'  # with this, :math:`\psi` can be written simply as `\psi`
 html_theme = "sphinx_rtd_theme"
 html_theme_path = ["_themes", ]
 html_static_path = ['_static']
+html_title = 'DeerLab'
 highlight_language = 'python'
 primary_domain = 'py'
 html_logo = '_static/logo.png'
@@ -183,20 +184,20 @@ from pygments.token import Keyword, Name, Comment, String, Error, Number, Operat
 # Define custom style for the MATLAB highlighting
 
 class MyFancyStyle(Style):
-    background_color = "#313439"
+    background_color = "#4f566b"
     default_style = "default"
     styles = {
-        Text:                   '#dddee4',
-        Comment:                'italic #8f8f8f',
-        Keyword:                '#c074d5',
-        Operator.Word:          '#c074d5',
+        Text:                   '#fff',
+        Comment:                '#c1c9d2',
+        Keyword:                '#a4cdfe',
+        Operator.Word:          '#a4cdfe',
         Name.Variable:          '#dddee4',
-        Name.Function:          '#75abff',
+        Name.Function:          '#a4cdfe',
         Name.Class:             '#0000FF',
-        Name.Builtin:           '#4893e3',
-        String:                 '#90d97a',
-        Operator:               '#84e5f5',
-        Number:                 '#db8e5b',
+        Name.Builtin:           '#a4cdfe',
+        String:                 '#85d996',
+        Operator:               '#a4cdfe',
+        Number:                 '#f8b886',
     }
 
 # Create patch for applying the style 	

@@ -17,40 +17,15 @@
 code, .rst-content tt, .rst-content code {
     font-family: monospace !important;
     font-size: 100% !important;
-    border: solid 0px #e1e4e5 !important;
 }
 
-/*Override the title of MATLAB live scripts*/
-.S0{
-color: #5c87d6 !important;
-padding-bottom:10px !important;
-padding-top:-10px !important;
-}
-.S3{
-padding-bottom:10px !important;
-padding-top:-10px !important;
-}
-
-.rst-content code.literal{
-	color:#000000 !important;
-}
-
-
-/*Set the size of the download buttons of the tutorials*/
-.tutorial_buttons{
-    width:125px;
-    height:125px;
-}
-
-/*Change default fonts used throughout the documentation*/
-body{
-    font-family:'Open Sans', sans-serif !important;
-}
 
 /*Override the width of the page to cover the whole window*/
 .wy-nav-content {
     background: #ffffff !important;
-    max-width:  75% !important;
+    max-width:  100% !important;
+    margin-left: 5% !important;
+    margin-right: 25% !important;
 }
 
 /*Begin CSS formatting of the functions and models sections*/
@@ -129,7 +104,7 @@ table.func-list.docutils a {
     text-decoration: none;
     cursor: pointer;
     font-family: monospace;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 /*Formatting of the table cells*/
@@ -140,7 +115,7 @@ table.func-list.docutils a {
     border-top: solid 1px #f2f2f2;
     border-left: hidden 1px #fff;
     border-right: hidden 1px #fff;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 /*Formatting of the table header*/
@@ -152,7 +127,7 @@ table.func-list.docutils a {
     border-left: hidden 1px #fff;
     border-right: hidden 1px #fff;
     margin-bottom: 0px;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 /*Coloring when hovering over row*/
@@ -388,4 +363,78 @@ html.writer-html4 .rst-content dl:not(.docutils) code, html.writer-html4 .rst-co
 .py.class li, ul {
     list-style: disc;
     margin-left: 24px;
-    margin-bottom: -12px
+    margin-bottom: -12px}
+
+.btn-quick {
+    display:inline-block;
+    padding:16px 24px;
+    font-size:16px;
+    font-weight:500;
+    color:#fff;
+    white-space:nowrap;
+    vertical-align:middle;
+    cursor:pointer;
+    user-select:none;
+    background-color:#3c55c8;
+    border:1px solid #3c55c8;
+    border-radius:6px;
+    appearance:none
+    }
+.btn-quick:visited {
+    text-decoration:none;
+    background-color:#3c55c8;
+    border-color:#3c55c8;
+    color: #fff;
+    }
+.btn-quick:hover {
+    text-decoration:none;
+    background-color:#3c55c8;
+    border-color:#3c55c8
+    }
+
+
+.btn-ref {
+    display:inline-block;
+    padding:16px 24px;
+    font-size:16px;
+    font-weight:500;
+    color:#3c55c8;
+    white-space:nowrap;
+    vertical-align:middle;
+    cursor:pointer;
+    user-select:none;
+    background-color:#fff;
+    border:1px solid #3c55c8;
+    border-radius:6px;
+    transition:.2s;
+    appearance:none
+    }
+.btn-ref:visited {
+    text-decoration:none;
+    background-color:#fff;
+    border-color:#3c55c8;
+    color: #3c55c8;
+    }
+.btn-ref:hover {
+    text-decoration:none;
+    background-color:#fff;
+    border-color:#3c55c8
+    }
+.btn-ref:focus {
+outline:0;
+box-shadow:0 0 0 .2em rgba(3,102,214,.3)
+}
+.btn-ref:disabled,
+.btn-ref.disabled,
+.btn-ref[aria-disabled=true] {
+pointer-events:none;
+cursor:default;
+opacity:.65
+}
+
+.div_home{
+    border: solid 2px #3c55c845;
+    border-radius: 14px;
+    padding: 19px;
+    width: 70%;
+}
