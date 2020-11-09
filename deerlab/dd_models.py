@@ -309,7 +309,7 @@ def dd_gengauss(*args):
         info = dict(
             Parameters = ('Mean','Spread','Kurtosis'),
             Units = ('nm','nm',''),
-            Start = np.asarray([3.5, 0.5,0.5]),
+            Start = np.asarray([3.5, 0.5, 5]),
             Lower = np.asarray([1, 0.2, 0.25]),
             Upper = np.asarray([20, 5, 15])
         )

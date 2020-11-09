@@ -116,9 +116,9 @@ def ex_ovl4pdeer(param=None):
      ---------------------------------------------------------------------------
       Parameter                                Units   Lower    Upper    Start
      ---------------------------------------------------------------------------
-      Amplitude of unmodulated components                0       1        0.3
+      Amplitude of unmodulated components                0       1        0.7
       Amplitude of 1st modulated pathway                 0       1        0.3
-      Amplitude of 2nd modulated pathway                 0       1        0.3
+      Amplitude of 2nd modulated pathway                 0       1        0.1
       Refocusing time of 2nd modulated pathway   μs      0       20        5        
      ---------------------------------------------------------------------------
     """  
@@ -127,7 +127,7 @@ def ex_ovl4pdeer(param=None):
             Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway',
                           'Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
             Units = ['','','','μs'],
-            Start = np.asarray([0.3, 0.3, 0.3,5]),
+            Start = np.asarray([0.7, 0.3, 0.1, 5]),
             Lower = np.asarray([0, 0, 0, 0]),
             Upper = np.asarray([1, 1, 1, 20])
         )
@@ -183,9 +183,9 @@ def ex_5pdeer(param=None):
      ---------------------------------------------------------------------------
       Parameter                                Units   Lower    Upper    Start
      ---------------------------------------------------------------------------
-      Amplitude of unmodulated components                0       1        0.3
-      Amplitude of 1st modulated pathway                 0       1        0.3
-      Amplitude of 2nd modulated pathway                 0       1        0.3
+      Amplitude of unmodulated components                0       1        0.4
+      Amplitude of 1st modulated pathway                 0       1        0.4
+      Amplitude of 2nd modulated pathway                 0       1        0.2
       Refocusing time of 2nd modulated pathway   μs      0       20        5        
      ---------------------------------------------------------------------------
     """  
@@ -193,7 +193,7 @@ def ex_5pdeer(param=None):
         info = dict(
             Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway','Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
             Units = ['','','','μs'],
-            Start = np.asarray([0.3, 0.3, 0.3,5]),
+            Start = np.asarray([0.4, 0.4, 0.2,5]),
             Lower = np.asarray([0, 0, 0, 0]),
             Upper = np.asarray([1, 1, 1, 20])
         )
