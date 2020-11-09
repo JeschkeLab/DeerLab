@@ -37,7 +37,7 @@ def regparamrange(K,L,noiselvl=0,logres=0.1):
     try:
         # Get generalized singular values of K and L
         singularValues = gsvd(K,L)
-    except ValueError as e:
+    except:
         # Otherwise just estimate via the SVD from the dipolar kernel to avoid crash
         _,singularValues,_ = svd(K)
 
