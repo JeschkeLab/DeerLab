@@ -499,7 +499,7 @@ def multistarts(n,x0,lb,ub):
 
     # Generate n-1 new starting points within the bounds
     if n>1:
-        x0 = np.concatenate(([x0], np.random.uniform(low = lb, high = ub, size=(n-1,len(x0)))), 0)
+        x0 = np.linspace(lb,ub,n-1)
     else:
         x0 = [x0]
     return x0
