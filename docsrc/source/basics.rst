@@ -101,7 +101,7 @@ Experiments
 
         The returned output ``pathways`` is a list of pathways information ::
 
-                pathways =[[0.7], [0.3, 0]]
+                pathways = [[0.7], [0.3, 0]]
 
         Each nested list holds information about one pathway. The first element is modulation amplitude, and the second element is the refocusing point.
         In the above example, the first list shows a pathway with amplitude 0.7 and no refocusing time, indicating that it represents the unmodulated contribution.

@@ -26,7 +26,7 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
         Regularization functional type: 
     
         * ``'tikhonov'`` - Tikhonov regularizaton
-        * ``'tv' `` - Total variation regularization
+        * ``'tv'`` - Total variation regularization
         * ``'huber'`` - Huber regularization
         The default is ``'tikhonov'``.
 

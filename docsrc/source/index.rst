@@ -1,7 +1,4 @@
 ﻿
-.. warning:: DeerLab is currently in the pre-release stage (version numbers v0.x.x) and under active development. Major changes are likely before the first stable version (v1.0.0) is released.
-
-
 .. raw:: html 
 
     <style>
@@ -29,6 +26,9 @@ DeerLab :blueish:`Docs`
     <a href="./functions.html" class="btn-ref">   Reference Guides </a>
     <br>
     <br>
+
+
+.. warning:: DeerLab is currently in the pre-release stage (version numbers v0.x.x) and under active development. Major changes are likely before the first stable version (v1.0.0) is released.
 
 
 -------
@@ -86,6 +86,7 @@ DeerLab :blueish:`Docs`
 
 .. toctree::
     :hidden:
+    :caption: Documentation
     :maxdepth: 0
 
     Home <self>

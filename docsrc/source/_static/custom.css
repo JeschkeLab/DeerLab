@@ -323,12 +323,14 @@ html.writer-html4 .rst-content dl:not(.docutils) code, html.writer-html4 .rst-co
     bottom: 0;
     display: block;
     left: 0;
-    padding: 150px 10px 0;
+    padding: 150px 0px 0px 0px;
     position: absolute;
     right: 0;
     top: 0;   
     text-align: center;
     color: #343131;
+    font-style: normal;
+    font-weight: 400;
 } 
 .sphx-glr-thumbcontainer .figure {
     width: 160px;
