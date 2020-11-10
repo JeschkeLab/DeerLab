@@ -1,6 +1,27 @@
 
 -------------------------------
 
+Release v0.12.2 - October 2020
+---------------------------------
+
+#### Hotfix
+
+* ``regparamrange``: The exception handling introduced in the previous release was still too specific. The function kept crashing due to SVD non-convergence errors during the GSVD. This has been fixed and the error will not lead to a crash. ([#42](https://github.com/JeschkeLab/DeerLab/issues/42)).   
+
+#### Overall changes
+
+* Fit functions using the ``multistart`` option are now fully deterministic. The functions was using now a random generator to define the different start points, this is now deterministic. 
+
+* Documentation UI has been re-designed for a more confortable reading. Minor errors and outdated information have been corrected throughout. Expanded reference documentation of several functions for better understanding. 
+
+#### Specific changes
+
+* ``dd_skewgauss``: corrected an error in the implementation that was leading to wrong distributions ([#61](https://github.com/JeschkeLab/DeerLab/issues/61)).  
+
+* ``dd_models``, ``ex_models``: Adapted numerical boundaries and start values of some built-in models to reflect better the physical reality. Afected models: ``dd_skewgauss``, ``dd_triangle``, ``dd_gengauss``, ``ex_5pdeer``, ``ex_ovl4pdeer``. 
+
+-------------------------------
+
 Release v0.12.1 - October 2020
 ---------------------------------
 
