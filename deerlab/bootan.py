@@ -26,33 +26,33 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, 
     Vfit : array or list of array_like
         Fit of the dataset(s).
 
-    samples : scalar
+    samples : scalar, optional
         Number of bootstrap samples to analyze. The quality of bootstrapping 
         results improve with the number of boostrap samples evaluated, the 
         default is 1000.
 
-    Returns
-    -------
-    bootuq : :ref:`UncertQuant` or list of :ref:`UncertQuant`
-        Bootstrap uncertainty quantification for each variable returned by ``fcn``. 
-
-    Other Parameters
-    ----------------
-    resampling : string
+    resampling : string, optional
         Specifies the method employed for re-sampling new bootstrap samples.
 
         * ``'gaussian'`` - Sample noise from a Gaussian distribution.
         * ``'residual'`` - Sample noise from the fit residuals.
         The default is ``'gaussian'``.
 
-    cores : scalar
+    cores : scalar, optional
         Number of CPU cores/processes for parallel computing. If ``cores=1`` no parallel 
         computing is used. If ``cores=-1`` all available CPUs are used. The default is 
         one core (no parallelization).
 
-    verbose : boolean
+    verbose : boolean, optional
         Specifies whether to print the progress of the bootstrap analysis on the 
         command window, the default is false.
+
+
+    Returns
+    -------
+    bootuq : :ref:`UncertQuant` or list of :ref:`UncertQuant`
+        Bootstrap uncertainty quantification for each variable returned by ``fcn``. 
+
 
     Examples
     --------

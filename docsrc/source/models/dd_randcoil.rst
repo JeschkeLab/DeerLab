@@ -26,8 +26,28 @@ where :math:`\nu_0 = 3/(12\pi r_0 N \nu)^{3/2}`
 ``param[2]``   :math:`\nu`       0.60           0.33         1.00           Scaling exponent
 ============== ============= ============= ============= ============= =======================================
 
-Example using default parameters:
 
-.. image:: ../images/model_dd_randcoil.png
-   :width: 650px
+Example
+=========================================
+
+Example of the model evaluated at the start values of the parameters:
+
+.. plot::
+
+   import deerlab as dl
+   import matplotlib.pyplot as plt 
+   import numpy as np 
+   model = dl.dd_randcoil
+   r = np.linspace(0.5,8,400)
+   info = model() 
+   par0 = info['Start']
+   P = model(r,par0)
+   plt.figure(figsize=[6,3])
+   plt.plot(r,P)
+   plt.xlabel('r [nm]',fontsize=13)
+   plt.ylabel('P(r) [nm$^{-1}$]',fontsize=13)
+   plt.grid(alpha=0.4)
+   plt.tick_params(labelsize=12)
+   plt.tick_params(labelsize=12)
+   plt.tight_layout()
 

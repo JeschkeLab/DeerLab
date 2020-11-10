@@ -14,11 +14,13 @@ def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
     ----------
     t : array_like
         Time axis, in microseconds.
+
     pathways : list of lists or scalar
         List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time (T0), 
         and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]`` for one pathway. If n is not given it is assumed to be 1. 
         For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``.
         If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  
+
     Bmodel : callable
         Background basis function. Its use depends on the type of background model. 
 
@@ -27,6 +29,7 @@ def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
 
     renormalize : boolean, optional
         Re-normalization of the multi-pathway background to ensure the equality ``B(t=0)==1`` is satisfied. Enabled by default.
+        
     renormpaths: boolean, optional
         Normalization of the pathway amplitudes such that ``Lam0 + lam1 + ... + lamN = 1``. Enabled by default.  
 
@@ -35,14 +38,17 @@ def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
     B : ndarray
         Multipathway background decay
 
-    Other parameters
-    ----------------
-    renormalize : boolean
-        The multi-pathway background does not necessarily satisfy ``V(0) == 1``. This option enables/disables a re-normalization of the background function to ensure that equality is satisfied, by default it is enabled.
-
     Notes
     -----
-    Computes the multipathway background ``B`` for the time axis ``t`` corresponding to the dipolar pathways specified in ``pathways``. The total background is computed from the basis background function model specified in ``Bmodel``. For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` is a 2D-array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals
+    Computes the multipathway background ``B`` for the time axis ``t`` corresponding to the dipolar pathways specified in ``pathways`` [1]_. 
+    The total background is computed from the basis background function model specified in ``Bmodel``. For a multi-pathway DEER signal
+    (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways``
+    is a 2D-array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals
+
+    References
+    ----------
+    .. [1] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. 
+        DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson., 1, 209–224, 2020 
 
     Examples
     --------

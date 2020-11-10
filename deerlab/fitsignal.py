@@ -18,25 +18,29 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
               par0=[None,None,None], lb=[None,None,None], ub=[None,None,None], verbose= False,
               weights=1, uqanalysis=True, regparam='aic', regtype = 'tikhonov'):
     r"""
-    Fits a dipolar model to the experimental signal V with time axis t, using
-    distance axis r. The model is specified by the distance distribution (dd),
+    Fits a dipolar model to the experimental signal ``V`` with time axis ``t``, using
+    distance axis ``r``. The model is specified by the distance distribution (dd),
     the background (bg), and the experiment (ex).
 
-    If multiple signals (V1,V2,...) and their corresponding time axes (t1,t2,...)
-    are given, they will be fitted globally with a single distance distribution (dd).
-    For each signal, a specific background (bg1,bg2,...) and experiment (ex1,ex2)
+    If multiple signals (``V1``, ``V2``,...) and their corresponding time axes (``t1``, ``t2``,...)
+    are given, they will be fitted globally with a single distance distribution (``dd``).
+    For each signal, a specific background (``bg1``, ``bg2``,...) and experiment (``ex1``, ``ex2``)
     models can be assigned.
 
-    This function can handle both parametric and non-parametric distance distribution models.
+    This function can handle both parametric and non-parametric distance distribution models. It 
+    accepts only built-in parametric models, no user-defined models.
 
     Parameters
     ----------
     V : array_like or list of array_like
         Time-domain signal(s) to fit.
+    
     t : array_like or list of array_like
         Time axis, in microseconds. 
+    
     r : array_like
         Distance axis, in nanometers.
+    
     dd : callable or string
         Distance distribution model, the following modes are allowed:
 
@@ -44,7 +48,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * A callable function of a DeerLab parametric distribution model (e.g. ``dd_gauss``).
         * A string ``None`` to indicate no distribution, i.e. only background.
 
-        The default is 'P'.
+        The default is ``'P'``.
 
     bg : callable or string
         Background model, the following modes are allowed:
@@ -52,31 +56,74 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * A callable function of a DeerLab parametric background model (e.g. ``bg_hom3d``).
         * ``None`` to indicate no background decay.
 
-        The default is bg_hom3d.
+        The default is ``bg_hom3d``.
 
     ex : callable or string
         Experiment model, the following modes are allowed:
 
         * Function handle to experiment model (e.g. ``ex_4pdeer``)
-        * ``None`` to indicate simple dipolar oscillation (mod.depth = 1)
+        * ``None`` to indicate simple dipolar oscillation (modulation depth equal 1)
 
-        The default is ex_4pdeer.
+        The default is ``ex_4pdeer``.
 
-    par0 : list of array_like
+    par0 : list of array_like, optional
         Starting parameter values. Must be a 3-element list ``[par0_dd,par0_bg,par0_ex]``
         containing the start values of the distribution, background and experiment models, in that order.
         If a model does not require parameters or are to be determined automatically it must be specified 
         as an empty list ``[]``. The default is ``par0=[[],[],[]]``.
-    lb : list of array_like
+    
+    lb : list of array_like, optional
         Lower bounds for parameters.  Must be a 3-element list ``[lb_dd,lb_bg,lb_ex]``
         containing the start values of the distribution, background and experiment models, in that order.
         If a model does not require parameters or are to be determined automatically it must be specified 
         as an empty list ``[]``. The default is ``lb=[[],[],[]]``.
-    ub : list of array_like
+    
+    ub : list of array_like, optional
         Upper bounds for parameters, Must be a 3-element list ``[ub_dd,ub_bg,ub_ex]``
         containing the start values of the distribution, background and experiment models, in that order.
         If a model does not require parameters or are to be determined automatically it must be specified 
         as an empty list ``[]``. The default is ``ub=[[],[],[]]``.
+    
+    weights : array_like, optional
+        Array of weighting coefficients for the individual signals in global fitting,
+        the default is all weighted equally.
+        If not specified all datasets are weighted equally.
+    
+    regparam : str or scalar, optional
+        Method for the automatic selection of the optimal regularization parameter:
+
+        * ``'lr'`` - L-curve minimum-radius method (LR)
+        * ``'lc'`` - L-curve maximum-curvature method (LC)
+        * ``'cv'`` - Cross validation (CV)
+        * ``'gcv'`` - Generalized Cross Validation (GCV)
+        * ``'rgcv'`` - Robust Generalized Cross Validation (rGCV)
+        * ``'srgcv'`` - Strong Robust Generalized Cross Validation (srGCV)
+        * ``'aic'`` - Akaike information criterion (AIC)
+        * ``'bic'`` - Bayesian information criterion (BIC)
+        * ``'aicc'`` - Corrected Akaike information criterion (AICC)
+        * ``'rm'`` - Residual method (RM)
+        * ``'ee'`` - Extrapolated Error (EE)
+        * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
+        * ``'gml'`` - Generalized Maximum Likelihood (GML)
+        * ``'mcl'`` - Mallows' C_L (MCL)
+        The regularization parameter can be manually specified by passing a scalar value
+        instead of a string. The default ``'aic'``.
+
+    regtype : string, optional
+        Regularization functional type: 
+    
+        * ``'tikhonov'`` - Tikhonov regularizaton
+        * ``'tv'``  - Total variation regularization
+        * ``'huber'`` - Huber regularization
+        The default is ``'tikhonov'``.  
+    
+    verbose : boolean, optional
+        Enable/disable printing a table of fit results, by default is disabled
+    
+    uqanalysis : boolean, optional
+        Enable/disable the uncertainty quantification analysis, by default it is enabled.
+
+
 
     Returns
     -------
@@ -130,43 +177,6 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     residuals : ndarray
         Vector of residuals at the solution.
 
-    Other Parameters
-    ----------------
-    weights : array_like 
-        Array of weighting coefficients for the individual signals in global fitting,
-        the default is all weighted equally.
-        If not specified all datasets are weighted equally.
-    regparam (str or scalar):
-        Method for the automatic selection of the optimal regularization parameter:
-
-        * ``'lr'`` - L-curve minimum-radius method (LR)
-        * ``'lc'`` - L-curve maximum-curvature method (LC)
-        * ``'cv'`` - Cross validation (CV)
-        * ``'gcv'`` - Generalized Cross Validation (GCV)
-        * ``'rgcv'`` - Robust Generalized Cross Validation (rGCV)
-        * ``'srgcv'`` - Strong Robust Generalized Cross Validation (srGCV)
-        * ``'aic'`` - Akaike information criterion (AIC)
-        * ``'bic'`` - Bayesian information criterion (BIC)
-        * ``'aicc'`` - Corrected Akaike information criterion (AICC)
-        * ``'rm'`` - Residual method (RM)
-        * ``'ee'`` - Extrapolated Error (EE)
-        * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
-        * ``'gml'`` - Generalized Maximum Likelihood (GML)
-        * ``'mcl'`` - Mallows' C_L (MCL)
-        The regularization parameter can be manually specified by passing a scalar value
-        instead of a string. The default ``'aic'``.
-
-    regtype : string
-        Regularization functional type: 
-    
-        * ``'tikhonov'`` - Tikhonov regularizaton
-        * ``'tv'``  - Total variation regularization
-        * ``'huber'`` - Huber regularization
-        The default is ``'tikhonov'``.  
-    verbose : boolean
-        Enable/disable printing a table of fit results, by default is disabled
-    uqanalysis : boolean
-        Enable/disable the uncertainty quantification analysis, by default it is enabled.  
 
     Examples
     --------

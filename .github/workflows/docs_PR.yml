@@ -1,0 +1,43 @@
+name: Docs Build PR test
+
+on: 
+  pull_request:
+    branches:
+    - main
+    paths:
+    - 'docsrc/**'
+    - '.github/workflows/deploy_ghpages.yml'
+    - '.github/workflows/docs_PR.yml'
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cache/pip
+        key: ${{ runner.os }}-${{ hashFiles('**/make.bat') }}
+        restore-keys: |
+          {{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+           python -m pip install --upgrade pip
+           python -m pip install sphinx_rtd_theme
+           python -m pip install numpydoc
+           python -m pip install sphinx-gallery
+           python -m pip install sphinxcontrib-httpdomain
+           python -m pip install m2r2
+           python -m pip install sphinx==1.8.4
+           sudo apt install texlive-extra-utils
+           sudo apt-get install texlive-latex-extra
+           python -m pip install .
+    - name: Build with Sphinx
+      run: |
+           sphinx-build -E -b html ./docsrc/source ./docs

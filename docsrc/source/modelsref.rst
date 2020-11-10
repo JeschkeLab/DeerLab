@@ -15,9 +15,9 @@ This group of distribution models is based on function that can serve as basis f
 
 .. rst-class:: func-list
 
-============================= ===================================================
+============================== =============================================================================
   Model function                 Description
-============================= ===================================================
+============================== =============================================================================
 :ref:`dd_rice`                  Single 3D-Rice distribution
 :ref:`dd_rice2`                 Two 3D-Rice distributions
 :ref:`dd_rice3`                 Three 3D-Rice distributions
@@ -27,7 +27,7 @@ This group of distribution models is based on function that can serve as basis f
 :ref:`dd_gengauss`              Single generalized Gaussian distribution
 :ref:`dd_skewgauss`             Single skew Gaussian distribution
 :ref:`dd_cos`                   Raised-cosine distribution
-============================= ===================================================
+============================== =============================================================================
 
 Disordered physical models
 ........................................
@@ -36,13 +36,13 @@ This group of distribution models represents spin labels attached to disordered 
 
 .. rst-class:: func-list
 
-=========================== ===================================================
+============================== =============================================================================
   Model function                                       Description
-=========================== ===================================================
-:ref:`dd_wormchain`           Worm-like chain
-:ref:`dd_wormgauss`           Worm-like chain with Gaussian convolution
-:ref:`dd_randcoil`            Random coil
-=========================== ===================================================
+============================== =============================================================================
+:ref:`dd_wormchain`              Worm-like chain
+:ref:`dd_wormgauss`              Worm-like chain with Gaussian convolution
+:ref:`dd_randcoil`               Random coil
+============================== =============================================================================
 
 
 Sphere/shell models
@@ -95,13 +95,13 @@ This category involves models that describe particular distributions of spin lab
 
 .. rst-class:: func-list
 
-=============================================  =================================================================== 
-Model function                                 Description                                                         
-=============================================  ===================================================================
-:doc:`bg_hom3d<models/bg_hom3d>`                 Homogeneous distribution in 3D
-:doc:`bg_hom3dex<models/bg_hom3dex>`             Homogeneous distribution in 3D with hard-shell excluded volume
-:doc:`bg_homfractal<models/bg_homfractal>`       Homogeneous distribution in fractal dimensions
-=============================================  ===================================================================
+==============================  ============================================================================= 
+Model function                                Description                                                         
+==============================  =============================================================================
+:ref:`bg_hom3d`                   Homogeneous distribution in 3D
+:ref:`bg_hom3dex`                 Homogeneous distribution in 3D with hard-shell excluded volume
+:ref:`bg_homfractal`              Homogeneous distribution in fractal dimensions
+==============================  =============================================================================
 
 Phenomenological models
 ...........................................
@@ -110,17 +110,17 @@ This category comprises phenomenological models that represent various mathemati
 
 .. rst-class:: func-list
 
-=============================================  ============================================================
-Model function                                 Description
-=============================================  ============================================================
-:doc:`bg_exp<models/bg_exp>`                   Exponential decay
-:doc:`bg_strexp<models/bg_strexp>`             Stretched exponential decay
-:doc:`bg_sumstrexp<models/bg_sumstrexp>`       Sum of two stretched exponential decays
-:doc:`bg_prodstrexp<models/bg_prodstrexp>`     Product of two stretched exponential decays
-:doc:`bg_poly1<models/bg_poly1>`               Linear polynomial
-:doc:`bg_poly2<models/bg_poly2>`               Quadratic polynomial
-:doc:`bg_poly3<models/bg_poly3>`               Cubic polynomial
-=============================================  ============================================================
+==============================  =============================================================================
+Model function                                  Description
+==============================  =============================================================================
+:ref:`bg_exp`                    Exponential decay
+:ref:`bg_strexp`                 Stretched exponential decay
+:ref:`bg_sumstrexp`              Sum of two stretched exponential decays
+:ref:`bg_prodstrexp`             Product of two stretched exponential decays
+:ref:`bg_poly1`                  Linear polynomial
+:ref:`bg_poly2`                  Quadratic polynomial
+:ref:`bg_poly3`                  Cubic polynomial
+==============================  =============================================================================
 
 
 .. _modelsref_ex:
@@ -131,14 +131,14 @@ Experiment models
 
 .. rst-class:: func-list
 
-=========================================== ===============================================================
-Model function                              Description
-=========================================== ===============================================================
-:doc:`ex_4pdeer<models/ex_4pdeer>`           4-pulse DEER, 3-pulse DEER (single modulated pathway)
-:doc:`ex_ovl4pdeer<models/ex_ovl4pdeer>`     4-pulse DEER (including 2+1 pathway) 
-:doc:`ex_5pdeer<models/ex_5pdeer>`           5-pulse DEER
-:doc:`ex_7pdeer<models/ex_7pdeer>`           7-pulse DEER
-=========================================== ===============================================================
+============================== =============================================================================
+Model function                               Description
+============================== =============================================================================
+:ref:`ex_4pdeer`                  4-pulse DEER, 3-pulse DEER (single modulated pathway)
+:ref:`ex_ovl4pdeer`               4-pulse DEER (including 2+1 pathway) 
+:ref:`ex_5pdeer`                  5-pulse DEER
+:ref:`ex_7pdeer`                  7-pulse DEER
+============================== =============================================================================
 
 
 

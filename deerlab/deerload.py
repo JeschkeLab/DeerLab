@@ -5,28 +5,41 @@ import os
 import matplotlib.pyplot as plt
 
 #-------------------------------------------------------------------------------
-def deerload(fullbasename,Scaling=None,plot=False,full_output=False,*args,**kwargs):
+def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
     r"""
     Load file in BES3T format (Bruker EPR Standard for Spectrum Storage and Transfer)
     
     * .DSC: description file
     * .DTA: data file
     
-    used on Bruker ELEXSYS and EMX machines. 
+    used on Bruker ELEXSYS and EMX machines. This function can handle experiments acquired 
+    in a multi-dimensional setup. 
 
     Parameters
     ----------
     fullbasename : string
         Full name of data file.
-    full_output : boolean
-        Enable/Disable returning parameter file entries as third output. Disabled by default.
     
+    full_output : boolean, optional
+        Return the parameter file entries as a third output. Disabled by default.
+    
+    plot : boolean, optional
+        Display a plot of the real and imaginary parts of the loaded data. Disabled by default.
+
     Returns
     -------
     t : ndarray
-        Time axis in microseconds.
+        Time axis in microseconds.Its structure depends on the dimensionality of the experimental datasets:
+
+        * 1D-datasets: the time axis of ``N`` points is returned as a one-dimensional ndarray of shape ``(N,)``
+        * 2D-datasets: the ``M`` time-axes of ``N`` points are returned as a two-dimensional ndarray of shape ``(N,M)``. The i-th axis can be accessed via ``t[:,i]``.
+        
     V : ndarray
-        Experimental signal.
+        Experimental signal(s). Its structure depends on the dimensionality of the experimental datasets:
+
+        * 1D-datasets: the signal of ``N`` points is returned as a one-dimensional ndarray of shape ``(N,)``
+        * 2D-datasets: the ``M`` signals of ``N`` points are returned as a two-dimensional ndarray of shape ``(N,M)``. The i-th  signal can be accessed via ``V[:,i]``.
+        
     pars : dict
         Parameter file entries, returned if ``full_output`` is ``True``.
 
@@ -196,67 +209,7 @@ def deerload(fullbasename,Scaling=None,plot=False,full_output=False,*args,**kwar
     
     if nz == 1:
         data = data.reshape(nx,ny)
-        
-    if Scaling == None:
-        pass
-    else:
-        # Averaging over the number of scans
-        if Scaling == 'n':
-            #Check if the experiments was already averaged
-            # Number of scans  
-            if 'AVGS' in parSPL:
-                nAverages = float(parSPL['AVGS'])
-                if 'SctNorm' in parameters["DSL"]["signalChannel"]:
-                    if parameters["DSL"]["signalChannel"] == "True":
-                        warn('Scaling by number of scans not possible,\nsince data in DSC/DTA are already averaged')
-                else:
-                    warn("Missing SctNorm field in the DSC file. Cannot determine whether data is already scaled, assuming it isn't...")
-                    data = data/nAverages
-            else:
-                raise warn('Missing AVGS field in the DSC file.')
-        
-        # Receiver gain
-        if parameters['EXPT'] =='CW' and Scaling == 'G':
-            #SPL/RCAG: Receiver Gain in dB
-            if 'RCAG' in parameters:
-                ReceiverGaindB = float(parameters['RCAG'])
-                ReceiverGain = 10 ** (ReceiverGaindB / 20)
-                data /= ReceiverGain
-            else:
-                warn('Cannot scale by receiver gain, since RCAG in the DSC file is missing.')
-
-        # Conversion/sampling time
-        elif parameters['EXPT'] =='CW' and Scaling == 'c':
-            #SPL/SPTP: sampling time in seconds
-            if 'STPT' in parameters:
-                # Xenon (according to Feb 2011 manual) already scaled data by ConvTime if
-                # normalization is specified (SctNorm=True). Question: which units are used?
-                # Xepr (2.6b.2) scales by conversion time even if data normalization is
-                # switched off!
-                ConversionTime = float(parameters['SPTP'])
-                data /= ConversionTime*1000
-            else:
-                warn('Cannot scale by sampling time, since SPTP in the DSC file is missing.')
-        # Microwave power
-        elif parameters['EXPT'] =='CW' and Scaling == 'P':
-            #SPL/MWPW: microwave power in watt
-            if 'MWPW' in parameters:
-                mwPower = float(parameters['MWPW'])*1000
-                data /= np.sqrt(mwPower)
-            else:
-                warn('Cannot scale by power, since MWPW is absent in parameter file.')
-        #else:
-        #    warn('Cannot scale by microwave power, since these are not CW-EPR data.')
-        
-        # Temperature
-        if Scaling == 'T':
-            ##SPL/STMP: temperature in kelvin
-            if 'STMP'in parameters:
-                Temperature = float(parameters['STMP'])
-                data *= Temperature
-            else:
-                warn('Cannot scale by temperature, since STMP in the DSC file is missing.')
-    
+            
      # ns -> us converesion
     abscissa /= 1e3
 
@@ -266,10 +219,10 @@ def deerload(fullbasename,Scaling=None,plot=False,full_output=False,*args,**kwar
     data = np.squeeze(data)
 
     if plot:
-        plt.plot(abscissa/1e3,np.real(data),abscissa/1e3,np.imag(data))
-        plt.xlabel("time (μs)")
-        plt.ylabel("intensity")
-        plt.grid()
+        plt.plot(abscissa,np.real(data),abscissa,np.imag(data))
+        plt.xlabel("Time (μs)")
+        plt.ylabel("Intensity [a.u.]")
+        plt.grid(alpha=0.3)
         plt.show()
     
     if full_output:

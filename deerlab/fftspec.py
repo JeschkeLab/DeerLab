@@ -15,8 +15,18 @@ def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
     ----------
     V : array_like
         Signal to be processed.
+    
     t : array_like
         Time axis, in microseconds.
+    
+    mode : string, optional
+        Type of spectrum to be returned (``'real'``,``'imag'``,``'abs'``), the default is ``'abs'``.
+    
+    zerofilling : scalar, optional
+        Number of elements in the output FFT spectrum, the default is ``2*len(V)``.
+    
+    apodization : boolean, optional
+        Use of a Hamming apodization window, the default is ``True``.
 
     Returns
     -------
@@ -25,14 +35,6 @@ def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
     spec : ndarray
         FFT spectrum.
 
-    Other parameters
-    ----------------
-    mode : string 
-        Type of spectrum to be returned ('real','imag','abs'), the default is 'abs'.
-    zerofilling : scalar
-        Number of elements in the output FFT spectrum, the default is ``2*len(V)``.
-    apodization : boolean
-        Use of a Hamming apodization window, the default is True.
     """
     
     if zerofilling == 'auto':

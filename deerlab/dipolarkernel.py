@@ -33,37 +33,48 @@ def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = 
     ----------
     t : array_like
         Dipolar time axis, in microseconds.
+    
     r : array_like
         Distance axis, in nanometers.
+    
     pathways : list of lists or scalar
         List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time (T0), 
         and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]`` for one pathway. If n is not given it is assumed to be 1. 
         For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``.
         If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  
+    
     B : callable or array_like
         For a single-pathway model, the numerical background decay can be passed as an array. 
         For multiple pathways, a callable function must be passed, accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``
- 
-    Other Parameters
-    ----------------
-    method : string, default=``'fresnel'``
+
+    method : string, optional
         Numerical method for kernel matrix calculation: 
 
-            * 'fresnel' - uses Fresnel integrals for the kernel (default)
-            * 'integral' - uses explicit integration function (slow, accurate)
-            * 'grid' - powder average via explicit grid integration (slow, inaccurate)
+            * ``'fresnel'`` - uses Fresnel integrals for the kernel (default)
+            * ``'integral'`` - uses explicit integration function (slow, accurate)
+            * ``'grid'`` - powder average via explicit grid integration (slow, inaccurate)
+        The default is ``'fresnel'``.
+
     excbandwidth : scalar, optional
         Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth [4]_.
+    
     g : scalar, 2-element array, optional
-        Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, [g, g] is assumed 
+        Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, ``[g, g]`` is assumed 
+    
     integralop : boolean, optional
-        Whether to return K as an integral operator (i.e ``K = K*dr``) or not (``K``). Usage as an integral operator means that the matrix operation ``V=K@P`` with a normalized distance distribution (i.e. ``trapz(r,P)==1``) leads to a signal ``V`` with ampliude ``V(t=0)=1``. Default is True.
+        Whether to return K as an integral operator (i.e ``K = K*dr``) or not (``K``). Usage as an integral operator means that the 
+        matrix operation ``V=K@P`` with a normalized distance distribution (i.e. ``trapz(r,P)==1``) leads to a signal ``V`` with 
+        ampliude ``V(t=0)=1``. Enabled by default.
+    
     nKnots : scalar, optional
-        Number of knots for the grid of powder orientations to be used in the 'grid' kernel calculation method.
+        Number of knots for the grid of powder orientations to be used in the ``'grid'`` kernel calculation method.
+    
     renormalize : boolean, optional
         Re-normalization of multi-pathway kernels to ensure the equality ``K(t=0,r)==1`` is satisfied. Enabled by default.
+    
     renormpaths: boolean, optional
         Normalization of the pathway amplitudes such that ``Lam0 + lam1 + ... + lamN = 1``. Enabled by default. 
+    
     clearcache : boolean, optional
         Clear the cached dipolar kernels at the beginning of the function. Disabled by default.
 
@@ -97,14 +108,14 @@ def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = 
 
 	To specify a more complete 4-pulse DEER model that, e.g includes the 2+1 contribution, use::
 
-        Lam0 = 0.5                     # unmodulated part
-        lam = 0.4                      # modulation depth main signal
-        lam21 = 0.1                    # modulation depth 2+1 contribution
-        tau2 = 4                       # refocusing time (us) of 2+1 contribution
+        Lam0 = 0.5  # unmodulated part
+        lam = 0.4  # modulation depth main signal
+        lam21 = 0.1  # modulation depth 2+1 contribution
+        tau2 = 4  # refocusing time (us) of 2+1 contribution
 
-        path0 = Lam0            # unmodulated pathway
-        path1 = [lam1, 0]       # main dipolar pathway, refocusing at time zero
-        path1 = [lam2, tau2]    # 2+1 dipolar pathway, refocusing at time tau2
+        path0 = Lam0  # unmodulated pathway
+        path1 = [lam1, 0]  # main dipolar pathway, refocusing at time zero
+        path1 = [lam2, tau2]  # 2+1 dipolar pathway, refocusing at time tau2
         pathways = [path0, path1, path2]  
         
         K = dl.dipolarkernel(t,r,pathways)
@@ -112,13 +123,18 @@ def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = 
 
     References
     ----------
-    .. [1] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson., 1, 209–224, 2020 
+    .. [1] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. 
+        DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson., 1, 209–224, 2020 
 
-    .. [2] L. Fábregas Ibáñez, and G. Jeschke: Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.
+    .. [2] L. Fábregas Ibáñez, and G. Jeschke
+        Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.
 
-    .. [3] K. Keller, V. Mertens, M. Qi, A. I. Nalepa, A. Godt, A. Savitsky, G. Jeschke, and M. Yulikov: Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19
+    .. [3] K. Keller, V. Mertens, M. Qi, A. I. Nalepa, A. Godt, A. Savitsky, G. Jeschke, and M. Yulikov
+        Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19
 
-    .. [4] J.E. Banham, C.M. Baker, S. Ceola, I.J. Day, G.H. Grant, E.J.J. Groenen, C.T. Rodgers, G. Jeschke, C.R. Timmel, Distance measurements in the borderline region of applicability of CW EPR and DEER: A model study on a homologous series of spin-labelled peptides, Journal of Magnetic Resonance, 191, 2, 2008, 202-218
+    .. [4] J. E. Banham, C. M. Baker, S. Ceola, I. J. Day, G.H. Grant, E. J. J. Groenen, C. T. Rodgers, G. Jeschke, C. R. Timmel
+        Distance measurements in the borderline region of applicability of CW EPR and DEER: A model study on a homologous series of spin-labelled peptides, Journal of Magnetic Resonance, 191, 2, 2008, 202-218
+    
     """
     # Clear cache of memoized function is requested
     if clearcache:

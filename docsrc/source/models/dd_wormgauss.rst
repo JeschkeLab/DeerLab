@@ -20,11 +20,29 @@ Model
 ``param[2]``   :math:`\sigma`    0.2            0.01           2         Gaussian standard deviation (nm)
 ============== ============== ============= ============= ============= ==================================
 
-Example using start values:
+Example
+=========================================
 
-.. image:: ../images/model_dd_wormgauss.png
-   :width: 650px
+Example of the model evaluated at the start values of the parameters:
 
+.. plot::
+
+   import deerlab as dl
+   import matplotlib.pyplot as plt 
+   import numpy as np 
+   model = dl.dd_wormgauss
+   r = np.linspace(0.5,8,400)
+   info = model() 
+   par0 = info['Start']
+   P = model(r,par0)
+   plt.figure(figsize=[6,3])
+   plt.plot(r,P)
+   plt.xlabel('r [nm]',fontsize=13)
+   plt.ylabel('P(r) [nm$^{-1}$]',fontsize=13)
+   plt.grid(alpha=0.4)
+   plt.tick_params(labelsize=12)
+   plt.tick_params(labelsize=12)
+   plt.tight_layout()
 
 
 References

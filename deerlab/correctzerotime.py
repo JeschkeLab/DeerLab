@@ -26,7 +26,8 @@ def correctzerotime(V,t):
 
     References
     ----------
-    .. [1] G. Jeschke, Appl.Magn.Reson. 30, 473-498 (2006) p.485
+    .. [1] G. Jeschke,  V. Chechik, P. Ionita, A. Godt, H. Zimmermann, J. Banham, C. R. Timmel, D. Hilger and H. Jung,
+        DeerAnalysis2006—a comprehensive software package for analyzing pulsed ELDOR data Applied Magnetic Resonance 30, 2006, 473-498
     """
 
     if len(t)!=len(V):

@@ -21,19 +21,24 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     ----------
     V : array_like or list of array_like
         Dipolar signal(s) to be fitted.
+    
     Kmodel : callable or 2D-array_like
         Dipolar kernel model. If no kernel parameters must be fitted, it can be specified as a matrix array 
         (or a list thereof if multiple signals are globally fitted). 
         Otherwise, it is a callable function that accepts an array of kernel parameters and returns
         a kernel matrix array or a list thereof.
+    
     r : array_like 
         Distance axis, in nanometers.
+    
     model : callable 
         Basis component of the multi-component distance distribution. 
-        Must be a callable DeerLab model function (e.g. dd_gauss or dd_rice).
+        Must be a callable DeerLab model function (e.g. ``dd_gauss`` or ``dd_rice``).
+    
     maxModels : scalar 
         Maximal number of components in the multi-component distance distribution.
-    method : string
+    
+    method : string, optional
         Functional metric used for the selection of the optimal number of components:
 
         * ``'aic'``  Akaike information criterion
@@ -42,43 +47,66 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         * ``'rmsd'`` Root-mean squared deviation
         The default is ``'aic'``.
         
-    lb : array_like
+    lb : array_like, optional
         Lower bounds for the distribution basis model parameters. If not specified, parameters are unbounded.
-    ub : array_like
+    
+    ub : array_like, optional
         Upper bounds for the distribution basis model parameters. If not specified, parameters are unbounded.
-    ubK : array_like
+    
+    ubK : array_like, optional
         Lower bounds for the kernel model parameters. If not specified, parameters are unbounded.
-    ubK : array_like
+    
+    ubK : array_like, optional
         Upper bounds for the kernel model parameters. If not specified, parameters are unbounded.
+    
+    weights : array_like, optional
+        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
+    
+    renormalize : boolean, optional
+        Enable/disable renormalization of the fitted distribution, by default it is enabled.
+    
+    uqanalysis : boolean, optional
+        Enable/disable the uncertainty quantification analysis, by default it is enabled.  
 
     Returns
     -------
     :ref:`FitResult` with the following fields defined:
     P : ndarray
         Fitted distance distribution with optimal number of components.
+    
     Pparam : ndarray
         Fitted distance distribution components parameters
+    
     amps : ndarray
         Fitted components amplitudes
+    
     Kparam : ndarray
         Fitted kernel parameters.
+    
     Puncert : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted distance distribution
+    
     paramUncert : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted parameters
+    
     Nopt : int scalar
         Optimized number of components in model.
+    
     Pn : list of ndarrays
         List of all fitted multi-component distance distributions. 
+    
     selfun : ndarray
         Selection functional values (as specified as ``method``) for the all fitted multi-component models.
+    
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
+    
     plot : callable
         Function to display the results. It will display the 
         fitted signals, the distance distribution with confidence intervals, 
         and the values of the selection functional. If requested, the function
         returns the `matplotlib.axes` object as output. 
+    
     stats : dict
         Goodness of fit statistical estimators:
 
@@ -88,21 +116,16 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         * ``stats['aic']`` - Akaike information criterion
         * ``stats['aicc']`` - Corrected Akaike information criterion
         * ``stats['bic']`` - Bayesian information criterion
+    
     success : bool
         Whether or not the optimizer exited successfully.
+    
     cost : float
         Value of the cost function at the solution.
+    
     residuals : ndarray
         Vector of residuals at the solution.
 
-    Other parameters
-    ----------------
-    weights : array_like
-        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
-    renormalize : boolean
-        Enable/disable renormalization of the fitted distribution, by default it is enabled.
-    uqanalysis : boolean
-        Enable/disable the uncertainty quantification analysis, by default it is enabled.    
 
     Notes
     -----

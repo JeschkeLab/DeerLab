@@ -1,65 +1,95 @@
-﻿DeerLab |version|
-=====================================================
+﻿
+.. raw:: html 
 
-.. warning:: DeerLab is currently in the pre-release stage (version numbers 0.x.x) and under active development. Major changes are likely before the first stable version (1.0.0) is released.
+    <style>
+    .blueish {color:#556cd6; margin-left:-1%} 
+    </style> 
 
-DeerLab is a free software package for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy data based on the Python programming language. Dipolar EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others.
+.. role:: blueish
 
-DeerLab consists of a collection of functions that perform modelling, processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows. To model distance distributions, DeerLab supports two types of model classes and associated workflows: parameter-free models (as used in Tikhonov regularization) as well as a series of parameterized models (multi-Gaussians etc). It also provides a selection of background and experiment models. 
+DeerLab :blueish:`Docs`
+---------------------------------
 
--------
+|version|
+""""""""""
 
-Documentation
-    To get started read the :ref:`beginners_guide` tutorial. 
+.. raw:: html 
 
-    Looking for a specific topic? Look at the :ref:`selection of examples <examples>` or at :ref:`reference <functions>` for specific DeerLab functions. 
+    <div style="width:70%">
+    <span style="color:#586069; font-size:20px; line-height:1.5;">
+    DeerLab is a free software package for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy data based on the Python programming language. Dipolar 
+    EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others.
+    DeerLab provides a collection of functions that perform modelling, processing or fitting tasks. They can be combined in scripts to build custom data analysis workflows. 
+    </span></div>
+    <br>
+    <a href="./beginners_guide.html" class="btn-quick">   Get started → </a>
+    <a href="./functions.html" class="btn-ref">   Reference Guides </a>
+    <br>
+    <br>
 
--------
 
-What's new?
-    Check the :ref:`changelog` for the changes introduced in the latest releases.
-
--------
-
-Citing DeerLab
-    When you use DeerLab in your work, please cite the following publication:
-
-    .. raw:: html 
-
-        <div style="height:2%px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
-            <div style="width:7%;">
-                <img src='https://www.magnetic-resonance-ampere.net/graphic_journal_cover_normal.png', style="margin-top:1%; margin-bottom:1%; width=50% !important ; ">
-            </div>
-            <div style="margin-left:1%; font-size:14px">
-                <h3 style="font-size:110%">  DeerLab: a comprehensive software package for analyzing dipolar electron paramagnetic resonance spectroscopy data </h3> 
-                Luis Fábregas Ibáñez, Gunnar Jeschke, Stefan Stoll <br>
-                Magn. Reson., 1, 209–224, 2020 <br>
-                <a href="https://doi.org/10.5194/mr-1-209-2020"> doi.org/10.5194/mr-1-209-2020</a>
-            </div>
-        </div>
+.. warning:: DeerLab is currently in the pre-release stage (version numbers v0.x.x) and under active development. Major changes are likely before the first stable version (v1.0.0) is released.
 
 
 -------
 
-Contributing
-    .. raw:: html 
+.. raw:: html 
 
-        <div style="height:3%; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
-            <div style="width:5%;">
-                <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png', style="margin-top:1%; margin-bottom:1%;height:60%;">
-            </div>
-            <div style="margin-left:1%; font-size:14px">
-                DeerLab is hosted on <a href="https://github.com/JeschkeLab/DeerLab"> Github </a>:
-                <ul style="font-size:14px">
-                <li> Bugs and feature requests can be reported on the <a href="https://github.com/JeschkeLab/DeerLab/issues"> issue tracker </a>.
-                <li> Any contributions in the form of <a href="https://github.com/JeschkeLab/DeerLab/pulls"> pull requests</a>  are very welcome.
-                </ul>
-            </div>
-        </div>
+    <div class="div_home">
+    <h2> What's new? </h2>
+    <span style="color:#586069; font-size:16px; line-height:1.5;"> Check the Release Notes for the changes introduced in the latest releases.</span>
+    <br><br>
+    <a href="./changelog.html" class="btn-ref">   Release Notes → </a>
+    <br>
+    </div>
+
+-------
+
+.. raw:: html 
+
+    <div  class="div_home">
+    <h2> How to cite? </h2>
+    <span style="color:#586069; font-size:16px; line-height:1.5;"> When you use DeerLab in your work, please cite the following publication:</span>
+    <br>
+    <div style="margin-left:1%; font-size:14px">
+        <br>
+        <h3 style="font-size:110%">  DeerLab: a comprehensive software package for analyzing dipolar electron paramagnetic resonance spectroscopy data </h3> 
+        Luis Fábregas Ibáñez, Gunnar Jeschke, Stefan Stoll <br>
+        Magn. Reson., 1, 209–224, 2020 <br>
+    </div>
+    <br>
+    <a href="https://doi.org/10.5194/mr-1-209-2020" class="btn-ref">   Read on MR → </a>
+    <br>
+    </div>
+
+
+-------
+
+.. raw:: html 
+
+    <div  class="div_home">
+    <h2> Contributing </h2>
+    <span style="color:#586069; font-size:16px; line-height:1.5;">
+        DeerLab is hosted on <a href="https://github.com/JeschkeLab/DeerLab"> Github </a>:
+        <ul style="font-size:14px">
+        <li> Bugs and feature requests can be reported on the <a href="https://github.com/JeschkeLab/DeerLab/issues"> issue tracker </a>.
+        <li> Any contributions in the form of <a href="https://github.com/JeschkeLab/DeerLab/pulls"> pull requests</a>  are very welcome.
+        </ul>
+     </span>
+    <a href="https://github.com/JeschkeLab/DeerLab/issues" class="btn-ref">   Report an issue → </a>
+    <br>
+    </div>
 
 
 .. include:: changelog.rst
     :start-after: Version
+
+.. toctree::
+    :hidden:
+    :caption: Documentation
+    :maxdepth: 0
+
+    Home <self>
 
 .. toctree::
     :hidden:

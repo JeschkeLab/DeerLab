@@ -10,12 +10,12 @@ def whitegaussnoise(t,level=1,rescale=False,seed=None):
         Time axis.
     level : float scalar
         Noise level, i.e. standard deviation of underlying Gaussian distribution.
-    rescale : boolean
+    rescale : boolean, optional
         If true, rescales the noise vector such that its standard deviation is exactly equal
         to ``level``. If false (default), the standard deviation of the noise vector can deviate
         slightly from ``level``, particularly for short vectors.
-    seed : None or integer scalar
-        If None (default), do not seed the random number generator. If an integer scalar is
+    seed : integer scalar, optional
+        If ``None`` (default), do not seed the random number generator. If an integer scalar is
         given (e.g. ``seed=137``), seed the random number generator with this number.
     
     Returns

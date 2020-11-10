@@ -19,28 +19,61 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
     ----------
     V : array_like or list of array_like
         Dipolar signal(s) to be fitted.
+    
     Vmodel : callable
         Function taking an array of parameters and returning the dipolar signal(s) as an array or a list of arrays.
+    
     par0  : array_like
         Start values of the model parameters.
+    
     lb : array_like      
         Lower bounds for the model parameters. If not specified, it is left unbounded.
+    
     ub : array_like     
         Upper bounds for the model parameters. If not specified, it is left unbounded.
+    
+    weights : array_like, optional
+        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
+    
+    rescale : boolean, optional
+        Enable/disable optimization of the signal scale, by default it is enabled.
+    
+    multiStarts : scalar, optional
+        Number of starting points for global optimization, the default is 1.
+    
+    uqanalysis : boolean, optional
+        Enable/disable the uncertainty quantification analysis, by default it is enabled.    
+    
+    tol : scalar, optional
+        Optimizer function tolerance, the default is 1e-10.
+    
+    maxeval : scalar, optional
+        Maximum number of optimizer iterations, the default is 5000.
+    
+    maxiter : scalar, optional
+        Maximum number of optimizer iterations, the default is 3000.
+    
+    covmatrix : array_like with shape(n,n), optional
+        Covariance matrix of the noise in the dataset(s). If not specified it is automatically computed.
+
 
     Returns
     -------
     :ref:`FitResult` with the following fields defined:
     param : ndarray
         Fitted model parameters
+    
     uncertainty : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted parameters.
+    
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
+    
     plot : callable
         Function to display the results. It will 
         display the fitted signals. If requested, the function returns 
-        the `matplotlib.axes` object as output. 
+        the ``matplotlib.axes`` object as output. 
+    
     stats :  dict
         Goodness of fit statistical estimators:
 
@@ -50,31 +83,16 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
         * ``stats['aic']`` - Akaike information criterion
         * ``stats['aicc']`` - Corrected Akaike information criterion
         * ``stats['bic']`` - Bayesian information criterion
+    
     success : bool
         Whether or not the optimizer exited successfully.
+    
     cost : float
         Value of the cost function at the solution.
+    
     residuals : ndarray
         Vector of residuals at the solution.
 
-    Other parameters
-    ----------------
-    weights : array_like 
-        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
-    rescale : boolean
-        Enable/disable optimization of the signal scale, by default it is enabled.
-    multiStarts : scalar
-        Number of starting points for global optimization, the default is 1.
-    uqanalysis : boolean
-        Enable/disable the uncertainty quantification analysis, by default it is enabled.    
-    tol : scalar
-        Optimizer function tolerance, the default is 1e-10.
-    maxeval : scalar
-        Maximum number of optimizer iterations, the default is 5000.
-    maxiter : scalar
-        Maximum number of optimizer iterations, the default is 3000.
-    covmatrix : array_like with shape(n,n)
-        Covariance matrix of the noise in the dataset(s). If not specified it is automatically computed.
 
     Examples
     --------

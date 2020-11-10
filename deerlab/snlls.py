@@ -30,14 +30,86 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         returning a matrix array or a list thereof.
     par0 : array_like
         Start values of the non-linear parameters.
-    lb : array_like
+    lb : array_like, optional
         Lower bounds for the non-linear parameters, assumed unconstrained if not specified.
-    ub : array_like
+    ub : array_like, optional
         Upper bounds for the non-linear parameters, assumed unconstrained if not specified.
-    lbl : array_like
+    lbl : array_like, optional
         Lower bounds for the linear parameters, assumed unconstrained if not specified.
-    ubl : array_like
+    ubl : array_like, optional
         Upper bounds for the linear parameters, assumed unconstrained if not specified.
+    reg : boolean or string, optional
+        Determines the use of regularization on the solution of the linear problem.
+        
+        * ``'auto'`` - Automatic decision based con the condition number of the non-linear model ``Amodel``.
+        * ``True`` - Forces regularization regardless of the condition number
+        * ``False`` - Disables regularization regardless of the condition number
+        The default is ``'auto'``.
+
+    regType : string, optional
+        Regularization penalty type:
+
+        * ``'tikhonov'`` - Tikhonov regularizaton
+        * ``'tv'``  - Total variation regularization
+        * ``'huber'`` - Huber regularization
+        The default is ``'tikhonov'``.
+
+    regorder : int scalar, optional
+        Order of the regularization operator
+    regParam : string or float scalar, optional
+        Method for the automatic selection of the optimal regularization parameter:
+
+        * ``'lr'`` - L-curve minimum-radius method (LR)
+        * ``'lc'`` - L-curve maximum-curvature method (LC)
+        * ``'cv'`` - Cross validation (CV)
+        * ``'gcv'`` - Generalized Cross Validation (GCV)
+        * ``'rgcv'`` - Robust Generalized Cross Validation (rGCV)
+        * ``'srgcv'`` - Strong Robust Generalized Cross Validation (srGCV)
+        * ``'aic'`` - Akaike information criterion (AIC)
+        * ``'bic'`` - Bayesian information criterion (BIC)
+        * ``'aicc'`` - Corrected Akaike information criterion (AICC)
+        * ``'rm'`` - Residual method (RM)
+        * ``'ee'`` - Extrapolated Error (EE)
+        * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
+        * ``'gml'`` - Generalized Maximum Likelihood (GML)
+        * ``'mcl'`` - Mallows' C_L (MCL)
+        The regularization parameter can be manually specified by passing a scalar value
+        instead of a string. The default ``'aic'``.
+
+    alphareopt : float scalar, optional
+        Relative parameter change threshold for reoptimizing the regularization parameter
+        when using a selection method, the default is 1e-3.
+
+    nnlsSolver : string, optional
+        Solver used to solve a non-negative least-squares problem (if applicable):
+
+        * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
+        * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
+        * ``'nnlsbpp'`` - Optimization using the block principal pivoting NNLS algorithm.
+        The default is ``'cvx'``.
+
+    weights : array_like, optional
+        Array of weighting coefficients for the individual signals in global fitting,
+        the default is all weighted equally.
+
+    multistart : int scalar, optional
+        Number of starting points for global optimization, the default is 1.
+        
+    nonlin_maxiter : float scalar, optional
+        Non-linear solver maximal number of iterations, the default is 1e8.
+
+    nonlin_tol : float scalar, optional
+        Non-linear solver function tolerance, the default is 1e-9.
+
+    lin_maxiter : float scalar, optional
+        Linear solver maximal number of iterations, the default is 1e4.
+
+    lin_tol : float scalar, optional
+        Linear solver function tolerance, the default is 1e-15.
+
+    uqanalysis : boolean, optional
+        Enable/disable the uncertainty quantification analysis, by default it is enabled.
+
 
     Returns
     -------
@@ -75,71 +147,6 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     residuals : ndarray
         Vector of residuals at the solution.
 
-    Other parameters
-    ----------------
-    reg : boolean or string
-        Determines the use of regularization on the solution of the linear problem.
-        
-        * ``'auto'`` - Automatic decision based con the condition number of the non-linear model ``Amodel``.
-        * ``True`` - Forces regularization regardless of the condition number
-        * ``False`` - Disables regularization regardless of the condition number
-        The default is ``'auto'``.
-
-    regType : string
-        Regularization penalty type:
-
-        * ``'tikhonov'`` - Tikhonov regularizaton
-        * ``'tv'``  - Total variation regularization
-        * ``'huber'`` - Huber regularization
-        The default is ``'tikhonov'``.
-
-    regorder (scalar,int)
-        Order of the regularization operator
-    regParam (str or scalar):
-        Method for the automatic selection of the optimal regularization parameter:
-
-        * ``'lr'`` - L-curve minimum-radius method (LR)
-        * ``'lc'`` - L-curve maximum-curvature method (LC)
-        * ``'cv'`` - Cross validation (CV)
-        * ``'gcv'`` - Generalized Cross Validation (GCV)
-        * ``'rgcv'`` - Robust Generalized Cross Validation (rGCV)
-        * ``'srgcv'`` - Strong Robust Generalized Cross Validation (srGCV)
-        * ``'aic'`` - Akaike information criterion (AIC)
-        * ``'bic'`` - Bayesian information criterion (BIC)
-        * ``'aicc'`` - Corrected Akaike information criterion (AICC)
-        * ``'rm'`` - Residual method (RM)
-        * ``'ee'`` - Extrapolated Error (EE)
-        * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
-        * ``'gml'`` - Generalized Maximum Likelihood (GML)
-        * ``'mcl'`` - Mallows' C_L (MCL)
-        The regularization parameter can be manually specified by passing a scalar value
-        instead of a string. The default ``'aic'``.
-
-    alphareopt : float scalar
-        Relative parameter change threshold for reoptimizing the regularization parameter
-        when using a selection method, the default is 1e-3.
-    nnlsSolver : string
-        Solver used to solve a non-negative least-squares problem (if applicable):
-
-        * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
-        * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
-        * ``'nnlsbpp'`` - Optimization using the block principal pivoting NNLS algorithm.
-        The default is ``'cvx'``.
-    weights : array_like
-        Array of weighting coefficients for the individual signals in global fitting,
-        the default is all weighted equally.
-    multistart : int scalar
-        Number of starting points for global optimization, the default is 1.
-    nonlin_maxiter : float scalar
-        Non-linear solver maximal number of iterations, the default is 1e8.
-    nonlin_tol : float scalar
-        Non-linear solver function tolerance, the default is 1e-9.
-    lin_maxiter : float scalar
-        Linear solver maximal number of iterations, the default is 1e4.
-    lin_tol : float scalar
-        Linear solver function tolerance, the default is 1e-15.
-    uqanalysis : boolean
-        Enable/disable the uncertainty quantification analysis, by default it is enabled.
 
     Notes
     -----
