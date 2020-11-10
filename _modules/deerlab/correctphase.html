@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.correctphase &mdash; DeerLab  documentation</title>
+  <title>deerlab.correctphase &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -202,6 +206,12 @@
 <span class="sd">    ----------</span>
 <span class="sd">    V : array_like or list of array_like</span>
 <span class="sd">        Complex-valued signals or list thereof.</span>
+<span class="sd">    phase  : float scalar, optional</span>
+<span class="sd">        Phase shift for manual correction, in radians. </span>
+<span class="sd">    imagoffset : boolean, optional</span>
+<span class="sd">        Enables/Disables the fitting and correction of an imaginary offset, by default disabled.</span>
+<span class="sd">    full_output : boolean, optional</span>
+<span class="sd">        If enabled the function will return additional output arguments in a tuple, by default disabled.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -213,15 +223,6 @@
 <span class="sd">        Fitted phase used for correction, in radians.    </span>
 <span class="sd">    imoffset : float scalar (if full_output==True)</span>
 <span class="sd">        Fitted imaginary offset used for correction.</span>
-
-<span class="sd">    Other Parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    phase  : float scalar</span>
-<span class="sd">        Phase shift for manual correction, in radians. </span>
-<span class="sd">    imagoffset : boolean</span>
-<span class="sd">        Enables/Disables the fitting and correction of an imaginary offset, by default disabled.</span>
-<span class="sd">    full_output : boolean</span>
-<span class="sd">        If enabled the function will return additional output arguments in a tuple, by default disabled.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

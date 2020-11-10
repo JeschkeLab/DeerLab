@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>correctphase &mdash; DeerLab  documentation</title>
+  <title>correctphase &mdash; DeerLab</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -100,7 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -204,10 +208,19 @@ must contain the single traces. An array of phases <code class="docutils literal
 <dt><strong>V</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like or list of array_like</span></dt>
 <dd><p class="first last">Complex-valued signals or list thereof.</p>
 </dd>
+<dt><strong>phase</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar, optional</span></dt>
+<dd><p class="first last">Phase shift for manual correction, in radians.</p>
+</dd>
+<dt><strong>imagoffset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Enables/Disables the fitting and correction of an imaginary offset, by default disabled.</p>
+</dd>
+<dt><strong>full_output</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">If enabled the function will return additional output arguments in a tuple, by default disabled.</p>
+</dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>Vr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
 <dd><p class="first last">Real part of the phase corrected dataset.</p>
 </dd>
@@ -219,20 +232,6 @@ must contain the single traces. An array of phases <code class="docutils literal
 </dd>
 <dt><strong>imoffset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar (if full_output==True)</span></dt>
 <dd><p class="first last">Fitted imaginary offset used for correction.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
-<dt><strong>phase</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar</span></dt>
-<dd><p class="first last">Phase shift for manual correction, in radians.</p>
-</dd>
-<dt><strong>imagoffset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">Enables/Disables the fitting and correction of an imaginary offset, by default disabled.</p>
-</dd>
-<dt><strong>full_output</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">If enabled the function will return additional output arguments in a tuple, by default disabled.</p>
 </dd>
 </dl>
 </td>

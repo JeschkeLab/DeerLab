@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.dipolarbackground &mdash; DeerLab  documentation</title>
+  <title>deerlab.dipolarbackground &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -197,11 +201,13 @@
 <span class="sd">    ----------</span>
 <span class="sd">    t : array_like</span>
 <span class="sd">        Time axis, in microseconds.</span>
+
 <span class="sd">    pathways : list of lists or scalar</span>
 <span class="sd">        List of pathways. Each pathway is defined as a list of the pathway&#39;s amplitude (lambda), refocusing time (T0), </span>
 <span class="sd">        and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]`` for one pathway. If n is not given it is assumed to be 1. </span>
 <span class="sd">        For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``.</span>
 <span class="sd">        If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  </span>
+
 <span class="sd">    Bmodel : callable</span>
 <span class="sd">        Background basis function. Its use depends on the type of background model. </span>
 
@@ -210,6 +216,7 @@
 
 <span class="sd">    renormalize : boolean, optional</span>
 <span class="sd">        Re-normalization of the multi-pathway background to ensure the equality ``B(t=0)==1`` is satisfied. Enabled by default.</span>
+<span class="sd">        </span>
 <span class="sd">    renormpaths: boolean, optional</span>
 <span class="sd">        Normalization of the pathway amplitudes such that ``Lam0 + lam1 + ... + lamN = 1``. Enabled by default.  </span>
 
@@ -218,14 +225,17 @@
 <span class="sd">    B : ndarray</span>
 <span class="sd">        Multipathway background decay</span>
 
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    renormalize : boolean</span>
-<span class="sd">        The multi-pathway background does not necessarily satisfy ``V(0) == 1``. This option enables/disables a re-normalization of the background function to ensure that equality is satisfied, by default it is enabled.</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Computes the multipathway background ``B`` for the time axis ``t`` corresponding to the dipolar pathways specified in ``pathways``. The total background is computed from the basis background function model specified in ``Bmodel``. For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` is a 2D-array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals</span>
+<span class="sd">    Computes the multipathway background ``B`` for the time axis ``t`` corresponding to the dipolar pathways specified in ``pathways`` [1]_. </span>
+<span class="sd">    The total background is computed from the basis background function model specified in ``Bmodel``. For a multi-pathway DEER signal</span>
+<span class="sd">    (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways``</span>
+<span class="sd">    is a 2D-array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. </span>
+<span class="sd">        DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson., 1, 209–224, 2020 </span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>

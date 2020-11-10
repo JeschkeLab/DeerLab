@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fftspec &mdash; DeerLab  documentation</title>
+  <title>fftspec &mdash; DeerLab</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -100,7 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -201,29 +205,24 @@
 <dt><strong>t</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
 <dd><p class="first last">Time axis, in microseconds.</p>
 </dd>
+<dt><strong>mode</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Type of spectrum to be returned (<code class="docutils literal notranslate"><span class="pre">'real'</span></code>,``’imag’<code class="docutils literal notranslate"><span class="pre">,</span></code>’abs’<code class="docutils literal notranslate"><span class="pre">),</span> <span class="pre">the</span> <span class="pre">default</span> <span class="pre">is</span> <span class="pre">``'abs'</span></code>.</p>
+</dd>
+<dt><strong>zerofilling</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar, optional</span></dt>
+<dd><p class="first last">Number of elements in the output FFT spectrum, the default is <code class="docutils literal notranslate"><span class="pre">2*len(V)</span></code>.</p>
+</dd>
+<dt><strong>apodization</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Use of a Hamming apodization window, the default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>nu</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
 <dd><p class="first last">Frequency axis, in megahertz</p>
 </dd>
 <dt><strong>spec</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
 <dd><p class="first last">FFT spectrum.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
-<dt><strong>mode</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">Type of spectrum to be returned (‘real’,’imag’,’abs’), the default is ‘abs’.</p>
-</dd>
-<dt><strong>zerofilling</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar</span></dt>
-<dd><p class="first last">Number of elements in the output FFT spectrum, the default is <code class="docutils literal notranslate"><span class="pre">2*len(V)</span></code>.</p>
-</dd>
-<dt><strong>apodization</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">Use of a Hamming apodization window, the default is True.</p>
 </dd>
 </dl>
 </td>

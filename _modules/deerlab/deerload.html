@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.deerload &mdash; DeerLab  documentation</title>
+  <title>deerlab.deerload &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -188,28 +192,41 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="c1">#-------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="deerload"><a class="viewcode-back" href="../../functions/deerload.html#deerlab.deerload">[docs]</a><span class="k">def</span> <span class="nf">deerload</span><span class="p">(</span><span class="n">fullbasename</span><span class="p">,</span><span class="n">Scaling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="nf">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="deerload"><a class="viewcode-back" href="../../functions/deerload.html#deerlab.deerload">[docs]</a><span class="k">def</span> <span class="nf">deerload</span><span class="p">(</span><span class="n">fullbasename</span><span class="p">,</span> <span class="nf">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load file in BES3T format (Bruker EPR Standard for Spectrum Storage and Transfer)</span>
 <span class="sd">    </span>
 <span class="sd">    * .DSC: description file</span>
 <span class="sd">    * .DTA: data file</span>
 <span class="sd">    </span>
-<span class="sd">    used on Bruker ELEXSYS and EMX machines. </span>
+<span class="sd">    used on Bruker ELEXSYS and EMX machines. This function can handle experiments acquired </span>
+<span class="sd">    in a multi-dimensional setup. </span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    fullbasename : string</span>
 <span class="sd">        Full name of data file.</span>
-<span class="sd">    full_output : boolean</span>
-<span class="sd">        Enable/Disable returning parameter file entries as third output. Disabled by default.</span>
 <span class="sd">    </span>
+<span class="sd">    full_output : boolean, optional</span>
+<span class="sd">        Return the parameter file entries as a third output. Disabled by default.</span>
+<span class="sd">    </span>
+<span class="sd">    plot : boolean, optional</span>
+<span class="sd">        Display a plot of the real and imaginary parts of the loaded data. Disabled by default.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    t : ndarray</span>
-<span class="sd">        Time axis in microseconds.</span>
+<span class="sd">        Time axis in microseconds.Its structure depends on the dimensionality of the experimental datasets:</span>
+
+<span class="sd">        * 1D-datasets: the time axis of ``N`` points is returned as a one-dimensional ndarray of shape ``(N,)``</span>
+<span class="sd">        * 2D-datasets: the ``M`` time-axes of ``N`` points are returned as a two-dimensional ndarray of shape ``(N,M)``. The i-th axis can be accessed via ``t[:,i]``.</span>
+<span class="sd">        </span>
 <span class="sd">    V : ndarray</span>
-<span class="sd">        Experimental signal.</span>
+<span class="sd">        Experimental signal(s). Its structure depends on the dimensionality of the experimental datasets:</span>
+
+<span class="sd">        * 1D-datasets: the signal of ``N`` points is returned as a one-dimensional ndarray of shape ``(N,)``</span>
+<span class="sd">        * 2D-datasets: the ``M`` signals of ``N`` points are returned as a two-dimensional ndarray of shape ``(N,M)``. The i-th  signal can be accessed via ``V[:,i]``.</span>
+<span class="sd">        </span>
 <span class="sd">    pars : dict</span>
 <span class="sd">        Parameter file entries, returned if ``full_output`` is ``True``.</span>
 
@@ -379,67 +396,7 @@
     
     <span class="k">if</span> <span class="n">nz</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="nf">reshape</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">)</span>
-        
-    <span class="k">if</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">pass</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># Averaging over the number of scans</span>
-        <span class="k">if</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span>
-            <span class="c1">#Check if the experiments was already averaged</span>
-            <span class="c1"># Number of scans  </span>
-            <span class="k">if</span> <span class="s1">&#39;AVGS&#39;</span> <span class="ow">in</span> <span class="n">parSPL</span><span class="p">:</span>
-                <span class="n">nAverages</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parSPL</span><span class="p">[</span><span class="s1">&#39;AVGS&#39;</span><span class="p">])</span>
-                <span class="k">if</span> <span class="s1">&#39;SctNorm&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;DSL&quot;</span><span class="p">][</span><span class="s2">&quot;signalChannel&quot;</span><span class="p">]:</span>
-                    <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;DSL&quot;</span><span class="p">][</span><span class="s2">&quot;signalChannel&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span><span class="p">:</span>
-                        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Scaling by number of scans not possible,</span><span class="se">\n</span><span class="s1">since data in DSC/DTA are already averaged&#39;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Missing SctNorm field in the DSC file. Cannot determine whether data is already scaled, assuming it isn&#39;t...&quot;</span><span class="p">)</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">/</span><span class="n">nAverages</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Missing AVGS field in the DSC file.&#39;</span><span class="p">)</span>
-        
-        <span class="c1"># Receiver gain</span>
-        <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;EXPT&#39;</span><span class="p">]</span> <span class="o">==</span><span class="s1">&#39;CW&#39;</span> <span class="ow">and</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span>
-            <span class="c1">#SPL/RCAG: Receiver Gain in dB</span>
-            <span class="k">if</span> <span class="s1">&#39;RCAG&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
-                <span class="n">ReceiverGaindB</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;RCAG&#39;</span><span class="p">])</span>
-                <span class="n">ReceiverGain</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">ReceiverGaindB</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span>
-                <span class="n">data</span> <span class="o">/=</span> <span class="n">ReceiverGain</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Cannot scale by receiver gain, since RCAG in the DSC file is missing.&#39;</span><span class="p">)</span>
-
-        <span class="c1"># Conversion/sampling time</span>
-        <span class="k">elif</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;EXPT&#39;</span><span class="p">]</span> <span class="o">==</span><span class="s1">&#39;CW&#39;</span> <span class="ow">and</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
-            <span class="c1">#SPL/SPTP: sampling time in seconds</span>
-            <span class="k">if</span> <span class="s1">&#39;STPT&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
-                <span class="c1"># Xenon (according to Feb 2011 manual) already scaled data by ConvTime if</span>
-                <span class="c1"># normalization is specified (SctNorm=True). Question: which units are used?</span>
-                <span class="c1"># Xepr (2.6b.2) scales by conversion time even if data normalization is</span>
-                <span class="c1"># switched off!</span>
-                <span class="n">ConversionTime</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;SPTP&#39;</span><span class="p">])</span>
-                <span class="n">data</span> <span class="o">/=</span> <span class="n">ConversionTime</span><span class="o">*</span><span class="mi">1000</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Cannot scale by sampling time, since SPTP in the DSC file is missing.&#39;</span><span class="p">)</span>
-        <span class="c1"># Microwave power</span>
-        <span class="k">elif</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;EXPT&#39;</span><span class="p">]</span> <span class="o">==</span><span class="s1">&#39;CW&#39;</span> <span class="ow">and</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span>
-            <span class="c1">#SPL/MWPW: microwave power in watt</span>
-            <span class="k">if</span> <span class="s1">&#39;MWPW&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
-                <span class="n">mwPower</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;MWPW&#39;</span><span class="p">])</span><span class="o">*</span><span class="mi">1000</span>
-                <span class="n">data</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mwPower</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Cannot scale by power, since MWPW is absent in parameter file.&#39;</span><span class="p">)</span>
-        <span class="c1">#else:</span>
-        <span class="c1">#    warn(&#39;Cannot scale by microwave power, since these are not CW-EPR data.&#39;)</span>
-        
-        <span class="c1"># Temperature</span>
-        <span class="k">if</span> <span class="n">Scaling</span> <span class="o">==</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-            <span class="c1">##SPL/STMP: temperature in kelvin</span>
-            <span class="k">if</span> <span class="s1">&#39;STMP&#39;</span><span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
-                <span class="n">Temperature</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;STMP&#39;</span><span class="p">])</span>
-                <span class="n">data</span> <span class="o">*=</span> <span class="n">Temperature</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Cannot scale by temperature, since STMP in the DSC file is missing.&#39;</span><span class="p">)</span>
-    
+            
      <span class="c1"># ns -&gt; us converesion</span>
     <span class="n">abscissa</span> <span class="o">/=</span> <span class="mf">1e3</span>
 
@@ -449,10 +406,10 @@
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">squeeze</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nf">plot</span><span class="p">:</span>
-        <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">abscissa</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="nf">real</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="n">abscissa</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="nf">imag</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
-        <span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s2">&quot;time (μs)&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s2">&quot;intensity&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">abscissa</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="nf">real</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="n">abscissa</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="nf">imag</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s2">&quot;Time (μs)&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s2">&quot;Intensity [a.u.]&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
     
     <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.snlls &mdash; DeerLab  documentation</title>
+  <title>deerlab.snlls &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -213,14 +217,86 @@
 <span class="sd">        returning a matrix array or a list thereof.</span>
 <span class="sd">    par0 : array_like</span>
 <span class="sd">        Start values of the non-linear parameters.</span>
-<span class="sd">    lb : array_like</span>
+<span class="sd">    lb : array_like, optional</span>
 <span class="sd">        Lower bounds for the non-linear parameters, assumed unconstrained if not specified.</span>
-<span class="sd">    ub : array_like</span>
+<span class="sd">    ub : array_like, optional</span>
 <span class="sd">        Upper bounds for the non-linear parameters, assumed unconstrained if not specified.</span>
-<span class="sd">    lbl : array_like</span>
+<span class="sd">    lbl : array_like, optional</span>
 <span class="sd">        Lower bounds for the linear parameters, assumed unconstrained if not specified.</span>
-<span class="sd">    ubl : array_like</span>
+<span class="sd">    ubl : array_like, optional</span>
 <span class="sd">        Upper bounds for the linear parameters, assumed unconstrained if not specified.</span>
+<span class="sd">    reg : boolean or string, optional</span>
+<span class="sd">        Determines the use of regularization on the solution of the linear problem.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``&#39;auto&#39;`` - Automatic decision based con the condition number of the non-linear model ``Amodel``.</span>
+<span class="sd">        * ``True`` - Forces regularization regardless of the condition number</span>
+<span class="sd">        * ``False`` - Disables regularization regardless of the condition number</span>
+<span class="sd">        The default is ``&#39;auto&#39;``.</span>
+
+<span class="sd">    regType : string, optional</span>
+<span class="sd">        Regularization penalty type:</span>
+
+<span class="sd">        * ``&#39;tikhonov&#39;`` - Tikhonov regularizaton</span>
+<span class="sd">        * ``&#39;tv&#39;``  - Total variation regularization</span>
+<span class="sd">        * ``&#39;huber&#39;`` - Huber regularization</span>
+<span class="sd">        The default is ``&#39;tikhonov&#39;``.</span>
+
+<span class="sd">    regorder : int scalar, optional</span>
+<span class="sd">        Order of the regularization operator</span>
+<span class="sd">    regParam : string or float scalar, optional</span>
+<span class="sd">        Method for the automatic selection of the optimal regularization parameter:</span>
+
+<span class="sd">        * ``&#39;lr&#39;`` - L-curve minimum-radius method (LR)</span>
+<span class="sd">        * ``&#39;lc&#39;`` - L-curve maximum-curvature method (LC)</span>
+<span class="sd">        * ``&#39;cv&#39;`` - Cross validation (CV)</span>
+<span class="sd">        * ``&#39;gcv&#39;`` - Generalized Cross Validation (GCV)</span>
+<span class="sd">        * ``&#39;rgcv&#39;`` - Robust Generalized Cross Validation (rGCV)</span>
+<span class="sd">        * ``&#39;srgcv&#39;`` - Strong Robust Generalized Cross Validation (srGCV)</span>
+<span class="sd">        * ``&#39;aic&#39;`` - Akaike information criterion (AIC)</span>
+<span class="sd">        * ``&#39;bic&#39;`` - Bayesian information criterion (BIC)</span>
+<span class="sd">        * ``&#39;aicc&#39;`` - Corrected Akaike information criterion (AICC)</span>
+<span class="sd">        * ``&#39;rm&#39;`` - Residual method (RM)</span>
+<span class="sd">        * ``&#39;ee&#39;`` - Extrapolated Error (EE)</span>
+<span class="sd">        * ``&#39;ncp&#39;`` - Normalized Cumulative Periodogram (NCP)</span>
+<span class="sd">        * ``&#39;gml&#39;`` - Generalized Maximum Likelihood (GML)</span>
+<span class="sd">        * ``&#39;mcl&#39;`` - Mallows&#39; C_L (MCL)</span>
+<span class="sd">        The regularization parameter can be manually specified by passing a scalar value</span>
+<span class="sd">        instead of a string. The default ``&#39;aic&#39;``.</span>
+
+<span class="sd">    alphareopt : float scalar, optional</span>
+<span class="sd">        Relative parameter change threshold for reoptimizing the regularization parameter</span>
+<span class="sd">        when using a selection method, the default is 1e-3.</span>
+
+<span class="sd">    nnlsSolver : string, optional</span>
+<span class="sd">        Solver used to solve a non-negative least-squares problem (if applicable):</span>
+
+<span class="sd">        * ``&#39;cvx&#39;`` - Optimization of the NNLS problem using the cvxopt package.</span>
+<span class="sd">        * ``&#39;fnnls&#39;`` - Optimization using the fast NNLS algorithm.</span>
+<span class="sd">        * ``&#39;nnlsbpp&#39;`` - Optimization using the block principal pivoting NNLS algorithm.</span>
+<span class="sd">        The default is ``&#39;cvx&#39;``.</span>
+
+<span class="sd">    weights : array_like, optional</span>
+<span class="sd">        Array of weighting coefficients for the individual signals in global fitting,</span>
+<span class="sd">        the default is all weighted equally.</span>
+
+<span class="sd">    multistart : int scalar, optional</span>
+<span class="sd">        Number of starting points for global optimization, the default is 1.</span>
+<span class="sd">        </span>
+<span class="sd">    nonlin_maxiter : float scalar, optional</span>
+<span class="sd">        Non-linear solver maximal number of iterations, the default is 1e8.</span>
+
+<span class="sd">    nonlin_tol : float scalar, optional</span>
+<span class="sd">        Non-linear solver function tolerance, the default is 1e-9.</span>
+
+<span class="sd">    lin_maxiter : float scalar, optional</span>
+<span class="sd">        Linear solver maximal number of iterations, the default is 1e4.</span>
+
+<span class="sd">    lin_tol : float scalar, optional</span>
+<span class="sd">        Linear solver function tolerance, the default is 1e-15.</span>
+
+<span class="sd">    uqanalysis : boolean, optional</span>
+<span class="sd">        Enable/disable the uncertainty quantification analysis, by default it is enabled.</span>
+
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -258,71 +334,6 @@
 <span class="sd">    residuals : ndarray</span>
 <span class="sd">        Vector of residuals at the solution.</span>
 
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    reg : boolean or string</span>
-<span class="sd">        Determines the use of regularization on the solution of the linear problem.</span>
-<span class="sd">        </span>
-<span class="sd">        * ``&#39;auto&#39;`` - Automatic decision based con the condition number of the non-linear model ``Amodel``.</span>
-<span class="sd">        * ``True`` - Forces regularization regardless of the condition number</span>
-<span class="sd">        * ``False`` - Disables regularization regardless of the condition number</span>
-<span class="sd">        The default is ``&#39;auto&#39;``.</span>
-
-<span class="sd">    regType : string</span>
-<span class="sd">        Regularization penalty type:</span>
-
-<span class="sd">        * ``&#39;tikhonov&#39;`` - Tikhonov regularizaton</span>
-<span class="sd">        * ``&#39;tv&#39;``  - Total variation regularization</span>
-<span class="sd">        * ``&#39;huber&#39;`` - Huber regularization</span>
-<span class="sd">        The default is ``&#39;tikhonov&#39;``.</span>
-
-<span class="sd">    regorder (scalar,int)</span>
-<span class="sd">        Order of the regularization operator</span>
-<span class="sd">    regParam (str or scalar):</span>
-<span class="sd">        Method for the automatic selection of the optimal regularization parameter:</span>
-
-<span class="sd">        * ``&#39;lr&#39;`` - L-curve minimum-radius method (LR)</span>
-<span class="sd">        * ``&#39;lc&#39;`` - L-curve maximum-curvature method (LC)</span>
-<span class="sd">        * ``&#39;cv&#39;`` - Cross validation (CV)</span>
-<span class="sd">        * ``&#39;gcv&#39;`` - Generalized Cross Validation (GCV)</span>
-<span class="sd">        * ``&#39;rgcv&#39;`` - Robust Generalized Cross Validation (rGCV)</span>
-<span class="sd">        * ``&#39;srgcv&#39;`` - Strong Robust Generalized Cross Validation (srGCV)</span>
-<span class="sd">        * ``&#39;aic&#39;`` - Akaike information criterion (AIC)</span>
-<span class="sd">        * ``&#39;bic&#39;`` - Bayesian information criterion (BIC)</span>
-<span class="sd">        * ``&#39;aicc&#39;`` - Corrected Akaike information criterion (AICC)</span>
-<span class="sd">        * ``&#39;rm&#39;`` - Residual method (RM)</span>
-<span class="sd">        * ``&#39;ee&#39;`` - Extrapolated Error (EE)</span>
-<span class="sd">        * ``&#39;ncp&#39;`` - Normalized Cumulative Periodogram (NCP)</span>
-<span class="sd">        * ``&#39;gml&#39;`` - Generalized Maximum Likelihood (GML)</span>
-<span class="sd">        * ``&#39;mcl&#39;`` - Mallows&#39; C_L (MCL)</span>
-<span class="sd">        The regularization parameter can be manually specified by passing a scalar value</span>
-<span class="sd">        instead of a string. The default ``&#39;aic&#39;``.</span>
-
-<span class="sd">    alphareopt : float scalar</span>
-<span class="sd">        Relative parameter change threshold for reoptimizing the regularization parameter</span>
-<span class="sd">        when using a selection method, the default is 1e-3.</span>
-<span class="sd">    nnlsSolver : string</span>
-<span class="sd">        Solver used to solve a non-negative least-squares problem (if applicable):</span>
-
-<span class="sd">        * ``&#39;cvx&#39;`` - Optimization of the NNLS problem using the cvxopt package.</span>
-<span class="sd">        * ``&#39;fnnls&#39;`` - Optimization using the fast NNLS algorithm.</span>
-<span class="sd">        * ``&#39;nnlsbpp&#39;`` - Optimization using the block principal pivoting NNLS algorithm.</span>
-<span class="sd">        The default is ``&#39;cvx&#39;``.</span>
-<span class="sd">    weights : array_like</span>
-<span class="sd">        Array of weighting coefficients for the individual signals in global fitting,</span>
-<span class="sd">        the default is all weighted equally.</span>
-<span class="sd">    multistart : int scalar</span>
-<span class="sd">        Number of starting points for global optimization, the default is 1.</span>
-<span class="sd">    nonlin_maxiter : float scalar</span>
-<span class="sd">        Non-linear solver maximal number of iterations, the default is 1e8.</span>
-<span class="sd">    nonlin_tol : float scalar</span>
-<span class="sd">        Non-linear solver function tolerance, the default is 1e-9.</span>
-<span class="sd">    lin_maxiter : float scalar</span>
-<span class="sd">        Linear solver maximal number of iterations, the default is 1e4.</span>
-<span class="sd">    lin_tol : float scalar</span>
-<span class="sd">        Linear solver function tolerance, the default is 1e-15.</span>
-<span class="sd">    uqanalysis : boolean</span>
-<span class="sd">        Enable/disable the uncertainty quantification analysis, by default it is enabled.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>

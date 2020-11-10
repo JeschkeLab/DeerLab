@@ -159,5 +159,5 @@ plt.ylabel('P(r) [nm]$^{-1}$')
 plt.legend(['truth','fit'])
 
 plt.tight_layout()
-
+plt.show()
 # %%

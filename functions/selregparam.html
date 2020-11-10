@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>selregparam &mdash; DeerLab  documentation</title>
+  <title>selregparam &mdash; DeerLab</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -100,7 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -208,7 +212,7 @@
 <dd><p class="first">Regularization functional type:</p>
 <ul class="simple">
 <li><code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code> - Tikhonov regularizaton</li>
-<li><a href="#id2"><span class="problematic" id="id3">``</span></a>’tv’ `` - Total variation regularization</li>
+<li><code class="docutils literal notranslate"><span class="pre">'tv'</span></code> - Total variation regularization</li>
 <li><code class="docutils literal notranslate"><span class="pre">'huber'</span></code> - Huber regularization</li>
 </ul>
 <p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code>.</p>
@@ -232,10 +236,43 @@
 <li><code class="docutils literal notranslate"><span class="pre">'mcl'</span></code> - Mallows’ C_L (MCL)</li>
 </ul>
 </dd>
+<dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like, optional</span></dt>
+<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting, 
+the default is all weighted equally.</p>
+</dd>
+<dt><strong>candidates</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional</span></dt>
+<dd><p class="first last">List or array of candidate regularization parameter values to be evaluated. 
+If not specified, these are automatically computed from the GSVD of the 
+dipolar kernel and regularization operator.</p>
+</dd>
+<dt><strong>regorder</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int scalar, optional</span></dt>
+<dd><p class="first last">Order of the regularization operator, the default is 2.</p>
+</dd>
+<dt><strong>algorithm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first">Search algorithm:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'grid'</span></code> - Grid-search, slow.</li>
+<li><code class="docutils literal notranslate"><span class="pre">'brent'</span></code> - Brent-algorithm, fast.</li>
+</ul>
+<p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'brent'</span></code>.</p>
+</dd>
+<dt><strong>full_output</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">If enabled the function will return additional output arguments in a tuple, the default is False.</p>
+</dd>
+<dt><strong>nonnegativity</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Enforces the non-negativity constraint on computed distance distributions, by default enabled.</p>
+</dd>
+<dt><strong>noiselvl</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar, optional</span></dt>
+<dd><p class="first last">Estimate of the noise standard deviation, if not specified it is estimated form the fit residuals.
+Used for the MCL selection method.</p>
+</dd>
+<dt><strong>huberparam</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar, optional</span></dt>
+<dd><p class="first last">Value of the Huber parameter used in Huber regularization, the default is 1.35.</p>
+</dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>alphaopt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar</span></dt>
 <dd><p class="first last">Optimal regularization parameter.</p>
 </dd>
@@ -254,44 +291,6 @@ Returned if full_output is True.</p>
 <dt><strong>residuals</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
 <dd><p class="first last">Values of the penalty norms evaluated during the search. 
 Returned if full_output is True.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
-<dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
-<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting, 
-the default is all weighted equally.</p>
-</dd>
-<dt><strong>candidates</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">List or array of candidate regularization parameter values to be evaluated. 
-If not specified, these are automatically computed from the GSVD of the 
-dipolar kernel and regularization operator.</p>
-</dd>
-<dt><strong>regorder</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int scalar</span></dt>
-<dd><p class="first last">Order of the regularization operator, the default is 2.</p>
-</dd>
-<dt><strong>algorithm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first">Search algorithm:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">'grid'</span></code> - Grid-search, slow.</li>
-<li><code class="docutils literal notranslate"><span class="pre">'brent'</span></code> - Brent-algorithm, fast.</li>
-</ul>
-<p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'brent'</span></code>.</p>
-</dd>
-<dt><strong>full_output</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">If enabled the function will return additional output arguments in a tuple, the default is False.</p>
-</dd>
-<dt><strong>nonnegativity</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">Enforces the non-negativity constraint on computed distance distributions, by default enabled.</p>
-</dd>
-<dt><strong>noiselvl</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar</span></dt>
-<dd><p class="first last">Estimate of the noise standard deviation, if not specified it is estimated form the fit residuals.
-Used for the MCL selection method.</p>
-</dd>
-<dt><strong>huberparam</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar</span></dt>
-<dd><p class="first last">Value of the Huber parameter used in Huber regularization, the default is 1.35.</p>
 </dd>
 </dl>
 </td>

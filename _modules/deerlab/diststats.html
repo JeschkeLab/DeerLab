@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.diststats &mdash; DeerLab  documentation</title>
+  <title>deerlab.diststats &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -199,18 +203,22 @@
 <span class="sd">    ----------</span>
 <span class="sd">    r : array_like</span>
 <span class="sd">        Distance axis in nm. </span>
+<span class="sd">    </span>
 <span class="sd">    P : array_like</span>
 <span class="sd">        Distance distribution.</span>
+<span class="sd">    </span>
 <span class="sd">    Puq : :ref:`UncertQuant`</span>
 <span class="sd">        Uncertainty quantification of the distance distribution. If not </span>
 <span class="sd">        specified, the one single output is returned without any uncertainty </span>
 <span class="sd">        estimation. If specified, two outputs are returned containing the </span>
 <span class="sd">        uncertainty estimation.</span>
-<span class="sd">    verbose : boolean</span>
-<span class="sd">        Enables printing a summary of all statistical quantities and their uncertainties if calculated.</span>
-<span class="sd">    threshold : float</span>
-<span class="sd">        Peak detection threshold for the calculation of modes of a distribution. The default is max(P)/10.</span>
 <span class="sd">    </span>
+<span class="sd">    verbose : boolean, optional</span>
+<span class="sd">        Enables printing a summary of all statistical quantities and their uncertainties if calculated.</span>
+<span class="sd">    </span>
+<span class="sd">    threshold : float, optional</span>
+<span class="sd">        Peak detection threshold for the calculation of modes of a distribution. The default is ``max(P)/10``.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    estimators : dict</span>
@@ -249,14 +257,6 @@
 <span class="sd">    uq : dict of :ref:`UncertQuant`</span>
 <span class="sd">        Dictionary of the parameters covariance-based uncertainty quantifications. </span>
 <span class="sd">        See above for the dictionary keys. Only calculated if ``Puq`` is specified.</span>
-
-<span class="sd">    Other Parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    verbose : boolean</span>
-<span class="sd">        Enable to print a summary of all distribution descriptors along </span>
-<span class="sd">        with their corresponding 95% confidence intervals. Disabled by default.</span>
-<span class="sd">    threshold : scalar</span>
-<span class="sd">        Required minimal height of peaks. Either a number or ``None``.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>

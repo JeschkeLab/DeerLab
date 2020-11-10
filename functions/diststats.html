@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>diststats &mdash; DeerLab  documentation</title>
+  <title>diststats &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -204,16 +208,16 @@ specified, the one single output is returned without any uncertainty
 estimation. If specified, two outputs are returned containing the 
 uncertainty estimation.</p>
 </dd>
-<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
 <dd><p class="first last">Enables printing a summary of all statistical quantities and their uncertainties if calculated.</p>
 </dd>
-<dt><strong>threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Peak detection threshold for the calculation of modes of a distribution. The default is max(P)/10.</p>
+<dt><strong>threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Peak detection threshold for the calculation of modes of a distribution. The default is <code class="docutils literal notranslate"><span class="pre">max(P)/10</span></code>.</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>estimators</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd><p class="first">Dictionary of shape, location and spread descriptors of 
 the input distance distribution:</p>
@@ -258,18 +262,6 @@ the input distance distribution:</p>
 <dt><strong>uq</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of <a class="reference internal" href="UncertQuant.html#uncertquant"><span class="std std-ref">UncertQuant</span></a></span></dt>
 <dd><p class="first last">Dictionary of the parameters covariance-based uncertainty quantifications. 
 See above for the dictionary keys. Only calculated if <code class="docutils literal notranslate"><span class="pre">Puq</span></code> is specified.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
-<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">Enable to print a summary of all distribution descriptors along 
-with their corresponding 95% confidence intervals. Disabled by default.</p>
-</dd>
-<dt><strong>threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar</span></dt>
-<dd><p class="first last">Required minimal height of peaks. Either a number or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 </dl>
 </td>

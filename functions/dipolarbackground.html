@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dipolarbackground &mdash; DeerLab  documentation</title>
+  <title>dipolarbackground &mdash; DeerLab</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -100,7 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -220,17 +224,9 @@ If a single value is specified, it is interpreted as the 4-pulse DEER pathway am
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>B</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
 <dd><p class="first last">Multipathway background decay</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
-<dt><strong>renormalize</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">The multi-pathway background does not necessarily satisfy <code class="docutils literal notranslate"><span class="pre">V(0)</span> <span class="pre">==</span> <span class="pre">1</span></code>. This option enables/disables a re-normalization of the background function to ensure that equality is satisfied, by default it is enabled.</p>
 </dd>
 </dl>
 </td>
@@ -238,7 +234,18 @@ If a single value is specified, it is interpreted as the 4-pulse DEER pathway am
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>Computes the multipathway background <code class="docutils literal notranslate"><span class="pre">B</span></code> for the time axis <code class="docutils literal notranslate"><span class="pre">t</span></code> corresponding to the dipolar pathways specified in <code class="docutils literal notranslate"><span class="pre">pathways</span></code>. The total background is computed from the basis background function model specified in <code class="docutils literal notranslate"><span class="pre">Bmodel</span></code>. For a multi-pathway DEER signal (e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), <code class="docutils literal notranslate"><span class="pre">pathways</span></code> is a 2D-array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals</p>
+<p>Computes the multipathway background <code class="docutils literal notranslate"><span class="pre">B</span></code> for the time axis <code class="docutils literal notranslate"><span class="pre">t</span></code> corresponding to the dipolar pathways specified in <code class="docutils literal notranslate"><span class="pre">pathways</span></code> <a class="reference internal" href="#r8d7f6cb812e6-1" id="id2">[1]</a>. 
+The total background is computed from the basis background function model specified in <code class="docutils literal notranslate"><span class="pre">Bmodel</span></code>. For a multi-pathway DEER signal
+(e.g, 4-pulse DEER with 2+1 contribution; 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), <code class="docutils literal notranslate"><span class="pre">pathways</span></code>
+is a 2D-array that contains a list of modulation depths (amplitudes), refocusing times (in microseconds), and optional harmonics for all modulated pathway signals</p>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="r8d7f6cb812e6-1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td>L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. 
+DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson., 1, 209–224, 2020</td></tr>
+</tbody>
+</table>
 <p class="rubric">Examples</p>
 <p>To calculate the background for the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>

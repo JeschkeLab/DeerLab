@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.fftspec &mdash; DeerLab  documentation</title>
+  <title>deerlab.fftspec &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -197,8 +201,18 @@
 <span class="sd">    ----------</span>
 <span class="sd">    V : array_like</span>
 <span class="sd">        Signal to be processed.</span>
+<span class="sd">    </span>
 <span class="sd">    t : array_like</span>
 <span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">    </span>
+<span class="sd">    mode : string, optional</span>
+<span class="sd">        Type of spectrum to be returned (``&#39;real&#39;``,``&#39;imag&#39;``,``&#39;abs&#39;``), the default is ``&#39;abs&#39;``.</span>
+<span class="sd">    </span>
+<span class="sd">    zerofilling : scalar, optional</span>
+<span class="sd">        Number of elements in the output FFT spectrum, the default is ``2*len(V)``.</span>
+<span class="sd">    </span>
+<span class="sd">    apodization : boolean, optional</span>
+<span class="sd">        Use of a Hamming apodization window, the default is ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -207,14 +221,6 @@
 <span class="sd">    spec : ndarray</span>
 <span class="sd">        FFT spectrum.</span>
 
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    mode : string </span>
-<span class="sd">        Type of spectrum to be returned (&#39;real&#39;,&#39;imag&#39;,&#39;abs&#39;), the default is &#39;abs&#39;.</span>
-<span class="sd">    zerofilling : scalar</span>
-<span class="sd">        Number of elements in the output FFT spectrum, the default is ``2*len(V)``.</span>
-<span class="sd">    apodization : boolean</span>
-<span class="sd">        Use of a Hamming apodization window, the default is True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="n">zerofilling</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>

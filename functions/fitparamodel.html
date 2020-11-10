@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fitparamodel &mdash; DeerLab  documentation</title>
+  <title>fitparamodel &mdash; DeerLab</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -100,7 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -210,10 +214,34 @@
 <dt><strong>ub</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
 <dd><p class="first last">Upper bounds for the model parameters. If not specified, it is left unbounded.</p>
 </dd>
+<dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like, optional</span></dt>
+<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</p>
+</dd>
+<dt><strong>rescale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Enable/disable optimization of the signal scale, by default it is enabled.</p>
+</dd>
+<dt><strong>multiStarts</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar, optional</span></dt>
+<dd><p class="first last">Number of starting points for global optimization, the default is 1.</p>
+</dd>
+<dt><strong>uqanalysis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Enable/disable the uncertainty quantification analysis, by default it is enabled.</p>
+</dd>
+<dt><strong>tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar, optional</span></dt>
+<dd><p class="first last">Optimizer function tolerance, the default is 1e-10.</p>
+</dd>
+<dt><strong>maxeval</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar, optional</span></dt>
+<dd><p class="first last">Maximum number of optimizer iterations, the default is 5000.</p>
+</dd>
+<dt><strong>maxiter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar, optional</span></dt>
+<dd><p class="first last">Maximum number of optimizer iterations, the default is 3000.</p>
+</dd>
+<dt><strong>covmatrix</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like with shape(n,n), optional</span></dt>
+<dd><p class="first last">Covariance matrix of the noise in the dataset(s). If not specified it is automatically computed.</p>
+</dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><a class="reference internal" href="FitResult.html#fitresult"><span class="std std-ref">FitResult</span></a> with the following fields defined:</dt>
 <dd></dd>
 <dt><strong>param</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
@@ -228,7 +256,7 @@
 <dt><strong>plot</strong> <span class="classifier-delimiter">:</span> <span class="classifier">callable</span></dt>
 <dd><p class="first last">Function to display the results. It will 
 display the fitted signals. If requested, the function returns 
-the <img class="math" src="../_images/math/b45ce4d1ac365b560ee03f9a632470303825db6c.svg" alt="matplotlib.axes"/> object as output.</p>
+the <code class="docutils literal notranslate"><span class="pre">matplotlib.axes</span></code> object as output.</p>
 </dd>
 <dt><strong>stats</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd><p class="first">Goodness of fit statistical estimators:</p>
@@ -249,35 +277,6 @@ the <img class="math" src="../_images/math/b45ce4d1ac365b560ee03f9a632470303825d
 </dd>
 <dt><strong>residuals</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
 <dd><p class="first last">Vector of residuals at the solution.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
-<dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
-<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</p>
-</dd>
-<dt><strong>rescale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">Enable/disable optimization of the signal scale, by default it is enabled.</p>
-</dd>
-<dt><strong>multiStarts</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar</span></dt>
-<dd><p class="first last">Number of starting points for global optimization, the default is 1.</p>
-</dd>
-<dt><strong>uqanalysis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">Enable/disable the uncertainty quantification analysis, by default it is enabled.</p>
-</dd>
-<dt><strong>tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar</span></dt>
-<dd><p class="first last">Optimizer function tolerance, the default is 1e-10.</p>
-</dd>
-<dt><strong>maxeval</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar</span></dt>
-<dd><p class="first last">Maximum number of optimizer iterations, the default is 5000.</p>
-</dd>
-<dt><strong>maxiter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar</span></dt>
-<dd><p class="first last">Maximum number of optimizer iterations, the default is 3000.</p>
-</dd>
-<dt><strong>covmatrix</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like with shape(n,n)</span></dt>
-<dd><p class="first last">Covariance matrix of the noise in the dataset(s). If not specified it is automatically computed.</p>
 </dd>
 </dl>
 </td>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerload &mdash; DeerLab  documentation</title>
+  <title>deerload &mdash; DeerLab</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -100,7 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -188,13 +192,14 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">deerload</span></code><a class="headerlink" href="#deerload" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="deerlab.deerload">
-<code class="descclassname">deerlab.</code><code class="descname">deerload</code><span class="sig-paren">(</span><em>fullbasename</em>, <em>Scaling=None</em>, <em>plot=False</em>, <em>full_output=False</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/deerload.html#deerload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.deerload" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">deerlab.</code><code class="descname">deerload</code><span class="sig-paren">(</span><em>fullbasename</em>, <em>plot=False</em>, <em>full_output=False</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/deerload.html#deerload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.deerload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load file in BES3T format (Bruker EPR Standard for Spectrum Storage and Transfer)</p>
 <ul class="simple">
 <li>.DSC: description file</li>
 <li>.DTA: data file</li>
 </ul>
-<p>used on Bruker ELEXSYS and EMX machines.</p>
+<p>used on Bruker ELEXSYS and EMX machines. This function can handle experiments acquired 
+in a multi-dimensional setup.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -203,18 +208,29 @@
 <dt><strong>fullbasename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Full name of data file.</p>
 </dd>
-<dt><strong>full_output</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">Enable/Disable returning parameter file entries as third output. Disabled by default.</p>
+<dt><strong>full_output</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Return the parameter file entries as a third output. Disabled by default.</p>
+</dd>
+<dt><strong>plot</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Display a plot of the real and imaginary parts of the loaded data. Disabled by default.</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>t</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd><p class="first last">Time axis in microseconds.</p>
+<dd><p class="first">Time axis in microseconds.Its structure depends on the dimensionality of the experimental datasets:</p>
+<ul class="last simple">
+<li>1D-datasets: the time axis of <code class="docutils literal notranslate"><span class="pre">N</span></code> points is returned as a one-dimensional ndarray of shape <code class="docutils literal notranslate"><span class="pre">(N,)</span></code></li>
+<li>2D-datasets: the <code class="docutils literal notranslate"><span class="pre">M</span></code> time-axes of <code class="docutils literal notranslate"><span class="pre">N</span></code> points are returned as a two-dimensional ndarray of shape <code class="docutils literal notranslate"><span class="pre">(N,M)</span></code>. The i-th axis can be accessed via <code class="docutils literal notranslate"><span class="pre">t[:,i]</span></code>.</li>
+</ul>
 </dd>
 <dt><strong>V</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd><p class="first last">Experimental signal.</p>
+<dd><p class="first">Experimental signal(s). Its structure depends on the dimensionality of the experimental datasets:</p>
+<ul class="last simple">
+<li>1D-datasets: the signal of <code class="docutils literal notranslate"><span class="pre">N</span></code> points is returned as a one-dimensional ndarray of shape <code class="docutils literal notranslate"><span class="pre">(N,)</span></code></li>
+<li>2D-datasets: the <code class="docutils literal notranslate"><span class="pre">M</span></code> signals of <code class="docutils literal notranslate"><span class="pre">N</span></code> points are returned as a two-dimensional ndarray of shape <code class="docutils literal notranslate"><span class="pre">(N,M)</span></code>. The i-th  signal can be accessed via <code class="docutils literal notranslate"><span class="pre">V[:,i]</span></code>.</li>
+</ul>
 </dd>
 <dt><strong>pars</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd><p class="first last">Parameter file entries, returned if <code class="docutils literal notranslate"><span class="pre">full_output</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>

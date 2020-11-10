@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.regparamrange &mdash; DeerLab  documentation</title>
+  <title>deerlab.regparamrange &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -198,20 +202,18 @@
 <span class="sd">        Dipolar kernel matrix</span>
 <span class="sd">    L : array_like with shape(n-2,n)  </span>
 <span class="sd">        Regularization operator</span>
+<span class="sd">    noiselvl : float scalar, optional</span>
+<span class="sd">        Standard deviation estimation of the noise in the data. Used for scaling </span>
+<span class="sd">        of the singular values, the default is 0.</span>
+<span class="sd">    logres : float scalar, optional</span>
+<span class="sd">        Resolution of the array of alpha candidates, on a base-10 logarithmic scale, the default is 0.1 </span>
+<span class="sd">        (corresponding to a tenth of a decade).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    alphas : ndarray</span>
 <span class="sd">        Regularization parameter candidates</span>
 
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    noiselvl : float scalar</span>
-<span class="sd">        Standard deviation estimation of the noise in the data. Used for scaling </span>
-<span class="sd">        of the singular values, the default is 0.</span>
-<span class="sd">    logres : float scalar</span>
-<span class="sd">        Resolution of the array of alpha candidates, on a base-10 logarithmic scale, the default is 0.1 </span>
-<span class="sd">        (corresponding to a tenth of a decade).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Set alpha range</span>
     <span class="n">minmax_ratio</span> <span class="o">=</span> <span class="mi">16</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="o">*</span><span class="mf">1e6</span>  <span class="c1"># ratio of smallest to largest alpha</span>
@@ -222,7 +224,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Get generalized singular values of K and L</span>
         <span class="n">singularValues</span> <span class="o">=</span> <span class="n">gsvd</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">L</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>
         <span class="c1"># Otherwise just estimate via the SVD from the dipolar kernel to avoid crash</span>
         <span class="n">_</span><span class="p">,</span><span class="n">singularValues</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">svd</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
 

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.selregparam &mdash; DeerLab  documentation</title>
+  <title>deerlab.selregparam &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -209,7 +213,7 @@
 <span class="sd">        Regularization functional type: </span>
 <span class="sd">    </span>
 <span class="sd">        * ``&#39;tikhonov&#39;`` - Tikhonov regularizaton</span>
-<span class="sd">        * ``&#39;tv&#39; `` - Total variation regularization</span>
+<span class="sd">        * ``&#39;tv&#39;`` - Total variation regularization</span>
 <span class="sd">        * ``&#39;huber&#39;`` - Huber regularization</span>
 <span class="sd">        The default is ``&#39;tikhonov&#39;``.</span>
 
@@ -230,33 +234,30 @@
 <span class="sd">        * ``&#39;ncp&#39;`` - Normalized Cumulative Periodogram (NCP)</span>
 <span class="sd">        * ``&#39;gml&#39;`` - Generalized Maximum Likelihood (GML)</span>
 <span class="sd">        * ``&#39;mcl&#39;`` - Mallows&#39; C_L (MCL)</span>
-<span class="sd">        </span>
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    weights : array_like </span>
+<span class="sd">    weights : array_like, optional</span>
 <span class="sd">        Array of weighting coefficients for the individual signals in global fitting, </span>
 <span class="sd">        the default is all weighted equally.</span>
-<span class="sd">    candidates : list</span>
+<span class="sd">    candidates : list, optional</span>
 <span class="sd">        List or array of candidate regularization parameter values to be evaluated. </span>
 <span class="sd">        If not specified, these are automatically computed from the GSVD of the </span>
 <span class="sd">        dipolar kernel and regularization operator.</span>
-<span class="sd">    regorder : int scalar</span>
+<span class="sd">    regorder : int scalar, optional</span>
 <span class="sd">        Order of the regularization operator, the default is 2.</span>
-<span class="sd">    algorithm : string</span>
+<span class="sd">    algorithm : string, optional</span>
 <span class="sd">        Search algorithm: </span>
 <span class="sd">        </span>
 <span class="sd">        * ``&#39;grid&#39;`` - Grid-search, slow.</span>
 <span class="sd">        * ``&#39;brent&#39;`` - Brent-algorithm, fast.</span>
 <span class="sd">        The default is ``&#39;brent&#39;``.</span>
 <span class="sd">        </span>
-<span class="sd">    full_output : boolean</span>
+<span class="sd">    full_output : boolean, optional</span>
 <span class="sd">        If enabled the function will return additional output arguments in a tuple, the default is False.</span>
-<span class="sd">    nonnegativity : boolean</span>
+<span class="sd">    nonnegativity : boolean, optional</span>
 <span class="sd">        Enforces the non-negativity constraint on computed distance distributions, by default enabled.</span>
-<span class="sd">    noiselvl : float scalar</span>
+<span class="sd">    noiselvl : float scalar, optional</span>
 <span class="sd">        Estimate of the noise standard deviation, if not specified it is estimated form the fit residuals.</span>
 <span class="sd">        Used for the MCL selection method.  </span>
-<span class="sd">    huberparam : float scalar</span>
+<span class="sd">    huberparam : float scalar, optional</span>
 <span class="sd">        Value of the Huber parameter used in Huber regularization, the default is 1.35.</span>
 
 <span class="sd">    Returns</span>

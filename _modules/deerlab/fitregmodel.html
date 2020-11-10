@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.fitregmodel &mdash; DeerLab  documentation</title>
+  <title>deerlab.fitregmodel &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -204,11 +208,14 @@
 <span class="sd">    ----------</span>
 <span class="sd">    V : array_like or list of array_like  </span>
 <span class="sd">        Dipolar signal, multiple datasets can be globally evaluated by passing a list of signals.</span>
+<span class="sd">    </span>
 <span class="sd">    K : 2D-array_like array or list of 2D-array_like</span>
 <span class="sd">        Dipolar kernel, if a list of signals is specified, a corresponding list of kernels must be passed as well.</span>
+<span class="sd">    </span>
 <span class="sd">    r : array_like</span>
 <span class="sd">        Distance axis, in nanometers.</span>
-<span class="sd">    regtype : string</span>
+<span class="sd">    </span>
+<span class="sd">    regtype : string, optional</span>
 <span class="sd">        Regularization functional type: </span>
 <span class="sd">    </span>
 <span class="sd">        * ``&#39;tikhonov&#39;`` - Tikhonov regularizaton</span>
@@ -216,7 +223,7 @@
 <span class="sd">        * ``&#39;huber&#39;`` - Huber regularization</span>
 <span class="sd">        The default is ``&#39;tikhonov&#39;``.   </span>
 <span class="sd">    </span>
-<span class="sd">    regparam : string or scalar</span>
+<span class="sd">    regparam : string or scalar, optional</span>
 <span class="sd">        Method for the automatic selection of the optimal regularization parameter:</span>
 <span class="sd">    </span>
 <span class="sd">        * ``&#39;lr&#39;`` - L-curve minimum-radius method (LR)</span>
@@ -234,47 +241,15 @@
 <span class="sd">        * ``&#39;gml&#39;`` - Generalized Maximum Likelihood (GML)</span>
 <span class="sd">        * ``&#39;mcl&#39;`` - Mallows&#39; C_L (MCL)</span>
 <span class="sd">        The regularization parameter can be manually specified by passing a scalar value instead of a string.</span>
-<span class="sd">        The default &#39;aic&#39;.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    :ref:`FitResult` with the following fields defined:</span>
-<span class="sd">    P : ndarray</span>
-<span class="sd">        Fitted distance distribution</span>
-<span class="sd">    uncertainty : :ref:`UncertQuant`</span>
-<span class="sd">        Covariance-based uncertainty quantification of the fitted distance distribution</span>
-<span class="sd">    alpha : float int</span>
-<span class="sd">        Regularization parameter used in the optimization</span>
-<span class="sd">    scale : float int or list of float int</span>
-<span class="sd">        Amplitude scale(s) of the dipolar signal(s).</span>
-<span class="sd">    plot : callable</span>
-<span class="sd">        Function to display the results. It will </span>
-<span class="sd">        display the fitted signals and distance distributions with</span>
-<span class="sd">        confidence intervals. If requested, the function returns </span>
-<span class="sd">        the `matplotlib.axes` object as output. </span>
-<span class="sd">    stats : dict</span>
-<span class="sd">        Goodness of fit statistical estimators (if full_output=True):</span>
-
-<span class="sd">        * ``stats[&#39;chi2red&#39;]`` - Reduced \chi^2 test</span>
-<span class="sd">        * ``stats[&#39;r2&#39;]`` - R^2 test</span>
-<span class="sd">        * ``stats[&#39;rmsd&#39;]`` - Root-mean squared deviation (RMSD)</span>
-<span class="sd">        * ``stats[&#39;aic&#39;]`` - Akaike information criterion</span>
-<span class="sd">        * ``stats[&#39;aicc&#39;]`` - Corrected Akaike information criterion</span>
-<span class="sd">        * ``stats[&#39;bic&#39;]`` - Bayesian information criterion</span>
-<span class="sd">    success : bool</span>
-<span class="sd">        Whether or not the optimizer exited successfully.</span>
-<span class="sd">    cost : float</span>
-<span class="sd">        Value of the cost function at the solution.</span>
-<span class="sd">    residuals : ndarray</span>
-<span class="sd">        Vector of residuals at the solution.</span>
-
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    weights : array_like </span>
+<span class="sd">        The default ``&#39;aic&#39;``.</span>
+<span class="sd">    </span>
+<span class="sd">    weights : array_like, optional</span>
 <span class="sd">        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</span>
-<span class="sd">    regorder : int scalar</span>
+<span class="sd">    </span>
+<span class="sd">    regorder : int scalar, optional</span>
 <span class="sd">        Order of the regularization operator, the default is 2.</span>
-<span class="sd">    solver : string</span>
+<span class="sd">    </span>
+<span class="sd">    solver : string, optional</span>
 <span class="sd">        Optimizer used to solve the non-negative least-squares problem: </span>
 
 <span class="sd">        * ``&#39;cvx&#39;`` - Optimization of the NNLS problem using cvxopt</span>
@@ -282,18 +257,65 @@
 <span class="sd">        * ``&#39;nnlsbpp&#39;`` - Optimization using the block principal pivoting NNLS algorithm.</span>
 <span class="sd">        The default is ``&#39;cvx&#39;``.</span>
 
-<span class="sd">    uqanalysis : boolean</span>
+<span class="sd">    uqanalysis : boolean, optional</span>
 <span class="sd">        Enable/disable the uncertainty quantification analysis, by default it is enabled. </span>
-<span class="sd">    nonnegativity : boolean</span>
+<span class="sd">    </span>
+<span class="sd">    nonnegativity : boolean, optional</span>
 <span class="sd">        Enforces the non-negativity constraint on computed distance distributions, by default it is enabled.</span>
-<span class="sd">    huberparam : scalar</span>
+<span class="sd">    </span>
+<span class="sd">    huberparam : scalar, optional</span>
 <span class="sd">        Value of the Huber parameter used in Huber regularization, the default is 1.35.</span>
-<span class="sd">    renormalize : boolean</span>
+<span class="sd">    </span>
+<span class="sd">    renormalize : boolean, optional</span>
 <span class="sd">        Enable/disable renormalization of the fitted distribution, by default it is enabled.</span>
-<span class="sd">    obir : boolean</span>
+<span class="sd">    </span>
+<span class="sd">    obir : boolean, optional</span>
 <span class="sd">        Enable/disable the use of the Osher-Bregman iterated regularization algorithm, by default it is disabled.</span>
-<span class="sd">    noiselevelaim : scalar</span>
+<span class="sd">    </span>
+<span class="sd">    noiselevelaim : scalar, optional</span>
 <span class="sd">        Noise level at which to stop the OBIR algorithm. If not specified it is automatically estimated from the fit residuals.</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :ref:`FitResult` with the following fields defined:</span>
+<span class="sd">    P : ndarray</span>
+<span class="sd">        Fitted distance distribution</span>
+<span class="sd">    </span>
+<span class="sd">    uncertainty : :ref:`UncertQuant`</span>
+<span class="sd">        Covariance-based uncertainty quantification of the fitted distance distribution</span>
+<span class="sd">    </span>
+<span class="sd">    alpha : float int</span>
+<span class="sd">        Regularization parameter used in the optimization</span>
+<span class="sd">    </span>
+<span class="sd">    scale : float int or list of float int</span>
+<span class="sd">        Amplitude scale(s) of the dipolar signal(s).</span>
+<span class="sd">    </span>
+<span class="sd">    plot : callable</span>
+<span class="sd">        Function to display the results. It will </span>
+<span class="sd">        display the fitted signals and distance distributions with</span>
+<span class="sd">        confidence intervals. If requested, the function returns </span>
+<span class="sd">        the `matplotlib.axes` object as output. </span>
+<span class="sd">    </span>
+<span class="sd">    stats : dict</span>
+<span class="sd">        Goodness of fit statistical estimators (if ``full_output=True``):</span>
+
+<span class="sd">        * ``stats[&#39;chi2red&#39;]`` - Reduced \chi^2 test</span>
+<span class="sd">        * ``stats[&#39;r2&#39;]`` - R^2 test</span>
+<span class="sd">        * ``stats[&#39;rmsd&#39;]`` - Root-mean squared deviation (RMSD)</span>
+<span class="sd">        * ``stats[&#39;aic&#39;]`` - Akaike information criterion</span>
+<span class="sd">        * ``stats[&#39;aicc&#39;]`` - Corrected Akaike information criterion</span>
+<span class="sd">        * ``stats[&#39;bic&#39;]`` - Bayesian information criterion</span>
+<span class="sd">    </span>
+<span class="sd">    success : bool</span>
+<span class="sd">        Whether or not the optimizer exited successfully.</span>
+<span class="sd">    </span>
+<span class="sd">    cost : float</span>
+<span class="sd">        Value of the cost function at the solution.</span>
+<span class="sd">    </span>
+<span class="sd">    residuals : ndarray</span>
+<span class="sd">        Vector of residuals at the solution.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Prepare signals, kernels and weights if multiple are passed</span>
     <span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">subsets</span><span class="p">,</span> <span class="n">prescales</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">parse_multidatasets</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span><span class="n">precondition</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

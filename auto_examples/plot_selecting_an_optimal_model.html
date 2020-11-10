@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Selecting an optimal parametric model for fitting a dipolar signal &mdash; DeerLab  documentation</title>
+  <title>Selecting an optimal parametric model for fitting a dipolar signal &mdash; DeerLab</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -100,7 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -250,13 +254,13 @@ we listed above, and collecting the AIC-values for each model.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:204: UserWarning: The fitted value of parameter #5, is at the lower bound (0.0).
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:222: UserWarning: The fitted value of parameter #5, is at the lower bound (0.0).
   warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound ({}).&#39;.format(p,lb[p]))
 /opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/utils/gof.py:54: RuntimeWarning: divide by zero encountered in double_scalars
   R2 = 1 - np.sum((x-xfit)**2)/np.sum((xfit-np.mean(xfit))**2)
-/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:206: UserWarning: The fitted value of parameter #8,  is at the upper bound (1).
+/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:224: UserWarning: The fitted value of parameter #8,  is at the upper bound (1).
   warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound ({}).&#39;.format(p,ub[p]))
-/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:204: UserWarning: The fitted value of parameter #2, is at the lower bound (0.0).
+/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:222: UserWarning: The fitted value of parameter #2, is at the lower bound (0.0).
   warnings.warn(&#39;The fitted value of parameter #{}, is at the lower bound ({}).&#39;.format(p,lb[p]))
 </pre></div>
 </div>
@@ -311,7 +315,7 @@ Akaike weights, i.e. the probabilities of a model being the most optimal.</div><
 <img alt="plot selecting an optimal model" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_selecting_an_optimal_model_001.png" />
 <p>Typically there is not a single optimal model unless the noise level is very
 low. Usually several models have similar probabilities and should therefore be presented together.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  46.609 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  42.930 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-selecting-an-optimal-model-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <a class="reference download internal" download="" href="../_downloads/d34b1b5a377876c6fd700053df16411e/plot_selecting_an_optimal_model.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_selecting_an_optimal_model.py</span></code></a></div>

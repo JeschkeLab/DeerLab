@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.whitegaussnoise &mdash; DeerLab  documentation</title>
+  <title>deerlab.whitegaussnoise &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -193,12 +197,12 @@
 <span class="sd">        Time axis.</span>
 <span class="sd">    level : float scalar</span>
 <span class="sd">        Noise level, i.e. standard deviation of underlying Gaussian distribution.</span>
-<span class="sd">    rescale : boolean</span>
+<span class="sd">    rescale : boolean, optional</span>
 <span class="sd">        If true, rescales the noise vector such that its standard deviation is exactly equal</span>
 <span class="sd">        to ``level``. If false (default), the standard deviation of the noise vector can deviate</span>
 <span class="sd">        slightly from ``level``, particularly for short vectors.</span>
-<span class="sd">    seed : None or integer scalar</span>
-<span class="sd">        If None (default), do not seed the random number generator. If an integer scalar is</span>
+<span class="sd">    seed : integer scalar, optional</span>
+<span class="sd">        If ``None`` (default), do not seed the random number generator. If an integer scalar is</span>
 <span class="sd">        given (e.g. ``seed=137``), seed the random number generator with this number.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>

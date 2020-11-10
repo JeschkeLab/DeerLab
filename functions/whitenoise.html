@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>whitegaussnoise &mdash; DeerLab  documentation</title>
+  <title>whitegaussnoise &mdash; DeerLab</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -100,7 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -201,13 +205,13 @@
 <dt><strong>level</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar</span></dt>
 <dd><p class="first last">Noise level, i.e. standard deviation of underlying Gaussian distribution.</p>
 </dd>
-<dt><strong>rescale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dt><strong>rescale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
 <dd><p class="first last">If true, rescales the noise vector such that its standard deviation is exactly equal
 to <code class="docutils literal notranslate"><span class="pre">level</span></code>. If false (default), the standard deviation of the noise vector can deviate
 slightly from <code class="docutils literal notranslate"><span class="pre">level</span></code>, particularly for short vectors.</p>
 </dd>
-<dt><strong>seed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">None or integer scalar</span></dt>
-<dd><p class="first last">If None (default), do not seed the random number generator. If an integer scalar is
+<dt><strong>seed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer scalar, optional</span></dt>
+<dd><p class="first last">If <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), do not seed the random number generator. If an integer scalar is
 given (e.g. <code class="docutils literal notranslate"><span class="pre">seed=137</span></code>), seed the random number generator with this number.</p>
 </dd>
 </dl>

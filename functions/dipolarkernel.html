@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dipolarkernel &mdash; DeerLab  documentation</title>
+  <title>dipolarkernel &mdash; DeerLab</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -100,7 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -212,39 +216,30 @@ If a single value is specified, it is interpreted as the 4-pulse DEER pathway am
 <dd><p class="first last">For a single-pathway model, the numerical background decay can be passed as an array. 
 For multiple pathways, a callable function must be passed, accepting a time-axis array as first input and a pathway amplitude as a second, i.e. <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">=</span> <span class="pre">lambda</span> <span class="pre">t,lam:</span> <span class="pre">bg_model(t,par,lam)</span></code></p>
 </dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>K</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd><p class="first last">Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is <code class="docutils literal notranslate"><span class="pre">V</span> <span class="pre">=</span> <span class="pre">K&#64;P</span></code></p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
-<dt><strong>method</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default=``’fresnel’``</span></dt>
+<dt><strong>method</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
 <dd><p class="first">Numerical method for kernel matrix calculation:</p>
-<blockquote class="last">
+<blockquote>
 <div><ul class="simple">
-<li>‘fresnel’ - uses Fresnel integrals for the kernel (default)</li>
-<li>‘integral’ - uses explicit integration function (slow, accurate)</li>
-<li>‘grid’ - powder average via explicit grid integration (slow, inaccurate)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'fresnel'</span></code> - uses Fresnel integrals for the kernel (default)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'integral'</span></code> - uses explicit integration function (slow, accurate)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'grid'</span></code> - powder average via explicit grid integration (slow, inaccurate)</li>
 </ul>
 </div></blockquote>
+<p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'fresnel'</span></code>.</p>
 </dd>
 <dt><strong>excbandwidth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar, optional</span></dt>
 <dd><p class="first last">Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth <a class="reference internal" href="#r23328abbf0e7-4" id="id2">[4]</a>.</p>
 </dd>
 <dt><strong>g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar, 2-element array, optional</span></dt>
-<dd><p class="first last">Electron g-values of the spin centers <code class="docutils literal notranslate"><span class="pre">[g1,</span> <span class="pre">g2]</span></code>. If a single g is specified, [g, g] is assumed</p>
+<dd><p class="first last">Electron g-values of the spin centers <code class="docutils literal notranslate"><span class="pre">[g1,</span> <span class="pre">g2]</span></code>. If a single g is specified, <code class="docutils literal notranslate"><span class="pre">[g,</span> <span class="pre">g]</span></code> is assumed</p>
 </dd>
 <dt><strong>integralop</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
-<dd><p class="first last">Whether to return K as an integral operator (i.e <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">K*dr</span></code>) or not (<code class="docutils literal notranslate"><span class="pre">K</span></code>). Usage as an integral operator means that the matrix operation <code class="docutils literal notranslate"><span class="pre">V=K&#64;P</span></code> with a normalized distance distribution (i.e. <code class="docutils literal notranslate"><span class="pre">trapz(r,P)==1</span></code>) leads to a signal <code class="docutils literal notranslate"><span class="pre">V</span></code> with ampliude <code class="docutils literal notranslate"><span class="pre">V(t=0)=1</span></code>. Default is True.</p>
+<dd><p class="first last">Whether to return K as an integral operator (i.e <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">=</span> <span class="pre">K*dr</span></code>) or not (<code class="docutils literal notranslate"><span class="pre">K</span></code>). Usage as an integral operator means that the 
+matrix operation <code class="docutils literal notranslate"><span class="pre">V=K&#64;P</span></code> with a normalized distance distribution (i.e. <code class="docutils literal notranslate"><span class="pre">trapz(r,P)==1</span></code>) leads to a signal <code class="docutils literal notranslate"><span class="pre">V</span></code> with 
+ampliude <code class="docutils literal notranslate"><span class="pre">V(t=0)=1</span></code>. Enabled by default.</p>
 </dd>
 <dt><strong>nKnots</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar, optional</span></dt>
-<dd><p class="first last">Number of knots for the grid of powder orientations to be used in the ‘grid’ kernel calculation method.</p>
+<dd><p class="first last">Number of knots for the grid of powder orientations to be used in the <code class="docutils literal notranslate"><span class="pre">'grid'</span></code> kernel calculation method.</p>
 </dd>
 <dt><strong>renormalize</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
 <dd><p class="first last">Re-normalization of multi-pathway kernels to ensure the equality <code class="docutils literal notranslate"><span class="pre">K(t=0,r)==1</span></code> is satisfied. Enabled by default.</p>
@@ -254,6 +249,13 @@ For multiple pathways, a callable function must be passed, accepting a time-axis
 </dd>
 <dt><strong>clearcache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
 <dd><p class="first last">Clear the cached dipolar kernels at the beginning of the function. Disabled by default.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>K</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd><p class="first last">Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is <code class="docutils literal notranslate"><span class="pre">V</span> <span class="pre">=</span> <span class="pre">K&#64;P</span></code></p>
 </dd>
 </dl>
 </td>
@@ -268,34 +270,29 @@ Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be give
 <table class="docutils citation" frame="void" id="r23328abbf0e7-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[1]</a></td><td><ol class="first last upperalpha simple" start="12">
-<li>Fábregas Ibáñez, G. Jeschke, and S. Stoll. DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson., 1, 209–224, 2020</li>
-</ol>
-</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id3">[1]</a></td><td>L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. 
+DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson., 1, 209–224, 2020</td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="r23328abbf0e7-2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[2]</a></td><td><ol class="first last upperalpha simple" start="12">
-<li>Fábregas Ibáñez, and G. Jeschke: Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.</li>
-</ol>
-</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id4">[2]</a></td><td>L. Fábregas Ibáñez, and G. Jeschke
+Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.</td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="r23328abbf0e7-3" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id5">[3]</a></td><td><ol class="first last upperalpha simple" start="11">
-<li>Keller, V. Mertens, M. Qi, A. I. Nalepa, A. Godt, A. Savitsky, G. Jeschke, and M. Yulikov: Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19</li>
-</ol>
-</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id5">[3]</a></td><td>K. Keller, V. Mertens, M. Qi, A. I. Nalepa, A. Godt, A. Savitsky, G. Jeschke, and M. Yulikov
+Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19</td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="r23328abbf0e7-4" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[4]</a></td><td>J.E. Banham, C.M. Baker, S. Ceola, I.J. Day, G.H. Grant, E.J.J. Groenen, C.T. Rodgers, G. Jeschke, C.R. Timmel, Distance measurements in the borderline region of applicability of CW EPR and DEER: A model study on a homologous series of spin-labelled peptides, Journal of Magnetic Resonance, 191, 2, 2008, 202-218</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id2">[4]</a></td><td>J. E. Banham, C. M. Baker, S. Ceola, I. J. Day, G.H. Grant, E. J. J. Groenen, C. T. Rodgers, G. Jeschke, C. R. Timmel
+Distance measurements in the borderline region of applicability of CW EPR and DEER: A model study on a homologous series of spin-labelled peptides, Journal of Magnetic Resonance, 191, 2, 2008, 202-218</td></tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
@@ -312,14 +309,14 @@ Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be give
 
 <span class="n">To</span> <span class="n">specify</span> <span class="n">a</span> <span class="n">more</span> <span class="n">complete</span> <span class="mi">4</span><span class="o">-</span><span class="n">pulse</span> <span class="n">DEER</span> <span class="n">model</span> <span class="n">that</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">g</span> <span class="n">includes</span> <span class="n">the</span> <span class="mi">2</span><span class="o">+</span><span class="mi">1</span> <span class="n">contribution</span><span class="p">,</span> <span class="n">use</span><span class="p">::</span>
 
-<span class="n">Lam0</span> <span class="o">=</span> <span class="mf">0.5</span>                     <span class="c1"># unmodulated part</span>
-<span class="n">lam</span> <span class="o">=</span> <span class="mf">0.4</span>                      <span class="c1"># modulation depth main signal</span>
-<span class="n">lam21</span> <span class="o">=</span> <span class="mf">0.1</span>                    <span class="c1"># modulation depth 2+1 contribution</span>
-<span class="n">tau2</span> <span class="o">=</span> <span class="mi">4</span>                       <span class="c1"># refocusing time (us) of 2+1 contribution</span>
+<span class="n">Lam0</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># unmodulated part</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="mf">0.4</span>  <span class="c1"># modulation depth main signal</span>
+<span class="n">lam21</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># modulation depth 2+1 contribution</span>
+<span class="n">tau2</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># refocusing time (us) of 2+1 contribution</span>
 
-<span class="n">path0</span> <span class="o">=</span> <span class="n">Lam0</span>            <span class="c1"># unmodulated pathway</span>
-<span class="n">path1</span> <span class="o">=</span> <span class="p">[</span><span class="n">lam1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>       <span class="c1"># main dipolar pathway, refocusing at time zero</span>
-<span class="n">path1</span> <span class="o">=</span> <span class="p">[</span><span class="n">lam2</span><span class="p">,</span> <span class="n">tau2</span><span class="p">]</span>    <span class="c1"># 2+1 dipolar pathway, refocusing at time tau2</span>
+<span class="n">path0</span> <span class="o">=</span> <span class="n">Lam0</span>  <span class="c1"># unmodulated pathway</span>
+<span class="n">path1</span> <span class="o">=</span> <span class="p">[</span><span class="n">lam1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># main dipolar pathway, refocusing at time zero</span>
+<span class="n">path1</span> <span class="o">=</span> <span class="p">[</span><span class="n">lam2</span><span class="p">,</span> <span class="n">tau2</span><span class="p">]</span>  <span class="c1"># 2+1 dipolar pathway, refocusing at time tau2</span>
 <span class="n">pathways</span> <span class="o">=</span> <span class="p">[</span><span class="n">path0</span><span class="p">,</span> <span class="n">path1</span><span class="p">,</span> <span class="n">path2</span><span class="p">]</span>  
 
 <span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">pathways</span><span class="p">)</span>

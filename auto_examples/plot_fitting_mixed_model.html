@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fitting a mixed distance-distribution model &mdash; DeerLab  documentation</title>
+  <title>Fitting a mixed distance-distribution model &mdash; DeerLab</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -100,7 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -269,6 +273,11 @@ a very basic dipolar kernel.</p>
 <span class="n">fitpar</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
 </pre></div>
 </div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/deerlab/fitparamodel.py:224: UserWarning: The fitted value of parameter #5,  is at the upper bound (1.0).
+  warnings.warn(&#39;The fitted value of parameter #{},  is at the upper bound ({}).&#39;.format(p,ub[p]))
+</pre></div>
+</div>
 <p>From the fitted parameter set <code class="docutils literal notranslate"><span class="pre">fitpar</span></code> we can now generate our fitted distance
 distribution and the corresponding time-domain fit.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Calculate the fitted model</span>
@@ -294,10 +303,10 @@ dipolar signal, let’s see how our fit turned out.</p>
 </div>
 <img alt="plot fitting mixed model" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_fitting_mixed_model_001.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7f52c07ffa90&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend object at 0x7fe76a622f10&gt;
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 3 minutes  55.640 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 1 minutes  54.364 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-fitting-mixed-model-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <a class="reference download internal" download="" href="../_downloads/da4d4d053b5bedea7c30d2caf7b6c308/plot_fitting_mixed_model.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_fitting_mixed_model.py</span></code></a></div>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.correctscale &mdash; DeerLab  documentation</title>
+  <title>deerlab.correctscale &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -207,22 +211,19 @@
 <span class="sd">        Experimenal signal.</span>
 <span class="sd">    t : array_like </span>
 <span class="sd">        Time axis, in microseconds. </span>
-<span class="sd">    </span>
+<span class="sd">    tmax : scalar, optional</span>
+<span class="sd">        Time cutoff for fit range, in microseconds.</span>
+<span class="sd">    model : string, optional</span>
+<span class="sd">        Model to fit over |t|&lt;tmax</span>
+<span class="sd">        * ``&#39;deer&#39;``   - DEER model with Gaussian distribution.</span>
+<span class="sd">        * ``&#39;gauss&#39;``  - Raised Gaussian.</span>
+<span class="sd">        The default is ``&#39;deer&#39;``</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Vc : ndarray</span>
 <span class="sd">        Rescaled signal.</span>
 <span class="sd">    </span>
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    tmax : scalar</span>
-<span class="sd">        Time cutoff for fit range, in microseconds.</span>
-<span class="sd">    model : string</span>
-<span class="sd">        Model to fit over |t|&lt;tmax</span>
-<span class="sd">        * ``&#39;deer&#39;``   - DEER model with Gaussian distribution.</span>
-<span class="sd">        * ``&#39;gauss&#39;``  - Raised Gaussian.</span>
-<span class="sd">        The default is ``&#39;deer&#39;``</span>
-<span class="sd">        </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nf">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">isreal</span><span class="p">(</span><span class="n">V</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input signal cannot be complex.&#39;</span><span class="p">)</span> 

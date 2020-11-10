@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.fitsignal &mdash; DeerLab  documentation</title>
+  <title>deerlab.fitsignal &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -201,25 +205,29 @@
               <span class="n">par0</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">],</span> <span class="n">lb</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">],</span> <span class="n">ub</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
               <span class="n">weights</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">uqanalysis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span> <span class="n">regtype</span> <span class="o">=</span> <span class="s1">&#39;tikhonov&#39;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Fits a dipolar model to the experimental signal V with time axis t, using</span>
-<span class="sd">    distance axis r. The model is specified by the distance distribution (dd),</span>
+<span class="sd">    Fits a dipolar model to the experimental signal ``V`` with time axis ``t``, using</span>
+<span class="sd">    distance axis ``r``. The model is specified by the distance distribution (dd),</span>
 <span class="sd">    the background (bg), and the experiment (ex).</span>
 
-<span class="sd">    If multiple signals (V1,V2,...) and their corresponding time axes (t1,t2,...)</span>
-<span class="sd">    are given, they will be fitted globally with a single distance distribution (dd).</span>
-<span class="sd">    For each signal, a specific background (bg1,bg2,...) and experiment (ex1,ex2)</span>
+<span class="sd">    If multiple signals (``V1``, ``V2``,...) and their corresponding time axes (``t1``, ``t2``,...)</span>
+<span class="sd">    are given, they will be fitted globally with a single distance distribution (``dd``).</span>
+<span class="sd">    For each signal, a specific background (``bg1``, ``bg2``,...) and experiment (``ex1``, ``ex2``)</span>
 <span class="sd">    models can be assigned.</span>
 
-<span class="sd">    This function can handle both parametric and non-parametric distance distribution models.</span>
+<span class="sd">    This function can handle both parametric and non-parametric distance distribution models. It </span>
+<span class="sd">    accepts only built-in parametric models, no user-defined models.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    V : array_like or list of array_like</span>
 <span class="sd">        Time-domain signal(s) to fit.</span>
+<span class="sd">    </span>
 <span class="sd">    t : array_like or list of array_like</span>
 <span class="sd">        Time axis, in microseconds. </span>
+<span class="sd">    </span>
 <span class="sd">    r : array_like</span>
 <span class="sd">        Distance axis, in nanometers.</span>
+<span class="sd">    </span>
 <span class="sd">    dd : callable or string</span>
 <span class="sd">        Distance distribution model, the following modes are allowed:</span>
 
@@ -227,7 +235,7 @@
 <span class="sd">        * A callable function of a DeerLab parametric distribution model (e.g. ``dd_gauss``).</span>
 <span class="sd">        * A string ``None`` to indicate no distribution, i.e. only background.</span>
 
-<span class="sd">        The default is &#39;P&#39;.</span>
+<span class="sd">        The default is ``&#39;P&#39;``.</span>
 
 <span class="sd">    bg : callable or string</span>
 <span class="sd">        Background model, the following modes are allowed:</span>
@@ -235,31 +243,74 @@
 <span class="sd">        * A callable function of a DeerLab parametric background model (e.g. ``bg_hom3d``).</span>
 <span class="sd">        * ``None`` to indicate no background decay.</span>
 
-<span class="sd">        The default is bg_hom3d.</span>
+<span class="sd">        The default is ``bg_hom3d``.</span>
 
 <span class="sd">    ex : callable or string</span>
 <span class="sd">        Experiment model, the following modes are allowed:</span>
 
 <span class="sd">        * Function handle to experiment model (e.g. ``ex_4pdeer``)</span>
-<span class="sd">        * ``None`` to indicate simple dipolar oscillation (mod.depth = 1)</span>
+<span class="sd">        * ``None`` to indicate simple dipolar oscillation (modulation depth equal 1)</span>
 
-<span class="sd">        The default is ex_4pdeer.</span>
+<span class="sd">        The default is ``ex_4pdeer``.</span>
 
-<span class="sd">    par0 : list of array_like</span>
+<span class="sd">    par0 : list of array_like, optional</span>
 <span class="sd">        Starting parameter values. Must be a 3-element list ``[par0_dd,par0_bg,par0_ex]``</span>
 <span class="sd">        containing the start values of the distribution, background and experiment models, in that order.</span>
 <span class="sd">        If a model does not require parameters or are to be determined automatically it must be specified </span>
 <span class="sd">        as an empty list ``[]``. The default is ``par0=[[],[],[]]``.</span>
-<span class="sd">    lb : list of array_like</span>
+<span class="sd">    </span>
+<span class="sd">    lb : list of array_like, optional</span>
 <span class="sd">        Lower bounds for parameters.  Must be a 3-element list ``[lb_dd,lb_bg,lb_ex]``</span>
 <span class="sd">        containing the start values of the distribution, background and experiment models, in that order.</span>
 <span class="sd">        If a model does not require parameters or are to be determined automatically it must be specified </span>
 <span class="sd">        as an empty list ``[]``. The default is ``lb=[[],[],[]]``.</span>
-<span class="sd">    ub : list of array_like</span>
+<span class="sd">    </span>
+<span class="sd">    ub : list of array_like, optional</span>
 <span class="sd">        Upper bounds for parameters, Must be a 3-element list ``[ub_dd,ub_bg,ub_ex]``</span>
 <span class="sd">        containing the start values of the distribution, background and experiment models, in that order.</span>
 <span class="sd">        If a model does not require parameters or are to be determined automatically it must be specified </span>
 <span class="sd">        as an empty list ``[]``. The default is ``ub=[[],[],[]]``.</span>
+<span class="sd">    </span>
+<span class="sd">    weights : array_like, optional</span>
+<span class="sd">        Array of weighting coefficients for the individual signals in global fitting,</span>
+<span class="sd">        the default is all weighted equally.</span>
+<span class="sd">        If not specified all datasets are weighted equally.</span>
+<span class="sd">    </span>
+<span class="sd">    regparam : str or scalar, optional</span>
+<span class="sd">        Method for the automatic selection of the optimal regularization parameter:</span>
+
+<span class="sd">        * ``&#39;lr&#39;`` - L-curve minimum-radius method (LR)</span>
+<span class="sd">        * ``&#39;lc&#39;`` - L-curve maximum-curvature method (LC)</span>
+<span class="sd">        * ``&#39;cv&#39;`` - Cross validation (CV)</span>
+<span class="sd">        * ``&#39;gcv&#39;`` - Generalized Cross Validation (GCV)</span>
+<span class="sd">        * ``&#39;rgcv&#39;`` - Robust Generalized Cross Validation (rGCV)</span>
+<span class="sd">        * ``&#39;srgcv&#39;`` - Strong Robust Generalized Cross Validation (srGCV)</span>
+<span class="sd">        * ``&#39;aic&#39;`` - Akaike information criterion (AIC)</span>
+<span class="sd">        * ``&#39;bic&#39;`` - Bayesian information criterion (BIC)</span>
+<span class="sd">        * ``&#39;aicc&#39;`` - Corrected Akaike information criterion (AICC)</span>
+<span class="sd">        * ``&#39;rm&#39;`` - Residual method (RM)</span>
+<span class="sd">        * ``&#39;ee&#39;`` - Extrapolated Error (EE)</span>
+<span class="sd">        * ``&#39;ncp&#39;`` - Normalized Cumulative Periodogram (NCP)</span>
+<span class="sd">        * ``&#39;gml&#39;`` - Generalized Maximum Likelihood (GML)</span>
+<span class="sd">        * ``&#39;mcl&#39;`` - Mallows&#39; C_L (MCL)</span>
+<span class="sd">        The regularization parameter can be manually specified by passing a scalar value</span>
+<span class="sd">        instead of a string. The default ``&#39;aic&#39;``.</span>
+
+<span class="sd">    regtype : string, optional</span>
+<span class="sd">        Regularization functional type: </span>
+<span class="sd">    </span>
+<span class="sd">        * ``&#39;tikhonov&#39;`` - Tikhonov regularizaton</span>
+<span class="sd">        * ``&#39;tv&#39;``  - Total variation regularization</span>
+<span class="sd">        * ``&#39;huber&#39;`` - Huber regularization</span>
+<span class="sd">        The default is ``&#39;tikhonov&#39;``.  </span>
+<span class="sd">    </span>
+<span class="sd">    verbose : boolean, optional</span>
+<span class="sd">        Enable/disable printing a table of fit results, by default is disabled</span>
+<span class="sd">    </span>
+<span class="sd">    uqanalysis : boolean, optional</span>
+<span class="sd">        Enable/disable the uncertainty quantification analysis, by default it is enabled.</span>
+
+
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -313,43 +364,6 @@
 <span class="sd">    residuals : ndarray</span>
 <span class="sd">        Vector of residuals at the solution.</span>
 
-<span class="sd">    Other Parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    weights : array_like </span>
-<span class="sd">        Array of weighting coefficients for the individual signals in global fitting,</span>
-<span class="sd">        the default is all weighted equally.</span>
-<span class="sd">        If not specified all datasets are weighted equally.</span>
-<span class="sd">    regparam (str or scalar):</span>
-<span class="sd">        Method for the automatic selection of the optimal regularization parameter:</span>
-
-<span class="sd">        * ``&#39;lr&#39;`` - L-curve minimum-radius method (LR)</span>
-<span class="sd">        * ``&#39;lc&#39;`` - L-curve maximum-curvature method (LC)</span>
-<span class="sd">        * ``&#39;cv&#39;`` - Cross validation (CV)</span>
-<span class="sd">        * ``&#39;gcv&#39;`` - Generalized Cross Validation (GCV)</span>
-<span class="sd">        * ``&#39;rgcv&#39;`` - Robust Generalized Cross Validation (rGCV)</span>
-<span class="sd">        * ``&#39;srgcv&#39;`` - Strong Robust Generalized Cross Validation (srGCV)</span>
-<span class="sd">        * ``&#39;aic&#39;`` - Akaike information criterion (AIC)</span>
-<span class="sd">        * ``&#39;bic&#39;`` - Bayesian information criterion (BIC)</span>
-<span class="sd">        * ``&#39;aicc&#39;`` - Corrected Akaike information criterion (AICC)</span>
-<span class="sd">        * ``&#39;rm&#39;`` - Residual method (RM)</span>
-<span class="sd">        * ``&#39;ee&#39;`` - Extrapolated Error (EE)</span>
-<span class="sd">        * ``&#39;ncp&#39;`` - Normalized Cumulative Periodogram (NCP)</span>
-<span class="sd">        * ``&#39;gml&#39;`` - Generalized Maximum Likelihood (GML)</span>
-<span class="sd">        * ``&#39;mcl&#39;`` - Mallows&#39; C_L (MCL)</span>
-<span class="sd">        The regularization parameter can be manually specified by passing a scalar value</span>
-<span class="sd">        instead of a string. The default ``&#39;aic&#39;``.</span>
-
-<span class="sd">    regtype : string</span>
-<span class="sd">        Regularization functional type: </span>
-<span class="sd">    </span>
-<span class="sd">        * ``&#39;tikhonov&#39;`` - Tikhonov regularizaton</span>
-<span class="sd">        * ``&#39;tv&#39;``  - Total variation regularization</span>
-<span class="sd">        * ``&#39;huber&#39;`` - Huber regularization</span>
-<span class="sd">        The default is ``&#39;tikhonov&#39;``.  </span>
-<span class="sd">    verbose : boolean</span>
-<span class="sd">        Enable/disable printing a table of fit results, by default is disabled</span>
-<span class="sd">    uqanalysis : boolean</span>
-<span class="sd">        Enable/disable the uncertainty quantification analysis, by default it is enabled.  </span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.fitmultimodel &mdash; DeerLab  documentation</title>
+  <title>deerlab.fitmultimodel &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -204,19 +208,24 @@
 <span class="sd">    ----------</span>
 <span class="sd">    V : array_like or list of array_like</span>
 <span class="sd">        Dipolar signal(s) to be fitted.</span>
+<span class="sd">    </span>
 <span class="sd">    Kmodel : callable or 2D-array_like</span>
 <span class="sd">        Dipolar kernel model. If no kernel parameters must be fitted, it can be specified as a matrix array </span>
 <span class="sd">        (or a list thereof if multiple signals are globally fitted). </span>
 <span class="sd">        Otherwise, it is a callable function that accepts an array of kernel parameters and returns</span>
 <span class="sd">        a kernel matrix array or a list thereof.</span>
+<span class="sd">    </span>
 <span class="sd">    r : array_like </span>
 <span class="sd">        Distance axis, in nanometers.</span>
+<span class="sd">    </span>
 <span class="sd">    model : callable </span>
 <span class="sd">        Basis component of the multi-component distance distribution. </span>
-<span class="sd">        Must be a callable DeerLab model function (e.g. dd_gauss or dd_rice).</span>
+<span class="sd">        Must be a callable DeerLab model function (e.g. ``dd_gauss`` or ``dd_rice``).</span>
+<span class="sd">    </span>
 <span class="sd">    maxModels : scalar </span>
 <span class="sd">        Maximal number of components in the multi-component distance distribution.</span>
-<span class="sd">    method : string</span>
+<span class="sd">    </span>
+<span class="sd">    method : string, optional</span>
 <span class="sd">        Functional metric used for the selection of the optimal number of components:</span>
 
 <span class="sd">        * ``&#39;aic&#39;``  Akaike information criterion</span>
@@ -225,43 +234,66 @@
 <span class="sd">        * ``&#39;rmsd&#39;`` Root-mean squared deviation</span>
 <span class="sd">        The default is ``&#39;aic&#39;``.</span>
 <span class="sd">        </span>
-<span class="sd">    lb : array_like</span>
+<span class="sd">    lb : array_like, optional</span>
 <span class="sd">        Lower bounds for the distribution basis model parameters. If not specified, parameters are unbounded.</span>
-<span class="sd">    ub : array_like</span>
+<span class="sd">    </span>
+<span class="sd">    ub : array_like, optional</span>
 <span class="sd">        Upper bounds for the distribution basis model parameters. If not specified, parameters are unbounded.</span>
-<span class="sd">    ubK : array_like</span>
+<span class="sd">    </span>
+<span class="sd">    ubK : array_like, optional</span>
 <span class="sd">        Lower bounds for the kernel model parameters. If not specified, parameters are unbounded.</span>
-<span class="sd">    ubK : array_like</span>
+<span class="sd">    </span>
+<span class="sd">    ubK : array_like, optional</span>
 <span class="sd">        Upper bounds for the kernel model parameters. If not specified, parameters are unbounded.</span>
+<span class="sd">    </span>
+<span class="sd">    weights : array_like, optional</span>
+<span class="sd">        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</span>
+<span class="sd">    </span>
+<span class="sd">    renormalize : boolean, optional</span>
+<span class="sd">        Enable/disable renormalization of the fitted distribution, by default it is enabled.</span>
+<span class="sd">    </span>
+<span class="sd">    uqanalysis : boolean, optional</span>
+<span class="sd">        Enable/disable the uncertainty quantification analysis, by default it is enabled.  </span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    :ref:`FitResult` with the following fields defined:</span>
 <span class="sd">    P : ndarray</span>
 <span class="sd">        Fitted distance distribution with optimal number of components.</span>
+<span class="sd">    </span>
 <span class="sd">    Pparam : ndarray</span>
 <span class="sd">        Fitted distance distribution components parameters</span>
+<span class="sd">    </span>
 <span class="sd">    amps : ndarray</span>
 <span class="sd">        Fitted components amplitudes</span>
+<span class="sd">    </span>
 <span class="sd">    Kparam : ndarray</span>
 <span class="sd">        Fitted kernel parameters.</span>
+<span class="sd">    </span>
 <span class="sd">    Puncert : :ref:`UncertQuant`</span>
 <span class="sd">        Covariance-based uncertainty quantification of the fitted distance distribution</span>
+<span class="sd">    </span>
 <span class="sd">    paramUncert : :ref:`UncertQuant`</span>
 <span class="sd">        Covariance-based uncertainty quantification of the fitted parameters</span>
+<span class="sd">    </span>
 <span class="sd">    Nopt : int scalar</span>
 <span class="sd">        Optimized number of components in model.</span>
+<span class="sd">    </span>
 <span class="sd">    Pn : list of ndarrays</span>
 <span class="sd">        List of all fitted multi-component distance distributions. </span>
+<span class="sd">    </span>
 <span class="sd">    selfun : ndarray</span>
 <span class="sd">        Selection functional values (as specified as ``method``) for the all fitted multi-component models.</span>
+<span class="sd">    </span>
 <span class="sd">    scale : float int or list of float int</span>
 <span class="sd">        Amplitude scale(s) of the dipolar signal(s).</span>
+<span class="sd">    </span>
 <span class="sd">    plot : callable</span>
 <span class="sd">        Function to display the results. It will display the </span>
 <span class="sd">        fitted signals, the distance distribution with confidence intervals, </span>
 <span class="sd">        and the values of the selection functional. If requested, the function</span>
 <span class="sd">        returns the `matplotlib.axes` object as output. </span>
+<span class="sd">    </span>
 <span class="sd">    stats : dict</span>
 <span class="sd">        Goodness of fit statistical estimators:</span>
 
@@ -271,21 +303,16 @@
 <span class="sd">        * ``stats[&#39;aic&#39;]`` - Akaike information criterion</span>
 <span class="sd">        * ``stats[&#39;aicc&#39;]`` - Corrected Akaike information criterion</span>
 <span class="sd">        * ``stats[&#39;bic&#39;]`` - Bayesian information criterion</span>
+<span class="sd">    </span>
 <span class="sd">    success : bool</span>
 <span class="sd">        Whether or not the optimizer exited successfully.</span>
+<span class="sd">    </span>
 <span class="sd">    cost : float</span>
 <span class="sd">        Value of the cost function at the solution.</span>
+<span class="sd">    </span>
 <span class="sd">    residuals : ndarray</span>
 <span class="sd">        Vector of residuals at the solution.</span>
 
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    weights : array_like</span>
-<span class="sd">        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</span>
-<span class="sd">    renormalize : boolean</span>
-<span class="sd">        Enable/disable renormalization of the fitted distribution, by default it is enabled.</span>
-<span class="sd">    uqanalysis : boolean</span>
-<span class="sd">        Enable/disable the uncertainty quantification analysis, by default it is enabled.    </span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>

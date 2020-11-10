@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fitsignal &mdash; DeerLab  documentation</title>
+  <title>fitsignal &mdash; DeerLab</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -100,7 +100,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
@@ -189,14 +193,15 @@
 <dl class="function">
 <dt id="deerlab.fitsignal">
 <code class="descclassname">deerlab.</code><code class="descname">fitsignal</code><span class="sig-paren">(</span><em>Vexp, t, r, dd_model='P', bg_model=&lt;function bg_hom3d&gt;, ex_model=&lt;function ex_4pdeer&gt;, par0=[None, None, None], lb=[None, None, None], ub=[None, None, None], verbose=False, weights=1, uqanalysis=True, regparam='aic', regtype='tikhonov'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitsignal.html#fitsignal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitsignal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fits a dipolar model to the experimental signal V with time axis t, using
-distance axis r. The model is specified by the distance distribution (dd),
+<dd><p>Fits a dipolar model to the experimental signal <code class="docutils literal notranslate"><span class="pre">V</span></code> with time axis <code class="docutils literal notranslate"><span class="pre">t</span></code>, using
+distance axis <code class="docutils literal notranslate"><span class="pre">r</span></code>. The model is specified by the distance distribution (dd),
 the background (bg), and the experiment (ex).</p>
-<p>If multiple signals (V1,V2,…) and their corresponding time axes (t1,t2,…)
-are given, they will be fitted globally with a single distance distribution (dd).
-For each signal, a specific background (bg1,bg2,…) and experiment (ex1,ex2)
+<p>If multiple signals (<code class="docutils literal notranslate"><span class="pre">V1</span></code>, <code class="docutils literal notranslate"><span class="pre">V2</span></code>,…) and their corresponding time axes (<code class="docutils literal notranslate"><span class="pre">t1</span></code>, <code class="docutils literal notranslate"><span class="pre">t2</span></code>,…)
+are given, they will be fitted globally with a single distance distribution (<code class="docutils literal notranslate"><span class="pre">dd</span></code>).
+For each signal, a specific background (<code class="docutils literal notranslate"><span class="pre">bg1</span></code>, <code class="docutils literal notranslate"><span class="pre">bg2</span></code>,…) and experiment (<code class="docutils literal notranslate"><span class="pre">ex1</span></code>, <code class="docutils literal notranslate"><span class="pre">ex2</span></code>)
 models can be assigned.</p>
-<p>This function can handle both parametric and non-parametric distance distribution models.</p>
+<p>This function can handle both parametric and non-parametric distance distribution models. It 
+accepts only built-in parametric models, no user-defined models.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -218,7 +223,7 @@ models can be assigned.</p>
 <li>A callable function of a DeerLab parametric distribution model (e.g. <code class="docutils literal notranslate"><span class="pre">dd_gauss</span></code>).</li>
 <li>A string <code class="docutils literal notranslate"><span class="pre">None</span></code> to indicate no distribution, i.e. only background.</li>
 </ul>
-<p class="last">The default is ‘P’.</p>
+<p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'P'</span></code>.</p>
 </dd>
 <dt><strong>bg</strong> <span class="classifier-delimiter">:</span> <span class="classifier">callable or string</span></dt>
 <dd><p class="first">Background model, the following modes are allowed:</p>
@@ -226,38 +231,79 @@ models can be assigned.</p>
 <li>A callable function of a DeerLab parametric background model (e.g. <code class="docutils literal notranslate"><span class="pre">bg_hom3d</span></code>).</li>
 <li><code class="docutils literal notranslate"><span class="pre">None</span></code> to indicate no background decay.</li>
 </ul>
-<p class="last">The default is bg_hom3d.</p>
+<p class="last">The default is <code class="docutils literal notranslate"><span class="pre">bg_hom3d</span></code>.</p>
 </dd>
 <dt><strong>ex</strong> <span class="classifier-delimiter">:</span> <span class="classifier">callable or string</span></dt>
 <dd><p class="first">Experiment model, the following modes are allowed:</p>
 <ul class="simple">
 <li>Function handle to experiment model (e.g. <code class="docutils literal notranslate"><span class="pre">ex_4pdeer</span></code>)</li>
-<li><code class="docutils literal notranslate"><span class="pre">None</span></code> to indicate simple dipolar oscillation (mod.depth = 1)</li>
+<li><code class="docutils literal notranslate"><span class="pre">None</span></code> to indicate simple dipolar oscillation (modulation depth equal 1)</li>
 </ul>
-<p class="last">The default is ex_4pdeer.</p>
+<p class="last">The default is <code class="docutils literal notranslate"><span class="pre">ex_4pdeer</span></code>.</p>
 </dd>
-<dt><strong>par0</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of array_like</span></dt>
+<dt><strong>par0</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of array_like, optional</span></dt>
 <dd><p class="first last">Starting parameter values. Must be a 3-element list <code class="docutils literal notranslate"><span class="pre">[par0_dd,par0_bg,par0_ex]</span></code>
 containing the start values of the distribution, background and experiment models, in that order.
 If a model does not require parameters or are to be determined automatically it must be specified 
 as an empty list <code class="docutils literal notranslate"><span class="pre">[]</span></code>. The default is <code class="docutils literal notranslate"><span class="pre">par0=[[],[],[]]</span></code>.</p>
 </dd>
-<dt><strong>lb</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of array_like</span></dt>
+<dt><strong>lb</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of array_like, optional</span></dt>
 <dd><p class="first last">Lower bounds for parameters.  Must be a 3-element list <code class="docutils literal notranslate"><span class="pre">[lb_dd,lb_bg,lb_ex]</span></code>
 containing the start values of the distribution, background and experiment models, in that order.
 If a model does not require parameters or are to be determined automatically it must be specified 
 as an empty list <code class="docutils literal notranslate"><span class="pre">[]</span></code>. The default is <code class="docutils literal notranslate"><span class="pre">lb=[[],[],[]]</span></code>.</p>
 </dd>
-<dt><strong>ub</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of array_like</span></dt>
+<dt><strong>ub</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of array_like, optional</span></dt>
 <dd><p class="first last">Upper bounds for parameters, Must be a 3-element list <code class="docutils literal notranslate"><span class="pre">[ub_dd,ub_bg,ub_ex]</span></code>
 containing the start values of the distribution, background and experiment models, in that order.
 If a model does not require parameters or are to be determined automatically it must be specified 
 as an empty list <code class="docutils literal notranslate"><span class="pre">[]</span></code>. The default is <code class="docutils literal notranslate"><span class="pre">ub=[[],[],[]]</span></code>.</p>
 </dd>
+<dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like, optional</span></dt>
+<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting,
+the default is all weighted equally.
+If not specified all datasets are weighted equally.</p>
+</dd>
+<dt><strong>regparam</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or scalar, optional</span></dt>
+<dd><p class="first">Method for the automatic selection of the optimal regularization parameter:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'lr'</span></code> - L-curve minimum-radius method (LR)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'lc'</span></code> - L-curve maximum-curvature method (LC)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'cv'</span></code> - Cross validation (CV)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'gcv'</span></code> - Generalized Cross Validation (GCV)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'rgcv'</span></code> - Robust Generalized Cross Validation (rGCV)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'srgcv'</span></code> - Strong Robust Generalized Cross Validation (srGCV)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'aic'</span></code> - Akaike information criterion (AIC)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'bic'</span></code> - Bayesian information criterion (BIC)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'aicc'</span></code> - Corrected Akaike information criterion (AICC)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'rm'</span></code> - Residual method (RM)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'ee'</span></code> - Extrapolated Error (EE)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'ncp'</span></code> - Normalized Cumulative Periodogram (NCP)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'gml'</span></code> - Generalized Maximum Likelihood (GML)</li>
+<li><code class="docutils literal notranslate"><span class="pre">'mcl'</span></code> - Mallows’ C_L (MCL)</li>
+</ul>
+<p class="last">The regularization parameter can be manually specified by passing a scalar value
+instead of a string. The default <code class="docutils literal notranslate"><span class="pre">'aic'</span></code>.</p>
+</dd>
+<dt><strong>regtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first">Regularization functional type:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code> - Tikhonov regularizaton</li>
+<li><code class="docutils literal notranslate"><span class="pre">'tv'</span></code>  - Total variation regularization</li>
+<li><code class="docutils literal notranslate"><span class="pre">'huber'</span></code> - Huber regularization</li>
+</ul>
+<p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code>.</p>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Enable/disable printing a table of fit results, by default is disabled</p>
+</dd>
+<dt><strong>uqanalysis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Enable/disable the uncertainty quantification analysis, by default it is enabled.</p>
+</dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><a class="reference internal" href="FitResult.html#fitresult"><span class="std std-ref">FitResult</span></a> with the following fields defined:</dt>
 <dd></dd>
 <dt><strong>V</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray or list thereof</span></dt>
@@ -327,52 +373,6 @@ the <img class="math" src="../_images/math/b45ce4d1ac365b560ee03f9a632470303825d
 </dd>
 <dt><strong>residuals</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
 <dd><p class="first last">Vector of residuals at the solution.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
-<dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
-<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting,
-the default is all weighted equally.
-If not specified all datasets are weighted equally.</p>
-</dd>
-<dt><strong>regparam (str or scalar):</strong></dt>
-<dd><p class="first">Method for the automatic selection of the optimal regularization parameter:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">'lr'</span></code> - L-curve minimum-radius method (LR)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'lc'</span></code> - L-curve maximum-curvature method (LC)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'cv'</span></code> - Cross validation (CV)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'gcv'</span></code> - Generalized Cross Validation (GCV)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'rgcv'</span></code> - Robust Generalized Cross Validation (rGCV)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'srgcv'</span></code> - Strong Robust Generalized Cross Validation (srGCV)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'aic'</span></code> - Akaike information criterion (AIC)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'bic'</span></code> - Bayesian information criterion (BIC)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'aicc'</span></code> - Corrected Akaike information criterion (AICC)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'rm'</span></code> - Residual method (RM)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'ee'</span></code> - Extrapolated Error (EE)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'ncp'</span></code> - Normalized Cumulative Periodogram (NCP)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'gml'</span></code> - Generalized Maximum Likelihood (GML)</li>
-<li><code class="docutils literal notranslate"><span class="pre">'mcl'</span></code> - Mallows’ C_L (MCL)</li>
-</ul>
-<p class="last">The regularization parameter can be manually specified by passing a scalar value
-instead of a string. The default <code class="docutils literal notranslate"><span class="pre">'aic'</span></code>.</p>
-</dd>
-<dt><strong>regtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first">Regularization functional type:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code> - Tikhonov regularizaton</li>
-<li><code class="docutils literal notranslate"><span class="pre">'tv'</span></code>  - Total variation regularization</li>
-<li><code class="docutils literal notranslate"><span class="pre">'huber'</span></code> - Huber regularization</li>
-</ul>
-<p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'tikhonov'</span></code>.</p>
-</dd>
-<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">Enable/disable printing a table of fit results, by default is disabled</p>
-</dd>
-<dt><strong>uqanalysis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">Enable/disable the uncertainty quantification analysis, by default it is enabled.</p>
 </dd>
 </dl>
 </td>

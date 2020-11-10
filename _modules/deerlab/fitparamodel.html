@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>deerlab.fitparamodel &mdash; DeerLab  documentation</title>
+  <title>deerlab.fitparamodel &mdash; DeerLab</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.13.0-dev
+                v0.12.2
               </div>
             
           
@@ -98,7 +98,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
@@ -202,28 +206,61 @@
 <span class="sd">    ----------</span>
 <span class="sd">    V : array_like or list of array_like</span>
 <span class="sd">        Dipolar signal(s) to be fitted.</span>
+<span class="sd">    </span>
 <span class="sd">    Vmodel : callable</span>
 <span class="sd">        Function taking an array of parameters and returning the dipolar signal(s) as an array or a list of arrays.</span>
+<span class="sd">    </span>
 <span class="sd">    par0  : array_like</span>
 <span class="sd">        Start values of the model parameters.</span>
+<span class="sd">    </span>
 <span class="sd">    lb : array_like      </span>
 <span class="sd">        Lower bounds for the model parameters. If not specified, it is left unbounded.</span>
+<span class="sd">    </span>
 <span class="sd">    ub : array_like     </span>
 <span class="sd">        Upper bounds for the model parameters. If not specified, it is left unbounded.</span>
+<span class="sd">    </span>
+<span class="sd">    weights : array_like, optional</span>
+<span class="sd">        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</span>
+<span class="sd">    </span>
+<span class="sd">    rescale : boolean, optional</span>
+<span class="sd">        Enable/disable optimization of the signal scale, by default it is enabled.</span>
+<span class="sd">    </span>
+<span class="sd">    multiStarts : scalar, optional</span>
+<span class="sd">        Number of starting points for global optimization, the default is 1.</span>
+<span class="sd">    </span>
+<span class="sd">    uqanalysis : boolean, optional</span>
+<span class="sd">        Enable/disable the uncertainty quantification analysis, by default it is enabled.    </span>
+<span class="sd">    </span>
+<span class="sd">    tol : scalar, optional</span>
+<span class="sd">        Optimizer function tolerance, the default is 1e-10.</span>
+<span class="sd">    </span>
+<span class="sd">    maxeval : scalar, optional</span>
+<span class="sd">        Maximum number of optimizer iterations, the default is 5000.</span>
+<span class="sd">    </span>
+<span class="sd">    maxiter : scalar, optional</span>
+<span class="sd">        Maximum number of optimizer iterations, the default is 3000.</span>
+<span class="sd">    </span>
+<span class="sd">    covmatrix : array_like with shape(n,n), optional</span>
+<span class="sd">        Covariance matrix of the noise in the dataset(s). If not specified it is automatically computed.</span>
+
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    :ref:`FitResult` with the following fields defined:</span>
 <span class="sd">    param : ndarray</span>
 <span class="sd">        Fitted model parameters</span>
+<span class="sd">    </span>
 <span class="sd">    uncertainty : :ref:`UncertQuant`</span>
 <span class="sd">        Covariance-based uncertainty quantification of the fitted parameters.</span>
+<span class="sd">    </span>
 <span class="sd">    scale : float int or list of float int</span>
 <span class="sd">        Amplitude scale(s) of the dipolar signal(s).</span>
+<span class="sd">    </span>
 <span class="sd">    plot : callable</span>
 <span class="sd">        Function to display the results. It will </span>
 <span class="sd">        display the fitted signals. If requested, the function returns </span>
-<span class="sd">        the `matplotlib.axes` object as output. </span>
+<span class="sd">        the ``matplotlib.axes`` object as output. </span>
+<span class="sd">    </span>
 <span class="sd">    stats :  dict</span>
 <span class="sd">        Goodness of fit statistical estimators:</span>
 
@@ -233,31 +270,16 @@
 <span class="sd">        * ``stats[&#39;aic&#39;]`` - Akaike information criterion</span>
 <span class="sd">        * ``stats[&#39;aicc&#39;]`` - Corrected Akaike information criterion</span>
 <span class="sd">        * ``stats[&#39;bic&#39;]`` - Bayesian information criterion</span>
+<span class="sd">    </span>
 <span class="sd">    success : bool</span>
 <span class="sd">        Whether or not the optimizer exited successfully.</span>
+<span class="sd">    </span>
 <span class="sd">    cost : float</span>
 <span class="sd">        Value of the cost function at the solution.</span>
+<span class="sd">    </span>
 <span class="sd">    residuals : ndarray</span>
 <span class="sd">        Vector of residuals at the solution.</span>
 
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    weights : array_like </span>
-<span class="sd">        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</span>
-<span class="sd">    rescale : boolean</span>
-<span class="sd">        Enable/disable optimization of the signal scale, by default it is enabled.</span>
-<span class="sd">    multiStarts : scalar</span>
-<span class="sd">        Number of starting points for global optimization, the default is 1.</span>
-<span class="sd">    uqanalysis : boolean</span>
-<span class="sd">        Enable/disable the uncertainty quantification analysis, by default it is enabled.    </span>
-<span class="sd">    tol : scalar</span>
-<span class="sd">        Optimizer function tolerance, the default is 1e-10.</span>
-<span class="sd">    maxeval : scalar</span>
-<span class="sd">        Maximum number of optimizer iterations, the default is 5000.</span>
-<span class="sd">    maxiter : scalar</span>
-<span class="sd">        Maximum number of optimizer iterations, the default is 3000.</span>
-<span class="sd">    covmatrix : array_like with shape(n,n)</span>
-<span class="sd">        Covariance matrix of the noise in the dataset(s). If not specified it is automatically computed.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
