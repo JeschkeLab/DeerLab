@@ -59,6 +59,17 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     ubK : array_like, optional
         Upper bounds for the kernel model parameters. If not specified, parameters are unbounded.
     
+    strategy: string, optional
+        Strategy for the initialization of the multi-component non-linear parameters: 
+
+        * ``'spread'`` For each N-component model, the non-linear parameters start values are spread equidistantly over the box constraints. 
+                       The number of components are changed in a forward matter, i.e. 1,2,...,N.
+        * ``'split'`` For each N-component model, the non-linear parameters start values are selected by splitting the location and spread of 
+                      the components obtained from the N-1 component fit. The number of components are changed in a forward matter, i.e. 1,2,...,N.
+        * ``'merge'`` For each N-component model, the non-linear parameters start values are selected by merging the location and spread of 
+                      the components obtained from the N+1 component fit. The number of components are changed in a backward matter, i.e. N,N-1,...,1.
+        The default is ``'split'``. 
+
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
     
