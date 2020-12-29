@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit, Jacobian
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
-                 weights=1, renormalize = True, uqanalysis=True, **kwargs):
+                 strategy='split', weights=1, renormalize = True, uqanalysis=True, **kwargs):
     r""" 
     Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
@@ -208,12 +208,13 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     if len(lbK) is not nKparam or len(ubK) is not nKparam:
         raise ValueError('The upper/lower bounds of the kernel parameters must be ',nKparam,'-element arrays')
 
-    areCenterDistances = [str in ['Mean','Location'] for str in paramnames]
-    if any(areCenterDistances):
+    areLocations = [str in ['Mean','Location'] for str in paramnames]
+    areSpreads   = [str in ['Spread','Width','Standard deviation'] for str in paramnames]
+    if any(areLocations):
         # If the center of the basis function is a parameter limit it 
         # to the distance axis range (stabilizes parameter search)
-        ub[areCenterDistances] = max(r)
-        lb[areCenterDistances] = min(r)
+        ub[areLocations] = max(r)
+        lb[areLocations] = min(r)
 
 
 
@@ -306,34 +307,95 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         return par0
     #===============================================================================
 
+    def initialize(par0_old,Ncomp,lb,ub,strategy):
+    #===============================================================================
+        if par0_old is None:
+            par = []
+            for lbi,ubi in zip(lb,ub):
+                par.append(np.linspace(lbi,ubi,Ncomp+2)[1:-1])
+            par0 = []        
+            for i in range(Ncomp):
+                for pari in par:
+                    par0.append(pari[i])
+            return par0
+        par0_old = np.asarray(par0_old)
+
+        Nold = int(len(par0_old)/len(lb))
+        areLocations_old = np.tile(areLocations,Nold)
+        areSpreads_old = np.tile(areSpreads,Nold)
+        locations_old = par0_old[areLocations_old]
+        spreads_old = par0_old[areSpreads_old]
+
+        locations_new = np.zeros((Ncomp))
+        spreads_new = np.zeros((Ncomp))
+        
+        if strategy is 'merge':
+            for n in range(Ncomp):
+                locations_new[n] = (locations_old[n] + locations_old[n+1])/2
+                spreads_new[n] = (spreads_old[n] + spreads_old[n+1])/2
+
+        elif strategy is 'split':
+            locations_new[0] = locations_old[0] - spreads_old[0]
+            spreads_new[0] = spreads_old[0]/2
+            for n in range(1,Ncomp-1,1):
+                locations_new[n] = (locations_old[n-1] + spreads_old[n-1] + locations_old[n] - spreads_old[n])/2
+                spreads_new[n] = spreads_old[n]/2
+            locations_new[-1] = locations_old[-1] + spreads_old[-1]
+            spreads_new[-1] = spreads_old[-1]/2
+
+        elif strategy is 'spread': 
+            locations_new = np.squeeze(np.linspace(lb[areLocations],ub[areLocations],Ncomp+2)[1:-1])
+            spreads_new = np.squeeze(np.linspace(lb[areSpreads],ub[areSpreads],Ncomp+2)[1:-1])
+
+        # Ensure box constraints
+        locations_new = np.maximum(locations_new,lb[areLocations])
+        locations_new = np.minimum(locations_new,ub[areLocations])
+        spreads_new = np.maximum(spreads_new,lb[areSpreads])
+        spreads_new = np.minimum(spreads_new,ub[areSpreads])
+
+        areLocations_new = np.tile(areLocations,Ncomp)
+        areSpreads_new = np.tile(areSpreads,Ncomp)
+        par0_new = np.tile(par0_old[0:len(lb)],Ncomp)
+        par0_new[areLocations_new] = locations_new
+        par0_new[areSpreads_new] = spreads_new
+
+        return par0_new
+    #===============================================================================
+
     # Pre-allocate containers
     fits,Vfit,Pfit,plin_,pnonlin_,nlin_ub_,nlin_lb_,lin_ub_,lin_lb_ = ([] for _ in range(9))
     logest = []
+    par0_P = None
+
+    if strategy is 'spread' or strategy is 'split':
+        Ncomponents = np.arange(1,maxModels+1)
+    elif strategy is 'merge':
+        Ncomponents = np.arange(maxModels,0,-1)
 
     # Loop over number of components in model
     # =======================================
-    for Nmodels in np.arange(1,maxModels+1):
+    for Ncomp in Ncomponents:
         
         # Prepare non-linear model with N-components
         # ===========================================
-        Knonlin = lambda par: nonlinmodel(par,Nmodels)
+        Knonlin = lambda par: nonlinmodel(par,Ncomp)
         
         # Start values of non-linear parameters
         par0_K = (ubK - lbK)/2 # start in the middle
-        par0_P = spread_within_box(lb,ub,Nmodels) # start spread within boundaries
+        par0_P = initialize(par0_P,Ncomp,lb,ub,strategy) # start spread within boundaries
         par0 = np.concatenate((par0_K, par0_P),axis=None)
 
         # Box constraints for the model parameters (non-linear parameters)
-        nlin_lb = np.tile(lb,(1,Nmodels))
-        nlin_ub = np.tile(ub,(1,Nmodels))
+        nlin_lb = np.tile(lb,(1,Ncomp))
+        nlin_ub = np.tile(ub,(1,Ncomp))
 
         # Add the box constraints on the non-linear kernel parameters
         nlin_lb = np.concatenate((lbK, nlin_lb),axis=None)
         nlin_ub = np.concatenate((ubK, nlin_ub),axis=None)
         
         # Box constraints for the components amplitudes (linear parameters)
-        lin_lb = np.ones(Nmodels)        
-        lin_ub = np.full(Nmodels,np.inf)
+        lin_lb = np.ones(Ncomp)        
+        lin_ub = np.full(Ncomp,np.inf)
         
         # Separable non-linear least-squares (SNLLS) fit
         scale = 1e2
@@ -349,7 +411,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         plin_.append(plin)
 
         # Get fitted kernel
-        Kfit = nonlinmodel(pnonlin,Nmodels)
+        Kfit = nonlinmodel(pnonlin,Ncomp)
         
         # Get fitted signal
         Vfit.append(Kfit@plin)
@@ -359,7 +421,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
 
         # Likelihood estimators
         # =====================
-        logest = logestimators(V,Vfit[Nmodels-1],plin,pnonlin,logest)
+        logest = logestimators(V,Vfit[-1],plin,pnonlin,logest)
 
         # Store other parameters for later
         nlin_ub_.append(nlin_ub)
@@ -372,7 +434,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     Peval = Pfit
     fcnals = logest[method]
     idx = np.argmin(fcnals)
-    Nopt = idx+1
+    Nopt = Ncomponents[idx]
     fit,Pfit,Vfit,pnonlin,plin = (var[idx] for var in [fits,Pfit,Vfit,pnonlin_,plin_])
     nlin_lb,nlin_ub,lin_lb,lin_ub = (var[idx] for var in [nlin_lb_,nlin_ub_,lin_lb_,lin_ub_])
 
@@ -474,9 +536,9 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
     # Compute the Akaike weights
     dfcnals = fcnals - min(fcnals)
     ax = plt.subplot(nSignals+1,2,2*(nSignals+1))
-    ax.bar(np.arange(maxModels)+1,dfcnals + abs(min(dfcnals)),facecolor='tab:blue',alpha=0.6)
+    ax.bar(np.arange(maxModels)+1,np.log10(1 + dfcnals + abs(min(dfcnals))),facecolor='tab:blue',alpha=0.6)
     ax.grid(alpha=0.3)
-    ax.set_ylabel('Δ{}'.format(method.upper()))
+    ax.set_ylabel('log10 Δ{}'.format(method.upper()))
     ax.set_xlabel('Number of components')
     axs = np.append(axs,ax)
 
