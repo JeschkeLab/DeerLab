@@ -289,27 +289,17 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         return functionals
     #===============================================================================
 
-    def spread_within_box(lb,ub,Nmodels):
+    def initialize_nonlin_param(par,Ncomp,lb,ub,strategy):
     #===============================================================================
         """
-        Start values within boundary box
-        ---------------------------------
+        Initialize start values of nonlinear parameters
+        ------------------------------------------------
         Computes the start values of the parameters of the multiple basis functions
-        spread equally within the box constraints.
+        according to different strategies.
         """
-        par = []
-        for lbi,ubi in zip(lb,ub):
-            par.append(np.linspace(lbi,ubi,Nmodels+2)[1:-1])
-        par0 = []        
-        for i in range(Nmodels):
-            for pari in par:
-                par0.append(pari[i])
-        return par0
-    #===============================================================================
-
-    def initialize(par0_old,Ncomp,lb,ub,strategy):
-    #===============================================================================
-        if par0_old is None:
+        # On the first run, use a spread strategy regardless of choice
+        if par is None:
+            # Spread all components parameters equidistantly within box boundaries
             par = []
             for lbi,ubi in zip(lb,ub):
                 par.append(np.linspace(lbi,ubi,Ncomp+2)[1:-1])
@@ -318,22 +308,27 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
                 for pari in par:
                     par0.append(pari[i])
             return par0
-        par0_old = np.asarray(par0_old)
+        else: 
+            par = np.asarray(par)
 
-        Nold = int(len(par0_old)/len(lb))
+        # Extract information on location and spread of components of previous solution
+        Nold = int(len(par)/len(lb))
         areLocations_old = np.tile(areLocations,Nold)
         areSpreads_old = np.tile(areSpreads,Nold)
-        locations_old = par0_old[areLocations_old]
-        spreads_old = par0_old[areSpreads_old]
+        locations_old = par[areLocations_old]
+        spreads_old = par[areSpreads_old]
 
+        # Pre-allocate containers
         locations_new = np.zeros((Ncomp))
         spreads_new = np.zeros((Ncomp))
         
+        # Strategy #1: Merge N+1 components into N components
         if strategy is 'merge':
             for n in range(Ncomp):
                 locations_new[n] = (locations_old[n] + locations_old[n+1])/2
                 spreads_new[n] = (spreads_old[n] + spreads_old[n+1])/2
 
+        # Strategy #2: Split N-1 components into N components
         elif strategy is 'split':
             locations_new[0] = locations_old[0] - spreads_old[0]
             spreads_new[0] = spreads_old[0]/2
@@ -343,19 +338,21 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
             locations_new[-1] = locations_old[-1] + spreads_old[-1]
             spreads_new[-1] = spreads_old[-1]/2
 
+        # Strategy #3: Spread N components equidistantly within box boundaries
         elif strategy is 'spread': 
             locations_new = np.squeeze(np.linspace(lb[areLocations],ub[areLocations],Ncomp+2)[1:-1])
             spreads_new = np.squeeze(np.linspace(lb[areSpreads],ub[areSpreads],Ncomp+2)[1:-1])
 
-        # Ensure box constraints
+        # Ensure box constraints of new parameter start values
         locations_new = np.maximum(locations_new,lb[areLocations])
         locations_new = np.minimum(locations_new,ub[areLocations])
         spreads_new = np.maximum(spreads_new,lb[areSpreads])
         spreads_new = np.minimum(spreads_new,ub[areSpreads])
 
+        # Mount the new par0 vector for the N components
         areLocations_new = np.tile(areLocations,Ncomp)
         areSpreads_new = np.tile(areSpreads,Ncomp)
-        par0_new = np.tile(par0_old[0:len(lb)],Ncomp)
+        par0_new = np.tile(par[0:len(lb)],Ncomp)
         par0_new[areLocations_new] = locations_new
         par0_new[areSpreads_new] = spreads_new
 
@@ -365,11 +362,13 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     # Pre-allocate containers
     fits,Vfit,Pfit,plin_,pnonlin_,nlin_ub_,nlin_lb_,lin_ub_,lin_lb_ = ([] for _ in range(9))
     logest = []
-    par0_P = None
+    par_prev = None
 
     if strategy is 'spread' or strategy is 'split':
+        # Start with single components, add sequentially (forward)
         Ncomponents = np.arange(1,maxModels+1)
     elif strategy is 'merge':
+        # Start with maximum components, remove sequentially (backward)
         Ncomponents = np.arange(maxModels,0,-1)
 
     # Loop over number of components in model
@@ -382,7 +381,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         
         # Start values of non-linear parameters
         par0_K = (ubK - lbK)/2 # start in the middle
-        par0_P = initialize(par0_P,Ncomp,lb,ub,strategy) # start spread within boundaries
+        par0_P = initialize_nonlin_param(par_prev,Ncomp,lb,ub,strategy) # start spread within boundaries
         par0 = np.concatenate((par0_K, par0_P),axis=None)
 
         # Box constraints for the model parameters (non-linear parameters)
@@ -403,6 +402,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
                         weights=weights, reg=False, uqanalysis=False, lin_tol=[], lin_maxiter=[],**kwargs)
         pnonlin = fit.nonlin
         plin = fit.lin
+        par_prev = pnonlin
 
         plin = plin/scale
 
