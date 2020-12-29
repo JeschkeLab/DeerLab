@@ -254,3 +254,98 @@ def test_globalfit_scales():
     assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
 #=======================================================================
 
+def test_multigauss_spread():
+#=======================================================================
+    "Check the spreading strategy for multi-Gauss fitting"
+        
+    r = np.linspace(2,6,300)
+    t = np.linspace(-0.5,6,500)
+    K = dipolarkernel(t,r)
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
+    P = dd_gauss3(r,parin)
+    V = K@P
+
+    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uqanalysis=False, strategy='spread')
+    
+    assert ovl(P,fit.P) > 0.95 # more than 99% overlap
+#=======================================================================
+
+def test_multigauss_split():
+#=======================================================================
+    "Check the splitting strategy for multi-Gauss fitting"
+        
+    r = np.linspace(2,6,300)
+    t = np.linspace(-0.5,6,500)
+    K = dipolarkernel(t,r)
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
+    P = dd_gauss3(r,parin)
+    V = K@P
+
+    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uqanalysis=False, strategy='split')
+    
+    assert ovl(P,fit.P) > 0.95 # more than 99% overlap
+#=======================================================================
+
+def test_multigauss_merge():
+#=======================================================================
+    "Check the merging strategy for multi-Gauss fitting"
+        
+    r = np.linspace(2,6,300)
+    t = np.linspace(-0.5,6,500)
+    K = dipolarkernel(t,r)
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
+    P = dd_gauss3(r,parin)
+    V = K@P
+
+    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uqanalysis=False, strategy='merge')
+    
+    assert ovl(P,fit.P) > 0.95 # more than 99% overlap
+#=======================================================================
+
+def test_multirice_spread():
+#=======================================================================
+    "Check the spreading strategy for multi-Rice fitting"
+        
+    r = np.linspace(2,6,300)
+    t = np.linspace(0,6,500)
+    K = dipolarkernel(t,r)
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
+    P = dd_rice3(r,parin)
+    V = K@P
+
+    fit = fitmultimodel(V,K,r,dd_rice,3,'aicc', uqanalysis=False, strategy='spread')
+
+    assert ovl(P,fit.P) > 0.95 # more than 99% overlap
+#=======================================================================
+
+def test_multirice_split():
+#=======================================================================
+    "Check the splitting strategy for multi-Rice fitting"
+        
+    r = np.linspace(2,6,300)
+    t = np.linspace(0,6,500)
+    K = dipolarkernel(t,r)
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
+    P = dd_rice3(r,parin)
+    V = K@P
+
+    fit = fitmultimodel(V,K,r,dd_rice,3,'aicc', uqanalysis=False, strategy='split')
+
+    assert ovl(P,fit.P) > 0.95 # more than 99% overlap
+#=======================================================================
+
+def test_multirice_merge():
+#=======================================================================
+    "Check the merging strategy for multi-Rice fitting"
+        
+    r = np.linspace(2,6,300)
+    t = np.linspace(0,6,500)
+    K = dipolarkernel(t,r)
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
+    P = dd_rice3(r,parin)
+    V = K@P
+
+    fit = fitmultimodel(V,K,r,dd_rice,3,'aicc', uqanalysis=False, strategy='merge')
+
+    assert ovl(P,fit.P) > 0.95 # more than 99% overlap
+#=======================================================================
