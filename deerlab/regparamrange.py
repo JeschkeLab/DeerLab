@@ -34,12 +34,8 @@ def regparamrange(K,L,noiselvl=0,logres=0.1):
     # Scaling by noise. This improves L curve corner detection for DEER.
     minmax_ratio = minmax_ratio*2**(noiselvl/0.0025)
 
-    try:
-        # Get generalized singular values of K and L
-        singularValues = gsvd(K,L)
-    except:
-        # Otherwise just estimate via the SVD from the dipolar kernel to avoid crash
-        _,singularValues,_ = svd(K)
+    # Get generalized singular values of K and L
+    singularValues = gsvd(K,L)
 
     DerivativeOrder = L.shape[1] - L.shape[0] # get order of derivative (=number of inf in singval)
     singularValues = singularValues[0:len(singularValues)-DerivativeOrder] # remove inf 
