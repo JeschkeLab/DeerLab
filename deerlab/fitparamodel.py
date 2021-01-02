@@ -10,9 +10,9 @@ import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 import warnings
 
-def fitparamodel(V, model, par0, lb=[], ub=[], weights = 1,
+def fitparamodel(V, model, par0, lb=None, ub=None, weights = 1,
                  multistart=1, tol=1e-10, maxeval=5000, maxiter = 3000,
-                 rescale=True, uqanalysis=True, covmatrix=[]):
+                 rescale=True, uqanalysis=True, covmatrix=None):
     r""" Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
 
     Parameters
@@ -135,7 +135,6 @@ def fitparamodel(V, model, par0, lb=[], ub=[], weights = 1,
 
     """
     
-    lb,ub = np.atleast_1d(lb,ub)
     V, model, weights, Vsubsets = parse_multidatasets(V, model, weights)
     Nsignals = len(Vsubsets)
     scales = [1]*Nsignals
@@ -143,10 +142,15 @@ def fitparamodel(V, model, par0, lb=[], ub=[], weights = 1,
     if not np.all(np.isreal(V)):
         raise ValueError('The input signal(s) cannot be complex-valued.')
 
-    if isempty(lb):
+    if lb is None:
         lb = np.full_like(par0, -np.inf)
-    if isempty(ub):
+    else:
+        lb = np.atleast_1d(lb)
+
+    if ub is None:
         ub = np.full_like(par0, +np.inf)
+    else:
+        ub = np.atleast_1d(ub)
 
     # Prepare upper/lower bounds on parameter search range
     unboundedparams = np.any(np.isinf(lb)) or np.any(np.isinf(ub))
@@ -197,7 +201,7 @@ def fitparamodel(V, model, par0, lb=[], ub=[], weights = 1,
     sols = []
     for par0 in multistarts_par0:
         # Solve the non-linear least squares (NLLS) problem 
-        sol = least_squares(lsqresiduals ,par0, bounds=(lb,ub), max_nfev=int(maxiter), ftol=tol, method='dogbox',x_scale=1)
+        sol = least_squares(lsqresiduals ,par0, bounds=(lb,ub), max_nfev=int(maxiter), ftol=tol, method='dogbox')
         sols.append(sol)
         parfits.append(sol.x)
         fvals.append(sol.cost)        
@@ -233,7 +237,7 @@ def fitparamodel(V, model, par0, lb=[], ub=[], weights = 1,
             J = Jacobian(lsqresiduals,parfit,lb,ub)
 
         # Estimate the heteroscedasticity-consistent covariance matrix
-        if isempty(covmatrix):
+        if covmatrix is None:
             # Use estimated data covariance matrix
             covmatrix = hccm(J,residuals,'HC1')
         else:
