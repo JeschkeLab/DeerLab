@@ -6,7 +6,6 @@
 import numpy as np
 import types
 import copy
-import inspect
 import matplotlib.pyplot as plt
 import deerlab as dl
 from deerlab.classes import UncertQuant, FitResult
@@ -15,7 +14,8 @@ from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit, Jacobian
 
 def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
-              par0=[None,None,None], lb=[None,None,None], ub=[None,None,None], verbose= False,
+              par0_dd=None, par0_bg=None, par0_ex=None, verbose= False,
+              lb_dd=None, lb_bg=None, lb_ex=None, ub_dd=None, ub_bg=None, ub_ex=None,
               weights=1, uqanalysis=True, regparam='aic', regtype = 'tikhonov'):
     r"""
     Fits a dipolar model to the experimental signal ``V`` with time axis ``t``, using
@@ -231,9 +231,9 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     if len(ex_model)!=nSignals:
         ex_model = ex_model*nSignals
 
-    par0 = [[] if par0_i is None else par0_i for par0_i in par0]
-    lb = [[] if lb_i is None else lb_i for lb_i in lb]
-    ub = [[] if ub_i is None else ub_i for ub_i in ub]
+    par0 = [[] if par0_i is None else par0_i for par0_i in [par0_dd,par0_bg,par0_ex]]
+    lb = [[] if lb_i is None else lb_i for lb_i in [lb_dd,lb_bg,lb_ex]]
+    ub = [[] if ub_i is None else ub_i for ub_i in [ub_dd,ub_bg,ub_ex]]
     if type(par0) is not list or len(par0)!=3:
         raise TypeError('Initial parameters (7th input) must be a 3-element cell array.')
      
