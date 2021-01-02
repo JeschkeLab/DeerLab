@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 import warnings
 
-def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
+def fitparamodel(V, model, par0, lb=[], ub=[], weights = 1,
                  multistart=1, tol=1e-10, maxeval=5000, maxiter = 3000,
                  rescale=True, uqanalysis=True, covmatrix=[]):
     r""" Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
@@ -134,10 +134,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
         fit = dl.fitparamodel([V1,V2],Vmodel,par0,lb,ub)
 
     """
-
-    if isempty(par0):
-        raise KeyError('The start values par0 of the parameters must be specified')
-
+    
     lb,ub = np.atleast_1d(lb,ub)
     V, model, weights, Vsubsets = parse_multidatasets(V, model, weights)
     Nsignals = len(Vsubsets)
@@ -200,7 +197,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
     sols = []
     for par0 in multistarts_par0:
         # Solve the non-linear least squares (NLLS) problem 
-        sol = least_squares(lsqresiduals ,par0, bounds=(lb,ub), max_nfev=int(maxiter), ftol=tol, method='dogbox')
+        sol = least_squares(lsqresiduals ,par0, bounds=(lb,ub), max_nfev=int(maxiter), ftol=tol, method='dogbox',x_scale=1)
         sols.append(sol)
         parfits.append(sol.x)
         fvals.append(sol.cost)        
