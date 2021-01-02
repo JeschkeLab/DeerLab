@@ -66,23 +66,20 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         The default is ``ex_4pdeer``.
 
-    par0 : list of array_like, optional
-        Starting parameter values. Must be a 3-element list ``[par0_dd,par0_bg,par0_ex]``
-        containing the start values of the distribution, background and experiment models, in that order.
+    par0_dd, par0_bg, par0_ex : array_like, optional
+        Initial parameter values of the distance distribution/background/experimental model parameters.
         If a model does not require parameters or are to be determined automatically it must be specified 
-        as an empty list ``[]``. The default is ``par0=[[],[],[]]``.
+        a ``None`` (default).
     
-    lb : list of array_like, optional
-        Lower bounds for parameters.  Must be a 3-element list ``[lb_dd,lb_bg,lb_ex]``
-        containing the start values of the distribution, background and experiment models, in that order.
+    lb_dd, lb_bg, lb_ex : array_like, optional    
+        Lower boundary values of the distance distribution/background/experimental model parameters.
         If a model does not require parameters or are to be determined automatically it must be specified 
-        as an empty list ``[]``. The default is ``lb=[[],[],[]]``.
+        a ``None`` (default).
     
-    ub : list of array_like, optional
-        Upper bounds for parameters, Must be a 3-element list ``[ub_dd,ub_bg,ub_ex]``
-        containing the start values of the distribution, background and experiment models, in that order.
+    ub_dd, ub_bg, ub_ex : array_like, optional    
+        Upper boundary values of the distance distribution/background/experimental model parameters.
         If a model does not require parameters or are to be determined automatically it must be specified 
-        as an empty list ``[]``. The default is ``ub=[[],[],[]]``.
+        a ``None`` (default).
     
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting,
