@@ -26,10 +26,10 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights = 1,
     par0  : array_like
         Start values of the model parameters.
     
-    lb : array_like      
+    lb : array_like, optional      
         Lower bounds for the model parameters. If not specified, it is left unbounded.
     
-    ub : array_like     
+    ub : array_like, optional     
         Upper bounds for the model parameters. If not specified, it is left unbounded.
     
     weights : array_like, optional
