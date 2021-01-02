@@ -42,18 +42,8 @@ ex_ub   = [100, 100, 100, max(t)/2+1] # upper bounds
 ex_par0 = [0.5, 0.5, 0.5, max(t)/2  ] # start values
 
 # %% [markdown]
-# In this case we only want to set the bounds for the experiment
-# parameters, so we can leave the rest empty:
-# 
-
-# %%
-ub = [[],[],ex_ub]
-lb = [[],[],ex_lb]
-par0 = [[],[],ex_par0]
-
-# %% [markdown]
 # Run the fit with a 5-pulse DEER signal model
 
 # %%
-fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer,par0,lb,ub)
+fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer,par0_ex=ex_par0,lb_ex=ex_lb,ub_ex=ex_ub)
 fit.plot()

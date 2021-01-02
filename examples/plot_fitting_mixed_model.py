@@ -44,7 +44,7 @@ V = K @ P + dl.whitegaussnoise(t,0.02,seed=0)
 #
 # Let's say our intuiton (which, since we know the ground truth, is exact) on 
 # the sample indicates that our distribution is a llinear combination of a Gaussian 
-# distirbution and a worm-like chain model. While DeerAnalysis provides built-in 
+# distirbution and a worm-like chain model. While DeerLab provides built-in 
 # parametric models for both models, we require a combination of both. 
 #
 # For such cases we can use the ``mixmodels`` function to create a custom mixed 
