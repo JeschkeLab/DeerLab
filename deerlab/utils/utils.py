@@ -249,7 +249,7 @@ def gsvd(A,B):
 #===============================================================================
 
 
-def csd(q1,q2):
+def csd(Q1,Q2):
 #===============================================================================
     """
     Cosine-Sine Decomposition
@@ -269,10 +269,10 @@ def csd(q1,q2):
     http://www.ar-tiste.com/m-fun/m-fun-index.html
 
     """
-    m,n = q1.shape
-    p,_ = q2.shape
+    m,n = Q1.shape
+    p,_ = Q2.shape
     if m < p:
-        s,c = csd(q2,q1)
+        s,c = csd(Q2,Q1)
         j = np.flip(np.arange(n)) 
         c = c[:,j] 
         s = s[:,j] 
@@ -284,7 +284,7 @@ def csd(q1,q2):
         s[np.arange(n),:] = s[i,:] 
         return c,s
 
-    _,sdiag,v = np.linalg.svd(q1)
+    _,sdiag,v = np.linalg.svd(Q1)
     c = np.zeros((m, n))
     np.fill_diagonal(c, sdiag)
     v = v.T.conj()
@@ -292,13 +292,13 @@ def csd(q1,q2):
     z = scp.linalg.hankel(z[:,n-1])
     c[0:n,:] = z@c[0:n,:]@z
     v = v@z
-    q2 = q2@v
+    Q2 = Q2@v
     k=0
     for j in range(1,n):
         if c[j,j] <= 1/np.sqrt(2): k=j
-    b = q2[:,0:k]
+    b = Q2[:,0:k]
     u2,r = np.linalg.qr(b,mode='complete')
-    s = u2.T@q2
+    s = u2.T@Q2
     t = np.minimum(p,n)
     tt = np.minimum(m,p)
     if k<t:
