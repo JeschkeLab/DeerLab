@@ -36,6 +36,8 @@ Vexp = K@P + dl.whitegaussnoise(t,0.005,seed=1)
 # pathway amplitudes pretty much unconstrained.
 # 
 
+# %% [markdown]
+# Define initial values and bounds for model parameters
 # %%
 ex_lb   = [ 0,   0,   0,  max(t)/2-1] # lower bounds
 ex_ub   = [100, 100, 100, max(t)/2+1] # upper bounds
