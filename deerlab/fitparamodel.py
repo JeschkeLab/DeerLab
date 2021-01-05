@@ -4,14 +4,15 @@
 # Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
+import matplotlib.pyplot as plt
+import warnings
 from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian
 from deerlab.classes import UncertQuant, FitResult
-import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
-import warnings
 
-def fitparamodel(V, model, par0, lb=None, ub=None, weights = 1,
-                 multistart=1, tol=1e-10, maxiter = 3000,
+
+def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
+                 multistart=1, tol=1e-10, maxiter=3000,
                  rescale=True, uqanalysis=True, covmatrix=None):
     r""" Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
 
