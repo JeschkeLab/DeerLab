@@ -132,6 +132,7 @@ plt.ylabel('P(r) [nm$^{-1}$]')
 plt.grid(alpha=0.3)
 plt.legend(['truth','Pfit','Pfit 95%-CI'])
 
+plt.show()
 
 # %%
 

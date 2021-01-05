@@ -34,6 +34,7 @@ V = K@P + dl.whitegaussnoise(t,0.01,seed=0)   # DEER trace, with added noise
 # %%
 fit = dl.fitsignal(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer)
 fit.plot()
+plt.show() 
 
 # %% [markdown]
 # Fit Gaussians to the distance distribution
