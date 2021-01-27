@@ -1,7 +1,7 @@
 # dipolarkernel.py - Dipolar kernel operator
 # -----------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 # Numpy + SciPy
 import numpy as np
