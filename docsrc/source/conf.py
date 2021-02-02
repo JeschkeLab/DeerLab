@@ -26,6 +26,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
     'sphinxcontrib.httpdomain',
+    'sphinxcontrib.ghcontributors',
     'matplotlib.sphinxext.plot_directive',
     'sphinx.ext.imgmath',
     'numpydoc',
