@@ -280,3 +280,293 @@ def ex_7pdeer(param=None):
     
     return pathways
 # ===================================================================
+
+
+def ex_ridme1(param=None):
+# ===================================================================
+    r"""
+    RIDME experiment model (spin S=1/2)
+    ===================================
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = ex_ridme1()
+
+
+    Otherwise the function returns to calculated experiment dipolar pathways::
+    
+        pathways = ex_ridme1(param)
+ 
+ 
+    Parameters
+    ----------
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    pathways : ndarray
+        Dipolar pathways of the experiment
+ 
+    Model parameters:
+    -------------------
+
+     ---------------------------------------------------------------------------
+      Parameter                                Units   Lower    Upper    Start
+     ---------------------------------------------------------------------------
+      Amplitude of unmodulated contribution              0       1        0.3
+      Amplitude of 1st harmonic pathway                  0       1        0.5
+     ---------------------------------------------------------------------------
+    """  
+    if param is None:
+        info = dict(
+            Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st modulated pathway'],
+            Units = ['',''],
+            Start = np.asarray([0.3, 0.5]),
+            Lower = np.asarray([0, 0]),
+            Upper = np.asarray([1, 1])
+        )
+        return info
+    param = _parsargs(param,npar=2)
+
+    # Dipolar pathways
+    lam = param.copy()
+    pathways = [[] for _ in lam]
+    pathways[0] = [lam[0]]
+    pathways[1] = [lam[1], 0, 1]
+    
+    return pathways
+# ===================================================================
+
+
+def ex_ridme3(param=None):
+# ===================================================================
+    r"""
+    RIDME experiment model (spin S=3/2)
+    ====================================
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = ex_ridme3()
+
+
+    Otherwise the function returns to calculated experiment dipolar pathways::
+    
+        pathways = ex_ridme3(param)
+ 
+ 
+    Parameters
+    ----------
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    pathways : ndarray
+        Dipolar pathways of the experiment
+ 
+    Model parameters:
+    -------------------
+
+     ---------------------------------------------------------------------------
+      Parameter                                Units   Lower    Upper    Start
+     ---------------------------------------------------------------------------
+      Amplitude of unmodulated contribution              0       1        0.3
+      Amplitude of 1st harmonic pathway                  0       1        0.5
+      Amplitude of 2nd harmonic pathway                  0       1        0.3
+      Amplitude of 3rd harmonic pathway                  0       1        0.2
+     ---------------------------------------------------------------------------
+    """  
+    if param is None:
+        info = dict(
+            Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
+                          'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway'],
+            Units = ['','','',''],
+            Start = np.asarray([0.3, 0.5, 0.3, 0.2]),
+            Lower = np.asarray([0, 0, 0, 0]),
+            Upper = np.asarray([1, 1, 1, 1])
+        )
+        return info
+    param = _parsargs(param,npar=4)
+
+    # Dipolar pathways
+    lam = param.copy()
+    pathways = [[] for _ in lam]
+    pathways[0] = [lam[0]]
+    pathways[1] = [lam[1], 0, 1]
+    pathways[2] = [lam[2], 0, 2]
+    pathways[3] = [lam[3], 0, 3]
+    
+    return pathways
+# ===================================================================
+
+
+def ex_ridme5(param=None):
+# ===================================================================
+    r"""
+    RIDME experiment model (spin S=5/2)
+    ====================================
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = ex_ridme5()
+
+
+    Otherwise the function returns to calculated experiment dipolar pathways::
+    
+        pathways = ex_ridme5(param)
+ 
+ 
+    Parameters
+    ----------
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    pathways : ndarray
+        Dipolar pathways of the experiment
+ 
+    Model parameters:
+    -------------------
+
+     ---------------------------------------------------------------------------
+      Parameter                                Units   Lower    Upper    Start
+     ---------------------------------------------------------------------------
+      Amplitude of unmodulated component                 0       1        0.3
+      Amplitude of 1st harmonic pathway                  0       1        0.5
+      Amplitude of 2nd harmonic pathway                  0       1        0.3
+      Amplitude of 3rd harmonic pathway                  0       1        0.2 
+      Amplitude of 4th harmonic pathway                  0       1        0.1 
+      Amplitude of 5th harmonic pathway                  0       1        0.05 
+     ---------------------------------------------------------------------------
+    """  
+    if param is None:
+        info = dict(
+            Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
+                          'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway',
+                          'Amplitude of 4th harmonic pathway','Amplitude of 5th harmonic pathway'],
+            Units = ['','','','','',''],
+            Start = np.asarray([0.3, 0.5, 0.3, 0.2,0.1,0.05]),
+            Lower = np.asarray([0, 0, 0, 0, 0, 0]),
+            Upper = np.asarray([1, 1, 1, 1, 1, 1])
+        )
+        return info
+    param = _parsargs(param,npar=6)
+
+    # Dipolar pathways
+    lam = param.copy()
+    pathways = [[] for _ in lam]
+    pathways[0] = [lam[0]]
+    pathways[1] = [lam[1], 0, 1]
+    pathways[2] = [lam[2], 0, 2]
+    pathways[3] = [lam[3], 0, 3]
+    pathways[4] = [lam[4], 0, 4]
+    pathways[5] = [lam[5], 0, 5]
+
+    return pathways
+# ===================================================================
+
+
+def ex_ridme7(param=None):
+# ===================================================================
+    r"""
+    RIDME experiment model (spin S=7/2)
+    ====================================
+ 
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+        info = ex_ridme7()
+
+
+    Otherwise the function returns to calculated experiment dipolar pathways::
+    
+        pathways = ex_ridme7(param)
+ 
+ 
+    Parameters
+    ----------
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+    pathways : ndarray
+        Dipolar pathways of the experiment
+ 
+    Model parameters:
+    -------------------
+
+     ---------------------------------------------------------------------------
+      Parameter                                Units   Lower    Upper    Start
+     ---------------------------------------------------------------------------
+      Amplitude of unmodulated component                 0       1        0.3
+      Amplitude of 1st harmonic pathway                  0       1        0.5
+      Amplitude of 2nd harmonic pathway                  0       1        0.3
+      Amplitude of 3rd harmonic pathway                  0       1        0.2 
+      Amplitude of 4th harmonic pathway                  0       1        0.1 
+      Amplitude of 5th harmonic pathway                  0       1        0.05 
+      Amplitude of 6th harmonic pathway                  0       1        0.02 
+      Amplitude of 7th harmonic pathway                  0       1        0.01 
+     ---------------------------------------------------------------------------
+    """  
+    if param is None:
+        info = dict(
+            Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
+                          'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway',
+                          'Amplitude of 4th harmonic pathway','Amplitude of 5th harmonic pathway',
+                          'Amplitude of 6th harmonic pathway','Amplitude of 7th harmonic pathway'],
+            Units = ['','','','','','','',''],
+            Start = np.asarray([0.3, 0.5, 0.3, 0.2,0.1,0.05,0.02,0.01]),
+            Lower = np.asarray([0, 0, 0, 0, 0, 0, 0, 0]),
+            Upper = np.asarray([1, 1, 1, 1, 1, 1, 1, 1])
+        )
+        return info
+    param = _parsargs(param,npar=8)
+
+    # Dipolar pathways
+    lam = param.copy()
+    pathways = [[] for _ in lam]
+    pathways[0] = [lam[0]]
+    pathways[1] = [lam[1], 0, 1]
+    pathways[2] = [lam[2], 0, 2]
+    pathways[3] = [lam[3], 0, 3]
+    pathways[4] = [lam[4], 0, 4]
+    pathways[5] = [lam[5], 0, 5]
+    pathways[6] = [lam[6], 0, 6]
+    pathways[7] = [lam[7], 0, 7]
+
+    return pathways
+# ===================================================================
