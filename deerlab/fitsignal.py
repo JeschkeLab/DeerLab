@@ -329,7 +329,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         return Ks, Bs     
     # =========================================================================
 
-    def splituq(full_uq,scales=1):
+    def splituq(full_uq,Pfit,Vfit,Bfit,parfit_,Kfit,scales=1):
     # =========================================================================
         """ 
         Uncertainty quantification
@@ -383,6 +383,11 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # ----------------------------------
         nonneg = np.zeros_like(r)
         if parametricDistribution:
+            # Prepare parametric model
+            if includeForeground:
+                Pfcn = lambda par: dd_model(r,par[ddidx])
+            else:
+                Pfcn = lambda _: np.ones_like(r)/np.trapz(np.ones_like(r),r)
             Pfit_uq = paruq.propagate(Pfcn,nonneg,[])
         else:
             subcovmat = covmat[np.ix_(Pfreeidx,Pfreeidx)]
@@ -420,10 +425,9 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         return Vfit_uq,Pfit_uq,Bfit_uq,paruq_bg,paruq_ex,paruq_dd   
     # =========================================================================
 
-    OnlyRegularization = np.all(~parametricDistribution & ~includeExperiment & ~includeBackground)
-    OnlyParametric = not OnlyRegularization and (parametricDistribution or not includeForeground)
-
-    if OnlyRegularization:
+    def regularization_analysis(Vexp):
+    # =========================================================================
+        " Analysis workflow for non-parametric models based on regularized least-squares" 
         
         # Use basic dipolar kernel
         Ks = [dl.dipolarkernel(ts,r) for ts in t]
@@ -433,7 +437,6 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Pfit = fit.P
         Pfit_uq = fit.uncertainty
         scales = np.atleast_1d(fit.scale)
-
         alphaopt = fit.regparam
 
         # Get fitted models
@@ -441,12 +444,18 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Bfit = [np.ones_like(V) for V in Vexp]
         
         # No parameters
-        parfit_ = np.asarray([None])
+        parfit = np.asarray([None])
         if uqanalysis:
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(Pfit_uq)
+            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(Pfit_uq,Pfit,Vfit,Bfit,parfit,Ks)
+            return fit,Pfit,Vfit,Bfit,parfit,Pfit_uq,Vfit_uq,Bfit_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
+        else:
+            return fit,Pfit,Vfit,Bfit,parfit,scales,alphaopt
+    # =========================================================================
 
-    elif OnlyParametric:
-        
+    def nonlinear_lsq_analysis(Vexp):
+    # =========================================================================
+        " Analysis workflow for fully parametric models based on nonlinear least-squares" 
+
         # Prepare the full-parametric model
         if includeForeground:
             Pfcn = lambda par: dd_model(r,par[ddidx])
@@ -456,16 +465,16 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         # Non-linear parametric fit
         fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uqanalysis=uqanalysis)
-        parfit_ = fit.param
+        parfit = fit.param
         param_uq = fit.uncertainty
         scales = fit.scale
         alphaopt = None
 
         # Get fitted models
-        Vfit = Vmodel(parfit_)
-        _,Bfit = multiPathwayModel(parfit_)
+        Vfit = Vmodel(parfit)
+        _,Bfit = multiPathwayModel(parfit)
         if includeForeground:
-            Pfit = Pfcn(parfit_)
+            Pfit = Pfcn(parfit)
         else:
             Pfit = []
         if type(Vfit) is not list:
@@ -475,10 +484,16 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vfit = [V*scale for scale,V in zip(scales,Vfit) ]
 
         if uqanalysis:
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,scales)
-        
-    else:
-        
+            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,Pfit,Vfit,Bfit,parfit,[],scales)
+            return fit,Pfit,Vfit,Bfit,parfit,Pfit_uq,Vfit_uq,Bfit_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
+        else:
+            return fit,Pfit,Vfit,Bfit,parfit,scales,alphaopt
+    # =========================================================================
+
+    def separable_nonlinear_lsq_analysis(Vexp):
+    # =========================================================================
+        " Analysis workflow for semiparametric models based on separable nonlinear least-squares" 
+
         # Non-negativity constraint on distributions
         lbl = np.zeros_like(r)
         
@@ -488,19 +503,48 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # Separable non-linear least squares (SNNLS) 
         fit = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
                             regparam=regparam, lin_maxiter=[], uqanalysis=uqanalysis, lin_tol=[], weights=weights)
-        parfit_ = fit.nonlin
+        parfit = fit.nonlin
         Pfit = fit.lin
         snlls_uq = fit.uncertainty
         alphaopt = fit.regparam
         scales = [prescales[i]*np.trapz(Pfit,r) for i in range(nSignals)]
 
         # Get the fitted models
-        Kfit,Bfit = multiPathwayModel(parfit_)
+        Kfit,Bfit = multiPathwayModel(parfit)
         Vfit = [scale*K@Pfit for K,scale in zip(Kfit,scales)]
 
         if uqanalysis:
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq)
-    
+            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq,Pfit,Vfit,Bfit,parfit,Kfit)
+            return fit,Pfit,Vfit,Bfit,parfit,Pfit_uq,Vfit_uq,Bfit_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
+        else:
+            return fit,Pfit,Vfit,Bfit,parfit,scales,alphaopt
+    # =========================================================================
+
+    # Analyze the data
+    # ----------------------
+
+    # Determine type of model
+    nonparametric = np.all(~parametricDistribution & ~includeExperiment & ~includeBackground)
+    fullparametric = not nonparametric and (parametricDistribution or not includeForeground)
+    semiparametric = not nonparametric and not fullparametric
+
+    # Choose appropiate analysis for type of model
+    if nonparametric:
+        analysis = regularization_analysis
+    elif fullparametric:
+        analysis = nonlinear_lsq_analysis
+    elif semiparametric:
+        analysis = separable_nonlinear_lsq_analysis
+
+    # Run the analysis
+    results = analysis(Vexp)
+
+    # Extract results
+    if uqanalysis:
+        fit,Pfit,Vfit,Bfit,parfit_,Pfit_uq,Vfit_uq,Bfit_uq,paruq_bg,paruq_ex,paruq_dd,scales,alphaopt = results
+    else:
+        fit,Pfit,Vfit,Bfit,parfit_,scales,alphaopt = results
+
     # Normalize distribution
     # -----------------------
     scale = 1
@@ -545,6 +589,8 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         modfituq['Vfit'] = UncertQuant('void')
         modfituq['Bfit'] = UncertQuant('void')
 
+    # Graphical display of results
+    # ---------------------------------------------------------------
     Vfit_ = Vfit
     def _display_results():
     # =========================================================================
