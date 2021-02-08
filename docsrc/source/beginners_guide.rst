@@ -279,15 +279,16 @@ and fitted parameters with uncertainties, for example
 
 .. code-block:: text
 
-    -----------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------
     Goodness of fit
-    Vexp[0]: chi2 = 1.008066  RMSD  = 0.019209
-    -----------------------------------------------------------------------------------
+    Vexp[0]: 𝛘2 = 25.510184  RMSD  = 1.953580e+07
+    -----------------------------------------------------------------------------------------
     Fitted parameters and 95%-confidence intervals
     Vfit[0]:
-    bgparam[0]:   292.02402  (230.33576, 353.71227)  Concentration of pumped spins (μM)
-    exparam[0]:   0.5097663  (0.4809968, 0.5385358)  Modulation depth ()
-    -----------------------------------------------------------------------------------
+    V0:  3.551e+07  Signal scale (a.u.)
+    bgparam[0]:   145.3121342  (111.0809911, 179.5432773)  Concentration of pumped spins (μM)
+    exparam[0]:   0.4066627  (0.3630338, 0.4502916)  Modulation depth ()
+    -----------------------------------------------------------------------------------------
 
 where there are no distribution parameters ``ddparam`` due to the distribution model being non-parametric. 
 
