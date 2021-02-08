@@ -254,7 +254,6 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     isphenomenological = [_iserror(model,t,par0,1) for model,par0 in zip(bg_model,par0_bg)]
 
-
     if np.any(~isparamodel & includeBackground):
         raise TypeError('Background model (5th input) must either be a function handle, or None.')
     
@@ -322,14 +321,14 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             # Compute the multipathway-background
             B_ = dl.dipolarbackground(t[iSignal],pathways,Bfcn)
             # Compute the multipathway-kernel
-            K_ = dl.dipolarkernel(t[iSignal],r,pathways)
-            Ks.append(K_*B_[:,np.newaxis])
+            K_ = dl.dipolarkernel(t[iSignal],r,pathways,Bfcn)
+            Ks.append(K_)
             Bs.append(B_)
             
         return Ks, Bs     
     # =========================================================================
 
-    def splituq(full_uq,scales=1):
+    def splituq(full_uq,scales):
     # =========================================================================
         """ 
         Uncertainty quantification
@@ -339,7 +338,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         components of the model. 
         """
         # Pre-allocation
-        paruq_bg,paruq_ex,Bfit_uq,Vfit_uq = ([],[],[],[])
+        paruq_bg,paruq_ex,Bfit_uq,scaledBfit_uq,Vfit_uq = ([],[],[],[],[])
         
         # Retrieve full covariance matrix
         covmat = full_uq.covmat
@@ -392,10 +391,21 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # -----------------------
         for jj in range(nSignals):
             if includeExperiment[jj]:
-                Bfit_uq.append( paruq.propagate(lambda par:multiPathwayModel(par)[1][jj]))
+                Bfit_uq.append( paruq.propagate(lambda par:multiPathwayModel(par)[1][jj]) )
             else:
                 Bfit_uq.append([None])
         
+        # Scaled background uncertainty
+        # -----------------------------
+        for jj in range(nSignals):
+            if includeExperiment[jj]:
+                Lam0fcn = lambda par: ex_model[jj](par)[0]
+                Bfcn = lambda par: scales[jj]*multiPathwayModel(par)[1][jj]
+                scaledBfit_fcn = lambda par: Lam0fcn(par[exidx[jj]])*Bfcn(par)
+                scaledBfit_uq.append( paruq.propagate(lambda par:scaledBfit_fcn(par)) )
+            else:
+                scaledBfit_uq.append([None])
+
         # Dipolar signal uncertainty
         # --------------------------
         for jj in range(nSignals):
@@ -410,15 +420,16 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat,[],[]))
             elif includeForeground:
                 # Parametric signal with parameter-free distribution
-                Jnonlin = Jacobian(lambda par: multiPathwayModel(par[paramidx])[0][jj]@Pfit,parfit_,lb[paramidx],ub[paramidx])
-                J = np.concatenate((Jnonlin, Kfit[jj]),1)
+                Jnonlin = Jacobian(lambda par: scales[jj]*multiPathwayModel(par[paramidx])[0][jj]@Pfit,parfit_,lb[paramidx],ub[paramidx])
+                J = np.concatenate((Jnonlin, scales[jj]*Kfit[jj]),1)
                 Vcovmat = J@covmat@J.T
                 Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat,[],[]))
             else:
                 Vfit_uq.append([None])
 
-        return Vfit_uq,Pfit_uq,Bfit_uq,paruq_bg,paruq_ex,paruq_dd   
+        return Vfit_uq,Pfit_uq,Bfit_uq,scaledBfit_uq,paruq_bg,paruq_ex,paruq_dd   
     # =========================================================================
+
 
     OnlyRegularization = np.all(~parametricDistribution & ~includeExperiment & ~includeBackground)
     OnlyParametric = not OnlyRegularization and (parametricDistribution or not includeForeground)
@@ -443,7 +454,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # No parameters
         parfit_ = np.asarray([None])
         if uqanalysis:
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(Pfit_uq)
+            Vfit_uq, Pfit_uq, Bfit_uq, scaledBfit_uq, paruq_bg, paruq_ex, paruq_dd   = splituq(Pfit_uq,scales)
 
     elif OnlyParametric:
         
@@ -475,7 +486,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vfit = [V*scale for scale,V in zip(scales,Vfit) ]
 
         if uqanalysis:
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,scales)
+            Vfit_uq, Pfit_uq, Bfit_uq, scaledBfit_uq, paruq_bg, paruq_ex, paruq_dd   = splituq(param_uq,scales)
         
     else:
         
@@ -487,7 +498,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         # Separable non-linear least squares (SNNLS) 
         fit = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
-                            regparam=regparam, lin_maxiter=[], uqanalysis=uqanalysis, lin_tol=[], weights=weights)
+                            regparam=regparam, uqanalysis=uqanalysis, weights=weights)
         parfit_ = fit.nonlin
         Pfit = fit.lin
         snlls_uq = fit.uncertainty
@@ -499,8 +510,21 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vfit = [scale*K@Pfit for K,scale in zip(Kfit,scales)]
 
         if uqanalysis:
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq)
+            Vfit_uq, Pfit_uq, Bfit_uq, scaledBfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq,scales)
     
+    # Calculate backgrounds scaled by unmodulated contribution
+    # --------------------------------------------------------
+    scaledBfit = []
+    for j in range(nSignals):
+        if includeExperiment[j]:
+            Lam0 = ex_model[j](parfit_[exidx[j]])[0]
+            if includeBackground[j]:
+                scaledBfit.append(scales[j]*np.array(Lam0*Bfit[j]) )
+            else:
+                scaledBfit.append(np.full_like(t,Lam0))
+        else:
+            scaledBfit.append(None)
+
     # Normalize distribution
     # -----------------------
     scale = 1
@@ -545,24 +569,31 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         modfituq['Vfit'] = UncertQuant('void')
         modfituq['Bfit'] = UncertQuant('void')
 
-    Vfit_ = Vfit
+    Vfit_ = Vfit.copy()
     def _display_results():
     # =========================================================================
         _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
         for i in range(nSignals):
             # Plot the signal
-            axs[i].plot(t[i],Vexp[i],'.',color='grey',alpha=0.5)
+            axs[i].plot(t[i],scales[i]*Vexp[i],'.',color='grey',alpha=0.5)
             axs[i].plot(t[i],Vfit_[i],'tab:blue')
+            if includeBackground[i]:
+                axs[i].plot(t[i],scaledBfit[i],'--',color='tab:orange')
             if uqanalysis:
                 # Get confidence intervals for the signal
                 Vci95 = Vfit_uq[i].ci(95)
                 Vci50 = Vfit_uq[i].ci(50)
                 axs[i].fill_between(t[i],Vci95[:,0], Vci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
                 axs[i].fill_between(t[i],Vci50[:,0], Vci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
+                if includeBackground[i]:
+                    scaledBfit95 = scaledBfit_uq[i].ci(95)
+                    scaledBfit50 = scaledBfit_uq[i].ci(50)
+                    axs[i].fill_between(t[i],scaledBfit95[:,0], scaledBfit95[:,1],facecolor='tab:orange',linestyle='None',alpha=0.2)
+                    axs[i].fill_between(t[i],scaledBfit50[:,0], scaledBfit50[:,1],facecolor='tab:orange',linestyle='None',alpha=0.4)
             axs[i].grid(alpha=0.3)
             axs[i].set_xlabel('Time [μs]')
             axs[i].set_ylabel('V[{}]'.format(i))
-            axs[i].legend(('Data','Fit','95%-CI','50%-CI'))
+            axs[i].legend(('Data','Vfit','Bfit','95%-CI','50%-CI'))
 
         # Plot the distribution
         axs[nSignals].plot(r,Pfit,'tab:blue')
@@ -586,7 +617,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         print('----------------------------------------------------------------------------')
         print('Goodness of fit')
         for i in range(nSignals):
-            print('  Vexp[{}]: chi2 = {:4f}  RMSD  = {:4f}'.format(i,stats[i]['chi2red'],stats[i]['rmsd']))
+            print('  Vexp[{}]: 𝛘2 = {:4f}  RMSD  = {:4f}'.format(i,stats[i]['chi2red'],stats[i]['rmsd']))
         print('----------------------------------------------------------------------------')
         print('Fitted parameters and 95%-confidence intervals')
         pstr = "  {}[{:d}]:   {:5.7f}  ({:.7f}, {:.7f})  {} ({})"
@@ -603,6 +634,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         for i in range(nSignals):
             print('Vfit[{}]:'.format(i))
+            print('  scale (a.u.):  {:9.7f}'.format(scales[i]))
             if includeBackground[i]:
                 if len(parfit['bg'])>0:
                     info = bg_model[i]()

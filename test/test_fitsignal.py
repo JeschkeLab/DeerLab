@@ -1,6 +1,7 @@
 
 import numpy as np
 from numpy import inf
+import deerlab as dl
 from deerlab import dipolarkernel, whitegaussnoise, fitsignal
 from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp, bg_hom3d
@@ -508,4 +509,38 @@ def test_V_scale_regularized():
     fit = fitsignal(V,t,r,'P',None,None,uqanalysis=False)
 
     assert max(abs(1 - V/fit.V)) < 1e-4
+# ======================================================================
+
+def test_physical_bg_model():
+# ======================================================================
+    "Check that the background parameters of a physical model are fitted correctly"
+
+    t = np.linspace(-0.1,7,200)
+    r = np.linspace(3,5,50)
+    P = dl.dd_gauss(r,[4,0.2])
+    V0 = 3000
+    K = dl.dipolarkernel(t,r,0.4,lambda t,lam:dl.bg_hom3d(t,50,lam))
+    V = K@P
+    V = V0*V
+
+    fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,uqanalysis=False)
+
+    assert abs(fit.bgparam - 50)<1e-1 and abs(fit.exparam - 0.4)<1e-1
+# ======================================================================
+
+def test_phenomenological_bg_model():
+# ======================================================================
+    "Check that the background parameters of a phenomenological model are fitted correctly"
+
+    t = np.linspace(-0.1,7,200)
+    r = np.linspace(3,5,50)
+    P = dl.dd_gauss(r,[4,0.2])
+    V0 = 3000
+    K = dl.dipolarkernel(t,r,dl.ex_4pdeer(0.4),lambda t: dl.bg_exp(t,0.3))
+    V = K@P
+    V = V0*V
+
+    fit = dl.fitsignal(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer,uqanalysis=False)
+
+    assert abs(fit.bgparam - 0.3)<1e-1 and abs(fit.exparam - 0.4)<1e-1
 # ======================================================================
