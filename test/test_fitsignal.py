@@ -544,3 +544,21 @@ def test_phenomenological_bg_model():
 
     assert abs(fit.bgparam - 0.3)<1e-1 and abs(fit.exparam - 0.4)<1e-1
 # ======================================================================
+
+
+def test_bckg_scaling():
+# ======================================================================
+    "Check that the background scaling is correct if requested"
+
+    t = np.linspace(-0.1,7,200)
+    r = np.linspace(3,5,50)
+    P = dl.dd_gauss(r,[4,0.2])
+    lam = 0.4
+    K = dl.dipolarkernel(t,r,dl.ex_4pdeer(lam),lambda t,lam: dl.bg_hom3d(t,50,lam))
+    Bscaled = (1-lam)*dl.bg_hom3d(t,50,lam)
+    V = K@P
+
+    fit = dl.fitsignal(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer,scaledbckg=True,uqanalysis=False)
+
+    assert max(abs(Bscaled - fit.B))<1e-4
+# ======================================================================

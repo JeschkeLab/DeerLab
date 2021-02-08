@@ -14,7 +14,7 @@ from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit, Jacobian
 
 def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
-              dd_par0=None, bg_par0=None, ex_par0=None, verbose= False,
+              dd_par0=None, bg_par0=None, ex_par0=None, verbose=False, scaledbckg=False, 
               dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
               weights=1, uqanalysis=True, regparam='aic', regtype = 'tikhonov'):
     r"""
@@ -113,7 +113,11 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * ``'tv'``  - Total variation regularization
         * ``'huber'`` - Huber regularization
         The default is ``'tikhonov'``.  
-    
+
+    scaledbckg: boolean, optional
+        If ``True``, the fitted background and its uncertainty quantification are returned scaled 
+        by the unmodulated contributions, if ``False`` (default) the background is is returned unscaled.
+
     verbose : boolean, optional
         Enable/disable printing a table of fit results, by default is disabled
     
@@ -558,7 +562,10 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         modfituq = dict()
         modfituq['Pfit'] = Pfit_uq
         modfituq['Vfit'] = [Vfit_uq[j] for j in range(nSignals)]
-        modfituq['Bfit'] = [Bfit_uq[j] for j in range(nSignals)]
+        if scaledbckg:
+            modfituq['Bfit'] = [scaledBfit_uq[j] for j in range(nSignals)]
+        else:
+            modfituq['Bfit'] = [Bfit_uq[j] for j in range(nSignals)]
     else:
         paruq = dict()
         paruq['dd'] = UncertQuant('void')
@@ -568,6 +575,9 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         modfituq['Pfit'] = UncertQuant('void')
         modfituq['Vfit'] = UncertQuant('void')
         modfituq['Bfit'] = UncertQuant('void')
+
+    if scaledbckg:
+        Bfit = scaledBfit
 
     Vfit_ = Vfit.copy()
     def _display_results():
@@ -670,6 +680,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 modfituq[subset] = modfituq[subset][0]
         if not isempty(stats):
             stats = stats[0]
+
 
     return FitResult(V=Vfit, P=Pfit, B=Bfit, exparam=parfit['ex'], bgparam=parfit['bg'],
                       ddparam=parfit['dd'], Vuncert = modfituq['Vfit'], Puncert = modfituq['Pfit'],
