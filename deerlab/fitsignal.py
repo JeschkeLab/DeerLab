@@ -627,7 +627,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         print('----------------------------------------------------------------------------')
         print('Goodness of fit')
         for i in range(nSignals):
-            print('  Vexp[{}]: 𝛘2 = {:4f}  RMSD  = {:4f}'.format(i,stats[i]['chi2red'],stats[i]['rmsd']))
+            print('  Vexp[{}]: 𝛘2 = {:4f}  RMSD  = {:4e}'.format(i,stats[i]['chi2red'],stats[i]['rmsd']))
         print('----------------------------------------------------------------------------')
         print('Fitted parameters and 95%-confidence intervals')
         pstr = "  {}[{:d}]:   {:5.7f}  ({:.7f}, {:.7f})  {} ({})"
@@ -644,7 +644,10 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         for i in range(nSignals):
             print('Vfit[{}]:'.format(i))
-            print('  scale (a.u.):  {:9.7f}'.format(scales[i]))
+            if scales[i]>1e2:
+                print('  V0:  {:.3e}  Signal scale (a.u.)'.format(scales[i]))
+            else:
+                print('  V0:  {:2.2f}  Signal scale (a.u.)'.format(scales[i]))
             if includeBackground[i]:
                 if len(parfit['bg'])>0:
                     info = bg_model[i]()
