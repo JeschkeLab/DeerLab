@@ -16,7 +16,7 @@ from deerlab.utils import isempty, goodness_of_fit, Jacobian
 def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
               dd_par0=None, bg_par0=None, ex_par0=None, verbose= False,
               dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
-              weights=1, uqanalysis=True, regparam='aic', regtype = 'tikhonov'):
+              weights=1, uqanalysis=True, uq='covariance', regparam='aic', regtype = 'tikhonov'):
     r"""
     Fits a dipolar model to the experimental signal ``V`` with time axis ``t``, using
     distance axis ``r``. The model is specified by the distance distribution (dd),
@@ -445,7 +445,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         
         # No parameters
         parfit = np.asarray([None])
-        if uqanalysis:
+        if uqanalysis and uq=='covariance':
             Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(Pfit_uq,Pfit,Vfit,Bfit,parfit,Ks)
             return fit,Pfit,Vfit,Bfit,parfit,Pfit_uq,Vfit_uq,Bfit_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
         else:
@@ -483,7 +483,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             scales = [scales]
         Vfit = [V*scale for scale,V in zip(scales,Vfit) ]
 
-        if uqanalysis:
+        if uqanalysis and uq=='covariance':
             Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,Pfit,Vfit,Bfit,parfit,[],scales)
             return fit,Pfit,Vfit,Bfit,parfit,Pfit_uq,Vfit_uq,Bfit_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
         else:
@@ -513,7 +513,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Kfit,Bfit = multiPathwayModel(parfit)
         Vfit = [scale*K@Pfit for K,scale in zip(Kfit,scales)]
 
-        if uqanalysis:
+        if uqanalysis and uq=='covariance':
             Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq,Pfit,Vfit,Bfit,parfit,Kfit)
             return fit,Pfit,Vfit,Bfit,parfit,Pfit_uq,Vfit_uq,Bfit_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
         else:
@@ -539,11 +539,37 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     # Run the analysis
     results = analysis(Vexp)
 
-    # Extract results
-    if uqanalysis:
+    # Unpack results
+    if uqanalysis and uq=='covariance':
         fit,Pfit,Vfit,Bfit,parfit_,Pfit_uq,Vfit_uq,Bfit_uq,paruq_bg,paruq_ex,paruq_dd,scales,alphaopt = results
     else:
         fit,Pfit,Vfit,Bfit,parfit_,scales,alphaopt = results
+
+    # Bootstrapping uncertainty quantification
+    # -----------------------------------------
+    if uqanalysis and uq=='bootstrap':
+
+        def bootstrapfcn(Vexp):
+            # ======================================================
+            # Fit the data
+            _,Pfit_,Vfit_,Bfit_,parfit,_,_ = analysis(Vexp)
+            # Extract the individual parameter subsets
+            parfit_bg = [parfit[bgidx[n]] for n in range(nSignals)]
+            parfit_ex = [parfit[exidx[n]] for n in range(nSignals)]
+            parfit_dd = parfit[ddidx]
+            return Pfit_,*Vfit_,*Bfit_,*parfit_bg,*parfit_ex,parfit_dd
+            # ======================================================
+
+        # Run bootstrapping
+        boot_uq = dl.bootan(bootstrapfcn,Vexp,Vfit,verbose=verbose)
+
+        # Unpack bootstrapping results
+        Pfit_uq = boot_uq[0]
+        Vfit_uq = [boot_uq[1+n] for n in range(nSignals)]
+        Bfit_uq = [boot_uq[1+nSignals+n] for n in range(nSignals)]
+        paruq_bg = [boot_uq[1+2*nSignals+n] for n in range(nSignals)]
+        paruq_ex = [boot_uq[1+3*nSignals+n] for n in range(nSignals)]
+        paruq_dd = boot_uq[-1]
 
     # Normalize distribution
     # -----------------------
