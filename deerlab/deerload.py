@@ -203,7 +203,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
     else:
         warn("Keyword IKKF not found in .DSC file! Assuming IKKF=REAL.")
     
-        # Split 1D-array according to XPTS/YPTS/ZPTS into 3D-array
+    # Split 1D-array into 3D-array according to XPTS/YPTS/ZPTS 
         data = np.array_split(data,nz)
         data = np.array(data).T
         data = np.array_split(data,ny)
