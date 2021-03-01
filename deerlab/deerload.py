@@ -63,7 +63,6 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
     parameters = read_description_file(filename_dsc)
     parDESC = parameters["DESC"]
     parSPL = parameters["SPL"]
-    print( int(parDESC['XPTS']))
     # XPTS, YPTS, ZPTS specify the number of data points along x, y and z.
     if 'XPTS' in parDESC:
         nx = int(parDESC['XPTS'])
