@@ -126,8 +126,7 @@ def test_start_values():
     K = dipolarkernel(t,r,lam,Bmodel)
     V = K@P
 
-    par0 = [[],0.5,0.5]
-    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,par0,uqanalysis=False)
+    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,bg_par0=0.5,ex_par0=0.5,uqanalysis=False)
 
     assert ovl(P,fit.P) > 0.95
 # ======================================================================
@@ -145,14 +144,12 @@ def test_boundaries():
     K = dipolarkernel(t,r,lam,Bmodel)
     V = K@P 
 
-    par0 = [[],0.4,0.4]
-    lb = [[],0.2,0.2]
-    ub = [[],0.5,0.5]
-    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,par0,lb,ub,uqanalysis=False)
+    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer, uqanalysis=False,
+                    bg_par0=0.4, bg_lb=0.2, bg_ub=0.5,
+                    ex_par0=0.4, ex_lb=0.2, ex_ub=0.5)
 
     assert ovl(P,fit.P) > 0.95
 # ======================================================================
-
 
 def test_global_4pdeer():
 # ======================================================================

@@ -116,6 +116,7 @@ DeerLab :blueish:`Docs`
     :caption: Others
     :maxdepth: 1
 
+    ./contributing
     ./license
     ./funding
     ./changelog

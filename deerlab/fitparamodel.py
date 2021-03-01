@@ -1,18 +1,19 @@
 # fitparamodel.py - Parametric dipolar signal model fit function
 # ---------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from deerlab.utils import isempty, multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian
-from deerlab.classes import UncertQuant, FitResult
 import matplotlib.pyplot as plt
-from scipy.optimize import least_squares
 import warnings
+from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian
+from deerlab.classes import UncertQuant, FitResult
+from scipy.optimize import least_squares
 
-def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
-                 multistart=1, tol=1e-10, maxeval=5000, maxiter = 3000,
-                 rescale=True, uqanalysis=True, covmatrix=[]):
+
+def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
+                 multistart=1, tol=1e-10, maxiter=3000,
+                 rescale=True, uqanalysis=True, covmatrix=None):
     r""" Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
 
     Parameters
@@ -26,10 +27,10 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
     par0  : array_like
         Start values of the model parameters.
     
-    lb : array_like      
+    lb : array_like, optional      
         Lower bounds for the model parameters. If not specified, it is left unbounded.
     
-    ub : array_like     
+    ub : array_like, optional     
         Upper bounds for the model parameters. If not specified, it is left unbounded.
     
     weights : array_like, optional
@@ -46,9 +47,6 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
     
     tol : scalar, optional
         Optimizer function tolerance, the default is 1e-10.
-    
-    maxeval : scalar, optional
-        Maximum number of optimizer iterations, the default is 5000.
     
     maxiter : scalar, optional
         Maximum number of optimizer iterations, the default is 3000.
@@ -134,11 +132,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
         fit = dl.fitparamodel([V1,V2],Vmodel,par0,lb,ub)
 
     """
-
-    if isempty(par0):
-        raise KeyError('The start values par0 of the parameters must be specified')
-
-    lb,ub = np.atleast_1d(lb,ub)
+    
     V, model, weights, Vsubsets = parse_multidatasets(V, model, weights)
     Nsignals = len(Vsubsets)
     scales = [1]*Nsignals
@@ -146,10 +140,15 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
     if not np.all(np.isreal(V)):
         raise ValueError('The input signal(s) cannot be complex-valued.')
 
-    if isempty(lb):
+    if lb is None:
         lb = np.full_like(par0, -np.inf)
-    if isempty(ub):
+    else:
+        lb = np.atleast_1d(lb)
+
+    if ub is None:
         ub = np.full_like(par0, +np.inf)
+    else:
+        ub = np.atleast_1d(ub)
 
     # Prepare upper/lower bounds on parameter search range
     unboundedparams = np.any(np.isinf(lb)) or np.any(np.isinf(ub))
@@ -236,7 +235,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
             J = Jacobian(lsqresiduals,parfit,lb,ub)
 
         # Estimate the heteroscedasticity-consistent covariance matrix
-        if isempty(covmatrix):
+        if covmatrix is None:
             # Use estimated data covariance matrix
             covmatrix = hccm(J,residuals,'HC1')
         else:

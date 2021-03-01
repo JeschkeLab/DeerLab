@@ -26,3 +26,4 @@ build/
 multidocs/**/*
 docsrc/source/auto_examples/**/*
 docsrc/plot_directive/
+docsrc/source/_build/

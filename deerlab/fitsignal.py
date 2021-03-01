@@ -1,12 +1,11 @@
 # fitsignal.py - Dipolar signal fit function
 # ---------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 import types
 import copy
-import inspect
 import matplotlib.pyplot as plt
 import deerlab as dl
 from deerlab.classes import UncertQuant, FitResult
@@ -15,7 +14,8 @@ from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit, Jacobian
 
 def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
-              par0=[None,None,None], lb=[None,None,None], ub=[None,None,None], verbose= False,
+              dd_par0=None, bg_par0=None, ex_par0=None, verbose= False,
+              dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
               weights=1, uqanalysis=True, regparam='aic', regtype = 'tikhonov'):
     r"""
     Fits a dipolar model to the experimental signal ``V`` with time axis ``t``, using
@@ -66,23 +66,20 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         The default is ``ex_4pdeer``.
 
-    par0 : list of array_like, optional
-        Starting parameter values. Must be a 3-element list ``[par0_dd,par0_bg,par0_ex]``
-        containing the start values of the distribution, background and experiment models, in that order.
-        If a model does not require parameters or are to be determined automatically it must be specified 
-        as an empty list ``[]``. The default is ``par0=[[],[],[]]``.
+    dd_par0, bg_par0, ex_par0 : array_like, optional
+        Initial parameter values of the distance distribution/background/experimental model parameters.
+        If a model does not require parameters or are to be determined automatically it can be omitted or specified 
+        as ``None`` (default).
     
-    lb : list of array_like, optional
-        Lower bounds for parameters.  Must be a 3-element list ``[lb_dd,lb_bg,lb_ex]``
-        containing the start values of the distribution, background and experiment models, in that order.
-        If a model does not require parameters or are to be determined automatically it must be specified 
-        as an empty list ``[]``. The default is ``lb=[[],[],[]]``.
+    dd_lb, bg_lb, ex_lb : array_like, optional    
+        Lower boundary values of the distance distribution/background/experimental model parameters.
+        If a model does not require parameters or are to be determined automatically it can be omitted or specified 
+        as ``None`` (default).
     
-    ub : list of array_like, optional
-        Upper bounds for parameters, Must be a 3-element list ``[ub_dd,ub_bg,ub_ex]``
-        containing the start values of the distribution, background and experiment models, in that order.
-        If a model does not require parameters or are to be determined automatically it must be specified 
-        as an empty list ``[]``. The default is ``ub=[[],[],[]]``.
+    dd_ub, bg_ub, ex_ub : array_like, optional    
+        Upper boundary values of the distance distribution/background/experimental model parameters.
+        If a model does not require parameters or are to be determined automatically it can be omitted or specified 
+        as ``None`` (default).
     
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting,
@@ -231,9 +228,9 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     if len(ex_model)!=nSignals:
         ex_model = ex_model*nSignals
 
-    par0 = [[] if par0_i is None else par0_i for par0_i in par0]
-    lb = [[] if lb_i is None else lb_i for lb_i in lb]
-    ub = [[] if ub_i is None else ub_i for ub_i in ub]
+    par0 = [[] if par0_i is None else par0_i for par0_i in [dd_par0,bg_par0,ex_par0]]
+    lb = [[] if lb_i is None else lb_i for lb_i in [dd_lb,bg_lb,ex_lb]]
+    ub = [[] if ub_i is None else ub_i for ub_i in [dd_ub,bg_ub,ex_ub]]
     if type(par0) is not list or len(par0)!=3:
         raise TypeError('Initial parameters (7th input) must be a 3-element cell array.')
      

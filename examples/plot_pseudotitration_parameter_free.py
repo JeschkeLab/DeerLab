@@ -182,6 +182,5 @@ plt.ylabel('Fractions')
 plt.legend(['state A','state B'])
 plt.ylim([0,1])
 
-plt.tight_layout()
 plt.show()
 # %%
