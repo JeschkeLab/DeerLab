@@ -204,10 +204,10 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
         warn("Keyword IKKF not found in .DSC file! Assuming IKKF=REAL.")
     
     # Split 1D-array into 3D-array according to XPTS/YPTS/ZPTS 
-        data = np.array_split(data,nz)
-        data = np.array(data).T
-        data = np.array_split(data,ny)
-        data = np.array(data).T
+    data = np.array_split(data,nz)
+    data = np.array(data).T
+    data = np.array_split(data,ny)
+    data = np.array(data).T
 
     # Ensue proper numpy formatting
     data = np.atleast_1d(data)
@@ -225,6 +225,10 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
             absc /= 1e3
             # Remove nan values to ensure proper length of abscissa
             abscissas.append(absc[~np.isnan(absc)])
+    # If 1D-dataset, return array instead of single-element list
+    print(len(abscissas))
+    if len(abscissas)==1:
+        abscissas = abscissas[0]
 
     if plot:
         plt.plot(abscissa,np.real(data),abscissa,np.imag(data))
