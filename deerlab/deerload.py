@@ -225,7 +225,6 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
             # Remove nan values to ensure proper length of abscissa
             abscissas.append(absc[~np.isnan(absc)])
     # If 1D-dataset, return array instead of single-element list
-    print(len(abscissas))
     if len(abscissas)==1:
         abscissas = abscissas[0]
 
