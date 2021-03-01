@@ -167,12 +167,9 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
             abscissa[:Dimensions[index],index] = np.linspace(minimum,minimum+width,npts)
         if axistype == 'NTUP':
             raise ValueError('Cannot read data with NTUP axes.')
-    
-    # In case of column filled with NaN, erase the column in the array
-    abscissa = abscissa[:,~np.isnan(abscissa).all(axis=0)]
+
     dt_data = dt_spc
     dt_spc = dt_spc.newbyteorder(byteorder)
-
     # Read data matrix and separate complex case from real case.
     data = np.full((nx,ny,nz),np.nan)
     # reorganize the data in a "complex" way as the real part and the imaginary part are separated
@@ -198,7 +195,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
                 n_harmonics = sum(harmonics)[0]
                 if n_harmonics != 0:
                     ny = int(len(data)/nx/n_harmonics)
-            
+
             # copy the data to a writable numpy array
             data = np.copy(data.astype(dtype=dt_data).view(dtype=dt_new).reshape(nx,ny,nz))
         else:
@@ -208,14 +205,24 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
     
     if nz == 1:
         data = data.reshape(nx,ny)
-            
-     # ns -> us converesion
-    abscissa /= 1e3
+
 
     # Ensue proper numpy formatting
-    abscissa,data = np.atleast_1d(abscissa,data)
-    abscissa = np.squeeze(abscissa)
+    data = np.atleast_1d(data)
     data = np.squeeze(data)
+
+    # Abscissa formatting
+    abscissa = np.atleast_1d(abscissa)
+    abscissa = np.squeeze(abscissa)
+    abscissas = []
+    # Convert to list of abscissas 
+    for absc in abscissa.T: 
+        # Do not include abcissas full of NaNs
+        if not all(np.isnan(absc)):
+            # ns -> us converesion
+            absc /= 1e3
+            # Remove nan values to ensure proper length of abscissa
+            abscissas.append(absc[~np.isnan(absc)])
 
     if plot:
         plt.plot(abscissa,np.real(data),abscissa,np.imag(data))
@@ -225,9 +232,9 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
         plt.show()
     
     if full_output:
-        return abscissa, data, parameters
+        return abscissas, data, parameters
     else:
-        return abscissa, data
+        return abscissas, data
 
 
 def read_description_file(DSCFileName):
