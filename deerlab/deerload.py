@@ -186,7 +186,6 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
             data = np.copy(data)
         elif parDESC['IKKF'] == 'CPLX':
             dt_new = np.dtype('complex')
-            data = np.full((2*nx*ny*nz,1),np.nan)
             with open(filename_dta,'rb') as fp:
                 data = np.frombuffer(fp.read(),dtype=dt_spc)
                 # Check if there is multiple harmonics (High field ESR quadrature detection)
