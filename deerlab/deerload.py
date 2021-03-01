@@ -208,7 +208,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
         warn("Keyword IKKF not found in .DSC file! Assuming IKKF=REAL.")
     
     if nz == 1:
-        data = data.reshape(ny,nx)
+        data = data.reshape(nx,ny)
             
      # ns -> us converesion
     abscissa /= 1e3
