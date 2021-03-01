@@ -179,7 +179,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
         if parDESC['IKKF'] == 'REAL':
             data = np.full((nx,ny,nz),np.nan) 
             with open(filename_dta,'rb') as fp:
-                 data = np.frombuffer(fp.read(),dtype=dt_spc).reshape(nx,ny,nz)
+                 data = np.frombuffer(fp.read(),dtype=dt_spc)
             data = np.copy(data)
         elif parDESC['IKKF'] == 'CPLX':
             dt_new = np.dtype('complex')
@@ -198,17 +198,17 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
 
             # copy the data to a writable numpy array
             data = np.copy(data.astype(dtype=dt_data).view(dtype=dt_new))
-
-            # Split 1D-array according to XPTS/YPTS/ZPTS into 3D-array
-            data = np.array_split(data,nz)
-            data = np.array(data).T
-            data = np.array_split(data,ny)
-            data = np.array(data).T
         else:
             raise ValueError("Unknown value for keyword IKKF in .DSC file!")
     else:
         warn("Keyword IKKF not found in .DSC file! Assuming IKKF=REAL.")
     
+        # Split 1D-array according to XPTS/YPTS/ZPTS into 3D-array
+        data = np.array_split(data,nz)
+        data = np.array(data).T
+        data = np.array_split(data,ny)
+        data = np.array(data).T
+
     # Ensue proper numpy formatting
     data = np.atleast_1d(data)
     data = np.squeeze(data)
