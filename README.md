@@ -1,8 +1,8 @@
 # DeerLab
 
-![PyPI](https://img.shields.io/pypi/v/deerlab)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/deerlab)
-![Website](https://img.shields.io/website?down_message=offline&label=Documentation&up_message=online&url=https%3A%2F%2Fjeschkelab.github.io%2FDeerLab%2Findex.html)
+[![https://jeschkelab.github.io/DeerLab/](https://img.shields.io/pypi/v/deerlab)](https://pypi.org/project/DeerLab/)
+[![Website](https://img.shields.io/website?down_message=offline&label=Documentation&up_message=online&url=https%3A%2F%2Fjeschkelab.github.io%2FDeerLab%2Findex.html)](https://jeschkelab.github.io/DeerLab/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/deerlab)](https://www.python.org/downloads/)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/deerlab?color=brightgreen)
 
 ### About
