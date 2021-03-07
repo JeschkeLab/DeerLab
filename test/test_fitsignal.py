@@ -512,3 +512,21 @@ def test_V_scale_regularized():
 
     assert max(abs(1 - V/fit.V)) < 1e-4
 # ======================================================================
+
+def test_cost_value():
+# ======================================================================
+    "Check that starts values can be correctly specified"
+
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,150)
+    P = dd_gauss(r,[4.5, 0.25])
+
+    Bmodel = lambda t: bg_exp(t,0.4)
+    K = dipolarkernel(t,r,0.4,Bmodel)
+    V = K@P
+
+    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
+
+    assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
+# ======================================================================
+

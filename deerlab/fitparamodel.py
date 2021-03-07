@@ -203,7 +203,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
         sol = least_squares(lsqresiduals ,par0, bounds=(lb,ub), max_nfev=int(maxiter), ftol=tol, method='dogbox')
         sols.append(sol)
         parfits.append(sol.x)
-        fvals.append(sol.cost)        
+        fvals.append(2*sol.cost) # least_squares uses 0.5*sum(residual**2)          
 
     # Find global minimum from multiple runs
     globmin = np.argmin(fvals)
@@ -256,7 +256,7 @@ def fitparamodel(V, model, par0=[],lb=[],ub=[], weights = 1,
     if Nsignals==1: 
         stats = stats[0]
         scales = scales[0]
-
+        fvals = fvals[0]
     # Get plot function
     plotfcn = lambda: _plot(Vsubsets,V,Vfit)
 
