@@ -69,8 +69,10 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
     
     plot : callable
         Function to display the results. It will 
-        display the fitted signals. If requested, the function returns 
-        the ``matplotlib.axes`` object as output. 
+        display the fitted signals. The function returns the figure object 
+        (``matplotlib.figure.Figure``) object as output, which can be 
+        modified. Using ``fig = plot(show=False)`` will not render
+        the figure unless ``display(fig)`` is called. 
     
     stats :  dict
         Goodness of fit statistical estimators:

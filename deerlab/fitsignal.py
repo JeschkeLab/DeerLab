@@ -156,8 +156,10 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     plot : callable
         Function to display the results. It will 
         display the fitted signals and distance distributions with
-        confidence intervals. If requested, the function returns 
-        the `matplotlib.axes` object as output. 
+        confidence intervals. The function returns 
+        the figure object (``matplotlib.figure.Figure``) object as output, 
+        which can be modified. Using ``fig = plot(show=False)`` will not render
+        the figure unless ``display(fig)`` is called. 
     stats :  dict
         Goodness of fit statistical estimators:
 
