@@ -353,7 +353,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         sol = least_squares(ResidualsFcn, par0, bounds=(lb, ub), max_nfev=int(nonlin_maxiter), ftol=nonlin_tol)
         nonlinfits.append(sol.x)
         linfits.append(linfit)
-        fvals.append(sol.cost)
+        fvals.append(2*sol.cost) # least_squares uses 0.5*sum(residual**2)          
         sols.append(sol)
     # Find global minimum from multiple runs
     globmin = np.argmin(fvals)
@@ -418,6 +418,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         stats.append(goodness_of_fit(y[subset], yfit[subset], Ndof))
     if len(stats) == 1: 
         stats = stats[0]
+        fvals = fvals[0]
 
     # Display function
     plotfcn = lambda: _plot(subsets,y,yfit)
