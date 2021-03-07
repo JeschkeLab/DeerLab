@@ -519,7 +519,7 @@ def test_plot():
     P = dd_gauss(r,[4.5, 0.25])
 
     Bmodel = lambda t: bg_exp(t,0.4)
-    K = dipolarkernel(t,r,lam,Bmodel)
+    K = dipolarkernel(t,r,0.4,Bmodel)
     V = K@P
 
     fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,uqanalysis=False)

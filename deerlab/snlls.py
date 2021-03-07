@@ -465,7 +465,7 @@ def _augment(res, J, regtype, alpha, L, x, eta, Nnonlin):
 # ===========================================================================================
 
 
-def _plot(subsets,y,yfit,axs):
+def _plot(subsets,y,yfit,show):
 # ===========================================================================================
     nSignals = len(subsets)
     fig,axs = plt.subplots(nSignals+1,figsize=[7,3*nSignals])

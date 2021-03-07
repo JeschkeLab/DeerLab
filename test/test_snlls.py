@@ -370,7 +370,7 @@ def test_plot():
     # Linear parameters: non-negativity
     lbl = np.zeros(len(r))
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0=0.2,lb=0,ub=1,lbl=lbl, uqanalysis=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),par0=0.2,lb=0,ub=1,lbl=lbl, uqanalysis=False)
     fig = fit.plot(show=False)
     
     assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
