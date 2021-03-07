@@ -435,7 +435,9 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         scales = scales[0]
 
     # Results display function
-    plotfcn = lambda: _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method)
+    def plotfcn(show=False):
+        fig = _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,show)
+        return fig
 
     return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, Puncert=Puq, 
                     paramUncert=paramuq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
@@ -443,10 +445,10 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
 # =========================================================================
 
 
-def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
+def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,show):
 # =========================================================================
     nSignals = len(Vsubsets)
-    _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
+    fig,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
     for i in range(nSignals): 
         subset = Vsubsets[i]
         # Plot the experimental signal and fit
@@ -481,7 +483,10 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
     axs = np.append(axs,ax)
 
     plt.tight_layout()
-    plt.show()
-    return axs
+    if show:
+        plt.show()
+    else:
+        plt.close()
+    return fig
 # =========================================================================
 

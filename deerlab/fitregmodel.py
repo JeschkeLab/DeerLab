@@ -229,7 +229,9 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
 
     # Results display
     # ---------------------------------------
-    plotfcn = lambda: _plot(subsets,V,Vfit,r,Pfit,Puq)
+    def plotfcn(show=False):
+        fig = _plot(subsets,V,Vfit,r,Pfit,Puq,show)
+        return fig 
 
     return FitResult(P=Pfit, V=Vfit, uncertainty=Puq, regparam=alpha, scale=scales, stats=stats, 
                      plot=plotfcn, cost=fval, residuals=res, success=success)
@@ -372,10 +374,10 @@ def _obir(V,K,L, regtype, alpha, weights, noiselevelaim=-1, huberparam=1.35 , so
     return Pfit
 # ===========================================================================================
 
-def _plot(subsets,Vexp,Vfit,r,Pfit,Puq):
+def _plot(subsets,Vexp,Vfit,r,Pfit,Puq,show=False):
 # ===========================================================================================
     nSignals = len(subsets)
-    _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
+    fig,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
     for i in range(nSignals): 
         subset = subsets[i]
         # Plot the experimental signal and fit
@@ -398,8 +400,11 @@ def _plot(subsets,Vexp,Vfit,r,Pfit,Puq):
     axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
     axs[nSignals].grid(alpha=0.3)
     plt.tight_layout()
-    plt.show()
-    return axs
+    if show:
+        plt.show()
+    else:
+        plt.close()
+    return fig
 # ===========================================================================================
 
 

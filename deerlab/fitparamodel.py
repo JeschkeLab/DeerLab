@@ -257,15 +257,17 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
         scales = scales[0]
 
     # Get plot function
-    plotfcn = lambda: _plot(Vsubsets,V,Vfit)
+    def plotfcn(show=False):
+        fig = _plot(Vsubsets,V,Vfit,show)
+        return fig
 
     return FitResult(
             param=parfit, uncertainty=paruq, scale=scales, stats=stats, cost=fvals,
             plot=plotfcn, residuals=sol.fun, success=sol.success)
 
-def _plot(Vsubsets,V,Vfit):
+def _plot(Vsubsets,V,Vfit,show):
     nSignals = len(Vsubsets)
-    _,axs = plt.subplots(nSignals,figsize=[7,3*nSignals])
+    fig,axs = plt.subplots(nSignals,figsize=[7,3*nSignals])
     axs = np.atleast_1d(axs)
     for i in range(nSignals): 
         subset = Vsubsets[i]
@@ -278,5 +280,8 @@ def _plot(Vsubsets,V,Vfit):
         axs[i].legend(('Data','Fit'))
 
     plt.tight_layout()
-    plt.show()
-    return axs
+    if show:
+        plt.show()
+    else:
+        plt.close()
+    return fig

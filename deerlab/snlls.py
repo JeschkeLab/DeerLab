@@ -420,7 +420,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         stats = stats[0]
 
     # Display function
-    plotfcn = lambda: _plot(subsets,y,yfit)
+    def plotfcn(show=False):
+        fig = _plot(subsets,y,yfit,show)
+        return fig
 
     return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq, regparam=alpha, plot=plotfcn,
                      stats=stats, cost=fvals, residuals=sol.fun, success=sol.success)
@@ -463,10 +465,10 @@ def _augment(res, J, regtype, alpha, L, x, eta, Nnonlin):
 # ===========================================================================================
 
 
-def _plot(subsets,y,yfit):
+def _plot(subsets,y,yfit,axs):
 # ===========================================================================================
     nSignals = len(subsets)
-    _,axs = plt.subplots(nSignals+1,figsize=[7,3*nSignals])
+    fig,axs = plt.subplots(nSignals+1,figsize=[7,3*nSignals])
     for i in range(nSignals): 
         subset = subsets[i]
         # Plot the experimental signal and fit
@@ -477,7 +479,10 @@ def _plot(subsets,y,yfit):
         axs[i].set_ylabel('Data #{}'.format(i))
         axs[i].legend(('Data','Fit'))
     plt.tight_layout()
-    plt.show()
-    return axs
+    if show:
+        plt.show()
+    else:
+        plt.close()
+    return fig
 # ===========================================================================================
 

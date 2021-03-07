@@ -546,9 +546,9 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         modfituq['Bfit'] = UncertQuant('void')
 
     Vfit_ = Vfit
-    def _display_results():
+    def _display_results(show=True):
     # =========================================================================
-        _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
+        fig,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
         for i in range(nSignals):
             # Plot the signal
             axs[i].plot(t[i],Vexp[i],'.',color='grey',alpha=0.5)
@@ -577,8 +577,11 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
         axs[nSignals].grid(alpha=0.3)
         plt.tight_layout()
-        plt.show()
-        return axs
+        if show:
+            plt.show()
+        else:
+            plt.close()
+        return fig
     # =========================================================================
 
 

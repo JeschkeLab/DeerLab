@@ -353,3 +353,25 @@ def test_reg_huber():
 
     assert_reg_type(regtype='huber')
 #=======================================================================
+
+def test_plot():
+# ======================================================================
+    "Check that the plot method works"
+
+    # Prepare test data
+    r = np.linspace(1,8,80)
+    t = np.linspace(0,4,200)
+    lam = 0.25
+    K = dipolarkernel(t,r,lam)
+    parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
+    P = dd_gauss2(r,parin)
+    V = K@P
+
+    # Linear parameters: non-negativity
+    lbl = np.zeros(len(r))
+    # Separable LSQ fit
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0=0.2,lb=0,ub=1,lbl=lbl, uqanalysis=False)
+    fig = fit.plot(show=False)
+    
+    assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
+# ======================================================================

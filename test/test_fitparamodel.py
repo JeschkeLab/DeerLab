@@ -225,3 +225,24 @@ def test_globalfit_scales():
 
     assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
 #============================================================
+
+def test_plot():
+# ======================================================================
+    "Check that the plot method works"
+
+    t = np.linspace(0,3,300)
+    r = np.linspace(2,5,200)
+    par = np.array([3,0.2])
+    P = dd_gauss(r,par)
+
+    K = dipolarkernel(t,r)
+    V = K@P
+
+    par0 = [5, 0.5]
+    lb = [1, 0.1]
+    ub = [20, 1]
+    model = lambda p: K@dd_gauss(r,p)
+    fit = fitparamodel(V,model,par0,lb,ub)
+    fig = fit.plot(show=False)
+    assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
+# ======================================================================
