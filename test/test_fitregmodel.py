@@ -390,3 +390,18 @@ def test_globalfit_scales():
 
     assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
 #============================================================
+
+def test_cost_value():
+#============================================================
+    "Check that the cost value is properly returned"
+
+    np.random.seed(1)
+    t = np.linspace(-2,4,300)
+    r = np.linspace(2,6,100)
+    P = dd_gauss(r,[3,0.2])
+    K = dipolarkernel(t,r)
+    V = K@P + whitegaussnoise(t,0.01)
+    fit = fitregmodel(V,K,r)
+
+    assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
+#============================================================
