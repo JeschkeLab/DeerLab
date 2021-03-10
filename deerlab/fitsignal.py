@@ -576,6 +576,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         modfituq['Vunmod'] = UncertQuant('void')
 
     Vfit_ = Vfit.copy()
+    Vunmod_ = Vunmod.copy()
     def _display_results():
     # =========================================================================
         _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
@@ -584,7 +585,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             axs[i].plot(t[i],scales[i]*Vexp[i],'.',color='grey',alpha=0.5)
             axs[i].plot(t[i],Vfit_[i],'tab:blue')
             if includeBackground[i]:
-                axs[i].plot(t[i],Vunmod[i],'--',color='tab:orange')
+                axs[i].plot(t[i],Vunmod_[i],'--',color='tab:orange')
             if uqanalysis:
                 # Get confidence intervals for the signal
                 Vci95 = Vfit_uq[i].ci(95)
@@ -669,7 +670,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     # Return numeric arrays and not lists if there is only one signal
     if nSignals==1:
-        Vfit,Bfit,Vunmodfit = (var[0] if type(var) is list else var for var in [Vfit,Bfit,Vunmod])
+        Vfit,Bfit,Vunmod = (var[0] if type(var) is list else var for var in [Vfit,Bfit,Vunmod])
         for subset in ('ex','bg'):
             parfit[subset] = parfit[subset][0]
             if uqanalysis:
@@ -681,7 +682,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             stats = stats[0]
 
 
-    return FitResult(V=Vfit, P=Pfit, B=Bfit, Vunmod=Vunmodfit, exparam=parfit['ex'], bgparam=parfit['bg'],
+    return FitResult(V=Vfit, P=Pfit, B=Bfit, Vunmod=Vunmod, exparam=parfit['ex'], bgparam=parfit['bg'],
                       ddparam=parfit['dd'], Vuncert = modfituq['Vfit'], Puncert = modfituq['Pfit'], VunmodUncert=modfituq['Vunmod'],
                       Buncert = modfituq['Bfit'], exparamUncert = paruq['ex'], bgparamUncert = paruq['bg'],
                       ddparamUncert = paruq['dd'], regparam = alphaopt, plot=_display_results, scale=scales,  stats=stats, cost=fit.cost,
