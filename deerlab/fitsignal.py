@@ -669,7 +669,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     # Return numeric arrays and not lists if there is only one signal
     if nSignals==1:
-        Vfit,Bfit,Vunmod = (var[0] if type(var) is list else var for var in [Vfit,Bfit,Vunmod])
+        Vfit,Bfit,Vunmodfit = (var[0] if type(var) is list else var for var in [Vfit,Bfit,Vunmod])
         for subset in ('ex','bg'):
             parfit[subset] = parfit[subset][0]
             if uqanalysis:
@@ -681,7 +681,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             stats = stats[0]
 
 
-    return FitResult(V=Vfit, P=Pfit, B=Bfit, Vunmod=Vunmod, exparam=parfit['ex'], bgparam=parfit['bg'],
+    return FitResult(V=Vfit, P=Pfit, B=Bfit, Vunmod=Vunmodfit, exparam=parfit['ex'], bgparam=parfit['bg'],
                       ddparam=parfit['dd'], Vuncert = modfituq['Vfit'], Puncert = modfituq['Pfit'], VunmodUncert=modfituq['Vunmod'],
                       Buncert = modfituq['Bfit'], exparamUncert = paruq['ex'], bgparamUncert = paruq['bg'],
                       ddparamUncert = paruq['dd'], regparam = alphaopt, plot=_display_results, scale=scales,  stats=stats, cost=fit.cost,
