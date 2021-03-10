@@ -546,7 +546,7 @@ def test_phenomenological_bg_model():
 # ======================================================================
 
 
-def test_bckg_scaling():
+def test_Vunmod():
 # ======================================================================
     "Check that the background scaling is correct if requested"
 
@@ -558,7 +558,7 @@ def test_bckg_scaling():
     Bscaled = (1-lam)*dl.bg_hom3d(t,50,lam)
     V = K@P
 
-    fit = dl.fitsignal(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer,scaledbckg=True,uqanalysis=False)
+    fit = dl.fitsignal(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer,uqanalysis=False)
 
-    assert max(abs(Bscaled - fit.B))<1e-4
+    assert max(abs(Bscaled - fit.Vunmod))<1e-4
 # ======================================================================
