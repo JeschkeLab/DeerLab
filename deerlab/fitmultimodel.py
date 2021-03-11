@@ -334,13 +334,13 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         spreads_new = np.zeros((Ncomp))
         
         # Strategy #1: Merge N+1 components into N components
-        if strategy is 'merge':
+        if strategy=='merge':
             for n in range(Ncomp):
                 locations_new[n] = (locations_old[n] + locations_old[n+1])/2
                 spreads_new[n] = (spreads_old[n] + spreads_old[n+1])/2
 
         # Strategy #2: Split N-1 components into N components
-        elif strategy is 'split':
+        elif strategy=='split':
             locations_new[0] = locations_old[0] - spreads_old[0]
             spreads_new[0] = spreads_old[0]/2
             for n in range(1,Ncomp-1,1):
@@ -350,7 +350,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
             spreads_new[-1] = spreads_old[-1]/2
 
         # Strategy #3: Spread N components equidistantly within box boundaries
-        elif strategy is 'spread': 
+        elif strategy=='spread': 
             locations_new = np.squeeze(np.linspace(lb[areLocations],ub[areLocations],Ncomp+2)[1:-1])
             spreads_new = np.squeeze(np.linspace(lb[areSpreads],ub[areSpreads],Ncomp+2)[1:-1])
 
@@ -375,10 +375,10 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     logest = []
     par_prev = None
 
-    if strategy is 'spread' or strategy is 'split':
+    if strategy=='spread' or strategy=='split':
         # Start with single components, add sequentially (forward)
         Ncomponents = np.arange(1,maxModels+1)
-    elif strategy is 'merge':
+    elif strategy=='merge':
         # Start with maximum components, remove sequentially (backward)
         Ncomponents = np.arange(maxModels,0,-1)
 

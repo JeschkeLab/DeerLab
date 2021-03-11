@@ -39,7 +39,7 @@ def goodness_of_fit(x,xfit,Ndof,sigma='auto'):
             stats['bic'] - Bayesian information criterion
 
     """
-    if sigma is 'auto':
+    if sigma=='auto':
         sigma = np.std(x - xfit)
         
     # Get number of xariables
