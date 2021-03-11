@@ -5,6 +5,7 @@ from deerlab import dipolarkernel, whitegaussnoise, fitsignal
 from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp, bg_hom3d
 from deerlab.ex_models import ex_4pdeer, ex_5pdeer, ex_7pdeer, ex_ovl4pdeer
+import deerlab as dl
 from deerlab.utils import ovl
 
 
@@ -54,6 +55,27 @@ def test_ovl4pdeer():
     "Check that the fit of a 4-pulse DEER signal is correct"
         
     assert_experiment_model(ex_ovl4pdeer)
+# ======================================================================
+
+def test_ridme1():
+# ======================================================================
+    "Check that the fit of a S=1/2 RIDME signal is correct"
+        
+    assert_experiment_model(dl.ex_ridme1)
+# ======================================================================
+
+def test_ridme3():
+# ======================================================================
+    "Check that the fit of a S=3/2 RIDME signal is correct"
+        
+    assert_experiment_model(dl.ex_ridme3)
+# ======================================================================
+
+def test_ridme5():
+# ======================================================================
+    "Check that the fit of a S=5/2 RIDME signal is correct"
+        
+    assert_experiment_model(dl.ex_ridme5)
 # ======================================================================
 
 def test_dipevo_function():
@@ -126,8 +148,7 @@ def test_start_values():
     K = dipolarkernel(t,r,lam,Bmodel)
     V = K@P
 
-    par0 = [[],0.5,0.5]
-    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,par0,uqanalysis=False)
+    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,bg_par0=0.5,ex_par0=0.5,uqanalysis=False)
 
     assert ovl(P,fit.P) > 0.95
 # ======================================================================
@@ -145,14 +166,12 @@ def test_boundaries():
     K = dipolarkernel(t,r,lam,Bmodel)
     V = K@P 
 
-    par0 = [[],0.4,0.4]
-    lb = [[],0.2,0.2]
-    ub = [[],0.5,0.5]
-    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,par0,lb,ub,uqanalysis=False)
+    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer, uqanalysis=False,
+                    bg_par0=0.4, bg_lb=0.2, bg_ub=0.5,
+                    ex_par0=0.4, ex_lb=0.2, ex_ub=0.5)
 
     assert ovl(P,fit.P) > 0.95
 # ======================================================================
-
 
 def test_global_4pdeer():
 # ======================================================================

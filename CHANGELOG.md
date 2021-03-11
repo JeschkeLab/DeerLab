@@ -51,7 +51,7 @@ Release v0.12.0 - October 2020
 
 * The regularization operator matrices ``regoperator`` now include the edges of the distribution ([#38](https://github.com/JeschkeLab/DeerLab/pull/38)). Now the smoothness penalty is imposed on the distribution edges avoiding the accumulation of distribution mass at the edges of ``r``. 
 
-* The interface for defining dipolar pathways has been simplified ([#41](https://github.com/JeschkeLab/DeerLab/pull/41)). For example, a signal with two dipolar pathways had to be defined as ``pathways = [[Lam0,np.nan], [lam1,T0]]``. Now the unmodulated pathway can just be defined by its amplitude and does not require the use of ``np.nan``, e.g. ``pathways = [Lam0, [lam1,T0]]``.
+* The interface for defining dipolar pathways has been simplified ([#41](https://github.com/JeschkeLab/DeerLab/pull/41)). For example, a signal with two dipolar pathways had to be defined as ``pathways = [[Lam0,np.nan], [lam1,T0]]``. Now the unmodulated pathway must be defined by its amplitude and does not accept the use of ``np.nan``, e.g. ``pathways = [Lam0, [lam1,T0]]``.
 
 * The project version control has been switched from the Git-flow to the GitHub-flow design. The default branch has been switched from ``master`` to ``main``, which is now always production-ready. All new contributions are merged into ``main`` exclusively by pull requests.
 

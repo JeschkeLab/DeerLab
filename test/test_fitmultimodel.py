@@ -353,7 +353,7 @@ def test_multirice_merge():
 def test_cost_value():
 #=======================================================================
     "Check that the fit of a multi-Gauss model works"
-
+        
     r = np.linspace(2,6,300)
     t = np.linspace(-0.5,6,500)
     K = dipolarkernel(t,r)
