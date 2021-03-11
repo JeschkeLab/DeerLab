@@ -138,6 +138,10 @@ Model function                               Description
 :ref:`ex_ovl4pdeer`               4-pulse DEER (including 2+1 pathway) 
 :ref:`ex_5pdeer`                  5-pulse DEER
 :ref:`ex_7pdeer`                  7-pulse DEER
+:ref:`ex_ridme1`                  RIDME with one harmonic pathway (spin S=1/2)
+:ref:`ex_ridme3`                  RIDME with three harmonic pathways (spin S=3/2)
+:ref:`ex_ridme5`                  RIDME with five harmonic pathways (spin S=5/2)
+:ref:`ex_ridme7`                  RIDME with seven harmonic pathways (spin S=7/2)
 ============================== =============================================================================
 
 

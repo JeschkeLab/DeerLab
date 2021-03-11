@@ -37,13 +37,11 @@ def fitroutine(V):
     ex_lb   = [ 0,   0,   0,  max(t)/2-1] # lower bounds
     ex_ub   = [10,  10,  10,  max(t)/2+1] # upper bounds
     ex_par0 = [0.5, 0.5, 0.5, max(t)/2  ] # start values
-    ub = [[],[],ex_ub]
-    lb = [[],[],ex_lb]
-    par0 = [[],[],ex_par0]
+
     # When running the fit, since we are only interested in the parameters we'll ignore
     # the rest (otherwise the ``Bfit``,``Pfit``,etc. could be bootstrapped as well) 
     # We need the Vfit to pass it to bootan as well, so we'll request that one too.
-    fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer,par0,lb,ub,uqanalysis=False)
+    fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer,ex_par0=ex_par0,ex_lb=ex_lb,ex_ub=ex_ub,uqanalysis=False)
     Vfit = fit.V
     exparam = fit.exparam
     exparam[0:3] /=sum(exparam[0:3])

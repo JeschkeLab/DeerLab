@@ -33,6 +33,7 @@ jobs:
            python -m pip install numpydoc
            python -m pip install sphinx-gallery
            python -m pip install sphinxcontrib-httpdomain
+           python -m pip install sphinxcontrib-ghcontributors
            python -m pip install m2r2
            python -m pip install sphinx==1.8.4
            sudo apt install texlive-extra-utils
