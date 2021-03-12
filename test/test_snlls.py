@@ -366,7 +366,6 @@ def test_plot():
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P
-
     # Linear parameters: non-negativity
     lbl = np.zeros(len(r))
     # Separable LSQ fit
@@ -375,3 +374,28 @@ def test_plot():
     
     assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
 # ======================================================================
+
+def test_cost_value():
+#============================================================
+    "Check that the cost value is properly returned"
+
+    # Prepare test data
+    r = np.linspace(1,8,80)
+    t = np.linspace(0,4,200)
+    lam = 0.25
+    K = dipolarkernel(t,r,lam)
+    parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
+    P = dd_gauss2(r,parin)
+    V = K@P
+    # Non-linear parameters
+    nlpar0 = 0.2
+    lb = 0
+    ub = 1
+    # Linear parameters: non-negativity
+    lbl = np.zeros(len(r))
+    ubl = np.full(len(r), np.inf)
+    # Separable LSQ fit
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl)
+
+    assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
+#============================================================
