@@ -128,12 +128,12 @@ def test_no_foreground():
 
     t = np.linspace(0,5,500)
     r = np.linspace(2,6,200)
-    conc = 50
-    B = bg_hom3d(t,conc)
+    k = 0.2
+    B = bg_exp(t,k)
 
-    fit = fitsignal(B,t,r,None,bg_hom3d,ex_4pdeer,uqanalysis=False)
+    fit = fitsignal(B,t,r,None,bg_exp,None,uqanalysis=False)
 
-    assert max(abs(B - fit.B)) < 1e-2 and abs(conc-fit.bgparam*fit.exparam) < 1
+    assert abs(k-fit.bgparam) < 1
 # ======================================================================
 
 def test_start_values():
@@ -173,6 +173,61 @@ def test_boundaries():
 
     assert ovl(P,fit.P) > 0.95
 # ======================================================================
+
+def test_boundaries_adjust_bg():
+# ======================================================================
+    "Check that start values are adjusted when defining bounds leaving default par0 out"
+
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,150)
+    P = dd_gauss(r,[4.5, 0.25])
+
+    lam,conc = 0.4,80
+    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
+    K = dipolarkernel(t,r,lam,Bmodel)
+    V = K@P 
+
+    fit = fitsignal(V,t,r,'P',bg_hom3d,ex_4pdeer, uqanalysis=False, bg_lb=70, bg_ub=90)
+
+    assert ovl(P,fit.P) > 0.95
+# ======================================================================
+
+def test_boundaries_adjust_ex():
+# ======================================================================
+    "Check that start values are adjusted when defining bounds leaving default par0 out"
+
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,150)
+    P = dd_gauss(r,[4.5, 0.25])
+
+    lam,conc = 0.6,80
+    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
+    K = dipolarkernel(t,r,lam,Bmodel)
+    V = K@P 
+
+    fit = fitsignal(V,t,r,'P',bg_hom3d,ex_4pdeer, uqanalysis=False, ex_lb=0.55, ex_ub=0.65)
+
+    assert ovl(P,fit.P) > 0.95
+# ======================================================================
+
+def test_boundaries_adjust_dd():
+# ======================================================================
+    "Check that start values are adjusted when defining bounds leaving default par0 out"
+
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,150)
+    P = dd_gauss(r,[4.5, 0.35])
+
+    lam,conc = 0.4,80
+    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
+    K = dipolarkernel(t,r,lam,Bmodel)
+    V = K@P 
+
+    fit = fitsignal(V,t,r,dd_gauss,bg_hom3d,ex_4pdeer, uqanalysis=False, dd_lb=[4,0.3],dd_ub=[6,0.5])
+
+    assert ovl(P,fit.P) > 0.95
+# ======================================================================
+
 
 def test_global_4pdeer():
 # ======================================================================
