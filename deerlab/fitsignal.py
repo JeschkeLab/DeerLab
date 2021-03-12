@@ -81,6 +81,14 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         If a model does not require parameters or are to be determined automatically it can be omitted or specified 
         as ``None`` (default).
     
+    uq : string or list, optional
+        Type of uncertainty quantification analysis. Any ``UncertQuant`` output returned by this function will
+        be adjusted accordingly. The options are:
+
+        * ``'covariance'`` - Covariance-based uncertainty quantification. Fast, but approximate.   
+        * ``'bootstrap'`` - Bootstrapped uncertainty quantification. Slow, but accurate. By default, 1000 bootstrap
+        samples are used. Alternatively, a different number can be specified as follows ``uq=['bootstrap',Nsamples]``.
+
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting,
         the default is all weighted equally.
@@ -243,6 +251,9 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     bootsamples = 1000
     if isinstance(uq, str):
         uq = [uq]
+    if uq[0]!='bootstrap' and uq[0]!='covariance':
+        raise KeyError("Uncertainty quantification must be either 'covariance' or 'bootstrap'.")
+        
     if uq[0]=='bootstrap':
         # OVerride default if user has specified bootstraped samples
         if len(uq)>1: bootsamples = uq[1]

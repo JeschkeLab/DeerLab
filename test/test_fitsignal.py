@@ -332,6 +332,7 @@ def assert_confidence_intervals(pci50,pci95,pfit,lb,ub):
     assert not errors, "Errors occured:\n{}".format("\n".join(errors))
 #----------------------------------------------------------------------
 
+#----------------------------------------------------------------------
 exmodel = ex_4pdeer
 ddmodel = dd_gauss
 bgmodel = bg_exp
@@ -351,6 +352,7 @@ np.random.seed(0)
 V = dipolarkernel(t,r,pathways,Bmodel)@P + whitegaussnoise(t,0.01)
 
 fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
+#----------------------------------------------------------------------
 
 def assert_confinter_param(subset):
 #----------------------------------------------------------------------
