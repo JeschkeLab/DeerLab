@@ -14,7 +14,7 @@ from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit, Jacobian
 
 def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
-              dd_par0=None, bg_par0=None, ex_par0=None, verbose= False,
+              dd_par0=None, bg_par0=None, ex_par0=None, verbose=False, 
               dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
               weights=1, uqanalysis=True, uq='covariance', regparam='aic', regtype = 'tikhonov'):
     r"""
@@ -113,7 +113,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * ``'tv'``  - Total variation regularization
         * ``'huber'`` - Huber regularization
         The default is ``'tikhonov'``.  
-    
+
     verbose : boolean, optional
         Enable/disable printing a table of fit results, by default is disabled
     
@@ -131,6 +131,10 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Fitted distance distribution.
     B : ndarray or list thereof
         Fitted background decay(s).
+    Vmod : ndarray or list thereof
+        Fitted modulated contribution (foreground and background).
+    Vunmod : ndarray or list thereof
+        Fitted unmodulated contribution (foreground and background). 
     ddparam : ndarray
         Fitted parameters for distance distribution model.
     bgparam : ndarray or list thereof
@@ -143,6 +147,10 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Uncertainty quanfitication for fitted distance distribution.
     Buncert : :ref:`UncertQuant` or list thereof
         Uncertainty quanfitication for fitted background(s).
+    VmodUncert : ndarray or list thereof
+        Uncertainty quanfitication for fitted modulated contribution(s). 
+    VunmodUncert : ndarray or list thereof
+        Uncertainty quanfitication for fitted unmodulated contribution(s). 
     ddparamUncert : :ref:`UncertQuant` 
         Uncertainty quanfitication for distribution parameters
     bgparamUncert : :ref:`UncertQuant` or list thereof
@@ -156,8 +164,10 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     plot : callable
         Function to display the results. It will 
         display the fitted signals and distance distributions with
-        confidence intervals. If requested, the function returns 
-        the `matplotlib.axes` object as output. 
+        confidence intervals. The function returns 
+        the figure object (``matplotlib.figure.Figure``) object as output, 
+        which can be modified. Using ``fig = plot(show=False)`` will not render
+        the figure unless ``display(fig)`` is called. 
     stats :  dict
         Goodness of fit statistical estimators:
 
@@ -189,7 +199,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     
     Fit a 4pDEER stretched exponential background (no foreground)::
     
-        fit = dl.fitsignal(V,t,r,None,dl.bg_strexp,dl.ex_4pdeer)  
+        fit = dl.fitsignal(V,t,r,None,dl.bg_strexp,None)  
     
     
     Fit a dipolar evolution function with Rician distribution::
@@ -213,6 +223,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     # Make inputs into a list if just a singal is passed
     Vexp,t,bg_model,ex_model = ([var] if type(var) is not list else var for var in (Vexp,t,bg_model,ex_model))
 
+    # Basic validation of experimental signals
     nSignals = len(Vexp)
     if len(t)!=nSignals:
         raise KeyError('The same number of signals V and time axes t must be provided.')
@@ -222,63 +233,61 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         if not np.all(np.isreal(Vexp[i])):
             raise ValueError('Input signals cannot be complex-valued')
     
+    # If just one model is specified, assume same model for all signals
     if len(bg_model)!=nSignals:
-        bg_model = bg_model*nSignals
-    
+        bg_model = bg_model*nSignals    
     if len(ex_model)!=nSignals:
         ex_model = ex_model*nSignals
 
+    # Combine input boundary and start conditions
     par0 = [[] if par0_i is None else par0_i for par0_i in [dd_par0,bg_par0,ex_par0]]
     lb = [[] if lb_i is None else lb_i for lb_i in [dd_lb,bg_lb,ex_lb]]
     ub = [[] if ub_i is None else ub_i for ub_i in [dd_ub,bg_ub,ex_ub]]
-    if type(par0) is not list or len(par0)!=3:
-        raise TypeError('Initial parameters (7th input) must be a 3-element cell array.')
      
     # Get information about distance distribution parameters
     # ------------------------------------------------------
-    parametricDistribution  = type(dd_model) is types.FunctionType
-    parfreeDistribution = dd_model == 'P'
-    includeForeground = np.array(dd_model is not None)
+    parametricDistribution  = type(dd_model) is types.FunctionType # Check if P(r) is parametric model
+    parfreeDistribution = dd_model == 'P' # Check if P(r) is non-parametric model
+    includeForeground = np.array(dd_model is not None) # Check if there is a foreground or just background in the model
 
-    par0_dd, lower_dd, upper_dd, N_dd = _getmodelparams(dd_model)
+    par0_dd, lower_dd, upper_dd, N_dd = _getmodelparams(dd_model) # Get model built-in info
 
+    # Catch nonsensical case
     if includeForeground and not parametricDistribution and not parfreeDistribution:
         raise TypeError('Distribution model (4th input) must either be a function handle, ''P'', or None.')
 
     # Get information about background parameters
     # ------------------------------------------------------
-    isparamodel = np.array([type(model) is types.FunctionType for model in bg_model])
-    includeBackground = np.array([model is not None for model in bg_model])
+    isparamodel = np.array([type(model) is types.FunctionType for model in bg_model]) # Check if B(t) is a parametric model
+    includeBackground = np.array([model is not None for model in bg_model]) # Check if model includes B(t) or not
 
-    par0_bg, lower_bg, upper_bg, N_bg = _getmodelparams(bg_model)
+    par0_bg, lower_bg, upper_bg, N_bg = _getmodelparams(bg_model) # Get model built-in info
 
+    # Check whether the background model is a physical or phenomenological model
     isphenomenological = [_iserror(model,t,par0,1) for model,par0 in zip(bg_model,par0_bg)]
 
-
+    # Catch nonsensical case
     if np.any(~isparamodel & includeBackground):
         raise TypeError('Background model (5th input) must either be a function handle, or None.')
     
     # Get information about experiment parameters
     # ------------------------------------------------------
-    isparamodel = np.array([type(model) is types.FunctionType for model in ex_model])
-    includeExperiment = np.array([model is not None for model in ex_model])
+    isparamodel = np.array([type(model) is types.FunctionType for model in ex_model]) # Check if experiment is a parametric model
+    includeExperiment = np.array([model is not None for model in ex_model]) # Check whether to include experiment in the model
 
-    par0_ex, lower_ex, upper_ex, N_ex = _getmodelparams(ex_model)
+    par0_ex, lower_ex, upper_ex, N_ex = _getmodelparams(ex_model) # Get model built-in info
 
+    # Catch nonsensical situations
     if np.any(~isparamodel & includeExperiment):
         raise TypeError('Experiment models must either be a function handle, or None.')
-
-    # Catch nonsensical situation
-    if np.any(~includeForeground & ~includeExperiment):
-        raise KeyError('Cannot fit anything without distribution model and without background model.')
 
     # Prepare full-parameter set
     # -------------------------------------------------------
     # Combine all initial, lower and upper bounds of parameters into vectors
-    par0 = _parcombine(par0,[par0_dd,par0_bg,par0_ex])
-    lb = _parcombine(lb,[lower_dd,lower_bg,lower_ex])
-    ub = _parcombine(ub,[upper_dd,upper_bg,upper_ex])
-    _checkbounds(lb,ub,par0)
+    par0,par0_defined = _parcombine(par0,[par0_dd,par0_bg,par0_ex])
+    lb,_ = _parcombine(lb,[lower_dd,lower_bg,lower_ex])
+    ub,_ = _parcombine(ub,[upper_dd,upper_bg,upper_ex])
+    lb,ub,par0 = _checkbounds(lb,ub,par0,par0_defined)
 
     # Build index vectors for accessing parameter subsets
     ddidx = np.arange(N_dd[0])
@@ -322,8 +331,8 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             # Compute the multipathway-background
             B_ = dl.dipolarbackground(t[iSignal],pathways,Bfcn)
             # Compute the multipathway-kernel
-            K_ = dl.dipolarkernel(t[iSignal],r,pathways)
-            Ks.append(K_*B_[:,np.newaxis])
+            K_ = dl.dipolarkernel(t[iSignal],r,pathways,Bfcn)
+            Ks.append(K_)
             Bs.append(B_)
             
         return Ks, Bs     
@@ -339,7 +348,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         components of the model. 
         """
         # Pre-allocation
-        paruq_bg,paruq_ex,Bfit_uq,Vfit_uq = ([],[],[],[])
+        paruq_bg,paruq_ex,Bfit_uq,Vmod_uq,Vunmod_uq,Vfit_uq = ([],[],[],[],[],[])
         
         # Retrieve full covariance matrix
         covmat = full_uq.covmat
@@ -397,9 +406,20 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # -----------------------
         for jj in range(nSignals):
             if includeExperiment[jj]:
-                Bfit_uq.append( paruq.propagate(lambda par:multiPathwayModel(par)[1][jj]))
+                Bfit_uq.append( paruq.propagate(lambda par:scales[jj]*multiPathwayModel(par)[1][jj]) )
             else:
                 Bfit_uq.append([None])
+        
+        # Unmodulated contribution uncertainty
+        # -----------------------------
+        for jj in range(nSignals):
+            if includeExperiment[jj]:
+                Lam0fcn = lambda par: ex_model[jj](par)[0]
+                Bfcn = lambda par: scales[jj]*multiPathwayModel(par)[1][jj]
+                Vunmod_fcn = lambda par: Lam0fcn(par[exidx[jj]])*Bfcn(par)
+                Vunmod_uq.append( paruq.propagate(lambda par:Vunmod_fcn(par)) )
+            else:
+                Vunmod_uq.append([None])
         
         # Dipolar signal uncertainty
         # --------------------------
@@ -409,20 +429,65 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 Vmodel = lambda par: scales[jj]*multiPathwayModel(par)[0][jj]@Pfcn(par[ddidx])
                 Vfit_uq.append( paruq.propagate(Vmodel))
             elif includeForeground and np.all(~includeExperiment & ~includeBackground):
+                Vmodel = lambda _: Kfit[jj]@Pfit
                 # Dipola evolution function
-                J = Ks[jj]
+                J = Kfit[jj]
                 Vcovmat = J@covmat@J.T
-                Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat,[],[]))
+                Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat))
             elif includeForeground:
                 # Parametric signal with parameter-free distribution
-                Jnonlin = Jacobian(lambda par: multiPathwayModel(par[paramidx])[0][jj]@Pfit,parfit_,lb[paramidx],ub[paramidx])
-                J = np.concatenate((Jnonlin, Kfit[jj]),1)
+                Vmodel = lambda par: scales[jj]*multiPathwayModel(par[paramidx])[0][jj]@Pfit
+                Jnonlin = Jacobian(Vmodel,parfit_,lb[paramidx],ub[paramidx])
+                J = np.concatenate((Jnonlin, scales[jj]*Kfit[jj]),1)
                 Vcovmat = J@covmat@J.T
-                Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat,[],[]))
+                Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat))
             else:
                 Vfit_uq.append([None])
 
-        return Vfit_uq,Pfit_uq,Bfit_uq,paruq_bg,paruq_ex,paruq_dd   
+        # Modulated contribution uncertainty
+        # -----------------------------
+        for jj in range(nSignals):
+            if includeForeground:
+                Vmod_fcn = lambda par: Vmodel(par) - Vunmod_fcn(par)
+                Vunmod_uq.append( paruq.propagate(lambda par:Vmod_fcn(par)) )
+                Jnonlin = Jacobian(Vmod_fcn,parfit_,lb[paramidx],ub[paramidx])
+                if parametricDistribution:
+                    J = Jnonlin
+                else:
+                    J = np.concatenate((Jnonlin, scales[jj]*Kfit[jj]),1)
+                Vmod_covmat = J@covmat@J.T
+                Vmod_uq.append( UncertQuant('covariance',Vmod_fcn(parfit_),Vmod_covmat))
+            else: 
+                Vmod_uq.append([None]) 
+
+        return Vfit_uq,Pfit_uq,Bfit_uq,Vmod_uq,Vunmod_uq,paruq_bg,paruq_ex,paruq_dd   
+    # =========================================================================
+
+
+    def calculate_Vmod_Vunmod(parfit,Vfit,Bfit,scales):
+    # =========================================================================
+        " Calculation of the (un)modulated components of the dipolar signal" 
+
+        # Calculate the unmodulated contribution (Vunmod)
+        # --------------------------------------------------------
+        Vunmod = []
+        for j in range(nSignals):
+            if includeExperiment[j]:
+                Lam0 = ex_model[j](parfit[exidx[j]])[0][0]
+                if includeBackground[j]:
+                    Vunmod.append(Lam0*np.array(Bfit[j]))
+                else:
+                    Vunmod.append(np.full_like(t[j],scales[j]*Lam0))
+            else:
+                Vunmod.append(np.zeros_like(t[j]))
+
+        # Calculate the modulated contribution (Vmod)
+        # --------------------------------------------------------
+        Vmod = []
+        for j in range(nSignals):
+            Vmod = Vfit[i] - Vunmod[i]
+
+        return Vmod, Vunmod
     # =========================================================================
 
     def regularization_analysis(Vexp):
@@ -441,15 +506,17 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         # Get fitted models
         Vfit = [scale*K@Pfit for K,scale in zip(Ks,scales)]
-        Bfit = [np.ones_like(V) for V in Vexp]
-        
+        Bfit = [scale*np.ones_like(V) for V,scale in zip(Vexp,scales)]
+        Vmod, Vunmod = calculate_Vmod_Vunmod(None,Vfit,Bfit,scales)
+
         # No parameters
         parfit = np.asarray([None])
+
         if uqanalysis and uq=='covariance':
             Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(Pfit_uq,Pfit,Vfit,Bfit,parfit,Ks)
-            return fit,Pfit,Vfit,Bfit,parfit,Pfit_uq,Vfit_uq,Bfit_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
+            return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, Pfit_uq, Vfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd, scales, alphaopt
         else:
-            return fit,Pfit,Vfit,Bfit,parfit,scales,alphaopt
+            return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt
     # =========================================================================
 
     def nonlinear_lsq_analysis(Vexp):
@@ -481,13 +548,15 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             Vfit = [Vfit]
         if type(scales) is not list:
             scales = [scales]
+        Bfit = [scale*B for B,scale in zip(Bfit,scales)]
         Vfit = [V*scale for scale,V in zip(scales,Vfit) ]
+        Vmod, Vunmod = calculate_Vmod_Vunmod(parfit,Vfit,Bfit,scales)
 
         if uqanalysis and uq=='covariance':
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,Pfit,Vfit,Bfit,parfit,[],scales)
-            return fit,Pfit,Vfit,Bfit,parfit,Pfit_uq,Vfit_uq,Bfit_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
+            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,Pfit,Vfit,Bfit,parfit,None,scales)
+            return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, Pfit_uq, Vfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
         else:
-            return fit,Pfit,Vfit,Bfit,parfit,scales,alphaopt
+            return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt
     # =========================================================================
 
     def separable_nonlinear_lsq_analysis(Vexp):
@@ -498,11 +567,11 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         lbl = np.zeros_like(r)
         
         prescales = [max(V) for V in Vexp]
-        Vexp = [Vexp[i]/prescales[i] for i in range(nSignals)]
+        Vexp_ = [Vexp[i]/prescales[i] for i in range(nSignals)]
 
         # Separable non-linear least squares (SNNLS) 
-        fit = dl.snlls(Vexp,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
-                            regparam=regparam, lin_maxiter=[], uqanalysis=uqanalysis, lin_tol=[], weights=weights)
+        fit = dl.snlls(Vexp_,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
+                            regparam=regparam, uqanalysis=uqanalysis, weights=weights)
         parfit = fit.nonlin
         Pfit = fit.lin
         snlls_uq = fit.uncertainty
@@ -511,13 +580,15 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         # Get the fitted models
         Kfit,Bfit = multiPathwayModel(parfit)
+        Bfit = [scale*B for B,scale in zip(Bfit,scales)]
         Vfit = [scale*K@Pfit for K,scale in zip(Kfit,scales)]
+        Vmod, Vunmod = calculate_Vmod_Vunmod(parfit,Vfit,Bfit,scales)
 
         if uqanalysis and uq=='covariance':
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq,Pfit,Vfit,Bfit,parfit,Kfit)
-            return fit,Pfit,Vfit,Bfit,parfit,Pfit_uq,Vfit_uq,Bfit_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
+            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq, Pfit, Vfit, Bfit, parfit, Kfit)
+            return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, Pfit_uq, Vfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
         else:
-            return fit,Pfit,Vfit,Bfit,parfit,scales,alphaopt
+            return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt
     # =========================================================================
 
     # Analyze the data
@@ -541,9 +612,9 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     # Unpack results
     if uqanalysis and uq=='covariance':
-        fit,Pfit,Vfit,Bfit,parfit_,Pfit_uq,Vfit_uq,Bfit_uq,paruq_bg,paruq_ex,paruq_dd,scales,alphaopt = results
+        fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit_, Pfit_uq, Vfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd, scales, alphaopt = results
     else:
-        fit,Pfit,Vfit,Bfit,parfit_,scales,alphaopt = results
+        fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit_, scales, alphaopt = results
 
     # Bootstrapping uncertainty quantification
     # -----------------------------------------
@@ -564,12 +635,12 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         boot_uq = dl.bootan(bootstrapfcn,Vexp,Vfit,verbose=verbose)
 
         # Unpack bootstrapping results
-        Pfit_uq = boot_uq[0]
-        Vfit_uq = [boot_uq[1+n] for n in range(nSignals)]
-        Bfit_uq = [boot_uq[1+nSignals+n] for n in range(nSignals)]
+        Pfit_uq  =  boot_uq[0]
+        Vfit_uq  = [boot_uq[1+n] for n in range(nSignals)]
+        Bfit_uq  = [boot_uq[1+nSignals+n] for n in range(nSignals)]
         paruq_bg = [boot_uq[1+2*nSignals+n] for n in range(nSignals)]
         paruq_ex = [boot_uq[1+3*nSignals+n] for n in range(nSignals)]
-        paruq_dd = boot_uq[-1]
+        paruq_dd =  boot_uq[-1]
 
     # Normalize distribution
     # -----------------------
@@ -604,6 +675,8 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         modfituq = dict()
         modfituq['Pfit'] = Pfit_uq
         modfituq['Vfit'] = [Vfit_uq[j] for j in range(nSignals)]
+        modfituq['Vmod'] = [Vmod_uq[j] for j in range(nSignals)]
+        modfituq['Vunmod'] = [Vunmod_uq[j] for j in range(nSignals)]
         modfituq['Bfit'] = [Bfit_uq[j] for j in range(nSignals)]
     else:
         paruq = dict()
@@ -614,27 +687,36 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         modfituq['Pfit'] = UncertQuant('void')
         modfituq['Vfit'] = UncertQuant('void')
         modfituq['Bfit'] = UncertQuant('void')
+        modfituq['Vmod'] = UncertQuant('void')
+        modfituq['Vunmod'] = UncertQuant('void')
 
-    # Graphical display of results
-    # ---------------------------------------------------------------
-    Vfit_ = Vfit
-    def _display_results():
+
+    Vfit_ = Vfit.copy()
+    Vunmod_ = Vunmod.copy()
+    def _display_results(show=True):
     # =========================================================================
-        _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
+        fig,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
         for i in range(nSignals):
             # Plot the signal
             axs[i].plot(t[i],Vexp[i],'.',color='grey',alpha=0.5)
             axs[i].plot(t[i],Vfit_[i],'tab:blue')
+            if includeBackground[i]:
+                axs[i].plot(t[i],Vunmod_[i],'--',color='tab:orange')
             if uqanalysis:
                 # Get confidence intervals for the signal
                 Vci95 = Vfit_uq[i].ci(95)
                 Vci50 = Vfit_uq[i].ci(50)
                 axs[i].fill_between(t[i],Vci95[:,0], Vci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
                 axs[i].fill_between(t[i],Vci50[:,0], Vci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
+                if includeBackground[i]:
+                    Vunmod95 = Vunmod_uq[i].ci(95)
+                    Vunmod50 = Vunmod_uq[i].ci(50)
+                    axs[i].fill_between(t[i],Vunmod95[:,0], Vunmod95[:,1],facecolor='tab:orange',linestyle='None',alpha=0.2)
+                    axs[i].fill_between(t[i],Vunmod50[:,0], Vunmod50[:,1],facecolor='tab:orange',linestyle='None',alpha=0.4)
             axs[i].grid(alpha=0.3)
             axs[i].set_xlabel('Time [μs]')
             axs[i].set_ylabel('V[{}]'.format(i))
-            axs[i].legend(('Data','Fit','95%-CI','50%-CI'))
+            axs[i].legend(('Data','Vfit','Bfit','95%-CI','50%-CI'))
 
         # Plot the distribution
         axs[nSignals].plot(r,Pfit,'tab:blue')
@@ -649,8 +731,11 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
         axs[nSignals].grid(alpha=0.3)
         plt.tight_layout()
-        plt.show()
-        return axs
+        if show:
+            plt.show()
+        else:
+            plt.close()
+        return fig
     # =========================================================================
 
 
@@ -658,7 +743,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         print('----------------------------------------------------------------------------')
         print('Goodness of fit')
         for i in range(nSignals):
-            print('  Vexp[{}]: chi2 = {:4f}  RMSD  = {:4f}'.format(i,stats[i]['chi2red'],stats[i]['rmsd']))
+            print('  Vexp[{}]: 𝛘2 = {:4f}  RMSD  = {:4e}'.format(i,stats[i]['chi2red'],stats[i]['rmsd']))
         print('----------------------------------------------------------------------------')
         print('Fitted parameters and 95%-confidence intervals')
         pstr = "  {}[{:d}]:   {:5.7f}  ({:.7f}, {:.7f})  {} ({})"
@@ -675,6 +760,10 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         for i in range(nSignals):
             print('Vfit[{}]:'.format(i))
+            if scales[i]>1e2:
+                print('  V0:  {:.3e}  Signal scale (a.u.)'.format(scales[i]))
+            else:
+                print('  V0:  {:2.2f}  Signal scale (a.u.)'.format(scales[i]))
             if includeBackground[i]:
                 if len(parfit['bg'])>0:
                     info = bg_model[i]()
@@ -700,22 +789,27 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     # Return numeric arrays and not lists if there is only one signal
     if nSignals==1:
-        Vfit,Bfit = (var[0] if type(var) is list else var for var in [Vfit,Bfit])
+        Vfit,Bfit,Vmod,Vunmod = (var[0] if type(var) is list else var for var in [Vfit,Bfit,Vmod,Vunmod])
         for subset in ('ex','bg'):
             parfit[subset] = parfit[subset][0]
             if uqanalysis:
                 paruq[subset] = paruq[subset][0]
-        for subset in ('Vfit','Bfit'):
+        for subset in ('Vfit','Bfit','Vmod','Vunmod'):
             if uqanalysis:
                 modfituq[subset] = modfituq[subset][0]
         if not isempty(stats):
             stats = stats[0]
 
-    return FitResult(V=Vfit, P=Pfit, B=Bfit, exparam=parfit['ex'], bgparam=parfit['bg'],
-                      ddparam=parfit['dd'], Vuncert = modfituq['Vfit'], Puncert = modfituq['Pfit'],
+
+    return FitResult(V=Vfit, P=Pfit, B=Bfit, Vmod=Vmod, Vunmod=Vunmod, exparam=parfit['ex'], bgparam=parfit['bg'],
+                      ddparam=parfit['dd'], Vuncert = modfituq['Vfit'], Puncert = modfituq['Pfit'], 
+                      VmodUncert=modfituq['Vmod'], VunmodUncert=modfituq['Vunmod'],
                       Buncert = modfituq['Bfit'], exparamUncert = paruq['ex'], bgparamUncert = paruq['bg'],
                       ddparamUncert = paruq['dd'], regparam = alphaopt, plot=_display_results, scale=scales,  stats=stats, cost=fit.cost,
                       residuals=fit.residuals, success=fit.success)
+# ==============================================================================
+# ==============================================================================
+# ==============================================================================
 
             
 def _getmodelparams(models):
@@ -746,31 +840,51 @@ def _getmodelparams(models):
 
 def _parcombine(p,d):
 # ==============================================================================
-    "Combine parameter subsets"
-    
+    """
+    Combine parameter subsets
+    p: User-defined parameter values
+    d: Built-in parameter values
+    """
+    defined = p.copy()
+    # Loop over all three parameter subsets (dd,bg,ex)
     for k in range(3):
         p[k] = np.atleast_1d(p[k])
         d[k] = np.atleast_1d(d[k])
+        # If user has not defined the values, use built-in defaults
         if isempty(p[k]):
             p[k] = d[k].flatten()
+            defined[k] = np.full_like(d[k],False)
+        else:
+            defined[k] = np.full_like(d[k],True)
+        # Otherwise use the user-defined values
         if type(p[k]) is list:
             p[k] = p[k].flatten()
+            
+    # Concatenate all parameter subsets into one vector
     pvec = np.concatenate(p,axis=0)
-    return pvec
+    defined = np.concatenate(defined,axis=0).astype(bool)
+
+    return pvec,defined
 # ==============================================================================
 
-def _checkbounds(lb,ub,par0):
+def _checkbounds(lb,ub,par0,par0_passed):
 # ==============================================================================
     "Boundary checking"
     nParams = len(par0)
     if len(lb)!=nParams:
         raise ValueError('Lower bounds and initial values of parameters must have the same number of elements.')
     if len(ub)!=nParams:
-        raise ValueError('Lower bounds and initial values of parameters must have the same number of elements.')
+        raise ValueError('Upper bounds and initial values of parameters must have the same number of elements.')
     if np.any(lb>ub):
         raise ValueError('Lower bounds cannot be larger than upper bounds.')
-    if np.any(lb>par0) or np.any(par0>ub):
-        raise ValueError('Inital values for parameters must lie between lower and upper bounds.')
+    # If user has specified some par0, check that it is within bounds
+    if np.any(lb[par0_passed]>par0[par0_passed]) or np.any(par0[par0_passed]>ub[par0_passed]):
+        raise ValueError('The specified parameters inital values must lie between lower and upper bounds.')
+    # For the rest ensure that start values are withing bounds (even for user-defined bounds)
+    if np.any(lb[~par0_passed]>par0[~par0_passed]) or np.any(par0[~par0_passed]>ub[~par0_passed]):
+        par0[~par0_passed] = (lb[~par0_passed] + ub[~par0_passed])/2
+
+    return lb,ub,par0
 # ==============================================================================
 
 def _iserror(func, *args, **kw):

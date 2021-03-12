@@ -47,5 +47,5 @@ ex_par0 = [0.5, 0.5, 0.5, max(t)/2  ] # start values
 # Run the fit with a 5-pulse DEER signal model
 
 # %%
-fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer,par0_ex=ex_par0,lb_ex=ex_lb,ub_ex=ex_ub)
+fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer,ex_par0=ex_par0,ex_lb=ex_lb,ex_ub=ex_ub)
 fit.plot()

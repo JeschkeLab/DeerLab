@@ -69,8 +69,10 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
     
     plot : callable
         Function to display the results. It will 
-        display the fitted signals. If requested, the function returns 
-        the ``matplotlib.axes`` object as output. 
+        display the fitted signals. The function returns the figure object 
+        (``matplotlib.figure.Figure``) object as output, which can be 
+        modified. Using ``fig = plot(show=False)`` will not render
+        the figure unless ``display(fig)`` is called. 
     
     stats :  dict
         Goodness of fit statistical estimators:
@@ -202,7 +204,7 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
         sol = least_squares(lsqresiduals ,par0, bounds=(lb,ub), max_nfev=int(maxiter), ftol=tol, method='dogbox')
         sols.append(sol)
         parfits.append(sol.x)
-        fvals.append(sol.cost)        
+        fvals.append(2*sol.cost) # least_squares uses 0.5*sum(residual**2)          
 
     # Find global minimum from multiple runs
     globmin = np.argmin(fvals)
@@ -255,17 +257,19 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
     if Nsignals==1: 
         stats = stats[0]
         scales = scales[0]
-
+        fvals = fvals[0]
     # Get plot function
-    plotfcn = lambda: _plot(Vsubsets,V,Vfit)
+    def plotfcn(show=False):
+        fig = _plot(Vsubsets,V,Vfit,show)
+        return fig
 
     return FitResult(
             param=parfit, uncertainty=paruq, scale=scales, stats=stats, cost=fvals,
             plot=plotfcn, residuals=sol.fun, success=sol.success)
 
-def _plot(Vsubsets,V,Vfit):
+def _plot(Vsubsets,V,Vfit,show):
     nSignals = len(Vsubsets)
-    _,axs = plt.subplots(nSignals,figsize=[7,3*nSignals])
+    fig,axs = plt.subplots(nSignals,figsize=[7,3*nSignals])
     axs = np.atleast_1d(axs)
     for i in range(nSignals): 
         subset = Vsubsets[i]
@@ -278,5 +282,8 @@ def _plot(Vsubsets,V,Vfit):
         axs[i].legend(('Data','Fit'))
 
     plt.tight_layout()
-    plt.show()
-    return axs
+    if show:
+        plt.show()
+    else:
+        plt.close()
+    return fig

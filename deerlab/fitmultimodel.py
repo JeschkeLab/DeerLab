@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit, Jacobian
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
-                 weights=1, renormalize = True, uqanalysis=True, **kwargs):
+                 strategy='split', weights=1, renormalize = True, uqanalysis=True, **kwargs):
     r""" 
     Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
@@ -59,6 +59,17 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     ubK : array_like, optional
         Upper bounds for the kernel model parameters. If not specified, parameters are unbounded.
     
+    strategy: string, optional
+        Strategy for the initialization of the multi-component non-linear parameters: 
+
+        * ``'spread'`` For each N-component model, the non-linear parameters start values are spread equidistantly over the box constraints. 
+                       The number of components are changed in a forward matter, i.e. 1,2,...,N.
+        * ``'split'`` For each N-component model, the non-linear parameters start values are selected by splitting the location and spread of 
+                      the components obtained from the N-1 component fit. The number of components are changed in a forward matter, i.e. 1,2,...,N.
+        * ``'merge'`` For each N-component model, the non-linear parameters start values are selected by merging the location and spread of 
+                      the components obtained from the N+1 component fit. The number of components are changed in a backward matter, i.e. N,N-1,...,1.
+        The default is ``'split'``. 
+
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
     
@@ -104,8 +115,10 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     plot : callable
         Function to display the results. It will display the 
         fitted signals, the distance distribution with confidence intervals, 
-        and the values of the selection functional. If requested, the function
-        returns the `matplotlib.axes` object as output. 
+        and the values of the selection functional. The function returns the figure object 
+        (``matplotlib.figure.Figure``) object as output, which can be 
+        modified. Using ``fig = plot(show=False)`` will not render
+        the figure unless ``display(fig)`` is called. 
     
     stats : dict
         Goodness of fit statistical estimators:
@@ -208,12 +221,13 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     if len(lbK) is not nKparam or len(ubK) is not nKparam:
         raise ValueError('The upper/lower bounds of the kernel parameters must be ',nKparam,'-element arrays')
 
-    areCenterDistances = [str in ['Mean','Location'] for str in paramnames]
-    if any(areCenterDistances):
+    areLocations = [str in ['Mean','Location'] for str in paramnames]
+    areSpreads   = [str in ['Spread','Width','Standard deviation'] for str in paramnames]
+    if any(areLocations):
         # If the center of the basis function is a parameter limit it 
         # to the distance axis range (stabilizes parameter search)
-        ub[areCenterDistances] = max(r)
-        lb[areCenterDistances] = min(r)
+        ub[areLocations] = max(r)
+        lb[areLocations] = min(r)
 
 
 
@@ -288,52 +302,112 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         return functionals
     #===============================================================================
 
-    def spread_within_box(lb,ub,Nmodels):
+    def initialize_nonlin_param(par,Ncomp,lb,ub,strategy):
     #===============================================================================
         """
-        Start values within boundary box
-        ---------------------------------
+        Initialize start values of nonlinear parameters
+        ------------------------------------------------
         Computes the start values of the parameters of the multiple basis functions
-        spread equally within the box constraints.
+        according to different strategies.
         """
-        par = []
-        for lbi,ubi in zip(lb,ub):
-            par.append(np.linspace(lbi,ubi,Nmodels+2)[1:-1])
-        par0 = []        
-        for i in range(Nmodels):
-            for pari in par:
-                par0.append(pari[i])
-        return par0
+        # On the first run, use a spread strategy regardless of choice
+        if par is None:
+            # Spread all components parameters equidistantly within box boundaries
+            par = []
+            for lbi,ubi in zip(lb,ub):
+                par.append(np.linspace(lbi,ubi,Ncomp+2)[1:-1])
+            par0 = []        
+            for i in range(Ncomp):
+                for pari in par:
+                    par0.append(pari[i])
+            return par0
+        else: 
+            par = np.asarray(par)
+
+        # Extract information on location and spread of components of previous solution
+        Nold = int(len(par)/len(lb))
+        areLocations_old = np.tile(areLocations,Nold)
+        areSpreads_old = np.tile(areSpreads,Nold)
+        locations_old = par[areLocations_old]
+        spreads_old = par[areSpreads_old]
+
+        # Pre-allocate containers
+        locations_new = np.zeros((Ncomp))
+        spreads_new = np.zeros((Ncomp))
+        
+        # Strategy #1: Merge N+1 components into N components
+        if strategy=='merge':
+            for n in range(Ncomp):
+                locations_new[n] = (locations_old[n] + locations_old[n+1])/2
+                spreads_new[n] = (spreads_old[n] + spreads_old[n+1])/2
+
+        # Strategy #2: Split N-1 components into N components
+        elif strategy=='split':
+            locations_new[0] = locations_old[0] - spreads_old[0]
+            spreads_new[0] = spreads_old[0]/2
+            for n in range(1,Ncomp-1,1):
+                locations_new[n] = (locations_old[n-1] + spreads_old[n-1] + locations_old[n] - spreads_old[n])/2
+                spreads_new[n] = spreads_old[n]/2
+            locations_new[-1] = locations_old[-1] + spreads_old[-1]
+            spreads_new[-1] = spreads_old[-1]/2
+
+        # Strategy #3: Spread N components equidistantly within box boundaries
+        elif strategy=='spread': 
+            locations_new = np.squeeze(np.linspace(lb[areLocations],ub[areLocations],Ncomp+2)[1:-1])
+            spreads_new = np.squeeze(np.linspace(lb[areSpreads],ub[areSpreads],Ncomp+2)[1:-1])
+
+        # Ensure box constraints of new parameter start values
+        locations_new = np.maximum(locations_new,lb[areLocations])
+        locations_new = np.minimum(locations_new,ub[areLocations])
+        spreads_new = np.maximum(spreads_new,lb[areSpreads])
+        spreads_new = np.minimum(spreads_new,ub[areSpreads])
+
+        # Mount the new par0 vector for the N components
+        areLocations_new = np.tile(areLocations,Ncomp)
+        areSpreads_new = np.tile(areSpreads,Ncomp)
+        par0_new = np.tile(par[0:len(lb)],Ncomp)
+        par0_new[areLocations_new] = locations_new
+        par0_new[areSpreads_new] = spreads_new
+
+        return par0_new
     #===============================================================================
 
     # Pre-allocate containers
     fits,Vfit,Pfit,plin_,pnonlin_,nlin_ub_,nlin_lb_,lin_ub_,lin_lb_ = ([] for _ in range(9))
     logest = []
+    par_prev = None
+
+    if strategy=='spread' or strategy=='split':
+        # Start with single components, add sequentially (forward)
+        Ncomponents = np.arange(1,maxModels+1)
+    elif strategy=='merge':
+        # Start with maximum components, remove sequentially (backward)
+        Ncomponents = np.arange(maxModels,0,-1)
 
     # Loop over number of components in model
     # =======================================
-    for Nmodels in np.arange(1,maxModels+1):
+    for Ncomp in Ncomponents:
         
         # Prepare non-linear model with N-components
         # ===========================================
-        Knonlin = lambda par: nonlinmodel(par,Nmodels)
+        Knonlin = lambda par: nonlinmodel(par,Ncomp)
         
         # Start values of non-linear parameters
         par0_K = (ubK - lbK)/2 # start in the middle
-        par0_P = spread_within_box(lb,ub,Nmodels) # start spread within boundaries
+        par0_P = initialize_nonlin_param(par_prev,Ncomp,lb,ub,strategy) # start spread within boundaries
         par0 = np.concatenate((par0_K, par0_P),axis=None)
 
         # Box constraints for the model parameters (non-linear parameters)
-        nlin_lb = np.tile(lb,(1,Nmodels))
-        nlin_ub = np.tile(ub,(1,Nmodels))
+        nlin_lb = np.tile(lb,(1,Ncomp))
+        nlin_ub = np.tile(ub,(1,Ncomp))
 
         # Add the box constraints on the non-linear kernel parameters
         nlin_lb = np.concatenate((lbK, nlin_lb),axis=None)
         nlin_ub = np.concatenate((ubK, nlin_ub),axis=None)
         
         # Box constraints for the components amplitudes (linear parameters)
-        lin_lb = np.ones(Nmodels)        
-        lin_ub = np.full(Nmodels,np.inf)
+        lin_lb = np.ones(Ncomp)        
+        lin_ub = np.full(Ncomp,np.inf)
         
         # Separable non-linear least-squares (SNLLS) fit
         scale = 1e2
@@ -341,6 +415,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
                         weights=weights, reg=False, uqanalysis=False, lin_tol=[], lin_maxiter=[],**kwargs)
         pnonlin = fit.nonlin
         plin = fit.lin
+        par_prev = pnonlin
 
         plin = plin/scale
 
@@ -349,7 +424,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         plin_.append(plin)
 
         # Get fitted kernel
-        Kfit = nonlinmodel(pnonlin,Nmodels)
+        Kfit = nonlinmodel(pnonlin,Ncomp)
         
         # Get fitted signal
         Vfit.append(Kfit@plin)
@@ -359,7 +434,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
 
         # Likelihood estimators
         # =====================
-        logest = logestimators(V,Vfit[Nmodels-1],plin,pnonlin,logest)
+        logest = logestimators(V,Vfit[-1],plin,pnonlin,logest)
 
         # Store other parameters for later
         nlin_ub_.append(nlin_ub)
@@ -372,7 +447,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     Peval = Pfit
     fcnals = logest[method]
     idx = np.argmin(fcnals)
-    Nopt = idx+1
+    Nopt = Ncomponents[idx]
     fit,Pfit,Vfit,pnonlin,plin = (var[idx] for var in [fits,Pfit,Vfit,pnonlin_,plin_])
     nlin_lb,nlin_ub,lin_lb,lin_ub = (var[idx] for var in [nlin_lb_,nlin_ub_,lin_lb_,lin_ub_])
 
@@ -435,7 +510,9 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         scales = scales[0]
 
     # Results display function
-    plotfcn = lambda: _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method)
+    def plotfcn(show=False):
+        fig = _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uqanalysis,show)
+        return fig
 
     return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, Puncert=Puq, 
                     paramUncert=paramuq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
@@ -443,10 +520,10 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
 # =========================================================================
 
 
-def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
+def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uqanalysis,show):
 # =========================================================================
     nSignals = len(Vsubsets)
-    _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
+    fig,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
     for i in range(nSignals): 
         subset = Vsubsets[i]
         # Plot the experimental signal and fit
@@ -457,16 +534,21 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
         axs[i].set_ylabel('V[{}]'.format(i))
         axs[i].legend(('Data','Fit'))
 
-    # Confidence intervals of the fitted distance distribution
-    Pci95 = Puq.ci(95) # 95#-confidence interval
-    Pci50 = Puq.ci(50) # 50#-confidence interval
+    if uqanalysis:
+        # Confidence intervals of the fitted distance distribution
+        Pci95 = Puq.ci(95) # 95#-confidence interval
+        Pci50 = Puq.ci(50) # 50#-confidence interval
 
     ax = plt.subplot(nSignals+1,2,2*(nSignals+1)-1)
     ax.plot(r,Pfit,color='tab:blue',linewidth=1.5)
-    ax.fill_between(r,Pci50[:,0],Pci50[:,1],color='tab:blue',linestyle='None',alpha=0.45)
-    ax.fill_between(r,Pci95[:,0],Pci95[:,1],color='tab:blue',linestyle='None',alpha=0.25)
+    if uqanalysis:
+        ax.fill_between(r,Pci50[:,0],Pci50[:,1],color='tab:blue',linestyle='None',alpha=0.45)
+        ax.fill_between(r,Pci95[:,0],Pci95[:,1],color='tab:blue',linestyle='None',alpha=0.25)
     ax.grid(alpha=0.3)
-    ax.legend(['truth','optimal fit','95%-CI'])
+    if uqanalysis:
+        ax.legend(['truth','optimal fit','95%-CI'])
+    else:
+        ax.legend(['truth','optimal fit'])
     ax.set_xlabel('Distance [nm]')
     ax.set_ylabel('P [nm⁻¹]')
     axs = np.append(axs,ax)
@@ -474,14 +556,17 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
     # Compute the Akaike weights
     dfcnals = fcnals - min(fcnals)
     ax = plt.subplot(nSignals+1,2,2*(nSignals+1))
-    ax.bar(np.arange(maxModels)+1,dfcnals + abs(min(dfcnals)),facecolor='tab:blue',alpha=0.6)
+    ax.bar(np.arange(maxModels)+1,np.log10(1 + dfcnals + abs(min(dfcnals))),facecolor='tab:blue',alpha=0.6)
     ax.grid(alpha=0.3)
-    ax.set_ylabel('Δ{}'.format(method.upper()))
+    ax.set_ylabel('log10 Δ{}'.format(method.upper()))
     ax.set_xlabel('Number of components')
     axs = np.append(axs,ax)
 
     plt.tight_layout()
-    plt.show()
-    return axs
+    if show:
+        plt.show()
+    else:
+        plt.close()
+    return fig
 # =========================================================================
 
