@@ -239,6 +239,15 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     if len(ex_model)!=nSignals:
         ex_model = ex_model*nSignals
 
+    # Default bootstrap samples
+    bootsamples = 1000
+    if isinstance(uq, str):
+        uq = [uq]
+    if uq[0]=='bootstrap':
+        # OVerride default if user has specified bootstraped samples
+        if len(uq)>1: bootsamples = uq[1]
+    uq = uq[0]
+
     # Combine input boundary and start conditions
     par0 = [[] if par0_i is None else par0_i for par0_i in [dd_par0,bg_par0,ex_par0]]
     lb = [[] if lb_i is None else lb_i for lb_i in [dd_lb,bg_lb,ex_lb]]
@@ -485,7 +494,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # --------------------------------------------------------
         Vmod = []
         for j in range(nSignals):
-            Vmod = Vfit[i] - Vunmod[i]
+            Vmod.append(Vfit[i] - Vunmod[i])
 
         return Vmod, Vunmod
     # =========================================================================
@@ -623,16 +632,17 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         def bootstrapfcn(Vexp):
             # ======================================================
             # Fit the data
-            _,Pfit_,Vfit_,Bfit_,parfit,_,_ = analysis(Vexp)
+            _, Pfit_, Vfit_, Bfit_, Vmod_, Vunmod_, parfit, _, _ = analysis(Vexp)
             # Extract the individual parameter subsets
             parfit_bg = [parfit[bgidx[n]] for n in range(nSignals)]
             parfit_ex = [parfit[exidx[n]] for n in range(nSignals)]
             parfit_dd = parfit[ddidx]
-            return Pfit_,*Vfit_,*Bfit_,*parfit_bg,*parfit_ex,parfit_dd
+
+            return Pfit_,*Vfit_,*Bfit_,*Vmod_,*Vunmod_,*parfit_bg,*parfit_ex,parfit_dd
             # ======================================================
 
         # Run bootstrapping
-        boot_uq = dl.bootan(bootstrapfcn,Vexp,Vfit,verbose=verbose)
+        boot_uq = dl.bootan(bootstrapfcn,Vexp,Vfit,samples=bootsamples,verbose=verbose)
 
         # Unpack bootstrapping results
         Pfit_uq   =  boot_uq[0]
