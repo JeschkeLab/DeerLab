@@ -334,7 +334,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             K_ = dl.dipolarkernel(t[iSignal],r,pathways,Bfcn)
             Ks.append(K_)
             Bs.append(B_)
-            
+
         return Ks, Bs     
     # =========================================================================
 
@@ -460,7 +460,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             else: 
                 Vmod_uq.append([None]) 
 
-        return Vfit_uq,Pfit_uq,Bfit_uq,Vmod_uq,Vunmod_uq,paruq_bg,paruq_ex,paruq_dd   
+        return Vfit_uq, Pfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd   
     # =========================================================================
 
 
@@ -513,7 +513,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         parfit = np.asarray([None])
 
         if uqanalysis and uq=='covariance':
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(Pfit_uq,Pfit,Vfit,Bfit,parfit,Ks)
+            Vfit_uq, Pfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd = splituq(Pfit_uq,Pfit,Vfit,Bfit,parfit,Ks,scales)
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, Pfit_uq, Vfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd, scales, alphaopt
         else:
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt
@@ -534,7 +534,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uqanalysis=uqanalysis)
         parfit = fit.param
         param_uq = fit.uncertainty
-        scales = fit.scale
+        scales = np.atleast_1d(fit.scale)
         alphaopt = None
 
         # Get fitted models
@@ -546,14 +546,14 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             Pfit = []
         if type(Vfit) is not list:
             Vfit = [Vfit]
-        if type(scales) is not list:
-            scales = [scales]
+        if type(Bfit) is not list:
+            Bfit = [Bfit]
         Bfit = [scale*B for B,scale in zip(Bfit,scales)]
-        Vfit = [V*scale for scale,V in zip(scales,Vfit) ]
+        Vfit = [scale*V for V,scale in zip(Vfit,scales) ]
         Vmod, Vunmod = calculate_Vmod_Vunmod(parfit,Vfit,Bfit,scales)
 
         if uqanalysis and uq=='covariance':
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,Pfit,Vfit,Bfit,parfit,None,scales)
+            Vfit_uq, Pfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,Pfit,Vfit,Bfit,parfit,None, scales)
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, Pfit_uq, Vfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
         else:
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt
@@ -585,7 +585,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vmod, Vunmod = calculate_Vmod_Vunmod(parfit,Vfit,Bfit,scales)
 
         if uqanalysis and uq=='covariance':
-            Vfit_uq, Pfit_uq, Bfit_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq, Pfit, Vfit, Bfit, parfit, Kfit)
+            Vfit_uq, Pfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq, Pfit, Vfit, Bfit, parfit, Kfit, scales)
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, Pfit_uq, Vfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
         else:
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt
@@ -635,12 +635,14 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         boot_uq = dl.bootan(bootstrapfcn,Vexp,Vfit,verbose=verbose)
 
         # Unpack bootstrapping results
-        Pfit_uq  =  boot_uq[0]
-        Vfit_uq  = [boot_uq[1+n] for n in range(nSignals)]
-        Bfit_uq  = [boot_uq[1+nSignals+n] for n in range(nSignals)]
-        paruq_bg = [boot_uq[1+2*nSignals+n] for n in range(nSignals)]
-        paruq_ex = [boot_uq[1+3*nSignals+n] for n in range(nSignals)]
-        paruq_dd =  boot_uq[-1]
+        Pfit_uq   =  boot_uq[0]
+        Vfit_uq   = [boot_uq[1+n] for n in range(nSignals)]
+        Bfit_uq   = [boot_uq[1+nSignals+n] for n in range(nSignals)]
+        Vmod_uq   = [boot_uq[1+2*nSignals+n] for n in range(nSignals)]
+        Vunmod_uq = [boot_uq[1+3*nSignals+n] for n in range(nSignals)]
+        paruq_bg  = [boot_uq[1+4*nSignals+n] for n in range(nSignals)]
+        paruq_ex  = [boot_uq[1+5*nSignals+n] for n in range(nSignals)]
+        paruq_dd  =  boot_uq[-1]
 
     # Normalize distribution
     # -----------------------
