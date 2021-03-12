@@ -533,6 +533,24 @@ def test_V_scale_regularized():
     assert max(abs(1 - V/fit.V)) < 1e-4
 # ======================================================================
 
+def test_plot():
+# ======================================================================
+    "Check that the plot method works"
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,150)
+    P = dd_gauss(r,[4.5, 0.25])
+
+    Bmodel = lambda t: bg_exp(t,0.4)
+    K = dipolarkernel(t,r,0.4,Bmodel)
+    V = K@P
+
+    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
+    
+    fig = fit.plot(show=False)
+    assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
+# ======================================================================
+
+
 def test_physical_bg_model():
 # ======================================================================
     "Check that the background parameters of a physical model are fitted correctly"

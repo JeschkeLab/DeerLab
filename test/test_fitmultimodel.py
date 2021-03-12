@@ -280,11 +280,26 @@ def test_multigauss_split():
     parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
     P = dd_gauss3(r,parin)
     V = K@P
-
     fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uqanalysis=False, strategy='split')
     
     assert ovl(P,fit.P) > 0.95 # more than 99% overlap
 #=======================================================================
+
+def test_plot():
+# ======================================================================
+    "Check that the plot method works"
+
+    r = np.linspace(2,6,200)
+    t = np.linspace(-0.5,6,200)
+    K = dipolarkernel(t,r)
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
+    P = dd_gauss3(r,parin)
+    V = K@P
+    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uqanalysis=False)
+    fig = fit.plot(show=False)
+
+    assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
+# ======================================================================
 
 def test_multigauss_merge():
 #=======================================================================

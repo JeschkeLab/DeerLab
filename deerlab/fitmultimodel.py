@@ -115,8 +115,10 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     plot : callable
         Function to display the results. It will display the 
         fitted signals, the distance distribution with confidence intervals, 
-        and the values of the selection functional. If requested, the function
-        returns the `matplotlib.axes` object as output. 
+        and the values of the selection functional. The function returns the figure object 
+        (``matplotlib.figure.Figure``) object as output, which can be 
+        modified. Using ``fig = plot(show=False)`` will not render
+        the figure unless ``display(fig)`` is called. 
     
     stats : dict
         Goodness of fit statistical estimators:
@@ -508,7 +510,9 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         scales = scales[0]
 
     # Results display function
-    plotfcn = lambda: _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method)
+    def plotfcn(show=False):
+        fig = _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uqanalysis,show)
+        return fig
 
     return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, Puncert=Puq, 
                     paramUncert=paramuq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
@@ -516,10 +520,10 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
 # =========================================================================
 
 
-def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
+def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uqanalysis,show):
 # =========================================================================
     nSignals = len(Vsubsets)
-    _,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
+    fig,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
     for i in range(nSignals): 
         subset = Vsubsets[i]
         # Plot the experimental signal and fit
@@ -530,16 +534,21 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
         axs[i].set_ylabel('V[{}]'.format(i))
         axs[i].legend(('Data','Fit'))
 
-    # Confidence intervals of the fitted distance distribution
-    Pci95 = Puq.ci(95) # 95#-confidence interval
-    Pci50 = Puq.ci(50) # 50#-confidence interval
+    if uqanalysis:
+        # Confidence intervals of the fitted distance distribution
+        Pci95 = Puq.ci(95) # 95#-confidence interval
+        Pci50 = Puq.ci(50) # 50#-confidence interval
 
     ax = plt.subplot(nSignals+1,2,2*(nSignals+1)-1)
     ax.plot(r,Pfit,color='tab:blue',linewidth=1.5)
-    ax.fill_between(r,Pci50[:,0],Pci50[:,1],color='tab:blue',linestyle='None',alpha=0.45)
-    ax.fill_between(r,Pci95[:,0],Pci95[:,1],color='tab:blue',linestyle='None',alpha=0.25)
+    if uqanalysis:
+        ax.fill_between(r,Pci50[:,0],Pci50[:,1],color='tab:blue',linestyle='None',alpha=0.45)
+        ax.fill_between(r,Pci95[:,0],Pci95[:,1],color='tab:blue',linestyle='None',alpha=0.25)
     ax.grid(alpha=0.3)
-    ax.legend(['truth','optimal fit','95%-CI'])
+    if uqanalysis:
+        ax.legend(['truth','optimal fit','95%-CI'])
+    else:
+        ax.legend(['truth','optimal fit'])
     ax.set_xlabel('Distance [nm]')
     ax.set_ylabel('P [nm⁻¹]')
     axs = np.append(axs,ax)
@@ -554,7 +563,10 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method):
     axs = np.append(axs,ax)
 
     plt.tight_layout()
-    plt.show()
-    return axs
+    if show:
+        plt.show()
+    else:
+        plt.close()
+    return fig
 # =========================================================================
 
