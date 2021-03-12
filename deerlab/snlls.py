@@ -1,7 +1,7 @@
 # snlls.py - Separable non-linear least-squares solver
 # ---------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import copy
 import numpy as np
@@ -353,7 +353,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         sol = least_squares(ResidualsFcn, par0, bounds=(lb, ub), max_nfev=int(nonlin_maxiter), ftol=nonlin_tol)
         nonlinfits.append(sol.x)
         linfits.append(linfit)
-        fvals.append(sol.cost)
+        fvals.append(2*sol.cost) # least_squares uses 0.5*sum(residual**2)          
         sols.append(sol)
     # Find global minimum from multiple runs
     globmin = np.argmin(fvals)
@@ -418,6 +418,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         stats.append(goodness_of_fit(y[subset], yfit[subset], Ndof))
     if len(stats) == 1: 
         stats = stats[0]
+        fvals = fvals[0]
 
     # Display function
     plotfcn = lambda: _plot(subsets,y,yfit)

@@ -13,7 +13,7 @@ from sphinx_rtd_theme import __version__
 
 # Project details
 project = 'DeerLab'
-copyright = '2019-2020, Luis Fábregas Ibáñez, Stefan Stoll, and others'
+copyright = '2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others'
 author = 'Fabregas Ibanez'
 language = 'en'
 
@@ -26,6 +26,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
     'sphinxcontrib.httpdomain',
+    'sphinxcontrib.ghcontributors',
     'matplotlib.sphinxext.plot_directive',
     'sphinx.ext.imgmath',
     'numpydoc',

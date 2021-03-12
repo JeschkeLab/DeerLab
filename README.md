@@ -1,8 +1,8 @@
 # DeerLab
 
-![PyPI](https://img.shields.io/pypi/v/deerlab)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/deerlab)
-![Website](https://img.shields.io/website?down_message=offline&label=Documentation&up_message=online&url=https%3A%2F%2Fjeschkelab.github.io%2FDeerLab%2Findex.html)
+[![https://jeschkelab.github.io/DeerLab/](https://img.shields.io/pypi/v/deerlab)](https://pypi.org/project/DeerLab/)
+[![Website](https://img.shields.io/website?down_message=offline&label=Documentation&up_message=online&url=https%3A%2F%2Fjeschkelab.github.io%2FDeerLab%2Findex.html)](https://jeschkelab.github.io/DeerLab/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/deerlab)](https://www.python.org/downloads/)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/deerlab?color=brightgreen)
 
 ### About
@@ -46,4 +46,4 @@ When you use DeerLab in your work, please cite the following publication:
 
 DeerLab is licensed under the [MIT License](LICENSE).
 
-Copyright © 2019-2020: Luis Fábregas Ibáñez, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).
+Copyright © 2019-2021: Luis Fábregas Ibáñez, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).

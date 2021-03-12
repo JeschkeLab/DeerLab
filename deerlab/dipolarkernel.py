@@ -1,7 +1,7 @@
 # dipolarkernel.py - Dipolar kernel operator
 # -----------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2020: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 # Numpy + SciPy
 import numpy as np
@@ -164,7 +164,7 @@ def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = 
         lam = pathways[0]
         pathways = [[1-lam], [lam, 0]]
 
-    paths = [np.atleast_1d(path) for path in pathways]
+    paths = [np.array(path,dtype=float) for path in pathways]
 
     # Get unmodulated pathways    
     unmodulated = [paths.pop(i) for i,path in enumerate(paths) if len(path)==1]

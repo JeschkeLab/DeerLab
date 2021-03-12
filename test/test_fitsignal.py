@@ -1,10 +1,12 @@
 
 import numpy as np
 from numpy import inf
+import deerlab as dl
 from deerlab import dipolarkernel, whitegaussnoise, fitsignal
 from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp, bg_hom3d
 from deerlab.ex_models import ex_4pdeer, ex_5pdeer, ex_7pdeer, ex_ovl4pdeer
+import deerlab as dl
 from deerlab.utils import ovl
 
 
@@ -54,6 +56,27 @@ def test_ovl4pdeer():
     "Check that the fit of a 4-pulse DEER signal is correct"
         
     assert_experiment_model(ex_ovl4pdeer)
+# ======================================================================
+
+def test_ridme1():
+# ======================================================================
+    "Check that the fit of a S=1/2 RIDME signal is correct"
+        
+    assert_experiment_model(dl.ex_ridme1)
+# ======================================================================
+
+def test_ridme3():
+# ======================================================================
+    "Check that the fit of a S=3/2 RIDME signal is correct"
+        
+    assert_experiment_model(dl.ex_ridme3)
+# ======================================================================
+
+def test_ridme5():
+# ======================================================================
+    "Check that the fit of a S=5/2 RIDME signal is correct"
+        
+    assert_experiment_model(dl.ex_ridme5)
 # ======================================================================
 
 def test_dipevo_function():
@@ -563,4 +586,73 @@ def test_V_scale_regularized():
     fit = fitsignal(V,t,r,'P',None,None,uqanalysis=False)
 
     assert max(abs(1 - V/fit.V)) < 1e-4
+# ======================================================================
+
+def test_physical_bg_model():
+# ======================================================================
+    "Check that the background parameters of a physical model are fitted correctly"
+
+    t = np.linspace(-0.1,7,200)
+    r = np.linspace(3,5,50)
+    P = dl.dd_gauss(r,[4,0.2])
+    V0 = 3000
+    K = dl.dipolarkernel(t,r,0.4,lambda t,lam:dl.bg_hom3d(t,50,lam))
+    V = K@P
+    V = V0*V
+
+    fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,uqanalysis=False)
+
+    assert abs(fit.bgparam - 50)<1e-1 and abs(fit.exparam - 0.4)<1e-1
+# ======================================================================
+
+def test_phenomenological_bg_model():
+# ======================================================================
+    "Check that the background parameters of a phenomenological model are fitted correctly"
+
+    t = np.linspace(-0.1,7,200)
+    r = np.linspace(3,5,50)
+    P = dl.dd_gauss(r,[4,0.2])
+    V0 = 3000
+    K = dl.dipolarkernel(t,r,dl.ex_4pdeer(0.4),lambda t: dl.bg_exp(t,0.3))
+    V = K@P
+    V = V0*V
+
+    fit = dl.fitsignal(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer,uqanalysis=False)
+
+    assert abs(fit.bgparam - 0.3)<1e-1 and abs(fit.exparam - 0.4)<1e-1
+# ======================================================================
+
+
+def test_Vunmod():
+# ======================================================================
+    "Check that the background scaling is correct if requested"
+
+    t = np.linspace(-0.1,7,200)
+    r = np.linspace(3,5,50)
+    P = dl.dd_gauss(r,[4,0.2])
+    lam = 0.4
+    K = dl.dipolarkernel(t,r,dl.ex_4pdeer(lam),lambda t,lam: dl.bg_hom3d(t,50,lam))
+    Bscaled = (1-lam)*dl.bg_hom3d(t,50,lam)
+    V = K@P
+
+    fit = dl.fitsignal(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer,uqanalysis=False)
+
+    assert max(abs(Bscaled - fit.Vunmod))<1e-4
+# ======================================================================
+
+def test_cost_value():
+# ======================================================================
+    "Check that starts values can be correctly specified"
+
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,150)
+    P = dd_gauss(r,[4.5, 0.25])
+
+    Bmodel = lambda t: bg_exp(t,0.4)
+    K = dipolarkernel(t,r,0.4,Bmodel)
+    V = K@P
+
+    fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
+
+    assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
 # ======================================================================
