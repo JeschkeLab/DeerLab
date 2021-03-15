@@ -332,28 +332,30 @@ def assert_confidence_intervals(pci50,pci95,pfit,lb,ub):
     assert not errors, "Errors occured:\n{}".format("\n".join(errors))
 #----------------------------------------------------------------------
 
+#----------------------------------------------------------------------
+exmodel = ex_4pdeer
+ddmodel = dd_gauss
+bgmodel = bg_exp
+
+r = np.linspace(2,6,40)
+P = ddmodel(r,[4.5, 0.25])
+
+info = exmodel()
+parIn = info['Start']
+pathways = exmodel(parIn)
+
+kappa = 0.4
+Bmodel = lambda t,lam: bgmodel(t,kappa)
+
+t = np.linspace(0,5,100)
+np.random.seed(0)
+V = dipolarkernel(t,r,pathways,Bmodel)@P + whitegaussnoise(t,0.01)
+
+fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
+#----------------------------------------------------------------------
+
 def assert_confinter_param(subset):
 #----------------------------------------------------------------------
-    exmodel = ex_4pdeer
-    ddmodel = dd_gauss
-    bgmodel = bg_exp
-
-    r = np.linspace(2,6,40)
-    P = ddmodel(r,[4.5, 0.25])
-
-    info = exmodel()
-    parIn = info['Start']
-    pathways = exmodel(parIn)
-
-    kappa = 0.4
-    Bmodel = lambda t,lam: bgmodel(t,kappa)
-
-    t = np.linspace(0,5,100)
-    np.random.seed(0)
-    V = dipolarkernel(t,r,pathways,Bmodel)@P + whitegaussnoise(t,0.01)
-    
-    fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
-
     if subset == 'ex':
         info = exmodel()
         pfit = fit.exparam
@@ -394,33 +396,37 @@ def test_confinter_ddparam():
     assert_confinter_param('dd')
 # ======================================================================
 
+#----------------------------------------------------------------------
+exmodel = ex_4pdeer
+bgmodel = bg_exp
+
+r = np.linspace(2,6,40)
+P = dd_gauss(r,[4.5, 0.25])
+
+info = exmodel()
+parIn = info['Start']
+pathways = exmodel(parIn)
+
+kappa = 0.4
+Bmodel = lambda t: bgmodel(t,kappa)
+
+t = np.linspace(0,5,100)
+np.random.seed(0)
+V = dipolarkernel(t,r,pathways,Bmodel)@P + whitegaussnoise(t,0.03)
+
+fit_Pparam = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uq='covariance')
+fit_Pfree = fitsignal(V,t,r,'P',bgmodel,exmodel,uq='covariance')
+#----------------------------------------------------------------------
+
 def assert_confinter_models(subset):
 #----------------------------------------------------------------------
-    exmodel = ex_4pdeer
-    if subset == 'Pfitfree':
-        ddmodel = 'P'
-        subset = 'Pfit'
+
+    if subset=='Pfitfree':
+        fit = fit_Pfree
     else:
-        ddmodel= dd_gauss
-    bgmodel = bg_exp
+        fit = fit_Pparam
 
-    r = np.linspace(2,6,40)
-    P = dd_gauss(r,[4.5, 0.25])
-
-    info = exmodel()
-    parIn = info['Start']
-    pathways = exmodel(parIn)
-
-    kappa = 0.4
-    Bmodel = lambda t: bgmodel(t,kappa)
-
-    t = np.linspace(0,5,100)
-    np.random.seed(0)
-    V = dipolarkernel(t,r,pathways,Bmodel)@P + whitegaussnoise(t,0.03)
-    
-    fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uqanalysis=True)
-
-    if subset == 'Pfit':
+    if subset == 'Pfit' or subset == 'Pfitfree':
         modelfit = fit.P
         lb = np.zeros_like(r)
         ub = np.full_like(r,inf)
@@ -465,6 +471,7 @@ def test_confinter_Bfit():
     "Check that the confidence inervals for fitted distribution are correct"
     assert_confinter_models('Bfit')
 # ======================================================================
+
 
 def assert_confinter_noforeground():
 # ======================================================================
@@ -673,4 +680,97 @@ def test_cost_value():
     fit = fitsignal(V,t,r,'P',bg_exp,ex_4pdeer,uqanalysis=False)
 
     assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
+# ======================================================================
+
+# ----------------------------------------------------------------------
+    exmodel = ex_4pdeer
+    bgmodel = bg_exp
+
+    r = np.linspace(2,6,40)
+    P = dd_gauss(r,[4.5, 0.25])
+
+    info = exmodel()
+    parIn = info['Start']
+    pathways = exmodel(parIn)
+
+    kappa = 0.4
+    Bmodel = lambda t: bgmodel(t,kappa)
+
+    t = np.linspace(0,5,100)
+    np.random.seed(0)
+    V = dipolarkernel(t,r,pathways,Bmodel)@P + whitegaussnoise(t,0.03)
+
+    fit = fitsignal(V,t,r,ddmodel,bgmodel,exmodel,uq=['bootstrap',2])
+# ----------------------------------------------------------------------
+
+def assert_boot_ci(quantity):
+# ----------------------------------------------------------------------
+
+    if quantity=='P':
+        ci = fit.Puncert.ci(95)
+    elif quantity=='V':
+        ci = fit.Vuncert.ci(95)
+    elif quantity=='Vmod':
+        ci = fit.VmodUncert.ci(95)
+    elif quantity=='Vunmod':
+        ci = fit.VunmodUncert.ci(95)
+    elif quantity=='B':
+        ci = fit.Buncert.ci(95)
+    elif quantity=='ddparam':
+        ci = fit.ddparamUncert.ci(95)
+    elif quantity=='bgparam':
+        ci = fit.bgparamUncert.ci(95)
+    elif quantity=='exparam':
+        ci = fit.exparamUncert.ci(95)
+
+    assert np.all(ci[:,0]<=ci[:,1])
+# ----------------------------------------------------------------------
+
+
+def test_bootci_P():
+# ======================================================================
+    "Check that the bootstrapped confidence intervals work"
+    assert_boot_ci('P')
+# ======================================================================
+
+def test_bootci_V():
+# ======================================================================
+    "Check that the bootstrapped confidence intervals work"
+    assert_boot_ci('V')
+# ======================================================================
+
+def test_bootci_B():
+# ======================================================================
+    "Check that the bootstrapped confidence intervals work"
+    assert_boot_ci('B')
+# ======================================================================
+
+def test_bootci_Vmod():
+# ======================================================================
+    "Check that the bootstrapped confidence intervals work"
+    assert_boot_ci('Vmod')
+# ======================================================================
+
+def test_bootci_Vunmod():
+# ======================================================================
+    "Check that the bootstrapped confidence intervals work"
+    assert_boot_ci('Vunmod')
+# ======================================================================
+
+def test_bootci_ddparam():
+# ======================================================================
+    "Check that the bootstrapped confidence intervals work"
+    assert_boot_ci('ddparam')
+# ======================================================================
+
+def test_bootci_exparam():
+# ======================================================================
+    "Check that the bootstrapped confidence intervals work"
+    assert_boot_ci('exparam')
+# ======================================================================
+
+def test_bootci_bparam():
+# ======================================================================
+    "Check that the bootstrapped confidence intervals work"
+    assert_boot_ci('bgparam')
 # ======================================================================
