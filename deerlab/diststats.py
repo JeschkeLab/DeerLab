@@ -85,6 +85,10 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
 
     P,r = np.atleast_1d(P,r)
 
+    # Check to avoid non-sensical results with syntax diststats(P,r)
+    if not np.all(np.diff(r)>0): 
+        raise KeyError('The distance axis (1st argument) must be a monotnously increasing vector.')
+
     if threshold is None:
         threshold = np.max(P)/10
 
