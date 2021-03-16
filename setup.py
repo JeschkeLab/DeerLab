@@ -20,7 +20,7 @@ def install_dependencies(develop_mode=False):
     # DeerLab dependencies on the PyPI
     dependencies = ["memoization","matplotlib","tqdm","joblib"] 
 
-    if platform.system() is 'Windows':
+    if platform.system() == 'Windows':
         # Use own forked pipwin repo for self-patched fixes 
         dependencies += ["git+https://github.com/luisfabib/pipwin"]
     else:
@@ -68,7 +68,7 @@ class develop_routine(develop):
 
 setup(
     name='DeerLab',
-    version=open('VERSION').read().splitlines()[0],
+    version=open('VERSION').read().splitlines()[0].replace("v", ""),
     author='Luis Fábregas Ibáñez , Stefan Stoll and other contributors',
     package_dir={'deerlab': 'deerlab',
                 'deerlab.utils': 'deerlab/utils'},
