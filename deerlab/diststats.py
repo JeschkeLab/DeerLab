@@ -9,8 +9,8 @@ import copy
 from scipy.signal import find_peaks
 
 def diststats(r, P, Puq=None, verbose=False, threshold=None):
-    r""" Computes statistical quantities for the location, spread and shape 
-    of a distance distribution with or without their corresponding uncertainties.
+    r""" Computes statistical quantities for the location, spread, and shape 
+    of a distance distribution, with or without their corresponding uncertainties.
 
     Parameters
     ----------
@@ -18,16 +18,15 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
         Distance axis in nm. 
     
     P : array_like
-        Distance distribution.
+        Distance distribution, does not have to be normalized.
     
-    Puq : :ref:`UncertQuant`
-        Uncertainty quantification of the distance distribution. If not 
-        specified, the one single output is returned without any uncertainty 
-        estimation. If specified, two outputs are returned containing the 
-        uncertainty estimation.
+    Puq : :ref:`UncertQuant`, optional
+        Uncertainty quantification of the distance distribution. If Puq is not given, a
+        single output is returned without any uncertainty estimation. If given, two outputs
+        are returned containing the uncertainty estimation.
     
     verbose : boolean, optional
-        Enables printing a summary of all statistical quantities and their uncertainties if calculated.
+        Print a summary of all statistical quantities (and their uncertainties if calculated).
     
     threshold : float, optional
         Peak detection threshold for the calculation of modes of a distribution. The default is ``max(P)/10``.
@@ -35,8 +34,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     Returns
     -------
     estimators : dict
-        Dictionary of shape, location and spread descriptors of 
-        the input distance distribution:
+        Dictionary of shape, location, and spread descriptors of the input distance distribution:
         
         General parameters
 
@@ -62,31 +60,34 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
 
         Shape parameters
 
-            * ``'modality'`` - Modality (number of peaks)
+            * ``'modality'`` - Modality (number of modes)
             * ``'skewness'`` or ``'moment3'`` - Skewness (see `more <https://en.wikipedia.org/wiki/Skewness>`_)
             * ``'kurtosis'`` - Excess kurtosis (see `more <https://en.wikipedia.org/wiki/Kurtosis>`_)
             * ``'moment4'`` - 4th moment (kurtosis) (see `more <https://en.wikipedia.org/wiki/Kurtosis>`_)
 
     uq : dict of :ref:`UncertQuant`
         Dictionary of the parameters covariance-based uncertainty quantifications. 
-        See above for the dictionary keys. Only calculated if ``Puq`` is specified.
+        See above for the dictionary keys. Only calculated if ``Puq`` is provided.
 
     Notes
     -----
-    The ``'mode'``, ``'modes'`` and ``'modality'`` parameters have no corresponding covariance-based
-    uncertainty quantification since they are mathematically not defined. These can, however, be 
-    calculated via bootsrapping of these quantities, e.g. ::
+    For the ``'mode'``, ``'modes'`` and ``'modality'`` parameters, covariance-based uncertainties are not 
+    available. Unvertainties can, however, be calculated via bootsrapping of these quantities, e.g. ::
 
         def analyze_rmode(V):
             fit = dl.fitsignal(V,t,r)
             rmode = dl.diststats(fit.P,r)[0]['mode']
             return rmode
-        # Bootstrap analysis of distance mode    
-        rmode_uq = dl.bootan(V,Vfit,analyze_r_mode)
+        # Bootstrap analysis of distance mode
+        rmode_uq = dl.bootan(V,Vfit,analyze_rmode)
 
     """
 
     P,r = np.atleast_1d(P,r)
+
+    # Check to avoid non-sensical results with syntax diststats(P,r)
+    if not np.all(np.diff(r)>0): 
+        raise KeyError('The distance axis (1st argument) must be a monotnously increasing vector.')
 
     if threshold is None:
         threshold = np.max(P)/10
