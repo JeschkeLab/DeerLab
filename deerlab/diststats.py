@@ -7,6 +7,7 @@ import numpy as np
 import warnings
 import copy
 from scipy.signal import find_peaks
+from scipy.integrate import cumtrapz
 
 def diststats(r, P, Puq=None, verbose=False, threshold=None):
     r""" Computes statistical quantities for the location, spread, and shape 
@@ -94,56 +95,57 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
 
     # Auxiliary functions
     # -------------------
-
     # Percentile function
-    def pctile(P,p):
-        cdf = np.cumsum(P/np.sum(P))
+    def pctile(r,P,p):
+        cdf = cumtrapz(P,r,initial=0)
         cdf, index = np.lib.arraysetops.unique(cdf,return_index=True)
         rpctile = np.interp(p/100,cdf,r[index])
         return rpctile
     # Expectation operator function
-    def E(x,P):
-        return np.sum(x*P/np.sum(P))
-        
-    # 0th moment  - Integral 
-    intfcn = lambda P: np.trapz(P,r)
+    def E(x,P,r):
+        return np.trapz(x*P,r)
 
     # Location estimators
     # -------------------
     # 1st moment  - Mean 
-    meanfcn = lambda P: E(r,P)
+    meanfcn = lambda P: E(r,P,r)
     # Median
-    medianfcn = lambda P: pctile(P,50)
+    medianfcn = lambda P: pctile(r,P,50)
     # Interquartile mean
-    iqmfcn = lambda P: E(r[(r>pctile(P,25)) & (r<pctile(P,75))],P[(r>pctile(P,25)) & (r<pctile(P,75))]) 
+    def iqmfcn(P):
+        IQrange = (r>pctile(r,P,25)) & (r<pctile(r,P,75))
+        return E(r[IQrange],P[IQrange]/np.trapz(P[IQrange],r[IQrange]),r[IQrange]) 
     # Mode
-    modefcn = lambda P: r[np.argmax(P/np.sum(P))]
+    modefcn = lambda P: r[np.argmax(P)]
     # Modes
     modesfcn = lambda P: r[find_peaks(P,height=threshold)[0]]
 
     # Spread estimators
     # -----------------
     # Interquartile range
-    iqrfcn = lambda P: pctile(P,75) - pctile(P,25)
+    iqrfcn = lambda P: pctile(r,P,75) - pctile(r,P,25)
     # Mean absolute deviation
-    madfcn = lambda P: E(abs(r - meanfcn(P)),P)
+    madfcn = lambda P: E(abs(r - meanfcn(P)),P,r)
     # 2nd moment - Variance
-    variancefcn = lambda P: E(r**2 - meanfcn(P)**2,P)
+    variancefcn = lambda P: E(r**2 - meanfcn(P)**2,P,r)
     # 2nd moment - Standard deviation
     stdfcn = lambda P: np.sqrt(variancefcn(P))
     # Entropy (information theory)
-    entropyfcn = lambda P: -E(np.log(np.maximum(np.finfo(float).eps,P)),P)
+    entropyfcn = lambda P: -E(np.log(np.maximum(np.finfo(float).eps,P)),P,r)
 
     # Shape estimators
     # ----------------
     # Modality
     modalityfcn = lambda P:  np.size(modesfcn(P))
     # 3rd moment - Skewness
-    skewnessfcn = lambda P: E(((r - meanfcn(P))/stdfcn(P))**3,P)
+    skewnessfcn = lambda P: E(((r - meanfcn(P))/stdfcn(P))**3,P,r)
     # 4th moment - Kurtosis
-    kurtosisfcn = lambda P: E(((r - meanfcn(P))/stdfcn(P))**4,P)
+    kurtosisfcn = lambda P: E(((r - meanfcn(P))/stdfcn(P))**4,P,r)
     # Excess kurtosis 
-    exkurtosisfcn = lambda P: 3 - E(((r - meanfcn(P))/stdfcn(P))**4,P)
+    exkurtosisfcn = lambda P: 3 - E(((r - meanfcn(P))/stdfcn(P))**4,P,r)
+        
+    # 0th moment  - Integral 
+    intfcn = lambda P: np.trapz(P,r)
 
     # Calculate distribution estimators
     estimators = {
