@@ -278,3 +278,176 @@ def test_moment4_uncertainty():
     "Check that the 4th moment confidence intervals are correct."
     assert_uncertainty('moment4')
 # ======================================================================
+
+
+def assert_descriptor_nonuniform_r(key,truth):
+# ----------------------------------------------------------------------
+    # High-resolution non-uniform distance axis
+    r = np.sqrt(np.linspace(2**2,6**2,2000))
+    dr = np.min(np.diff(r))
+    # Gaussian distribution
+    P = dd_gauss(r,[Pmean, Psigma])
+    
+    descriptor = diststats(r,P)[0][key]
+    assert abs(descriptor - truth) < dr
+# ----------------------------------------------------------------------
+
+def test_nonuniform_r_rmin():
+# ======================================================================
+    "Check that the minimal distribution distance is correctly computed"
+
+    truth = min(r)
+    assert_descriptor_nonuniform_r('rmin',truth)
+# ======================================================================
+
+def test_nonuniform_r_rmax():
+# ======================================================================
+    "Check that the maximal distribution distance is correctly computed"
+
+    truth = max(r)
+    assert_descriptor_nonuniform_r('rmax',truth)
+# ======================================================================
+
+def test_nonuniform_r_int():
+# ======================================================================
+    "Check that the distribution integral is correctly computed"
+
+    truth = 1
+    assert_descriptor_nonuniform_r('int',truth)
+# ======================================================================
+
+def test_nonuniform_r_mean():
+# ======================================================================
+    "Check that the mean is correctly computed"
+
+    truth = Pmean
+    assert_descriptor_nonuniform_r('mean',truth)
+# ======================================================================
+
+def test_nonuniform_r_median():
+# ======================================================================
+    "Check that the median is correctly computed"
+
+    truth = Pmean
+    assert_descriptor_nonuniform_r('median',truth)
+# ======================================================================
+
+def test_nonuniform_r_mode():
+# ======================================================================
+    "Check that the mode is correctly computed"
+
+    truth = Pmean
+    assert_descriptor_nonuniform_r('mode',truth)
+# ======================================================================
+
+def test_nonuniform_r_modes():
+# ======================================================================
+    "Check that the modes are correctly computed"
+
+    truth = Pmean
+    assert_descriptor_nonuniform_r('modes',truth)
+# ======================================================================
+
+def test_nonuniform_r_iqm():
+# ======================================================================
+    "Check that the interquartile mean is correctly computed"
+
+    truth = Pmean
+    assert_descriptor_nonuniform_r('iqm',truth)
+# ======================================================================
+
+def test_nonuniform_r_iqr():
+# ======================================================================
+    "Check that the interquartile range is correctly computed"
+
+    truth = 1.349*Psigma
+    assert_descriptor_nonuniform_r('iqr',truth)
+# ======================================================================
+
+def test_nonuniform_r_std():
+# ======================================================================
+    "Check that the standard deviation is correctly computed"
+
+    truth = Psigma
+    assert_descriptor_nonuniform_r('std',truth)
+# ======================================================================
+
+def test_nonuniform_r_variance():
+# ======================================================================
+    "Check that the variance is correctly computed"
+
+    truth = Psigma**2
+    assert_descriptor_nonuniform_r('var',truth)
+# ======================================================================
+
+def test_nonuniform_r_entropy():
+# ======================================================================
+    "Check that the entropy is correctly computed"
+
+    truth = 1/2*np.log(2*np.pi*np.e*Psigma**2)
+    assert_descriptor_nonuniform_r('entropy',truth)
+# ======================================================================
+
+def test_nonuniform_r_mad():
+# ======================================================================
+    "Check that the mean absolute deviation is correctly computed"
+
+    truth = np.sqrt(2/np.pi)*Psigma
+    assert_descriptor_nonuniform_r('mad',truth)
+# ======================================================================
+
+def test_nonuniform_r_modality():
+# ======================================================================
+    "Check that the modality is correctly computed"
+
+    truth = 1
+    assert_descriptor_nonuniform_r('modality',truth)
+# ======================================================================
+
+def test_nonuniform_r_skewness():
+# ======================================================================
+    "Check that the skewness is correctly computed"
+
+    truth = 0
+    assert_descriptor_nonuniform_r('skewness',truth)
+# ======================================================================
+
+def test_nonuniform_r_kurtosis():
+# ======================================================================
+    "Check that the excess kurtosis is correctly computed"
+
+    truth = 0
+    assert_descriptor_nonuniform_r('kurtosis',truth)
+# ======================================================================
+
+def test_nonuniform_r_moment1():
+# ======================================================================
+    "Check that the 1st moment is correctly computed"
+
+    truth = Pmean
+    assert_descriptor_nonuniform_r('moment1',truth)
+# ======================================================================
+
+def test_nonuniform_r_moment2():
+# ======================================================================
+    "Check that the 2nd moment is correctly computed"
+
+    truth = Psigma**2
+    assert_descriptor_nonuniform_r('moment2',truth)
+# ======================================================================
+
+def test_nonuniform_r_moment3():
+# ======================================================================
+    "Check that the 3rd moment is correctly computed"
+
+    truth = 0
+    assert_descriptor_nonuniform_r('moment3',truth)
+# ======================================================================
+
+def test_nonuniform_r_moment4():
+# ======================================================================
+    "Check that the 4th moment is correctly computed"
+
+    truth = 3
+    assert_descriptor_nonuniform_r('moment4',truth)
+# ======================================================================
