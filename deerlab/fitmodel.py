@@ -1,4 +1,4 @@
-# fitsignal.py - Dipolar signal fit function
+# fitmodel.py - Dipolar signal fit function
 # ---------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
@@ -13,7 +13,7 @@ from deerlab.bg_models import bg_hom3d
 from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit, Jacobian
 
-def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
+def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
               dd_par0=None, bg_par0=None, ex_par0=None, verbose=False, 
               dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
               weights=1, uqanalysis=True, uq='covariance', regparam='aic', regtype = 'tikhonov'):
@@ -196,32 +196,32 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     --------
     Fit a 4pDEER signal with homogenous 3D background with Gaussian distribution::
 
-        fit = dl.fitsignal(V,t,r,dl.dd_gauss,dl.bg_hom3d,dl.ex_4pdeer)  
+        fit = dl.fitmodel(V,t,r,dl.dd_gauss,dl.bg_hom3d,dl.ex_4pdeer)  
 
 
     Fit a 5pDEER signal with exponential background and Tikhonov regularization::
 
-        fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer)
+        fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer)
     
     
     Fit a 4pDEER stretched exponential background (no foreground)::
     
-        fit = dl.fitsignal(V,t,r,None,dl.bg_strexp,None)  
+        fit = dl.fitmodel(V,t,r,None,dl.bg_strexp,None)  
     
     
     Fit a dipolar evolution function with Rician distribution::
     
-        fit = dl.fitsignal(V,t,r,dl.dd_rice,None,None)
+        fit = dl.fitmodel(V,t,r,dl.dd_rice,None,None)
     
     
     Fit a 4pDEER form factor (no background) with bimodal Gaussian distribution:: 
 
-        fit = dl.fitsignal(V,t,r,dl.dd_gauss2,None,dl.ex_4pdeer)   
+        fit = dl.fitmodel(V,t,r,dl.dd_gauss2,None,dl.ex_4pdeer)   
    
      
     Fit a 4pDEER signal and a 5pDEER signal with same type of background::
     
-        fit = fitsignal([V1,V2],t,r,'P',dl.bg_hom3d,[dl.ex_4pdeer,dl.ex_5pdeer])    
+        fit = fitmodel([V1,V2],t,r,'P',dl.bg_hom3d,[dl.ex_4pdeer,dl.ex_5pdeer])    
     """
 
     # Default optional settings
@@ -324,7 +324,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         """
         Multi-pathway dipolar model
         ------------------------------------------------------------------
-        This function represent the core model of fitsignal, it takes the
+        This function represent the core model of fitmodel, it takes the
         parameters and computes the dipolar kernel and background according to
         the dipolar multi-pathway theory. 
         This is the non-linear part of the SNLLS problem when fitting a

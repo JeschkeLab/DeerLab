@@ -76,7 +76,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     available. Unvertainties can, however, be calculated via bootsrapping of these quantities, e.g. ::
 
         def analyze_rmode(V):
-            fit = dl.fitsignal(V,t,r)
+            fit = dl.fitmodel(V,t,r)
             rmode = dl.diststats(fit.P,r)[0]['mode']
             return rmode
         # Bootstrap analysis of distance mode

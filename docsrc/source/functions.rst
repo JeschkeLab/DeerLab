@@ -44,7 +44,7 @@ This class of functions can be used and/or combined to create fitting routines o
     :maxdepth: 1
 
     ./functions/snlls
-    ./functions/fitsignal
+    ./functions/fitmodel
     ./functions/backgroundstart
     ./functions/fitmultimodel
     ./functions/fitparamodel
@@ -59,7 +59,7 @@ This class of functions can be used and/or combined to create fitting routines o
 Function                                         Description
 =============================================  ============================================================
 :ref:`snlls`                                     Separable non-linear least squares solver
-:ref:`fitsignal`                                 Full model signal fitting engine
+:ref:`fitmodel`                                 Full model signal fitting engine
 :ref:`bootan`                                    Bootstrap uncertainty analysis
 :ref:`fitmultimodel`                             Multi-component model fitting engine
 :ref:`fitparamodel`                              Parametric model fitting engine

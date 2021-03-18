@@ -1,8 +1,8 @@
 .. highlight:: python
-.. _fitsignal:
+.. _fitmodel:
 
 ***********************
-:mod:`fitsignal`
+:mod:`fitmodel`
 ***********************
 
-.. autofunction:: deerlab.fitsignal
+.. autofunction:: deerlab.fitmodel

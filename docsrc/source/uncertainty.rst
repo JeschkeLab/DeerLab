@@ -21,10 +21,10 @@ fields with all quantities of interested related to uncertainty (see details :re
 attributes is ``UncertQuant.type``, which identifies whether the uncertainty was estimated by 
 covariance-based or bootstrap methods. 
 
-One ``UncertQuant`` can contain the uncertainty of multiple parameters and information on their correlations. For example, if ``fitsignal`` is used to fit a 
+One ``UncertQuant`` can contain the uncertainty of multiple parameters and information on their correlations. For example, if ``fitmodel`` is used to fit a 
 4-pulse DEER signal without background ::
 
-    fit = dl.fitsignal(Vexp,t,r,'P',None,ex_4pdeer)  # Fit a 4-DEER form factor
+    fit = dl.fitmodel(Vexp,t,r,'P',None,ex_4pdeer)  # Fit a 4-DEER form factor
     Puq = fit.Puncert           # Uncertainty quantification of fitted distance distribution
     lamuq = fit.exparamUncert   # Uncertainty quantification of fitted modulation depth
 
@@ -113,9 +113,9 @@ Due to the need of repeating the fit for multiple bootstrap samples, this method
 any assumptions, the bootstrap uncertainty estimation are considered some of the most accurate, provided that enough bootstrap samples are taken. While a reduced number of
 samples (50-100) can be used when testing workflows or new scripts, for conclusive analysis the minimum standard is to use at least about 1000 bootstrap samples. 
 
-For routine analysis, the function ``fitsignal`` provides the option to switch from covariance based uncertainty quantification to bootstrapped uncertainty quantification by means of the keyword ``uq='bootstrap'``. The function will use 1000 bootstrap samples by default, however this can be changed if wanted by using ``uq=['bootstrap',Nsamples]`` when calling the function::
+For routine analysis, the function ``fitmodel`` provides the option to switch from covariance based uncertainty quantification to bootstrapped uncertainty quantification by means of the keyword ``uq='bootstrap'``. The function will use 1000 bootstrap samples by default, however this can be changed if wanted by using ``uq=['bootstrap',Nsamples]`` when calling the function::
 
-    fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,uq=['bootstrap',Nsamples],verbose=True)
+    fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,uq=['bootstrap',Nsamples],verbose=True)
     Puq = fit.Puncert # bootstrapped uncertainty quantification of fitted P(r)
 
 However, in DeerLab you can calculate bootstrap uncertainty estimates of any quantities using the :ref:`bootan` function. The function takes the experimental data, the fit, and the analysis function. This analysis 

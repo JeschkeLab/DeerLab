@@ -30,9 +30,9 @@ V = K@P + dl.whitegaussnoise(t,0.01,seed=0)   # DEER trace, with added noise
 # %% [markdown]
 # Fit the dipolar signal
 # ----------------------
-# First, we fit the non-parametric distance distribution using ``fitsignal()``
+# First, we fit the non-parametric distance distribution using ``fitmodel()``
 # %%
-fit = dl.fitsignal(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer)
+fit = dl.fitmodel(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer)
 fit.plot()
 plt.show() 
 
