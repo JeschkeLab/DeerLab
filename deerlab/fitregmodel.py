@@ -98,7 +98,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
     uncertainty : :ref:`UncertQuant`
         Covariance-based uncertainty quantification of the fitted distance distribution
     
-    alpha : float int
+    regparam : float int
         Regularization parameter used in the optimization
     
     scale : float int or list of float int

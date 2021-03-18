@@ -113,17 +113,23 @@ Due to the need of repeating the fit for multiple bootstrap samples, this method
 any assumptions, the bootstrap uncertainty estimation are considered some of the most accurate, provided that enough bootstrap samples are taken. While a reduced number of
 samples (50-100) can be used when testing workflows or new scripts, for conclusive analysis the minimum standard is to use at least about 1000 bootstrap samples. 
 
-In DeerLab you can calculate bootstrap uncertainty estimates using the :ref:`bootan` function. The function takes the experimental data, the fit, and the analysis function. This analysis 
-function must be a function that takes the experimental data and returns the quantities whose uncertainties are to be calculated. For examples, to bootstrap the distance distribution and 
-parameters obtained from a 4-pulse DEER fit using ``fitmodel`` you could use the following ::
+For routine analysis, the function ``fitmodel`` provides the option to switch from covariance based uncertainty quantification to bootstrapped uncertainty quantification by means of the keyword ``uq='bootstrap'``. The function will use 1000 bootstrap samples by default, however this can be changed if wanted by using ``uq=['bootstrap',Nsamples]`` when calling the function::
 
-    fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
-    Vfit = fit.V # Fitted signal
+    fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,uq=['bootstrap',Nsamples],verbose=True)
+    Puq = fit.Puncert # bootstrapped uncertainty quantification of fitted P(r)
+
+However, in DeerLab you can calculate bootstrap uncertainty estimates of any quantities using the :ref:`bootan` function. The function takes the experimental data, the fit, and the analysis function. This analysis 
+function must be a function that takes the experimental data and returns the quantities whose uncertainties are to be calculated. For example, to bootstrap the distance distribution, dipolar signal, and 
+regularization parameter obtained from a 4-pulse DEER fit using ``fitregmodel`` you could use the following ::
+
+    fit = dl.fitregmodel(Vexp,K,r,'tikh','aic')
+    Vfit = K@fit.P # Fitted signal
     
     # Define the function to be bootstrapped
     def fitfcn(Vexp):
-        fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
-        return fit.P, fit.exparam, fit.bgparam  # bootstrap the fitted distance distribution, modulation depth and spin concentration
+        fit = dl.fitregmodel(Vexp,K,r,'tikh','aic')
+        V = K@fit.P
+        return fit.P, V, fit.regparam  # bootstrap the fitted distance distribution, dipolar signal and regularization parameter
 
     bootuq = dl.bootan(fitfcn,Vexp,Vfit,samples=1000,verbose=True) # Bootstrap uncertainty quantification
 
