@@ -259,11 +259,8 @@ def test_multipath_harmonics():
     K = dipolarkernel(t,r,paths, integralop=False)
 
     Kref = 1-prob
-    Krenorm = Kref
     for p in range(len(lam)):
             Kref = Kref + lam[p]*calckernelmatrix(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge])
-            Krenorm = Krenorm + lam[p]*calckernelmatrix(-n[p]*T0[p],r,'fresnel',[],[],[ge,ge])
-    Kref = Kref/Krenorm
     Kref = Kref
 
     assert np.max(K-Kref) < 1e-3
