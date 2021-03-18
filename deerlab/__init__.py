@@ -20,7 +20,7 @@ from .snlls import snlls
 from .fitmultimodel import fitmultimodel
 from .fitparamodel import fitparamodel
 from .bootan import bootan
-from .fitsignal import fitsignal
+from .fitmodel import fitmodel
 from .correctscale import correctscale
 from .fftspec import fftspec
 from .time2dist import time2dist

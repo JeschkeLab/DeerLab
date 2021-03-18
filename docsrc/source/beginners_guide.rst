@@ -153,14 +153,14 @@ Fitting Dipolar Signals
 -----------------------
 
 DeerLab provides a wide range of functionality to analyze experimental dipolar EPR data using least-squares fitting. While there are multiple analysis functions of varying application, 
-generality and difficulty, the main fit function of DeerLab is ``fitsignal``. This function can fit non-parametric and parametric distance distributions, and all model parameters 
+generality and difficulty, the main fit function of DeerLab is ``fitmodel``. This function can fit non-parametric and parametric distance distributions, and all model parameters 
 (e.g. modulation depth, background decay rate, spin concentration, etc.) in a one-step analysis. It also provides uncertainty estimates for all fitted quantities (see later).
 
 Picking the right model
 ***********************
 
 DeerLab provides a very flexible framework to model dipolar signals originating from many different dipolar EPR spectroscopy experiments. Choosing a model that properly describes your 
-is of paramount importance. In ``fitsignal`` the main structure of the model is already defined, and the decision is divided into four decisions that define the model: 
+is of paramount importance. In ``fitmodel`` the main structure of the model is already defined, and the decision is divided into four decisions that define the model: 
     * **Distance range**: Also called the distance-axis, is the range of distances where the distribution is defined. 
     * **Distribution model**: Describes the distance distributions in a parametric (e.g. a Gaussian distribution) or non-parametric way. 
     * **Background model**: Describes the dipolar background arising from the inter-molecular contributions during an experiment. 
@@ -179,7 +179,7 @@ Now you must decide for a model. As described above, there are four separate cho
 
 (2) **Choosing a distribution model**
 
-    Generally, a non-parametric distribution is preferred (specified using the string ``'P'`` in ``fitsignal``), i.e. a distribution where each element :math:`P_i` of the distribution is a parameter. 
+    Generally, a non-parametric distribution is preferred (specified using the string ``'P'`` in ``fitmodel``), i.e. a distribution where each element :math:`P_i` of the distribution is a parameter. 
     Non-parametric distributions are obtained via methods such as Tikhonov regularization. If there are reasons to believe that the distance distribution has a 
     specific shape (e.g. Gaussian, Rice, random-coil, etc.), use the associated parametric distance distribution model from the :ref:`list of available models<modelsref_dd>`.
 
@@ -213,39 +213,39 @@ Dipolar evolution function with a random-coil distribution                    ``
 Starting the fit
 *****************
 
-Once you have chosen your model, you need to specify it to ``fitsignal``. The function takes several inputs: the experimental dipolar signal ``V`` and its time=axis ``t``, followed by all four 
+Once you have chosen your model, you need to specify it to ``fitmodel``. The function takes several inputs: the experimental dipolar signal ``V`` and its time=axis ``t``, followed by all four 
 model components described above, distance-axis ``r`` the distribution, background and experiment models. 
 
-The models that have an associated parametric function, e.g. ``bg_hom3d``, must be passed directly as inputs to ``fitsignal``. In Python functions are treated as common numerical variables in that 
+The models that have an associated parametric function, e.g. ``bg_hom3d``, must be passed directly as inputs to ``fitmodel``. In Python functions are treated as common numerical variables in that 
 they can be passed as inputs to other functions. 
 
 For example, a 4pDEER signal with homogenous 3D background and Tikhonov regularization can be fitted via ::
 
-    fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)  # 4pDEER fit
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)  # 4pDEER fit
 
-For the other examples in the table above, the call to ``fitsignal`` would look like this
+For the other examples in the table above, the call to ``fitmodel`` would look like this
 
 =========================================================================== ================================================================
             Description                                                        Fit
 =========================================================================== ================================================================
-4pDEER signal with homogenous 3D background and non-parametric distribution  ``fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)``
-4pDEER signal with homogenous 3D background and Gaussian distribution        ``fit = dl.fitsignal(V,t,r,dl.gauss,dl.bg_hom3d,dl.ex_4pdeer)``
-Dipolar evolution function with a random-coil distribution                   ``fit = dl.fitsignal(V,t,r,dl.randcoil,None,None)``
-4pDEER signal with no background and non-parametric distribution             ``fit = dl.fitsignal(V,t,r,'P',None,dl.ex_4pdeer)``
-5pDEER signal with fractal background and non-parametric distribution        ``fit = dl.fitsignal(V,t,r,'P',dl.bg_homfractal,dl.ex_5pdeer)``
+4pDEER signal with homogenous 3D background and non-parametric distribution  ``fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)``
+4pDEER signal with homogenous 3D background and Gaussian distribution        ``fit = dl.fitmodel(V,t,r,dl.gauss,dl.bg_hom3d,dl.ex_4pdeer)``
+Dipolar evolution function with a random-coil distribution                   ``fit = dl.fitmodel(V,t,r,dl.randcoil,None,None)``
+4pDEER signal with no background and non-parametric distribution             ``fit = dl.fitmodel(V,t,r,'P',None,dl.ex_4pdeer)``
+5pDEER signal with fractal background and non-parametric distribution        ``fit = dl.fitmodel(V,t,r,'P',dl.bg_homfractal,dl.ex_5pdeer)``
 =========================================================================== ================================================================
 
-fitsignal uses a least-squares fitting algorithm to determine the optimal distance distribution, background parameters, and experiment parameters that fit the experiment data. To determine the non-parametric 
+fitmodel uses a least-squares fitting algorithm to determine the optimal distance distribution, background parameters, and experiment parameters that fit the experiment data. To determine the non-parametric 
 distribution, it internally uses Tikhnonov regularization with a regularization parameter optimized using the Akaike Information Criterion (AIC). All settings related to the fit can be adjusted by using the 
-appropriate keywords, see the :ref:`reference documentation <fitsignal>` for details. For example, the regularization parameter used in the Tikhonov regularization could be manually adjusted by using the ``regparam``
+appropriate keywords, see the :ref:`reference documentation <fitmodel>` for details. For example, the regularization parameter used in the Tikhonov regularization could be manually adjusted by using the ``regparam``
 keyword: ::
 
-    fit1 = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam='aic') # regularization with Akaike information criterion
-    fit2 = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam='gcv') # regularization with Generalized Cross-Validation
-    fit3 = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam=0.05)  # regularization with fixed regularization parameter
+    fit1 = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam='aic') # regularization with Akaike information criterion
+    fit2 = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam='gcv') # regularization with Generalized Cross-Validation
+    fit3 = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam=0.05)  # regularization with fixed regularization parameter
 
 After the function has found a solution if will return a variable ``fit``. This fit is an object with different fields containing all quantities of interest with the fit results.
-A detailed list of these quantities can be found again in the :ref:`reference` for ``fitsignal``.
+A detailed list of these quantities can be found again in the :ref:`reference` for ``fitmodel``.
 
 
 Displaying the results
@@ -270,9 +270,9 @@ The ``fit`` output contains some interesting information as well, for example:
     * ``fit.scale`` contains the fitted arbitrary scale of the dipolar signal. 
 
 In addition to the distance distribution fit, it is important to check and report the fitted model parameters and their uncertainties. While this can be computed manually, a summary can be easily requested by enabling the 
-``verbose`` option of ``fitsignal``. By using ::
+``verbose`` option of ``fitmodel``. By using ::
 
-    fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,verbose=True)  # 4pDEER fit and report parameter fits
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,verbose=True)  # 4pDEER fit and report parameter fits
 
 after the function has fitted your data, it will print a summary the results, including goodness-of-fit estimators
 and fitted parameters with uncertainties, for example
@@ -314,5 +314,5 @@ Summarizing, this would be an example script to load experimental data, pre-proc
     r = np.linspace(1.5,6,len(t))   # define distance range form 1.5nm to 6nm with the same amount of points as t
 
     # Fit
-    fit = dl.fitsignal(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,verbose=True)   # 4pDEER fit
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,verbose=True)   # 4pDEER fit
     fit.plot() # display results

@@ -21,10 +21,10 @@ fields with all quantities of interested related to uncertainty (see details :re
 attributes is ``UncertQuant.type``, which identifies whether the uncertainty was estimated by 
 covariance-based or bootstrap methods. 
 
-One ``UncertQuant`` can contain the uncertainty of multiple parameters and information on their correlations. For example, if ``fitsignal`` is used to fit a 
+One ``UncertQuant`` can contain the uncertainty of multiple parameters and information on their correlations. For example, if ``fitmodel`` is used to fit a 
 4-pulse DEER signal without background ::
 
-    fit = dl.fitsignal(Vexp,t,r,'P',None,ex_4pdeer)  # Fit a 4-DEER form factor
+    fit = dl.fitmodel(Vexp,t,r,'P',None,ex_4pdeer)  # Fit a 4-DEER form factor
     Puq = fit.Puncert           # Uncertainty quantification of fitted distance distribution
     lamuq = fit.exparamUncert   # Uncertainty quantification of fitted modulation depth
 
@@ -115,14 +115,14 @@ samples (50-100) can be used when testing workflows or new scripts, for conclusi
 
 In DeerLab you can calculate bootstrap uncertainty estimates using the :ref:`bootan` function. The function takes the experimental data, the fit, and the analysis function. This analysis 
 function must be a function that takes the experimental data and returns the quantities whose uncertainties are to be calculated. For examples, to bootstrap the distance distribution and 
-parameters obtained from a 4-pulse DEER fit using ``fitsignal`` you could use the following ::
+parameters obtained from a 4-pulse DEER fit using ``fitmodel`` you could use the following ::
 
-    fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
+    fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
     Vfit = fit.V # Fitted signal
     
     # Define the function to be bootstrapped
     def fitfcn(Vexp):
-        fit = dl.fitsignal(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
+        fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
         return fit.P, fit.exparam, fit.bgparam  # bootstrap the fitted distance distribution, modulation depth and spin concentration
 
     bootuq = dl.bootan(fitfcn,Vexp,Vfit,samples=1000,verbose=True) # Bootstrap uncertainty quantification
