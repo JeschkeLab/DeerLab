@@ -88,6 +88,9 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * ``'covariance'`` - Covariance-based uncertainty quantification. Fast, but approximate.   
         * ``'bootstrap'`` - Bootstrapped uncertainty quantification. Slow, but accurate. By default, 1000 bootstrap
         samples are used. Alternatively, a different number can be specified as follows ``uq=['bootstrap',Nsamples]``.
+        * ``None`` - Disable the uncertainty quantification analysis. 
+
+        The default is ``'covariance'``.
 
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting,
@@ -124,10 +127,6 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     verbose : boolean, optional
         Enable/disable printing a table of fit results, by default is disabled
-    
-    uqanalysis : boolean, optional
-        Enable/disable the uncertainty quantification analysis, by default it is enabled.
-
 
 
     Returns
