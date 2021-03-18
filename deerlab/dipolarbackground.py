@@ -27,12 +27,6 @@ def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
         * Physical background models: A callable function accepting a time-axis array as first input and a pathway amplitude as a second, e.g. ``B = lambda t,lam: bg_hom3d(t,par,lam)``
         * Phenomenological background models: A callable function accepting a time-axis array as input, e.g. ``B = lambda t: bg_exp(t,par)``
 
-    renormalize : boolean, optional
-        Re-normalization of the multi-pathway background to ensure the equality ``B(t=0)==1`` is satisfied. Enabled by default.
-        
-    renormpaths: boolean, optional
-        Normalization of the pathway amplitudes such that ``Lam0 + lam1 + ... + lamN = 1``. Enabled by default.  
-
     Returns
     -------
     B : ndarray
@@ -105,13 +99,6 @@ def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
             # Otherwise paths are not correctly defined
             raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i))
 
-    # Normalize the pathway amplitudes to unity
-    if renormpaths:
-        lamsum = Lambda0 + sum([path[0] for path in pathways])
-        Lambda0 /= lamsum
-        for i in range(len(pathways)):
-            pathways[i][0] /= lamsum 
-
     # Construction of multi-pathway background function 
     #-------------------------------------------------------------------------------
     Bnorm = 1
@@ -120,8 +107,5 @@ def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
         n,T0,lam = pathway
         B = B*Bmodel(n*(t-T0),lam)
         Bnorm = Bnorm*Bmodel(-T0*n,lam)
-    
-    if renormalize:
-        B = B/Bnorm
 
     return B

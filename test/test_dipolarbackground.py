@@ -142,7 +142,6 @@ def test_multipath_raw():
     for p in range(len(lam)):
             Bref = Bref*Bmodel((t-T0[p]),lam[p])
             Bnorm = Bnorm*Bmodel(-T0[p],lam[p])
-    Bref = Bref/Bnorm
     
     paths = []
     paths.append(1-prob)
