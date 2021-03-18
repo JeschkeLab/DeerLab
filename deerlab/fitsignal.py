@@ -651,7 +651,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             parfit_ex = [parfit[exidx[n]] for n in range(nSignals)]
             parfit_dd = parfit[ddidx]
 
-            return Pfit_,*Vfit_,*Bfit_,*Vmod_,*Vunmod_,*parfit_bg,*parfit_ex,parfit_dd
+            return (Pfit_,*Vfit_,*Bfit_,*Vmod_,*Vunmod_,*parfit_bg,*parfit_ex,parfit_dd)
             # ======================================================
 
         # Run bootstrapping
