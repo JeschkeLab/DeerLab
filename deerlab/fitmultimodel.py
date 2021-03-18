@@ -209,6 +209,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     if ub is None:
         ub = info['Upper']
     paramnames = info['Parameters']
+    modelfcn = info['ModelFcn']
 
     if lbK is None:
         lbK = []
@@ -248,7 +249,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
             subset = np.arange(paramsused, paramsused+nparam)
             paramsused = paramsused + nparam
             # Get basis functions
-            Pbasis = model(r,par[subset])
+            Pbasis = modelfcn(r,par[subset])
             # Combine all non-linear functions into one
             Knonlin[:,iModel] = K@Pbasis
         return Knonlin
@@ -269,7 +270,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
             subset = np.arange(paramsused, paramsused+nparam)
             paramsused = paramsused + nparam
             # Add basis functions
-            Pfit = Pfit + amp*model(r,nlinpar[subset])
+            Pfit = Pfit + amp*modelfcn(r,nlinpar[subset])
         return Pfit
     #===============================================================================
 

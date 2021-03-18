@@ -272,7 +272,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     parfreeDistribution = dd_model == 'P' # Check if P(r) is non-parametric model
     includeForeground = np.array(dd_model is not None) # Check if there is a foreground or just background in the model
 
-    par0_dd, lower_dd, upper_dd, N_dd = _getmodelparams(dd_model) # Get model built-in info
+    par0_dd, lower_dd, upper_dd, N_dd, dd_fcn = _getmodelparams(dd_model) # Get model built-in info
 
     # Catch nonsensical case
     if includeForeground and not parametricDistribution and not parfreeDistribution:
@@ -283,7 +283,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     isparamodel = np.array([type(model) is types.FunctionType for model in bg_model]) # Check if B(t) is a parametric model
     includeBackground = np.array([model is not None for model in bg_model]) # Check if model includes B(t) or not
 
-    par0_bg, lower_bg, upper_bg, N_bg = _getmodelparams(bg_model) # Get model built-in info
+    par0_bg, lower_bg, upper_bg, N_bg, bg_fcn = _getmodelparams(bg_model) # Get model built-in info
 
     # Check whether the background model is a physical or phenomenological model
     isphenomenological = [_iserror(model,t,par0,1) for model,par0 in zip(bg_model,par0_bg)]
@@ -297,7 +297,7 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     isparamodel = np.array([type(model) is types.FunctionType for model in ex_model]) # Check if experiment is a parametric model
     includeExperiment = np.array([model is not None for model in ex_model]) # Check whether to include experiment in the model
 
-    par0_ex, lower_ex, upper_ex, N_ex = _getmodelparams(ex_model) # Get model built-in info
+    par0_ex, lower_ex, upper_ex, N_ex, ex_fcn = _getmodelparams(ex_model) # Get model built-in info
 
     # Catch nonsensical situations
     if np.any(~isparamodel & includeExperiment):
@@ -338,15 +338,15 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             # Prepare background basis function
             if includeBackground[iSignal]:
                 if isphenomenological[iSignal]:
-                    Bfcn = lambda t: bg_model[iSignal](t,bg_par)
+                    Bfcn = lambda t: bg_fcn[iSignal](t,bg_par)
                 else:
-                    Bfcn = lambda t,lam: bg_model[iSignal](t,bg_par,lam)
+                    Bfcn = lambda t,lam: bg_fcn[iSignal](t,bg_par,lam)
             else:
                 Bfcn = lambda _,__: np.ones_like(Vexp[iSignal])
             
             # Get pathway information
             if includeExperiment[iSignal]:
-                pathways = ex_model[iSignal](ex_par)
+                pathways = ex_fcn[iSignal](ex_par)
             else:
                 pathways = 1
             
@@ -843,24 +843,26 @@ def _getmodelparams(models):
     if type(models) is not list:
         models = [models]
 
-    par0,lo,up,N = ([],[],[],[])
+    par0,lo,up,N,modelfcn = ([],[],[],[],[])
     for model in models:
         if type(model) is types.FunctionType:
             info = model()
             par0.append(info['Start'])
             lo.append(info['Lower'])
             up.append(info['Upper'])
+            modelfcn.append(info['ModelFcn'])
         else:
             par0.append([])
             lo.append([])
             up.append([])
+            modelfcn.append([])
         N.append(len(par0[-1]))
 
     par0 = np.concatenate(par0)
     lo = np.concatenate(lo)
     up = np.concatenate(up)
     N = np.atleast_1d(N)
-    return par0,lo,up,N
+    return par0,lo,up,N,modelfcn
 # ==============================================================================
 
 def _parcombine(p,d):

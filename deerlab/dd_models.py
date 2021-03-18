@@ -99,22 +99,26 @@ def dd_gauss(*args):
       Standard deviation         nm       0.05      2.5      0.2 
      -------------------------------------------------------------
     """  
+    def model(r,p):    
+        r0 = [p[0]]
+        sigma = [p[1]]
+        a = [1.0]
+        P = _multigaussfun(r,r0,sigma,a)
+        return P
     if not args:
         info = dict(
             Parameters = ('Mean','Standard deviation'),
             Units = ('nm','nm'),
             Start = np.asarray([3.5, 0.2]),
             Lower = np.asarray([1, 0.05]),
-            Upper = np.asarray([20, 2.5])
+            Upper = np.asarray([20, 2.5]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=2)
-
-    r0 = [p[0]]
-    sigma = [p[1]]
-    a = [1.0]
-    P = _multigaussfun(r,r0,sigma,a)
-    return P
+    else: 
+        r,p = _parsargs(args,npar=2)
+        P = model(r,p)
+        return P
 #=================================================================
     
 
@@ -164,6 +168,13 @@ def dd_gauss2(*args):
       Amplitude of 2nd Gaussian                        0        1        0.5 
      -------------------------------------------------------------------------
     """
+    def model(r,p):    
+        r0 = [p[0], p[3]]
+        sigma = [p[1], p[4]]
+        a = [p[2], p[5]]
+        P = _multigaussfun(r,r0,sigma,a)
+
+        return P
 
     if not args:
         info = dict(
@@ -172,17 +183,14 @@ def dd_gauss2(*args):
             Units = ('nm','nm','','nm','nm',''),
             Start = np.asarray([2.5, 0.2, 0.5, 3.5, 0.2, 0.5]),
             Lower = np.asarray([1, 0.05, 0, 1, 0.05, 0]),
-            Upper = np.asarray([20, 2.5, 1, 20, 2.5, 1])
+            Upper = np.asarray([20, 2.5, 1, 20, 2.5, 1]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=6)
-
-    r0 = [p[0], p[3]]
-    sigma = [p[1], p[4]]
-    a = [p[2], p[5]]
-    P = _multigaussfun(r,r0,sigma,a)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=6)
+        P = model(r,p)
+        return P
 #=================================================================
     
 
@@ -238,6 +246,13 @@ def dd_gauss3(*args):
       Amplitude of 3rd Gaussian                       0        1        0.3 
      -------------------------------------------------------------------------
     """
+    def model(r,p):    
+        r0 = [p[0], p[3], p[6]]
+        sigma = [p[1], p[4], p[7]]
+        a = [p[2], p[5], p[8]]
+        P = _multigaussfun(r,r0,sigma,a)
+
+        return P
 
     if not args:
         info = dict(
@@ -247,17 +262,14 @@ def dd_gauss3(*args):
             Units = ('nm','nm','','nm','nm','','nm','nm',''),
             Start = np.asarray([2.5, 0.2, 0.3, 3.5, 0.2, 0.3, 5, 0.2, 0.3]),
             Lower = np.asarray([1, 0.05, 0, 1, 0.05, 0, 1, 0.05, 0]),
-            Upper = np.asarray([20, 2.5, 1, 20, 2.5, 1,  20, 2.5, 1])
+            Upper = np.asarray([20, 2.5, 1, 20, 2.5, 1,  20, 2.5, 1]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=9)
-
-    r0 = [p[0], p[3], p[6]]
-    sigma = [p[1], p[4], p[7]]
-    a = [p[2], p[5], p[8]]
-    P = _multigaussfun(r,r0,sigma,a)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=9)
+        P = model(r,p)
+        return P
 #=================================================================
 
 def dd_gengauss(*args):    
@@ -305,26 +317,31 @@ def dd_gengauss(*args):
       Kurtosis             0.25    15       5 
      --------------------------------------------
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        r0 = p[0]
+        sigma = p[1]
+        beta = p[2]
+        x = abs(r-r0)/sigma
+        P = beta/(2*sigma*spc.gamma(1/beta))*np.exp(-x**beta)
+        P = _normalize(r,P)
+
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Mean','Spread','Kurtosis'),
             Units = ('nm','nm',''),
             Start = np.asarray([3.5, 0.5,0.5]),
             Lower = np.asarray([1, 0.05, 0.25]),
-            Upper = np.asarray([20, 5, 15])
+            Upper = np.asarray([20, 5, 15]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=3)
-    
-    # Compute the model distance distribution
-    r0 = p[0]
-    sigma = p[1]
-    beta = p[2]
-    x = abs(r-r0)/sigma
-    P = beta/(2*sigma*spc.gamma(1/beta))*np.exp(-x**beta)
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=3)
+        P = model(r,p)
+        return P
 #=================================================================
     
 
@@ -374,26 +391,31 @@ def dd_skewgauss(*args):
       Skewness             -25     25      5 
      --------------------------------------------
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        r0 = p[0]
+        sigma = p[1]
+        alpha = p[2]
+        x = (r-r0)/sigma/np.sqrt(2)
+        P = 1/np.sqrt(2*np.pi)*np.exp(-x**2)*(1 + spc.erf(alpha*x))
+        P = _normalize(r,P)
+
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Center','Spread','Kurtosis'),
             Units = ('nm','nm',''),
             Start = np.asarray([3.5, 0.2, 5]),
             Lower = np.asarray([1, 0.05, -25]),
-            Upper = np.asarray([20, 5, 25])
+            Upper = np.asarray([20, 5, 25]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=3)
-    
-    # Compute the model distance distribution
-    r0 = p[0]
-    sigma = p[1]
-    alpha = p[2]
-    x = (r-r0)/sigma/np.sqrt(2)
-    P = 1/np.sqrt(2*np.pi)*np.exp(-x**2)*(1 + spc.erf(alpha*x))
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=3)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -442,22 +464,27 @@ def dd_rice(*args):
       Spread         nm       0.1       5        0.7 
      ------------------------------------------------
     """  
+    def model(r,p):    
+        nu = [p[0]]
+        sig = [p[1]]
+        a = [1.0]
+        P = _multirice3dfun(r,nu,sig,a)
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Location','Spread'),
             Units = ('nm','nm'),
             Start = np.asarray([3.5, 0.7]),
             Lower = np.asarray([1, 0.1]),
-            Upper = np.asarray([10, 5])
+            Upper = np.asarray([10, 5]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=2)
-
-    nu = [p[0]]
-    sig = [p[1]]
-    a = [1.0]
-    P = _multirice3dfun(r,nu,sig,a)
-    return P
+    else: 
+        r,p = _parsargs(args,npar=2)
+        P = model(r,p)
+        return P
 #=================================================================
     
 
@@ -510,6 +537,13 @@ def dd_rice2(*args):
       Amplitude of 2nd Rician                 0        1        0.5 
      --------------------------------------------------------------
     """
+    def model(r,p):    
+        nu = [p[0], p[3]]
+        sig = [p[1], p[4]]
+        a = [p[2], p[5]]
+        P = _multirice3dfun(r,nu,sig,a)
+
+        return P
 
     if not args:
         info = dict(
@@ -518,17 +552,14 @@ def dd_rice2(*args):
             Units = ('nm','nm','','nm','nm',''),
             Start = np.asarray([2.5, 0.7, 0.5, 4.0, 0.7, 0.5]),
             Lower = np.asarray([1, 0.1, 0, 1, 0.1, 0]),
-            Upper = np.asarray([10, 5, 1, 10, 5, 1])
+            Upper = np.asarray([10, 5, 1, 10, 5, 1]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=6)
-
-    nu = [p[0], p[3]]
-    sig = [p[1], p[4]]
-    a = [p[2], p[5]]
-    P = _multirice3dfun(r,nu,sig,a)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=6)
+        P = model(r,p)
+        return P
 #=================================================================
     
 
@@ -583,6 +614,13 @@ def dd_rice3(*args):
       Amplitude of 3rd Rician               0        1        0.3 
      --------------------------------------------------------------
     """
+    def model(r,p):    
+        nu = [p[0], p[3], p[6]]
+        sig = [p[1], p[4], p[7]]
+        a = [p[2], p[5], p[8]]
+        P = _multirice3dfun(r,nu,sig,a)
+
+        return P
 
     if not args:
         info = dict(
@@ -592,17 +630,14 @@ def dd_rice3(*args):
             Units = ('nm','nm','','nm','nm','','nm','nm',''),
             Start = np.asarray([2.5, 0.7, 0.3, 3.5, 0.7, 0.3, 5, 0.7, 0.3]),
             Lower = np.asarray([1, 0.1, 0, 1, 0.1, 0, 1, 0.1, 0]),
-            Upper = np.asarray([10, 5, 1, 10, 5, 1,  10, 5, 1])
+            Upper = np.asarray([10, 5, 1, 10, 5, 1,  10, 5, 1]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=9)
-
-    nu = [p[0], p[3], p[6]]
-    sig = [p[1], p[4], p[7]]
-    a = [p[2], p[5], p[8]]
-    P = _multirice3dfun(r,nu,sig,a)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=9)
+        P = model(r,p)
+        return P
 #=================================================================
 
 def dd_randcoil(*args):    
@@ -651,29 +686,34 @@ def dd_randcoil(*args):
       Scaling exponent             0.33    1         0.602
      ------------------------------------------------------
     """  
+    def model(r,p):    
+        N  = p[0]  # number of residues
+        nu = p[1] # scaling exponent
+        R0 = p[2] # residue length
+
+        rsq = 6*(R0*N**nu)**2 # mean square end-to-end distance from radius of gyration
+        normFact = 3/(2*np.pi*rsq)**(3/2) # normalization prefactor
+        ShellSurf = 4*np.pi*r**2 # spherical shell surface
+        Gaussian = np.exp(-3*r**2/(2*rsq))
+        P = normFact*ShellSurf*Gaussian
+        P = _normalize(r,P)
+
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
             Units = ('','nm',''),
             Start = np.asarray([50,   0.2, 0.602]),
             Lower = np.asarray([2,    0.1, 0.33 ]),
-            Upper = np.asarray([1000, 0.4, 1    ])
+            Upper = np.asarray([1000, 0.4, 1    ]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=3)
-    
-    N  = p[0]  # number of residues
-    nu = p[1] # scaling exponent
-    R0 = p[2] # residue length
-
-    rsq = 6*(R0*N**nu)**2 # mean square end-to-end distance from radius of gyration
-    normFact = 3/(2*np.pi*rsq)**(3/2) # normalization prefactor
-    ShellSurf = 4*np.pi*r**2 # spherical shell surface
-    Gaussian = np.exp(-3*r**2/(2*rsq))
-    P = normFact*ShellSurf*Gaussian
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=3)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -722,29 +762,34 @@ def dd_circle(*args):
       Radius       nm      0.1      5      0.5 
      ----------------------------------------------
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        r0 = p[0]
+        R = abs(p[1])
+
+        dr = r - r0
+        idx = abs(dr)<R
+
+        P = np.zeros(len(r))
+        P[idx] = 2/np.pi/R**2*np.sqrt(R**2 - dr[idx]**2)
+        P = _normalize(r,P)
+
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
             Units = ('nm','nm'),
             Start = np.asarray([3, 0.5]),
             Lower = np.asarray([1, 0.1]),
-            Upper = np.asarray([20, 5 ])
+            Upper = np.asarray([20, 5 ]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=2)
-    
-    # Compute the model distance distribution
-    r0 = p[0]
-    R = abs(p[1])
-
-    dr = r - r0
-    idx = abs(dr)<R
-
-    P = np.zeros(len(r))
-    P[idx] = 2/np.pi/R**2*np.sqrt(R**2 - dr[idx]**2)
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=2)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -793,27 +838,32 @@ def dd_cos(*args):
       FWHM         nm      0.1      5      0.5 
      ----------------------------------------------
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        r0 = p[0]
+        fwhm = p[1]
+
+        phi = (r-r0)/fwhm*np.pi
+        P = (1 + np.cos(phi))/2/fwhm
+        P[(r<(r0-fwhm)) | (r>(r0+fwhm))] = 0
+        P = _normalize(r,P)
+
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
             Units = ('nm','nm'),
             Start = np.asarray([3, 0.5]),
             Lower = np.asarray([1, 0.1]),
-            Upper = np.asarray([20, 5 ])
+            Upper = np.asarray([20, 5 ]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=2)
-    
-    # Compute the model distance distribution
-    r0 = p[0]
-    fwhm = p[1]
-
-    phi = (r-r0)/fwhm*np.pi
-    P = (1 + np.cos(phi))/2/fwhm
-    P[(r<(r0-fwhm)) | (r>(r0+fwhm))] = 0
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=2)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -901,6 +951,21 @@ def dd_shell(*args):
     http://doi.org/10.1016/j.jmr.2013.01.007
 
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        R1 = float(p[0])
+        w = float(p[1])
+        R2 = R1 + w
+
+        P = np.zeros(len(r))
+        P = R2**6*_pb(r,R2) - R1**6*_pb(r,R1) - 2*(R2**3 - R1**3)*_pbs(r,R1,R2)
+
+        P = P/(R2**3 - R1**3)**2
+
+        P = _normalize(r,P)
+
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -908,23 +973,13 @@ def dd_shell(*args):
             Lower = np.asarray([0.1, 0.1]),
             Upper = np.asarray([20,  20 ]),
             Start = np.asarray([1.5, 0.5]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=2)
-        
-    # Compute the model distance distribution
-    R1 = float(p[0])
-    w = float(p[1])
-    R2 = R1 + w
-
-    P = np.zeros(len(r))
-    P = R2**6*_pb(r,R2) - R1**6*_pb(r,R1) - 2*(R2**3 - R1**3)*_pbs(r,R1,R2)
-
-    P = P/(R2**3 - R1**3)**2
-
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=2)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -976,7 +1031,19 @@ def dd_spherepoint(*args):
     See: D.R. Kattnig, D. Hinderberger, Journal of Magnetic Resonance, 230 (2013), 50-63 
     http://doi.org/10.1016/j.jmr.2013.01.007
 
-    """  
+    """ 
+    def model(r,p):    
+        # Compute the model distance distribution
+        R = float(p[0])
+        d = float(p[1])
+        P = np.zeros(len(r))
+        idx = (r >= d - R) & (r<= d + R)
+        P[idx] = 3*r[idx]*(R**2 - (d - r[idx])**2)/(4*d*R**3)
+
+        P = _normalize(r,P)
+
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -984,20 +1051,13 @@ def dd_spherepoint(*args):
             Lower = np.asarray([0.1, 0.1]),
             Upper = np.asarray([20,  20 ]),
             Start = np.asarray([1.5, 3.5]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=2)
-        
-    # Compute the model distance distribution
-    R = float(p[0])
-    d = float(p[1])
-    P = np.zeros(len(r))
-    idx = (r >= d - R) & (r<= d + R)
-    P[idx] = 3*r[idx]*(R**2 - (d - r[idx])**2)/(4*d*R**3)
-
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=2)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -1048,7 +1108,18 @@ def dd_spheresurf(*args):
     See: D.R. Kattnig, D. Hinderberger, Journal of Magnetic Resonance, 230 (2013), 50-63 
     http://doi.org/10.1016/j.jmr.2013.01.007
 
-    """  
+    """ 
+    def model(r,p):    
+        # Compute the model distance distribution
+        R = float(p[0])
+        P = np.zeros(len(r))
+        idx = (r >= 0) & (r<= 2*R)
+        P[idx] = r[idx]/R**2
+
+        P = _normalize(r,P)
+
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -1056,19 +1127,13 @@ def dd_spheresurf(*args):
             Lower = np.asarray([0.1]),
             Upper = np.asarray([20]),
             Start = np.asarray([2.5]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=1)
-        
-    # Compute the model distance distribution
-    R = float(p[0])
-    P = np.zeros(len(r))
-    idx = (r >= 0) & (r<= 2*R)
-    P[idx] = r[idx]/R**2
-
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=1)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -1122,6 +1187,29 @@ def dd_shellshell(*args):
     http://doi.org/10.1016/j.jmr.2013.01.007
 
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        R1 = float(p[0])
+        w1 = float(p[1])
+        w2 = float(p[2])
+
+        R2 = R1 + w1
+        R3 = R2 + w2
+
+        delta21 = R2**3 - R1**3
+        q21 = delta21*_pbs(r,R1,R2)
+        delta31 = R3**3 - R1**3
+        q31 = delta31*_pbs(r,R1,R3)
+        delta32 = R3**3 - R2**3
+        q32 = delta32*_pbs(r,R2,R3)
+
+        P = R1**3*q21 - R1**3*q31 + R2**3*q32
+        P = P/(delta21*delta32)
+
+        P = _normalize(r,P)
+
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -1129,31 +1217,13 @@ def dd_shellshell(*args):
             Lower = np.asarray([0.1, 0.1, 0.1]),
             Upper = np.asarray([20,  20,  20 ]),
             Start = np.asarray([1.5, 0.5, 0.5]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=3)
-        
-    # Compute the model distance distribution
-    R1 = float(p[0])
-    w1 = float(p[1])
-    w2 = float(p[2])
-
-    R2 = R1 + w1
-    R3 = R2 + w2
-
-    delta21 = R2**3 - R1**3
-    q21 = delta21*_pbs(r,R1,R2)
-    delta31 = R3**3 - R1**3
-    q31 = delta31*_pbs(r,R1,R3)
-    delta32 = R3**3 - R2**3
-    q32 = delta32*_pbs(r,R2,R3)
-
-    P = R1**3*q21 - R1**3*q31 + R2**3*q32
-    P = P/(delta21*delta32)
-
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=3)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -1207,6 +1277,17 @@ def dd_shellsphere(*args):
     http://doi.org/10.1016/j.jmr.2013.01.007
 
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        R1 = float(p[0])
+        w = float(p[1])
+        R2 = R1 + w
+        P = _pbs(r,R1,R2)
+
+        P = _normalize(r,P)
+
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -1214,19 +1295,13 @@ def dd_shellsphere(*args):
             Lower = np.asarray([0.1, 0.1]),
             Upper = np.asarray([20,  20]),
             Start = np.asarray([1.5, 0.5]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=2)
-        
-    # Compute the model distance distribution
-    R1 = float(p[0])
-    w = float(p[1])
-    R2 = R1 + w
-    P = _pbs(r,R1,R2)
-
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=2)
+        P = model(r,p)
+        return P
 #=================================================================
 
 def dd_shellvoidshell(*args):    
@@ -1280,6 +1355,35 @@ def dd_shellvoidshell(*args):
     http://doi.org/10.1016/j.jmr.2013.01.007
 
     """  
+    def model(r,p):        
+        # Compute the model distance distribution
+        R1 = float(p[0])
+        w1 = float(p[1])
+        w2 = float(p[2])
+        d  = float(p[3])
+
+        R2 = R1 + w1
+        R3 = R1 + w1 + w2
+        R4 = R1 + w1 + w2 + d
+
+        delta21 = R2**3 - R1**3
+        delta31 = R3**3 - R1**3
+        q31 = delta31*_pbs(r,R1,R3)
+        delta32 = R3**3 - R2**3
+        q32 = delta32*_pbs(r,R2,R3)
+        delta41 = R4**3 - R1**3
+        q41 = delta41*_pbs(r,R1,R4)
+        delta42 = R4**3 - R2**3
+        q42 = delta42*_pbs(r,R2,R4)
+        delta43 = R4**3 - R3**3
+
+        P = (R1**3*(q31 - q41) + R2**3*(q42 - q32))/(delta43*delta21)
+        P = np.round(P,15)
+
+        P = _normalize(r,P)
+
+        return P
+        
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -1287,37 +1391,13 @@ def dd_shellvoidshell(*args):
             Lower = np.asarray([0.1, 0.1, 0.1, 0.1]),
             Upper = np.asarray([20,  20, 20, 2]),
             Start = np.asarray([0.75, 1, 1, 0.5]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=4)
-        
-    # Compute the model distance distribution
-    R1 = float(p[0])
-    w1 = float(p[1])
-    w2 = float(p[2])
-    d  = float(p[3])
-
-    R2 = R1 + w1
-    R3 = R1 + w1 + w2
-    R4 = R1 + w1 + w2 + d
-
-    delta21 = R2**3 - R1**3
-    delta31 = R3**3 - R1**3
-    q31 = delta31*_pbs(r,R1,R3)
-    delta32 = R3**3 - R2**3
-    q32 = delta32*_pbs(r,R2,R3)
-    delta41 = R4**3 - R1**3
-    q41 = delta41*_pbs(r,R1,R4)
-    delta42 = R4**3 - R2**3
-    q42 = delta42*_pbs(r,R2,R4)
-    delta43 = R4**3 - R3**3
-
-    P = (R1**3*(q31 - q41) + R2**3*(q42 - q32))/(delta43*delta21)
-    P = np.round(P,15)
-
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=4)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -1371,6 +1451,26 @@ def dd_shellvoidsphere(*args):
     http://doi.org/10.1016/j.jmr.2013.01.007
 
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        R1 = float(p[0])
+        w  = float(p[1])
+        d  = float(p[2])
+
+        R2 = R1 + w
+        R3 = R1 + w + d
+
+        delta21 = R2**3 - R1**3
+        q21 = delta21*_pbs(r,R1,R2)
+        delta31 = R3**3 - R1**3
+        q31 = delta31*_pbs(r,R1,R3)
+        delta32 = R3**3 - R2**3
+        
+        P = (q31 - q21)/delta32
+        P = np.round(P,15)
+        P = _normalize(r,P)
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -1378,30 +1478,13 @@ def dd_shellvoidsphere(*args):
             Lower = np.asarray([0.1, 0.1, 0.1]),
             Upper = np.asarray([20, 20, 20]),
             Start = np.asarray([1.5, 1, 0.5]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=3)
-        
-    # Compute the model distance distribution
-    R1 = float(p[0])
-    w  = float(p[1])
-    d  = float(p[2])
-
-    R2 = R1 + w
-    R3 = R1 + w + d
-
-    delta21 = R2**3 - R1**3
-    q21 = delta21*_pbs(r,R1,R2)
-    delta31 = R3**3 - R1**3
-    q31 = delta31*_pbs(r,R1,R3)
-    delta32 = R3**3 - R2**3
-
-    P = (q31 - q21)/delta32
-    P = np.round(P,15)
-
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=3)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -1455,6 +1538,13 @@ def dd_sphere(*args):
     http://doi.org/10.1016/j.jmr.2013.01.007
 
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        R = float(p[0])
+        P = _pb(r,R)
+        P = _normalize(r,P)
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -1462,17 +1552,13 @@ def dd_sphere(*args):
             Lower = np.asarray([0.1, 0.1, 0.1]),
             Upper = np.asarray([20,  20, 20]),
             Start = np.asarray([1.5, 1, 0.5]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=3)
-        
-    # Compute the model distance distribution
-    R = float(p[0])
-    P = _pb(r,R)
-
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=3)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -1523,6 +1609,24 @@ def dd_triangle(*args):
      ---------------------------------------------
 
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        r0 = p[0]
+        wL = abs(p[1])
+        wR = abs(p[2])
+        rL = r0 - wL
+        rR = r0 + wR
+        idxL = (r >= r0-wL) & (r <= r0)
+        idxR = (r <= r0+wR) & (r >= r0)
+        P = np.zeros(len(r))
+        if wL>0:
+            P[idxL] = (r[idxL]-rL)/wL/(wL+wR)
+        if wR>0:
+            P[idxR] = -(r[idxR]-rR)/wR/(wL+wR)
+        P = _normalize(r,P)
+        return P
+
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -1530,27 +1634,13 @@ def dd_triangle(*args):
             Lower = np.asarray([1, 0.1, 0.1]),
             Upper = np.asarray([20,  20, 20]),
             Start = np.asarray([3.5, 1, 0.5]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=3)
-        
-    # Compute the model distance distribution
-    r0 = p[0]
-    wL = abs(p[1])
-    wR = abs(p[2])
-    rL = r0 - wL
-    rR = r0 + wR
-    idxL = (r >= r0-wL) & (r <= r0)
-    idxR = (r <= r0+wR) & (r >= r0)
-    P = np.zeros(len(r))
-    if wL>0:
-        P[idxL] = (r[idxL]-rL)/wL/(wL+wR)
-    if wR>0:
-        P[idxR] = -(r[idxR]-rR)/wR/(wL+wR)
-
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=3)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -1600,6 +1690,15 @@ def dd_uniform(*args):
      --------------------------------------------
 
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        rL = min(abs(p))
+        rR = max(abs(p))
+        P = np.zeros(len(r))
+        P[(r>=rL) & (r<=rR)] = 1
+        P = _normalize(r,P)
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -1607,19 +1706,13 @@ def dd_uniform(*args):
             Lower = np.asarray([0.1, 0.2]),
             Upper = np.asarray([6, 20]),
             Start = np.asarray([2.5, 3]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=2)
-        
-    # Compute the model distance distribution
-    rL = min(abs(p))
-    rR = max(abs(p))
-    P = np.zeros(len(r))
-    P[(r>=rL) & (r<=rR)] = 1
-
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=2)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -1690,6 +1783,14 @@ def dd_wormchain(*args):
     https://doi.org/10.1103/PhysRevLett.77.2581
 
     """  
+    def model(r,p):    
+        # Compute the model distance distribution
+        L = p[0]
+        Lp = p[1]
+        P = wlc(r,L,Lp)
+        P = _normalize(r,P)
+        return P
+
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -1697,18 +1798,13 @@ def dd_wormchain(*args):
             Lower = np.asarray([1.5, 2]),
             Upper = np.asarray([20, 100]),
             Start = np.asarray([3.7, 10]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=2)
-    
-    # Compute the model distance distribution
-    L = p[0]
-    Lp = p[1]
-    P = wlc(r,L,Lp)
-
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=2)
+        P = model(r,p)
+        return P
 #=================================================================
 
 
@@ -1763,6 +1859,32 @@ def dd_wormgauss(*args):
     https://doi.org/10.1103/PhysRevLett.77.2581
 
     """  
+    def model(r,p):        
+        # Compute the model distance distribution
+        L = p[0]
+        Lp = p[1]
+        sigma = p[2]
+        P = wlc(r,L,Lp)
+
+        # Compute Gaussian convolution window
+        idx = np.argmax(P)
+        gauss = np.exp(-((r - r[idx])/sigma)**2)
+        
+        # Convolution with size retention
+        P = np.convolve(gauss,P,mode='full')
+
+        # Adjust new convoluted axis
+        idxconv = np.argmax(P)
+        rconv = np.linspace(min(r),max(r)*2,len(P))
+        rconv = rconv - abs(r[idx] - rconv[idxconv])
+
+        #Interpolate down to original axis
+        P = np.interp(r,rconv,P)
+        print(P.shape)
+        P = _normalize(r,P)
+
+        return P
+        
     if not args:
         info = dict(
             Parameters = ('Number of residues','Segment length','Scaling exponent'),
@@ -1770,32 +1892,11 @@ def dd_wormgauss(*args):
             Lower = np.asarray([1.5, 2, 0.001]),
             Upper = np.asarray([20, 100, 2]),
             Start = np.asarray([3.7, 10, 0.2]),
+            ModelFcn = model
         )
         return info
-    r,p = _parsargs(args,npar=3)
-    
-    # Compute the model distance distribution
-    L = p[0]
-    Lp = p[1]
-    sigma = p[2]
-    P = wlc(r,L,Lp)
-
-    # Compute Gaussian convolution window
-    idx = np.argmax(P)
-    gauss = np.exp(-((r - r[idx])/sigma)**2)
-    
-    # Convolution with size retention
-    P = np.convolve(gauss,P,mode='full')
-
-    # Adjust new convoluted axis
-    idxconv = np.argmax(P)
-    rconv = np.linspace(min(r),max(r)*2,len(P))
-    rconv = rconv - abs(r[idx] - rconv[idxconv])
-
-    #Interpolate down to original axis
-    P = np.interp(r,rconv,P)
-    print(P.shape)
-    P = _normalize(r,P)
-
-    return P
+    else: 
+        r,p = _parsargs(args,npar=3)
+        P = model(r,p)
+        return P
 #=================================================================

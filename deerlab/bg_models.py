@@ -42,6 +42,7 @@ def _parsargs(args,npar,takes_lambda=False):
 #=================================================================
 
 def bg_hom3d(*args):
+# ======================================================================
     r"""
     Background from homogeneous distribution of spins in a 3D medium
 
@@ -85,41 +86,46 @@ def bg_hom3d(*args):
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
         * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['ModelFcn']`` - function used to calculate the model output 
     B : ndarray
         Background decay function. 
     """  
-# ======================================================================
+    def model(t,param,lam=1):
+        conc = param            # concentration, uM
+        NA = 6.02214076e23      # Avogadro constant, mol^-1
+        muB = 9.2740100783e-24  # Bohr magneton, J/T (CODATA 2018 value)
+        mu0 = 1.25663706212e-6  # magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
+        h = 6.62607015e-34      # Planck constant, J/Hz (CODATA 2018)
+        ge = 2.00231930436256   # free-electron g factor (CODATA 2018 value)
+        hbar = h/2/pi         # reduced Planck constant, J/(rad/s)
+
+        D = (mu0/4/pi)*(muB*ge)**2/hbar   # dipolar constant, m^3 s^-1
+        
+        conc = conc*1e-6*1e3*NA # umol/L -> mol/L -> mol/m^3 -> spins/m^3
+        
+        # Compute background function
+        B = np.exp(-8*pi**2/9/m.sqrt(3)*lam*conc*D*np.abs(t*1e-6))
+        return B 
+
     if not args:
         info = dict(
             Parameters = ['Concentration of pumped spins'],
             Units = ['μM'],
             Start = np.asarray([50]),
             Lower = np.asarray([0.01]),
-            Upper = np.asarray([5000])
+            Upper = np.asarray([5000]),
+            ModelFcn = model
         )
         return info
-    t,param,lam = _parsargs(args, npar=1, takes_lambda=True) 
-
-    conc = param            # concentration, uM
-    NA = 6.02214076e23      # Avogadro constant, mol^-1
-    muB = 9.2740100783e-24  # Bohr magneton, J/T (CODATA 2018 value)
-    mu0 = 1.25663706212e-6  # magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
-    h = 6.62607015e-34      # Planck constant, J/Hz (CODATA 2018)
-    ge = 2.00231930436256   # free-electron g factor (CODATA 2018 value)
-    hbar = h/2/pi         # reduced Planck constant, J/(rad/s)
-
-    D = (mu0/4/pi)*(muB*ge)**2/hbar   # dipolar constant, m^3 s^-1
-    
-    conc = conc*1e-6*1e3*NA # umol/L -> mol/L -> mol/m^3 -> spins/m^3
-    
-    # Compute background function
-    B = np.exp(-8*pi**2/9/m.sqrt(3)*lam*conc*D*np.abs(t*1e-6))
-    return B
+    else:
+        t,param,lam = _parsargs(args, npar=1, takes_lambda=True) 
+        return model(t,param,lam)
 # ======================================================================
 
 from deerlab.utils import load_exvolume_redfactor
 
 def bg_hom3dex(*args):
+# ======================================================================
     r"""
     Background from homogeneous distribution of spins with excluded-volume effects
 
@@ -164,61 +170,66 @@ def bg_hom3dex(*args):
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
         * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['ModelFcn']`` - function used to calculate the model output 
     B : ndarray
         Background decay function. 
     """  
-# ======================================================================
+
+    def model(t,param,lam):
+        # Load precalculated reduction factor look-up table (Kattnig Eq.(18))
+        dR_tab,alphas_tab = load_exvolume_redfactor()
+
+        # Get parameters
+        conc = param[0] # uM
+        R = param[1]    # nm
+
+        NA = 6.02214076e23      # Avogadro constant, mol^-1
+        conc = conc*1e-6*1e3*NA # umol/L -> mol/L -> mol/m^3 -> spins/m^3
+        ge = 2.00231930436256   # free-electron g factor (CODATA 2018 value)
+        mu0 = 1.25663706212e-6  # magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
+        muB = 9.2740100783e-24  # Bohr magneton, J/T (CODATA 2018 value)
+        h = 6.62607015e-34      # Planck constant, J/Hz (CODATA 2018)
+        hbar = h/2/pi
+
+        A = (mu0/4/pi)*(ge*muB)**2/hbar # Eq.(6) m^3 s^-1
+
+        # Calculate reduction factor (Eq.(18))
+        if R==0:
+            alpha = 1
+        else:
+            dR = A*abs(t*1e-6)/(R*1e-9)**3 # unitless
+            
+            # Use interpolation of look-up table for small dR
+            small = dR < max(dR_tab)
+            alpha = np.zeros(np.shape(dR))
+            alpha[small] = np.interp(dR[small], dR_tab, alphas_tab)
+            
+            # For large dR, use limiting dR->inf expression
+            alpha[~small] = 1 - (3/2/pi)*np.sqrt(3)/dR[~small]
+
+        K = 8*pi**2/9/np.sqrt(3)*A*abs(t*1e-6)*alpha # Eq.(17)
+        B = np.exp(-lam*conc*K) # Eq.(13)
+        return B
+
     if not args:
         info = dict(
             Parameters = ['Fractal Concentration of pumped spins','Fractal dimensionality'],
             Units = ['μmol/dmᵈ',''],
             Start = np.asarray([50,   1]),
             Lower = np.asarray([0.01, 0.01]),
-            Upper = np.asarray([5000, 20])
+            Upper = np.asarray([5000, 20]),
+            ModelFcn = model
         )
         return info
-    t,param,lam = _parsargs(args, npar=2, takes_lambda=True) 
-
-    # Load precalculated reduction factor look-up table (Kattnig Eq.(18))
-    dR_tab,alphas_tab = load_exvolume_redfactor()
-
-    # Get parameters
-    conc = param[0] # uM
-    R = param[1]    # nm
-
-    NA = 6.02214076e23      # Avogadro constant, mol^-1
-    conc = conc*1e-6*1e3*NA # umol/L -> mol/L -> mol/m^3 -> spins/m^3
-    ge = 2.00231930436256   # free-electron g factor (CODATA 2018 value)
-    mu0 = 1.25663706212e-6  # magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
-    muB = 9.2740100783e-24  # Bohr magneton, J/T (CODATA 2018 value)
-    h = 6.62607015e-34      # Planck constant, J/Hz (CODATA 2018)
-    hbar = h/2/pi
-
-    A = (mu0/4/pi)*(ge*muB)**2/hbar # Eq.(6) m^3 s^-1
-
-    # Calculate reduction factor (Eq.(18))
-    if R==0:
-        alpha = 1
     else:
-        dR = A*abs(t*1e-6)/(R*1e-9)**3 # unitless
-        
-        # Use interpolation of look-up table for small dR
-        small = dR < max(dR_tab)
-        alpha = np.zeros(np.shape(dR))
-        alpha[small] = np.interp(dR[small], dR_tab, alphas_tab)
-        
-        # For large dR, use limiting dR->inf expression
-        alpha[~small] = 1 - (3/2/pi)*np.sqrt(3)/dR[~small]
-
-    K = 8*pi**2/9/np.sqrt(3)*A*abs(t*1e-6)*alpha # Eq.(17)
-    B = np.exp(-lam*conc*K) # Eq.(13)
-
-    return B
+        t,param,lam = _parsargs(args, npar=2, takes_lambda=True) 
+        return model(t,param,lam)
 # ======================================================================
 
 
 
 def bg_homfractal(*args):
+# ======================================================================
     r"""
     Background from homogeneous distribution of spins in a fractal medium
 
@@ -263,55 +274,59 @@ def bg_homfractal(*args):
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
         * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['ModelFcn']`` - function used to calculate the model output 
     B : ndarray
         Background decay function. 
     """  
-# ======================================================================
+    def model(t,param,lam=1):
+        # Unpack model paramters
+        conc = param[0]         # concentration, umol/dm^d
+        d = float(param[1])     # fractal dimension    
+
+        # Natural constants
+        NA = 6.02214076e23      # Avogadro constant, mol^-1
+        muB = 9.2740100783e-24  # Bohr magneton, J/T (CODATA 2018 value)
+        mu0 = 1.25663706212e-6  # magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
+        h = 6.62607015e-34      # Planck constant, J/Hz (CODATA 2018)
+        ge = 2.00231930436256   # free-electron g factor (CODATA 2018 value)
+        hbar = h/2/pi         # reduced Planck constant, J/(rad/s)
+        D = (mu0/4/pi)*(muB*ge)**2/hbar   # dipolar constant, m^3 s^-1
+        # Units conversion of concentration    
+        conc = conc*1e-6*(np.power(10,d))*NA # umol/dm^d -> mol/m^d -> spins/m^d
+        
+
+        # Compute constants
+        if d==3:
+            c = -pi/2
+            Lam = 4/3/np.sqrt(3)
+        else:
+            c = np.cos(d*pi/6)*scp.special.gamma(-d/3)
+            integrand = lambda z: abs(1-3*z**2)**(d/3)
+            Lam,_ = scp.integrate.quad(integrand,0,1,limit=1000)
+
+        # Compute background function
+        B = np.exp(4*pi/3*c*Lam*lam*conc*D**(d/3)*abs(t*1e-6)**(d/3))
+
+        return B
+
     if not args:
         info = dict(
             Parameters = ['Fractal Concentration of pumped spins','Fractal dimensionality'],
             Units = ['μmol/dmᵈ',''],
             Start = np.asarray([50,   3]),
             Lower = np.asarray([0.01, 0+np.finfo(float).eps]),
-            Upper = np.asarray([5000, 6-np.finfo(float).eps])
+            Upper = np.asarray([5000, 6-np.finfo(float).eps]),
+            ModelFcn = model
         )
         return info
-    t,param,lam = _parsargs(args, npar=2, takes_lambda=True)
- 
-
-    # Unpack model paramters
-    conc = param[0]         # concentration, umol/dm^d
-    d = float(param[1])     # fractal dimension    
-
-    # Natural constants
-    NA = 6.02214076e23      # Avogadro constant, mol^-1
-    muB = 9.2740100783e-24  # Bohr magneton, J/T (CODATA 2018 value)
-    mu0 = 1.25663706212e-6  # magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
-    h = 6.62607015e-34      # Planck constant, J/Hz (CODATA 2018)
-    ge = 2.00231930436256   # free-electron g factor (CODATA 2018 value)
-    hbar = h/2/pi         # reduced Planck constant, J/(rad/s)
-    D = (mu0/4/pi)*(muB*ge)**2/hbar   # dipolar constant, m^3 s^-1
-    # Units conversion of concentration    
-    conc = conc*1e-6*(np.power(10,d))*NA # umol/dm^d -> mol/m^d -> spins/m^d
-    
-
-    # Compute constants
-    if d==3:
-        c = -pi/2
-        Lam = 4/3/np.sqrt(3)
     else:
-        c = np.cos(d*pi/6)*scp.special.gamma(-d/3)
-        integrand = lambda z: abs(1-3*z**2)**(d/3)
-        Lam,_ = scp.integrate.quad(integrand,0,1,limit=1000)
-
-    # Compute background function
-    B = np.exp(4*pi/3*c*Lam*lam*conc*D**(d/3)*abs(t*1e-6)**(d/3))
-
-    return B
-# ======================================================================
+        t,param,lam = _parsargs(args, npar=2, takes_lambda=True) 
+        return model(t,param,lam)
+ # ======================================================================
 
 
 def bg_exp(*args):
+ # ======================================================================
     r"""
     Exponential background model
    
@@ -352,30 +367,35 @@ def bg_exp(*args):
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
         * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['ModelFcn']`` - function used to calculate the model output 
     B : ndarray
         Background decay function. 
     """  
-# ======================================================================
+    def model(t,param):            
+        t = np.atleast_1d(t)
+        param = np.atleast_1d(param)
+
+        kappa = param[0]
+        B = np.exp(-kappa*np.abs(t))
+        return B
+
     if not args:
         info = dict(
             Parameters = ['Decay Rate'],
             Units = ['μs⁻¹'],
             Start = np.asarray([0.35]),
             Lower = np.asarray([0]),
-            Upper = np.asarray([200])
+            Upper = np.asarray([200]),
+            ModelFcn = model
         )
         return info
-    t,param = _parsargs(args, npar=1) 
-    
-    t = np.atleast_1d(t)
-    param = np.atleast_1d(param)
-
-    kappa = param[0]
-    B = np.exp(-kappa*np.abs(t))
-    return B
+    else:
+        t,param = _parsargs(args, npar=1) 
+        return model(t,param)
 # ======================================================================
 
 def bg_strexp(*args):
+# ======================================================================
     r"""
     Stretched exponential background model
  
@@ -416,31 +436,35 @@ def bg_strexp(*args):
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
         * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['ModelFcn']`` - function used to calculate the model output 
     B : ndarray
         Background decay function. 
     """  
-# ======================================================================
+    def model(t,param):
+        # Unpack model paramters
+        kappa = param[0]         # decay rate, µs^-1
+        d = param[1]            # fractal dimension    
+        B = np.exp(-kappa*abs(t)**d)
+        return B
+
     if not args:
         info = dict(
             Parameters = ['Decay Rate','Stretch factor'],
             Units = ['μs⁻¹',''],
             Start = np.asarray([0.25, 1]),
             Lower = np.asarray([0,    0]),
-            Upper = np.asarray([200,  6])
+            Upper = np.asarray([200,  6]),
+            ModelFcn = model
         )
         return info
-    t,param = _parsargs(args, npar=2) 
-
-    # Unpack model paramters
-    kappa = param[0]         # decay rate, µs^-1
-    d = param[1]            # fractal dimension    
-    B = np.exp(-kappa*abs(t)**d)
-    
-    return B
+    else:
+        t,param = _parsargs(args, npar=2) 
+        return model(t,param) 
 # ======================================================================
 
 
 def bg_prodstrexp(*args):
+# ======================================================================
     r"""
     Product of two stretched exponentials background model
  
@@ -483,30 +507,35 @@ def bg_prodstrexp(*args):
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
         * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['ModelFcn']`` - function used to calculate the model output 
     B : ndarray
         Background decay function. 
     """  
-# ======================================================================
+    def model(t,param):            
+        # Unpack model paramters
+        kappa1 = param[0]
+        d1 = param[1]
+        kappa2 = param[2]
+        d2 = param[3]
+        strexp1 = np.exp(-kappa1*abs(t)**d1)
+        strexp2 = np.exp(-kappa2*abs(t)**d2)
+        B = strexp1*strexp2
+        return B
+
     if not args:
         info = dict(
             Parameters = ['Decay Rate of 1st component','Stretch factor of 1st component','Decay Rate of 2nd component','Stretch factor of 2nd component'],
             Units = ['µs^-1','','µs^-1',''],
             Start = np.asarray([0.25, 1, 0.25, 1]),
             Lower = np.asarray([ 0,   0,  0,   0]),
-            Upper = np.asarray([200,  6, 200,  6])
+            Upper = np.asarray([200,  6, 200,  6]),
+            ModelFcn = model
         )
         return info
-    t,param = _parsargs(args, npar=4) 
+    else:
+        t,param = _parsargs(args, npar=4) 
+        return model(t,param) 
 
-    # Unpack model paramters
-    kappa1 = param[0]
-    d1 = param[1]
-    kappa2 = param[2]
-    d2 = param[3]
-    strexp1 = np.exp(-kappa1*abs(t)**d1)
-    strexp2 = np.exp(-kappa2*abs(t)**d2)
-    B = strexp1*strexp2
-    return B
 # ======================================================================
 
 
@@ -554,33 +583,37 @@ def bg_sumstrexp(*args):
         * ``info['Units']`` - string list of metric units of parameters
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization
+        * ``info['ModelFcn']`` - function used to calculate the model output  
     B : ndarray
         Background decay function. 
     """  
 # ======================================================================
+    def model(t,param):            
+        # Unpack model paramters
+        kappa1 = param[0]
+        d1 = param[1]
+        w1 = param[2]
+        kappa2 = param[3]
+        d2 = param[4]
+        strexp1 = np.exp(-kappa1*abs(t)**d1)
+        strexp2 = np.exp(-kappa2*abs(t)**d2)
+        B = w1*strexp1 + (1-w1)*strexp2
+        return B
+
     if not args:
         info = dict(
             Parameters = ['Decay Rate of 1st component','Stretch factor of 1st component','Amplitude of 1st component','Decay Rate of 2nd component','Stretch factor of 2nd component'],
             Units = ['μs⁻¹','','','μs⁻¹',''],
             Start = np.asarray([0.25, 1, 0.5, 0.25, 1]),
             Lower = np.asarray([ 0,   0,  0,   0,   0]),
-            Upper = np.asarray([200,  6,  1,  200,  6])
+            Upper = np.asarray([200,  6,  1,  200,  6]),
+            ModelFcn = model
         )
         return info
-    t,param = _parsargs(args, npar=5) 
-
-    # Unpack model paramters
-    kappa1 = param[0]
-    d1 = param[1]
-    w1 = param[2]
-    kappa2 = param[3]
-    d2 = param[4]
-    strexp1 = np.exp(-kappa1*abs(t)**d1)
-    strexp2 = np.exp(-kappa2*abs(t)**d2)
-    B = w1*strexp1 + (1-w1)*strexp2
-    
-    return B
+    else:
+        t,param = _parsargs(args, npar=5) 
+        return model(t,param)
 # ======================================================================
 
 
@@ -625,31 +658,32 @@ def bg_poly1(*args):
         * ``info['Units']`` - string list of metric units of parameters
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization
+        * ``info['ModelFcn']`` - function used to calculate the model output 
     B : ndarray
         Background decay function.  
     """  
 # ======================================================================
+    def model(t,param):            
+        # Compute polynomial
+        p = np.copy(np.flip(param))
+        p[:-1] = p[:-1]
+        B = np.polyval(p,abs(t))
+        return B
+
     if not args:
         info = dict(
             Parameters = ['Intercept','1st-order coefficient'],
             Units = ['','μs⁻¹'],
             Start = np.asarray([ 1,   -1 ]),
             Lower = np.asarray([ 0,  -200]),
-            Upper = np.asarray([200,  200])
+            Upper = np.asarray([200,  200]),
+            ModelFcn = model
         )
         return info
-    t,param = _parsargs(args, npar=2) 
-
-    print(param)
-    # Compute polynomial
-    p = np.copy(np.flip(param))
-    p[:-1] = p[:-1]
-    B = np.polyval(p,abs(t))
-
-    print(param)
-
-    return B
+    else:
+        t,param = _parsargs(args, npar=2) 
+        return model(t,param) 
 # ======================================================================
 
 
@@ -695,26 +729,31 @@ def bg_poly2(*args):
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
         * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['ModelFcn']`` - function used to calculate the model output
     B : ndarray
         Background decay function.  
     """  
 # ======================================================================
+    def model(t,param):            
+        # Compute polynomial
+        p = np.copy(np.flip(param))
+        p[:-1] = p[:-1]
+        B = np.polyval(p,abs(t))
+        return B
+
     if not args:
         info = dict(
             Parameters = ['Intercept','1st-order coefficient','2nd-order coefficient'],
             Units = ['','μs⁻¹','μs⁻²'],
             Start = np.asarray([ 1,   -1 , -1]),
             Lower = np.asarray([ 0,  -200, -200]),
-            Upper = np.asarray([200,  200,  200])
+            Upper = np.asarray([200,  200,  200]),
+            ModelFcn = model
         )
         return info
-    t,param = _parsargs(args, npar=3) 
-
-    # Compute polynomial
-    p = np.copy(np.flip(param))
-    p[:-1] = p[:-1]
-    B = np.polyval(p,abs(t))
-    return B
+    else:
+        t,param = _parsargs(args, npar=3) 
+        return model(t,param) 
 # ======================================================================
 
 
@@ -761,24 +800,29 @@ def bg_poly3(*args):
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
         * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['ModelFcn']`` - function used to calculate the model output
     B : ndarray
         Background decay function.  
     """  
 # ======================================================================
+    def model(t,param):            
+        # Compute polynomial
+        p = np.copy(np.flip(param))
+        p[:-1] = p[:-1]
+        B = np.polyval(p,abs(t))
+        return B
+
     if not args:
         info = dict(
             Parameters = ['Intercept','1st-order coefficient','2nd-order coefficient','3rd-order coefficient'],
             Units = ['','μs⁻¹','μs⁻²','μs⁻³'],
             Start = np.asarray([ 1,  -1  , -1,   -1  ]),
             Lower = np.asarray([ 0,  -200, -200, -200]),
-            Upper = np.asarray([200,  200,  200,  200])
+            Upper = np.asarray([200,  200,  200,  200]),
+            ModelFcn = model
         )
         return info
-    t,param = _parsargs(args, npar=4) 
-
-    # Compute polynomial
-    p = np.copy(np.flip(param))
-    p[:-1] = p[:-1]
-    B = np.polyval(p,abs(t))
-    return B
+    else:
+        t,param = _parsargs(args, npar=4) 
+        return model(t,param) 
 # ======================================================================

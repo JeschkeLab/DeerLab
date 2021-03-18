@@ -44,7 +44,9 @@ def ex_4pdeer(param=None):
         * ``info['Units']`` - string list of metric units of parameters
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization  
+        * ``info['ModelFcn']`` - function used to calculate the model output
+        
     pathways : ndarray
         Dipolar pathways of the experiment
 
@@ -58,22 +60,28 @@ def ex_4pdeer(param=None):
      Modulation depth               0        1       0.3 
      -------------------------------------------------------
     """  
+    def model(param):     
+        # Dipolar pathways
+        lam = param[0]
+        pathways = [
+            [1-lam],
+            [lam, 0]
+        ]
+        return pathways
+        
     if param is None:
         info = dict(
             Parameters = ['Modulation depth'],
             Units = [''],
             Start = np.asarray([0.3]),
             Lower = np.asarray([0]),
-            Upper = np.asarray([1])
+            Upper = np.asarray([1]),
+            ModelFcn = model
         )
         return info
-    param = _parsargs(param,npar=1)
-
-    # Dipolar pathways
-    lam = param[0]
-    pathways = [[1-lam], [lam, 0]]
-    
-    return pathways
+    else:
+        param = _parsargs(param, npar=1) 
+        return model(param) 
 # ===================================================================
 
 
@@ -106,7 +114,9 @@ def ex_ovl4pdeer(param=None):
         * ``info['Units']`` - string list of metric units of parameters
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization  
+        * ``info['ModelFcn']`` - function used to calculate the model output
+        
     pathways : ndarray
         Dipolar pathways of the experiment
 
@@ -122,6 +132,16 @@ def ex_ovl4pdeer(param=None):
       Refocusing time of 2nd modulated pathway   μs      0       20        5        
      ---------------------------------------------------------------------------
     """  
+    def model(param):   
+        # Dipolar pathways
+        lam = param[[0,1,2]]
+        T0 = param[3]
+        pathways = [[] for _ in lam]
+        pathways[0] = [lam[0]]
+        pathways[1] = [lam[1], 0]
+        pathways[2] = [lam[2], T0]  
+        return pathways  
+
     if param is None:
         info = dict(
             Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway',
@@ -129,17 +149,13 @@ def ex_ovl4pdeer(param=None):
             Units = ['','','','μs'],
             Start = np.asarray([0.7, 0.3, 0.1, 5]),
             Lower = np.asarray([0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 20])
+            Upper = np.asarray([1, 1, 1, 20]),
+            ModelFcn = model
         )
         return info
-    param = _parsargs(param,npar=4)
-
-    # Dipolar pathways
-    lam = param[[0,1,2]]
-    T02 = param[3]
-    pathways = [[lam[0]], [lam[1], 0], [lam[2], T02]]
-    
-    return pathways
+    else:
+        param = _parsargs(param, npar=4) 
+        return model(param) 
 # ===================================================================
 
 
@@ -173,7 +189,9 @@ def ex_5pdeer(param=None):
         * ``info['Units']`` - string list of metric units of parameters
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization  
+        * ``info['ModelFcn']`` - function used to calculate the model output
+        
     pathways : ndarray
         Dipolar pathways of the experiment
  
@@ -189,23 +207,29 @@ def ex_5pdeer(param=None):
       Refocusing time of 2nd modulated pathway   μs      0       20        5        
      ---------------------------------------------------------------------------
     """  
+    def model(param):   
+                  # Dipolar pathways
+        lam = param[[0,1,2]]
+        T0 = param[3]
+        pathways = [[] for _ in lam]
+        pathways[0] = [lam[0]]
+        pathways[1] = [lam[1], 0]
+        pathways[2] = [lam[2], T0]
+        return pathways  
+
     if param is None:
         info = dict(
             Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway','Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
             Units = ['','','','μs'],
             Start = np.asarray([0.4, 0.4, 0.2,5]),
             Lower = np.asarray([0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 20])
+            Upper = np.asarray([1, 1, 1, 20]),
+            ModelFcn = model
         )
         return info
-    param = _parsargs(param,npar=4)
-
-    # Dipolar pathways
-    lam = param[[0,1,2]]
-    T02 = param[3]
-    pathways = [[lam[0]], [lam[1], 0], [lam[2], T02]]
-    
-    return pathways
+    else:
+        param = _parsargs(param, npar=4) 
+        return model(param) 
 # ===================================================================
 
 
@@ -240,7 +264,9 @@ def ex_7pdeer(param=None):
         * ``info['Units']`` - string list of metric units of parameters
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization  
+        * ``info['ModelFcn']`` - function used to calculate the model output
+        
     pathways : ndarray
         Dipolar pathways of the experiment
  
@@ -258,6 +284,17 @@ def ex_7pdeer(param=None):
       Refocusing time of 3rd modulated pathway   μs      0       20       3.5 
      ---------------------------------------------------------------------------
     """  
+    def model(param):   
+        # Dipolar pathways
+        lam = param[[0,1,2,3]]
+        T0 = param[[4,5]]
+        pathways = [[] for _ in lam]
+        pathways[0] = [lam[0]]
+        pathways[1] = [lam[1], 0]
+        pathways[2] = [lam[2], T0[0]]
+        pathways[3] = [lam[3], T0[1]]    
+        return pathways  
+
     if param is None:
         info = dict(
             Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway',
@@ -266,19 +303,14 @@ def ex_7pdeer(param=None):
             Units = ['','','','','μs','μs'],
             Start = np.asarray([0.3, 0.5, 0.3, 0.2, 1.5, 3.5]),
             Lower = np.asarray([0, 0, 0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 1, 20, 20])
+            Upper = np.asarray([1, 1, 1, 1, 20, 20]),
+            ModelFcn = model
         )
         return info
-    param = _parsargs(param,npar=6)
+    else:
+        param = _parsargs(param, npar=6) 
+        return model(param) 
 
-    # Dipolar pathways
-    lam = param[[0,1,2,3]]
-    T02 = param[4]
-    T03 = param[5]
-
-    pathways = [[lam[0]], [lam[1], 0], [lam[2], T02], [lam[3], T03]]
-    
-    return pathways
 # ===================================================================
 
 
@@ -312,7 +344,9 @@ def ex_ridme1(param=None):
         * ``info['Units']`` - string list of metric units of parameters
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization  
+        * ``info['ModelFcn']`` - function used to calculate the model output
+        
     pathways : ndarray
         Dipolar pathways of the experiment
  
@@ -326,24 +360,28 @@ def ex_ridme1(param=None):
       Amplitude of 1st harmonic pathway                  0       1        0.5
      ---------------------------------------------------------------------------
     """  
+    def model(param):   
+        # Dipolar pathways
+        lam = param.copy()
+        pathways = [[] for _ in lam]
+        pathways[0] = [lam[0]]
+        pathways[1] = [lam[1], 0, 1]
+        return pathways      
+
     if param is None:
         info = dict(
             Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st modulated pathway'],
             Units = ['',''],
             Start = np.asarray([0.3, 0.5]),
             Lower = np.asarray([0, 0]),
-            Upper = np.asarray([1, 1])
+            Upper = np.asarray([1, 1]),
+            ModelFcn = model
         )
         return info
-    param = _parsargs(param,npar=2)
+    else:
+        param = _parsargs(param, npar=2) 
+        return model(param) 
 
-    # Dipolar pathways
-    lam = param.copy()
-    pathways = [[] for _ in lam]
-    pathways[0] = [lam[0]]
-    pathways[1] = [lam[1], 0, 1]
-    
-    return pathways
 # ===================================================================
 
 
@@ -378,6 +416,8 @@ def ex_ridme3(param=None):
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
         * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['ModelFcn']`` - function used to calculate the model output
+
     pathways : ndarray
         Dipolar pathways of the experiment
  
@@ -393,6 +433,16 @@ def ex_ridme3(param=None):
       Amplitude of 3rd harmonic pathway                  0       1        0.2
      ---------------------------------------------------------------------------
     """  
+    def model(param):   
+        # Dipolar pathways
+        lam = param.copy()
+        pathways = [[] for _ in lam]
+        pathways[0] = [lam[0]]
+        pathways[1] = [lam[1], 0, 1]
+        pathways[2] = [lam[2], 0, 2]
+        pathways[3] = [lam[3], 0, 3]
+        return pathways
+
     if param is None:
         info = dict(
             Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
@@ -400,20 +450,14 @@ def ex_ridme3(param=None):
             Units = ['','','',''],
             Start = np.asarray([0.3, 0.5, 0.3, 0.2]),
             Lower = np.asarray([0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 1])
+            Upper = np.asarray([1, 1, 1, 1]),
+            ModelFcn = model
         )
         return info
-    param = _parsargs(param,npar=4)
+    else:
+        param = _parsargs(param, npar=4) 
+        return model(param) 
 
-    # Dipolar pathways
-    lam = param.copy()
-    pathways = [[] for _ in lam]
-    pathways[0] = [lam[0]]
-    pathways[1] = [lam[1], 0, 1]
-    pathways[2] = [lam[2], 0, 2]
-    pathways[3] = [lam[3], 0, 3]
-    
-    return pathways
 # ===================================================================
 
 
@@ -448,6 +492,8 @@ def ex_ridme5(param=None):
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
         * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['ModelFcn']`` - function used to calculate the model output
+
     pathways : ndarray
         Dipolar pathways of the experiment
  
@@ -465,6 +511,18 @@ def ex_ridme5(param=None):
       Amplitude of 5th harmonic pathway                  0       1        0.05 
      ---------------------------------------------------------------------------
     """  
+    def model(param):     
+        # Dipolar pathways
+        lam = param.copy()
+        pathways = [[] for _ in lam]
+        pathways[0] = [lam[0]]
+        pathways[1] = [lam[1], 0, 1]
+        pathways[2] = [lam[2], 0, 2]
+        pathways[3] = [lam[3], 0, 3]
+        pathways[4] = [lam[4], 0, 4]
+        pathways[5] = [lam[5], 0, 5]
+        return pathways
+
     if param is None:
         info = dict(
             Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
@@ -473,22 +531,14 @@ def ex_ridme5(param=None):
             Units = ['','','','','',''],
             Start = np.asarray([0.3, 0.5, 0.3, 0.2,0.1,0.05]),
             Lower = np.asarray([0, 0, 0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 1, 1, 1])
+            Upper = np.asarray([1, 1, 1, 1, 1, 1]),
+            ModelFcn = model
         )
         return info
-    param = _parsargs(param,npar=6)
+    else:
+        param = _parsargs(param, npar=6) 
+        return model(param) 
 
-    # Dipolar pathways
-    lam = param.copy()
-    pathways = [[] for _ in lam]
-    pathways[0] = [lam[0]]
-    pathways[1] = [lam[1], 0, 1]
-    pathways[2] = [lam[2], 0, 2]
-    pathways[3] = [lam[3], 0, 3]
-    pathways[4] = [lam[4], 0, 4]
-    pathways[5] = [lam[5], 0, 5]
-
-    return pathways
 # ===================================================================
 
 
@@ -522,7 +572,8 @@ def ex_ridme7(param=None):
         * ``info['Units']`` - string list of metric units of parameters
         * ``info['Start']`` - list of values used as start values during optimization 
         * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization
+        * ``info['ModelFcn']`` - function used to calculate the model output 
     pathways : ndarray
         Dipolar pathways of the experiment
  
@@ -542,6 +593,20 @@ def ex_ridme7(param=None):
       Amplitude of 7th harmonic pathway                  0       1        0.01 
      ---------------------------------------------------------------------------
     """  
+    def model(param):        
+        # Dipolar pathways
+        lam = param.copy()
+        pathways = [[] for _ in lam]
+        pathways[0] = [lam[0]]
+        pathways[1] = [lam[1], 0, 1]
+        pathways[2] = [lam[2], 0, 2]
+        pathways[3] = [lam[3], 0, 3]
+        pathways[4] = [lam[4], 0, 4]
+        pathways[5] = [lam[5], 0, 5]
+        pathways[6] = [lam[6], 0, 6]
+        pathways[7] = [lam[7], 0, 7]
+        return pathways
+
     if param is None:
         info = dict(
             Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
@@ -551,22 +616,12 @@ def ex_ridme7(param=None):
             Units = ['','','','','','','',''],
             Start = np.asarray([0.3, 0.5, 0.3, 0.2,0.1,0.05,0.02,0.01]),
             Lower = np.asarray([0, 0, 0, 0, 0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 1, 1, 1, 1, 1])
+            Upper = np.asarray([1, 1, 1, 1, 1, 1, 1, 1]),
+            ModelFcn = model
         )
         return info
-    param = _parsargs(param,npar=8)
+    else:
+        param = _parsargs(param, npar=8) 
+        return model(param) 
 
-    # Dipolar pathways
-    lam = param.copy()
-    pathways = [[] for _ in lam]
-    pathways[0] = [lam[0]]
-    pathways[1] = [lam[1], 0, 1]
-    pathways[2] = [lam[2], 0, 2]
-    pathways[3] = [lam[3], 0, 3]
-    pathways[4] = [lam[4], 0, 4]
-    pathways[5] = [lam[5], 0, 5]
-    pathways[6] = [lam[6], 0, 6]
-    pathways[7] = [lam[7], 0, 7]
-
-    return pathways
 # ===================================================================
