@@ -68,13 +68,7 @@ def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = 
     
     nKnots : scalar, optional
         Number of knots for the grid of powder orientations to be used in the ``'grid'`` kernel calculation method.
-    
-    renormalize : boolean, optional
-        Re-normalization of multi-pathway kernels to ensure the equality ``K(t=0,r)==1`` is satisfied. Enabled by default.
-    
-    renormpaths: boolean, optional
-        Normalization of the pathway amplitudes such that ``Lam0 + lam1 + ... + lamN = 1``. Enabled by default. 
-    
+        
     clearcache : boolean, optional
         Clear the cached dipolar kernels at the beginning of the function. Disabled by default.
 
@@ -178,14 +172,7 @@ def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = 
             paths[i] = np.append(path,1) 
         elif len(path) != 3:
             # Otherwise paths are not correctly defined
-            raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i))
-
-    # Normalize the pathway amplitudes to unity
-    if renormpaths:
-        lamsum = Lambda0 + sum([path[0] for path in paths])
-        Lambda0 /= lamsum
-        for i in range(len(paths)):
-            paths[i][0] /= lamsum 
+            raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i)) 
 
     # Define kernel matrix auxiliary function
     kernelmatrix = lambda t: calckernelmatrix(t,r,method,excbandwidth,nKnots,g)
@@ -195,14 +182,6 @@ def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = 
     for pathway in paths:
         lam,T0,n = pathway
         K = K + lam*kernelmatrix(n*(t-T0))
-
-    # Renormalize if requested
-    if renormalize:
-        Knorm = Lambda0
-        for pathway in paths:
-            lam,T0,n = pathway
-            Knorm = Knorm + lam*kernelmatrix(-T0*n)
-        K = K/Knorm
 
     # Multiply by background
     if ismodelB:
