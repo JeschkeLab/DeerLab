@@ -249,15 +249,18 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     # Default bootstrap samples
     bootsamples = 1000
-    if isinstance(uq, str):
+    if isinstance(uq, str) or uq==None:
         uq = [uq]
-    if uq[0]!='bootstrap' and uq[0]!='covariance':
-        raise KeyError("Uncertainty quantification must be either 'covariance' or 'bootstrap'.")
-        
+    if uq[0]!='bootstrap' and uq[0]!='covariance'and uq[0]!=None:
+        raise KeyError("Uncertainty quantification must be either 'covariance', 'bootstrap', or None.")
     if uq[0]=='bootstrap':
         # OVerride default if user has specified bootstraped samples
         if len(uq)>1: bootsamples = uq[1]
     uq = uq[0]
+    if uq is None:
+        uqanalysis = False 
+    else:
+        uqanalysis = True 
 
     # Combine input boundary and start conditions
     par0 = [[] if par0_i is None else par0_i for par0_i in [dd_par0,bg_par0,ex_par0]]
