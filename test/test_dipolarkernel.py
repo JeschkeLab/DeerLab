@@ -191,12 +191,8 @@ def test_multipath():
     K = dipolarkernel(t,r,paths, integralop=False)
 
     Kref = 1-prob
-    Krenorm = Kref
     for p in range(len(lam)):
             Kref = Kref + lam[p]*calckernelmatrix(t-T0[p],r,'fresnel',[],[],[ge,ge])
-            Krenorm = Krenorm + lam[p]*calckernelmatrix(-T0[p],r,'fresnel',[],[],[ge,ge])
-    Kref = Kref/Krenorm
-    Kref = Kref
 
     assert np.all(abs(K-Kref) < 1e-3)
 #=======================================================================
@@ -219,19 +215,13 @@ def test_multipath_background():
 
     # Reference
     Kref = 1-prob
-    Krenorm = Kref
     for p in range(len(lam)):
             Kref = Kref + lam[p]*calckernelmatrix(t-T0[p],r,'fresnel',[],[],[ge,ge])
-            Krenorm = Krenorm + lam[p]*calckernelmatrix(-T0[p],r,'fresnel',[],[],[ge,ge])
-    Kref = Kref/Krenorm
     Kref = Kref
     
     Bref = 1
-    Bnorm = 1
     for p in range(len(lam)):
             Bref = Bref*Bmodel((t-T0[p]),lam[p])
-            Bnorm = Bnorm*Bmodel(-T0[p],lam[p])
-    Bref = Bref/Bnorm
     KBref = Kref*Bref[:,np.newaxis]
 
     paths = []
@@ -269,11 +259,8 @@ def test_multipath_harmonics():
     K = dipolarkernel(t,r,paths, integralop=False)
 
     Kref = 1-prob
-    Krenorm = Kref
     for p in range(len(lam)):
             Kref = Kref + lam[p]*calckernelmatrix(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge])
-            Krenorm = Krenorm + lam[p]*calckernelmatrix(-n[p]*T0[p],r,'fresnel',[],[],[ge,ge])
-    Kref = Kref/Krenorm
     Kref = Kref
 
     assert np.max(K-Kref) < 1e-3
@@ -334,7 +321,6 @@ def test_excbandwidth():
         w = wdd*orientation
         D_ = D_ + np.cos(w*abs(t))*np.exp(-w**2/excitewidth**2)
     K0 = D_/nKnots
-    K0 /= K0[0]
     K0 = K0.reshape((len(t),1))
 
     assert np.max(K0-K)<1e-4
@@ -372,21 +358,6 @@ def test_r_scaling():
     assert np.max(K1 - K2) < 1e-15
 #=======================================================================
 
-def test_arbitrary_pathway_amps():
-#=======================================================================
-    """Check compatibility with arbitrary pathway amplitudes"""
-
-    t = np.linspace(0,5,201)
-    r = 2.5
-    pathway=[]
-    pathway.append([0.2])
-    pathway.append([0.8, 0])
-    pathway.append([0.5, 3])
-
-    K = dipolarkernel(t,r,pathway)
-
-    assert np.round(K[0],2) == 1
-#=======================================================================
 
 def test_integralop():
 #=======================================================================
