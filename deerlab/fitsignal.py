@@ -88,6 +88,9 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * ``'covariance'`` - Covariance-based uncertainty quantification. Fast, but approximate.   
         * ``'bootstrap'`` - Bootstrapped uncertainty quantification. Slow, but accurate. By default, 1000 bootstrap
         samples are used. Alternatively, a different number can be specified as follows ``uq=['bootstrap',Nsamples]``.
+        * ``None`` - Disable the uncertainty quantification analysis. 
+
+        The default is ``'covariance'``.
 
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting,
@@ -124,10 +127,6 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     verbose : boolean, optional
         Enable/disable printing a table of fit results, by default is disabled
-    
-    uqanalysis : boolean, optional
-        Enable/disable the uncertainty quantification analysis, by default it is enabled.
-
 
 
     Returns
@@ -249,15 +248,18 @@ def fitsignal(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     # Default bootstrap samples
     bootsamples = 1000
-    if isinstance(uq, str):
+    if isinstance(uq, str) or uq==None:
         uq = [uq]
-    if uq[0]!='bootstrap' and uq[0]!='covariance':
-        raise KeyError("Uncertainty quantification must be either 'covariance' or 'bootstrap'.")
-        
+    if uq[0]!='bootstrap' and uq[0]!='covariance'and uq[0]!=None:
+        raise KeyError("Uncertainty quantification must be either 'covariance', 'bootstrap', or None.")
     if uq[0]=='bootstrap':
         # OVerride default if user has specified bootstraped samples
         if len(uq)>1: bootsamples = uq[1]
     uq = uq[0]
+    if uq is None:
+        uqanalysis = False 
+    else:
+        uqanalysis = True 
 
     # Combine input boundary and start conditions
     par0 = [[] if par0_i is None else par0_i for par0_i in [dd_par0,bg_par0,ex_par0]]
