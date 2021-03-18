@@ -332,9 +332,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         # Compute residual vector
         res = weights*(yfit - y)
         if includePenalty:
-            penalty = alpha*L@linfit
             # Augmented residual
-            res = np.concatenate((res, penalty))
             res, _ = _augment(res, [], regtype, alpha, L, linfit, huberparam, Nnonlin)
 
         return res
