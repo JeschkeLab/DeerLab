@@ -114,7 +114,7 @@ plt.ylabel('P (nm⁻¹)')
 plt.subplot(323)
 plt.bar(np.arange(NGauss)+1,metrics + abs(min(metrics)),facecolor='b',alpha=0.6)
 plt.grid(alpha=0.3)
-plt.ylabel('$\Delta AIC$')
+plt.ylabel('$\Delta$AIC')
 plt.xlabel('Number of Gaussians')
 
 plt.subplot(325)

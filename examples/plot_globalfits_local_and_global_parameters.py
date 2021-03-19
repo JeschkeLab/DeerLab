@@ -155,7 +155,7 @@ plt.subplot(224)
 plt.plot(r,P2,'k',r,Pfit2,'b')
 plt.grid(alpha=0.3)
 plt.xlabel('r (nm)')
-plt.ylabel('P (nm)$^{-1}$')
+plt.ylabel('P (nm⁻¹)')
 plt.legend(['truth','fit'])
 
 plt.tight_layout()
