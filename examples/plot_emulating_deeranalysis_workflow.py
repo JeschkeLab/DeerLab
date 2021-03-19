@@ -25,7 +25,7 @@ Ptrue = dl.dd_gauss3(rtrue,[4.5, 0.35, 0.4, 3, 0.25, 0.3, 4, 0.4, 0.5])
 lam = 0.3
 conc = 180 #uM
 
-# Simulate an experimental signal with some a.u. and phase offset
+# Simulate an experimental signal with some scale and phase
 Bmodel = lambda t, lam: dl.bg_hom3d(t,conc,lam)
 K = dl.dipolarkernel(t,rtrue,lam,Bmodel)
 V = K@Ptrue*np.exp(1j*np.pi/16) # add a phase shift 
@@ -35,7 +35,7 @@ V = V + rnoise + inoise # complex-valued noisy signal
 V = V*3e6 # add an arbitrary amplitude scale
 
 plt.plot(t,V.real,'.',t,V.imag,'.'),
-plt.xlabel('t [µs]')
+plt.xlabel('t (µs)')
 plt.ylabel('V(t)')
 plt.grid(alpha=0.3)
 plt.legend(['real','imag'])
@@ -85,20 +85,20 @@ Pfit = fit.P
 
 plt.subplot(311)
 plt.plot(t,V,'k.',t,(1-lamfit)*Bfit,'r',linewidth=1.5)
-plt.xlabel('t [\mus]')
+plt.xlabel('t (µs)')
 plt.ylabel('V(t)')
 plt.legend(['data','(1-\lambda)B$_{fit}$'])
 
 plt.subplot(312)
 plt.plot(t,Vcorr,'k.',t,K@Pfit,'r',linewidth=1.5)
-plt.xlabel('t [\mus]')
+plt.xlabel('t (µs)')
 plt.ylabel('V(t)')
 plt.legend(['corrected data','fit'])
 
 plt.subplot(313)
 plt.plot(rtrue,Ptrue,'k',r,Pfit,'r',linewidth=1.5)
-plt.xlabel('r [nm]')
-plt.ylabel('P [nm^{-1}]')
+plt.xlabel('r (nm)')
+plt.ylabel('P (nm^{-1})')
 plt.legend(['truth','fit'])
 plt.tight_layout()
 plt.show()

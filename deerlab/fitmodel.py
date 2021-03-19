@@ -739,7 +739,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                     axs[i].fill_between(t[i],Vunmod95[:,0], Vunmod95[:,1],facecolor='tab:orange',linestyle='None',alpha=0.2)
                     axs[i].fill_between(t[i],Vunmod50[:,0], Vunmod50[:,1],facecolor='tab:orange',linestyle='None',alpha=0.4)
             axs[i].grid(alpha=0.3)
-            axs[i].set_xlabel('Time [μs]')
+            axs[i].set_xlabel('Time (µs)')
             axs[i].set_ylabel('V[{}]'.format(i))
             axs[i].legend(('Data','Vfit','Bfit','95%-CI','50%-CI'))
 
@@ -751,8 +751,8 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             Pci50 = Pfit_uq.ci(50)
             axs[nSignals].fill_between(r,Pci95[:,0], Pci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
             axs[nSignals].fill_between(r,Pci50[:,0], Pci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
-        axs[nSignals].set_xlabel('Distance [nm]')
-        axs[nSignals].set_ylabel('P [nm⁻¹]')
+        axs[nSignals].set_xlabel('Distance (nm)')
+        axs[nSignals].set_ylabel('P (nm⁻¹)')
         axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
         axs[nSignals].grid(alpha=0.3)
         plt.tight_layout()
@@ -786,9 +786,9 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         for i in range(nSignals):
             print('Vfit[{}]:'.format(i))
             if scales[i]>1e2:
-                print('  V0:  {:.3e}  Signal scale (a.u.)'.format(scales[i]))
+                print('  V0:  {:.3e}  Signal scale (arb.u.)'.format(scales[i]))
             else:
-                print('  V0:  {:2.2f}  Signal scale (a.u.)'.format(scales[i]))
+                print('  V0:  {:2.2f}  Signal scale (arb.u.)'.format(scales[i]))
             if includeBackground[i]:
                 if len(parfit['bg'])>0:
                     info = bg_model[i]()

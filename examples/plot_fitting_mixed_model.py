@@ -105,14 +105,14 @@ Vfit = Vmodel(fitpar)
 #Plot results
 plt.subplot(2,1,1)
 plt.plot(t,V,'k.',t,Vfit,'r',linewidth=1.5)
-plt.xlabel('t [$\mu s$]')
-plt.ylabel('V(t)')
+plt.xlabel('t (µs)')
+plt.ylabel('V')
 plt.legend(['data','fit'])
 
 plt.subplot(2,1,2)
 plt.plot(r,P,'k',r,Pfit,'r',linewidth=1.5)
-plt.xlabel('r [nm]')
-plt.ylabel('P(r) [nm$^{-1}$]')
+plt.xlabel('r (nm)')
+plt.ylabel('P (nm⁻¹)')
 plt.legend(['truth','fit'])
 
 # %%

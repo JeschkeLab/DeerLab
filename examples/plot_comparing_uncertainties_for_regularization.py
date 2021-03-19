@@ -76,13 +76,13 @@ ax[1].fill_between(r,Pci50_bs[:,0],Pci50_bs[:,1],color='b',linestyle='None',alph
 ax[1].fill_between(r,Pci95_bs[:,0],Pci95_bs[:,1],color='b',linestyle='None',alpha=0.25)
 
 ax[0].grid(alpha=0.5)
-ax[0].set_xlabel('r [nm]')
-ax[0].set_ylabel('P [nm$^{-1}$]')
+ax[0].set_xlabel('r (nm)')
+ax[0].set_ylabel('P (nm$^{-1}$)')
 ax[0].set_title('Curvature Matrix CI')
 ax[0].legend(['Truth','Fit','50%-CI','95%-CI'])
 
 ax[1].grid(alpha=0.5)
-ax[1].set_xlabel('r [nm]')
+ax[1].set_xlabel('r (nm)')
 ax[1].set_title('Bootstrapped CI')
 ax[1].legend(['Truth','Fit','50%-CI','95%-CI'])
 plt.tight_layout()

@@ -54,7 +54,7 @@ Example of a simulated signal using the model evaluated at the start values of i
    V = K@P
    plt.figure(figsize=[6,3])
    plt.plot(t,V)
-   plt.xlabel('t [μs]',fontsize=13)
+   plt.xlabel('t (µs)',fontsize=13)
    plt.ylabel('V(t)',fontsize=13)
    plt.grid(alpha=0.4)
    plt.tick_params(labelsize=12)
