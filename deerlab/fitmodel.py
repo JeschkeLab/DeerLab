@@ -573,6 +573,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt
     # =========================================================================
 
+    
     def separable_nonlinear_lsq_analysis(Vexp):
     # =========================================================================
         " Analysis workflow for semiparametric models based on separable nonlinear least-squares" 
@@ -584,9 +585,21 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         prescales = [1 for V in Vexp]
         Vexp_ = [Vexp[i]/prescales[i] for i in range(nSignals)]
 
+        def scale_constraint(nonlinpar):
+            penalty = np.zeros(nSignals)
+            for i in range(nSignals):
+                ex_par = nonlinpar[exidx[i]]
+                pathways = ex_fcn[i](ex_par)
+                lams = [pathway[0] for pathway in pathways]
+                if np.sum(lams)<1: 
+                    penalty[i] = np.atleast_1d(0)
+                else:
+                    penalty[i] = np.atleast_1d(max(Vexp[i])*(np.sum(lams) - 1))
+            return penalty 
+    
         # Separable non-linear least squares (SNNLS) 
         fit = dl.snlls(Vexp_,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
-                            regparam=regparam, uqanalysis=uqanalysis, weights=weights)
+                            regparam=regparam, uqanalysis=uqanalysis, weights=weights,custom_penalty=scale_constraint)
         parfit = fit.nonlin
         Pfit = fit.lin
         param_uq = fit.nonlinUncert
