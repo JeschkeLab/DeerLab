@@ -168,7 +168,7 @@ for i in range(Nsignals):
 
 plt.grid(alpha =0.3)
 plt.xlabel('r (nm)')
-plt.ylabel('P(r)')
+plt.ylabel('P (nm⁻¹)')
 plt.legend(['state A','state B'])
 plt.xlim([2,7])
 

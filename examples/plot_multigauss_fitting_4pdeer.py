@@ -99,7 +99,7 @@ plt.plot(t,(1-Kparfit[0])*dl.bg_hom3d(t,Kparfit[1],Kparfit[0]),'b--',linewidth=1
 plt.grid(alpha=0.3)
 plt.legend(['data','Vfit','Bfit'])
 plt.xlabel('t (µs)')
-plt.ylabel('V(t)')
+plt.ylabel('V')
 
 plt.subplot(322)
 plt.plot(r,P,'k',linewidth=1.5)
@@ -109,7 +109,7 @@ plt.fill_between(r,Pci95[:,0],Pci95[:,1],color='b',linestyle='None',alpha=0.25)
 plt.grid(alpha=0.3)
 plt.legend(['truth','optimal fit','95%-CI'])
 plt.xlabel('r (nm)')
-plt.ylabel('P(r)')
+plt.ylabel('P (nm⁻¹)')
 
 plt.subplot(323)
 plt.bar(np.arange(NGauss)+1,metrics + abs(min(metrics)),facecolor='b',alpha=0.6)

@@ -101,7 +101,7 @@ plt.plot(r,PGauss,'b',linewidth=1.5)
 plt.fill_between(r,PGauss95[:,0], PGauss95[:,1],facecolor='b',linestyle='None',alpha=0.2)
 
 plt.xlabel('Distance (nm)')
-plt.ylabel('P (nm$^{-1}$)')
+plt.ylabel('P (nm⁻¹)')
 plt.tight_layout()
 plt.grid(alpha=0.3)
 plt.legend(['Tikhonov fit','95%-CI','2G fit to Tikhonov','95%-CI'])

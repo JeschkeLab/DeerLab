@@ -36,7 +36,7 @@ V = V*3e6 # add an arbitrary amplitude scale
 
 plt.plot(t,V.real,'.',t,V.imag,'.'),
 plt.xlabel('t (µs)')
-plt.ylabel('V(t)')
+plt.ylabel('V')
 plt.grid(alpha=0.3)
 plt.legend(['real','imag'])
 plt.tight_layout()
@@ -86,19 +86,19 @@ Pfit = fit.P
 plt.subplot(311)
 plt.plot(t,V,'k.',t,(1-lamfit)*Bfit,'r',linewidth=1.5)
 plt.xlabel('t (µs)')
-plt.ylabel('V(t)')
+plt.ylabel('V')
 plt.legend(['data','(1-\lambda)B$_{fit}$'])
 
 plt.subplot(312)
 plt.plot(t,Vcorr,'k.',t,K@Pfit,'r',linewidth=1.5)
 plt.xlabel('t (µs)')
-plt.ylabel('V(t)')
+plt.ylabel('V')
 plt.legend(['corrected data','fit'])
 
 plt.subplot(313)
 plt.plot(rtrue,Ptrue,'k',r,Pfit,'r',linewidth=1.5)
 plt.xlabel('r (nm)')
-plt.ylabel('P (nm^{-1})')
+plt.ylabel('P (nm⁻¹)')
 plt.legend(['truth','fit'])
 plt.tight_layout()
 plt.show()

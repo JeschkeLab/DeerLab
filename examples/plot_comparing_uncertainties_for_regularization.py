@@ -77,7 +77,7 @@ ax[1].fill_between(r,Pci95_bs[:,0],Pci95_bs[:,1],color='b',linestyle='None',alph
 
 ax[0].grid(alpha=0.5)
 ax[0].set_xlabel('r (nm)')
-ax[0].set_ylabel('P (nm$^{-1}$)')
+ax[0].set_ylabel('P (nm⁻¹)')
 ax[0].set_title('Curvature Matrix CI')
 ax[0].legend(['Truth','Fit','50%-CI','95%-CI'])
 
