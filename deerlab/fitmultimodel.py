@@ -550,8 +550,8 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uqanalysis,show):
         ax.legend(['truth','optimal fit','95%-CI'])
     else:
         ax.legend(['truth','optimal fit'])
-    ax.set_xlabel('Distance [nm]')
-    ax.set_ylabel('P [nm⁻¹]')
+    ax.set_xlabel('Distance (nm)')
+    ax.set_ylabel('P (nm⁻¹)')
     axs = np.append(axs,ax)
 
     # Compute the Akaike weights
