@@ -16,7 +16,7 @@ from deerlab.nnls import cvxnnls, fnnls, nnlsbpp
 from deerlab.classes import UncertQuant, FitResult
 
 def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=1,
-          regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3,
+          regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3, custom_penalty=None,
           nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, huberparam=1.35,
           uqanalysis=True):
     r""" Separable Non-linear Least Squares Solver
@@ -76,6 +76,10 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         The regularization parameter can be manually specified by passing a scalar value
         instead of a string. The default ``'aic'``.
 
+    custom_penalty: callable 
+        Custom penalty function to impose upon the solution. Must return a vector to be
+        added to the residual vector. 
+
     alphareopt : float scalar, optional
         Relative parameter change threshold for reoptimizing the regularization parameter
         when using a selection method, the default is 1e-3.
@@ -118,14 +122,10 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         Fitted non-linear parameters
     lin : ndarray
         Fitted linear parameters
-    paramuq : :ref:`UncertQuant`
-        Uncertainty quantification of the joined parameter
-        set (linear + non-linear parameters). The confidence intervals
-        of the individual subsets can be requested via:
-
-        * ``paramuq.ci(n)``           - n%-CI of the full parameter set
-        * ``paramuq.ci(n,'lin')``     - n%-CI of the linear parameter set
-        * ``paramuq.ci(n,'nonlin')``  - n%-CI of the non-linear parameter set
+    nonlinUncert : :ref:`UncertQuant`
+        Uncertainty quantification of the non-linear parameter set.
+    linUncert : :ref:`UncertQuant`
+        Uncertainty quantification of the linear parameter set.
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
     plot : callable
@@ -193,7 +193,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     par0 = np.atleast_1d(par0)
 
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
-    y, Amodel, weights, subsets, _ = dl.utils.parse_multidatasets(y, Amodel, weights, precondition=True)
+    y, Amodel, weights, subsets = dl.utils.parse_multidatasets(y, Amodel, weights, precondition=False)
 
     # Get info on the problem parameters and non-linear operator
     A0 = Amodel(par0)
@@ -201,7 +201,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     Nlin = np.shape(A0)[1]
     linfit = np.zeros(Nlin)
     alpha = 0
-
+    scales = [1 for _ in subsets]
+    prescales= [1 for _ in subsets]
     # Determine whether to use regularization penalty
     illConditioned = np.linalg.cond(A0) > 10
     if reg == 'auto':
@@ -247,9 +248,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     nonNegativeOnly = (np.all(lbl == 0)) and (np.all(np.isinf(ubl)))
 
 
+    # Use an arbitrary axis
+    ax = np.arange(1, Nlin+1)
     if includePenalty:
-        # Use an arbitrary axis
-        ax = np.arange(1, Nlin+1)
         # Get regularization operator
         regorder = np.minimum(Nlin-1, regorder)
         L = dl.regoperator(ax, regorder)
@@ -284,6 +285,26 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     regparam_prev = 0
     par_prev = [0]*len(par0)
 
+
+    def linear_problem(A,optimize_alpha):
+    #===========================================================================
+
+        global alpha
+        
+        # Regularization components
+        if optimize_alpha:
+            alpha = dl.selregparam(y, A, ax, regtype, regparam, regorder=regorder)
+
+        # Components for linear least-squares
+        AtA, Aty = dl.lsqcomponents(y, A, L, alpha, weights, regtype=regtype)
+        # Solve the linear least-squares problem
+        result = linSolver(AtA, Aty)
+        linfit = parseResult(result)
+        linfit = np.atleast_1d(linfit)
+        
+        return linfit
+    #===========================================================================
+
     def ResidualsFcn(p):
     #===========================================================================
         """
@@ -293,9 +314,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         non-linear least-squares solver. 
         """
 
-        nonlocal par_prev, check, regparam_prev, linfit, alpha
+        nonlocal par_prev, check, regparam_prev, scales, linfit
+        global alpha
         # Non-linear model evaluation
         A = Amodel(p)
+
 
         # Regularization components
         if includePenalty:
@@ -303,34 +326,49 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
                 # If the parameter vector has not changed by much...
                 if check and all(abs(par_prev-p)/p < alphareopt):
                     # ...use the alpha optimized in the previous iteration
+                    optimize_alpha = False
                     alpha = regparam_prev
                 else:
                     # ...otherwise optimize with current settings
-                    alpha = dl.selregparam(y, A, ax, regtype, regparam, regorder=regorder)
+                    alpha = regparam
+                    optimize_alpha = True
                     check = True
             else:
                 # Fixed regularization parameter
                 alpha = regparam
-
+                optimize_alpha = False
             # Store current iteration data for next one
             par_prev = p
             regparam_prev = alpha
-
         else:
             # Non-linear operator without penalty
+            optimize_alpha = False
             alpha = 0
 
-        # Components for linear least-squares
-        AtA, Aty = dl.lsqcomponents(y, A, L, alpha, weights, regtype=regtype)
+        linfit = linear_problem(A,optimize_alpha)
+        regparam_prev = alpha
 
-        # Solve the linear least-squares problem
-        result = linSolver(AtA, Aty)
-        linfit = parseResult(result)
-        linfit = np.atleast_1d(linfit)
         # Evaluate full model residual
         yfit = A@linfit
+
+        scales = []
+        for subset in subsets:
+            yfit_,y_ = (np.atleast_2d(y[subset]) for y in [yfit, y]) # Rescale the subsets corresponding to each signal
+            scale = np.squeeze(np.linalg.lstsq(yfit_.T,y_.T,rcond=None)[0])
+            scales.append(scale) # Store the optimized scales of each signal
+        scales_vec = np.zeros_like(yfit) 
+        for subset,scale in zip(subsets,scales): 
+            scales_vec[subset] = scale 
+
         # Compute residual vector
-        res = weights*(yfit - y)
+        res = weights*(scales_vec*(Amodel(p)@linfit) - y)
+
+        # Compute residual from custom penalty
+        if callable(custom_penalty):
+            penres = custom_penalty(p)
+            penres = np.atleast_1d(penres)
+            res = np.concatenate((res,penres))
+
         if includePenalty:
             # Augmented residual
             res, _ = _augment(res, [], regtype, alpha, L, linfit, huberparam, Nnonlin)
@@ -361,54 +399,28 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     nonlinfit = nonlinfits[globmin]
     sol = sols[globmin]
     Afit = Amodel(nonlinfit)
-    yfit = Afit@linfit
+
+    scales_vec = np.zeros_like(y) 
+    for subset,scale in zip(subsets,scales): 
+        scales_vec[subset] = scale 
+    yfit = scales_vec*(Afit@linfit)
 
     # Uncertainty analysis
     #--------------------------------------------------------
     if uqanalysis:
-        # Compue the residual vector
-        res = weights*(yfit - y)
-
-        # Compute the Jacobian for the linear and non-linear parameters
-        fcn = lambda p: Amodel(p)@linfit
-        Jnonlin = Jacobian(fcn,nonlinfit,lb,ub)
-
-        Jlin = Afit
-        J = np.concatenate((Jnonlin, Jlin),1)
-
-        # Augment the residual and Jacobian with the regularization penalty on the linear parameters
-        res, J = _augment(res, J, regtype, regparam_prev, L, linfit, huberparam, Nnonlin)
+        # Compute the residual and Jacobian
+        res = ResidualsFcn(nonlinfit)
+        J = Jacobian(ResidualsFcn,nonlinfit,lb,ub)
 
         # Calculate the heteroscedasticity consistent covariance matrix
         covmatrix = hccm(J, res, 'HC1')
-        
-        # Get combined parameter sets and boundaries
-        parfit = np.concatenate((nonlinfit, linfit))
-        lbs = np.concatenate((lb, lbl))
-        ubs = np.concatenate((ub, ubl))
 
         # Construct the uncertainty quantification object
-        paramuq_ = UncertQuant('covariance', parfit, covmatrix, lbs, ubs)
-        paramuq = copy.deepcopy(paramuq_)
-
-        def ci(coverage,ptype='full'):
-        #===========================================================================
-            "Wrapper around the CI function handle of the uncertainty structure"
-            # Get requested confidence interval of joined parameter set
-            paramci = paramuq_.ci(coverage)
-            if ptype == 'nonlin':
-                # Return only confidence intervals on non-linear parameters
-                paramci = paramci[range(Nnonlin), :]
-            elif ptype == 'lin':
-                # Return only confidence intervals on linear parameters
-                paramci = paramci[Nnonlin:, :]
-            return paramci
-        #===========================================================================
-
-        # Add the function to the confidence interval function call
-        paramuq.ci = ci
+        paramuq_nonlin = UncertQuant('covariance', nonlinfit, covmatrix, lb, ub)
+        paramuq_lin = paramuq_nonlin.propagate(lambda p: linear_problem(Amodel(p),optimize_alpha=True),lbl,ubl)
     else:
-        paramuq = []
+        paramuq_nonlin = []
+        paramuq_lin = []
 
     # Goodness-of-fit
     # --------------------------------------
@@ -420,14 +432,32 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         stats = stats[0]
         fvals = fvals[0]
 
+    for i in range(len(subsets)):
+        scales[i] *= prescales[i]
+
     # Display function
     def plotfcn(show=False):
         fig = _plot(subsets,y,yfit,show)
         return fig
 
-    return FitResult(nonlin=nonlinfit, lin=linfit, uncertainty=paramuq, regparam=alpha, plot=plotfcn,
-                     stats=stats, cost=fvals, residuals=sol.fun, success=sol.success)
+    return FitResult(nonlin=nonlinfit, lin=linfit, nonlinUncert=paramuq_nonlin, linUncert=paramuq_lin, regparam=alpha, plot=plotfcn,
+                     stats=stats, cost=fvals, residuals=sol.fun, success=sol.success, scale=scales)
 # ===========================================================================================
+
+def res_lambda(p,y,linfit,Amodel,weights,L,scales_vec=1):
+    res = weights*(scales_vec*(Amodel(p)@linfit) - y)
+
+    lams = p[[1,2,3]]
+    if np.sum(lams)<1: 
+        pen = 0
+    else:
+        pen = np.atleast_1d(max(y)*np.linalg.norm(np.sum(lams) - 1))**2
+    pen = np.full_like(res,pen)
+
+    res = np.concatenate((res,pen)) 
+    res = np.concatenate((res,L@P)) 
+
+    return np.concatenate((res,pen)) 
 
 
 def _augment(res, J, regtype, alpha, L, x, eta, Nnonlin):
