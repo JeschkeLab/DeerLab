@@ -23,7 +23,7 @@ def regoperator(r,d=2):
         
     Notes
     -----
-    All finite difference matrix coefficients are computed via Fornberg's method [1]_. Therefore, the 
+    All finite-difference matrix elements are computed via Fornberg's method [1]_. Therefore, the 
     resulting operator is agnostic with respect to the increments in the distance vector, allowing 
     uniformly as well as non-uniformly spaced distance vectors. 
 

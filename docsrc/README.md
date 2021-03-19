@@ -1,15 +1,6 @@
 ## Compiling the documentation
 
-The DeerLab documentation/website is written in restructured-text (RST) format and built using Sphinx. In order to compile the source files of the documentation, several packages/programs are required. This is a summary of the steps to be taken before being able to compile the documentation.
-
-### Requirements: 
-  * Pyhton3
-  * Sphinx 1.8.3
-  * numpydoc
-  * Sphinx-Gallery
-  * Read-the-Docs Sphinx-theme
-  * DeerLab
-  * dvissvgm
+The DeerLab documentation/website is written in restructured-text (RST) format and built using Sphinx. In order to compile the source files of the documentation, several packages and programs are required. This is a summary of the steps to be taken before being able to compile the documentation.
 
 ### Installation:
 
@@ -19,7 +10,7 @@ In order to compile the documentation the following steps must be followed:
 
 2) Install DeerLab (see installation instructions)
 
-3) Install Sphinx
+3) Install Sphinx v1.8.3
 
         pip install sphinx==1.8.3
 
