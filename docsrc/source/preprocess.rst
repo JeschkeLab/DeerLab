@@ -29,7 +29,7 @@ Before fitting, experimental DEER data must be preprocessed. Three steps are usu
     V = dl.correctphase(V)           # phase correction
     t = dl.correctzerotime(V,t)      # zero-time adjustment
 
-Both ``correct*`` functions determine the corrections via an optimization approach. If that fails, you can provide an explicit phase, time shift, and scale as additional argument.
+Both ``correct*`` functions determine the corrections via an optimization approach. If the phase correction fails, you can provide an explicit phase as additional input to ``correctphase``.
 
 The signal amplitude is given in arbitrary units. DeerLab functions are agnostic with respect to this scaling and do not require the dipolar signal to be scaled. The scale is automatically optimized by all fit functions in DeerLab.
 
