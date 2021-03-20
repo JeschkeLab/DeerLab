@@ -1,4 +1,3 @@
-
 import numpy as np
 import scipy.optimize as opt
 from deerlab.utils import isempty
@@ -8,9 +7,10 @@ def correctphase(V, phase = [], imagoffset=False, full_output=False):
     r"""
     Phase correction of complex-valued data
 
-    Performs a phase optimization on the complex-valued data ``V`` by minimization of the
-    imaginary component of the data. The phase can be corrected manually by specifying 
-    a phase ``phase``, in radians.
+    Performs a phase optimization on the complex-valued data ``V`` by determining a phase
+    rotation of ``V`` that minimizes the imaginary component.
+    
+    Also, the phase can be corrected manually by specifying  a phase ``phase``, in radians.
 
     Two-dimensional datasets ``V2D``, e.g. from multiple scans measurements, can be provided, 
     and the phase correction will be done on each trace individually. The first dimension ``V2D[:,i]``
@@ -20,12 +20,12 @@ def correctphase(V, phase = [], imagoffset=False, full_output=False):
     ----------
     V : array_like or list of array_like
         Complex-valued signals or list thereof.
-    phase  : float scalar, optional
+    phase : float scalar, optional
         Phase shift for manual correction, in radians. 
     imagoffset : boolean, optional
         Enables/Disables the fitting and correction of an imaginary offset, by default disabled.
     full_output : boolean, optional
-        If enabled the function will return additional output arguments in a tuple, by default disabled.
+        If enabled, the function will return additional output arguments, by default disabled.
 
     Returns
     -------
@@ -106,20 +106,19 @@ def correctphase(V, phase = [], imagoffset=False, full_output=False):
 
 def _imaginarynorm(params,V):
 # ==========================================================================
-        """
-        Computes norm of the imaginary part of phase-corrected data from zero before
-        phase correction, an offset can be subtracted from the imaginary part.
-        """
+    """
+    Computes norm of the imaginary part of phase-corrected data from zero before
+    phase correction, an offset can be subtracted from the imaginary part.
+    """
 
-        phase = params[0]
-        if len(params)>1:
-            imoffsets = params[1]
-        else:
-            imoffsets = 0
+    phase = params[0]
+    if len(params)>1:
+        imoffsets = params[1]
+    else:
+        imoffsets = 0
 
-        Vcorr = (V-1j*imoffsets)*np.exp(-1j*phase)
-        ImagNorm = np.linalg.norm(np.imag(Vcorr))
+    Vcorr = (V-1j*imoffsets)*np.exp(-1j*phase)
+    ImagNorm = np.linalg.norm(np.imag(Vcorr))
 
-        return ImagNorm
+    return ImagNorm
 # ==========================================================================
-    

@@ -16,7 +16,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     Parameters
     ----------
     r : array_like
-        Distance axis in nm. 
+        Distance axis, in nm. 
     
     P : array_like
         Distance distribution, does not have to be normalized.
@@ -39,25 +39,25 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
         
         General parameters
 
-            * ``'rmin'`` - Minimum distance in the distribution range in nm
-            * ``'rmax'`` - Maximum distance in the distribution range in nm
+            * ``'rmin'`` - Minimum distance in the distribution range, in nm
+            * ``'rmax'`` - Maximum distance in the distribution range, in nm
             * ``'int'`` - Integral of the distance distribution
 
         Location parameters
 
-            * ``'mean'`` or ``'moment1'`` - Mean distance in nm (see `more <https://en.wikipedia.org/wiki/Mean>`_)
-            * ``'median'`` - Median distance in nm (see `more <https://en.wikipedia.org/wiki/Median>`_)
-            * ``'iqm'`` - Interquartile mean (IQM) distance in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_mean>`_)
-            * ``'mode'`` - First modal distance in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`_)
-            * ``'modes'`` - All modal distances in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`_)
+            * ``'mean'`` or ``'moment1'`` - Mean distance, in nm (see `more <https://en.wikipedia.org/wiki/Mean>`_)
+            * ``'median'`` - Median distance, in nm (see `more <https://en.wikipedia.org/wiki/Median>`_)
+            * ``'iqm'`` - Interquartile mean (IQM) distance, in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_mean>`_)
+            * ``'mode'`` - First modal distance, in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`_)
+            * ``'modes'`` - All modal distances, in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`_)
 
         Spread parameters
 
-            * ``'iqr'`` - Interquartile range in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_range>`_)
-            * ``'mad'`` - Mean absolute deviation (MAD)  in nm (see `more <https://en.wikipedia.org/wiki/Average_absolute_deviation>`_)
-            * ``'std'`` - Standard deviation  in nm (see `more <https://en.wikipedia.org/wiki/Standard_deviation>`_)
-            * ``'var'`` or ``'moment2'`` - Variance in nm² (see `more <https://en.wikipedia.org/wiki/Variance>`_)
-            * ``'entropy'`` - Shannon entropy (see `more <https://en.wikipedia.org/wiki/Entropy_(information_theory)>`_)
+            * ``'iqr'`` - Interquartile range, in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_range>`_)
+            * ``'mad'`` - Mean absolute deviation (MAD), in nm (see `more <https://en.wikipedia.org/wiki/Average_absolute_deviation>`_)
+            * ``'std'`` - Standard deviation, in nm (see `more <https://en.wikipedia.org/wiki/Standard_deviation>`_)
+            * ``'var'`` or ``'moment2'`` - Variance, in nm² (see `more <https://en.wikipedia.org/wiki/Variance>`_)
+            * ``'entropy'`` - Shannon entropy, in nat (see `more <https://en.wikipedia.org/wiki/Entropy_(information_theory)>`_)
 
         Shape parameters
 

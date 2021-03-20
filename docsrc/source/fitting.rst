@@ -1,21 +1,21 @@
 Fitting
 =========================================
 
-DeerLab provides a wide range of functionality to analyze experimental dipolar EPR data using least-squares fitting. For fitting, the experimental data is assumed to be properly phased, shifted, and scaled.
+DeerLab provides a wide range of functionality to analyze experimental dipolar EPR data using least-squares fitting. For fitting, the experimental data is assumed to be properly phased and time-shifted.
 
 The main fitting function is ``fitmodel``. It can fit either non-parametric and parametric distance distributions, and it fits the distribution, the background, and the modulation depth in a single step. It provides uncertainty estimates for all fitted quantities.
 
-The older two-step workflow of fitting the background in a separate step is supported as well, but not recommended.
+The older two-step workflow of fitting the background and modulation depth in a separate step prior to fitting the distribution is supported as well, but not recommended.
 
 
 Picking the model
 ------------------------------------------
 
-After preprocessing the experimental data, the next important step is to decide on the model to be fitted. This consists of four separate choices
+After preprocessing the experimental data, the next important step is to decide on the model to be fitted. This consists of four separate choices:
 
-(1) Choose a **distance range** ``r``. The distance range is an important choice, as any distance distibution is truncated to this range. The lower limit of the distance range is determined by the bandwidth of the pulses, and also on the time increment. Typically, 1.5 nm is reasonable. The upper limit depends on the length of the experimental time trace. The number of points in ``r`` is usually set equal to the number of time points.
+(1) Choose a **distance range** ``r``. The distance range is an important choice, as any distance distibution is truncated to this range. The lower limit of the distance range is determined by the time increment and by the bandwidth of the pulses. Typically, 1.5 nm is reasonable. The upper limit depends on the length of the experimental time trace. The number of points in ``r`` is usually set equal to the number of time points.
 
-(2) Choose a **distribution model**. Generally, a non-parametric distribution is preferred. If there a reasons to believe the distances distribution has a specific shape, use the associated :ref:`parametric distance distibution model<modelsref_dd>`.
+(2) Choose a **distribution model**. Generally, a non-parametric distribution is preferred. If there a reasons to believe the distances distribution has a specific shape, or if the experimental time trace does not contain a lot of information because it is truncated or noisy, use the associated :ref:`parametric distance distibution model<modelsref_dd>`.
 
 (3) Choose a **background model**. Typically, a homogeneous 3D background (``bg_hom3d``) is sufficient, but other :ref:`background models<modelsref_bg>` could be needed.
 
@@ -25,19 +25,15 @@ After preprocessing the experimental data, the next important step is to decide 
 Non-parametric distribution
 ------------------------------------------
 
-To fit a signal with a non-parametric distance distribution, the simplest possible call is
+To fit a model with a non-parametric distance distribution to a standard 4-pulse DEER trace, the simplest possible call is
 
 .. code-block:: python
 
     fit = dl.fitmodel(Vexp,t,r)
 
-This fits the signal in ``Vexp`` (defined over the time axis ``t``) with a non-parametric distance distribution defined over distance vector ``r``, a homogeneous 3D spin distribution for the background, and a modulation depth (assuming a standard 4-pulse DEER). 
+This takes the signal in ``Vexp`` (defined over the time axis ``t``) and fits it with model using a non-parametric distance distribution defined over distance vector ``r``, a homogeneous 3D spin distribution for the background, and a modulation depth.
 
-To obtain the fitted signal, use
-
-.. code-block:: python
-
-    fit = dl.fitmodel(Vexp,t,r)
+``fitmodel`` returns a variable ``fit`` which contains all the required results from the fit: the fitted distance distribution ``fit.P``, background ``fit.B`` and signal ``fit.B``, all the fitted parameters (``fit.bgparam``, ``fit.ddparam``, ``fit.exparam``), as well as uncertainties for all of them. A full list of ``fitmodel`` outputs can be found `here <./functions/fitmodel.html>`_.
 
 Since all fit functions in DeerLab are agnostic with respect to the absolute scale of the signal amplitude (does not need to statisfy ``V(t=0)==1``), the pre-processed signals can be passed directly to the fit functions and the corresponding scale will be automatically fitted and returned as the output ``fit.scale``.
 
@@ -47,9 +43,9 @@ With additional inputs, you can specify which :ref:`distance distribution model 
 
     fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
 
-Here, ``'P'`` specifies that a non-parametric distribution (defined over ``r``) should be fitted. ``bg_hom3d`` is a function handle to the background model function. If you want to fit a signal that doesn't have a background, use  ``None`` instead.  ``ex_4pdeer`` is a function handle to the particular experiment model. ``ex_4pdeer`` consists of the main dipolar modulation function centered at time zero with an ampltitude ``lambda`` plus a constant offset of amplitude ``1-lambda``. If you want to fit a simple dipolar evolution function with 100% modulation depth, use ``None`` as the experiment model.
+Here, ``'P'`` specifies that a non-parametric distribution (defined over ``r``) should be fitted. ``bg_hom3d`` is a function handle to the background model function. If you want to fit a signal that doesn't have a background, use  ``None`` instead.  ``ex_4pdeer`` is a function handle to the particular experiment model. ``ex_4pdeer`` consists of the main dipolar modulation function centered at time zero with an amplitude ``lambda`` plus a constant offset of amplitude ``1-lambda``. If you want to fit a simple dipolar evolution function with 100% modulation depth, use ``None`` as the experiment model.
 
-``fitmodel`` uses a least-squares fitting algorithm to determine the optimal distribution, background parameters, and experiment parameters that fit the experiment data. To determine the non-parametric distribution, it internally uses Tikhnonov regularization with a regularization parameter optimized using the Akaike Information Criterion (AIC). These settings can be changed:
+``fitmodel`` uses a least-squares fitting algorithm to determine the optimal distribution, background parameters, and experiment parameters that fit the experiment data. To determine a non-parametric distribution, it internally uses Tikhnonov regularization with a regularization parameter optimized using the Akaike Information Criterion (AIC). These settings can be changed:
 
 .. code-block:: python
 
@@ -57,15 +53,14 @@ Here, ``'P'`` specifies that a non-parametric distribution (defined over ``r``) 
    alpha = 0.8     # manually set regularization parameter
    fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,regtype=regtype,regparam=alpha)
 
-``fitmodel`` returns a variable ``fit`` which contains all the required results from the fit: the fitted distance distribution, background and signal, all the fitted parameters as well as uncertainties for all of them. A full list of ``fitmodel`` outputs can be found `here <./functions/fitmodel.html>`_.
 
 Parametric distributions
 ----------------------------------
 
-To use a parametric distance distribution model, provide ``fitmodel`` with a function handle to the :ref:`distance distribution models<modelsref_dd>` instead of ``'P'``. For example:
+To use a parametric distance distribution model, provide ``fitmodel`` with one of the :ref:`distance distribution model functions<modelsref_dd>` instead of ``'P'``. For example:
 
 .. code-block:: python
 
     fit = dl.fitmodel(Vexp,t,r,dl.dd_gauss2,dl.bg_hom3d,dl.ex_4pdeer)
 
-This will fit a two-Gauss distribution over ``r``. The fitted distribution parameters are returned in ``parfit``, and the corresponding distribution in ``Pfit``.
+This will fit a two-Gauss distribution over ``r``. The fitted distribution parameters are returned in ``fit.ddparam``, and the corresponding distribution in ``fit.P``.
