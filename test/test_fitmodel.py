@@ -544,9 +544,9 @@ def test_global_scale_4pdeer():
     
     fit = fitmodel([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer,uq=None)
 
-    assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
+    assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 5e-2 
 # ======================================================================
-
+test_global_scale_4pdeer()
 
 def test_V_scale_parametric():
 # ======================================================================
