@@ -200,7 +200,6 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     Nnonlin = len(par0)
     Nlin = np.shape(A0)[1]
     linfit = np.zeros(Nlin)
-    alpha = 0
     scales = [1 for _ in subsets]
     prescales= [1 for _ in subsets]
     # Determine whether to use regularization penalty
@@ -288,7 +287,12 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     def linear_problem(A,optimize_alpha):
     #===========================================================================
-
+        """
+        Linear problem
+        ------------------
+        Solves the linear subproblem of the SNLLS objective function via linear LSQ 
+        constrained, unconstrained, or regularized.
+        """
         global alpha
         
         # Regularization components
@@ -352,12 +356,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         yfit = A@linfit
 
         scales = []
+        scales_vec = np.zeros_like(yfit) 
         for subset in subsets:
             yfit_,y_ = (np.atleast_2d(y[subset]) for y in [yfit, y]) # Rescale the subsets corresponding to each signal
             scale = np.squeeze(np.linalg.lstsq(yfit_.T,y_.T,rcond=None)[0])
             scales.append(scale) # Store the optimized scales of each signal
-        scales_vec = np.zeros_like(yfit) 
-        for subset,scale in zip(subsets,scales): 
             scales_vec[subset] = scale 
 
         # Compute residual vector
@@ -371,11 +374,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
         if includePenalty:
             # Augmented residual
-            res, _ = _augment(res, [], regtype, alpha, L, linfit, huberparam, Nnonlin)
+            res_reg, _ = reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)
+            res = np.concatenate((res,res_reg))
 
         return res
     #===========================================================================
-
 
     # Preprare multiple start global optimization if requested
     if multistart > 1 and not nonLinearConstrained:
@@ -406,24 +409,45 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     yfit = scales_vec*(Afit@linfit)
 
     # Uncertainty analysis
-    #--------------------------------------------------------
+    #---------------------
     if uqanalysis:
-        # Compute the residual and Jacobian
+        # Compute the fit residual
         res = ResidualsFcn(nonlinfit)
-        J = Jacobian(ResidualsFcn,nonlinfit,lb,ub)
+        
+        # Jacobian (non-linear part)
+        Jnonlin = Jacobian(ResidualsFcn,nonlinfit,lb,ub)
+
+        # Jacobian (linear part)
+        Jlin = np.zeros((len(res),len(linfit)))
+        Jlin[:len(y),:] = Amodel(nonlinfit)
+        Jlin[len(res)-Nlin:,:] = reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)[1]
+
+        # Full Jacobian
+        J = np.concatenate((Jnonlin,Jlin),axis=1)
 
         # Calculate the heteroscedasticity consistent covariance matrix
         covmatrix = hccm(J, res, 'HC1')
 
+        # Get combined parameter sets and boundaries
+        parfit = np.concatenate((nonlinfit, linfit))
+        lbs = np.concatenate((lb, lbl))
+        ubs = np.concatenate((ub, ubl))
+
         # Construct the uncertainty quantification object
-        paramuq_nonlin = UncertQuant('covariance', nonlinfit, covmatrix, lb, ub)
-        paramuq_lin = paramuq_nonlin.propagate(lambda p: linear_problem(Amodel(p),optimize_alpha=True),lbl,ubl)
+        paramuq = UncertQuant('covariance', parfit, covmatrix, lbs, ubs)
+
+        # Split the uncertainty quantification of nonlinear/linear parts
+        nonlin_subset = np.arange(0,Nnonlin)
+        lin_subset = np.arange(Nnonlin,Nnonlin+Nlin)
+        paramuq_nonlin = uq_subset(paramuq,nonlin_subset)
+        paramuq_lin = uq_subset(paramuq,lin_subset)
+
     else:
         paramuq_nonlin = []
         paramuq_lin = []
 
     # Goodness-of-fit
-    # --------------------------------------
+    # ---------------
     stats = []
     for subset in subsets:
         Ndof = len(y[subset]) - Nnonlin
@@ -444,23 +468,26 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
                      stats=stats, cost=fvals, residuals=sol.fun, success=sol.success, scale=scales)
 # ===========================================================================================
 
-def res_lambda(p,y,linfit,Amodel,weights,L,scales_vec=1):
-    res = weights*(scales_vec*(Amodel(p)@linfit) - y)
 
-    lams = p[[1,2,3]]
-    if np.sum(lams)<1: 
-        pen = 0
-    else:
-        pen = np.atleast_1d(max(y)*np.linalg.norm(np.sum(lams) - 1))**2
-    pen = np.full_like(res,pen)
+def uq_subset(uq_full,subset):
+#===========================================================================
+    "Wrapper around the CI function handle of the uncertainty structure"
+    uq_subset = copy.deepcopy(uq_full)
 
-    res = np.concatenate((res,pen)) 
-    res = np.concatenate((res,L@P)) 
+    uq_subset.mean = uq_subset.mean[subset]
+    uq_subset.median = uq_subset.median[subset]
+    uq_subset.std = uq_subset.std[subset]
+    uq_subset.covmat = uq_subset.covmat[np.ix_(subset,subset)]
+    uq_subset.nparam = len(subset)
 
-    return np.concatenate((res,pen)) 
+    # Get requested confidence interval of joined parameter set
+    uq_subset.ci = lambda coverage: uq_full.ci(coverage)[subset, :]
+    uq_subset.percentile = lambda p: uq_full.percentile(p)[subset]
 
+    return uq_subset
+#===========================================================================
 
-def _augment(res, J, regtype, alpha, L, x, eta, Nnonlin):
+def reg_penalty(regtype, alpha, L, x, eta, Nnonlin):
 # ===========================================================================================
     """
     LSQ residual and Jacobian augmentation
@@ -486,13 +513,7 @@ def _augment(res, J, regtype, alpha, L, x, eta, Nnonlin):
     resreg = alpha*resreg
     Jreg = alpha*Jreg
 
-    # Augment jacobian and residual
-    res = np.concatenate((res, resreg))
-    if np.size(J) != 0:
-        Jreg = np.concatenate((np.zeros((np.shape(L)[0],Nnonlin)), Jreg),1)
-        J = np.concatenate((J, Jreg))
-
-    return res, J
+    return resreg, Jreg
 # ===========================================================================================
 
 
