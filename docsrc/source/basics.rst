@@ -74,11 +74,11 @@ Dipolar background
 Experiments
         DeerLab supports a wide range of dipolar EPR experiments. Experiments differ in the number and nature of their modulated dipolar pathways. Each of these pathways leads to a dipolar modulation contribution to the dipolar signal, with specific amplitude and refocusing times. The overall dipolar signal is the sum of an unmodulated contribution and a contribution from all modulated pathways, each of which with its own amplitude, refocusing time, and harmonic. For each type of supported dipolar EPR experiment, there is a dedicated experiment :ref:` model function<modelsref_ex>` starting with ``ex_``, which models the dipolar pathways for that specific experiment. These functions take an array of parameters characterizing the experiment. As output, they return an array containing information about the dipolar pathways of the experiment model.
 
-        For example, the model function representing the typical model for a 4-pulse DEER signal is ``ex_4pdeer``: ::
+        For example, the model function representing the typical model for a 4-pulse DEER signal is ``ex_4pdeer1``: ::
 
                 t = np.linspace(0,3,151)
                 lam = 0.3;
-                pathways = dl.ex_4pdeer(t,lam)
+                pathways = dl.ex_4pdeer1(t,lam)
 
         The returned output ``pathways`` is a list of pathway information ::
 
@@ -119,7 +119,7 @@ Dipolar kernels
                 lam1 = 0.4      # amplitude of primary pathway
                 lam2 = 0.1      # amplitude of secondary pathway
                 T02 = 3.1       # refocusing time of secondary pathway, in us
-                pathways = dl.ex_5pdeer([Lam0,lam1,lam2,T02]) # dipolar pathways of 5-pulse DEER experiment
+                pathways = dl.ex_5pdeer2([Lam0,lam1,lam2,T02]) # dipolar pathways of 5-pulse DEER experiment
                 Bfcn = lambda t,lam: dl.bg_hom3d(t,200,lam)   # define function for background
                 K = dl.dipolarkernel(t,r,pathways,Bfcn) # 5-pulse DEER dipolar kernel
         

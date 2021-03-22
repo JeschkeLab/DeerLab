@@ -160,18 +160,18 @@ For each of these four components, a choice needs to be made:
 
 (4) **Choose an experiment model**
 
-    This decision should be based on the experiment you used to acquire the data. In the case of 4-pulse DEER data, when analyzing a standard 4-pulse DEER signal without 2+1 component at the end, use :ref:`ex_4pdeer`. If the 2+1 component (appearing at the right edge of the time trace) should be fitted as well, use the :ref:`ex_ovl4pdeer` model. There are experiment models for more complicated signals, such as 5-pulse DEER or 7-pulse DEER. Use the associated parametric experiment models from the :ref:`list of available models<modelsref_ex>`. If you want to model simple dipolar oscillations without any additional effects (modulation depth, secondary pathways), set the experiment model to ``'None'``.
+    This decision should be based on the experiment you used to acquire the data. In the case of 4-pulse DEER data, when analyzing a standard 4-pulse DEER signal without 2+1 component at the end, use :ref:`ex_4pdeer1`. If the 2+1 component (appearing at the right edge of the time trace) should be fitted as well, use the :ref:`ex_ovl4pdeer` model. There are experiment models for more complicated signals, such as 5-pulse DEER or 7-pulse DEER. Use the associated parametric experiment models from the :ref:`list of available models<modelsref_ex>`. If you want to model simple dipolar oscillations without any additional effects (modulation depth, secondary pathways), set the experiment model to ``'None'``.
 
 Here is a list of examples with different situations and what the proper choices of model are: 
 
 =========================================================================== ==================== ================== ==================
             Description                                                      Distribution model   Background model   Experiment model
 =========================================================================== ==================== ================== ==================
-4pDEER signal with non-parametric distribution and homogenous 3D background   ``'P'``             ``bg_hom3d``       ``ex_4pdeer``
-4pDEER signal with Gaussian distribution amd homogenous 3D background         ``dd_gauss``        ``bg_hom3d``       ``ex_4pdeer``
+4pDEER signal with non-parametric distribution and homogenous 3D background   ``'P'``             ``bg_hom3d``       ``ex_4pdeer1``
+4pDEER signal with Gaussian distribution amd homogenous 3D background         ``dd_gauss``        ``bg_hom3d``       ``ex_4pdeer1``
 Dipolar evolution function with a random-coil distribution                    ``dd_randcoil``     ``None``           ``None``
-4pDEER signal with non-parametric distribution and no background              ``'P'``             ``None``           ``ex_4pdeer``
-5pDEER signal with non-parametric distribution and fractal background         ``'P'``             ``bg_homfractal``  ``ex_5pdeer``
+4pDEER signal with non-parametric distribution and no background              ``'P'``             ``None``           ``ex_4pdeer1``
+5pDEER signal with non-parametric distribution and fractal background         ``'P'``             ``bg_homfractal``  ``ex_5pdeer2``
 =========================================================================== ==================== ================== ==================
 
 
@@ -183,25 +183,25 @@ The models that have an associated parametric function, e.g. ``bg_hom3d``, must 
 
 For example, a 4pDEER signal with non-parametiric distribution and homogenous 3D background can be fitted using ::
 
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)  # 4pDEER fit
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1)  # 4pDEER fit
 
 For the other examples in the table above, the call to ``fitmodel`` would look like this
 
 =========================================================================== ================================================================
             Description                                                        Fit
 =========================================================================== ================================================================
-4pDEER signal with non-parametric distribution and homogenous 3D background  ``fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)``
-4pDEER signal with Gaussian distribution and homogenous 3D background        ``fit = dl.fitmodel(V,t,r,dl.gauss,dl.bg_hom3d,dl.ex_4pdeer)``
+4pDEER signal with non-parametric distribution and homogenous 3D background  ``fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1)``
+4pDEER signal with Gaussian distribution and homogenous 3D background        ``fit = dl.fitmodel(V,t,r,dl.gauss,dl.bg_hom3d,dl.ex_4pdeer1)``
 Dipolar evolution function with a random-coil distribution                   ``fit = dl.fitmodel(V,t,r,dl.randcoil,None,None)``
-4pDEER signal with non-parametric distribution and no background             ``fit = dl.fitmodel(V,t,r,'P',None,dl.ex_4pdeer)``
-5pDEER signal with non-parametric distribution and fractal background        ``fit = dl.fitmodel(V,t,r,'P',dl.bg_homfractal,dl.ex_5pdeer)``
+4pDEER signal with non-parametric distribution and no background             ``fit = dl.fitmodel(V,t,r,'P',None,dl.ex_4pdeer1)``
+5pDEER signal with non-parametric distribution and fractal background        ``fit = dl.fitmodel(V,t,r,'P',dl.bg_homfractal,dl.ex_5pdeer2)``
 =========================================================================== ================================================================
 
 ``fitmodel`` uses a least-squares fitting algorithm to determine the optimal distance distribution, background parameters, and experiment parameters that fit the experiment data. To determine the non-parametric distribution, it internally uses Tikhnonov regularization with a regularization parameter optimized using the Akaike Information Criterion (AIC). All settings related to the fit can be adjusted by using the appropriate keywords, see the :ref:`reference documentation <fitmodel>` for details. For example, the regularization parameter used in the Tikhonov regularization could be manually adjusted by using the ``regparam`` keyword: ::
 
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam='aic') # regularization with Akaike information criterion
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam='gcv') # regularization with Generalized Cross-Validation
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam=0.05)  # regularization with fixed regularization parameter
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1, regparam='aic') # regularization with Akaike information criterion
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1, regparam='gcv') # regularization with Generalized Cross-Validation
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1, regparam=0.05)  # regularization with fixed regularization parameter
 
 After ``fitmodel`` has found a solution, it returns an object that we assigned to ``fit``. This object contains fields with all quantities of interest with the fit results, such as the fitted model, goodness-of-fit statistics, and uncertainty information. See the :ref:`reference` for ``fitmodel``  for a detailed list of these quantities.
 
@@ -227,7 +227,7 @@ The ``fit`` output contains additional information, for example:
 
 In addition to the distance distribution fit, it is important to check and report the fitted model parameters and their uncertainties. While this can be computed manually, a summary can be easily requested by enabling the ``verbose`` option of ``fitmodel``. By using ::
 
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,verbose=True)  # 4pDEER fit and report parameter fits
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1,verbose=True)  # 4pDEER fit and report parameter fits
 
 after the function has fitted your data, it will print a summary the results, including goodness-of-fit estimators
 and fitted parameters with uncertainties. Here is an example output
@@ -269,5 +269,5 @@ Here is an example script to load experimental time trace, pre-process it, and f
     r = np.linspace(1.5,6,len(t))   # define distance range from 1.5nm to 6nm with the same number of points as t
 
     # Fit
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,verbose=True)   # 4pDEER fit using non-parametric distance distribution
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1,verbose=True)   # 4pDEER fit using non-parametric distance distribution
     fit.plot() # display results

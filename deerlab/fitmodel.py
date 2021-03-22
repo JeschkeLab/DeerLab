@@ -61,10 +61,10 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer1,
     ex : callable or string
         Experiment model, the following modes are allowed:
 
-        * Function handle to experiment model (e.g. ``ex_4pdeer``)
+        * Function handle to experiment model (e.g. ``ex_4pdeer1``)
         * ``None`` to indicate simple dipolar oscillation (modulation depth equal 1)
 
-        The default is ``ex_4pdeer``.
+        The default is ``ex_4pdeer1``.
 
     dd_par0, bg_par0, ex_par0 : array_like, optional
         Initial parameter values of the distance distribution/background/experimental model parameters.
@@ -196,12 +196,12 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer1,
     --------
     Fit a 4pDEER signal with homogenous 3D background with Gaussian distribution::
 
-        fit = dl.fitmodel(V,t,r,dl.dd_gauss,dl.bg_hom3d,dl.ex_4pdeer)  
+        fit = dl.fitmodel(V,t,r,dl.dd_gauss,dl.bg_hom3d,dl.ex_4pdeer1)  
 
 
     Fit a 5pDEER signal with exponential background and Tikhonov regularization::
 
-        fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer)
+        fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer2)
     
     
     Fit a 4pDEER stretched exponential background (no foreground)::
@@ -216,12 +216,12 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer1,
     
     Fit a 4pDEER form factor (no background) with bimodal Gaussian distribution:: 
 
-        fit = dl.fitmodel(V,t,r,dl.dd_gauss2,None,dl.ex_4pdeer)   
+        fit = dl.fitmodel(V,t,r,dl.dd_gauss2,None,dl.ex_4pdeer1)   
    
      
     Fit a 4pDEER signal and a 5pDEER signal with same type of background::
     
-        fit = fitmodel([V1,V2],t,r,'P',dl.bg_hom3d,[dl.ex_4pdeer,dl.ex_5pdeer])    
+        fit = fitmodel([V1,V2],t,r,'P',dl.bg_hom3d,[dl.ex_4pdeer1,dl.ex_5pdeer2])    
     """
 
     # Default optional settings

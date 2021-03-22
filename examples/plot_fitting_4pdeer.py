@@ -27,7 +27,7 @@ Vexp = K@P + dl.whitegaussnoise(t,0.01,seed=0)
 # %% [markdown]
 # Run fit
 #---------
-fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
+fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1)
 fit.plot()
 
 # %%

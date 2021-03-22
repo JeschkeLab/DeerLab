@@ -21,7 +21,7 @@ param0 = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-G
 P = dl.dd_gauss3(r,param0)         # model distance distribution
 B = lambda t,lam: dl.bg_hom3d(t,300,lam) # background decay
 exparam = [0.6, 0.3, 0.1, 3.2]     # parameters for 5pDEER experiment
-pathinfo = dl.ex_5pdeer(exparam)   # pathways information
+pathinfo = dl.ex_5pdeer2(exparam)   # pathways information
 
 K = dl.dipolarkernel(t,r,pathinfo,B)
 Vexp = K@P + dl.whitegaussnoise(t,0.01,seed=0)
@@ -41,7 +41,7 @@ def fitroutine(V):
     # When running the fit, since we are only interested in the parameters we'll ignore
     # the rest (otherwise the ``Bfit``,``Pfit``,etc. could be bootstrapped as well) 
     # We need the Vfit to pass it to bootan as well, so we'll request that one too.
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer,ex_par0=ex_par0,ex_lb=ex_lb,ex_ub=ex_ub,uqanalysis=False)
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer2,ex_par0=ex_par0,ex_lb=ex_lb,ex_ub=ex_ub,uqanalysis=False)
     Vfit = fit.V
     exparam = fit.exparam
     exparam[0:3] /=sum(exparam[0:3])

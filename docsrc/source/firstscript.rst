@@ -78,7 +78,7 @@ Now that we have a noisy DEER trace, we fit to it (in a single step) a model wit
 
 .. code-block:: python
 
-   fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)  # fitting
+   fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1)  # fitting
 
 Finally, we plot the results:
 

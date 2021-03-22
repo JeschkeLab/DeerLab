@@ -19,7 +19,7 @@ param0 = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-G
 P = dl.dd_gauss3(r,param0)         # model distance distribution
 B = lambda t,lam: dl.bg_hom3d(t,300,lam) # background decay
 exparam = [0.6, 0.3, 0.1, 3.2]     # parameters for 5pDEER experiment
-pathways = dl.ex_5pdeer(exparam)   # pathways information
+pathways = dl.ex_5pdeer2(exparam)   # pathways information
 
 K = dl.dipolarkernel(t,r,pathways,B)
 Vexp = K@P + dl.whitegaussnoise(t,0.005,seed=1)
@@ -47,5 +47,5 @@ ex_par0 = [0.5, 0.5, 0.5, max(t)/2  ] # start values
 # Run the fit with a 5-pulse DEER signal model
 
 # %%
-fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer,ex_par0=ex_par0,ex_lb=ex_lb,ex_ub=ex_ub)
+fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer2,ex_par0=ex_par0,ex_lb=ex_lb,ex_ub=ex_ub)
 fit.plot()

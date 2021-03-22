@@ -19,7 +19,7 @@ After preprocessing the experimental data, the next important step is to decide 
 
 (3) Choose a **background model**. Typically, a homogeneous 3D background (``bg_hom3d``) is sufficient, but other :ref:`background models<modelsref_bg>` could be needed.
 
-(4) Select an **experiment model**. If analyzing a standard 4-pulse DEER trace without 2+1 component at the end, use ``ex_4pdeer``. If the 2+1 components should be fitted as well, use ``ex_ovl4pdeer``. There are :ref:`experimental models<modelsref_ex>` for more complicated signals.
+(4) Select an **experiment model**. If analyzing a standard 4-pulse DEER trace without 2+1 component at the end, use ``ex_4pdeer1``. If the 2+1 components should be fitted as well, use ``ex_ovl4pdeer``. There are :ref:`experimental models<modelsref_ex>` for more complicated signals.
 
 
 Non-parametric distribution
@@ -41,9 +41,9 @@ With additional inputs, you can specify which :ref:`distance distribution model 
 
 .. code-block:: python
 
-    fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
+    fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1)
 
-Here, ``'P'`` specifies that a non-parametric distribution (defined over ``r``) should be fitted. ``bg_hom3d`` is a function handle to the background model function. If you want to fit a signal that doesn't have a background, use  ``None`` instead.  ``ex_4pdeer`` is a function handle to the particular experiment model. ``ex_4pdeer`` consists of the main dipolar modulation function centered at time zero with an amplitude ``lambda`` plus a constant offset of amplitude ``1-lambda``. If you want to fit a simple dipolar evolution function with 100% modulation depth, use ``None`` as the experiment model.
+Here, ``'P'`` specifies that a non-parametric distribution (defined over ``r``) should be fitted. ``bg_hom3d`` is a function handle to the background model function. If you want to fit a signal that doesn't have a background, use  ``None`` instead.  ``ex_4pdeer1`` is a function handle to the particular experiment model. ``ex_4pdeer1`` consists of the main dipolar modulation function centered at time zero with an amplitude ``lambda`` plus a constant offset of amplitude ``1-lambda``. If you want to fit a simple dipolar evolution function with 100% modulation depth, use ``None`` as the experiment model.
 
 ``fitmodel`` uses a least-squares fitting algorithm to determine the optimal distribution, background parameters, and experiment parameters that fit the experiment data. To determine a non-parametric distribution, it internally uses Tikhnonov regularization with a regularization parameter optimized using the Akaike Information Criterion (AIC). These settings can be changed:
 
@@ -51,7 +51,7 @@ Here, ``'P'`` specifies that a non-parametric distribution (defined over ``r``) 
 
    regtype = 'tv'  # use total variation instead of Tikhonov regularization
    alpha = 0.8     # manually set regularization parameter
-   fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,regtype=regtype,regparam=alpha)
+   fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1,regtype=regtype,regparam=alpha)
 
 
 Parametric distributions
@@ -61,6 +61,6 @@ To use a parametric distance distribution model, provide ``fitmodel`` with one o
 
 .. code-block:: python
 
-    fit = dl.fitmodel(Vexp,t,r,dl.dd_gauss2,dl.bg_hom3d,dl.ex_4pdeer)
+    fit = dl.fitmodel(Vexp,t,r,dl.dd_gauss2,dl.bg_hom3d,dl.ex_4pdeer1)
 
 This will fit a two-Gauss distribution over ``r``. The fitted distribution parameters are returned in ``fit.ddparam``, and the corresponding distribution in ``fit.P``.
