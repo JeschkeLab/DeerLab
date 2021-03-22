@@ -7,35 +7,35 @@ import numpy as np
 
 # Definition of the header for all experiment models
 docstr_header = lambda fcnstr: """
-If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-    info = {}()
-
-
-Otherwise the function returns to calculated experiment dipolar pathways::
-
-    pathways = {}(param)
+        info = {}()
 
 
-Parameters
-----------
-param : array_like
-    List of model parameter values.
+    Otherwise the function returns to calculated experiment dipolar pathways::
 
-Returns
--------
-info : dict
-    Dictionary containing the built-in information of the model:
-    
-    * ``info['Parameters']`` - string list of parameter names
-    * ``info['Units']`` - string list of metric units of parameters
-    * ``info['Start']`` - list of values used as start values during optimization 
-    * ``info['Lower']`` - list of values used as lower bounds during optimization 
-    * ``info['Upper']`` - list of values used as upper bounds during optimization  
-    * ``info['ModelFcn']`` - function used to calculate the model output
-    
-pathways : ndarray
-    Dipolar pathways of the experiment
+        pathways = {}(param)
+
+
+    Parameters
+    ----------
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization  
+        * ``info['ModelFcn']`` - function used to calculate the model output
+        
+    pathways : ndarray
+        Dipolar pathways of the experiment
 """.format(fcnstr,fcnstr)
 
 # =================================================================
@@ -45,10 +45,9 @@ def docstring():
     """
     sep="\n"
     def _decorator(func):
-        if func.__doc__ == None:
-            func.__doc__ = docstr
-        else:
-            func.__doc__ = sep.join([func.__doc__,docstr_header(func.__name__)])
+        docstr = func.__doc__
+        docstr = docstr.split("Model parameters:",1)[0]
+        func.__doc__ = sep.join([docstr,docstr_header(func.__name__)])
         return func
     return _decorator
 # =================================================================
