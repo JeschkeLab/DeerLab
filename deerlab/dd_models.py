@@ -8,6 +8,56 @@ import numpy as np
 import scipy.special as spc
 import inspect
 
+# Definition of the header for all experiment models
+docstr_header = lambda fcnstr: """
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+            info = {}()
+
+
+    Otherwise the function returns the calculated distance distribution::
+
+            P = {}(r,param)
+
+
+    Parameters
+    ----------
+    r : array_like
+        Distance axis, in nanometers.
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization  
+        * ``info['ModelFcn']`` - function used to calculate the model output
+        
+    P : ndarray
+        Distance distribution.
+""".format(fcnstr,fcnstr)
+
+# =================================================================
+def docstring():
+    """
+    Decorator: Insert docstring header to a pre-existing docstring
+    """
+    sep="\n"
+    def _decorator(func):
+        docstr = func.__doc__
+        docstr = docstr.split("Model parameters:",1)[0]
+        func.__doc__ = sep.join([docstr,docstr_header(func.__name__)])
+        return func
+    return _decorator
+# =================================================================
+
+
 def _parsargs(args,npar):
 #=================================================================
     name = inspect.stack()[1][3]
@@ -53,41 +103,12 @@ def _multirice3dfun(r,nu,sig,a):
     return P
 #=================================================================
 
-
+@docstring()
 def dd_gauss(*args):    
 #=================================================================
     r"""
     Gaussian distribution
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_gauss()
-
-
-    Otherwise the function returns to calculated distance distribution::
-
-        P = dd_gauss(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
  
     Model parameters:
     -------------------
@@ -121,41 +142,14 @@ def dd_gauss(*args):
         return P
 #=================================================================
     
-
+@docstring()
 def dd_gauss2(*args):
 #=================================================================
     r"""
     Sum of two Gaussian distributions
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = dd_gauss2()
-
-
-    Otherwise the function returns to calculated distance distribution::
-
-        P = dd_gauss2(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
+    Model parameters:
+    -------------------
  
      -------------------------------------------------------------------------
       Parameter                             Units     Lower    Upper    Start
@@ -193,41 +187,12 @@ def dd_gauss2(*args):
         return P
 #=================================================================
     
-
+@docstring()
 def dd_gauss3(*args):
 #=================================================================
     r"""
     Sum of three Gaussian distributions
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = dd_gauss3()
-
-
-    Otherwise the function returns to calculated distance distribution::
-
-        P = dd_gauss3(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
  
     Model parameters:
     -------------------
@@ -272,40 +237,13 @@ def dd_gauss3(*args):
         return P
 #=================================================================
 
+@docstring()
 def dd_gengauss(*args):    
 #=================================================================
     r"""
     Generalized Gaussian distribution model
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_gengauss()
 
-    Otherwise the function returns to calculated distance distribution::
-
-        P = dd_gengauss(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 
@@ -344,42 +282,13 @@ def dd_gengauss(*args):
         return P
 #=================================================================
     
-
+@docstring()
 def dd_skewgauss(*args):    
 #=================================================================
     r"""
     Skew Gaussian distribution model
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = dd_skewgauss()
 
 
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_skewgauss(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 
@@ -418,42 +327,13 @@ def dd_skewgauss(*args):
         return P
 #=================================================================
 
-
+@docstring()
 def dd_rice(*args):    
 #=================================================================
     r"""
     3D-Rice distribution
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_rice()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_rice(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 
@@ -487,42 +367,13 @@ def dd_rice(*args):
         return P
 #=================================================================
     
-
+@docstring()
 def dd_rice2(*args):
 #=================================================================
     r"""
     Sum of two 3D-Rice distributions
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_rice2()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_rice2(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 
@@ -562,40 +413,12 @@ def dd_rice2(*args):
         return P
 #=================================================================
     
-
+@docstring()
 def dd_rice3(*args):
 #=================================================================
     r"""
     Sum of three 3D-Rice distributions
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = dd_rice3()
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_rice3(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
  
     Model parameters:
     -------------------
@@ -640,40 +463,12 @@ def dd_rice3(*args):
         return P
 #=================================================================
 
+@docstring()
 def dd_randcoil(*args):    
 #=================================================================
     r"""
     Random-coil model for an unfolded peptide/protein
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_randcoil()
-
-
-    Otherwise the function returns to calculated distance distribution::
-
-        P = dd_randcoil(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
  
     Model parameters:
     -------------------
@@ -716,41 +511,12 @@ def dd_randcoil(*args):
         return P
 #=================================================================
 
-
+@docstring()
 def dd_circle(*args):    
 #=================================================================
     r"""
     Semicircle distribution model
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_circle()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_circle(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
  
     Model parameters:
     -------------------
@@ -792,42 +558,13 @@ def dd_circle(*args):
         return P
 #=================================================================
 
-
+@docstring()
 def dd_cos(*args):    
 #=================================================================
     r"""
     Raised-cosine parametric model
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_cos()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_cos(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 
@@ -901,41 +638,12 @@ def _pbs(r,R1,R2):
 #=================================================================
 
 
-
+@docstring()
 def dd_shell(*args):    
 #=================================================================
     r"""
     Uniform spherical shell
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = dd_shell()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_shell(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
  
     Model parameters:
     -------------------
@@ -982,41 +690,12 @@ def dd_shell(*args):
         return P
 #=================================================================
 
-
+@docstring()
 def dd_spherepoint(*args):    
 #=================================================================
     r"""
     One particle distanced from particles distributed on a sphere
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_spherepoint()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_spherepoint(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
  
     Model parameters:
     -------------------
@@ -1060,42 +739,13 @@ def dd_spherepoint(*args):
         return P
 #=================================================================
 
-
+@docstring()
 def dd_spheresurf(*args):    
 #=================================================================
     r"""
     Particles distributed on a sphere's surface
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_spheresurf()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_spheresurf(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 
@@ -1136,42 +786,13 @@ def dd_spheresurf(*args):
         return P
 #=================================================================
 
-
+@docstring()
 def dd_shellshell(*args):    
 #=================================================================
     r"""
     Uniform spherical shell inside another spherical shell
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = dd_shellshell()
 
 
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_shellshell(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 
@@ -1226,42 +847,11 @@ def dd_shellshell(*args):
         return P
 #=================================================================
 
-
-
+@docstring()
 def dd_shellsphere(*args):    
 #=================================================================
     r"""
     Particles distributed on a sphere inside a spherical shell
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = dd_shellsphere()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_shellsphere(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
  
     Model parameters:
     -------------------
@@ -1304,41 +894,13 @@ def dd_shellsphere(*args):
         return P
 #=================================================================
 
+@docstring()
 def dd_shellvoidshell(*args):    
 #=================================================================
     r"""
     Particles distributed on a spherical shell inside another spherical shell separated by a void 
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_shellvoidshell()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_shellvoidshell(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 
@@ -1400,42 +962,13 @@ def dd_shellvoidshell(*args):
         return P
 #=================================================================
 
-
+@docstring()
 def dd_shellvoidsphere(*args):    
 #=================================================================
     r"""
     Particles distributed on a sphere inside a spherical shell separated by a void 
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_shellvoidsphere()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_shellvoidsphere(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 
@@ -1487,42 +1020,13 @@ def dd_shellvoidsphere(*args):
         return P
 #=================================================================
 
-
+@docstring()
 def dd_sphere(*args):    
 #=================================================================
     r"""
     Particles distributed on a sphere
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = dd_sphere()
 
 
-    Otherwise the function returns to calculated distance distribution::
-
-        P = dd_sphere(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 
@@ -1561,41 +1065,12 @@ def dd_sphere(*args):
         return P
 #=================================================================
 
-
+@docstring()
 def dd_triangle(*args):    
 #=================================================================
     r"""
     Triangle distribution model
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = dd_triangle()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_triangle(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
  
     Model parameters:
     -------------------
@@ -1643,42 +1118,13 @@ def dd_triangle(*args):
         return P
 #=================================================================
 
-
+@docstring()
 def dd_uniform(*args):    
 #=================================================================
     r"""
     Uniform distribution model
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = dd_uniform()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_uniform(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 
@@ -1734,40 +1180,12 @@ def wlc(r,L,Lp):
 
     return P
 
+@docstring()
 def dd_wormchain(*args):    
 #=================================================================
     r"""
     Worm-like chain model near the rigid limit
  
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = dd_wormchain()
-
-
-    Otherwise the function returns to calculated distance distribution::
-    
-        P = dd_wormchain(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
  
     Model parameters:
     -------------------
@@ -1807,43 +1225,13 @@ def dd_wormchain(*args):
         return P
 #=================================================================
 
-
+@docstring()
 def dd_wormgauss(*args):    
 #=================================================================
     r"""
     Worm-like chain model near the rigid limit with Gaussian convolution
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = dd_wormgauss()
 
 
-    Otherwise the function returns to calculated distance distribution::
-    
-
-        P = dd_wormgauss(r,param)
-       
- 
-    Parameters
-    ----------
-    r : array_like
-        TDistance axis, in nanoseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-    P : ndarray
-        Distance distribution.
- 
     Model parameters:
     -------------------
 

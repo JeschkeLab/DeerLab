@@ -8,9 +8,104 @@ import math as m
 import scipy as scp
 from numpy import pi
 import inspect
+from deerlab.utils import load_exvolume_redfactor
+
+
+# Definition of the header for all experiment models taking lambda as well
+# =================================================================
+docstr_header1 = lambda fcnstr: """
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+            info = {}()
+
+
+    Otherwise the function returns the calculated background model::
+
+            B = {}(t,param)
+            B = {}(t,param,lam)
+
+    Parameters
+    ----------
+    t : array_like
+        Time axis, in microseconds.
+    param : array_like
+        List of model parameter values.
+    lam : float scalar
+        Pathway amplitude. If not specified it is set to 1.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization  
+        * ``info['ModelFcn']`` - function used to calculate the model output
+        
+    B : ndarray
+        Dipolar background. 
+""".format(fcnstr,fcnstr,fcnstr)
+# =================================================================
+
+# Definition of the header for all experiment models 
+# =================================================================
+docstr_header2 = lambda fcnstr: """
+    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+            info = {}()
+
+
+    Otherwise the function returns the calculated background model::
+
+            B = {}(t,param)
+
+    Parameters
+    ----------
+    t : array_like
+        Time axis, in microseconds.
+    param : array_like
+        List of model parameter values.
+
+    Returns
+    -------
+    info : dict
+        Dictionary containing the built-in information of the model:
+        
+        * ``info['Parameters']`` - string list of parameter names
+        * ``info['Units']`` - string list of metric units of parameters
+        * ``info['Start']`` - list of values used as start values during optimization 
+        * ``info['Lower']`` - list of values used as lower bounds during optimization 
+        * ``info['Upper']`` - list of values used as upper bounds during optimization  
+        * ``info['ModelFcn']`` - function used to calculate the model output
+        
+    B : ndarray
+        Dipolar background. 
+""".format(fcnstr,fcnstr)
+# =================================================================
+
+def docstring(takes_lambda=False):
+# =================================================================
+    """
+    Decorator: Insert docstring header to a pre-existing docstring
+    """
+    sep="\n"
+    def _decorator(func):
+        docstr = func.__doc__
+        docstr = docstr.split("Model parameters:",1)[0]
+        if takes_lambda:
+            func.__doc__ = sep.join([docstr,docstr_header1(func.__name__)])
+        else:
+            func.__doc__ = sep.join([docstr,docstr_header2(func.__name__)])
+        return func
+    return _decorator
+# =================================================================
+
 
 def _parsargs(args,npar,takes_lambda=False):
-#=================================================================
+# =================================================================
     name = inspect.stack()[1][3]
     
     # Check the number of input arguments specified
@@ -39,25 +134,14 @@ def _parsargs(args,npar,takes_lambda=False):
         return t,p,lam
     else:   
         return t,p
-#=================================================================
+# =================================================================
 
+@docstring(takes_lambda=True)
 def bg_hom3d(*args):
 # ======================================================================
     r"""
     Background from homogeneous distribution of spins in a 3D medium
 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = bg_hom3d()
-
-
-    Otherwise the function returns to calculated background model::
-    
-
-        B = bg_hom3d(t,param)
-        B = bg_hom3d(t,param,lam)
- 
- 
     Model parameters:
     -------------------
 
@@ -66,29 +150,6 @@ def bg_hom3d(*args):
      ----------------------------------------------------------------------
       Concentration of pumped spins     μM        0.01    5000      50 
      ----------------------------------------------------------------------
-
-    Parameters
-    ----------
-    t : array_like
-        Time axis, in microseconds.
-    param : array_like
-        List of model parameter values.
-    lam : float scalar
-        Pathway amplitude. If not specified it is set to 1.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-        * ``info['ModelFcn']`` - function used to calculate the model output 
-    B : ndarray
-        Background decay function. 
     """  
     def model(t,param,lam=1):
         conc = param            # concentration, uM
@@ -122,25 +183,13 @@ def bg_hom3d(*args):
         return model(t,param,lam)
 # ======================================================================
 
-from deerlab.utils import load_exvolume_redfactor
 
+@docstring(takes_lambda=True)
 def bg_hom3dex(*args):
 # ======================================================================
     r"""
     Background from homogeneous distribution of spins with excluded-volume effects
 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = bg_hom3dex()
-
-
-    Otherwise the function returns to calculated background model::
-    
-
-        B = bg_hom3dex(t,param)
-        B = bg_hom3dex(t,param,lam)
- 
- 
     Model parameters:
     -------------------
 
@@ -150,29 +199,6 @@ def bg_hom3dex(*args):
       Fractal Concentration of pumped spins   μmol/dmᵈ    0.01    5000      50 
       Exclusion distance                        nm        0.10     20       1 
      -----------------------------------------------------------------------------
-
-    Parameters
-    ----------
-    t : array_like
-        Time axis, in microseconds.
-    param : array_like
-        List of model parameter values.
-    lam : float scalar
-        Pathway amplitude. If not specified it is set to 1.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-        * ``info['ModelFcn']`` - function used to calculate the model output 
-    B : ndarray
-        Background decay function. 
     """  
 
     def model(t,param,lam):
@@ -226,25 +252,12 @@ def bg_hom3dex(*args):
         return model(t,param,lam)
 # ======================================================================
 
-
-
+@docstring(takes_lambda=True)
 def bg_homfractal(*args):
 # ======================================================================
     r"""
     Background from homogeneous distribution of spins in a fractal medium
 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = bg_homfractal()
-
-
-    Otherwise the function returns to calculated background model::
-    
-
-        B = bg_homfractal(t,param)
-        B = bg_homfractal(t,param,lam)
- 
- 
     Model parameters:
     -------------------
 
@@ -254,29 +267,6 @@ def bg_homfractal(*args):
       Fractal Concentration of pumped spins   μmol/dmᵈ    0.01    5000      50 
       Fractal dimensionality                               0        6       3
      -----------------------------------------------------------------------------
-
-    Parameters
-    ----------
-    t : array_like
-        Time axis, in microseconds.
-    param : array_like
-        List of model parameter values.
-    lam : float scalar
-        Pathway amplitude. If not specified it is set to 1.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-        * ``info['ModelFcn']`` - function used to calculate the model output 
-    B : ndarray
-        Background decay function. 
     """  
     def model(t,param,lam=1):
         # Unpack model paramters
@@ -324,22 +314,12 @@ def bg_homfractal(*args):
         return model(t,param,lam)
  # ======================================================================
 
-
+@docstring()
 def bg_exp(*args):
  # ======================================================================
     r"""
     Exponential background model
    
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = bg_exp()
-
-
-    Otherwise the function returns to calculated background model::
-    
-        B = bg_exp(t,param)
- 
- 
     Model parameters:
     -------------------
 
@@ -348,28 +328,6 @@ def bg_exp(*args):
      -------------------------------------------------
       Decay Rate    μs⁻¹       0       200      0.35 
      -------------------------------------------------
-
-
-    Parameters
-    ----------
-    t : array_like
-        Time axis, in microseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-        * ``info['ModelFcn']`` - function used to calculate the model output 
-    B : ndarray
-        Background decay function. 
     """  
     def model(t,param):            
         t = np.atleast_1d(t)
@@ -394,20 +352,11 @@ def bg_exp(*args):
         return model(t,param)
 # ======================================================================
 
+@docstring()
 def bg_strexp(*args):
 # ======================================================================
     r"""
     Stretched exponential background model
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = bg_strexp()
-
-
-    Otherwise the function returns to calculated background model::
-
-        B = bg_strexp(t,param)
- 
  
     Model parameters:
     -------------------
@@ -418,27 +367,6 @@ def bg_strexp(*args):
       Decay Rate       μs⁻ᵈ       0       200      0.25 
       Stretch factor              0        6        1
      ----------------------------------------------------
-
-    Parameters
-    ----------
-    t : array_like
-        Time axis, in microseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-        * ``info['ModelFcn']`` - function used to calculate the model output 
-    B : ndarray
-        Background decay function. 
     """  
     def model(t,param):
         # Unpack model paramters
@@ -463,20 +391,11 @@ def bg_strexp(*args):
 # ======================================================================
 
 
+@docstring()
 def bg_prodstrexp(*args):
 # ======================================================================
     r"""
     Product of two stretched exponentials background model
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = bg_prodstrexp()
-
-
-    Otherwise the function returns to calculated background model::
-    
-        B = bg_prodstrexp(t,param)
- 
  
     Model parameters:
     -------------------
@@ -489,27 +408,6 @@ def bg_prodstrexp(*args):
       Decay Rate of 2nd component    μs⁻¹      0       200      0.25 
       Stretch factor 2nd component             0        6        1
      -----------------------------------------------------------------
-
-    Parameters
-    ----------
-    t : array_like
-        Time axis, in microseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-        * ``info['ModelFcn']`` - function used to calculate the model output 
-    B : ndarray
-        Background decay function. 
     """  
     def model(t,param):            
         # Unpack model paramters
@@ -539,20 +437,11 @@ def bg_prodstrexp(*args):
 # ======================================================================
 
 
-
+@docstring()
 def bg_sumstrexp(*args):
+# ======================================================================
     r"""
     Sum of two stretched exponentials background model
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = bg_sumstrexp()
-
-
-    Otherwise the function returns to calculated background model::
-    
-        B = bg_sumstrexp(t,param)
- 
  
     Model parameters:
     -------------------
@@ -566,29 +455,7 @@ def bg_sumstrexp(*args):
       Decay Rate of 2nd component    μs⁻¹      0       200      0.25 
       Stretch factor 2nd component             0        6        1
      -----------------------------------------------------------------
-
-    Parameters
-    ----------
-    t : array_like
-        Time axis, in microseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization
-        * ``info['ModelFcn']`` - function used to calculate the model output  
-    B : ndarray
-        Background decay function. 
     """  
-# ======================================================================
     def model(t,param):            
         # Unpack model paramters
         kappa1 = param[0]
@@ -617,21 +484,12 @@ def bg_sumstrexp(*args):
 # ======================================================================
 
 
-
+@docstring()
 def bg_poly1(*args):
+# ======================================================================
     r"""
     Polynomial 1st-order background model
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = bg_poly1()
-
-
-    Otherwise the function returns to calculated background model::
-
-        B = bg_poly1(t,param)
- 
- 
     Model parameters:
     -------------------
 
@@ -641,29 +499,7 @@ def bg_poly1(*args):
       Intercept                         0       200       1  
       1st-order coefficient  μs⁻¹    -200      200      -1  
      ----------------------------------------------------------
-
-    Parameters
-    ----------
-    t : array_like
-        Time axis, in microseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization
-        * ``info['ModelFcn']`` - function used to calculate the model output 
-    B : ndarray
-        Background decay function.  
     """  
-# ======================================================================
     def model(t,param):            
         # Compute polynomial
         p = np.copy(np.flip(param))
@@ -686,20 +522,11 @@ def bg_poly1(*args):
         return model(t,param) 
 # ======================================================================
 
-
+@docstring()
 def bg_poly2(*args):
+# ======================================================================
     r"""
     Polynomial 2nd-order background model
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = bg_poly2()
-
-
-    Otherwise the function returns to calculated background model::
-    
-        B = bg_poly2(t,param)
- 
  
     Model parameters:
     -------------------
@@ -707,33 +534,11 @@ def bg_poly2(*args):
      ----------------------------------------------------------
       Parameter              Units    Lower    Upper    Start
      ----------------------------------------------------------
-      Intercept                         0       200       1  
+      Intercept                         0      200       1  
       1st-order coefficient  μs⁻¹    -200      200      -1  
       2nd-order coefficient  μs⁻²    -200      200      -1 
      ----------------------------------------------------------
-
-    Parameters
-    ----------
-    t : array_like
-        Time axis, in microseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-        * ``info['ModelFcn']`` - function used to calculate the model output
-    B : ndarray
-        Background decay function.  
     """  
-# ======================================================================
     def model(t,param):            
         # Compute polynomial
         p = np.copy(np.flip(param))
@@ -756,20 +561,11 @@ def bg_poly2(*args):
         return model(t,param) 
 # ======================================================================
 
-
+@docstring()
 def bg_poly3(*args):
+# ======================================================================
     r"""
     Polynomial 3rd-order background model
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = bg_poly3()
-
-
-    Otherwise the function returns to calculated background model::
-
-        B = bg_poly3(t,param)
- 
  
     Model parameters:
     -------------------
@@ -782,29 +578,7 @@ def bg_poly3(*args):
       2nd-order coefficient   μs⁻²    -200      200      -1 
       3rd-order coefficient   μs⁻³    -200      200      -1
      ----------------------------------------------------------
-
-    Parameters
-    ----------
-    t : array_like
-        Time axis, in microseconds.
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-        * ``info['ModelFcn']`` - function used to calculate the model output
-    B : ndarray
-        Background decay function.  
     """  
-# ======================================================================
     def model(t,param):            
         # Compute polynomial
         p = np.copy(np.flip(param))
