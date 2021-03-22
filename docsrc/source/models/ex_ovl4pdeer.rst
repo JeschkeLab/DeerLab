@@ -12,10 +12,6 @@
 Model
 =========================================
 
-.. image:: ../images/model_scheme_ex_ovl4pdeer.png
-   :width: 550px
-
-
 This experiment model has two modulated pathways and an unmodulated contribution. The second modulated pathway results in the 2+1 contribution at the end of a 4-pulse DEER trace.The kernel is 
 
 .. math::

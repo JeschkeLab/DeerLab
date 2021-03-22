@@ -11,10 +11,6 @@
 Model
 =========================================
 
-.. image:: ../images/model_scheme_ex_5pdeer.png
-   :width: 550px
-
-
 This experiment model has two modulated pathway and an unmodulated contribution. The kernel is 
 
 .. math::

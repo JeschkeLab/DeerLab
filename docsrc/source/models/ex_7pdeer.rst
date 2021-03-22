@@ -11,9 +11,6 @@
 Model
 =========================================
 
-.. image:: ../images/model_scheme_ex_7pdeer.png
-   :width: 650px
-
 In order to reduce the parameter space, only the dipolar pathways refocusing at positive times (pathways #1-3) are considered in this model:
 
 .. math::
