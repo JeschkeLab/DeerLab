@@ -1,12 +1,12 @@
 .. highlight:: python
-.. _ex_4pdeer:
+.. _ex_4pdeer1:
 
 
 ***********************
-:mod:`ex_4pdeer`
+:mod:`ex_4pdeer1`
 ***********************
 
-.. autofunction:: deerlab.ex_models.ex_4pdeer
+.. autofunction:: deerlab.ex_models.ex_4pdeer1
 
 
 Model
@@ -39,7 +39,7 @@ Example of a simulated signal using the model evaluated at the start values of i
    import deerlab as dl
    import matplotlib.pyplot as plt 
    import numpy as np 
-   model = dl.ex_4pdeer
+   model = dl.ex_4pdeer1
    t = np.linspace(-0.5,5,400)
    r = np.linspace(2,5,200)
    info = dl.dd_gauss()

@@ -135,14 +135,23 @@ Experiment models
 ============================== =============================================================================
 Model function                               Description
 ============================== =============================================================================
-:ref:`ex_4pdeer`                  4-pulse DEER, 3-pulse DEER (single modulated pathway)
-:ref:`ex_ovl4pdeer`               4-pulse DEER (including 2+1 pathway) 
-:ref:`ex_5pdeer`                  5-pulse DEER
-:ref:`ex_7pdeer`                  7-pulse DEER
-:ref:`ex_ridme1`                  RIDME with one harmonic pathway (spin S=1/2)
-:ref:`ex_ridme3`                  RIDME with three harmonic pathways (spin S=3/2)
-:ref:`ex_ridme5`                  RIDME with five harmonic pathways (spin S=5/2)
-:ref:`ex_ridme7`                  RIDME with seven harmonic pathways (spin S=7/2)
+:ref:`ex_3pdeer1`                 3-pulse DEER, single modulated pathway
+:ref:`ex_3pdeer2`                 3-pulse DEER, two modulated pathways
+:ref:`ex_4pdeer1`                 4-pulse DEER, single modulated pathway
+:ref:`ex_4pdeer2`                 4-pulse DEER, two modulated pathways
+:ref:`ex_4pdeer3`                 4-pulse DEER, three modulated pathways
+:ref:`ex_5pdeer1`                 5-pulse DEER, single modulated pathway
+:ref:`ex_5pdeer2`                 5-pulse DEER, two modulated pathways
+:ref:`ex_5pdeer3`                 5-pulse DEER, three modulated pathways
+:ref:`ex_5pdeer4`                 5-pulse DEER, four modulated pathways
+:ref:`ex_7pdeer1`                 7-pulse DEER, single modulated pathway
+:ref:`ex_7pdeer2`                 7-pulse DEER, two modulated pathways
+:ref:`ex_7pdeer3`                 7-pulse DEER, three modulated pathways
+:ref:`ex_7pdeer4`                 7-pulse DEER, four modulated pathways
+:ref:`ex_ridme1`                  RIDME, one harmonic pathway
+:ref:`ex_ridme3`                  RIDME, three harmonic pathways
+:ref:`ex_ridme5`                  RIDME, five harmonic pathways
+:ref:`ex_ridme7`                  RIDME, seven harmonic pathways
 ============================== =============================================================================
 
 

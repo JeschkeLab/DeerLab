@@ -1,17 +1,17 @@
 .. highlight:: python
-.. _ex_5pdeer:
+.. _ex_3pdeer2:
 
 
 ***********************
-:mod:`ex_5pdeer`
+:mod:`ex_3pdeer2`
 ***********************
 
-.. autofunction:: deerlab.ex_models.ex_5pdeer
+.. autofunction:: deerlab.ex_models.ex_3pdeer2
 
 Model
 =========================================
 
-This experiment model has two modulated pathway and an unmodulated contribution. The kernel is 
+This experiment model has two modulated pathways and an unmodulated contribution. The kernel is 
 
 .. math::
    K(t,r) =
@@ -24,9 +24,9 @@ where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the 
 ============== ======================== ============= ============ ============ ================================================
  Variable        Symbol                  Start Values     Lower        Upper                Description
 ============== ======================== ============= ============ ============ ================================================
-``param[0]``   :math:`\varLambda_0`          0.4            0            1       Unmodulated pathways, amplitude
-``param[1]``   :math:`\lambda_1`             0.4            0            1       1st modulated pathway, amplitude
-``param[2]``   :math:`\lambda_2`             0.2            0            1       2nd modulated pathway, amplitude
+``param[0]``   :math:`\varLambda_0`          0.6            0            1       Unmodulated pathways, amplitude
+``param[1]``   :math:`\lambda_1`             0.3            0            1       1st modulated pathway, amplitude
+``param[2]``   :math:`\lambda_2`             0.1            0            1       2nd modulated pathway, amplitude
 ``param[3]``   :math:`T_0^{(2)}`             5.0            0            20      2nd modulated pathway, refocusing time (μs)
 ============== ======================== ============= ============ ============ ================================================
 
@@ -40,8 +40,8 @@ Example of a simulated signal using the model evaluated at the start values of i
    import deerlab as dl
    import matplotlib.pyplot as plt 
    import numpy as np 
-   model = dl.ex_5pdeer
-   t = np.linspace(-0.5,8,400)
+   model = dl.ex_3pdeer2
+   t = np.linspace(-0.5,5,400)
    r = np.linspace(2,5,200)
    info = dl.dd_gauss()
    par0 = info['Start']

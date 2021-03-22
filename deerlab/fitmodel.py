@@ -10,10 +10,10 @@ import matplotlib.pyplot as plt
 import deerlab as dl
 from deerlab.classes import UncertQuant, FitResult
 from deerlab.bg_models import bg_hom3d
-from deerlab.ex_models import ex_4pdeer
+from deerlab.ex_models import ex_4pdeer1
 from deerlab.utils import isempty, goodness_of_fit, Jacobian
 
-def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
+def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer1,
               dd_par0=None, bg_par0=None, ex_par0=None, verbose=False, 
               dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
               weights=1, uqanalysis=True, uq='covariance', regparam='aic', regtype = 'tikhonov'):

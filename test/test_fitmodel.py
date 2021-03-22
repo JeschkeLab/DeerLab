@@ -5,7 +5,7 @@ import deerlab as dl
 from deerlab import dipolarkernel, whitegaussnoise, fitmodel
 from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp, bg_hom3d
-from deerlab.ex_models import ex_4pdeer, ex_5pdeer, ex_7pdeer, ex_ovl4pdeer
+from deerlab.ex_models import ex_4pdeer1, ex_5pdeer2, ex_7pdeer3, ex_4pdeer2
 import deerlab as dl
 from deerlab.utils import ovl
 
@@ -34,28 +34,28 @@ def test_4pdeer():
 # ======================================================================
     "Check that the fit of a 4-pulse DEER signal is correct"
         
-    assert_experiment_model(ex_4pdeer)
+    assert_experiment_model(ex_4pdeer1)
 # ======================================================================
 
 def test_5pdeer():
 # ======================================================================
     "Check that the fit of a 4-pulse DEER signal is correct"
         
-    assert_experiment_model(ex_5pdeer)
+    assert_experiment_model(ex_5pdeer2)
 # ======================================================================
 
 def test_7pdeer():
 # ======================================================================
     "Check that the fit of a 4-pulse DEER signal is correct"
         
-    assert_experiment_model(ex_7pdeer)
+    assert_experiment_model(ex_7pdeer3)
 # ======================================================================
 
 def test_ovl4pdeer():
 # ======================================================================
     "Check that the fit of a 4-pulse DEER signal is correct"
         
-    assert_experiment_model(ex_ovl4pdeer)
+    assert_experiment_model(ex_4pdeer2)
 # ======================================================================
 
 def test_ridme1():
@@ -101,7 +101,7 @@ def test_form_factor():
     P = dd_gauss(r,[4.5, 0.25])
     K = dipolarkernel(t,r,0.3)
     V = K@P
-    fit = fitmodel(V,t,r,'P',None,ex_4pdeer,uq=None)
+    fit = fitmodel(V,t,r,'P',None,ex_4pdeer1,uq=None)
     assert ovl(P,fit.P) > 0.90
 # ======================================================================
 
@@ -117,7 +117,7 @@ def test_full_parametric():
     B = bg_exp(t,lam*kappa)
     V = dipolarkernel(t,r,lam,B)@P
 
-    fit = fitmodel(V,t,r,dd_gauss,bg_exp,ex_4pdeer,uq=None)
+    fit = fitmodel(V,t,r,dd_gauss,bg_exp,ex_4pdeer1,uq=None)
 
     assert ovl(P,fit.P) > 0.99
 # ======================================================================
@@ -149,7 +149,7 @@ def test_start_values():
     K = dipolarkernel(t,r,lam,Bmodel)
     V = K@P
 
-    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,bg_par0=0.5,ex_par0=0.5,uq=None)
+    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer1,bg_par0=0.5,ex_par0=0.5,uq=None)
 
     assert ovl(P,fit.P) > 0.95
 # ======================================================================
@@ -167,7 +167,7 @@ def test_boundaries():
     K = dipolarkernel(t,r,lam,Bmodel)
     V = K@P 
 
-    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer, uq=None,
+    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer1, uq=None,
                     bg_par0=0.4, bg_lb=0.2, bg_ub=0.5,
                     ex_par0=0.4, ex_lb=0.2, ex_ub=0.5)
 
@@ -187,7 +187,7 @@ def test_boundaries_adjust_bg():
     K = dipolarkernel(t,r,lam,Bmodel)
     V = K@P 
 
-    fit = fitmodel(V,t,r,'P',bg_hom3d,ex_4pdeer, uq=None, bg_lb=70, bg_ub=90)
+    fit = fitmodel(V,t,r,'P',bg_hom3d,ex_4pdeer1, uq=None, bg_lb=70, bg_ub=90)
 
     assert ovl(P,fit.P) > 0.95
 # ======================================================================
@@ -205,7 +205,7 @@ def test_boundaries_adjust_ex():
     K = dipolarkernel(t,r,lam,Bmodel)
     V = K@P 
 
-    fit = fitmodel(V,t,r,'P',bg_hom3d,ex_4pdeer, uq=None, ex_lb=0.55, ex_ub=0.65)
+    fit = fitmodel(V,t,r,'P',bg_hom3d,ex_4pdeer1, uq=None, ex_lb=0.55, ex_ub=0.65)
 
     assert ovl(P,fit.P) > 0.95
 # ======================================================================
@@ -223,7 +223,7 @@ def test_boundaries_adjust_dd():
     K = dipolarkernel(t,r,lam,Bmodel)
     V = K@P 
 
-    fit = fitmodel(V,t,r,dd_gauss,bg_hom3d,ex_4pdeer, uq=None, dd_lb=[4,0.3],dd_ub=[6,0.5])
+    fit = fitmodel(V,t,r,dd_gauss,bg_hom3d,ex_4pdeer1, uq=None, dd_lb=[4,0.3],dd_ub=[6,0.5])
 
     assert ovl(P,fit.P) > 0.95
 # ======================================================================
@@ -236,9 +236,9 @@ def test_global_4pdeer():
     r = np.linspace(2,6,90)
     P = dd_gauss(r,[4.5, 0.3])
 
-    info = ex_4pdeer()
+    info = ex_4pdeer1()
     parIn = info['Start']
-    pathways = ex_4pdeer(parIn)
+    pathways = ex_4pdeer1(parIn)
 
     kappa = 0.4
     Bmodel = lambda t: bg_exp(t,kappa)
@@ -248,7 +248,7 @@ def test_global_4pdeer():
     t2 = np.linspace(0,5,250)
     V2 = dipolarkernel(t2,r,pathways,Bmodel)@P
     
-    fit = fitmodel([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer,uq=None)
+    fit = fitmodel([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer1,uq=None)
 
     assert ovl(P,fit.P) > 0.90
 # ======================================================================
@@ -267,7 +267,7 @@ def test_global_full_parametric():
     V1 = dipolarkernel(t1,r,lam,B)@P
     V2 = dipolarkernel(t2,r,lam,B)@P
 
-    fit = fitmodel([V1,V2],[t1,t2],r,dd_gauss,bg_exp,ex_4pdeer,uq=None)
+    fit = fitmodel([V1,V2],[t1,t2],r,dd_gauss,bg_exp,ex_4pdeer1,uq=None)
 
     assert ovl(P,fit.P) > 0.99
 # ======================================================================
@@ -286,7 +286,7 @@ def test_global_mixed_backgrounds():
     V1 = dipolarkernel(t1,r,lam,B)@P
     V2 = dipolarkernel(t2,r,lam)@P
 
-    fit = fitmodel([V1,V2],[t1,t2],r,dd_gauss,[bg_exp,None],ex_4pdeer,uq=None)
+    fit = fitmodel([V1,V2],[t1,t2],r,dd_gauss,[bg_exp,None],ex_4pdeer1,uq=None)
 
     assert ovl(P,fit.P) > 0.90
 # ======================================================================
@@ -303,7 +303,7 @@ def test_global_mixed_experiments():
     V1 = dipolarkernel(t1,r,lam)@P
     V2 = dipolarkernel(t2,r)@P
 
-    fit = fitmodel([V1,V2],[t1,t2],r,dd_gauss,None,[ex_4pdeer,None],uq=None)
+    fit = fitmodel([V1,V2],[t1,t2],r,dd_gauss,None,[ex_4pdeer1,None],uq=None)
 
     assert ovl(P,fit.P) > 0.9
 # ======================================================================
@@ -333,7 +333,7 @@ def assert_confidence_intervals(pci50,pci95,pfit,lb,ub):
 #----------------------------------------------------------------------
 
 #----------------------------------------------------------------------
-exmodel = ex_4pdeer
+exmodel = ex_4pdeer1
 ddmodel = dd_gauss
 bgmodel = bg_exp
 
@@ -397,7 +397,7 @@ def test_confinter_ddparam():
 # ======================================================================
 
 #----------------------------------------------------------------------
-exmodel = ex_4pdeer
+exmodel = ex_4pdeer1
 bgmodel = bg_exp
 
 r = np.linspace(2,6,40)
@@ -489,7 +489,7 @@ def assert_confinter_noforeground():
     np.random.seed(0)
     V = dipolarkernel(t,r,lam,Bmodel)@P + whitegaussnoise(t,0.01)
     
-    fit = fitmodel(V,t,r,None,bgmodel,ex_4pdeer,uqanalysis=True)
+    fit = fitmodel(V,t,r,None,bgmodel,ex_4pdeer1,uqanalysis=True)
 
     Bfit = fit.B
     Buq = fit.Buncert
@@ -530,9 +530,9 @@ def test_global_scale_4pdeer():
     r = np.linspace(2,6,90)
     P = dd_gauss(r,[4.5, 0.25])
 
-    info = ex_4pdeer()
+    info = ex_4pdeer1()
     parIn = info['Start']
-    pathways = ex_4pdeer(parIn)
+    pathways = ex_4pdeer1(parIn)
 
     kappa = 0.4
     Bmodel = lambda t: bg_exp(t,kappa)
@@ -542,7 +542,7 @@ def test_global_scale_4pdeer():
     t2 = np.linspace(0,5,250)
     V2 = scales[1]*dipolarkernel(t2,r,pathways,Bmodel)@P
     
-    fit = fitmodel([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer,uq=None)
+    fit = fitmodel([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer1,uq=None)
 
     assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
 # ======================================================================
@@ -559,7 +559,7 @@ def test_V_scale_parametric():
     scale = 1.54e6
     V = scale*(K@P)
 
-    fit = fitmodel(V,t,r,dd_gauss,bg_exp,ex_4pdeer,uq=None)
+    fit = fitmodel(V,t,r,dd_gauss,bg_exp,ex_4pdeer1,uq=None)
 
     assert max(abs(1 - V/fit.V)) < 1e-4
 # ======================================================================
@@ -575,7 +575,7 @@ def test_V_scale():
     scale =1.54e6
     V = scale*(K@P)
 
-    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,uq=None)
+    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer1,uq=None)
 
     assert max(abs(1 - V/fit.V)) < 1e-4
 # ======================================================================
@@ -606,7 +606,7 @@ def test_plot():
     K = dipolarkernel(t,r,0.4,Bmodel)
     V = K@P
 
-    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,uq=None)
+    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer1,uq=None)
     
     fig = fit.plot(show=False)
     assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
@@ -625,7 +625,7 @@ def test_physical_bg_model():
     V = K@P
     V = V0*V
 
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,uq=None)
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer1,uq=None)
 
     assert abs(fit.bgparam - 50)<1e-1 and abs(fit.exparam - 0.4)<1e-1
 # ======================================================================
@@ -638,11 +638,11 @@ def test_phenomenological_bg_model():
     r = np.linspace(3,5,50)
     P = dl.dd_gauss(r,[4,0.2])
     V0 = 3000
-    K = dl.dipolarkernel(t,r,dl.ex_4pdeer(0.4),lambda t: dl.bg_exp(t,0.3))
+    K = dl.dipolarkernel(t,r,dl.ex_4pdeer1(0.4),lambda t: dl.bg_exp(t,0.3))
     V = K@P
     V = V0*V
 
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer,uq=None)
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer1,uq=None)
 
     assert abs(fit.bgparam - 0.3)<1e-1 and abs(fit.exparam - 0.4)<1e-1
 # ======================================================================
@@ -656,11 +656,11 @@ def test_Vunmod():
     r = np.linspace(3,5,50)
     P = dl.dd_gauss(r,[4,0.2])
     lam = 0.4
-    K = dl.dipolarkernel(t,r,dl.ex_4pdeer(lam),lambda t,lam: dl.bg_hom3d(t,50,lam))
+    K = dl.dipolarkernel(t,r,dl.ex_4pdeer1(lam),lambda t,lam: dl.bg_hom3d(t,50,lam))
     Bscaled = (1-lam)*dl.bg_hom3d(t,50,lam)
     V = K@P
 
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer,uq=None)
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer1,uq=None)
 
     assert max(abs(Bscaled - fit.Vunmod))<1e-4
 # ======================================================================
@@ -677,13 +677,13 @@ def test_cost_value():
     K = dipolarkernel(t,r,0.4,Bmodel)
     V = K@P
 
-    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,uq=None)
+    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer1,uq=None)
 
     assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
 # ======================================================================
 
 # ----------------------------------------------------------------------
-    exmodel = ex_4pdeer
+    exmodel = ex_4pdeer1
     bgmodel = bg_exp
 
     r = np.linspace(2,6,40)
