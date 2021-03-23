@@ -561,7 +561,7 @@ def test_V_scale_parametric():
 
     fit = fitmodel(V,t,r,dd_gauss,bg_exp,ex_4pdeer,uq=None)
 
-    assert max(abs(1 - V/fit.V)) < 1e-4
+    assert isinstance(fit.scale,float) and  abs(1 - scale/fit.scale) < 1e-2
 # ======================================================================
 
 def test_V_scale():
@@ -577,7 +577,7 @@ def test_V_scale():
 
     fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,uq=None)
 
-    assert max(abs(1 - V/fit.V)) < 1e-4
+    assert isinstance(fit.scale,float) and abs(1 - scale/fit.scale) < 1e-2
 # ======================================================================
 
 def test_V_scale_regularized():
@@ -592,7 +592,7 @@ def test_V_scale_regularized():
 
     fit = fitmodel(V,t,r,'P',None,None,uq=None)
 
-    assert max(abs(1 - V/fit.V)) < 1e-4
+    assert isinstance(fit.scale,float) and  abs(1 - scale/fit.scale) < 1e-2
 # ======================================================================
 
 def test_plot():
@@ -773,4 +773,21 @@ def test_bootci_bparam():
 # ======================================================================
     "Check that the bootstrapped confidence intervals work"
     assert_boot_ci('bgparam')
+# ======================================================================
+
+def test_convergence_criteria():
+# ======================================================================
+    "Check that convergence criteria can be specified without crashing"
+
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,150)
+    P = dd_gauss(r,[4.5, 0.25])
+
+    Bmodel = lambda t: bg_exp(t,0.4)
+    K = dipolarkernel(t,r,0.4,Bmodel)
+    V = K@P
+
+    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,uq=None,tol=1e-3,maxiter=1e2)
+
+    assert ovl(P,fit.P) > 0.90
 # ======================================================================

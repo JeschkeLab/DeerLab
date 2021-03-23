@@ -16,7 +16,8 @@ from deerlab.utils import isempty, goodness_of_fit, Jacobian
 def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
               dd_par0=None, bg_par0=None, ex_par0=None, verbose=False, 
               dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
-              weights=1, uqanalysis=True, uq='covariance', regparam='aic', regtype = 'tikhonov'):
+              weights=1, uqanalysis=True, uq='covariance', regparam='aic', regtype = 'tikhonov',
+              tol=1e-10,maxiter=1e8):
     r"""
     Fits a dipolar model to the experimental signal ``V`` with time axis ``t``, using
     distance axis ``r``. The model is specified by the distance distribution (dd),
@@ -92,6 +93,9 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         The default is ``'covariance'``.
 
+    verbose : boolean, optional
+        Enable/disable printing a table of fit results, by default is disabled
+
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting,
         the default is all weighted equally.
@@ -125,9 +129,11 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * ``'huber'`` - Huber regularization
         The default is ``'tikhonov'``.  
 
-    verbose : boolean, optional
-        Enable/disable printing a table of fit results, by default is disabled
-
+    tol : scalar, optional 
+        Tolerance value for convergence of the NNLS algorithm. If not specified, the value is set to ``tol = 1e-10``.
+        
+    maxiter: scalar, optional  
+        Maximum number of iterations before termination. If not specified, the value is set to ``maxiter = 1e8``.
 
     Returns
     -------
@@ -520,7 +526,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Ks = [dl.dipolarkernel(ts,r) for ts in t]
         
         # Linear regularization fit
-        fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=uqanalysis)
+        fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=uqanalysis,tol=tol,maxiter=maxiter)
         Pfit = fit.P
         Pfit_uq = fit.uncertainty
         scales = np.atleast_1d(fit.scale)
@@ -553,7 +559,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vmodel =lambda par: [K@Pfcn(par) for K in multiPathwayModel(par)[0]]
 
         # Non-linear parametric fit
-        fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uqanalysis=uqanalysis)
+        fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uqanalysis=uqanalysis,tol=tol,maxiter=maxiter)
         parfit = fit.param
         param_uq = fit.uncertainty
         scales = np.atleast_1d(fit.scale)
@@ -593,12 +599,13 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         # Separable non-linear least squares (SNNLS) 
         fit = dl.snlls(Vexp_,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
-                            regparam=regparam, uqanalysis=uqanalysis, weights=weights)
+                            regparam=regparam, uqanalysis=uqanalysis, weights=weights,
+                            nonlin_tol=tol,nonlin_maxiter=maxiter)
         parfit = fit.nonlin
         Pfit = fit.lin
         snlls_uq = fit.uncertainty
         alphaopt = fit.regparam
-        scales = [prescales[i]*np.trapz(Pfit,r) for i in range(nSignals)]
+        scales = np.atleast_1d([prescales[i]*np.trapz(Pfit,r) for i in range(nSignals)])
 
         # Get the fitted models
         Kfit,Bfit = multiPathwayModel(parfit)
@@ -677,6 +684,10 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             # scale CIs accordingly
             Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
             Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/scale
+
+    # Do not return array for a single scale
+    if len(scales)==1:
+        scales = scales[0]
 
     # Calculate goodness of fit
     # -------------------------

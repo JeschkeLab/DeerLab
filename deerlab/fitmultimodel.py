@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit, Jacobian
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
-                 strategy='split', weights=1, renormalize = True, uqanalysis=True, **kwargs):
+                 strategy='split', weights=1, renormalize = True, uqanalysis=True, tol=1e-9, maxiter=1e8):
     r""" 
     Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
@@ -78,6 +78,12 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     
     uqanalysis : boolean, optional
         Enable/disable the uncertainty quantification analysis, by default it is enabled.  
+
+    tol : scalar, optional 
+        Tolerance value for convergence of the NNLS algorithm. If not specified, the value is set to ``tol = 1e-9``.
+        
+    maxiter: scalar, optional  
+        Maximum number of iterations before termination. If not specified, the value is set to ``maxiter = 1e8``.
 
     Returns
     -------
@@ -413,7 +419,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         # Separable non-linear least-squares (SNLLS) fit
         scale = 1e2
         fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, 
-                        weights=weights, reg=False, uqanalysis=False, lin_tol=[], lin_maxiter=[],**kwargs)
+                        weights=weights, reg=False, uqanalysis=False, nonlin_tol=tol, nonlin_maxiter=maxiter)
         pnonlin = fit.nonlin
         plin = fit.lin
         par_prev = pnonlin

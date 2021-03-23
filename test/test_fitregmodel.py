@@ -420,3 +420,18 @@ def test_cost_value():
 
     assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
 #============================================================
+
+def test_convergence_criteria():
+#============================================================
+    "Check that convergence criteria can be specified without crashing"
+
+    t = np.linspace(0,3,200)
+    r = np.linspace(1,5,100)
+    P = dd_gauss(r,[3,0.08])
+    K = dipolarkernel(t,r)
+    V = K@P
+
+    fit = fitregmodel(V,K,r,'tikhonov','aic',tol=1e-9,maxiter=2e3)
+  
+    assert ovl(P,fit.P) > 0.90 # more than 80% overlap
+#============================================================
