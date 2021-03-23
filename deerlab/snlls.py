@@ -16,7 +16,7 @@ from deerlab.nnls import cvxnnls, fnnls, nnlsbpp
 from deerlab.classes import UncertQuant, FitResult
 
 def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=1,
-          regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3, custom_penalty=None,
+          regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3, extrapenalty=None,
           nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, huberparam=1.35,
           uqanalysis=True):
     r""" Separable Non-linear Least Squares Solver
@@ -295,12 +295,13 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         """
         global alpha
         
-        # Regularization components
+        # Optimiza the regularization parameter only if needed
         if optimize_alpha:
             alpha = dl.selregparam(y, A, ax, regtype, regparam, regorder=regorder)
 
         # Components for linear least-squares
         AtA, Aty = dl.lsqcomponents(y, A, L, alpha, weights, regtype=regtype)
+         
         # Solve the linear least-squares problem
         result = linSolver(AtA, Aty)
         linfit = parseResult(result)
@@ -324,7 +325,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         A = Amodel(p)
 
 
-        # Regularization components
+        # Check whether optimization of the regularization parameter is needed
         if includePenalty:
             if type(regparam) is str:
                 # If the parameter vector has not changed by much...
@@ -355,8 +356,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         # Evaluate full model residual
         yfit = A@linfit
 
-        scales = []
-        scales_vec = np.zeros_like(yfit) 
+        # Optimize the scale yfit
+        scales, scales_vec = [], np.zeros_like(yfit) 
         for subset in subsets:
             yfit_,y_ = (np.atleast_2d(y[subset]) for y in [yfit, y]) # Rescale the subsets corresponding to each signal
             scale = np.squeeze(np.linalg.lstsq(yfit_.T,y_.T,rcond=None)[0])
@@ -367,8 +368,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         res = weights*(scales_vec*(Amodel(p)@linfit) - y)
 
         # Compute residual from custom penalty
-        if callable(custom_penalty):
-            penres = custom_penalty(p)
+        if callable(extrapenalty):
+            penres = extrapenalty(p)
             penres = np.atleast_1d(penres)
             res = np.concatenate((res,penres))
 
@@ -396,6 +397,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         linfits.append(linfit)
         fvals.append(2*sol.cost) # least_squares uses 0.5*sum(residual**2)          
         sols.append(sol)
+
     # Find global minimum from multiple runs
     globmin = np.argmin(fvals)
     linfit = linfits[globmin]
