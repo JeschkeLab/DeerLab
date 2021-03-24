@@ -5,36 +5,54 @@ Release v0.13.0 - March 2021
 ---------------------------------
 
 #### New features 
-- Added new experiment models for RIDME on systems with S=1/2, 3/2, 5/2, 7/2 modelling its pathways with higher harmonics ([#79](https://github.com/JeschkeLab/DeerLab/pull/79)). 
-- Bootstrapping is now embedded into ``fitsignal`` to automatically bootstrap all output quantities without the need to write additional script lines ([#55](https://github.com/JeschkeLab/DeerLab/issues/55)). In ``fitsignal`` a new option ``uq`` allows to switch between covariance or bootstrapping uncertainty quantification ([#88](https://github.com/JeschkeLab/DeerLab/pull/88)). 
-- THe function ``fitsignal`` now returns ``Vmod`` and ``Vunmod``, the modulated and unmodulated contributionsto the fitted dipolar signal, respectively, along their uncertainties as additional outputs ([#78](https://github.com/JeschkeLab/DeerLab/pull/78)).
+
+- The function ``fitsignal`` has been re-named to ``fitmodel`` for correctness and consistency with other functions ([#102](https://github.com/JeschkeLab/DeerLab/pull/102)).
+- Added new experiment models for RIDME on systems with one to seven harmonic pathways (S=1/2 to S=7/2) to include all higher harmonics (overtones) ([#79](https://github.com/JeschkeLab/DeerLab/pull/79)). 
+- Bootstrapping is now embedded into ``fitmodel`` to automatically bootstrap all output quantities without the need to write additional script lines ([#55](https://github.com/JeschkeLab/DeerLab/issues/55)). In ``fitmodel`` a new option ``uq`` allows to switch between covariance or bootstrapping uncertainty quantification ([#88](https://github.com/JeschkeLab/DeerLab/pull/88)). 
+- The function ``fitmodel`` now returns ``Vmod`` and ``Vunmod``, the modulated and unmodulated contributionsto the fitted dipolar signal, respectively, along their uncertainties as additional outputs ([#78](https://github.com/JeschkeLab/DeerLab/pull/78)).
 - Implemented initialization strategies in ``fitmultimodel`` for multi-model components ([#67](https://github.com/JeschkeLab/DeerLab/pull/67)). Three different new strategies ``'spread'``, ``'split'`` and ``'merge'`` will initialize the parameter values of the N-component fit based on the results of the N-1/N+1 component fit to improve quality of results and speed.  
 - Added contribution guidelines to the documentation and automated list of DeerLab contributors. 
+- The function ``snlls`` now accepts additional custom penalties to include in the optimization ([#76](https://github.com/JeschkeLab/DeerLab/issues/76), [#108](https://github.com/JeschkeLab/DeerLab/pull/112)).
 
 #### Overall changes
 
+- The performance of all fit functions has been considerably accelerated by removing call overheads in built-in DeerLab models ([#100](https://github.com/JeschkeLab/DeerLab/issues/100), [#101](https://github.com/JeschkeLab/DeerLab/pull/101)).
 - Improved robustness of the installer ([#65](https://github.com/JeschkeLab/DeerLab/pull/65)):
     - The installer no longer assumes the alias ``pip`` to be setup on the system. 
     - The installation will now handle cases when system-wide privileges are not available ([#52](https://github.com/JeschkeLab/DeerLab/issues/52)).
     - Improved robustness of the installation in Windows systems to avoid missing DLL errors ([#64](https://github.com/JeschkeLab/DeerLab/issues/64)).
     - The installer will now get the latest Numpy/Scipy releases in Windows systems. 
-- Implemented new CSD algorithm for the ``regparamrange`` function to avoid LAPACK library crashes encountered when using multiple DeerLab functions ([#68](https://github.com/JeschkeLab/DeerLab/pull/68)).
 - Adapted piece of code leading to a ``VisibleDeprecationWarning `` visible during execution of certain DeerLab functions.
 - Improved interface of built-in plots in ``FitResult.plot()``. The method now returns a Matplotlib figure object (`matplotlib.figure.Figure`) instead of an axes object (``matplotlib.axes._subplots.AxesSubplot``) which can be modified more freely to adjust graphical elements ([#85](https://github.com/JeschkeLab/DeerLab/issues/85)). The method now takes an optional keyword ``FitResult.plot(show=True\False)`` to enable/disable rendering of the graphics upon calling the method ([#87](https://github.com/JeschkeLab/DeerLab/pull/87)).
 - The fit objective values returned in ``FitResult.cost`` are now correct (previous versions had an erroneous 1/2 factor) ([#80](https://github.com/JeschkeLab/DeerLab/issues/80)). The value is now returned as a scalar value instead of a single-element list ([#81](https://github.com/JeschkeLab/DeerLab/issues/81)).
+- Removed the re-normalization conventions ``K(t=0,r)=1`` and ``B(t=0)=1`` and associated options ``renormalize`` and ``renormpaths`` in the ``dipolarkernel`` and ``dipolarbackground`` functions ([#99](https://github.com/JeschkeLab/DeerLab/pull/99)) to avoid redundance issues between dipolar pathway amplitudes and signal scales ([#76](https://github.com/JeschkeLab/DeerLab/issues/76)). 
+- The fit convergence criteria ``tol`` (objective function tolerance) and ``maxiter`` (iteration limit) are now exposed as keyword argument in all fit functions ([#111](https://github.com/JeschkeLab/DeerLab/issues/111), [#112](https://github.com/JeschkeLab/DeerLab/pull/112)). 
+- Multiple improvements and corrections to the documentation ([#95](https://github.com/JeschkeLab/DeerLab/pull/95), [#96](https://github.com/JeschkeLab/DeerLab/pull/96), [#104](https://github.com/JeschkeLab/DeerLab/pull/104), [#106](https://github.com/JeschkeLab/DeerLab/pull/106), [#107](https://github.com/JeschkeLab/DeerLab/pull/107))
 
 #### Specific changes
 - ``deerload``: 
-    - Fixed behaviour of the function when loading certain 2D-datasets in the BES3T format ([#82](https://github.com/JeschkeLab/DeerLab/issues/82),[#83](https://github.com/JeschkeLab/DeerLab/pull/83)).
+    - Fixed behaviour of the function when loading certain 2D-datasets in the BES3T format ([#82](https://github.com/JeschkeLab/DeerLab/issues/82), [#83](https://github.com/JeschkeLab/DeerLab/pull/83)).
     - In 2D-datasets, the abscissas are now returned as a list of abscissas instead of a single 2D-matrix ([#83](https://github.com/JeschkeLab/DeerLab/pull/83))). 
-- ``fitsignal``:
+- ``fitmodel``:
     - Corrected the scaling behaviour of all outputs related to components of the dipolar signal to match the scaling of the original experimental data ([#78](https://github.com/JeschkeLab/DeerLab/pull/78)). 
     - The built-in plot method ``FitResult.plot()`` now plots the unmodulated component fit as well with its uncertainty ([#78](https://github.com/JeschkeLab/DeerLab/pull/78)).
     - Extended information included in the verbose summary ([#78](https://github.com/JeschkeLab/DeerLab/pull/78)). 
     - Simplified the interface for defining initial values and boundaries of parameters in ``fitsignal`` ([#71](https://github.com/JeschkeLab/DeerLab/pull/71)). Now instead of defining, e.g., `fitsignal(..., lb = [[],[50],[0.2, 0.5]])` one can define the individual vales/boundaries ``fitsignal(..., bg_lb = 50, ex_lb = [0.2,0.5])`` by using the new keywords. 
+    - Removed the keyword argument ``uqanalysis=True/False``. The uncertainty quantification can now be disabled via the new keyword ``uq=None`` ([#98](https://github.com/JeschkeLab/DeerLab/pull/98)).
     - Corrected the behaviour of built-in start values when manually specifying boundaries ([#73](https://github.com/JeschkeLab/DeerLab/pull/73)). If the built-in start values are outside of the user-specified boundaries the program will now automatically set the start values in the middle of the boundaries to avoid errors ([#72](https://github.com/JeschkeLab/DeerLab/issues/72)).
+    - Implemented the constraint ``Lam0+sum(lam)<=1`` to ensure the structural-identifiability of ``Lam0`` and ``V0`` during SNLLS optimization of experiment models with more than one modulated dipolar pathway (i.e. does not affect ``ex_4pdeer``) ([#76](https://github.com/JeschkeLab/DeerLab/issues/76),[#108](https://github.com/JeschkeLab/DeerLab/pull/108)).
 - ``fitparamodel``: 
     - Made ``par0`` a positional argument instead of an optional keyword ([#70](https://github.com/JeschkeLab/DeerLab/issues/70)). to avoid errors when not defined ([#69](https://github.com/JeschkeLab/DeerLab/issues/69)).
+- ``snlls``:
+    - Corrected bug that was leading to the smoothness penalty being accounted for twice in the least-squares residual during optimization ([#103](https://github.com/JeschkeLab/DeerLab/issues/103)).
+    - Now returns the uncertainty quantification of linear and nonlinear parts as separate objects ``nonlinUncert`` and ``linUncert`` ([#108](https://github.com/JeschkeLab/DeerLab/pull/108)).
+    - Improved the covariance-based uncertainty analysis by including correlations between linear and non-linear parameters ([#108](https://github.com/JeschkeLab/DeerLab/pull/108)).
+    - Improved the behavior of signal scale determination ([#108](https://github.com/JeschkeLab/DeerLab/pull/108)).
+- ``diststats``: 
+    - Now compatible with non-uniformly defined distance distributions ([#92](https://github.com/JeschkeLab/DeerLab/issues/92), [#94](https://github.com/JeschkeLab/DeerLab/pull/94)). 
+    - Added internal validation step to avoid non-sensical results when confounding the syntax ([#91](https://github.com/JeschkeLab/DeerLab/pull/91)).
+- ``regparamrange``:
+    - Implemented new CSD algorithm to avoid LAPACK library crashes encountered when using multiple DeerLab functions calling ``regparamrange`` internally ([#68](https://github.com/JeschkeLab/DeerLab/pull/68)).
 
 -------------------------------
 
