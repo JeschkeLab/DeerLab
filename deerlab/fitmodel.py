@@ -627,7 +627,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         if uqanalysis and uq=='covariance':
             # scale CIs accordingly
             Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
-            Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/Pscal
+            Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/Pscale
 
         # Get the fitted models
         Kfit,Bfit = multiPathwayModel(parfit)
