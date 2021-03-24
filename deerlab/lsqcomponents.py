@@ -1,10 +1,13 @@
 import numpy as np
 
-def lsqcomponents(V,K,L,alpha,weights, regtype = 'tikh',huberparam = 1.35):
+def lsqcomponents(V,K,L=None,alpha=0,weights=1, regtype = 'tikh',huberparam = 1.35):
 # ==============================================================================================
 
     # Prepare
     nr = np.shape(K)[1]
+
+    if L is None:
+        L = np.eye(nr)
 
     # Compute residual terms
     KtV = weights*K.T@V

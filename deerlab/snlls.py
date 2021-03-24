@@ -205,9 +205,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     # Determine whether to use regularization penalty
     illConditioned = np.linalg.cond(A0) > 10
     if reg == 'auto':
-        includePenalty = illConditioned
+        includeRegularization  = illConditioned
     else:
-        includePenalty = reg
+        includeRegularization  = reg
 
     # Checks for bounds constraints
     # ----------------------------------------------------------
@@ -249,12 +249,12 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     # Use an arbitrary axis
     ax = np.arange(1, Nlin+1)
-    if includePenalty:
+    if includeRegularization :
         # Get regularization operator
         regorder = np.minimum(Nlin-1, regorder)
         L = dl.regoperator(ax, regorder)
     else:
-        L = np.eye(Nlin, Nlin)
+        L = None
 
     # Prepare the linear solver
     # ----------------------------------------------------------
@@ -283,9 +283,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     check = False
     regparam_prev = 0
     par_prev = [0]*len(par0)
+    alpha = None
 
-
-    def linear_problem(A,optimize_alpha):
+    def linear_problem(A,optimize_alpha,alpha):
     #===========================================================================
         """
         Linear problem
@@ -293,7 +293,6 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         Solves the linear subproblem of the SNLLS objective function via linear LSQ 
         constrained, unconstrained, or regularized.
         """
-        global alpha
         
         # Optimiza the regularization parameter only if needed
         if optimize_alpha:
@@ -307,7 +306,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         linfit = parseResult(result)
         linfit = np.atleast_1d(linfit)
         
-        return linfit
+        return linfit, alpha
     #===========================================================================
 
     def ResidualsFcn(p):
@@ -319,14 +318,14 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         non-linear least-squares solver. 
         """
 
-        nonlocal par_prev, check, regparam_prev, scales, linfit
-        global alpha
+        nonlocal par_prev, check, regparam_prev, scales, linfit, alpha
+
         # Non-linear model evaluation
         A = Amodel(p)
 
 
         # Check whether optimization of the regularization parameter is needed
-        if includePenalty:
+        if includeRegularization :
             if type(regparam) is str:
                 # If the parameter vector has not changed by much...
                 if check and all(abs(par_prev-p)/p < alphareopt):
@@ -350,7 +349,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
             optimize_alpha = False
             alpha = 0
 
-        linfit = linear_problem(A,optimize_alpha)
+        linfit,alpha = linear_problem(A,optimize_alpha,alpha)
         regparam_prev = alpha
 
         # Evaluate full model residual
@@ -373,11 +372,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
             penres = np.atleast_1d(penres)
             res = np.concatenate((res,penres))
 
-        if includePenalty:
+        if includeRegularization :
             # Augmented residual
             res_reg, _ = reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)
             res = np.concatenate((res,res_reg))
-
+        
         return res
     #===========================================================================
 
