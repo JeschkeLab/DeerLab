@@ -13,9 +13,10 @@ from deerlab.classes import UncertQuant, FitResult
 
 def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
                 weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
-                uqanalysis=True, renormalize=True, noiselevelaim = -1):
+                uqanalysis=True, renormalize=True, noiselevelaim = -1,tol=None,maxiter=None):
     r"""
-    Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches.
+    Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches 
+    via non-negative least-squares (NNLS).
 
     Parameters 
     ----------
@@ -88,6 +89,13 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
     noiselevelaim : scalar, optional
         Noise level at which to stop the OBIR algorithm. If not specified it is automatically estimated from the fit residuals.
 
+    tol : scalar, optional 
+        Tolerance value for convergence of the NNLS algorithm. If not specified (``None``), the value is set automatically to ``tol = max(K.T@K.shape)*norm(K.T@K,1)*eps``.
+        It is only valid for the ``'cvx'`` and ``'fnnls'`` solvers, it has no effect on the ``'nnlsbpp'`` solver.
+        
+    maxiter: scalar, optional  
+        Maximum number of iterations before termination. If not specified (``None``), the value is set automatically to ``maxiter = 5*shape(K.T@K)[1]``.
+        It is only valid for the ``'cvx'`` and ``'fnnls'`` solvers, it has no effect on the ``'nnlsbpp'`` solver.
 
     Returns
     -------
@@ -166,11 +174,11 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
     elif problem == 'nnls':
 
         if solver == 'fnnls':
-            Pfit = fnnls(KtKreg,KtV)
+            Pfit = fnnls(KtKreg,KtV,tol=tol,maxiter=maxiter)
         elif solver == 'nnlsbpp':
             Pfit = nnlsbpp(KtKreg,KtV,np.linalg.solve(KtKreg,KtV))
         elif solver == 'cvx':
-            Pfit = cvxnnls(KtKreg, KtV)
+            Pfit = cvxnnls(KtKreg, KtV,tol=tol,maxiter=maxiter)
         else:
             raise KeyError(f'{solver} is not a known non-negative least squares solver')
 
@@ -397,8 +405,8 @@ def _plot(subsets,Vexp,Vfit,r,Pfit,Puq,show=False):
     axs[nSignals].plot(r,Pfit,'tab:blue')
     axs[nSignals].fill_between(r,Pci95[:,0], Pci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
     axs[nSignals].fill_between(r,Pci50[:,0], Pci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
-    axs[nSignals].set_xlabel('Distance [nm]')
-    axs[nSignals].set_ylabel('P [nm⁻¹]')
+    axs[nSignals].set_xlabel('Distance (nm)')
+    axs[nSignals].set_ylabel('P (nm⁻¹)')
     axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
     axs[nSignals].grid(alpha=0.3)
     plt.tight_layout()

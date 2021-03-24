@@ -101,14 +101,14 @@ plt.subplot(324)
 plt.fill_between(T02_values,T02_pdf,color='b',alpha=0.4)
 plt.vlines(exparfit[3],0,max(T02_pdf),colors='k',linestyles='dashed',linewidth=2)
 plt.vlines(exparam[3],0,max(T02_pdf),colors='r',linestyles='dashed',linewidth=2)
-plt.xlabel('$T_{0,2}$ [$\mu s$]')
+plt.xlabel('$T_{0,2}$ (µs)')
 plt.ylabel('PDF')
 
 plt.subplot(325)
 plt.fill_between(conc_values,conc_pdf,color='b',alpha=0.4)
 plt.vlines(bgparfit[0],0,max(conc_pdf),colors='k',linestyles='dashed',linewidth=2)
 plt.vlines(300,0,max(conc_pdf),colors='r',linestyles='dashed',linewidth=2)
-plt.xlabel('Spin conc. [$\mu M$]')
+plt.xlabel('Spin conc. (µM)')
 plt.ylabel('PDF')
 
 # %%

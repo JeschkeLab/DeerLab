@@ -240,7 +240,7 @@ and fitted parameters with uncertainties. Here is an example output
     -----------------------------------------------------------------------------------------
     Fitted parameters and 95%-confidence intervals
     Vfit[0]:
-    V0:  3.551e+07  Signal scale (a.u.)
+    V0:  3.551e+07  Signal scale (arb.u.)
     bgparam[0]:   145.3121342  (111.0809911, 179.5432773)  Concentration of pumped spins (μM)
     exparam[0]:   0.4066627  (0.3630338, 0.4502916)  Modulation depth ()
     -----------------------------------------------------------------------------------------

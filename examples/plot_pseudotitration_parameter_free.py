@@ -155,8 +155,8 @@ for i in range(Nsignals):
     Vsfit.append(Ksfit[i]@Pfit)
     plt.plot(ts[i],Vs[i]+i/9,'k.',ts[i],Vsfit[i]+i/9,'tab:blue',linewidth=1.5)
 plt.grid(alpha =0.3)
-plt.xlabel('t [$\mu s$]')
-plt.ylabel('V(t) [a.u.]')
+plt.xlabel('t (µs)')
+plt.ylabel('V (arb.u.)')
 plt.legend(['data','fit'])
 
 xAfit,xBfit = chemicalequilibrium(Kdisfit,L)
@@ -167,8 +167,8 @@ for i in range(Nsignals):
     plt.plot(rA,PAfit+1.2*i,'tab:red',rB,PBfit+1.2*i,'tab:blue',linewidth=1.5)
 
 plt.grid(alpha =0.3)
-plt.xlabel('r [nm]')
-plt.ylabel('P(r)')
+plt.xlabel('r (nm)')
+plt.ylabel('P (nm⁻¹)')
 plt.legend(['state A','state B'])
 plt.xlim([2,7])
 

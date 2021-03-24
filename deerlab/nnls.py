@@ -7,7 +7,7 @@ import numpy as np
 import cvxopt as cvx
 import math as m
 
-def fnnls(AtA,Atb,tol=[],maxiter=[],verbose=False):
+def fnnls(AtA, Atb, tol=None, maxiter=None, verbose=False):
 #=====================================================================================
     r"""
     FNNLS   Fast non-negative least-squares algorithm.
@@ -36,10 +36,10 @@ def fnnls(AtA,Atb,tol=[],maxiter=[],verbose=False):
     x = np.zeros(N)
 
     # Calculate tolerance and maxiter if not given.
-    if np.size(np.atleast_1d(tol))==0:
+    if tol is None:
         eps = np.finfo(float).eps
         tol = 10*eps*np.linalg.norm(AtA,1)*max(np.shape(AtA))
-    if np.size(np.atleast_1d(maxiter))==0:
+    if maxiter is None:
         maxiter = 5*N
 
 
@@ -117,7 +117,7 @@ def fnnls(AtA,Atb,tol=[],maxiter=[],verbose=False):
 
 
 
-def cvxnnls(AtA, Atb, tol=[], maxiter=[]):
+def cvxnnls(AtA, Atb, tol=None, maxiter=None):
 #=====================================================================================
     """
     NNLS problem solved via CVXOPT
@@ -132,10 +132,10 @@ def cvxnnls(AtA, Atb, tol=[], maxiter=[]):
     """
 
     N = np.shape(AtA)[1]
-    if np.size(np.atleast_1d(tol))==0:
+    if tol is None:
         eps = np.finfo(float).eps
         tol = 10*eps*np.linalg.norm(AtA,1)*max(np.shape(AtA))
-    if np.size(np.atleast_1d(maxiter)):
+    if maxiter is None:
         maxiter = 5*N
 
     x0 = np.zeros(N)
@@ -158,7 +158,7 @@ def cvxnnls(AtA, Atb, tol=[], maxiter=[]):
 #=====================================================================================
 
 
-def nnlsbpp(AtA,AtB,x0=None):
+def nnlsbpp(AtA, AtB, x0=None):
 #=====================================================================================
     """
     Non-Negative Least Squares using Block Principal Pivoting

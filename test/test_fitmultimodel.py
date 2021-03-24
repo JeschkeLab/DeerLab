@@ -380,3 +380,20 @@ def test_cost_value():
     
     assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
 #=======================================================================
+
+
+def test_convergence_criteria():
+#=======================================================================
+    "Check that convergence criteria can be specified without crashing"
+        
+    r = np.linspace(2,6,300)
+    t = np.linspace(-0.5,6,500)
+    K = dipolarkernel(t,r)
+    parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
+    P = dd_gauss3(r,parin)
+    V = K@P
+
+    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uqanalysis=False, tol=1e-3, maxiter=200)
+    
+    assert ovl(P,fit.P) > 0.95 # more than 99% overlap
+#=======================================================================

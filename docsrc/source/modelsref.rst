@@ -11,21 +11,22 @@ Distribution models
 
 Basis functions
 ........................................
-This group of distribution models is based on function that can serve as basis functions for modeling general distributions.
+
+This group of distribution models is based on functions that can serve as basis functions for modeling more general distributions.
 
 .. rst-class:: func-list
 
 ============================== =============================================================================
   Model function                 Description
 ============================== =============================================================================
-:ref:`dd_rice`                  Single 3D-Rice distribution
+:ref:`dd_rice`                  3D-Rice distribution
 :ref:`dd_rice2`                 Two 3D-Rice distributions
 :ref:`dd_rice3`                 Three 3D-Rice distributions
-:ref:`dd_gauss`                 Single Gaussian distribution
-:ref:`dd_gauss2`                Two Gaussians distributions
-:ref:`dd_gauss3`                Three Gaussians distributions
-:ref:`dd_gengauss`              Single generalized Gaussian distribution
-:ref:`dd_skewgauss`             Single skew Gaussian distribution
+:ref:`dd_gauss`                 Gaussian distribution
+:ref:`dd_gauss2`                Two Gaussian distributions
+:ref:`dd_gauss3`                Three Gaussian distributions
+:ref:`dd_gengauss`              Generalized Gaussian distribution
+:ref:`dd_skewgauss`             Skew Gaussian distribution
 :ref:`dd_cos`                   Raised-cosine distribution
 ============================== =============================================================================
 
@@ -69,7 +70,7 @@ This group of distribution models represents spin labels in simple partitions of
 Toy models
 ........................................
 
-This group contains distribution models that have absolutely no physical relevance. They are useful as distributions to test numerical algorithms.
+This group contains distribution models that have absolutely no physical relevance. They are useful for testing numerical algorithms.
 
 .. rst-class:: func-list
 

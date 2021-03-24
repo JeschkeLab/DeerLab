@@ -16,7 +16,8 @@ from deerlab.utils import isempty, goodness_of_fit, Jacobian
 def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
               dd_par0=None, bg_par0=None, ex_par0=None, verbose=False, 
               dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
-              weights=1, uq='covariance', regparam='aic', regtype = 'tikhonov'):
+              weights=1, uq='covariance', regparam='aic', regtype = 'tikhonov',
+              tol=1e-10,maxiter=1e8):
     r"""
     Fits a dipolar model to the experimental signal ``V`` with time axis ``t``, using
     distance axis ``r``. The model is specified by the distance distribution (dd),
@@ -92,6 +93,9 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         The default is ``'covariance'``.
 
+    verbose : boolean, optional
+        Enable/disable printing a table of fit results, by default is disabled
+
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting,
         the default is all weighted equally.
@@ -125,9 +129,11 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * ``'huber'`` - Huber regularization
         The default is ``'tikhonov'``.  
 
-    verbose : boolean, optional
-        Enable/disable printing a table of fit results, by default is disabled
-
+    tol : scalar, optional 
+        Tolerance value for convergence of the NNLS algorithm. If not specified, the value is set to ``tol = 1e-10``.
+        
+    maxiter: scalar, optional  
+        Maximum number of iterations before termination. If not specified, the value is set to ``maxiter = 1e8``.
 
     Returns
     -------
@@ -512,7 +518,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Ks = [dl.dipolarkernel(ts,r) for ts in t]
         
         # Linear regularization fit
-        fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=uqanalysis)
+        fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=uqanalysis,tol=tol,maxiter=maxiter)
         Pfit = fit.P
         Pfit_uq = fit.uncertainty
         scales = np.atleast_1d(fit.scale)
@@ -545,7 +551,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vmodel =lambda par: [K@Pfcn(par) for K in multiPathwayModel(par)[0]]
 
         # Non-linear parametric fit
-        fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uqanalysis=uqanalysis)
+        fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uqanalysis=uqanalysis,tol=tol,maxiter=maxiter)
         parfit = fit.param
         param_uq = fit.uncertainty
         scales = np.atleast_1d(fit.scale)
@@ -604,6 +610,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # Separable non-linear least squares (SNNLS) 
         fit = dl.snlls(Vexp_,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
                             regparam=regparam, uqanalysis=uqanalysis, weights=weights,extrapenalty=scale_constraint)
+                            nonlin_tol=tol,nonlin_maxiter=maxiter)
         parfit = fit.nonlin
         Pfit = fit.lin
         param_uq = fit.nonlinUncert
@@ -616,11 +623,11 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # -----------------------
         Pscale = np.trapz(Pfit,r)
         Pfit /= Pscale
-        scales = [scale*Pscale for scale in scales]
+        scales = np.atleast_1d([scale*Pscale for scale in scales])
         if uqanalysis and uq=='covariance':
             # scale CIs accordingly
             Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
-            Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/Pscale
+            Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/Pscal
 
         # Get the fitted models
         Kfit,Bfit = multiPathwayModel(parfit)
@@ -700,6 +707,10 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
             Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/scale
 
+    # Do not return array for a single scale
+    if len(scales)==1:
+        scales = scales[0]
+
     # Calculate goodness of fit
     # -------------------------
     stats = []
@@ -761,7 +772,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                     axs[i].fill_between(t[i],Vunmod95[:,0], Vunmod95[:,1],facecolor='tab:orange',linestyle='None',alpha=0.2)
                     axs[i].fill_between(t[i],Vunmod50[:,0], Vunmod50[:,1],facecolor='tab:orange',linestyle='None',alpha=0.4)
             axs[i].grid(alpha=0.3)
-            axs[i].set_xlabel('Time [μs]')
+            axs[i].set_xlabel('Time (µs)')
             axs[i].set_ylabel('V[{}]'.format(i))
             axs[i].legend(('Data','Vfit','Bfit','95%-CI','50%-CI'))
 
@@ -773,8 +784,8 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             Pci50 = Pfit_uq.ci(50)
             axs[nSignals].fill_between(r,Pci95[:,0], Pci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
             axs[nSignals].fill_between(r,Pci50[:,0], Pci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
-        axs[nSignals].set_xlabel('Distance [nm]')
-        axs[nSignals].set_ylabel('P [nm⁻¹]')
+        axs[nSignals].set_xlabel('Distance (nm)')
+        axs[nSignals].set_ylabel('P (nm⁻¹)')
         axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
         axs[nSignals].grid(alpha=0.3)
         plt.tight_layout()
@@ -808,9 +819,9 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         for i in range(nSignals):
             print('Vfit[{}]:'.format(i))
             if scales[i]>1e2:
-                print('  V0:  {:.3e}  Signal scale (a.u.)'.format(scales[i]))
+                print('  V0:  {:.3e}  Signal scale (arb.u.)'.format(scales[i]))
             else:
-                print('  V0:  {:2.2f}  Signal scale (a.u.)'.format(scales[i]))
+                print('  V0:  {:2.2f}  Signal scale (arb.u.)'.format(scales[i]))
             if includeBackground[i]:
                 if len(parfit['bg'])>0:
                     info = bg_model[i]()

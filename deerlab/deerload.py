@@ -231,7 +231,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
     if plot:
         plt.plot(abscissa,np.real(data),abscissa,np.imag(data))
         plt.xlabel("Time (μs)")
-        plt.ylabel("Intensity [a.u.]")
+        plt.ylabel("Intensity (arb.u.)")
         plt.grid(alpha=0.3)
         plt.show()
     

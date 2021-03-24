@@ -38,9 +38,9 @@ def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = 
         Distance axis, in nanometers.
     
     pathways : list of lists or scalar
-        List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time (T0), 
-        and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]`` for one pathway. If n is not given it is assumed to be 1. 
-        For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``.
+        List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time in microseconds (T0), 
+        and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]``. If n is not given, it is assumed to be 1. 
+        For a unmodulated pathway, specify only the amplitude, i.e. ``[Lambda0]``.
         If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  
     
     B : callable or array_like

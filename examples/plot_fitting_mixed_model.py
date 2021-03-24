@@ -66,8 +66,8 @@ info = gausswlc()
 # We can see that the ``mixmodels`` function has introduced an ampitude parameters 
 # as the first parameter of the model. This parameters weights the contribution 
 # of each individual parametric model. We see also that this is followed by the 
-# parameters of the Gaussian model and finally with the parameters of the WLC 
-# model.
+# parameters of the Gaussian model and finally with the parameters of the worm-
+# like chain model.
 #
 # Our model is ready, and since it was generated from built-in models we do 
 # not need to specify any parameters initial values or boundary constraints. These 
@@ -105,14 +105,14 @@ Vfit = Vmodel(fitpar)
 #Plot results
 plt.subplot(2,1,1)
 plt.plot(t,V,'k.',t,Vfit,'r',linewidth=1.5)
-plt.xlabel('t [$\mu s$]')
-plt.ylabel('V(t)')
+plt.xlabel('t (µs)')
+plt.ylabel('V')
 plt.legend(['data','fit'])
 
 plt.subplot(2,1,2)
 plt.plot(r,P,'k',r,Pfit,'r',linewidth=1.5)
-plt.xlabel('r [nm]')
-plt.ylabel('P(r) [nm$^{-1}$]')
+plt.xlabel('r (nm)')
+plt.ylabel('P (nm⁻¹)')
 plt.legend(['truth','fit'])
 
 # %%

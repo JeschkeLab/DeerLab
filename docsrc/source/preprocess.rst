@@ -20,28 +20,27 @@ Preprocessing
 ------------------------------------------
 Before fitting, experimental DEER data must be preprocessed. Three steps are usually required:
 
--  Since the dipolar signal is usually complex, the first step if to perform a phase correction which will minimize the imaginary component / maximize the real component.
+- Phase correction. Since the dipolar signal is usually complex, the first step if to perform a phase correction which minimizes the imaginary component and maximizes the real component.
 
-- In common commercial spectrometers, the time-axes are measured in absolute values. This step aims to optimally determine and correct for the zero-time of the time axis.
-
-- The intensity of the signal is fiven in some arbitrary units (usually some kind voltage). All functions in DeerLab are agnostic with respect to this scaling and do not require the dipolar signal to be scaled such that V(0)=1. This scale is automatically optimized by all fit functions in DeerLab, yet it can still be corrected by pre-processing (although it is not recommended).
+- Zero-time correction. Experimental time-axes values might be shifted relative to the theoretical ones. This step determines the zero-time of the time axis based on the data and shifts the time axis.
 
 .. code-block:: python
 
     V = dl.correctphase(V)           # phase correction
     t = dl.correctzerotime(V,t)      # zero-time adjustment
 
-All the ``correct*`` functions determine the corrections via an optimization approach. If that fails, you can provide an explicit phase, time shift, and scale as additional argument.
+Both ``correct*`` functions determine the corrections via an optimization approach. If the phase correction fails, you can provide an explicit phase as additional input to ``correctphase``.
+
+The signal amplitude is given in arbitrary units. DeerLab functions are agnostic with respect to this scaling and do not require the dipolar signal to be scaled. The scale is automatically optimized by all fit functions in DeerLab.
 
 
 Noise levels
 ------------------------------------------
 
-It can be useful to estimate the level of noise present in the data before actually fitting the data. Use the function ``noiselevel`` for this.
+It can be useful to estimate the noise level in the data before fitting the data. Use the function ``noiselevel`` for this.
 
 .. code-block:: python
 
    sigma = dl.noiselevel(V)
 
-This returns an estimate of the noise standard deviation in the signal ``V``. If the signal is 1D, it estimates the noise level from the imaginary part, and if the signal is 2D (containing many scans), it gets from the standard deviation across scans.
-
+This returns an estimate of the noise standard deviation in the signal ``V``. If the signal is 1D, it estimates the noise level from the imaginary part or by filtering, and if the signal is 2D (containing many scans), it gets it from the standard deviation across scans.

@@ -17,8 +17,8 @@ import deerlab as dl
 
 t = np.linspace(-0.2,4,300)
 r = np.linspace(2,5,400)
-center = 3.5 # [nm] Rician center distance
-width = 0.3 # [nm] Rician width
+center = 3.5 # (nm) Rician center distance
+width = 0.3 # (nm) Rician width
 lam = 0.27 # Modulation depth
 conc = 150 # [uM] Spin concentration
 P = dl.dd_rice(r,[center, width])
@@ -119,16 +119,16 @@ plt.plot(t,V,'k.',t,Vfit,'r',t,(1-lamfit)*Bfit,'b',linewidth=1.5)
 plt.fill_between(t,Vci95[:,0],Vci95[:,1],color='r',alpha=0.3,linestyle='None')
 plt.fill_between(t,Bci95[:,0],Bci95[:,1],color='b',alpha=0.3,linestyle='None')
 plt.grid(alpha=0.3)
-plt.xlabel('t [$\mu s$]')
-plt.ylabel('V(t)')
+plt.xlabel('t (µs)')
+plt.ylabel('V')
 plt.legend(['data','Vfit','Bfit','Vfit 95%-CI','Bfit 95%-CI'])
 
 # Distance-domain
 plt.subplot(212)
 plt.plot(r,P,'k',r,Pfit,'r',linewidth=1.5)
 plt.fill_between(r,Pci95[:,0],Pci95[:,1],color='r',alpha=0.3,linestyle='None')
-plt.xlabel('r [nm]')
-plt.ylabel('P(r) [nm$^{-1}$]')
+plt.xlabel('r (nm)')
+plt.ylabel('P (nm⁻¹)')
 plt.grid(alpha=0.3)
 plt.legend(['truth','Pfit','Pfit 95%-CI'])
 

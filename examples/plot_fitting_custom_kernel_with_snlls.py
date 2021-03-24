@@ -99,8 +99,8 @@ Vfit = Kfit@Pfit
 plt.subplot(211)
 plt.plot(t,V,'k.',t,Vfit,'b')
 plt.grid(alpha=0.3)
-plt.xlabel('t [$\mu s$]')
-plt.ylabel('V(t)')
+plt.xlabel('t (µs)')
+plt.ylabel('V')
 plt.legend(['data','fit'])
 
 plt.subplot(212)
@@ -108,8 +108,8 @@ plt.plot(r,P,'k',r,Pfit,'b')
 plt.fill_between(r,Pci50[:,0],Pci50[:,1],color='b',alpha=0.4,linestyle='None')
 plt.fill_between(r,Pci95[:,0],Pci95[:,1],color='b',alpha=0.2,linestyle='None')
 plt.grid(alpha=0.3)
-plt.xlabel('r [nm]')
-plt.ylabel('P(r) [nm$^{-1}$]')
+plt.xlabel('r (nm)')
+plt.ylabel('P (nm⁻¹)')
 plt.legend(['truth','fit','50%-CI','95%-CI'])
 
 # %%

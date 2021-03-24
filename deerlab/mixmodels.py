@@ -22,7 +22,7 @@ def mixmodels(*models):
 
     Examples
     --------
-    If one mixes a single Gaussian model (2 parameters) with a WLC model (2 parameters) into a single model::
+    If one mixes a single Gaussian model (2 parameters) with a worm-like chain (WLC) model (2 parameters) into a single model::
 
         newmodel = mixmodels(dd_gauss,dd_wormchain)
 

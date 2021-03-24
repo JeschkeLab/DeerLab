@@ -45,7 +45,6 @@ This class of functions can be used and/or combined to create fitting routines o
 
     ./functions/snlls
     ./functions/fitmodel
-    ./functions/backgroundstart
     ./functions/fitmultimodel
     ./functions/fitparamodel
     ./functions/fitregmodel
