@@ -16,7 +16,7 @@ from deerlab.utils import isempty, goodness_of_fit, Jacobian
 def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
               dd_par0=None, bg_par0=None, ex_par0=None, verbose=False, 
               dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
-              weights=1, uqanalysis=True, uq='covariance', regparam='aic', regtype = 'tikhonov',
+              weights=1, uq='covariance', regparam='aic', regtype = 'tikhonov',
               tol=1e-10,maxiter=1e8):
     r"""
     Fits a dipolar model to the experimental signal ``V`` with time axis ``t``, using
@@ -377,13 +377,16 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         """
         # Pre-allocation
         paruq_bg,paruq_ex,Bfit_uq,Vmod_uq,Vunmod_uq,Vfit_uq = ([],[],[],[],[],[])
-        
+
         # Retrieve full covariance matrix
-        covmat = full_uq.covmat
+        if isinstance(full_uq,list):
+            paruq = full_uq[0]
+        else:
+            paruq = full_uq
+        covmat = paruq.covmat
 
         Nparam = len(parfit_)
         paramidx = np.arange(Nparam)
-        Pfreeidx = np.arange(Nparam,np.shape(covmat)[0])
         
         # Full parameter set uncertainty
         # -------------------------------
@@ -427,8 +430,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 Pfcn = lambda _: np.ones_like(r)/np.trapz(np.ones_like(r),r)
             Pfit_uq = paruq.propagate(Pfcn,nonneg,[])
         else:
-            subcovmat = covmat[np.ix_(Pfreeidx,Pfreeidx)]
-            Pfit_uq = UncertQuant('covariance',Pfit,subcovmat,nonneg,[])
+            Pfit_uq = full_uq[1]
         
         # Background uncertainty
         # -----------------------
@@ -465,10 +467,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             elif includeForeground:
                 # Parametric signal with parameter-free distribution
                 Vmodel = lambda par: scales[jj]*multiPathwayModel(par[paramidx])[0][jj]@Pfit
-                Jnonlin = Jacobian(Vmodel,parfit_,lb[paramidx],ub[paramidx])
-                J = np.concatenate((Jnonlin, scales[jj]*Kfit[jj]),1)
-                Vcovmat = J@covmat@J.T
-                Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat))
+                Vfit_uq.append( paruq.propagate(Vmodel) )
             else:
                 Vfit_uq.append([None])
 
@@ -477,14 +476,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         for jj in range(nSignals):
             if includeForeground:
                 Vmod_fcn = lambda par: Vmodel(par) - Vunmod_fcn(par)
-                Vunmod_uq.append( paruq.propagate(lambda par:Vmod_fcn(par)) )
-                Jnonlin = Jacobian(Vmod_fcn,parfit_,lb[paramidx],ub[paramidx])
-                if parametricDistribution:
-                    J = Jnonlin
-                else:
-                    J = np.concatenate((Jnonlin, scales[jj]*Kfit[jj]),1)
-                Vmod_covmat = J@covmat@J.T
-                Vmod_uq.append( UncertQuant('covariance',Vmod_fcn(parfit_),Vmod_covmat))
+                Vmod_uq.append( paruq.propagate(Vmod_fcn) )
             else: 
                 Vmod_uq.append([None]) 
 
@@ -587,6 +579,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt
     # =========================================================================
 
+    
     def separable_nonlinear_lsq_analysis(Vexp):
     # =========================================================================
         " Analysis workflow for semiparametric models based on separable nonlinear least-squares" 
@@ -594,18 +587,47 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # Non-negativity constraint on distributions
         lbl = np.zeros_like(r)
         
-        prescales = [max(V) for V in Vexp]
+        #prescales = [max(V) for V in Vexp]
+        prescales = [1 for V in Vexp]
         Vexp_ = [Vexp[i]/prescales[i] for i in range(nSignals)]
+
+        def scale_constraint(nonlinpar):
+        # --------------------------------------------------------
+            penalty = np.zeros(nSignals)
+            for i in range(nSignals):
+                ex_par = nonlinpar[exidx[i]]
+                pathways = ex_fcn[i](ex_par)
+                lams = [pathway[0] for pathway in pathways]
+                if np.sum(lams)<1 or ex_model[i].__name__=='ex_4pdeer': 
+                    penalty[i] = 0
+                else:
+                    penalty[i] = max(Vexp[i])*(np.sum(lams) - 1)
+
+            return penalty 
+        # --------------------------------------------------------
+
 
         # Separable non-linear least squares (SNNLS) 
         fit = dl.snlls(Vexp_,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
-                            regparam=regparam, uqanalysis=uqanalysis, weights=weights,
+                            regparam=regparam, uqanalysis=uqanalysis, weights=weights,extrapenalty=scale_constraint,
                             nonlin_tol=tol,nonlin_maxiter=maxiter)
         parfit = fit.nonlin
         Pfit = fit.lin
-        snlls_uq = fit.uncertainty
+        param_uq = fit.nonlinUncert
+        Pfit_uq = fit.linUncert
+        snlls_uq = [param_uq,Pfit_uq]
         alphaopt = fit.regparam
-        scales = np.atleast_1d([prescales[i]*np.trapz(Pfit,r) for i in range(nSignals)])
+        scales = fit.scale
+
+        # Normalize distribution
+        # -----------------------
+        Pscale = np.trapz(Pfit,r)
+        Pfit /= Pscale
+        scales = np.atleast_1d([scale*Pscale for scale in scales])
+        if uqanalysis and uq=='covariance':
+            # scale CIs accordingly
+            Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
+            Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/Pscale
 
         # Get the fitted models
         Kfit,Bfit = multiPathwayModel(parfit)

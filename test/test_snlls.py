@@ -1,5 +1,5 @@
 import numpy as np
-from deerlab import dipolarkernel,dd_gauss,dd_gauss2,snlls
+from deerlab import dipolarkernel,dd_gauss,dd_gauss2,snlls,whitegaussnoise
 from deerlab.bg_models import bg_exp
 from deerlab.utils import ovl
 
@@ -119,7 +119,7 @@ def assert_confidence_intervals(pci50,pci95,pfit,lb,ub):
     errors = []
     if not np.all(p95lb <= pfit) and not np.all(p50lb <= pfit):
         errors.append("Some fitted values are below the lower bound of the confidence intervals.")
-    if not np.all(p95ub >= pfit) and not np.all(p50lb >= pfit):
+    if not np.all(p95ub >= pfit) and not np.all(p50ub >= pfit):
         errors.append("Some fitted values are over the upper bound of the confidence intervals.")
     if not np.all(p95lb <= p50lb):
         errors.append("The 50%-CI has lower values than the 95%-CI")
@@ -136,13 +136,13 @@ def test_confinter_linear():
     "Check that the confidence intervals of the linear parameters are correct"
     
     # Prepare test data
-    r = np.linspace(1,8,80)
+    r = np.linspace(1,8,150)
     t = np.linspace(0,4,200)
     lam = 0.25
     K = dipolarkernel(t,r,lam)
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
     P = dd_gauss2(r,parin)
-    V = K@P
+    V = K@P + whitegaussnoise(t,0.05,seed=1)
 
     # Non-linear parameters
     # nlpar = [lam]
@@ -153,11 +153,11 @@ def test_confinter_linear():
     lbl = np.zeros(len(r))
     ubl = np.full(len(r), np.inf)
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl)
-    Pfit = fit.lin
-    uq = fit.uncertainty
-    Pci50 = uq.ci(50,'lin')
-    Pci95 = uq.ci(95,'lin')
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl)
+    Pfit =  np.round(fit.lin,6)
+    uq = fit.linUncert
+    Pci50 = np.round(uq.ci(50),6)
+    Pci95 = np.round(uq.ci(95),6)
 
     assert_confidence_intervals(Pci50,Pci95,Pfit,lbl,ubl)
 #=======================================================================
@@ -187,9 +187,9 @@ def test_confinter_nonlinear():
 
     fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl)
     parfit = fit.nonlin
-    uq = fit.uncertainty
-    parci50 = uq.ci(50,'nonlin')
-    parci95 = uq.ci(95,'nonlin')
+    uq = fit.nonlinUncert
+    parci50 = uq.ci(50)
+    parci95 = uq.ci(95)
 
     assert_confidence_intervals(parci50,parci95,parfit,lb,ub)
 #=======================================================================

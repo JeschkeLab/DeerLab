@@ -1,6 +1,6 @@
 import numpy as np
 
-def lsqcomponents(V,K,L,alpha,weights, regtype = 'tikh',huberparam = 1.35):
+def lsqcomponents(V,K,L=None,alpha=0,weights=1, regtype = 'tikh',huberparam = 1.35):
 # ==============================================================================================
 
     # Prepare
@@ -10,6 +10,9 @@ def lsqcomponents(V,K,L,alpha,weights, regtype = 'tikh',huberparam = 1.35):
     KtV = weights*K.T@V
     KtK = weights*K.T@K
 
+    if L is None:
+        return KtK, KtV
+    
     def optimizeregterm(fun,threshold):
     # ============================================================================
         P = np.zeros(nr)
