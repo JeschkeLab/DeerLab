@@ -6,13 +6,13 @@ def lsqcomponents(V,K,L=None,alpha=0,weights=1, regtype = 'tikh',huberparam = 1.
     # Prepare
     nr = np.shape(K)[1]
 
-    if L is None:
-        L = np.eye(nr)
-
     # Compute residual terms
     KtV = weights*K.T@V
     KtK = weights*K.T@K
 
+    if L is None:
+        return KtK, KtV
+    
     def optimizeregterm(fun,threshold):
     # ============================================================================
         P = np.zeros(nr)
