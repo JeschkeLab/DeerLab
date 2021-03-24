@@ -609,7 +609,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         # Separable non-linear least squares (SNNLS) 
         fit = dl.snlls(Vexp_,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
-                            regparam=regparam, uqanalysis=uqanalysis, weights=weights,extrapenalty=scale_constraint)
+                            regparam=regparam, uqanalysis=uqanalysis, weights=weights,extrapenalty=scale_constraint,
                             nonlin_tol=tol,nonlin_maxiter=maxiter)
         parfit = fit.nonlin
         Pfit = fit.lin
