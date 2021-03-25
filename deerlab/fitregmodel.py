@@ -35,6 +35,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         * ``'tikhonov'`` - Tikhonov regularizaton
         * ``'tv'``  - Total variation regularization
         * ``'huber'`` - Huber regularization
+        
         The default is ``'tikhonov'``.   
     
     regparam : string or scalar, optional
@@ -54,6 +55,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
         * ``'gml'`` - Generalized Maximum Likelihood (GML)
         * ``'mcl'`` - Mallows' C_L (MCL)
+        
         The regularization parameter can be manually specified by passing a scalar value instead of a string.
         The default ``'aic'``.
     
@@ -69,6 +71,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         * ``'cvx'`` - Optimization of the NNLS problem using cvxopt
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         * ``'nnlsbpp'`` - Optimization using the block principal pivoting NNLS algorithm.
+        
         The default is ``'cvx'``.
 
     uqanalysis : boolean, optional

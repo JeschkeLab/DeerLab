@@ -98,8 +98,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting,
-        the default is all weighted equally.
-        If not specified all datasets are weighted equally.
+        the default is all weighted equally. If not specified all datasets are weighted equally.
     
     regparam : str or scalar, optional
         Method for the automatic selection of the optimal regularization parameter:
@@ -118,6 +117,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
         * ``'gml'`` - Generalized Maximum Likelihood (GML)
         * ``'mcl'`` - Mallows' C_L (MCL)
+        
         The regularization parameter can be manually specified by passing a scalar value
         instead of a string. The default ``'aic'``.
 
@@ -127,6 +127,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * ``'tikhonov'`` - Tikhonov regularizaton
         * ``'tv'``  - Total variation regularization
         * ``'huber'`` - Huber regularization
+        
         The default is ``'tikhonov'``.  
 
     tol : scalar, optional 
@@ -190,6 +191,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         * ``stats['aic']`` - Akaike information criterion
         * ``stats['aicc']`` - Corrected Akaike information criterion
         * ``stats['bic']`` - Bayesian information criterion
+        
     success : bool
         Whether or not the optimizer exited successfully.
     cost : float

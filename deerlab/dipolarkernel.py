@@ -53,6 +53,7 @@ def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = 
             * ``'fresnel'`` - uses Fresnel integrals for the kernel (default)
             * ``'integral'`` - uses explicit integration function (slow, accurate)
             * ``'grid'`` - powder average via explicit grid integration (slow, inaccurate)
+        
         The default is ``'fresnel'``.
 
     excbandwidth : scalar, optional

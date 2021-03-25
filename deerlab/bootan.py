@@ -10,7 +10,8 @@ from joblib import Parallel, delayed
 from deerlab.classes import UncertQuant
 
 def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, cores=1):
-    r""" Bootstrap analysis for uncertainty quantification
+    r""" 
+    Bootstrap analysis for uncertainty quantification
 
     Parameters
     ----------
@@ -36,6 +37,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, 
 
         * ``'gaussian'`` - Sample noise from a Gaussian distribution.
         * ``'residual'`` - Sample noise from the fit residuals.
+        
         The default is ``'gaussian'``.
 
     cores : scalar, optional

@@ -18,16 +18,20 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
     ----------
     V : array_like or list of array_like
         Dipolar signal, multiple datasets can be globally evaluated by passing a list of signals.
+
     K : 2D-array_like or list of 2D-array_like
         Dipolar kernel, if a list of signals is specified, a corresponding list of kernels must be passed as well.
+
     r : array-like
         Distance axis, in nanometers.
+
     regtype : string
         Regularization functional type: 
     
         * ``'tikhonov'`` - Tikhonov regularizaton
         * ``'tv'`` - Total variation regularization
         * ``'huber'`` - Huber regularization
+        
         The default is ``'tikhonov'``.
 
     method : string
@@ -47,29 +51,37 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
         * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
         * ``'gml'`` - Generalized Maximum Likelihood (GML)
         * ``'mcl'`` - Mallows' C_L (MCL)
+    
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting, 
         the default is all weighted equally.
+
     candidates : list, optional
         List or array of candidate regularization parameter values to be evaluated. 
         If not specified, these are automatically computed from the GSVD of the 
         dipolar kernel and regularization operator.
+
     regorder : int scalar, optional
         Order of the regularization operator, the default is 2.
+
     algorithm : string, optional
         Search algorithm: 
         
         * ``'grid'`` - Grid-search, slow.
         * ``'brent'`` - Brent-algorithm, fast.
+        
         The default is ``'brent'``.
         
     full_output : boolean, optional
         If enabled the function will return additional output arguments in a tuple, the default is False.
+
     nonnegativity : boolean, optional
         Enforces the non-negativity constraint on computed distance distributions, by default enabled.
+
     noiselvl : float scalar, optional
         Estimate of the noise standard deviation, if not specified it is estimated form the fit residuals.
         Used for the MCL selection method.  
+
     huberparam : float scalar, optional
         Value of the Huber parameter used in Huber regularization, the default is 1.35.
 

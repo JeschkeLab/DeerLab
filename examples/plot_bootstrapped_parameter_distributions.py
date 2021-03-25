@@ -41,7 +41,7 @@ def fitroutine(V):
     # When running the fit, since we are only interested in the parameters we'll ignore
     # the rest (otherwise the ``Bfit``,``Pfit``,etc. could be bootstrapped as well) 
     # We need the Vfit to pass it to bootan as well, so we'll request that one too.
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer,ex_par0=ex_par0,ex_lb=ex_lb,ex_ub=ex_ub,uqanalysis=False)
+    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer,ex_par0=ex_par0,ex_lb=ex_lb,ex_ub=ex_ub,uq=None)
     Vfit = fit.V
     exparam = fit.exparam
     exparam[0:3] /=sum(exparam[0:3])

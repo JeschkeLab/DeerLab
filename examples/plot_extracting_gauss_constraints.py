@@ -38,7 +38,7 @@ plt.show()
 
 # %% [markdown]
 # Fit Gaussians to the distance distribution
-# -----------------------------------------
+# ------------------------------------------
 # Next, we fit a multi-Gauss distribution to the fitted non-parametric
 # distribution. We can do this by using the ``fitparamodel()`` function (in
 # this example, fitting a two-Gauss model). 

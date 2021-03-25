@@ -29,13 +29,18 @@ def time2dist(t, M=[]):
     approximations derived by Gunnar Jeschke as implemented in DeerAnalysis.
 
     These empirical equation approximate the minimal and maximal detectable distances
-    given a certain time step :math:`\\Delta t` and trace length :math:`t_\\text{max}`.
+    given a certain time step :math:`\Delta t` and trace length :math:`t_\text{max}`.
 
-    .. math:: r_\\text{min} = 4\left( \\frac{4\Delta t \\nu_0}{0.85} \\right)^{1/3}
+    .. math:: 
+        
+        r_\text{min} = 4\left( \frac{4\Delta t \nu_0}{0.85} \right)^{1/3}
 
-    .. math:: r_\\text{max} = 6\left( \\frac{t_\\text{max}}{2} \\right)^{1/3}
 
-    where :math:`\\nu_0` = 52.04 MHz is the dipolar frequency of between two nitroxide electron spins separated by 1 nm.
+    .. math:: 
+        
+        r_\text{max} = 6\left( \frac{t_\text{max}}{2} \right)^{1/3}
+
+    where :math:`\nu_0` = 52.04 MHz is the dipolar frequency of between two nitroxide electron spins separated by 1 nm.
 
     """
 

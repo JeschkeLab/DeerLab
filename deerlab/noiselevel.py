@@ -40,6 +40,7 @@ def noiselevel(V,*args):
 
         * ``'movmean'`` - Moving mean filter
         * ``'savgol'``  - Savitzky-Golay filter
+        
         The default is ``'movmean'``
         
     Vref : array_like

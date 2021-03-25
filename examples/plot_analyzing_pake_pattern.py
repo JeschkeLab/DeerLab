@@ -54,7 +54,7 @@ def Bmodel(par):
     return B
 
 # Fit the background function
-fit = dl.fitmodel(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer,uqanalysis=False)
+fit = dl.fitmodel(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer)
 Bfit = fit.B
 lam = fit.exparam
 kappa = fit.bgparam

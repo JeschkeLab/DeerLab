@@ -1,4 +1,6 @@
-.. _installation_failed
+:orphan:
+
+.. _installation_failed:
 
 ====================
 Installation failed
