@@ -3,8 +3,8 @@
 Fitting a 5-pulse DEER signal with a parameter-free distribution
 ==================================================================
 
-This example shows how to fit a 5-pulse DEER signal with a parameter-
-free distribution, a background, and all pathways parameters
+This example shows how to fit a 5-pulse DEER signal with a non-parametric
+distribution, a background, and all pathways parameters.
 """ 
 # %%
 import numpy as np
@@ -13,8 +13,8 @@ import deerlab as dl
 
 # %%
 # Generate data
-t = np.linspace(-0.1,6.5,200)    # time axis, µs
-r = np.linspace(1.5,6,100)          # distance axis, nm
+t = np.linspace(-0.1,6.5,200)      # time axis, µs
+r = np.linspace(1.5,6,100)         # distance axis, nm
 param0 = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Gaussian model
 P = dl.dd_gauss3(r,param0)         # model distance distribution
 B = lambda t,lam: dl.bg_hom3d(t,300,lam) # background decay

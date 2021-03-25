@@ -79,10 +79,10 @@ info = gausswlc()
 # is a dipolar evolution function, therefore we do not require anything else than 
 # a very basic dipolar kernel.
 
-#Generate the dipolar evolution function kernel
+# Generate the dipolar evolution function kernel
 K = dl.dipolarkernel(t,r)
 
-#Fit the model to the data
+# Fit the model to the data
 Vmodel = lambda par: K @ gausswlc(r,par)
 info = gausswlc()
 par0 = info['Start'] # built-in start values
@@ -94,7 +94,7 @@ fitpar = fit.param
 # From the fitted parameter set ``fitpar`` we can now generate our fitted distance 
 # distribution and the corresponding time-domain fit.
 
-#Calculate the fitted model
+# Calculate the fitted model
 Pfit = gausswlc(r,fitpar)
 Vfit = Vmodel(fitpar)
 
@@ -102,7 +102,7 @@ Vfit = Vmodel(fitpar)
 # Since we know both the ground truth for the distance distribution and the 
 # dipolar signal, let's see how our fit turned out.
 
-#Plot results
+# Plot results
 plt.subplot(2,1,1)
 plt.plot(t,V,'k.',t,Vfit,'r',linewidth=1.5)
 plt.xlabel('t (µs)')
@@ -114,5 +114,3 @@ plt.plot(r,P,'k',r,Pfit,'r',linewidth=1.5)
 plt.xlabel('r (nm)')
 plt.ylabel('P (nm⁻¹)')
 plt.legend(['truth','fit'])
-
-# %%

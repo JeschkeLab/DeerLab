@@ -87,7 +87,7 @@ plt.subplot(311)
 plt.plot(t,V,'k.',t,(1-lamfit)*Bfit,'r',linewidth=1.5)
 plt.xlabel('t (µs)')
 plt.ylabel('V')
-plt.legend(['data','(1-\lambda)B$_{fit}$'])
+plt.legend(['data','$(1-\lambda)B_{fit}$'])
 
 plt.subplot(312)
 plt.plot(t,Vcorr,'k.',t,K@Pfit,'r',linewidth=1.5)
