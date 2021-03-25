@@ -9,39 +9,68 @@ import scipy.special as spc
 import inspect
 
 # Definition of the header for all experiment models
-docstr_header = lambda fcnstr: """
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+docstr_header = lambda title, fcnstr: """
+{}
 
-            info = {}()
+If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-
-    Otherwise the function returns the calculated distance distribution::
-
-            P = {}(r,param)
+        info = {}()
 
 
-    Parameters
-    ----------
-    r : array_like
-        Distance axis, in nanometers.
-    param : array_like
-        List of model parameter values.
+Otherwise the function returns the calculated distance distribution::
 
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization  
-        * ``info['ModelFcn']`` - function used to calculate the model output
-        
-    P : ndarray
-        Distance distribution.
-""".format(fcnstr,fcnstr)
+        P = {}(r,param)
+
+
+Parameters
+----------
+r : array_like
+    Distance axis, in nanometers.
+    
+param : array_like
+    List of model parameter values.
+
+Returns
+-------
+info : dict
+    Dictionary containing the built-in information of the model:
+    
+    * ``info['Parameters']`` - string list of parameter names
+    * ``info['Units']`` - string list of metric units of parameters
+    * ``info['Start']`` - list of values used as start values during optimization 
+    * ``info['Lower']`` - list of values used as lower bounds during optimization 
+    * ``info['Upper']`` - list of values used as upper bounds during optimization  
+    * ``info['ModelFcn']`` - function used to calculate the model output
+    
+P : ndarray
+    Distance distribution.
+""".format(title,fcnstr,fcnstr)
+
+docstr_example = lambda fcnstr: """ 
+Examples
+--------
+
+Example of the model evaluated at the start values of the parameters:
+
+.. plot::
+
+    import deerlab as dl
+    import matplotlib.pyplot as plt 
+    import numpy as np 
+    model = dl.{}
+    r = np.linspace(2,5,400)
+    info = model() 
+    par0 = info['Start']
+    P = model(r,par0)
+    plt.figure(figsize=[6,3])
+    plt.plot(r,P)
+    plt.xlabel('r (nm)',fontsize=13)
+    plt.ylabel('P (nm⁻¹)',fontsize=13)
+    plt.grid(alpha=0.4)
+    plt.tick_params(labelsize=12)
+    plt.tick_params(labelsize=12)
+    plt.tight_layout()
+""".format(fcnstr)
 
 # =================================================================
 def docstring():
@@ -51,8 +80,10 @@ def docstring():
     sep="\n"
     def _decorator(func):
         docstr = func.__doc__
-        docstr = docstr.split("Model parameters:",1)[0]
-        func.__doc__ = sep.join([docstr,docstr_header(func.__name__)])
+        title = docstr.split("Notes",1)[0]
+        docstr = docstr.replace(title,"")
+        func.__doc__ = sep.join([docstr_header(title,func.__name__),docstr])
+        func.__doc__ = sep.join([func.__doc__,docstr_example(func.__name__)])
         return func
     return _decorator
 # =================================================================
@@ -107,18 +138,21 @@ def _multirice3dfun(r,nu,sig,a):
 def dd_gauss(*args):    
 #=================================================================
     r"""
-    Gaussian distribution
+Gaussian distribution
+    
+Notes
+-----
 
- 
-    Model parameters:
-    -------------------
+**Model:**
 
-     -------------------------------------------------------------
-      Parameter                 Units     Lower    Upper    Start
-     -------------------------------------------------------------
-      Mean                       nm        1        20       3.5 
-      Standard deviation         nm       0.05      2.5      0.2 
-     -------------------------------------------------------------
+:math:`P(r) = \sqrt{\frac{2}{\pi}}\frac{1}{\sigma}\exp\left(-\frac{(r-\left<r\right>)^2}{\sigma^2}\right)`
+
+==============  ========================  =============  =============  =============  ===========================
+Variable        Symbol                    Start value    Lower bound    Upper bound    Description
+==============  ========================  =============  =============  =============  ===========================
+``param[0]``    :math:`\left<r\right>`    3.5            1.0            20             Mean (nm)
+``param[1]``    :math:`\sigma`            0.2            0.05           2.5            Standard deviation (nm)
+==============  ========================  =============  =============  =============  ===========================
     """  
     def model(r,p):    
         r0 = [p[0]]
@@ -146,21 +180,26 @@ def dd_gauss(*args):
 def dd_gauss2(*args):
 #=================================================================
     r"""
-    Sum of two Gaussian distributions
- 
-    Model parameters:
-    -------------------
- 
-     -------------------------------------------------------------------------
-      Parameter                             Units     Lower    Upper    Start
-     -------------------------------------------------------------------------
-      Mean of 1st Gaussian                   nm        1        20       2.5 
-      Standard deviation of 1st Gaussian     nm       0.05      2.5      0.2 
-      Amplitude of 1st Gaussian                        0        1        0.5 
-      Mean of 2nd Gaussian                   nm        1        20       3.5 
-      Standard deviation of 2nd Gaussian     nm       0.05      2.5      0.2 
-      Amplitude of 2nd Gaussian                        0        1        0.5 
-     -------------------------------------------------------------------------
+Sum of two Gaussian distributions
+        
+Notes
+-----
+
+**Model:**
+
+:math:`P(r) = a_1\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_1}\exp\left(-\frac{(r-\left<r_1\right>)^2}{\sigma_1^2}\right) + a_2\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_2}\exp\left(-\frac{(r-\left<r_2\right>)^2}{\sigma_2^2}\right)`
+
+
+============== ========================= ============= ============= ============= ======================================
+Variable         Symbol                  Start Value   Lower bound   Upper bound      Description
+============== ========================= ============= ============= ============= ======================================
+``param[0]``   :math:`\left<r_1\right>`     2.5            1.0            20        1st Gaussian mean distance (nm)
+``param[1]``   :math:`\sigma_1`             0.2            0.05          2.5        1st Gaussian standard deviation (nm)
+``param[2]``   :math:`a_1`                  0.5            0              1         1st Gaussian amplitude
+``param[3]``   :math:`\left<r_2\right>`     3.5            1.0            20        2nd Gaussian mean distance (nm)
+``param[4]``   :math:`\sigma_2`             0.2            0.05          2.5        2nd Gaussian standard deviation (nm)
+``param[5]``   :math:`a_2`                  0.5            0              1         2nd Gaussian amplitude
+============== ========================= ============= ============= ============= ======================================
     """
     def model(r,p):    
         r0 = [p[0], p[3]]
@@ -191,25 +230,28 @@ def dd_gauss2(*args):
 def dd_gauss3(*args):
 #=================================================================
     r"""
-    Sum of three Gaussian distributions
- 
- 
-    Model parameters:
-    -------------------
+Sum of three Gaussian distributions
+        
+Notes
+-----
 
-     -------------------------------------------------------------------------
-      Parameter                            Units     Lower    Upper    Start
-     -------------------------------------------------------------------------
-      Mean of 1st Gaussian                  nm        1        20       2.5 
-      Standard deviation of 1st Gaussian    nm       0.05      2.5      0.2 
-      Amplitude of 1sd Gaussian                       0        1        0.3 
-      Mean of 2nd Gaussian                  nm        1        20       3.5 
-      Standard deviation of 2nd Gaussian    nm       0.05      2.5      0.2 
-      Amplitude of 2nd Gaussian                       0        1        0.3 
-      Mean of 3rd Gaussian                  nm        1        20       5.0 
-      Standard deviation of 3rd Gaussian    nm       0.05      2.5      0.2 
-      Amplitude of 3rd Gaussian                       0        1        0.3 
-     -------------------------------------------------------------------------
+**Model:**
+
+:math:`P(r) = a_1\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_1}\exp\left(-\frac{(r-\left<r_1\right>)^2}{\sigma_1^2}\right) + a_2\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_2}\exp\left(-\frac{(r-\left<r_2\right>)^2}{\sigma_2^2}\right) + a_3\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_3}\exp\left(-\frac{(r-\left<r_3\right>)^2}{\sigma_3^2}\right)`
+
+============== ========================== ============= ============= ============= =======================================
+Variable         Symbol                   Start Value   Lower bound   Upper bound      Description
+============== ========================== ============= ============= ============= =======================================
+``param[0]``     :math:`\left<r_1\right>`     2.5           1.0           20         1st Gaussian mean distance (nm)
+``param[1]``     :math:`\sigma_1`             0.2           0.05          2.5        1st Gaussian standard deviation (nm)
+``param[2]``     :math:`a_1`                  0.3           0             1          1st Gaussian amplitude
+``param[3]``     :math:`\left<r_2\right>`     3.5           1.0           20         2nd Gaussian mean distance (nm)
+``param[4]``     :math:`\sigma_2`             0.2           0.05          2.5        2nd Gaussian standard deviation (nm)
+``param[5]``     :math:`a_2`                  0.3           0             1          2nd Gaussian amplitude
+``param[6]``     :math:`\left<r_3\right>`     5.0           1.0           20         3rd Gaussian mean distance (nm)
+``param[7]``     :math:`\sigma_3`             0.2           0.05          2.5        3rd Gaussian standard deviation (nm)
+``param[8]``     :math:`a_3`                  0.3           0             1          3rd Gaussian amplitude
+============== ========================== ============= ============= ============= =======================================
     """
     def model(r,p):    
         r0 = [p[0], p[3], p[6]]
@@ -241,19 +283,26 @@ def dd_gauss3(*args):
 def dd_gengauss(*args):    
 #=================================================================
     r"""
-    Generalized Gaussian distribution model
+Generalized Gaussian distribution model
 
+Notes
+-----
 
-    Model parameters:
-    -------------------
+**Model:**
 
-     -------------------------------------------
-      Parameter   Units   Lower   Upper   Start
-     -------------------------------------------
-      Mean         nm       1      20      3.5 
-      Spread       nm      0.05   2.5      0.2 
-      Kurtosis             0.25    15       5 
-     --------------------------------------------
+.. image:: ../images/model_scheme_dd_gengauss.png
+    :width: 450px
+
+:math:`P(r) = \frac{\beta}{2\sigma\Gamma(1/\beta)}\exp\left(-\left(\frac{(r-\left<r\right>)}{\sigma}\right)^\beta \right)`
+
+============== ========================== ============= ============= ============= =======================================
+Variable         Symbol                   Start Value   Lower bound   Upper bound      Description
+============== ========================== ============= ============= ============= =======================================
+``param[0]``   :math:`r_0`                     3.5          1.0              20         Mean (nm)
+``param[1]``   :math:`\sigma`                  0.2          0.05             2.5        Spread (nm)
+``param[2]``   :math:`\beta`                   5.0          0.25             15         kurtosis
+============== ========================== ============= ============= ============= =======================================
+
     """  
     def model(r,p):    
         # Compute the model distance distribution
@@ -286,19 +335,27 @@ def dd_gengauss(*args):
 def dd_skewgauss(*args):    
 #=================================================================
     r"""
-    Skew Gaussian distribution model
+Skew Gaussian distribution model
 
 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     -------------------------------------------
-      Parameter   Units   Lower   Upper   Start
-     -------------------------------------------
-      Center       nm       1      20      3.5 
-      Spread       nm      0.05    2.5     0.2 
-      Skewness             -25     25      5 
-     --------------------------------------------
+**Model:**
+
+.. image:: ../images/model_scheme_dd_skewgauss.png
+    :width: 650px
+
+:math:`P(r) = \sqrt{\frac{2}{\pi}}\frac{1}{\sigma}\exp\left(-\frac{(r-\left<r\right>)^2}{\sqrt(2)\sigma^2}\right)\frac{1}{2}\left(1 + erf\left(\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
+
+============== ============== ============= ============= ============= =========================
+Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =========================
+``param[0]``   :math:`r_0`          3.5         1.0            20         Location (nm)
+``param[1]``   :math:`\sigma`       0.2         0.05           2.5        Spread (nm)
+``param[2]``   :math:`\alpha`       5.0         -25            25         Skewness
+============== ============== ============= ============= ============= =========================
+
     """  
     def model(r,p):    
         # Compute the model distance distribution
@@ -331,18 +388,23 @@ def dd_skewgauss(*args):
 def dd_rice(*args):    
 #=================================================================
     r"""
-    3D-Rice distribution
- 
+3D-Rice distribution
 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     ------------------------------------------------
-      Parameter  Units     Lower    Upper    Start
-     ------------------------------------------------
-      Location       nm        1        10       3.5 
-      Spread         nm       0.1       5        0.7 
-     ------------------------------------------------
+**Model:** 
+
+:math:`P(r) = \frac{\nu^{n/2-1}}{\sigma^2}r^{n/2}\exp\left(-\frac{(r^2+\nu^2)}{2\sigma^2}\right)I_{n/2-1}\left(\frac{r\nu}{\sigma^2} \right)`
+
+where :math:`n=3` and :math:`I_{n/2-1}(x)` is the modified Bessel function of the first kind with order :math:`n/2-1`. This is a three-dimensional non-central chi distribution, the 3D generalization of the 2D Rice distribution.
+
+============== ======================== ============= ============= ============= =======================================
+Variable         Symbol                 Start Value   Lower bound   Upper bound      Description
+============== ======================== ============= ============= ============= =======================================
+``param[0]``     :math:`\nu`                3.5           1.0              10          Location (nm)
+``param[1]``     :math:`\sigma`             0.7           0.1              5           Spread (nm)
+============== ======================== ============= ============= ============= =======================================
     """  
     def model(r,p):    
         nu = [p[0]]
@@ -371,22 +433,30 @@ def dd_rice(*args):
 def dd_rice2(*args):
 #=================================================================
     r"""
-    Sum of two 3D-Rice distributions
- 
+Sum of two 3D-Rice distributions
 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     ---------------------------------------------------------------
-      Parameter                    Units     Lower    Upper    Start
-     ---------------------------------------------------------------
-      Location of 1st Rician        nm        1        10       2.5 
-      Spread of 1st Rician          nm       0.1       5        0.7 
-      Amplitude of 1sd Rician                 0        1        0.5 
-      Location of 2nd Rician        nm        1        10       4.0 
-      Spread of 2nd Rician          nm       0.1       5        0.7 
-      Amplitude of 2nd Rician                 0        1        0.5 
-     --------------------------------------------------------------
+**Model:**
+
+:math:`P(r) = a_1 R(r,\nu_1,\sigma_1) + a_2 R(r,\nu_2,\sigma_2)`
+
+:math:`R(r,\nu,\sigma) = \frac{\nu^{n/2-1}}{\sigma^2}r^{n/2}\exp\left(-\frac{(r^2+\nu^2)}{2\sigma^2}\right)I_{n/2-1}\left(\frac{r\nu}{\sigma^2} \right)`
+
+where :math:`n=3` and :math:`I_{n/2-1}(x)` is the modified Bessel function of the first kind with order :math:`n/2-1`.
+This is a three-dimensional non-central chi distribution, the 3D generalization of the 2D Rice distribution.
+
+============== ======================== ============= ============= ============= =======================================
+Variable         Symbol                 Start Value   Lower bound   Upper bound      Description
+============== ======================== ============= ============= ============= =======================================
+``param[0]``   :math:`\nu_1`                2.5              1         10           1st Rician location (nm)
+``param[1]``   :math:`\sigma_1`             0.7             0.1         5           1st Rician spread (nm)
+``param[2]``   :math:`a_1`                  0.5              0          1           1st Rician amplitude
+``param[3]``   :math:`\nu_2`                 4               1         10           2nd Rician location (nm)
+``param[4]``   :math:`\sigma_2`             0.7             0.1         5           2nd Rician spread (nm)
+``param[5]``   :math:`a_2`                  0.5              0          1           2nd Rician amplitude
+============== ======================== ============= ============= ============= =======================================
     """
     def model(r,p):    
         nu = [p[0], p[3]]
@@ -417,25 +487,33 @@ def dd_rice2(*args):
 def dd_rice3(*args):
 #=================================================================
     r"""
-    Sum of three 3D-Rice distributions
- 
- 
-    Model parameters:
-    -------------------
+Sum of three 3D-Rice distributions
 
-     ---------------------------------------------------------------
-      Parameter                    Units     Lower    Upper    Start
-     ---------------------------------------------------------------
-      Location of 1st Rician        nm        1        10       2.5 
-      Spread of 1st Rician         nm       0.1       5        0.7 
-      Amplitude of 1sd Rician               0        1        0.3 
-      Location of 2nd Rician        nm        1        10       3.5 
-      Spread of 2nd Rician         nm       0.1       5        0.7 
-      Amplitude of 2nd Rician               0        1        0.3 
-      Location of 3rd Rician        nm        1        10       5.0 
-      Spread of 3rd Rician         nm       0.1       5        0.7 
-      Amplitude of 3rd Rician               0        1        0.3 
-     --------------------------------------------------------------
+Notes
+-----
+
+**Model:**
+    
+:math:`P(r) = a_1 R(r,\nu_1,\sigma_1) + a_2 R(r,\nu_2,\sigma_2) + a_3 R(r,\nu_3,\sigma_3)`
+
+:math:`R(r,\nu,\sigma) = \frac{\nu^{n/2-1}}{\sigma^2}r^{n/2}\exp\left(-\frac{(r^2+\nu^2)}{2\sigma^2}\right)I_{n/2-1}\left(\frac{r\nu}{\sigma^2} \right)`
+
+where :math:`n=3` and :math:`I_{n/2-1}(x)` is the modified Bessel function of the first kind with order :math:`n/2-1`.
+This is a three-dimensional non-central chi distribution, the 3D generalization of the 2D Rice distribution.
+
+============== ======================== ============= ============= ============= =======================================
+Variable         Symbol                 Start Value   Lower bound   Upper bound      Description
+============== ======================== ============= ============= ============= =======================================
+``param[0]``   :math:`\nu_1`                2.5           1.0           10          1st Rician location (nm)
+``param[1]``   :math:`\sigma_1`             0.7           0.1           5           1st Rician spread (nm)
+``param[2]``   :math:`a_1`                  0.3             0           1           1st Rician amplitude
+``param[3]``   :math:`\nu_2`                4.0           1.0           10          2nd Rician location (nm)
+``param[4]``   :math:`\sigma_2`             0.7           0.1           5           2nd Rician spread (nm)
+``param[5]``   :math:`a_2`                  0.3           0             1           2nd Rician amplitude
+``param[6]``   :math:`\nu_3`                5.0           1.0           10          3rd Rician location (nm)
+``param[7]``   :math:`\sigma_3`             0.7           0.1           5           3rd Rician spread (nm)
+``param[8]``   :math:`a_3`                  0.3           0             1           3rd Rician amplitude
+============== ======================== ============= ============= ============= =======================================
     """
     def model(r,p):    
         nu = [p[0], p[3], p[6]]
@@ -467,19 +545,28 @@ def dd_rice3(*args):
 def dd_randcoil(*args):    
 #=================================================================
     r"""
-    Random-coil model for an unfolded peptide/protein
+Random-coil model for an unfolded peptide/protein
 
- 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     ------------------------------------------------------
-      Parameter           Units   Lower    Upper    Start
-     ------------------------------------------------------
-      Number of residues           2       1000      50
-      Segment length       nm      0.1     0.4       0.2
-      Scaling exponent             0.33    1         0.602
-     ------------------------------------------------------
+**Model:**
+    
+.. image:: ../images/model_scheme_dd_randcoil.png
+    :width: 25%
+
+:math:`P(r) = \frac{3}{(2\pi\nu_0)^{3/2}}4\pi r^2\exp(-\frac{3 r^2}{\nu_0})`
+
+where :math:`\nu_0 = 3/(12\pi r_0 N \nu)^{3/2}`
+
+============== ============= ============= ============= ============= =======================================
+Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============= ============= ============= ============= =======================================
+``param[0]``   :math:`N`         50                2         1000           Number of residues
+``param[1]``   :math:`R_0`       0.20           0.10         0.40           Segment length (nm)
+``param[2]``   :math:`\nu`       0.602          0.33         1.00           Scaling exponent
+============== ============= ============= ============= ============= =======================================
+
     """  
     def model(r,p):    
         N  = p[0]  # number of residues
@@ -515,18 +602,22 @@ def dd_randcoil(*args):
 def dd_circle(*args):    
 #=================================================================
     r"""
-    Semicircle distribution model
+Semicircle distribution model
 
- 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     ----------------------------------------------
-      Parameter   Units   Lower    Upper    Start
-     ----------------------------------------------
-      Center       nm        1      20       3 
-      Radius       nm      0.1      5      0.5 
-     ----------------------------------------------
+**Model:**
+
+This provides a `semi-circle distribution <https://en.wikipedia.org/wiki/Wigner_semicircle_distribution>`_, defined by
+:math:`P(r) = 2\pi\sqrt{(r-r_0)^2/R^2+1}` for :math:`r_0-R\le r\le r_0+R` and zero otherwise.
+
+============== ================= ============= ============= ============= =================================
+Variable         Symbol          Start Value   Lower bound   Upper bound      Description
+============== ================= ============= ============= ============= =================================
+``param[0]``   :math:`r_0`            3.0           1              20          Center (nm)
+``param[1]``   :math:`R`              0.5          0.1              5          Radius (nm)
+============== ================= ============= ============= ============= =================================
     """  
     def model(r,p):    
         # Compute the model distance distribution
@@ -544,7 +635,7 @@ def dd_circle(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
+            Parameters = ('Center','Radius'),
             Units = ('nm','nm'),
             Start = np.asarray([3, 0.5]),
             Lower = np.asarray([1, 0.1]),
@@ -562,18 +653,22 @@ def dd_circle(*args):
 def dd_cos(*args):    
 #=================================================================
     r"""
-    Raised-cosine parametric model
- 
+Raised-cosine parametric model
 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     ----------------------------------------------
-      Parameter   Units   Lower    Upper    Start
-     ----------------------------------------------
-      Center       nm        1      20       3 
-      FWHM         nm      0.1      5      0.5 
-     ----------------------------------------------
+**Model:**
+
+This provides a `raised-cosine distribution <https://en.wikipedia.org/wiki/Raised_cosine_distribution>`_, defined by 
+:math:`P(r) = \frac{1}{2w}\cos\left(\frac{r-r_0}{w}\pi\right)` for :math:`r_0-w \le r \le r_0+w`, and zero otherwise.
+
+============== ================= ============= ============= ============= =================================
+Variable         Symbol          Start Value   Lower bound   Upper bound      Description
+============== ================= ============= ============= ============= =================================
+``param[0]``   :math:`r_0`            3.0           1              20          Center (nm)
+``param[1]``   :math:`w`              0.5          0.1             5           FWHM (nm)
+============== ================= ============= ============= ============= =================================
     """  
     def model(r,p):    
         # Compute the model distance distribution
@@ -589,7 +684,7 @@ def dd_cos(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
+            Parameters = ('Center','FWHM'),
             Units = ('nm','nm'),
             Start = np.asarray([3, 0.5]),
             Lower = np.asarray([1, 0.1]),
@@ -642,21 +737,41 @@ def _pbs(r,R1,R2):
 def dd_shell(*args):    
 #=================================================================
     r"""
-    Uniform spherical shell
- 
- 
-    Model parameters:
-    -------------------
+Uniform spherical shell
 
-     -------------------------------------------------
-      Parameter       Units   Lower    Upper    Start
-     -------------------------------------------------
-      Shell radius     nm     0.1      20       1.5 
-      Shell thickness  nm     0.1      20       0.5 
-     -------------------------------------------------
+Notes
+-----
 
-    See: D.R. Kattnig, D. Hinderberger, Journal of Magnetic Resonance, 230 (2013), 50-63 
-    http://doi.org/10.1016/j.jmr.2013.01.007
+**Model:**
+    
+.. image:: ../images/model_scheme_dd_shell.png
+    :width: 25%
+
+:math:`P(r) = \left(R_2^6 P_\mathrm{B}(r|R_2) - R_1^6 P_\mathrm{B}(r|R_1) - 2(r_2^3 - r_1^3)P_\mathrm{BS}(r|R_1,R_2)\right)/(R_2^3 - R_1^3)^2`
+
+with 
+
+:math:`P_\mathrm{BS}(r|R_i,R_j) = \frac{3}{16R_i^3(R_j^3 - R_i^3)}\begin{cases} 12r^3R_i^2 - r^5  \quad \text{for} \quad 0\leq r < \min(2R_i,R_j - R_i) \\ 8r^2(R_j^3 - R_i^3) - 3r(R_j^2 - R_i^2)^2 - 6r^3(R_j - R_i)(R_j + R_i) \quad \text{for} \quad R_j-R_i \leq r < 2R_i \\ 16r^2R_i^3 \quad \text{for} \quad 2R_i\leq r < R_j - R_i  \\  r^5 - 6r^3(R_j^2 + R_i^2) + 8r^2(R_j^3 + R_i^3) - 3r(R_j^2 - R1_2)^2 \quad \text{for} \quad \max(R_j-R_i,2R_i) \leq r < R_i+R_j \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
+
+:math:`P_\mathrm{B}(r|R_i) = \begin{cases} \frac{3r^5}{16R_i^6} - \frac{9r^3}{4R_i^4} + \frac{3r^2}{R_i^3} \quad \text{for} \quad 0 \leq r < 2R_i \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
+
+and
+
+:math:`R_1 = R`
+
+:math:`R_2 = R + w`
+
+============== ============== ============= ============= ============= =======================================
+Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =======================================
+``param[0]``     :math:`R`       1.5            0.1           20         Inner shell radius (nm)
+``param[1]``     :math:`w`       0.5            0.1           20         Shell thickness (nm)
+============== ============== ============= ============= ============= =======================================
+
+References
+----------
+.. [1] D.R. Kattnig, D. Hinderberger,
+    Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
 
     """  
     def model(r,p):    
@@ -676,7 +791,7 @@ def dd_shell(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
+            Parameters = ('Inner shell radius','Shell thickness'),
             Units = ('nm','nm'),
             Lower = np.asarray([0.1, 0.1]),
             Upper = np.asarray([20,  20 ]),
@@ -694,22 +809,29 @@ def dd_shell(*args):
 def dd_spherepoint(*args):    
 #=================================================================
     r"""
-    One particle distanced from particles distributed on a sphere
+One particle distanced from particles distributed on a sphere
 
- 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     ---------------------------------------------------
-      Parameter         Units   Lower    Upper    Start
-     ---------------------------------------------------
-      Sphere radius      nm     0.1     20      1.5 
-      Distance to point  nm     0.1     20      3.5 
-     ---------------------------------------------------
+**Model:**
 
-    See: D.R. Kattnig, D. Hinderberger, Journal of Magnetic Resonance, 230 (2013), 50-63 
-    http://doi.org/10.1016/j.jmr.2013.01.007
+.. image:: ../images/model_scheme_dd_spherepoint.png
+    :width: 25%
 
+:math:`P(r) = \begin{cases} \frac{3r(R^2-(d-r)^2)}{4dR^3} \quad \text{for} \quad d-R \leq r < d+R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
+
+============== ============== ============= ============= ============= =========================
+Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =========================
+``param[0]``     :math:`R`       1.5            0.1            20        Sphere radius (nm)
+``param[1]``     :math:`d`       3.5            0.1            20        Distance to point (nm)
+============== ============== ============= ============= ============= =========================
+
+References
+----------
+.. [1] D.R. Kattnig, D. Hinderberger,
+    Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """ 
     def model(r,p):    
         # Compute the model distance distribution
@@ -725,7 +847,7 @@ def dd_spherepoint(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
+            Parameters = ('Sphere radius','Distance to point'),
             Units = ('nm','nm'),
             Lower = np.asarray([0.1, 0.1]),
             Upper = np.asarray([20,  20 ]),
@@ -743,21 +865,28 @@ def dd_spherepoint(*args):
 def dd_spheresurf(*args):    
 #=================================================================
     r"""
-    Particles distributed on a sphere's surface
- 
+Particles distributed on a sphere's surface
 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     ---------------------------------------------------
-      Parameter         Units   Lower    Upper    Start
-     ---------------------------------------------------
-      Sphere radius      nm     0.1     20      2.5 
-     ---------------------------------------------------
+**Model:**
+    
+.. image:: ../images/model_scheme_dd_spheresurf.png
+    :width: 25%
 
-    See: D.R. Kattnig, D. Hinderberger, Journal of Magnetic Resonance, 230 (2013), 50-63 
-    http://doi.org/10.1016/j.jmr.2013.01.007
+:math:`P(r) = \begin{cases} \frac{r}{2R^2} \quad \text{for} \quad 0 \leq r < 2R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
 
+============== ============== ============= ============= ============= =========================
+Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =========================
+``param[0]``     :math:`R`       2.5              0.1          20        Sphere radius (nm)
+============== ============== ============= ============= ============= =========================
+
+References
+----------
+.. [1] D.R. Kattnig, D. Hinderberger,
+    Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """ 
     def model(r,p):    
         # Compute the model distance distribution
@@ -772,8 +901,8 @@ def dd_spheresurf(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
-            Units = ('nm','nm'),
+            Parameters = ('Sphere radius'),
+            Units = ('nm'),
             Lower = np.asarray([0.1]),
             Upper = np.asarray([20]),
             Start = np.asarray([2.5]),
@@ -790,23 +919,42 @@ def dd_spheresurf(*args):
 def dd_shellshell(*args):    
 #=================================================================
     r"""
-    Uniform spherical shell inside another spherical shell
+Uniform spherical shell inside another spherical shell
 
+Notes
+-----
 
-    Model parameters:
-    -------------------
+**Model:**
+    
+.. image:: ../images/model_scheme_dd_shellshell.png
+    :width: 25%
 
-     -------------------------------------------------------
-      Parameter             Units   Lower    Upper    Start
-     -------------------------------------------------------
-      Inner shell radius     nm     0.1      20       1.5 
-      Inner shell thickness  nm     0.1      20       0.5 
-      Outer shell thickness  nm     0.1      20       0.5 
-     -------------------------------------------------------
+:math:`P(r) = (R_1^3(R_2^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_2) - R_1^3(R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - R_2^3(R_3^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_3))/((R_3^3 - R_2^3)(R_2^3 - R_1^3))`
 
-    See: D.R. Kattnig, D. Hinderberger, Journal of Magnetic Resonance, 230 (2013), 50-63 
-    http://doi.org/10.1016/j.jmr.2013.01.007
+with 
 
+:math:`P_\mathrm{BS}(r|R_i,R_j) = \frac{3}{16R_i^3(R_j^3 - R_i^3)}\begin{cases} 12r^3R_i^2 - r^5  \quad \text{for} \quad 0\leq r < \min(2R_i,R_j - R_i) \\ 8r^2(R_j^3 - R_i^3) - 3r(R_j^2 - R_i^2)^2 - 6r^3(R_j - R_i)(R_j + R_i) \quad \text{for} \quad R_j-R_i \leq r < 2R_i \\ 16r^2R_i^3 \quad \text{for} \quad 2R_i\leq r < R_j - R_i  \\  r^5 - 6r^3(R_j^2 + R_i^2) + 8r^2(R_j^3 + R_i^3) - 3r(R_j^2 - R1_2)^2 \quad \text{for} \quad \max(R_j-R_i,2R_i) \leq r < R_i+R_j \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
+
+and
+
+:math:`R_1 = R`
+
+:math:`R_2 = R + w_1`
+
+:math:`R_3 = R + w_1 + w_2`
+
+============== ============== ============= ============= ============= =======================================
+Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =======================================
+``param[0]``     :math:`R`       1.5             0.1           20         Inner shell radius (nm)
+``param[1]``     :math:`w_1`     0.5             0.1           20         1st Shell thickness (nm)
+``param[2]``     :math:`w_2`     0.5             0.1           20         2nd Shell thickness (nm)
+============== ============== ============= ============= ============= =======================================
+
+References
+----------
+.. [1] D.R. Kattnig, D. Hinderberger,
+    Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
     def model(r,p):    
         # Compute the model distance distribution
@@ -833,8 +981,8 @@ def dd_shellshell(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
-            Units = ('nm','nm'),
+            Parameters = ('Inner shell radius','1st Shell thickness','2nd Shell thickness'),
+            Units = ('nm','nm','nm'),
             Lower = np.asarray([0.1, 0.1, 0.1]),
             Upper = np.asarray([20,  20,  20 ]),
             Start = np.asarray([1.5, 0.5, 0.5]),
@@ -851,21 +999,35 @@ def dd_shellshell(*args):
 def dd_shellsphere(*args):    
 #=================================================================
     r"""
-    Particles distributed on a sphere inside a spherical shell
- 
-    Model parameters:
-    -------------------
+Particles distributed on a sphere inside a spherical shell
 
-     --------------------------------------------------
-      Parameter       Units   Lower    Upper    Start
-     --------------------------------------------------
-      Sphere radius    nm     0.1      20       1.5 
-      Shell thickness  nm     0.1      20       0.5 
-     --------------------------------------------------
+Notes
+-----
 
-    See: D.R. Kattnig, D. Hinderberger, Journal of Magnetic Resonance, 230 (2013), 50-63 
-    http://doi.org/10.1016/j.jmr.2013.01.007
+**Model:**
+    
+.. image:: ../images/model_scheme_dd_sphereshell.png
+    :width: 25%
 
+:math:`P(r) = \frac{3}{16R_1^3(R_2^3 - R_1^3)}\begin{cases} 12r^3R_1^2 - r^5  \quad \text{for} \quad 0\leq r < \min(2R_1,R_2 - R_1) \\ 8r^2(R_2^3 - R_1^3) - 3r(R_2^2 - R_1^2)^2 - 6r^3(R_2 - R_1)(R_2 + R_1) \quad \text{for} \quad R_2-R_1 \leq r < 2R_1 \\ 16r^2R_1^3 \quad \text{for} \quad 2R_1\leq r < R_2 - R_1  \\  r^5 - 6r^3(R_2^2 + R_1^2) + 8r^2(R_2^3 + R_1^3) - 3r(R_2^2 - R1_2)^2 \quad \text{for} \quad \max(R_2-R_1,2R_1) \leq r < R_1+R_2 \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
+
+with 
+
+:math:`R_1 = R`
+
+:math:`R_2 = R + w_1`
+
+============== ============== ============= ============= ============= =========================
+Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =========================
+``param[0]``     :math:`R`       1.5             0.1            20         Sphere radius (nm)
+``param[1]``     :math:`w`       0.5             0.1            20         Shell thickness (nm)
+============== ============== ============= ============= ============= =========================
+
+References
+----------
+.. [1] D.R. Kattnig, D. Hinderberger,
+    Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
     def model(r,p):    
         # Compute the model distance distribution
@@ -880,7 +1042,7 @@ def dd_shellsphere(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
+            Parameters = ('Sphere radius','Shell thickness'),
             Units = ('nm','nm'),
             Lower = np.asarray([0.1, 0.1]),
             Upper = np.asarray([20,  20]),
@@ -898,24 +1060,45 @@ def dd_shellsphere(*args):
 def dd_shellvoidshell(*args):    
 #=================================================================
     r"""
-    Particles distributed on a spherical shell inside another spherical shell separated by a void 
- 
+Particles distributed on a spherical shell inside another spherical shell separated by a void 
 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     -----------------------------------------------------
-      Parameter              Units   Lower   Upper  Start
-     -----------------------------------------------------
-      Inner sphere radius     nm      0.1     20     0.75 
-      Inner shell thickness   nm      0.1     20      1 
-      Outer shell thickness   nm      0.1     20      1 
-      Shell-shell separation  nm      0.1      2      0.5 
-     -----------------------------------------------------
+**Model:**
+    
+.. image:: ../images/model_scheme_dd_shellvoidshell.png
+    :width: 25%
 
-    See: D.R. Kattnig, D. Hinderberger, Journal of Magnetic Resonance, 230 (2013), 50-63 
-    http://doi.org/10.1016/j.jmr.2013.01.007
+:math:`P(r) = \left(R_1^3((R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - (R_4^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_4)) + R_2^3((R_4^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_4) - (R_3^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_3)) \right)/((R_4^3 - R_3^3)(R_2^3 - R_1^3))`
 
+with 
+
+:math:`P_\mathrm{BS}(r|R_i,R_j) = \frac{3}{16R_i^3(R_j^3 - R_i^3)}\begin{cases} 12r^3R_i^2 - r^5  \quad \text{for} \quad 0\leq r < \min(2R_i,R_j - R_i) \\ 8r^2(R_j^3 - R_i^3) - 3r(R_j^2 - R_i^2)^2 - 6r^3(R_j - R_i)(R_j + R_i) \quad \text{for} \quad R_j-R_i \leq r < 2R_i \\ 16r^2R_i^3 \quad \text{for} \quad 2R_i\leq r < R_j - R_i  \\  r^5 - 6r^3(R_j^2 + R_i^2) + 8r^2(R_j^3 + R_i^3) - 3r(R_j^2 - R1_2)^2 \quad \text{for} \quad \max(R_j-R_i,2R_i) \leq r < R_i+R_j \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
+
+and
+
+:math:`R_1 = R`
+
+:math:`R_2 = R + w_1`
+
+:math:`R_3 = R + w_1 + d`
+
+:math:`R_4 = R + w_1 + d + w_2`
+
+============== ============== ============= ============= ============= =============================
+Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =============================
+``param[0]``     :math:`R`       0.75             0.1           20        Sphere radius (nm)
+``param[1]``     :math:`w_1`     1.00             0.1           20        1st Shell thickness (nm)
+``param[2]``     :math:`w_2`     1.00             0.1           20        2nd Shell thickness (nm)
+``param[3]``     :math:`d`       0.50             0.1           20        Shell-Shell separation (nm)
+============== ============== ============= ============= ============= =============================
+
+References
+----------
+.. [1] D.R. Kattnig, D. Hinderberger,
+    Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
     def model(r,p):        
         # Compute the model distance distribution
@@ -948,8 +1131,8 @@ def dd_shellvoidshell(*args):
         
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
-            Units = ('nm','nm'),
+            Parameters = ('Sphere radius','1st Shell thickness','2nd Shell thickness','Shell-Shell separation'),
+            Units = ('nm','nm','nm','nm'),
             Lower = np.asarray([0.1, 0.1, 0.1, 0.1]),
             Upper = np.asarray([20,  20, 20, 2]),
             Start = np.asarray([0.75, 1, 1, 0.5]),
@@ -966,23 +1149,43 @@ def dd_shellvoidshell(*args):
 def dd_shellvoidsphere(*args):    
 #=================================================================
     r"""
-    Particles distributed on a sphere inside a spherical shell separated by a void 
- 
+Particles distributed on a sphere inside a spherical shell separated by a void 
 
-    Model parameters:
-    -------------------
 
-     --------------------------------------------------------
-      Parameter               Units   Lower   Upper   Start
-     --------------------------------------------------------
-      Sphere radius            nm     0.1     20      1.5 
-      Shell thickness          nm     0.1     20       1 
-      Shell-sphere separation  nm     0.1     20      0.5 
-     ---------------------------------------------------------
+Notes
+-----
 
-    See: D.R. Kattnig, D. Hinderberger, Journal of Magnetic Resonance, 230 (2013), 50-63 
-    http://doi.org/10.1016/j.jmr.2013.01.007
+**Model:**
+    
+.. image:: ../images/model_scheme_dd_shellvoidsphere.png
+    :width: 25%
 
+:math:`P(r) = ((R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - (R_2^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_2) )/(R_3^3 - R_2^3)`
+
+with 
+
+:math:`P_\mathrm{BS}(r|R_i,R_j) = \frac{3}{16R_i^3(R_j^3 - R_i^3)}\begin{cases} 12r^3R_i^2 - r^5  \quad \text{for} \quad 0\leq r < \min(2R_i,R_j - R_i) \\ 8r^2(R_j^3 - R_i^3) - 3r(R_j^2 - R_i^2)^2 - 6r^3(R_j - R_i)(R_j + R_i) \quad \text{for} \quad R_j-R_i \leq r < 2R_i \\ 16r^2R_i^3 \quad \text{for} \quad 2R_i\leq r < R_j - R_i  \\  r^5 - 6r^3(R_j^2 + R_i^2) + 8r^2(R_j^3 + R_i^3) - 3r(R_j^2 - R1_2)^2 \quad \text{for} \quad \max(R_j-R_i,2R_i) \leq r < R_i+R_j \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
+
+and
+
+:math:`R_1 = R`
+
+:math:`R_2 = R + d`
+
+:math:`R_3 = R + d + w`
+
+============== ============== ============= ============= ============= ==============================
+Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= ==============================
+``param[0]``     :math:`R`       1.5            0.1            20        Sphere radius (nm)
+``param[1]``     :math:`w`       1.0            0.1            20        Shell thickness (nm)
+``param[2]``     :math:`d`       0.5            0.1            20        Shell-Sphere separation (nm)
+============== ============== ============= ============= ============= ==============================
+
+References
+----------
+.. [1] D.R. Kattnig, D. Hinderberger,
+    Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
     def model(r,p):    
         # Compute the model distance distribution
@@ -1006,8 +1209,8 @@ def dd_shellvoidsphere(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
-            Units = ('nm','nm'),
+            Parameters = ('Sphere radius','Shell thickness','Shell-Sphere separation'),
+            Units = ('nm','nm','nm'),
             Lower = np.asarray([0.1, 0.1, 0.1]),
             Upper = np.asarray([20, 20, 20]),
             Start = np.asarray([1.5, 1, 0.5]),
@@ -1024,23 +1227,28 @@ def dd_shellvoidsphere(*args):
 def dd_sphere(*args):    
 #=================================================================
     r"""
-    Particles distributed on a sphere
+Particles distributed on a sphere
 
+Notes
+-----
 
-    Model parameters:
-    -------------------
+**Model:**
+    
+.. image:: ../images/model_scheme_dd_sphere.png
+    :width: 25%
 
-     ------------------------------------------------------
-      Parameter              Units   Lower   Upper   Start
-     ------------------------------------------------------
-      Sphere radius            nm     0.1     20      1.5 
-      Shell thickness          nm     0.1     20       1 
-      Shell-sphere separation  nm     0.1     20      0.5 
-     ------------------------------------------------------
+:math:`P(r) = \begin{cases} \frac{3r^5}{16R^6} - \frac{9r^3}{4R^4} + \frac{3r^2}{R^3} \quad \text{for} \quad 0 \leq r < 2R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
 
-    See: D.R. Kattnig, D. Hinderberger, Journal of Magnetic Resonance, 230 (2013), 50-63 
-    http://doi.org/10.1016/j.jmr.2013.01.007
+============== ============== ============= ============= ============= =========================
+Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= =========================
+``param[0]``     :math:`R`       2.5            0.1            20         Sphere radius (nm)
+============== ============== ============= ============= ============= =========================
 
+References
+----------
+.. [1] D.R. Kattnig, D. Hinderberger,
+    Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
     def model(r,p):    
         # Compute the model distance distribution
@@ -1051,16 +1259,16 @@ def dd_sphere(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
-            Units = ('nm','nm'),
-            Lower = np.asarray([0.1, 0.1, 0.1]),
-            Upper = np.asarray([20,  20, 20]),
-            Start = np.asarray([1.5, 1, 0.5]),
+            Parameters = ('Sphere radius'),
+            Units = ('nm'),
+            Lower = np.asarray([0.1]),
+            Upper = np.asarray([20]),
+            Start = np.asarray([2.5]),
             ModelFcn = model
         )
         return info
     else: 
-        r,p = _parsargs(args,npar=3)
+        r,p = _parsargs(args,npar=1)
         P = model(r,p)
         return P
 #=================================================================
@@ -1069,20 +1277,22 @@ def dd_sphere(*args):
 def dd_triangle(*args):    
 #=================================================================
     r"""
-    Triangle distribution model
- 
- 
-    Model parameters:
-    -------------------
+Triangle distribution model
 
-     ---------------------------------------------
-      Parameter   Units     Lower   Upper   Start
-     ---------------------------------------------
-      Center       nm       1       20       3.5 
-      Width left   nm      0.1       5       0.3 
-      Width right  nm      0.1       5       0.3 
-     ---------------------------------------------
+Notes
+-----
 
+**Model:**
+
+This provides a simple triangular distribution.
+
+============== ======================== ============= ============= ============= =========================
+Variable         Symbol                 Start Value   Lower bound   Upper bound      Description
+============== ======================== ============= ============= ============= =========================
+``param[0]``   :math:`r_0`                 3.5            1.0              20         Mode (nm)
+``param[1]``   :math:`w_\mathrm{L}`        0.3            0.1              5          Left width (nm)
+``param[2]``   :math:`w_\mathrm{R}`        0.3            0.1              5          Right width (nm)
+============== ======================== ============= ============= ============= =========================
     """  
     def model(r,p):    
         # Compute the model distance distribution
@@ -1104,8 +1314,8 @@ def dd_triangle(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
-            Units = ('nm','nm'),
+            Parameters = ('Mode','Left width','Right width'),
+            Units = ('nm','nm','nm'),
             Lower = np.asarray([1, 0.1, 0.1]),
             Upper = np.asarray([20,  20, 20]),
             Start = np.asarray([3.5, 1, 0.5]),
@@ -1122,19 +1332,21 @@ def dd_triangle(*args):
 def dd_uniform(*args):    
 #=================================================================
     r"""
-    Uniform distribution model
- 
+Uniform distribution model
 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     --------------------------------------------
-      Parameter   Units   Lower   Upper   Start
-     --------------------------------------------
-      Left edge    nm      0.1     6       2.5 
-      Right edge   nm      0.2     20       3 
-     --------------------------------------------
+**Model:**
+    
+This provides a simple uniform distribution.
 
+============== ======================== ============= ============= ============= =========================
+Variable         Symbol                 Start Value   Lower bound   Upper bound      Description
+============== ======================== ============= ============= ============= =========================
+``param[0]``   :math:`r_\mathrm{L}`         2.5             0.1            6           Left edge (nm)
+``param[1]``   :math:`r_\mathrm{R}`         3.0             0.2            20          Right edge (nm)
+============== ======================== ============= ============= ============= =========================
     """  
     def model(r,p):    
         # Compute the model distance distribution
@@ -1147,7 +1359,7 @@ def dd_uniform(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
+            Parameters = ('Left edge','Right edge'),
             Units = ('nm','nm'),
             Lower = np.asarray([0.1, 0.2]),
             Upper = np.asarray([6, 20]),
@@ -1184,22 +1396,25 @@ def wlc(r,L,Lp):
 def dd_wormchain(*args):    
 #=================================================================
     r"""
-    Worm-like chain model near the rigid limit
- 
- 
-    Model parameters:
-    -------------------
+Worm-like chain model near the rigid limit
 
-     ---------------------------------------------------
-      Parameter           Units   Lower   Upper   Start
-     ---------------------------------------------------
-      Chain length         nm      1.5     20      3.7 
-      Persistence length   nm       2      100     10 
-     ---------------------------------------------------
+Notes
+-----
 
-    See: J. Wilhelm, E. Frey, Phys. Rev. Lett. 77(12), 2581-2584 (1996)
-    https://doi.org/10.1103/PhysRevLett.77.2581
+**Model:**
 
+============== ============ ============= ============= ============= =========================
+Variable         Symbol     Start Value   Lower bound   Upper bound      Description
+============== ============ ============= ============= ============= =========================
+``param[0]``   :math:`L`      3.7            1.5            10         Contour length (nm)
+``param[1]``   :math:`L_p`    10             2              100        Persistence length (nm)
+============== ============ ============= ============= ============= =========================
+
+References
+----------
+.. [1] J. Wilhelm, E. Frey,
+    Radial Distribution Function of Semiflexible Polymers
+    Phys. Rev. Lett. 77(12), 2581-2584, 1996
     """  
     def model(r,p):    
         # Compute the model distance distribution
@@ -1211,7 +1426,7 @@ def dd_wormchain(*args):
 
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
+            Parameters = ('Contour length','Persistence length'),
             Units = ('nm','nm'),
             Lower = np.asarray([1.5, 2]),
             Upper = np.asarray([20, 100]),
@@ -1229,23 +1444,27 @@ def dd_wormchain(*args):
 def dd_wormgauss(*args):    
 #=================================================================
     r"""
-    Worm-like chain model near the rigid limit with Gaussian convolution
+Worm-like chain model near the rigid limit with Gaussian convolution
 
+Notes
+-----
 
-    Model parameters:
-    -------------------
+**Model:**
 
-     ------------------------------------------------------------=
-      Parameter                    Units   Lower   Upper   Start
-     -------------------------------------------------------------
-      Chain length                  nm      1.5     20      3.7 
-      Persistence length            nm       2      100     10 
-      Gaussian standard deviation   nm    0.001      2      0.2 
-     -------------------------------------------------------------
+============== ============== ============= ============= ============= ==================================
+Variable         Symbol       Start Value   Lower bound   Upper bound      Description
+============== ============== ============= ============= ============= ==================================
+``param[0]``   :math:`L`         3.7            1.5           10         Contour length (nm)
+``param[1]``   :math:`L_p`       10              2            100        Persistence length (nm)
+``param[2]``   :math:`\sigma`    0.2            0.01           2         Gaussian standard deviation (nm)
+============== ============== ============= ============= ============= ==================================
 
-    See: J. Wilhelm, E. Frey, Phys. Rev. Lett. 77(12), 2581-2584 (1996)
-    https://doi.org/10.1103/PhysRevLett.77.2581
-
+References
+----------
+.. [1] J. Wilhelm, E. Frey,
+    Radial Distribution Function of Semiflexible Polymers
+    Phys. Rev. Lett. 77(12), 2581-2584, 1996
+    
     """  
     def model(r,p):        
         # Compute the model distance distribution
@@ -1275,7 +1494,7 @@ def dd_wormgauss(*args):
         
     if not args:
         info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
+            Parameters = ('Contour length','Persistence length','Gaussian standard deviation'),
             Units = ('nm','nm'),
             Lower = np.asarray([1.5, 2, 0.001]),
             Upper = np.asarray([20, 100, 2]),
