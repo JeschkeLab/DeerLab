@@ -130,7 +130,7 @@ This class of functions provides several tools for quick commands typically requ
     ./functions/deerload
     ./functions/noiselevel
     ./functions/fftspec
-    ./functions/distdesc
+    ./functions/diststats
 
 
 
@@ -150,6 +150,13 @@ Function                                         Description
 Legacy Functions
 =========================================
 
+.. toctree::
+    :hidden:
+    :glob:
+    :maxdepth: 1
+
+    ./functions/time2dist
+    ./functions/correctscale
 
 This group of functions provides tools for reproducing analysis methods or workflows encountered in older software. These functions are not recommended for routine data analysis.
 

@@ -19,6 +19,7 @@ import deerlab as dl
 # simulate a protein system in their states A (natural) and B (changed upon addition
 # of a ligand L) given by the chemical equilibrium  A + L <-> B.
 
+# %%
 def chemicalequilibrium(Kdis,L):
     """Prepare equilibrium of type: A + L <-> B"""
     Ctot = 1 # total protein concentration, uM
@@ -37,7 +38,7 @@ def chemicalequilibrium(Kdis,L):
 
     return xA,xB
 
-# %% [markdown]\
+# %% [markdown]
 # Next, we define the dipolar kernel model as the non-linear function of the
 # SNLLS problem. This function needs to take the parameters and return a
 # cell-array of kernels, each one for the corresponding datasets that we
@@ -50,6 +51,7 @@ def chemicalequilibrium(Kdis,L):
 #     ``K@[PA PB] = V``
 # and the vector ``[PA PB]`` constitutes the linear part fitted by SNLLS.
 
+# %%
 def Kmodel(par,ts,rA,rB,L):
 
     Nsignals = len(ts)
@@ -76,6 +78,7 @@ def Kmodel(par,ts,rA,rB,L):
 # Now, we can simulate multiple signals corresponding to different concentrations
 # of added ligand. 
 
+# %%
 # Time axes
 ts = [[]]*7
 ts[0] = np.linspace(-0.2,3,100)
@@ -117,6 +120,7 @@ for i in range(Nsignals):
 # modulations depth (lam) and background decay constant (k) globally along
 # the dissociation constant (KD).
 
+# %%
 # Non-linear parameters:
 #       lam  k   KD
 par0 = [0.5, 0.5,  5]  # start values 

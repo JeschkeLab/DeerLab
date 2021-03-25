@@ -25,25 +25,33 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     ----------
     y : array_like or list of array_like
         Input data to be fitted.
+        
     Amodel : callable
         Function taking an array of non-linear parameters and
         returning a matrix array or a list thereof.
+
     par0 : array_like
         Start values of the non-linear parameters.
+
     lb : array_like, optional
         Lower bounds for the non-linear parameters, assumed unconstrained if not specified.
+
     ub : array_like, optional
         Upper bounds for the non-linear parameters, assumed unconstrained if not specified.
+
     lbl : array_like, optional
         Lower bounds for the linear parameters, assumed unconstrained if not specified.
+
     ubl : array_like, optional
         Upper bounds for the linear parameters, assumed unconstrained if not specified.
+
     reg : boolean or string, optional
         Determines the use of regularization on the solution of the linear problem.
         
         * ``'auto'`` - Automatic decision based con the condition number of the non-linear model ``Amodel``.
         * ``True`` - Forces regularization regardless of the condition number
         * ``False`` - Disables regularization regardless of the condition number
+        
         The default is ``'auto'``.
 
     regType : string, optional
@@ -52,10 +60,12 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         * ``'tikhonov'`` - Tikhonov regularizaton
         * ``'tv'``  - Total variation regularization
         * ``'huber'`` - Huber regularization
+        
         The default is ``'tikhonov'``.
 
     regorder : int scalar, optional
         Order of the regularization operator
+
     regParam : string or float scalar, optional
         Method for the automatic selection of the optimal regularization parameter:
 
@@ -73,6 +83,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
         * ``'gml'`` - Generalized Maximum Likelihood (GML)
         * ``'mcl'`` - Mallows' C_L (MCL)
+        
         The regularization parameter can be manually specified by passing a scalar value
         instead of a string. The default ``'aic'``.
 
@@ -90,6 +101,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         * ``'nnlsbpp'`` - Optimization using the block principal pivoting NNLS algorithm.
+        
         The default is ``'cvx'``.
 
     weights : array_like, optional

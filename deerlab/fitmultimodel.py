@@ -45,6 +45,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         * ``'aicc'`` corrected Akaike information criterion
         * ``'bic'``  Bayesian information criterion
         * ``'rmsd'`` Root-mean squared deviation
+        
         The default is ``'aic'``.
         
     lb : array_like, optional
@@ -68,6 +69,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
                       the components obtained from the N-1 component fit. The number of components are changed in a forward matter, i.e. 1,2,...,N.
         * ``'merge'`` For each N-component model, the non-linear parameters start values are selected by merging the location and spread of 
                       the components obtained from the N+1 component fit. The number of components are changed in a backward matter, i.e. N,N-1,...,1.
+        
         The default is ``'split'``. 
 
     weights : array_like, optional

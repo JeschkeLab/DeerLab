@@ -40,8 +40,10 @@ sphinx_gallery_conf = {
      'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
 }
 
+# Warnings suppression
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
+exclude_patterns = ['.', './functions']
 
 # Render Latex math equations as svg instead of rendering with JavaScript
 imgmath_image_format = 'svg'

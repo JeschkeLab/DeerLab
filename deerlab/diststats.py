@@ -45,26 +45,26 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
 
         Location parameters
 
-            * ``'mean'`` or ``'moment1'`` - Mean distance, in nm (see `more <https://en.wikipedia.org/wiki/Mean>`_)
-            * ``'median'`` - Median distance, in nm (see `more <https://en.wikipedia.org/wiki/Median>`_)
-            * ``'iqm'`` - Interquartile mean (IQM) distance, in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_mean>`_)
-            * ``'mode'`` - First modal distance, in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`_)
-            * ``'modes'`` - All modal distances, in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`_)
+            * ``'mean'`` or ``'moment1'`` - Mean distance, in nm (see `more <https://en.wikipedia.org/wiki/Mean>`__)
+            * ``'median'`` - Median distance, in nm (see `more <https://en.wikipedia.org/wiki/Median>`__)
+            * ``'iqm'`` - Interquartile mean (IQM) distance, in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_mean>`__)
+            * ``'mode'`` - First modal distance, in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`__)
+            * ``'modes'`` - All modal distances, in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`__)
 
         Spread parameters
 
-            * ``'iqr'`` - Interquartile range, in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_range>`_)
-            * ``'mad'`` - Mean absolute deviation (MAD), in nm (see `more <https://en.wikipedia.org/wiki/Average_absolute_deviation>`_)
-            * ``'std'`` - Standard deviation, in nm (see `more <https://en.wikipedia.org/wiki/Standard_deviation>`_)
-            * ``'var'`` or ``'moment2'`` - Variance, in nm² (see `more <https://en.wikipedia.org/wiki/Variance>`_)
-            * ``'entropy'`` - Shannon entropy, in nat (see `more <https://en.wikipedia.org/wiki/Entropy_(information_theory)>`_)
+            * ``'iqr'`` - Interquartile range, in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_range>`__)
+            * ``'mad'`` - Mean absolute deviation (MAD), in nm (see `more <https://en.wikipedia.org/wiki/Average_absolute_deviation>`__)
+            * ``'std'`` - Standard deviation, in nm (see `more <https://en.wikipedia.org/wiki/Standard_deviation>`__)
+            * ``'var'`` or ``'moment2'`` - Variance, in nm² (see `more <https://en.wikipedia.org/wiki/Variance>`__)
+            * ``'entropy'`` - Shannon entropy, in nat (see `more <https://en.wikipedia.org/wiki/Entropy_(information_theory)>`__)
 
         Shape parameters
 
             * ``'modality'`` - Modality (number of modes)
-            * ``'skewness'`` or ``'moment3'`` - Skewness (see `more <https://en.wikipedia.org/wiki/Skewness>`_)
-            * ``'kurtosis'`` - Excess kurtosis (see `more <https://en.wikipedia.org/wiki/Kurtosis>`_)
-            * ``'moment4'`` - 4th moment (kurtosis) (see `more <https://en.wikipedia.org/wiki/Kurtosis>`_)
+            * ``'skewness'`` or ``'moment3'`` - Skewness (see `more <https://en.wikipedia.org/wiki/Skewness>`__)
+            * ``'kurtosis'`` - Excess kurtosis (see `more <https://en.wikipedia.org/wiki/Kurtosis>`__)
+            * ``'moment4'`` - 4th moment (kurtosis) (see `more <https://en.wikipedia.org/wiki/Kurtosis>`__)
 
     uq : dict of :ref:`UncertQuant`
         Dictionary of the parameters covariance-based uncertainty quantifications. 
