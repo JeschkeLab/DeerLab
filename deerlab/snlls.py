@@ -118,7 +118,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     Returns
     -------
     :ref:`FitResult` with the following fields defined:
-    nlin : ndarray
+    nonlin : ndarray
         Fitted non-linear parameters
     lin : ndarray
         Fitted linear parameters

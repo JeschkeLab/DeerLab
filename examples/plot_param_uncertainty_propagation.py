@@ -1,8 +1,8 @@
 
 # %% [markdown]
 """
-Uncertainty propagation from parameter fits using covariance-based uncertainty quantificaion
-===========================================================================================
+Uncertainty propagation from parameter fits using covariance-based uncertainty quantification
+=============================================================================================
 
 How to propagate the uncertainty of the fitted parameters to the models which depend on them.
 """

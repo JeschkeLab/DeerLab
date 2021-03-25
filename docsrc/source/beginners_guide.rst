@@ -190,7 +190,7 @@ Dipolar evolution function with a random-coil distribution                   ``f
     fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam='gcv') # regularization with Generalized Cross-Validation
     fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer, regparam=0.05)  # regularization with fixed regularization parameter
 
-After ``fitmodel`` has found a solution, it returns an object that we assigned to ``fit``. This object contains fields with all quantities of interest with the fit results, such as the fitted model, goodness-of-fit statistics, and uncertainty information. See the :ref:`reference` for ``fitmodel``  for a detailed list of these quantities.
+After ``fitmodel`` has found a solution, it returns an object that we assigned to ``fit``. This object contains fields with all quantities of interest with the fit results, such as the fitted model, goodness-of-fit statistics, and uncertainty information. See the :ref:`reference <fitmodel>` for ``fitmodel``  for a detailed list of these quantities.
 
 
 Displaying the results
@@ -204,7 +204,7 @@ For just a quick display of the results, you can use the ``plot()`` method of th
 .. image:: ./images/beginners_guide1.png
    :width: 450px
 
-These confidence bands are covariance-based and might represent an overestimation of the true uncertainty on the results (see :ref:`uncertainty` for further details). It is important to always report confidence bands with fitted distance distributions.
+These confidence bands are covariance-based and might represent an overestimation of the true uncertainty on the results (see :ref:`uncertainty <uncertainty>` for further details). It is important to always report confidence bands with fitted distance distributions.
 
 The ``fit`` output contains additional information, for example:
 

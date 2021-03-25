@@ -154,7 +154,7 @@ class UncertQuant:
             # Calling the super class to avoid recursion
             if super(UncertQuant, self).__getattribute__('type') == 'void':
                 # Check if the uncertainty quantification has been done, if not report that there is nothing in the object
-                raise ValueError('The requested attribute/method is not available. Uncertainty quantification has not been calculated during the fit by using the `uqanalysis=False` keyword.')
+                raise ValueError('The requested attribute/method is not available. Uncertainty quantification has not been calculated during the fit by using the `uq=None` keyword.')
         except AttributeError:
             # Catch cases where 'type' attribute has still not been defined (e.g. when using copy.deepcopy)
             pass
