@@ -6,6 +6,57 @@
 import numpy as np
 
 
+# Definition of the header for all experiment models
+docstr_header = lambda title,fcnstr: """
+{}
+
+If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+
+    info = {}()
+
+
+Otherwise the function returns to calculated experiment dipolar pathways::
+
+    pathways = {}(param)
+
+
+Parameters
+----------
+param : array_like
+    List of model parameter values.
+
+Returns
+-------
+info : dict
+    Dictionary containing the built-in information of the model:
+    
+    * ``info['Parameters']`` - string list of parameter names
+    * ``info['Units']`` - string list of metric units of parameters
+    * ``info['Start']`` - list of values used as start values during optimization 
+    * ``info['Lower']`` - list of values used as lower bounds during optimization 
+    * ``info['Upper']`` - list of values used as upper bounds during optimization  
+    * ``info['ModelFcn']`` - function used to calculate the model output
+    
+pathways : ndarray
+    Dipolar pathways of the experiment
+""".format(title,fcnstr,fcnstr)
+
+# =================================================================
+def docstring():
+    """
+    Decorator: Insert docstring header to a pre-existing docstring
+    """
+    sep="\n"
+    def _decorator(func):
+        docstr = func.__doc__
+        title = docstr.split("Notes",1)[0]
+        docstr = docstr.replace(title,"")
+        func.__doc__ = sep.join([docstr_header(title,func.__name__),docstr])
+        return func
+    return _decorator
+# =================================================================
+
+
 def _parsargs(param,npar):
 #=================================================================
     param = np.atleast_1d(param)
@@ -14,51 +65,31 @@ def _parsargs(param,npar):
     return param
 #=================================================================
 
-
+@docstring()
 def ex_4pdeer(param=None):
 # ===================================================================
     r"""
-    Single-pathway 4-pulse DEER experiment model 
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = ex_4pdeer()
-
-
-    Otherwise the function returns to calculated experiment dipolar pathways::
-    
-        pathways = ex_4pdeer(param)
- 
- 
-    Parameters
-    ----------
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
+Single-pathway 4-pulse DEER experiment model 
         
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization  
-        * ``info['ModelFcn']`` - function used to calculate the model output
-        
-    pathways : ndarray
-        Dipolar pathways of the experiment
+Notes
+-----
+
+**Model:**
+
+This experiment model has one modulated pathway and an unmodulated contribution. The kernel is 
+
+.. math::
+   K(t,r) =
+   [1-\lambda + \lambda K_0(t-T_0^{(1)},r)]B(t-T_0^{(1)},\lambda)
+
+where :math:`T_0^{(1)}=0` is the refocusing time of the modulated dipolar pathway.
 
 
-    Model parameters:
-    -------------------
-    
-     -------------------------------------------------------
-     Parameter            Units   Lower    Upper    Start
-     -------------------------------------------------------
-     Modulation depth               0        1       0.3 
-     -------------------------------------------------------
+============== ================ ============= ============ ============ ================================================
+ Variable        Symbol         Start Values     Lower        Upper                Description
+============== ================ ============= ============ ============ ================================================
+``param[0]``   :math:`\lambda`     0.3           0            1          Modulated pathway amplitude (modulation depth)
+============== ================ ============= ============ ============ ================================================
     """  
     def model(param):     
         # Dipolar pathways
@@ -84,53 +115,36 @@ def ex_4pdeer(param=None):
         return model(param) 
 # ===================================================================
 
-
+@docstring()
 def ex_ovl4pdeer(param=None):
 # ===================================================================
     r"""
-    4-pulse DEER with band overlap experiment model 
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = ex_ovl4pdeer()
-
-
-    Otherwise the function returns to calculated experiment dipolar pathways::
-    
-        pathways = ex_ovl4pdeer(param)
- 
- 
-    Parameters
-    ----------
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
+4-pulse DEER with band overlap experiment model 
         
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization  
-        * ``info['ModelFcn']`` - function used to calculate the model output
-        
-    pathways : ndarray
-        Dipolar pathways of the experiment
+Notes
+-----
 
-    Model parameters:
-    -------------------
+**Model:**
 
-     ---------------------------------------------------------------------------
-      Parameter                                Units   Lower    Upper    Start
-     ---------------------------------------------------------------------------
-      Amplitude of unmodulated components                0       1        0.7
-      Amplitude of 1st modulated pathway                 0       1        0.3
-      Amplitude of 2nd modulated pathway                 0       1        0.1
-      Refocusing time of 2nd modulated pathway   μs      0       20        5        
-     ---------------------------------------------------------------------------
+This experiment model has two modulated pathways and an unmodulated contribution. The second modulated pathway results in the 2+1 contribution at the end of a 4-pulse DEER trace.The kernel is 
+
+.. math::
+   K(t,r) =
+   [\Lambda_0 + \lambda_1 K_0(t-T_0^{(1)},r) + \lambda_2 K_0(t-T_0^{(2)},r)]
+   B(t-T_0^{(1)},\lambda_1)
+   B(t-T_0^{(2)},\lambda_2)
+
+where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the two modulated dipolar pathways.
+
+
+============== ======================== ============= ============ ============ ================================================
+ Variable        Symbol                  Start Values     Lower        Upper                Description
+============== ======================== ============= ============ ============ ================================================
+``param[0]``   :math:`\varLambda_0`        0.7              0            1        Unmodulated pathways, amplitude
+``param[1]``   :math:`\lambda_1`           0.3              0            1        1st modulated pathway, amplitude
+``param[2]``   :math:`\lambda_2`           0.1              0            1        2nd modulated pathway, amplitude
+``param[3]``   :math:`T_0^{(2)}`           5.0              0           20        2nd modulated pathway, refocusing time (μs)
+============== ======================== ============= ============ ============ ================================================
     """  
     def model(param):   
         # Dipolar pathways
@@ -159,53 +173,35 @@ def ex_ovl4pdeer(param=None):
 # ===================================================================
 
 
-
+@docstring()
 def ex_5pdeer(param=None):
 # ===================================================================
     r"""
-    5-pulse DEER experiment model
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = ex_5pdeer()
-
-
-    Otherwise the function returns to calculated experiment dipolar pathways::
-    
-        pathways = ex_5pdeer(param)
- 
- 
-    Parameters
-    ----------
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
+5-pulse DEER experiment model
         
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization  
-        * ``info['ModelFcn']`` - function used to calculate the model output
-        
-    pathways : ndarray
-        Dipolar pathways of the experiment
- 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     ---------------------------------------------------------------------------
-      Parameter                                Units   Lower    Upper    Start
-     ---------------------------------------------------------------------------
-      Amplitude of unmodulated components                0       1        0.4
-      Amplitude of 1st modulated pathway                 0       1        0.4
-      Amplitude of 2nd modulated pathway                 0       1        0.2
-      Refocusing time of 2nd modulated pathway   μs      0       20        5        
-     ---------------------------------------------------------------------------
+**Model:**
+
+This experiment model has two modulated pathway and an unmodulated contribution. The kernel is 
+
+.. math::
+   K(t,r) =
+   [\varLambda_0 + \lambda_1 K_0(t-T_0^{(1)},r) + \lambda_2 K_0(t-T_0^{(2)},r)]
+   B(t-T_0^{(1)},\lambda_1) B(t - T_0^{(2)},\lambda_2)
+
+where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the two modulated dipolar pathways.
+
+
+============== ======================== ============= ============ ============ ================================================
+ Variable        Symbol                  Start Values     Lower        Upper                Description
+============== ======================== ============= ============ ============ ================================================
+``param[0]``   :math:`\varLambda_0`          0.4            0            1       Unmodulated pathways, amplitude
+``param[1]``   :math:`\lambda_1`             0.4            0            1       1st modulated pathway, amplitude
+``param[2]``   :math:`\lambda_2`             0.2            0            1       2nd modulated pathway, amplitude
+``param[3]``   :math:`T_0^{(2)}`             5.0            0            20      2nd modulated pathway, refocusing time (μs)
+============== ======================== ============= ============ ============ ================================================
     """  
     def model(param):   
                   # Dipolar pathways
@@ -234,55 +230,38 @@ def ex_5pdeer(param=None):
 
 
 
+@docstring()
 def ex_7pdeer(param=None):
 # ===================================================================
     r"""
-    7-pulse DEER experiment model
-    ==============================
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+7-pulse DEER experiment model
+   
+Notes
+-----
 
-        info = ex_7pdeer()
+**Model:**
+
+In order to reduce the parameter space, only the dipolar pathways refocusing at positive times (pathways #1-3) are considered in this model:
+
+.. math::
+
+    K(t,r) =
+    [\Lambda_0 + \sum^3_{p=1} \lambda_p K_0(t-T_0^{(p)},r)]
+    \prod^3_{p=1} B(t - T_0^{(p)},\lambda_p)
+
+where :math:`T_0^{(1)}=0\;\mu s`, :math:`T_0^{(2)}`, and :math:`T_0^{(3)}` are the refocusing times of the three modulated dipolar pathways at positive evolution times.
 
 
-    Otherwise the function returns to calculated experiment dipolar pathways::
-    
-        pathways = ex_7pdeer(param)
- 
- 
-    Parameters
-    ----------
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization  
-        * ``info['ModelFcn']`` - function used to calculate the model output
-        
-    pathways : ndarray
-        Dipolar pathways of the experiment
- 
-    Model parameters:
-    -------------------
-
-     ---------------------------------------------------------------------------
-      Parameter                                Units   Lower    Upper    Start
-     ---------------------------------------------------------------------------
-      Amplitude of unmodulated components                0       1        0.3
-      Amplitude of 1st modulated pathway                 0       1        0.5
-      Amplitude of 2nd modulated pathway                 0       1        0.3
-      Amplitude of 3rd modulated pathway                 0       1        0.2 
-      Refocusing time of 2nd modulated pathway   μs      0       20       1.5        
-      Refocusing time of 3rd modulated pathway   μs      0       20       3.5 
-     ---------------------------------------------------------------------------
+============== ======================== ============= ============ ============ ================================================
+ Variable        Symbol                  Start Values     Lower        Upper                Description
+============== ======================== ============= ============ ============ ================================================
+``param[0]``   :math:`\varLambda_0`        0.3                0       1          Unmodulated pathways, amplitude
+``param[1]``   :math:`\lambda_1`           0.5                0       1          1st modulated pathway, amplitude
+``param[2]``   :math:`\lambda_2`           0.3                0       1          2nd modulated pathway, amplitude
+``param[3]``   :math:`\lambda_3`           0.2                0       1          3rd modulated pathway, amplitude
+``param[4]``   :math:`T_0^{(2)}`           1.5                0       20         2nd modulated pathway, refocusing time (μs)
+``param[5]``   :math:`T_0^{(3)}`           3.5                0       20         3rd modulated pathway, refocusing time (μs)
+============== ======================== ============= ============ ============ ================================================
     """  
     def model(param):   
         # Dipolar pathways
@@ -314,51 +293,29 @@ def ex_7pdeer(param=None):
 # ===================================================================
 
 
+@docstring()
 def ex_ridme1(param=None):
 # ===================================================================
     r"""
-    RIDME experiment model (spin S=1/2)
-    ===================================
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = ex_ridme1()
-
-
-    Otherwise the function returns to calculated experiment dipolar pathways::
-    
-        pathways = ex_ridme1(param)
- 
- 
-    Parameters
-    ----------
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
+RIDME experiment model (spin S=1/2)
         
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization  
-        * ``info['ModelFcn']`` - function used to calculate the model output
-        
-    pathways : ndarray
-        Dipolar pathways of the experiment
- 
-    Model parameters:
-    -------------------
+Notes
+-----
 
-     ---------------------------------------------------------------------------
-      Parameter                                Units   Lower    Upper    Start
-     ---------------------------------------------------------------------------
-      Amplitude of unmodulated contribution              0       1        0.3
-      Amplitude of 1st harmonic pathway                  0       1        0.5
-     ---------------------------------------------------------------------------
+**Model:**
+
+This experiment model has one harmonic pathway and an unmodulated contribution. The kernel is 
+
+.. math::
+   K(t,r) =
+   [\Lambda_0 + \lambda_1 K_0(t,r)]B(t)
+
+============== =================== ============= ============ ============ ================================================
+ Variable        Symbol            Start Values     Lower        Upper                Description
+============== =================== ============= ============ ============ ================================================
+``param[0]``   :math:`\Lambda_0`     0.5           0            1          Amplitude of unmodulated contribution
+``param[1]``   :math:`\lambda_1`     0.3           0            1          Amplitude of 1st harmonic pathway
+============== =================== ============= ============ ============ ================================================
     """  
     def model(param):   
         # Dipolar pathways
@@ -385,53 +342,32 @@ def ex_ridme1(param=None):
 # ===================================================================
 
 
+@docstring()
 def ex_ridme3(param=None):
 # ===================================================================
     r"""
-    RIDME experiment model (spin S=3/2)
-    ====================================
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = ex_ridme3()
-
-
-    Otherwise the function returns to calculated experiment dipolar pathways::
-    
-        pathways = ex_ridme3(param)
- 
- 
-    Parameters
-    ----------
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
+RIDME experiment model (spin S=3/2)
         
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-        * ``info['ModelFcn']`` - function used to calculate the model output
+Notes
+-----
 
-    pathways : ndarray
-        Dipolar pathways of the experiment
+**Model:**
  
-    Model parameters:
-    -------------------
+This experiment model has three harmonic pathways and an unmodulated contribution. The kernel is 
 
-     ---------------------------------------------------------------------------
-      Parameter                                Units   Lower    Upper    Start
-     ---------------------------------------------------------------------------
-      Amplitude of unmodulated contribution              0       1        0.3
-      Amplitude of 1st harmonic pathway                  0       1        0.5
-      Amplitude of 2nd harmonic pathway                  0       1        0.3
-      Amplitude of 3rd harmonic pathway                  0       1        0.2
-     ---------------------------------------------------------------------------
+.. math::
+   K(t,r) =
+   [\Lambda_0 + \lambda_1 K_0(t,r) + \lambda_2 K_0(2t,r) + \lambda_3 K_0(3t,r)]B(t)
+
+
+============== =================== ============= ============ ============ ================================================
+ Variable        Symbol            Start Values     Lower        Upper                Description
+============== =================== ============= ============ ============ ================================================
+``param[0]``   :math:`\Lambda_0`     0.3           0            1          Amplitude of unmodulated contribution
+``param[1]``   :math:`\lambda_1`     0.5           0            1          Amplitude of 1st harmonic pathway
+``param[2]``   :math:`\lambda_2`     0.3           0            1          Amplitude of 2nd harmonic pathway
+``param[3]``   :math:`\lambda_3`     0.2           0            1          Amplitude of 3rd harmonic pathway
+============== =================== ============= ============ ============ ================================================
     """  
     def model(param):   
         # Dipolar pathways
@@ -461,55 +397,33 @@ def ex_ridme3(param=None):
 # ===================================================================
 
 
+@docstring()
 def ex_ridme5(param=None):
 # ===================================================================
     r"""
-    RIDME experiment model (spin S=5/2)
-    ====================================
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = ex_ridme5()
-
-
-    Otherwise the function returns to calculated experiment dipolar pathways::
-    
-        pathways = ex_ridme5(param)
- 
- 
-    Parameters
-    ----------
-    param : array_like
-        List of model parameter values.
-
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
+RIDME experiment model (spin S=5/2)
         
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization 
-        * ``info['ModelFcn']`` - function used to calculate the model output
+Notes
+-----
 
-    pathways : ndarray
-        Dipolar pathways of the experiment
- 
-    Model parameters:
-    -------------------
+**Model:**
 
-     ---------------------------------------------------------------------------
-      Parameter                                Units   Lower    Upper    Start
-     ---------------------------------------------------------------------------
-      Amplitude of unmodulated component                 0       1        0.3
-      Amplitude of 1st harmonic pathway                  0       1        0.5
-      Amplitude of 2nd harmonic pathway                  0       1        0.3
-      Amplitude of 3rd harmonic pathway                  0       1        0.2 
-      Amplitude of 4th harmonic pathway                  0       1        0.1 
-      Amplitude of 5th harmonic pathway                  0       1        0.05 
-     ---------------------------------------------------------------------------
+This experiment model has five harmonic pathways and an unmodulated contribution. The kernel is 
+
+.. math::
+   K(t,r) =
+   [\Lambda_0 + \lambda_1 K_0(t,r) + \lambda_2 K_0(2t,r) + \lambda_3 K_0(3t,r) + \lambda_4 K_0(4t,r) + \lambda_5 K_0(5t,r)]B(t)
+
+============== =================== ============= ============ ============ ================================================
+ Variable        Symbol            Start Values     Lower        Upper                Description
+============== =================== ============= ============ ============ ================================================
+``param[0]``   :math:`\Lambda_0`     0.3           0            1          Amplitude of unmodulated contribution
+``param[1]``   :math:`\lambda_1`     0.5           0            1          Amplitude of 1st harmonic pathway
+``param[2]``   :math:`\lambda_2`     0.3           0            1          Amplitude of 2nd harmonic pathway
+``param[3]``   :math:`\lambda_3`     0.2           0            1          Amplitude of 3rd harmonic pathway
+``param[4]``   :math:`\lambda_4`     0.1           0            1          Amplitude of 4th harmonic pathway
+``param[5]``   :math:`\lambda_5`     0.05          0            1          Amplitude of 5th harmonic pathway
+============== =================== ============= ============ ============ ================================================
     """  
     def model(param):     
         # Dipolar pathways
@@ -542,56 +456,38 @@ def ex_ridme5(param=None):
 # ===================================================================
 
 
+@docstring()
 def ex_ridme7(param=None):
 # ===================================================================
     r"""
-    RIDME experiment model (spin S=7/2)
-    ====================================
- 
-    If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+RIDME experiment model (spin S=7/2)
 
-        info = ex_ridme7()
+Notes
+-----
+
+**Model:**
+
+This experiment model has seven harmonic pathways and an unmodulated contribution. The kernel is 
+
+.. math::
+   K(t,r) =
+   [\Lambda_0 + \lambda_1 K_0(t,r) + \lambda_2 K_0(2t,r) + \lambda_3 K_0(3t,r) + \lambda_4 K_0(4t,r) + \lambda_5 K_0(5t,r) + \lambda_6 K_0(6t,r) + \lambda_7 K_0(7t,r)]B(t)
 
 
-    Otherwise the function returns to calculated experiment dipolar pathways::
-    
-        pathways = ex_ridme7(param)
- 
- 
-    Parameters
-    ----------
-    param : array_like
-        List of model parameter values.
+============== =================== ============= ============ ============ ================================================
+ Variable        Symbol            Start Values     Lower        Upper                Description
+============== =================== ============= ============ ============ ================================================
+``param[0]``   :math:`\Lambda_0`     0.3           0            1          Amplitude of unmodulated contribution
+``param[1]``   :math:`\lambda_1`     0.5           0            1          Amplitude of 1st harmonic pathway
+``param[2]``   :math:`\lambda_2`     0.3           0            1          Amplitude of 2nd harmonic pathway
+``param[3]``   :math:`\lambda_3`     0.2           0            1          Amplitude of 3rd harmonic pathway
+``param[4]``   :math:`\lambda_4`     0.1           0            1          Amplitude of 4th harmonic pathway
+``param[5]``   :math:`\lambda_5`     0.05          0            1          Amplitude of 5th harmonic pathway
+``param[6]``   :math:`\lambda_6`     0.02          0            1          Amplitude of 6th harmonic pathway
+``param[7]``   :math:`\lambda_7`     0.01          0            1          Amplitude of 7th harmonic pathway
+============== =================== ============= ============ ============ ================================================
 
-    Returns
-    -------
-    info : dict
-        Dictionary containing the built-in information of the model:
-        
-        * ``info['Parameters']`` - string list of parameter names
-        * ``info['Units']`` - string list of metric units of parameters
-        * ``info['Start']`` - list of values used as start values during optimization 
-        * ``info['Lower']`` - list of values used as lower bounds during optimization 
-        * ``info['Upper']`` - list of values used as upper bounds during optimization
-        * ``info['ModelFcn']`` - function used to calculate the model output 
-    pathways : ndarray
-        Dipolar pathways of the experiment
- 
-    Model parameters:
-    -------------------
 
-     ---------------------------------------------------------------------------
-      Parameter                                Units   Lower    Upper    Start
-     ---------------------------------------------------------------------------
-      Amplitude of unmodulated component                 0       1        0.3
-      Amplitude of 1st harmonic pathway                  0       1        0.5
-      Amplitude of 2nd harmonic pathway                  0       1        0.3
-      Amplitude of 3rd harmonic pathway                  0       1        0.2 
-      Amplitude of 4th harmonic pathway                  0       1        0.1 
-      Amplitude of 5th harmonic pathway                  0       1        0.05 
-      Amplitude of 6th harmonic pathway                  0       1        0.02 
-      Amplitude of 7th harmonic pathway                  0       1        0.01 
-     ---------------------------------------------------------------------------
     """  
     def model(param):        
         # Dipolar pathways
