@@ -1,5 +1,5 @@
 :orphan:
-.. _installation_failed
+.. _installation_failed:
 
 ====================
 Installation failed
