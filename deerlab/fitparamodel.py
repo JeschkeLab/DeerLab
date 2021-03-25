@@ -13,7 +13,7 @@ from scipy.optimize import least_squares
 
 def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
                  multistart=1, tol=1e-10, maxiter=3000,
-                 rescale=True, uqanalysis=True, covmatrix=None):
+                 rescale=True, uq=True, covmatrix=None):
     r""" Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
 
     Parameters
@@ -42,7 +42,7 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
     multiStarts : scalar, optional
         Number of starting points for global optimization, the default is 1.
     
-    uqanalysis : boolean, optional
+    uq : boolean, optional
         Enable/disable the uncertainty quantification analysis, by default it is enabled.    
     
     tol : scalar, optional
@@ -225,7 +225,7 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
             warnings.warn('The fitted value of parameter #{},  is at the upper bound ({}).'.format(p,ub[p]))
 
     # Calculate parameter confidence intervals
-    if uqanalysis:
+    if uq:
         
         # Compute residual vector and estimate variance from that
         residuals = lsqresiduals(parfit)

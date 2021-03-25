@@ -44,7 +44,7 @@ def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
         ubl = []    
 
     # Separable LSQ fit
-    fit = snlls(V,lambda p: Kmodel(p,t,r),nlpar0,lb,ub,lbl,ubl, reg=False, uqanalysis=False)
+    fit = snlls(V,lambda p: Kmodel(p,t,r),nlpar0,lb,ub,lbl,ubl, reg=False, uq=False)
     nonlinfit = fit.nonlin
     linfit = fit.lin
     parout = [nonlinfit[0], nonlinfit[1], linfit[0], nonlinfit[2], nonlinfit[3], linfit[1]] 
@@ -103,7 +103,7 @@ def test_regularized():
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uqanalysis=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uq=False)
     Pfit = fit.lin
 
     assert  np.max(abs(P - Pfit)) < 1e-2
@@ -228,7 +228,7 @@ def test_regularized_global():
     ubl = []
 
     # Separable LSQ fit
-    fit = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl, uqanalysis=False)
+    fit = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl, uq=False)
     Pfit = fit.lin
 
     assert  ovl(P,Pfit) > 0.9
@@ -255,7 +255,7 @@ def assert_solver(solver):
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,nnlsSolver=solver, uqanalysis=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,nnlsSolver=solver, uq=False)
     Pfit = fit.lin
 
     assert  np.max(abs(P - Pfit)) < 1e-2
@@ -303,7 +303,7 @@ def test_goodnes_of_fit():
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uqanalysis=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uq=False)
     stats = fit.stats
 
     assert abs(stats['chi2red'] - 1) < 5e-2 and abs(stats['R2'] - 1) < 5e-2
@@ -328,7 +328,7 @@ def assert_reg_type(regtype):
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,regtype = regtype, uqanalysis=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,regtype = regtype, uq=False)
     Pfit = fit.lin
     
     assert  np.max(abs(P - Pfit)) < 4e-2
@@ -369,7 +369,7 @@ def test_plot():
     # Linear parameters: non-negativity
     lbl = np.zeros(len(r))
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),par0=0.2,lb=0,ub=1,lbl=lbl, uqanalysis=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),par0=0.2,lb=0,ub=1,lbl=lbl, uq=False)
     fig = fit.plot(show=False)
     
     assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"

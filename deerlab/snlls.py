@@ -18,7 +18,7 @@ from deerlab.classes import UncertQuant, FitResult
 def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=1,
           regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3, extrapenalty=None,
           nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, huberparam=1.35,
-          uqanalysis=True):
+          uq=True):
     r""" Separable Non-linear Least Squares Solver
 
     Parameters
@@ -123,7 +123,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     lin_tol : float scalar, optional
         Linear solver function tolerance, the default is 1e-15.
 
-    uqanalysis : boolean, optional
+    uq : boolean, optional
         Enable/disable the uncertainty quantification analysis, by default it is enabled.
 
 
@@ -423,7 +423,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     # Uncertainty analysis
     #---------------------
-    if uqanalysis:
+    if uq:
         # Compute the fit residual
         res = ResidualsFcn(nonlinfit)
         

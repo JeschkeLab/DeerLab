@@ -26,7 +26,8 @@ Release v0.13.0 - March 2021
 - Removed the re-normalization conventions ``K(t=0,r)=1`` and ``B(t=0)=1`` and associated options ``renormalize`` and ``renormpaths`` in the ``dipolarkernel`` and ``dipolarbackground`` functions ([#99](https://github.com/JeschkeLab/DeerLab/pull/99)) to avoid identifiability issues between dipolar pathway amplitudes and signal scales during fitting ([#76](https://github.com/JeschkeLab/DeerLab/issues/76)). 
 - The fit convergence criteria ``tol`` (objective function tolerance) and ``maxiter`` (iteration limit) are now exposed as keyword argument in all fit functions ([#111](https://github.com/JeschkeLab/DeerLab/issues/111), [#112](https://github.com/JeschkeLab/DeerLab/pull/112)). 
 - Improvements and corrections to the documentation ([#95](https://github.com/JeschkeLab/DeerLab/pull/95), [#96](https://github.com/JeschkeLab/DeerLab/pull/96), [#104](https://github.com/JeschkeLab/DeerLab/pull/104), [#106](https://github.com/JeschkeLab/DeerLab/pull/106), [#107](https://github.com/JeschkeLab/DeerLab/pull/107))
-- Corrections in the ``info`` dictionary of multiple ``dd_models``. The key ``Parameters`` of some models contained the wrong names. 
+- Corrections in the ``info`` dictionary of multiple ``dd_models``. The key ``Parameters`` of some models contained the wrong names.
+- The keyword argument to request uncertainty quantification has been unified across all fitting functions. It is now ``uq``.
 
 #### Specific changes
 - ``deerload``: 
