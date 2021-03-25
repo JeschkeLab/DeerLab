@@ -9,11 +9,6 @@ This tutorial will assume that DeerLab is already installed on your computer. De
    import numpy as np                # NumPy: vectors, matrices, linear algebra
    import matplotlib.pyplot as plt   # MatPlotLib: plotting
 
-Loading experimental data
---------------------------
-
-
-
 
 Simulating dipolar signals
 ---------------------------

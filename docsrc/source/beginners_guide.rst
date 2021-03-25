@@ -7,19 +7,6 @@ This is the introductory guide to DeerLab.
 
 --------
 
-Installing DeerLab
--------------------
-To install DeerLab, first install Python on your computer. You can download it from the `official Python website <https://www.python.org/>`_ There are many online tutorials to guide you through the installation and setup (see `here <https://realpython.com/installing-python/>`_ for example). Make sure you install one of the Python versions compatible with DeerLab, as listed :ref:`here <installation>`.
-
-Once you have Python installed,  download and install DeerLab with: ::
-
-    pip install deerlab
-
-
-For more detailed instructions for installing DeerLab on your operating system, see :ref:`here <installation>`.
-
---------
-
 Importing DeerLab
 -------------------
 
@@ -247,6 +234,26 @@ and fitted parameters with uncertainties. Here is an example output
 
 where there are no distribution parameters (``ddparam``) due to the distribution model being non-parametric. 
 
+
+Exporting the figure and the data
+*********************************
+
+After completing the fit, you might want to export the figure with the fit. Here is one way to do it: ::
+
+    figure = fit.plot()                       # get figure object
+    figure.savefig('DEERFig.png', dpi=600)    # save figure as png file
+    figure.savefig('DEERFig.pdf')             # save figure as pdf file
+
+To export the fitted distance distribution for plotting with another software, save it in a simple text file ::
+
+    np.savetxt('distancedistribution.txt', np.asarray((r, fit.P, *fit.Puncert.ci(95).T)).T)
+
+The generated file contain four columns: the distance axis, the distance distributions, and the upper and lower confidence bounds. The ``.T`` indicate array transposes, which are used to get the confidence bands into the column format for saving.
+
+To export the fitted time-domain trace, use similarly ::
+
+    np.savetxt('timetrace.txt', np.asarray((t, V, fit.V, *fit.Vuncert.ci(95).T)).T)
+
 ------------
 
 Summary
@@ -271,3 +278,7 @@ Here is an example script to load experimental time trace, pre-process it, and f
     # Fit
     fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,verbose=True)   # 4pDEER fit using non-parametric distance distribution
     fit.plot() # display results
+    
+    # Print figure
+    figure = fit.plot()
+    figure.savefig('DEERfig.pdf')

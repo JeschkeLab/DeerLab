@@ -1,19 +1,6 @@
 License
 -------
 
-.. raw:: html 
-
-    <div style="height:80px; width:100%; margin-bottom:1%;">
-        <div style="width=40%; margin-right:8%; font-size:16px">
-            <h3 style="font-size:110%">  MIT License </h3> 
-        </div>
-        <div style="height:70%; width=30%">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/MIT_logo.svg/1200px-MIT_logo.svg.png", style="margin-top:0%; margin-bottom:5%;height:96%;">
-        </div>
-    <br>
-    </div>    
-
-
 Copyright (c) 2019-2021 Luis Fabregas, Stefan Stoll, and others
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
