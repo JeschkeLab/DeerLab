@@ -77,11 +77,11 @@ parfit = fit.nonlin
 Pfit = fit.lin
 
 # Get non-linear parameters uncertainty
-param95 = fit.nonlinUncert.ci(95,'nonlin')  #  95#-confidence interval
+param95 = fit.nonlinUncert.ci(95)  #  95#-confidence interval
 
 # Get linear parameters (distribution) uncertainty
-Pci50 = fit.linUncert.ci(50,'lin') #  50#-confidence interval
-Pci95 = fit.linUncert.ci(95,'lin') #  95#-confidence interval
+Pci50 = fit.linUncert.ci(50) #  50#-confidence interval
+Pci95 = fit.linUncert.ci(95) #  95#-confidence interval
 
 # Print result
 print('lambda = {:.2f}({:.2f}-{:.2f})'.format(parfit[0],param95[0,0],param95[0,1]))
