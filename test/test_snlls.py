@@ -281,7 +281,7 @@ def test_nnls_nnlsbpp():
     assert_solver(solver='nnlsbpp')
 #=======================================================================
 
-def test_goodnes_of_fit():
+def test_goodness_of_fit():
 #============================================================
     "Check the goodness-of-fit statistics are correct"
         
@@ -335,21 +335,21 @@ def assert_reg_type(regtype):
 
 def test_reg_tikh():
 #=======================================================================
-    "Check SNNLS using Tikhonov regularization works"
+    "Check that SNLLS using Tikhonov regularization works"
 
     assert_reg_type(regtype='tikhonov')
 #=======================================================================
 
 def test_reg_tv():
 #=======================================================================
-    "Check SNNLS using Tikhonov regularization works"
+    "Check that SNLLS using total variation regularization works"
 
     assert_reg_type(regtype='tv')
 #=======================================================================
 
 def test_reg_huber():
 #=======================================================================
-    "Check SNNLS using Tikhonov regularization works"
+    "Check that SNNLS using Huber regularization works"
 
     assert_reg_type(regtype='huber')
 #=======================================================================
