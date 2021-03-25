@@ -23,7 +23,7 @@ h = 6.62607015e-34 # Planck constant, J/Hz
 def w0(g):
     return (mu0/2)*muB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> Mrad s^-1 nm^3
 
-def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
+def dipolarkernel(t, r, pathways = 1, B = None, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
                   integralop = True, nKnots = 5001, renormalize = True, renormpaths=True, clearcache = False):
 #===================================================================================================
     r"""Compute the dipolar kernel operator which enables the linear transformation from
@@ -43,9 +43,9 @@ def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = 
         For a unmodulated pathway, specify only the amplitude, i.e. ``[Lambda0]``.
         If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  
     
-    B : callable or array_like
+    B : callable or array_like or ``None``
         For a single-pathway model, the numerical background decay can be passed as an array. 
-        For multiple pathways, a callable function must be passed, accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``
+        For multiple pathways, a callable function must be passed, accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``. If set to ``None``, no background decay is included.
 
     method : string, optional
         Numerical method for kernel matrix calculation: 
@@ -138,6 +138,9 @@ def dipolarkernel(t, r, pathways = 1, B = 1, method = 'fresnel', excbandwidth = 
     # Ensure that all inputs are numpy arrays
     r = np.atleast_1d(r)
     t = np.atleast_1d(t)
+
+    if B is None:
+        B = 1
 
     if type(B) is types.LambdaType:
         ismodelB = True
