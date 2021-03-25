@@ -44,7 +44,7 @@ sphinx_gallery_conf = {
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 exclude_patterns = ['.', './functions']
-
+numpydoc_show_class_members = False
 # Render Latex math equations as svg instead of rendering with JavaScript
 imgmath_image_format = 'svg'
 imgmath_dvisvgm = 'dvisvgm'
