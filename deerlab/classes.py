@@ -67,7 +67,7 @@ class FitResult(dict):
         return list(self.keys())
 # =========================================================================
 
-class UncertQuant:
+class UQResult:
 # =========================================================================
     r""" Represents the uncertainty quantification of fit results.
 
@@ -99,21 +99,21 @@ class UncertQuant:
 
         #Parse inputs schemes
         if uqtype=='covariance':
-            # Scheme 1: UncertQuant('covariance',parfit,covmat,lb,ub)
+            # Scheme 1: UQResult('covariance',parfit,covmat,lb,ub)
             self.type = uqtype
             parfit = data
             self.__parfit = parfit
             nParam = len(parfit)
             
         elif uqtype == 'bootstrap':
-            # Scheme 2: UncertQuant('bootstrap',samples)
+            # Scheme 2: UQResult('bootstrap',samples)
             self.type = uqtype
             samples = data
             self.samples = samples
             nParam = np.shape(samples)[1]
 
         elif uqtype=='void':
-            # Scheme 2: UncertQuant('void')
+            # Scheme 2: UQResult('void')
             self.type = uqtype
             self.mean, self.median, self.std, self.covmat, self.nparam = ([] for _ in range(5))
             return
@@ -152,14 +152,14 @@ class UncertQuant:
     def __getattribute__(self, attr):
         try:
             # Calling the super class to avoid recursion
-            if super(UncertQuant, self).__getattribute__('type') == 'void':
+            if super(UQResult, self).__getattribute__('type') == 'void':
                 # Check if the uncertainty quantification has been done, if not report that there is nothing in the object
                 raise ValueError('The requested attribute/method is not available. Uncertainty quantification has not been calculated during the fit by using the `uq=None` keyword.')
         except AttributeError:
             # Catch cases where 'type' attribute has still not been defined (e.g. when using copy.deepcopy)
             pass
         # Otherwise return requested attribute
-        return super(UncertQuant, self).__getattribute__(attr)
+        return super(UQResult, self).__getattribute__(attr)
     #--------------------------------------------------------------------------------
 
     # Parameter distributions
@@ -319,7 +319,7 @@ class UncertQuant:
 
         Returns
         -------
-        modeluq : :ref:`UncertQuant`
+        modeluq : :ref:`UQResult`
             New uncertainty quantification analysis for the ouputs of ``model``.
 
         Notes
@@ -353,7 +353,7 @@ class UncertQuant:
         modelcovmat = J@self.covmat@J.T
         
         # Construct new CI-structure for the model
-        return  UncertQuant('covariance',modelfit,modelcovmat,lbm,ubm)
+        return  UQResult('covariance',modelfit,modelcovmat,lbm,ubm)
     #--------------------------------------------------------------------------------
 
 # =========================================================================

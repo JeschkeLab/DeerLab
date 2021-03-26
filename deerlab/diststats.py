@@ -21,7 +21,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     P : array_like
         Distance distribution, does not have to be normalized.
     
-    Puq : :ref:`UncertQuant`, optional
+    Puq : :ref:`UQResult`, optional
         Uncertainty quantification of the distance distribution. If Puq is not given, a
         single output is returned without any uncertainty estimation. If given, two outputs
         are returned containing the uncertainty estimation.
@@ -66,7 +66,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
             * ``'kurtosis'`` - Excess kurtosis (see `more <https://en.wikipedia.org/wiki/Kurtosis>`__)
             * ``'moment4'`` - 4th moment (kurtosis) (see `more <https://en.wikipedia.org/wiki/Kurtosis>`__)
 
-    uq : dict of :ref:`UncertQuant`
+    uq : dict of :ref:`UQResult`
         Dictionary of the parameters covariance-based uncertainty quantifications. 
         See above for the dictionary keys. Only calculated if ``Puq`` is provided.
 

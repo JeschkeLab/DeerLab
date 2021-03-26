@@ -9,7 +9,7 @@ from deerlab.nnls import fnnls, cvxnnls, nnlsbpp
 import deerlab as dl
 import copy
 from deerlab.utils import hccm, goodness_of_fit
-from deerlab.classes import UncertQuant, FitResult
+from deerlab.classes import UQResult, FitResult
 
 def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
                 weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
@@ -106,7 +106,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
     P : ndarray
         Fitted distance distribution
     
-    uncertainty : :ref:`UncertQuant`
+    uncertainty : :ref:`UQResult`
         Covariance-based uncertainty quantification of the fitted distance distribution
     
     regparam : float int
@@ -206,9 +206,9 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         
         # Construct confidence interval structure for P
         NonNegConst = np.zeros(len(r))
-        Puq = UncertQuant('covariance',Pfit,covmat,NonNegConst,[])
+        Puq = UQResult('covariance',Pfit,covmat,NonNegConst,[])
     else:
-        Puq = UncertQuant('void')
+        Puq = UQResult('void')
 
     
     # Re-normalization of the distributions

@@ -13,7 +13,7 @@ from numpy.linalg import solve
 import deerlab as dl
 from deerlab.utils import goodness_of_fit, hccm, isempty, Jacobian
 from deerlab.nnls import cvxnnls, fnnls, nnlsbpp
-from deerlab.classes import UncertQuant, FitResult
+from deerlab.classes import UQResult, FitResult
 
 def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=1,
           regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3, extrapenalty=None,
@@ -134,9 +134,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         Fitted non-linear parameters
     lin : ndarray
         Fitted linear parameters
-    nonlinUncert : :ref:`UncertQuant`
+    nonlinUncert : :ref:`UQResult`
         Uncertainty quantification of the non-linear parameter set.
-    linUncert : :ref:`UncertQuant`
+    linUncert : :ref:`UQResult`
         Uncertainty quantification of the linear parameter set.
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
@@ -447,7 +447,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         ubs = np.concatenate((ub, ubl))
 
         # Construct the uncertainty quantification object
-        paramuq = UncertQuant('covariance', parfit, covmatrix, lbs, ubs)
+        paramuq = UQResult('covariance', parfit, covmatrix, lbs, ubs)
 
         # Split the uncertainty quantification of nonlinear/linear parts
         nonlin_subset = np.arange(0,Nnonlin)

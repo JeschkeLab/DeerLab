@@ -14,27 +14,27 @@ which the true solution might reside with a given probability.
 
 DeerLab provides two means to estimate the uncertainty of fitted quantities: **covariance-matrix uncertainty**; a fast method, but not entirely accurate, and **bootstrapped uncertainty**; a much slower method, but more robust and accurate. 
 
-The ``UncertQuant`` Object
+The ``UQResult`` Object
 ---------------------------
 
-The uncertainty estimation framework in DeerLab is contained into :ref:`UncertQuant` (Uncertainty Quantification) objects. 
+The uncertainty estimation framework in DeerLab is contained into :ref:`UQResult` (Uncertainty Quantification) objects. 
 These objects are variables returned by any function which calculates some kind of uncertainty estimate, and contain different 
-fields with all quantities of interested related to uncertainty (see details :ref:`here <UncertQuant>`). Some of the most basic
-attributes is ``UncertQuant.type``, which identifies whether the uncertainty was estimated by 
+fields with all quantities of interested related to uncertainty (see details :ref:`here <UQResult>`). Some of the most basic
+attributes is ``UQResult.type``, which identifies whether the uncertainty was estimated by 
 covariance-based or bootstrap methods. 
 
-One ``UncertQuant`` can contain the uncertainty of multiple parameters and information on their correlations. For example, if ``fitmodel`` is used to fit a 
+One ``UQResult`` can contain the uncertainty of multiple parameters and information on their correlations. For example, if ``fitmodel`` is used to fit a 
 4-pulse DEER signal without background ::
 
     fit = dl.fitmodel(Vexp,t,r,'P',None,ex_4pdeer)  # Fit a 4-DEER form factor
     Puq = fit.Puncert           # Uncertainty quantification of fitted distance distribution
     lamuq = fit.exparamUncert   # Uncertainty quantification of fitted modulation depth
 
-it will return a fit with a non-parametric distribution of N-points ``fit.P``, and the fitted modulation depth as ``fit.exparam``, then the output ``fit.Puncert`` will be a ``UncertQuant`` object with the information on all 
+it will return a fit with a non-parametric distribution of N-points ``fit.P``, and the fitted modulation depth as ``fit.exparam``, then the output ``fit.Puncert`` will be a ``UQResult`` object with the information on all 
 N-distribution elements and the output ``fit.exparamUncert`` will contain just the uncertainty of the modulation depth.
 
 Confidence intervals
-    As mentioned above, confidence intervals are the most practical quantities to report uncertainty of fit results. The ``UncertQuant.ci()`` is a method
+    As mentioned above, confidence intervals are the most practical quantities to report uncertainty of fit results. The ``UQResult.ci()`` is a method
     that takes the coverage or probability to be covered, and generates the confidence intervals. For the example above, if you want to generate the 95%-confidence 
     intervals you need to call ::
 
@@ -56,7 +56,7 @@ Confidence intervals
 
 Uncertainty distributions 
     A more complete description of the uncertainty are the uncertainty distributions for the fit parameter. These can be requested from the
-    the ``UncertQuant.pardist`` method. Using ``UncertQuant.pardist(n)`` will return the parameter uncertainty probability density function 
+    the ``UQResult.pardist`` method. Using ``UQResult.pardist(n)`` will return the parameter uncertainty probability density function 
     corresponding to the fit parameter with index ``n`` and its corresponding abscissa values. For example, ::
 
       P5_dist,P5_vals = Puq.pardit(5)       # Uncertainty distribution of fit.P[5] values
@@ -67,7 +67,7 @@ Uncertainty Propagation
     is of a model that depends on those parameters. Analyzing the effect that the uncertainty of a set of parameters has on a dependent function is called 
     uncertainty or error propagation. 
     
-    The ``UncertQuant.propagate`` method provides a simple interface for propagation uncertainty to dependent models or functions. The method just takes as input the function or model to which you 
+    The ``UQResult.propagate`` method provides a simple interface for propagation uncertainty to dependent models or functions. The method just takes as input the function or model to which you 
     want to propagate the uncertainty. Additionally if the model has some boundaries (e.g. a distance distribution with non-negative values) you can specify the lower and upper bounds as additional inputs. 
     
     For example, if you fitted a Gaussian distribution with ``fitparamodel`` and obtained the uncertainty quantification for its parameters ::
@@ -91,7 +91,7 @@ Covariance Uncertainty Quantification
 ------------------------------------------
 
 Covariance-baed uncertainty is the fastest method for uncertainty quantification available in DeerLab. Due to its readiness all fit functions 
-in DeerLab return covariance-based ``UncertQuant`` objects for all quantities fitted.
+in DeerLab return covariance-based ``UQResult`` objects for all quantities fitted.
 
 This method estimates the uncertainty based on the curvature of the optimization surface. During optimization, when a minimum is found, the curvature
 of the parameter hypersurface at that point is measured. A very sharp minimum means that there is less uncertainty in the found result, whereas a shallow
@@ -135,6 +135,6 @@ regularization parameter obtained from a 4-pulse DEER fit using ``fitregmodel`` 
 
     bootuq = dl.bootan(fitfcn,Vexp,Vfit,samples=1000,verbose=True) # Bootstrap uncertainty quantification
 
-The output of ``bootuq`` is an ``UncertQuant`` object equivalent to the ones obtained for covariance-based uncertainty analysis. If the fit procedure is slow or
+The output of ``bootuq`` is an ``UQResult`` object equivalent to the ones obtained for covariance-based uncertainty analysis. If the fit procedure is slow or
 costly, it is very recommendable to use the ``cores`` option to assign multiple CPU cores to the bootstrapping, in order to run different bootstrap samples in parallel, speeding
 up the uncertainty estimation.

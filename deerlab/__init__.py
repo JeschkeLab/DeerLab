@@ -24,5 +24,5 @@ from .fitmodel import fitmodel
 from .correctscale import correctscale
 from .fftspec import fftspec
 from .time2dist import time2dist
-from .classes import FitResult, UncertQuant
+from .classes import FitResult, UQResult
 from .diststats import diststats

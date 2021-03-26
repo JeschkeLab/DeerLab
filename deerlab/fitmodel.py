@@ -8,7 +8,7 @@ import types
 import copy
 import matplotlib.pyplot as plt
 import deerlab as dl
-from deerlab.classes import UncertQuant, FitResult
+from deerlab.classes import UQResult, FitResult
 from deerlab.bg_models import bg_hom3d
 from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit, Jacobian
@@ -83,7 +83,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         as ``None`` (default).
     
     uq : string or list, optional
-        Type of uncertainty quantification analysis. Any ``UncertQuant`` output returned by this function will
+        Type of uncertainty quantification analysis. Any ``UQResult`` output returned by this function will
         be adjusted accordingly. The options are:
 
         * ``'covariance'`` - Covariance-based uncertainty quantification. Fast, but approximate.   
@@ -155,21 +155,21 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Fitted parameters for background model(s).
     exparam : ndarray or list thereof
         Fitted parameters for experiment model(s).
-    Vuncert : :ref:`UncertQuant` or list thereof
+    Vuncert : :ref:`UQResult` or list thereof
         Uncertainty quanfitication for fitted dipolar signal(s).
-    Puncert : :ref:`UncertQuant`
+    Puncert : :ref:`UQResult`
         Uncertainty quanfitication for fitted distance distribution.
-    Buncert : :ref:`UncertQuant` or list thereof
+    Buncert : :ref:`UQResult` or list thereof
         Uncertainty quanfitication for fitted background(s).
     VmodUncert : ndarray or list thereof
         Uncertainty quanfitication for fitted modulated contribution(s). 
     VunmodUncert : ndarray or list thereof
         Uncertainty quanfitication for fitted unmodulated contribution(s). 
-    ddparamUncert : :ref:`UncertQuant` 
+    ddparamUncert : :ref:`UQResult` 
         Uncertainty quanfitication for distribution parameters
-    bgparamUncert : :ref:`UncertQuant` or list thereof
+    bgparamUncert : :ref:`UQResult` or list thereof
         Uncertainty quanfitication for background(s) parameters
-    exparamUncert : :ref:`UncertQuant` or list thereof
+    exparamUncert : :ref:`UQResult` or list thereof
         Uncertainty quanfitication for experiment(s) parameters
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
@@ -393,14 +393,14 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # Full parameter set uncertainty
         # -------------------------------
         subcovmat = covmat[np.ix_(paramidx,paramidx)]
-        paruq = UncertQuant('covariance',parfit_,subcovmat,lb,ub)
+        paruq = UQResult('covariance',parfit_,subcovmat,lb,ub)
         
         # Background parameters uncertainty
         # ---------------------------------
         for jj in range(nSignals):
             if includeBackground[jj]:
                 bgsubcovmat  = paruq.covmat[np.ix_(bgidx[jj],bgidx[jj])]
-                paruq_bg.append( UncertQuant('covariance',parfit_[bgidx[jj]],bgsubcovmat,lb[bgidx[jj]],ub[bgidx[jj]]))
+                paruq_bg.append( UQResult('covariance',parfit_[bgidx[jj]],bgsubcovmat,lb[bgidx[jj]],ub[bgidx[jj]]))
             else:
                 paruq_bg.append([None])
         
@@ -409,7 +409,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         for jj in range(nSignals):
             if includeExperiment[jj]:
                 exsubcovmat  = paruq.covmat[np.ix_(exidx[jj],exidx[jj])]
-                paruq_ex.append( UncertQuant('covariance',parfit_[exidx[jj]],exsubcovmat,lb[exidx[jj]],ub[exidx[jj]]))
+                paruq_ex.append( UQResult('covariance',parfit_[exidx[jj]],exsubcovmat,lb[exidx[jj]],ub[exidx[jj]]))
             else:
                 paruq_ex.append([None])
             
@@ -417,7 +417,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # ------------------------------------
         if parametricDistribution:
             ddsubcovmat  = paruq.covmat[np.ix_(ddidx,ddidx)]
-            paruq_dd = UncertQuant('covariance',parfit_[ddidx],ddsubcovmat,lb[ddidx],ub[ddidx])
+            paruq_dd = UQResult('covariance',parfit_[ddidx],ddsubcovmat,lb[ddidx],ub[ddidx])
         else:
             paruq_dd = [None]
         
@@ -465,7 +465,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 # Dipola evolution function
                 J = Kfit[jj]
                 Vcovmat = J@covmat@J.T
-                Vfit_uq.append( UncertQuant('covariance',Vfit[jj],Vcovmat))
+                Vfit_uq.append( UQResult('covariance',Vfit[jj],Vcovmat))
             elif includeForeground:
                 # Parametric signal with parameter-free distribution
                 Vmodel = lambda par: scales[jj]*multiPathwayModel(par[paramidx])[0][jj]@Pfit
@@ -740,15 +740,15 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         modfituq['Bfit'] = [Bfit_uq[j] for j in range(nSignals)]
     else:
         paruq = dict()
-        paruq['dd'] = UncertQuant('void')
-        paruq['bg'] = UncertQuant('void')
-        paruq['ex'] = UncertQuant('void')
+        paruq['dd'] = UQResult('void')
+        paruq['bg'] = UQResult('void')
+        paruq['ex'] = UQResult('void')
         modfituq = dict()
-        modfituq['Pfit'] = UncertQuant('void')
-        modfituq['Vfit'] = UncertQuant('void')
-        modfituq['Bfit'] = UncertQuant('void')
-        modfituq['Vmod'] = UncertQuant('void')
-        modfituq['Vunmod'] = UncertQuant('void')
+        modfituq['Pfit'] = UQResult('void')
+        modfituq['Vfit'] = UQResult('void')
+        modfituq['Bfit'] = UQResult('void')
+        modfituq['Vmod'] = UQResult('void')
+        modfituq['Vunmod'] = UQResult('void')
 
 
     Vfit_ = Vfit.copy()
