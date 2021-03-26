@@ -67,7 +67,7 @@ class FitResult(dict):
         return list(self.keys())
 # =========================================================================
 
-class UncertQuant:
+class UQResult:
 # =========================================================================
     r""" Represents the uncertainty quantification of fit results.
 
@@ -95,35 +95,35 @@ class UncertQuant:
 
     """
 
-    def __init__(self,uqtype,data=[],covmat=[],lb=[],ub=[]):
+    def __init__(self,uqtype,data=None,covmat=None,lb=None,ub=None):
 
         #Parse inputs schemes
         if uqtype=='covariance':
-            # Scheme 1: UncertQuant('covariance',parfit,covmat,lb,ub)
+            # Scheme 1: UQResult('covariance',parfit,covmat,lb,ub)
             self.type = uqtype
             parfit = data
             self.__parfit = parfit
             nParam = len(parfit)
             
         elif uqtype == 'bootstrap':
-            # Scheme 2: UncertQuant('bootstrap',samples)
+            # Scheme 2: UQResult('bootstrap',samples)
             self.type = uqtype
             samples = data
             self.samples = samples
             nParam = np.shape(samples)[1]
 
         elif uqtype=='void':
-            # Scheme 2: UncertQuant('void')
+            # Scheme 2: UQResult('void')
             self.type = uqtype
             self.mean, self.median, self.std, self.covmat, self.nparam = ([] for _ in range(5))
             return
         else:
             raise NameError('uqtype not found. Must be: ''covariance'', ''bootstrap'' or ''void''.')
 
-        if len(lb)==0:
+        if lb is None:
             lb = np.full(nParam, -np.inf)
         
-        if len(ub)==0:
+        if ub is None:
             ub = np.full(nParam, np.inf)
 
         # Create confidence intervals structure
@@ -152,14 +152,14 @@ class UncertQuant:
     def __getattribute__(self, attr):
         try:
             # Calling the super class to avoid recursion
-            if super(UncertQuant, self).__getattribute__('type') == 'void':
+            if super(UQResult, self).__getattribute__('type') == 'void':
                 # Check if the uncertainty quantification has been done, if not report that there is nothing in the object
                 raise ValueError('The requested attribute/method is not available. Uncertainty quantification has not been calculated during the fit by using the `uq=None` keyword.')
         except AttributeError:
             # Catch cases where 'type' attribute has still not been defined (e.g. when using copy.deepcopy)
             pass
         # Otherwise return requested attribute
-        return super(UncertQuant, self).__getattribute__(attr)
+        return super(UQResult, self).__getattribute__(attr)
     #--------------------------------------------------------------------------------
 
     # Parameter distributions
@@ -303,7 +303,7 @@ class UncertQuant:
 
     # Error Propagation (covariance-based only)
     #--------------------------------------------------------------------------------
-    def propagate(self,model,lbm=[],ubm=[]):
+    def propagate(self,model,lbm=None,ubm=None):
         """
         Uncertainty propagation. This function takes the uncertainty analysis of the 
         parameters and propagates it to another functon depending on those parameters.
@@ -319,26 +319,27 @@ class UncertQuant:
 
         Returns
         -------
-        modeluq : :ref:`UncertQuant`
+        modeluq : :ref:`UQResult`
             New uncertainty quantification analysis for the ouputs of ``model``.
 
         Notes
         -----
         Uncertainty propagation is covariance-based and so will be the resulting uncertainty analysis.
         """
-        lbm,ubm = (np.atleast_1d(var) for var in [lbm,ubm])
 
         parfit = self.mean
         # Evaluate model with fit parameters
         modelfit = model(parfit)
         
         # Validate input boundaries
-        if np.size(lbm)==0:
+        if lbm is None:
             lbm = np.full(np.size(modelfit), -np.inf)
 
-        if np.size(ubm)==0:
+        if ubm is None:
             ubm = np.full(np.size(modelfit), np.inf)
-        
+
+        lbm,ubm = (np.atleast_1d(var) for var in [lbm,ubm])
+
         if np.size(modelfit)!=np.size(lbm) or np.size(modelfit)!=np.size(ubm):
             raise IndexError ('The 2nd and 3rd input arguments must have the same number of elements as the model output.')
         
@@ -353,7 +354,7 @@ class UncertQuant:
         modelcovmat = J@self.covmat@J.T
         
         # Construct new CI-structure for the model
-        return  UncertQuant('covariance',modelfit,modelcovmat,lbm,ubm)
+        return  UQResult('covariance',modelfit,modelcovmat,lbm,ubm)
     #--------------------------------------------------------------------------------
 
 # =========================================================================

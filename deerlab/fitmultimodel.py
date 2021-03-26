@@ -102,10 +102,10 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     Kparam : ndarray
         Fitted kernel parameters.
     
-    Puncert : :ref:`UncertQuant`
+    Puncert : :ref:`UQResult`
         Covariance-based uncertainty quantification of the fitted distance distribution
     
-    paramUncert : :ref:`UncertQuant`
+    paramUncert : :ref:`UQResult`
         Covariance-based uncertainty quantification of the fitted parameters
     
     Nopt : int scalar
@@ -485,14 +485,14 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         covmatrix = hccm(J,res,'HC1')
         
         # Construct uncertainty quantification structure for fitted parameters
-        paramuq = dl.UncertQuant('covariance',np.concatenate((pnonlin, plin)),covmatrix,lb_full,ub_full)
+        paramuq = dl.UQResult('covariance',np.concatenate((pnonlin, plin)),covmatrix,lb_full,ub_full)
         
         P_subset = np.arange(0, nKparam+nparam*Nopt)
         amps_subset = np.arange(P_subset[-1]+1, P_subset[-1]+1+Nopt)
         Puq = paramuq.propagate(lambda p: Pmodel(p[P_subset],p[amps_subset]), np.zeros(len(r)))
     else: 
-        Puq = dl.UncertQuant('void')
-        paramuq = dl.UncertQuant('void')
+        Puq = dl.UQResult('void')
+        paramuq = dl.UQResult('void')
 
     # Goodness of fit
     stats = []

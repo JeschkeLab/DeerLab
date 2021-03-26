@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import warnings
 from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian
-from deerlab.classes import UncertQuant, FitResult
+from deerlab.classes import UQResult, FitResult
 from scipy.optimize import least_squares
 
 
@@ -61,7 +61,7 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
     param : ndarray
         Fitted model parameters
     
-    uncertainty : :ref:`UncertQuant`
+    uncertainty : :ref:`UQResult`
         Covariance-based uncertainty quantification of the fitted parameters.
     
     scale : float int or list of float int
@@ -244,9 +244,9 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
             # Use user-given data covariance matrix
             covmatrix = hccm(J,covmatrix)
         # Construct confidence interval structure
-        paruq = UncertQuant('covariance',parfit,covmatrix,lb,ub)
+        paruq = UQResult('covariance',parfit,covmatrix,lb,ub)
     else:
-        paruq = UncertQuant('void')
+        paruq = UQResult('void')
 
     # Calculate goodness of fit
     stats = []

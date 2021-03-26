@@ -7,7 +7,7 @@ import numpy as np
 import types
 from tqdm.auto import tqdm
 from joblib import Parallel, delayed
-from deerlab.classes import UncertQuant
+from deerlab.classes import UQResult
 
 def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, cores=1):
     r""" 
@@ -52,7 +52,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, 
 
     Returns
     -------
-    bootuq : :ref:`UncertQuant` or list of :ref:`UncertQuant`
+    bootuq : :ref:`UQResult` or list of :ref:`UQResult`
         Bootstrap uncertainty quantification for each variable returned by ``fcn``. 
 
 
@@ -160,7 +160,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, 
     #-------------------------------------------------------------------------------
     stats = []
     for variables in evals:
-        stats.append(UncertQuant('bootstrap',variables))
+        stats.append(UQResult('bootstrap',variables))
     if len(stats)==1:
         stats = stats[0]
     return stats
