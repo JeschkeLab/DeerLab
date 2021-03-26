@@ -206,7 +206,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         
         # Construct confidence interval structure for P
         NonNegConst = np.zeros(len(r))
-        Puq = UQResult('covariance',Pfit,covmat,NonNegConst,[])
+        Puq = UQResult('covariance',Pfit,covmat,NonNegConst)
     else:
         Puq = UQResult('void')
 

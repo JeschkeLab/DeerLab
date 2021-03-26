@@ -95,7 +95,7 @@ class UQResult:
 
     """
 
-    def __init__(self,uqtype,data=[],covmat=[],lb=[],ub=[]):
+    def __init__(self,uqtype,data=None,covmat=None,lb=None,ub=None):
 
         #Parse inputs schemes
         if uqtype=='covariance':
@@ -120,10 +120,10 @@ class UQResult:
         else:
             raise NameError('uqtype not found. Must be: ''covariance'', ''bootstrap'' or ''void''.')
 
-        if len(lb)==0:
+        if lb is None:
             lb = np.full(nParam, -np.inf)
         
-        if len(ub)==0:
+        if ub is None:
             ub = np.full(nParam, np.inf)
 
         # Create confidence intervals structure
@@ -303,7 +303,7 @@ class UQResult:
 
     # Error Propagation (covariance-based only)
     #--------------------------------------------------------------------------------
-    def propagate(self,model,lbm=[],ubm=[]):
+    def propagate(self,model,lbm=None,ubm=None):
         """
         Uncertainty propagation. This function takes the uncertainty analysis of the 
         parameters and propagates it to another functon depending on those parameters.
@@ -326,19 +326,20 @@ class UQResult:
         -----
         Uncertainty propagation is covariance-based and so will be the resulting uncertainty analysis.
         """
-        lbm,ubm = (np.atleast_1d(var) for var in [lbm,ubm])
 
         parfit = self.mean
         # Evaluate model with fit parameters
         modelfit = model(parfit)
         
         # Validate input boundaries
-        if np.size(lbm)==0:
+        if lbm is None:
             lbm = np.full(np.size(modelfit), -np.inf)
 
-        if np.size(ubm)==0:
+        if ubm is None:
             ubm = np.full(np.size(modelfit), np.inf)
-        
+
+        lbm,ubm = (np.atleast_1d(var) for var in [lbm,ubm])
+
         if np.size(modelfit)!=np.size(lbm) or np.size(modelfit)!=np.size(ubm):
             raise IndexError ('The 2nd and 3rd input arguments must have the same number of elements as the model output.')
         
