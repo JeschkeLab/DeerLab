@@ -169,6 +169,18 @@ def test_background():
     assert np.all(abs(KB - KBref) < 1e-5)
 #=======================================================================
 
+def test_nobackground():
+#=======================================================================
+    "Check that dipolar kernel builds correctly without a background specified"
+    t = np.linspace(0,3,80)
+    r = np.linspace(2,6,100)
+
+    K1 = dipolarkernel(t,r)
+    
+    K2 = dipolarkernel(t,r,B=None)
+    assert np.all(abs(K2 - K1) < 1e-5)
+#=======================================================================
+
 def test_multipath():
 #=======================================================================
     "Check that multi-pathway kernels are properly generated"
