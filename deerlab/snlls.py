@@ -384,7 +384,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
             penres = np.atleast_1d(penres)
             res = np.concatenate((res,penres))
 
-        if includeRegularization :
+        if includeRegularization:
             # Augmented residual
             res_reg, _ = reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)
             res = np.concatenate((res,res_reg))
@@ -433,7 +433,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         # Jacobian (linear part)
         Jlin = np.zeros((len(res),len(linfit)))
         Jlin[:len(y),:] = Amodel(nonlinfit)
-        Jlin[len(res)-Nlin:,:] = reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)[1]
+        if includeRegularization:
+            Jlin[len(res)-Nlin:,:] = reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)[1]
 
         # Full Jacobian
         J = np.concatenate((Jnonlin,Jlin),axis=1)

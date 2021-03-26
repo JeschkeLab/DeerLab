@@ -399,3 +399,31 @@ def test_cost_value():
 
     assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
 #============================================================
+
+def test_confinter_values():
+# ======================================================================
+    "Check that the values of the confidence intervals are correct"
+
+    np.random.seed(0)
+    A0  = np.random.rand(300,2)
+    A = lambda p: 1 - p[0] + A0**p[1]
+    pnonlin = np.array([0.5,2])
+    plin = np.array([0.75,5.5])
+    y = A(pnonlin)@plin + 0.3*np.random.randn(300)
+
+    # Reference confidence intervals (calculated using lmfit package, see #116)
+    cov = [99.73,95.45,68.27]
+    a_ci_ref = [[0.4636991758611843, 0.5411943256617782], 
+                [0.47730341575508245, 0.5286896152296477], 
+                [0.4905189733270308, 0.5161245529171482]]
+    b_ci_ref = [[1.7876921926935445, 2.1089296764536907], 
+                [1.8384482433779732, 2.0515346381926847], 
+                [1.8899306688797555, 1.9961521871803736]]
+
+    fit = snlls(y,A,[1,0.5],reg=False)
+    a_ci = [fit.nonlinUncert.ci(cov[i])[0,:] for i in range(3)]
+    b_ci = [fit.nonlinUncert.ci(cov[i])[1,:] for i in range(3)]
+
+    ci_match = lambda ci,ci_ref,truth:np.max(abs(np.array(ci) - np.array(ci_ref)))/truth < 0.01
+    assert ci_match(a_ci,a_ci_ref,pnonlin[0]) & ci_match(b_ci,b_ci_ref,pnonlin[1])
+# ======================================================================

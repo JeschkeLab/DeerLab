@@ -435,3 +435,29 @@ def test_convergence_criteria():
   
     assert ovl(P,fit.P) > 0.90 # more than 80% overlap
 #============================================================
+
+def test_confinter_values():
+# ======================================================================
+    "Check that the values of the confidence intervals are correct"
+
+    np.random.seed(0)
+    A = np.random.rand(300,2)
+    p = np.array([0.5,3])
+    y = A@p + 0.2*np.random.randn(300)
+
+    # Reference confidence intervals (calculated using lmfit package, see #116)
+    cov = [99.73,95.45,68.27]
+    a_ci_ref = [[0.41918705096124576, 0.6052333453428683],
+                [0.4504549830560608, 0.5739654132472912], 
+                [0.48140740318342196, 0.5430129931207299]]
+    b_ci_ref = [[2.8472129716943995, 3.0317740823087562], 
+                [2.878254646104185, 3.00073387702068], 
+                [2.9089331341860465, 2.9700584546043713]]
+    
+    fit = fitregmodel(y,A, np.arange(2),renormalize=False,nonnegativity=False,regparam=0,regorder=0)
+    a_ci = [fit.uncertainty.ci(cov[i])[0,:] for i in range(3)]
+    b_ci = [fit.uncertainty.ci(cov[i])[1,:] for i in range(3)]
+
+    ci_match = lambda ci,ci_ref,truth:np.max(abs(np.array(ci) - np.array(ci_ref)))/truth < 0.01
+    assert ci_match(a_ci,a_ci_ref,p[0]) & ci_match(b_ci,b_ci_ref,p[1])
+# ======================================================================
