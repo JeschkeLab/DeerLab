@@ -4,7 +4,7 @@ Basic fitting of a 4-pulse DEER signal, non-parametric distribution
 -------------------------------------------------------------------
 
 Fit a simple 4-pulse DEER signal with a model with a non-parametric
-distribution distribution and a homogeneous background, using Tikhonov regularization.
+distribution and a homogeneous background, using Tikhonov regularization.
 """ 
 
 import numpy as np

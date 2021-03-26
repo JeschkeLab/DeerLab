@@ -520,7 +520,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Ks = [dl.dipolarkernel(ts,r) for ts in t]
         
         # Linear regularization fit
-        fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uqanalysis=uqanalysis,tol=tol,maxiter=maxiter)
+        fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter)
         Pfit = fit.P
         Pfit_uq = fit.uncertainty
         scales = np.atleast_1d(fit.scale)
@@ -553,7 +553,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vmodel =lambda par: [K@Pfcn(par) for K in multiPathwayModel(par)[0]]
 
         # Non-linear parametric fit
-        fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uqanalysis=uqanalysis,tol=tol,maxiter=maxiter)
+        fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter)
         parfit = fit.param
         param_uq = fit.uncertainty
         scales = np.atleast_1d(fit.scale)
@@ -611,7 +611,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         # Separable non-linear least squares (SNNLS) 
         fit = dl.snlls(Vexp_,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
-                            regparam=regparam, uqanalysis=uqanalysis, weights=weights,extrapenalty=scale_constraint,
+                            regparam=regparam, uq=uqanalysis, weights=weights,extrapenalty=scale_constraint,
                             nonlin_tol=tol,nonlin_maxiter=maxiter)
         parfit = fit.nonlin
         Pfit = fit.lin

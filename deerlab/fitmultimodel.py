@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit, Jacobian
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
-                 strategy='split', weights=1, renormalize = True, uqanalysis=True, tol=1e-9, maxiter=1e8):
+                 strategy='split', weights=1, renormalize = True, uq=True, tol=1e-9, maxiter=1e8):
     r""" 
     Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
@@ -78,7 +78,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     renormalize : boolean, optional
         Enable/disable renormalization of the fitted distribution, by default it is enabled.
     
-    uqanalysis : boolean, optional
+    uq : boolean, optional
         Enable/disable the uncertainty quantification analysis, by default it is enabled.  
 
     tol : scalar, optional 
@@ -421,7 +421,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         # Separable non-linear least-squares (SNLLS) fit
         scale = 1e2
         fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, 
-                        weights=weights, reg=False, uqanalysis=False, nonlin_tol=tol, nonlin_maxiter=maxiter)
+                        weights=weights, reg=False, uq=False, nonlin_tol=tol, nonlin_maxiter=maxiter)
         pnonlin = fit.nonlin
         plin = fit.lin
         par_prev = pnonlin
@@ -468,7 +468,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
 
     # Uncertainty quantification analysis (if requested)
     # ==================================================
-    if uqanalysis:
+    if uq:
         # Compute the residual vector
         Knonlin = lambda par: nonlinmodel(par,Nopt)
         res = weights*(Vfit - V)
@@ -507,7 +507,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     if renormalize:
         Pfit = Pfit/postscale
         fitparam_amp = fitparam_amp/sum(fitparam_amp)
-        if uqanalysis:
+        if uq:
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
             Puq.ci = lambda p: Puq_.ci(p)/postscale
 
@@ -520,7 +520,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
 
     # Results display function
     def plotfcn(show=False):
-        fig = _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uqanalysis,show)
+        fig = _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uq,show)
         return fig
 
     return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, Puncert=Puq, 
@@ -529,7 +529,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
 # =========================================================================
 
 
-def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uqanalysis,show):
+def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uq,show):
 # =========================================================================
     nSignals = len(Vsubsets)
     fig,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
@@ -543,18 +543,18 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uqanalysis,show):
         axs[i].set_ylabel('V[{}]'.format(i))
         axs[i].legend(('Data','Fit'))
 
-    if uqanalysis:
+    if uq:
         # Confidence intervals of the fitted distance distribution
         Pci95 = Puq.ci(95) # 95#-confidence interval
         Pci50 = Puq.ci(50) # 50#-confidence interval
 
     ax = plt.subplot(nSignals+1,2,2*(nSignals+1)-1)
     ax.plot(r,Pfit,color='tab:blue',linewidth=1.5)
-    if uqanalysis:
+    if uq:
         ax.fill_between(r,Pci50[:,0],Pci50[:,1],color='tab:blue',linestyle='None',alpha=0.45)
         ax.fill_between(r,Pci95[:,0],Pci95[:,1],color='tab:blue',linestyle='None',alpha=0.25)
     ax.grid(alpha=0.3)
-    if uqanalysis:
+    if uq:
         ax.legend(['truth','optimal fit','95%-CI'])
     else:
         ax.legend(['truth','optimal fit'])

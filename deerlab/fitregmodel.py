@@ -13,7 +13,7 @@ from deerlab.classes import UncertQuant, FitResult
 
 def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
                 weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
-                uqanalysis=True, renormalize=True, noiselevelaim = -1,tol=None,maxiter=None):
+                uq=True, renormalize=True, noiselevelaim = -1,tol=None,maxiter=None):
     r"""
     Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches 
     via non-negative least-squares (NNLS).
@@ -74,7 +74,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         
         The default is ``'cvx'``.
 
-    uqanalysis : boolean, optional
+    uq : boolean, optional
         Enable/disable the uncertainty quantification analysis, by default it is enabled. 
     
     nonnegativity : boolean, optional
@@ -193,7 +193,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         
     # Uncertainty quantification
     # ----------------------------------------------------------------
-    if uqanalysis:
+    if uq:
         # Construct residual parts for for the residual and regularization terms
         res = weights*(V - K@Pfit)
 
@@ -216,7 +216,7 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
     postscale = np.trapz(Pfit,r)
     if renormalize:
         Pfit = Pfit/postscale
-        if uqanalysis:
+        if uq:
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
             Puq.ci = lambda p: Puq_.ci(p)/postscale
 
