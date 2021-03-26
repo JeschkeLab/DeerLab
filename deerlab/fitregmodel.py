@@ -205,7 +205,10 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         covmat = hccm(J,res,'HC1')
         
         # Construct confidence interval structure for P
-        NonNegConst = np.zeros(len(r))
+        if nonnegativity:
+            NonNegConst = np.zeros(len(r))
+        else: 
+            NonNegConst = []
         Puq = UncertQuant('covariance',Pfit,covmat,NonNegConst,[])
     else:
         Puq = UncertQuant('void')
