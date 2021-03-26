@@ -135,18 +135,9 @@ def dipolarkernel(t, r, pathways = 1, B = None, method = 'fresnel', excbandwidth
     if clearcache:
         calckernelmatrix.cache_clear()
 
-    # Ensure that all inputs are numpy arrays
+    # Ensure that r and t are numpy arrays
     r = np.atleast_1d(r)
     t = np.atleast_1d(t)
-
-    if B is None:
-        B = 1
-
-    if type(B) is types.LambdaType:
-        ismodelB = True
-    else:
-        ismodelB = False
-        B = np.atleast_1d(B)
 
     g = np.atleast_1d(g)
     if len(g) == 1:
@@ -187,10 +178,13 @@ def dipolarkernel(t, r, pathways = 1, B = None, method = 'fresnel', excbandwidth
         lam,T0,n = pathway
         K = K + lam*kernelmatrix(n*(t-T0))
 
-    # Multiply by background
-    if ismodelB:
-        B = dipolarbackground(t,pathways,B)
-    K = K*B[:,np.newaxis]
+    # Multiply by background if given
+    if B is not None:
+        if type(B) is types.LambdaType:
+            B = dipolarbackground(t,pathways,B)
+        else:
+            B = np.atleast_1d(B)
+        K = K*B[:,np.newaxis]
 
     # Include delta-r factor for integration
     if integralop and len(r)>1:
