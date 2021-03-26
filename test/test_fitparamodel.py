@@ -249,7 +249,7 @@ def test_plot():
 # ======================================================================
 
 def test_cost_value():
-#============================================================
+# ======================================================================
     "Check that the cost value is properly returned"
 
     t = np.linspace(0,3,300)
@@ -266,4 +266,31 @@ def test_cost_value():
     model = lambda p: K@dd_gauss(r,p)
     fit = fitparamodel(V,model,par0,lb,ub)
     assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
-#============================================================
+# ======================================================================
+
+
+def test_confinter_values():
+# ======================================================================
+    "Check that the values of the confidence intervals are correct"
+
+    x = np.linspace(0.3, 10, 100)
+    np.random.seed(0)
+    p = [0.1,2]
+    y = p[0]*x + p[1] + 0.5*np.random.randn(x.size)
+
+    # Reference confidence intervals (calculated using lmfit package, see #116)
+    cov = [99.73,95.45,68.27]
+    a_ci_ref = [[0.02947257081676860, 0.13987679478796447],
+                [0.04834630918638558, 0.12100143673822517], 
+                [0.06664985961745347, 0.10269723504693312]]
+    b_ci_ref = [[1.7844876967028012, 2.433179427358454], 
+                [1.8953902386010164, 2.322276885466784], 
+                [2.0029218541761944, 2.214745269892137]]
+    
+    fit = fitparamodel(y,lambda p: p[0]*x + p[1],[0.1,1],rescale=False)
+    a_ci = [fit.uncertainty.ci(cov[i])[0,:] for i in range(3)]
+    b_ci = [fit.uncertainty.ci(cov[i])[1,:] for i in range(3)]
+
+    ci_match = lambda ci,ci_ref,truth:np.max(abs(np.array(ci) - np.array(ci_ref)))/truth < 0.01
+    assert ci_match(a_ci,a_ci_ref,p[0]) & ci_match(b_ci,b_ci_ref,p[1])
+# ======================================================================
