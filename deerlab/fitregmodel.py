@@ -11,9 +11,9 @@ import copy
 from deerlab.utils import hccm, goodness_of_fit
 from deerlab.classes import UQResult, FitResult
 
-def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
-                weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
-                uq=True, renormalize=True, noiselevelaim = -1,tol=None,maxiter=None):
+def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
+                weights=1, huberparam=1.35, nonnegativity=True, obir=False, 
+                uq=True, renormalize=True, noiselevelaim=None, tol=None, maxiter=None):
     r"""
     Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches 
     via non-negative least-squares (NNLS).
@@ -146,9 +146,6 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
     # Prepare signals, kernels and weights if multiple are passed
     V, K, weights, subsets, prescales = dl.utils.parse_multidatasets(V, K, weights,precondition=True)
 
-    # Compute regularization matrix
-    L = dl.regoperator(r,regorder)
-
     # Determine the type of problem to solve
     if obir:
         problem = 'obir'
@@ -164,16 +161,18 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         alpha = regparam
 
     # Prepare components of the LSQ-problem
+    L = dl.regoperator(r,regorder)
     [KtKreg, KtV] = dl.lsqcomponents(V,K,L,alpha,weights, regtype=regtype, huberparam=huberparam)
 
-    # Unconstrained LSQ problem
+    # Solve unconstrained LSQ problem
     if problem == 'unconstrained':
         Pfit = np.linalg.solve(KtKreg,KtV)
 
-    # Osher-Bregman iterated regularization
+    # Solve using Osher-Bregman iterated regularization
     elif problem == 'obir':
         Pfit = _obir(V,K,L,regtype,alpha,weights,noiselevelaim=noiselevelaim,huberparam = huberparam, solver = solver)
-    # Non-negative LSQ problem
+    
+    # Solve non-negative LSQ problem
     elif problem == 'nnls':
 
         if solver == 'fnnls':
@@ -288,30 +287,33 @@ def _augment(res,J,regtype,alpha,L,P,eta):
 # ===========================================================================================
 
 
-def _obir(V,K,L, regtype, alpha, weights, noiselevelaim=-1, huberparam=1.35 , solver = 'cvx'):
+def _obir(V,K,L, regtype, alpha, weights, noiselevelaim=None, huberparam=1.35 , solver = 'cvx'):
 # ===========================================================================================
     """
     Osher's Bregman-iterated regularization method
     ==============================================
 
-    P = OBIR(V,K,r,'type',alpha)
+    P = OBIR(V,K,r,regtype,alpha)
 
     OBIR of the N-point signal (V) to a M-point distance
     distribution (P) given a M-point distance axis (r) and NxM point kernel
     (K). The regularization parameter (alpha) controls the regularization
     properties.
 
-    The type of regularization employed in OBIR is set by the 'type'
+    The type of regularization employed in OBIR is set by the regtype
     input argument. The regularization models implemented in OBIR are:
         'tikhonov' -   Tikhonov regularization
         'tv'       -   Total variation regularization
         'huber'    -   pseudo-Huber regularization
 
-    P = OBIR(...,'Property',Value)
-    Additional (optional) arguments can be passed as name-value pairs.
+    Additional (optional) keyword arguments:
+      weights          weights  
+      noiselevelaim    the noise level to aim for, automatic if set to None
+      huberparam       parameter for Huber reguarization
+      solver           solver to use: 'cvx', 'fnnls', or 'nnlsbpp'
     """
 
-    if noiselevelaim == -1:
+    if noiselevelaim is None:
         noiselevelaim = dl.noiselevel(V)
 
     MaxOuterIter = 5000
@@ -340,10 +342,10 @@ def _obir(V,K,L, regtype, alpha, weights, noiselevelaim=-1, huberparam=1.35 , so
         # Store previous iteration distribution
         Pprev = Pfit
         
-        #Update
+        # Update
         KtVsg = KtV - subGrad
         
-        #Get solution of current Bregman iteration
+        # Get solution of current Bregman iteration
         if solver == 'fnnls':
             Pfit = fnnls(KtKreg,KtVsg)
         elif solver == 'nnlsbpp':
@@ -422,6 +424,3 @@ def _plot(subsets,Vexp,Vfit,r,Pfit,Puq,show=False):
         plt.close()
     return fig
 # ===========================================================================================
-
-
-
