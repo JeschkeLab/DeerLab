@@ -43,13 +43,13 @@ def lsqcomponents(V, K, L=None, alpha=0, weights=1, regtype='tikhonov', huberpar
     elif regtype.lower() == 'tv':
         maxIter = 500
         changeThreshold = 1e-1
-        TVFcn = lambda p: L.T@((L/np.sqrt((L@p)**2 + np.finfo(float).eps)[:,np.newaxis]))
+        TVFcn = lambda _P: L.T@((L/np.sqrt((L@_P)**2 + np.finfo(float).eps)[:,np.newaxis]))
         regterm = optimizeregterm(TVFcn,changeThreshold,maxIter)
         
     elif regtype.lower() == 'huber':
         maxIter = 500
         changeThreshold = 1e-2
-        HuberFcn = lambda p: 1/(huberparam**2)*(L.T@(L/np.sqrt((L@p/huberparam)**2 + 1)[:,np.newaxis]))
+        HuberFcn = lambda _P: 1/(huberparam**2)*(L.T@(L/np.sqrt((L@_P/huberparam)**2 + 1)[:,np.newaxis]))
         regterm = optimizeregterm(HuberFcn,changeThreshold,maxIter)
         
     else:
