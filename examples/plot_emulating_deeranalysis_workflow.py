@@ -66,7 +66,7 @@ def Bmodel(par):
 par0 = [0.5,   0.5, 3]
 lb   = [0.1,    0,  1]
 ub   = [1,      5,  6]
-fit = dl.fitparamodel(V[mask],Bmodel,par0,lb,ub,rescale=False)
+fit = dl.fitparamodel(V[mask],Bmodel,par0,lb,ub,fitscale=False)
 
 lamfit,kappa,d = fit.param
 Bfit = dl.bg_strexp(t,[kappa,d])

@@ -85,8 +85,8 @@ def test_rescaling():
     ub = [20, 5]
     mymodel = lambda param: dipolarkernel(t,r)@dd_gauss(r,param)
 
-    fit1 = fitparamodel(V*scale,mymodel,par0,lb,ub,rescale=True)
-    fit2 = fitparamodel(V,mymodel,par0,lb,ub,rescale=False)
+    fit1 = fitparamodel(V*scale,mymodel,par0,lb,ub,fitscale=True)
+    fit2 = fitparamodel(V,mymodel,par0,lb,ub,fitscale=False)
 
     assert all(abs(fit1.param - fit2.param) < 1e-2)
 # =======================================================================
@@ -287,7 +287,7 @@ def test_confinter_values():
                 [1.8953902386010164, 2.322276885466784], 
                 [2.0029218541761944, 2.214745269892137]]
     
-    fit = fitparamodel(y,lambda p: p[0]*x + p[1],[0.1,1],rescale=False)
+    fit = fitparamodel(y,lambda p: p[0]*x + p[1],[0.1,1],fitscale=False)
     a_ci = [fit.uncertainty.ci(cov[i])[0,:] for i in range(3)]
     b_ci = [fit.uncertainty.ci(cov[i])[1,:] for i in range(3)]
 

@@ -13,7 +13,7 @@ from scipy.optimize import least_squares
 
 def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
                  multistart=1, tol=1e-10, maxiter=3000,
-                 rescale=True, uq=True, covmatrix=None):
+                 fitscale=True, uq=True, covmatrix=None):
     r""" Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
 
     Parameters
@@ -36,8 +36,8 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
     
-    rescale : boolean, optional
-        Enable/disable optimization of the signal scale, by default it is enabled.
+    fitscale : boolean, optional
+        Enable/disable fitting of the signal scale, by default it is enabled.
     
     multiStarts : scalar, optional
         Number of starting points for global optimization, the default is 1.
@@ -173,8 +173,7 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
         Function that provides vector of residuals, which is the objective
         function for the least-squares solvers
         """
-        nonlocal scales
-
+        # Evaluate the model
         Vsim = model(p)
 
         # Check if there are invalid values...
@@ -182,14 +181,15 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
             res = np.zeros_like(Vsim) # ...can happen when Jacobian is evaluated outside of bounds
             return res
 
-        # Otherwise if requested, compute the scale of the signal via linear LSQ   
-        if rescale:
+        # If requested, fit the scale of the signal via linear LSQ
+        if fitscale:
+            nonlocal scales
             scales = []
             for subset in Vsubsets:
                 Vsim_,V_ = (V[subset] for V in [Vsim, V]) # Rescale the subsets corresponding to each signal
                 scale = np.squeeze(np.linalg.lstsq(np.atleast_2d(Vsim_).T,np.atleast_2d(V_).T,rcond=None)[0])
                 Vsim[subset] = scale*Vsim_  
-                scales.append(scale) # Store the optimized scales of each signal
+                scales.append(scale) # Store the fitted scales of each signal
 
         # Compute the residual
         res = weights*(V-Vsim)

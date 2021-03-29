@@ -71,7 +71,7 @@ lb = info['Lower']
 ub = info['Upper']
 
 # Fit the Gaussians
-fit = dl.fitparamodel(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat,rescale=False)
+fit = dl.fitparamodel(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat,fitscale=False)
 
 # Extract the fit results
 parfit = fit.param

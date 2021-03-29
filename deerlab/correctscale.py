@@ -77,7 +77,7 @@ Vc : ndarray
         raise KeyError("Unknown model '{}'".format(model))
 
     # Run the parametric model fitting
-    fit = fitparamodel(V_,fitmodel,par0,lb,ub,rescale=False,uq=False)
+    fit = fitparamodel(V_,fitmodel,par0,lb,ub,fitscale=False,uq=False)
 
     # Get the fitted signal amplitude and scale the signal
     V0 = Amp0*fit.param[0]
