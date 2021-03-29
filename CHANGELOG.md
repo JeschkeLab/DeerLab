@@ -43,7 +43,7 @@ Release v0.13.0 - March 2021
     - Implemented the constraint ``Lam0+sum(lam)<=1`` to ensure the structural-identifiability of ``Lam0`` and ``V0`` during SNLLS optimization of experiment models with more than one modulated dipolar pathway (i.e. does not affect ``ex_4pdeer``) ([#76](https://github.com/JeschkeLab/DeerLab/issues/76),[#108](https://github.com/JeschkeLab/DeerLab/pull/108)).
 - ``fitparamodel``: 
     - Made ``par0`` a positional argument instead of an optional keyword ([#70](https://github.com/JeschkeLab/DeerLab/issues/70)). to avoid errors when not defined ([#69](https://github.com/JeschkeLab/DeerLab/issues/69)).
-    - Keyword argument ``rescale`` has been renamed to ``fitscale`` ([#124])https://github.com/JeschkeLab/DeerLab/issues/128)).
+    - Keyword argument ``rescale`` has been renamed to ``fitscale`` ([#128])https://github.com/JeschkeLab/DeerLab/issues/128)).
 - ``snlls``:
     - Corrected bug that was leading to the smoothness penalty being accounted for twice in the least-squares residual during optimization ([#103](https://github.com/JeschkeLab/DeerLab/issues/103)).
     - Now returns the uncertainty quantification of linear and nonlinear parts as separate objects ``nonlinUncert`` and ``linUncert`` ([#108](https://github.com/JeschkeLab/DeerLab/pull/108)).
