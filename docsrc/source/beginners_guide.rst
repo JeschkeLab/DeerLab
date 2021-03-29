@@ -123,21 +123,22 @@ DeerLab provides a wide range of functionality to analyze experimental dipolar E
 Picking the right model
 ***********************
 
-DeerLab provides a very flexible framework to model dipolar signals originating from many different dipolar EPR spectroscopy experiments. Choosing a model that properly describes your sample and experiment is of paramount importance. In ``fitmodel`` the main structure of the model is already defined, with the following components: 
-    * **Distance range**: Also called the distance-axis, is the range of distances where the distribution is defined. 
-    * **Distribution model**: Describes the intra-molecular distance distribution in either a parametric (e.g. a Gaussian distribution) or a non-parametric way. 
-    * **Background model**: Describes the dipolar background signal arising from the inter-molecular contributions. 
-    * **Experiment model**: Describes the experiment-specific shape of the dipolar signal.
+DeerLab provides a very flexible framework to model dipolar signals originating from many different dipolar EPR spectroscopy experiments. Choosing a model that properly describes your sample and experiment is of paramount importance. In ``fitmodel`` the main structure of the model is already defined, with the following components:     
+
+* **Distance range**: Also called the distance-axis, is the range of distances where the distribution is defined. 
+* **Distribution model**: Describes the intra-molecular distance distribution in either a parametric (e.g. a Gaussian distribution) or a non-parametric way. 
+* **Background model**: Describes the dipolar background signal arising from the inter-molecular contributions. 
+* **Experiment model**: Describes the experiment-specific shape of the dipolar signal.
 
 For each of these four components, a choice needs to be made: 
 
-(1) **Choosa a distance range**
+(1) **Choose a distance range**
 
     The distance range :math:`[r_\mathrm{min},r_\mathrm{max}]` is an important choice, as any distance distribution is truncated to this range, i.e. :math:`P(r)=0` for:math:`r<r_\mathrm{min}` and :math:`r>r_\mathrm{max}`. The lower limit of the distance range is determined by the bandwidth of the pulses, and also by the time increment. Typically, 1.5 nm is a reasonable choice. The upper limit depends on the length of the experimental time trace and on the distances in your sample. The number of points in ``r`` is usually set equal to the number of time points. Such a distance-axis is usually defined as ``r`` is most easily defined using the ``linspace`` function from NumPy: ::
 
         r = np.linspace(1.5,6,len(t))  # define distance range form 1.5nm to 6nm with the same amount of points as t
 
-(2) **Choosa a distribution model**
+(2) **Choose a distribution model**
 
     A non-parametric distribution is specified using the string ``'P'`` in ``fitmodel``. In a non-parametric distribution, each element :math:`P_i` of the distribution is a parameter. Non-parametric distributions are obtained via methods such as Tikhonov regularization. If there are reasons to believe that the distance distribution has a specific shape (e.g. Gaussian, Rice, random-coil, etc.), or if there is very little information in the data, use a parametric distance distribution model from the :ref:`list of available models<modelsref_dd>`. If a sample does not have a intra-molecular distance distribution (if there are no doubly labelled molecules), set the distribution model to ``None``.
 

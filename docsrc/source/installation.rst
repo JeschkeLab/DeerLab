@@ -6,7 +6,9 @@ Installation
 Requirements
 ------------
 
-To install DeerLab, first install Python on your computer. Python can be downloaded from the `official Python distribution <https://www.python.org/>`_. There are many online tutorials to guide you through the installation and setup (see `here <https://realpython.com/installing-python/>`_ for example). Make sure you install one of the Python versions compatible with DeerLab, as listed :ref:`here <installation>`.
+To install DeerLab, first install Python on your computer. Python can be downloaded from the `official Python distribution <https://www.python.org/>`_. There are
+many online tutorials to guide you through the installation and setup (see `here <https://realpython.com/installing-python/>`_ for example). Make sure you install
+one of the Python versions compatible with DeerLab, either **Python 3.6**, **3.7**, **3.8**, or **3.9**  
 
 For Windows systems it is important to ensure that the **Install launcher for all users (recommended)** and  the **Add Python 3.x to PATH** checkboxes at the bottom are checked. To test if python has been successfully  installed, open a terminal window and run the command::
 
