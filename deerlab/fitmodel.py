@@ -234,6 +234,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     # Default optional settings
     normP = True
+    bootsamples = 1000
 
     # Make inputs into a list if just a singal is passed
     Vexp,t,bg_model,ex_model = ([var] if type(var) is not list else var for var in (Vexp,t,bg_model,ex_model))
@@ -244,30 +245,28 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         raise KeyError('The same number of signals V and time axes t must be provided.')
     for i in range(nSignals):
         if len(Vexp[i])!=len(t[i]):
-            raise ValueError('V[{}] and t[{}] must have the same number of elements.'.format(i,i))
+            raise ValueError(f'V[{i}] and t[{i}] must have the same number of elements.')
         if not np.all(np.isreal(Vexp[i])):
-            raise ValueError('Input signals cannot be complex-valued')
+            raise ValueError('Input signals cannot be complex-valued.')
     
     # If just one model is specified, assume same model for all signals
     if len(bg_model)!=nSignals:
-        bg_model = bg_model*nSignals    
+        bg_model = bg_model*nSignals
     if len(ex_model)!=nSignals:
         ex_model = ex_model*nSignals
 
-    # Default bootstrap samples
-    bootsamples = 1000
-    if isinstance(uq, str) or uq==None:
+    # Process uncertainty quantification settings
+    if isinstance(uq, str) or uq is None:
         uq = [uq]
-    if uq[0]!='bootstrap' and uq[0]!='covariance'and uq[0]!=None:
+    if uq[0]!='bootstrap' and uq[0]!='covariance'and uq[0] is not None:
         raise KeyError("Uncertainty quantification must be either 'covariance', 'bootstrap', or None.")
     if uq[0]=='bootstrap':
-        # OVerride default if user has specified bootstraped samples
-        if len(uq)>1: bootsamples = uq[1]
+        # Override default if user has specified bootstraped samples
+        if len(uq)>1:
+            bootsamples = uq[1]
+    
     uq = uq[0]
-    if uq is None:
-        uqanalysis = False 
-    else:
-        uqanalysis = True 
+    uqanalysis = uq is not None
 
     # Combine input boundary and start conditions
     par0 = [[] if par0_i is None else par0_i for par0_i in [dd_par0,bg_par0,ex_par0]]
@@ -862,10 +861,10 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
 
     return FitResult(V=Vfit, P=Pfit, B=Bfit, Vmod=Vmod, Vunmod=Vunmod, exparam=parfit['ex'], bgparam=parfit['bg'],
-                      ddparam=parfit['dd'], Vuncert = modfituq['Vfit'], Puncert = modfituq['Pfit'], 
+                      ddparam=parfit['dd'], Vuncert=modfituq['Vfit'], Puncert=modfituq['Pfit'], 
                       VmodUncert=modfituq['Vmod'], VunmodUncert=modfituq['Vunmod'],
-                      Buncert = modfituq['Bfit'], exparamUncert = paruq['ex'], bgparamUncert = paruq['bg'],
-                      ddparamUncert = paruq['dd'], regparam = alphaopt, plot=_display_results, scale=scales,  stats=stats, cost=fit.cost,
+                      Buncert=modfituq['Bfit'], exparamUncert=paruq['ex'], bgparamUncert=paruq['bg'],
+                      ddparamUncert=paruq['dd'], regparam=alphaopt, plot=_display_results, scale=scales, stats=stats, cost=fit.cost,
                       residuals=fit.residuals, success=fit.success)
 # ==============================================================================
 # ==============================================================================

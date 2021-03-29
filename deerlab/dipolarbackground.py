@@ -7,7 +7,7 @@ import numpy as np
 import inspect
 import types
 
-def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
+def dipolarbackground(t, pathways, Bmodel):
     r""" Constructs background decay functions according to the multi-pathway model.
     
     Parameters
@@ -85,11 +85,9 @@ def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
 
     pathways = [np.atleast_1d(path) for path in pathways]
     
-    # Get unmodulated pathways    
+    # Remove unmodulated pathways    
     unmodulated = [pathways.pop(i) for i,path in enumerate(pathways) if len(path)==1]
-    # Combine all unmodulated contributions
-    Lambda0 = sum(np.concatenate([path for path in unmodulated]))
-
+ 
     # Check structure of pathways
     for i,path in enumerate(pathways):
         if len(path) == 2:
@@ -97,15 +95,14 @@ def dipolarbackground(t, pathways, Bmodel, renormalize=True, renormpaths=True):
             pathways[i] = np.append(path,1) 
         elif len(path) != 3:
             # Otherwise paths are not correctly defined
-            raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i))
+            raise KeyError(f'The pathway #{i} must be a list of two or three elements [lam, T0] or [lam, T0, n]')
 
     # Construction of multi-pathway background function 
     #-------------------------------------------------------------------------------
-    Bnorm = 1
     B = 1
     for pathway in pathways:        
         n,T0,lam = pathway
         B = B*Bmodel(n*(t-T0),lam)
-        Bnorm = Bnorm*Bmodel(-T0*n,lam)
 
     return B
+    

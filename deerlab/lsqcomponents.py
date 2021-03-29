@@ -1,26 +1,28 @@
 import numpy as np
 
-def lsqcomponents(V,K,L=None,alpha=0,weights=1, regtype = 'tikh',huberparam = 1.35):
+def lsqcomponents(V, K, L=None, alpha=0, weights=1, regtype='tikhonov', huberparam=1.35):
 # ==============================================================================================
-
-    # Prepare
-    nr = np.shape(K)[1]
-
-    # Compute residual terms
-    KtV = weights*K.T@V
+    """
+    Calculate the components needed for the least-squares (LSQ) solvers
+    """
+    
+    # Compute components of the LSQ normal equations
     KtK = weights*K.T@K
-
+    KtV = weights*K.T@V
+    
+    # No regularization term -> done
     if L is None:
         return KtK, KtV
     
-    def optimizeregterm(fun,threshold):
+    def optimizeregterm(regfun, threshold, maxIter):
     # ============================================================================
+        nr = K.shape[1]
         P = np.zeros(nr)
         for _ in range(maxIter):
             Pprev = P
-            # Compute pseudoinverse and unconst. distribution recursively
-            KtKreg_ = KtK + alpha**2*fun(P)
-            P = P + np.linalg.solve(KtKreg_,weights*K.T@V)
+            # Compute punconstrained distribution iteratively
+            KtKreg_ = KtK + alpha**2*regfun(P)
+            P = P + np.linalg.solve(KtKreg_,KtV)
             
             # Normalize distribution by its integral to stabilize convergence
             P = P/np.sum(abs(P))
@@ -30,32 +32,30 @@ def lsqcomponents(V,K,L=None,alpha=0,weights=1, regtype = 'tikh',huberparam = 1.
             if change < threshold:
                 break
         # Compute the regularization term from the optimized result
-        regterm = fun(P)
+        regterm = regfun(P)
         return regterm
     # ============================================================================
-
-    # Compute then the LSQ components needed by NNLS optimizers    
-    if regtype.lower() == 'tikh' or regtype.lower() == 'tikhonov':
+    
+    # Compute the regularization term
+    if regtype.lower() == 'tikhonov':
         regterm = L.T@L
         
     elif regtype.lower() == 'tv':
         maxIter = 500
         changeThreshold = 1e-1
-        TVFcn = lambda p: L.T@((L/np.sqrt((L@p)**2 + np.finfo(float).eps)[:,np.newaxis]))
-        regterm = optimizeregterm(TVFcn,changeThreshold)
+        TVFcn = lambda _P: L.T@((L/np.sqrt((L@_P)**2 + np.finfo(float).eps)[:,np.newaxis]))
+        regterm = optimizeregterm(TVFcn,changeThreshold,maxIter)
         
     elif regtype.lower() == 'huber':
         maxIter = 500
         changeThreshold = 1e-2
-        HuberFcn = lambda p: 1/(huberparam**2)*(L.T@(L/np.sqrt((L@p/huberparam)**2 + 1)[:,np.newaxis]))
-        regterm = optimizeregterm(HuberFcn,changeThreshold)
+        HuberFcn = lambda _P: 1/(huberparam**2)*(L.T@(L/np.sqrt((L@_P/huberparam)**2 + 1)[:,np.newaxis]))
+        regterm = optimizeregterm(HuberFcn,changeThreshold,maxIter)
+        
     else:
-        raise ValueError("Regularization type not found. Must be 'tikh', 'tv' or 'huber'")
-
+        raise ValueError(f"Regularization type {regtype} not recognized. Must be 'tikhonov', 'tv' or 'huber'")
+    
     KtKreg = KtK + alpha**2*regterm
-
-      
+    
     return KtKreg, KtV
 # ==============================================================================================
-
-

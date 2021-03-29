@@ -103,7 +103,7 @@ def test_multipath_renorm():
     T0 = [0, tau2-t2]
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
 
-    #Reference
+    # Reference
     Bref = 1
     for p in range(len(lam)):
             Bref = Bref*Bmodel((t-T0[p]),lam[p])
@@ -113,8 +113,8 @@ def test_multipath_renorm():
     paths.append([prob**2,0])
     paths.append([prob*(1-prob),tau2-t2])
 
-    #Output
-    B = dipolarbackground(t,paths,Bmodel,renormalize=False)
+    # Output
+    B = dipolarbackground(t,paths,Bmodel)
 
     assert max(abs(B-Bref)) < 1e-8
 #==================================================================================

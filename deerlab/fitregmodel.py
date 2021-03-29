@@ -11,9 +11,9 @@ import copy
 from deerlab.utils import hccm, goodness_of_fit
 from deerlab.classes import UQResult, FitResult
 
-def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
-                weights=1, huberparam=1.35, nonnegativity=True, obir = False, 
-                uq=True, renormalize=True, noiselevelaim = -1,tol=None,maxiter=None):
+def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
+                weights=1, huberparam=1.35, nonnegativity=True, obir=False, 
+                uq=True, renormalize=True, noiselevelaim=None, tol=None, maxiter=None):
     r"""
     Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches 
     via non-negative least-squares (NNLS).
@@ -146,8 +146,15 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
     # Prepare signals, kernels and weights if multiple are passed
     V, K, weights, subsets, prescales = dl.utils.parse_multidatasets(V, K, weights,precondition=True)
 
-    # Compute regularization matrix
+    # Determine an optimal value of the regularization parameter if requested
+    if type(regparam) is str:
+        alpha = dl.selregparam(V,K,r,regtype,regparam,regorder=regorder,weights=weights, nonnegativity=nonnegativity,huberparam=huberparam)
+    else:
+        alpha = regparam
+
+    # Prepare components of the LSQ problem
     L = dl.regoperator(r,regorder)
+    KtKreg, KtV = dl.lsqcomponents(V,K,L,alpha,weights, regtype=regtype, huberparam=huberparam)
 
     # Determine the type of problem to solve
     if obir:
@@ -157,23 +164,15 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
     else:
         problem = 'unconstrained'
 
-    # If the regularization parameter is not specified, get the optimal choice
-    if type(regparam) is str:
-        alpha = dl.selregparam(V,K,r,regtype,regparam,regorder=regorder,weights=weights, nonnegativity=nonnegativity,huberparam=huberparam)
-    else:
-        alpha = regparam
-
-    # Prepare components of the LSQ-problem
-    [KtKreg, KtV] = dl.lsqcomponents(V,K,L,alpha,weights, regtype=regtype, huberparam=huberparam)
-
-    # Unconstrained LSQ problem
+    # Solve unconstrained LSQ problem
     if problem == 'unconstrained':
         Pfit = np.linalg.solve(KtKreg,KtV)
 
-    # Osher-Bregman iterated regularization
+    # Solve using Osher-Bregman iterated regularization
     elif problem == 'obir':
-        Pfit = _obir(V,K,L,regtype,alpha,weights,noiselevelaim=noiselevelaim,huberparam = huberparam, solver = solver)
-    # Non-negative LSQ problem
+        Pfit = _obir(V,K,L,regtype,alpha,weights,noiselevelaim=noiselevelaim,huberparam=huberparam, solver=solver)
+    
+    # Solve non-negative LSQ problem
     elif problem == 'nnls':
 
         if solver == 'fnnls':
@@ -181,16 +180,16 @@ def fitregmodel(V,K,r, regtype='tikhonov', regparam='aic', regorder=2, solver='c
         elif solver == 'nnlsbpp':
             Pfit = nnlsbpp(KtKreg,KtV,np.linalg.solve(KtKreg,KtV))
         elif solver == 'cvx':
-            Pfit = cvxnnls(KtKreg, KtV,tol=tol,maxiter=maxiter)
+            Pfit = cvxnnls(KtKreg,KtV,tol=tol,maxiter=maxiter)
         else:
-            raise KeyError(f'{solver} is not a known non-negative least squares solver')
+            raise KeyError(f'{solver} is not a known non-negative least squares solver.')
 
     # Get fit final status
     Vfit = K@Pfit
     success = ~np.all(Pfit==0)
     res = V - Vfit
     fval = np.linalg.norm(V - Vfit)**2 + alpha**2*np.linalg.norm(L@Pfit)**2
-        
+
     # Uncertainty quantification
     # ----------------------------------------------------------------
     if uq:
@@ -288,30 +287,33 @@ def _augment(res,J,regtype,alpha,L,P,eta):
 # ===========================================================================================
 
 
-def _obir(V,K,L, regtype, alpha, weights, noiselevelaim=-1, huberparam=1.35 , solver = 'cvx'):
+def _obir(V,K,L, regtype, alpha, weights, noiselevelaim=None, huberparam=1.35 , solver = 'cvx'):
 # ===========================================================================================
     """
     Osher's Bregman-iterated regularization method
     ==============================================
 
-    P = OBIR(V,K,r,'type',alpha)
+    P = OBIR(V,K,r,regtype,alpha)
 
     OBIR of the N-point signal (V) to a M-point distance
     distribution (P) given a M-point distance axis (r) and NxM point kernel
     (K). The regularization parameter (alpha) controls the regularization
     properties.
 
-    The type of regularization employed in OBIR is set by the 'type'
+    The type of regularization employed in OBIR is set by the regtype
     input argument. The regularization models implemented in OBIR are:
         'tikhonov' -   Tikhonov regularization
         'tv'       -   Total variation regularization
         'huber'    -   pseudo-Huber regularization
 
-    P = OBIR(...,'Property',Value)
-    Additional (optional) arguments can be passed as name-value pairs.
+    Additional (optional) keyword arguments:
+      weights          weights  
+      noiselevelaim    the noise level to aim for, automatic if set to None
+      huberparam       parameter for Huber reguarization
+      solver           solver to use: 'cvx', 'fnnls', or 'nnlsbpp'
     """
 
-    if noiselevelaim == -1:
+    if noiselevelaim is None:
         noiselevelaim = dl.noiselevel(V)
 
     MaxOuterIter = 5000
@@ -340,10 +342,10 @@ def _obir(V,K,L, regtype, alpha, weights, noiselevelaim=-1, huberparam=1.35 , so
         # Store previous iteration distribution
         Pprev = Pfit
         
-        #Update
+        # Update
         KtVsg = KtV - subGrad
         
-        #Get solution of current Bregman iteration
+        # Get solution of current Bregman iteration
         if solver == 'fnnls':
             Pfit = fnnls(KtKreg,KtVsg)
         elif solver == 'nnlsbpp':
@@ -351,7 +353,7 @@ def _obir(V,K,L, regtype, alpha, weights, noiselevelaim=-1, huberparam=1.35 , so
         elif solver == 'cvx':
             Pfit = cvxnnls(KtKreg, KtVsg)
         else:
-            raise KeyError(f'{solver} is not a known non-negative least squares solver')
+            raise KeyError(f'{solver} is not a known non-negative least squares solver.')
         
         # Update subgradient at current solution
         subGrad = subGrad + weights*K.T@(K@Pfit - V)
@@ -422,6 +424,3 @@ def _plot(subsets,Vexp,Vfit,r,Pfit,Puq,show=False):
         plt.close()
     return fig
 # ===========================================================================================
-
-
-
