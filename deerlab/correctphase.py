@@ -2,7 +2,7 @@ import numpy as np
 import scipy.optimize as opt
 from deerlab.utils import isempty
 
-def correctphase(V, phase = [], imagoffset=False, full_output=False):
+def correctphase(V, phase=None, imagoffset=False, selphase='maxrealint', full_output=False):
 # ==========================================================================
     r"""
     Phase correction of complex-valued data
@@ -20,10 +20,21 @@ def correctphase(V, phase = [], imagoffset=False, full_output=False):
     ----------
     V : array_like or list of array_like
         Complex-valued signals or list thereof.
+
     phase : float scalar, optional
         Phase shift for manual correction, in radians. 
+
     imagoffset : boolean, optional
         Enables/Disables the fitting and correction of an imaginary offset, by default disabled.
+
+    phaseselect : string, optional 
+        Selection criterion for phase optimization. 
+
+        * ``'maxrealint'`` - Maximization of the integral of the real component of ``V``.
+        * ``'minphase'`` - Minimization of the imaginary component of ``V``.
+
+        The default behaviour is ``'maxrealint'``.
+
     full_output : boolean, optional
         If enabled, the function will return additional output arguments, by default disabled.
 
@@ -31,30 +42,59 @@ def correctphase(V, phase = [], imagoffset=False, full_output=False):
     -------
     Vr : ndarray
         Real part of the phase corrected dataset.
+
     Vi : ndarray (if full_output==True)
         Imaginary part of the phase corrected dataset.
+
     phase : float scalar (if full_output==True)
         Fitted phase used for correction, in radians.    
+
     imoffset : float scalar (if full_output==True)
         Fitted imaginary offset used for correction.
 
     """
 
-    if V.ndim == 1:
+    V_ = V.copy()
+    if V_.ndim == 1:
         Ntraces = 1
-        V = V[:,np.newaxis]
+        V_ = V_[:,np.newaxis]
     else:
-        Ntraces = V.shape[1]
-    n = V.shape[0]
+        Ntraces = V_.shape[1]
+    n = V_.shape[0]
 
     # Determine if phase must be fitted or has been passed
-    if isempty(phase):
+    if phase is None:
         fitPhase = True
     else: 
         fitPhase = False
         phase = np.atleast_1d(phase)
         if len(phase) != Ntraces:
             raise ValueError('The number of input phases must agree with the number of traces.') 
+    if imagoffset:
+        selphase=='minphase'
+
+    def phase_objfcn(params,V):
+    # ==========================================================================
+        " Objective function for optimization of the phase"
+
+        phase = params[0]
+        if len(params)>1:
+            imoffsets = params[1]
+        else:
+            imoffsets = 0
+
+        Vcorr = (V-1j*imoffsets)*np.exp(-1j*phase)
+        if selphase=='minphase':
+            # Minimize the imaginary part / Maximize the real part
+            objfcn = np.linalg.norm(np.imag(Vcorr))
+        elif selphase=='maxrealint':
+            # Maximize the integral of the real opart
+            objfcn = np.sum(np.abs(Vcorr))-np.sum(np.real(Vcorr))
+        else: 
+            raise KeyError("The requested method is not valid. It must be either 'maxrealint' or 'minphase'.")
+
+        return objfcn
+    # ==========================================================================
 
     # Phase/offset fitting
     #-------------------------------------------------------------------------------
@@ -64,13 +104,12 @@ def correctphase(V, phase = [], imagoffset=False, full_output=False):
         for i in range(Ntraces):
             par0 = []
             FitRange = np.arange(round(n/8),n) # use only last 7/8 of data for phase/offset correction
-            V_ = V[FitRange,i]
-            par0.append(np.mean(np.angle(V_))) # use average phase as initial value
+            V_cut = V_[FitRange,i]
+            par0.append(np.mean(np.angle(V_cut))) # use average phase as initial value
             if imagoffset:
-                par0.append(np.mean(np.imag(V_))) # use average offset as initial value
-            fun = lambda par: _imaginarynorm(par,V_)
+                par0.append(np.mean(np.imag(V_cut))) # use average offset as initial value
 
-            pars = opt.fmin(fun,par0,maxfun=1e5,maxiter=1e5,disp=False)
+            pars = opt.fmin(lambda par: phase_objfcn(par,V_cut),par0,maxfun=1e5,maxiter=1e5,disp=False)
             phase[i] = pars[0]
             if imagoffset:
                 ImagOffset[i] = pars[1]
@@ -79,14 +118,13 @@ def correctphase(V, phase = [], imagoffset=False, full_output=False):
             # Fit only imaginary offset        
             for i in range(Ntraces):
                 par0 = 0
-                fun = lambda offset: _imaginarynorm([phase, offset],V[:,i])
-                ImagOffset[i] = opt.fmin(fun,par0)
+                ImagOffset[i] = opt.fmin(lambda offset: phase_objfcn([phase, offset],V_cut[:,i]),par0,maxfun=1e5,maxiter=1e5,disp=False)
 
     ImagOffset = ImagOffset*1j
 
     # Apply phase/offset correction
-    ph = np.exp(1j*phase)
-    Vc = (V - ImagOffset)/ph
+    ph = np.exp(-1j*phase)
+    Vc = (V_ - ImagOffset)*ph
 
     if Ntraces==1:
         Vc = np.squeeze(Vc)
@@ -94,31 +132,12 @@ def correctphase(V, phase = [], imagoffset=False, full_output=False):
     # Output
     Vreal = np.real(Vc)
     Vimag = np.imag(Vc)
-    phase = np.angle(ph) # map phase angle to [-pi,pi) interval
+    # Map phase angle to [-pi,pi) interval
+    phase = np.angle(ph) 
 
     if full_output:
         return Vreal,Vimag,phase,ImagOffset
     else:
         return Vreal
 
-# ==========================================================================
-
-
-def _imaginarynorm(params,V):
-# ==========================================================================
-    """
-    Computes norm of the imaginary part of phase-corrected data from zero before
-    phase correction, an offset can be subtracted from the imaginary part.
-    """
-
-    phase = params[0]
-    if len(params)>1:
-        imoffsets = params[1]
-    else:
-        imoffsets = 0
-
-    Vcorr = (V-1j*imoffsets)*np.exp(-1j*phase)
-    ImagNorm = np.linalg.norm(np.imag(Vcorr))
-
-    return ImagNorm
 # ==========================================================================
