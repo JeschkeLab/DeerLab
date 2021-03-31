@@ -421,12 +421,14 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         # Separable non-linear least-squares (SNLLS) fit
         scale = 1e2
         fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, 
-                        weights=weights, reg=False, uq=False, nonlin_tol=tol, nonlin_maxiter=maxiter)
+                        weights=weights, reg=False, nonlin_tol=tol, nonlin_maxiter=maxiter)
         pnonlin = fit.nonlin
         plin = fit.lin
         par_prev = pnonlin
 
-        plin = plin/scale
+        plin /= scale
+        fit.model /= scale
+        fit.modelUncert = fit.modelUncert.propagate(lambda x: x/scale)
 
         # Store the fitted parameters
         pnonlin_.append(pnonlin)
@@ -451,6 +453,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         lin_ub_.append(lin_ub)
         lin_lb_.append(lin_lb-1) # rescale to zero
         fits.append(fit)
+
     # Select the optimal model
     # ========================
     Peval = Pfit
@@ -523,8 +526,8 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         fig = _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uq,show)
         return fig
 
-    return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, Puncert=Puq, 
-                    paramUncert=paramuq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
+    return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, model=fit.model, Puncert=Puq, 
+                    paramUncert=paramuq, modelUncert=fit.modelUncert, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
                     stats=stats, cost=fit.cost, residuals=fit.residuals, success=fit.success)
 # =========================================================================
 
