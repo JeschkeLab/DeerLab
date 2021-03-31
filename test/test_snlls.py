@@ -427,3 +427,32 @@ def test_confinter_values():
     ci_match = lambda ci,ci_ref,truth:np.max(abs(np.array(ci) - np.array(ci_ref)))/truth < 0.01
     assert ci_match(a_ci,a_ci_ref,pnonlin[0]) & ci_match(b_ci,b_ci_ref,pnonlin[1])
 # ======================================================================
+
+
+def test_confinter_scaling():
+#============================================================
+    "Check that the confidence intervals are agnostic w.r.t. scaling"
+
+    # Prepare test data
+    r = np.linspace(1,8,80)
+    t = np.linspace(0,4,200)
+    lam = 0.25
+    K = dipolarkernel(t,r,lam)
+    parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
+    P = dd_gauss2(r,parin)
+    V = K@P
+    # Non-linear parameters
+    nlpar0 = 0.2
+    lb = 0
+    ub = 1
+    # Linear parameters: non-negativity
+    lbl = np.zeros(len(r))
+    V0_1 = 1
+    V0_2 = 1e9
+
+    # Separable LSQ fit
+    fit1 = snlls(V*V0_1,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl)
+    fit2 = snlls(V*V0_2,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl)
+
+    assert np.max(abs(fit1.linUncert.ci(95)/V0_1 - fit2.linUncert.ci(95)/V0_2)) < 0.05
+#============================================================
