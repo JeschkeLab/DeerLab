@@ -27,7 +27,7 @@ def correctphase(V, phase=None, imagoffset=False, selphase='maxrealint', full_ou
     imagoffset : boolean, optional
         Enables/Disables the fitting and correction of an imaginary offset, by default disabled.
 
-    phaseselect : string, optional 
+    selphase : string, optional 
         Selection criterion for phase optimization. 
 
         * ``'maxrealint'`` - Maximization of the integral of the real component of ``V``.
