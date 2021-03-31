@@ -54,6 +54,8 @@ Release v0.13.0 - March 2021
     - Added internal validation step to avoid non-sensical results when confounding the syntax ([#91](https://github.com/JeschkeLab/DeerLab/pull/91)).
 - ``regparamrange``:
     - Implemented new CSD algorithm to avoid LAPACK library crashes encountered when using multiple DeerLab functions calling ``regparamrange`` internally ([#68](https://github.com/JeschkeLab/DeerLab/pull/68)).
+- ``correctphase``: 
+    - Implement new method for optimization of the phase based on maximization of the integral of the real part of the signal, rather than minimization of the norm of the imaginary part, which was prone to multiple minima ([#114](https://github.com/JeschkeLab/DeerLab/issues/114)). Both approaches are available and can be switched by a new keyword argument `phaseselect` ([#131](https://github.com/JeschkeLab/DeerLab/pull0/131)).
 
 -------------------------------
 
