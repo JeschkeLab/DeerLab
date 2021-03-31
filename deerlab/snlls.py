@@ -205,7 +205,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     par0 = np.atleast_1d(par0)
 
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
-    y, Amodel, weights, subsets = dl.utils.parse_multidatasets(y, Amodel, weights, precondition=False)
+    y, Amodel, weights, subsets, prescales = dl.utils.parse_multidatasets(y, Amodel, weights, precondition=True)
 
     # Get info on the problem parameters and non-linear operator
     A0 = Amodel(par0)
@@ -213,7 +213,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     Nlin = np.shape(A0)[1]
     linfit = np.zeros(Nlin)
     scales = [1 for _ in subsets]
-    prescales= [1 for _ in subsets]
+
     # Determine whether to use regularization penalty
     illConditioned = np.linalg.cond(A0) > 10
     if reg == 'auto':
@@ -257,7 +257,6 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     linearConstrained = (not np.all(np.isinf(lbl))) or (not np.all(np.isinf(ubl)))
     # Check for non-negativity constraints on the linear solution
     nonNegativeOnly = (np.all(lbl == 0)) and (np.all(np.isinf(ubl)))
-
 
     # Use an arbitrary axis
     ax = np.arange(1, Nlin+1)
@@ -432,7 +431,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
         # Jacobian (linear part)
         Jlin = np.zeros((len(res),len(linfit)))
-        Jlin[:len(y),:] = Amodel(nonlinfit)
+        Jlin[:len(y),:] = scales_vec[:,np.newaxis]*Amodel(nonlinfit)
         if includeRegularization:
             Jlin[len(res)-Nlin:,:] = reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)[1]
 
@@ -534,7 +533,8 @@ def reg_penalty(regtype, alpha, L, x, eta, Nnonlin):
 def _plot(subsets,y,yfit,show):
 # ===========================================================================================
     nSignals = len(subsets)
-    fig,axs = plt.subplots(nSignals+1,figsize=[7,3*nSignals])
+    fig,axs = plt.subplots(nSignals,figsize=[7,3*nSignals])
+    axs = np.atleast_1d(axs)
     for i in range(nSignals): 
         subset = subsets[i]
         # Plot the experimental signal and fit
