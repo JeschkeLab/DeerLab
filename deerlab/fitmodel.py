@@ -16,8 +16,7 @@ from deerlab.utils import isempty, goodness_of_fit, Jacobian
 def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
               dd_par0=None, bg_par0=None, ex_par0=None, verbose=False, 
               dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
-              weights=1, uq='covariance', regparam='aic', regtype = 'tikhonov',
-              tol=1e-10,maxiter=1e8):
+              weights=1, uq='covariance', regparam='aic', tol=1e-10,maxiter=1e8):
     r"""
     Fits a dipolar model to the experimental signal ``V`` with time axis ``t``, using
     distance axis ``r``. The model is specified by the distance distribution (dd),
@@ -120,15 +119,6 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         
         The regularization parameter can be manually specified by passing a scalar value
         instead of a string. The default ``'aic'``.
-
-    regtype : string, optional
-        Regularization functional type: 
-    
-        * ``'tikhonov'`` - Tikhonov regularizaton
-        * ``'tv'``  - Total variation regularization
-        * ``'huber'`` - Huber regularization
-        
-        The default is ``'tikhonov'``.  
 
     tol : scalar, optional 
         Tolerance value for convergence of the NNLS algorithm. If not specified, the value is set to ``tol = 1e-10``.
@@ -519,7 +509,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Ks = [dl.dipolarkernel(ts,r) for ts in t]
         
         # Linear regularization fit
-        fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter)
+        fit = dl.fitregmodel(Vexp,Ks,r,'tikhonov',regparam, weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter)
         Pfit = fit.P
         Pfit_uq = fit.Puncert
         scales = np.atleast_1d(fit.scale)
