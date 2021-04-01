@@ -12,7 +12,7 @@ def test_correction():
     P = dd_gauss(r,[5,0.2])
     B = bg_exp(t,0.3)
     scale = 1e8
-    V = dipolarkernel(t,r,0.25,B)@P
+    V = dipolarkernel(t,r,mod=0.25,bg=B)@P
     
     Vc = correctscale(V*scale,t,model='deer')
 
@@ -28,7 +28,7 @@ def test_model_gauss():
     P = dd_gauss(r,[5,0.2])
     B = bg_exp(t,0.3)
     scale = 1e8
-    V = dipolarkernel(t,r,0.25,B)@P
+    V = dipolarkernel(t,r,mod=0.25,bg=B)@P
     
     Vc = correctscale(scale*V,t,model='gauss')
 
@@ -45,7 +45,7 @@ def test_tmax():
     P = dd_gauss(r,[5,0.2])
     B = bg_exp(t,0.3)
     scale = 1e8
-    V = dipolarkernel(t,r,0.25,B)@P
+    V = dipolarkernel(t,r,mod=0.25,bg=B)@P
     
     Vc = correctscale(V*scale,t,tmax=3.5)
 

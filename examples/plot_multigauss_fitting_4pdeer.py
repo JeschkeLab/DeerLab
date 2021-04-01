@@ -24,7 +24,7 @@ def K4pdeer(par,t,r):
     # Simualte background
     B = dl.bg_hom3d(t,conc,lam)
     # Generate dipolar kernel
-    K = dl.dipolarkernel(t,r,lam,B)
+    K = dl.dipolarkernel(t,r,mod=lam,bg=B)
 
     return K
 

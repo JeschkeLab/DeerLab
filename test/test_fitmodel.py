@@ -22,7 +22,7 @@ def assert_experiment_model(model):
 
     kappa = 0.4
     Bmodel = lambda t: bg_exp(t,kappa)
-    K = dipolarkernel(t,r,pathways,Bmodel)
+    K = dipolarkernel(t,r,pathways=pathways,bg=Bmodel)
     V = K@P
 
     fit = fitmodel(V,t,r,'P',bg_exp,model,uq=None)
@@ -99,7 +99,7 @@ def test_form_factor():
     t = np.linspace(0,5,100)
     r = np.linspace(2,6,150)
     P = dd_gauss(r,[4.5, 0.25])
-    K = dipolarkernel(t,r,0.3)
+    K = dipolarkernel(t,r,mod=0.3)
     V = K@P
     fit = fitmodel(V,t,r,'P',None,ex_4pdeer,uq=None)
     assert ovl(P,fit.P) > 0.90
@@ -115,7 +115,7 @@ def test_full_parametric():
     lam = 0.3
     kappa = 0.2
     B = bg_exp(t,lam*kappa)
-    V = dipolarkernel(t,r,lam,B)@P
+    V = dipolarkernel(t,r,mod=lam,bg=B)@P
 
     fit = fitmodel(V,t,r,dd_gauss,bg_exp,ex_4pdeer,uq=None)
 
@@ -146,7 +146,7 @@ def test_start_values():
 
     lam = 0.4
     Bmodel = lambda t: bg_exp(t,0.4)
-    K = dipolarkernel(t,r,lam,Bmodel)
+    K = dipolarkernel(t,r,mod=lam,bg=Bmodel)
     V = K@P
 
     fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,bg_par0=0.5,ex_par0=0.5,uq=None)
@@ -164,7 +164,7 @@ def test_boundaries():
 
     lam = 0.4
     Bmodel = lambda t: bg_exp(t,0.4)
-    K = dipolarkernel(t,r,lam,Bmodel)
+    K = dipolarkernel(t,r,mod=lam,bg=Bmodel)
     V = K@P 
 
     fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer, uq=None,
@@ -184,7 +184,7 @@ def test_boundaries_adjust_bg():
 
     lam,conc = 0.4,80
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
-    K = dipolarkernel(t,r,lam,Bmodel)
+    K = dipolarkernel(t,r,mod=lam,bg=Bmodel)
     V = K@P 
 
     fit = fitmodel(V,t,r,'P',bg_hom3d,ex_4pdeer, uq=None, bg_lb=70, bg_ub=90)
@@ -202,7 +202,7 @@ def test_boundaries_adjust_ex():
 
     lam,conc = 0.6,80
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
-    K = dipolarkernel(t,r,lam,Bmodel)
+    K = dipolarkernel(t,r,mod=lam,bg=Bmodel)
     V = K@P 
 
     fit = fitmodel(V,t,r,'P',bg_hom3d,ex_4pdeer, uq=None, ex_lb=0.55, ex_ub=0.65)
@@ -220,7 +220,7 @@ def test_boundaries_adjust_dd():
 
     lam,conc = 0.4,80
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
-    K = dipolarkernel(t,r,lam,Bmodel)
+    K = dipolarkernel(t,r,mod=lam,bg=Bmodel)
     V = K@P 
 
     fit = fitmodel(V,t,r,dd_gauss,bg_hom3d,ex_4pdeer, uq=None, dd_lb=[4,0.3],dd_ub=[6,0.5])
@@ -244,9 +244,9 @@ def test_global_4pdeer():
     Bmodel = lambda t: bg_exp(t,kappa)
 
     t1 = np.linspace(0,5,100)
-    V1 = dipolarkernel(t1,r,pathways,Bmodel)@P
+    V1 = dipolarkernel(t1,r,pathways=pathways,bg=Bmodel)@P
     t2 = np.linspace(0,5,250)
-    V2 = dipolarkernel(t2,r,pathways,Bmodel)@P
+    V2 = dipolarkernel(t2,r,pathways=pathways,bg=Bmodel)@P
     
     fit = fitmodel([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer,uq=None)
 
@@ -264,8 +264,8 @@ def test_global_full_parametric():
     B = lambda t: bg_exp(t,kappa)
     t1 = np.linspace(0,5,100)
     t2 = np.linspace(0,3,200)
-    V1 = dipolarkernel(t1,r,lam,B)@P
-    V2 = dipolarkernel(t2,r,lam,B)@P
+    V1 = dipolarkernel(t1,r,mod=lam,bg=B)@P
+    V2 = dipolarkernel(t2,r,mod=lam,bg=B)@P
 
     fit = fitmodel([V1,V2],[t1,t2],r,dd_gauss,bg_exp,ex_4pdeer,uq=None)
 
@@ -283,8 +283,8 @@ def test_global_mixed_backgrounds():
     B = lambda t: bg_exp(t,kappa)
     t1 = np.linspace(0,5,100)
     t2 = np.linspace(0,3,200)
-    V1 = dipolarkernel(t1,r,lam,B)@P
-    V2 = dipolarkernel(t2,r,lam)@P
+    V1 = dipolarkernel(t1,r,mod=lam,bg=B)@P
+    V2 = dipolarkernel(t2,r,mod=lam)@P
 
     fit = fitmodel([V1,V2],[t1,t2],r,dd_gauss,[bg_exp,None],ex_4pdeer,uq=None)
 
@@ -300,7 +300,7 @@ def test_global_mixed_experiments():
     lam = 0.3
     t1 = np.linspace(0,5,100)
     t2 = np.linspace(0,3,200)
-    V1 = dipolarkernel(t1,r,lam)@P
+    V1 = dipolarkernel(t1,r,mod=lam)@P
     V2 = dipolarkernel(t2,r)@P
 
     fit = fitmodel([V1,V2],[t1,t2],r,dd_gauss,None,[ex_4pdeer,None],uq=None)
@@ -349,7 +349,7 @@ Bmodel = lambda t,lam: bgmodel(t,kappa)
 
 t = np.linspace(0,5,100)
 np.random.seed(0)
-V = dipolarkernel(t,r,pathways,Bmodel)@P + whitegaussnoise(t,0.01)
+V = dipolarkernel(t,r,pathways=pathways,bg=Bmodel)@P + whitegaussnoise(t,0.01)
 
 fit = fitmodel(V,t,r,ddmodel,bgmodel,exmodel,uq='covariance')
 #----------------------------------------------------------------------
@@ -412,7 +412,7 @@ Bmodel = lambda t: bgmodel(t,kappa)
 
 t = np.linspace(0,5,100)
 np.random.seed(0)
-V = dipolarkernel(t,r,pathways,Bmodel)@P + whitegaussnoise(t,0.03)
+V = dipolarkernel(t,r,pathways=pathways,bg=Bmodel)@P + whitegaussnoise(t,0.03)
 
 fit_Pparam = fitmodel(V,t,r,ddmodel,bgmodel,exmodel,uq='covariance')
 fit_Pfree = fitmodel(V,t,r,'P',bgmodel,exmodel,uq='covariance')
@@ -487,7 +487,7 @@ def assert_confinter_noforeground():
     Bmodel = bgmodel(t,kappa)
 
     np.random.seed(0)
-    V = dipolarkernel(t,r,lam,Bmodel)@P + whitegaussnoise(t,0.01)
+    V = dipolarkernel(t,r,mod=lam,bg=Bmodel)@P + whitegaussnoise(t,0.01)
     
     fit = fitmodel(V,t,r,None,bgmodel,ex_4pdeer,uq='covariance')
 
@@ -538,9 +538,9 @@ def test_global_scale_4pdeer():
     Bmodel = lambda t: bg_exp(t,kappa)
     scales = [1e3,1e9]
     t1 = np.linspace(0,5,100)
-    V1 = scales[0]*dipolarkernel(t1,r,pathways,Bmodel)@P
+    V1 = scales[0]*dipolarkernel(t1,r,pathways=pathways,bg=Bmodel)@P
     t2 = np.linspace(0,5,250)
-    V2 = scales[1]*dipolarkernel(t2,r,pathways,Bmodel)@P
+    V2 = scales[1]*dipolarkernel(t2,r,pathways=pathways,bg=Bmodel)@P
     
     fit = fitmodel([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer,uq=None)
 
@@ -555,7 +555,7 @@ def test_V_scale_parametric():
     r = np.linspace(2,6,150)
     P = dd_gauss(r,[4.5, 0.2])
     Bmodel = lambda t: bg_exp(t,0.4)
-    K = dipolarkernel(t,r,0.3,Bmodel)
+    K = dipolarkernel(t,r,mod=0.3,bg=Bmodel)
     scale = 1.54e6
     V = scale*(K@P)
 
@@ -571,7 +571,7 @@ def test_V_scale():
     r = np.linspace(2,6,150)
     P = dd_gauss(r,[4.5, 0.2])
     Bmodel = lambda t: bg_exp(t,0.4)
-    K = dipolarkernel(t,r,0.3,Bmodel)
+    K = dipolarkernel(t,r,mod=0.3,bg=Bmodel)
     scale =1.54e6
     V = scale*(K@P)
 
@@ -603,7 +603,7 @@ def test_plot():
     P = dd_gauss(r,[4.5, 0.25])
 
     Bmodel = lambda t: bg_exp(t,0.4)
-    K = dipolarkernel(t,r,0.4,Bmodel)
+    K = dipolarkernel(t,r,mod=0.4,bg=Bmodel)
     V = K@P
 
     fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,uq=None)
@@ -621,7 +621,7 @@ def test_physical_bg_model():
     r = np.linspace(3,5,50)
     P = dl.dd_gauss(r,[4,0.2])
     V0 = 3000
-    K = dl.dipolarkernel(t,r,0.4,lambda t,lam:dl.bg_hom3d(t,50,lam))
+    K = dl.dipolarkernel(t,r,mod=0.4,bg=lambda t,lam:dl.bg_hom3d(t,50,lam))
     V = K@P
     V = V0*V
 
@@ -638,7 +638,7 @@ def test_phenomenological_bg_model():
     r = np.linspace(3,5,50)
     P = dl.dd_gauss(r,[4,0.2])
     V0 = 3000
-    K = dl.dipolarkernel(t,r,dl.ex_4pdeer(0.4),lambda t: dl.bg_exp(t,0.3))
+    K = dl.dipolarkernel(t,r,pathways=dl.ex_4pdeer(0.4),bg=lambda t: dl.bg_exp(t,0.3))
     V = K@P
     V = V0*V
 
@@ -656,7 +656,7 @@ def test_Vunmod():
     r = np.linspace(3,5,50)
     P = dl.dd_gauss(r,[4,0.2])
     lam = 0.4
-    K = dl.dipolarkernel(t,r,dl.ex_4pdeer(lam),lambda t,lam: dl.bg_hom3d(t,50,lam))
+    K = dl.dipolarkernel(t,r,pathways=dl.ex_4pdeer(lam),bg=lambda t,lam: dl.bg_hom3d(t,50,lam))
     Bscaled = (1-lam)*dl.bg_hom3d(t,50,lam)
     V = K@P
 
@@ -674,7 +674,7 @@ def test_cost_value():
     P = dd_gauss(r,[4.5, 0.25])
 
     Bmodel = lambda t: bg_exp(t,0.4)
-    K = dipolarkernel(t,r,0.4,Bmodel)
+    K = dipolarkernel(t,r,mod=0.4,bg=Bmodel)
     V = K@P
 
     fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,uq=None)
@@ -698,7 +698,7 @@ def test_cost_value():
 
     t = np.linspace(0,5,100)
     np.random.seed(0)
-    V = dipolarkernel(t,r,pathways,Bmodel)@P + whitegaussnoise(t,0.03)
+    V = dipolarkernel(t,r,pathways=pathways,bg=Bmodel)@P + whitegaussnoise(t,0.03)
 
     fit = fitmodel(V,t,r,ddmodel,bgmodel,exmodel,uq=['bootstrap',2])
 # ----------------------------------------------------------------------
@@ -784,7 +784,7 @@ def test_convergence_criteria():
     P = dd_gauss(r,[4.5, 0.25])
 
     Bmodel = lambda t: bg_exp(t,0.4)
-    K = dipolarkernel(t,r,0.4,Bmodel)
+    K = dipolarkernel(t,r,mod=0.4,bg=Bmodel)
     V = K@P
 
     fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,uq=None,tol=1e-3,maxiter=1e2)

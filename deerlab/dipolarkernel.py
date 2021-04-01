@@ -23,8 +23,8 @@ h = 6.62607015e-34 # Planck constant, J/Hz
 def w0(g):
     return (mu0/2)*muB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> Mrad s^-1 nm^3
 
-def dipolarkernel(t, r, pathways = 1, B = None, method = 'fresnel', excbandwidth = inf, g = [ge, ge], 
-                  integralop = True, nKnots = 5001, clearcache = False):
+def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, g=[ge,ge], 
+                  integralop=True, nKnots=5001, clearcache=False):
 #===================================================================================================
     r"""Compute the dipolar kernel operator which enables the linear transformation from
     distance-domain to time-domain data. 
@@ -37,13 +37,17 @@ def dipolarkernel(t, r, pathways = 1, B = None, method = 'fresnel', excbandwidth
     r : array_like
         Distance axis, in nanometers.
     
-    pathways : list of lists or scalar
+    pathways : list of lists  or ``None``, optional
         List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time in microseconds (T0), 
         and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]``. If n is not given, it is assumed to be 1. 
-        For a unmodulated pathway, specify only the amplitude, i.e. ``[Lambda0]``.
-        If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  
+        For a unmodulated pathway, specify only the amplitude, i.e. ``[Lambda0]``. If neither ``pathways`` or ``mod`` are specified
+        (or ``None``), full-modulation is assumed ``pathways=[[0],[1,0]]``.
     
-    B : callable or array_like or ``None``
+    mod : scalar  or ``None``, optional
+        Modulation depth for the simplified 4-pulse DEER model. If neither ``pathways`` or ``mod`` are specified (or ``None``),
+        it is assumed to be ``mod=1`. 
+        
+    bg : callable or array_like or ``None``, optional
         For a single-pathway model, the numerical background decay can be passed as an array. 
         For multiple pathways, a callable function must be passed, accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``. If set to ``None``, no background decay is included.
 
@@ -92,13 +96,13 @@ def dipolarkernel(t, r, pathways = 1, B = None, method = 'fresnel', excbandwidth
         lam = 0.4  # modulation depth main signal
         pathways = [[1-lam], [lam, 0]]
         
-        K = dl.dipolarkernel(t,r,pathways)
+        K = dl.dipolarkernel(t,r,pathways=pathways)
 
 
     A shorthand input syntax equivalent to this input::
 
         lam = 0.4
-        K = dl.dipolarkernel(t,r,lam)
+        K = dl.dipolarkernel(t,r,mod=lam)
 
 
 	To specify a more complete 4-pulse DEER model that, e.g includes the 2+1 contribution, use::
@@ -113,7 +117,7 @@ def dipolarkernel(t, r, pathways = 1, B = None, method = 'fresnel', excbandwidth
         path1 = [lam2, tau2]  # 2+1 dipolar pathway, refocusing at time tau2
         pathways = [path0, path1, path2]  
         
-        K = dl.dipolarkernel(t,r,pathways)
+        K = dl.dipolarkernel(t,r,pathways=pathways)
 
 
     References
@@ -135,11 +139,9 @@ def dipolarkernel(t, r, pathways = 1, B = None, method = 'fresnel', excbandwidth
     if clearcache:
         calckernelmatrix.cache_clear()
 
-    # Ensure that r and t are numpy arrays
-    r = np.atleast_1d(r)
-    t = np.atleast_1d(t)
+    # Ensure that inputs are Numpy arrays
+    r,t,g = np.atleast_1d(r,t,g)
 
-    g = np.atleast_1d(g)
     if len(g) == 1:
         g = [g, g]
     elif len(g) != 2:
@@ -148,11 +150,20 @@ def dipolarkernel(t, r, pathways = 1, B = None, method = 'fresnel', excbandwidth
     if np.any(r<=0):
         raise ValueError("All elements in r must be nonnegative and nonzero.")
 
-    if not isinstance(pathways,list): pathways = [pathways] 
-    if len(pathways) == 1:
-        lam = pathways[0]
-        pathways = [[1-lam], [lam, 0]]
+    # Check whether the full pathways or the modulation depth have been passed
+    pathways_passed =  pathways is not None
+    moddepth_passed =  mod is not None
+    if pathways_passed and moddepth_passed: 
+        raise KeyError("Modulation depth and dipolar pathways cannot be specified simultaneously.")
 
+    if moddepth_passed:
+        # Construct 4-pulse DEER pathways if modulation depth is specified
+        pathways = [[1-mod], [mod, 0]]
+    elif not pathways_passed:
+        # Full modulation if neither pathways or modulation depth are specified
+        pathways = [[0], [1, 0]]
+
+    # Ensure correct formatting of the pathways
     paths = [np.concatenate([np.atleast_1d(p) for p in path]).astype(float) for path in pathways]
 
     # Get unmodulated pathways    
@@ -179,11 +190,11 @@ def dipolarkernel(t, r, pathways = 1, B = None, method = 'fresnel', excbandwidth
         K = K + lam*kernelmatrix(n*(t-T0))
 
     # Multiply by background if given
-    if B is not None:
-        if type(B) is types.LambdaType:
-            B = dipolarbackground(t,pathways,B)
+    if bg is not None:
+        if type(bg) is types.LambdaType:
+            B = dipolarbackground(t,pathways,bg)
         else:
-            B = np.atleast_1d(B)
+            B = np.atleast_1d(bg)
         K = K*B[:,np.newaxis]
 
     # Include delta-r factor for integration

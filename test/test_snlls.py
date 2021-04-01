@@ -89,7 +89,7 @@ def test_regularized():
     r = np.linspace(1,8,80)
     t = np.linspace(0,4,200)
     lam = 0.25
-    K = dipolarkernel(t,r,lam)
+    K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P
@@ -103,7 +103,7 @@ def test_regularized():
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uq=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl, uq=False)
     Pfit = fit.lin
 
     assert  np.max(abs(P - Pfit)) < 1e-2
@@ -139,7 +139,7 @@ def test_confinter_linear():
     r = np.linspace(1,8,150)
     t = np.linspace(0,4,200)
     lam = 0.25
-    K = dipolarkernel(t,r,lam)
+    K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P + whitegaussnoise(t,0.05,seed=1)
@@ -153,7 +153,7 @@ def test_confinter_linear():
     lbl = np.zeros(len(r))
     ubl = np.full(len(r), np.inf)
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl)
     Pfit =  np.round(fit.lin,6)
     uq = fit.linUncert
     Pci50 = np.round(uq.ci(50),6)
@@ -170,7 +170,7 @@ def test_confinter_nonlinear():
     r = np.linspace(1,8,80)
     t = np.linspace(0,4,200)
     lam = 0.25
-    K = dipolarkernel(t,r,lam)
+    K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P
@@ -185,7 +185,7 @@ def test_confinter_nonlinear():
     ubl = np.full(len(r), np.inf)
     # Separable LSQ fit
 
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl)
     parfit = fit.nonlin
     uq = fit.nonlinUncert
     parci50 = uq.ci(50)
@@ -205,8 +205,8 @@ def test_regularized_global():
     kappa = 0.50
     lam1 = 0.25
     lam2 = 0.35
-    K1 = dipolarkernel(t1,r,lam1,bg_exp(t1,kappa))
-    K2 = dipolarkernel(t2,r,lam2,bg_exp(t2,kappa))
+    K1 = dipolarkernel(t1,r,mod=lam1,bg=bg_exp(t1,kappa))
+    K2 = dipolarkernel(t2,r,mod=lam2,bg=bg_exp(t2,kappa))
     V1 = K1@P
     V2 = K2@P
 
@@ -214,8 +214,8 @@ def test_regularized_global():
     def globalKmodel(par):
         # Unpack parameters
         kappa,lam1,lam2 = par
-        K1 = dipolarkernel(t1,r,lam1,bg_exp(t1,kappa))
-        K2 = dipolarkernel(t2,r,lam2,bg_exp(t2,kappa))
+        K1 = dipolarkernel(t1,r,mod=lam1,bg=bg_exp(t1,kappa))
+        K2 = dipolarkernel(t2,r,mod=lam2,bg=bg_exp(t2,kappa))
         return K1, K2
 
     # Non-linear parameters
@@ -241,7 +241,7 @@ def assert_solver(solver):
     r = np.linspace(1,8,80)
     t = np.linspace(0,4,200)
     lam = 0.25
-    K = dipolarkernel(t,r,lam)
+    K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P
@@ -255,7 +255,7 @@ def assert_solver(solver):
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,nnlsSolver=solver, uq=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl,nnlsSolver=solver, uq=False)
     Pfit = fit.lin
 
     assert  np.max(abs(P - Pfit)) < 1e-2
@@ -289,7 +289,7 @@ def test_goodness_of_fit():
     r = np.linspace(1,8,80)
     t = np.linspace(0,4,200)
     lam = 0.25
-    K = dipolarkernel(t,r,lam)
+    K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.15, 0.6, 4.5, 0.2, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P
@@ -303,7 +303,7 @@ def test_goodness_of_fit():
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl, uq=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl, uq=False)
     stats = fit.stats
 
     assert abs(stats['chi2red'] - 1) < 5e-2 and abs(stats['R2'] - 1) < 5e-2
@@ -314,7 +314,7 @@ def assert_reg_type(regtype):
     r = np.linspace(1,8,80)
     t = np.linspace(0,4,100)
     lam = 0.25
-    K = dipolarkernel(t,r,lam)
+    K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P
@@ -328,7 +328,7 @@ def assert_reg_type(regtype):
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl,regtype = regtype, uq=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl,regtype = regtype, uq=False)
     Pfit = fit.lin
     
     assert  np.max(abs(P - Pfit)) < 4e-2
@@ -362,14 +362,14 @@ def test_plot():
     r = np.linspace(1,8,80)
     t = np.linspace(0,4,200)
     lam = 0.25
-    K = dipolarkernel(t,r,lam)
+    K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P
     # Linear parameters: non-negativity
     lbl = np.zeros(len(r))
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),par0=0.2,lb=0,ub=1,lbl=lbl, uq=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),par0=0.2,lb=0,ub=1,lbl=lbl, uq=False)
     fig = fit.plot(show=False)
     
     assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
@@ -383,7 +383,7 @@ def test_cost_value():
     r = np.linspace(1,8,80)
     t = np.linspace(0,4,200)
     lam = 0.25
-    K = dipolarkernel(t,r,lam)
+    K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P
@@ -395,7 +395,7 @@ def test_cost_value():
     lbl = np.zeros(len(r))
     ubl = np.full(len(r), np.inf)
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl,ubl)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl)
 
     assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
 #============================================================
@@ -437,7 +437,7 @@ def test_confinter_scaling():
     r = np.linspace(1,8,80)
     t = np.linspace(0,4,200)
     lam = 0.25
-    K = dipolarkernel(t,r,lam)
+    K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P
@@ -451,8 +451,8 @@ def test_confinter_scaling():
     V0_2 = 1e9
 
     # Separable LSQ fit
-    fit1 = snlls(V*V0_1,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl)
-    fit2 = snlls(V*V0_2,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl)
+    fit1 = snlls(V*V0_1,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl)
+    fit2 = snlls(V*V0_2,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl)
 
     assert np.max(abs(fit1.linUncert.ci(95)/V0_1 - fit2.linUncert.ci(95)/V0_2)) < 0.05
 #============================================================

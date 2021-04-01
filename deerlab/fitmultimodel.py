@@ -164,7 +164,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
             # Unpack parameters
             lam,conc = Kpar
             # Construct kernel
-            K = dl.dipolarkernel(t,r,lam,dl.bg_hom3d(t,conc,lam))
+            K = dl.dipolarkernel(t,r,mod=lam,bg=dl.bg_hom3d(t,conc,lam))
             return K
         
         fit = dl.fitmultimodel(V,Kmodel,r,dd_model,Nmax,'aicc')
@@ -177,8 +177,8 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
             # Unpack parameters
             lam,conc = Kpar
             # Construct kernels for both signals
-            K1 = dl.dipolarkernel(t1,r,lam,bg_hom3d(t1,conc,lam))
-            K2 = dl.dipolarkernel(t2,r,lam,bg_hom3d(t2,conc,lam))
+            K1 = dl.dipolarkernel(t1,r,mod=lam,bg=bg_hom3d(t1,conc,lam))
+            K2 = dl.dipolarkernel(t2,r,mod=lam,bg=bg_hom3d(t2,conc,lam))
             return K1,K2
         
         fit = dl.fitmultimodel([V1,V2],Kmodel,r,dd_model,Nmax,'aicc')

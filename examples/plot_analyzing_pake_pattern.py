@@ -22,7 +22,7 @@ r = np.linspace(2,5,100)   # nm
 P = dl.dd_gauss2(r,[3.5, 0.1, 0.2, 4, 0.05, 0.8])
 B = dl.bg_exp(t,0.2)
 lam = 0.3
-K = dl.dipolarkernel(t,r,lam,B)
+K = dl.dipolarkernel(t,r,mod=lam,bg=B)
 V = K@P + dl.whitegaussnoise(t,0.005,seed=0)
 
 # Plot

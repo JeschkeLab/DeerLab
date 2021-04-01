@@ -15,7 +15,7 @@ def test_filtered_movmean():
     lam = 0.25
     B = bg_exp(t,1.5)
     noise = whitegaussnoise(t,0.03)
-    V = dipolarkernel(t,r,lam,B)@P + noise
+    V = dipolarkernel(t,r,mod=lam,bg=B)@P + noise
 
 
     truelevel = np.std(noise)
@@ -36,7 +36,7 @@ def test_reference():
     P = dd_gauss(r,[3, 0.5])
     lam = 0.25
     B = bg_exp(t,1.5)
-    Vref = dipolarkernel(t,r,lam,B)@P
+    Vref = dipolarkernel(t,r,mod=lam,bg=B)@P
     noise = whitegaussnoise(t,0.03)
     V = Vref + noise
 
@@ -59,7 +59,7 @@ def test_filtered_savgol():
     lam = 0.25
     B = bg_exp(t,1.5)
     noise = whitegaussnoise(t,0.03)
-    V = dipolarkernel(t,r,lam,B)@P + noise
+    V = dipolarkernel(t,r,mod=lam,bg=B)@P + noise
 
     truelevel = np.std(noise)
     approxlevel = noiselevel(V,'savgol')
@@ -105,7 +105,7 @@ def test_complex():
     noise = whitegaussnoise(t,0.03)
     np.random.seed(2)
     noisec = 1j*whitegaussnoise(t,0.03)
-    V = dipolarkernel(t,r,lam,B)@P
+    V = dipolarkernel(t,r,mod=lam,bg=B)@P
     Vco = V*np.exp(-1j*np.pi/5)
     Vco = Vco + noise + noisec
     truelevel = np.std(noise)

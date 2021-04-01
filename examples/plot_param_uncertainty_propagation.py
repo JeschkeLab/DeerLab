@@ -23,7 +23,7 @@ lam = 0.27 # Modulation depth
 conc = 150 # [uM] Spin concentration
 P = dl.dd_rice(r,[center, width])
 B = dl.bg_hom3d(t,conc,lam)
-K = dl.dipolarkernel(t,r,lam,B)
+K = dl.dipolarkernel(t,r,mod=lam,bg=B)
 V = K@P + dl.whitegaussnoise(t,0.03,seed=0)
 
 # %% [markdown]

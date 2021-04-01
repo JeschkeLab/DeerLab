@@ -140,12 +140,12 @@ def test_background_fit():
     InputParam = [4, 0.15, 0.5, 4.3, 0.1, 0.4]
     P = dd_gauss2(r,InputParam)
     B = bg_exp(t,0.15)
-    V = dipolarkernel(t,r,0.25,B)@P
+    V = dipolarkernel(t,r,mod=0.25,bg=B)@P
 
     def Kmodel(par):
         lam,k = par
         B = bg_exp(t,k)
-        K = dipolarkernel(t,r,lam,B)
+        K = dipolarkernel(t,r,mod=lam,bg=B)
         return K
 
     fit = fitmultimodel(V,Kmodel,r,dd_gauss,2,'aicc',lb=[1,0.02],ub=[6,1],lbK=[0.2,0.01],ubK=[0.9,1],uq=False)

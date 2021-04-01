@@ -23,7 +23,7 @@ P = dl.dd_gauss2(r,[3.5, 0.25, 0.4, 4.5, 0.4, 0.6])
 lam = 0.36
 c0 = 250 #uM
 B = dl.bg_hom3d(t,c0,lam)
-K = dl.dipolarkernel(t,r,lam,B)
+K = dl.dipolarkernel(t,r,mod=lam,bg=B)
 V = K@P  + dl.whitegaussnoise(t,0.01)
 
 # %% [markdown]
@@ -45,7 +45,7 @@ def Kmodel(p):
     # Get background
     B = dl.bg_hom3d(t,c0,lam)
     # Generate 4pDEER kernel
-    K = dl.dipolarkernel(t,r,lam,B)
+    K = dl.dipolarkernel(t,r,mod=lam,bg=B)
 
     return K
 

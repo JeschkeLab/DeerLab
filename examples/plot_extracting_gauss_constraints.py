@@ -24,7 +24,7 @@ lam = 0.3                  # modulation depth
 conc = 80                  # spin concentration, µM
 
 B = dl.bg_hom3d(t,conc,lam)                   # background
-K = dl.dipolarkernel(t,r,lam,B)               # kernel matrix
+K = dl.dipolarkernel(t,r,mod=lam,bg=B)               # kernel matrix
 V = K@P + dl.whitegaussnoise(t,0.01,seed=0)   # DEER trace, with added noise
 
 # %% [markdown]
