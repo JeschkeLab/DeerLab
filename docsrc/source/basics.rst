@@ -55,7 +55,7 @@ DeerLab's :ref:`background models<modelsref_bg>` fall into two categories, physi
 
                         t = np.linspace(-0.1,4,200)    # time, in microseconds
                         lam = 0.4                      # modulation depth
-                        conc = 70                      # spin concentration, in uM
+                        conc = 70                      # spin concentration, in µM
                         B = dl.bg_hom3d(t,conc,lam)    # homogeneous 3D background
                         plt.plot(t,B)
 

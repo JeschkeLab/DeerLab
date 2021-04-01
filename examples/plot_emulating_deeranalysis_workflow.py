@@ -19,11 +19,11 @@ import deerlab as dl
 # For this example we will simulate a simple 4pDEER signal
 
 # Parameters
-t = np.linspace(-0.1,3,250)
-rtrue = np.linspace(1,7,200)
+t = np.linspace(-0.1,3,250) # µs
+rtrue = np.linspace(1,7,200) # nm
 Ptrue = dl.dd_gauss3(rtrue,[4.5, 0.35, 0.4, 3, 0.25, 0.3, 4, 0.4, 0.5])
 lam = 0.3
-conc = 180 #uM
+conc = 180 # µM
 
 # Simulate an experimental signal with some scale and phase
 Bmodel = lambda t, lam: dl.bg_hom3d(t,conc,lam)

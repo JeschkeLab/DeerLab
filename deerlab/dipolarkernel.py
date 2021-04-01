@@ -110,7 +110,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         Lam0 = 0.5  # unmodulated part
         lam = 0.4  # modulation depth main signal
         lam21 = 0.1  # modulation depth 2+1 contribution
-        tau2 = 4  # refocusing time (us) of 2+1 contribution
+        tau2 = 4  # refocusing time (µs) of 2+1 contribution
 
         path0 = Lam0  # unmodulated pathway
         path1 = [lam1, 0]  # main dipolar pathway, refocusing at time zero
@@ -180,7 +180,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
             paths[i] = np.append(path,1) 
         elif len(path) != 3:
             # Otherwise paths are not correctly defined
-            raise KeyError('The pathway #{} must be a list of two or three elements [lam, T0] or [lam, T0, n]'.format(i)) 
+            raise KeyError(f'The pathway #{i} must be a list of two or three elements [lam, T0] or [lam, T0, n]') 
 
     # Define kernel matrix auxiliary function
     kernelmatrix = lambda t: calckernelmatrix(t,r,method,excbandwidth,nKnots,g)

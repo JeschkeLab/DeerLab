@@ -96,7 +96,7 @@ def test_value_fresnel():
     "Test whether kernel matrix element (calculated using Fresnel integrals) is correct."
 
     # Generate kernel numerically
-    t = 1 # us
+    t = 1 # µs
     r = 1 # nm
     K = dipolarkernel(t,r,method='fresnel')
 
@@ -113,7 +113,7 @@ def test_value_grid():
     "Test whether kernel matrix element (calculated using the grid method) is correct."
 
     # Generate kernel numerically
-    t = 1 # us
+    t = 1 # µs
     r = 1 # nm
     K = dipolarkernel(t,r,method='grid',nKnots=2e6)
 
@@ -130,7 +130,7 @@ def test_value_integral():
     "Test whether kernel matrix element (calculated using the integal method) is correct."
 
     # Generate kernel numerically
-    t = 1 # us
+    t = 1 # µs
     r = 1 # nm
     K = dipolarkernel(t,r,method='integral')
 
@@ -146,7 +146,7 @@ def test_lambda():
 #=======================================================================
     "Check that dipolar kernel with modulation depth works"
 
-    t = np.linspace(0,4,150) # us
+    t = np.linspace(0,4,150) # µs
     r = np.linspace(1,5,150) # nm
     lam = 0.4
     Kref = ((1-lam) + lam*dipolarkernel(t,r, integralop=False))
@@ -284,7 +284,7 @@ def test_excbandwidth_inf_grid():
 
     r = 2.5 # nm
     excitewidth = 15 # MHz
-    t = np.linspace(0,2,501) # us
+    t = np.linspace(0,2,501) # µs
 
     # Reference kernel with infinite bandwidth
     Kinf = dipolarkernel(t,r,excbandwidth=inf,method='grid')
@@ -301,7 +301,7 @@ def test_excbandwidth_inf_integral():
 
     r = 2.5 # nm
     excitewidth = 15 # MHz
-    t = np.linspace(0,2,501) # us
+    t = np.linspace(0,2,501) # µs
 
     # Reference kernel with infinite bandwidth
     Kinf = dipolarkernel(t,r,excbandwidth=inf,method='integral')
@@ -318,7 +318,7 @@ def test_excbandwidth():
 
     r = 2.5 # nm
     excitewidth = 15 # MHz
-    t = np.linspace(0,2,501) # us
+    t = np.linspace(0,2,501) # µs
 
     # Kernel using numerical integrals and approx. bandwidth treatment
     K = dipolarkernel(t,r,excbandwidth=excitewidth,method='grid')
@@ -343,7 +343,7 @@ def test_gvalues():
     """Check whether K matrix elements scale properly g-values"""
 
     t = 2 # nm
-    r = 3 # us
+    r = 3 # µs
     # isotropic g values of two spins
     g1 = 2.1
     g2 = 2.4
@@ -361,7 +361,7 @@ def test_r_scaling():
     """Check whether K matrix elements scale properly with t and r"""
 
     t = 2 # nm
-    r = 3 # us
+    r = 3 # µs
     c = 1.2 # distance scaling factor
 
     K1 = dipolarkernel(t,r)

@@ -129,7 +129,7 @@ def assert_confidence_intervals(pci50,pci95,pfit,lb,ub):
         errors.append("The lower bounds are not satisfied by the confidence intervals.")
     if not np.all(np.maximum(ub,p95ub)==ub):
         errors.append("The upper bounds are not satisfied by the confidence intervals.")
-    assert not errors, "Errors occured:\n{}".format("\n".join(errors))
+    assert not errors, f"Errors occured:\n{chr(10).join(errors)}"
 
 def test_confinter_linear():
 #=======================================================================
@@ -194,6 +194,36 @@ def test_confinter_nonlinear():
     assert_confidence_intervals(parci50,parci95,parfit,lb,ub)
 #=======================================================================
 
+def test_confinter_model():
+#=======================================================================
+    "Check that the confidence intervals of the fitted model are correct"
+    
+    # Prepare test data
+    r = np.linspace(1,8,150)
+    t = np.linspace(0,4,200)
+    lam = 0.25
+    K = dipolarkernel(t,r,lam)
+    parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
+    P = dd_gauss2(r,parin)
+    V = K@P + whitegaussnoise(t,0.05,seed=1)
+
+    nlpar0 = 0.2
+    lb = 0
+    ub = 1
+    lbl = np.full(len(r), 0)
+    # Separable LSQ fit
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl)
+    Vfit =  fit.model
+    Vuq = fit.modelUncert
+    Vci50 = Vuq.ci(50)
+    Vci95 = Vuq.ci(95)
+
+    Vlb = np.full(len(t), -np.inf)
+    Vub = np.full(len(t), np.inf)
+
+    assert_confidence_intervals(Vci50,Vci95,Vfit,Vlb,Vub)
+#=======================================================================
+
 def test_regularized_global():
 #=======================================================================
     "Check global SNLLS of a nonlinear-constrained + linear-regularized problem"
@@ -234,8 +264,6 @@ def test_regularized_global():
     assert  ovl(P,Pfit) > 0.9
 #=======================================================================
 
-
-    
 def assert_solver(solver):    
     # Prepare test data
     r = np.linspace(1,8,80)

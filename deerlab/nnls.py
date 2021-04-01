@@ -98,7 +98,7 @@ def fnnls(AtA, Atb, tol=None, maxiter=None, verbose=False):
         w = Atb - AtA@x
         w[passive] = -m.inf
         if verbose:
-            print('{:10.0f}{:15.0f}{:20.4e}\n'.format(outIteration,iIteration,max(w)) )
+            print(f'{outIteration:10.0f}{iIteration:15.0f}{max(w):20.4e}\n')
 
     if verbose:
         if unsolvable:
@@ -106,7 +106,7 @@ def fnnls(AtA, Atb, tol=None, maxiter=None, verbose=False):
         elif any(~passive):
             print('Optimization stopped because the active set has been completely emptied. \n')
         elif w>tol:
-            print('Optimization stopped because the gradient (w) is inferior than the tolerance value TolFun = #.6e. \n' %tol)
+            print(f'Optimization stopped because the gradient (w) is inferior than the tolerance value TolFun = {tol:.6e}. \n')
         else:
             print('Solution found. \n')
     

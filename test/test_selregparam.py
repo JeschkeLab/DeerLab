@@ -298,7 +298,7 @@ def assert_full_output(method):
         errors.append("The number of elements of evluated residuals and penalties are different")
     if not alpha in alphas_evaled:
         errors.append("The optimal alpha is not part of the evaluated alphas")
-    assert not errors, "Errors occured:\n{}".format("\n".join(errors))
+    assert not errors, f"Errors occured:\n{chr(10).join(errors)}"
 
 def test_full_output_brent():
 #=======================================================================

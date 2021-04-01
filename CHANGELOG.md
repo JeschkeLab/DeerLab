@@ -15,6 +15,7 @@ Release v0.13.0 - March 2021
 #### Overall changes
 
 - The performance of all fit functions has been considerably accelerated by removing call overheads in built-in DeerLab models ([#100](https://github.com/JeschkeLab/DeerLab/issues/100), [#101](https://github.com/JeschkeLab/DeerLab/pull/101)).
+- All fit functions now return the fitted data and its uncertainty quantification as part of the ``FitResult`` object ([#130](https://github.com/JeschkeLab/DeerLab/issues/130), [#134](https://github.com/JeschkeLab/DeerLab/pull/134)). 
 - Improved robustness of the installer ([#65](https://github.com/JeschkeLab/DeerLab/pull/65)):
     - The installer no longer assumes the alias ``pip`` to be setup on the system. 
     - The installation will now handle cases when system-wide privileges are not available ([#52](https://github.com/JeschkeLab/DeerLab/issues/52)).

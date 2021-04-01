@@ -134,10 +134,14 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         Fitted non-linear parameters
     lin : ndarray
         Fitted linear parameters
+    modelfit : ndarray
+        Fitted model
     nonlinUncert : :ref:`UQResult`
         Uncertainty quantification of the non-linear parameter set.
     linUncert : :ref:`UQResult`
         Uncertainty quantification of the linear parameter set.
+    modelUncert : :ref:`UQResult`
+        Uncertainty quantification of the fitted model.
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
     plot : callable
@@ -456,8 +460,21 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         paramuq_lin = uq_subset(paramuq,lin_subset)
 
     else:
-        paramuq_nonlin = []
-        paramuq_lin = []
+        paramuq_nonlin = UQResult('void')
+        paramuq_lin = UQResult('void')
+
+    # Get fitted signals and their uncertainty
+    parfit = np.concatenate((nonlinfit, linfit))
+    nonlin_idx = np.arange(len(nonlinfit))
+    lin_idx = np.arange(len(nonlinfit),len(parfit))
+    modelfit, modelfituq = [],[]
+    for subset in subsets: 
+        subset_model = lambda p: scales_vec[subset]*((Amodel(p[nonlin_idx])@p[lin_idx])[subset])
+        modelfit.append(subset_model(parfit))
+        if uq: 
+            modelfituq.append(paramuq.propagate(subset_model))
+        else:
+            modelfituq.append(UQResult('void'))
 
     # Goodness-of-fit
     # ---------------
@@ -468,6 +485,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     if len(stats) == 1: 
         stats = stats[0]
         fvals = fvals[0]
+        modelfit = modelfit[0]
+        modelfituq = modelfituq[0]
 
     for i in range(len(subsets)):
         scales[i] *= prescales[i]
@@ -477,7 +496,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         fig = _plot(subsets,y,yfit,show)
         return fig
 
-    return FitResult(nonlin=nonlinfit, lin=linfit, nonlinUncert=paramuq_nonlin, linUncert=paramuq_lin, regparam=alpha, plot=plotfcn,
+    return FitResult(nonlin=nonlinfit, lin=linfit, model=modelfit, nonlinUncert=paramuq_nonlin,
+                     linUncert=paramuq_lin, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,
                      stats=stats, cost=fvals, residuals=sol.fun, success=sol.success, scale=scales)
 # ===========================================================================================
 
@@ -542,7 +562,7 @@ def _plot(subsets,y,yfit,show):
         axs[i].plot(yfit[subset],'tab:blue')
         axs[i].grid(alpha=0.3)
         axs[i].set_xlabel('Array elements')
-        axs[i].set_ylabel('Data #{}'.format(i))
+        axs[i].set_ylabel(f'Data #{i}')
         axs[i].legend(('Data','Fit'))
     plt.tight_layout()
     if show:

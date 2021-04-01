@@ -182,7 +182,7 @@ def assert_confidence_intervals(Puq,Pfit):
         errors.append("The 50%-CI has larger values than the 95%-CI")
     if not np.all(np.minimum(0,P95lb)==0):
         errors.append("The non-negativity constraint is not working.")
-    assert not errors, "Errors occured:\n{}".format("\n".join(errors))
+    assert not errors, f"Errors occured:\n{chr(10).join(errors)}"
 
 def test_confinter_tikh():
 #============================================================
@@ -196,7 +196,7 @@ def test_confinter_tikh():
 
     fit = fitregmodel(V,K,r,'tikhonov','aic')
 
-    assert_confidence_intervals(fit.uncertainty,fit.P)
+    assert_confidence_intervals(fit.Puncert,fit.P)
 #============================================================
 
 def test_confinter_tv():
@@ -211,7 +211,7 @@ def test_confinter_tv():
 
     fit = fitregmodel(V,K,r,'tv','aic')
 
-    assert_confidence_intervals(fit.uncertainty,fit.P)
+    assert_confidence_intervals(fit.Puncert,fit.P)
 #============================================================
 
 
@@ -227,7 +227,7 @@ def test_confinter_huber():
 
     fit = fitregmodel(V,K,r,'huber','aic')
 
-    assert_confidence_intervals(fit.uncertainty,fit.P)
+    assert_confidence_intervals(fit.Puncert,fit.P)
 #============================================================
 
 def test_confinter_global():
@@ -238,7 +238,22 @@ def test_confinter_global():
 
     fit = fitregmodel([V1,V2],[K1,K2],r,'tikhonov','aic')
 
-    assert_confidence_intervals(fit.uncertainty,fit.P)
+    assert_confidence_intervals(fit.Puncert,fit.P)
+#============================================================
+
+def test_confinter_Vfit():
+#============================================================
+    "Check that the confidence intervals are correctly for the fitted signal"
+
+    t = np.linspace(-2,4,300)
+    r = np.linspace(2,6,100)
+    P = dd_gauss(r,[3,0.2])
+    K = dipolarkernel(t,r,0.2)
+    V = K@P + whitegaussnoise(t,0.05)
+
+    fit = fitregmodel(V,K,r,'tikhonov','aic')
+
+    assert_confidence_intervals(fit.Vuncert,fit.V)
 #============================================================
 
 def test_renormalize():
@@ -455,8 +470,8 @@ def test_confinter_values():
                 [2.9089331341860465, 2.9700584546043713]]
     
     fit = fitregmodel(y,A, np.arange(2),renormalize=False,nonnegativity=False,regparam=0,regorder=0)
-    a_ci = [fit.uncertainty.ci(cov[i])[0,:] for i in range(3)]
-    b_ci = [fit.uncertainty.ci(cov[i])[1,:] for i in range(3)]
+    a_ci = [fit.Puncert.ci(cov[i])[0,:] for i in range(3)]
+    b_ci = [fit.Puncert.ci(cov[i])[1,:] for i in range(3)]
 
     ci_match = lambda ci,ci_ref,truth:np.max(abs(np.array(ci) - np.array(ci_ref)))/truth < 0.01
     assert ci_match(a_ci,a_ci_ref,p[0]) & ci_match(b_ci,b_ci_ref,p[1])
