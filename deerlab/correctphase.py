@@ -2,7 +2,7 @@ import numpy as np
 import scipy.optimize as opt
 from deerlab.utils import isempty
 
-def correctphase(V, phase=None, imagoffset=False, selphase='maxrealint', full_output=False):
+def correctphase(V, phase='posrealint', full_output=False):
 # ==========================================================================
     r"""
     Phase correction of complex-valued data
@@ -10,8 +10,6 @@ def correctphase(V, phase=None, imagoffset=False, selphase='maxrealint', full_ou
     Performs a phase optimization on the complex-valued data ``V`` by determining a phase
     rotation of ``V`` that minimizes the imaginary component.
     
-    Also, the phase can be corrected manually by specifying  a phase ``phase``, in radians.
-
     Two-dimensional datasets ``V2D``, e.g. from multiple scans measurements, can be provided, 
     and the phase correction will be done on each trace individually. The first dimension ``V2D[:,i]``
     must contain the single traces. An array of phases ``phases`` can be specified to manually correct the traces.
@@ -22,18 +20,13 @@ def correctphase(V, phase=None, imagoffset=False, selphase='maxrealint', full_ou
         Complex-valued signals or list thereof.
 
     phase : float scalar, optional
-        Phase shift for manual correction, in radians. 
+        Criterion for selection of correction phase. 
 
-    imagoffset : boolean, optional
-        Enables/Disables the fitting and correction of an imaginary offset, by default disabled.
+        * ``'posrealint'`` - Select the phase that gives the largest positive integral of the real part.
+        * ``'negrealint'`` - Select the phase that gives the largest negative integral of the real part.
+        * ``'close'`` - Select the phase closest to the average phase of the original data.
 
-    selphase : string, optional 
-        Selection criterion for phase optimization. 
-
-        * ``'maxrealint'`` - Maximization of the integral of the real component of ``V``.
-        * ``'minphase'`` - Minimization of the imaginary component of ``V``.
-
-        The default behaviour is ``'maxrealint'``.
+        The default behaviour is ``'posrealint'``.
 
     full_output : boolean, optional
         If enabled, the function will return additional output arguments, by default disabled.
@@ -49,94 +42,53 @@ def correctphase(V, phase=None, imagoffset=False, selphase='maxrealint', full_ou
     phase : float scalar (if full_output==True)
         Fitted phase used for correction, in radians.    
 
-    imoffset : float scalar (if full_output==True)
-        Fitted imaginary offset used for correction.
-
     """
 
-    V_ = V.copy()
-    if V_.ndim == 1:
+    V_2d = V.copy()
+    if V_2d.ndim == 1:
         Ntraces = 1
-        V_ = V_[:,np.newaxis]
+        V_2d = V_2d[:,np.newaxis]
     else:
-        Ntraces = V_.shape[1]
-    n = V_.shape[0]
+        Ntraces = V_2d.shape[1]
+    n = V_2d.shape[0]
+ 
+    phaseopt = np.zeros(Ntraces)
+    for i in range(Ntraces):
+        V_ = V_2d[:,i]
 
-    # Determine if phase must be fitted or has been passed
-    if phase is None:
-        fitPhase = True
-    else: 
-        fitPhase = False
-        phase = np.atleast_1d(phase)
-        if len(phase) != Ntraces:
-            raise ValueError('The number of input phases must agree with the number of traces.') 
-    if imagoffset:
-        selphase=='minphase'
+        # Get the average phase in the signal
+        phaseav = np.mean(np.angle(V_))
 
-    def phase_objfcn(params,V):
-    # ==========================================================================
-        " Objective function for optimization of the phase"
+        # Objective function for optimization of the phase
+        phase_objfcn = lambda phase: np.linalg.norm(np.imag(V_*np.exp(-1j*phase)))
 
-        phase = params[0]
-        if len(params)>1:
-            imoffsets = params[1]
-        else:
-            imoffsets = 0
+        pars = opt.fmin(phase_objfcn,phaseav,maxfun=1e5,maxiter=1e5,disp=False)
+        
+        # Get the two phases that minimize the imaginary part
+        phases = [pars[0], pars[0]+np.pi]
+        realint = [np.sum(V_*np.exp(-1j*phase)) for phase in phases]
+            
+        if phase == 'posrealint':
+            phaseopt[i] =  phases[np.argmax(realint)]
+        elif phase == 'negrealint':
+            phaseopt[i] =  phases[np.argmin(realint)]
+        elif phase == 'close':
+            phaseopt[i] =  phases[np.argmin(abs(phases - phaseav))]
 
-        Vcorr = (V-1j*imoffsets)*np.exp(-1j*phase)
-        if selphase=='minphase':
-            # Minimize the imaginary part / Maximize the real part
-            objfcn = np.linalg.norm(np.imag(Vcorr))
-        elif selphase=='maxrealint':
-            # Maximize the integral of the real opart
-            objfcn = np.sum(np.abs(Vcorr))-np.sum(np.real(Vcorr))
-        else: 
-            raise KeyError("The requested method is not valid. It must be either 'maxrealint' or 'minphase'.")
-
-        return objfcn
-    # ==========================================================================
-
-    # Phase/offset fitting
-    #-------------------------------------------------------------------------------
-    ImagOffset = np.zeros(Ntraces)
-    if fitPhase:
-        phase = np.zeros(Ntraces)
-        for i in range(Ntraces):
-            par0 = []
-            FitRange = np.arange(round(n/8),n) # use only last 7/8 of data for phase/offset correction
-            V_cut = V_[FitRange,i]
-            par0.append(np.mean(np.angle(V_cut))) # use average phase as initial value
-            if imagoffset:
-                par0.append(np.mean(np.imag(V_cut))) # use average offset as initial value
-
-            pars = opt.fmin(lambda par: phase_objfcn(par,V_cut),par0,maxfun=1e5,maxiter=1e5,disp=False)
-            phase[i] = pars[0]
-            if imagoffset:
-                ImagOffset[i] = pars[1]
-    else:
-        if imagoffset:
-            # Fit only imaginary offset        
-            for i in range(Ntraces):
-                par0 = 0
-                ImagOffset[i] = opt.fmin(lambda offset: phase_objfcn([phase, offset],V_cut[:,i]),par0,maxfun=1e5,maxiter=1e5,disp=False)
-
-    ImagOffset = ImagOffset*1j
-
-    # Apply phase/offset correction
-    ph = np.exp(-1j*phase)
-    Vc = (V_ - ImagOffset)*ph
+        # Apply phase
+        V_2d[:,i] = V_*np.exp(-1j*phaseopt[i])
 
     if Ntraces==1:
-        Vc = np.squeeze(Vc)
+        V_2d = np.squeeze(V_2d)
 
     # Output
-    Vreal = np.real(Vc)
-    Vimag = np.imag(Vc)
+    Vreal = np.real(V_2d)
+    Vimag = np.imag(V_2d)
     # Map phase angle to [-pi,pi) interval
-    phase = np.angle(ph) 
+    phase = np.angle(np.exp(-1j*phaseopt)) 
 
     if full_output:
-        return Vreal,Vimag,phase,ImagOffset
+        return Vreal,Vimag,phase
     else:
         return Vreal
 
