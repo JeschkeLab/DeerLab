@@ -50,14 +50,14 @@ def mixmodels(*models):
         pidx.append(idx + np.arange(0,nparam))
         idx = idx + nparam
         for j in range(nparam):
-            Info['Parameters'].append('Model {}: {}'.format(i+1,info['Parameters'][j]))
+            Info['Parameters'].append(f'Model {i+1}: {info["Parameters"][j]}')
             Info['Units'].append(info['Units'][j])
             Info['Lower'].append(info['Lower'][j])
             Info['Upper'].append(info['Upper'][j])
             Info['Start'].append(info['Start'][j])
 
         # Add amplitudes for each model
-        Info['Parameters'].append('Model {}: Amplitude'.format(i+1))
+        Info['Parameters'].append(f'Model {i+1}: Amplitude')
         Info['Units'].append('')
         Info['Lower'].append(0)
         Info['Upper'].append(1)

@@ -47,7 +47,7 @@ def assert_bgmodel(model,Bref,physical=False):
         errors.append("The number of parameter names and units are not equal.")
 
     # assert no error message has been registered, else print messages
-    assert not errors, "{}".format(", ".join(errors))
+    assert not errors, f"Errors occured:\n{chr(10).join(errors)}"
  
 
 def test_bg_hom3d():

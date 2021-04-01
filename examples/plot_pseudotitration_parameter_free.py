@@ -22,7 +22,7 @@ import deerlab as dl
 # %%
 def chemicalequilibrium(Kdis,L):
     """Prepare equilibrium of type: A + L <-> B"""
-    Ctot = 1 # total protein concentration, uM
+    Ctot = 1 # total protein concentration, µM
 
     # # Get fraction of state B
     Kb = 1/Kdis
@@ -98,8 +98,8 @@ rB = np.linspace(1,8,100)
 PstateA = dl.dd_gauss(rA,[5.5, 0.25])
 PstateB = dl.dd_gauss2(rB,[4.5, 0.4, 0.4, 3.5, 0.35, 0.6])
 
-L = [0.3, 1, 3, 10, 30, 100, 300] # total ligand concentration, uM
-Kdis = 5.65  # dissociation constant, uM
+L = [0.3, 1, 3, 10, 30, 100, 300] # total ligand concentration, µM
+Kdis = 5.65  # dissociation constant, µM
 
 # Populations of states A and B
 [xA,xB] = chemicalequilibrium(Kdis,L)
@@ -144,7 +144,7 @@ parci = fit.nonlinUncert.ci(95)
 KDci = parci[2,:]
 
 # Print result
-print('Kdis = {:.2f}({:.2f}-{:.2f})uM'.format(Kdisfit,KDci[0],KDci[1]))
+print(f'Kdis = {Kdisfit:.2f}({KDci[0]:.2f}-{KDci[1]:.2f})µM')
 
 # %%
 # Plot results

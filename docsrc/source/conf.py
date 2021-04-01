@@ -19,7 +19,7 @@ language = 'en'
 
 
 version = open(os.path.join('..','..','VERSION')).read().splitlines()[0]
-rst_epilog = '.. |version| replace:: {}'.format(version)
+rst_epilog = f'.. |version| replace:: {version}'
 
 # Add sphinx extensions
 extensions = [

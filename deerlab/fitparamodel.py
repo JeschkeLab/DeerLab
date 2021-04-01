@@ -225,9 +225,9 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
             # Skip if parameter is fixed
             continue
         if atLower[p]:
-            warnings.warn('The fitted value of parameter #{}, is at the lower bound ({}).'.format(p,lb[p]))
+            warnings.warn(f'The fitted value of parameter #{p}, is at the lower bound ({lb[p]}).')
         if atUpper[p]:
-            warnings.warn('The fitted value of parameter #{},  is at the upper bound ({}).'.format(p,ub[p]))
+            warnings.warn(f'The fitted value of parameter #{p},  is at the upper bound ({ub[p]}).')
 
     # Calculate parameter confidence intervals
     if uq:
@@ -295,7 +295,7 @@ def _plot(Vsubsets,V,Vfit,show):
         axs[i].plot(Vfit[subset],'tab:blue')
         axs[i].grid(alpha=0.3)
         axs[i].set_xlabel('Array Elements')
-        axs[i].set_ylabel('V[{}]'.format(i))
+        axs[i].set_ylabel(f'V[{i}]')
         axs[i].legend(('Data','Fit'))
 
     plt.tight_layout()

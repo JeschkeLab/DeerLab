@@ -85,7 +85,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, 
     nSignals = len(Vexp)
     for i in range(len(Vfit)):
         if len(Vexp[i])!=len(Vfit[i]):
-            raise KeyError('The V and Vfit #{} must have the same number of elements.'.format(i))
+            raise KeyError(f'The V and Vfit #{i} must have the same number of elements.')
     if type(fcn) is not types.FunctionType:
         raise KeyError('The 1st argument must be a callable function accepting dataset(s) as input.')
 
@@ -138,7 +138,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, 
         return out
 
     # Run bootsample() for all samples in series (cores=1) or in parallel (cores>1)
-    if verbose : print('Bootstrap analysis with {0} cores:'.format(cores))          
+    if verbose : print(f'Bootstrap analysis with {cores} cores:')          
     out = _ProgressParallel(n_jobs=cores,total=nSamples,use_tqdm=verbose)(delayed(bootsample)() for _ in range(nSamples))
     
     # Post-process the outputs

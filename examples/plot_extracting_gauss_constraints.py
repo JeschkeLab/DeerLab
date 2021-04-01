@@ -84,7 +84,7 @@ par95 = paruq.ci(95)
 print('\nGaussian components:')
 info = dl.dd_gauss2()
 for i in range(len(parfit)):
-    print('  parfit[{}] = {:2.2f} ({:2.2f}, {:2.2f}) {}'.format(i,parfit[i],par95[i,0],par95[i,1],info['Parameters'][i]))
+    print(f'  parfit[{i}] = {parfit[i]:2.2f} ({par95[i,0]:2.2f}, {par95[i,1]:2.2f}) {info["Parameters"][i]}')
 
 # Now propagate the error of the Gaussian parameters to the distribution
 lb = np.zeros_like(r) # non-negativity constraint

@@ -32,12 +32,12 @@ def K4pdeer(par,t,r):
 # Generating a dataset
 # ---------------------
 
-t = np.linspace(-0.25,4,300) # time axis, us
+t = np.linspace(-0.25,4,300) # time axis, µs
 r = np.linspace(2.5,4.5,300) # distance axis, nm
 param0 = [3, 0.1, 0.2, 3.5, 0.1, 0.45, 3.9, 0.05, 0.20] # parameters for three-Gaussian model
 P = dl.dd_gauss3(r,param0) # ground truth distance distribution
 lam = 0.3 # modulation depth
-conc = 250 # spin concentration, uM
+conc = 250 # spin concentration, µM
 noiselvl = 0.005 # noise level
 
 # Generate 4pDEER dipolar signal with noise

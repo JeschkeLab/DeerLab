@@ -182,7 +182,7 @@ def assert_confidence_intervals(Puq,Pfit):
         errors.append("The 50%-CI has larger values than the 95%-CI")
     if not np.all(np.minimum(0,P95lb)==0):
         errors.append("The non-negativity constraint is not working.")
-    assert not errors, "Errors occured:\n{}".format("\n".join(errors))
+    assert not errors, f"Errors occured:\n{chr(10).join(errors)}"
 
 def test_confinter_tikh():
 #============================================================

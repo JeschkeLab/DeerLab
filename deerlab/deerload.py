@@ -145,7 +145,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
                 elif 'S' == parDESC[str(a+'FMT')]:
                     dt_axis = np.dtype('int16')
                 else:
-                    raise ValueError('Cannot read data format {0} for companion file {1}'.format(str(a+'FMT'),companionfilename))
+                    raise ValueError(f'Cannot read data format {a+"FMT"} for companion file {companionfilename}')
 
                 dt_axis = dt_axis.newbyteorder(byteorder)
                 # Open and read companion file
@@ -153,14 +153,14 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
                     if fp > 0:
                         abscissa[:Dimensions[index],index] = np.frombuffer(fp.read(),dtype=dt_axis)
                     else:
-                        warn('Could not read companion file {0} for nonlinear axis. Assuming linear axis.'.format(companionfilename))
+                        warn(f'Could not read companion file {companionfilename} for nonlinear axis. Assuming linear axis.')
                 axistype='IDX'
         if axistype == 'IDX':
             minimum = float(parDESC[str(a+'MIN')])
             width = float(parDESC[str(a+'WID')])
             npts = int(parDESC[str(a+'PTS')])
             if width == 0:
-                warn('Warning: {0} range has zero width.\n'.format(a))
+                warn(f'Warning: {a} range has zero width.\n')
                 minimum = 1.0
                 width = len(a) - 1.0
             abscissa[:Dimensions[index],index] = np.linspace(minimum,minimum+width,npts)
@@ -220,7 +220,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
     for absc in abscissa.T: 
         # Do not include abcissas full of NaNs
         if not all(np.isnan(absc)):
-            # ns -> us converesion
+            # ns -> µs converesion
             absc /= 1e3
             # Remove nan values to ensure proper length of abscissa
             abscissas.append(absc[~np.isnan(absc)])

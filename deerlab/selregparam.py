@@ -290,7 +290,7 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParame
     elif selmethod == 'lr' or selmethod == 'lc':
         f_ = 0
     else:
-        raise ValueError('Selection method \'{}\' is not known.'.format(selmethod))
+        raise ValueError(f'Selection method \'{selmethod}\' is not known.')
 
     functional = functional + f_
 

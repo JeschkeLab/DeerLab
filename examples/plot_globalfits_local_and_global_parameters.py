@@ -23,8 +23,8 @@ import deerlab as dl
 # and B. 
 
 r = np.linspace(2,6,300)  # distance axis, in nm
-t1 = np.linspace(0,4,200) # time axis of first measurement, in us
-t2 = np.linspace(0,6,150) # time axis of first measurement, in us
+t1 = np.linspace(0,4,200) # time axis of first measurement, in µs
+t2 = np.linspace(0,6,150) # time axis of first measurement, in µs
 
 # Parameters
 rmeanA = 3.45 # mean distance state A, in nm
