@@ -85,7 +85,7 @@ Pci95 = fit.linUncert.ci(95) #  95#-confidence interval
 
 # Print result
 print(f'lambda = {parfit[0]:.2f}({param95[0,0]:.2f}-{param95[0,1]:.2f})')
-print(f'c0 = {parfit[1]:.2f}({pararm95[1,0]:.2f}-{param95[1,1]:.2f})µM')
+print(f'c0 = {parfit[1]:.2f}({param95[1,0]:.2f}-{param95[1,1]:.2f})µM')
 
 # Get fitted model
 Kfit = Kmodel(parfit)
