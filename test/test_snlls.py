@@ -202,7 +202,7 @@ def test_confinter_model():
     r = np.linspace(1,8,150)
     t = np.linspace(0,4,200)
     lam = 0.25
-    K = dipolarkernel(t,r,lam)
+    K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
     P = dd_gauss2(r,parin)
     V = K@P + whitegaussnoise(t,0.05,seed=1)
@@ -212,7 +212,7 @@ def test_confinter_model():
     ub = 1
     lbl = np.full(len(r), 0)
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,lam),nlpar0,lb,ub,lbl)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl)
     Vfit =  fit.model
     Vuq = fit.modelUncert
     Vci50 = Vuq.ci(50)
