@@ -345,12 +345,12 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             if includeExperiment[iSignal]:
                 pathways = ex_fcn[iSignal](ex_par)
             else:
-                pathways = 1
+                pathways = [[1,0]]
             
             # Compute the multipathway-background
             B_ = dl.dipolarbackground(t[iSignal],pathways,Bfcn)
             # Compute the multipathway-kernel
-            K_ = dl.dipolarkernel(t[iSignal],r,pathways,Bfcn)
+            K_ = dl.dipolarkernel(t[iSignal],r,pathways=pathways,bg=Bfcn)
             Ks.append(K_)
             Bs.append(B_)
 

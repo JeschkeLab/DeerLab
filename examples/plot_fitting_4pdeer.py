@@ -21,7 +21,7 @@ param = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Ga
 P = dl.dd_gauss3(r,param)          # model distance distribution
 lam = 0.5                          # modulation depth
 B = dl.bg_hom3d(t,300,lam)         # background decay
-K = dl.dipolarkernel(t,r,lam,B)    # kernel matrix
+K = dl.dipolarkernel(t,r,mod=lam,bg=B)    # kernel matrix
 Vexp = K@P + dl.whitegaussnoise(t,0.01,seed=0)
 
 # %% [markdown]

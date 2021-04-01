@@ -111,11 +111,11 @@ The simplest dipolar kernel just requires the time-vector ``t`` and distance-vec
 
 The above ``K0`` is the most elementary kernel, giving a single dipolar evolution function centered at time zero, with modulation depth 1, and without any background decay. The kernel can also account for the background and the dipolar pathways. Then, operation  ``V=K@P`` will return the complete time-domain dipolar signal. Here is an example for a 4-pulse DEER signal ::
 
-        lam = 0.4                        # modulation depth
-        B = dl.bg_hom3d(t,200,lam)       # background (inter-molecular modulation function)
-        K = dl.dipolarkernel(t,r,lam,B)  # kernel matrix, including lam and B
-        V = K@P                          # calculate signal from distribution
-        plt.plot(t,V)                    # plotting
+        lam = 0.4                               # modulation depth
+        B = dl.bg_hom3d(t,200,lam)              # background (inter-molecular modulation function)
+        K = dl.dipolarkernel(t,r,mod=lam,bg=B)  # kernel matrix, including lam and B
+        V = K@P                                 # calculate signal from distribution
+        plt.plot(t,V)                           # plotting
 
 For experiments with more than one modulated dipolar pathway (such as 5-pulse DEER), modulation amplitudes and refocusing times for each pathway must be provided to ``dipolarkernel``. Additionally, the background must be provided as a callable function that takes only time and modulation amplitude and encapsulates all other parameters. For example, for a 5-pulse DEER signal :: 
 
@@ -124,9 +124,9 @@ For experiments with more than one modulated dipolar pathway (such as 5-pulse DE
         lam2 = 0.1      # amplitude of secondary modulated pathway
         T02 = 3.1       # refocusing time of secondary pathway, in µs
         
-        pathways = dl.ex_5pdeer([Lam0,lam1,lam2,T02])  # dipolar pathways of 5-pulse DEER experiment
-        Bfcn = lambda t,lam: dl.bg_hom3d(t,200,lam)    # function for background
-        K = dl.dipolarkernel(t,r,pathways,Bfcn)        # 5-pulse DEER dipolar kernel
+        pathways = dl.ex_5pdeer([Lam0,lam1,lam2,T02])           # dipolar pathways of 5-pulse DEER experiment
+        Bfcn = lambda t,lam: dl.bg_hom3d(t,200,lam)             # function for background
+        K = dl.dipolarkernel(t,r,pathways=pathways,bg=Bfcn)     # 5-pulse DEER dipolar kernel
         
 The function ``dipolarkernel`` also has :ref:`options<dipolarkernel>` to set the excitation bandwidth, to select the internal calculation method, and more.
 
@@ -138,8 +138,8 @@ Dipolar signals are the results of the many different dipolar EPR spectroscopy e
 
 To generate complete time-domain signals from a distance distribution and a background decay, use the function ``dipolarkernel`` (described above) and apply it to the distance distribution: ::
 
-        K = dl.dipolarkernel(t,r,lam,B)   # generate dipolar kernel
-        V = K@P                           # generate dipolar signal
+        K = dl.dipolarkernel(t,r,mod=lam,bg=B)   # generate dipolar kernel
+        V = K@P                                  # generate dipolar signal
         plt.plot(t,V)
 
 It is possible to add noise to simulated data by using the ``whitegaussnoise`` function: ::

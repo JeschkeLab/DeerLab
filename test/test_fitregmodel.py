@@ -248,7 +248,7 @@ def test_confinter_Vfit():
     t = np.linspace(-2,4,300)
     r = np.linspace(2,6,100)
     P = dd_gauss(r,[3,0.2])
-    K = dipolarkernel(t,r,0.2)
+    K = dipolarkernel(t,r,mod=0.2)
     V = K@P + whitegaussnoise(t,0.05)
 
     fit = fitregmodel(V,K,r,'tikhonov','aic')

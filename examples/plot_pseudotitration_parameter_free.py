@@ -67,9 +67,9 @@ def Kmodel(par,ts,rA,rB,L):
     for i in range(Nsignals):
         B = dl.bg_exp(ts[i],k)
         # Kernel for fraction A
-        KstateA = dl.dipolarkernel(ts[i],rA,lam,B)
+        KstateA = dl.dipolarkernel(ts[i],rA,mod=lam,bg=B)
         # Kernel for fraction B
-        KstateB = dl.dipolarkernel(ts[i],rB,lam,B)
+        KstateB = dl.dipolarkernel(ts[i],rB,mod=lam,bg=B)
         Ks[i] = np.concatenate((xA[i]*KstateA, xB[i]*KstateB),axis=1)
 
     return Ks

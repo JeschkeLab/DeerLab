@@ -18,8 +18,7 @@ def dipolarbackground(t, pathways, Bmodel):
     pathways : list of lists or scalar
         List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time (T0), 
         and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]`` for one pathway. If n is not given it is assumed to be 1. 
-        For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``.
-        If a single value is specified, it is interpreted as the 4-pulse DEER pathway amplitude (modulation depth).  
+        For a pathway with unmodulated contribution, only the amplitude must be specified, i.e. ``[Lambda0]``. 
 
     Bmodel : callable
         Background basis function. Its use depends on the type of background model. 
@@ -77,11 +76,6 @@ def dipolarbackground(t, pathways, Bmodel):
     if not takes_lambda:
         _Bmodel = Bmodel
         Bmodel = lambda t,_: _Bmodel(t)
-  
-    if not isinstance(pathways,list): pathways = [pathways] 
-    if len(pathways) == 1:
-        lam = pathways[0]
-        pathways = [[1-lam], [lam, 0]]
 
     pathways = [np.atleast_1d(path) for path in pathways]
     

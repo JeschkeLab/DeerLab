@@ -23,7 +23,7 @@ r = np.linspace(2,5,160)                # distance axis, nm
 P = dl.dd_gauss2(r,[3, 0.1, 0.6, 3.5, 0.2, 0.4]) # model distribution
 lam = 0.32                              # modulatio depth
 B = dl.bg_strexp(t,[0.04,1])        # background decay
-K = dl.dipolarkernel(t,r,lam,B)         # dipolar kernel matrix
+K = dl.dipolarkernel(t,r,mod=lam,bg=B)         # dipolar kernel matrix
 V = K@P + dl.whitegaussnoise(t,0.01)    # signal with added noise
 
 # %% [markdown] 
@@ -39,8 +39,8 @@ Pfit = fit.P        # fitted distribution
 Vfit = fit.V        # fitted DEER trace
 
 # curvature matrix confidence intervals for distribution
-Pci95_cm = fit.uncertainty.ci(95)
-Pci50_cm = fit.uncertainty.ci(50)
+Pci95_cm = fit.Puncert.ci(95)
+Pci50_cm = fit.Puncert.ci(50)
 
 # %% [markdown]
 # Bootstrapped confidence intervals

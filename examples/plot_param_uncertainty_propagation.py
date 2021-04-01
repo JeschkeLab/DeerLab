@@ -23,7 +23,7 @@ lam = 0.27 # Modulation depth
 conc = 150 # Spin concentration, µM
 P = dl.dd_rice(r,[center, width])
 B = dl.bg_hom3d(t,conc,lam)
-K = dl.dipolarkernel(t,r,lam,B)
+K = dl.dipolarkernel(t,r,mod=lam,bg=B)
 V = K@P + dl.whitegaussnoise(t,0.03,seed=0)
 
 # %% [markdown]
@@ -65,7 +65,7 @@ upper =      [0.50, 7.0,  0.5, 1500] # upper bounds
 fit = dl.fitparamodel(V,Vmodel,par0,lower,upper)
 
 parfit = fit.param
-paruq = fit.uncertainty
+paruq = fit.paramUncert
 
 # Forward-calculate the models with the fitted parameters
 Vfit = Vmodel(parfit)

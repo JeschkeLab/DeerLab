@@ -69,25 +69,6 @@ def test_harmonics():
     assert max(abs(B-Bref)) < 1e-8
 #==================================================================================
 
-
-def test_lambda():
-#==================================================================================
-    "Check that dipolar background with modulation depth works"
-
-    t = np.linspace(0,5,150)
-    conc = 50
-    lam = 0.5
-
-    #Reference
-    Bref = bg_hom3d(t,lam*conc)
-
-    #Output
-    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
-    B = dipolarbackground(t,lam,Bmodel)
-
-    assert max(abs(B-Bref)) < 1e-8
-#==================================================================================
-
 def test_multipath_renorm():
 #==================================================================================
     "Check that multi-pathway kernels are properly generated without renormalization"

@@ -21,7 +21,7 @@ B = lambda t,lam: dl.bg_hom3d(t,300,lam) # background decay
 exparam = [0.6, 0.3, 0.1, 3.2]     # parameters for 5pDEER experiment
 pathways = dl.ex_5pdeer(exparam)   # pathways information
 
-K = dl.dipolarkernel(t,r,pathways,B)
+K = dl.dipolarkernel(t,r,pathways=pathways,bg=B)
 Vexp = K@P + dl.whitegaussnoise(t,0.005,seed=1)
 
 # %% [markdown]

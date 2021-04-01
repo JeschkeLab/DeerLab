@@ -150,7 +150,7 @@ def test_lambda():
     r = np.linspace(1,5,150) # nm
     lam = 0.4
     Kref = ((1-lam) + lam*dipolarkernel(t,r, integralop=False))
-    K = dipolarkernel(t,r,lam, integralop=False)
+    K = dipolarkernel(t,r,mod=lam, integralop=False)
 
     assert np.all(abs(K-Kref) < 1e-14)
 #=======================================================================
@@ -164,7 +164,7 @@ def test_background():
 
     lam = 0.25
     KBref = (1 - lam + lam*dipolarkernel(t,r, integralop=False))*B[:,np.newaxis]
-    KB = dipolarkernel(t,r,lam,B, integralop=False)
+    KB = dipolarkernel(t,r,mod=lam, bg=B, integralop=False)
     
     assert np.all(abs(KB - KBref) < 1e-5)
 #=======================================================================
@@ -177,7 +177,7 @@ def test_nobackground():
 
     K1 = dipolarkernel(t,r)
     
-    K2 = dipolarkernel(t,r,B=None)
+    K2 = dipolarkernel(t,r,bg=None)
     assert np.all(abs(K2 - K1) < 1e-5)
 #=======================================================================
 
@@ -200,7 +200,7 @@ def test_multipath():
     paths.append([prob**2, 0])
     paths.append([prob*(1-prob), tau2-t2])
 
-    K = dipolarkernel(t,r,paths, integralop=False)
+    K = dipolarkernel(t,r,pathways=paths, integralop=False)
 
     Kref = 1-prob
     for p in range(len(lam)):
@@ -242,7 +242,7 @@ def test_multipath_background():
     paths.append([prob*(1-prob), tau2-t2])
 
     # Output
-    KB = dipolarkernel(t,r,paths,Bmodel, integralop=False)
+    KB = dipolarkernel(t,r,pathways=paths, bg=Bmodel, integralop=False)
 
     assert np.all(abs(KB - KBref) < 1e-3)
 #=======================================================================
@@ -268,7 +268,7 @@ def test_multipath_harmonics():
     paths.append([prob**2, 0, 2])
     paths.append([prob*(1-prob), tau2-t2,3])
 
-    K = dipolarkernel(t,r,paths, integralop=False)
+    K = dipolarkernel(t,r,pathways=paths, integralop=False)
 
     Kref = 1-prob
     for p in range(len(lam)):
