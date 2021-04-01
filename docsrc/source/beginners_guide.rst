@@ -109,7 +109,10 @@ Zero-time correction
 
         t = dl.correctzerotime(V,t)  # zero-time correction
 
-In both steps, the corrections are based on optimization approaches. These work well in most cases. Should either fail for a specific case, the phase adjustment and time-axis shift can also be manually specified. See the documentation for :ref:`correctphase` and :ref:`correctzerotime`.
+In both steps, the corrections are based on optimization approaches. These work well in most cases. Should either fail for a specific case, the phase adjustment and time-axis shift can also be done manually: ::
+
+    t = t - t0                          # manual zero-time correction 
+    V = np.real(V*np.exp(-1j*phase))    # manual phase correction
 
 All analysis and fitting functions in DeeLab assume the dipolar signals and their corresponding time-axes to be properly pre-processed.
 
