@@ -19,7 +19,7 @@ def correctphase(V, phase='posrealint', full_output=False):
     V : array_like or list of array_like
         Complex-valued signals or list thereof.
 
-    phase : float scalar, optional
+    phase : string, optional
         Criterion for selection of correction phase. 
 
         * ``'posrealint'`` - Select the phase that gives the largest positive integral of the real part.

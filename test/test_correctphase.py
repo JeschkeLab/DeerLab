@@ -27,7 +27,7 @@ def test_phase_fit():
 
 def test_multiple_datasets():
 #============================================================
-    "Check that the phase correcion works when passing multiple datasets"
+    "Check that the phase correction works when passing multiple datasets"
 
     V = np.tile(np.arange(100),(20,1)).T
     phases = np.mod(np.linspace(-3*pi/4,pi/2,20),pi)
