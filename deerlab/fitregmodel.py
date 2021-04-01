@@ -104,11 +104,17 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
     -------
     :ref:`FitResult` with the following fields defined:
     P : ndarray
-        Fitted distance distribution
+        Fitted distance distribution.
     
-    uncertainty : :ref:`UQResult`
-        Covariance-based uncertainty quantification of the fitted distance distribution
-    
+    V : ndarray 
+        Fitted dipolar signal.
+
+    Puncert : :ref:`UQResult`
+        Covariance-based uncertainty quantification of the fitted distance distribution.
+   
+    VUncert : :ref:`UQResult`
+        Covariance-based uncertainty quantification of the fitted dipolar signal.
+     
     regparam : float int
         Regularization parameter used in the optimization
     
@@ -212,6 +218,16 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
     else:
         Puq = UQResult('void')
 
+    # Get fitted signals and their uncertainty
+    # --------------------------------------
+    modelfit, modelfituq = [],[]
+    for subset in subsets: 
+        subset_model = lambda P: (K@P)[subset]
+        modelfit.append(subset_model(Pfit))
+        if uq: 
+            modelfituq.append(Puq.propagate(subset_model))
+        else:
+            modelfituq.append(UQResult('void'))
     
     # Re-normalization of the distributions
     # --------------------------------------
@@ -222,7 +238,6 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
             Puq.ci = lambda p: Puq_.ci(p)/postscale
 
-
     # Goodness-of-fit
     # --------------------------------------
     H = K@(np.linalg.pinv(KtKreg)@K.T)
@@ -230,8 +245,6 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
     for subset in subsets: 
         Ndof = len(V[subset]) - np.trace(H)
         stats.append(goodness_of_fit(V[subset],Vfit[subset],Ndof))
-    if len(stats)==1: 
-        stats = stats[0]
 
 
     # Signal amplitude scales
@@ -239,8 +252,12 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
     scales = []
     for i in range(len(subsets)): 
         scales.append(prescales[i]*postscale)
+
     if len(scales)==1:
         scales = scales[0]
+        stats = stats[0]
+        modelfit = modelfit[0]
+        modelfituq = modelfituq[0]
 
     # Results display
     # ---------------------------------------
@@ -248,7 +265,7 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
         fig = _plot(subsets,V,Vfit,r,Pfit,Puq,show)
         return fig 
 
-    return FitResult(P=Pfit, V=Vfit, uncertainty=Puq, regparam=alpha, scale=scales, stats=stats, 
+    return FitResult(P=Pfit, V=modelfit, Puncert=Puq, Vuncert=modelfituq, regparam=alpha, scale=scales, stats=stats, 
                      plot=plotfcn, cost=fval, residuals=res, success=success)
 # ===========================================================================================
 

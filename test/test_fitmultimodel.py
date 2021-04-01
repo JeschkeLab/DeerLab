@@ -176,6 +176,21 @@ def assert_confidence_intervals(pci50,pci95,pfit,lb,ub):
     assert not errors, "Errors occured:\n{}".format("\n".join(errors))
 #----------------------------------------------------------------------
 
+def test_Vfit():
+#=======================================================================
+    "Check that the fitted signal is correct"
+    
+    t = np.linspace(-0.3,4,100)
+    r = np.linspace(3,6,200)
+    InputParam = [4, 0.05, 0.5, 4.3, 0.1, 0.4]
+    P = dd_gauss2(r,InputParam)
+    K = dipolarkernel(t,r)
+    V = K@P
+
+    fit = fitmultimodel(V,K,r,dd_gauss,2,'aicc',lb=[1,0.02],ub=[6,1])
+
+    assert max(abs(fit.V - V))<1e-3
+#=======================================================================
 
 def test_confinter_Pfit():
 #=======================================================================
@@ -193,6 +208,24 @@ def test_confinter_Pfit():
     lbP = np.zeros(len(r))
     ubP = np.full(len(r), np.inf)
     assert_confidence_intervals(fit.Puncert.ci(50),fit.Puncert.ci(95),fit.P,lbP,ubP)
+#=======================================================================
+
+def test_confinter_Vfit():
+#=======================================================================
+    "Check that the confidence intervals of the fitted signal are correct"
+    
+    t = np.linspace(-0.3,4,100)
+    r = np.linspace(3,6,200)
+    InputParam = [4, 0.05, 0.5, 4.3, 0.1, 0.4]
+    P = dd_gauss2(r,InputParam)
+    K = dipolarkernel(t,r)
+    V = K@P
+
+    fit = fitmultimodel(V,K,r,dd_gauss,2,'aicc',lb=[1,0.02],ub=[6,1])
+
+    lb = np.full(len(t), -np.inf)
+    ub = np.full(len(t), np.inf)
+    assert_confidence_intervals(fit.Vuncert.ci(50),fit.Vuncert.ci(95),fit.V,lb,ub)
 #=======================================================================
 
 def test_confinter_parfit():
@@ -213,6 +246,7 @@ def test_confinter_parfit():
     parfit = fit.Pparam
     assert_confidence_intervals(paruq.ci(50)[0:2,:],paruq.ci(95)[0:2,:],parfit,lbPpar,ubPpar)
 #=======================================================================
+
 
 
 def test_goodness_of_fit():

@@ -189,7 +189,7 @@ fit = fitregmodel(K@P,K,r)
 
 def assert_uncertainty(key):
 # ----------------------------------------------------------------------
-    desc,uq = diststats(r,fit.P,fit.uncertainty)
+    desc,uq = diststats(r,fit.P,fit.Puncert)
     desc = desc[key]
     ci = uq[key].ci(95)
     assert (desc >= ci[0]) & (desc <= ci[1])

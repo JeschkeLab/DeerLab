@@ -133,7 +133,7 @@ def test_confinter_Pfit():
     ub = [20, 1]
     model = lambda p: K@dd_gauss(r,p)
     fit = fitparamodel(V,model,par0,lb,ub)
-    paruq = fit.uncertainty
+    paruq = fit.paramUncert
     parfit = fit.param
 
     assert_confidence_intervals(paruq.ci(50),paruq.ci(95),parfit,lb,ub)
@@ -160,8 +160,8 @@ def test_manual_covmatrix():
     fitmanual = fitparamodel(V,model,par0,lb,ub, covmatrix = covmat)
     fitauto = fitparamodel(V,model,par0,lb,ub)
 
-    paruq_manual = fitmanual.uncertainty
-    paruq_auto = fitauto.uncertainty
+    paruq_manual = fitmanual.paramUncert
+    paruq_auto = fitauto.paramUncert
 
     ci_manual = paruq_manual.ci(95)
     ci_auto = paruq_auto.ci(95)
@@ -288,8 +288,8 @@ def test_confinter_values():
                 [2.0029218541761944, 2.214745269892137]]
     
     fit = fitparamodel(y,lambda p: p[0]*x + p[1],[0.1,1],fitscale=False)
-    a_ci = [fit.uncertainty.ci(cov[i])[0,:] for i in range(3)]
-    b_ci = [fit.uncertainty.ci(cov[i])[1,:] for i in range(3)]
+    a_ci = [fit.paramUncert.ci(cov[i])[0,:] for i in range(3)]
+    b_ci = [fit.paramUncert.ci(cov[i])[1,:] for i in range(3)]
 
     ci_match = lambda ci,ci_ref,truth:np.max(abs(np.array(ci) - np.array(ci_ref)))/truth < 0.01
     assert ci_match(a_ci,a_ci_ref,p[0]) & ci_match(b_ci,b_ci_ref,p[1])

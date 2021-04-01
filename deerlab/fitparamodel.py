@@ -59,11 +59,17 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
     -------
     :ref:`FitResult` with the following fields defined:
     param : ndarray
-        Fitted model parameters
+        Fitted model parameters.
     
-    uncertainty : :ref:`UQResult`
+    model : ndarray 
+        Fitted model.
+
+    paramUncert : :ref:`UQResult`
         Covariance-based uncertainty quantification of the fitted parameters.
-    
+ 
+    modelUncert : :ref:`UQResult`
+        Covariance-based uncertainty quantification of the fitted model.
+
     scale : float int or list of float int
         Amplitude scale(s) of the dipolar signal(s).
     
@@ -134,7 +140,6 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
         fit = dl.fitparamodel([V1,V2],Vmodel,par0,lb,ub)
 
     """
-    
     V, model, weights, Vsubsets = parse_multidatasets(V, model, weights)
     Nsignals = len(Vsubsets)
     scales = [1]*Nsignals
@@ -248,6 +253,15 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
     else:
         paruq = UQResult('void')
 
+    modelfit,modelfit_uq = [],[]
+    for subset in Vsubsets: 
+        subset_model = lambda p: model(p)[subset]
+        modelfit.append(subset_model(parfit))
+        if uq:
+            modelfit_uq.append(paruq.propagate(subset_model))        
+        else: 
+            modelfit_uq.append(UQResult('void'))
+
     # Calculate goodness of fit
     stats = []
     Vfit = model(parfit)
@@ -258,13 +272,16 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
         stats = stats[0]
         scales = scales[0]
         fvals = fvals[0]
+        modelfit = modelfit[0]
+        modelfit_uq = modelfit_uq[0]
+
     # Get plot function
     def plotfcn(show=False):
         fig = _plot(Vsubsets,V,Vfit,show)
         return fig
 
     return FitResult(
-            param=parfit, uncertainty=paruq, scale=scales, stats=stats, cost=fvals,
+            param=parfit, model=modelfit, paramUncert=paruq, modelUncert=modelfit_uq, scale=scales, stats=stats, cost=fvals,
             plot=plotfcn, residuals=sol.fun, success=sol.success)
 
 def _plot(Vsubsets,V,Vfit,show):
