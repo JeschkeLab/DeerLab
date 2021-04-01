@@ -41,7 +41,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time in microseconds (T0), 
         and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]``. If n is not given, it is assumed to be 1. 
         For a unmodulated pathway, specify only the amplitude, i.e. ``[Lambda0]``. If neither ``pathways`` or ``mod`` are specified
-        (or ``None``), full-modulation is assumed ``pathways=[[0],[1,0]]``.
+        (or ``None``), full-modulation is assumed ``pathways=[[1,0]]``.
     
     mod : scalar  or ``None``, optional
         Modulation depth for the simplified 4-pulse DEER model. If neither ``pathways`` or ``mod`` are specified (or ``None``),
@@ -161,7 +161,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         pathways = [[1-mod], [mod, 0]]
     elif not pathways_passed:
         # Full modulation if neither pathways or modulation depth are specified
-        pathways = [[0], [1, 0]]
+        pathways = [[1, 0]]
 
     # Ensure correct formatting of the pathways
     paths = [np.concatenate([np.atleast_1d(p) for p in path]).astype(float) for path in pathways]
@@ -169,8 +169,10 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     # Get unmodulated pathways    
     unmodulated = [paths.pop(i) for i,path in enumerate(paths) if len(path)==1]
     # Combine all unmodulated contributions
-    Lambda0 = sum(np.concatenate([path for path in unmodulated]))
-
+    if unmodulated:
+        Lambda0 = sum(np.concatenate([path for path in unmodulated]))
+    else: 
+        Lambda0 = 0
     # Check structure of pathways
     for i,path in enumerate(paths):
         if len(path) == 2:
