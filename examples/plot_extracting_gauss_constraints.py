@@ -75,7 +75,7 @@ fit = dl.fitparamodel(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat,fitscale=Fals
 
 # Extract the fit results
 parfit = fit.param
-paruq = fit.uncertainty
+paruq = fit.paramUncert
 PGauss = dl.dd_gauss2(r,parfit)
 
 # Extract the 95%-confidence intervals...
@@ -94,15 +94,17 @@ PGauss95 = PGauss_uq.ci(95)
 # %%
 
 # Plot the fitted constraints model on top of the non-parametric case
-plt.plot(r,Pfit,'r',linewidth=1.5)
-plt.fill_between(r,Pfit_uq.ci(95)[:,0], Pfit_uq.ci(95)[:,1],facecolor='r',linestyle='None',alpha=0.2)
+plt.plot(r,Pfit,'r',linewidth=1.5,label='non-param. fit')
+plt.fill_between(r,Pfit_uq.ci(95)[:,0], Pfit_uq.ci(95)[:,1],facecolor='r',linestyle='None',alpha=0.2,label='95% CI')
 
-plt.plot(r,PGauss,'b',linewidth=1.5)
-plt.fill_between(r,PGauss95[:,0], PGauss95[:,1],facecolor='b',linestyle='None',alpha=0.2)
+plt.plot(r,PGauss,'b',linewidth=1.5,label='2-Gauss fit to nonparam. fit')
+plt.fill_between(r,PGauss95[:,0], PGauss95[:,1],facecolor='b',linestyle='None',alpha=0.2,label='95% CI')
 
 plt.xlabel('Distance (nm)')
 plt.ylabel('P (nm⁻¹)')
 plt.tight_layout()
 plt.grid(alpha=0.3)
-plt.legend(['Tikhonov fit','95%-CI','2G fit to Tikhonov','95%-CI'])
+plt.legend()
 plt.show()
+
+# %%

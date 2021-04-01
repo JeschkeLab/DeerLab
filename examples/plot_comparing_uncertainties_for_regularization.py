@@ -39,8 +39,8 @@ Pfit = fit.P        # fitted distribution
 Vfit = fit.V        # fitted DEER trace
 
 # curvature matrix confidence intervals for distribution
-Pci95_cm = fit.uncertainty.ci(95)
-Pci50_cm = fit.uncertainty.ci(50)
+Pci95_cm = fit.Puncert.ci(95)
+Pci50_cm = fit.Puncert.ci(50)
 
 # %% [markdown]
 # Bootstrapped confidence intervals

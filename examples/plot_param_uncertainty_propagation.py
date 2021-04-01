@@ -65,7 +65,7 @@ upper =      [0.50, 7.0,  0.5, 1500] # upper bounds
 fit = dl.fitparamodel(V,Vmodel,par0,lower,upper)
 
 parfit = fit.param
-paruq = fit.uncertainty
+paruq = fit.paramUncert
 
 # Forward-calculate the models with the fitted parameters
 Vfit = Vmodel(parfit)
