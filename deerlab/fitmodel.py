@@ -521,7 +521,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # Linear regularization fit
         fit = dl.fitregmodel(Vexp,Ks,r,regtype,regparam, weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter)
         Pfit = fit.P
-        Pfit_uq = fit.uncertainty
+        Pfit_uq = fit.Puncert
         scales = np.atleast_1d(fit.scale)
         alphaopt = fit.regparam
 

@@ -104,11 +104,17 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
     -------
     :ref:`FitResult` with the following fields defined:
     P : ndarray
-        Fitted distance distribution
+        Fitted distance distribution.
     
-    uncertainty : :ref:`UQResult`
-        Covariance-based uncertainty quantification of the fitted distance distribution
-    
+    V : ndarray 
+        Fitted dipolar signal.
+
+    Puncert : :ref:`UQResult`
+        Covariance-based uncertainty quantification of the fitted distance distribution.
+   
+    VUncert : :ref:`UQResult`
+        Covariance-based uncertainty quantification of the fitted dipolar signal.
+     
     regparam : float int
         Regularization parameter used in the optimization
     
@@ -246,7 +252,7 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
     scales = []
     for i in range(len(subsets)): 
         scales.append(prescales[i]*postscale)
-        
+
     if len(scales)==1:
         scales = scales[0]
         stats = stats[0]
@@ -259,7 +265,7 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
         fig = _plot(subsets,V,Vfit,r,Pfit,Puq,show)
         return fig 
 
-    return FitResult(P=Pfit, model=modelfit, Puncert=Puq, modelUncert=modelfituq, regparam=alpha, scale=scales, stats=stats, 
+    return FitResult(P=Pfit, V=modelfit, Puncert=Puq, Vuncert=modelfituq, regparam=alpha, scale=scales, stats=stats, 
                      plot=plotfcn, cost=fval, residuals=res, success=success)
 # ===========================================================================================
 

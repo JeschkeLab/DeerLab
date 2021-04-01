@@ -189,7 +189,7 @@ def test_Vfit():
 
     fit = fitmultimodel(V,K,r,dd_gauss,2,'aicc',lb=[1,0.02],ub=[6,1])
 
-    assert max(abs(fit.model - V))<1e-3
+    assert max(abs(fit.V - V))<1e-3
 #=======================================================================
 
 def test_confinter_Pfit():
@@ -225,7 +225,7 @@ def test_confinter_Vfit():
 
     lb = np.full(len(t), -np.inf)
     ub = np.full(len(t), np.inf)
-    assert_confidence_intervals(fit.modelUncert.ci(50),fit.modelUncert.ci(95),fit.model,lb,ub)
+    assert_confidence_intervals(fit.Vuncert.ci(50),fit.Vuncert.ci(95),fit.V,lb,ub)
 #=======================================================================
 
 def test_confinter_parfit():

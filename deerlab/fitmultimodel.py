@@ -102,12 +102,18 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     Kparam : ndarray
         Fitted kernel parameters.
     
+    V : ndarray or list thereof
+        Fitted dipolar signal(s).
+
     Puncert : :ref:`UQResult`
         Covariance-based uncertainty quantification of the fitted distance distribution
     
     paramUncert : :ref:`UQResult`
         Covariance-based uncertainty quantification of the fitted parameters
-    
+
+    Vuncert : ndarray or list thereof
+        Covariance-based uncertainty quantification of the fitted dipolar signal(s).
+
     Nopt : int scalar
         Optimized number of components in model.
     
@@ -526,8 +532,8 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         fig = _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uq,show)
         return fig
 
-    return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, model=fit.model, Puncert=Puq, 
-                    paramUncert=paramuq, modelUncert=fit.modelUncert, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
+    return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, V=fit.model, Puncert=Puq, 
+                    paramUncert=paramuq, Vuncert=fit.modelUncert, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
                     stats=stats, cost=fit.cost, residuals=fit.residuals, success=fit.success)
 # =========================================================================
 

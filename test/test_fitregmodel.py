@@ -253,7 +253,7 @@ def test_confinter_Vfit():
 
     fit = fitregmodel(V,K,r,'tikhonov','aic')
 
-    assert_confidence_intervals(fit.modelUncert,fit.model)
+    assert_confidence_intervals(fit.Vuncert,fit.V)
 #============================================================
 
 def test_renormalize():
