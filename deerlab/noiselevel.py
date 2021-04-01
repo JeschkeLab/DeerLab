@@ -115,7 +115,7 @@ def noiselevel(V,*args):
             
     elif estimationMethod == 'complex':
             # Optimize the phase of the signal
-            _,Vim,_,_ = correctphase(V,full_output=True)
+            _,Vim,_ = correctphase(V,full_output=True)
             # And estimate the noiselevel from the imaginary part
             sigma = std(Vim)
             
