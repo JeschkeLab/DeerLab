@@ -15,13 +15,13 @@ import deerlab as dl
 #-----------------------------------------------------------------------------
 # For this example we will simulate a simple 4pDEER signal
 
-t = np.linspace(-0.5,5,300)
-r = np.linspace(2,6,200)
+t = np.linspace(-0.5,5,300)  # µs
+r = np.linspace(2,6,200)   # nm
 
 # Generate ground truth and input signal
 P = dl.dd_gauss2(r,[3.5, 0.25, 0.4, 4.5, 0.4, 0.6])
 lam = 0.36
-c0 = 250 #uM
+c0 = 250 # µM
 B = dl.bg_hom3d(t,c0,lam)
 K = dl.dipolarkernel(t,r,lam,B)
 V = K@P  + dl.whitegaussnoise(t,0.01)
@@ -84,8 +84,8 @@ Pci50 = fit.linUncert.ci(50) #  50#-confidence interval
 Pci95 = fit.linUncert.ci(95) #  95#-confidence interval
 
 # Print result
-print('lambda = {:.2f}({:.2f}-{:.2f})'.format(parfit[0],param95[0,0],param95[0,1]))
-print('c0 = {:.2f}({:.2f}-{:.2f})uM'.format(parfit[1],param95[1,0],param95[1,1]))
+print(f'lambda = {parfit[0]:.2f}({param95[0,0]:.2f}-{param95[0,1]:.2f})')
+print(f'c0 = {parfit[1]:.2f}({pararm95[1,0]:.2f}-{param95[1,1]:.2f})µM')
 
 # Get fitted model
 Kfit = Kmodel(parfit)

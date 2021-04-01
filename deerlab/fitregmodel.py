@@ -403,7 +403,7 @@ def _plot(subsets,Vexp,Vfit,r,Pfit,Puq,show=False):
         axs[i].plot(Vfit[subset],'tab:blue')
         axs[i].grid(alpha=0.3)
         axs[i].set_xlabel('Array Elements')
-        axs[i].set_ylabel('V[{}]'.format(i))
+        axs[i].set_ylabel(f'V[{i}]')
         axs[i].legend(('Data','Fit'))
 
     # Get confidence intervals for the distance distribution

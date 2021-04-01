@@ -129,7 +129,7 @@ def assert_confidence_intervals(pci50,pci95,pfit,lb,ub):
         errors.append("The lower bounds are not satisfied by the confidence intervals.")
     if not np.all(np.maximum(ub,p95ub)==ub):
         errors.append("The upper bounds are not satisfied by the confidence intervals.")
-    assert not errors, "Errors occured:\n{}".format("\n".join(errors))
+    assert not errors, f"Errors occured:\n{chr(10).join(errors)}"
 
 def test_confinter_linear():
 #=======================================================================

@@ -540,7 +540,7 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uq,show):
         axs[i].plot(Vfit[subset],'tab:blue')
         axs[i].grid(alpha=0.3)
         axs[i].set_xlabel('Array Elements')
-        axs[i].set_ylabel('V[{}]'.format(i))
+        axs[i].set_ylabel(f'V[{i}]')
         axs[i].legend(('Data','Fit'))
 
     if uq:
@@ -567,7 +567,7 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uq,show):
     ax = plt.subplot(nSignals+1,2,2*(nSignals+1))
     ax.bar(np.arange(maxModels)+1,np.log10(1 + dfcnals + abs(min(dfcnals))),facecolor='tab:blue',alpha=0.6)
     ax.grid(alpha=0.3)
-    ax.set_ylabel('log10 Δ{}'.format(method.upper()))
+    ax.set_ylabel(f'log10 Δ{method.upper()}')
     ax.set_xlabel('Number of components')
     axs = np.append(axs,ax)
 

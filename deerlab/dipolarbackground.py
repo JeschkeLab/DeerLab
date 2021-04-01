@@ -51,9 +51,9 @@ def dipolarbackground(t, pathways, Bmodel):
         import numpy as np
         import deerlab as dl
 
-        t = np.linspace(-5,20,501) # time axis (us)
+        t = np.linspace(-5,20,501) # time axis (µs)
         lam = 0.4 # modulation depth main signal
-        conc = 200   # spin concentration (uM)
+        conc = 200   # spin concentration (µM)
 
         pathways = []
         path0 = [1-lam]             # unmodulated part, gives offset

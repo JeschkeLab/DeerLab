@@ -7,17 +7,17 @@ import numpy as np
 
 
 # Definition of the header for all experiment models
-docstr_header = lambda title,fcnstr: """
-{}
+docstr_header = lambda title,fcnstr: f"""
+{title}
 
 If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-    info = {}()
+    info = {fcnstr}()
 
 
 Otherwise the function returns to calculated experiment dipolar pathways::
 
-    pathways = {}(param)
+    pathways = {fcnstr}(param)
 
 
 Parameters
@@ -39,7 +39,7 @@ info : dict
     
 pathways : ndarray
     Dipolar pathways of the experiment
-""".format(title,fcnstr,fcnstr)
+"""
 
 # =================================================================
 def docstring():

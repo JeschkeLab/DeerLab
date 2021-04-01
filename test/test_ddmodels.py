@@ -41,7 +41,7 @@ def assert_ddmodel(model):
         errors.append("Non-uniform trapezoidal integration failed")
 
     # assert no error message has been registered, else print messages
-    assert not errors, "Errors occured:\n{}".format("\n".join(errors))
+    assert not errors, f"Errors occured:\n{chr(10).join(errors)}"
 #=============================================================================
 
 def test_dd_gauss():

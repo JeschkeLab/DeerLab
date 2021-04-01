@@ -9,17 +9,17 @@ import scipy.special as spc
 import inspect
 
 # Definition of the header for all experiment models
-docstr_header = lambda title, fcnstr: """
-{}
+docstr_header = lambda title, fcnstr: f"""
+{title}
 
 If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = {}()
+        info = {fcnstr}()
 
 
 Otherwise the function returns the calculated distance distribution::
 
-        P = {}(r,param)
+        P = {fcnstr}(r,param)
 
 
 Parameters
@@ -44,9 +44,9 @@ info : dict
     
 P : ndarray
     Distance distribution.
-""".format(title,fcnstr,fcnstr)
+"""
 
-docstr_example = lambda fcnstr: """ 
+docstr_example = lambda fcnstr: f""" 
 Examples
 --------
 
@@ -57,7 +57,7 @@ Example of the model evaluated at the start values of the parameters:
     import deerlab as dl
     import matplotlib.pyplot as plt 
     import numpy as np 
-    model = dl.{}
+    model = dl.{fcnstr}
     r = np.linspace(2,5,400)
     info = model() 
     par0 = info['Start']
@@ -70,7 +70,7 @@ Example of the model evaluated at the start values of the parameters:
     plt.tick_params(labelsize=12)
     plt.tick_params(labelsize=12)
     plt.tight_layout()
-""".format(fcnstr)
+"""
 
 # =================================================================
 def docstring():
@@ -93,10 +93,10 @@ def _parsargs(args,npar):
 #=================================================================
     name = inspect.stack()[1][3]
     if len(args)!=2:
-        raise KeyError('The model function {} requires two input arguments: {}(r,params).'.format(name,name))
+        raise KeyError(f'The model function {name} requires two input arguments: {name}(r,params).')
     r,p = args
     if len(p)!=npar:
-        raise ValueError('The model function {} requires {} parameters, but {} are provided.'.format(name,npar,len(p)))
+        raise ValueError(f'The model function {name} requires {npar} parameters, but {len(p)} are provided.')
     return r,p
 #=================================================================
 

@@ -74,7 +74,7 @@ Vc : ndarray
         lb = [1e-3, 1e-3, 1e-3]
         ub = [10, 1000, 10000]
     else: 
-        raise KeyError("Unknown model '{}'".format(model))
+        raise KeyError(f"Unknown model '{model}'")
 
     # Run the parametric model fitting
     fit = fitparamodel(V_,fitmodel,par0,lb,ub,fitscale=False,uq=False)

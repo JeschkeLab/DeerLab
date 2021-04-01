@@ -13,18 +13,18 @@ from deerlab.utils import load_exvolume_redfactor
 
 # Definition of the header for all experiment models taking lambda as well
 # =================================================================
-docstr_header1 = lambda title,fcnstr: """
-{}
+docstr_header1 = lambda title,fcnstr: f"""
+{title}
 
 If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = {}()
+        info = {fcnstr}()
 
 
 Otherwise the function returns the calculated background model::
 
-        B = {}(t,param)
-        B = {}(t,param,lam)
+        B = {fcnstr}(t,param)
+        B = {fcnstr}(t,param,lam)
 
 Parameters
 ----------
@@ -49,22 +49,22 @@ info : dict
     
 B : ndarray
     Dipolar background. 
-""".format(title,fcnstr,fcnstr,fcnstr)
+"""
 # =================================================================
 
 # Definition of the header for all experiment models 
 # =================================================================
-docstr_header2 = lambda title,fcnstr: """
-{}
+docstr_header2 = lambda title,fcnstr: f"""
+{title}
 
 If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
 
-        info = {}()
+        info = {fcnstr}()
 
 
 Otherwise the function returns the calculated background model::
 
-        B = {}(t,param)
+        B = {fcnstr}(t,param)
 
 Parameters
 ----------
@@ -87,7 +87,7 @@ info : dict
     
 B : ndarray
     Dipolar background. 
-""".format(title,fcnstr,fcnstr)
+"""
 # =================================================================
 
 def docstring(takes_lambda=False):
@@ -118,7 +118,7 @@ def _parsargs(args,npar,takes_lambda=False):
         if len(args)==2:
             t,p = args
         else:
-            raise KeyError('The model function {} requires two input arguments: {}(t,params).'.format(name,name))
+            raise KeyError(f'The model function {name} requires two input arguments: {name}(t,params).')
     if takes_lambda:
         if len(args)==3:
             t,p,lam = args
@@ -126,14 +126,14 @@ def _parsargs(args,npar,takes_lambda=False):
             t,p = args
             lam = 1
         else:
-            raise KeyError('The model function {} requires two or three input arguments: {}(t,params) or {}(t,params,lambda).'.format(name,name,name))
+            raise KeyError(f'The model function {name} requires two or three input arguments: {name}(t,params) or {name}(t,params,lambda).')
 
     t = np.atleast_1d(t)
     p = np.atleast_1d(p)
 
     # Check that the correct number of parmameters have been specified
     if len(p)!=npar:
-        raise ValueError('The model function {} requires {} parameters, but {} are provided.'.format(name,npar,len(p)))
+        raise ValueError(f'The model function {name} requires {npar} parameters, but {len(p)} are provided.')
 
     if takes_lambda:
         return t,p,lam
@@ -174,7 +174,7 @@ where `c_p` is the pumped-spin concentration (entered in spins/m\ :sup:`3` into 
 ============== =============== ============= ============= ============= =================================
     """  
     def model(t,param,lam=1):
-        conc = param            # concentration, uM
+        conc = param            # concentration, µM
         NA = 6.02214076e23      # Avogadro constant, mol^-1
         muB = 9.2740100783e-24  # Bohr magneton, J/T (CODATA 2018 value)
         mu0 = 1.25663706212e-6  # magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
@@ -245,7 +245,7 @@ The function :math:`\alpha(R)` of the exclusion distance :math:`R` captures the 
         dR_tab,alphas_tab = load_exvolume_redfactor()
 
         # Get parameters
-        conc = param[0] # uM
+        conc = param[0] # µM
         R = param[1]    # nm
 
         NA = 6.02214076e23      # Avogadro constant, mol^-1

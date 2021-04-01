@@ -542,7 +542,7 @@ def _plot(subsets,y,yfit,show):
         axs[i].plot(yfit[subset],'tab:blue')
         axs[i].grid(alpha=0.3)
         axs[i].set_xlabel('Array elements')
-        axs[i].set_ylabel('Data #{}'.format(i))
+        axs[i].set_ylabel(f'Data #{i}')
         axs[i].legend(('Data','Fit'))
     plt.tight_layout()
     if show:

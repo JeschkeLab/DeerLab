@@ -15,12 +15,12 @@ import deerlab as dl
 # Generate data
 # -------------
 
-t = np.linspace(-0.2,4,300)
-r = np.linspace(2,5,400)
-center = 3.5 # (nm) Rician center distance
-width = 0.3 # (nm) Rician width
+t = np.linspace(-0.2,4,300)   # µs
+r = np.linspace(2,5,400)     # nm
+center = 3.5 # Rician center distance, nm
+width = 0.3 # Rician width, nm
 lam = 0.27 # Modulation depth
-conc = 150 # [uM] Spin concentration
+conc = 150 # Spin concentration, µM
 P = dl.dd_rice(r,[center, width])
 B = dl.bg_hom3d(t,conc,lam)
 K = dl.dipolarkernel(t,r,lam,B)

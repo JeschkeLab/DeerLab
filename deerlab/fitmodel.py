@@ -774,7 +774,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                     axs[i].fill_between(t[i],Vunmod50[:,0], Vunmod50[:,1],facecolor='tab:orange',linestyle='None',alpha=0.4)
             axs[i].grid(alpha=0.3)
             axs[i].set_xlabel('Time (µs)')
-            axs[i].set_ylabel('V[{}]'.format(i))
+            axs[i].set_ylabel(f'V[{i}]')
             axs[i].legend(('Data','Vfit','Bfit','95%-CI','50%-CI'))
 
         # Plot the distribution
@@ -802,10 +802,9 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         print('----------------------------------------------------------------------------')
         print('Goodness of fit')
         for i in range(nSignals):
-            print('  Vexp[{}]: 𝛘2 = {:4f}  RMSD  = {:4e}'.format(i,stats[i]['chi2red'],stats[i]['rmsd']))
+            print(f'  Vexp[{i}]: 𝛘2 = {stats[i]["chi2red"]:4f}  RMSD  = {stats[i]["rmsd"]:4e}')
         print('----------------------------------------------------------------------------')
         print('Fitted parameters and 95%-confidence intervals')
-        pstr = "  {}[{:d}]:   {:5.7f}  ({:.7f}, {:.7f})  {} ({})"
         if len(parfit['dd'])>0:
             print()
             info = dd_model()
@@ -815,14 +814,14 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 ci = np.full((len(parfit['dd']),2),np.nan)
             for j in range(len(parfit['dd'])):
                 c = parfit['dd'][j]
-                print(pstr.format('ddparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
+                print(f'  ddparam[{j:d}]:   {c:5.7f}  ({ci[j,0]:.7f}, {ci[j,1]:.7f})  {info["Parameters"][j]} ({info["Units"][j]})')
 
         for i in range(nSignals):
-            print('Vfit[{}]:'.format(i))
+            print(f'Vfit[{i}]:')
             if scales[i]>1e2:
-                print('  V0:  {:.3e}  Signal scale (arb.u.)'.format(scales[i]))
+                print(f'  V0:  {scales[i]:.3e}  Signal scale (arb.u.)')
             else:
-                print('  V0:  {:2.2f}  Signal scale (arb.u.)'.format(scales[i]))
+                print(f'  V0:  {scales[i]:2.2f}  Signal scale (arb.u.)')
             if includeBackground[i]:
                 if len(parfit['bg'])>0:
                     info = bg_model[i]()
@@ -831,8 +830,8 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 else:
                     ci = np.full((len(parfit['bg'][i]),2),np.nan)
                 for j in range(len(parfit['bg'][i])):
-                        c = parfit['bg'][i][j]
-                        print(pstr.format('bgparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
+                    c = parfit['bg'][i][j]
+                    print(f'  bgparam[{j:d}]:   {c:5.7f}  ({ci[j,0]:.7f}, {ci[j,1]:.7f})  {info["Parameters"][j]} ({info["Units"][j]})')
             if includeExperiment[i]:
                 if len(parfit['ex'])>0:
                     info = ex_model[i]()
@@ -842,7 +841,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                     ci = np.full((len(parfit['ex'][i]),2),np.nan)
                 for j in range(len(parfit['ex'][i])):
                     c = parfit['ex'][i][j]
-                    print(pstr.format('exparam',j,c,ci[j,0],ci[j,1],info['Parameters'][j],info['Units'][j]))
+                    print(f'  exparam[{j:d}]:   {c:5.7f}  ({ci[j,0]:.7f}, {ci[j,1]:.7f})  {info["Parameters"][j]} ({info["Units"][j]})')
         print('----------------------------------------------------------------------------')
 
 
