@@ -136,7 +136,7 @@ def test_background_fit():
     "Check the fitting of a non-linear kernel model"
     
     t = np.linspace(-0.3,4,100)
-    r = np.linspace(3,6,200)
+    r = np.linspace(3,6,100)
     InputParam = [4, 0.15, 0.5, 4.3, 0.1, 0.4]
     P = dd_gauss2(r,InputParam)
     B = bg_exp(t,0.15)
