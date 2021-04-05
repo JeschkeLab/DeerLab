@@ -172,4 +172,3 @@ def test_phenomenological():
 
     assert max(abs(B-Bref) < 1e-8)
 #==================================================================================
-test_phenomenological()

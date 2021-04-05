@@ -463,7 +463,7 @@ def test_confinter_scaling():
 
     # Prepare test data
     r = np.linspace(1,8,80)
-    t = np.linspace(0,4,200)
+    t = np.linspace(0,4,50)
     lam = 0.25
     K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]

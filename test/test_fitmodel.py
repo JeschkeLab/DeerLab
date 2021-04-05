@@ -13,8 +13,8 @@ from deerlab.utils import ovl
 def assert_experiment_model(model):
 # --------------------------------------------------------------------
     t = np.linspace(0,5,100)
-    r = np.linspace(2,6,150)
-    P = dd_gauss(r,[4.5, 0.255])
+    r = np.linspace(2,6,50)
+    P = dd_gauss(r,[4.5, 0.25])
 
     info = model()
     parIn = info['Start']
@@ -670,7 +670,7 @@ def test_cost_value():
     "Check that starts values can be correctly specified"
 
     t = np.linspace(0,5,100)
-    r = np.linspace(2,6,150)
+    r = np.linspace(2,6,50)
     P = dd_gauss(r,[4.5, 0.25])
 
     Bmodel = lambda t: bg_exp(t,0.4)
@@ -780,7 +780,7 @@ def test_convergence_criteria():
     "Check that convergence criteria can be specified without crashing"
 
     t = np.linspace(0,5,100)
-    r = np.linspace(2,6,150)
+    r = np.linspace(2,6,80)
     P = dd_gauss(r,[4.5, 0.25])
 
     Bmodel = lambda t: bg_exp(t,0.4)
