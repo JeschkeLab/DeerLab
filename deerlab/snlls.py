@@ -463,13 +463,17 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         paramuq_nonlin = UQResult('void')
         paramuq_lin = UQResult('void')
 
+
+    for i in range(len(subsets)):
+        scales[i] *= prescales[i]
+
     # Get fitted signals and their uncertainty
     parfit = np.concatenate((nonlinfit, linfit))
     nonlin_idx = np.arange(len(nonlinfit))
     lin_idx = np.arange(len(nonlinfit),len(parfit))
     modelfit, modelfituq = [],[]
-    for subset in subsets: 
-        subset_model = lambda p: scales_vec[subset]*((Amodel(p[nonlin_idx])@p[lin_idx])[subset])
+    for i,subset in enumerate(subsets): 
+        subset_model = lambda p: scales[i]*((Amodel(p[nonlin_idx])@p[lin_idx])[subset])
         modelfit.append(subset_model(parfit))
         if uq: 
             modelfituq.append(paramuq.propagate(subset_model))
@@ -487,9 +491,6 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         fvals = fvals[0]
         modelfit = modelfit[0]
         modelfituq = modelfituq[0]
-
-    for i in range(len(subsets)):
-        scales[i] *= prescales[i]
 
     # Display function
     def plotfcn(show=False):
