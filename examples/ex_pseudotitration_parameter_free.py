@@ -44,11 +44,17 @@ def chemicalequilibrium(Kdis,L):
 # cell-array of kernels, each one for the corresponding datasets that we
 # have. 
 # Since we have a total distribution of the form 
+#
 #     ``P = xA*PA + xB*PB``
+#
 # we can define an augmented kernel as
+#
 #     ``K = [xA*KA xB*KB]``
+#
 # such that 
+#
 #     ``K@[PA PB] = V``
+#
 # and the vector ``[PA PB]`` constitutes the linear part fitted by SNLLS.
 
 # %%
@@ -110,7 +116,7 @@ Ks = Kmodel([0.25, 0.1, Kdis],ts,rA,rB,L)
 # Simulate dipolar signals
 Vs = [[]]*Nsignals
 for i in range(Nsignals):
-    Vs[i] = Ks[i]@np.concatenate((PstateA, PstateB)) + dl.whitegaussnoise(ts[i],0.005,seed=i)
+    Vs[i] = Ks[i]@np.concatenate((PstateA, PstateB)) + dl.whitegaussnoise(ts[i],0.01,seed=i)
 
 # %% [markdown]
 # Psuedotitration SNLLS Analysis
@@ -155,19 +161,35 @@ Ksfit = Kmodel(parfit,ts,rA,rB,L)
 Vsfit = []
 plt.subplot(3,2,(1,3))
 for i in range(Nsignals):
-    Vsfit.append(Ksfit[i]@Pfit)
-    plt.plot(ts[i],Vs[i]+i/9,'k.',ts[i],Vsfit[i]+i/9,'tab:blue',linewidth=1.5)
+    Vci = fit.modelUncert[i].ci(95)
+    Vfit = fit.model[i]
+    plt.plot(ts[i],Vs[i]+i/3,'.',color='grey',alpha=0.7,linestyle=None)
+    plt.plot(ts[i],Vfit+i/3,'b',linewidth=1.5)
+    plt.fill_between(ts[i],Vci[:,0]+i/3,Vci[:,1]+i/3,color='b',alpha=0.2)
 plt.grid(alpha =0.3)
 plt.xlabel('t (µs)')
 plt.ylabel('V (arb.u.)')
 plt.legend(['data','fit'])
 
 xAfit,xBfit = chemicalequilibrium(Kdisfit,L)
+
+xA_model = lambda param: chemicalequilibrium(param[2],L)[0]
+xB_model = lambda param: chemicalequilibrium(param[2],L)[1]
+xA_uq = fit.nonlinUncert.propagate(xA_model)
+xB_uq = fit.nonlinUncert.propagate(xB_model)
+xA_ci = xA_uq.ci(95)
+xB_ci = xB_uq.ci(95)
+
 plt.subplot(2,2,(2,4))
 for i in range(Nsignals):
     PAfit = xAfit[i]*Pfit[0:len(rA)]
     PBfit = xBfit[i]*Pfit[len(rA):len(rB)+len(rA)]
+    PAci = xAfit[i]*fit.linUncert.ci(95)[0:len(rA)]
+    PBci = xBfit[i]*fit.linUncert.ci(95)[len(rA):len(rB)+len(rA)]
+
     plt.plot(rA,PAfit+1.2*i,'tab:red',rB,PBfit+1.2*i,'tab:blue',linewidth=1.5)
+    plt.fill_between(rA,PAci[:,0]+1.2*i,PAci[:,1]+1.2*i,color='tab:red',alpha=0.2)
+    plt.fill_between(rB,PBci[:,0]+1.2*i,PBci[:,1]+1.2*i,color='tab:blue',alpha=0.2)
 
 plt.grid(alpha =0.3)
 plt.xlabel('r (nm)')
@@ -179,6 +201,8 @@ plt.subplot(325)
 plt.plot(np.log10(L),xA,'tab:red',np.log10(L),xB,'tab:blue')
 plt.plot(np.log10(L),xAfit,'o',color='tab:red')
 plt.plot(np.log10(L),xBfit,'o',color='tab:blue')
+plt.fill_between(np.log10(L),xA_ci[:,0],xA_ci[:,1],color='tab:red',alpha=0.2)
+plt.fill_between(np.log10(L),xB_ci[:,0],xB_ci[:,1],color='tab:blue',alpha=0.2)
 plt.grid(alpha =0.3)
 plt.xlabel('log$_{10}$([L])')
 plt.ylabel('Fractions')
