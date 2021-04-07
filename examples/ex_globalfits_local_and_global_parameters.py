@@ -122,7 +122,7 @@ fit = dl.fitparamodel(Vs,model,par0,lower,upper,multistart=40)
 # The use of the option 'multistart' will help the solver to find the
 # global minimum and not to get stuck at local minima.
 
-# Define infividual models for each fitted distribution
+# Define individual models for each fitted distribution
 P1_model = lambda param: myABmodel(param)[1]
 P2_model = lambda param: myABmodel(param)[2]
 
