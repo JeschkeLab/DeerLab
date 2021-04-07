@@ -45,8 +45,8 @@ K1 = dl.dipolarkernel(t1,r)
 K2 = dl.dipolarkernel(t2,r)
 
 # ...and the two corresponding signals
-V1 = K1@P1 + dl.whitegaussnoise(t1,0.01,seed=0)
-V2 = K2@P2 + dl.whitegaussnoise(t2,0.02,seed=1)
+V1 = K1@P1 + dl.whitegaussnoise(t1,0.05,seed=0)
+V2 = K2@P2 + dl.whitegaussnoise(t2,0.1,seed=1)
 # (for the sake of simplicity no background and 100# modulation depth are assumed)
 
 # %% [markdown]
@@ -122,16 +122,36 @@ fit = dl.fitparamodel(Vs,model,par0,lower,upper,multistart=40)
 # The use of the option 'multistart' will help the solver to find the
 # global minimum and not to get stuck at local minima.
 
+# Define individual models for each fitted distribution
+P1_model = lambda param: myABmodel(param)[1]
+P2_model = lambda param: myABmodel(param)[2]
+
 # Get the fitted models 
-Vfits,Pfit1,Pfit2 = myABmodel(fit.param)
-Vfit1 = Vfits[0]
-Vfit2 = Vfits[1]
+Vfit1 = fit.model[0]
+Vfit2 = fit.model[1]
+Pfit1 = P1_model(fit.param)
+Pfit2 = P2_model(fit.param)
+
+# Get uncertainties of the fitted signals
+Vfit1_uq = fit.modelUncert[0]
+Vfit2_uq = fit.modelUncert[1]
+# Propagate parameter uncertainty to the distribution models accounting for non-negativity
+Pfit1_uq = fit.paramUncert.propagate(P1_model,lbm=np.zeros_like(r))
+Pfit2_uq = fit.paramUncert.propagate(P2_model,lbm=np.zeros_like(r))
+
+# Get their 95%-confidence intervals 
+Vfit1_ci = Vfit1_uq.ci(95)
+Vfit2_ci = Vfit2_uq.ci(95)
+Pfit1_ci = Pfit1_uq.ci(95)
+Pfit2_ci = Pfit2_uq.ci(95)
 
 # %% [markdown]
 # Plot results
 # ------------
 plt.subplot(221)
-plt.plot(t1,V1,'k.',t1,Vfit1,'r')
+plt.plot(t1,V1,'.',color='grey')
+plt.plot(t1,Vfit1,'r')
+plt.fill_between(t1,Vfit1_ci[:,0],Vfit1_ci[:,1],color='r',alpha=0.3)
 plt.grid(alpha=0.3)
 plt.xlabel('t (µs)')
 plt.ylabel('V')
@@ -139,13 +159,16 @@ plt.title('Conditions #1')
 
 plt.subplot(222)
 plt.plot(r,P1,'k',r,Pfit1,'r')
+plt.fill_between(r,Pfit1_ci[:,0],Pfit1_ci[:,1],color='r',alpha=0.3)
 plt.grid(alpha=0.3)
 plt.xlabel('r (nm)')
 plt.ylabel('P (nm⁻¹)')
 plt.legend(['truth','fit'])
 
 plt.subplot(223)
-plt.plot(t2,V2,'k.',t2,Vfit2,'b')
+plt.plot(t2,V2,'.',color='grey')
+plt.plot(t2,Vfit2,'b')
+plt.fill_between(t2,Vfit2_ci[:,0],Vfit2_ci[:,1],color='b',alpha=0.3)
 plt.grid(alpha=0.3)
 plt.xlabel('t (µs)')
 plt.ylabel('V')
@@ -153,6 +176,7 @@ plt.title('Conditions #2')
 
 plt.subplot(224)
 plt.plot(r,P2,'k',r,Pfit2,'b')
+plt.fill_between(r,Pfit2_ci[:,0],Pfit2_ci[:,1],color='b',alpha=0.3)
 plt.grid(alpha=0.3)
 plt.xlabel('r (nm)')
 plt.ylabel('P (nm⁻¹)')
@@ -160,4 +184,4 @@ plt.legend(['truth','fit'])
 
 plt.tight_layout()
 plt.show()
-# %%
+ # %%

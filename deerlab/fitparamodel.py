@@ -229,12 +229,12 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
         if atUpper[p]:
             warnings.warn(f'The fitted value of parameter #{p},  is at the upper bound ({ub[p]}).')
 
+    # Compute residual vector
+    residuals = lsqresiduals(parfit)
+
     # Calculate parameter confidence intervals
     if uq:
-        
-        # Compute residual vector and estimate variance from that
-        residuals = lsqresiduals(parfit)
-        
+                
         # Calculate numerical estimates of the Jacobian and Hessian
         # of the negative log-likelihood
         with warnings.catch_warnings():
@@ -282,7 +282,7 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
 
     return FitResult(
             param=parfit, model=modelfit, paramUncert=paruq, modelUncert=modelfit_uq, scale=scales, stats=stats, cost=fvals,
-            plot=plotfcn, residuals=sol.fun, success=sol.success)
+            plot=plotfcn, residuals=residuals, success=sol.success)
 
 def _plot(Vsubsets,V,Vfit,show):
     nSignals = len(Vsubsets)
