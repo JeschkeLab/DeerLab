@@ -10,15 +10,17 @@ import numpy as np
 docstr_header = lambda title,fcnstr: f"""
 {title}
 
-If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
+The function takes a list or array of parameters and returns the calculated experiment dipolar pathways::
 
-    info = {fcnstr}()
+        pathways = {fcnstr}(param)
 
+The built-in information on the model can be accessed via its attributes::
 
-Otherwise the function returns to calculated experiment dipolar pathways::
-
-    pathways = {fcnstr}(param)
-
+        {fcnstr}.parameters  # String list of parameter names
+        {fcnstr}.units       # String list of metric units of parameters
+        {fcnstr}.start       # List of values used as start values during optimization 
+        {fcnstr}.lower       # List of values used as lower bounds during optimization
+        {fcnstr}.upper       # List of values used as upper bounds during optimization 
 
 Parameters
 ----------
@@ -27,15 +29,6 @@ param : array_like
 
 Returns
 -------
-info : dict
-    Dictionary containing the built-in information of the model:
-    
-    * ``info['Parameters']`` - string list of parameter names
-    * ``info['Units']`` - string list of metric units of parameters
-    * ``info['Start']`` - list of values used as start values during optimization 
-    * ``info['Lower']`` - list of values used as lower bounds during optimization 
-    * ``info['Upper']`` - list of values used as upper bounds during optimization  
-    * ``info['ModelFcn']`` - function used to calculate the model output
     
 pathways : ndarray
     Dipolar pathways of the experiment
@@ -57,17 +50,39 @@ def docstring():
 # =================================================================
 
 
-def _parsargs(param,npar):
+# =================================================================
+def setmetadata(parameters,units,start,lower,upper):
+    """
+    Decorator: Set model metadata as function attributes 
+    """
+    def _setmetadata(func):
+        func.parameters = parameters
+        func.units = units
+        func.start = start
+        func.lower = lower
+        func.upper = upper
+        return func
+    return _setmetadata
+# =================================================================
+
 #=================================================================
+def _parsargs(param,npar):
     param = np.atleast_1d(param)
     if len(param)!=npar:
         raise ValueError('This model requires ',npar,' parameters. A total of ',len(param),' where specified.')
     return param
 #=================================================================
 
+
+# =================================================================
+@setmetadata(
+parameters = ['Modulation depth'],
+units = [''],
+start = np.asarray([0.3]),
+lower = np.asarray([0]),
+upper = np.asarray([1]))
 @docstring()
-def ex_4pdeer(param=None):
-# ===================================================================
+def ex_4pdeer(param):
     r"""
 Single-pathway 4-pulse DEER experiment model 
         
@@ -91,33 +106,28 @@ where :math:`T_0^{(1)}=0` is the refocusing time of the modulated dipolar pathwa
 ``param[0]``   :math:`\lambda`     0.3           0            1          Modulated pathway amplitude (modulation depth)
 ============== ================ ============= ============ ============ ================================================
     """  
-    def model(param):     
-        # Dipolar pathways
-        lam = param[0]
-        pathways = [
-            [1-lam],
-            [lam, 0]
-        ]
-        return pathways
-        
-    if param is None:
-        info = dict(
-            Parameters = ['Modulation depth'],
-            Units = [''],
-            Start = np.asarray([0.3]),
-            Lower = np.asarray([0]),
-            Upper = np.asarray([1]),
-            ModelFcn = model
-        )
-        return info
-    else:
-        param = _parsargs(param, npar=1) 
-        return model(param) 
+    param = _parsargs(param,npar=1) 
+    
+    # Dipolar pathways
+    lam = param[0]
+    pathways = [
+        [1-lam],
+        [lam, 0]
+    ]
+    return pathways
 # ===================================================================
 
+
+# =================================================================
+@setmetadata(
+parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway',
+                'Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
+units = ['','','','μs'],
+start = np.asarray([0.7, 0.3, 0.1, 5]),
+lower = np.asarray([0, 0, 0, 0]),
+upper = np.asarray([1, 1, 1, 20]))
 @docstring()
-def ex_ovl4pdeer(param=None):
-# ===================================================================
+def ex_ovl4pdeer(param):
     r"""
 4-pulse DEER with band overlap experiment model 
         
@@ -146,36 +156,28 @@ where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the 
 ``param[3]``   :math:`T_0^{(2)}`           5.0              0           20        2nd modulated pathway, refocusing time (μs)
 ============== ======================== ============= ============ ============ ================================================
     """  
-    def model(param):   
-        # Dipolar pathways
-        lam = param[[0,1,2]]
-        T0 = param[3]
-        pathways = [[] for _ in lam]
-        pathways[0] = [lam[0]]
-        pathways[1] = [lam[1], 0]
-        pathways[2] = [lam[2], T0]  
-        return pathways  
+    param = _parsargs(param,npar=4) 
 
-    if param is None:
-        info = dict(
-            Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway',
-                          'Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
-            Units = ['','','','μs'],
-            Start = np.asarray([0.7, 0.3, 0.1, 5]),
-            Lower = np.asarray([0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 20]),
-            ModelFcn = model
-        )
-        return info
-    else:
-        param = _parsargs(param, npar=4) 
-        return model(param) 
+    # Dipolar pathways
+    lam = param[[0,1,2]]
+    T0 = param[3]
+    pathways = [[] for _ in lam]
+    pathways[0] = [lam[0]]
+    pathways[1] = [lam[1], 0]
+    pathways[2] = [lam[2], T0]  
+    return pathways 
 # ===================================================================
 
 
+# =================================================================
+@setmetadata(
+parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway','Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
+units = ['','','','μs'],
+start = np.asarray([0.4, 0.4, 0.2,5]),
+lower = np.asarray([0, 0, 0, 0]),
+upper = np.asarray([1, 1, 1, 20]))
 @docstring()
-def ex_5pdeer(param=None):
-# ===================================================================
+def ex_5pdeer(param):
     r"""
 5-pulse DEER experiment model
         
@@ -203,36 +205,30 @@ where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the 
 ``param[3]``   :math:`T_0^{(2)}`             5.0            0            20      2nd modulated pathway, refocusing time (μs)
 ============== ======================== ============= ============ ============ ================================================
     """  
-    def model(param):   
-                  # Dipolar pathways
-        lam = param[[0,1,2]]
-        T0 = param[3]
-        pathways = [[] for _ in lam]
-        pathways[0] = [lam[0]]
-        pathways[1] = [lam[1], 0]
-        pathways[2] = [lam[2], T0]
-        return pathways  
+    param = _parsargs(param,npar=4) 
 
-    if param is None:
-        info = dict(
-            Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway','Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
-            Units = ['','','','μs'],
-            Start = np.asarray([0.4, 0.4, 0.2,5]),
-            Lower = np.asarray([0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 20]),
-            ModelFcn = model
-        )
-        return info
-    else:
-        param = _parsargs(param, npar=4) 
-        return model(param) 
+    # Dipolar pathways
+    lam = param[[0,1,2]]
+    T0 = param[3]
+    pathways = [[] for _ in lam]
+    pathways[0] = [lam[0]]
+    pathways[1] = [lam[1], 0]
+    pathways[2] = [lam[2], T0]
+    return pathways
 # ===================================================================
 
 
-
+# =================================================================
+@setmetadata(
+parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway',
+                'Amplitude of 2nd modulated pathway','Amplitude of 3rd modulated pathway',
+                'Refocusing time of 2nd modulated pathway','Refocusing time of 3rd modulated pathway'],
+units = ['','','','','μs','μs'],
+start = np.asarray([0.3, 0.5, 0.3, 0.2, 1.5, 3.5]),
+lower = np.asarray([0, 0, 0, 0, 0, 0]),
+upper = np.asarray([1, 1, 1, 1, 20, 20]))
 @docstring()
-def ex_7pdeer(param=None):
-# ===================================================================
+def ex_7pdeer(param):
     r"""
 7-pulse DEER experiment model
    
@@ -263,39 +259,29 @@ where :math:`T_0^{(1)}=0\;\mu s`, :math:`T_0^{(2)}`, and :math:`T_0^{(3)}` are t
 ``param[5]``   :math:`T_0^{(3)}`           3.5                0       20         3rd modulated pathway, refocusing time (μs)
 ============== ======================== ============= ============ ============ ================================================
     """  
-    def model(param):   
-        # Dipolar pathways
-        lam = param[[0,1,2,3]]
-        T0 = param[[4,5]]
-        pathways = [[] for _ in lam]
-        pathways[0] = [lam[0]]
-        pathways[1] = [lam[1], 0]
-        pathways[2] = [lam[2], T0[0]]
-        pathways[3] = [lam[3], T0[1]]    
-        return pathways  
+    param = _parsargs(param,npar=6) 
 
-    if param is None:
-        info = dict(
-            Parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway',
-                          'Amplitude of 2nd modulated pathway','Amplitude of 3rd modulated pathway',
-                          'Refocusing time of 2nd modulated pathway','Refocusing time of 3rd modulated pathway'],
-            Units = ['','','','','μs','μs'],
-            Start = np.asarray([0.3, 0.5, 0.3, 0.2, 1.5, 3.5]),
-            Lower = np.asarray([0, 0, 0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 1, 20, 20]),
-            ModelFcn = model
-        )
-        return info
-    else:
-        param = _parsargs(param, npar=6) 
-        return model(param) 
-
+    # Dipolar pathways
+    lam = param[[0,1,2,3]]
+    T0 = param[[4,5]]
+    pathways = [[] for _ in lam]
+    pathways[0] = [lam[0]]
+    pathways[1] = [lam[1], 0]
+    pathways[2] = [lam[2], T0[0]]
+    pathways[3] = [lam[3], T0[1]]    
+    return pathways  
 # ===================================================================
 
 
+# =================================================================
+@setmetadata(
+parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st modulated pathway'],
+units = ['',''],
+start = np.asarray([0.3, 0.5]),
+lower = np.asarray([0, 0]),
+upper = np.asarray([1, 1]))
 @docstring()
-def ex_ridme1(param=None):
-# ===================================================================
+def ex_ridme1(param):
     r"""
 RIDME experiment model (spin S=1/2)
         
@@ -317,34 +303,27 @@ This experiment model has one harmonic pathway and an unmodulated contribution. 
 ``param[1]``   :math:`\lambda_1`     0.3           0            1          Amplitude of 1st harmonic pathway
 ============== =================== ============= ============ ============ ================================================
     """  
-    def model(param):   
-        # Dipolar pathways
-        lam = param.copy()
-        pathways = [[] for _ in lam]
-        pathways[0] = [lam[0]]
-        pathways[1] = [lam[1], 0, 1]
-        return pathways      
-
-    if param is None:
-        info = dict(
-            Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st modulated pathway'],
-            Units = ['',''],
-            Start = np.asarray([0.3, 0.5]),
-            Lower = np.asarray([0, 0]),
-            Upper = np.asarray([1, 1]),
-            ModelFcn = model
-        )
-        return info
-    else:
-        param = _parsargs(param, npar=2) 
-        return model(param) 
-
+    param = _parsargs(param, npar=2) 
+    
+    # Dipolar pathways
+    lam = param.copy()
+    pathways = [[] for _ in lam]
+    pathways[0] = [lam[0]]
+    pathways[1] = [lam[1], 0, 1]
+    return pathways   
 # ===================================================================
 
 
+# =================================================================
+@setmetadata(
+parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
+                'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway'],
+units = ['','','',''],
+start = np.asarray([0.3, 0.5, 0.3, 0.2]),
+lower = np.asarray([0, 0, 0, 0]),
+upper = np.asarray([1, 1, 1, 1]))
 @docstring()
-def ex_ridme3(param=None):
-# ===================================================================
+def ex_ridme3(param):
     r"""
 RIDME experiment model (spin S=3/2)
         
@@ -369,37 +348,30 @@ This experiment model has three harmonic pathways and an unmodulated contributio
 ``param[3]``   :math:`\lambda_3`     0.2           0            1          Amplitude of 3rd harmonic pathway
 ============== =================== ============= ============ ============ ================================================
     """  
-    def model(param):   
-        # Dipolar pathways
-        lam = param.copy()
-        pathways = [[] for _ in lam]
-        pathways[0] = [lam[0]]
-        pathways[1] = [lam[1], 0, 1]
-        pathways[2] = [lam[2], 0, 2]
-        pathways[3] = [lam[3], 0, 3]
-        return pathways
+    param = _parsargs(param,npar=4) 
 
-    if param is None:
-        info = dict(
-            Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
-                          'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway'],
-            Units = ['','','',''],
-            Start = np.asarray([0.3, 0.5, 0.3, 0.2]),
-            Lower = np.asarray([0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 1]),
-            ModelFcn = model
-        )
-        return info
-    else:
-        param = _parsargs(param, npar=4) 
-        return model(param) 
-
+    # Dipolar pathways
+    lam = param.copy()
+    pathways = [[] for _ in lam]
+    pathways[0] = [lam[0]]
+    pathways[1] = [lam[1], 0, 1]
+    pathways[2] = [lam[2], 0, 2]
+    pathways[3] = [lam[3], 0, 3]
+    return pathways
 # ===================================================================
 
 
+# =================================================================
+@setmetadata(
+parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
+                'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway',
+                'Amplitude of 4th harmonic pathway','Amplitude of 5th harmonic pathway'],
+units = ['','','','','',''],
+start = np.asarray([0.3, 0.5, 0.3, 0.2,0.1,0.05]),
+lower = np.asarray([0, 0, 0, 0, 0, 0]),
+upper = np.asarray([1, 1, 1, 1, 1, 1]))
 @docstring()
-def ex_ridme5(param=None):
-# ===================================================================
+def ex_ridme5(param):
     r"""
 RIDME experiment model (spin S=5/2)
         
@@ -425,40 +397,33 @@ This experiment model has five harmonic pathways and an unmodulated contribution
 ``param[5]``   :math:`\lambda_5`     0.05          0            1          Amplitude of 5th harmonic pathway
 ============== =================== ============= ============ ============ ================================================
     """  
-    def model(param):     
-        # Dipolar pathways
-        lam = param.copy()
-        pathways = [[] for _ in lam]
-        pathways[0] = [lam[0]]
-        pathways[1] = [lam[1], 0, 1]
-        pathways[2] = [lam[2], 0, 2]
-        pathways[3] = [lam[3], 0, 3]
-        pathways[4] = [lam[4], 0, 4]
-        pathways[5] = [lam[5], 0, 5]
-        return pathways
+    param = _parsargs(param, npar=6) 
 
-    if param is None:
-        info = dict(
-            Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
-                          'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway',
-                          'Amplitude of 4th harmonic pathway','Amplitude of 5th harmonic pathway'],
-            Units = ['','','','','',''],
-            Start = np.asarray([0.3, 0.5, 0.3, 0.2,0.1,0.05]),
-            Lower = np.asarray([0, 0, 0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 1, 1, 1]),
-            ModelFcn = model
-        )
-        return info
-    else:
-        param = _parsargs(param, npar=6) 
-        return model(param) 
-
+    # Dipolar pathways
+    lam = param.copy()
+    pathways = [[] for _ in lam]
+    pathways[0] = [lam[0]]
+    pathways[1] = [lam[1], 0, 1]
+    pathways[2] = [lam[2], 0, 2]
+    pathways[3] = [lam[3], 0, 3]
+    pathways[4] = [lam[4], 0, 4]
+    pathways[5] = [lam[5], 0, 5]
+    return pathways
 # ===================================================================
 
 
+# =================================================================
+@setmetadata(
+parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
+                'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway',
+                'Amplitude of 4th harmonic pathway','Amplitude of 5th harmonic pathway',
+                'Amplitude of 6th harmonic pathway','Amplitude of 7th harmonic pathway'],
+units = ['','','','','','','',''],
+start = np.asarray([0.3, 0.5, 0.3, 0.2,0.1,0.05,0.02,0.01]),
+lower = np.asarray([0, 0, 0, 0, 0, 0, 0, 0]),
+upper = np.asarray([1, 1, 1, 1, 1, 1, 1, 1]))
 @docstring()
-def ex_ridme7(param=None):
-# ===================================================================
+def ex_ridme7(param):
     r"""
 RIDME experiment model (spin S=7/2)
 
@@ -486,38 +451,19 @@ This experiment model has seven harmonic pathways and an unmodulated contributio
 ``param[6]``   :math:`\lambda_6`     0.02          0            1          Amplitude of 6th harmonic pathway
 ``param[7]``   :math:`\lambda_7`     0.01          0            1          Amplitude of 7th harmonic pathway
 ============== =================== ============= ============ ============ ================================================
-
-
     """  
-    def model(param):        
-        # Dipolar pathways
-        lam = param.copy()
-        pathways = [[] for _ in lam]
-        pathways[0] = [lam[0]]
-        pathways[1] = [lam[1], 0, 1]
-        pathways[2] = [lam[2], 0, 2]
-        pathways[3] = [lam[3], 0, 3]
-        pathways[4] = [lam[4], 0, 4]
-        pathways[5] = [lam[5], 0, 5]
-        pathways[6] = [lam[6], 0, 6]
-        pathways[7] = [lam[7], 0, 7]
-        return pathways
+    param = _parsargs(param,npar=8) 
 
-    if param is None:
-        info = dict(
-            Parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
-                          'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway',
-                          'Amplitude of 4th harmonic pathway','Amplitude of 5th harmonic pathway',
-                          'Amplitude of 6th harmonic pathway','Amplitude of 7th harmonic pathway'],
-            Units = ['','','','','','','',''],
-            Start = np.asarray([0.3, 0.5, 0.3, 0.2,0.1,0.05,0.02,0.01]),
-            Lower = np.asarray([0, 0, 0, 0, 0, 0, 0, 0]),
-            Upper = np.asarray([1, 1, 1, 1, 1, 1, 1, 1]),
-            ModelFcn = model
-        )
-        return info
-    else:
-        param = _parsargs(param, npar=8) 
-        return model(param) 
-
+    # Dipolar pathways
+    lam = param.copy()
+    pathways = [[] for _ in lam]
+    pathways[0] = [lam[0]]
+    pathways[1] = [lam[1], 0, 1]
+    pathways[2] = [lam[2], 0, 2]
+    pathways[3] = [lam[3], 0, 3]
+    pathways[4] = [lam[4], 0, 4]
+    pathways[5] = [lam[5], 0, 5]
+    pathways[6] = [lam[6], 0, 6]
+    pathways[7] = [lam[7], 0, 7]
+    return pathways
 # ===================================================================

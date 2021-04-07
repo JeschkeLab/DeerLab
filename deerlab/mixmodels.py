@@ -44,17 +44,16 @@ def mixmodels(*models):
     Info = dict(Parameters=[],Units=[],Start=[],Lower=[],Upper=[])
     pidx = []
     pidx_amp = []
-    for i in range(nModels):
-        info = models[i]()
-        nparam = len(info['Start'])
+    for i,model in enumerate(models):
+        nparam = len(model.start)
         pidx.append(idx + np.arange(0,nparam))
         idx = idx + nparam
         for j in range(nparam):
-            Info['Parameters'].append(f'Model {i+1}: {info["Parameters"][j]}')
-            Info['Units'].append(info['Units'][j])
-            Info['Lower'].append(info['Lower'][j])
-            Info['Upper'].append(info['Upper'][j])
-            Info['Start'].append(info['Start'][j])
+            Info['Parameters'].append(f'Model {i+1}: {model.parameters[j]}')
+            Info['Units'].append(model.units[j])
+            Info['Lower'].append(model.lower[j])
+            Info['Upper'].append(model.upper[j])
+            Info['Start'].append(model.start[j])
 
         # Add amplitudes for each model
         Info['Parameters'].append(f'Model {i+1}: Amplitude')
@@ -70,22 +69,37 @@ def mixmodels(*models):
     Info['Upper'] = np.asarray(Info['Upper'])
     Info['Start'] = np.asarray(Info['Start'])
 
-    def mixedFunction(*args):
-    # =======================================================================
+
+    # =================================================================
+    def setmetadata(parameters,units,start,lower,upper):
+        """
+        Decorator: Set model metadata as function attributes 
+        """
+        def _setmetadata(func):
+            func.parameters = parameters
+            func.units = units
+            func.start = start
+            func.lower = lower
+            func.upper = upper
+            return func
+        return _setmetadata
+    # =================================================================
+
+
+    # =================================================================
+    @setmetadata(
+    parameters = Info['Parameters'],
+    units = Info['Units'],
+    start = Info['Start'],
+    lower = Info['Lower'],
+    upper = Info['Upper'])
+    def mixedFunction(ax, params):
         """
         Mixed model function handle
         ---------------------------
         Function to allow request of information structure or model values
         """
-        if not args:    
-            return Info
-        
-        if len(args)<2:
-            raise KeyError('At least two input arguments are required.')
-        elif len(args)>3:
-            raise KeyError('Only two input arguments are allowed.')
-        
-        ax, params = args        
+
         params = np.atleast_1d(params)
         evaled = 0
         for k in range(nModels):

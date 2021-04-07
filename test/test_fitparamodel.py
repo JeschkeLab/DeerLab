@@ -38,10 +38,9 @@ def test_rice():
     K = dipolarkernel(t,r)
     V = K@P
 
-    info = dd_rice()
-    par0 = info['Start']
-    lb = info['Lower']
-    ub = info['Upper']
+    par0 = dd_rice.start
+    lb = dd_rice.lower
+    ub = dd_rice.upper
     model = lambda p: K@dd_rice(r,p)
     fit = fitparamodel(V,model,par0,lb,ub)
 

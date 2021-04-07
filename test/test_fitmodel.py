@@ -16,8 +16,7 @@ def assert_experiment_model(model):
     r = np.linspace(2,6,50)
     P = dd_gauss(r,[4.5, 0.25])
 
-    info = model()
-    parIn = info['Start']
+    parIn = model.start
     pathways = model(parIn)
 
     kappa = 0.4
@@ -236,8 +235,7 @@ def test_global_4pdeer():
     r = np.linspace(2,6,90)
     P = dd_gauss(r,[4.5, 0.3])
 
-    info = ex_4pdeer()
-    parIn = info['Start']
+    parIn = ex_4pdeer.start
     pathways = ex_4pdeer(parIn)
 
     kappa = 0.4
@@ -340,8 +338,7 @@ bgmodel = bg_exp
 r = np.linspace(2,6,40)
 P = ddmodel(r,[4.5, 0.25])
 
-info = exmodel()
-parIn = info['Start']
+parIn = exmodel.start
 pathways = exmodel(parIn)
 
 kappa = 0.4
@@ -357,22 +354,22 @@ fit = fitmodel(V,t,r,ddmodel,bgmodel,exmodel,uq='covariance')
 def assert_confinter_param(subset):
 #----------------------------------------------------------------------
     if subset == 'ex':
-        info = exmodel()
+        model = exmodel
         pfit = fit.exparam
         ci50 = fit.exparamUncert.ci(50)
         ci95 = fit.exparamUncert.ci(95)
     if subset == 'dd':
-        info = ddmodel()
+        model = ddmodel
         pfit = fit.ddparam
         ci50 = fit.ddparamUncert.ci(50)
         ci95 = fit.ddparamUncert.ci(95)
     if subset == 'bg':
-        info = bgmodel()
+        model = bgmodel
         pfit = fit.bgparam
         ci50 = fit.bgparamUncert.ci(50)
         ci95 = fit.bgparamUncert.ci(95)
-    lb = info['Lower']
-    ub = info['Upper']
+    lb = model.lower
+    ub = model.upper
 
     assert_confidence_intervals(ci50,ci95,pfit,lb,ub)
 #----------------------------------------------------------------------
@@ -403,8 +400,7 @@ bgmodel = bg_exp
 r = np.linspace(2,6,40)
 P = dd_gauss(r,[4.5, 0.25])
 
-info = exmodel()
-parIn = info['Start']
+parIn = exmodel.start
 pathways = exmodel(parIn)
 
 kappa = 0.4
@@ -530,8 +526,7 @@ def test_global_scale_4pdeer():
     r = np.linspace(2,6,90)
     P = dd_gauss(r,[4.5, 0.25])
 
-    info = ex_4pdeer()
-    parIn = info['Start']
+    parIn = ex_4pdeer.start
     pathways = ex_4pdeer(parIn)
 
     kappa = 0.4
@@ -689,8 +684,7 @@ def test_cost_value():
     r = np.linspace(2,6,40)
     P = dd_gauss(r,[4.5, 0.25])
 
-    info = exmodel()
-    parIn = info['Start']
+    parIn = exmodel.start
     pathways = exmodel(parIn)
 
     kappa = 0.4
