@@ -97,9 +97,11 @@ def setmetadata(parameters,units,start,lower,upper):
 # =================================================================
 
 # =================================================================
-def _parsparam(p,npar):
+def _parsparam(r,p,npar):
+    r,p = np.atleast_1d(r,p)
     if len(p)!=npar:
         raise ValueError(f'The model function requires {npar} parameters, but {len(p)} are provided.')
+    return r,p
 # =================================================================
 
 # =================================================================
@@ -162,7 +164,7 @@ Variable        Symbol                    Start value    Lower bound    Upper bo
 ``param[1]``    :math:`\sigma`            0.2            0.05           2.5            Standard deviation (nm)
 ==============  ========================  =============  =============  =============  ===========================
     """  
-    _parsparam(param,npar=2)
+    r,param = _parsparam(r,param,npar=2)
     r0    = [param[0]]
     sigma = [param[1]]
     a = [1.0]
@@ -203,7 +205,7 @@ Variable         Symbol                  Start Value   Lower bound   Upper bound
 ``param[5]``   :math:`a_2`                  0.5            0              1         2nd Gaussian amplitude
 ============== ========================= ============= ============= ============= ======================================
     """
-    _parsparam(param,npar=6)
+    r,param = _parsparam(r,param,npar=6)
     r0    = [param[0], param[3]]
     sigma = [param[1], param[4]]
     a     = [param[2], param[5]]
@@ -247,7 +249,7 @@ Variable         Symbol                   Start Value   Lower bound   Upper boun
 ``param[8]``     :math:`a_3`                  0.3           0             1          3rd Gaussian amplitude
 ============== ========================== ============= ============= ============= =======================================
     """
-    _parsparam(param,npar=9)
+    r,param = _parsparam(r,param,npar=9)
     r0    = [param[0], param[3], param[6]]
     sigma = [param[1], param[4], param[7]]
     a     = [param[2], param[5], param[8]]
@@ -287,7 +289,7 @@ Variable         Symbol                   Start Value   Lower bound   Upper boun
 ============== ========================== ============= ============= ============= =======================================
 
     """  
-    _parsparam(param,npar=3)
+    r,param = _parsparam(r,param,npar=3)
     r0, sigma, beta = param
     x = abs(r-r0)/sigma
     P = beta/(2*sigma*spc.gamma(1/beta))*np.exp(-x**beta)
@@ -328,7 +330,7 @@ Variable         Symbol       Start Value   Lower bound   Upper bound      Descr
 ============== ============== ============= ============= ============= =========================
 
     """  
-    _parsparam(param,npar=3)
+    r,param = _parsparam(r,param,npar=3)
     r0, sigma, alpha = param
     x = (r-r0)/sigma/np.sqrt(2)
     P = 1/np.sqrt(2*np.pi)*np.exp(-x**2)*(1 + spc.erf(alpha*x))
@@ -365,7 +367,7 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 ``param[1]``     :math:`\sigma`             0.7           0.1              5           Spread (nm)
 ============== ======================== ============= ============= ============= =======================================
     """  
-    _parsparam(param,npar=2)
+    r,param = _parsparam(r,param,npar=2)
     nu = [param[0]]
     sig = [param[1]]
     a = [1.0]
@@ -410,7 +412,7 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 ``param[5]``   :math:`a_2`                  0.5              0          1           2nd Rician amplitude
 ============== ======================== ============= ============= ============= =======================================
     """
-    _parsparam(param,npar=6)
+    r,param = _parsparam(r,param,npar=6)
     nu  = [param[0], param[3]]
     sig = [param[1], param[4]]
     a   = [param[2], param[5]]
@@ -459,7 +461,7 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 ``param[8]``   :math:`a_3`                  0.3           0             1           3rd Rician amplitude
 ============== ======================== ============= ============= ============= =======================================
     """
-    _parsparam(param,npar=9)
+    r,param = _parsparam(r,param,npar=9)
     nu  = [param[0], param[3], param[6]]
     sig = [param[1], param[4], param[7]]
     a   = [param[2], param[5], param[8]]
@@ -501,7 +503,7 @@ Variable         Symbol       Start Value   Lower bound   Upper bound      Descr
 ============== ============= ============= ============= ============= =======================================
 
     """  
-    _parsparam(param,npar=3)
+    r,param = _parsparam(r,param,npar=3)
     N  = param[0] # number of residues
     nu = param[1] # scaling exponent
     R0 = param[2] # residue length
@@ -543,7 +545,7 @@ Variable         Symbol          Start Value   Lower bound   Upper bound      De
 ``param[1]``   :math:`R`              0.5          0.1              5          Radius (nm)
 ============== ================= ============= ============= ============= =================================
     """  
-    _parsparam(param,npar=2)
+    r,param = _parsparam(r,param,npar=2)
     r0 = param[0]
     R = abs(param[1])
     dr = r - r0
@@ -582,7 +584,7 @@ Variable         Symbol          Start Value   Lower bound   Upper bound      De
 ``param[1]``   :math:`w`              0.5          0.1             5           FWHM (nm)
 ============== ================= ============= ============= ============= =================================
     """  
-    _parsparam(param,npar=2)
+    r,param = _parsparam(r,param,npar=2)
     r0 = param[0]
     fwhm = param[1]
 
@@ -674,7 +676,7 @@ References
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
 
     """  
-    _parsparam(param,npar=2)
+    r,param = _parsparam(r,param,npar=2)
     R1 = float(param[0])
     w = float(param[1])
     R2 = R1 + w
@@ -723,7 +725,7 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """ 
-    _parsparam(param,npar=2)
+    r,param = _parsparam(r,param,npar=2)
     R = float(param[0])
     d = float(param[1])
     P = np.zeros(len(r))
@@ -767,8 +769,7 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """ 
-    _parsparam(param,npar=1)
-    param = np.atleast_1d(param)
+    r,param = _parsparam(r,param,npar=1)
     R = float(param[0])
     P = np.zeros(len(r))
     idx = (r >= 0) & (r<= 2*R)
@@ -825,7 +826,7 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
-    _parsparam(param,npar=3)
+    r,param = _parsparam(r,param,npar=3)
     R1 = float(param[0])
     w1 = float(param[1])
     w2 = float(param[2])
@@ -889,7 +890,7 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
-    _parsparam(param,npar=2)
+    r,param = _parsparam(r,param,npar=2)
     R1 = float(param[0])
     w = float(param[1])
     R2 = R1 + w
@@ -950,7 +951,7 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
-    _parsparam(param,npar=4)
+    r,param = _parsparam(r,param,npar=4)
     R1 = float(param[0])
     w1 = float(param[1])
     w2 = float(param[2])
@@ -1028,7 +1029,7 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
-    _parsparam(param,npar=3)
+    r,param = _parsparam(r,param,npar=3)
     R1 = float(param[0])
     w  = float(param[1])
     d  = float(param[2])
@@ -1082,8 +1083,7 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
-    _parsparam(param,npar=1)
-    param = np.atleast_1d(param)
+    r,param = _parsparam(r,param,npar=1)
     R = float(param[0])
     P = _pb(r,R)
     P = _normalize(r,P)
@@ -1118,7 +1118,7 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 ``param[2]``   :math:`w_\mathrm{R}`        0.3            0.1              5          Right width (nm)
 ============== ======================== ============= ============= ============= =========================
     """  
-    _parsparam(param,npar=3)
+    r,param = _parsparam(r,param,npar=3)
     r0 = param[0]
     wL = abs(param[1])
     wR = abs(param[2])
@@ -1162,7 +1162,7 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 ``param[1]``   :math:`r_\mathrm{R}`         3.0             0.2            20          Right edge (nm)
 ============== ======================== ============= ============= ============= =========================
     """  
-    _parsparam(param,npar=2)
+    r,param = _parsparam(r,param,npar=2)
     rL = min(abs(param))
     rR = max(abs(param))
     P = np.zeros(len(r))
@@ -1222,7 +1222,7 @@ References
     Radial Distribution Function of Semiflexible Polymers
     Phys. Rev. Lett. 77(12), 2581-2584, 1996
     """  
-    _parsparam(param,npar=2)
+    r,param = _parsparam(r,param,npar=2)
     L = param[0]
     Lp = param[1]
     P = wlc(r,L,Lp)
@@ -1263,7 +1263,7 @@ References
     Phys. Rev. Lett. 77(12), 2581-2584, 1996
     
     """  
-    _parsparam(param,npar=3)
+    r,param = _parsparam(r,param,npar=3)
     L = param[0]
     Lp = param[1]
     sigma = param[2]

@@ -115,9 +115,7 @@ def setmetadata(parameters,units,start,lower,upper):
 
 # =================================================================
 def _parsargs(t,p,npar):
-    t = np.atleast_1d(t)
-    p = np.atleast_1d(p)
-
+    t,p = np.atleast_1d(t,p)
     # Check that the correct number of parmameters have been specified
     if len(p)!=npar:
         raise ValueError(f'The model function requires {npar} parameters, but {len(p)} are provided.')
