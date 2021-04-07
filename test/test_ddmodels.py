@@ -9,10 +9,9 @@ def assert_ddmodel(model):
     rnus = np.sqrt(np.linspace(1.5,6**2,500))
 
     # Extract model information
-    info = model()
-    par0 = info['Start']
-    lower = info['Lower']
-    upper = info['Upper']
+    par0 = model.start
+    lower = model.lower
+    upper = model.upper
 
     # Calculate under different conditions
     P1 = model(r,par0)

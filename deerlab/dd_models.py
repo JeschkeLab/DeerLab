@@ -12,15 +12,17 @@ import inspect
 docstr_header = lambda title, fcnstr: f"""
 {title}
 
-If called without arguments, returns an ``info`` dictionary of model parameters and boundaries::
-
-        info = {fcnstr}()
-
-
-Otherwise the function returns the calculated distance distribution::
+The function takes a list or array of parameters and returns the calculated distance distribution::
 
         P = {fcnstr}(r,param)
 
+The built-in information on the model can be accessed via its attributes::
+
+        {fcnstr}.parameters  # String list of parameter names
+        {fcnstr}.units       # String list of metric units of parameters
+        {fcnstr}.start       # List of values used as start values during optimization 
+        {fcnstr}.lower       # List of values used as lower bounds during optimization
+        {fcnstr}.upper       # List of values used as upper bounds during optimization 
 
 Parameters
 ----------
@@ -32,16 +34,7 @@ param : array_like
 
 Returns
 -------
-info : dict
-    Dictionary containing the built-in information of the model:
-    
-    * ``info['Parameters']`` - string list of parameter names
-    * ``info['Units']`` - string list of metric units of parameters
-    * ``info['Start']`` - list of values used as start values during optimization 
-    * ``info['Lower']`` - list of values used as lower bounds during optimization 
-    * ``info['Upper']`` - list of values used as upper bounds during optimization  
-    * ``info['ModelFcn']`` - function used to calculate the model output
-    
+
 P : ndarray
     Distance distribution.
 """
@@ -88,27 +81,38 @@ def docstring():
     return _decorator
 # =================================================================
 
+# =================================================================
+def setmetadata(parameters,units,start,lower,upper):
+    """
+    Decorator: Set model metadata as function attributes 
+    """
+    def _setmetadata(func):
+        func.parameters = parameters
+        func.units = units
+        func.start = start
+        func.lower = lower
+        func.upper = upper
+        return func
+    return _setmetadata
+# =================================================================
 
-def _parsargs(args,npar):
-#=================================================================
-    name = inspect.stack()[1][3]
-    if len(args)!=2:
-        raise KeyError(f'The model function {name} requires two input arguments: {name}(r,params).')
-    r,p = args
+# =================================================================
+def _parsparam(r,p,npar):
+    r,p = np.atleast_1d(r,p)
     if len(p)!=npar:
-        raise ValueError(f'The model function {name} requires {npar} parameters, but {len(p)} are provided.')
+        raise ValueError(f'The model function requires {npar} parameters, but {len(p)} are provided.')
     return r,p
-#=================================================================
+# =================================================================
 
+# =================================================================
 def _normalize(r,P):
-#=================================================================
     if not all(P==0):
         P = P/np.trapz(P,r)
     return P
-#=================================================================
+# =================================================================
 
+# =================================================================
 def _multigaussfun(r,r0,sig,a):
-#=================================================================
     "Compute a distribution with multiple Gaussians"    
     n = len(r0)
     P = np.zeros_like(r)
@@ -116,10 +120,10 @@ def _multigaussfun(r,r0,sig,a):
         P += a[k]*m.sqrt(1/(2*m.pi))*1/sig[k]*np.exp(-0.5*((r-r0[k])/sig[k])**2)
     P = _normalize(r,P)
     return P
-#=================================================================
+# =================================================================
 
 def _multirice3dfun(r,nu,sig,a):
-#=================================================================
+# =================================================================
     "Compute a distribution with multiple Gaussians"    
     N = len(nu)
     nu = np.maximum(nu,0) # to avoid invalid values
@@ -132,11 +136,17 @@ def _multirice3dfun(r,nu,sig,a):
     P[P<0] = 0
     P = _normalize(r,P)
     return P
-#=================================================================
+# =================================================================
 
+# =================================================================
+@setmetadata(
+parameters = ('Mean','Standard deviation'),
+units = ('nm','nm'),
+start = np.asarray([3.5, 0.2]),
+lower = np.asarray([1, 0.05]),
+upper = np.asarray([20, 2.5]))
 @docstring()
-def dd_gauss(*args):    
-#=================================================================
+def dd_gauss(r,param):    
     r"""
 Gaussian distribution
     
@@ -154,31 +164,25 @@ Variable        Symbol                    Start value    Lower bound    Upper bo
 ``param[1]``    :math:`\sigma`            0.2            0.05           2.5            Standard deviation (nm)
 ==============  ========================  =============  =============  =============  ===========================
     """  
-    def model(r,p):    
-        r0 = [p[0]]
-        sigma = [p[1]]
-        a = [1.0]
-        P = _multigaussfun(r,r0,sigma,a)
-        return P
-    if not args:
-        info = dict(
-            Parameters = ('Mean','Standard deviation'),
-            Units = ('nm','nm'),
-            Start = np.asarray([3.5, 0.2]),
-            Lower = np.asarray([1, 0.05]),
-            Upper = np.asarray([20, 2.5]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=2)
-        P = model(r,p)
-        return P
-#=================================================================
-    
+    r,param = _parsparam(r,param,npar=2)
+    r0    = [param[0]]
+    sigma = [param[1]]
+    a = [1.0]
+    P = _multigaussfun(r,r0,sigma,a)
+    return P
+# =================================================================
+
+
+# =================================================================
+@setmetadata(
+parameters = ('Mean of 1st Gaussian', 'Standard deviation of 1st Gaussian', 'Amplitude of 1st Gaussian',
+                'Mean of 2nd Gaussian', 'Standard deviation of 2nd Gaussian', 'Amplitude of 2nd Gaussian'),
+units = ('nm','nm','','nm','nm',''),
+start = np.asarray([2.5, 0.2, 0.5, 3.5, 0.2, 0.5]),
+lower = np.asarray([1, 0.05, 0, 1, 0.05, 0]),
+upper = np.asarray([20, 2.5, 1, 20, 2.5, 1]))
 @docstring()
-def dd_gauss2(*args):
-#=================================================================
+def dd_gauss2(r,param):
     r"""
 Sum of two Gaussian distributions
         
@@ -201,34 +205,26 @@ Variable         Symbol                  Start Value   Lower bound   Upper bound
 ``param[5]``   :math:`a_2`                  0.5            0              1         2nd Gaussian amplitude
 ============== ========================= ============= ============= ============= ======================================
     """
-    def model(r,p):    
-        r0 = [p[0], p[3]]
-        sigma = [p[1], p[4]]
-        a = [p[2], p[5]]
-        P = _multigaussfun(r,r0,sigma,a)
-
-        return P
-
-    if not args:
-        info = dict(
-            Parameters = ('Mean of 1st Gaussian', 'Standard deviation of 1st Gaussian', 'Amplitude of 1st Gaussian',
-                          'Mean of 2nd Gaussian', 'Standard deviation of 2nd Gaussian', 'Amplitude of 2nd Gaussian'),
-            Units = ('nm','nm','','nm','nm',''),
-            Start = np.asarray([2.5, 0.2, 0.5, 3.5, 0.2, 0.5]),
-            Lower = np.asarray([1, 0.05, 0, 1, 0.05, 0]),
-            Upper = np.asarray([20, 2.5, 1, 20, 2.5, 1]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=6)
-        P = model(r,p)
-        return P
-#=================================================================
+    r,param = _parsparam(r,param,npar=6)
+    r0    = [param[0], param[3]]
+    sigma = [param[1], param[4]]
+    a     = [param[2], param[5]]
+    P = _multigaussfun(r,r0,sigma,a)
+    return P
+# =================================================================
     
+
+# =================================================================
+@setmetadata(
+parameters = ('Mean of 1st Gaussian', 'Standard deviation of 1st Gaussian', 'Amplitude of 1st Gaussian',
+                'Mean of 2nd Gaussian', 'Standard deviation of 2nd Gaussian', 'Amplitude of 2nd Gaussian',
+                'Mean of 3rd Gaussian', 'Standard deviation of 3rd Gaussian', 'Amplitude of 3rd Gaussian'),
+units = ('nm','nm','','nm','nm','','nm','nm',''),
+start = np.asarray([2.5, 0.2, 0.3, 3.5, 0.2, 0.3, 5, 0.2, 0.3]),
+lower = np.asarray([1, 0.05, 0, 1, 0.05, 0, 1, 0.05, 0]),
+upper = np.asarray([20, 2.5, 1, 20, 2.5, 1,  20, 2.5, 1]))
 @docstring()
-def dd_gauss3(*args):
-#=================================================================
+def dd_gauss3(r,param):
     r"""
 Sum of three Gaussian distributions
         
@@ -253,35 +249,24 @@ Variable         Symbol                   Start Value   Lower bound   Upper boun
 ``param[8]``     :math:`a_3`                  0.3           0             1          3rd Gaussian amplitude
 ============== ========================== ============= ============= ============= =======================================
     """
-    def model(r,p):    
-        r0 = [p[0], p[3], p[6]]
-        sigma = [p[1], p[4], p[7]]
-        a = [p[2], p[5], p[8]]
-        P = _multigaussfun(r,r0,sigma,a)
+    r,param = _parsparam(r,param,npar=9)
+    r0    = [param[0], param[3], param[6]]
+    sigma = [param[1], param[4], param[7]]
+    a     = [param[2], param[5], param[8]]
+    P = _multigaussfun(r,r0,sigma,a)
+    return P
+# =================================================================
 
-        return P
 
-    if not args:
-        info = dict(
-            Parameters = ('Mean of 1st Gaussian', 'Standard deviation of 1st Gaussian', 'Amplitude of 1st Gaussian',
-                          'Mean of 2nd Gaussian', 'Standard deviation of 2nd Gaussian', 'Amplitude of 2nd Gaussian',
-                          'Mean of 3rd Gaussian', 'Standard deviation of 3rd Gaussian', 'Amplitude of 3rd Gaussian'),
-            Units = ('nm','nm','','nm','nm','','nm','nm',''),
-            Start = np.asarray([2.5, 0.2, 0.3, 3.5, 0.2, 0.3, 5, 0.2, 0.3]),
-            Lower = np.asarray([1, 0.05, 0, 1, 0.05, 0, 1, 0.05, 0]),
-            Upper = np.asarray([20, 2.5, 1, 20, 2.5, 1,  20, 2.5, 1]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=9)
-        P = model(r,p)
-        return P
-#=================================================================
-
+# =================================================================
+@setmetadata(
+parameters = ('Mean','Spread','Kurtosis'),
+units = ('nm','nm',''),
+start = np.asarray([3.5, 0.5,0.5]),
+lower = np.asarray([1, 0.05, 0.25]),
+upper = np.asarray([20, 5, 15]))
 @docstring()
-def dd_gengauss(*args):    
-#=================================================================
+def dd_gengauss(r,param):    
     r"""
 Generalized Gaussian distribution model
 
@@ -304,36 +289,24 @@ Variable         Symbol                   Start Value   Lower bound   Upper boun
 ============== ========================== ============= ============= ============= =======================================
 
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        r0 = p[0]
-        sigma = p[1]
-        beta = p[2]
-        x = abs(r-r0)/sigma
-        P = beta/(2*sigma*spc.gamma(1/beta))*np.exp(-x**beta)
-        P = _normalize(r,P)
-
-        return P
-
-    if not args:
-        info = dict(
-            Parameters = ('Mean','Spread','Kurtosis'),
-            Units = ('nm','nm',''),
-            Start = np.asarray([3.5, 0.5,0.5]),
-            Lower = np.asarray([1, 0.05, 0.25]),
-            Upper = np.asarray([20, 5, 15]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=3)
-        P = model(r,p)
-        return P
-#=================================================================
+    r,param = _parsparam(r,param,npar=3)
+    r0, sigma, beta = param
+    x = abs(r-r0)/sigma
+    P = beta/(2*sigma*spc.gamma(1/beta))*np.exp(-x**beta)
+    P = _normalize(r,P)
+    return P
+# =================================================================
     
+
+# =================================================================
+@setmetadata(
+parameters = ('Center','Spread','Kurtosis'),
+units = ('nm','nm',''),
+start = np.asarray([3.5, 0.2, 5]),
+lower = np.asarray([1, 0.05, -25]),
+upper = np.asarray([20, 5, 25]))
 @docstring()
-def dd_skewgauss(*args):    
-#=================================================================
+def dd_skewgauss(r,param):    
     r"""
 Skew Gaussian distribution model
 
@@ -357,36 +330,24 @@ Variable         Symbol       Start Value   Lower bound   Upper bound      Descr
 ============== ============== ============= ============= ============= =========================
 
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        r0 = p[0]
-        sigma = p[1]
-        alpha = p[2]
-        x = (r-r0)/sigma/np.sqrt(2)
-        P = 1/np.sqrt(2*np.pi)*np.exp(-x**2)*(1 + spc.erf(alpha*x))
-        P = _normalize(r,P)
+    r,param = _parsparam(r,param,npar=3)
+    r0, sigma, alpha = param
+    x = (r-r0)/sigma/np.sqrt(2)
+    P = 1/np.sqrt(2*np.pi)*np.exp(-x**2)*(1 + spc.erf(alpha*x))
+    P = _normalize(r,P)
+    return P
+# =================================================================
 
-        return P
 
-    if not args:
-        info = dict(
-            Parameters = ('Center','Spread','Kurtosis'),
-            Units = ('nm','nm',''),
-            Start = np.asarray([3.5, 0.2, 5]),
-            Lower = np.asarray([1, 0.05, -25]),
-            Upper = np.asarray([20, 5, 25]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=3)
-        P = model(r,p)
-        return P
-#=================================================================
-
+# =================================================================
+@setmetadata(
+parameters = ('Location','Spread'),
+units = ('nm','nm'),
+start = np.asarray([3.5, 0.7]),
+lower = np.asarray([1, 0.1]),
+upper = np.asarray([10, 5])) 
 @docstring()
-def dd_rice(*args):    
-#=================================================================
+def dd_rice(r,param):    
     r"""
 3D-Rice distribution
 
@@ -406,32 +367,25 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 ``param[1]``     :math:`\sigma`             0.7           0.1              5           Spread (nm)
 ============== ======================== ============= ============= ============= =======================================
     """  
-    def model(r,p):    
-        nu = [p[0]]
-        sig = [p[1]]
-        a = [1.0]
-        P = _multirice3dfun(r,nu,sig,a)
-        return P
-
-    if not args:
-        info = dict(
-            Parameters = ('Location','Spread'),
-            Units = ('nm','nm'),
-            Start = np.asarray([3.5, 0.7]),
-            Lower = np.asarray([1, 0.1]),
-            Upper = np.asarray([10, 5]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=2)
-        P = model(r,p)
-        return P
-#=================================================================
+    r,param = _parsparam(r,param,npar=2)
+    nu = [param[0]]
+    sig = [param[1]]
+    a = [1.0]
+    P = _multirice3dfun(r,nu,sig,a)
+    return P
+# =================================================================
     
+
+# =================================================================
+@setmetadata(
+parameters = ('Location of 1st Rician', 'Spread of 1st Rician', 'Amplitude of 1st Rician',
+                'Location of 2nd Rician', 'Spread of 2nd Rician', 'Amplitude of 2nd Rician'),
+units = ('nm','nm','','nm','nm',''),
+start = np.asarray([2.5, 0.7, 0.5, 4.0, 0.7, 0.5]),
+lower = np.asarray([1, 0.1, 0, 1, 0.1, 0]),
+upper = np.asarray([10, 5, 1, 10, 5, 1])) 
 @docstring()
-def dd_rice2(*args):
-#=================================================================
+def dd_rice2(r,param):
     r"""
 Sum of two 3D-Rice distributions
 
@@ -458,34 +412,26 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 ``param[5]``   :math:`a_2`                  0.5              0          1           2nd Rician amplitude
 ============== ======================== ============= ============= ============= =======================================
     """
-    def model(r,p):    
-        nu = [p[0], p[3]]
-        sig = [p[1], p[4]]
-        a = [p[2], p[5]]
-        P = _multirice3dfun(r,nu,sig,a)
-
-        return P
-
-    if not args:
-        info = dict(
-            Parameters = ('Location of 1st Rician', 'Spread of 1st Rician', 'Amplitude of 1st Rician',
-                          'Location of 2nd Rician', 'Spread of 2nd Rician', 'Amplitude of 2nd Rician'),
-            Units = ('nm','nm','','nm','nm',''),
-            Start = np.asarray([2.5, 0.7, 0.5, 4.0, 0.7, 0.5]),
-            Lower = np.asarray([1, 0.1, 0, 1, 0.1, 0]),
-            Upper = np.asarray([10, 5, 1, 10, 5, 1]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=6)
-        P = model(r,p)
-        return P
-#=================================================================
+    r,param = _parsparam(r,param,npar=6)
+    nu  = [param[0], param[3]]
+    sig = [param[1], param[4]]
+    a   = [param[2], param[5]]
+    P = _multirice3dfun(r,nu,sig,a)
+    return P
+# =================================================================
     
+
+# =================================================================
+@setmetadata(
+parameters = ('Location of 1st Rician', 'Spread of 1st Rician', 'Amplitude of 1st Rician',
+              'Location of 2nd Rician', 'Spread of 2nd Rician', 'Amplitude of 2nd Rician',
+              'Location of 3rd Rician', 'Spread of 3rd Rician', 'Amplitude of 3rd Rician'),
+units = ('nm','nm','','nm','nm','','nm','nm',''),
+start = np.asarray([2.5, 0.7, 0.3, 3.5, 0.7, 0.3, 5, 0.7, 0.3]),
+lower = np.asarray([1, 0.1, 0, 1, 0.1, 0, 1, 0.1, 0]),
+upper = np.asarray([10, 5, 1, 10, 5, 1,  10, 5, 1])) 
 @docstring()
-def dd_rice3(*args):
-#=================================================================
+def dd_rice3(r,param):
     r"""
 Sum of three 3D-Rice distributions
 
@@ -515,35 +461,24 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 ``param[8]``   :math:`a_3`                  0.3           0             1           3rd Rician amplitude
 ============== ======================== ============= ============= ============= =======================================
     """
-    def model(r,p):    
-        nu = [p[0], p[3], p[6]]
-        sig = [p[1], p[4], p[7]]
-        a = [p[2], p[5], p[8]]
-        P = _multirice3dfun(r,nu,sig,a)
+    r,param = _parsparam(r,param,npar=9)
+    nu  = [param[0], param[3], param[6]]
+    sig = [param[1], param[4], param[7]]
+    a   = [param[2], param[5], param[8]]
+    P = _multirice3dfun(r,nu,sig,a)
+    return P
+# =================================================================
 
-        return P
 
-    if not args:
-        info = dict(
-            Parameters = ('Location of 1st Rician', 'Spread of 1st Rician', 'Amplitude of 1st Rician',
-                          'Location of 2nd Rician', 'Spread of 2nd Rician', 'Amplitude of 2nd Rician',
-                          'Location of 3rd Rician', 'Spread of 3rd Rician', 'Amplitude of 3rd Rician'),
-            Units = ('nm','nm','','nm','nm','','nm','nm',''),
-            Start = np.asarray([2.5, 0.7, 0.3, 3.5, 0.7, 0.3, 5, 0.7, 0.3]),
-            Lower = np.asarray([1, 0.1, 0, 1, 0.1, 0, 1, 0.1, 0]),
-            Upper = np.asarray([10, 5, 1, 10, 5, 1,  10, 5, 1]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=9)
-        P = model(r,p)
-        return P
-#=================================================================
-
+# =================================================================
+@setmetadata(
+parameters = ('Number of residues','Segment length','Scaling exponent'),
+units = ('','nm',''),
+start = np.asarray([50,   0.2, 0.602]),
+lower = np.asarray([2,    0.1, 0.33 ]),
+upper = np.asarray([1000, 0.4, 1    ])) 
 @docstring()
-def dd_randcoil(*args):    
-#=================================================================
+def dd_randcoil(r,param):    
     r"""
 Random-coil model for an unfolded peptide/protein
 
@@ -568,39 +503,30 @@ Variable         Symbol       Start Value   Lower bound   Upper bound      Descr
 ============== ============= ============= ============= ============= =======================================
 
     """  
-    def model(r,p):    
-        N  = p[0]  # number of residues
-        nu = p[1] # scaling exponent
-        R0 = p[2] # residue length
+    r,param = _parsparam(r,param,npar=3)
+    N  = param[0] # number of residues
+    nu = param[1] # scaling exponent
+    R0 = param[2] # residue length
 
-        rsq = 6*(R0*N**nu)**2 # mean square end-to-end distance from radius of gyration
-        normFact = 3/(2*np.pi*rsq)**(3/2) # normalization prefactor
-        ShellSurf = 4*np.pi*r**2 # spherical shell surface
-        Gaussian = np.exp(-3*r**2/(2*rsq))
-        P = normFact*ShellSurf*Gaussian
-        P = _normalize(r,P)
+    rsq = 6*(R0*N**nu)**2 # mean square end-to-end distance from radius of gyration
+    normFact = 3/(2*np.pi*rsq)**(3/2) # normalization prefactor
+    ShellSurf = 4*np.pi*r**2 # spherical shell surface
+    Gaussian = np.exp(-3*r**2/(2*rsq))
+    P = normFact*ShellSurf*Gaussian
+    P = _normalize(r,P)
+    return P
+# =================================================================
 
-        return P
 
-    if not args:
-        info = dict(
-            Parameters = ('Number of residues','Segment length','Scaling exponent'),
-            Units = ('','nm',''),
-            Start = np.asarray([50,   0.2, 0.602]),
-            Lower = np.asarray([2,    0.1, 0.33 ]),
-            Upper = np.asarray([1000, 0.4, 1    ]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=3)
-        P = model(r,p)
-        return P
-#=================================================================
-
+# =================================================================
+@setmetadata(
+parameters = ('Center','Radius'),
+units = ('nm','nm'),
+start = np.asarray([3, 0.5]),
+lower = np.asarray([1, 0.1]),
+upper = np.asarray([20, 5 ])) 
 @docstring()
-def dd_circle(*args):    
-#=================================================================
+def dd_circle(r,param):    
     r"""
 Semicircle distribution model
 
@@ -619,39 +545,27 @@ Variable         Symbol          Start Value   Lower bound   Upper bound      De
 ``param[1]``   :math:`R`              0.5          0.1              5          Radius (nm)
 ============== ================= ============= ============= ============= =================================
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        r0 = p[0]
-        R = abs(p[1])
+    r,param = _parsparam(r,param,npar=2)
+    r0 = param[0]
+    R = abs(param[1])
+    dr = r - r0
+    idx = abs(dr)<R
+    P = np.zeros(len(r))
+    P[idx] = 2/np.pi/R**2*np.sqrt(R**2 - dr[idx]**2)
+    P = _normalize(r,P)
+    return P
+# =================================================================
 
-        dr = r - r0
-        idx = abs(dr)<R
 
-        P = np.zeros(len(r))
-        P[idx] = 2/np.pi/R**2*np.sqrt(R**2 - dr[idx]**2)
-        P = _normalize(r,P)
-
-        return P
-
-    if not args:
-        info = dict(
-            Parameters = ('Center','Radius'),
-            Units = ('nm','nm'),
-            Start = np.asarray([3, 0.5]),
-            Lower = np.asarray([1, 0.1]),
-            Upper = np.asarray([20, 5 ]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=2)
-        P = model(r,p)
-        return P
-#=================================================================
-
+# =================================================================
+@setmetadata(
+parameters = ('Center','FWHM'),
+units = ('nm','nm'),
+start = np.asarray([3, 0.5]),
+lower = np.asarray([1, 0.1]),
+upper = np.asarray([20, 5 ])) 
 @docstring()
-def dd_cos(*args):    
-#=================================================================
+def dd_cos(r,param):    
     r"""
 Raised-cosine parametric model
 
@@ -670,47 +584,30 @@ Variable         Symbol          Start Value   Lower bound   Upper bound      De
 ``param[1]``   :math:`w`              0.5          0.1             5           FWHM (nm)
 ============== ================= ============= ============= ============= =================================
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        r0 = p[0]
-        fwhm = p[1]
+    r,param = _parsparam(r,param,npar=2)
+    r0 = param[0]
+    fwhm = param[1]
 
-        phi = (r-r0)/fwhm*np.pi
-        P = (1 + np.cos(phi))/2/fwhm
-        P[(r<(r0-fwhm)) | (r>(r0+fwhm))] = 0
-        P = _normalize(r,P)
-
-        return P
-
-    if not args:
-        info = dict(
-            Parameters = ('Center','FWHM'),
-            Units = ('nm','nm'),
-            Start = np.asarray([3, 0.5]),
-            Lower = np.asarray([1, 0.1]),
-            Upper = np.asarray([20, 5 ]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=2)
-        P = model(r,p)
-        return P
-#=================================================================
+    phi = (r-r0)/fwhm*np.pi
+    P = (1 + np.cos(phi))/2/fwhm
+    P[(r<(r0-fwhm)) | (r>(r0+fwhm))] = 0
+    P = _normalize(r,P)
+    return P
+# =================================================================
 
 
 def _pb(r,R):
-#=================================================================
+# =================================================================
     P = np.zeros(len(r))
     idx = (r >= 0) & (r <= 2*R)
     P[idx] = 3*r[idx]**5/(16*R**6) - 9*r[idx]**3/(4*R**4) + 3*r[idx]**2/(R**3)
 
     return P
-#=================================================================
+# =================================================================
 
 
 def _pbs(r,R1,R2):
-#=================================================================
+# =================================================================
     P = np.zeros(len(r))
     # Case1
     idx = (r >= 0) & (r < np.minimum(2*R1,R2 - R1)) 
@@ -730,12 +627,17 @@ def _pbs(r,R1,R2):
 
     P = P*3/(16*R1**3*(R2**3 - R1**3))
     return P
-#=================================================================
+# =================================================================
 
-
+# =================================================================
+@setmetadata(
+parameters = ('Inner shell radius','Shell thickness'),
+units = ('nm','nm'),
+lower = np.asarray([0.1, 0.1]),
+upper = np.asarray([20,  20 ]),
+start = np.asarray([1.5, 0.5])) 
 @docstring()
-def dd_shell(*args):    
-#=================================================================
+def dd_shell(r,param):    
     r"""
 Uniform spherical shell
 
@@ -774,40 +676,30 @@ References
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
 
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        R1 = float(p[0])
-        w = float(p[1])
-        R2 = R1 + w
+    r,param = _parsparam(r,param,npar=2)
+    R1 = float(param[0])
+    w = float(param[1])
+    R2 = R1 + w
 
-        P = np.zeros(len(r))
-        P = R2**6*_pb(r,R2) - R1**6*_pb(r,R1) - 2*(R2**3 - R1**3)*_pbs(r,R1,R2)
+    P = np.zeros(len(r))
+    P = R2**6*_pb(r,R2) - R1**6*_pb(r,R1) - 2*(R2**3 - R1**3)*_pbs(r,R1,R2)
 
-        P = P/(R2**3 - R1**3)**2
+    P = P/(R2**3 - R1**3)**2
 
-        P = _normalize(r,P)
+    P = _normalize(r,P)
+    return P
+# =================================================================
 
-        return P
 
-    if not args:
-        info = dict(
-            Parameters = ('Inner shell radius','Shell thickness'),
-            Units = ('nm','nm'),
-            Lower = np.asarray([0.1, 0.1]),
-            Upper = np.asarray([20,  20 ]),
-            Start = np.asarray([1.5, 0.5]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=2)
-        P = model(r,p)
-        return P
-#=================================================================
-
+# =================================================================
+@setmetadata(
+parameters = ('Sphere radius','Distance to point'),
+units = ('nm','nm'),
+lower = np.asarray([0.1, 0.1]),
+upper = np.asarray([20,  20 ]),
+start = np.asarray([1.5, 3.5])) 
 @docstring()
-def dd_spherepoint(*args):    
-#=================================================================
+def dd_spherepoint(r,param):    
     r"""
 One particle distanced from particles distributed on a sphere
 
@@ -833,37 +725,26 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """ 
-    def model(r,p):    
-        # Compute the model distance distribution
-        R = float(p[0])
-        d = float(p[1])
-        P = np.zeros(len(r))
-        idx = (r >= d - R) & (r<= d + R)
-        P[idx] = 3*r[idx]*(R**2 - (d - r[idx])**2)/(4*d*R**3)
+    r,param = _parsparam(r,param,npar=2)
+    R = float(param[0])
+    d = float(param[1])
+    P = np.zeros(len(r))
+    idx = (r >= d - R) & (r<= d + R)
+    P[idx] = 3*r[idx]*(R**2 - (d - r[idx])**2)/(4*d*R**3)
+    P = _normalize(r,P)
+    return P
+# =================================================================
 
-        P = _normalize(r,P)
 
-        return P
-
-    if not args:
-        info = dict(
-            Parameters = ('Sphere radius','Distance to point'),
-            Units = ('nm','nm'),
-            Lower = np.asarray([0.1, 0.1]),
-            Upper = np.asarray([20,  20 ]),
-            Start = np.asarray([1.5, 3.5]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=2)
-        P = model(r,p)
-        return P
-#=================================================================
-
+# =================================================================
+@setmetadata(
+parameters = ('Sphere radius'),
+units = ('nm'),
+lower = np.asarray([0.1]),
+upper = np.asarray([20]),
+start = np.asarray([2.5])) 
 @docstring()
-def dd_spheresurf(*args):    
-#=================================================================
+def dd_spheresurf(r,param):    
     r"""
 Particles distributed on a sphere's surface
 
@@ -888,36 +769,25 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """ 
-    def model(r,p):    
-        # Compute the model distance distribution
-        R = float(p[0])
-        P = np.zeros(len(r))
-        idx = (r >= 0) & (r<= 2*R)
-        P[idx] = r[idx]/R**2
-
-        P = _normalize(r,P)
-
-        return P
-
-    if not args:
-        info = dict(
-            Parameters = ('Sphere radius'),
-            Units = ('nm'),
-            Lower = np.asarray([0.1]),
-            Upper = np.asarray([20]),
-            Start = np.asarray([2.5]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=1)
-        P = model(r,p)
-        return P
+    r,param = _parsparam(r,param,npar=1)
+    R = float(param[0])
+    P = np.zeros(len(r))
+    idx = (r >= 0) & (r<= 2*R)
+    P[idx] = r[idx]/R**2
+    P = _normalize(r,P)
+    return P
 #=================================================================
 
+
+# =================================================================
+@setmetadata(
+parameters = ('Inner shell radius','1st Shell thickness','2nd Shell thickness'),
+units = ('nm','nm','nm'),
+lower = np.asarray([0.1, 0.1, 0.1]),
+upper = np.asarray([20,  20,  20 ]),
+start = np.asarray([1.5, 0.5, 0.5])) 
 @docstring()
-def dd_shellshell(*args):    
-#=================================================================
+def dd_shellshell(r,param):    
     r"""
 Uniform spherical shell inside another spherical shell
 
@@ -956,48 +826,39 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        R1 = float(p[0])
-        w1 = float(p[1])
-        w2 = float(p[2])
+    r,param = _parsparam(r,param,npar=3)
+    R1 = float(param[0])
+    w1 = float(param[1])
+    w2 = float(param[2])
 
-        R2 = R1 + w1
-        R3 = R2 + w2
+    R2 = R1 + w1
+    R3 = R2 + w2
 
-        delta21 = R2**3 - R1**3
-        q21 = delta21*_pbs(r,R1,R2)
-        delta31 = R3**3 - R1**3
-        q31 = delta31*_pbs(r,R1,R3)
-        delta32 = R3**3 - R2**3
-        q32 = delta32*_pbs(r,R2,R3)
+    delta21 = R2**3 - R1**3
+    q21 = delta21*_pbs(r,R1,R2)
+    delta31 = R3**3 - R1**3
+    q31 = delta31*_pbs(r,R1,R3)
+    delta32 = R3**3 - R2**3
+    q32 = delta32*_pbs(r,R2,R3)
 
-        P = R1**3*q21 - R1**3*q31 + R2**3*q32
-        P = P/(delta21*delta32)
+    P = R1**3*q21 - R1**3*q31 + R2**3*q32
+    P = P/(delta21*delta32)
 
-        P = _normalize(r,P)
+    P = _normalize(r,P)
 
-        return P
-
-    if not args:
-        info = dict(
-            Parameters = ('Inner shell radius','1st Shell thickness','2nd Shell thickness'),
-            Units = ('nm','nm','nm'),
-            Lower = np.asarray([0.1, 0.1, 0.1]),
-            Upper = np.asarray([20,  20,  20 ]),
-            Start = np.asarray([1.5, 0.5, 0.5]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=3)
-        P = model(r,p)
-        return P
+    return P
 #=================================================================
 
+
+# =================================================================
+@setmetadata(
+parameters = ('Sphere radius','Shell thickness'),
+units = ('nm','nm'),
+lower = np.asarray([0.1, 0.1]),
+upper = np.asarray([20,  20]),
+start = np.asarray([1.5, 0.5])) 
 @docstring()
-def dd_shellsphere(*args):    
-#=================================================================
+def dd_shellsphere(r,param):    
     r"""
 Particles distributed on a sphere inside a spherical shell
 
@@ -1029,36 +890,26 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        R1 = float(p[0])
-        w = float(p[1])
-        R2 = R1 + w
-        P = _pbs(r,R1,R2)
+    r,param = _parsparam(r,param,npar=2)
+    R1 = float(param[0])
+    w = float(param[1])
+    R2 = R1 + w
+    P = _pbs(r,R1,R2)
 
-        P = _normalize(r,P)
+    P = _normalize(r,P)
+    return P
+# =================================================================
 
-        return P
 
-    if not args:
-        info = dict(
-            Parameters = ('Sphere radius','Shell thickness'),
-            Units = ('nm','nm'),
-            Lower = np.asarray([0.1, 0.1]),
-            Upper = np.asarray([20,  20]),
-            Start = np.asarray([1.5, 0.5]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=2)
-        P = model(r,p)
-        return P
-#=================================================================
-
+# =================================================================
+@setmetadata(
+parameters = ('Sphere radius','1st Shell thickness','2nd Shell thickness','Shell-Shell separation'),
+units = ('nm','nm','nm','nm'),
+lower = np.asarray([0.1, 0.1, 0.1, 0.1]),
+upper = np.asarray([20,  20, 20, 2]),
+start = np.asarray([0.75, 1, 1, 0.5])) 
 @docstring()
-def dd_shellvoidshell(*args):    
-#=================================================================
+def dd_shellvoidshell(r,param):    
     r"""
 Particles distributed on a spherical shell inside another spherical shell separated by a void 
 
@@ -1100,54 +951,45 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
-    def model(r,p):        
-        # Compute the model distance distribution
-        R1 = float(p[0])
-        w1 = float(p[1])
-        w2 = float(p[2])
-        d  = float(p[3])
+    r,param = _parsparam(r,param,npar=4)
+    R1 = float(param[0])
+    w1 = float(param[1])
+    w2 = float(param[2])
+    d  = float(param[3])
 
-        R2 = R1 + w1
-        R3 = R1 + w1 + w2
-        R4 = R1 + w1 + w2 + d
+    R2 = R1 + w1
+    R3 = R1 + w1 + w2
+    R4 = R1 + w1 + w2 + d
 
-        delta21 = R2**3 - R1**3
-        delta31 = R3**3 - R1**3
-        q31 = delta31*_pbs(r,R1,R3)
-        delta32 = R3**3 - R2**3
-        q32 = delta32*_pbs(r,R2,R3)
-        delta41 = R4**3 - R1**3
-        q41 = delta41*_pbs(r,R1,R4)
-        delta42 = R4**3 - R2**3
-        q42 = delta42*_pbs(r,R2,R4)
-        delta43 = R4**3 - R3**3
+    delta21 = R2**3 - R1**3
+    delta31 = R3**3 - R1**3
+    q31 = delta31*_pbs(r,R1,R3)
+    delta32 = R3**3 - R2**3
+    q32 = delta32*_pbs(r,R2,R3)
+    delta41 = R4**3 - R1**3
+    q41 = delta41*_pbs(r,R1,R4)
+    delta42 = R4**3 - R2**3
+    q42 = delta42*_pbs(r,R2,R4)
+    delta43 = R4**3 - R3**3
 
-        P = (R1**3*(q31 - q41) + R2**3*(q42 - q32))/(delta43*delta21)
-        P = np.round(P,15)
+    P = (R1**3*(q31 - q41) + R2**3*(q42 - q32))/(delta43*delta21)
+    P = np.round(P,15)
 
-        P = _normalize(r,P)
+    P = _normalize(r,P)
 
-        return P
-        
-    if not args:
-        info = dict(
-            Parameters = ('Sphere radius','1st Shell thickness','2nd Shell thickness','Shell-Shell separation'),
-            Units = ('nm','nm','nm','nm'),
-            Lower = np.asarray([0.1, 0.1, 0.1, 0.1]),
-            Upper = np.asarray([20,  20, 20, 2]),
-            Start = np.asarray([0.75, 1, 1, 0.5]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=4)
-        P = model(r,p)
-        return P
-#=================================================================
+    return P
+# =================================================================
 
+
+# =================================================================
+@setmetadata(
+parameters = ('Sphere radius','Shell thickness','Shell-Sphere separation'),
+units = ('nm','nm','nm'),
+lower = np.asarray([0.1, 0.1, 0.1]),
+upper = np.asarray([20, 20, 20]),
+start = np.asarray([1.5, 1, 0.5])) 
 @docstring()
-def dd_shellvoidsphere(*args):    
-#=================================================================
+def dd_shellvoidsphere(r,param):    
     r"""
 Particles distributed on a sphere inside a spherical shell separated by a void 
 
@@ -1187,45 +1029,36 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        R1 = float(p[0])
-        w  = float(p[1])
-        d  = float(p[2])
+    r,param = _parsparam(r,param,npar=3)
+    R1 = float(param[0])
+    w  = float(param[1])
+    d  = float(param[2])
 
-        R2 = R1 + w
-        R3 = R1 + w + d
+    R2 = R1 + w
+    R3 = R1 + w + d
 
-        delta21 = R2**3 - R1**3
-        q21 = delta21*_pbs(r,R1,R2)
-        delta31 = R3**3 - R1**3
-        q31 = delta31*_pbs(r,R1,R3)
-        delta32 = R3**3 - R2**3
-        
-        P = (q31 - q21)/delta32
-        P = np.round(P,15)
-        P = _normalize(r,P)
-        return P
+    delta21 = R2**3 - R1**3
+    q21 = delta21*_pbs(r,R1,R2)
+    delta31 = R3**3 - R1**3
+    q31 = delta31*_pbs(r,R1,R3)
+    delta32 = R3**3 - R2**3
+    
+    P = (q31 - q21)/delta32
+    P = np.round(P,15)
+    P = _normalize(r,P)
+    return P
+# =================================================================
 
-    if not args:
-        info = dict(
-            Parameters = ('Sphere radius','Shell thickness','Shell-Sphere separation'),
-            Units = ('nm','nm','nm'),
-            Lower = np.asarray([0.1, 0.1, 0.1]),
-            Upper = np.asarray([20, 20, 20]),
-            Start = np.asarray([1.5, 1, 0.5]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=3)
-        P = model(r,p)
-        return P
-#=================================================================
 
+# =================================================================
+@setmetadata(
+parameters = ('Sphere radius'),
+units = ('nm'),
+lower = np.asarray([0.1]),
+upper = np.asarray([20]),
+start = np.asarray([2.5])) 
 @docstring()
-def dd_sphere(*args):    
-#=================================================================
+def dd_sphere(r,param):    
     r"""
 Particles distributed on a sphere
 
@@ -1250,32 +1083,23 @@ References
 .. [1] D.R. Kattnig, D. Hinderberger,
     Analytical distance distributions in systems of spherical symmetry with applications to double electron-electron resonance, JMR, 230, 50-63, 2013 
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        R = float(p[0])
-        P = _pb(r,R)
-        P = _normalize(r,P)
-        return P
+    r,param = _parsparam(r,param,npar=1)
+    R = float(param[0])
+    P = _pb(r,R)
+    P = _normalize(r,P)
+    return P
+# =================================================================
 
-    if not args:
-        info = dict(
-            Parameters = ('Sphere radius'),
-            Units = ('nm'),
-            Lower = np.asarray([0.1]),
-            Upper = np.asarray([20]),
-            Start = np.asarray([2.5]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=1)
-        P = model(r,p)
-        return P
-#=================================================================
 
+# =================================================================
+@setmetadata(
+parameters = ('Mode','Left width','Right width'),
+units = ('nm','nm','nm'),
+lower = np.asarray([1, 0.1, 0.1]),
+upper = np.asarray([20,  20, 20]),
+start = np.asarray([3.5, 1, 0.5]))
 @docstring()
-def dd_triangle(*args):    
-#=================================================================
+def dd_triangle(r,param):    
     r"""
 Triangle distribution model
 
@@ -1294,43 +1118,33 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 ``param[2]``   :math:`w_\mathrm{R}`        0.3            0.1              5          Right width (nm)
 ============== ======================== ============= ============= ============= =========================
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        r0 = p[0]
-        wL = abs(p[1])
-        wR = abs(p[2])
-        rL = r0 - wL
-        rR = r0 + wR
-        idxL = (r >= r0-wL) & (r <= r0)
-        idxR = (r <= r0+wR) & (r >= r0)
-        P = np.zeros(len(r))
-        if wL>0:
-            P[idxL] = (r[idxL]-rL)/wL/(wL+wR)
-        if wR>0:
-            P[idxR] = -(r[idxR]-rR)/wR/(wL+wR)
-        P = _normalize(r,P)
-        return P
+    r,param = _parsparam(r,param,npar=3)
+    r0 = param[0]
+    wL = abs(param[1])
+    wR = abs(param[2])
+    rL = r0 - wL
+    rR = r0 + wR
+    idxL = (r >= r0-wL) & (r <= r0)
+    idxR = (r <= r0+wR) & (r >= r0)
+    P = np.zeros(len(r))
+    if wL>0:
+        P[idxL] = (r[idxL]-rL)/wL/(wL+wR)
+    if wR>0:
+        P[idxR] = -(r[idxR]-rR)/wR/(wL+wR)
+    P = _normalize(r,P)
+    return P
+# =================================================================
 
 
-    if not args:
-        info = dict(
-            Parameters = ('Mode','Left width','Right width'),
-            Units = ('nm','nm','nm'),
-            Lower = np.asarray([1, 0.1, 0.1]),
-            Upper = np.asarray([20,  20, 20]),
-            Start = np.asarray([3.5, 1, 0.5]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=3)
-        P = model(r,p)
-        return P
-#=================================================================
-
+# =================================================================
+@setmetadata(
+parameters = ('Left edge','Right edge'),
+units = ('nm','nm'),
+lower = np.asarray([0.1, 0.2]),
+upper = np.asarray([6, 20]),
+start = np.asarray([2.5, 3]))
 @docstring()
-def dd_uniform(*args):    
-#=================================================================
+def dd_uniform(r,param):    
     r"""
 Uniform distribution model
 
@@ -1348,32 +1162,16 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 ``param[1]``   :math:`r_\mathrm{R}`         3.0             0.2            20          Right edge (nm)
 ============== ======================== ============= ============= ============= =========================
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        rL = min(abs(p))
-        rR = max(abs(p))
-        P = np.zeros(len(r))
-        P[(r>=rL) & (r<=rR)] = 1
-        P = _normalize(r,P)
-        return P
+    r,param = _parsparam(r,param,npar=2)
+    rL = min(abs(param))
+    rR = max(abs(param))
+    P = np.zeros(len(r))
+    P[(r>=rL) & (r<=rR)] = 1
+    P = _normalize(r,P)
+    return P
+# =================================================================
 
-    if not args:
-        info = dict(
-            Parameters = ('Left edge','Right edge'),
-            Units = ('nm','nm'),
-            Lower = np.asarray([0.1, 0.2]),
-            Upper = np.asarray([6, 20]),
-            Start = np.asarray([2.5, 3]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=2)
-        P = model(r,p)
-        return P
-#=================================================================
-
-
+# -----------------------------------------------------------------
 def wlc(r,L,Lp):
     
     P = np.zeros(len(r))
@@ -1391,10 +1189,18 @@ def wlc(r,L,Lp):
     P[idx] = kappa/(4*np.pi*2*np.sqrt(np.pi))*((1/(kappa*(1 - rcrit))**(3/2)*np.exp(-(1 - 1/2)**2/(kappa*(1 - rcrit)))*(4*((1 - 1/2)/np.sqrt(kappa*(1-rcrit)))**2-2)) + 1/(kappa*(1 - rcrit))**(3/2)*np.exp(-(2 - 1/2)**2/(kappa*(1 - rcrit)))*(4*((2 - 1/2)/np.sqrt(kappa*(1-rcrit)))**2-2))
 
     return P
+# -----------------------------------------------------------------
 
+
+# =================================================================
+@setmetadata(
+parameters = ('Contour length','Persistence length'),
+units = ('nm','nm'),
+lower = np.asarray([1.5, 2]),
+upper = np.asarray([20, 100]),
+start = np.asarray([3.7, 10]))
 @docstring()
-def dd_wormchain(*args):    
-#=================================================================
+def dd_wormchain(r,param):    
     r"""
 Worm-like chain model near the rigid limit
 
@@ -1416,33 +1222,24 @@ References
     Radial Distribution Function of Semiflexible Polymers
     Phys. Rev. Lett. 77(12), 2581-2584, 1996
     """  
-    def model(r,p):    
-        # Compute the model distance distribution
-        L = p[0]
-        Lp = p[1]
-        P = wlc(r,L,Lp)
-        P = _normalize(r,P)
-        return P
-
-    if not args:
-        info = dict(
-            Parameters = ('Contour length','Persistence length'),
-            Units = ('nm','nm'),
-            Lower = np.asarray([1.5, 2]),
-            Upper = np.asarray([20, 100]),
-            Start = np.asarray([3.7, 10]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=2)
-        P = model(r,p)
-        return P
+    r,param = _parsparam(r,param,npar=2)
+    L = param[0]
+    Lp = param[1]
+    P = wlc(r,L,Lp)
+    P = _normalize(r,P)
+    return P
 #=================================================================
 
+
+# =================================================================
+@setmetadata(
+parameters = ('Contour length','Persistence length','Gaussian standard deviation'),
+units = ('nm','nm'),
+lower = np.asarray([1.5, 2, 0.001]),
+upper = np.asarray([20, 100, 2]),
+start = np.asarray([3.7, 10, 0.2]))
 @docstring()
-def dd_wormgauss(*args):    
-#=================================================================
+def dd_wormgauss(r,param):    
     r"""
 Worm-like chain model near the rigid limit with Gaussian convolution
 
@@ -1466,44 +1263,27 @@ References
     Phys. Rev. Lett. 77(12), 2581-2584, 1996
     
     """  
-    def model(r,p):        
-        # Compute the model distance distribution
-        L = p[0]
-        Lp = p[1]
-        sigma = p[2]
-        P = wlc(r,L,Lp)
+    r,param = _parsparam(r,param,npar=3)
+    L = param[0]
+    Lp = param[1]
+    sigma = param[2]
+    P = wlc(r,L,Lp)
 
-        # Compute Gaussian convolution window
-        idx = np.argmax(P)
-        gauss = np.exp(-((r - r[idx])/sigma)**2)
-        
-        # Convolution with size retention
-        P = np.convolve(gauss,P,mode='full')
+    # Compute Gaussian convolution window
+    idx = np.argmax(P)
+    gauss = np.exp(-((r - r[idx])/sigma)**2)
+    
+    # Convolution with size retention
+    P = np.convolve(gauss,P,mode='full')
 
-        # Adjust new convoluted axis
-        idxconv = np.argmax(P)
-        rconv = np.linspace(min(r),max(r)*2,len(P))
-        rconv = rconv - abs(r[idx] - rconv[idxconv])
+    # Adjust new convoluted axis
+    idxconv = np.argmax(P)
+    rconv = np.linspace(min(r),max(r)*2,len(P))
+    rconv = rconv - abs(r[idx] - rconv[idxconv])
 
-        #Interpolate down to original axis
-        P = np.interp(r,rconv,P)
-        print(P.shape)
-        P = _normalize(r,P)
+    #Interpolate down to original axis
+    P = np.interp(r,rconv,P)
+    P = _normalize(r,P)
 
-        return P
-        
-    if not args:
-        info = dict(
-            Parameters = ('Contour length','Persistence length','Gaussian standard deviation'),
-            Units = ('nm','nm'),
-            Lower = np.asarray([1.5, 2, 0.001]),
-            Upper = np.asarray([20, 100, 2]),
-            Start = np.asarray([3.7, 10, 0.2]),
-            ModelFcn = model
-        )
-        return info
-    else: 
-        r,p = _parsargs(args,npar=3)
-        P = model(r,p)
-        return P
+    return P
 #=================================================================
