@@ -162,6 +162,12 @@ class UQResult:
         return super(UQResult, self).__getattribute__(attr)
     #--------------------------------------------------------------------------------
 
+    def _getbounds(self):
+        return self.__lb, self.__ub
+    def _setbounds(self,lb,ub):
+        self.__lb = lb 
+        self.__ub = ub
+        return
     # Parameter distributions
     #--------------------------------------------------------------------------------
     def pardist(self,n):

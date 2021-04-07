@@ -512,6 +512,9 @@ def uq_subset(uq_full,subset):
     uq_subset.std = uq_subset.std[subset]
     uq_subset.covmat = uq_subset.covmat[np.ix_(subset,subset)]
     uq_subset.nparam = len(subset)
+    lbsubset = uq_subset._getbounds()[0][subset]
+    ubsubset = uq_subset._getbounds()[1][subset]
+    uq_subset._setbounds(lbsubset,ubsubset)
 
     # Get requested confidence interval of joined parameter set
     uq_subset.ci = lambda coverage: uq_full.ci(coverage)[subset, :]
