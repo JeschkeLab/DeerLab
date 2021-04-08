@@ -764,16 +764,19 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             axs[i].legend(('Data','Vfit','Bfit','95%-CI','50%-CI'))
 
         # Plot the distribution
-        axs[nSignals].plot(r,Pfit,'tab:blue')
+        if uqanalysis and uq=='bootstrap':
+            axs[nSignals].plot(r,Pfit_uq.median,'tab:blue',label='Median')
+        else:
+            axs[nSignals].plot(r,Pfit,'tab:blue',label='Fit')
         if uqanalysis:
             # Get confidence intervals for the distance distribution
             Pci95 = Pfit_uq.ci(95)
             Pci50 = Pfit_uq.ci(50)
-            axs[nSignals].fill_between(r,Pci95[:,0], Pci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2)
-            axs[nSignals].fill_between(r,Pci50[:,0], Pci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4)
+            axs[nSignals].fill_between(r,Pci95[:,0], Pci95[:,1],facecolor='tab:blue',linestyle='None',alpha=0.2,label='95%-CI')
+            axs[nSignals].fill_between(r,Pci50[:,0], Pci50[:,1],facecolor='tab:blue',linestyle='None',alpha=0.4,label='50%-CI')
         axs[nSignals].set_xlabel('Distance (nm)')
         axs[nSignals].set_ylabel('P (nm⁻¹)')
-        axs[nSignals].legend(('Fit','95%-CI','50%-CI'))
+        axs[nSignals].legend()
         axs[nSignals].grid(alpha=0.3)
         plt.tight_layout()
         if show:
