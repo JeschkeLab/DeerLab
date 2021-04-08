@@ -698,10 +698,6 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
             Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/scale
 
-    # Do not return array for a single scale
-    if len(scales)==1:
-        scales = scales[0]
-
     # Calculate goodness of fit
     # -------------------------
     stats = []
@@ -797,14 +793,13 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         print('Fitted parameters and 95%-confidence intervals')
         if len(parfit['dd'])>0:
             print()
-            info = dd_model()
             if uqanalysis:
                 ci = paruq['dd'].ci(95)
             else:
                 ci = np.full((len(parfit['dd']),2),np.nan)
             for j in range(len(parfit['dd'])):
                 c = parfit['dd'][j]
-                print(f'  ddparam[{j:d}]:   {c:5.7f}  ({ci[j,0]:.7f}, {ci[j,1]:.7f})  {info["Parameters"][j]} ({info["Units"][j]})')
+                print(f'  ddparam[{j:d}]:   {c:5.7f}  ({ci[j,0]:.7f}, {ci[j,1]:.7f})  {dd_model.parameters[j]} ({dd_model.units[j]})')
 
         for i in range(nSignals):
             print(f'Vfit[{i}]:')
@@ -813,25 +808,21 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             else:
                 print(f'  V0:  {scales[i]:2.2f}  Signal scale (arb.u.)')
             if includeBackground[i]:
-                if len(parfit['bg'])>0:
-                    info = bg_model[i]()
                 if uqanalysis:
                     ci = paruq['bg'][i].ci(95)
                 else:
                     ci = np.full((len(parfit['bg'][i]),2),np.nan)
                 for j in range(len(parfit['bg'][i])):
                     c = parfit['bg'][i][j]
-                    print(f'  bgparam[{j:d}]:   {c:5.7f}  ({ci[j,0]:.7f}, {ci[j,1]:.7f})  {info["Parameters"][j]} ({info["Units"][j]})')
+                    print(f'  bgparam[{j:d}]:   {c:5.7f}  ({ci[j,0]:.7f}, {ci[j,1]:.7f})  {bg_model[i].parameters[j]} ({bg_model[i].units[j]})')
             if includeExperiment[i]:
-                if len(parfit['ex'])>0:
-                    info = ex_model[i]()
                 if uqanalysis:
                     ci = paruq['ex'][i].ci(95)
                 else:
                     ci = np.full((len(parfit['ex'][i]),2),np.nan)
                 for j in range(len(parfit['ex'][i])):
                     c = parfit['ex'][i][j]
-                    print(f'  exparam[{j:d}]:   {c:5.7f}  ({ci[j,0]:.7f}, {ci[j,1]:.7f})  {info["Parameters"][j]} ({info["Units"][j]})')
+                    print(f'  exparam[{j:d}]:   {c:5.7f}  ({ci[j,0]:.7f}, {ci[j,1]:.7f})  {ex_model[i].parameters[j]} ({ex_model[i].units[j]})')
         print('----------------------------------------------------------------------------')
 
 
@@ -847,6 +838,10 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 modfituq[subset] = modfituq[subset][0]
         if not isempty(stats):
             stats = stats[0]
+
+    # Do not return array for a single scale
+    if len(scales)==1:
+        scales = scales[0]
 
 
     return FitResult(V=Vfit, P=Pfit, B=Bfit, Vmod=Vmod, Vunmod=Vunmod, exparam=parfit['ex'], bgparam=parfit['bg'],
