@@ -698,6 +698,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
             Pfit_uq = Pfit_uq_.propagate(lambda P: P/scale,lbm=np.zeros_like(r))
 
+
     # Calculate goodness of fit
     # -------------------------
     stats = []
