@@ -7,6 +7,7 @@ import math as m
 import numpy as np
 import scipy.special as spc
 import inspect
+from deerlab.utils import metadata 
 
 # Definition of the header for all experiment models
 docstr_header = lambda title, fcnstr: f"""
@@ -82,21 +83,6 @@ def docstring():
 # =================================================================
 
 # =================================================================
-def setmetadata(parameters,units,start,lower,upper):
-    """
-    Decorator: Set model metadata as function attributes 
-    """
-    def _setmetadata(func):
-        func.parameters = parameters
-        func.units = units
-        func.start = start
-        func.lower = lower
-        func.upper = upper
-        return func
-    return _setmetadata
-# =================================================================
-
-# =================================================================
 def _parsparam(r,p,npar):
     r,p = np.atleast_1d(r,p)
     if len(p)!=npar:
@@ -139,7 +125,7 @@ def _multirice3dfun(r,nu,sig,a):
 # =================================================================
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Mean','Standard deviation'),
 units = ('nm','nm'),
 start = np.asarray([3.5, 0.2]),
@@ -174,7 +160,7 @@ Variable        Symbol                    Start value    Lower bound    Upper bo
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Mean of 1st Gaussian', 'Standard deviation of 1st Gaussian', 'Amplitude of 1st Gaussian',
                 'Mean of 2nd Gaussian', 'Standard deviation of 2nd Gaussian', 'Amplitude of 2nd Gaussian'),
 units = ('nm','nm','','nm','nm',''),
@@ -215,7 +201,7 @@ Variable         Symbol                  Start Value   Lower bound   Upper bound
     
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Mean of 1st Gaussian', 'Standard deviation of 1st Gaussian', 'Amplitude of 1st Gaussian',
                 'Mean of 2nd Gaussian', 'Standard deviation of 2nd Gaussian', 'Amplitude of 2nd Gaussian',
                 'Mean of 3rd Gaussian', 'Standard deviation of 3rd Gaussian', 'Amplitude of 3rd Gaussian'),
@@ -259,7 +245,7 @@ Variable         Symbol                   Start Value   Lower bound   Upper boun
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Mean','Spread','Kurtosis'),
 units = ('nm','nm',''),
 start = np.asarray([3.5, 0.5,0.5]),
@@ -299,7 +285,7 @@ Variable         Symbol                   Start Value   Lower bound   Upper boun
     
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Center','Spread','Kurtosis'),
 units = ('nm','nm',''),
 start = np.asarray([3.5, 0.2, 5]),
@@ -340,7 +326,7 @@ Variable         Symbol       Start Value   Lower bound   Upper bound      Descr
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Location','Spread'),
 units = ('nm','nm'),
 start = np.asarray([3.5, 0.7]),
@@ -377,7 +363,7 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
     
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Location of 1st Rician', 'Spread of 1st Rician', 'Amplitude of 1st Rician',
                 'Location of 2nd Rician', 'Spread of 2nd Rician', 'Amplitude of 2nd Rician'),
 units = ('nm','nm','','nm','nm',''),
@@ -422,7 +408,7 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
     
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Location of 1st Rician', 'Spread of 1st Rician', 'Amplitude of 1st Rician',
               'Location of 2nd Rician', 'Spread of 2nd Rician', 'Amplitude of 2nd Rician',
               'Location of 3rd Rician', 'Spread of 3rd Rician', 'Amplitude of 3rd Rician'),
@@ -471,7 +457,7 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Number of residues','Segment length','Scaling exponent'),
 units = ('','nm',''),
 start = np.asarray([50,   0.2, 0.602]),
@@ -519,7 +505,7 @@ Variable         Symbol       Start Value   Lower bound   Upper bound      Descr
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Center','Radius'),
 units = ('nm','nm'),
 start = np.asarray([3, 0.5]),
@@ -558,7 +544,7 @@ Variable         Symbol          Start Value   Lower bound   Upper bound      De
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Center','FWHM'),
 units = ('nm','nm'),
 start = np.asarray([3, 0.5]),
@@ -630,7 +616,7 @@ def _pbs(r,R1,R2):
 # =================================================================
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Inner shell radius','Shell thickness'),
 units = ('nm','nm'),
 lower = np.asarray([0.1, 0.1]),
@@ -692,7 +678,7 @@ References
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Sphere radius','Distance to point'),
 units = ('nm','nm'),
 lower = np.asarray([0.1, 0.1]),
@@ -737,7 +723,7 @@ References
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Sphere radius',),
 units = ('nm',),
 lower = np.asarray([0.1]),
@@ -780,7 +766,7 @@ References
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Inner shell radius','1st Shell thickness','2nd Shell thickness'),
 units = ('nm','nm','nm'),
 lower = np.asarray([0.1, 0.1, 0.1]),
@@ -851,7 +837,7 @@ References
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Sphere radius','Shell thickness'),
 units = ('nm','nm'),
 lower = np.asarray([0.1, 0.1]),
@@ -902,7 +888,7 @@ References
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Sphere radius','1st Shell thickness','2nd Shell thickness','Shell-Shell separation'),
 units = ('nm','nm','nm','nm'),
 lower = np.asarray([0.1, 0.1, 0.1, 0.1]),
@@ -982,7 +968,7 @@ References
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Sphere radius','Shell thickness','Shell-Sphere separation'),
 units = ('nm','nm','nm'),
 lower = np.asarray([0.1, 0.1, 0.1]),
@@ -1051,7 +1037,7 @@ References
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Sphere radius',),
 units = ('nm',),
 lower = np.asarray([0.1]),
@@ -1092,7 +1078,7 @@ References
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Mode','Left width','Right width'),
 units = ('nm','nm','nm'),
 lower = np.asarray([1, 0.1, 0.1]),
@@ -1137,7 +1123,7 @@ Variable         Symbol                 Start Value   Lower bound   Upper bound 
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Left edge','Right edge'),
 units = ('nm','nm'),
 lower = np.asarray([0.1, 0.2]),
@@ -1193,7 +1179,7 @@ def wlc(r,L,Lp):
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Contour length','Persistence length'),
 units = ('nm','nm'),
 lower = np.asarray([1.5, 2]),
@@ -1232,7 +1218,7 @@ References
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ('Contour length','Persistence length','Gaussian standard deviation'),
 units = ('nm','nm','nm'),
 lower = np.asarray([1.5, 2, 0.001]),

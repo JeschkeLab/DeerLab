@@ -212,6 +212,21 @@ def hccm(J,*args):
 #===============================================================================
 
 
+# =================================================================
+def metadata(**kwargs):
+    """
+    Decorator: Set model metadata as function attributes 
+    """
+    attributes = list(kwargs.keys())
+    metadata = list(kwargs.values())
+
+    def _setmetadata(func):
+        for attribute,data in zip(attributes,metadata):
+            setattr(func,attribute,data)
+        return func
+    return _setmetadata
+# =================================================================
+
 def gsvd(A,B):
 #===============================================================================
     m,p = A.shape

@@ -4,7 +4,7 @@
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-
+from deerlab.utils import metadata 
 
 # Definition of the header for all experiment models
 docstr_header = lambda title,fcnstr: f"""
@@ -49,22 +49,6 @@ def docstring():
     return _decorator
 # =================================================================
 
-
-# =================================================================
-def setmetadata(parameters,units,start,lower,upper):
-    """
-    Decorator: Set model metadata as function attributes 
-    """
-    def _setmetadata(func):
-        func.parameters = parameters
-        func.units = units
-        func.start = start
-        func.lower = lower
-        func.upper = upper
-        return func
-    return _setmetadata
-# =================================================================
-
 #=================================================================
 def _parsargs(param,npar):
     param = np.atleast_1d(param)
@@ -75,7 +59,7 @@ def _parsargs(param,npar):
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Modulation depth'],
 units = [''],
 start = np.asarray([0.3]),
@@ -119,7 +103,7 @@ where :math:`T_0^{(1)}=0` is the refocusing time of the modulated dipolar pathwa
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway',
                 'Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
 units = ['','','','μs'],
@@ -170,7 +154,7 @@ where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the 
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway','Amplitude of 2nd modulated pathway','Refocusing time of 2nd modulated pathway'],
 units = ['','','','μs'],
 start = np.asarray([0.4, 0.4, 0.2,5]),
@@ -219,7 +203,7 @@ where :math:`T_0^{(1)}=0` and :math:`T_0^{(2)}` are the refocusing times of the 
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Amplitude of unmodulated components','Amplitude of 1st modulated pathway',
                 'Amplitude of 2nd modulated pathway','Amplitude of 3rd modulated pathway',
                 'Refocusing time of 2nd modulated pathway','Refocusing time of 3rd modulated pathway'],
@@ -274,7 +258,7 @@ where :math:`T_0^{(1)}=0\;\mu s`, :math:`T_0^{(2)}`, and :math:`T_0^{(3)}` are t
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st modulated pathway'],
 units = ['',''],
 start = np.asarray([0.3, 0.5]),
@@ -315,7 +299,7 @@ This experiment model has one harmonic pathway and an unmodulated contribution. 
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
                 'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway'],
 units = ['','','',''],
@@ -362,7 +346,7 @@ This experiment model has three harmonic pathways and an unmodulated contributio
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
                 'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway',
                 'Amplitude of 4th harmonic pathway','Amplitude of 5th harmonic pathway'],
@@ -413,7 +397,7 @@ This experiment model has five harmonic pathways and an unmodulated contribution
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Amplitude of unmodulated contribution','Amplitude of 1st harmonic pathway',
                 'Amplitude of 2nd harmonic pathway','Amplitude of 3rd harmonic pathway',
                 'Amplitude of 4th harmonic pathway','Amplitude of 5th harmonic pathway',

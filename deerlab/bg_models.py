@@ -8,7 +8,7 @@ import math as m
 import scipy as scp
 from numpy import pi
 import inspect
-from deerlab.utils import load_exvolume_redfactor
+from deerlab.utils import load_exvolume_redfactor, metadata
 
 
 # Definition of the header for all experiment models taking lambda as well
@@ -99,21 +99,6 @@ def docstring(takes_lambda=False):
 # =================================================================
 
 # =================================================================
-def setmetadata(parameters,units,start,lower,upper):
-    """
-    Decorator: Set model metadata as function attributes 
-    """
-    def _setmetadata(func):
-        func.parameters = parameters
-        func.units = units
-        func.start = start
-        func.lower = lower
-        func.upper = upper
-        return func
-    return _setmetadata
-# =================================================================
-
-# =================================================================
 def _parsargs(t,p,npar):
     t,p = np.atleast_1d(t,p)
     # Check that the correct number of parmameters have been specified
@@ -125,7 +110,7 @@ def _parsargs(t,p,npar):
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Concentration of pumped spins'],
 units = ['μM'],
 start = np.asarray([50]),
@@ -183,7 +168,7 @@ where `c_p` is the pumped-spin concentration (entered in spins/m\ :sup:`3` into 
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Spin concentration','Exclusion distance'],
 units = ['μM','nm'],
 start = np.asarray([50,   1]),
@@ -261,7 +246,7 @@ The function :math:`\alpha(R)` of the exclusion distance :math:`R` captures the 
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Fractal Concentration of pumped spins','Fractal dimensionality'],
 units = ['μmol/dmᵈ',''],
 start = np.asarray([50,   3]),
@@ -321,7 +306,7 @@ This implements the background due to a homogeneous distribution of spins in a d
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Decay Rate'],
 units = ['μs⁻¹'],
 start = np.asarray([0.35]),
@@ -361,7 +346,7 @@ parameter is a decay rate constant and not a spin concentration like for ``bg_ho
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Decay Rate','Stretch factor'],
 units = ['μs⁻¹',''],
 start = np.asarray([0.25, 1]),
@@ -400,7 +385,7 @@ first parameter is a decay rate constant and not a spin concentration like for `
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Decay Rate of 1st component','Stretch factor of 1st component',
               'Decay Rate of 2nd component','Stretch factor of 2nd component'],
 units = ['µs^-1','','µs^-1',''],
@@ -441,7 +426,7 @@ Notes
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Decay Rate of 1st component','Stretch factor of 1st component',
               'Amplitude of 1st component','Decay Rate of 2nd component','Stretch factor of 2nd component'],
 units = ['μs⁻¹','','','μs⁻¹',''],
@@ -484,7 +469,7 @@ Notes
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Intercept','1st-order coefficient'],
 units = ['','μs⁻¹'],
 start = np.asarray([ 1,   -1 ]),
@@ -518,7 +503,7 @@ Notes
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Intercept','1st-order coefficient','2nd-order coefficient'],
 units = ['','μs⁻¹','μs⁻²'],
 start = np.asarray([ 1,   -1 , -1]),
@@ -553,7 +538,7 @@ Notes
 
 
 # =================================================================
-@setmetadata(
+@metadata(
 parameters = ['Intercept','1st-order coefficient','2nd-order coefficient','3rd-order coefficient'],
 units = ['','μs⁻¹','μs⁻²','μs⁻³'],
 start = np.asarray([ 1,  -1  , -1,   -1  ]),
