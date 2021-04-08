@@ -13,25 +13,28 @@ import deerlab as dl
 # %% [markdown]
 # Experimental data must be loaded and pre-processed::
 #
-#        t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
-#        Vexp = dl.correctphase(Vexp)
-#        t = dl.correctzerotime(Vexp,t)
+# t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
+# Vexp = dl.correctphase(Vexp)
+# t = dl.correctzerotime(Vexp,t)
 #
-
 
 # %% [markdown]
 # In this example we will use simulated data instead:
 
 #%% 
 
-t = np.linspace(-0.1,4,250)        # time axis, µs
-r = np.linspace(2,5,200)           # distance axis, nm
-param = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Gaussian model
-P = dl.dd_gauss3(r,param)          # model distance distribution
-lam = 0.5                          # modulation depth
-B = dl.bg_hom3d(t,300,lam)         # background decay
-K = dl.dipolarkernel(t,r,mod=lam,bg=B)    # kernel matrix
-Vexp = K@P + dl.whitegaussnoise(t,0.01,seed=0)
+def simulatedata():
+    t = np.linspace(-0.1,4,250)        # time axis, µs
+    r = np.linspace(2,5,200)           # distance axis, nm
+    param = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Gaussian model
+    P = dl.dd_gauss3(r,param)          # model distance distribution
+    lam = 0.5                          # modulation depth
+    B = dl.bg_hom3d(t,300,lam)         # background decay
+    K = dl.dipolarkernel(t,r,mod=lam,bg=B)    # kernel matrix
+    Vexp = K@P + dl.whitegaussnoise(t,0.01,seed=0)
+    return t, Vexp
+
+t, Vexp = simulatedata()
 
 # %% [markdown]
 # Unless specified otherwise, the function ``fitmodel`` will return asymptotic confidence intervals based on the covariance matrix 
@@ -49,6 +52,7 @@ Vexp = K@P + dl.whitegaussnoise(t,0.01,seed=0)
 # In this example, for the sake of time, we will just use 50 bootstrap samples.  
 
 #%%
+r = np.linspace(2,5,200)
 BootSamples = 50 # For publication-grade analysis, the standard is 1000
 fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,uq=['bootstrap',BootSamples])
 fit.plot();

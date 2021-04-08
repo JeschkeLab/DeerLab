@@ -14,9 +14,9 @@ import deerlab as dl
 # %% [markdown]
 # Experimental data must be loaded and pre-processed::
 #
-#        t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
-#        Vexp = dl.correctphase(Vexp)
-#        t = dl.correctzerotime(Vexp,t)
+# t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
+# Vexp = dl.correctphase(Vexp)
+# t = dl.correctzerotime(Vexp,t)
 #
 
 # %% [markdown]#
@@ -24,18 +24,23 @@ import deerlab as dl
 
 #%% 
 
-t = np.linspace(-0.1,4,250)        # time axis, µs
-r = np.linspace(1,6,200)           # distance axis, nm
-param = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Gaussian model
-P = dl.dd_gauss3(r,param)          # model distance distribution
-lam = 0.5                          # modulation depth
-B = dl.bg_hom3d(t,300,lam)         # background decay
-K = dl.dipolarkernel(t,r,mod=lam,bg=B)    # kernel matrix
-Vexp = K@P + dl.whitegaussnoise(t,0.03,seed=0)
+def generatedata():
+    t = np.linspace(-0.1,4,250)        # time axis, µs
+    r = np.linspace(1,6,200)           # distance axis, nm
+    param = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Gaussian model
+    P = dl.dd_gauss3(r,param)          # model distance distribution
+    lam = 0.5                          # modulation depth
+    B = dl.bg_hom3d(t,300,lam)         # background decay
+    K = dl.dipolarkernel(t,r,mod=lam,bg=B)    # kernel matrix
+    Vexp = K@P + dl.whitegaussnoise(t,0.03,seed=0)
+    return t, Vexp
+
+t, Vexp = generatedata()
 
 # %%
 
 # Run fit
+r = np.linspace(1,6,200)
 fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
 fit.plot();
 

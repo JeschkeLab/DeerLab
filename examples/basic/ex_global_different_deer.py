@@ -17,10 +17,10 @@ import deerlab as dl
 #
 # All experimental data must be loaded and pre-processed::
 #
-#       datasets = ('file1.DTA','file2.DTA','file3.DTA')
-#       data = [dl.deerload(ds) for ds in datasets]
-#       t = [_[0] for _ in data]
-#       V = [_[1] for _ in data]
+# datasets = ('file1.DTA','file2.DTA','file3.DTA')
+# data = [dl.deerload(ds) for ds in datasets]
+# t = [_[0] for _ in data]
+# V = [_[1] for _ in data]
 #
 
 # %% [markdown]
@@ -31,21 +31,26 @@ import deerlab as dl
 
 #%%
 
-r = np.linspace(2,5,150)                # distance axis, nm
-param = [3, 0.1, 0.2, 3.5, 0.1, 0.65]   # parameters for three-Gaussian model
-P = dl.dd_gauss2(r,param)               # model distance distribution
+def simulatedata():
+    r = np.linspace(2,5,150)                # distance axis, nm
+    param = [3, 0.1, 0.2, 3.5, 0.1, 0.65]   # parameters for three-Gaussian model
+    P = dl.dd_gauss2(r,param)               # model distance distribution
 
-t1 = np.linspace(-0.2,3,200)             # time axis 1, µs
-t2 = np.linspace(-0.1,6,400)             # time axis 2, µs
+    t1 = np.linspace(-0.2,3,200)             # time axis 1, µs
+    t2 = np.linspace(-0.1,6,400)             # time axis 2, µs
 
-path4p = dl.ex_4pdeer(0.3)                      # 4-pulse DEER pathways
-path5p = dl.ex_5pdeer([0.6, 0.3, 0.1, 3.2])     # 5-pulse DEER pathways
+    path4p = dl.ex_4pdeer(0.3)                      # 4-pulse DEER pathways
+    path5p = dl.ex_5pdeer([0.6, 0.3, 0.1, 3.2])     # 5-pulse DEER pathways
 
-K1 = dl.dipolarkernel(t1,r,pathways=path4p,bg=lambda t,lam: dl.bg_hom3d(t1,100,lam))  # dipolar kernel 1
-K2 = dl.dipolarkernel(t2,r,pathways=path5p,bg=lambda t,lam: dl.bg_hom3d(t2,20,lam))   # dipolar kernel 2
+    K1 = dl.dipolarkernel(t1,r,pathways=path4p,bg=lambda t,lam: dl.bg_hom3d(t1,100,lam))  # dipolar kernel 1
+    K2 = dl.dipolarkernel(t2,r,pathways=path5p,bg=lambda t,lam: dl.bg_hom3d(t2,20,lam))   # dipolar kernel 2
 
-V1 = K1@P + dl.whitegaussnoise(t1,0.005,seed=1) # simulated signal 1
-V2 = K2@P + dl.whitegaussnoise(t2,0.01,seed=2) # simulated signal 2
+    V1 = K1@P + dl.whitegaussnoise(t1,0.005,seed=1) # simulated signal 1
+    V2 = K2@P + dl.whitegaussnoise(t2,0.01,seed=2) # simulated signal 2
+    
+    return [t1,t2], [V1,V2]
+
+t, V = simulatedata()
 
 # %% [markdown]
 # When doing global fitting, you must specify a list of the signals as well as a list of the corresponding time axes. 
@@ -59,7 +64,8 @@ V2 = K2@P + dl.whitegaussnoise(t2,0.01,seed=2) # simulated signal 2
 dl.ex_5pdeer.start = [0.3, 0.3, 0.3, 3.2]
 
 # Run fit
-fit = dl.fitmodel([V1,V2],[t1,t2],r,'P',[dl.bg_hom3d,dl.bg_hom3d],[dl.ex_4pdeer,dl.ex_5pdeer],verbose=True,weights=[2,1])
+r = np.linspace(2,5,150)
+fit = dl.fitmodel(V,t,r,'P',[dl.bg_hom3d,dl.bg_hom3d],[dl.ex_4pdeer,dl.ex_5pdeer],verbose=True,weights=[2,1])
 fit.plot();
 
 # %%

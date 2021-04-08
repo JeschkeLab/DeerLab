@@ -17,9 +17,9 @@ import deerlab as dl
 #
 # Experimental data must be loaded and pre-processed::
 #
-#        t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
-#        Vexp = dl.correctphase(Vexp)
-#        t = dl.correctzerotime(Vexp,t)
+# t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
+# Vexp = dl.correctphase(Vexp)
+# t = dl.correctzerotime(Vexp,t)
 #
 # In this example we will use simulated data instead:
 
@@ -32,15 +32,19 @@ import deerlab as dl
 #%%
 
 # Generate data
-t = np.linspace(-0.2,4,200)                             # time axis, µs
-r = np.linspace(2,5,200  )                              # distance axis, nm
-param0 = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Gaussian model
-P = dl.dd_gauss3(r,param0)                              # model distance distribution
-B = lambda t,lam: dl.bg_hom3d(t,300,lam)                # background decay
-exparam = [0.6, 0.3, 0.1, 4.1]                          # parameters for the experiment model
-pathways = dl.ex_ovl4pdeer(exparam)                     # pathways information
-K = dl.dipolarkernel(t,r,pathways=pathways,bg=B)
-Vexp = K@P + dl.whitegaussnoise(t,0.01,seed=1)
+def generatedata():
+    t = np.linspace(-0.2,4,200)                             # time axis, µs
+    r = np.linspace(2,5,200)                                # distance axis, nm
+    param0 = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Gaussian model
+    P = dl.dd_gauss3(r,param0)                              # model distance distribution
+    B = lambda t,lam: dl.bg_hom3d(t,300,lam)                # background decay
+    exparam = [0.6, 0.3, 0.1, 4.1]                          # parameters for the experiment model
+    pathways = dl.ex_ovl4pdeer(exparam)                     # pathways information
+    K = dl.dipolarkernel(t,r,pathways=pathways,bg=B)
+    Vexp = K@P + dl.whitegaussnoise(t,0.01,seed=1)
+    return t, Vexp
+    
+t, Vexp = generatedata()
 
 # %% [markdown]
 # Now, if we take the "2+1" contribution into account, the 4pDEER model
@@ -61,11 +65,12 @@ ex_ub   = [1, 1, 1, max(t)+1] # upper bounds
 ex_par0 = [0.3, 0.3, 0.3, max(t)  ] # start values
 
 # %% [markdown]
-# Run the fit with a 4-pulse DEER (with the "2+1" pathway contribution) signal model
+# Run the fit with a 4-pulse DEER model that includes the "2+1" pathway contribution
 
 # %%
-
-fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_ovl4pdeer,ex_par0=ex_par0,ex_lb=ex_lb,ex_ub=ex_ub,verbose=True)
+r = np.linspace(2,5,200)
+fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_ovl4pdeer,
+                  ex_par0=ex_par0,ex_lb=ex_lb,ex_ub=ex_ub,verbose=True)
 fit.plot();
 
 # %%
