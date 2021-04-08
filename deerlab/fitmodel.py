@@ -8,6 +8,7 @@ import types
 import copy
 import matplotlib.pyplot as plt
 import deerlab as dl
+from collections.abc import Sequence
 from deerlab.classes import UQResult, FitResult
 from deerlab.bg_models import bg_hom3d
 from deerlab.ex_models import ex_4pdeer
@@ -227,7 +228,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     bootsamples = 1000
 
     # Make inputs into a list if just a singal is passed
-    Vexp,t,bg_model,ex_model = ([var] if type(var) is not list else var for var in (Vexp,t,bg_model,ex_model))
+    Vexp,t,bg_model,ex_model = ([var] if not isinstance(var, Sequence) else var for var in (Vexp,t,bg_model,ex_model))
 
     # Basic validation of experimental signals
     nSignals = len(Vexp)
