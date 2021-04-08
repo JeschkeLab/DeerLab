@@ -11,9 +11,10 @@ import inspect
 from deerlab.utils import load_exvolume_redfactor, metadata
 
 
-# Definition of the header for all experiment models taking lambda as well
 # =================================================================
-docstr_header1 = lambda title,fcnstr: f"""
+def docstr_header1(title,fcnstr): 
+    """ Definition of the header for all experiment models taking lambda as well"""
+    return f"""
 {title}
 
 The function takes a list or array of parameters and returns the calculated background model::
@@ -47,9 +48,10 @@ B : ndarray
 """
 # =================================================================
 
-# Definition of the header for all experiment models 
 # =================================================================
-docstr_header2 = lambda title,fcnstr: f"""
+def docstr_header2(title,fcnstr): 
+    """Definition of the header for all experiment models"""
+    return f"""
 {title}
 
 The function takes a list or array of parameters and returns the calculated background model::

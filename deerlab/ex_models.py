@@ -6,8 +6,10 @@
 import numpy as np
 from deerlab.utils import metadata 
 
-# Definition of the header for all experiment models
-docstr_header = lambda title,fcnstr: f"""
+# =================================================================
+def docstr_header(title,fcnstr):
+    "Definition of the header for all experiment models"
+    return f"""
 {title}
 
 The function takes a list or array of parameters and returns the calculated experiment dipolar pathways::
@@ -32,7 +34,8 @@ Returns
     
 pathways : ndarray
     Dipolar pathways of the experiment
-"""
+    """
+# =================================================================
 
 # =================================================================
 def docstring():

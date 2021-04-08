@@ -9,8 +9,10 @@ import scipy.special as spc
 import inspect
 from deerlab.utils import metadata 
 
-# Definition of the header for all experiment models
-docstr_header = lambda title, fcnstr: f"""
+# =================================================================
+def docstr_header(title,fcnstr):
+    "Definition of the header for all distribution models"
+    return f"""
 {title}
 
 The function takes a list or array of parameters and returns the calculated distance distribution::
@@ -39,8 +41,12 @@ Returns
 P : ndarray
     Distance distribution.
 """
+# =================================================================
 
-docstr_example = lambda fcnstr: f""" 
+
+# =================================================================
+def docstr_example(fcnstr): 
+    return f""" 
 Examples
 --------
 
@@ -65,6 +71,8 @@ Example of the model evaluated at the start values of the parameters:
     plt.tick_params(labelsize=12)
     plt.tight_layout()
 """
+# =================================================================
+
 
 # =================================================================
 def docstring():
