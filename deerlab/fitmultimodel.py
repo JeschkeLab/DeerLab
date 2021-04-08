@@ -516,7 +516,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         fitparam_amp = fitparam_amp/sum(fitparam_amp)
         if uq:
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
-            Puq.ci = lambda p: Puq_.ci(p)/postscale
+            Puq = Puq_.propagate(lambda P: P/postscale, lbm=np.zeros_like(Pfit))
 
     # Dataset scales
     scales = []

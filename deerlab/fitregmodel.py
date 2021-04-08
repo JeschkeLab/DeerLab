@@ -236,7 +236,7 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
         Pfit = Pfit/postscale
         if uq:
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
-            Puq.ci = lambda p: Puq_.ci(p)/postscale
+            Puq = Puq_.propagate(lambda P: P/postscale, lbm=np.zeros_like(Pfit))
 
     # Goodness-of-fit
     # --------------------------------------

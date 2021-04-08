@@ -456,8 +456,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         # Split the uncertainty quantification of nonlinear/linear parts
         nonlin_subset = np.arange(0,Nnonlin)
         lin_subset = np.arange(Nnonlin,Nnonlin+Nlin)
-        paramuq_nonlin = uq_subset(paramuq,nonlin_subset)
-        paramuq_lin = uq_subset(paramuq,lin_subset)
+        paramuq_nonlin = uq_subset(paramuq,nonlin_subset,lb,ub)
+        paramuq_lin = uq_subset(paramuq,lin_subset,lbl,ubl)
 
     else:
         paramuq_nonlin = UQResult('void')
@@ -503,23 +503,12 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 # ===========================================================================================
 
 
-def uq_subset(uq_full,subset):
+def uq_subset(uq_full,subset,subset_lb,subset_ub):
 #===========================================================================
-    "Wrapper around the CI function handle of the uncertainty structure"
-    uq_subset = copy.deepcopy(uq_full)
+    "Get the uncertainty quantification for a subset of parameters"
 
-    uq_subset.mean = uq_subset.mean[subset]
-    uq_subset.median = uq_subset.median[subset]
-    uq_subset.std = uq_subset.std[subset]
-    uq_subset.covmat = uq_subset.covmat[np.ix_(subset,subset)]
-    uq_subset.nparam = len(subset)
-    lbsubset = uq_subset._getbounds()[0][subset]
-    ubsubset = uq_subset._getbounds()[1][subset]
-    uq_subset._setbounds(lbsubset,ubsubset)
-
-    # Get requested confidence interval of joined parameter set
-    uq_subset.ci = lambda coverage: uq_full.ci(coverage)[subset, :]
-    uq_subset.percentile = lambda p: uq_full.percentile(p)[subset]
+    subset_model = lambda x: x[subset]
+    uq_subset = uq_full.propagate(subset_model,lbm=subset_lb, ubm=subset_ub)
 
     return uq_subset
 #===========================================================================
