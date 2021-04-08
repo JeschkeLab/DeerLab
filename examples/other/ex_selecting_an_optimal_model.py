@@ -9,6 +9,7 @@ How to optimally select a parametric model for a given dipolar signal.
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
+import warnings
 
 # %% [markdown]
 # Data Generation
@@ -18,11 +19,11 @@ import deerlab as dl
 # from a bimodal Gaussian distance distribution.
 
 # Prepare the signal components
-t = np.linspace(-0.3,3.5,300)                # time axis, µs
+t = np.linspace(-0.3,4.5,200)                # time axis, µs
 r = np.linspace(2,6,200)                     # distance axis, nm
 P = dl.dd_gauss2(r,[3.8, 0.4, 0.7, 4.5, 0.2, 0.7])   # distance distribution
 K = dl.dipolarkernel(t,r)                    # dipolar kernel matrix
-V = K@P + dl.whitegaussnoise(t,0.02)         # DEER signal, with added noise
+V = K@P + dl.whitegaussnoise(t,0.08,seed=1)         # DEER signal, with added noise
 
 # %% [markdown]
 # Selecting an optimal model
@@ -61,8 +62,9 @@ for model in models:
     # Prepare the signal model with the new distance model
     Vmodel = lambda par: K@model(r,par)
     # Fit the signal
-    fit = dl.fitparamodel(V,Vmodel,par0=model.start,lb=model.lower,ub=model.upper)
-    parfit = fit.param
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        fit = dl.fitparamodel(V,Vmodel,par0=model.start,lb=model.lower,ub=model.upper,multistart=5)
     stats= fit.stats
     # Add current AIC value to the list
     aic.append(stats['aic'])
@@ -102,19 +104,25 @@ plt.grid(alpha=0.2)
 
 modelnames = [model.__name__ for model in models]
 
-plt.subplot(2,2,3)
+plt.subplot(212)
 plt.bar(modelnames,daic,color='b',alpha=0.5)
 plt.ylabel('$\Delta$AIC')
 plt.grid(alpha=0.2)
 plt.xticks(rotation=45)
 
+plt.tight_layout()
+plt.show()
+
 # Plot the results
-plt.subplot(2,2,4)
+plt.figure()
 plt.bar(modelnames,weights,color='b',alpha=0.5)
 plt.ylabel('Akaike Weights (%)')
 plt.xticks(rotation=45)
 plt.grid(alpha=0.2)
 
+
+plt.tight_layout()
+plt.show()
 # %% [markdown]
 # Typically there is not a single optimal model unless the noise level is very
 # low. Usually several models have similar probabilities and should therefore be presented together. 
