@@ -58,9 +58,9 @@ V2 = K2@P2 + dl.whitegaussnoise(t2,0.1,seed=1)
 # signal (local). 
 #
 # In this examples we have the following parameters:
-#   - fixed: ``sigmaA``, ``sigmaB`` (known paramters)
-#   - global: ``rmeanA``, ``rmeanB`` (same for both signals)
-#   - local: ``fracA1``, ``fracA2`` (different for both signals/conditions)
+#   - Fixed: ``sigmaA``, ``sigmaB`` (known paramters)
+#   - lobal: ``rmeanA``, ``rmeanB`` (same for both signals)
+#   - Local: ``fracA1``, ``fracA2`` (different for both signals/conditions)
 #
 # The next step is to construct the model function which describes our
 # system. This function models the signals in our A-B system, and it is used to
@@ -71,13 +71,13 @@ V2 = K2@P2 + dl.whitegaussnoise(t2,0.1,seed=1)
 # Model definition
 def myABmodel(par):
 
-    #Fixed parameters
+    # Fixed parameters
     sigmaA = 0.5
     sigmaB = 0.3
-    #Global parameters
+    # Global parameters
     rmeanA = par[0]
     rmeanB = par[1]
-    #Local parameters
+    # Local parameters
     fracA1 = par[2]
     fracA2 = par[3]
     
@@ -135,6 +135,7 @@ Pfit2 = P2_model(fit.param)
 # Get uncertainties of the fitted signals
 Vfit1_uq = fit.modelUncert[0]
 Vfit2_uq = fit.modelUncert[1]
+
 # Propagate parameter uncertainty to the distribution models accounting for non-negativity
 Pfit1_uq = fit.paramUncert.propagate(P1_model,lbm=np.zeros_like(r))
 Pfit2_uq = fit.paramUncert.propagate(P2_model,lbm=np.zeros_like(r))

@@ -58,11 +58,10 @@ models = [dl.dd_rice,dl.dd_rice2,dl.dd_rice3,dl.dd_gauss,dl.dd_gauss2,dl.dd_gaus
  
 aic = []
 for model in models:
-    info = model()
     # Prepare the signal model with the new distance model
     Vmodel = lambda par: K@model(r,par)
     # Fit the signal
-    fit = dl.fitparamodel(V,Vmodel,par0=info['Start'],lb=info['Lower'],ub=info['Upper'])
+    fit = dl.fitparamodel(V,Vmodel,par0=model.start,lb=model.lower,ub=model.upper)
     parfit = fit.param
     stats= fit.stats
     # Add current AIC value to the list

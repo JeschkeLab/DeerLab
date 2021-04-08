@@ -35,10 +35,15 @@ extensions = [
     'm2r2'
 ]
 
+from sphinx_gallery.sorting import ExplicitOrder
 sphinx_gallery_conf = {
     'filename_pattern': 'ex_',
     'examples_dirs': '../../examples',   # path to your example scripts
     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+    'remove_config_comments': True,
+    'subsection_order': ExplicitOrder(['../../examples/basic',
+                                       '../../examples/advanced',
+                                       '../../examples/other']),
 }
 
 # Warnings suppression

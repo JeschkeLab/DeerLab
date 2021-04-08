@@ -1,11 +1,11 @@
 # %% [markdown]
 """
-Analyzing pseudo-titration (dose-respononse) curves with parameter-free distributions 
+Analyzing pseudo-titration (dose-response) curves with non-parametric distributions 
 ======================================================================================
 
 How to use separable non-linear least squares (SNLLS)
 to fit a pseudo-titration curve to multiple DEER datsets, using
-parameter-free distance distributions.
+non-parametric distance distributions.
 """
 
 import numpy as np
@@ -20,6 +20,7 @@ import deerlab as dl
 # of a ligand L) given by the chemical equilibrium  A + L <-> B.
 
 # %%
+
 def chemicalequilibrium(Kdis,L):
     """Prepare equilibrium of type: A + L <-> B"""
     Ctot = 1 # total protein concentration, µM
@@ -58,6 +59,7 @@ def chemicalequilibrium(Kdis,L):
 # and the vector ``[PA PB]`` constitutes the linear part fitted by SNLLS.
 
 # %%
+
 def Kmodel(par,ts,rA,rB,L):
 
     Nsignals = len(ts)
@@ -85,6 +87,7 @@ def Kmodel(par,ts,rA,rB,L):
 # of added ligand. 
 
 # %%
+
 # Time axes
 ts = [[]]*7
 ts[0] = np.linspace(-0.2,3,100)
@@ -127,6 +130,7 @@ for i in range(Nsignals):
 # the dissociation constant (KD).
 
 # %%
+
 # Non-linear parameters:
 #       lam  k   KD
 par0 = [0.5, 0.5,  5]  # start values 
@@ -149,17 +153,16 @@ Kdisfit = parfit[2]
 parci = fit.nonlinUncert.ci(95)
 KDci = parci[2,:]
 
-# Print result
+# Print the fitted dissociation constant with confidence intervals
 print(f'Kdis = {Kdisfit:.2f}({KDci[0]:.2f}-{KDci[1]:.2f})µM')
 
 # %%
+
 # Plot results
 plt.figure(figsize=(12,12))
 
-# Simulate fits
-Ksfit = Kmodel(parfit,ts,rA,rB,L)
-Vsfit = []
-plt.subplot(3,2,(1,3))
+# Plot the fitted signals with confidence bands
+plt.subplot(121)
 for i in range(Nsignals):
     Vci = fit.modelUncert[i].ci(95)
     Vfit = fit.model[i]
@@ -171,8 +174,8 @@ plt.xlabel('t (µs)')
 plt.ylabel('V (arb.u.)')
 plt.legend(['data','fit'])
 
+# Get fitted fractions with confidence intervals
 xAfit,xBfit = chemicalequilibrium(Kdisfit,L)
-
 xA_model = lambda param: chemicalequilibrium(param[2],L)[0]
 xB_model = lambda param: chemicalequilibrium(param[2],L)[1]
 xA_uq = fit.nonlinUncert.propagate(xA_model)
@@ -180,24 +183,30 @@ xB_uq = fit.nonlinUncert.propagate(xB_model)
 xA_ci = xA_uq.ci(95)
 xB_ci = xB_uq.ci(95)
 
-plt.subplot(2,2,(2,4))
+# Plot the fitted distributions with confidence bands
+plt.subplot(122)
 for i in range(Nsignals):
     PAfit = xAfit[i]*Pfit[0:len(rA)]
     PBfit = xBfit[i]*Pfit[len(rA):len(rB)+len(rA)]
     PAci = xAfit[i]*fit.linUncert.ci(95)[0:len(rA)]
     PBci = xBfit[i]*fit.linUncert.ci(95)[len(rA):len(rB)+len(rA)]
-
     plt.plot(rA,PAfit+1.2*i,'tab:red',rB,PBfit+1.2*i,'tab:blue',linewidth=1.5)
     plt.fill_between(rA,PAci[:,0]+1.2*i,PAci[:,1]+1.2*i,color='tab:red',alpha=0.2)
     plt.fill_between(rB,PBci[:,0]+1.2*i,PBci[:,1]+1.2*i,color='tab:blue',alpha=0.2)
-
 plt.grid(alpha =0.3)
 plt.xlabel('r (nm)')
 plt.ylabel('P (nm⁻¹)')
 plt.legend(['state A','state B'])
 plt.xlim([2,7])
 
-plt.subplot(325)
+plt.tight_layout()
+plt.show()
+# %%
+
+# sphinx_gallery_thumbnail_number = 2
+
+# Plot dose-response curve with confidence bands
+plt.figure()
 plt.plot(np.log10(L),xA,'tab:red',np.log10(L),xB,'tab:blue')
 plt.plot(np.log10(L),xAfit,'o',color='tab:red')
 plt.plot(np.log10(L),xBfit,'o',color='tab:blue')
@@ -209,5 +218,5 @@ plt.ylabel('Fractions')
 plt.legend(['state A','state B'])
 plt.ylim([0,1])
 
+plt.tight_layout()
 plt.show()
-# %%

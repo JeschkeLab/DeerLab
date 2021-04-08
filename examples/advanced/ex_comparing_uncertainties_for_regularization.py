@@ -55,7 +55,7 @@ def mybootfcn(V):
     return fit.P
 
 # Launch bootstrapping
-Nsamples = 50
+Nsamples = 100
 booci = dl.bootan(mybootfcn,V,Vfit,Nsamples)
 Pci95_bs = booci.ci(95)
 Pci50_bs = booci.ci(50)
@@ -67,13 +67,13 @@ Pci50_bs = booci.ci(50)
 # account, whereas the curvature matrix CIs do not. 
 
 fig, ax = plt.subplots(2,1,sharey=True)
-ax[0].plot(r,P,'k',r,Pfit,'r',linewidth=1)
-ax[0].fill_between(r,Pci50_cm[:,0],Pci50_cm[:,1],color='r',linestyle='None',alpha=0.45)
-ax[0].fill_between(r,Pci95_cm[:,0],Pci95_cm[:,1],color='r',linestyle='None',alpha=0.25)
+ax[0].plot(r,Pfit,'tab:red',linewidth=1)
+ax[0].fill_between(r,Pci50_cm[:,0],Pci50_cm[:,1],color='tab:red',linestyle='None',alpha=0.45)
+ax[0].fill_between(r,Pci95_cm[:,0],Pci95_cm[:,1],color='tab:red',linestyle='None',alpha=0.25)
 
-ax[1].plot(r,P,'k',r,Pfit,'b',linewidth=1)
-ax[1].fill_between(r,Pci50_bs[:,0],Pci50_bs[:,1],color='b',linestyle='None',alpha=0.45)
-ax[1].fill_between(r,Pci95_bs[:,0],Pci95_bs[:,1],color='b',linestyle='None',alpha=0.25)
+ax[1].plot(r,Pfit,'tab:blue',linewidth=1)
+ax[1].fill_between(r,Pci50_bs[:,0],Pci50_bs[:,1],color='tab:blue',linestyle='None',alpha=0.45)
+ax[1].fill_between(r,Pci95_bs[:,0],Pci95_bs[:,1],color='tab:blue',linestyle='None',alpha=0.25)
 
 ax[0].grid(alpha=0.5)
 ax[0].set_xlabel('r (nm)')
@@ -83,6 +83,7 @@ ax[0].legend(['Truth','Fit','50%-CI','95%-CI'])
 
 ax[1].grid(alpha=0.5)
 ax[1].set_xlabel('r (nm)')
+ax[1].set_ylabel('P (nm⁻¹)')
 ax[1].set_title('Bootstrapped CI')
 ax[1].legend(['Truth','Fit','50%-CI','95%-CI'])
 plt.tight_layout()
