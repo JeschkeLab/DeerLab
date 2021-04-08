@@ -618,7 +618,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         if uqanalysis and uq=='covariance':
             # scale CIs accordingly
             Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
-            Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/Pscale
+            Pfit_uq = Pfit_uq_.propagate(lambda P: P/Pscale,lbm=lbl)
 
         # Get the fitted models
         Kfit,Bfit = multiPathwayModel(parfit)
@@ -627,7 +627,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vmod, Vunmod = calculate_Vmod_Vunmod(parfit,Vfit,Bfit,scales)
 
         if uqanalysis and uq=='covariance':
-            Vfit_uq, Pfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq, Pfit, Vfit, Bfit, parfit, Kfit, scales)
+            Vfit_uq, _, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq, Pfit, Vfit, Bfit, parfit, Kfit, scales)
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, Pfit_uq, Vfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
         else:
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt
@@ -696,7 +696,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         if uqanalysis:
             # scale CIs accordingly
             Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
-            Pfit_uq.ci = lambda p: Pfit_uq_.ci(p)/scale
+            Pfit_uq = Pfit_uq_.propagate(lambda P: P/scale, lbm=np.zeros_like(r))
 
     # Do not return array for a single scale
     if len(scales)==1:
