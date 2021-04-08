@@ -12,6 +12,7 @@ def assert_ddmodel(model):
     par0 = model.start
     lower = model.lower
     upper = model.upper
+    nParam = len(par0)
 
     # Calculate under different conditions
     P1 = model(r,par0)
@@ -21,12 +22,17 @@ def assert_ddmodel(model):
     P5 = model(rnus,par0)
 
     # Assert
-    passed = np.zeros(5, dtype=bool)
+    passed = np.zeros(9, dtype=bool)
     passed[0] = all(P1 == P2)
     passed[1] = all(P1 >= 0)
     passed[2] = all(P1 >= 0) and all(P2 >= 0)
     passed[3] = all(~np.isnan(P1)) and all(~np.isnan(P2)) and all(~np.isnan(P3)) and all(~np.isnan(P4))
     passed[4] = np.round(np.trapz(P5,rnus),2) == 1
+    passed[5] = len(lower)==nParam
+    passed[6] = len(upper)==nParam
+    passed[7] = len(model.parameters)==nParam
+    passed[8] = len(model.units)==nParam
+    
     errors = []
     if not passed[0]:
         errors.append("Dimensionality is not correct")
@@ -38,6 +44,14 @@ def assert_ddmodel(model):
         errors.append("Some conditions have returned NaN values")
     if not passed[4]:
         errors.append("Non-uniform trapezoidal integration failed")
+    if not passed[5]:
+        errors.append("model.lower has the wrong number of elements")
+    if not passed[6]:
+        errors.append("model.upper has the wrong number of elements")
+    if not passed[7]:
+        errors.append("model.parameters has the wrong number of elements")
+    if not passed[8]:
+        errors.append("model.units has the wrong number of elements")
 
     # assert no error message has been registered, else print messages
     assert not errors, f"Errors occured:\n{chr(10).join(errors)}"

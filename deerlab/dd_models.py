@@ -738,8 +738,8 @@ References
 
 # =================================================================
 @setmetadata(
-parameters = ('Sphere radius'),
-units = ('nm'),
+parameters = ('Sphere radius',),
+units = ('nm',),
 lower = np.asarray([0.1]),
 upper = np.asarray([20]),
 start = np.asarray([2.5])) 
@@ -1052,8 +1052,8 @@ References
 
 # =================================================================
 @setmetadata(
-parameters = ('Sphere radius'),
-units = ('nm'),
+parameters = ('Sphere radius',),
+units = ('nm',),
 lower = np.asarray([0.1]),
 upper = np.asarray([20]),
 start = np.asarray([2.5])) 
@@ -1234,7 +1234,7 @@ References
 # =================================================================
 @setmetadata(
 parameters = ('Contour length','Persistence length','Gaussian standard deviation'),
-units = ('nm','nm'),
+units = ('nm','nm','nm'),
 lower = np.asarray([1.5, 2, 0.001]),
 upper = np.asarray([20, 100, 2]),
 start = np.asarray([3.7, 10, 0.2]))
