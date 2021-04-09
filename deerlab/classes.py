@@ -5,6 +5,7 @@ import numpy as np
 from deerlab.utils import Jacobian
 from scipy.stats import norm
 from scipy.signal import fftconvolve
+from scipy.linalg import block_diag
 import copy
 
 class FitResult(dict):
@@ -102,7 +103,6 @@ class UQResult:
             # Scheme 1: UQResult('covariance',parfit,covmat,lb,ub)
             self.type = uqtype
             parfit = data
-            self.__parfit = parfit
             nParam = len(parfit)
             
         elif uqtype == 'bootstrap':
@@ -160,6 +160,46 @@ class UQResult:
             pass
         # Otherwise return requested attribute
         return super(UQResult, self).__getattribute__(attr)
+    #--------------------------------------------------------------------------------
+
+
+    # Combination of multiple uncertainties
+    #--------------------------------------------------------------------------------
+    def join(self,*args):
+        """
+        Combine multiple uncertainty quantification instances.
+
+        Parameters
+        ----------
+        uq : any number of :ref:`UQResult`
+            Uncertainty quantification objects with ``N1,N2,...,Nn`` parameters to be joined 
+            to the object calling the method with ``M`` parameters. 
+        
+        Returns
+        -------
+        uq_joined : :ref:`UQResult`
+            Joined uncertainty quantification object with a total of ``M + N1 + N2 + ... + Nn`` parameters. 
+            The parameter vectors are concatenated on the order they are passed. 
+        """
+        # Original metadata
+        mean = self.mean
+        covmat = self.covmat
+        lbm = self.__lb
+        ubm = self.__ub
+
+        for uq in args:
+            if not isinstance(uq, UQResult):
+                raise TypeError('Only UQResult objects can be joined.')
+            if uq.type=='void':
+                raise TypeError('Void UQResults cannot be joined.')
+            # Concatenate metadata of external UQResult objects
+            mean = np.concatenate([mean, uq.mean])
+            covmat = block_diag(covmat, uq.covmat)
+            lbm = np.concatenate([lbm, uq.__lb])
+            ubm = np.concatenate([ubm, uq.__ub])
+
+        # Return new UQResult object with combined information    
+        return UQResult('covariance',mean,covmat,lbm,ubm) 
     #--------------------------------------------------------------------------------
 
 
@@ -289,8 +329,8 @@ class UQResult:
         if self.type=='covariance':
                 # Compute covariance-based confidence intervals
                 # Clip at specified box boundaries
-                x[:,0] = np.maximum(self.__lb, self.__parfit - norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
-                x[:,1] = np.minimum(self.__ub, self.__parfit + norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
+                x[:,0] = np.maximum(self.__lb, self.mean - norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
+                x[:,1] = np.minimum(self.__ub, self.mean + norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
                 
         elif self.type=='bootstrap':
                 # Compute bootstrap-based confidence intervals
