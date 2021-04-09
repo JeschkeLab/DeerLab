@@ -162,13 +162,46 @@ class UQResult:
         return super(UQResult, self).__getattribute__(attr)
     #--------------------------------------------------------------------------------
 
-    def join(self,uq_ext):
-        # Create confidence intervals structure
-        mean = np.concatenate([self.mean, uq_ext.mean])
-        covmat = block_diag(self.covmat, uq_ext.covmat)
-        lbm = np.concatenate([self.__lb, uq_ext.__lb])
-        ubm = np.concatenate([self.__ub, uq_ext.__ub])
+
+    # Combination of multiple uncertainties
+    #--------------------------------------------------------------------------------
+    def join(self,*args):
+        """
+        Combine multiple uncertainty quantification instances.
+
+        Parameters
+        ----------
+        uq : any number of :ref:`UQResult`
+            Uncertainty quantification objects with ``N1,N2,...,Nn`` parameters to be joined 
+            to the object calling the method with ``M`` parameters. 
+        
+        Returns
+        -------
+        uq_joined : :ref:`UQResult`
+            Joined uncertainty quantification object with a total of ``M + N1 + N2 + ... + Nn`` parameters. 
+            The parameter vectors are concatenated on the order they are passed. 
+        """
+        # Original metadata
+        mean = self.mean
+        covmat = self.covmat
+        lbm = self.__lb
+        ubm = self.__ub
+
+        for uq in args:
+            if not isinstance(uq, UQResult):
+                raise TypeError('Only UQResult objects can be joined.')
+            if uq.type=='void':
+                raise TypeError('Void UQResults cannot be joined.')
+            # Concatenate metadata of external UQResult objects
+            mean = np.concatenate([mean, uq.mean])
+            covmat = block_diag(covmat, uq.covmat)
+            lbm = np.concatenate([lbm, uq.__lb])
+            ubm = np.concatenate([ubm, uq.__ub])
+
+        # Return new UQResult object with combined information    
         return UQResult('covariance',mean,covmat,lbm,ubm) 
+    #--------------------------------------------------------------------------------
+
 
     # Parameter distributions
     #--------------------------------------------------------------------------------
