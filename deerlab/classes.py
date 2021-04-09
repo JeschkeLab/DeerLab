@@ -5,6 +5,7 @@ import numpy as np
 from deerlab.utils import Jacobian
 from scipy.stats import norm
 from scipy.signal import fftconvolve
+from scipy.linalg import block_diag
 import copy
 
 class FitResult(dict):
@@ -102,7 +103,6 @@ class UQResult:
             # Scheme 1: UQResult('covariance',parfit,covmat,lb,ub)
             self.type = uqtype
             parfit = data
-            self.__parfit = parfit
             nParam = len(parfit)
             
         elif uqtype == 'bootstrap':
@@ -162,6 +162,13 @@ class UQResult:
         return super(UQResult, self).__getattribute__(attr)
     #--------------------------------------------------------------------------------
 
+    def join(self,uq_ext):
+        # Create confidence intervals structure
+        mean = np.concatenate([self.mean, uq_ext.mean])
+        covmat = block_diag(self.covmat, uq_ext.covmat)
+        lbm = np.concatenate([self.__lb, uq_ext.__lb])
+        ubm = np.concatenate([self.__ub, uq_ext.__ub])
+        return UQResult('covariance',mean,covmat,lbm,ubm) 
 
     # Parameter distributions
     #--------------------------------------------------------------------------------
@@ -289,8 +296,8 @@ class UQResult:
         if self.type=='covariance':
                 # Compute covariance-based confidence intervals
                 # Clip at specified box boundaries
-                x[:,0] = np.maximum(self.__lb, self.__parfit - norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
-                x[:,1] = np.minimum(self.__ub, self.__parfit + norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
+                x[:,0] = np.maximum(self.__lb, self.mean - norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
+                x[:,1] = np.minimum(self.__ub, self.mean + norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
                 
         elif self.type=='bootstrap':
                 # Compute bootstrap-based confidence intervals
