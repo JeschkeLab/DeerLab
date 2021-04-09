@@ -15,7 +15,7 @@ import deerlab as dl
 # Load and pre-process data
 # ---------------------------
 #
-# Experimental data must be loaded and pre-processed::
+# Uncomment and use the following lines if you have experimental data:
 #
 # t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
 # Vexp = dl.correctphase(Vexp)

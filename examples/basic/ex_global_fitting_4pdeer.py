@@ -15,7 +15,7 @@ import deerlab as dl
 # Load and pre-process data
 # ---------------------------
 #
-# All experimental data must be loaded and pre-processed::
+# Uncomment and use the following lines if you have experimental data:
 #
 # datasets = ('file1.DTA','file2.DTA','file3.DTA')
 # data = [dl.deerload(ds) for ds in datasets]
