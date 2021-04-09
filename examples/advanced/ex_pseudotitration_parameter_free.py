@@ -119,7 +119,7 @@ Ks = Kmodel([0.25, 0.1, Kdis],ts,rA,rB,L)
 # Simulate dipolar signals
 Vs = [[]]*Nsignals
 for i in range(Nsignals):
-    Vs[i] = Ks[i]@np.concatenate((PstateA, PstateB)) + dl.whitegaussnoise(ts[i],0.01,seed=i)
+    Vs[i] = Ks[i]@np.concatenate((PstateA, PstateB)) + dl.whitegaussnoise(ts[i],0.05,seed=i)
 
 # %% [markdown]
 # Psuedotitration SNLLS Analysis
@@ -183,13 +183,44 @@ xB_uq = fit.nonlinUncert.propagate(xB_model)
 xA_ci = xA_uq.ci(95)
 xB_ci = xB_uq.ci(95)
 
-# Plot the fitted distributions with confidence bands
+# Combine the uncertainties of the distance distributions and the molar fractions
+joinedA_uq = fit.linUncert.join(xA_uq)
+joinedB_uq = fit.linUncert.join(xB_uq)
+
+# We now deal with a combined paramter vector containing (PAfit,PBfit,xfit)
+# Let's define the indices of the diferent quantities to access the elements of the 
+# array easier 
+rA_idx = np.arange(0,len(rA))
+rB_idx = np.arange(len(rA),len(rB)+len(rA))
+xA_idx = np.arange(len(rB)+len(rA),len(rB)+len(rA)+len(xAfit))
+xB_idx = np.arange(len(rB)+len(rA),len(rB)+len(rA)+len(xBfit))
+
 plt.subplot(122)
 for i in range(Nsignals):
-    PAfit = xAfit[i]*Pfit[0:len(rA)]
-    PBfit = xBfit[i]*Pfit[len(rA):len(rB)+len(rA)]
-    PAci = xAfit[i]*fit.linUncert.ci(95)[0:len(rA)]
-    PBci = xBfit[i]*fit.linUncert.ci(95)[len(rA):len(rB)+len(rA)]
+
+    # Model of the distance distribution of the A state
+    def PAfit_model(param):
+        PAfit = param[rA_idx]
+        xAfit = param[xA_idx][i]
+        return xAfit*PAfit
+        
+    # Model of the distance distribution of the B state
+    def PBfit_model(param):
+        PBfit = param[rB_idx]
+        xBfit = param[xB_idx][i] 
+        return xBfit*PBfit
+
+    PAfit = PAfit_model(np.concatenate([Pfit,xAfit]))
+    PBfit = PBfit_model(np.concatenate([Pfit,xBfit]))
+    
+    # Propagate the uncertainty in the fits to the fraction distance distribution models...
+    PAfit_uq = joinedA_uq.propagate(PAfit_model)
+    PBfit_uq = joinedB_uq.propagate(PBfit_model)
+    # ... and get the 95% confidence intervals
+    PAci = PAfit_uq.ci(95)
+    PBci = PBfit_uq.ci(95)
+
+    # Plot the fitted distributions with confidence bands
     plt.plot(rA,PAfit+1.2*i,'tab:red',rB,PBfit+1.2*i,'tab:blue',linewidth=1.5)
     plt.fill_between(rA,PAci[:,0]+1.2*i,PAci[:,1]+1.2*i,color='tab:red',alpha=0.2)
     plt.fill_between(rB,PBci[:,0]+1.2*i,PBci[:,1]+1.2*i,color='tab:blue',alpha=0.2)
@@ -220,3 +251,4 @@ plt.ylim([0,1])
 
 plt.tight_layout()
 plt.show()
+# %%
