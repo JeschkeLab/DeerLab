@@ -31,7 +31,8 @@ import deerlab as dl
 
 #%%
 
-def simulatedata():
+# Define a function that generates synthetic data
+def generatedata():
     r = np.linspace(2,5,150)                # distance axis, nm
     param = [3, 0.1, 0.2, 3.5, 0.1, 0.65]   # parameters for three-Gaussian model
     P = dl.dd_gauss2(r,param)               # model distance distribution
@@ -50,7 +51,7 @@ def simulatedata():
     
     return [t1,t2], [V1,V2]
 
-t, V = simulatedata()
+t, V = generatedata()
 
 # %% [markdown]
 # When doing global fitting, you must specify a list of the signals as well as a list of the corresponding time axes. 

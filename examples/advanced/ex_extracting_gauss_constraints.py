@@ -1,11 +1,11 @@
 # %% [markdown]
 """
-Extract Gaussian restraints from a non-parametric distance distribution fit
+Fitting Gaussians to a non-parametric distance distribution
 ============================================================================
 
 This example shows how to fit Gaussians to a non-parametric distance
 distribution obtained via Tikhonov regularization and how to calculate
-the corresponding uncertainty. 
+the corresponding uncertainty.
 """ 
 # %%
 
@@ -17,21 +17,25 @@ import deerlab as dl
 
 # Simulate a 4pDEER signal
 
-t = np.linspace(0,5,250)   # time axis, µs
-r = np.linspace(1,7,200)   # distance axis, nm
-P = dl.dd_gauss3(r,[4.5, 0.35, 0.4, 3, 0.25, 0.3, 4, 0.4, 0.5])  # distance distribution
-lam = 0.3                  # modulation depth
-conc = 80                  # spin concentration, µM
-
-B = dl.bg_hom3d(t,conc,lam)                   # background
-K = dl.dipolarkernel(t,r,mod=lam,bg=B)               # kernel matrix
-V = K@P + dl.whitegaussnoise(t,0.01,seed=0)   # DEER trace, with added noise
+def simulatedata():
+    r = np.linspace(1,7,200)   # distance axis, nm
+    P = dl.dd_gauss3(r,[4.5, 0.35, 0.4, 3, 0.25, 0.3, 4, 0.4, 0.5])  # distance distribution
+    lam = 0.3                  # modulation depth
+    conc = 80                  # spin concentration, µM
+    t = np.linspace(0,5,250)   # time axis, µs
+    B = dl.bg_hom3d(t,conc,lam)                   # background
+    K = dl.dipolarkernel(t,r,mod=lam,bg=B)        # kernel matrix
+    V = K@P + dl.whitegaussnoise(t,0.01,seed=0)   # DEER trace, with added noise
+    return t, V
+    
+t, V = simulatedata()
 
 # %% [markdown]
 # Fit the dipolar signal
 #----------------------
 # First, we fit the non-parametric distance distribution using ``fitmodel()``
 # %%
+r = np.linspace(1,7,200)
 fit = dl.fitmodel(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer)
 fit.plot()
 plt.show() 
@@ -63,7 +67,8 @@ Pfit_covmat = Pfit_uq.covmat
 #    - ``paruq```: the uncertainty quantification of our constraints
 
 # %%
-Pmodel = lambda p: dl.dd_gauss2(r,p)
+Pmodel = lambda par: dl.dd_gauss2(r,par)
+
 # Get information on the model
 par0 = dl.dd_gauss2.start
 lb = dl.dd_gauss2.lower

@@ -3,7 +3,7 @@
 Distance restraints from 4-pulse DEER data, non-parametric distribution
 -----------------------------------------------------------------------
 
-How to fit a simple 4-pulse DEER signal and extract distance restraints from 
+How to fit a simple 4-pulse DEER signal and derive distance restraints from 
 the fitted non-parametric distance distribution.
 """ 
 
@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import deerlab as dl
 
 # %% [markdown]
-# Experimental data must be loaded and pre-processed::
+# Uncomment and use the following lines if you have experimental data:
 #
 # t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
 # Vexp = dl.correctphase(Vexp)
@@ -24,6 +24,7 @@ import deerlab as dl
 
 #%% 
 
+# Define a function that generates synthetic data
 def generatedata():
     t = np.linspace(-0.1,4,250)        # time axis, µs
     r = np.linspace(1,6,200)           # distance axis, nm
@@ -45,7 +46,7 @@ fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)
 fit.plot();
 
 # %% [markdown]
-# Now that we have a fit of the distance distribution we can extract distance restraints in the form of different statistical 
+# Now that we have a fit of the distance distribution we can obtain distance restraints in the form of different statistical 
 # descriptors such as the mean distance and standard deviation of distances. 
 # While we could calculate this manually, DeerLab provides a convenient function ``diststats`` which will automatically compute
 # these for you and even propagate the uncertainty in the distributions to those values to get confidence intervals on the restraints. 

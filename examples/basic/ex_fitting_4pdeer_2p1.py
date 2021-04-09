@@ -31,7 +31,7 @@ import deerlab as dl
 
 #%%
 
-# Generate data
+# Define a function that generates synthetic data
 def generatedata():
     t = np.linspace(-0.2,4,200)                             # time axis, µs
     r = np.linspace(2,5,200)                                # distance axis, nm

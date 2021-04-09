@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import deerlab as dl
 
 # %% [markdown]
-# Experimental data must be loaded and pre-processed::
+# Uncomment and use the following lines if you have experimental data:
 #
 # t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
 # Vexp = dl.correctphase(Vexp)
@@ -23,6 +23,7 @@ import deerlab as dl
 
 #%% 
 
+# Define a function that generates synthetic data
 def simulatedata():
     t = np.linspace(-0.1,4,250)        # time axis, µs
     r = np.linspace(2,5,200)           # distance axis, nm

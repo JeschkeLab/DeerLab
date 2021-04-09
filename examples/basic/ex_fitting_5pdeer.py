@@ -15,21 +15,19 @@ import deerlab as dl
 # Load and pre-process data
 # ---------------------------
 #
-# Experimental data must be loaded and pre-processed::
+# Uncomment and use the following lines if you have experimental data:
 #
 # t,Vexp = dl.deerload('my\path\5pdeer_data.DTA')
 # Vexp = dl.correctphase(Vexp)
 # t = dl.correctzerotime(Vexp,t)
 #
-# In this example we will use simulated data instead:
+# In this example we will use simulated data instead.
 
 # %%
-# Simulate data
+# Generate data
 #--------------
-#
-# In this example we will use simulated data instead:
 
-# Simulate data
+# Define a function that generates synthetic data
 def generatedata():
     t = np.linspace(-0.1,6.5,200)      # time axis, µs
     r = np.linspace(2,5,200)           # distance axis, nm

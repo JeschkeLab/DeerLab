@@ -26,8 +26,8 @@ lam = 0.3
 conc = 180 # µM
 
 # Simulate an experimental signal with some scale and phase
-Bmodel = lambda t, lam: dl.bg_hom3d(t,conc,lam)
-K = dl.dipolarkernel(t,rtrue,mod=lam,bg=Bmodel)
+bg = lambda t, lam: dl.bg_hom3d(t,conc,lam)
+K = dl.dipolarkernel(t,rtrue,mod=lam,bg=bg)
 V = K@Ptrue*np.exp(1j*np.pi/16) # add a phase shift 
 rnoise = dl.whitegaussnoise(t,0.01,seed=1) # real-component noise 
 inoise = 1j*dl.whitegaussnoise(t,0.01,seed=2) # imaginary-component noise 
