@@ -26,14 +26,16 @@ lam = 0.3
 conc = 180 # µM
 
 # Simulate an experimental signal with some scale and phase
-Bmodel = lambda t, lam: dl.bg_hom3d(t,conc,lam)
-K = dl.dipolarkernel(t,rtrue,mod=lam,bg=Bmodel)
+bg = lambda t, lam: dl.bg_hom3d(t,conc,lam)
+K = dl.dipolarkernel(t,rtrue,mod=lam,bg=bg)
 V = K@Ptrue*np.exp(1j*np.pi/16) # add a phase shift 
 rnoise = dl.whitegaussnoise(t,0.01,seed=1) # real-component noise 
 inoise = 1j*dl.whitegaussnoise(t,0.01,seed=2) # imaginary-component noise 
 V = V + rnoise + inoise # complex-valued noisy signal
 V = V*3e6 # add an arbitrary amplitude scale
 
+
+plt.figure()
 plt.plot(t,V.real,'.',t,V.imag,'.'),
 plt.xlabel('t (µs)')
 plt.ylabel('V')
@@ -82,15 +84,19 @@ Pfit = fit.P
 # %% [markdown]
 # Plots
 # -----
+# sphinx_gallery_thumbnail_number = 2
 
+plt.figure(figsize=[8,8])
 plt.subplot(311)
-plt.plot(t,V,'k.',t,(1-lamfit)*Bfit,'r',linewidth=1.5)
+plt.plot(t,V,'.',color='grey')
+plt.plot(t,(1-lamfit)*Bfit,'r--',linewidth=1.5)
 plt.xlabel('t (µs)')
 plt.ylabel('V')
 plt.legend(['data','$(1-\lambda)B_{fit}$'])
 
 plt.subplot(312)
-plt.plot(t,Vcorr,'k.',t,K@Pfit,'r',linewidth=1.5)
+plt.plot(t,Vcorr,'.',color='grey')
+plt.plot(t,K@Pfit,'r',linewidth=1.5)
 plt.xlabel('t (µs)')
 plt.ylabel('V')
 plt.legend(['corrected data','fit'])
@@ -103,4 +109,9 @@ plt.legend(['truth','fit'])
 plt.tight_layout()
 plt.show()
 
-# %%
+# %% [markdown]
+# Note that these results do not include any confidence intervals. DeerAnalysis based its 
+# uncertainty estimation in a so-called "validation" tool. That tool does not provide true confidence intervals
+# and therefore its use is disnecouraged in favor of any of the uncertainty quantification tools provided in DeerLab. 
+# The "validation" tool of DeerAnalysis cannot be reproduced with DeerLab without implementing it manually. 
+

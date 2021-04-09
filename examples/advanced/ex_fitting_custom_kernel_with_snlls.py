@@ -1,7 +1,7 @@
 # %% [markdown]
 """
-Fitting a custom kernel model with a parameter-free distribution
-=================================================================
+Fitting a custom dipolar kernel model with a parameter-free distribution
+=========================================================================
 
 How the use of SNLLS to fit a kernel model and a parameter-free 
 distribution to a dipolar signal.
@@ -88,27 +88,32 @@ print(f'lambda = {parfit[0]:.2f}({param95[0,0]:.2f}-{param95[0,1]:.2f})')
 print(f'c0 = {parfit[1]:.2f}({param95[1,0]:.2f}-{param95[1,1]:.2f})µM')
 
 # Get fitted model
-Kfit = Kmodel(parfit)
-Vfit = Kfit@Pfit
+Vfit = fit.model
+Vci95 = fit.modelUncert.ci(95)
+Vci50 = fit.modelUncert.ci(50)
 
-# %% [markdown]
-# Plots
-#------
+# %% 
 
+# Plot the data and the fits with uncertainty bands
 plt.subplot(211)
-plt.plot(t,V,'k.',t,Vfit,'b')
+plt.plot(t,V,'.',color='grey')
+plt.plot(t,Vfit,'tab:blue')
+plt.fill_between(t,Vci50[:,0],Vci50[:,1],color='tab:blue',alpha=0.4,linestyle='None')
+plt.fill_between(t,Vci95[:,0],Vci95[:,1],color='tab:blue',alpha=0.2,linestyle='None')
 plt.grid(alpha=0.3)
 plt.xlabel('t (µs)')
-plt.ylabel('V')
+plt.ylabel('V(t)')
 plt.legend(['data','fit'])
 
 plt.subplot(212)
-plt.plot(r,P,'k',r,Pfit,'b')
-plt.fill_between(r,Pci50[:,0],Pci50[:,1],color='b',alpha=0.4,linestyle='None')
-plt.fill_between(r,Pci95[:,0],Pci95[:,1],color='b',alpha=0.2,linestyle='None')
+plt.plot(r,Pfit,'tab:blue')
+plt.fill_between(r,Pci50[:,0],Pci50[:,1],color='tab:blue',alpha=0.4,linestyle='None')
+plt.fill_between(r,Pci95[:,0],Pci95[:,1],color='tab:blue',alpha=0.2,linestyle='None')
 plt.grid(alpha=0.3)
 plt.xlabel('r (nm)')
-plt.ylabel('P (nm⁻¹)')
+plt.ylabel('P(r) (nm⁻¹)')
 plt.legend(['truth','fit','50%-CI','95%-CI'])
 
+plt.tight_layout()
+plt.show()
 # %%

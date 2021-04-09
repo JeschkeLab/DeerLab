@@ -1,8 +1,8 @@
 
 # %% [markdown]
 """
-Uncertainty propagation from parameter fits using covariance-based uncertainty quantification
-=============================================================================================
+Uncertainty propagation from parameter fits 
+=================================================
 
 How to propagate the uncertainty of the fitted parameters to the models which depend on them.
 """
@@ -98,7 +98,8 @@ Vci95 = Vuq.ci(95) # 95#-confidence intervals for Vfit
 # can specify via the lb input. 
 lb = np.zeros_like(r) # Non-negativity constraint
 Puq = paruq.propagate(Pmodel,lb) # Uncertainty quantification for Pfit
-Pci95 = Puq.ci(95) # 95#-confidence intervals for Pfit
+Pci95 = Puq.ci(95) # 95%-confidence intervals for Pfit
+Pci50 = Puq.ci(50) # 50%-confidence intervals for Pfit
 
 # %% [markdown]
 # 3. Uncertainty of the background: In this case, since we want to use this for plotting we need to evaluate
@@ -115,18 +116,20 @@ plt.figure(figsize=(7,7))
 
 # Time-domain
 plt.subplot(211)
-plt.plot(t,V,'k.',t,Vfit,'r',t,(1-lamfit)*Bfit,'b',linewidth=1.5)
-plt.fill_between(t,Vci95[:,0],Vci95[:,1],color='r',alpha=0.3,linestyle='None')
-plt.fill_between(t,Bci95[:,0],Bci95[:,1],color='b',alpha=0.3,linestyle='None')
+plt.plot(t,V,'.',color='grey') 
+plt.plot(t,Vfit,'tab:red',t,(1-lamfit)*Bfit,'tab:blue',linewidth=1.5)
+plt.fill_between(t,Vci95[:,0],Vci95[:,1],color='tab:red',alpha=0.3,linestyle='None')
+plt.fill_between(t,Bci95[:,0],Bci95[:,1],color='tab:blue',alpha=0.3,linestyle='None')
 plt.grid(alpha=0.3)
 plt.xlabel('t (µs)')
-plt.ylabel('V')
+plt.ylabel('V(t)')
 plt.legend(['data','Vfit','Bfit','Vfit 95%-CI','Bfit 95%-CI'])
 
 # Distance-domain
 plt.subplot(212)
-plt.plot(r,P,'k',r,Pfit,'r',linewidth=1.5)
-plt.fill_between(r,Pci95[:,0],Pci95[:,1],color='r',alpha=0.3,linestyle='None')
+plt.plot(r,Pfit,'r',linewidth=1.5)
+plt.fill_between(r,Pci95[:,0],Pci95[:,1],color='tab:red',alpha=0.3,linestyle='None')
+plt.fill_between(r,Pci50[:,0],Pci50[:,1],color='tab:red',alpha=0.3,linestyle='None')
 plt.xlabel('r (nm)')
 plt.ylabel('P (nm⁻¹)')
 plt.grid(alpha=0.3)

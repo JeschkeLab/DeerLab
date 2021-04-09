@@ -26,6 +26,7 @@ K = dl.dipolarkernel(t,r,mod=lam,bg=B)
 V = K@P + dl.whitegaussnoise(t,0.005,seed=0)
 
 # Plot
+plt.figure()
 plt.plot(t,V,'k.')
 plt.grid(alpha=0.3)
 plt.xlabel('Time (µs)')
@@ -70,6 +71,7 @@ kappa = fit.bgparam
 # "Correct" for the background and modulation depth
 Vcorr = (V/Bfit - (1 - lam))/lam
 
+plt.figure()
 plt.plot(t,Vcorr,'k.')
 plt.grid(alpha=0.3)
 plt.xlabel('Time (µs)')
@@ -98,6 +100,9 @@ nu,pake = dl.fftspec(Vcorr,t,apodization=False)
 nuapo,pakeapo = dl.fftspec(Vcorr,t,apodization=False,mode='real')
 
 # Plot results
+# sphinx_gallery_thumbnail_number = 3
+
+plt.figure()
 plt.plot(nu,pake,'k',nuapo,pakeapo,'b',linewidth=1.5)
 plt.grid(alpha=0.3)
 plt.xlim([-10, 10])

@@ -9,6 +9,7 @@ How to optimally select a parametric model for a given dipolar signal.
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
+import warnings
 
 # %% [markdown]
 # Data Generation
@@ -18,11 +19,15 @@ import deerlab as dl
 # from a bimodal Gaussian distance distribution.
 
 # Prepare the signal components
-t = np.linspace(-0.3,3.5,300)                # time axis, µs
-r = np.linspace(2,6,200)                     # distance axis, nm
-P = dl.dd_gauss2(r,[3.8, 0.4, 0.7, 4.5, 0.2, 0.7])   # distance distribution
-K = dl.dipolarkernel(t,r)                    # dipolar kernel matrix
-V = K@P + dl.whitegaussnoise(t,0.02)         # DEER signal, with added noise
+def generatedata():
+    t = np.linspace(-0.3,4.5,200)                # time axis, µs
+    r = np.linspace(2,6,200)                     # distance axis, nm
+    P = dl.dd_gauss2(r,[3.8, 0.4, 0.7, 4.5, 0.2, 0.7])   # distance distribution
+    K = dl.dipolarkernel(t,r)                    # dipolar kernel matrix
+    V = K@P + dl.whitegaussnoise(t,0.08,seed=1)         # DEER signal, with added noise
+    return t, V, P
+    
+t, V, P = generatedata()
 
 # %% [markdown]
 # Selecting an optimal model
@@ -56,31 +61,33 @@ models = [dl.dd_rice,dl.dd_rice2,dl.dd_rice3,dl.dd_gauss,dl.dd_gauss2,dl.dd_gaus
 # To do this, we just have to evaluate the parametric models with ``fitparamodel`` while looping over all the distribution models
 # we listed above, and collecting the AIC-values for each model.
  
+r = np.linspace(2,6,200)                     # distance axis, nm
+K = dl.dipolarkernel(t,r)                    # dipolar kernel matrix
+
 aic = []
 for model in models:
-    info = model()
     # Prepare the signal model with the new distance model
     Vmodel = lambda par: K@model(r,par)
     # Fit the signal
-    fit = dl.fitparamodel(V,Vmodel,par0=info['Start'],lb=info['Lower'],ub=info['Upper'])
-    parfit = fit.param
-    stats= fit.stats
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        fit = dl.fitparamodel(V,Vmodel,par0=model.start,lb=model.lower,ub=model.upper,multistart=5)
+    stats = fit.stats
     # Add current AIC value to the list
     aic.append(stats['aic'])
 
 # %% [markdown]
+# AIC values and Akaike weights
+#-----------------------------------------------------------------------------
 # Since the absolute AIC values have no meaning, it is standard practice to look at the relative 
 # changes in AIC values between the evaluated models.
 
 daic = aic - min(aic)
 
-# %% [markdown]
-# Akaike Weights
-#-----------------------------------------------------------------------------
 # It is often more useful to look at these results from the perspective of
 # Akaike weights, i.e. the probabilities of a model being the most optimal.
 
-weights = 100*np.exp(-(daic/2))/sum(np.exp(-daic/2))
+weights = 100*np.exp(-daic/2)/sum(np.exp(-daic/2))
 
 # %% [markdown]
 # Plot results
@@ -103,19 +110,24 @@ plt.grid(alpha=0.2)
 
 modelnames = [model.__name__ for model in models]
 
-plt.subplot(2,2,3)
+plt.subplot(212)
 plt.bar(modelnames,daic,color='b',alpha=0.5)
 plt.ylabel('$\Delta$AIC')
 plt.grid(alpha=0.2)
 plt.xticks(rotation=45)
 
+plt.tight_layout()
+plt.show()
+
 # Plot the results
-plt.subplot(2,2,4)
+plt.figure()
 plt.bar(modelnames,weights,color='b',alpha=0.5)
 plt.ylabel('Akaike Weights (%)')
 plt.xticks(rotation=45)
 plt.grid(alpha=0.2)
 
+plt.tight_layout()
+plt.show()
 # %% [markdown]
 # Typically there is not a single optimal model unless the noise level is very
 # low. Usually several models have similar probabilities and should therefore be presented together. 
