@@ -12,7 +12,7 @@ DeerLab.egg-info/dependency_links.txt
 DeerLab.egg-info/SOURCES.txt
 DeerLab.egg-info/PKG-INFO
 */dist/*
-*/build*
+*/build/*
 /.venv/*
 target/
 docsrc/source/.doctrees
