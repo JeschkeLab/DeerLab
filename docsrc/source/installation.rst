@@ -92,8 +92,8 @@ Installing from source
 If you wish to contribute to DeerLab or like to get the latest updates as they come, install DeerLab from ``git``. If your OS has not ``git`` installed, you can download it and install it from the `official Git distribution <https://git-scm.com/>`_.
 To download (clone) the repository, execute the following from the command line::
 
-		git clone git@github.com:JeschkeLab/DeerLab.git
-
+		git clone https://github.com/JeschkeLab/DeerLab.git
+		
 To update to the latest version, go the local directory where DeerLab has been downloaded and execute::
 		
 		git pull origin main 
