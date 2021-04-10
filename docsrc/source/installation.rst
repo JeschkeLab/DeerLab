@@ -16,8 +16,8 @@ For Windows systems it is important to ensure that the **Install launcher for al
 
 which should display the installed Python version and launch the Python command line. To exit, use the ``exit()`` command or close the console.
 
-Installing DeerLab from PyPI
------------------------------
+Installing from PyPI
+---------------------
 
 A pre-built distribution can be installed using `pip <https://pip.pypa.io/en/stable/installing/>`_.
 
@@ -47,19 +47,40 @@ The installed numerical packages (numpy, scipy, cvxopt) are linked against diffe
 
 If an error occurs during or after the installation, please consult `this section <./installation_failed.html>`_ for a possible solution.
 
+
+Installing from Anaconda
+-------------------------
+
+DeerLab is also distributed via the Anaconda repository and the ``conda`` package manager.
+
+Open the Anaconda prompt (preferably with administrative privileges) or activate the Anaconda environment. Next install DeerLab via the ``conda`` package manager as follows::
+
+	conda install deerlab -c phygbu -c JeschkeLab 
+
+The package manager will automatically take care of installing all DeerLab dependencies. 
+
+
+
 Upgrading to the latest release 
 --------------------------------
 To upgrade an existing DeerLab installation to the latest released version, use the following command from a terminal:: 
 
 		python -m pip install --upgrade deerlab
 
+or if you are using Anaconda use the following command from the Anaconda prompt::
+
+		conda update deerlab
+
 Installing specific versions
 -----------------------------
 
-Any DeerLab version released after v0.10.0 can be installed via pip using the following command matching the x.y.z to the desired version::
+Any DeerLab version released after v0.10.0 can be installed via ``pip`` using the following command matching the x.y.z to the desired version::
 
 		python -m pip install deerlab==x.y.z
 
+or via ``conda`` if you use Anaconda as follows::
+
+		conda install deerlab=x.y.z
 
 DeerLab version prior to 0.10 are written in MATLAB and are still available from an `archived repository <https://github.com/JeschkeLab/DeerLab-Matlab>`_. 
 Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.
@@ -87,22 +108,3 @@ In order to install DeerLab but be able to edit the code or update frequently wi
 
 Any changes made to the source code will then immediate effect.
 
-
-Installing from Anaconda
--------------------------
-
-DeerLab is currently not distributed via the ``conda`` or Anaconda package managers. However, ``conda`` or Anaconda users can still install and/or update the software as follows. 
-
-From a terminal (preferably with administrative privileges) choose a local directory where the program should be stored and clone DeerLab from the source as described above :: 
-
-		git clone git@github.com:JeschkeLab/DeerLab.git
-		cd DeerLab
-		git checkout vx.y.z 
-
-Next, open the Anaconda prompt (preferably with administrative privileges) and navigate to the directory where DeerLab has been stored. Then (optionally) activate your Anaconda environment:: 
-
-		activate installation-env
-
-Finally, install DeerLab such that updates in the folder will be automatically available after the Anaconda kernel is restarted::
-
-		pip install -e .
