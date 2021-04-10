@@ -55,7 +55,7 @@ DeerLab is also distributed via the Anaconda repository and the ``conda`` packag
 
 Open the Anaconda prompt (preferably with administrative privileges) or activate the Anaconda environment. Next install DeerLab via the ``conda`` package manager as follows::
 
-	conda install deerlab -c phygbu -c JeschkeLab 
+	conda install deerlab -c JeschkeLab 
 
 The package manager will automatically take care of installing all DeerLab dependencies. 
 
