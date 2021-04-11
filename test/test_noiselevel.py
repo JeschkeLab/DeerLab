@@ -14,12 +14,33 @@ def test_filtered_movmean():
     P = dd_gauss(r,[3, 0.5])
     lam = 0.25
     B = bg_exp(t,1.5)
-    noise = whitegaussnoise(t,0.03)
+    noise = whitegaussnoise(t,0.05)
     V = dipolarkernel(t,r,mod=lam,bg=B)@P + noise
 
 
     truelevel = np.std(noise)
-    approxlevel = noiselevel(V,'movmean')
+    approxlevel = noiselevel(V,'movmean',3)
+
+    assert abs(approxlevel - truelevel) < 1e-2
+#============================================================
+
+
+def test_der():
+#============================================================
+    "Check estimation of noiselevel using a moving-mean filter"
+
+    np.random.seed(1)
+    t = np.linspace(0,3,200)
+    r = np.linspace(2,6,100)
+    P = dd_gauss(r,[3, 0.5])
+    lam = 0.25
+    B = bg_exp(t,1.5)
+    noise = whitegaussnoise(t,0.05)
+    V = dipolarkernel(t,r,mod=lam,bg=B)@P + noise
+
+
+    truelevel = np.std(noise)
+    approxlevel = noiselevel(V,'der')
 
     assert abs(approxlevel - truelevel) < 1e-2
 #============================================================
@@ -42,7 +63,7 @@ def test_reference():
 
 
     truelevel = np.std(noise)
-    approxlevel = noiselevel(V,Vref)
+    approxlevel = noiselevel(V,'reference',Vref)
 
     assert abs(approxlevel - truelevel) < 1e-2
 #============================================================
@@ -62,7 +83,7 @@ def test_filtered_savgol():
     V = dipolarkernel(t,r,mod=lam,bg=B)@P + noise
 
     truelevel = np.std(noise)
-    approxlevel = noiselevel(V,'savgol')
+    approxlevel = noiselevel(V,'savgol',11,3)
 
     assert abs(approxlevel - truelevel) < 1e-2
 #============================================================
@@ -85,7 +106,7 @@ def test_multiscan():
     for i in range(N):
         V[:,i] = K@P + whitegaussnoise(t,sigma_ref)
 
-    sigma = noiselevel(V)
+    sigma = noiselevel(V,'scans')
 
     assert abs(sigma - sigma_ref) < 1e-2
 #============================================================
@@ -109,7 +130,7 @@ def test_complex():
     Vco = V*np.exp(-1j*np.pi/5)
     Vco = Vco + noise + noisec
     truelevel = np.std(noise)
-    approxlevel = noiselevel(Vco)
+    approxlevel = noiselevel(Vco,'complex')
 
     assert abs(truelevel - approxlevel) < 1e-2
 #============================================================

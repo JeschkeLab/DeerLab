@@ -4,6 +4,7 @@
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
+import deerlab as dl
 
 def goodness_of_fit(x,xfit,Ndof,sigma='auto'):
     r""" 
@@ -40,8 +41,8 @@ def goodness_of_fit(x,xfit,Ndof,sigma='auto'):
 
     """
     if sigma=='auto':
-        sigma = np.std(x - xfit)
-        
+        sigma = dl.noiselevel(x,'der')
+
     # Get number of xariables
     N = len(x)
     # Extrapolate number of parameters

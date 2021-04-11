@@ -1,6 +1,6 @@
 
 import numpy as np
-from deerlab import dipolarkernel, fitmultimodel
+from deerlab import dipolarkernel, fitmultimodel, whitegaussnoise
 from deerlab.dd_models import dd_gengauss, dd_gauss, dd_rice, dd_gauss2, dd_rice3, dd_gauss3
 from deerlab.bg_models import bg_exp
 from deerlab.utils import ovl
@@ -258,11 +258,11 @@ def test_goodness_of_fit():
     K = dipolarkernel(t,r)
     parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
     P = dd_gauss3(r,parin)
-    V = K@P
+    V = K@P + whitegaussnoise(t,0.01,seed=1)
 
     fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uq=False)
     stats= fit.stats
-    assert abs(stats['chi2red'] - 1) < 5e-2 and abs(stats['R2'] - 1) < 5e-2
+    assert abs(stats['chi2red'] - 1) < 0.3 and abs(stats['R2'] - 1) < 5e-2
 #=======================================================================
 
 

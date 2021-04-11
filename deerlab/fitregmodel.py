@@ -331,7 +331,7 @@ def _obir(V,K,L, regtype, alpha, weights, noiselevelaim=None, huberparam=1.35 , 
     """
 
     if noiselevelaim is None:
-        noiselevelaim = dl.noiselevel(V)
+        noiselevelaim = dl.noiselevel(V,'der')
 
     MaxOuterIter = 5000
     stopDivergent = False

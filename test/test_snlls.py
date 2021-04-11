@@ -320,7 +320,7 @@ def test_goodness_of_fit():
     K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.15, 0.6, 4.5, 0.2, 0.4]
     P = dd_gauss2(r,parin)
-    V = K@P
+    V = K@P + whitegaussnoise(t,0.01,seed=1)
 
     # Non-linear parameters
     # nlpar = [lam]
@@ -334,7 +334,7 @@ def test_goodness_of_fit():
     fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl, uq=False)
     stats = fit.stats
 
-    assert abs(stats['chi2red'] - 1) < 5e-2 and abs(stats['R2'] - 1) < 5e-2
+    assert abs(stats['chi2red'] - 1) < 0.1 and abs(stats['R2'] - 1) < 5e-2
 #============================================================
 
 def assert_reg_type(regtype):    
