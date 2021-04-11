@@ -1,0 +1,402 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Global fitting of a two-state model to a series of DEER traces &mdash; DeerLab</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-rendered-html.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Analyzing pseudo-titration (dose-response) curves with non-parametric distributions" href="ex_pseudotitration_parameter_free.html" />
+    <link rel="prev" title="Multi-Gauss fit of a 4-pulse DEER signal" href="ex_multigauss_fitting_4pdeer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.13.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../examples.html">Examples</a> &raquo;</li>
+        
+      <li>Global fitting of a two-state model to a series of DEER traces</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Click <a class="reference internal" href="#sphx-glr-download-auto-examples-advanced-ex-global-twostates-parametric-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="global-fitting-of-a-two-state-model-to-a-series-of-deer-traces">
+<span id="sphx-glr-auto-examples-advanced-ex-global-twostates-parametric-py"></span><h1>Global fitting of a two-state model to a series of DEER traces<a class="headerlink" href="#global-fitting-of-a-two-state-model-to-a-series-of-deer-traces" title="Permalink to this headline">¶</a></h1>
+<p>This example shows how to fit a two-state model to a series DEER traces. Each of the
+two states, A and B, has a one-Gauss distance distribution, and each DEER trace comes
+from a sample with different fractional populations of the two states. This could be
+the consequence of a chemical or conformational equilibrium. The model contains global
+parameters needed for all samples traces (the distribution parameters) and local
+parameters needed for individual samples traces (the fractional populations).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
+</pre></div>
+</div>
+<div class="section" id="generate-datasets">
+<h2>Generate datasets<a class="headerlink" href="#generate-datasets" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>For this example, we generate synthetic data.</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parameters for the distance distibutions for states A and B</span>
+<span class="n">rmeanA</span> <span class="o">=</span> <span class="mf">3.45</span>  <span class="c1"># mean distance state A, in nm</span>
+<span class="n">rmeanB</span> <span class="o">=</span> <span class="mf">5.05</span>  <span class="c1"># mean distance state B, in nm</span>
+<span class="n">sigmaA</span> <span class="o">=</span> <span class="mf">0.3</span>   <span class="c1"># standard deviation state A, in nm</span>
+<span class="n">sigmaB</span> <span class="o">=</span> <span class="mf">0.2</span>   <span class="c1"># standard deviation state B, in nm</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>  <span class="c1"># distance axis, in nm</span>
+
+<span class="n">fracA</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span> <span class="c1"># molar fraction of state A for each sample</span>
+
+<span class="c1"># Model parameters</span>
+<span class="n">par0</span> <span class="o">=</span> <span class="p">[</span><span class="n">rmeanA</span><span class="p">,</span> <span class="n">rmeanB</span><span class="p">,</span> <span class="n">sigmaA</span><span class="p">,</span> <span class="n">sigmaB</span><span class="p">]</span> <span class="o">+</span> <span class="n">fracA</span>
+
+<span class="c1"># Generate list of time axes</span>
+<span class="n">tmin</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">]</span>   <span class="c1"># start times, in µs</span>
+<span class="n">tmax</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>            <span class="c1"># end times, in µs</span>
+<span class="n">nt</span> <span class="o">=</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span>        <span class="c1"># number of time-domain points</span>
+<span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmin</span><span class="p">)</span>               <span class="c1"># number of DEER traces</span>
+<span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="n">tmin</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">tmax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">nt</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+
+<span class="c1"># Generate the corresponding dipolar kernels</span>
+<span class="c1"># (for the sake of simplicity, no background and 100% modulation depth are assumed)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t_</span><span class="p">,</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
+
+<span class="c1"># Model functions for V and P (needs K and r)</span>
+<span class="k">def</span> <span class="nf">ABmodel</span><span class="p">(</span><span class="n">par</span><span class="p">):</span>
+
+    <span class="c1"># Unpack parameters</span>
+    <span class="n">rmeanA</span><span class="p">,</span> <span class="n">rmeanB</span><span class="p">,</span> <span class="n">sigmaA</span><span class="p">,</span> <span class="n">sigmaB</span><span class="p">,</span> <span class="o">*</span><span class="n">fracA</span> <span class="o">=</span> <span class="n">par</span>
+
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fracA</span><span class="p">)</span> <span class="c1"># number of traces</span>
+
+    <span class="c1"># Generate the state distributions</span>
+    <span class="n">PA</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">rmeanA</span><span class="p">,</span> <span class="n">sigmaA</span><span class="p">])</span>
+    <span class="n">PB</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">rmeanB</span><span class="p">,</span> <span class="n">sigmaB</span><span class="p">])</span>
+
+    <span class="c1"># Generate distributions and signals for each sample</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="p">[</span><span class="n">fA</span><span class="o">*</span><span class="n">PA</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">fA</span><span class="p">)</span><span class="o">*</span><span class="n">PB</span> <span class="k">for</span> <span class="n">fA</span> <span class="ow">in</span> <span class="n">fracA</span><span class="p">]</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="p">[</span><span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="nd">@P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">V</span><span class="p">,</span> <span class="n">P</span>
+
+<span class="c1"># Generate noise-free synthetic traces and distributions</span>
+<span class="n">V0</span><span class="p">,</span> <span class="n">P0</span> <span class="o">=</span> <span class="n">ABmodel</span><span class="p">(</span><span class="n">par0</span><span class="p">)</span>
+
+<span class="c1"># Add noise</span>
+<span class="nf">noiselevel</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">Vexp</span> <span class="o">=</span> <span class="p">[</span><span class="n">V0</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="nf">noiselevel</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="global-fit">
+<h2>Global fit<a class="headerlink" href="#global-fit" title="Permalink to this headline">¶</a></h2>
+<p>We now want to fit the model to the generated data. The fit parameters are
+the distribution parameters for the two states (rmeanA, rmeanB, sigmaA, sigmaB)
+and the fractional population of state A in each sample (fracA)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set starting values and bounds of fit parameters</span>
+<span class="c1">#        [rmeanA rmeanB sigmaA sigmaB fracA1 fracA2 fracA3]</span>
+<span class="n">par0</span> <span class="o">=</span>   <span class="p">[</span><span class="mi">2</span><span class="p">,</span>       <span class="mi">2</span><span class="p">,</span>     <span class="mf">0.3</span><span class="p">,</span>   <span class="mf">0.3</span><span class="p">,</span>   <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">]</span>
+<span class="n">lower</span> <span class="o">=</span>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span>       <span class="mi">1</span><span class="p">,</span>     <span class="mf">0.05</span><span class="p">,</span>  <span class="mf">0.05</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">]</span>
+<span class="n">upper</span> <span class="o">=</span>  <span class="p">[</span><span class="mi">10</span><span class="p">,</span>     <span class="mi">10</span><span class="p">,</span>     <span class="mf">0.6</span><span class="p">,</span>   <span class="mf">0.6</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>    <span class="mi">1</span><span class="p">,</span>     <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Out model function <code class="docutils literal notranslate"><span class="pre">ABmodel</span></code> returns multiple outputs, V and P.
+This is useful for later obtaining boht V and P, but the fit function requires
+just one model output. Therefore, we  create a small wrapper function that just
+takes the first ouput argument of <code class="docutils literal notranslate"><span class="pre">ABmodel</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">ABmodel</span><span class="p">(</span><span class="n">par</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># call ABmodel and take the first output (V)</span>
+
+<span class="c1"># Fit the model to all traces simultaneously (global fit)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitparamodel</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lower</span><span class="p">,</span><span class="n">upper</span><span class="p">,</span><span class="n">multistart</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="c1"># The use of the option &#39;multistart&#39; helps the solver to find the</span>
+<span class="c1"># global minimum and not to get stuck in a local minimum.</span>
+
+<span class="c1"># Display fitted parameters and their uncertainties (standard deviations)</span>
+<span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">param</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">paramUncert</span><span class="o">.</span><span class="nf">std</span><span class="p">))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[(3.46179638465474, 0.035155561858738346), (5.02387750750536, 0.023032513418885698), (0.3353473763444151, 0.038856543784666034), (0.18331049638272104, 0.03483385160620861), (0.8021936688827496, 0.018114409153693632), (0.5020189535666287, 0.04787845236322752), (0.09771952038935394, 0.04431855761486734)]
+</pre></div>
+</div>
+<p>Get the fitted model traces and distributions</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Vfit</span><span class="p">,</span> <span class="n">Pfit</span> <span class="o">=</span> <span class="n">ABmodel</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">param</span><span class="p">)</span>
+
+<span class="c1"># Get 95% confidence intervals of the fitted traces</span>
+<span class="n">Vfit_ci</span> <span class="o">=</span> <span class="p">[</span><span class="n">fit</span><span class="o">.</span><span class="n">modelUncert</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+
+<span class="c1"># Propagate parameter uncertainty to the distribution models, accounting for non-negativity</span>
+<span class="n">Pfit_uq</span> <span class="o">=</span> <span class="p">[</span><span class="n">fit</span><span class="o">.</span><span class="n">paramUncert</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">param</span><span class="p">:</span> <span class="n">ABmodel</span><span class="p">(</span><span class="n">param</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">lbm</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">r</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+
+<span class="c1"># Get their 95% confidence intervals</span>
+<span class="n">Pfit_ci</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pfit_uq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="plot-results">
+<h2>Plot results<a class="headerlink" href="#plot-results" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">V0</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s1">&#39;tab:red&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">Vfit_ci</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Vfit_ci</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;tab:red&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t (µs)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trace </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P0</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s1">&#39;tab:red&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit_ci</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pfit_ci</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;tab:red&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;r (nm)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;P (nm⁻¹)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;truth&#39;</span><span class="p">,</span><span class="s1">&#39;fit&#39;</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+ <span class="c1"># %%</span>
+</pre></div>
+</div>
+<img alt="Trace 1, Trace 2, Trace 3" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_global_twostates_parametric_001.png" />
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  3.901 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-global-twostates-parametric-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<a class="reference download internal" download="" href="../../_downloads/f69a8601f9f9aaa332179d0088b1f952/ex_global_twostates_parametric.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_global_twostates_parametric.py</span></code></a></div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<a class="reference download internal" download="" href="../../_downloads/7450311aa3a7f574a2bb51e2afbf8f8c/ex_global_twostates_parametric.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_global_twostates_parametric.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="ex_pseudotitration_parameter_free.html" class="btn btn-neutral float-right" title="Analyzing pseudo-titration (dose-response) curves with non-parametric distributions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ex_multigauss_fitting_4pdeer.html" class="btn btn-neutral float-left" title="Multi-Gauss fit of a 4-pulse DEER signal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

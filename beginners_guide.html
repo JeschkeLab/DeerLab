@@ -1,0 +1,553 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Getting Started &mdash; DeerLab</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-rendered-html.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Uncertainty" href="uncertainty.html" />
+    <link rel="prev" title="Basics" href="basics.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.13.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Getting Started</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="getting-started">
+<span id="beginners-guide"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>This is the introductory guide to DeerLab.</p>
+<hr class="docutils" />
+<div class="section" id="importing-deerlab">
+<h2>Importing DeerLab<a class="headerlink" href="#importing-deerlab" title="Permalink to this headline">¶</a></h2>
+<p>DeerLab is a Python package. In order to use it, you need to import it. For this, use the import statement:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
+</pre></div>
+</div>
+<p>This makes DeerLab functions accessible via the abbreviated name <code class="docutils literal notranslate"><span class="pre">dl</span></code>. For example, the function <code class="docutils literal notranslate"><span class="pre">deerload</span></code> can be called via <code class="docutils literal notranslate"><span class="pre">dl.deerload</span></code>. We recommend to use <code class="docutils literal notranslate"><span class="pre">dl</span></code> as the standard import abbreviation for DeerLab.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="importing-other-packages">
+<h2>Importing other packages<a class="headerlink" href="#importing-other-packages" title="Permalink to this headline">¶</a></h2>
+<p>Other packages need to be imported as well. The most important one is</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>                <span class="c1"># NumPy: vectors, matrices, linear algebra</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://numpy.org/doc/stable/index.html">NumPy</a> is the fundamental package for scientific computing in Python. It is a Python library that provides multidimensional arrays (vectors, matrices, etc) and many array functions, including mathematical, logical, shape manipulation, sorting, selecting, I/O, discrete Fourier transforms, basic linear algebra, basic statistical operations, random number generators, and much more.</p>
+<p>Most mathematical operations in DeerLab are based on Numpy, and all numerical outputs returned by DeerLab functions are Numpy data types. It is recommendable, to invest a short amount of time to familiarize yourself with some <a class="reference external" href="https://numpy.org/doc/stable/user/basics.html">basic Numpy concepts</a>.</p>
+<p>If you have experience with MATLAB, have a look at <a class="reference external" href="https://numpy.org/doc/stable/user/numpy-for-matlab-users.html">Numpy for MATLAB users</a>.</p>
+<p>Another important package is <a class="reference external" href="https://matplotlib.org/">Matplotlib</a>, a library that provides plotting capabilities. It contains many modules, of which <code class="docutils literal notranslate"><span class="pre">pyplot</span></code> is the most important for basic plotting. Import it with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>   <span class="c1"># Matplotlib: plotting</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="python-lists-and-numpy-arrays">
+<h2>Python lists and NumPy arrays<a class="headerlink" href="#python-lists-and-numpy-arrays" title="Permalink to this headline">¶</a></h2>
+<p>In DeerLab, many functions accept Python lists, NumPy arrays, or both as inputs. While a Python list can contain different data types within a single list, all of the elements in a NumPy array (a so called ndarray) should share the same data type. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="c1"># is a list-type</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span> <span class="c1"># is an ndarray-type</span>
+</pre></div>
+</div>
+<p>and the elements on such variables can be accessed by their indices in the exact same way:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># print the first element of the list</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># print the third element of the ndarray</span>
+</pre></div>
+</div>
+<p>Note that Python is a 0-indexed language, meaning that the first element of any list, array,… is indexed with 0.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="loading-spectrometer-files">
+<h2>Loading Spectrometer Files<a class="headerlink" href="#loading-spectrometer-files" title="Permalink to this headline">¶</a></h2>
+<p>DeerLab provides the function <code class="docutils literal notranslate"><span class="pre">deerload</span></code> that can load dipolar EPR data from most spectrometer file formats. It works for 1D and 2D datasets, both real- or complex-valued.</p>
+<p>First, determine the location of the spectrometer files you want to load and of the script or Jupyter notebook you are writing is. Let’s assume that the script is called <code class="docutils literal notranslate"><span class="pre">myscript.py</span></code> and that the data is stored in <code class="docutils literal notranslate"><span class="pre">DEERexperiment.DTA</span></code> in the following folder structure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">home</span>
+ <span class="o">|-----</span><span class="n">experiments</span>
+ <span class="o">|</span>      <span class="o">|</span>
+ <span class="o">|</span>      <span class="o">|---</span><span class="n">DEERexperiment</span><span class="o">.</span><span class="n">DSC</span>
+ <span class="o">|</span>      <span class="o">+---</span><span class="n">DEERexperiment</span><span class="o">.</span><span class="n">DTA</span>
+ <span class="o">|</span>
+ <span class="o">+-----</span><span class="n">scripts</span>
+        <span class="o">|</span>
+        <span class="o">+---</span><span class="n">myscript</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>From the location of the script, you have two ways to access the data files: using the absolute path, or using the relative path:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;/home/experiments/DEERexperiment.DTA&#39;</span>   <span class="c1"># absolute path</span>
+<span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;../../experiments/DEERexperiment.DTA&#39;</span>   <span class="c1"># relative path</span>
+</pre></div>
+</div>
+<p>Call <code class="docutils literal notranslate"><span class="pre">deerload</span></code> with either of these two paths:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">deerload</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>   <span class="c1"># load experimental data</span>
+</pre></div>
+</div>
+<p>The function returns two outputs: the first is the time-axis of your experiment, and the second is the raw experimental data as saved by your spectrometer. Here, we store them in variables named <code class="docutils literal notranslate"><span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">V</span></code>.</p>
+<p>Both <code class="docutils literal notranslate"><span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">V</span></code> are 1D Numpy arrays with <code class="docutils literal notranslate"><span class="pre">N</span></code> elements. To load an additional file, load it into different variables:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">filepath1</span> <span class="o">=</span> <span class="s1">&#39;/home/experiments/DEER4p_experiment.DTA&#39;</span>   <span class="c1"># absolute path to 1st file</span>
+<span class="n">filepath2</span> <span class="o">=</span> <span class="s1">&#39;/home/experiments/DEER5p_experiment.DTA&#39;</span>   <span class="c1"># absolute path to 2nd file</span>
+<span class="n">t1</span><span class="p">,</span><span class="n">V2</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">deerload</span><span class="p">(</span><span class="n">filepath1</span><span class="p">)</span>   <span class="c1"># load 1st set of experimental data</span>
+<span class="n">t2</span><span class="p">,</span><span class="n">V2</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">deerload</span><span class="p">(</span><span class="n">filepath2</span><span class="p">)</span>   <span class="c1"># load 2nd set of experimental data</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">deerload</span></code> attempts to return the experiment time-axis <code class="docutils literal notranslate"><span class="pre">t</span></code> in units of microseconds, but might not be able to do so for all file formats. For more details about <code class="docutils literal notranslate"><span class="pre">deerload</span></code> see the <a class="reference internal" href="functions/deerload.html#deerload"><span class="std std-ref">reference documentation</span></a>.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="pre-processing">
+<h2>Pre-Processing<a class="headerlink" href="#pre-processing" title="Permalink to this headline">¶</a></h2>
+<p>After loading, the experimental dipolar EPR spectroscopy data pre-processing in a series of steps:</p>
+<dl class="docutils">
+<dt>Phase correction</dt>
+<dd><p class="first">Experimental dipolar signals are most often aquired in quadrature, with the in-phase and the out-of-phase component stored as the real and the imaginary part of a complex-valued signal. The first step is to perform a phase correction which minimizes the imaginary component and maximize the real component. If the signal is not complex-valued, skip this step. The phase correction function <code class="docutils literal notranslate"><span class="pre">correctphase</span></code> takes the complex-valued signal and returns the real-valued phase-corrected dipolar signal:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctphase</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>    <span class="c1"># phase correction of experimental data</span>
+</pre></div>
+</div>
+<p class="last">Note that all other DeerLab functions do not behave properly or might lead to errors if the dipolar signal is complex-valued.</p>
+</dd>
+<dt>Zero-time correction</dt>
+<dd><p class="first">In dipolar EPR spectroscopy models, we define the zero-time as that time, where the dipolar signal has its largest contribution or amplitude. In the raw data, the numerical values of time axis are often shifted relative to this due to details such as pulse lengths and time delays. The function <code class="docutils literal notranslate"><span class="pre">correctzerotime</span></code> takes the raw time-axis <code class="docutils literal notranslate"><span class="pre">t</span></code> and dipolar signal <code class="docutils literal notranslate"><span class="pre">V</span></code> and returns a time axis shifted such that the zero time corresponds to the signal’s maximum (taking into account noise in
+the data):</p>
+<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctzerotime</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># zero-time correction</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>In both steps, the corrections are based on optimization approaches. These work well in most cases. Should either fail for a specific case, the phase adjustment and time-axis shift can also be done manually:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">t0</span>                          <span class="c1"># manual zero-time correction</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">real</span><span class="p">(</span><span class="n">V</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">phase</span><span class="p">))</span>    <span class="c1"># manual phase correction</span>
+</pre></div>
+</div>
+<p>All analysis and fitting functions in DeeLab assume the dipolar signals and their corresponding time-axes to be properly pre-processed.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="fitting-dipolar-signals">
+<h2>Fitting Dipolar Signals<a class="headerlink" href="#fitting-dipolar-signals" title="Permalink to this headline">¶</a></h2>
+<p>DeerLab provides a wide range of functionality to analyze experimental dipolar EPR data using least-squares fitting. The main fit function of DeerLab is <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code>. This function can fit models with either non-parametric and parametric distance distributions to the data. This fitting is done in a one-step process, such that all model parameters (e.g. distance distribution, modulation depth, background decay rate, spin concentration, etc.) are obtained at the same time. It also provides uncertainty estimates for all fitted quantities (see later).</p>
+<div class="section" id="picking-the-right-model">
+<h3>Picking the right model<a class="headerlink" href="#picking-the-right-model" title="Permalink to this headline">¶</a></h3>
+<p>DeerLab provides a very flexible framework to model dipolar signals originating from many different dipolar EPR spectroscopy experiments. Choosing a model that properly describes your sample and experiment is of paramount importance. In <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> the main structure of the model is already defined, with the following components:</p>
+<ul class="simple">
+<li><strong>Distance range</strong>: Also called the distance-axis, is the range of distances where the distribution is defined.</li>
+<li><strong>Distribution model</strong>: Describes the intra-molecular distance distribution in either a parametric (e.g. a Gaussian distribution) or a non-parametric way.</li>
+<li><strong>Background model</strong>: Describes the dipolar background signal arising from the inter-molecular contributions.</li>
+<li><strong>Experiment model</strong>: Describes the experiment-specific shape of the dipolar signal.</li>
+</ul>
+<p>For each of these four components, a choice needs to be made:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Choose a distance range</strong></p>
+<p>The distance range <img class="math" src="_images/math/64a08d5a2e690dcc4c4910ebd4496af5590eb560.svg" alt="[r_\mathrm{min},r_\mathrm{max}]"/> is an important choice, as any distance distribution is truncated to this range, i.e. <img class="math" src="_images/math/1bdab7916914bf5c61fb5fda95f36910c1e52bd9.svg" alt="P(r)=0"/> for:math:<img class="math" src="_images/math/86e008c9d4a4d8fffe02feaca84832f2b626402f.svg" alt="r&lt;r_\mathrm{min}"/> and <img class="math" src="_images/math/e7186337d5c2028663db8fe8f716a52f4c63bc78.svg" alt="r&gt;r_\mathrm{max}"/>. The lower limit of the distance range is determined by the bandwidth of the pulses, and also by the time increment. Typically, 1.5 nm is a reasonable choice. The upper limit depends on the length of the experimental time trace and on the distances in your sample. The number of points in <code class="docutils literal notranslate"><span class="pre">r</span></code> is usually set equal to the number of time points. Such a distance-axis is usually defined as <code class="docutils literal notranslate"><span class="pre">r</span></code> is most easily defined using the <code class="docutils literal notranslate"><span class="pre">linspace</span></code> function from NumPy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>  <span class="c1"># define distance range form 1.5nm to 6nm with the same amount of points as t</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>Choose a distribution model</strong></p>
+<p>A non-parametric distribution is specified using the string <code class="docutils literal notranslate"><span class="pre">'P'</span></code> in <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code>. In a non-parametric distribution, each element <img class="math" src="_images/math/e9262823e350c817f49adb1e17e82a1a41f432b3.svg" alt="P_i"/> of the distribution is a parameter. Non-parametric distributions are obtained via methods such as Tikhonov regularization. If there are reasons to believe that the distance distribution has a specific shape (e.g. Gaussian, Rice, random-coil, etc.), or if there is very little information in the data, use a parametric distance distribution model from the <a class="reference internal" href="modelsref.html#modelsref-dd"><span class="std std-ref">list of available models</span></a>. If a sample does not have a intra-molecular distance distribution (if there are no doubly labelled molecules), set the distribution model to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</li>
+<li><p class="first"><strong>Choose a background model</strong></p>
+<p>Typically, a background model of a homogenous 3D distribution of spins is appropriate. The associated parametric model function is <a class="reference internal" href="models/bg_hom3d.html#bg-hom3d"><span class="std std-ref">bg_hom3d</span></a>. In some cases, depending on the properties of your sample, other background models might be needed, such as backgrounds arising from distributions of spins in fractal dimensions or when  accounting for volume-exclusion effects. In such cases, use the associated parametric background models from the <a class="reference internal" href="modelsref.html#modelsref-bg"><span class="std std-ref">list of available models</span></a>. If there is no inter-molecular background in your sample, or it is negligible, set the background model to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</li>
+<li><p class="first"><strong>Choose an experiment model</strong></p>
+<p>This decision should be based on the experiment you used to acquire the data. In the case of 4-pulse DEER data, when analyzing a standard 4-pulse DEER signal without 2+1 component at the end, use <a class="reference internal" href="models/ex_4pdeer.html#ex-4pdeer"><span class="std std-ref">ex_4pdeer</span></a>. If the 2+1 component (appearing at the right edge of the time trace) should be fitted as well, use the <a class="reference internal" href="models/ex_ovl4pdeer.html#ex-ovl4pdeer"><span class="std std-ref">ex_ovl4pdeer</span></a> model. There are experiment models for more complicated signals, such as 5-pulse DEER or 7-pulse DEER. Use the associated parametric experiment models from the <a class="reference internal" href="modelsref.html#modelsref-ex"><span class="std std-ref">list of available models</span></a>. If you want to model simple dipolar oscillations without any additional effects (modulation depth, secondary pathways), set the experiment model to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</li>
+</ol>
+<p>Here is a list of examples with different situations and what the proper choices of model are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="57%" />
+<col width="15%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Description</th>
+<th class="head">Distribution model</th>
+<th class="head">Background model</th>
+<th class="head">Experiment model</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>4pDEER signal with non-parametric distribution and homogenous 3D background</td>
+<td><code class="docutils literal notranslate"><span class="pre">'P'</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">bg_hom3d</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">ex_4pdeer</span></code></td>
+</tr>
+<tr class="row-odd"><td>4pDEER signal with Gaussian distribution amd homogenous 3D background</td>
+<td><code class="docutils literal notranslate"><span class="pre">dd_gauss</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">bg_hom3d</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">ex_4pdeer</span></code></td>
+</tr>
+<tr class="row-even"><td>Dipolar evolution function with a random-coil distribution</td>
+<td><code class="docutils literal notranslate"><span class="pre">dd_randcoil</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+<tr class="row-odd"><td>4pDEER signal with non-parametric distribution and no background</td>
+<td><code class="docutils literal notranslate"><span class="pre">'P'</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">ex_4pdeer</span></code></td>
+</tr>
+<tr class="row-even"><td>5pDEER signal with non-parametric distribution and fractal background</td>
+<td><code class="docutils literal notranslate"><span class="pre">'P'</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">bg_homfractal</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">ex_5pdeer</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="starting-the-fit">
+<h3>Starting the fit<a class="headerlink" href="#starting-the-fit" title="Permalink to this headline">¶</a></h3>
+<p>Next, the fit can be started by calling <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> with the chosen model. The function takes several inputs: the experimental dipolar signal <code class="docutils literal notranslate"><span class="pre">V</span></code> and its time-axis <code class="docutils literal notranslate"><span class="pre">t</span></code>, followed by all four model components described above: the distance-axis <code class="docutils literal notranslate"><span class="pre">r</span></code>, the distribution model, the background model, and the experiment model.</p>
+<p>The models that have an associated parametric function, e.g. <code class="docutils literal notranslate"><span class="pre">bg_hom3d</span></code>, must be passed directly as inputs to <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code>. In Python, functions can be passed as inputs to other functions.</p>
+<p>For example, a 4pDEER signal with non-parametiric distribution and homogenous 3D background can be fitted using</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">)</span>  <span class="c1"># 4pDEER fit</span>
+</pre></div>
+</div>
+<p>For the other examples in the table above, the call to <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> would look like this</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="46%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Description</th>
+<th class="head">Fit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>4pDEER signal with non-parametric distribution and homogenous 3D background</td>
+<td><code class="docutils literal notranslate"><span class="pre">fit</span> <span class="pre">=</span> <span class="pre">dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer)</span></code></td>
+</tr>
+<tr class="row-odd"><td>4pDEER signal with Gaussian distribution and homogenous 3D background</td>
+<td><code class="docutils literal notranslate"><span class="pre">fit</span> <span class="pre">=</span> <span class="pre">dl.fitmodel(V,t,r,dl.gauss,dl.bg_hom3d,dl.ex_4pdeer)</span></code></td>
+</tr>
+<tr class="row-even"><td>Dipolar evolution function with a random-coil distribution</td>
+<td><code class="docutils literal notranslate"><span class="pre">fit</span> <span class="pre">=</span> <span class="pre">dl.fitmodel(V,t,r,dl.randcoil,None,None)</span></code></td>
+</tr>
+<tr class="row-odd"><td>4pDEER signal with non-parametric distribution and no background</td>
+<td><code class="docutils literal notranslate"><span class="pre">fit</span> <span class="pre">=</span> <span class="pre">dl.fitmodel(V,t,r,'P',None,dl.ex_4pdeer)</span></code></td>
+</tr>
+<tr class="row-even"><td>5pDEER signal with non-parametric distribution and fractal background</td>
+<td><code class="docutils literal notranslate"><span class="pre">fit</span> <span class="pre">=</span> <span class="pre">dl.fitmodel(V,t,r,'P',dl.bg_homfractal,dl.ex_5pdeer)</span></code></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> uses a least-squares fitting algorithm to determine the optimal distance distribution, background parameters, and experiment parameters that fit the experiment data. To determine the non-parametric distribution, it internally uses Tikhnonov regularization with a regularization parameter optimized using the Akaike Information Criterion (AIC). All settings related to the fit can be adjusted by using the appropriate keywords, see the <a class="reference internal" href="functions/fitmodel.html#fitmodel"><span class="std std-ref">reference documentation</span></a> for details. For example, the regularization parameter used in the Tikhonov regularization could be manually adjusted by using the <code class="docutils literal notranslate"><span class="pre">regparam</span></code> keyword:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">)</span> <span class="c1"># regularization with Akaike information criterion</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;gcv&#39;</span><span class="p">)</span> <span class="c1"># regularization with Generalized Cross-Validation</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>  <span class="c1"># regularization with fixed regularization parameter</span>
+</pre></div>
+</div>
+<p>After <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> has found a solution, it returns an object that we assigned to <code class="docutils literal notranslate"><span class="pre">fit</span></code>. This object contains fields with all quantities of interest with the fit results, such as the fitted model, goodness-of-fit statistics, and uncertainty information. See the <a class="reference internal" href="functions/fitmodel.html#fitmodel"><span class="std std-ref">reference</span></a> for <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code>  for a detailed list of these quantities.</p>
+</div>
+<div class="section" id="displaying-the-results">
+<h3>Displaying the results<a class="headerlink" href="#displaying-the-results" title="Permalink to this headline">¶</a></h3>
+<p>For just a quick display of the results, you can use the <code class="docutils literal notranslate"><span class="pre">plot()</span></code> method of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> object that will display a figure with you experimental data, the corresponding fit, and the fitted distance distribution including confidence bands.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span><span class="o">.</span><span class="nf">plot</span><span class="p">()</span> <span class="c1"># display results</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/beginners_guide1.png"><img alt="_images/beginners_guide1.png" src="_images/beginners_guide1.png" style="width: 450px;" /></a>
+<p>These confidence bands are covariance-based and might represent an overestimation of the true uncertainty on the results (see <a class="reference internal" href="uncertainty.html#uncertainty"><span class="std std-ref">uncertainty</span></a> for further details). It is important to always report confidence bands with fitted distance distributions.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">fit</span></code> output contains additional information, for example:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">fit.V</span></code>, <code class="docutils literal notranslate"><span class="pre">fit.B</span></code>, and <code class="docutils literal notranslate"><span class="pre">fit.P</span></code> contain the arrays of the fitted dipolar signal, background, and distance distribution, respectively.</li>
+<li><code class="docutils literal notranslate"><span class="pre">fit.exparam</span></code>, <code class="docutils literal notranslate"><span class="pre">fit.bgparam</span></code>, and <code class="docutils literal notranslate"><span class="pre">fit.ddparam</span></code> contain the arrays of fitted model parameters for the experiment, background, and distribution models.</li>
+<li><code class="docutils literal notranslate"><span class="pre">fit.scale</span></code> contains the fitted overall scale of the dipolar signal.</li>
+</ul>
+</div></blockquote>
+<p>In addition to the distance distribution fit, it is important to check and report the fitted model parameters and their uncertainties. While this can be computed manually, a summary can be easily requested by enabling the <code class="docutils literal notranslate"><span class="pre">verbose</span></code> option of <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code>. By using</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># 4pDEER fit and report parameter fits</span>
+</pre></div>
+</div>
+<p>after the function has fitted your data, it will print a summary the results, including goodness-of-fit estimators
+and fitted parameters with uncertainties. Here is an example output</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>-----------------------------------------------------------------------------------------
+Goodness of fit
+Vexp[0]: 𝛘2 = 25.510184  RMSD  = 1.953580e+07
+-----------------------------------------------------------------------------------------
+Fitted parameters and 95%-confidence intervals
+Vfit[0]:
+V0:  3.551e+07  Signal scale (arb.u.)
+bgparam[0]:   145.3121342  (111.0809911, 179.5432773)  Concentration of pumped spins (μM)
+exparam[0]:   0.4066627  (0.3630338, 0.4502916)  Modulation depth ()
+-----------------------------------------------------------------------------------------
+</pre></div>
+</div>
+<p>where there are no distribution parameters (<code class="docutils literal notranslate"><span class="pre">ddparam</span></code>) due to the distribution model being non-parametric.</p>
+</div>
+<div class="section" id="exporting-the-figure-and-the-data">
+<h3>Exporting the figure and the data<a class="headerlink" href="#exporting-the-figure-and-the-data" title="Permalink to this headline">¶</a></h3>
+<p>After completing the fit, you might want to export the figure with the fit. Here is one way to do it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nf">figure</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="nf">plot</span><span class="p">()</span>                       <span class="c1"># get figure object</span>
+<span class="nf">figure</span><span class="o">.</span><span class="nf">savefig</span><span class="p">(</span><span class="s1">&#39;DEERFig.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>    <span class="c1"># save figure as png file</span>
+<span class="nf">figure</span><span class="o">.</span><span class="nf">savefig</span><span class="p">(</span><span class="s1">&#39;DEERFig.pdf&#39;</span><span class="p">)</span>             <span class="c1"># save figure as pdf file</span>
+</pre></div>
+</div>
+<p>To export the fitted distance distribution for plotting with another software, save it in a simple text file</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="nf">savetxt</span><span class="p">(</span><span class="s1">&#39;distancedistribution.txt&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span><span class="p">,</span> <span class="o">*</span><span class="n">fit</span><span class="o">.</span><span class="n">Puncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The generated file contain four columns: the distance axis, the distance distributions, and the upper and lower confidence bounds. The <code class="docutils literal notranslate"><span class="pre">.T</span></code> indicate array transposes, which are used to get the confidence bands into the column format for saving.</p>
+<p>To export the fitted time-domain trace, use similarly</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="nf">savetxt</span><span class="p">(</span><span class="s1">&#39;timetrace.txt&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">((</span><span class="n">t</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">V</span><span class="p">,</span> <span class="o">*</span><span class="n">fit</span><span class="o">.</span><span class="n">Vuncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Here is an example script to load experimental time trace, pre-process it, and fit a 4-pulse DEER model with a non-parametric distance distribution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
+
+<span class="c1"># Data import</span>
+<span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;/home/experiments/DEERexperiment.DTA&#39;</span>  <span class="c1"># file path</span>
+<span class="n">t</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">deerload</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>   <span class="c1"># load experimental data</span>
+
+<span class="c1"># Pre-processing</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctphase</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>   <span class="c1"># phase correction</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctzerotime</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>   <span class="c1"># zero-time shift</span>
+
+<span class="c1"># Distance range</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>   <span class="c1"># define distance range from 1.5nm to 6nm with the same number of points as t</span>
+
+<span class="c1"># Fit</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>   <span class="c1"># 4pDEER fit using non-parametric distance distribution</span>
+<span class="n">fit</span><span class="o">.</span><span class="nf">plot</span><span class="p">()</span> <span class="c1"># display results</span>
+
+<span class="c1"># Print figure</span>
+<span class="nf">figure</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="nf">plot</span><span class="p">()</span>
+<span class="nf">figure</span><span class="o">.</span><span class="nf">savefig</span><span class="p">(</span><span class="s1">&#39;DEERfig.pdf&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="uncertainty.html" class="btn btn-neutral float-right" title="Uncertainty" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="basics.html" class="btn btn-neutral float-left" title="Basics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

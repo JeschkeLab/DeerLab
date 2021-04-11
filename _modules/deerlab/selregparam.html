@@ -1,0 +1,539 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>deerlab.selregparam &mdash; DeerLab</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-rendered-html.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.13.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>deerlab.selregparam</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for deerlab.selregparam</h1><div class="highlight"><pre>
+<span></span><span class="c1"># selregparam.py - Regularization parameter selection</span>
+<span class="c1"># -----------------------------------------------------</span>
+<span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md).</span>
+<span class="c1"># Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="k">as</span> <span class="nn">opt</span>
+<span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">m</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
+
+<div class="viewcode-block" id="selregparam"><a class="viewcode-back" href="../../functions/selregparam.html#deerlab.selregparam">[docs]</a><span class="k">def</span> <span class="nf">selregparam</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">regtype</span><span class="o">=</span><span class="s1">&#39;tikhonov&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;brent&#39;</span><span class="p">,</span>
+                <span class="n">nonnegativity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">regorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">huberparam</span><span class="o">=</span><span class="mf">1.35</span><span class="p">,</span> <span class="n">candidates</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Selection of optimal regularization parameter based on a selection criterion.</span>
+
+<span class="sd">    Parameters </span>
+<span class="sd">    ----------</span>
+<span class="sd">    V : array_like or list of array_like</span>
+<span class="sd">        Dipolar signal, multiple datasets can be globally evaluated by passing a list of signals.</span>
+
+<span class="sd">    K : 2D-array_like or list of 2D-array_like</span>
+<span class="sd">        Dipolar kernel, if a list of signals is specified, a corresponding list of kernels must be passed as well.</span>
+
+<span class="sd">    r : array-like</span>
+<span class="sd">        Distance axis, in nanometers.</span>
+
+<span class="sd">    regtype : string</span>
+<span class="sd">        Regularization functional type: </span>
+<span class="sd">    </span>
+<span class="sd">        * ``&#39;tikhonov&#39;`` - Tikhonov regularizaton</span>
+<span class="sd">        * ``&#39;tv&#39;`` - Total variation regularization</span>
+<span class="sd">        * ``&#39;huber&#39;`` - Huber regularization</span>
+<span class="sd">        </span>
+<span class="sd">        The default is ``&#39;tikhonov&#39;``.</span>
+
+<span class="sd">    method : string</span>
+<span class="sd">        Method for the selection of the optimal regularization parameter.</span>
+
+<span class="sd">        * ``&#39;lr&#39;`` - L-curve minimum-radius method (LR)</span>
+<span class="sd">        * ``&#39;lc&#39;`` - L-curve maximum-curvature method (LC)</span>
+<span class="sd">        * ``&#39;cv&#39;`` - Cross validation (CV)</span>
+<span class="sd">        * ``&#39;gcv&#39;`` - Generalized Cross Validation (GCV)</span>
+<span class="sd">        * ``&#39;rgcv&#39;`` - Robust Generalized Cross Validation (rGCV)</span>
+<span class="sd">        * ``&#39;srgcv&#39;`` - Strong Robust Generalized Cross Validation (srGCV)</span>
+<span class="sd">        * ``&#39;aic&#39;`` - Akaike information criterion (AIC)</span>
+<span class="sd">        * ``&#39;bic&#39;`` - Bayesian information criterion (BIC)</span>
+<span class="sd">        * ``&#39;aicc&#39;`` - Corrected Akaike information criterion (AICC)</span>
+<span class="sd">        * ``&#39;rm&#39;`` - Residual method (RM)</span>
+<span class="sd">        * ``&#39;ee&#39;`` - Extrapolated Error (EE)          </span>
+<span class="sd">        * ``&#39;ncp&#39;`` - Normalized Cumulative Periodogram (NCP)</span>
+<span class="sd">        * ``&#39;gml&#39;`` - Generalized Maximum Likelihood (GML)</span>
+<span class="sd">        * ``&#39;mcl&#39;`` - Mallows&#39; C_L (MCL)</span>
+<span class="sd">    </span>
+<span class="sd">    weights : array_like, optional</span>
+<span class="sd">        Array of weighting coefficients for the individual signals in global fitting, </span>
+<span class="sd">        the default is all weighted equally.</span>
+
+<span class="sd">    candidates : list, optional</span>
+<span class="sd">        List or array of candidate regularization parameter values to be evaluated. </span>
+<span class="sd">        If not specified, these are automatically computed from the GSVD of the </span>
+<span class="sd">        dipolar kernel and regularization operator.</span>
+
+<span class="sd">    regorder : int scalar, optional</span>
+<span class="sd">        Order of the regularization operator, the default is 2.</span>
+
+<span class="sd">    algorithm : string, optional</span>
+<span class="sd">        Search algorithm: </span>
+<span class="sd">        </span>
+<span class="sd">        * ``&#39;grid&#39;`` - Grid-search, slow.</span>
+<span class="sd">        * ``&#39;brent&#39;`` - Brent-algorithm, fast.</span>
+<span class="sd">        </span>
+<span class="sd">        The default is ``&#39;brent&#39;``.</span>
+<span class="sd">        </span>
+<span class="sd">    full_output : boolean, optional</span>
+<span class="sd">        If enabled the function will return additional output arguments in a tuple, the default is False.</span>
+
+<span class="sd">    nonnegativity : boolean, optional</span>
+<span class="sd">        Enforces the non-negativity constraint on computed distance distributions, by default enabled.</span>
+
+<span class="sd">    noiselvl : float scalar, optional</span>
+<span class="sd">        Estimate of the noise standard deviation, if not specified it is estimated form the fit residuals.</span>
+<span class="sd">        Used for the MCL selection method.  </span>
+
+<span class="sd">    huberparam : float scalar, optional</span>
+<span class="sd">        Value of the Huber parameter used in Huber regularization, the default is 1.35.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    alphaopt : scalar</span>
+<span class="sd">        Optimal regularization parameter.</span>
+<span class="sd">    alphas : ndarray</span>
+<span class="sd">        Regularization parameter values candidates evaluated during the search. </span>
+<span class="sd">        Returned if full_output is True.</span>
+<span class="sd">    functional : ndarray</span>
+<span class="sd">        Values of the selection functional specified by (method) evaluated during the search. </span>
+<span class="sd">        Returned if full_output is True.</span>
+<span class="sd">    residuals : ndarray</span>
+<span class="sd">        Values of the residual norms evaluated during the search. </span>
+<span class="sd">        Returned if full_output is True.</span>
+<span class="sd">    residuals : ndarray</span>
+<span class="sd">        Values of the penalty norms evaluated during the search. </span>
+<span class="sd">        Returned if full_output is True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="c1">#=========================================================           </span>
+    <span class="c1"># Ensure the use of numpy-arrays</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+    <span class="c1"># If multiple datasets are passed, concatenate the signals and kernels</span>
+    <span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">parse_multidatasets</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+
+    <span class="c1"># The L-curve criteria require a grid-evaluation</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;lr&#39;</span> <span class="ow">or</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;lc&#39;</span><span class="p">:</span>
+        <span class="n">algorithm</span> <span class="o">=</span> <span class="s1">&#39;grid&#39;</span>
+
+    <span class="c1"># Get regularization operator</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">regoperator</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">regorder</span><span class="p">)</span>
+    <span class="c1"># Get range of potential alpha values candidates</span>
+    <span class="k">if</span> <span class="n">candidates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">alphaCandidates</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">regparamrange</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">L</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="n">alphaCandidates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span>
+
+    <span class="c1"># Create function handle</span>
+    <span class="n">evalalpha</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">alpha</span><span class="p">:</span> <span class="n">_evalalpha</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">nonnegativity</span><span class="p">,</span> <span class="n">noiselvl</span><span class="p">,</span> <span class="n">regtype</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">huberparam</span><span class="p">)</span>
+
+    <span class="c1"># Evaluate functional over search range, using specified search method</span>
+    <span class="k">if</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;brent&#39;</span><span class="p">:</span>
+                    
+        <span class="c1"># Search boundaries</span>
+        <span class="n">lga_min</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nf">min</span><span class="p">(</span><span class="n">alphaCandidates</span><span class="p">))</span>
+        <span class="n">lga_max</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">alphaCandidates</span><span class="p">))</span>
+
+        <span class="c1"># Create containers for non-local variables</span>
+        <span class="n">functional</span><span class="p">,</span><span class="n">residuals</span><span class="p">,</span><span class="n">penalties</span><span class="p">,</span><span class="n">alphas_evaled</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+        <span class="k">def</span> <span class="nf">register_ouputs</span><span class="p">(</span><span class="n">optout</span><span class="p">):</span>
+        <span class="c1">#========================</span>
+            <span class="k">nonlocal</span> <span class="n">functional</span><span class="p">,</span><span class="n">residuals</span><span class="p">,</span><span class="n">penalties</span><span class="p">,</span><span class="n">alphas_evaled</span>
+            <span class="c1"># Append the evaluated outpus at a iteration</span>
+            <span class="n">functional</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">functional</span><span class="p">,</span><span class="n">optout</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">residuals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">residuals</span><span class="p">,</span><span class="n">optout</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">penalties</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">penalties</span><span class="p">,</span><span class="n">optout</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">alphas_evaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">alphas_evaled</span><span class="p">,</span><span class="n">optout</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            <span class="c1"># Return the last element, current evaluation</span>
+            <span class="k">return</span> <span class="n">functional</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1">#========================</span>
+
+        <span class="c1"># Optimize alpha via Brent&#39;s method (implemented in scipy.optimize.fminbound)</span>
+        <span class="n">lga_opt</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">fminbound</span><span class="p">(</span><span class="k">lambda</span> <span class="n">lga</span><span class="p">:</span> <span class="n">register_ouputs</span><span class="p">(</span><span class="n">evalalpha</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">lga</span><span class="p">)),</span> <span class="n">lga_min</span><span class="p">,</span> <span class="n">lga_max</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="n">alphaOpt</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="n">lga_opt</span>
+
+    <span class="k">elif</span> <span class="n">algorithm</span><span class="o">==</span><span class="s1">&#39;grid&#39;</span><span class="p">:</span>
+        
+        <span class="c1"># Evaluate the full grid of alpha-candidates </span>
+        <span class="n">functional</span><span class="p">,</span><span class="n">residuals</span><span class="p">,</span><span class="n">penalties</span><span class="p">,</span><span class="n">alphas_evaled</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">evalalpha</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="n">alphaCandidates</span><span class="p">]))</span>
+
+        <span class="c1"># If an L-curve method is requested evaluate it now with the full grid:</span>
+        
+        <span class="c1"># L-curve minimum-radius method (LR)</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;lr&#39;</span><span class="p">:</span>
+            <span class="n">Eta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">penalties</span><span class="p">)</span>
+            <span class="n">Rho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
+            <span class="n">dd</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="nf">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="nf">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+            <span class="n">functional</span> <span class="o">=</span> <span class="n">dd</span><span class="p">(</span><span class="n">Rho</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">dd</span><span class="p">(</span><span class="n">Eta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>         
+
+        <span class="c1"># L-curve maximum-curvature method (LC)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;lc&#39;</span><span class="p">:</span> 
+            <span class="n">d1Residual</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">gradient</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">residuals</span><span class="p">))</span>
+            <span class="n">d2Residual</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">gradient</span><span class="p">(</span><span class="n">d1Residual</span><span class="p">)</span>
+            <span class="n">d1Penalty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">gradient</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">penalties</span><span class="p">))</span>
+            <span class="n">d2Penalty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">gradient</span><span class="p">(</span><span class="n">d1Penalty</span><span class="p">)</span>
+            <span class="n">functional</span> <span class="o">=</span> <span class="p">(</span><span class="n">d1Residual</span><span class="o">*</span><span class="n">d2Penalty</span> <span class="o">-</span> <span class="n">d2Residual</span><span class="o">*</span><span class="n">d1Penalty</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">d1Residual</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">d1Penalty</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># Find minimum of the selection functional              </span>
+        <span class="n">alphaOpt</span> <span class="o">=</span> <span class="n">alphaCandidates</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="nf">argmin</span><span class="p">(</span><span class="n">functional</span><span class="p">)]</span>
+
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Search method not found. Must be either &#39;brent&#39; or &#39;grid&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">alphaOpt</span><span class="p">,</span><span class="n">alphas_evaled</span><span class="p">,</span><span class="n">functional</span><span class="p">,</span><span class="n">residuals</span><span class="p">,</span><span class="n">penalties</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">alphaOpt</span></div>
+<span class="c1">#=========================================================</span>
+
+
+<span class="c1">#=========================================================</span>
+<span class="k">def</span> <span class="nf">_evalalpha</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">selmethod</span><span class="p">,</span><span class="n">nonneg</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">regtype</span><span class="p">,</span><span class="n">weights</span><span class="p">,</span><span class="n">HuberParameter</span><span class="p">):</span>
+    <span class="s2">&quot;Evaluation of the selection functional at a given regularization parameter value&quot;</span>
+
+    <span class="c1"># Prepare LSQ components</span>
+    <span class="n">KtKreg</span><span class="p">,</span> <span class="n">KtV</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">lsqcomponents</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">weights</span><span class="p">,</span> <span class="n">regtype</span><span class="o">=</span><span class="n">regtype</span><span class="p">,</span> <span class="n">huberparam</span><span class="o">=</span><span class="n">HuberParameter</span><span class="p">)</span>
+    <span class="c1"># Solve linear LSQ problem</span>
+    <span class="k">if</span> <span class="n">nonneg</span><span class="p">:</span>
+        <span class="c1"># Non-negative solution</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">cvxnnls</span><span class="p">(</span><span class="n">KtKreg</span><span class="p">,</span><span class="n">KtV</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Unconstrained solution</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">KtKreg</span><span class="p">,</span><span class="n">KtV</span><span class="p">)</span>
+
+    <span class="c1"># Moore-PeNose pseudoinverse</span>
+    <span class="n">pK</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">KtKreg</span><span class="p">)</span><span class="nd">@K</span><span class="o">.</span><span class="n">T</span>
+    <span class="c1"># Influence matrix</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@pK</span>
+
+    <span class="c1"># Residual term</span>
+    <span class="n">Residual</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">K</span><span class="nd">@P</span> <span class="o">-</span> <span class="n">V</span><span class="p">)</span>
+    <span class="c1"># Regularization penalty term</span>
+    <span class="k">if</span> <span class="n">regtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;tikhonov&#39;</span><span class="p">:</span>
+        <span class="n">Penalty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">L</span><span class="nd">@P</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">regtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;tv&#39;</span><span class="p">:</span>
+        <span class="n">Penalty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">L</span><span class="nd">@P</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">regtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;huber&#39;</span><span class="p">:</span>
+        <span class="n">Penalty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">L</span><span class="nd">@P</span><span class="o">/</span><span class="n">HuberParameter</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Regularization type not valid. Must be &#39;tikhonov&#39;,&#39;tv&#39; or &#39;huber&#39;&quot;</span><span class="p">)</span>
+    <span class="c1">#-----------------------------------------------------------------------</span>
+    <span class="c1">#  Selection methods for optimal regularization parameter</span>
+    <span class="c1">#-----------------------------------------------------------------------</span>
+    
+    <span class="n">functional</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+
+    <span class="c1"># Cross validation (CV)</span>
+    <span class="k">if</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;cv&#39;</span><span class="p">:</span> 
+        <span class="n">f_</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">((</span><span class="n">V</span> <span class="o">-</span> <span class="n">K</span><span class="nd">@P</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="nf">diag</span><span class="p">(</span><span class="n">H</span><span class="p">)))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            
+    <span class="c1"># Generalized Cross Validation (GCV)</span>
+    <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;gcv&#39;</span><span class="p">:</span> 
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">Residual</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            
+    <span class="c1"># Robust Generalized Cross Validation (rGCV)</span>
+    <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;rgcv&#39;</span><span class="p">:</span> 
+        <span class="n">tuning</span> <span class="o">=</span> <span class="mf">0.9</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">Residual</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">tuning</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">tuning</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">H</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">)</span>
+            
+    <span class="c1"># Strong Robust Generalized Cross Validation (srGCV)</span>
+    <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;srgcv&#39;</span><span class="p">:</span>
+        <span class="n">tuning</span> <span class="o">=</span> <span class="mf">0.8</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">Residual</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">tuning</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">tuning</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">pK</span><span class="o">.</span><span class="n">T</span><span class="nd">@pK</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">)</span>
+            
+    <span class="c1"># Akaike information criterion (AIC)</span>
+    <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;aic&#39;</span><span class="p">:</span> 
+        <span class="n">crit</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">N</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Residual</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="n">crit</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+            
+    <span class="c1"># Bayesian information criterion (BIC)</span>
+    <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;bic&#39;</span><span class="p">:</span>  
+        <span class="n">crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">N</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Residual</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="n">crit</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+            
+    <span class="c1"># Corrected Akaike information criterion (AICC)</span>
+    <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;aicc&#39;</span><span class="p">:</span> 
+        <span class="n">crit</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="o">/</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">N</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Residual</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="n">crit</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+    
+    <span class="c1"># Residual method (RM)</span>
+    <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;rm&#39;</span><span class="p">:</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">T</span><span class="o">@</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">eye</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">H</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">H</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">H</span><span class="p">)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">Residual</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">scale</span><span class="o">.</span><span class="n">T</span><span class="nd">@scale</span><span class="p">))</span>
+
+    <span class="c1"># Extrapolated Error (EE)          </span>
+    <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;ee&#39;</span><span class="p">:</span> 
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">Residual</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">T</span><span class="o">@</span><span class="p">(</span><span class="n">K</span><span class="nd">@P</span> <span class="o">-</span> <span class="n">V</span><span class="p">))</span>
+
+    <span class="c1"># Normalized Cumulative Periodogram (NCP)</span>
+    <span class="k">elif</span> <span class="n">selmethod</span> <span class="o">==</span> <span class="s1">&#39;ncp&#39;</span><span class="p">:</span> 
+        <span class="n">resPeriodogram</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">K</span><span class="nd">@P</span> <span class="o">-</span> <span class="n">V</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">wnoisePeriodogram</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">resPeriodogram</span><span class="p">))</span>
+        <span class="n">respowSpectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">resPeriodogram</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">resPeriodogram</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">respowSpectrum</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">resPeriodogram</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">resPeriodogram</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">wnoisePeriodogram</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">resPeriodogram</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">respowSpectrum</span> <span class="o">-</span> <span class="n">wnoisePeriodogram</span><span class="p">)</span>
+
+    <span class="c1"># Generalized Maximum Likelihood (GML)</span>
+    <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span> <span class="s1">&#39;gml&#39;</span><span class="p">:</span> 
+        <span class="n">Treshold</span> <span class="o">=</span> <span class="mf">1e-9</span>
+        <span class="n">eigs</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">eye</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">H</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">H</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">H</span><span class="p">)</span>
+        <span class="n">eigs</span><span class="p">[</span><span class="n">eigs</span> <span class="o">&lt;</span> <span class="n">Treshold</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nzeigs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">real</span><span class="p">(</span><span class="n">eigs</span><span class="p">[</span><span class="n">eigs</span><span class="o">!=</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">@</span><span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="n">K</span><span class="nd">@P</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="nf">prod</span><span class="p">(</span><span class="n">nzeigs</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">nzeigs</span><span class="p">))</span>
+
+    <span class="c1"># Mallows&#39; C_L (MCL)</span>
+    <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span> <span class="s1">&#39;mcl&#39;</span><span class="p">:</span>  
+        <span class="k">if</span> <span class="n">noiselvl</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">std</span><span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="n">K</span><span class="nd">@P</span><span class="p">)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">Residual</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">noiselvl</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">H</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="n">noiselvl</span><span class="o">**</span><span class="mi">2</span>
+        
+    <span class="k">elif</span> <span class="n">selmethod</span> <span class="o">==</span> <span class="s1">&#39;lr&#39;</span> <span class="ow">or</span> <span class="n">selmethod</span> <span class="o">==</span> <span class="s1">&#39;lc&#39;</span><span class="p">:</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Selection method </span><span class="se">\&#39;</span><span class="si">{</span><span class="n">selmethod</span><span class="si">}</span><span class="se">\&#39;</span><span class="s1"> is not known.&#39;</span><span class="p">)</span>
+
+    <span class="n">functional</span> <span class="o">=</span> <span class="n">functional</span> <span class="o">+</span> <span class="n">f_</span>
+
+    <span class="k">return</span> <span class="n">functional</span><span class="p">,</span> <span class="n">Residual</span><span class="p">,</span> <span class="n">Penalty</span><span class="p">,</span> <span class="n">alpha</span>  
+<span class="c1">#=========================================================           </span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

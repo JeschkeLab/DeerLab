@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Emulating the DeerAnalysis workflow &mdash; DeerLab</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-rendered-html.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Selecting an optimal parametric model for fitting a dipolar signal" href="ex_selecting_an_optimal_model.html" />
+    <link rel="prev" title="Analyzing the Pake pattern of a dipolar signal" href="ex_analyzing_pake_pattern.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.13.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../examples.html">Examples</a> &raquo;</li>
+        
+      <li>Emulating the DeerAnalysis workflow</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Click <a class="reference internal" href="#sphx-glr-download-auto-examples-other-ex-emulating-deeranalysis-workflow-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="emulating-the-deeranalysis-workflow">
+<span id="sphx-glr-auto-examples-other-ex-emulating-deeranalysis-workflow-py"></span><h1>Emulating the DeerAnalysis workflow<a class="headerlink" href="#emulating-the-deeranalysis-workflow" title="Permalink to this headline">¶</a></h1>
+<p>This example shows how to reproduce the type of workflow implemented in
+DeerAnalysis, using DeerLab functions. This kind of analysis workflow is
+outdated and not recommended for routine or accurate data analysis.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
+</pre></div>
+</div>
+<div class="section" id="generating-a-dataset">
+<h2>Generating a dataset<a class="headerlink" href="#generating-a-dataset" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>For this example we will simulate a simple 4pDEER signal</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parameters</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">250</span><span class="p">)</span> <span class="c1"># µs</span>
+<span class="n">rtrue</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span> <span class="c1"># nm</span>
+<span class="n">Ptrue</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss3</span><span class="p">(</span><span class="n">rtrue</span><span class="p">,[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">conc</span> <span class="o">=</span> <span class="mi">180</span> <span class="c1"># µM</span>
+
+<span class="c1"># Simulate an experimental signal with some scale and phase</span>
+<span class="n">bg</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">lam</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">rtrue</span><span class="p">,</span><span class="n">mod</span><span class="o">=</span><span class="n">lam</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="n">bg</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@Ptrue</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">16</span><span class="p">)</span> <span class="c1"># add a phase shift</span>
+<span class="n">rnoise</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># real-component noise</span>
+<span class="n">inoise</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># imaginary-component noise</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">V</span> <span class="o">+</span> <span class="n">rnoise</span> <span class="o">+</span> <span class="n">inoise</span> <span class="c1"># complex-valued noisy signal</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">*</span><span class="mf">3e6</span> <span class="c1"># add an arbitrary amplitude scale</span>
+
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="o">.</span><span class="nf">real</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="o">.</span><span class="nf">imag</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">),</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t (µs)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;real&#39;</span><span class="p">,</span><span class="s1">&#39;imag&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="ex emulating deeranalysis workflow" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_emulating_deeranalysis_workflow_001.png" />
+</div>
+<div class="section" id="deeranalysis-workflow">
+<h2>DeerAnalysis workflow<a class="headerlink" href="#deeranalysis-workflow" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Pre-processing</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctphase</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctzerotime</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">/</span><span class="nf">max</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+
+<span class="c1"># Distance axis estimation</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">time2dist</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Background fit</span>
+<span class="n">tstart</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># background fit start, in µs</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">t</span><span class="o">&gt;</span><span class="n">tstart</span>
+<span class="k">def</span> <span class="nf">Bmodel</span><span class="p">(</span><span class="n">par</span><span class="p">):</span>
+    <span class="n">lam</span><span class="p">,</span><span class="n">kappa</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">par</span> <span class="c1"># unpack parameters</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_strexp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">mask</span><span class="p">],[</span><span class="n">kappa</span><span class="p">,</span><span class="n">d</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">B</span>
+
+<span class="c1">#       lam     k   d</span>
+<span class="n">par0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span>   <span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">lb</span>   <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">]</span>
+<span class="n">ub</span>   <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span>      <span class="mi">5</span><span class="p">,</span>  <span class="mi">6</span><span class="p">]</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span><span class="n">Bmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">fitscale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">lamfit</span><span class="p">,</span><span class="n">kappa</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
+<span class="n">Bfit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_strexp</span><span class="p">(</span><span class="n">t</span><span class="p">,[</span><span class="n">kappa</span><span class="p">,</span><span class="n">d</span><span class="p">])</span>
+
+<span class="c1"># Background &quot;correction&quot; by division</span>
+<span class="n">Vcorr</span> <span class="o">=</span> <span class="p">(</span><span class="n">V</span><span class="o">/</span><span class="n">Bfit</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">lamfit</span><span class="p">)</span><span class="o">/</span><span class="n">lamfit</span>
+
+<span class="c1"># Tikhonov regularization using the L-curve criterion</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitregmodel</span><span class="p">(</span><span class="n">Vcorr</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;tikhonov&#39;</span><span class="p">,</span><span class="s1">&#39;lr&#39;</span><span class="p">,)</span>
+<span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="plots">
+<h2>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h2>
+<p>sphinx_gallery_thumbnail_number = 2</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">311</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,(</span><span class="mi">1</span><span class="o">-</span><span class="n">lamfit</span><span class="p">)</span><span class="o">*</span><span class="n">Bfit</span><span class="p">,</span><span class="s1">&#39;r--&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t (µs)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;data&#39;</span><span class="p">,</span><span class="s1">&#39;$(1-\lambda)B_</span><span class="si">{fit}</span><span class="s1">$&#39;</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">312</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vcorr</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">K</span><span class="nd">@Pfit</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t (µs)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;corrected data&#39;</span><span class="p">,</span><span class="s1">&#39;fit&#39;</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">313</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">rtrue</span><span class="p">,</span><span class="n">Ptrue</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;r (nm)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;P (nm⁻¹)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;truth&#39;</span><span class="p">,</span><span class="s1">&#39;fit&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="ex emulating deeranalysis workflow" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_emulating_deeranalysis_workflow_002.png" />
+<p>Note that these results do not include any confidence intervals. DeerAnalysis based its
+uncertainty estimation in a so-called “validation” tool. That tool does not provide true confidence intervals
+and therefore its use is disnecouraged in favor of any of the uncertainty quantification tools provided in DeerLab.
+The “validation” tool of DeerAnalysis cannot be reproduced with DeerLab without implementing it manually.</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  4.280 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-other-ex-emulating-deeranalysis-workflow-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<a class="reference download internal" download="" href="../../_downloads/51e19bc9175f5abe68bb012102f7aece/ex_emulating_deeranalysis_workflow.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_emulating_deeranalysis_workflow.py</span></code></a></div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<a class="reference download internal" download="" href="../../_downloads/480a6ccb3dd5f6a8c4901e7fe2cf33d2/ex_emulating_deeranalysis_workflow.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_emulating_deeranalysis_workflow.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="ex_selecting_an_optimal_model.html" class="btn btn-neutral float-right" title="Selecting an optimal parametric model for fitting a dipolar signal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ex_analyzing_pake_pattern.html" class="btn btn-neutral float-left" title="Analyzing the Pake pattern of a dipolar signal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Global fitting of multiple different DEER signals, non-parametric distribution &mdash; DeerLab</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-rendered-html.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Distance restraints from 4-pulse DEER data, non-parametric distribution" href="ex_restraints_4pdeer.html" />
+    <link rel="prev" title="Basic fitting of a 4-pulse DEER signal, with 2+1 contribution" href="ex_fitting_4pdeer_2p1.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.13.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../examples.html">Examples</a> &raquo;</li>
+        
+      <li>Global fitting of multiple different DEER signals, non-parametric distribution</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Click <a class="reference internal" href="#sphx-glr-download-auto-examples-basic-ex-global-different-deer-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="global-fitting-of-multiple-different-deer-signals-non-parametric-distribution">
+<span id="sphx-glr-auto-examples-basic-ex-global-different-deer-py"></span><h1>Global fitting of multiple different DEER signals, non-parametric distribution<a class="headerlink" href="#global-fitting-of-multiple-different-deer-signals-non-parametric-distribution" title="Permalink to this headline">¶</a></h1>
+<p>How to fit multiple signals from different DEER experiments to a model with a non-parametric
+distribution and a homogeneous background, using Tikhonov regularization.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="load-and-pre-process-data">
+<h1>Load and pre-process data<a class="headerlink" href="#load-and-pre-process-data" title="Permalink to this headline">¶</a></h1>
+<p>Uncomment and use the following lines if you have experimental data:</p>
+<p>datasets = (‘file1.DTA’,’file2.DTA’,’file3.DTA’)
+data = [dl.deerload(ds) for ds in datasets]
+t = [_[0] for _ in data]
+V = [_[1] for _ in data]</p>
+</div>
+<div class="section" id="simulate-data">
+<h1>Simulate data<a class="headerlink" href="#simulate-data" title="Permalink to this headline">¶</a></h1>
+<p>In this example we will use two simulated signals (one 4-pulse DEER signal and one 5-pulse DEER signal) instead:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define a function that generates synthetic data</span>
+<span class="k">def</span> <span class="nf">generatedata</span><span class="p">():</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">150</span><span class="p">)</span>                <span class="c1"># distance axis, nm</span>
+    <span class="n">param</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">]</span>   <span class="c1"># parameters for three-Gaussian model</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">param</span><span class="p">)</span>               <span class="c1"># model distance distribution</span>
+
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>             <span class="c1"># time axis 1, µs</span>
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">400</span><span class="p">)</span>             <span class="c1"># time axis 2, µs</span>
+
+    <span class="n">path4p</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>                      <span class="c1"># 4-pulse DEER pathways</span>
+    <span class="n">path5p</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">ex_5pdeer</span><span class="p">([</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">])</span>     <span class="c1"># 5-pulse DEER pathways</span>
+
+    <span class="n">K1</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">pathways</span><span class="o">=</span><span class="n">path4p</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">lam</span><span class="p">))</span>  <span class="c1"># dipolar kernel 1</span>
+    <span class="n">K2</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">pathways</span><span class="o">=</span><span class="n">path5p</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="n">lam</span><span class="p">))</span>   <span class="c1"># dipolar kernel 2</span>
+
+    <span class="n">V1</span> <span class="o">=</span> <span class="n">K1</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="mf">0.005</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># simulated signal 1</span>
+    <span class="n">V2</span> <span class="o">=</span> <span class="n">K2</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># simulated signal 2</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">],</span> <span class="p">[</span><span class="n">V1</span><span class="p">,</span><span class="n">V2</span><span class="p">]</span>
+
+<span class="n">t</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">generatedata</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When doing global fitting, you must specify a list of the signals as well as a list of the corresponding time axes.
+Then, a model type for the global distance distribution model and finally a list of models for the background and experiment.
+In this case we assume that both signals can be modelled as 3D-homogenous distributions of spins.
+Since we know that the</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change the start values of the 5-pulse DEER model to reflect the experimental data</span>
+<span class="n">dl</span><span class="o">.</span><span class="nf">ex_5pdeer</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">]</span>
+
+<span class="c1"># Run fit</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,[</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">],[</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_5pdeer</span><span class="p">],</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">fit</span><span class="o">.</span><span class="nf">plot</span><span class="p">();</span>
+</pre></div>
+</div>
+<img alt="ex global different deer" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_global_different_deer_001.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/numpy/core/_asarray.py:171: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify &#39;dtype=object&#39; when creating the ndarray.
+  return array(a, dtype, copy=False, order=order, subok=True)
+----------------------------------------------------------------------------
+Goodness of fit
+  Vexp[0]: 𝛘2 = 1.996923  RMSD  = 5.710482e-03
+  Vexp[1]: 𝛘2 = 1.512038  RMSD  = 1.200638e-02
+----------------------------------------------------------------------------
+Fitted parameters and 95%-confidence intervals
+Vfit[0]:
+  V0:  1.00  Signal scale (arb.u.)
+  bgparam[0]:   329.1838045  (319.7864437, 338.5811653)  Concentration of pumped spins (μM)
+  exparam[0]:   0.3006753  (0.2958686, 0.3054820)  Modulation depth ()
+Vfit[1]:
+  V0:  0.98  Signal scale (arb.u.)
+  bgparam[0]:   123.6794056  (116.2301845, 131.1286267)  Concentration of pumped spins (μM)
+  exparam[0]:   0.6231396  (0.6028287, 0.6434505)  Amplitude of unmodulated components ()
+  exparam[1]:   0.3155292  (0.3026335, 0.3284249)  Amplitude of 1st modulated pathway ()
+  exparam[2]:   0.0760435  (0.0683859, 0.0837011)  Amplitude of 2nd modulated pathway ()
+  exparam[3]:   3.2127107  (3.1961898, 3.2292316)  Refocusing time of 2nd modulated pathway (μs)
+----------------------------------------------------------------------------
+
+&lt;Figure size 700x900 with 3 Axes&gt;
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  16.809 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-global-different-deer-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<a class="reference download internal" download="" href="../../_downloads/ef97ff01844876656ecefd70c14b7baf/ex_global_different_deer.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_global_different_deer.py</span></code></a></div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<a class="reference download internal" download="" href="../../_downloads/65bad5c97080dc499d58bf3dc39f27c2/ex_global_different_deer.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_global_different_deer.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="ex_restraints_4pdeer.html" class="btn btn-neutral float-right" title="Distance restraints from 4-pulse DEER data, non-parametric distribution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ex_fitting_4pdeer_2p1.html" class="btn btn-neutral float-left" title="Basic fitting of a 4-pulse DEER signal, with 2+1 contribution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

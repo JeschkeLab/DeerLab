@@ -1,0 +1,386 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Examples &mdash; DeerLab</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-rendered-html.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.13.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../beginners_guide.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Examples</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="examples">
+<span id="sphx-glr-auto-examples"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<p>Here is a collection of example scripts for the use of DeerLab.</p>
+<div class="sphx-glr-clear"></div><hr class="docutils" id="sphx-glr-auto-examples-basic" />
+<div class="section" id="basic">
+<h2>Basic<a class="headerlink" href="#basic" title="Permalink to this headline">¶</a></h2>
+<p>These are basic examples for routine operations in DeerLab, mainly focused on the <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> function.</p>
+<div class="sphx-glr-thumbcontainer" tooltip="Fit a simple 4-pulse DEER signal with a model with a non-parametric distribution and a homogene..."><div class="figure" id="id1">
+<img alt="Basic analysis of a 4-pulse DEER signal, non-parametric distribution" src="../_images/sphx_glr_ex_fitting_4pdeer_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="basic/ex_fitting_4pdeer.html#sphx-glr-auto-examples-basic-ex-fitting-4pdeer-py"><span class="std std-ref">Basic analysis of a 4-pulse DEER signal, non-parametric distribution</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="How to obtain bootstrapped confidence intervals for simple routine operations with fitmodel."><div class="figure" id="id2">
+<img alt="Bootstrapped confidence intervals in routine analysis" src="../_images/sphx_glr_ex_bootstrapping_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="basic/ex_bootstrapping.html#sphx-glr-auto-examples-basic-ex-bootstrapping-py"><span class="std std-ref">Bootstrapped confidence intervals in routine analysis</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="This example shows how to fit a 5-pulse DEER signal with a non-parametric distribution, a backg..."><div class="figure" id="id3">
+<img alt="Basic fitting of a 5-pulse DEER signal, non-parametric distribution" src="../_images/sphx_glr_ex_fitting_5pdeer_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="basic/ex_fitting_5pdeer.html#sphx-glr-auto-examples-basic-ex-fitting-5pdeer-py"><span class="std std-ref">Basic fitting of a 5-pulse DEER signal, non-parametric distribution</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="How to fit multiple 4-pulse DEER signals to a model with a non-parametric distribution and a ho..."><div class="figure" id="id4">
+<img alt="Global fitting of multiple 4-pulse DEER signals, non-parametric distribution" src="../_images/sphx_glr_ex_global_fitting_4pdeer_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="basic/ex_global_fitting_4pdeer.html#sphx-glr-auto-examples-basic-ex-global-fitting-4pdeer-py"><span class="std std-ref">Global fitting of multiple 4-pulse DEER signals, non-parametric distribution</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="This example shows how to fit a 4-pulse DEER signal with a non-parametric distribution, includi..."><div class="figure" id="id5">
+<img alt="Basic fitting of a 4-pulse DEER signal, with 2+1 contribution" src="../_images/sphx_glr_ex_fitting_4pdeer_2p1_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="basic/ex_fitting_4pdeer_2p1.html#sphx-glr-auto-examples-basic-ex-fitting-4pdeer-2p1-py"><span class="std std-ref">Basic fitting of a 4-pulse DEER signal, with 2+1 contribution</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="How to fit multiple signals from different DEER experiments to a model with a non-parametric di..."><div class="figure" id="id6">
+<img alt="Global fitting of multiple different DEER signals, non-parametric distribution" src="../_images/sphx_glr_ex_global_different_deer_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="basic/ex_global_different_deer.html#sphx-glr-auto-examples-basic-ex-global-different-deer-py"><span class="std std-ref">Global fitting of multiple different DEER signals, non-parametric distribution</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="How to fit a simple 4-pulse DEER signal and derive distance restraints from  the fitted non-par..."><div class="figure" id="id7">
+<img alt="Distance restraints from 4-pulse DEER data, non-parametric distribution" src="../_images/sphx_glr_ex_restraints_4pdeer_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="basic/ex_restraints_4pdeer.html#sphx-glr-auto-examples-basic-ex-restraints-4pdeer-py"><span class="std std-ref">Distance restraints from 4-pulse DEER data, non-parametric distribution</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-clear"></div></div>
+<hr class="docutils" id="sphx-glr-auto-examples-advanced" />
+<div class="section" id="advanced">
+<h2>Advanced<a class="headerlink" href="#advanced" title="Permalink to this headline">¶</a></h2>
+<p>These examples showcase deeper usage of all DeerLab functions and the fitting of more complex and custom models.</p>
+<div class="sphx-glr-thumbcontainer" tooltip="Basic manipulation of parametric models and creating mixed models  for fitting distance distrib..."><div class="figure" id="id8">
+<img alt="Fitting a mixed distance-distribution model" src="../_images/sphx_glr_ex_fitting_mixed_model_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="advanced/ex_fitting_mixed_model.html#sphx-glr-auto-examples-advanced-ex-fitting-mixed-model-py"><span class="std std-ref">Fitting a mixed distance-distribution model</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="A simpe example of uncertainty estimation for Tikhonov regularization  results. The example wil..."><div class="figure" id="id9">
+<img alt="Comparing confidence intervals for regularization results" src="../_images/sphx_glr_ex_comparing_uncertainties_for_regularization_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="advanced/ex_comparing_uncertainties_for_regularization.html#sphx-glr-auto-examples-advanced-ex-comparing-uncertainties-for-regularization-py"><span class="std std-ref">Comparing confidence intervals for regularization results</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="Basic example for manipulating the figures returned by DeerLab fit functions."><div class="figure" id="id10">
+<img alt="Manipulating DeerLab plots" src="../_images/sphx_glr_ex_manipulating_graphics_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="advanced/ex_manipulating_graphics.html#sphx-glr-auto-examples-advanced-ex-manipulating-graphics-py"><span class="std std-ref">Manipulating DeerLab plots</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="This example shows how to fit Gaussians to a non-parametric distance distribution obtained via ..."><div class="figure" id="id11">
+<img alt="Fitting Gaussians to a non-parametric distance distribution" src="../_images/sphx_glr_ex_extracting_gauss_constraints_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="advanced/ex_extracting_gauss_constraints.html#sphx-glr-auto-examples-advanced-ex-extracting-gauss-constraints-py"><span class="std std-ref">Fitting Gaussians to a non-parametric distance distribution</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="How the use of SNLLS to fit a kernel model and a parameter-free  distribution to a dipolar sign..."><div class="figure" id="id12">
+<img alt="Fitting a custom dipolar kernel model with a parameter-free distribution" src="../_images/sphx_glr_ex_fitting_custom_kernel_with_snlls_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="advanced/ex_fitting_custom_kernel_with_snlls.html#sphx-glr-auto-examples-advanced-ex-fitting-custom-kernel-with-snlls-py"><span class="std std-ref">Fitting a custom dipolar kernel model with a parameter-free distribution</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="How to propagate the uncertainty of the fitted parameters to the models which depend on them."><div class="figure" id="id13">
+<img alt="Uncertainty propagation from parameter fits" src="../_images/sphx_glr_ex_param_uncertainty_propagation_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="advanced/ex_param_uncertainty_propagation.html#sphx-glr-auto-examples-advanced-ex-param-uncertainty-propagation-py"><span class="std std-ref">Uncertainty propagation from parameter fits</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="This example showcases how to fit a simple 4-pulse DEER signal with background using a multi-Ga..."><div class="figure" id="id14">
+<img alt="Multi-Gauss fit of a 4-pulse DEER signal" src="../_images/sphx_glr_ex_multigauss_fitting_4pdeer_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="advanced/ex_multigauss_fitting_4pdeer.html#sphx-glr-auto-examples-advanced-ex-multigauss-fitting-4pdeer-py"><span class="std std-ref">Multi-Gauss fit of a 4-pulse DEER signal</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="This example shows how to fit a two-state model to a series DEER traces. Each of the two states..."><div class="figure" id="id15">
+<img alt="Global fitting of a two-state model to a series of DEER traces" src="../_images/sphx_glr_ex_global_twostates_parametric_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="advanced/ex_global_twostates_parametric.html#sphx-glr-auto-examples-advanced-ex-global-twostates-parametric-py"><span class="std std-ref">Global fitting of a two-state model to a series of DEER traces</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="How to use separable non-linear least squares (SNLLS) to fit a pseudo-titration curve to multip..."><div class="figure" id="id16">
+<img alt="Analyzing pseudo-titration (dose-response) curves with non-parametric distributions" src="../_images/sphx_glr_ex_pseudotitration_parameter_free_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="advanced/ex_pseudotitration_parameter_free.html#sphx-glr-auto-examples-advanced-ex-pseudotitration-parameter-free-py"><span class="std std-ref">Analyzing pseudo-titration (dose-response) curves with non-parametric distributions</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-clear"></div></div>
+<hr class="docutils" id="sphx-glr-auto-examples-other" />
+<div class="section" id="others">
+<h2>Others<a class="headerlink" href="#others" title="Permalink to this headline">¶</a></h2>
+<p>These examples show how to perform minor data analysis tasks or reproduce older data analysis workflows.</p>
+<div class="sphx-glr-thumbcontainer" tooltip="A very basic example for displaying the dipolar spectrum (Pake pattern) of a given dipolar sign..."><div class="figure" id="id17">
+<img alt="Analyzing the Pake pattern of a dipolar signal" src="../_images/sphx_glr_ex_analyzing_pake_pattern_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="other/ex_analyzing_pake_pattern.html#sphx-glr-auto-examples-other-ex-analyzing-pake-pattern-py"><span class="std std-ref">Analyzing the Pake pattern of a dipolar signal</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="This example shows how to reproduce the type of workflow implemented in DeerAnalysis, using Dee..."><div class="figure" id="id18">
+<img alt="Emulating the DeerAnalysis workflow" src="../_images/sphx_glr_ex_emulating_deeranalysis_workflow_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="other/ex_emulating_deeranalysis_workflow.html#sphx-glr-auto-examples-other-ex-emulating-deeranalysis-workflow-py"><span class="std std-ref">Emulating the DeerAnalysis workflow</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="How to optimally select a parametric model for a given dipolar signal."><div class="figure" id="id19">
+<img alt="Selecting an optimal parametric model for fitting a dipolar signal" src="../_images/sphx_glr_ex_selecting_an_optimal_model_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="other/ex_selecting_an_optimal_model.html#sphx-glr-auto-examples-other-ex-selecting-an-optimal-model-py"><span class="std std-ref">Selecting an optimal parametric model for fitting a dipolar signal</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="This example shows how to generate probability density functions of values for fit parameters u..."><div class="figure" id="id20">
+<img alt="Bootstrapped distributions of fit parameters" src="../_images/sphx_glr_ex_bootstrapped_parameter_distributions_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="other/ex_bootstrapped_parameter_distributions.html#sphx-glr-auto-examples-other-ex-bootstrapped-parameter-distributions-py"><span class="std std-ref">Bootstrapped distributions of fit parameters</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-clear"></div><div class="sphx-glr-footer class sphx-glr-footer-gallery docutils container">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<a class="reference download internal" download="" href="../_downloads/c1f28bef40262f7ffaf331208404048a/auto_examples_python.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">all</span> <span class="pre">examples</span> <span class="pre">in</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">auto_examples_python.zip</span></code></a></div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<a class="reference download internal" download="" href="../_downloads/5b9dfcae0d216240faad372cd46e880e/auto_examples_jupyter.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">all</span> <span class="pre">examples</span> <span class="pre">in</span> <span class="pre">Jupyter</span> <span class="pre">notebooks:</span> <span class="pre">auto_examples_jupyter.zip</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

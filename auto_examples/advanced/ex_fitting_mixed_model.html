@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Fitting a mixed distance-distribution model &mdash; DeerLab</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery-rendered-html.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Comparing confidence intervals for regularization results" href="ex_comparing_uncertainties_for_regularization.html" />
+    <link rel="prev" title="Distance restraints from 4-pulse DEER data, non-parametric distribution" href="../basic/ex_restraints_4pdeer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.13.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DeerLab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../examples.html">Examples</a> &raquo;</li>
+        
+      <li>Fitting a mixed distance-distribution model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Click <a class="reference internal" href="#sphx-glr-download-auto-examples-advanced-ex-fitting-mixed-model-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="fitting-a-mixed-distance-distribution-model">
+<span id="sphx-glr-auto-examples-advanced-ex-fitting-mixed-model-py"></span><h1>Fitting a mixed distance-distribution model<a class="headerlink" href="#fitting-a-mixed-distance-distribution-model" title="Permalink to this headline">¶</a></h1>
+<p>Basic manipulation of parametric models and creating mixed models
+for fitting distance distributions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
+</pre></div>
+</div>
+<div class="section" id="simulate-the-data">
+<h2>Simulate the data<a class="headerlink" href="#simulate-the-data" title="Permalink to this headline">¶</a></h2>
+<p>Let’s start by creating a simple dipolar evolution function (i.e. no background
+and full modulation depth) corresponding to a simple 4-pulse DEER signal.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Axis definition</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">350</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="c1"># Distribution parameters</span>
+<span class="n">rmean</span> <span class="o">=</span> <span class="mf">4.5</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">chain</span> <span class="o">=</span> <span class="mf">4.3</span>
+<span class="n">pers</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="mf">0.35</span>
+
+<span class="c1"># Generate distribution</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">rmean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">])</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">amp</span><span class="o">*</span><span class="n">P</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">amp</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_wormchain</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">chain</span><span class="p">,</span> <span class="n">pers</span><span class="p">])</span>
+<span class="c1"># Normalize distribution</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">P</span><span class="o">/</span><span class="nf">sum</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">diff</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+<span class="c1"># Generate dipolar evolution function</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">K</span> <span class="o">@</span> <span class="n">P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.02</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generating-a-mixed-parametric-model">
+<h2>Generating a mixed parametric model<a class="headerlink" href="#generating-a-mixed-parametric-model" title="Permalink to this headline">¶</a></h2>
+<p>Let’s say our intuiton (which, since we know the ground truth, is exact) on
+the sample indicates that our distribution is a llinear combination of a Gaussian
+distribution and a worm-like chain model. While DeerLab provides built-in
+parametric models for both models, we require a combination of both.</p>
+<p>For such cases we can use the <code class="docutils literal notranslate"><span class="pre">mixmodels</span></code> function to create a custom mixed
+parametric model. It’s syntax is rather simple, we just have to pass the desired
+parametric models as lambda functions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Mix the models into new one</span>
+<span class="n">gausswlc</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">mixmodels</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_wormchain</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Our new model <code class="docutils literal notranslate"><span class="pre">gausswlc</span></code> will now describe our sought linear combination of
+both parametric models. We can check the state of the model by retrieving its
+information</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Get information on the mixed model</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gausswlc</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;Model 1: Mean&#39;, &#39;Model 1: Standard deviation&#39;, &#39;Model 1: Amplitude&#39;, &#39;Model 2: Contour length&#39;, &#39;Model 2: Persistence length&#39;, &#39;Model 2: Amplitude&#39;]
+</pre></div>
+</div>
+<p>We can see that the <code class="docutils literal notranslate"><span class="pre">mixmodels</span></code> function has introduced an ampitude parameters
+as the first parameter of the model. This parameters weights the contribution
+of each individual parametric model. We see also that this is followed by the
+parameters of the Gaussian model and finally with the parameters of the worm-
+like chain model.</p>
+<p>Our model is ready, and since it was generated from built-in models we do
+not need to specify any parameters initial values or boundary constraints. These
+can, however, by re-defined if the built-in defaults are not appropiate (see
+other examples).</p>
+<p>Since we are dealing with a distance-domain model we require a dipolar kernel
+to transform our model into time-domain. Remember that our signal in this example
+is a dipolar evolution function, therefore we do not require anything else than
+a very basic dipolar kernel.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate the dipolar evolution function kernel</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+<span class="c1"># Define the signal model</span>
+<span class="n">Vmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">K</span><span class="nd">@gausswlc</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">)</span>
+
+<span class="c1"># Fit the model to the data</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">par0</span><span class="o">=</span><span class="n">gausswlc</span><span class="o">.</span><span class="n">start</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="n">gausswlc</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="n">gausswlc</span><span class="o">.</span><span class="n">upper</span><span class="p">,</span><span class="n">multistart</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">fitpar</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
+</pre></div>
+</div>
+<p>From the fitted parameter set <code class="docutils literal notranslate"><span class="pre">fitpar</span></code> we can now generate our fitted distance
+distribution and the corresponding time-domain fit.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate the fitted model</span>
+<span class="n">Pfit</span> <span class="o">=</span> <span class="n">gausswlc</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">fitpar</span><span class="p">)</span>
+<span class="n">Vfit</span> <span class="o">=</span> <span class="n">Vmodel</span><span class="p">(</span><span class="n">fitpar</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Since we know both the ground truth for the distance distribution and the
+dipolar signal, let’s see how our fit turned out.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot results</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="s1">&#39;tab:red&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t (µs)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V(t)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;data&#39;</span><span class="p">,</span><span class="s1">&#39;fit&#39;</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;tab:red&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;r (nm)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;P(r) (nm⁻¹)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;truth&#39;</span><span class="p">,</span><span class="s1">&#39;fit&#39;</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="ex fitting mixed model" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_fitting_mixed_model_001.png" />
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  16.933 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-fitting-mixed-model-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<a class="reference download internal" download="" href="../../_downloads/f704eabe07c86bf4d82239c8211adc9f/ex_fitting_mixed_model.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_fitting_mixed_model.py</span></code></a></div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<a class="reference download internal" download="" href="../../_downloads/8a9e1b95dc02acce9a1889790ae15b9a/ex_fitting_mixed_model.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_fitting_mixed_model.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="ex_comparing_uncertainties_for_regularization.html" class="btn btn-neutral float-right" title="Comparing confidence intervals for regularization results" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../basic/ex_restraints_4pdeer.html" class="btn btn-neutral float-left" title="Distance restraints from 4-pulse DEER data, non-parametric distribution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
