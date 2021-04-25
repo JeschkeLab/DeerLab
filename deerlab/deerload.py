@@ -151,7 +151,6 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
                 # Open and read companion file
                 try:
                     with open(companionfilename,'rb') as fp:
-                        assert fp > 0
                         abscissa[:Dimensions[index],index] = np.frombuffer(fp.read(),dtype=dt_axis)
                 except:
                     warn(f'Could not read companion file {companionfilename} for nonlinear axis. Assuming linear axis.')
