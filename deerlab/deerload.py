@@ -130,7 +130,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
         index = AxisNames.index(a)
         axisname = a+'TYP'
         axistype = parDESC[axisname]
-        if Dimensions[index] > 1:
+        if Dimensions[index] == 1:
             pass
         else:
             if 'IGD'== axistype:
@@ -149,11 +149,11 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
 
                 dt_axis = dt_axis.newbyteorder(byteorder)
                 # Open and read companion file
-                with open(companionfilename,'rb') as fp:
-                    if fp > 0:
+                try:
+                    with open(companionfilename,'rb') as fp:
                         abscissa[:Dimensions[index],index] = np.frombuffer(fp.read(),dtype=dt_axis)
-                    else:
-                        warn(f'Could not read companion file {companionfilename} for nonlinear axis. Assuming linear axis.')
+                except:
+                    warn(f'Could not read companion file {companionfilename} for nonlinear axis. Assuming linear axis.')
                 axistype='IDX'
         if axistype == 'IDX':
             minimum = float(parDESC[str(a+'MIN')])
@@ -280,7 +280,9 @@ def read_description_file(DSCFileName):
     reKeyValue = re.compile(r"(\w+)\W+(.*)")
     
     for line in allLines:
-        
+
+        if 'MANIPULATION HISTORY LAYER' in line:
+            break
         # Layer/section header (possible values: #DESC, #SPL, #DSL, #MHL)
         mo1 = reSectionHeader.search(line) 
         if mo1:
