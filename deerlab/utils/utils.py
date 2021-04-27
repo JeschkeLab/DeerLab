@@ -7,9 +7,11 @@ import scipy.optimize as opt
 from types import FunctionType 
 
 
-def parse_multidatasets(V,K,weights,precondition=False):
+def parse_multidatasets(V_,K,weights,precondition=False):
 #===============================================================================
     
+    # Make copies to avoid modifying the originals
+    V = V_.copy()
     # Identify if the signals have already been processed by this function
     if type(V) is not list:
         if V.size == np.atleast_1d(weights).size:
@@ -19,26 +21,27 @@ def parse_multidatasets(V,K,weights,precondition=False):
             else:
                 return V,K,weights,[np.arange(0,len(V))]
 
+    Vlist = []
     # If multiple signals are specified as a list...
     if type(V) is list and all([type(Vs) is np.ndarray for Vs in V]):
         nSignals = len(V)
-        prescales = np.zeros(nSignals)
-        Vlist = []
-        # Pre-scale the signals, important for fitregmodel when using global fits with arbitrary scales
-        for i in range(nSignals):
-            if precondition:
-                prescales[i] = max(V[i])
-                Vlist.append(V[i]/prescales[i])
-            else:
-                Vlist.append(V[i])
-        V = np.concatenate(Vlist, axis=0) # ...concatenate them along the list 
+
     elif type(V) is np.ndarray:
         nSignals = 1
-        prescales = [1]
-        Vlist = [V]
+        V = [V]
     else:
         raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
     
+    prescales = np.zeros(nSignals)
+    # Pre-scale the signals, important for fitregmodel when using global fits with arbitrary scales
+    for i in range(nSignals):
+        if precondition:
+            prescales[i] = max(V[i])
+            Vlist.append(V[i]/prescales[i])
+        else:
+            Vlist.append(V[i])
+    V = np.concatenate(Vlist, axis=0) # ...concatenate them along the list 
+
     def prepareKernel(K,nSignals):
         # If multiple kernels are specified as a list...
         if type(K) is tuple:

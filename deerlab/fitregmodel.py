@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit
 from deerlab.classes import UQResult, FitResult
 
 def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
-                weights=1, huberparam=1.35, nonnegativity=True, obir=False, 
+                weights=1, huberparam=1.35, nonnegativity=True, obir=False,
                 uq=True, renormalize=True, noiselevelaim=None, tol=None, maxiter=None):
     r"""
     Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches 
@@ -150,7 +150,14 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
 
     """
     # Prepare signals, kernels and weights if multiple are passed
-    V, K, weights, subsets, prescales = dl.utils.parse_multidatasets(V, K, weights,precondition=True)
+    V, K, weights, subsets = dl.utils.parse_multidatasets(V, K, weights, precondition=False)
+
+    if len(subsets)>1:
+        prescales = [max(V[subset]) for subset in subsets]
+        for scale,subset in zip(prescales,subsets):
+            V[subset] = V[subset]/scale
+    else:
+        prescales = [1]
 
     # Determine an optimal value of the regularization parameter if requested
     if type(regparam) is str:
