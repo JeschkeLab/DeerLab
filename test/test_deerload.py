@@ -15,7 +15,7 @@ def test_1D_load(rootdir):
 #==================================================================================
     """ Check that a 1-dimensional dataset if properly loded """
 
-    t,V = deerload(os.path.join(rootdir, 'data/4pDEER_simple.DTA'))
+    t,V = deerload(os.path.join(rootdir, 'data/data_1d.DTA'))
     
     assert isinstance(t,np.ndarray) and isinstance(V,np.ndarray) and len(t)==len(V)
 #==================================================================================
@@ -47,7 +47,7 @@ def test_multiple_labs(rootdir):
     successfull = True
     for lab in np.arange(1,6,1):
         print(lab)
-        t,V = deerload(os.path.join(rootdir, f'data/data_lab{lab}.DTA'))
+        t,V = deerload(os.path.join(rootdir, f'data/data_multi_lab{lab}.DTA'))
     
         successfull = successfull and (isinstance(t,np.ndarray) and isinstance(V,np.ndarray))
         successfull = successfull and len(t)==len(V)
