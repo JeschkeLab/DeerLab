@@ -482,5 +482,10 @@ def test_confinter_scaling():
     fit1 = snlls(V*V0_1,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl)
     fit2 = snlls(V*V0_2,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl)
 
-    assert np.max(abs(fit1.linUncert.ci(95)/V0_1 - fit2.linUncert.ci(95)/V0_2)) < 0.05
+    ci1 = fit1.linUncert.ci(95)
+    ci2 = fit1.linUncert.ci(95)
+    ci1[ci1==0] = 1e-16
+    ci2[ci2==0] = 1e-16
+
+    assert np.max(abs(1-ci2/ci1)) < 0.001 # Allow up to 0.1% error
 #============================================================
