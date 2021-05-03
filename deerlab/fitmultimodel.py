@@ -207,14 +207,14 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
             try:
                 Kmodel(np.random.uniform(size=nKparam))
                 notEnoughParam = False
-            except ValueError:
+            except:
                 notEnoughParam = True
     else:
         # If the kernel is just a matrix make it a callable without parameters
         nKparam = 0
         K = copy.deepcopy(Kmodel) # need a copy to avoid infite recursion on next step
         Kmodel = lambda _: K
-    
+
     # Extract information about the model
     nparam = len(model.start)
     if lb is None:
@@ -231,7 +231,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     # Ensure that all arrays are numpy.nparray
     lb,ub,lbK,ubK = np.atleast_1d(lb,ub,lbK,ubK)
 
-    if len(lbK) is not nKparam or len(ubK) is not nKparam:
+    if len(lbK)!=nKparam or len(ubK)!=nKparam:
         raise ValueError('The upper/lower bounds of the kernel parameters must be ',nKparam,'-element arrays')
 
     areLocations = [str in ['Mean','Location'] for str in paramnames]
@@ -532,7 +532,6 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     for i,subset in enumerate(Vsubsets): 
         Ndof = len(V[subset]) - (nKparam + nparam + Nopt)
         stats.append(goodness_of_fit(V[subset],modelfit[i],Ndof))
-    
 
     # Results display function
     def plotfcn(show=True):
@@ -555,6 +554,10 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
 
 def _plot(Vsubsets,V,Vfit,Vuq,r,Pfit,Puq,fcnals,maxModels,method,uq,show):
 # =========================================================================
+    if not isinstance(Vuq, list): 
+        Vuq = [Vuq]
+        Vfit = [Vfit]
+        
     nSignals = len(Vsubsets)
     fig,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
     for i in range(nSignals): 
