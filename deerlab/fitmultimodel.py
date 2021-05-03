@@ -264,6 +264,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
             Pbasis = model(r,par[subset])
             # Combine all non-linear functions into one
             Knonlin[:,iModel] = K@Pbasis
+        Knonlin = weights[:,np.newaxis]*Knonlin
         return Knonlin
     #===============================================================================
 
