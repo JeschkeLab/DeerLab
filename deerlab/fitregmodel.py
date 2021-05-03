@@ -159,6 +159,8 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
     else:
         prescales = [1]
 
+
+
     # Determine an optimal value of the regularization parameter if requested
     if type(regparam) is str:
         alpha = dl.selregparam(V,K,r,regtype,regparam,regorder=regorder,weights=weights, nonnegativity=nonnegativity,huberparam=huberparam)
@@ -200,19 +202,20 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
     # Get fit final status
     Vfit = K@Pfit
     success = ~np.all(Pfit==0)
-    res = V - Vfit
-    fval = np.linalg.norm(V - Vfit)**2 + alpha**2*np.linalg.norm(L@Pfit)**2
+
+    # Construct residual parts for for the residual and regularization terms
+    res = weights*(V - K@Pfit)
+
+    # Construct Jacobians for the residual and penalty terms
+    Jres = K*weights[:,np.newaxis]
+    res,J = _augment(res,Jres,regtype,alpha,L,Pfit,huberparam)
+
+    # Get objective function value
+    fval = np.linalg.norm(res)**2
 
     # Uncertainty quantification
     # ----------------------------------------------------------------
     if uq:
-        # Construct residual parts for for the residual and regularization terms
-        res = weights*(V - K@Pfit)
-
-        # Construct Jacobians for the residual and penalty terms
-        Jres = K*weights[:,np.newaxis]
-        res,J = _augment(res,Jres,regtype,alpha,L,Pfit,huberparam)
-
         # Calculate the heteroscedasticity consistent covariance matrix 
         covmat = hccm(J,res,'HC1')
         
