@@ -502,14 +502,6 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         Puq = dl.UQResult('void')
         paramuq = dl.UQResult('void')
 
-    # Goodness of fit
-    stats = []
-    for subset in Vsubsets: 
-        Ndof = len(V[subset]) - (nKparam + nparam + Nopt)
-        stats.append(goodness_of_fit(V[subset],Vfit[subset],Ndof))
-    if len(stats)==1: 
-        stats = stats[0]
-
     # If requested re-normalize the distribution
     postscale = np.trapz(Pfit,r)
     if renormalize:
@@ -523,21 +515,42 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     scales = []
     for i in range(len(Vsubsets)): 
         scales.append(prescales[i]*postscale)
-    if len(scales)==1:
+
+    # Get fitted signals and their uncertainty
+    modelfit, modelfituq = [],[]
+    for i,subset in enumerate(Vsubsets): 
+        V[subset] = V[subset]*prescales[i]
+        modelfit.append(  scales[i]*fit.model[subset] )
+        if uq: 
+            modelfituq.append( fit.modelUncert.propagate(lambda V: scales[i]*V[subset]) )
+        else:
+            modelfituq.append(dl.UQResult('void'))
+
+    # Goodness of fit
+    stats = []
+    for i,subset in enumerate(Vsubsets): 
+        Ndof = len(V[subset]) - (nKparam + nparam + Nopt)
+        stats.append(goodness_of_fit(V[subset],modelfit[i],Ndof))
+    
+    # If just one dataset, return vector instead of list
+    if len(Vsubsets)==1: 
+        stats = stats[0]
         scales = scales[0]
+        modelfit = modelfit[0]
+        modelfituq = modelfituq[0]
 
     # Results display function
-    def plotfcn(show=False):
-        fig = _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uq,show)
+    def plotfcn(show=True):
+        fig = _plot(Vsubsets,V,modelfit,modelfituq,r,Pfit,Puq,fcnals,maxModels,method,uq,show)
         return fig
 
-    return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, V=fit.model, Puncert=Puq, 
-                    paramUncert=paramuq, Vuncert=fit.modelUncert, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
+    return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, V=modelfit, Puncert=Puq, 
+                    paramUncert=paramuq, Vuncert=modelfituq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
                     stats=stats, cost=fit.cost, residuals=fit.residuals, success=fit.success)
 # =========================================================================
 
 
-def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uq,show):
+def _plot(Vsubsets,V,Vfit,Vuq,r,Pfit,Puq,fcnals,maxModels,method,uq,show):
 # =========================================================================
     nSignals = len(Vsubsets)
     fig,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
@@ -545,7 +558,14 @@ def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uq,show):
         subset = Vsubsets[i]
         # Plot the experimental signal and fit
         axs[i].plot(V[subset],'.',color='grey',alpha=0.5)
-        axs[i].plot(Vfit[subset],'tab:blue')
+        axs[i].plot(Vfit[i],'tab:blue')
+        if uq:
+            # Confidence intervals of the fitted datasets
+            Vci95 = Vuq[i].ci(95) # 95#-confidence interval
+            Vci50 = Vuq[i].ci(50) # 50#-confidence interval
+            tax = np.arange(len(subset))
+            axs[i].fill_between(tax,Vci50[:,0],Vci50[:,1],color='tab:blue',linestyle='None',alpha=0.45)
+            axs[i].fill_between(tax,Vci95[:,0],Vci95[:,1],color='tab:blue',linestyle='None',alpha=0.25)
         axs[i].grid(alpha=0.3)
         axs[i].set_xlabel('Array Elements')
         axs[i].set_ylabel(f'V[{i}]')
