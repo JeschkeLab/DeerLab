@@ -554,10 +554,10 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
 
 def _plot(Vsubsets,V,Vfit,Vuq,r,Pfit,Puq,fcnals,maxModels,method,uq,show):
 # =========================================================================
-    if not isinstance(Vuq, list): 
+    if not isinstance(Vfit, list): 
         Vuq = [Vuq]
         Vfit = [Vfit]
-        
+
     nSignals = len(Vsubsets)
     fig,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
     for i in range(nSignals): 
