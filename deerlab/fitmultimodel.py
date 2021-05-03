@@ -533,6 +533,12 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         Ndof = len(V[subset]) - (nKparam + nparam + Nopt)
         stats.append(goodness_of_fit(V[subset],modelfit[i],Ndof))
     
+
+    # Results display function
+    def plotfcn(show=True):
+        fig = _plot(Vsubsets,V,modelfit,modelfituq,r,Pfit,Puq,fcnals,maxModels,method,uq,show)
+        return fig
+
     # If just one dataset, return vector instead of list
     if len(Vsubsets)==1: 
         stats = stats[0]
@@ -540,10 +546,6 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         modelfit = modelfit[0]
         modelfituq = modelfituq[0]
 
-    # Results display function
-    def plotfcn(show=True):
-        fig = _plot(Vsubsets,V,modelfit,modelfituq,r,Pfit,Puq,fcnals,maxModels,method,uq,show)
-        return fig
 
     return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, V=modelfit, Puncert=Puq, 
                     paramUncert=paramuq, Vuncert=modelfituq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
