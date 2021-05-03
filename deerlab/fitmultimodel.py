@@ -424,16 +424,16 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         lin_ub = np.full(Ncomp,np.inf)
         
         # Separable non-linear least-squares (SNLLS) fit
-        scale = 1e2
-        fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, 
+        upscale = 1e2
+        fit = dl.snlls(V*upscale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, 
                         weights=weights, reg=False, nonlin_tol=tol, nonlin_maxiter=maxiter)
         pnonlin = fit.nonlin
         plin = fit.lin
         par_prev = pnonlin
 
-        plin /= scale
-        fit.model /= scale
-        fit.modelUncert = fit.modelUncert.propagate(lambda x: x/scale)
+        plin /= upscale
+        fit.model /= upscale
+        fit.modelUncert = fit.modelUncert.propagate(lambda x: x/upscale)
 
         # Store the fitted parameters
         pnonlin_.append(pnonlin)
@@ -506,10 +506,11 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     postscale = np.trapz(Pfit,r)
     if renormalize:
         Pfit = Pfit/postscale
-        fitparam_amp = fitparam_amp/sum(fitparam_amp)
         if uq:
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
             Puq = Puq_.propagate(lambda P: P/postscale, lbm=np.zeros_like(Pfit))
+        postscale /= sum(fitparam_amp)
+        fitparam_amp = fitparam_amp/sum(fitparam_amp)
 
     # Dataset scales
     scales = []
