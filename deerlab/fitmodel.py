@@ -441,7 +441,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 Vfit_uq.append( UQResult('covariance',Vfit[jj],Vcovmat))
             elif includeForeground:
                 # Parametric signal with parameter-free distribution
-                Vmodel = lambda par: scales[jj]*multiPathwayModel(par[paramidx])[0][jj]@Pfit
+                Vmodel = lambda par: scales[jj]*multiPathwayModel(par)[0][jj]@Pfit
                 Vfit_uq.append( param_uq.propagate(Vmodel) )
             else:
                 Vfit_uq.append([None])
