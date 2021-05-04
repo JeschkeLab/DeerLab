@@ -254,8 +254,8 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
         paruq = UQResult('void')
 
     modelfit,modelfit_uq = [],[]
-    for subset in Vsubsets: 
-        subset_model = lambda p: model(p)[subset]
+    for i,subset in enumerate(Vsubsets): 
+        subset_model = lambda p: scales[i]*model(p)[subset]
         modelfit.append(subset_model(parfit))
         if uq:
             modelfit_uq.append(paruq.propagate(subset_model))        
