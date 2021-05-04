@@ -311,10 +311,10 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         
         # Optimiza the regularization parameter only if needed
         if optimize_alpha:
-            alpha = dl.selregparam(y, A, ax, regtype, regparam, regorder=regorder)
+            alpha = dl.selregparam(y, A, ax, regtype, regparam, weights=weights, regorder=regorder)
 
         # Components for linear least-squares
-        AtA, Aty = dl.lsqcomponents(y, A, L, alpha, weights, regtype=regtype)
+        AtA, Aty = dl.lsqcomponents(y, A, L, alpha, weights=weights, regtype=regtype)
          
         # Solve the linear least-squares problem
         result = linSolver(AtA, Aty)

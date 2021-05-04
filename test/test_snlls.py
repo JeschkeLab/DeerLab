@@ -489,3 +489,32 @@ def test_confinter_scaling():
 
     assert np.max(abs(1-ci2/ci1)) < 0.001 # Allow up to 0.1% error
 #============================================================
+
+
+def test_global_weights():
+# ======================================================================
+    "Check that the global weights properly work when specified"
+
+    t = np.linspace(-0.3,5,300)
+    r = np.linspace(2,6,150)
+
+    P1 = dd_gauss(r,[3,0.2])
+    P2 = dd_gauss(r,[5,0.2])
+
+    K = dipolarkernel(t,r,mod=0.2)
+
+    scales = [1e3, 1e9]
+    sigma1 = 0.001
+    V1 = K@P1 + whitegaussnoise(t,sigma1,seed=1)
+    sigma2 = 0.001
+    V2 = K@P2 + whitegaussnoise(t,sigma2,seed=1)
+
+    V1 = scales[0]*V1
+    V2 = scales[1]*V2
+
+    Kmodel= lambda lam: [dipolarkernel(t,r,mod=lam)]*2
+    fit1 = snlls([V1,V2],Kmodel,par0=[0.2],lb=0,ub=1,lbl=np.zeros_like(r),weights=[1,0])
+    fit2 = snlls([V1,V2],Kmodel,par0=[0.2],lb=0,ub=1,lbl=np.zeros_like(r),weights=[0,1])
+
+    assert ovl(P1,fit1.lin) > 0.95 and ovl(P2,fit2.lin) > 0.95
+# ======================================================================
