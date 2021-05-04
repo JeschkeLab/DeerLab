@@ -785,3 +785,60 @@ def test_convergence_criteria():
 
     assert ovl(P,fit.P) > 0.90
 # ======================================================================
+
+def test_global_weights():
+# ======================================================================
+    "Check that the global weights properly work when specified"
+
+    t = np.linspace(-0.3,5,300)
+    r = np.linspace(2,6,80)
+
+    P1 = dl.dd_gauss(r,[3,0.2])
+    P2 = dl.dd_gauss(r,[5,0.2])
+
+    K = dl.dipolarkernel(t,r,mod=0.2)
+
+    scales = [1e3, 1e9]
+    sigma1 = 0.001
+    V1 = K@P1 + dl.whitegaussnoise(t,sigma1,seed=1)
+    sigma2 = 0.001
+    V2 = K@P2 + dl.whitegaussnoise(t,sigma2,seed=1)
+
+    V1 = scales[0]*V1
+    V2 = scales[1]*V2
+
+    Kmodel= lambda lam: [dl.dipolarkernel(t,r,mod=lam)]*2
+    fit1 = dl.fitmodel([V1,V2],[t,t],r,'P',None,dl.ex_4pdeer,weights=[1,0])
+    fit2 = dl.fitmodel([V1,V2],[t,t],r,'P',None,dl.ex_4pdeer,weights=[0,1])
+
+    assert ovl(P1,fit1.P) > 0.95 and ovl(P2,fit2.P) > 0.95
+# ======================================================================
+
+
+def test_global_weights_param():
+# ======================================================================
+    "Check that the global weights properly work when specified"
+
+    t = np.linspace(-0.3,5,300)
+    r = np.linspace(2,6,80)
+
+    P1 = dl.dd_gauss(r,[3,0.2])
+    P2 = dl.dd_gauss(r,[5,0.2])
+
+    K = dl.dipolarkernel(t,r,mod=0.2)
+
+    scales = [1e3, 1e9]
+    sigma1 = 0.001
+    V1 = K@P1 + dl.whitegaussnoise(t,sigma1,seed=1)
+    sigma2 = 0.001
+    V2 = K@P2 + dl.whitegaussnoise(t,sigma2,seed=1)
+
+    V1 = scales[0]*V1
+    V2 = scales[1]*V2
+
+    Kmodel= lambda lam: [dl.dipolarkernel(t,r,mod=lam)]*2
+    fit1 = dl.fitmodel([V1,V2],[t,t],r,dd_gauss,None,dl.ex_4pdeer,weights=[1,0])
+    fit2 = dl.fitmodel([V1,V2],[t,t],r,dd_gauss,None,dl.ex_4pdeer,weights=[0,1])
+
+    assert ovl(P1,fit1.P) > 0.95 and ovl(P2,fit2.P) > 0.95
+# ======================================================================

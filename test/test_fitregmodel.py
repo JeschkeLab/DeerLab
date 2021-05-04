@@ -465,3 +465,24 @@ def test_confinter_values():
     ci_match = lambda ci,ci_ref,truth:np.max(abs(np.array(ci) - np.array(ci_ref)))/truth < 0.05
     assert ci_match(a_ci,a_ci_ref,p[0]) & ci_match(b_ci,b_ci_ref,p[1])
 # ======================================================================
+
+def test_global_weights():
+# ======================================================================
+    "Check that the global weights properly work when specified"
+
+    t = np.linspace(0,5,300)
+    r = np.linspace(2,8,150)
+    K = dipolarkernel(t,r)
+
+    param1 = [3,0.2]
+    param2 = [5,0.2]
+    P1 = dd_gauss(r,param1)
+    P2 = dd_gauss(r,param2)
+    V1 = K@P1 + whitegaussnoise(t,0.01,seed=1)
+    V2 = K@P2 + whitegaussnoise(t,0.01,seed=1)
+
+    fit1 = fitregmodel([V1,V2],[K,K],r,weights=[1,0])
+    fit2 = fitregmodel([V1,V2],[K,K],r,weights=[0,1])
+
+    assert ovl(P1,fit1.P) > 0.95 and ovl(P2,fit2.P) > 0.95
+# ======================================================================

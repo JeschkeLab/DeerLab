@@ -1,14 +1,19 @@
 import numpy as np
 
-def lsqcomponents(V, K, L=None, alpha=0, weights=1, regtype='tikhonov', huberparam=1.35):
+def lsqcomponents(V, K, L=None, alpha=0, weights=None, regtype='tikhonov', huberparam=1.35):
 # ==============================================================================================
     """
     Calculate the components needed for the least-squares (LSQ) solvers
     """
     
+    if weights is None:
+        weights = np.ones_like(V)
+    else:
+        weights = np.atleast_1d(weights)
+        
     # Compute components of the LSQ normal equations
-    KtK = weights*K.T@K
-    KtV = weights*K.T@V
+    KtK = K.T@(weights[:,np.newaxis]*K)
+    KtV = K.T@(weights*V)
     
     # No regularization term -> done
     if L is None:
@@ -39,7 +44,7 @@ def lsqcomponents(V, K, L=None, alpha=0, weights=1, regtype='tikhonov', huberpar
     # Compute the regularization term
     if regtype.lower() == 'tikhonov':
         regterm = L.T@L
-        
+
     elif regtype.lower() == 'tv':
         maxIter = 500
         changeThreshold = 1e-1
