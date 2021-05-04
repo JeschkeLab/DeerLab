@@ -358,7 +358,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         return Ks, Bs     
     # =========================================================================
 
-    def splituq(full_uq,Pfit,Vfit,Bfit,parfit_,Kfit,scales=1):
+    def splituq(param_uq,Pfit_uq,Pfit,Vfit,Bfit,parfit_,Kfit,scales=1):
     # =========================================================================
         """ 
         Uncertainty quantification
@@ -370,26 +370,11 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # Pre-allocation
         paruq_bg,paruq_ex,Bfit_uq,Vmod_uq,Vunmod_uq,Vfit_uq = ([],[],[],[],[],[])
 
-        # Retrieve full covariance matrix
-        if isinstance(full_uq,list):
-            paruq = full_uq[0]
-        else:
-            paruq = full_uq
-        covmat = paruq.covmat
-
-        Nparam = len(parfit_)
-        paramidx = np.arange(Nparam)
-        
-        # Full parameter set uncertainty
-        # -------------------------------
-        subcovmat = covmat[np.ix_(paramidx,paramidx)]
-        paruq = UQResult('covariance',parfit_,subcovmat,lb,ub)
-        
         # Background parameters uncertainty
         # ---------------------------------
         for jj in range(nSignals):
             if includeBackground[jj]:
-                bgsubcovmat  = paruq.covmat[np.ix_(bgidx[jj],bgidx[jj])]
+                bgsubcovmat  = param_uq.covmat[np.ix_(bgidx[jj],bgidx[jj])]
                 paruq_bg.append( UQResult('covariance',parfit_[bgidx[jj]],bgsubcovmat,lb[bgidx[jj]],ub[bgidx[jj]]))
             else:
                 paruq_bg.append([None])
@@ -398,7 +383,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # ----------------------------------
         for jj in range(nSignals):
             if includeExperiment[jj]:
-                exsubcovmat  = paruq.covmat[np.ix_(exidx[jj],exidx[jj])]
+                exsubcovmat  = param_uq.covmat[np.ix_(exidx[jj],exidx[jj])]
                 paruq_ex.append( UQResult('covariance',parfit_[exidx[jj]],exsubcovmat,lb[exidx[jj]],ub[exidx[jj]]))
             else:
                 paruq_ex.append([None])
@@ -406,7 +391,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         # Distribution parameters uncertainty
         # ------------------------------------
         if parametricDistribution:
-            ddsubcovmat  = paruq.covmat[np.ix_(ddidx,ddidx)]
+            ddsubcovmat  = param_uq.covmat[np.ix_(ddidx,ddidx)]
             paruq_dd = UQResult('covariance',parfit_[ddidx],ddsubcovmat,lb[ddidx],ub[ddidx])
         else:
             paruq_dd = [None]
@@ -420,15 +405,13 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 Pfcn = lambda par: dd_model(r,par[ddidx])
             else:
                 Pfcn = lambda _: np.ones_like(r)/np.trapz(np.ones_like(r),r)
-            Pfit_uq = paruq.propagate(Pfcn,nonneg)
-        else:
-            Pfit_uq = full_uq[1]
+            Pfit_uq = param_uq.propagate(Pfcn,nonneg)
         
         # Background uncertainty
         # -----------------------
         for jj in range(nSignals):
             if includeExperiment[jj]:
-                Bfit_uq.append( paruq.propagate(lambda par:scales[jj]*multiPathwayModel(par)[1][jj]) )
+                Bfit_uq.append( param_uq.propagate(lambda par:scales[jj]*multiPathwayModel(par)[1][jj]) )
             else:
                 Bfit_uq.append([None])
         
@@ -439,7 +422,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
                 Lam0fcn = lambda par: ex_model[jj](par)[0]
                 Bfcn = lambda par: scales[jj]*multiPathwayModel(par)[1][jj]
                 Vunmod_fcn = lambda par: Lam0fcn(par[exidx[jj]])*Bfcn(par)
-                Vunmod_uq.append( paruq.propagate(lambda par:Vunmod_fcn(par)) )
+                Vunmod_uq.append( param_uq.propagate(lambda par:Vunmod_fcn(par)) )
             else:
                 Vunmod_uq.append([None])
         
@@ -449,26 +432,28 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             if includeForeground and parametricDistribution:
                 # Full parametric signal
                 Vmodel = lambda par: scales[jj]*multiPathwayModel(par)[0][jj]@Pfcn(par[ddidx])
-                Vfit_uq.append( paruq.propagate(Vmodel))
+                Vfit_uq.append( param_uq.propagate(Vmodel))
             elif includeForeground and np.all(~includeExperiment & ~includeBackground):
                 Vmodel = lambda _: Kfit[jj]@Pfit
                 # Dipola evolution function
                 J = Kfit[jj]
-                Vcovmat = J@covmat@J.T
+                Vcovmat = J@Pfit_uq.covmat@J.T
                 Vfit_uq.append( UQResult('covariance',Vfit[jj],Vcovmat))
             elif includeForeground:
                 # Parametric signal with parameter-free distribution
-                Vmodel = lambda par: scales[jj]*multiPathwayModel(par[paramidx])[0][jj]@Pfit
-                Vfit_uq.append( paruq.propagate(Vmodel) )
+                Vmodel = lambda par: scales[jj]*multiPathwayModel(par)[0][jj]@Pfit
+                Vfit_uq.append( param_uq.propagate(Vmodel) )
             else:
                 Vfit_uq.append([None])
 
         # Modulated contribution uncertainty
         # -----------------------------
         for jj in range(nSignals):
-            if includeForeground:
+            if includeForeground and np.all(~includeExperiment & ~includeBackground):
+                Vmod_uq.append(Vfit_uq) 
+            elif includeForeground:
                 Vmod_fcn = lambda par: Vmodel(par) - Vunmod_fcn(par)
-                Vmod_uq.append( paruq.propagate(Vmod_fcn) )
+                Vmod_uq.append( param_uq.propagate(Vmod_fcn))
             else: 
                 Vmod_uq.append([None]) 
 
@@ -525,7 +510,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         parfit = np.asarray([None])
 
         if uqanalysis and uq=='covariance':
-            Vfit_uq, Pfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd = splituq(Pfit_uq,Pfit,Vfit,Bfit,parfit,Ks,scales)
+            Vfit_uq, Pfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd = splituq(None,Pfit_uq,Pfit,Vfit,Bfit,parfit,Ks,scales)
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, Pfit_uq, Vfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd, scales, alphaopt
         else:
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt
@@ -565,7 +550,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vmod, Vunmod = calculate_Vmod_Vunmod(parfit,Vfit,Bfit,scales)
 
         if uqanalysis and uq=='covariance':
-            Vfit_uq, Pfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,Pfit,Vfit,Bfit,parfit,None, scales)
+            Vfit_uq, Pfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,None,Pfit,Vfit,Bfit,parfit,None, scales)
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, Pfit_uq, Vfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
         else:
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt
@@ -607,7 +592,6 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Pfit = fit.lin
         param_uq = fit.nonlinUncert
         Pfit_uq = fit.linUncert
-        snlls_uq = [param_uq,Pfit_uq]
         alphaopt = fit.regparam
         scales = fit.scale
 
@@ -628,7 +612,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vmod, Vunmod = calculate_Vmod_Vunmod(parfit,Vfit,Bfit,scales)
 
         if uqanalysis and uq=='covariance':
-            Vfit_uq, _, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd = splituq(snlls_uq, Pfit, Vfit, Bfit, parfit, Kfit, scales)
+            Vfit_uq, _, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd = splituq(param_uq,Pfit_uq, Pfit, Vfit, Bfit, parfit, Kfit, scales)
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, Pfit_uq, Vfit_uq, Bfit_uq, Vmod_uq, Vunmod_uq, paruq_bg, paruq_ex, paruq_dd,scales,alphaopt
         else:
             return fit, Pfit, Vfit, Bfit, Vmod, Vunmod, parfit, scales, alphaopt

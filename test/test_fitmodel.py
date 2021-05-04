@@ -87,7 +87,7 @@ def test_dipevo_function():
     P = dd_gauss(r,[4.5, 0.25])
     K = dipolarkernel(t,r)
     V = K@P
-    fit = fitmodel(V,t,r,'P',None,None,uq=None)
+    fit = fitmodel(V,t,r,'P',None,None)
     assert ovl(P,fit.P) > 0.90
 # ======================================================================
 
@@ -100,7 +100,7 @@ def test_form_factor():
     P = dd_gauss(r,[4.5, 0.25])
     K = dipolarkernel(t,r,mod=0.3)
     V = K@P
-    fit = fitmodel(V,t,r,'P',None,ex_4pdeer,uq=None)
+    fit = fitmodel(V,t,r,'P',None,ex_4pdeer)
     assert ovl(P,fit.P) > 0.90
 # ======================================================================
 
