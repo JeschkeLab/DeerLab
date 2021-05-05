@@ -40,8 +40,8 @@ def parse_multidatasets(V_,K,weights,precondition=False):
             Vlist.append(V[i]/prescales[i])
         else:
             Vlist.append(V[i])
-        n = len(V[i])
-        sigmas[i] = 1.482602/np.sqrt(6)*np.median(abs(2.0*V[i][2:n-2] - V[i][0:n-4] - V[i][4:n]))
+        n = len(Vlist[i])
+        sigmas[i] = 1.482602/np.sqrt(6)*np.median(abs(2.0*Vlist[i][2:n-2] - Vlist[i][0:n-4] - Vlist[i][4:n]))
     V = np.concatenate(Vlist, axis=0) # ...concatenate them along the list 
 
     
