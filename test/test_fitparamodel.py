@@ -318,3 +318,26 @@ def test_global_weights():
 
     assert all(abs(fit1.param/param1-1) < 0.03) and all(abs(fit2.param/param2-1) < 0.03)
 # ======================================================================
+
+def test_global_weights_default():
+# ======================================================================
+    "Check the correct fit of two signals when one is of very low quality"
+
+    t = np.linspace(0,5,300)
+    r = np.linspace(2,6,90)
+    param = [4.5, 0.25]
+    P = dd_gauss(r,param)
+
+    K = dipolarkernel(t,r)
+    scales = [1e3,1e9]
+    V1 = scales[0]*K@P + whitegaussnoise(t,0.001,seed=1)
+    V2 = scales[1]*K@P + whitegaussnoise(t,0.1,seed=1)
+    
+    par0 = [5, 0.5]
+    lb = [1, 0.1]
+    ub = [20, 1]
+    model = lambda p: [K@dd_gauss(r,p)]*2
+    fit = fitparamodel([V1,V2],model,par0,lb,ub,weights=[1,0])
+
+    assert all(abs(fit.param/param-1) < 0.03)
+# ======================================================================
