@@ -17,7 +17,7 @@ from deerlab.utils import isempty, goodness_of_fit, Jacobian
 def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
               dd_par0=None, bg_par0=None, ex_par0=None, verbose=False, 
               dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
-              weights=1, uq='covariance', regparam='aic', tol=1e-10,maxiter=1e8):
+              weights=None, uq='covariance', regparam='aic', tol=1e-10,maxiter=1e8):
     r"""
     Fits a dipolar model to the experimental signal ``V`` with time axis ``t``, using
     distance axis ``r``. The model is specified by the distance distribution (dd),
@@ -98,7 +98,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting,
-        the default is all weighted equally. If not specified all datasets are weighted equally.
+        the default is all weighted equally. If not specified all datasets are weighted inversely proportional to their noise levels.
     
     regparam : str or scalar, optional
         Method for the automatic selection of the optimal regularization parameter:

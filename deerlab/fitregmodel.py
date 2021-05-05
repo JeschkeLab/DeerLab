@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit
 from deerlab.classes import UQResult, FitResult
 
 def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
-                weights=1, huberparam=1.35, nonnegativity=True, obir=False,
+                weights=None, huberparam=1.35, nonnegativity=True, obir=False,
                 uq=True, renormalize=True, noiselevelaim=None, tol=None, maxiter=None):
     r"""
     Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches 
@@ -60,7 +60,8 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
         The default ``'aic'``.
     
     weights : array_like, optional
-        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
+        Array of weighting coefficients for the individual signals in global fitting. 
+        If not specified all datasets are weighted inversely proportional to their noise levels.
     
     regorder : int scalar, optional
         Order of the regularization operator, the default is 2.
