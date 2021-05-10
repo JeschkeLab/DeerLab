@@ -436,10 +436,10 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
         # Jacobian (linear part)
         Jlin = scales_vec[:,np.newaxis]*Amodel(nonlinfit)
+        if callable(extrapenalty):
+            Jlin = np.concatenate((Jlin, Jacobian(lambda plin: extrapenalty(nonlinfit,plin),linfit,lbl,ubl)))
         if includeRegularization:
             Jlin = np.concatenate((Jlin, reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)[1]))
-        if callable(extrapenalty):
-            Jlin = np.concatenate((Jlin, Jacobian(lambda plin:extrapenalty(nonlinfit,plin),linfit,lbl,ubl)))
 
         # Full Jacobian
         J = np.concatenate((Jnonlin,Jlin),axis=1)
