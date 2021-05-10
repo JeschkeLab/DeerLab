@@ -568,7 +568,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         prescales = [1 for V in Vexp]
         Vexp_ = [Vexp[i]/prescales[i] for i in range(nSignals)]
 
-        def scale_constraint(nonlinpar):
+        def scale_constraint(nonlinpar,linpar):
         # --------------------------------------------------------
             penalty = np.zeros(nSignals)
             for i in range(nSignals):
