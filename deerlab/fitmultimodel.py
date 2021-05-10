@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit, Jacobian
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
-                 strategy='split', weights=1, renormalize = True, uq=True, tol=1e-9, maxiter=1e8):
+                 strategy='split', weights=None, renormalize = True, uq=True, tol=1e-9, maxiter=1e8):
     r""" 
     Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
@@ -73,7 +73,8 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         The default is ``'split'``. 
 
     weights : array_like, optional
-        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
+        Array of weighting coefficients for the individual signals in global fitting. 
+        If not specified all datasets are weighted inversely proportional to their noise levels.
     
     renormalize : boolean, optional
         Enable/disable renormalization of the fitted distribution, by default it is enabled.

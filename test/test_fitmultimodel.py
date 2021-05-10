@@ -452,3 +452,22 @@ def test_global_weights():
 
     assert ovl(P1,fit1.P) > 0.95 and ovl(P2,fit2.P) > 0.95
 # ======================================================================
+
+def test_global_weights_default():
+# ======================================================================
+    "Check the correct fit of two signals when one is of very low quality"
+
+    t = np.linspace(0,5,300)
+    r = np.linspace(2,6,90)
+    param = [4.5, 0.25]
+    P = dd_gauss(r,param)
+
+    K = dipolarkernel(t,r)
+    scales = [1e3,1e9]
+    V1 = scales[0]*K@P + whitegaussnoise(t,0.001,seed=1)
+    V2 = scales[1]*K@P + whitegaussnoise(t,0.1,seed=1)
+    
+    fit = fitmultimodel([V1,V2],[K,K],r,dd_gauss,3,'aic')
+
+    assert ovl(P,fit.P) > 0.95
+# ======================================================================

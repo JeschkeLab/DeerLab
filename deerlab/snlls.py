@@ -15,7 +15,7 @@ from deerlab.utils import goodness_of_fit, hccm, isempty, Jacobian
 from deerlab.nnls import cvxnnls, fnnls, nnlsbpp
 from deerlab.classes import UQResult, FitResult
 
-def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=1,
+def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=None,
           regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3, extrapenalty=None,
           nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, huberparam=1.35,
           uq=True):
@@ -106,8 +106,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         The default is ``'cvx'``.
 
     weights : array_like, optional
-        Array of weighting coefficients for the individual signals in global fitting,
-        the default is all weighted equally.
+        Array of weighting coefficients for the individual signals in global fitting.
+        If not specified all datasets are weighted inversely proportional to their noise levels.
 
     multistart : int scalar, optional
         Number of starting points for global optimization, the default is 1.

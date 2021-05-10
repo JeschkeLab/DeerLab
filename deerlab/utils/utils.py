@@ -3,7 +3,6 @@ import numpy as np
 import cmath as math
 import scipy as scp
 import scipy.optimize as opt
-
 from types import FunctionType 
 
 
@@ -33,14 +32,18 @@ def parse_multidatasets(V_,K,weights,precondition=False):
         raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
     
     prescales = np.zeros(nSignals)
-    # Pre-scale the signals, important for fitregmodel when using global fits with arbitrary scales
+    sigmas = np.zeros(nSignals)
+    # Pre-scale the signals, important when using global fits with arbitrary scales
     for i in range(nSignals):
         if precondition:
             prescales[i] = max(V[i])
             Vlist.append(V[i]/prescales[i])
         else:
             Vlist.append(V[i])
+        sigmas[i] = der_snr(Vlist[i])
     V = np.concatenate(Vlist, axis=0) # ...concatenate them along the list 
+
+    
 
     def prepareKernel(K,nSignals):
         # If multiple kernels are specified as a list...
@@ -63,8 +66,17 @@ def parse_multidatasets(V_,K,weights,precondition=False):
     else:
         Kmulti = prepareKernel(K,nSignals)
 
+    # If global weights are not specified, set default based on noise levels
+    if weights is None:
+        if nSignals==1:
+            weights=1
+        else:
+            weights = np.zeros(nSignals)
+            for i in range(nSignals):
+                weights[i] = 1/sigmas[i]
+
     # If multiple weights are specified as a list...
-    if type(weights) is list or not hasattr(weights, "__len__"):
+    if type(weights) is list or type(weights) is np.ndarray or not hasattr(weights, "__len__"):
         weights = np.atleast_1d(weights)
         if len(weights)==1:
                 weights = np.repeat(weights,nSignals)
@@ -94,6 +106,24 @@ def parse_multidatasets(V_,K,weights,precondition=False):
         return V,Kmulti,weights,subset
 #===============================================================================
 
+def der_snr(V):
+    """
+    DER_SNR Method
+    ==============
+    Estimates the noise level (standard deviation) in a signal.
+
+    References:
+    ------------ 
+    [1] F. Stoehr, R. White, M. Smith, I. Kamp, R. Thompson, D. Durand, W. Freudling,
+    D. Fraquelli, J. Haase, R. Hook, T. Kimball, M. Kummel, K. Levay, M. Lombardi, A. Micol, T. Rogers 
+    DERSNR: A Simple & General Spectroscopic Signal-to-Noise Measurement Algorithm
+    Astronomical Data Analysis Software and Systems XVII, ASP Conference Series, Vol. 30, 2008, p5.4
+    """
+
+    n = len(V)
+    sigma  = 1.482602/np.sqrt(6)*np.median(abs(2.0*V[2:n-2] - V[0:n-4] - V[4:n]))
+    
+    return sigma
 
 def hccm(J,*args):
     """

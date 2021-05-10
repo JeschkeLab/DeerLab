@@ -541,7 +541,28 @@ def test_global_scale_4pdeer():
 
     assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 5e-2 
 # ======================================================================
-test_global_scale_4pdeer()
+
+def test_global_weights_default():
+# ======================================================================
+    "Check the correct fit of two 4-DEER signals when one is of very low quality"
+    r = np.linspace(2,6,90)
+    P = dd_gauss(r,[4.5, 0.25])
+
+    parIn = ex_4pdeer.start
+    pathways = ex_4pdeer(parIn)
+
+    kappa = 0.4
+    Bmodel = lambda t: bg_exp(t,kappa)
+    scales = [1e3,1e9]
+    t1 = np.linspace(0,5,100)
+    V1 = scales[0]*dipolarkernel(t1,r,pathways=pathways,bg=Bmodel)@P + whitegaussnoise(t1,0.001,seed=1)
+    t2 = np.linspace(0,5,250)
+    V2 = scales[1]*dipolarkernel(t2,r,pathways=pathways,bg=Bmodel)@P + whitegaussnoise(t2,0.1,seed=1)
+    
+    fit = fitmodel([V1,V2],[t1,t2],r,'P',bg_exp,ex_4pdeer,uq=None)
+
+    assert ovl(P,fit.P)>0.95
+# ======================================================================
 
 def test_V_scale_parametric():
 # ======================================================================
