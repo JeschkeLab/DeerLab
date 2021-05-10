@@ -87,9 +87,10 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         The regularization parameter can be manually specified by passing a scalar value
         instead of a string. The default ``'aic'``.
 
-    custom_penalty: callable 
-        Custom penalty function to impose upon the solution. Must return a vector to be
-        added to the residual vector. 
+    extrapenalty: callable 
+        Custom penalty function to impose upon the solution. Must take two inputs, a vector of non-linear parameters
+        and a vector of linear parameters, and return a vector to be added to the residual vector (``pen = fcn(pnonlin,plin)``).  
+        The square of the penalty is computed internally.
 
     alphareopt : float scalar, optional
         Relative parameter change threshold for reoptimizing the regularization parameter
@@ -383,7 +384,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
         # Compute residual from custom penalty
         if callable(extrapenalty):
-            penres = extrapenalty(p)
+            penres = extrapenalty(p,linfit)
             penres = np.atleast_1d(penres)
             res = np.concatenate((res,penres))
 
@@ -434,10 +435,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         Jnonlin = Jacobian(ResidualsFcn,nonlinfit,lb,ub)
 
         # Jacobian (linear part)
-        Jlin = np.zeros((len(res),len(linfit)))
-        Jlin[:len(y),:] = scales_vec[:,np.newaxis]*Amodel(nonlinfit)
+        Jlin = scales_vec[:,np.newaxis]*Amodel(nonlinfit)
+        if callable(extrapenalty):
+            Jlin = np.concatenate((Jlin, Jacobian(lambda plin: extrapenalty(nonlinfit,plin),linfit,lbl,ubl)))
         if includeRegularization:
-            Jlin[len(res)-Nlin:,:] = reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)[1]
+            Jlin = np.concatenate((Jlin, reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)[1]))
 
         # Full Jacobian
         J = np.concatenate((Jnonlin,Jlin),axis=1)
