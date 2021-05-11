@@ -1,4 +1,21 @@
 
+Release v0.13.1 - May 2021
+---------------------------------
+
+#### Overall changes
+
+- Fixed the behaviour of global weights throughout DeerLab fit functions. The keyword argument ``weights`` was not having any or the expected effect in the results in some fit functions. Also fixes the behaviour of built-in plots for global fits ([#168](https://github.com/JeschkeLab/DeerLab/issues/168), [#171](https://github.com/JeschkeLab/DeerLab/pull/171)). 
+- Optimize default weights in global fitting according to the datasets noise levels ([#169](https://github.com/JeschkeLab/DeerLab/issues/169), [#174](https://github.com/JeschkeLab/DeerLab/pull/174)).
+- Fixed a bug in ``snlls`` that was causing the confidence intervals in ``snlls``, ``fitmodel`` and ``fitmultimodel`` to vanish for large signal scales ([#165](https://github.com/JeschkeLab/DeerLab/issues/165), [#166](https://github.com/JeschkeLab/DeerLab/pull/166)). 
+
+#### Specific changes
+- ``deerload``: Corrected a bug that happened in certain BES3T Bruker spectrometer files, when there are entries under the ``MANIPULATION HISTORY LAYER`` section at the end of the descriptor file. Also fixed the reading of ``.XGF`` partner files ([#164](https://github.com/JeschkeLab/DeerLab/pull/164)). 
+- ``snlls``: The keyword argument ``extrapenalty`` now requires a function that takes both non-linear and linear parameters. Corrected the name of the keyword in the documentation ([#175](https://github.com/JeschkeLab/DeerLab/pull/175)). 
+- ``fitparamodel``: Fixed the scaling of the output ``FitResult.model`` and ``FitResult.modelUncert`` ([#173](https://github.com/JeschkeLab/DeerLab/pull/173)).
+- ``ex_pseudotitration_parameter_free``: Removed ``Ctot`` from second order term in the ``chemicalequalibrium`` polynomial ([#163](https://github.com/JeschkeLab/DeerLab/pull/163)).
+
+---------------------------------
+
 Release v0.13.0 - April 2021
 ---------------------------------
 
