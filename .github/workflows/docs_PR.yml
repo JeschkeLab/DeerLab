@@ -3,7 +3,7 @@ name: Docs Build PR test
 on: 
   pull_request:
     branches:
-    - main
+    - "**"
     paths:
     - 'docsrc/**'
     - '.github/workflows/deploy_ghpages.yml'
