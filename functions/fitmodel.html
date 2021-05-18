@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -200,7 +200,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitmodel</span></code><a class="headerlink" href="#fitmodel" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="deerlab.fitmodel">
-<code class="descclassname">deerlab.</code><code class="descname">fitmodel</code><span class="sig-paren">(</span><em>Vexp</em>, <em>t</em>, <em>r</em>, <em>dd_model='P'</em>, <em>bg_model=&lt;function bg_hom3d&gt;</em>, <em>ex_model=&lt;function ex_4pdeer&gt;</em>, <em>dd_par0=None</em>, <em>bg_par0=None</em>, <em>ex_par0=None</em>, <em>verbose=False</em>, <em>dd_lb=None</em>, <em>bg_lb=None</em>, <em>ex_lb=None</em>, <em>dd_ub=None</em>, <em>bg_ub=None</em>, <em>ex_ub=None</em>, <em>weights=1</em>, <em>uq='covariance'</em>, <em>regparam='aic'</em>, <em>tol=1e-10</em>, <em>maxiter=100000000.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitmodel.html#fitmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitmodel" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">deerlab.</code><code class="descname">fitmodel</code><span class="sig-paren">(</span><em>Vexp</em>, <em>t</em>, <em>r</em>, <em>dd_model='P'</em>, <em>bg_model=&lt;function bg_hom3d&gt;</em>, <em>ex_model=&lt;function ex_4pdeer&gt;</em>, <em>dd_par0=None</em>, <em>bg_par0=None</em>, <em>ex_par0=None</em>, <em>verbose=False</em>, <em>dd_lb=None</em>, <em>bg_lb=None</em>, <em>ex_lb=None</em>, <em>dd_ub=None</em>, <em>bg_ub=None</em>, <em>ex_ub=None</em>, <em>weights=None</em>, <em>uq='covariance'</em>, <em>regparam='aic'</em>, <em>tol=1e-10</em>, <em>maxiter=100000000.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitmodel.html#fitmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitmodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits a dipolar model to the experimental signal <code class="docutils literal notranslate"><span class="pre">V</span></code> with time axis <code class="docutils literal notranslate"><span class="pre">t</span></code>, using
 distance axis <code class="docutils literal notranslate"><span class="pre">r</span></code>. The model is specified by the distance distribution (dd),
 the background (bg), and the experiment (ex).</p>
@@ -280,7 +280,7 @@ be adjusted accordingly. The options are:</p>
 </dd>
 <dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like, optional</span></dt>
 <dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting,
-the default is all weighted equally. If not specified all datasets are weighted equally.</p>
+the default is all weighted equally. If not specified all datasets are weighted inversely proportional to their noise levels.</p>
 </dd>
 <dt><strong>regparam</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or scalar, optional</span></dt>
 <dd><p class="first">Method for the automatic selection of the optimal regularization parameter:</p>

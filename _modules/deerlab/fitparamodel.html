@@ -78,7 +78,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -206,7 +206,7 @@
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">least_squares</span>
 
 
-<div class="viewcode-block" id="fitparamodel"><a class="viewcode-back" href="../../functions/fitparamodel.html#deerlab.fitparamodel">[docs]</a><span class="k">def</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">par0</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<div class="viewcode-block" id="fitparamodel"><a class="viewcode-back" href="../../functions/fitparamodel.html#deerlab.fitparamodel">[docs]</a><span class="k">def</span> <span class="nf">fitparamodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">par0</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">multistart</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
                  <span class="n">fitscale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">uq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">covmatrix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Fits the dipolar signal(s) to a parametric model using non-linear least-squares.</span>
@@ -229,7 +229,8 @@
 <span class="sd">        Upper bounds for the model parameters. If not specified, it is left unbounded.</span>
 <span class="sd">    </span>
 <span class="sd">    weights : array_like, optional</span>
-<span class="sd">        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</span>
+<span class="sd">        Array of weighting coefficients for the individual signals in global fitting. </span>
+<span class="sd">        If not specified all datasets are weighted inversely proportional to their noise levels.</span>
 <span class="sd">    </span>
 <span class="sd">    fitscale : boolean, optional</span>
 <span class="sd">        Enable/disable fitting of the signal scale, by default it is enabled.</span>
@@ -256,7 +257,7 @@
 <span class="sd">    param : ndarray</span>
 <span class="sd">        Fitted model parameters.</span>
 <span class="sd">    </span>
-<span class="sd">    model : ndarray </span>
+<span class="sd">    model : ndarray or list of ndarrays</span>
 <span class="sd">        Fitted model.</span>
 
 <span class="sd">    paramUncert : :ref:`UQResult`</span>
@@ -449,8 +450,8 @@
         <span class="n">paruq</span> <span class="o">=</span> <span class="n">UQResult</span><span class="p">(</span><span class="s1">&#39;void&#39;</span><span class="p">)</span>
 
     <span class="n">modelfit</span><span class="p">,</span><span class="n">modelfit_uq</span> <span class="o">=</span> <span class="p">[],[]</span>
-    <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">Vsubsets</span><span class="p">:</span> 
-        <span class="n">subset_model</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">model</span><span class="p">(</span><span class="n">p</span><span class="p">)[</span><span class="n">subset</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">subset</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">Vsubsets</span><span class="p">):</span> 
+        <span class="n">subset_model</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">scales</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">model</span><span class="p">(</span><span class="n">p</span><span class="p">)[</span><span class="n">subset</span><span class="p">]</span>
         <span class="n">modelfit</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">subset_model</span><span class="p">(</span><span class="n">parfit</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">uq</span><span class="p">:</span>
             <span class="n">modelfit_uq</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">paruq</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">subset_model</span><span class="p">))</span>        

@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -200,7 +200,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">selregparam</span></code><a class="headerlink" href="#selregparam" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="deerlab.selregparam">
-<code class="descclassname">deerlab.</code><code class="descname">selregparam</code><span class="sig-paren">(</span><em>V</em>, <em>K</em>, <em>r</em>, <em>regtype='tikhonov'</em>, <em>method='aic'</em>, <em>algorithm='brent'</em>, <em>nonnegativity=True</em>, <em>noiselvl=-1</em>, <em>regorder=2</em>, <em>weights=1</em>, <em>full_output=False</em>, <em>huberparam=1.35</em>, <em>candidates=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/selregparam.html#selregparam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.selregparam" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">deerlab.</code><code class="descname">selregparam</code><span class="sig-paren">(</span><em>V</em>, <em>K</em>, <em>r</em>, <em>regtype='tikhonov'</em>, <em>method='aic'</em>, <em>algorithm='brent'</em>, <em>nonnegativity=True</em>, <em>noiselvl=-1</em>, <em>regorder=2</em>, <em>weights=None</em>, <em>full_output=False</em>, <em>huberparam=1.35</em>, <em>candidates=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/selregparam.html#selregparam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.selregparam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selection of optimal regularization parameter based on a selection criterion.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -245,8 +245,8 @@
 </ul>
 </dd>
 <dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like, optional</span></dt>
-<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting, 
-the default is all weighted equally.</p>
+<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting.
+If not specified all datasets are weighted inversely proportional to their noise levels.</p>
 </dd>
 <dt><strong>candidates</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional</span></dt>
 <dd><p class="first last">List or array of candidate regularization parameter values to be evaluated. 

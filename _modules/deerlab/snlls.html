@@ -78,7 +78,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -210,7 +210,7 @@
 <span class="kn">from</span> <span class="nn">deerlab.nnls</span> <span class="kn">import</span> <span class="nf">cvxnnls</span><span class="p">,</span> <span class="nf">fnnls</span><span class="p">,</span> <span class="n">nnlsbpp</span>
 <span class="kn">from</span> <span class="nn">deerlab.classes</span> <span class="kn">import</span> <span class="n">UQResult</span><span class="p">,</span> <span class="n">FitResult</span>
 
-<div class="viewcode-block" id="snlls"><a class="viewcode-back" href="../../functions/snlls.html#deerlab.snlls">[docs]</a><span class="k">def</span> <span class="nf">snlls</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Amodel</span><span class="p">,</span> <span class="n">par0</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ubl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnlsSolver</span><span class="o">=</span><span class="s1">&#39;cvx&#39;</span><span class="p">,</span> <span class="n">reg</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<div class="viewcode-block" id="snlls"><a class="viewcode-back" href="../../functions/snlls.html#deerlab.snlls">[docs]</a><span class="k">def</span> <span class="nf">snlls</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Amodel</span><span class="p">,</span> <span class="n">par0</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ubl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnlsSolver</span><span class="o">=</span><span class="s1">&#39;cvx&#39;</span><span class="p">,</span> <span class="n">reg</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
           <span class="n">regtype</span><span class="o">=</span><span class="s1">&#39;tikhonov&#39;</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span> <span class="n">multistart</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">regorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alphareopt</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">extrapenalty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
           <span class="n">nonlin_tol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">nonlin_maxiter</span><span class="o">=</span><span class="mf">1e8</span><span class="p">,</span> <span class="n">lin_tol</span><span class="o">=</span><span class="mf">1e-15</span><span class="p">,</span> <span class="n">lin_maxiter</span><span class="o">=</span><span class="mf">1e4</span><span class="p">,</span> <span class="n">huberparam</span><span class="o">=</span><span class="mf">1.35</span><span class="p">,</span>
           <span class="n">uq</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -282,9 +282,10 @@
 <span class="sd">        The regularization parameter can be manually specified by passing a scalar value</span>
 <span class="sd">        instead of a string. The default ``&#39;aic&#39;``.</span>
 
-<span class="sd">    custom_penalty: callable </span>
-<span class="sd">        Custom penalty function to impose upon the solution. Must return a vector to be</span>
-<span class="sd">        added to the residual vector. </span>
+<span class="sd">    extrapenalty: callable </span>
+<span class="sd">        Custom penalty function to impose upon the solution. Must take two inputs, a vector of non-linear parameters</span>
+<span class="sd">        and a vector of linear parameters, and return a vector to be added to the residual vector (``pen = fcn(pnonlin,plin)``).  </span>
+<span class="sd">        The square of the penalty is computed internally.</span>
 
 <span class="sd">    alphareopt : float scalar, optional</span>
 <span class="sd">        Relative parameter change threshold for reoptimizing the regularization parameter</span>
@@ -300,8 +301,8 @@
 <span class="sd">        The default is ``&#39;cvx&#39;``.</span>
 
 <span class="sd">    weights : array_like, optional</span>
-<span class="sd">        Array of weighting coefficients for the individual signals in global fitting,</span>
-<span class="sd">        the default is all weighted equally.</span>
+<span class="sd">        Array of weighting coefficients for the individual signals in global fitting.</span>
+<span class="sd">        If not specified all datasets are weighted inversely proportional to their noise levels.</span>
 
 <span class="sd">    multistart : int scalar, optional</span>
 <span class="sd">        Number of starting points for global optimization, the default is 1.</span>
@@ -506,10 +507,10 @@
         
         <span class="c1"># Optimiza the regularization parameter only if needed</span>
         <span class="k">if</span> <span class="n">optimize_alpha</span><span class="p">:</span>
-            <span class="n">alpha</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">selregparam</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">regtype</span><span class="p">,</span> <span class="n">regparam</span><span class="p">,</span> <span class="n">regorder</span><span class="o">=</span><span class="n">regorder</span><span class="p">)</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">selregparam</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">regtype</span><span class="p">,</span> <span class="n">regparam</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">regorder</span><span class="o">=</span><span class="n">regorder</span><span class="p">)</span>
 
         <span class="c1"># Components for linear least-squares</span>
-        <span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">lsqcomponents</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">regtype</span><span class="o">=</span><span class="n">regtype</span><span class="p">)</span>
+        <span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">lsqcomponents</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">regtype</span><span class="o">=</span><span class="n">regtype</span><span class="p">)</span>
          
         <span class="c1"># Solve the linear least-squares problem</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">linSolver</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">)</span>
@@ -578,7 +579,7 @@
 
         <span class="c1"># Compute residual from custom penalty</span>
         <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">extrapenalty</span><span class="p">):</span>
-            <span class="n">penres</span> <span class="o">=</span> <span class="n">extrapenalty</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">penres</span> <span class="o">=</span> <span class="n">extrapenalty</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">linfit</span><span class="p">)</span>
             <span class="n">penres</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">penres</span><span class="p">)</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">res</span><span class="p">,</span><span class="n">penres</span><span class="p">))</span>
 
@@ -629,10 +630,11 @@
         <span class="n">Jnonlin</span> <span class="o">=</span> <span class="n">Jacobian</span><span class="p">(</span><span class="n">ResidualsFcn</span><span class="p">,</span><span class="n">nonlinfit</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">)</span>
 
         <span class="c1"># Jacobian (linear part)</span>
-        <span class="n">Jlin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">linfit</span><span class="p">)))</span>
-        <span class="n">Jlin</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),:]</span> <span class="o">=</span> <span class="n">scales_vec</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="n">Amodel</span><span class="p">(</span><span class="n">nonlinfit</span><span class="p">)</span>
+        <span class="n">Jlin</span> <span class="o">=</span> <span class="n">scales_vec</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="n">Amodel</span><span class="p">(</span><span class="n">nonlinfit</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">extrapenalty</span><span class="p">):</span>
+            <span class="n">Jlin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">Jlin</span><span class="p">,</span> <span class="n">Jacobian</span><span class="p">(</span><span class="k">lambda</span> <span class="n">plin</span><span class="p">:</span> <span class="n">extrapenalty</span><span class="p">(</span><span class="n">nonlinfit</span><span class="p">,</span><span class="n">plin</span><span class="p">),</span><span class="n">linfit</span><span class="p">,</span><span class="n">lbl</span><span class="p">,</span><span class="n">ubl</span><span class="p">)))</span>
         <span class="k">if</span> <span class="n">includeRegularization</span><span class="p">:</span>
-            <span class="n">Jlin</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">-</span><span class="n">Nlin</span><span class="p">:,:]</span> <span class="o">=</span> <span class="n">reg_penalty</span><span class="p">(</span><span class="n">regtype</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">linfit</span><span class="p">,</span> <span class="n">huberparam</span><span class="p">,</span> <span class="n">Nnonlin</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">Jlin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">Jlin</span><span class="p">,</span> <span class="n">reg_penalty</span><span class="p">(</span><span class="n">regtype</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">linfit</span><span class="p">,</span> <span class="n">huberparam</span><span class="p">,</span> <span class="n">Nnonlin</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span>
 
         <span class="c1"># Full Jacobian</span>
         <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">Jnonlin</span><span class="p">,</span><span class="n">Jlin</span><span class="p">),</span><span class="nf">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>

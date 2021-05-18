@@ -78,7 +78,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -325,7 +325,7 @@
         <span class="n">index</span> <span class="o">=</span> <span class="n">AxisNames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
         <span class="n">axisname</span> <span class="o">=</span> <span class="n">a</span><span class="o">+</span><span class="s1">&#39;TYP&#39;</span>
         <span class="n">axistype</span> <span class="o">=</span> <span class="n">parDESC</span><span class="p">[</span><span class="n">axisname</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">Dimensions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">Dimensions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="s1">&#39;IGD&#39;</span><span class="o">==</span> <span class="n">axistype</span><span class="p">:</span>
@@ -344,11 +344,11 @@
 
                 <span class="n">dt_axis</span> <span class="o">=</span> <span class="n">dt_axis</span><span class="o">.</span><span class="n">newbyteorder</span><span class="p">(</span><span class="n">byteorder</span><span class="p">)</span>
                 <span class="c1"># Open and read companion file</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">companionfilename</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">fp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">companionfilename</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                         <span class="n">abscissa</span><span class="p">[:</span><span class="n">Dimensions</span><span class="p">[</span><span class="n">index</span><span class="p">],</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span><span class="n">dtype</span><span class="o">=</span><span class="n">dt_axis</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not read companion file </span><span class="si">{</span><span class="n">companionfilename</span><span class="si">}</span><span class="s1"> for nonlinear axis. Assuming linear axis.&#39;</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not read companion file </span><span class="si">{</span><span class="n">companionfilename</span><span class="si">}</span><span class="s1"> for nonlinear axis. Assuming linear axis.&#39;</span><span class="p">)</span>
                 <span class="n">axistype</span><span class="o">=</span><span class="s1">&#39;IDX&#39;</span>
         <span class="k">if</span> <span class="n">axistype</span> <span class="o">==</span> <span class="s1">&#39;IDX&#39;</span><span class="p">:</span>
             <span class="n">minimum</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parDESC</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="s1">&#39;MIN&#39;</span><span class="p">)])</span>
@@ -475,7 +475,9 @@
     <span class="n">reKeyValue</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\w+)\W+(.*)&quot;</span><span class="p">)</span>
     
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">allLines</span><span class="p">:</span>
-        
+
+        <span class="k">if</span> <span class="s1">&#39;MANIPULATION HISTORY LAYER&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">break</span>
         <span class="c1"># Layer/section header (possible values: #DESC, #SPL, #DSL, #MHL)</span>
         <span class="n">mo1</span> <span class="o">=</span> <span class="n">reSectionHeader</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> 
         <span class="k">if</span> <span class="n">mo1</span><span class="p">:</span>

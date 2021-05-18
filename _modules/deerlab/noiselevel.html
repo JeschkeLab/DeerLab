@@ -78,7 +78,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -199,7 +199,7 @@
 <span class="c1"># Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.</span>
 
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="nf">isreal</span><span class="p">,</span> <span class="nf">std</span><span class="p">,</span> <span class="nf">mean</span><span class="p">,</span> <span class="nf">shape</span><span class="p">,</span> <span class="nf">atleast_1d</span>
-<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">movmean</span>
+<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">movmean</span><span class="p">,</span> <span class="n">der_snr</span>
 <span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="nf">correctphase</span>
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">savgol_filter</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -324,8 +324,7 @@
         <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;For the &#39;der&#39; method, no additional inputs are required.&quot;</span><span class="p">)</span>
 
-        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-        <span class="n">sigma</span>  <span class="o">=</span> <span class="mf">1.482602</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="nf">median</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">V</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">V</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="n">n</span><span class="p">]))</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">der_snr</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">sigma</span></div>
 </pre></div>

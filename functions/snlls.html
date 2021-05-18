@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -200,7 +200,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">snlls</span></code><a class="headerlink" href="#snlls" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="deerlab.snlls">
-<code class="descclassname">deerlab.</code><code class="descname">snlls</code><span class="sig-paren">(</span><em>y</em>, <em>Amodel</em>, <em>par0</em>, <em>lb=None</em>, <em>ub=None</em>, <em>lbl=None</em>, <em>ubl=None</em>, <em>nnlsSolver='cvx'</em>, <em>reg='auto'</em>, <em>weights=1</em>, <em>regtype='tikhonov'</em>, <em>regparam='aic'</em>, <em>multistart=1</em>, <em>regorder=2</em>, <em>alphareopt=0.001</em>, <em>extrapenalty=None</em>, <em>nonlin_tol=1e-09</em>, <em>nonlin_maxiter=100000000.0</em>, <em>lin_tol=1e-15</em>, <em>lin_maxiter=10000.0</em>, <em>huberparam=1.35</em>, <em>uq=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/snlls.html#snlls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.snlls" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">deerlab.</code><code class="descname">snlls</code><span class="sig-paren">(</span><em>y</em>, <em>Amodel</em>, <em>par0</em>, <em>lb=None</em>, <em>ub=None</em>, <em>lbl=None</em>, <em>ubl=None</em>, <em>nnlsSolver='cvx'</em>, <em>reg='auto'</em>, <em>weights=None</em>, <em>regtype='tikhonov'</em>, <em>regparam='aic'</em>, <em>multistart=1</em>, <em>regorder=2</em>, <em>alphareopt=0.001</em>, <em>extrapenalty=None</em>, <em>nonlin_tol=1e-09</em>, <em>nonlin_maxiter=100000000.0</em>, <em>lin_tol=1e-15</em>, <em>lin_maxiter=10000.0</em>, <em>huberparam=1.35</em>, <em>uq=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/snlls.html#snlls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.snlls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Separable Non-linear Least Squares Solver</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -271,9 +271,10 @@ returning a matrix array or a list thereof.</p>
 <p class="last">The regularization parameter can be manually specified by passing a scalar value
 instead of a string. The default <code class="docutils literal notranslate"><span class="pre">'aic'</span></code>.</p>
 </dd>
-<dt><strong>custom_penalty: callable</strong></dt>
-<dd><p class="first last">Custom penalty function to impose upon the solution. Must return a vector to be
-added to the residual vector.</p>
+<dt><strong>extrapenalty: callable</strong></dt>
+<dd><p class="first last">Custom penalty function to impose upon the solution. Must take two inputs, a vector of non-linear parameters
+and a vector of linear parameters, and return a vector to be added to the residual vector (<code class="docutils literal notranslate"><span class="pre">pen</span> <span class="pre">=</span> <span class="pre">fcn(pnonlin,plin)</span></code>).  
+The square of the penalty is computed internally.</p>
 </dd>
 <dt><strong>alphareopt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float scalar, optional</span></dt>
 <dd><p class="first last">Relative parameter change threshold for reoptimizing the regularization parameter
@@ -289,8 +290,8 @@ when using a selection method, the default is 1e-3.</p>
 <p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'cvx'</span></code>.</p>
 </dd>
 <dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like, optional</span></dt>
-<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting,
-the default is all weighted equally.</p>
+<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting.
+If not specified all datasets are weighted inversely proportional to their noise levels.</p>
 </dd>
 <dt><strong>multistart</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int scalar, optional</span></dt>
 <dd><p class="first last">Number of starting points for global optimization, the default is 1.</p>

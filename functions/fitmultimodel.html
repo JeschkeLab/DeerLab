@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -200,7 +200,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitmultimodel</span></code><a class="headerlink" href="#fitmultimodel" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="deerlab.fitmultimodel">
-<code class="descclassname">deerlab.</code><code class="descname">fitmultimodel</code><span class="sig-paren">(</span><em>V</em>, <em>Kmodel</em>, <em>r</em>, <em>model</em>, <em>maxModels</em>, <em>method='aic'</em>, <em>lb=None</em>, <em>ub=None</em>, <em>lbK=None</em>, <em>ubK=None</em>, <em>strategy='split'</em>, <em>weights=1</em>, <em>renormalize=True</em>, <em>uq=True</em>, <em>tol=1e-09</em>, <em>maxiter=100000000.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitmultimodel.html#fitmultimodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitmultimodel" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">deerlab.</code><code class="descname">fitmultimodel</code><span class="sig-paren">(</span><em>V</em>, <em>Kmodel</em>, <em>r</em>, <em>model</em>, <em>maxModels</em>, <em>method='aic'</em>, <em>lb=None</em>, <em>ub=None</em>, <em>lbK=None</em>, <em>ubK=None</em>, <em>strategy='split'</em>, <em>weights=None</em>, <em>renormalize=True</em>, <em>uq=True</em>, <em>tol=1e-09</em>, <em>maxiter=100000000.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitmultimodel.html#fitmultimodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitmultimodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
 non-linear least-squares (SNLLS).</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -271,7 +271,8 @@ Must be a callable DeerLab model function (e.g. <code class="docutils literal no
 <p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'split'</span></code>.</p>
 </dd>
 <dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like, optional</span></dt>
-<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</p>
+<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting. 
+If not specified all datasets are weighted inversely proportional to their noise levels.</p>
 </dd>
 <dt><strong>renormalize</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
 <dd><p class="first last">Enable/disable renormalization of the fitted distribution, by default it is enabled.</p>

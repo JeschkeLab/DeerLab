@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -200,7 +200,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitregmodel</span></code><a class="headerlink" href="#fitregmodel" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="deerlab.fitregmodel">
-<code class="descclassname">deerlab.</code><code class="descname">fitregmodel</code><span class="sig-paren">(</span><em>V</em>, <em>K</em>, <em>r</em>, <em>regtype='tikhonov'</em>, <em>regparam='aic'</em>, <em>regorder=2</em>, <em>solver='cvx'</em>, <em>weights=1</em>, <em>huberparam=1.35</em>, <em>nonnegativity=True</em>, <em>obir=False</em>, <em>uq=True</em>, <em>renormalize=True</em>, <em>noiselevelaim=None</em>, <em>tol=None</em>, <em>maxiter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitregmodel.html#fitregmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitregmodel" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">deerlab.</code><code class="descname">fitregmodel</code><span class="sig-paren">(</span><em>V</em>, <em>K</em>, <em>r</em>, <em>regtype='tikhonov'</em>, <em>regparam='aic'</em>, <em>regorder=2</em>, <em>solver='cvx'</em>, <em>weights=None</em>, <em>huberparam=1.35</em>, <em>nonnegativity=True</em>, <em>obir=False</em>, <em>uq=True</em>, <em>renormalize=True</em>, <em>noiselevelaim=None</em>, <em>tol=None</em>, <em>maxiter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitregmodel.html#fitregmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitregmodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches 
 via non-negative least-squares (NNLS).</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -248,7 +248,8 @@ via non-negative least-squares (NNLS).</p>
 The default <code class="docutils literal notranslate"><span class="pre">'aic'</span></code>.</p>
 </dd>
 <dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like, optional</span></dt>
-<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</p>
+<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting. 
+If not specified all datasets are weighted inversely proportional to their noise levels.</p>
 </dd>
 <dt><strong>regorder</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int scalar, optional</span></dt>
 <dd><p class="first last">Order of the regularization operator, the default is 2.</p>

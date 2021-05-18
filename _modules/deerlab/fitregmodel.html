@@ -78,7 +78,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -207,7 +207,7 @@
 <span class="kn">from</span> <span class="nn">deerlab.classes</span> <span class="kn">import</span> <span class="n">UQResult</span><span class="p">,</span> <span class="n">FitResult</span>
 
 <div class="viewcode-block" id="fitregmodel"><a class="viewcode-back" href="../../functions/fitregmodel.html#deerlab.fitregmodel">[docs]</a><span class="k">def</span> <span class="nf">fitregmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">regtype</span><span class="o">=</span><span class="s1">&#39;tikhonov&#39;</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span> <span class="n">regorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;cvx&#39;</span><span class="p">,</span> 
-                <span class="n">weights</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">huberparam</span><span class="o">=</span><span class="mf">1.35</span><span class="p">,</span> <span class="n">nonnegativity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">obir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">huberparam</span><span class="o">=</span><span class="mf">1.35</span><span class="p">,</span> <span class="n">nonnegativity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">obir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">uq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">renormalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">noiselevelaim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches </span>
@@ -255,7 +255,8 @@
 <span class="sd">        The default ``&#39;aic&#39;``.</span>
 <span class="sd">    </span>
 <span class="sd">    weights : array_like, optional</span>
-<span class="sd">        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</span>
+<span class="sd">        Array of weighting coefficients for the individual signals in global fitting. </span>
+<span class="sd">        If not specified all datasets are weighted inversely proportional to their noise levels.</span>
 <span class="sd">    </span>
 <span class="sd">    regorder : int scalar, optional</span>
 <span class="sd">        Order of the regularization operator, the default is 2.</span>
@@ -345,7 +346,16 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Prepare signals, kernels and weights if multiple are passed</span>
-    <span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">subsets</span><span class="p">,</span> <span class="n">prescales</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">parse_multidatasets</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span><span class="n">precondition</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">subsets</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">parse_multidatasets</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">precondition</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subsets</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">prescales</span> <span class="o">=</span> <span class="p">[</span><span class="nf">max</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">subset</span><span class="p">])</span> <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">subsets</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">scale</span><span class="p">,</span><span class="n">subset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">prescales</span><span class="p">,</span><span class="n">subsets</span><span class="p">):</span>
+            <span class="n">V</span><span class="p">[</span><span class="n">subset</span><span class="p">]</span> <span class="o">=</span> <span class="n">V</span><span class="p">[</span><span class="n">subset</span><span class="p">]</span><span class="o">/</span><span class="n">scale</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">prescales</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+
 
     <span class="c1"># Determine an optimal value of the regularization parameter if requested</span>
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">regparam</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
@@ -388,19 +398,20 @@
     <span class="c1"># Get fit final status</span>
     <span class="n">Vfit</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@Pfit</span>
     <span class="n">success</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="n">Pfit</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">V</span> <span class="o">-</span> <span class="n">Vfit</span>
-    <span class="n">fval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="n">Vfit</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">alpha</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">L</span><span class="nd">@Pfit</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="c1"># Construct residual parts for for the residual and regularization terms</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">weights</span><span class="o">*</span><span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="n">K</span><span class="nd">@Pfit</span><span class="p">)</span>
+
+    <span class="c1"># Construct Jacobians for the residual and penalty terms</span>
+    <span class="n">Jres</span> <span class="o">=</span> <span class="n">K</span><span class="o">*</span><span class="n">weights</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+    <span class="n">res</span><span class="p">,</span><span class="n">J</span> <span class="o">=</span> <span class="n">_augment</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="n">Jres</span><span class="p">,</span><span class="n">regtype</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="n">huberparam</span><span class="p">)</span>
+
+    <span class="c1"># Get objective function value</span>
+    <span class="n">fval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 
     <span class="c1"># Uncertainty quantification</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="k">if</span> <span class="n">uq</span><span class="p">:</span>
-        <span class="c1"># Construct residual parts for for the residual and regularization terms</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="n">weights</span><span class="o">*</span><span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="n">K</span><span class="nd">@Pfit</span><span class="p">)</span>
-
-        <span class="c1"># Construct Jacobians for the residual and penalty terms</span>
-        <span class="n">Jres</span> <span class="o">=</span> <span class="n">K</span><span class="o">*</span><span class="n">weights</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
-        <span class="n">res</span><span class="p">,</span><span class="n">J</span> <span class="o">=</span> <span class="n">_augment</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="n">Jres</span><span class="p">,</span><span class="n">regtype</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="n">huberparam</span><span class="p">)</span>
-
         <span class="c1"># Calculate the heteroscedasticity consistent covariance matrix </span>
         <span class="n">covmat</span> <span class="o">=</span> <span class="n">hccm</span><span class="p">(</span><span class="n">J</span><span class="p">,</span><span class="n">res</span><span class="p">,</span><span class="s1">&#39;HC1&#39;</span><span class="p">)</span>
         

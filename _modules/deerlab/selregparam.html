@@ -78,7 +78,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -204,7 +204,7 @@
 <span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 
 <div class="viewcode-block" id="selregparam"><a class="viewcode-back" href="../../functions/selregparam.html#deerlab.selregparam">[docs]</a><span class="k">def</span> <span class="nf">selregparam</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">regtype</span><span class="o">=</span><span class="s1">&#39;tikhonov&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;brent&#39;</span><span class="p">,</span>
-                <span class="n">nonnegativity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">regorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">nonnegativity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">regorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">huberparam</span><span class="o">=</span><span class="mf">1.35</span><span class="p">,</span> <span class="n">candidates</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Selection of optimal regularization parameter based on a selection criterion.</span>
@@ -248,8 +248,8 @@
 <span class="sd">        * ``&#39;mcl&#39;`` - Mallows&#39; C_L (MCL)</span>
 <span class="sd">    </span>
 <span class="sd">    weights : array_like, optional</span>
-<span class="sd">        Array of weighting coefficients for the individual signals in global fitting, </span>
-<span class="sd">        the default is all weighted equally.</span>
+<span class="sd">        Array of weighting coefficients for the individual signals in global fitting.</span>
+<span class="sd">        If not specified all datasets are weighted inversely proportional to their noise levels.</span>
 
 <span class="sd">    candidates : list, optional</span>
 <span class="sd">        List or array of candidate regularization parameter values to be evaluated. </span>
@@ -399,7 +399,8 @@
     <span class="n">H</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@pK</span>
 
     <span class="c1"># Residual term</span>
-    <span class="n">Residual</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">K</span><span class="nd">@P</span> <span class="o">-</span> <span class="n">V</span><span class="p">)</span>
+    <span class="n">residuals</span> <span class="o">=</span> <span class="n">weights</span><span class="o">*</span><span class="p">(</span><span class="n">K</span><span class="nd">@P</span> <span class="o">-</span> <span class="n">V</span><span class="p">)</span>
+    <span class="n">Residual</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
     <span class="c1"># Regularization penalty term</span>
     <span class="k">if</span> <span class="n">regtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;tikhonov&#39;</span><span class="p">:</span>
         <span class="n">Penalty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">L</span><span class="nd">@P</span><span class="p">)</span>
@@ -418,7 +419,7 @@
 
     <span class="c1"># Cross validation (CV)</span>
     <span class="k">if</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;cv&#39;</span><span class="p">:</span> 
-        <span class="n">f_</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">((</span><span class="n">V</span> <span class="o">-</span> <span class="n">K</span><span class="nd">@P</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="nf">diag</span><span class="p">(</span><span class="n">H</span><span class="p">)))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">residuals</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="nf">diag</span><span class="p">(</span><span class="n">H</span><span class="p">)))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
             
     <span class="c1"># Generalized Cross Validation (GCV)</span>
     <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;gcv&#39;</span><span class="p">:</span> 
@@ -456,11 +457,11 @@
 
     <span class="c1"># Extrapolated Error (EE)          </span>
     <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span><span class="s1">&#39;ee&#39;</span><span class="p">:</span> 
-        <span class="n">f_</span> <span class="o">=</span> <span class="n">Residual</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">T</span><span class="o">@</span><span class="p">(</span><span class="n">K</span><span class="nd">@P</span> <span class="o">-</span> <span class="n">V</span><span class="p">))</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">Residual</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">T</span><span class="o">@</span><span class="p">(</span><span class="n">residuals</span><span class="p">))</span>
 
     <span class="c1"># Normalized Cumulative Periodogram (NCP)</span>
     <span class="k">elif</span> <span class="n">selmethod</span> <span class="o">==</span> <span class="s1">&#39;ncp&#39;</span><span class="p">:</span> 
-        <span class="n">resPeriodogram</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">K</span><span class="nd">@P</span> <span class="o">-</span> <span class="n">V</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">resPeriodogram</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">residuals</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">wnoisePeriodogram</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">resPeriodogram</span><span class="p">))</span>
         <span class="n">respowSpectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">resPeriodogram</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">resPeriodogram</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
@@ -474,12 +475,12 @@
         <span class="n">eigs</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">eye</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">H</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="nf">shape</span><span class="p">(</span><span class="n">H</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">H</span><span class="p">)</span>
         <span class="n">eigs</span><span class="p">[</span><span class="n">eigs</span> <span class="o">&lt;</span> <span class="n">Treshold</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">nzeigs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">real</span><span class="p">(</span><span class="n">eigs</span><span class="p">[</span><span class="n">eigs</span><span class="o">!=</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">f_</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">@</span><span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="n">K</span><span class="nd">@P</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="nf">prod</span><span class="p">(</span><span class="n">nzeigs</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">nzeigs</span><span class="p">))</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">@</span><span class="p">(</span><span class="o">-</span><span class="n">residuals</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="nf">prod</span><span class="p">(</span><span class="n">nzeigs</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">nzeigs</span><span class="p">))</span>
 
     <span class="c1"># Mallows&#39; C_L (MCL)</span>
     <span class="k">elif</span>  <span class="n">selmethod</span> <span class="o">==</span> <span class="s1">&#39;mcl&#39;</span><span class="p">:</span>  
         <span class="k">if</span> <span class="n">noiselvl</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span>
-            <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">std</span><span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="n">K</span><span class="nd">@P</span><span class="p">)</span>
+            <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">std</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
         <span class="n">f_</span> <span class="o">=</span> <span class="n">Residual</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">noiselvl</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="nf">trace</span><span class="p">(</span><span class="n">H</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="n">noiselvl</span><span class="o">**</span><span class="mi">2</span>
         
     <span class="k">elif</span> <span class="n">selmethod</span> <span class="o">==</span> <span class="s1">&#39;lr&#39;</span> <span class="ow">or</span> <span class="n">selmethod</span> <span class="o">==</span> <span class="s1">&#39;lc&#39;</span><span class="p">:</span>

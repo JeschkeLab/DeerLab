@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -200,7 +200,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitparamodel</span></code><a class="headerlink" href="#fitparamodel" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="deerlab.fitparamodel">
-<code class="descclassname">deerlab.</code><code class="descname">fitparamodel</code><span class="sig-paren">(</span><em>V</em>, <em>model</em>, <em>par0</em>, <em>lb=None</em>, <em>ub=None</em>, <em>weights=1</em>, <em>multistart=1</em>, <em>tol=1e-10</em>, <em>maxiter=3000</em>, <em>fitscale=True</em>, <em>uq=True</em>, <em>covmatrix=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitparamodel.html#fitparamodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitparamodel" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">deerlab.</code><code class="descname">fitparamodel</code><span class="sig-paren">(</span><em>V</em>, <em>model</em>, <em>par0</em>, <em>lb=None</em>, <em>ub=None</em>, <em>weights=None</em>, <em>multistart=1</em>, <em>tol=1e-10</em>, <em>maxiter=3000</em>, <em>fitscale=True</em>, <em>uq=True</em>, <em>covmatrix=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/fitparamodel.html#fitparamodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.fitparamodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits the dipolar signal(s) to a parametric model using non-linear least-squares.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -223,7 +223,8 @@
 <dd><p class="first last">Upper bounds for the model parameters. If not specified, it is left unbounded.</p>
 </dd>
 <dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like, optional</span></dt>
-<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.</p>
+<dd><p class="first last">Array of weighting coefficients for the individual signals in global fitting. 
+If not specified all datasets are weighted inversely proportional to their noise levels.</p>
 </dd>
 <dt><strong>fitscale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
 <dd><p class="first last">Enable/disable fitting of the signal scale, by default it is enabled.</p>
@@ -252,7 +253,7 @@
 <dt><strong>param</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
 <dd><p class="first last">Fitted model parameters.</p>
 </dd>
-<dt><strong>model</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dt><strong>model</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray or list of ndarrays</span></dt>
 <dd><p class="first last">Fitted model.</p>
 </dd>
 <dt><strong>paramUncert</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference internal" href="UQResult.html#uqresult"><span class="std std-ref">UQResult</span></a></span></dt>

@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.0
+                v0.13.1
               </div>
             
           
@@ -225,7 +225,7 @@ of a ligand L) given by the chemical equilibrium  A + L &lt;-&gt; B.</div></bloc
     <span class="n">Kb</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">Kdis</span>
     <span class="n">xB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">)):</span>
-        <span class="n">xB_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">roots</span><span class="p">([</span><span class="n">Kb</span><span class="o">*</span><span class="n">Ctot</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">Kb</span><span class="o">*</span><span class="n">L</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">+</span> <span class="n">Kb</span><span class="o">*</span><span class="n">Ctot</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Kb</span><span class="o">*</span><span class="n">L</span><span class="p">[</span><span class="n">q</span><span class="p">]])</span>
+        <span class="n">xB_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">roots</span><span class="p">([</span><span class="n">Kb</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">Kb</span><span class="o">*</span><span class="n">L</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">+</span> <span class="n">Kb</span><span class="o">*</span><span class="n">Ctot</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Kb</span><span class="o">*</span><span class="n">L</span><span class="p">[</span><span class="n">q</span><span class="p">]])</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">xB</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">xB_</span><span class="p">[(</span><span class="n">xB_</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">xB_</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)]</span>
         <span class="k">except</span><span class="p">:</span>
@@ -344,7 +344,7 @@ the dissociation constant (KD).</div></blockquote>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Kdis = 4.61(1.32-7.90)µM
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Kdis = 7.65(1.87-10.00)µM
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot results</span>
@@ -442,7 +442,7 @@ the dissociation constant (KD).</div></blockquote>
 </pre></div>
 </div>
 <img alt="ex pseudotitration parameter free" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_pseudotitration_parameter_free_002.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 1 minutes  38.420 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 1 minutes  44.079 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-pseudotitration-parameter-free-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <a class="reference download internal" download="" href="../../_downloads/5e16e582c204568263d380606c4a5ea5/ex_pseudotitration_parameter_free.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_pseudotitration_parameter_free.py</span></code></a></div>
