@@ -15,7 +15,7 @@ from deerlab.utils import goodness_of_fit, hccm, isempty, Jacobian
 from deerlab.nnls import cvxnnls, fnnls, nnlsbpp
 from deerlab.classes import UQResult, FitResult
 
-def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=1,
+def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=None,
           regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3, extrapenalty=None,
           nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, huberparam=1.35,
           uq=True):
@@ -87,9 +87,10 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         The regularization parameter can be manually specified by passing a scalar value
         instead of a string. The default ``'aic'``.
 
-    custom_penalty: callable 
-        Custom penalty function to impose upon the solution. Must return a vector to be
-        added to the residual vector. 
+    extrapenalty: callable 
+        Custom penalty function to impose upon the solution. Must take two inputs, a vector of non-linear parameters
+        and a vector of linear parameters, and return a vector to be added to the residual vector (``pen = fcn(pnonlin,plin)``).  
+        The square of the penalty is computed internally.
 
     alphareopt : float scalar, optional
         Relative parameter change threshold for reoptimizing the regularization parameter
@@ -105,8 +106,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         The default is ``'cvx'``.
 
     weights : array_like, optional
-        Array of weighting coefficients for the individual signals in global fitting,
-        the default is all weighted equally.
+        Array of weighting coefficients for the individual signals in global fitting.
+        If not specified all datasets are weighted inversely proportional to their noise levels.
 
     multistart : int scalar, optional
         Number of starting points for global optimization, the default is 1.
@@ -311,10 +312,10 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         
         # Optimiza the regularization parameter only if needed
         if optimize_alpha:
-            alpha = dl.selregparam(y, A, ax, regtype, regparam, regorder=regorder)
+            alpha = dl.selregparam(y, A, ax, regtype, regparam, weights=weights, regorder=regorder)
 
         # Components for linear least-squares
-        AtA, Aty = dl.lsqcomponents(y, A, L, alpha, weights, regtype=regtype)
+        AtA, Aty = dl.lsqcomponents(y, A, L, alpha, weights=weights, regtype=regtype)
          
         # Solve the linear least-squares problem
         result = linSolver(AtA, Aty)
@@ -383,7 +384,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
         # Compute residual from custom penalty
         if callable(extrapenalty):
-            penres = extrapenalty(p)
+            penres = extrapenalty(p,linfit)
             penres = np.atleast_1d(penres)
             res = np.concatenate((res,penres))
 
@@ -434,10 +435,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         Jnonlin = Jacobian(ResidualsFcn,nonlinfit,lb,ub)
 
         # Jacobian (linear part)
-        Jlin = np.zeros((len(res),len(linfit)))
-        Jlin[:len(y),:] = scales_vec[:,np.newaxis]*Amodel(nonlinfit)
+        Jlin = scales_vec[:,np.newaxis]*Amodel(nonlinfit)
+        if callable(extrapenalty):
+            Jlin = np.concatenate((Jlin, Jacobian(lambda plin: extrapenalty(nonlinfit,plin),linfit,lbl,ubl)))
         if includeRegularization:
-            Jlin[len(res)-Nlin:,:] = reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)[1]
+            Jlin = np.concatenate((Jlin, reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)[1]))
 
         # Full Jacobian
         J = np.concatenate((Jnonlin,Jlin),axis=1)

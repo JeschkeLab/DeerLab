@@ -4,7 +4,7 @@
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 from numpy import isreal, std, mean, shape, atleast_1d
-from deerlab.utils import movmean
+from deerlab.utils import movmean, der_snr
 from deerlab import correctphase
 from scipy.signal import savgol_filter
 import warnings
@@ -129,7 +129,6 @@ def noiselevel(V,mode='der',*args):
         if args:
             raise KeyError("For the 'der' method, no additional inputs are required.")
 
-        n = len(V)
-        sigma  = 1.482602/np.sqrt(6)*np.median(abs(2.0*V[2:n-2] - V[0:n-4] - V[4:n]))
+        sigma = der_snr(V)
 
     return sigma

@@ -29,7 +29,7 @@ def chemicalequilibrium(Kdis,L):
     Kb = 1/Kdis
     xB = np.zeros_like(L)
     for q in range(len(L)):
-        xB_ = np.roots([Kb*Ctot, -(Kb*L[q] + Kb*Ctot + 1), Kb*L[q]])
+        xB_ = np.roots([Kb, -(Kb*L[q] + Kb*Ctot + 1), Kb*L[q]])
         try:
             xB[q] = xB_[(xB_<=1) & (xB_>=0)]
         except:

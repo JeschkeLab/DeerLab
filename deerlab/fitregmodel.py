@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit
 from deerlab.classes import UQResult, FitResult
 
 def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
-                weights=1, huberparam=1.35, nonnegativity=True, obir=False, 
+                weights=None, huberparam=1.35, nonnegativity=True, obir=False,
                 uq=True, renormalize=True, noiselevelaim=None, tol=None, maxiter=None):
     r"""
     Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches 
@@ -60,7 +60,8 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
         The default ``'aic'``.
     
     weights : array_like, optional
-        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
+        Array of weighting coefficients for the individual signals in global fitting. 
+        If not specified all datasets are weighted inversely proportional to their noise levels.
     
     regorder : int scalar, optional
         Order of the regularization operator, the default is 2.
@@ -150,7 +151,16 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
 
     """
     # Prepare signals, kernels and weights if multiple are passed
-    V, K, weights, subsets, prescales = dl.utils.parse_multidatasets(V, K, weights,precondition=True)
+    V, K, weights, subsets = dl.utils.parse_multidatasets(V, K, weights, precondition=False)
+
+    if len(subsets)>1:
+        prescales = [max(V[subset]) for subset in subsets]
+        for scale,subset in zip(prescales,subsets):
+            V[subset] = V[subset]/scale
+    else:
+        prescales = [1]
+
+
 
     # Determine an optimal value of the regularization parameter if requested
     if type(regparam) is str:
@@ -193,19 +203,20 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
     # Get fit final status
     Vfit = K@Pfit
     success = ~np.all(Pfit==0)
-    res = V - Vfit
-    fval = np.linalg.norm(V - Vfit)**2 + alpha**2*np.linalg.norm(L@Pfit)**2
+
+    # Construct residual parts for for the residual and regularization terms
+    res = weights*(V - K@Pfit)
+
+    # Construct Jacobians for the residual and penalty terms
+    Jres = K*weights[:,np.newaxis]
+    res,J = _augment(res,Jres,regtype,alpha,L,Pfit,huberparam)
+
+    # Get objective function value
+    fval = np.linalg.norm(res)**2
 
     # Uncertainty quantification
     # ----------------------------------------------------------------
     if uq:
-        # Construct residual parts for for the residual and regularization terms
-        res = weights*(V - K@Pfit)
-
-        # Construct Jacobians for the residual and penalty terms
-        Jres = K*weights[:,np.newaxis]
-        res,J = _augment(res,Jres,regtype,alpha,L,Pfit,huberparam)
-
         # Calculate the heteroscedasticity consistent covariance matrix 
         covmat = hccm(J,res,'HC1')
         

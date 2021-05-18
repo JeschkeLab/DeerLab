@@ -9,7 +9,7 @@ import math as m
 import deerlab as dl
 
 def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
-                nonnegativity=True, noiselvl=-1, regorder=2, weights=1, full_output=False,
+                nonnegativity=True, noiselvl=-1, regorder=2, weights=None, full_output=False,
                 huberparam=1.35, candidates=None):
     r"""
     Selection of optimal regularization parameter based on a selection criterion.
@@ -53,8 +53,8 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
         * ``'mcl'`` - Mallows' C_L (MCL)
     
     weights : array_like, optional
-        Array of weighting coefficients for the individual signals in global fitting, 
-        the default is all weighted equally.
+        Array of weighting coefficients for the individual signals in global fitting.
+        If not specified all datasets are weighted inversely proportional to their noise levels.
 
     candidates : list, optional
         List or array of candidate regularization parameter values to be evaluated. 
@@ -204,7 +204,8 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParame
     H = K@pK
 
     # Residual term
-    Residual = np.linalg.norm(K@P - V)
+    residuals = weights*(K@P - V)
+    Residual = np.linalg.norm(residuals)
     # Regularization penalty term
     if regtype.lower() == 'tikhonov':
         Penalty = np.linalg.norm(L@P)
@@ -223,7 +224,7 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParame
 
     # Cross validation (CV)
     if  selmethod =='cv': 
-        f_ = sum(abs((V - K@P)/(np.ones(N) - np.diag(H)))**2)
+        f_ = sum(abs(residuals/(np.ones(N) - np.diag(H)))**2)
             
     # Generalized Cross Validation (GCV)
     elif  selmethod =='gcv': 
@@ -261,11 +262,11 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParame
 
     # Extrapolated Error (EE)          
     elif  selmethod =='ee': 
-        f_ = Residual**2/np.linalg.norm(K.T@(K@P - V))
+        f_ = Residual**2/np.linalg.norm(K.T@(residuals))
 
     # Normalized Cumulative Periodogram (NCP)
     elif selmethod == 'ncp': 
-        resPeriodogram = abs(np.fft.fft(K@P - V))**2
+        resPeriodogram = abs(np.fft.fft(residuals))**2
         wnoisePeriodogram = np.zeros(len(resPeriodogram))
         respowSpectrum = np.zeros(len(resPeriodogram))
         for j in range(len(resPeriodogram)-1):
@@ -279,12 +280,12 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParame
         eigs,_ = np.linalg.eig(np.eye(np.shape(H)[0],np.shape(H)[1]) - H)
         eigs[eigs < Treshold] = 0
         nzeigs = np.real(eigs[eigs!=0])
-        f_ = V.T@(V - K@P)/np.prod(nzeigs)**(1/len(nzeigs))
+        f_ = V.T@(-residuals)/np.prod(nzeigs)**(1/len(nzeigs))
 
     # Mallows' C_L (MCL)
     elif  selmethod == 'mcl':  
         if noiselvl==-1:
-            noiselvl = np.std(V - K@P)
+            noiselvl = np.std(residuals)
         f_ = Residual**2 + 2*noiselvl**2*np.trace(H) - 2*N*noiselvl**2
         
     elif selmethod == 'lr' or selmethod == 'lc':

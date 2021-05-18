@@ -1,6 +1,6 @@
 @echo off
 
-set versions=3.6 3.7 3.8
+set versions=3.6 3.7 3.8 3.9
 set platforms=osx-64 linux-32 linux-64 win-32 win-64
 
 :: Get the path to the Anaconda executable

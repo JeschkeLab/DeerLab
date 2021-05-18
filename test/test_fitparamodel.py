@@ -293,3 +293,51 @@ def test_confinter_values():
     ci_match = lambda ci,ci_ref,truth:np.max(abs(np.array(ci) - np.array(ci_ref)))/truth < 0.01
     assert ci_match(a_ci,a_ci_ref,p[0]) & ci_match(b_ci,b_ci_ref,p[1])
 # ======================================================================
+
+def test_global_weights():
+# ======================================================================
+    "Check that the global weights properly work when specified"
+
+    t = np.linspace(0,5,300)
+    r = np.linspace(2,8,600)
+    K = dipolarkernel(t,r)
+
+    param1 = [3,0.2]
+    param2 = [5,0.2]
+    P1 = dd_gauss(r,param1)
+    P2 = dd_gauss(r,param2)
+    V1 = K@P1 + whitegaussnoise(t,0.01,seed=1)
+    V2 = K@P2 + whitegaussnoise(t,0.01,seed=1)
+
+    par0 = [5, 0.5]
+    lb = [1, 0.1]
+    ub = [20, 1]
+    model = lambda p: [K@dd_gauss(r,p)]*2
+    fit1 = fitparamodel([V1,V2],model,par0,lb,ub,weights=[1,0])
+    fit2 = fitparamodel([V1,V2],model,par0,lb,ub,weights=[0,1])
+
+    assert all(abs(fit1.param/param1-1) < 0.03) and all(abs(fit2.param/param2-1) < 0.03)
+# ======================================================================
+
+def test_global_weights_default():
+# ======================================================================
+    "Check the correct fit of two signals when one is of very low quality"
+
+    t = np.linspace(0,5,300)
+    r = np.linspace(2,6,90)
+    param = [4.5, 0.25]
+    P = dd_gauss(r,param)
+
+    K = dipolarkernel(t,r)
+    scales = [1e3,1e9]
+    V1 = scales[0]*K@P + whitegaussnoise(t,0.001,seed=1)
+    V2 = scales[1]*K@P + whitegaussnoise(t,0.1,seed=1)
+    
+    par0 = [5, 0.5]
+    lb = [1, 0.1]
+    ub = [20, 1]
+    model = lambda p: [K@dd_gauss(r,p)]*2
+    fit = fitparamodel([V1,V2],model,par0,lb,ub,weights=[1,0])
+
+    assert all(abs(fit.param/param-1) < 0.03)
+# ======================================================================

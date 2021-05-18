@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit, Jacobian
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
-                 strategy='split', weights=1, renormalize = True, uq=True, tol=1e-9, maxiter=1e8):
+                 strategy='split', weights=None, renormalize = True, uq=True, tol=1e-9, maxiter=1e8):
     r""" 
     Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
@@ -73,7 +73,8 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         The default is ``'split'``. 
 
     weights : array_like, optional
-        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
+        Array of weighting coefficients for the individual signals in global fitting. 
+        If not specified all datasets are weighted inversely proportional to their noise levels.
     
     renormalize : boolean, optional
         Enable/disable renormalization of the fitted distribution, by default it is enabled.
@@ -207,14 +208,14 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
             try:
                 Kmodel(np.random.uniform(size=nKparam))
                 notEnoughParam = False
-            except ValueError:
+            except:
                 notEnoughParam = True
     else:
         # If the kernel is just a matrix make it a callable without parameters
         nKparam = 0
         K = copy.deepcopy(Kmodel) # need a copy to avoid infite recursion on next step
         Kmodel = lambda _: K
-    
+
     # Extract information about the model
     nparam = len(model.start)
     if lb is None:
@@ -231,7 +232,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     # Ensure that all arrays are numpy.nparray
     lb,ub,lbK,ubK = np.atleast_1d(lb,ub,lbK,ubK)
 
-    if len(lbK) is not nKparam or len(ubK) is not nKparam:
+    if len(lbK)!=nKparam or len(ubK)!=nKparam:
         raise ValueError('The upper/lower bounds of the kernel parameters must be ',nKparam,'-element arrays')
 
     areLocations = [str in ['Mean','Location'] for str in paramnames]
@@ -264,6 +265,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
             Pbasis = model(r,par[subset])
             # Combine all non-linear functions into one
             Knonlin[:,iModel] = K@Pbasis
+        Knonlin = weights[:,np.newaxis]*Knonlin
         return Knonlin
     #===============================================================================
 
@@ -423,16 +425,16 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         lin_ub = np.full(Ncomp,np.inf)
         
         # Separable non-linear least-squares (SNLLS) fit
-        scale = 1e2
-        fit = dl.snlls(V*scale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, 
+        upscale = 1e2
+        fit = dl.snlls(V*upscale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, 
                         weights=weights, reg=False, nonlin_tol=tol, nonlin_maxiter=maxiter)
         pnonlin = fit.nonlin
         plin = fit.lin
         par_prev = pnonlin
 
-        plin /= scale
-        fit.model /= scale
-        fit.modelUncert = fit.modelUncert.propagate(lambda x: x/scale)
+        plin /= upscale
+        fit.model /= upscale
+        fit.modelUncert = fit.modelUncert.propagate(lambda x: x/upscale)
 
         # Store the fitted parameters
         pnonlin_.append(pnonlin)
@@ -501,50 +503,76 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         Puq = dl.UQResult('void')
         paramuq = dl.UQResult('void')
 
-    # Goodness of fit
-    stats = []
-    for subset in Vsubsets: 
-        Ndof = len(V[subset]) - (nKparam + nparam + Nopt)
-        stats.append(goodness_of_fit(V[subset],Vfit[subset],Ndof))
-    if len(stats)==1: 
-        stats = stats[0]
-
     # If requested re-normalize the distribution
     postscale = np.trapz(Pfit,r)
     if renormalize:
         Pfit = Pfit/postscale
-        fitparam_amp = fitparam_amp/sum(fitparam_amp)
         if uq:
             Puq_ = copy.deepcopy(Puq) # need a copy to avoid infite recursion on next step
             Puq = Puq_.propagate(lambda P: P/postscale, lbm=np.zeros_like(Pfit))
+        postscale /= sum(fitparam_amp)
+        fitparam_amp = fitparam_amp/sum(fitparam_amp)
 
     # Dataset scales
     scales = []
     for i in range(len(Vsubsets)): 
         scales.append(prescales[i]*postscale)
-    if len(scales)==1:
-        scales = scales[0]
+
+    # Get fitted signals and their uncertainty
+    modelfit, modelfituq = [],[]
+    for i,subset in enumerate(Vsubsets): 
+        V[subset] = V[subset]*prescales[i]
+        modelfit.append(  scales[i]*fit.model[subset] )
+        if uq: 
+            modelfituq.append( fit.modelUncert.propagate(lambda V: scales[i]*V[subset]) )
+        else:
+            modelfituq.append(dl.UQResult('void'))
+
+    # Goodness of fit
+    stats = []
+    for i,subset in enumerate(Vsubsets): 
+        Ndof = len(V[subset]) - (nKparam + nparam + Nopt)
+        stats.append(goodness_of_fit(V[subset],modelfit[i],Ndof))
 
     # Results display function
-    def plotfcn(show=False):
-        fig = _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uq,show)
+    def plotfcn(show=True):
+        fig = _plot(Vsubsets,V,modelfit,modelfituq,r,Pfit,Puq,fcnals,maxModels,method,uq,show)
         return fig
 
-    return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, V=fit.model, Puncert=Puq, 
-                    paramUncert=paramuq, Vuncert=fit.modelUncert, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
+    # If just one dataset, return vector instead of list
+    if len(Vsubsets)==1: 
+        stats = stats[0]
+        scales = scales[0]
+        modelfit = modelfit[0]
+        modelfituq = modelfituq[0]
+
+
+    return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, V=modelfit, Puncert=Puq, 
+                    paramUncert=paramuq, Vuncert=modelfituq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
                     stats=stats, cost=fit.cost, residuals=fit.residuals, success=fit.success)
 # =========================================================================
 
 
-def _plot(Vsubsets,V,Vfit,r,Pfit,Puq,fcnals,maxModels,method,uq,show):
+def _plot(Vsubsets,V,Vfit,Vuq,r,Pfit,Puq,fcnals,maxModels,method,uq,show):
 # =========================================================================
+    if not isinstance(Vfit, list): 
+        Vuq = [Vuq]
+        Vfit = [Vfit]
+
     nSignals = len(Vsubsets)
     fig,axs = plt.subplots(nSignals+1,figsize=[7,3+3*nSignals])
     for i in range(nSignals): 
         subset = Vsubsets[i]
         # Plot the experimental signal and fit
         axs[i].plot(V[subset],'.',color='grey',alpha=0.5)
-        axs[i].plot(Vfit[subset],'tab:blue')
+        axs[i].plot(Vfit[i],'tab:blue')
+        if uq:
+            # Confidence intervals of the fitted datasets
+            Vci95 = Vuq[i].ci(95) # 95#-confidence interval
+            Vci50 = Vuq[i].ci(50) # 50#-confidence interval
+            tax = np.arange(len(subset))
+            axs[i].fill_between(tax,Vci50[:,0],Vci50[:,1],color='tab:blue',linestyle='None',alpha=0.45)
+            axs[i].fill_between(tax,Vci95[:,0],Vci95[:,1],color='tab:blue',linestyle='None',alpha=0.25)
         axs[i].grid(alpha=0.3)
         axs[i].set_xlabel('Array Elements')
         axs[i].set_ylabel(f'V[{i}]')

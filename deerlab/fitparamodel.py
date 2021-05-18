@@ -11,7 +11,7 @@ from deerlab.classes import UQResult, FitResult
 from scipy.optimize import least_squares
 
 
-def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
+def fitparamodel(V, model, par0, lb=None, ub=None, weights=None,
                  multistart=1, tol=1e-10, maxiter=3000,
                  fitscale=True, uq=True, covmatrix=None):
     r""" Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
@@ -34,7 +34,8 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
         Upper bounds for the model parameters. If not specified, it is left unbounded.
     
     weights : array_like, optional
-        Array of weighting coefficients for the individual signals in global fitting, the default is all weighted equally.
+        Array of weighting coefficients for the individual signals in global fitting. 
+        If not specified all datasets are weighted inversely proportional to their noise levels.
     
     fitscale : boolean, optional
         Enable/disable fitting of the signal scale, by default it is enabled.
@@ -61,7 +62,7 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
     param : ndarray
         Fitted model parameters.
     
-    model : ndarray 
+    model : ndarray or list of ndarrays
         Fitted model.
 
     paramUncert : :ref:`UQResult`
@@ -254,8 +255,8 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=1,
         paruq = UQResult('void')
 
     modelfit,modelfit_uq = [],[]
-    for subset in Vsubsets: 
-        subset_model = lambda p: model(p)[subset]
+    for i,subset in enumerate(Vsubsets): 
+        subset_model = lambda p: scales[i]*model(p)[subset]
         modelfit.append(subset_model(parfit))
         if uq:
             modelfit_uq.append(paruq.propagate(subset_model))        
