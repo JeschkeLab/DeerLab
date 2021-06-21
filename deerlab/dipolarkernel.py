@@ -8,6 +8,7 @@ import numpy as np
 from numpy import pi,inf
 import scipy.integrate
 from scipy.special import fresnel
+from scipy.interpolate import interp1d
 # Other packages
 import types
 import warnings
@@ -20,10 +21,10 @@ ge = 2.00231930436256 # free-electron g factor
 muB = 9.2740100783e-24 # Bohr magneton, J/T 
 mu0 = 1.25663706212e-6 # magnetic constant, N A^-2 = T^2 m^3 J^-1 
 h = 6.62607015e-34 # Planck constant, J/Hz
-def w0(g):
+def ω0(g):
     return (mu0/2)*muB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> Mrad s^-1 nm^3
 
-def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, g=[ge,ge], 
+def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, orisel=None, g=[ge,ge], 
                   integralop=True, nKnots=5001, clearcache=False):
 #===================================================================================================
     r"""Compute the dipolar kernel operator which enables the linear transformation from
@@ -60,9 +61,15 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         
         The default is ``'fresnel'``.
 
+    orisel : array_like, optional 
+        Probability distribution of possible orientations of the interspin vector to account for orientation selection. Must be 
+        vector defined for uniformly distributed orientations in the range [0,π/2]. If speficied as ``None`` (by default), a uniform distribution is assumed. 
+        Requires the ``'grid'`` method.
+
     excbandwidth : scalar, optional
         Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth [4]_.
-    
+        Requires the ``'grid'`` or ``'integral'`` methods.
+
     g : scalar, 2-element array, optional
         Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, ``[g, g]`` is assumed 
     
@@ -137,11 +144,13 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     """
     # Clear cache of memoized function is requested
     if clearcache:
-        calckernelmatrix.cache_clear()
+        elementarykernel.cache_clear()
+        _Cgrid.cache.clear()
 
     # Ensure that inputs are Numpy arrays
     r,t,g = np.atleast_1d(r,t,g)
 
+    # Check validity of some inputs
     if len(g) == 1:
         g = [g, g]
     elif len(g) != 2:
@@ -153,11 +162,16 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     # Check that the kernel construction method is compatible with requested options
     if excbandwidth != inf and method=='fresnel':
         raise KeyError("Excitation bandwidths can only be specified with the 'grid' or 'integral' methods.")
+
+    if orisel is not None and method!='grid':
+        raise KeyError("Orientation selection weights can only be specified with the the 'grid' method.")
+
+
     # Check whether the full pathways or the modulation depth have been passed
     pathways_passed =  pathways is not None
     moddepth_passed =  mod is not None
     if pathways_passed and moddepth_passed: 
-        raise KeyError("Modulation depth and dipolar pathways cannot be specified simultaneously.")
+        raise KeyError("Modulation depth and dipolar pathways cannot be specified simultaneously.")    
 
     if moddepth_passed:
         # Construct 4-pulse DEER pathways if modulation depth is specified
@@ -173,9 +187,9 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     unmodulated = [paths.pop(i) for i,path in enumerate(paths) if len(path)==1]
     # Combine all unmodulated contributions
     if unmodulated:
-        Lambda0 = sum(np.concatenate([path for path in unmodulated]))
+        Λ0 = sum(np.concatenate([path for path in unmodulated]))
     else: 
-        Lambda0 = 0
+        Λ0 = 0
     # Check structure of pathways
     for i,path in enumerate(paths):
         if len(path) == 2:
@@ -183,16 +197,16 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
             paths[i] = np.append(path,1) 
         elif len(path) != 3:
             # Otherwise paths are not correctly defined
-            raise KeyError(f'The pathway #{i} must be a list of two or three elements [lam, T0] or [lam, T0, n]') 
+            raise KeyError(f'The pathway #{i} must be a list of two or three elements [λ, T0] or [λ, T0, n]') 
 
     # Define kernel matrix auxiliary function
-    kernelmatrix = lambda t: calckernelmatrix(t,r,method,excbandwidth,nKnots,g)
+    K0 = lambda t: elementarykernel(t,r,method,excbandwidth,nKnots,g,orisel)
 
     # Build dipolar kernel matrix, summing over all pathways
-    K = Lambda0
+    K = Λ0
     for pathway in paths:
-        lam,T0,n = pathway
-        K = K + lam*kernelmatrix(n*(t-T0))
+        λ,T0,n = pathway
+        K = K + λ*K0(n*(t-T0))
 
     # Multiply by background if given
     if bg is not None:
@@ -217,8 +231,21 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 #==============================================================================
 
 @cached
-def calckernelmatrix(t,r,method,wex,nKnots,g):
 #==============================================================================
+def _Cgrid(ωr,t,ωex,q):
+    "Evaluates the costly 3D powder kernel matrix (cached for speed)"
+    # Vectorized 3D-grid evaluation (t,r,powder averaging)
+    C = np.cos(ωr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:]*abs(t[:,np.newaxis,np.newaxis]))
+    # If given, include limited excitation bandwidth
+    if not np.isinf(ωex):
+        C = C*np.exp(-(ωr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:])**2/ωex**2)
+    return C
+#==============================================================================
+
+@cached
+def elementarykernel(t,r,method,ωex,nKnots,g,Pθ=None):
+#==============================================================================
+    "Calculates the elementary dipolar kernel (cached for speed)"
 
     t = np.atleast_1d(t)
     r = np.atleast_1d(r)
@@ -227,54 +254,60 @@ def calckernelmatrix(t,r,method,wex,nKnots,g):
     nr = np.size(r)
     nt = np.size(t)  
     K = np.zeros((nt,nr))
-    wr = w0(g)/(r**3)  # rad s^-1
+    ωr = ω0(g)/(r**3)  # Mrad s^-1
 
-    def kernelmatrix_fresnel(t,r):
+    orientationselection = Pθ is not None 
+
+    def elementarykernel_fresnel(t,r):
     #==========================================================================
         """Calculate kernel using Fresnel integrals (fast and accurate)"""
 
        # Calculation using Fresnel integrals
-        ph = np.outer(np.abs(t), wr)
-        kappa = np.sqrt(6*ph/pi)
+        ɸ = np.outer(np.abs(t), ωr)
+        κ = np.sqrt(6*ɸ/pi)
         
         # Supress divide by 0 warning        
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            S, C = fresnel(kappa)/kappa
+            S, C = fresnel(κ)/κ
         
-        K = C*np.cos(ph) + S*np.sin(ph)
+        K = C*np.cos(ɸ) + S*np.sin(ɸ)
         K[t==0] = 1 
 
         return K
     #==========================================================================
-    
-    def kernelmatrix_grid(t,r,wex,nKnots):
+
+    def elementarykernel_grid(t,r,ωex,nKnots,Pθ):
     #==========================================================================
         """Calculate kernel using grid-based powder integration (converges very slowly with nKnots)"""
 
         # Orientational grid
-        costheta = np.linspace(0,1,int(nKnots))
-        q = 1 - 3*costheta**2
-        # Vectorized 3D-grid evaluation (t,r,powder averaging)
-        C = np.cos(wr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:]*abs(t[:,np.newaxis,np.newaxis]))
-        # If given, include limited excitation bandwidth
-        if not np.isinf(wex):
-            C = C*np.exp(-(wr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:])**2/wex**2)
-        K = np.sum(C,2)/nKnots
+        cosθ = np.linspace(0,1,int(nKnots))
+        q = 1 - 3*cosθ**2
+
+        if orientationselection:
+            # Interpolate
+            Pθ = interp1d(np.linspace(0,1,int(len(Pθ))),Pθ,kind='cubic')(cosθ)
+            Pθ /= np.sum(Pθ)
+            # Integrate over the orientations distribution Pθ
+            K = np.dot(_Cgrid(ωr,t,ωex,q),Pθ)
+        else: 
+            # Elementary kernel without orientation selection
+            K = np.sum(_Cgrid(ωr,t,ωex,q),2)/nKnots
         return K
     #==========================================================================
 
-    def kernelmatrix_integral(t,r,wex):
+    def elementarykernel_integral(t,r,ωex):
     #==========================================================================
         """Calculate kernel using explicit numerical integration """
-        for ir in range(len(wr)):
+        for ir in range(len(ωr)):
             for it in range(len(t)):
                 #==================================================================
-                def integrand(costheta):
-                    integ = np.cos(wr[ir]*abs(t[it])*(1-3*costheta**2))
+                def integrand(cosθ):
+                    integ = np.cos(ωr[ir]*abs(t[it])*(1-3*cosθ**2))
                     # If given, include limited excitation bandwidth
-                    if not np.isinf(wex):
-                        integ = integ*np.exp(-(wr[ir]*(1-3*costheta**2))**2/wex**2)
+                    if not np.isinf(ωex):
+                        integ = integ*np.exp(-(ωr[ir]*(1-3*cosθ**2))**2/ωex**2)
                     return integ
                 #==================================================================   
                 K[it,ir],_ = scipy.integrate.quad(integrand,0,1,limit=1000)
@@ -282,10 +315,10 @@ def calckernelmatrix(t,r,method,wex,nKnots,g):
     #==========================================================================
 
     if method=='fresnel':
-        K = kernelmatrix_fresnel(t,r)
+        K = elementarykernel_fresnel(t,r)
     elif method=='integral': 
-        K = kernelmatrix_integral(t,r,wex)
+        K = elementarykernel_integral(t,r,ωex)
     elif method=='grid': 
-        K = kernelmatrix_grid(t,r,wex,nKnots)
+        K = elementarykernel_grid(t,r,ωex,nKnots,Pθ)
     return K
 #==============================================================================

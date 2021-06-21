@@ -3,7 +3,7 @@ import numpy as np
 from numpy import pi, inf, NaN
 from deerlab.bg_models import bg_hom3d,bg_exp
 from deerlab.dd_models import dd_gauss
-from deerlab.dipolarkernel import dipolarkernel,calckernelmatrix
+from deerlab.dipolarkernel import dipolarkernel,elementarykernel
 ge = 2.00231930436256 # free-electron g factor
 
 
@@ -204,7 +204,7 @@ def test_multipath():
 
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*calckernelmatrix(t-T0[p],r,'fresnel',[],[],[ge,ge])
+            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge])
 
     assert np.all(abs(K-Kref) < 1e-3)
 #=======================================================================
@@ -228,7 +228,7 @@ def test_multipath_background():
     # Reference
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*calckernelmatrix(t-T0[p],r,'fresnel',[],[],[ge,ge])
+            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge])
     Kref = Kref
     
     Bref = 1
@@ -272,7 +272,7 @@ def test_multipath_harmonics():
 
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*calckernelmatrix(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge])
+            Kref = Kref + lam[p]*elementarykernel(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge])
     Kref = Kref
 
     assert np.max(K-Kref) < 1e-3
