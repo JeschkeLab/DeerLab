@@ -150,6 +150,9 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     if np.any(r<=0):
         raise ValueError("All elements in r must be nonnegative and nonzero.")
 
+    # Check that the kernel construction method is compatible with requested options
+    if excbandwidth != inf and method=='fresnel':
+        raise KeyError("Excitation bandwidths can only be specified with the 'grid' or 'integral' methods.")
     # Check whether the full pathways or the modulation depth have been passed
     pathways_passed =  pathways is not None
     moddepth_passed =  mod is not None
