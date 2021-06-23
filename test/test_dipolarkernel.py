@@ -399,3 +399,19 @@ def test_nonuniform_r():
     V0 = K@P
     assert np.round(V0,3) == 1
 #=======================================================================
+
+def test_orisel():
+#=======================================================================
+    "Check that orientation selection works"
+
+    t = np.linspace(0,5,50) 
+    r = np.linspace(2,6,70)
+
+    theta = np.linspace(0,90,100)
+    weights = np.ones_like(theta)
+
+    Kref = dipolarkernel(t,r,method='grid',nKnots=100)
+    K = dipolarkernel(t,r,method='grid',nKnots=100,orisel=weights)
+    
+    assert np.max(K - Kref) < 1e-10
+#=======================================================================
