@@ -145,7 +145,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     # Clear cache of memoized function is requested
     if clearcache:
         elementarykernel.cache_clear()
-        _Cgrid.cache.clear()
+        _Cgrid.cache_clear()
 
     # Ensure that inputs are Numpy arrays
     r,t,g = np.atleast_1d(r,t,g)
