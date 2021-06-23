@@ -1,0 +1,57 @@
+name: Build & Upload Python Package
+
+on: 
+  release:
+    types: [published]
+
+jobs:
+
+  pypi-build-n-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+          apt-get install python3-pip -y
+          python -m pip install setuptools --user
+          python -m pip install build --user
+          python -m pip install twine --user
+          python -m pip install conda --user
+    - name: PyPI - Build and publish
+      run: |
+          python setup.py sdist
+          python -m twine upload dist/*
+    - name: Publish distribution to PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN  }}
+          
+  conda-build-n-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Get DeerLab version
+      run: echo "DEERLAB_VERSION=$(cat VERSION)" >> $GITHUB_ENV
+    - name: Update version in Conda metadata 
+      uses: jacobtomlinson/gha-find-replace@master
+      with:
+        find: "VERSION"
+        replace: ${{env.DEERLAB_VERSION}}
+        include: "conda.recipe/meta.yaml" 
+    - name: Build & Publish to Anaconda
+      uses: ./.github/actions/conda_build_publish_package
+      with:
+        subdir: 'conda.recipe'
+        anacondatoken: ${{ secrets.ANACONDA_TOKEN }}
+        platforms: 'osx-64 linux-32 linux-64 win-32 win-64'
+        python: '3.6 3.7 3.8 3.9'
