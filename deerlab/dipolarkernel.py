@@ -230,9 +230,9 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     return K
 #==============================================================================
 
-@cached
-#==============================================================================
+@cached(max_size=5)
 def _Cgrid(ωr,t,ωex,q):
+#==============================================================================
     "Evaluates the costly 3D powder kernel matrix (cached for speed)"
     # Vectorized 3D-grid evaluation (t,r,powder averaging)
     C = np.cos(ωr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:]*abs(t[:,np.newaxis,np.newaxis]))
@@ -242,7 +242,7 @@ def _Cgrid(ωr,t,ωex,q):
     return C
 #==============================================================================
 
-@cached
+@cached(max_size=100)
 def elementarykernel(t,r,method,ωex,nKnots,g,Pθ=None):
 #==============================================================================
     "Calculates the elementary dipolar kernel (cached for speed)"
