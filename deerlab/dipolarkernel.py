@@ -16,14 +16,14 @@ from memoization import cached
 # DeerLab dependencies
 from deerlab.dipolarbackground import dipolarbackground
 
-π = np.pi 
 # Fundamental constants (CODATA 2018)
+π = np.pi 
 ge = 2.00231930436256 # free-electron g factor
-muB = 9.2740100783e-24 # Bohr magneton, J/T 
-mu0 = 1.25663706212e-6 # magnetic constant, N A^-2 = T^2 m^3 J^-1 
-h = 6.62607015e-34 # Planck constant, J/Hz
+μB = 9.2740100783e-24 # Bohr magneton, J/T 
+μ0 = 1.25663706212e-6 # magnetic constant, N A^-2 = T^2 m^3 J^-1 
+h  = 6.62607015e-34   # Planck constant, J/Hz
 def ω0(g):
-    return (mu0/2)*muB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> Mrad s^-1 nm^3
+    return (μ0/2)*μB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> rad μs^-1 nm^3
 
 def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, orisel=None, g=[ge,ge], 
                   integralop=True, nKnots=5001, clearcache=False):
@@ -221,7 +221,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     if integralop and len(r)>1:
             
         # Vectorized matrix form of trapezoidal integration method
-        dr = np.zeros(len(r))
+        dr = np.zeros_like(r)
         dr[0] = r[1] - r[0]
         dr[-1] = r[-1] - r[-2]
         dr[1:-1] = r[2:] - r[0:-2]
@@ -255,7 +255,7 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ=None):
     nr = np.size(r)
     nt = np.size(t)  
     K = np.zeros((nt,nr))
-    ωr = ω0(g)/(r**3)  # Mrad s^-1
+    ωr = ω0(g)/(r**3)  # rad μs^-1
 
     orientationselection = Pθ is not None 
 
