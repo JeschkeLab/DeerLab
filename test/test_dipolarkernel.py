@@ -400,18 +400,68 @@ def test_nonuniform_r():
     assert np.round(V0,3) == 1
 #=======================================================================
 
-def test_orisel():
+def test_orisel_uni_grid():
 #=======================================================================
-    "Check that orientation selection works"
+    "Check that orientation selection works for a uniform distribution"
 
     t = np.linspace(0,5,50) 
     r = np.linspace(2,6,70)
-
-    theta = np.linspace(0,90,100)
-    weights = np.ones_like(theta)
+    Ptheta = lambda theta: np.ones_like(theta)
 
     Kref = dipolarkernel(t,r,method='grid',nKnots=100)
-    K = dipolarkernel(t,r,method='grid',nKnots=100,orisel=weights)
+    K = dipolarkernel(t,r,method='grid',nKnots=100,orisel=Ptheta)
     
     assert np.max(K - Kref) < 1e-10
+#=======================================================================
+
+def test_orisel_uni_integral():
+#=======================================================================
+    "Check that orientation selection works for a uniform distribution"
+
+    t = np.linspace(0,5,20) 
+    r = np.linspace(2,6,20)
+    Ptheta = lambda theta: np.ones_like(theta)
+
+    Kref = dipolarkernel(t,r,method='integral')
+    K = dipolarkernel(t,r,method='integral',orisel=Ptheta)
+    
+    assert np.max(K - Kref) < 1e-10
+#=======================================================================
+
+def test_orisel_value_grid():
+#=======================================================================
+    "Check that orientation selection works for a uniform distribution"
+
+    t = 1
+    r = 1
+    thetamean = pi/4
+    sigma = pi/3
+    Ptheta = lambda theta: 1/sigma/np.sqrt(2*pi)*np.exp(-(theta-thetamean)**2/2/sigma**2)
+
+    # Kernel value for 1us and 1nm computed using Mathematica
+    # and CODATA 2018 values for ge, muB, mu0, and h
+    Kref = 0.007128655802119539
+
+    K = dipolarkernel(t,r,method='grid',nKnots=5e6,orisel=Ptheta)
+    print(K/Kref)
+    assert abs(K - Kref) < 1e-7
+#=======================================================================
+
+def test_orisel_value_integral():
+#=======================================================================
+    "Check that orientation selection works for a uniform distribution"
+
+    t = 1
+    r = 1
+    thetamean = pi/4
+    sigma = pi/3
+    Ptheta = lambda theta: 1/sigma/np.sqrt(2*pi)*np.exp(-(theta-thetamean)**2/2/sigma**2)
+
+    # Kernel value for 1us and 1nm computed using Mathematica
+    # and CODATA 2018 values for ge, muB, mu0, and h
+    Kref = 0.007128655802119539
+
+    K = dipolarkernel(t,r,method='integral',orisel=Ptheta)
+    
+    assert abs(K - Kref) < 1e-10
 #=======================================================================

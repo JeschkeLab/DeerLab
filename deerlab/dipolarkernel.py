@@ -16,6 +16,7 @@ from memoization import cached
 # DeerLab dependencies
 from deerlab.dipolarbackground import dipolarbackground
 
+π = np.pi 
 # Fundamental constants (CODATA 2018)
 ge = 2.00231930436256 # free-electron g factor
 muB = 9.2740100783e-24 # Bohr magneton, J/T 
@@ -61,10 +62,11 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         
         The default is ``'fresnel'``.
 
-    orisel : array_like, optional 
+    orisel : callable  or ``None``, optional 
         Probability distribution of possible orientations of the interspin vector to account for orientation selection. Must be 
-        vector defined for uniformly distributed orientations in the range [0,π/2]. If speficied as ``None`` (by default), a uniform distribution is assumed. 
-        Requires the ``'grid'`` method.
+        a function taking a value of the angle θ∈[0,π/2] between the interspin vector and the external magnetic field and returning
+        the corresponding probability density. If speficied as ``None`` (by default), a uniform distribution is assumed. 
+        Requires the ``'grid'`` or ``'integral'`` methods.
 
     excbandwidth : scalar, optional
         Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth [4]_.
@@ -163,9 +165,8 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     if excbandwidth != inf and method=='fresnel':
         raise KeyError("Excitation bandwidths can only be specified with the 'grid' or 'integral' methods.")
 
-    if orisel is not None and method!='grid':
-        raise KeyError("Orientation selection weights can only be specified with the the 'grid' method.")
-
+    if orisel is not None and method=='fresnel':
+        raise KeyError("Orientation selection weights can only be specified with  the 'grid' or 'integral' methods.")
 
     # Check whether the full pathways or the modulation depth have been passed
     pathways_passed =  pathways is not None
@@ -258,13 +259,14 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ=None):
 
     orientationselection = Pθ is not None 
 
-    def elementarykernel_fresnel(t,r):
+
+    def elementarykernel_fresnel(t):
     #==========================================================================
         """Calculate kernel using Fresnel integrals (fast and accurate)"""
 
        # Calculation using Fresnel integrals
         ɸ = np.outer(np.abs(t), ωr)
-        κ = np.sqrt(6*ɸ/pi)
+        κ = np.sqrt(6*ɸ/π)
         
         # Supress divide by 0 warning        
         with warnings.catch_warnings():
@@ -277,27 +279,27 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ=None):
         return K
     #==========================================================================
 
-    def elementarykernel_grid(t,r,ωex,nKnots,Pθ):
+    def elementarykernel_grid(t,ωex,nKnots,Pθ):
     #==========================================================================
         """Calculate kernel using grid-based powder integration (converges very slowly with nKnots)"""
 
         # Orientational grid
-        cosθ = np.linspace(0,1,int(nKnots))
-        q = 1 - 3*cosθ**2
+        z = np.linspace(0,1,int(nKnots))
+        θ = np.arccos(z) # rad
+        q = 1 - 3*z**2
 
         if orientationselection:
-            # Interpolate
-            Pθ = interp1d(np.linspace(0,1,int(len(Pθ))),Pθ,kind='cubic')(cosθ)
-            Pθ /= np.sum(Pθ)
+            # Evaluate orientational distribution over grid        
+            Pθgrid = Pθ(θ)
             # Integrate over the orientations distribution Pθ
-            K = np.dot(_Cgrid(ωr,t,ωex,q),Pθ)
+            K = np.dot(_Cgrid(ωr,t,ωex,q),Pθgrid)/nKnots
         else: 
             # Elementary kernel without orientation selection
-            K = np.sum(_Cgrid(ωr,t,ωex,q),2)/nKnots
+            K = np.sum(_Cgrid(ωr,t,ωex,q),axis=2)/nKnots
         return K
     #==========================================================================
 
-    def elementarykernel_integral(t,r,ωex):
+    def elementarykernel_integral(t,ωex,Pθ):
     #==========================================================================
         """Calculate kernel using explicit numerical integration """
         for ir in range(len(ωr)):
@@ -308,6 +310,8 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ=None):
                     # If given, include limited excitation bandwidth
                     if not np.isinf(ωex):
                         integ = integ*np.exp(-(ωr[ir]*(1-3*cosθ**2))**2/ωex**2)
+                    if orientationselection:
+                        integ = integ*Pθ(np.arccos(cosθ))  
                     return integ
                 #==================================================================   
                 K[it,ir],_ = scipy.integrate.quad(integrand,0,1,limit=1000)
@@ -315,10 +319,10 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ=None):
     #==========================================================================
 
     if method=='fresnel':
-        K = elementarykernel_fresnel(t,r)
+        K = elementarykernel_fresnel(t)
     elif method=='integral': 
-        K = elementarykernel_integral(t,r,ωex)
+        K = elementarykernel_integral(t,ωex,Pθ)
     elif method=='grid': 
-        K = elementarykernel_grid(t,r,ωex,nKnots,Pθ)
+        K = elementarykernel_grid(t,ωex,nKnots,Pθ)
     return K
 #==============================================================================
