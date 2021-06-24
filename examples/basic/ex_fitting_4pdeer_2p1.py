@@ -15,12 +15,12 @@ import deerlab as dl
 # Load and pre-process data
 # ---------------------------
 #
-# Uncomment and use the following lines if you have experimental data:
-#
-# t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
-# Vexp = dl.correctphase(Vexp)
-# t = dl.correctzerotime(Vexp,t)
-#
+# Uncomment and use the following lines if you have experimental data::
+# 
+#   t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
+#   Vexp = dl.correctphase(Vexp)
+#   t = dl.correctzerotime(Vexp,t)
+# 
 # In this example we will use simulated data instead:
 
 # %%
