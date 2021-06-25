@@ -182,7 +182,8 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         pathways = [[1, 0]]
 
     # Ensure correct formatting of the pathways
-    paths = [np.concatenate([np.atleast_1d(p) for p in path]).astype(float) for path in pathways]
+    paths = [np.atleast_1d(path).astype(float) for path in pathways]
+    paths = [np.concatenate([np.atleast_1d(p) for p in path]).astype(float) for path in paths]
 
     # Get unmodulated pathways    
     unmodulated = [paths.pop(i) for i,path in enumerate(paths) if len(path)==1]
