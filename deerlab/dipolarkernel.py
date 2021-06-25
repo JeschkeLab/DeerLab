@@ -192,6 +192,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         Λ0 = sum(np.concatenate([path for path in unmodulated]))
     else: 
         Λ0 = 0
+
     # Check structure of pathways
     for i,path in enumerate(paths):
         if len(path) == 2:
@@ -208,7 +209,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     K = Λ0
     for pathway in paths:
         λ,T0,n = pathway
-        K = K + λ*K0(n*(t-T0))
+        K += λ*K0(n*(t-T0))
 
     # Multiply by background if given
     if bg is not None:
@@ -216,7 +217,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
             B = dipolarbackground(t,pathways,bg)
         else:
             B = np.atleast_1d(bg)
-        K = K*B[:,np.newaxis]
+        K *= B[:,np.newaxis]
 
     # Include delta-r factor for integration
     if integralop and len(r)>1:
@@ -255,9 +256,9 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
     # Pre-allocate K matrix
     nr = np.size(r)
     nt = np.size(t)  
-    K = np.zeros((nt,nr))
+    K0 = np.zeros((nt,nr))
     ωr = ω0(g)/(r**3)  # rad μs^-1
-
+    
     orientationselection = Pθ is not None 
 
 
@@ -274,10 +275,12 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
             warnings.simplefilter('ignore')
             S, C = fresnel(κ)/κ
         
-        K = C*np.cos(ɸ) + S*np.sin(ɸ)
-        K[t==0] = 1 
+        K0 = C*np.cos(ɸ) + S*np.sin(ɸ)
 
-        return K
+        # Limit of K0(t,r) as t->0
+        K0[t==0] = 1 
+
+        return K0
     #==========================================================================
 
     def elementarykernel_grid(t,ωex,nKnots,Pθ):
@@ -295,11 +298,11 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
             Pθgrid = Pθ(θ)
             Pθgrid = Pθgrid/Pθnorm
             # Integrate over the orientations distribution Pθ
-            K = np.dot(_Cgrid(ωr,t,ωex,q),Pθgrid)/nKnots
+            K0 = np.dot(_Cgrid(ωr,t,ωex,q),Pθgrid)/nKnots
         else: 
             # Elementary kernel without orientation selection
-            K = np.sum(_Cgrid(ωr,t,ωex,q),axis=2)/nKnots
-        return K
+            K0 = np.sum(_Cgrid(ωr,t,ωex,q),axis=2)/nKnots
+        return K0
     #==========================================================================
 
     def elementarykernel_integral(t,ωex,Pθ):
@@ -319,15 +322,15 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
                         integ = integ*Pθ(np.arccos(cosθ))/Pθnorm  
                     return integ
                 #==================================================================   
-                K[it,ir],_ = scipy.integrate.quad(integrand,0,1,limit=1000)
-        return K
+                K0[it,ir],_ = scipy.integrate.quad(integrand,0,1,limit=1000)
+        return K0
     #==========================================================================
 
     if method=='fresnel':
-        K = elementarykernel_fresnel(t)
+        K0 = elementarykernel_fresnel(t)
     elif method=='integral': 
-        K = elementarykernel_integral(t,ωex,Pθ)
+        K0 = elementarykernel_integral(t,ωex,Pθ)
     elif method=='grid': 
-        K = elementarykernel_grid(t,ωex,nKnots,Pθ)
-    return K
+        K0 = elementarykernel_grid(t,ωex,nKnots,Pθ)
+    return K0
 #==============================================================================
