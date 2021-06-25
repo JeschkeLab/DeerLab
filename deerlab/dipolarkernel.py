@@ -245,7 +245,7 @@ def _Cgrid(ωr,t,ωex,q):
 #==============================================================================
 
 @cached(max_size=100)
-def elementarykernel(t,r,method,ωex,nKnots,g,Pθ=None):
+def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
 #==============================================================================
     "Calculates the elementary dipolar kernel (cached for speed)"
 
@@ -291,7 +291,9 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ=None):
 
         if orientationselection:
             # Evaluate orientational distribution over grid        
+            Pθnorm,_ = scipy.integrate.quad(lambda z: Pθ(np.arccos(z)),0,1,limit=1000)
             Pθgrid = Pθ(θ)
+            Pθgrid = Pθgrid/Pθnorm
             # Integrate over the orientations distribution Pθ
             K = np.dot(_Cgrid(ωr,t,ωex,q),Pθgrid)/nKnots
         else: 
@@ -303,6 +305,8 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ=None):
     def elementarykernel_integral(t,ωex,Pθ):
     #==========================================================================
         """Calculate kernel using explicit numerical integration """
+        if orientationselection:
+            Pθnorm,_ = scipy.integrate.quad(lambda cosθ: Pθ(np.arccos(cosθ)),0,1,limit=1000)
         for ir in range(len(ωr)):
             for it in range(len(t)):
                 #==================================================================
@@ -312,7 +316,7 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ=None):
                     if not np.isinf(ωex):
                         integ = integ*np.exp(-(ωr[ir]*(1-3*cosθ**2))**2/ωex**2)
                     if orientationselection:
-                        integ = integ*Pθ(np.arccos(cosθ))  
+                        integ = integ*Pθ(np.arccos(cosθ))/Pθnorm  
                     return integ
                 #==================================================================   
                 K[it,ir],_ = scipy.integrate.quad(integrand,0,1,limit=1000)

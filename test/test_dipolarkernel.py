@@ -204,7 +204,7 @@ def test_multipath():
 
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge])
+            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None)
 
     assert np.all(abs(K-Kref) < 1e-3)
 #=======================================================================
@@ -228,7 +228,7 @@ def test_multipath_background():
     # Reference
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge])
+            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None)
     Kref = Kref
     
     Bref = 1
@@ -272,7 +272,7 @@ def test_multipath_harmonics():
 
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge])
+            Kref = Kref + lam[p]*elementarykernel(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge],None)
     Kref = Kref
 
     assert np.max(K-Kref) < 1e-3
@@ -404,12 +404,12 @@ def test_orisel_uni_grid():
 #=======================================================================
     "Check that orientation selection works for a uniform distribution"
 
-    t = np.linspace(0,5,50) 
-    r = np.linspace(2,6,70)
+    t = 1
+    r = 1
     Ptheta = lambda theta: np.ones_like(theta)
 
-    Kref = dipolarkernel(t,r,method='grid',nKnots=100)
-    K = dipolarkernel(t,r,method='grid',nKnots=100,orisel=Ptheta)
+    Kref = dipolarkernel(t,r,method='grid',nKnots=1e5)
+    K = dipolarkernel(t,r,method='grid',nKnots=1e5,orisel=Ptheta)
     
     assert np.max(K - Kref) < 1e-10
 #=======================================================================
@@ -418,8 +418,8 @@ def test_orisel_uni_integral():
 #=======================================================================
     "Check that orientation selection works for a uniform distribution"
 
-    t = np.linspace(0,5,20) 
-    r = np.linspace(2,6,20)
+    t = 1
+    r = 1
     Ptheta = lambda theta: np.ones_like(theta)
 
     Kref = dipolarkernel(t,r,method='integral')
@@ -440,9 +440,9 @@ def test_orisel_value_grid():
 
     # Kernel value for 1us and 1nm computed using Mathematica
     # and CODATA 2018 values for ge, muB, mu0, and h
-    Kref = 0.007128655802119539
+    Kref = 0.02031864642707554
 
-    K = dipolarkernel(t,r,method='grid',nKnots=5e6,orisel=Ptheta)
+    K = dipolarkernel(t,r,method='grid',nKnots=1e7,orisel=Ptheta)
     print(K/Kref)
     assert abs(K - Kref) < 1e-7
 #=======================================================================
@@ -459,7 +459,7 @@ def test_orisel_value_integral():
 
     # Kernel value for 1us and 1nm computed using Mathematica
     # and CODATA 2018 values for ge, muB, mu0, and h
-    Kref = 0.007128655802119539
+    Kref = 0.02031864642707554
 
     K = dipolarkernel(t,r,method='integral',orisel=Ptheta)
     
