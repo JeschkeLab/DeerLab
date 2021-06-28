@@ -408,6 +408,8 @@ def Jacobian(fcn, x0, lb, ub):
     This is a wrapper around the ``scipy.optimize._numdiff.approx_derivative`` function.
 
     """
+    # Protect against float-point round-off errors
+    x0,lb,ub = [var.round(12) for var in [x0,lb,ub]]
     J = opt._numdiff.approx_derivative(fcn,x0,method='2-point',bounds=(lb,ub))
     J = np.atleast_2d(J)
     return J
