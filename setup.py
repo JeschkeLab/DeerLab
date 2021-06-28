@@ -43,11 +43,11 @@ def install_dependencies(develop_mode=False):
     # Download and install pre-compiled binaries for Windows-systems
     if platform.system() == 'Windows':  
         # Refresh the pipwin cache to get the latest repo status
-        subprocess.run(['pipwin','refresh'],check=False)
+        subprocess.run([executable,'-m','pipwin','refresh'],check=False)
         # Install Numpy,SciPy, CVXopt linked to MKL from Gohlken's repository
-        subprocess.run(['pipwin','install','numpy','--filter=mkl'],check=False)
-        subprocess.run(['pipwin','install','scipy'],check=False)
-        subprocess.run(['pipwin','install','cvxopt'],check=False)
+        subprocess.run([executable,'-m','pipwin','install','numpy','--filter=mkl'],check=False)
+        subprocess.run([executable,'-m','pipwin','install','scipy'],check=False)
+        subprocess.run([executable,'-m','pipwin','install','cvxopt'],check=False)
 #-----------------------------------------------------------------------    
 
 class install_routine(install):
