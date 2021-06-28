@@ -65,7 +65,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     orisel : callable  or ``None``, optional 
         Probability distribution of possible orientations of the interspin vector to account for orientation selection. Must be 
         a function taking a value of the angle θ∈[0,π/2] between the interspin vector and the external magnetic field and returning
-        the corresponding probability density. If speficied as ``None`` (by default), a uniform distribution is assumed. 
+        the corresponding probability density. If specified as ``None`` (by default), a uniform distribution is assumed. 
         Requires the ``'grid'`` or ``'integral'`` methods.
 
     excbandwidth : scalar, optional
