@@ -162,11 +162,11 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         raise ValueError("All elements in r must be nonnegative and nonzero.")
 
     # Check that the kernel construction method is compatible with requested options
-    if excbandwidth != inf and method=='fresnel':
-        raise KeyError("Excitation bandwidths can only be specified with the 'grid' or 'integral' methods.")
-
-    if orisel is not None and method=='fresnel':
-        raise KeyError("Orientation selection weights can only be specified with  the 'grid' or 'integral' methods.")
+    if method=='fresnel':
+        if excbandwidth != inf:
+            raise KeyError("Excitation bandwidths can only be specified with the 'grid' or 'integral' methods.")
+        if orisel is not None:
+            raise KeyError("Orientation selection weights can only be specified with  the 'grid' or 'integral' methods.")
 
     # Check whether the full pathways or the modulation depth have been passed
     pathways_passed =  pathways is not None
@@ -261,6 +261,13 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
     
     orientationselection = Pθ is not None 
 
+    if orientationselection:
+        # Ensure zero-derivatives at [0,π/2]
+        θ = np.linspace(0,π/2,50) # rad
+        Pθ_ = scipy.interpolate.make_interp_spline(θ, Pθ(θ),bc_type="clamped")
+        # Ensure normalization of probability density function (∫P(cosθ)dcosθ=1)
+        Pθnorm,_ = scipy.integrate.quad(lambda cosθ: Pθ(np.arccos(cosθ)),0,1,limit=1000)
+        Pθ = lambda θ: Pθ_(θ)/Pθnorm
 
     def elementarykernel_fresnel(t):
     #==========================================================================
@@ -288,17 +295,12 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
         """Calculate kernel using grid-based powder integration (converges very slowly with nKnots)"""
 
         # Orientational grid
-        z = np.linspace(0,1,int(nKnots))
-        θ = np.arccos(z) # rad
-        q = 1 - 3*z**2
+        cosθ = np.linspace(0,1,int(nKnots))
+        q = 1 - 3*cosθ**2
 
         if orientationselection:
-            # Evaluate orientational distribution over grid        
-            Pθnorm,_ = scipy.integrate.quad(lambda z: Pθ(np.arccos(z)),0,1,limit=1000)
-            Pθgrid = Pθ(θ)
-            Pθgrid = Pθgrid/Pθnorm
             # Integrate over the orientations distribution Pθ
-            K0 = np.dot(_Cgrid(ωr,t,ωex,q),Pθgrid)/nKnots
+            K0 = np.dot(_Cgrid(ωr,t,ωex,q),Pθ(np.arccos(cosθ)))/nKnots
         else: 
             # Elementary kernel without orientation selection
             K0 = np.sum(_Cgrid(ωr,t,ωex,q),axis=2)/nKnots
@@ -308,20 +310,18 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
     def elementarykernel_integral(t,ωex,Pθ):
     #==========================================================================
         """Calculate kernel using explicit numerical integration """
-        if orientationselection:
-            Pθnorm,_ = scipy.integrate.quad(lambda cosθ: Pθ(np.arccos(cosθ)),0,1,limit=1000)
         for ir in range(len(ωr)):
-                #==================================================================
-                def integrand(cosθ):
+            #==================================================================
+            def integrand(cosθ):
                 integ = np.cos(ωr[ir]*abs(t)*(1-3*cosθ**2))
-                    # If given, include limited excitation bandwidth
-                    if not np.isinf(ωex):
-                        integ = integ*np.exp(-(ωr[ir]*(1-3*cosθ**2))**2/ωex**2)
+                # If given, include limited excitation bandwidth
+                if not np.isinf(ωex):
+                    integ = integ*np.exp(-(ωr[ir]*(1-3*cosθ**2))**2/ωex**2)
                 # If given, include orientation selection
-                    if orientationselection:
+                if orientationselection:
                     integ = integ*Pθ(np.arccos(cosθ))  
-                    return integ
-                #==================================================================   
+                return integ
+            #==================================================================   
             K0[:,ir],_ = scipy.integrate.quad_vec(integrand,0,1,limit=1000)
         return K0
     #==========================================================================
