@@ -444,7 +444,7 @@ def test_orisel_value_grid():
 
     K = dipolarkernel(t,r,method='grid',nKnots=1e7,orisel=Ptheta)
     print(K/Kref)
-    assert abs(K - Kref) < 1e-7
+    assert abs(K - Kref) < 1e-4
 #=======================================================================
 
 def test_orisel_value_integral():
@@ -463,5 +463,5 @@ def test_orisel_value_integral():
 
     K = dipolarkernel(t,r,method='integral',orisel=Ptheta)
     
-    assert abs(K - Kref) < 1e-10
+    assert abs(K - Kref) < 1e-4
 #=======================================================================
