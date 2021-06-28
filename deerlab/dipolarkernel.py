@@ -311,18 +311,18 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
         if orientationselection:
             Pθnorm,_ = scipy.integrate.quad(lambda cosθ: Pθ(np.arccos(cosθ)),0,1,limit=1000)
         for ir in range(len(ωr)):
-            for it in range(len(t)):
                 #==================================================================
                 def integrand(cosθ):
-                    integ = np.cos(ωr[ir]*abs(t[it])*(1-3*cosθ**2))
+                integ = np.cos(ωr[ir]*abs(t)*(1-3*cosθ**2))
                     # If given, include limited excitation bandwidth
                     if not np.isinf(ωex):
                         integ = integ*np.exp(-(ωr[ir]*(1-3*cosθ**2))**2/ωex**2)
+                # If given, include orientation selection
                     if orientationselection:
-                        integ = integ*Pθ(np.arccos(cosθ))/Pθnorm  
+                    integ = integ*Pθ(np.arccos(cosθ))  
                     return integ
                 #==================================================================   
-                K0[it,ir],_ = scipy.integrate.quad(integrand,0,1,limit=1000)
+            K0[:,ir],_ = scipy.integrate.quad_vec(integrand,0,1,limit=1000)
         return K0
     #==========================================================================
 
