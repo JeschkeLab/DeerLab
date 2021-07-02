@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.1
+                v0.14.0-dev
               </div>
             
           
@@ -200,7 +200,7 @@
 <span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">dipolarkernel</span></code><a class="headerlink" href="#dipolarkernel" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="deerlab.dipolarkernel">
-<code class="descclassname">deerlab.</code><code class="descname">dipolarkernel</code><span class="sig-paren">(</span><em>t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, g=[2.00231930436256, 2.00231930436256], integralop=True, nKnots=5001, clearcache=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/dipolarkernel.html#dipolarkernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.dipolarkernel" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">deerlab.</code><code class="descname">dipolarkernel</code><span class="sig-paren">(</span><em>t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, orisel=None, g=[2.00231930436256, 2.00231930436256], integralop=True, nKnots=5001, clearcache=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/dipolarkernel.html#dipolarkernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deerlab.dipolarkernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the dipolar kernel operator which enables the linear transformation from
 distance-domain to time-domain data.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -239,8 +239,15 @@ For multiple pathways, a callable function must be passed, accepting a time-axis
 </div></blockquote>
 <p class="last">The default is <code class="docutils literal notranslate"><span class="pre">'fresnel'</span></code>.</p>
 </dd>
+<dt><strong>orisel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">callable  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, optional</span></dt>
+<dd><p class="first last">Probability distribution of possible orientations of the interspin vector to account for orientation selection. Must be 
+a function taking a value of the angle θ∈[0,π/2] between the interspin vector and the external magnetic field and returning
+the corresponding probability density. If specified as <code class="docutils literal notranslate"><span class="pre">None</span></code> (by default), a uniform distribution is assumed. 
+Requires the <code class="docutils literal notranslate"><span class="pre">'grid'</span></code> or <code class="docutils literal notranslate"><span class="pre">'integral'</span></code> methods.</p>
+</dd>
 <dt><strong>excbandwidth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar, optional</span></dt>
-<dd><p class="first last">Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth <a class="reference internal" href="#r23328abbf0e7-4" id="id4">[4]</a>.</p>
+<dd><p class="first last">Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth <a class="reference internal" href="#r23328abbf0e7-4" id="id4">[4]</a>.
+Requires the <code class="docutils literal notranslate"><span class="pre">'grid'</span></code> or <code class="docutils literal notranslate"><span class="pre">'integral'</span></code> methods.</p>
 </dd>
 <dt><strong>g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar, 2-element array, optional</span></dt>
 <dd><p class="first last">Electron g-values of the spin centers <code class="docutils literal notranslate"><span class="pre">[g1,</span> <span class="pre">g2]</span></code>. If a single g is specified, <code class="docutils literal notranslate"><span class="pre">[g,</span> <span class="pre">g]</span></code> is assumed</p>

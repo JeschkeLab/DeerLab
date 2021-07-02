@@ -78,7 +78,7 @@
             
             
               <div class="version">
-                v0.13.1
+                v0.14.0-dev
               </div>
             
           
@@ -203,6 +203,7 @@
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span><span class="n">inf</span>
 <span class="kn">import</span> <span class="nn">scipy.integrate</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">fresnel</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
 <span class="c1"># Other packages</span>
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -211,14 +212,15 @@
 <span class="kn">from</span> <span class="nn">deerlab.</span><span class="nf">dipolarbackground</span> <span class="kn">import</span> <span class="nf">dipolarbackground</span>
 
 <span class="c1"># Fundamental constants (CODATA 2018)</span>
+<span class="n">π</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> 
 <span class="n">ge</span> <span class="o">=</span> <span class="mf">2.00231930436256</span> <span class="c1"># free-electron g factor</span>
-<span class="n">muB</span> <span class="o">=</span> <span class="mf">9.2740100783e-24</span> <span class="c1"># Bohr magneton, J/T </span>
-<span class="n">mu0</span> <span class="o">=</span> <span class="mf">1.25663706212e-6</span> <span class="c1"># magnetic constant, N A^-2 = T^2 m^3 J^-1 </span>
-<span class="n">h</span> <span class="o">=</span> <span class="mf">6.62607015e-34</span> <span class="c1"># Planck constant, J/Hz</span>
-<span class="k">def</span> <span class="nf">w0</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">mu0</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">muB</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">h</span><span class="o">*</span><span class="mf">1e21</span> <span class="c1"># Hz m^3 -&gt; MHz nm^3 -&gt; Mrad s^-1 nm^3</span>
+<span class="n">μB</span> <span class="o">=</span> <span class="mf">9.2740100783e-24</span> <span class="c1"># Bohr magneton, J/T </span>
+<span class="n">μ0</span> <span class="o">=</span> <span class="mf">1.25663706212e-6</span> <span class="c1"># magnetic constant, N A^-2 = T^2 m^3 J^-1 </span>
+<span class="n">h</span>  <span class="o">=</span> <span class="mf">6.62607015e-34</span>   <span class="c1"># Planck constant, J/Hz</span>
+<span class="k">def</span> <span class="nf">ω0</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">μ0</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">μB</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">h</span><span class="o">*</span><span class="mf">1e21</span> <span class="c1"># Hz m^3 -&gt; MHz nm^3 -&gt; rad μs^-1 nm^3</span>
 
-<div class="viewcode-block" id="dipolarkernel"><a class="viewcode-back" href="../../functions/dipolarkernel.html#deerlab.dipolarkernel">[docs]</a><span class="k">def</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mod</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;fresnel&#39;</span><span class="p">,</span> <span class="n">excbandwidth</span><span class="o">=</span><span class="n">inf</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="p">[</span><span class="n">ge</span><span class="p">,</span><span class="n">ge</span><span class="p">],</span> 
+<div class="viewcode-block" id="dipolarkernel"><a class="viewcode-back" href="../../functions/dipolarkernel.html#deerlab.dipolarkernel">[docs]</a><span class="k">def</span> <span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mod</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;fresnel&#39;</span><span class="p">,</span> <span class="n">excbandwidth</span><span class="o">=</span><span class="n">inf</span><span class="p">,</span> <span class="n">orisel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="p">[</span><span class="n">ge</span><span class="p">,</span><span class="n">ge</span><span class="p">],</span> 
                   <span class="n">integralop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nKnots</span><span class="o">=</span><span class="mi">5001</span><span class="p">,</span> <span class="n">clearcache</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="c1">#===================================================================================================</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the dipolar kernel operator which enables the linear transformation from</span>
@@ -255,9 +257,16 @@
 <span class="sd">        </span>
 <span class="sd">        The default is ``&#39;fresnel&#39;``.</span>
 
+<span class="sd">    orisel : callable  or ``None``, optional </span>
+<span class="sd">        Probability distribution of possible orientations of the interspin vector to account for orientation selection. Must be </span>
+<span class="sd">        a function taking a value of the angle θ∈[0,π/2] between the interspin vector and the external magnetic field and returning</span>
+<span class="sd">        the corresponding probability density. If specified as ``None`` (by default), a uniform distribution is assumed. </span>
+<span class="sd">        Requires the ``&#39;grid&#39;`` or ``&#39;integral&#39;`` methods.</span>
+
 <span class="sd">    excbandwidth : scalar, optional</span>
 <span class="sd">        Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth [4]_.</span>
-<span class="sd">    </span>
+<span class="sd">        Requires the ``&#39;grid&#39;`` or ``&#39;integral&#39;`` methods.</span>
+
 <span class="sd">    g : scalar, 2-element array, optional</span>
 <span class="sd">        Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, ``[g, g]`` is assumed </span>
 <span class="sd">    </span>
@@ -332,11 +341,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Clear cache of memoized function is requested</span>
     <span class="k">if</span> <span class="n">clearcache</span><span class="p">:</span>
-        <span class="n">calckernelmatrix</span><span class="o">.</span><span class="n">cache_clear</span><span class="p">()</span>
+        <span class="n">elementarykernel</span><span class="o">.</span><span class="n">cache_clear</span><span class="p">()</span>
+        <span class="n">_Cgrid</span><span class="o">.</span><span class="n">cache_clear</span><span class="p">()</span>
 
     <span class="c1"># Ensure that inputs are Numpy arrays</span>
     <span class="n">r</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">g</span><span class="p">)</span>
 
+    <span class="c1"># Check validity of some inputs</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">,</span> <span class="n">g</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
@@ -345,11 +356,18 @@
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="nf">any</span><span class="p">(</span><span class="n">r</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All elements in r must be nonnegative and nonzero.&quot;</span><span class="p">)</span>
 
+    <span class="c1"># Check that the kernel construction method is compatible with requested options</span>
+    <span class="k">if</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;fresnel&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">excbandwidth</span> <span class="o">!=</span> <span class="n">inf</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Excitation bandwidths can only be specified with the &#39;grid&#39; or &#39;integral&#39; methods.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">orisel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Orientation selection weights can only be specified with  the &#39;grid&#39; or &#39;integral&#39; methods.&quot;</span><span class="p">)</span>
+
     <span class="c1"># Check whether the full pathways or the modulation depth have been passed</span>
     <span class="n">pathways_passed</span> <span class="o">=</span>  <span class="n">pathways</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="n">moddepth_passed</span> <span class="o">=</span>  <span class="n">mod</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">pathways_passed</span> <span class="ow">and</span> <span class="n">moddepth_passed</span><span class="p">:</span> 
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Modulation depth and dipolar pathways cannot be specified simultaneously.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Modulation depth and dipolar pathways cannot be specified simultaneously.&quot;</span><span class="p">)</span>    
 
     <span class="k">if</span> <span class="n">moddepth_passed</span><span class="p">:</span>
         <span class="c1"># Construct 4-pulse DEER pathways if modulation depth is specified</span>
@@ -359,15 +377,17 @@
         <span class="n">pathways</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 
     <span class="c1"># Ensure correct formatting of the pathways</span>
-    <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">path</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">path</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]</span>
 
     <span class="c1"># Get unmodulated pathways    </span>
     <span class="n">unmodulated</span> <span class="o">=</span> <span class="p">[</span><span class="n">paths</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span>
     <span class="c1"># Combine all unmodulated contributions</span>
     <span class="k">if</span> <span class="n">unmodulated</span><span class="p">:</span>
-        <span class="n">Lambda0</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">([</span><span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">unmodulated</span><span class="p">]))</span>
+        <span class="n">Λ0</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">concatenate</span><span class="p">([</span><span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">unmodulated</span><span class="p">]))</span>
     <span class="k">else</span><span class="p">:</span> 
-        <span class="n">Lambda0</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">Λ0</span> <span class="o">=</span> <span class="mi">0</span>
+
     <span class="c1"># Check structure of pathways</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -375,16 +395,16 @@
             <span class="n">paths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> 
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
             <span class="c1"># Otherwise paths are not correctly defined</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The pathway #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1"> must be a list of two or three elements [lam, T0] or [lam, T0, n]&#39;</span><span class="p">)</span> 
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The pathway #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1"> must be a list of two or three elements [λ, T0] or [λ, T0, n]&#39;</span><span class="p">)</span> 
 
     <span class="c1"># Define kernel matrix auxiliary function</span>
-    <span class="n">kernelmatrix</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">calckernelmatrix</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="n">excbandwidth</span><span class="p">,</span><span class="n">nKnots</span><span class="p">,</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">K0</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">elementarykernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="n">excbandwidth</span><span class="p">,</span><span class="n">nKnots</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">orisel</span><span class="p">)</span>
 
     <span class="c1"># Build dipolar kernel matrix, summing over all pathways</span>
-    <span class="n">K</span> <span class="o">=</span> <span class="n">Lambda0</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">Λ0</span>
     <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
-        <span class="n">lam</span><span class="p">,</span><span class="n">T0</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="n">pathway</span>
-        <span class="n">K</span> <span class="o">=</span> <span class="n">K</span> <span class="o">+</span> <span class="n">lam</span><span class="o">*</span><span class="n">kernelmatrix</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">T0</span><span class="p">))</span>
+        <span class="n">λ</span><span class="p">,</span><span class="n">T0</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="n">pathway</span>
+        <span class="n">K</span> <span class="o">+=</span> <span class="n">λ</span><span class="o">*</span><span class="n">K0</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">T0</span><span class="p">))</span>
 
     <span class="c1"># Multiply by background if given</span>
     <span class="k">if</span> <span class="n">bg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -392,13 +412,13 @@
             <span class="n">B</span> <span class="o">=</span> <span class="nf">dipolarbackground</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">pathways</span><span class="p">,</span><span class="n">bg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">bg</span><span class="p">)</span>
-        <span class="n">K</span> <span class="o">=</span> <span class="n">K</span><span class="o">*</span><span class="n">B</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+        <span class="n">K</span> <span class="o">*=</span> <span class="n">B</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
 
     <span class="c1"># Include delta-r factor for integration</span>
     <span class="k">if</span> <span class="n">integralop</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
             
         <span class="c1"># Vectorized matrix form of trapezoidal integration method</span>
-        <span class="n">dr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+        <span class="n">dr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
         <span class="n">dr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">dr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">r</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">dr</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
@@ -408,9 +428,22 @@
     <span class="k">return</span> <span class="n">K</span></div>
 <span class="c1">#==============================================================================</span>
 
-<span class="nd">@cached</span>
-<span class="k">def</span> <span class="nf">calckernelmatrix</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="n">wex</span><span class="p">,</span><span class="n">nKnots</span><span class="p">,</span><span class="n">g</span><span class="p">):</span>
+<span class="nd">@cached</span><span class="p">(</span><span class="n">max_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_Cgrid</span><span class="p">(</span><span class="n">ωr</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">ωex</span><span class="p">,</span><span class="n">q</span><span class="p">):</span>
 <span class="c1">#==============================================================================</span>
+    <span class="s2">&quot;Evaluates the costly 3D powder kernel matrix (cached for speed)&quot;</span>
+    <span class="c1"># Vectorized 3D-grid evaluation (t,r,powder averaging)</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ωr</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="n">q</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]))</span>
+    <span class="c1"># If given, include limited excitation bandwidth</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">ωex</span><span class="p">):</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">ωr</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="n">q</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:])</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">ωex</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">C</span>
+<span class="c1">#==============================================================================</span>
+
+<span class="nd">@cached</span><span class="p">(</span><span class="n">max_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">elementarykernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="n">ωex</span><span class="p">,</span><span class="n">nKnots</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">Pθ</span><span class="p">):</span>
+<span class="c1">#==============================================================================</span>
+    <span class="s2">&quot;Calculates the elementary dipolar kernel (cached for speed)&quot;</span>
 
     <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
@@ -418,68 +451,83 @@
     <span class="c1"># Pre-allocate K matrix</span>
     <span class="n">nr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="n">nt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>  
-    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nt</span><span class="p">,</span><span class="n">nr</span><span class="p">))</span>
-    <span class="n">wr</span> <span class="o">=</span> <span class="n">w0</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># rad s^-1</span>
+    <span class="n">K0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nt</span><span class="p">,</span><span class="n">nr</span><span class="p">))</span>
+    <span class="n">ωr</span> <span class="o">=</span> <span class="n">ω0</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># rad μs^-1</span>
+    
+    <span class="n">orientationselection</span> <span class="o">=</span> <span class="n">Pθ</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> 
 
-    <span class="k">def</span> <span class="nf">kernelmatrix_fresnel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">orientationselection</span><span class="p">:</span>
+        <span class="c1"># Ensure zero-derivatives at [0,π/2]</span>
+        <span class="n">θ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">π</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span> <span class="c1"># rad</span>
+        <span class="n">Pθ_</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">make_interp_spline</span><span class="p">(</span><span class="n">θ</span><span class="p">,</span> <span class="n">Pθ</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span><span class="n">bc_type</span><span class="o">=</span><span class="s2">&quot;clamped&quot;</span><span class="p">)</span>
+        <span class="c1"># Ensure normalization of probability density function (∫P(cosθ)dcosθ=1)</span>
+        <span class="n">Pθnorm</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="k">lambda</span> <span class="n">cosθ</span><span class="p">:</span> <span class="n">Pθ</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">cosθ</span><span class="p">)),</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="n">Pθ</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">θ</span><span class="p">:</span> <span class="n">Pθ_</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span><span class="o">/</span><span class="n">Pθnorm</span>
+
+    <span class="k">def</span> <span class="nf">elementarykernel_fresnel</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
     <span class="c1">#==========================================================================</span>
         <span class="sd">&quot;&quot;&quot;Calculate kernel using Fresnel integrals (fast and accurate)&quot;&quot;&quot;</span>
 
        <span class="c1"># Calculation using Fresnel integrals</span>
-        <span class="n">ph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">outer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">wr</span><span class="p">)</span>
-        <span class="n">kappa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">6</span><span class="o">*</span><span class="n">ph</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span>
+        <span class="n">ɸ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">outer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">ωr</span><span class="p">)</span>
+        <span class="n">κ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">6</span><span class="o">*</span><span class="n">ɸ</span><span class="o">/</span><span class="n">π</span><span class="p">)</span>
         
         <span class="c1"># Supress divide by 0 warning        </span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
-            <span class="n">S</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">fresnel</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span><span class="o">/</span><span class="n">kappa</span>
+            <span class="n">S</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">fresnel</span><span class="p">(</span><span class="n">κ</span><span class="p">)</span><span class="o">/</span><span class="n">κ</span>
         
-        <span class="n">K</span> <span class="o">=</span> <span class="n">C</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ph</span><span class="p">)</span> <span class="o">+</span> <span class="n">S</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ph</span><span class="p">)</span>
-        <span class="n">K</span><span class="p">[</span><span class="n">t</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+        <span class="n">K0</span> <span class="o">=</span> <span class="n">C</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ɸ</span><span class="p">)</span> <span class="o">+</span> <span class="n">S</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ɸ</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">K</span>
+        <span class="c1"># Limit of K0(t,r) as t-&gt;0</span>
+        <span class="n">K0</span><span class="p">[</span><span class="n">t</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+
+        <span class="k">return</span> <span class="n">K0</span>
     <span class="c1">#==========================================================================</span>
-    
-    <span class="k">def</span> <span class="nf">kernelmatrix_grid</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">wex</span><span class="p">,</span><span class="n">nKnots</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">elementarykernel_grid</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">ωex</span><span class="p">,</span><span class="n">nKnots</span><span class="p">,</span><span class="n">Pθ</span><span class="p">):</span>
     <span class="c1">#==========================================================================</span>
         <span class="sd">&quot;&quot;&quot;Calculate kernel using grid-based powder integration (converges very slowly with nKnots)&quot;&quot;&quot;</span>
 
         <span class="c1"># Orientational grid</span>
-        <span class="n">costheta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">nKnots</span><span class="p">))</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="n">costheta</span><span class="o">**</span><span class="mi">2</span>
-        <span class="c1"># Vectorized 3D-grid evaluation (t,r,powder averaging)</span>
-        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">wr</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="n">q</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]))</span>
-        <span class="c1"># If given, include limited excitation bandwidth</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">wex</span><span class="p">):</span>
-            <span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">wr</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="n">q</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:])</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">wex</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">C</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">nKnots</span>
-        <span class="k">return</span> <span class="n">K</span>
+        <span class="n">cosθ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">nKnots</span><span class="p">))</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="n">cosθ</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="k">if</span> <span class="n">orientationselection</span><span class="p">:</span>
+            <span class="c1"># Integrate over the orientations distribution Pθ</span>
+            <span class="n">K0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">dot</span><span class="p">(</span><span class="n">_Cgrid</span><span class="p">(</span><span class="n">ωr</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">ωex</span><span class="p">,</span><span class="n">q</span><span class="p">),</span><span class="n">Pθ</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">cosθ</span><span class="p">)))</span><span class="o">/</span><span class="n">nKnots</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="c1"># Elementary kernel without orientation selection</span>
+            <span class="n">K0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">_Cgrid</span><span class="p">(</span><span class="n">ωr</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">ωex</span><span class="p">,</span><span class="n">q</span><span class="p">),</span><span class="nf">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">nKnots</span>
+        <span class="k">return</span> <span class="n">K0</span>
     <span class="c1">#==========================================================================</span>
 
-    <span class="k">def</span> <span class="nf">kernelmatrix_integral</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">wex</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">elementarykernel_integral</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">ωex</span><span class="p">,</span><span class="n">Pθ</span><span class="p">):</span>
     <span class="c1">#==========================================================================</span>
         <span class="sd">&quot;&quot;&quot;Calculate kernel using explicit numerical integration &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">ir</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">wr</span><span class="p">)):</span>
-            <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)):</span>
-                <span class="c1">#==================================================================</span>
-                <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">costheta</span><span class="p">):</span>
-                    <span class="n">integ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">wr</span><span class="p">[</span><span class="n">ir</span><span class="p">]</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">it</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">costheta</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-                    <span class="c1"># If given, include limited excitation bandwidth</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">wex</span><span class="p">):</span>
-                        <span class="n">integ</span> <span class="o">=</span> <span class="n">integ</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">wr</span><span class="p">[</span><span class="n">ir</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">costheta</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">wex</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">integ</span>
-                <span class="c1">#==================================================================   </span>
-                <span class="n">K</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="n">ir</span><span class="p">],</span><span class="n">_</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">K</span>
+        <span class="k">for</span> <span class="n">ir</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ωr</span><span class="p">)):</span>
+            <span class="c1">#==================================================================</span>
+            <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">cosθ</span><span class="p">):</span>
+                <span class="n">integ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ωr</span><span class="p">[</span><span class="n">ir</span><span class="p">]</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">cosθ</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+                <span class="c1"># If given, include limited excitation bandwidth</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">ωex</span><span class="p">):</span>
+                    <span class="n">integ</span> <span class="o">=</span> <span class="n">integ</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">ωr</span><span class="p">[</span><span class="n">ir</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">cosθ</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">ωex</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                <span class="c1"># If given, include orientation selection</span>
+                <span class="k">if</span> <span class="n">orientationselection</span><span class="p">:</span>
+                    <span class="n">integ</span> <span class="o">=</span> <span class="n">integ</span><span class="o">*</span><span class="n">Pθ</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">cosθ</span><span class="p">))</span>  
+                <span class="k">return</span> <span class="n">integ</span>
+            <span class="c1">#==================================================================   </span>
+            <span class="n">K0</span><span class="p">[:,</span><span class="n">ir</span><span class="p">],</span><span class="n">_</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">quad_vec</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">K0</span>
     <span class="c1">#==========================================================================</span>
 
     <span class="k">if</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;fresnel&#39;</span><span class="p">:</span>
-        <span class="n">K</span> <span class="o">=</span> <span class="n">kernelmatrix_fresnel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">K0</span> <span class="o">=</span> <span class="n">elementarykernel_fresnel</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;integral&#39;</span><span class="p">:</span> 
-        <span class="n">K</span> <span class="o">=</span> <span class="n">kernelmatrix_integral</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">wex</span><span class="p">)</span>
+        <span class="n">K0</span> <span class="o">=</span> <span class="n">elementarykernel_integral</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">ωex</span><span class="p">,</span><span class="n">Pθ</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;grid&#39;</span><span class="p">:</span> 
-        <span class="n">K</span> <span class="o">=</span> <span class="n">kernelmatrix_grid</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">wex</span><span class="p">,</span><span class="n">nKnots</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">K</span>
+        <span class="n">K0</span> <span class="o">=</span> <span class="n">elementarykernel_grid</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">ωex</span><span class="p">,</span><span class="n">nKnots</span><span class="p">,</span><span class="n">Pθ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">K0</span>
 <span class="c1">#==============================================================================</span>
 </pre></div>
 

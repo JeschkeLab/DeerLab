@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np 
 model = dl.dd_shellshell
 r = np.linspace(2,5,400)
-info = model() 
-par0 = info['Start']
+par0 = model.start
 P = model(r,par0)
 plt.figure(figsize=[6,3])
 plt.plot(r,P)

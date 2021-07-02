@@ -78,7 +78,7 @@
             
             
               <div class="version">
-                v0.13.1
+                v0.14.0-dev
               </div>
             
           
@@ -488,6 +488,9 @@
         <span class="k">elif</span> <span class="n">nnlsSolver</span> <span class="o">==</span> <span class="s1">&#39;cvx&#39;</span><span class="p">:</span>
             <span class="n">linSolver</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">:</span> <span class="nf">cvxnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">lin_tol</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="n">lin_maxiter</span><span class="p">)</span>
         <span class="n">parseResult</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">result</span><span class="p">:</span> <span class="n">result</span>
+    
+    <span class="c1"># Ensure correct formatting and shield against float-point errors</span>
+    <span class="n">validateResult</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">result</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">lbl</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">ubl</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">result</span><span class="p">)))</span>
     <span class="c1"># ----------------------------------------------------------</span>
 
     <span class="c1"># Containers for alpha-update checks</span>
@@ -514,9 +517,9 @@
          
         <span class="c1"># Solve the linear least-squares problem</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">linSolver</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">)</span>
-        <span class="n">linfit</span> <span class="o">=</span> <span class="n">parseResult</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="n">linfit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">linfit</span><span class="p">)</span>
-        
+        <span class="n">result</span> <span class="o">=</span> <span class="n">parseResult</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">linfit</span> <span class="o">=</span> <span class="n">validateResult</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">linfit</span><span class="p">,</span> <span class="n">alpha</span>
     <span class="c1">#===========================================================================</span>
 

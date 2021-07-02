@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.1
+                v0.14.0-dev
               </div>
             
           
@@ -214,10 +214,12 @@ distribution and a homogeneous background, using Tikhonov regularization.</p>
 <div class="section" id="load-and-pre-process-data">
 <h1>Load and pre-process data<a class="headerlink" href="#load-and-pre-process-data" title="Permalink to this headline">¶</a></h1>
 <p>Uncomment and use the following lines if you have experimental data:</p>
-<p>datasets = (‘file1.DTA’,’file2.DTA’,’file3.DTA’)
-data = [dl.deerload(ds) for ds in datasets]
-t = [_[0] for _ in data]
-V = [_[1] for _ in data]</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">datasets</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;file1.DTA&#39;</span><span class="p">,</span><span class="s1">&#39;file2.DTA&#39;</span><span class="p">,</span><span class="s1">&#39;file3.DTA&#39;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="nf">deerload</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">]</span>
+<span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+<span class="n">V</span> <span class="o">=</span> <span class="p">[</span><span class="n">_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="simulate-data">
 <h1>Simulate data<a class="headerlink" href="#simulate-data" title="Permalink to this headline">¶</a></h1>
@@ -260,8 +262,8 @@ Since we know that the</p>
 </div>
 <img alt="ex global different deer" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_global_different_deer_001.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/numpy/core/_asarray.py:171: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify &#39;dtype=object&#39; when creating the ndarray.
-  return array(a, dtype, copy=False, order=order, subok=True)
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/numpy/core/shape_base.py:65: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify &#39;dtype=object&#39; when creating the ndarray.
+  ary = asanyarray(ary)
 ----------------------------------------------------------------------------
 Goodness of fit
   Vexp[0]: 𝛘2 = 151.980157  RMSD  = 4.981792e-02
@@ -284,7 +286,7 @@ Vfit[1]:
 &lt;Figure size 700x900 with 3 Axes&gt;
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  17.582 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  14.890 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-global-different-deer-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <a class="reference download internal" download="" href="../../_downloads/ef97ff01844876656ecefd70c14b7baf/ex_global_different_deer.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_global_different_deer.py</span></code></a></div>

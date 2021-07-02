@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.1
+                v0.14.0-dev
               </div>
             
           
@@ -211,9 +211,11 @@ the fitted non-parametric distance distribution.</p>
 </pre></div>
 </div>
 <p>Uncomment and use the following lines if you have experimental data:</p>
-<p>t,Vexp = dl.deerload(‘mypath4pdeer_data.DTA’)
-Vexp = dl.correctphase(Vexp)
-t = dl.correctzerotime(Vexp,t)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="p">,</span><span class="n">Vexp</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">deerload</span><span class="p">(</span><span class="s1">&#39;my\path</span><span class="se">\4</span><span class="s1">pdeer_data.DTA&#39;</span><span class="p">)</span>
+<span class="n">Vexp</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctphase</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctzerotime</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>In this example we will use simulated data instead:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define a function that generates synthetic data</span>
 <span class="k">def</span> <span class="nf">generatedata</span><span class="p">():</span>
@@ -323,7 +325,7 @@ Standard deviation: 0.515 (0.000-1.029) nm
 </pre></div>
 </div>
 <img alt="ex restraints 4pdeer" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_restraints_4pdeer_002.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  6.302 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  5.336 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-restraints-4pdeer-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <a class="reference download internal" download="" href="../../_downloads/33b086949cde2ce6f1a2f6c0aef4bedc/ex_restraints_4pdeer.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_restraints_4pdeer.py</span></code></a></div>

@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.1
+                v0.14.0-dev
               </div>
             
           
@@ -213,9 +213,11 @@ distribution, including the “2+1” pathway contribution.</p>
 <div class="section" id="load-and-pre-process-data">
 <h2>Load and pre-process data<a class="headerlink" href="#load-and-pre-process-data" title="Permalink to this headline">¶</a></h2>
 <p>Uncomment and use the following lines if you have experimental data:</p>
-<p>t,Vexp = dl.deerload(‘mypath4pdeer_data.DTA’)
-Vexp = dl.correctphase(Vexp)
-t = dl.correctzerotime(Vexp,t)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="p">,</span><span class="n">Vexp</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">deerload</span><span class="p">(</span><span class="s1">&#39;my\path</span><span class="se">\4</span><span class="s1">pdeer_data.DTA&#39;</span><span class="p">)</span>
+<span class="n">Vexp</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctphase</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">correctzerotime</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>In this example we will use simulated data instead:</p>
 </div>
 <div class="section" id="generate-data">
@@ -279,7 +281,7 @@ Vfit[0]:
 &lt;Figure size 700x600 with 2 Axes&gt;
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  11.250 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  9.030 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-fitting-4pdeer-2p1-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <a class="reference download internal" download="" href="../../_downloads/29a0ba4b6caae23ffdf4ce2a86879ab5/ex_fitting_4pdeer_2p1.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_fitting_4pdeer_2p1.py</span></code></a></div>

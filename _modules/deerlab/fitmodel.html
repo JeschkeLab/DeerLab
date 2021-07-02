@@ -78,7 +78,7 @@
             
             
               <div class="version">
-                v0.13.1
+                v0.14.0-dev
               </div>
             
           
@@ -702,7 +702,7 @@
         <span class="n">Vmod</span><span class="p">,</span> <span class="n">Vunmod</span> <span class="o">=</span> <span class="n">calculate_Vmod_Vunmod</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="n">Bfit</span><span class="p">,</span><span class="n">scales</span><span class="p">)</span>
 
         <span class="c1"># No parameters</span>
-        <span class="n">parfit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">([</span><span class="kc">None</span><span class="p">])</span>
+        <span class="n">parfit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="kc">None</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">uqanalysis</span> <span class="ow">and</span> <span class="n">uq</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
             <span class="n">Vfit_uq</span><span class="p">,</span> <span class="n">Pfit_uq</span><span class="p">,</span> <span class="n">Bfit_uq</span><span class="p">,</span> <span class="n">Vmod_uq</span><span class="p">,</span> <span class="n">Vunmod_uq</span><span class="p">,</span> <span class="n">paruq_bg</span><span class="p">,</span> <span class="n">paruq_ex</span><span class="p">,</span> <span class="n">paruq_dd</span> <span class="o">=</span> <span class="n">splituq</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="n">Pfit_uq</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="n">Bfit</span><span class="p">,</span><span class="n">parfit</span><span class="p">,</span><span class="n">Ks</span><span class="p">,</span><span class="n">scales</span><span class="p">)</span>

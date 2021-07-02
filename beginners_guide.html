@@ -80,7 +80,7 @@
             
             
               <div class="version">
-                v0.13.1
+                v0.14.0-dev
               </div>
             
           
@@ -462,12 +462,12 @@ exparam[0]:   0.4066627  (0.3630338, 0.4502916)  Modulation depth ()
 </pre></div>
 </div>
 <p>To export the fitted distance distribution for plotting with another software, save it in a simple text file</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="nf">savetxt</span><span class="p">(</span><span class="s1">&#39;distancedistribution.txt&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span><span class="p">,</span> <span class="o">*</span><span class="n">fit</span><span class="o">.</span><span class="n">Puncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="nf">savetxt</span><span class="p">(</span><span class="s1">&#39;distancedistribution.txt&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span><span class="p">,</span> <span class="o">*</span><span class="n">fit</span><span class="o">.</span><span class="n">Puncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The generated file contain four columns: the distance axis, the distance distributions, and the upper and lower confidence bounds. The <code class="docutils literal notranslate"><span class="pre">.T</span></code> indicate array transposes, which are used to get the confidence bands into the column format for saving.</p>
 <p>To export the fitted time-domain trace, use similarly</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="nf">savetxt</span><span class="p">(</span><span class="s1">&#39;timetrace.txt&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="nf">asarray</span><span class="p">((</span><span class="n">t</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">V</span><span class="p">,</span> <span class="o">*</span><span class="n">fit</span><span class="o">.</span><span class="n">Vuncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="nf">savetxt</span><span class="p">(</span><span class="s1">&#39;timetrace.txt&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">((</span><span class="n">t</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">V</span><span class="p">,</span> <span class="o">*</span><span class="n">fit</span><span class="o">.</span><span class="n">Vuncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
