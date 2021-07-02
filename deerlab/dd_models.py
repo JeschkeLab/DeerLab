@@ -59,8 +59,7 @@ Example of the model evaluated at the start values of the parameters:
     import numpy as np 
     model = dl.{fcnstr}
     r = np.linspace(2,5,400)
-    info = model() 
-    par0 = info['Start']
+    par0 = model.start
     P = model(r,par0)
     plt.figure(figsize=[6,3])
     plt.plot(r,P)
