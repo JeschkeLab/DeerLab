@@ -409,7 +409,7 @@ def Jacobian(fcn, x0, lb, ub):
 
     """
     J = opt._numdiff.approx_derivative(fcn,x0,method='2-point',bounds=(lb,ub))
-    J = np.atleast_2d(J)
+    J = np.atleast_2d(J) 
     return J
 #===============================================================================
 

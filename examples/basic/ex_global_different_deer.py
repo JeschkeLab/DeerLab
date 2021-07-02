@@ -15,13 +15,13 @@ import deerlab as dl
 # Load and pre-process data
 # ---------------------------
 #
-# Uncomment and use the following lines if you have experimental data:
-#
-# datasets = ('file1.DTA','file2.DTA','file3.DTA')
-# data = [dl.deerload(ds) for ds in datasets]
-# t = [_[0] for _ in data]
-# V = [_[1] for _ in data]
-#
+# Uncomment and use the following lines if you have experimental data::
+# 
+#   datasets = ('file1.DTA','file2.DTA','file3.DTA')
+#   data = [dl.deerload(ds) for ds in datasets]
+#   t = [_[0] for _ in data]
+#   V = [_[1] for _ in data]
+# 
 
 # %% [markdown]
 # Simulate data

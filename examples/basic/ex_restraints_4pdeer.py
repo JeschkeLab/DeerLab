@@ -12,11 +12,11 @@ import matplotlib.pyplot as plt
 import deerlab as dl
 
 # %% [markdown]
-# Uncomment and use the following lines if you have experimental data:
-#
-# t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
-# Vexp = dl.correctphase(Vexp)
-# t = dl.correctzerotime(Vexp,t)
+# Uncomment and use the following lines if you have experimental data::
+# 
+#   t,Vexp = dl.deerload('my\path\4pdeer_data.DTA')
+#   Vexp = dl.correctphase(Vexp)
+#   t = dl.correctzerotime(Vexp,t)
 #
 
 # %% [markdown]#
