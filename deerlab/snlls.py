@@ -293,6 +293,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         elif nnlsSolver == 'cvx':
             linSolver = lambda AtA, Aty: cvxnnls(AtA, Aty, tol=lin_tol, maxiter=lin_maxiter)
         parseResult = lambda result: result
+    
+    # Ensure correct formatting and shield against float-point errors
+    validateResult = lambda result: np.maximum(lbl,np.minimum(ubl,np.atleast_1d(result)))
     # ----------------------------------------------------------
 
     # Containers for alpha-update checks
@@ -319,9 +322,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
          
         # Solve the linear least-squares problem
         result = linSolver(AtA, Aty)
-        linfit = parseResult(result)
-        linfit = np.atleast_1d(linfit)
-        
+        result = parseResult(result)
+        linfit = validateResult(result)
+
         return linfit, alpha
     #===========================================================================
 
@@ -566,4 +569,3 @@ def _plot(subsets,y,yfit,show):
         plt.close()
     return fig
 # ===========================================================================================
-
