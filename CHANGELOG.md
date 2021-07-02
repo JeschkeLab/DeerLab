@@ -1,4 +1,15 @@
 
+Release v0.13.2 - July 2021
+---------------------------------
+
+#### Overall changes
+
+- Fixed an error appearing during installation in Windows systems. If during installation a  ``python`` executable alias was not created, the call to the ``pipwin`` manager returned an error and the installation failed to download and install Numpy, SciPy and cvxopt. ([#187](https://github.com/JeschkeLab/DeerLab/pull/187)).
+- Fixed the rendering of certain code-blocks in the documentation examples which were appearing as plain text ([#179](https://github.com/JeschkeLab/DeerLab/issues/179), [#184](https://github.com/JeschkeLab/DeerLab/pull/184)). 
+- Fixed the execution and rendering of the model examples in the documentation ([#189](https://github.com/JeschkeLab/DeerLab/issues/189), [#190](https://github.com/JeschkeLab/DeerLab/pull/190)). 
+- Fixed a bug in ``snlls`` where one of the linear least-squares solvers can return results that violate the boundary conditions due to float-point round-off errors ([#177](https://github.com/JeschkeLab/DeerLab/issues/177), [#188](https://github.com/JeschkeLab/DeerLab/pull/188)). 
+
+
 Release v0.13.1 - May 2021
 ---------------------------------
 
