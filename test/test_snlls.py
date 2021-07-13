@@ -531,9 +531,50 @@ def test_global_weights_default():
     scales = [1e3,1e9]
     V1 = scales[0]*K@P + whitegaussnoise(t,0.001,seed=1)
     V2 = scales[1]*K@P + whitegaussnoise(t,0.1,seed=1)
-    
+
     Kmodel= lambda lam: [dipolarkernel(t,r,mod=lam)]*2
     fit = snlls([V1,V2],Kmodel,par0=[0.2],lb=0,ub=1,lbl=np.zeros_like(r))
 
     assert ovl(P,fit.lin) > 0.95
+# ======================================================================
+
+def test_extrapenalty():
+# ======================================================================
+    "Check that an additional penalty can be passed correctly"
+
+    t = np.linspace(0,5,300)
+    r = np.linspace(2,6,90)
+    P = dd_gauss(r,[4.5, 0.25])
+    K = dipolarkernel(t,r,mod=0.2)
+    V = K@P + whitegaussnoise(t,0.001,seed=1)
+    dr = np.mean(np.diff(r))
+    beta = 0.05
+    compactness_penalty = lambda pnonlin,plin: beta*np.sqrt(plin*(r - np.trapz(plin*r,r))**2*dr)
+    Kmodel= lambda lam: dipolarkernel(t,r,mod=lam)
+    fit = snlls(V,Kmodel,par0=0.2,lb=0,ub=1,lbl=np.zeros_like(r),extrapenalty=compactness_penalty)
+
+    assert ovl(P,fit.lin) > 0.95
+# ======================================================================
+
+def test_multiple_penalties():
+# ======================================================================
+    "Check that multiple additional penaltyies can be passed correctly"
+
+    t = np.linspace(0,5,300)
+    r = np.linspace(2,6,90)
+    P = dd_gauss(r,[4.5, 0.25])
+    param = 0.2
+    K = dipolarkernel(t,r,mod=param)
+    V = K@P + whitegaussnoise(t,0.001,seed=1)
+    dr = np.mean(np.diff(r))
+    beta = 0.05
+    R = 0.5
+    compactness_penalty = lambda pnonlin,plin: beta*np.sqrt(plin*(r - np.trapz(plin*r,r))**2*dr)
+    radial_penalty = lambda pnonlin,plin: 1/R**2*(np.linalg.norm((pnonlin-param)/param-R))**2
+
+    Kmodel= lambda lam: dipolarkernel(t,r,mod=lam)
+    fit0 = snlls(V,Kmodel,par0=0.2,lb=0,ub=1,lbl=np.zeros_like(r),extrapenalty=[compactness_penalty])
+    fitmoved = snlls(V,Kmodel,par0=0.2,lb=0,ub=1,lbl=np.zeros_like(r),extrapenalty=[compactness_penalty,radial_penalty])
+    
+    assert ovl(P,fit0.lin) > ovl(P,fitmoved.lin)
 # ======================================================================
