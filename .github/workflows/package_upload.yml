@@ -17,11 +17,9 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
-          apt-get install python3-pip -y
           python -m pip install setuptools --user
           python -m pip install build --user
           python -m pip install twine --user
-          python -m pip install conda --user
     - name: PyPI - Build and publish
       run: |
           python setup.py sdist
