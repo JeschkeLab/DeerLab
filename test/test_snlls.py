@@ -487,7 +487,7 @@ def test_confinter_scaling():
     ci1[ci1==0] = 1e-16
     ci2[ci2==0] = 1e-16
 
-    assert np.max(abs(1-ci2/ci1)) < 0.001 # Allow up to 0.1% error
+    assert np.max(abs(1-ci2/ci1)) < 0.01 # Allow up to 1% error
 #============================================================
 
 def test_global_weights():
