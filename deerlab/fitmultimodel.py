@@ -430,7 +430,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
                         weights=weights, reg=False, nonlin_tol=tol, nonlin_maxiter=maxiter)
         pnonlin = fit.nonlin
         plin = fit.lin
-        par_prev = pnonlin
+        par_prev = pnonlin[-Ncomp * len(lb):] 
 
         plin /= upscale
         fit.model /= upscale

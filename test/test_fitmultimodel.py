@@ -471,3 +471,24 @@ def test_global_weights_default():
 
     assert ovl(P,fit.P) > 0.95
 # ======================================================================
+
+def test_custom_kernel():
+# ======================================================================
+    "Check that passing a custom kernel works"
+
+    t = np.linspace(0,8,400)
+    r = np.linspace(1.5, 8, 256)
+    P = dd_gauss2(r,[3,0.1,0.5,4,0.1,0.5])
+
+    def Kmodel(par, t, r):
+        K = dipolarkernel(t, r, mod = par[0])
+        return K
+    K = lambda par: Kmodel(par, t, r)
+    V = K([0.3])@P + whitegaussnoise(t,0.001,seed=1)
+
+    lb = [1, 0.05]
+    ub = [8, 2.5]
+    fit = fitmultimodel(V, K, r, dd_gauss, 3,  lb=lb, ub=ub, lbK=[0], ubK=[1])
+
+    assert ovl(P,fit.P) > 0.95
+# ======================================================================
