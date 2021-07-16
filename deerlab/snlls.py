@@ -87,8 +87,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         The regularization parameter can be manually specified by passing a scalar value
         instead of a string. The default ``'aic'``.
 
-    extrapenalty: callable 
-        Custom penalty function to impose upon the solution. Must take two inputs, a vector of non-linear parameters
+    extrapenalty: callable or list thereof
+        Custom penalty function(s) to impose upon the solution. A single penalty must be specified as a callable function. 
+        Multiple penalties can be specified as a list of callable functons. Each function must take two inputs, a vector of non-linear parameters
         and a vector of linear parameters, and return a vector to be added to the residual vector (``pen = fcn(pnonlin,plin)``).  
         The square of the penalty is computed internally.
 
@@ -225,6 +226,13 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         includeRegularization  = illConditioned
     else:
         includeRegularization  = reg
+
+    includeExtrapenalty = extrapenalty is not None
+    if includeExtrapenalty:
+        extrapenalty = np.atleast_1d(extrapenalty)
+        for penalty in extrapenalty:
+            if not callable(penalty):
+                raise TypeError("The keyword argument 'extrapenalty' must be a callable function or a list thereof.")
 
     # Checks for bounds constraints
     # ----------------------------------------------------------
@@ -385,11 +393,12 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         # Compute residual vector
         res = weights*(scales_vec*(Amodel(p)@linfit) - y)
 
-        # Compute residual from custom penalty
-        if callable(extrapenalty):
-            penres = extrapenalty(p,linfit)
-            penres = np.atleast_1d(penres)
-            res = np.concatenate((res,penres))
+        # Compute residual from custom
+        if includeExtrapenalty:
+            for penalty in extrapenalty:
+                penres = penalty(p,linfit)
+                penres = np.atleast_1d(penres)
+                res = np.concatenate((res,penres))
 
         if includeRegularization:
             # Augmented residual
@@ -439,8 +448,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
         # Jacobian (linear part)
         Jlin = scales_vec[:,np.newaxis]*Amodel(nonlinfit)
-        if callable(extrapenalty):
-            Jlin = np.concatenate((Jlin, Jacobian(lambda plin: extrapenalty(nonlinfit,plin),linfit,lbl,ubl)))
+        if includeExtrapenalty:
+            for penalty in extrapenalty:
+                Jlin = np.concatenate((Jlin, Jacobian(lambda plin: penalty(nonlinfit,plin),linfit,lbl,ubl)))
         if includeRegularization:
             Jlin = np.concatenate((Jlin, reg_penalty(regtype, alpha, L, linfit, huberparam, Nnonlin)[1]))
 
