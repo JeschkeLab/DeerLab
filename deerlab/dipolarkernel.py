@@ -266,7 +266,7 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
         θ = np.linspace(0,π/2,50) # rad
         Pθ_ = scipy.interpolate.make_interp_spline(θ, Pθ(θ),bc_type="clamped")
         # Ensure normalization of probability density function (∫P(cosθ)dcosθ=1)
-        Pθnorm,_ = scipy.integrate.quad(lambda cosθ: Pθ(np.arccos(cosθ)),0,1,limit=1000)
+        Pθnorm,_ = scipy.integrate.quad(lambda cosθ: Pθ_(np.arccos(cosθ)),0,1,limit=1000)
         Pθ = lambda θ: Pθ_(θ)/Pθnorm
 
     def elementarykernel_fresnel(t):
