@@ -113,7 +113,7 @@ def _parsargs(t,p,npar):
 
 # =================================================================
 @metadata(
-parameters = ['Concentration of pumped spins'],
+parameters = ['Spin concentration'],
 units = ['μM'],
 start = np.asarray([50]),
 lower = np.asarray([0.01]),
@@ -128,7 +128,7 @@ Notes
 
 **Model:**
 
-This model describes the inter-molecular interaction of one observer spin with a 3D homogenous distribution of pump-spins of concentration `c_p`
+This model describes the inter-molecular interaction of one observer spin with a 3D homogenous distribution of spins of concentration `c_s`
 
 .. image:: ../images/model_scheme_bg_hom3d.png
    :width: 350px
@@ -136,9 +136,9 @@ This model describes the inter-molecular interaction of one observer spin with a
 The expression for this model is
 
 .. math::
-   B(t) = \mathrm{exp}\left(-\frac{8\pi^2}{9\sqrt{3}}\lambda c_p D |t|\right)`
+   B(t) = \mathrm{exp}\left(-\frac{8\pi^2}{9\sqrt{3}}\lambda c_s D |t|\right)`
 
-where `c_p` is the pumped-spin concentration (entered in spins/m\ :sup:`3` into this expression) and D is the dipolar constant
+where `c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this expression) and D is the dipolar constant
 
 .. math::
    D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
@@ -146,7 +146,7 @@ where `c_p` is the pumped-spin concentration (entered in spins/m\ :sup:`3` into 
 ============== =============== ============= ============= ============= =================================
  Variable         Symbol        Start Value   Lower bound   Upper bound      Description
 ============== =============== ============= ============= ============= =================================
-``param[0]``   :math:`c_p`        50            0.01           5000       Pumped spin concentration (μM)
+``param[0]``   :math:`c_s`        50            0.01           5000       Spin concentration (μM)
 ============== =============== ============= ============= ============= =================================
     """  
     t,param = _parsargs(t,param,npar=1) 
@@ -189,13 +189,13 @@ Notes
 .. image:: ../images/model_scheme_bg_hom3dex.png
    :width: 350px
 
-This implements a hard-shell excluded-volume model, with pumped spin concentration ``c`` (first parameter, in μM) and distance of closest approach ``R`` (second parameter, in nm).
+This implements a hard-shell excluded-volume model, with spin concentration ``c_s`` (first parameter, in μM) and distance of closest approach ``R`` (second parameter, in nm).
 
 The expression for this model is
 
-.. math:: B(t) = \mathrm{exp}\left(-\frac{8\pi^2}{9\sqrt{3}}\alpha(R) \lambda c D |t|\right)`
+.. math:: B(t) = \mathrm{exp}\left(-\frac{8\pi^2}{9\sqrt{3}}\alpha(R) \lambda c_s D |t|\right)`
 
-where :math:`c` is the spin concentration (entered in spins/m\ :sup:`3` into this expression) and :math:`D` is the dipolar constant
+where :math:`c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this expression) and :math:`D` is the dipolar constant
 
 .. math:: D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
 
@@ -204,7 +204,7 @@ The function :math:`\alpha(R)` of the exclusion distance :math:`R` captures the 
 ============== =============== ============= ============= ============= =================================
  Variable         Symbol        Start Value   Lower bound   Upper bound      Description
 ============== =============== ============= ============= ============= =================================
-``param[0]``    :math:`c`              50         0.01          5000          Spin concentration (μM)
+``param[0]``    :math:`c_s`            50         0.01          5000          Spin concentration (μM)
 ``param[1]``    :math:`R`              1          0.1            20           Exclusion distance (nm)
 ============== =============== ============= ============= ============= =================================
     """  
@@ -249,7 +249,7 @@ The function :math:`\alpha(R)` of the exclusion distance :math:`R` captures the 
 
 # =================================================================
 @metadata(
-parameters = ['Fractal Concentration of pumped spins','Fractal dimensionality'],
+parameters = ['Fractal concentration of spins','Fractal dimensionality'],
 units = ['μmol/dmᵈ',''],
 start = np.asarray([50,   3]),
 lower = np.asarray([0.01, 0+np.finfo(float).eps]),
@@ -269,7 +269,7 @@ This implements the background due to a homogeneous distribution of spins in a d
 ============= ============= ============= ============= ============= ==========================================================
  Variable       Symbol       Start Value   Lower bound   Upper bound      Description
 ============= ============= ============= ============= ============= ==========================================================
-``param[0]``   :math:`c_d`     50          0.01          5000          Pumped spin fractal concentration (μmol/dm\ :sup:`d`)
+``param[0]``   :math:`c_d`     50          0.01          5000          Spin fractal concentration (μmol/dm\ :sup:`d`)
 ``param[1]``   :math:`d`       3           0                6          Fractal dimension
 ============= ============= ============= ============= ============= ==========================================================
     """  
