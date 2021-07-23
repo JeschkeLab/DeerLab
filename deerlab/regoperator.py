@@ -6,15 +6,18 @@
 
 import numpy as np
 
-def regoperator(r,d=2):
+def regoperator(r,d=2,includeedges=True):
     r""" Computes the discrete approximation to the derivative operators used as regularization operators.
 
     Parameters
     ----------
     r : array_like with shape(n,)
         Distance axis, in nanometers.
-    d : int scalar
+    d : int scalar, optional
         Derivative order, the default is 2.
+    includeedges :  boolean, optional
+        Determines whether the first and last point of the distance range are included in the derivative.
+        The default is True.
 
     Returns
     -------
@@ -45,10 +48,11 @@ def regoperator(r,d=2):
         L[i,cols] = _fdcoeffF(d,r[i],r[cols])
 
     # Introduce missing rows to account for edges of axis
-    for __ in range(int(np.ceil(d/2))):
-        L = np.concatenate([np.atleast_2d(np.append(L[0,1:],0)), L])
-    for __ in range(int(np.floor(d/2))):
-        L = np.concatenate([L, np.atleast_2d(np.insert(L[-1,:-1],0,0))])
+    if includeedges:
+        for __ in range(int(np.ceil(d/2))):
+            L = np.concatenate([np.atleast_2d(np.append(L[0,1:],0)), L])
+        for __ in range(int(np.floor(d/2))):
+            L = np.concatenate([L, np.atleast_2d(np.insert(L[-1,:-1],0,0))])
 
     return L
 
