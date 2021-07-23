@@ -36,6 +36,40 @@ def test_L2shape():
     assert L.shape==(n, n)
 #=======================================================================
 
+
+def test_L0shape_noedges():
+#=======================================================================
+    "Check that L0 is returned with correct size if edges are excluded"
+    
+    n = 100
+    r = np.linspace(2,6,n)
+    L = regoperator(r,0,includeedges=False)
+
+    assert L.shape==(n, n)
+#=======================================================================
+
+def test_L1shape_noedges():
+#=======================================================================
+    "Check that L1 is returned with correct size if edges are excluded"
+    
+    n = 100
+    r = np.linspace(2,6,n)
+    L = regoperator(r,1,includeedges=False)
+
+    assert L.shape==(n-1, n)
+#=======================================================================
+
+def test_L2shape():
+#=======================================================================
+    "Check that L2 is returned with correct size if edges are excluded"
+    
+    n = 100
+    r = np.linspace(2,6,n)
+    L = regoperator(r,2,includeedges=False)
+
+    assert L.shape==(n-2, n)
+#=======================================================================
+
 def test_edge_smoothing():
 #=======================================================================
     "Check that L applies to edges and is NxN"
