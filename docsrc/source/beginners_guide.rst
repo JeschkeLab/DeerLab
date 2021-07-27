@@ -137,7 +137,7 @@ For each of these four components, a choice needs to be made:
 
 (1) **Choose a distance range**
 
-    The distance range :math:`[r_\mathrm{min},r_\mathrm{max}]` is an important choice, as any distance distribution is truncated to this range, i.e. :math:`P(r)=0` for:math:`r<r_\mathrm{min}` and :math:`r>r_\mathrm{max}`. The lower limit of the distance range is determined by the bandwidth of the pulses, and also by the time increment. Typically, 1.5 nm is a reasonable choice. The upper limit depends on the length of the experimental time trace and on the distances in your sample. The number of points in ``r`` is usually set equal to the number of time points. Such a distance-axis is usually defined as ``r`` is most easily defined using the ``linspace`` function from NumPy: ::
+    The distance range :math:`[r_\mathrm{min},r_\mathrm{max}]` is an important choice, as any distance distribution is truncated to this range, i.e. :math:`P(r)=0` for :math:`r<r_\mathrm{min}` and :math:`r>r_\mathrm{max}`. The lower limit of the distance range is determined by the bandwidth of the pulses, and also by the time increment. Typically, 1.5 nm is a reasonable choice. The upper limit depends on the length of the experimental time trace and on the distances in your sample. The number of points in ``r`` is usually set equal to the number of time points. Such a distance-axis is usually defined as ``r`` is most easily defined using the ``linspace`` function from NumPy: ::
 
         r = np.linspace(1.5,6,len(t))  # define distance range form 1.5nm to 6nm with the same amount of points as t
 
