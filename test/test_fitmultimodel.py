@@ -3,7 +3,7 @@ import numpy as np
 from deerlab import dipolarkernel, fitmultimodel, whitegaussnoise
 from deerlab.dd_models import dd_gengauss, dd_gauss, dd_rice, dd_gauss2, dd_rice3, dd_gauss3
 from deerlab.bg_models import bg_exp
-from deerlab.utils import ovl
+from deerlab.utils import ovl, skip_on
 
 def test_multigauss():
 #=======================================================================
@@ -319,6 +319,8 @@ def test_multigauss_split():
     assert ovl(P,fit.P) > 0.95 # more than 99% overlap
 #=======================================================================
 
+
+@skip_on('_tkinter.TclError', reason="A problem with the Tk backend occured")
 def test_plot():
 # ======================================================================
     "Check that the plot method works"

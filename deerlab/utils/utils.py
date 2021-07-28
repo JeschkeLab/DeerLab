@@ -1,10 +1,11 @@
+from copy import Error
 import warnings
 import numpy as np
 import cmath as math
 import scipy as scp
 import scipy.optimize as opt
 from types import FunctionType 
-
+from functools import wraps
 
 def parse_multidatasets(V_,K,weights,precondition=False):
 #===============================================================================
@@ -106,6 +107,7 @@ def parse_multidatasets(V_,K,weights,precondition=False):
         return V,Kmulti,weights,subset
 #===============================================================================
 
+#===============================================================================
 def der_snr(V):
     """
     DER_SNR Method
@@ -124,7 +126,9 @@ def der_snr(V):
     sigma  = 1.482602/np.sqrt(6)*np.median(abs(2.0*V[2:n-2] - V[0:n-4] - V[4:n]))
     
     return sigma
+#===============================================================================
 
+#===============================================================================
 def hccm(J,*args):
     """
     Heteroscedasticity Consistent Covariance Matrix (HCCM)
@@ -498,3 +502,31 @@ def multistarts(n,x0,lb,ub):
         x0 = [x0]
     return x0
 #===============================================================================
+
+# This is only required for the developers version which install pytest automatically
+try:
+    import pytest     
+    #===============================================================================
+    def skip_on(errclass, reason="Default reason"):
+        """ 
+        Skip a unit test in Pytest if a particular exception occurs during the execution of the test.
+        Source: modified from https://stackoverflow.com/a/63522579/16396391
+        """ 
+        # Func below is the real decorator and will receive the test function as param
+        def decorator_func(f):
+            @wraps(f)
+            def wrapper(*args, **kwargs):
+                try:
+                    # Try to run the test
+                    return f(*args, **kwargs)
+                except BaseException as error:
+                    if errclass in str(type(error)):
+                        # If exception of given type happens
+                        # just swallow it and raise pytest.Skip with given reason
+                        pytest.skip(reason)
+                    else: raise Error(error)
+            return wrapper
+
+        return decorator_func
+    #===============================================================================
+except: pass
