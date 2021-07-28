@@ -2,7 +2,7 @@
 import numpy as np
 from deerlab import fitregmodel,dipolarkernel, regoperator, whitegaussnoise
 from deerlab.dd_models import dd_gauss,dd_gauss2
-from deerlab.utils import ovl
+from deerlab.utils import ovl, skip_on
 
 def assert_solver(regtype,solver):
 #============================================================
@@ -395,6 +395,7 @@ def test_globalfit_scales():
     assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
 #============================================================
 
+@skip_on('_tkinter.TclError', reason="A problem with the Tk backend occured")
 def test_plot():
 #============================================================
     "Check the plotting method"

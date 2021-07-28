@@ -7,7 +7,7 @@ from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp, bg_hom3d
 from deerlab.ex_models import ex_4pdeer, ex_5pdeer, ex_7pdeer, ex_ovl4pdeer
 import deerlab as dl
-from deerlab.utils import ovl
+from deerlab.utils import ovl, skip_on
 
 
 def assert_experiment_model(model):
@@ -611,6 +611,7 @@ def test_V_scale_regularized():
     assert isinstance(fit.scale,float) and  abs(1 - scale/fit.scale) < 1e-2
 # ======================================================================
 
+@skip_on('_tkinter.TclError', reason="A problem with the Tk backend occured")
 def test_plot():
 # ======================================================================
     "Check that the plot method works"
