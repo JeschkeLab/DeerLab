@@ -1,7 +1,7 @@
 import numpy as np
 from deerlab import dipolarkernel,dd_gauss,dd_gauss2,snlls,whitegaussnoise
 from deerlab.bg_models import bg_exp
-from deerlab.utils import ovl
+from deerlab.utils import ovl, skip_on
 
 def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
     # Prepare test data
@@ -382,6 +382,7 @@ def test_reg_huber():
     assert_reg_type(regtype='huber')
 #=======================================================================
 
+@skip_on('_tkinter.TclError', reason="A problem with the Tk backend occured")
 def test_plot():
 # ======================================================================
     "Check that the plot method works"

@@ -2,7 +2,7 @@
 import numpy as np
 from deerlab import dipolarkernel, whitegaussnoise, fitparamodel
 from deerlab.dd_models import dd_gauss, dd_rice
-
+from deerlab.utils import skip_on
 
 def test_gaussian():
 # ======================================================================
@@ -225,6 +225,7 @@ def test_globalfit_scales():
     assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
 #============================================================
 
+@skip_on('_tkinter.TclError', reason="A problem with the Tk backend occured")
 def test_plot():
 # ======================================================================
     "Check that the plot method works"
