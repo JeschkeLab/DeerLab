@@ -181,8 +181,8 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         # Full modulation if neither pathways or modulation depth are specified
         pathways = [[1, 0]]
 
-    # Ensure correct formatting of the pathways
-    paths = [np.atleast_1d(path).astype(float) for path in pathways]
+    # Ensure correct data types of the pathways and its components
+    paths = [[np.atleast_1d(p).astype(float) for p in path] for path in pathways]
     paths = [np.concatenate([np.atleast_1d(p) for p in path]).astype(float) for path in paths]
 
     # Get unmodulated pathways    
