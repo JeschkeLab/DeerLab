@@ -8,8 +8,8 @@ import scipy.optimize as opt
 import math as m
 import deerlab as dl
 
-def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
-                nonnegativity=True, noiselvl=-1, regorder=2, weights=None, full_output=False,
+def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent', noiselvl=None,
+                nonnegativity=True, regorder=2, weights=None, full_output=False,
                 huberparam=1.35, candidates=None):
     r"""
     Selection of optimal regularization parameter based on a selection criterion.
@@ -79,7 +79,7 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
         Enforces the non-negativity constraint on computed distance distributions, by default enabled.
 
     noiselvl : float scalar, optional
-        Estimate of the noise standard deviation, if not specified it is estimated form the fit residuals.
+        Estimate of the noise standard deviation, if not specified it is estimated automatically.
         Used for the MCL selection method.  
 
     huberparam : float scalar, optional
@@ -107,7 +107,7 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent',
     r = np.atleast_1d(r)
 
     # If multiple datasets are passed, concatenate the signals and kernels
-    V, K, weights,_ = dl.utils.parse_multidatasets(V, K, weights)
+    V, K, weights,_, noiselvl = dl.utils.parse_multidatasets(V, K, weights, noiselvl)
 
     # The L-curve criteria require a grid-evaluation
     if method == 'lr' or method == 'lc':
@@ -284,8 +284,6 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParame
 
     # Mallows' C_L (MCL)
     elif  selmethod == 'mcl':  
-        if noiselvl==-1:
-            noiselvl = np.std(residuals)
         f_ = Residual**2 + 2*noiselvl**2*np.trace(H) - 2*N*noiselvl**2
         
     elif selmethod == 'lr' or selmethod == 'lc':
