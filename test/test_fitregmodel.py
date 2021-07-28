@@ -338,7 +338,7 @@ def test_obir():
 #============================================================
 
 
-def test_goodnes_of_fit():
+def test_goodness_of_fit():
 #============================================================
     "Check the goodness-of-fit statistics are correct"
     
@@ -347,16 +347,37 @@ def test_goodnes_of_fit():
     r = np.linspace(2,5,300)
     P = dd_gauss(r,[4.5,0.2])
     K = dipolarkernel(t,r)
-    V = K@P + whitegaussnoise(t,0.03,seed=1)
+    sigma = 0.03
+    V = K@P + whitegaussnoise(t,sigma,seed=1,rescale=True)
 
-    fit = fitregmodel(V,K,r,'tikhonov','aic')
+    fit = fitregmodel(V,K,r,'tikhonov','aic',noiselvl=sigma)
     stats = fit.stats
 
-    assert abs(stats['chi2red'] - 1.3) < 0.1 and abs(stats['R2'] - 1) < 5e-2
+    assert abs(stats['chi2red'] - 1) < 0.05
 #============================================================
 
 
-def test_goodnes_of_fit_global():
+def test_goodness_of_fit_scaled():
+#============================================================
+    "Check the goodness-of-fit statistics are correct even with arbitrary scales"
+    
+    np.random.seed(1)
+    t = np.linspace(0,8,500)
+    r = np.linspace(2,5,300)
+    P = dd_gauss(r,[4.5,0.2])
+    K = dipolarkernel(t,r)    
+    V0 = 1e3
+    V = V0*K@P 
+    sigma = V0*0.03
+    V += whitegaussnoise(t,sigma,seed=1,rescale=True)
+
+    fit = fitregmodel(V,K,r,'tikhonov','aic',noiselvl=sigma)
+    stats = fit.stats
+
+    assert abs(stats['chi2red'] - 1) < 0.05
+#============================================================
+
+def test_goodness_of_fit_global():
 #============================================================
     "Check the goodness-of-fit statistics are correct with multiple signals"
 

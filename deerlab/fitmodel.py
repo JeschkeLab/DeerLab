@@ -15,7 +15,7 @@ from deerlab.ex_models import ex_4pdeer
 from deerlab.utils import isempty, goodness_of_fit, Jacobian
 
 def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
-              dd_par0=None, bg_par0=None, ex_par0=None, verbose=False, 
+              dd_par0=None, bg_par0=None, ex_par0=None, verbose=False, noiselvl=None,
               dd_lb=None, bg_lb=None, ex_lb=None, dd_ub=None, bg_ub=None, ex_ub=None,
               weights=None, uq='covariance', regparam='aic', tol=1e-10,maxiter=1e8):
     r"""
@@ -95,6 +95,9 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     verbose : boolean, optional
         Enable/disable printing a table of fit results, by default is disabled
+
+    noiselvl : array_like, optional
+        Noise standard deviation of the input signal(s), if not specified it is estimated automatically. 
 
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting,
@@ -495,7 +498,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Ks = [dl.dipolarkernel(ts,r) for ts in t]
         
         # Linear regularization fit
-        fit = dl.fitregmodel(Vexp,Ks,r,'tikhonov',regparam, weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter)
+        fit = dl.fitregmodel(Vexp,Ks,r,'tikhonov',regparam, weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter,noiselvl=noiselvl)
         Pfit = fit.P
         Pfit_uq = fit.Puncert
         scales = np.atleast_1d(fit.scale)
@@ -528,7 +531,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vmodel =lambda par: [K@Pfcn(par) for K in multiPathwayModel(par)[0]]
 
         # Non-linear parametric fit
-        fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter)
+        fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter,noiselvl=noiselvl)
         parfit = fit.param
         param_uq = fit.paramUncert
         scales = np.atleast_1d(fit.scale)
@@ -585,7 +588,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
 
         # Separable non-linear least squares (SNNLS) 
-        fit = dl.snlls(Vexp_,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True,
+        fit = dl.snlls(Vexp_,lambda par: multiPathwayModel(par)[0],par0,lb,ub,lbl, reg=True, noiselvl=noiselvl,
                             regparam=regparam, uq=uqanalysis, weights=weights,extrapenalty=scale_constraint,
                             nonlin_tol=tol,nonlin_maxiter=maxiter)
         parfit = fit.nonlin
@@ -687,9 +690,19 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     # Calculate goodness of fit
     # -------------------------
     stats = []
+
     for j in range(nSignals):
         Ndof = len(Vexp[j]) - len(parfit_)
-        stats.append(goodness_of_fit(Vexp[j],Vfit[j],Ndof))
+
+    if noiselvl is None:
+        for j in range(nSignals):
+            sigma = dl.noiselevel(Vexp[j])
+    else:
+        noiselvl = np.atleast_1d(noiselvl)
+        for j in range(nSignals):
+            sigma = noiselvl[j]
+    for j in range(nSignals):
+        stats.append(goodness_of_fit(Vexp[j],Vfit[j],Ndof,sigma))
 
 
     # Return fitted parameters and confidence intervals in structures

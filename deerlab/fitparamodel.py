@@ -11,7 +11,7 @@ from deerlab.classes import UQResult, FitResult
 from scipy.optimize import least_squares
 
 
-def fitparamodel(V, model, par0, lb=None, ub=None, weights=None,
+def fitparamodel(V, model, par0, lb=None, ub=None, weights=None, noiselvl=None,
                  multistart=1, tol=1e-10, maxiter=3000,
                  fitscale=True, uq=True, covmatrix=None):
     r""" Fits the dipolar signal(s) to a parametric model using non-linear least-squares.
@@ -33,6 +33,9 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=None,
     ub : array_like, optional     
         Upper bounds for the model parameters. If not specified, it is left unbounded.
     
+    noiselvl : array_like, optional
+        Noise standard deviation of the input signal(s), if not specified it is estimated automatically. 
+
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting. 
         If not specified all datasets are weighted inversely proportional to their noise levels.
@@ -141,7 +144,7 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=None,
         fit = dl.fitparamodel([V1,V2],Vmodel,par0,lb,ub)
 
     """
-    V, model, weights, Vsubsets = parse_multidatasets(V, model, weights)
+    V, model, weights, Vsubsets, noiselvl = parse_multidatasets(V, model, weights, noiselvl)
     Nsignals = len(Vsubsets)
     scales = [1]*Nsignals
 
@@ -265,10 +268,9 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=None,
 
     # Calculate goodness of fit
     stats = []
-    Vfit = model(parfit)
-    for subset in Vsubsets: 
+    for i,subset in enumerate(Vsubsets): 
         Ndof = len(V[subset]) - len(par0)
-        stats.append(goodness_of_fit(V[subset],Vfit[subset],Ndof))
+        stats.append(goodness_of_fit(V[subset],modelfit[i],Ndof,noiselvl[i]))
     if Nsignals==1: 
         stats = stats[0]
         scales = scales[0]
@@ -278,7 +280,7 @@ def fitparamodel(V, model, par0, lb=None, ub=None, weights=None,
 
     # Get plot function
     def plotfcn(show=False):
-        fig = _plot(Vsubsets,V,Vfit,show)
+        fig = _plot(Vsubsets,V,modelfit,show)
         return fig
 
     return FitResult(
@@ -293,7 +295,7 @@ def _plot(Vsubsets,V,Vfit,show):
         subset = Vsubsets[i]
         # Plot the experimental signal and fit
         axs[i].plot(V[subset],'.',color='grey',alpha=0.5)
-        axs[i].plot(Vfit[subset],'tab:blue')
+        axs[i].plot(Vfit[i],'tab:blue')
         axs[i].grid(alpha=0.3)
         axs[i].set_xlabel('Array Elements')
         axs[i].set_ylabel(f'V[{i}]')

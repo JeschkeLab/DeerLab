@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit, Jacobian
 from deerlab.classes import FitResult
 
 def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None, lbK=None, ubK=None,
-                 strategy='split', weights=None, renormalize = True, uq=True, tol=1e-9, maxiter=1e8):
+                 strategy='split', weights=None, renormalize = True, uq=True, tol=1e-9, maxiter=1e8, noiselvl=None):
     r""" 
     Fits a multi-model parametric distance distribution model to a dipolar signal using separable 
     non-linear least-squares (SNLLS).
@@ -71,6 +71,9 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
                       the components obtained from the N+1 component fit. The number of components are changed in a backward matter, i.e. N,N-1,...,1.
         
         The default is ``'split'``. 
+
+    noiselvl : array_like, optional
+        Noise standard deviation of the input signal(s), if not specified it is estimated automatically. 
 
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting. 
@@ -196,7 +199,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     r = np.atleast_1d(r)
     
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
-    V, Kmodel, weights, Vsubsets, prescales = dl.utils.parse_multidatasets(V, Kmodel, weights,precondition=True)
+    V, Kmodel, weights, Vsubsets, noiselvl, prescales = dl.utils.parse_multidatasets(V, Kmodel, weights, noiselvl, precondition=True)
 
     # Check kernel model
     if type(Kmodel) is FunctionType:
@@ -426,7 +429,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         
         # Separable non-linear least-squares (SNLLS) fit
         upscale = 1e2
-        fit = dl.snlls(V*upscale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, 
+        fit = dl.snlls(V*upscale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, noiselvl=noiselvl,
                         weights=weights, reg=False, nonlin_tol=tol, nonlin_maxiter=maxiter)
         pnonlin = fit.nonlin
         plin = fit.lin
@@ -522,6 +525,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     modelfit, modelfituq = [],[]
     for i,subset in enumerate(Vsubsets): 
         V[subset] = V[subset]*prescales[i]
+        noiselvl[i] = noiselvl[i]*prescales[i] 
         modelfit.append(  scales[i]*fit.model[subset] )
         if uq: 
             modelfituq.append( fit.modelUncert.propagate(lambda V: scales[i]*V[subset]) )
@@ -532,7 +536,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     stats = []
     for i,subset in enumerate(Vsubsets): 
         Ndof = len(V[subset]) - (nKparam + nparam + Nopt)
-        stats.append(goodness_of_fit(V[subset],modelfit[i],Ndof))
+        stats.append(goodness_of_fit(V[subset],modelfit[i],Ndof,noiselvl[i]))
 
     # Results display function
     def plotfcn(show=True):

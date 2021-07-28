@@ -17,7 +17,7 @@ from deerlab.classes import UQResult, FitResult
 
 def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=None,
           regtype='tikhonov', regparam='aic', multistart=1, regorder=2, alphareopt=1e-3, extrapenalty=None,
-          nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, huberparam=1.35,
+          nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, huberparam=1.35, noiselvl=None,
           uq=True):
     r""" Separable Non-linear Least Squares Solver
 
@@ -105,6 +105,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         * ``'nnlsbpp'`` - Optimization using the block principal pivoting NNLS algorithm.
         
         The default is ``'cvx'``.
+
+    noiselvl : array_like, optional
+        Noise standard deviation of the input signal(s), if not specified it is estimated automatically. 
 
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting.
@@ -211,8 +214,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     par0 = np.atleast_1d(par0)
 
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
-    y, Amodel, weights, subsets, prescales = dl.utils.parse_multidatasets(y, Amodel, weights, precondition=True)
-
+    y, Amodel, weights, subsets, noiselvl, prescales = dl.utils.parse_multidatasets(y, Amodel, weights, noiselvl, precondition=True)
+    
     # Get info on the problem parameters and non-linear operator
     A0 = Amodel(par0)
     Nnonlin = len(par0)
@@ -498,9 +501,9 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     # Goodness-of-fit
     # ---------------
     stats = []
-    for subset in subsets:
+    for n,subset in enumerate(subsets):
         Ndof = len(y[subset]) - Nnonlin
-        stats.append(goodness_of_fit(y[subset], yfit[subset], Ndof))
+        stats.append(goodness_of_fit(y[subset], yfit[subset], Ndof, noiselvl[n]))
     if len(stats) == 1: 
         stats = stats[0]
         fvals = fvals[0]

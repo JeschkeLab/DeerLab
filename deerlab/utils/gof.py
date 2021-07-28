@@ -6,7 +6,7 @@
 import numpy as np
 import deerlab as dl
 
-def goodness_of_fit(x,xfit,Ndof,sigma='auto'):
+def goodness_of_fit(x,xfit,Ndof,noiselvl):
     r""" 
     Goodness of Fit statistics
     ==========================
@@ -25,7 +25,7 @@ def goodness_of_fit(x,xfit,Ndof,sigma='auto'):
         Fit
     Ndog (scalar, int)
         Number of degrees of freedom
-    sigma (scalar, optional)
+    noiselvl (scalar)
         Standard dexiation of the noise in x.
 
     Returns:
@@ -40,8 +40,7 @@ def goodness_of_fit(x,xfit,Ndof,sigma='auto'):
             stats['bic'] - Bayesian information criterion
 
     """
-    if sigma=='auto':
-        sigma = dl.noiselevel(x,'der')
+    sigma = noiselvl
 
     # Get number of xariables
     N = len(x)
