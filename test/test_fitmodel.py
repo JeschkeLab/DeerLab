@@ -864,3 +864,38 @@ def test_global_weights_param():
 
     assert ovl(P1,fit1.P) > 0.95 and ovl(P2,fit2.P) > 0.95
 # ======================================================================
+
+def test_goodness_of_fit():
+# ======================================================================
+    "Check the goodness-of-fit statistics are correct"
+
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,150)
+    P = dd_gauss(r,[4.5, 0.2])
+    Bmodel = lambda t: bg_exp(t,0.4)
+    K = dipolarkernel(t,r,mod=0.3,bg=Bmodel)
+    sigma = 0.03
+    V = K@P + whitegaussnoise(t,sigma,seed=1,rescale=True)
+
+    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,uq=None, noiselvl=sigma)
+    
+    assert abs(fit.stats['chi2red'] - 1) < 0.05
+# ======================================================================
+
+def test_goodness_of_fit_scaled():
+# ======================================================================
+    "Check the goodness-of-fit statistics are correct even with arbitrary scaling"
+
+    t = np.linspace(0,5,100)
+    r = np.linspace(2,6,150)
+    P = dd_gauss(r,[4.5, 0.2])
+    Bmodel = lambda t: bg_exp(t,0.4)
+    K = dipolarkernel(t,r,mod=0.3,bg=Bmodel)
+    V0 =1e6
+    sigma = V0*0.03
+    V = V0*(K@P) + whitegaussnoise(t,sigma,seed=1,rescale=True)
+
+    fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,uq=None, noiselvl=sigma)
+    
+    assert abs(fit.stats['chi2red'] - 1) < 0.05
+# ======================================================================

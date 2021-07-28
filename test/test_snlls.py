@@ -314,13 +314,14 @@ def test_goodness_of_fit():
     "Check the goodness-of-fit statistics are correct"
         
     # Prepare test data
-    r = np.linspace(1,8,80)
-    t = np.linspace(0,4,200)
+    r = np.linspace(2,5,150)
+    t = np.linspace(-0.2,4,100)
     lam = 0.25
     K = dipolarkernel(t,r,mod=lam)
     parin = [3.5, 0.15, 0.6, 4.5, 0.2, 0.4]
     P = dd_gauss2(r,parin)
-    V = K@P + whitegaussnoise(t,0.01,seed=1)
+    sigma = 0.03
+    V = K@P + whitegaussnoise(t,sigma,seed=2,rescale=True)
 
     # Non-linear parameters
     # nlpar = [lam]
@@ -331,11 +332,45 @@ def test_goodness_of_fit():
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl, uq=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl, noiselvl=sigma, uq=False)
     stats = fit.stats
 
-    assert abs(stats['chi2red'] - 1) < 0.1 and abs(stats['R2'] - 1) < 5e-2
+    assert abs(stats['chi2red'] - 1) < 0.05
 #============================================================
+
+
+def test_goodness_of_fit_scaled():
+#============================================================
+    "Check the goodness-of-fit statistics are correct even with arbitrary scaling"
+        
+    # Prepare test data
+    r = np.linspace(2,5,150)
+    t = np.linspace(-0.2,4,300)
+    lam = 0.25
+    K = dipolarkernel(t,r,mod=lam)
+    parin = [3.5, 0.15, 0.6, 4.5, 0.2, 0.4]
+    P = dd_gauss2(r,parin)
+    V0 = 1e3
+    V = V0*K@P 
+    sigma = V0*0.03
+    V += whitegaussnoise(t,sigma,seed=1,rescale=True)
+
+    # Non-linear parameters
+    # nlpar = [lam]
+    nlpar0 = 0.2
+    lb = 0
+    ub = 1
+    # Linear parameters: non-negativity
+    lbl = np.zeros(len(r))
+    ubl = []
+
+    # Separable LSQ fit
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl, noiselvl=sigma, uq=False)
+    stats = fit.stats
+
+    assert abs(stats['chi2red'] - 1) < 0.05
+#============================================================
+
 
 def assert_reg_type(regtype):    
     # Prepare test data

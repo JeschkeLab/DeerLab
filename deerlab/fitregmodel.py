@@ -12,7 +12,7 @@ from deerlab.utils import hccm, goodness_of_fit
 from deerlab.classes import UQResult, FitResult
 
 def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver='cvx', 
-                weights=None, huberparam=1.35, nonnegativity=True, obir=False,
+                weights=None, huberparam=1.35, nonnegativity=True, obir=False, noiselvl=None,
                 uq=True, renormalize=True, noiselevelaim=None, tol=None, maxiter=None):
     r"""
     Fits a non-parametric distance distribution to one (or several) signals using regularization aproaches 
@@ -59,6 +59,9 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
         The regularization parameter can be manually specified by passing a scalar value instead of a string.
         The default ``'aic'``.
     
+    noiselvl : array_like, optional
+        Noise standard deviation of the input signal(s), if not specified it is estimated automatically. 
+
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting. 
         If not specified all datasets are weighted inversely proportional to their noise levels.
@@ -151,7 +154,7 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
 
     """
     # Prepare signals, kernels and weights if multiple are passed
-    V, K, weights, subsets = dl.utils.parse_multidatasets(V, K, weights, precondition=False)
+    V, K, weights, subsets, noiselvl = dl.utils.parse_multidatasets(V, K, weights, noiselvl, precondition=False)
 
     if len(subsets)>1:
         prescales = [max(V[subset]) for subset in subsets]
@@ -164,7 +167,7 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
 
     # Determine an optimal value of the regularization parameter if requested
     if type(regparam) is str:
-        alpha = dl.selregparam(V,K,r,regtype,regparam,regorder=regorder,weights=weights, nonnegativity=nonnegativity,huberparam=huberparam)
+        alpha = dl.selregparam(V,K,r,regtype,regparam,regorder=regorder,weights=weights, noiselvl=noiselvl, nonnegativity=nonnegativity, huberparam=huberparam)
     else:
         alpha = regparam
 
@@ -255,7 +258,7 @@ def fitregmodel(V, K, r, regtype='tikhonov', regparam='aic', regorder=2, solver=
     stats = []
     for subset in subsets: 
         Ndof = len(V[subset]) - np.trace(H)
-        stats.append(goodness_of_fit(V[subset],Vfit[subset],Ndof))
+        stats.append(goodness_of_fit(V[subset],Vfit[subset],Ndof, noiselvl))
 
 
     # Signal amplitude scales

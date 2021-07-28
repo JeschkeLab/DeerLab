@@ -342,3 +342,42 @@ def test_global_weights_default():
 
     assert all(abs(fit.param/param-1) < 0.03)
 # ======================================================================
+
+def test_goodness_of_fit():
+# ======================================================================
+    "Check the goodness-of-fit statistics are correct even with arbitrary scaling"
+        
+    t = np.linspace(0,3,300)
+    r = np.linspace(2,5,200)
+    par = np.array([3,0.2])
+    P = dd_gauss(r,par)
+    K = dipolarkernel(t,r)
+    sigma = 0.03
+    V = K@P + whitegaussnoise(t,sigma,seed=1,rescale=True)
+
+    par0 = [5, 0.5]
+    model = lambda p: K@dd_gauss(r,p)
+    fit = fitparamodel(V, model, par0, lb=[1, 0.1], ub=[20, 1], noiselvl=sigma)
+    
+    assert abs(fit.stats['chi2red'] - 1) < 0.05
+# ======================================================================
+
+def test_goodness_of_fit_scaled():
+# ======================================================================
+    "Check the goodness-of-fit statistics are correct even with arbitrary scaling"
+        
+    t = np.linspace(0,3,300)
+    r = np.linspace(2,5,200)
+    par = np.array([3,0.2])
+    P = dd_gauss(r,par)
+    K = dipolarkernel(t,r)
+    V0 = 1e5
+    sigma = V0*0.03
+    V = V0*K@P + whitegaussnoise(t,sigma,seed=1,rescale=True)
+
+    par0 = [5, 0.5]
+    model = lambda p: K@dd_gauss(r,p)
+    fit = fitparamodel(V, model, par0, lb=[1, 0.1], ub=[20, 1], noiselvl=sigma)
+    
+    assert abs(fit.stats['chi2red'] - 1) < 0.05
+# ======================================================================

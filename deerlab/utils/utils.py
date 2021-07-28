@@ -1,13 +1,12 @@
 from copy import Error
 import warnings
 import numpy as np
-import cmath as math
 import scipy as scp
 import scipy.optimize as opt
 from types import FunctionType 
 from functools import wraps
 
-def parse_multidatasets(V_,K,weights,precondition=False):
+def parse_multidatasets(V_, K, weights, noiselvl, precondition=False):
 #===============================================================================
     
     # Make copies to avoid modifying the originals
@@ -17,9 +16,9 @@ def parse_multidatasets(V_,K,weights,precondition=False):
         if V.size == np.atleast_1d(weights).size:
             # If so, just return without doing anything
             if precondition:
-                return V,K,weights,[np.arange(0,len(V))],[1]
+                return V,K,weights,[np.arange(0,len(V))],noiselvl,[1]
             else:
-                return V,K,weights,[np.arange(0,len(V))]
+                return V,K,weights,[np.arange(0,len(V))],noiselvl
 
     Vlist = []
     # If multiple signals are specified as a list...
@@ -32,20 +31,29 @@ def parse_multidatasets(V_,K,weights,precondition=False):
     else:
         raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
     
-    prescales = np.zeros(nSignals)
-    sigmas = np.zeros(nSignals)
     # Pre-scale the signals, important when using global fits with arbitrary scales
+    prescales = np.ones(nSignals)
     for i in range(nSignals):
         if precondition:
             prescales[i] = max(V[i])
             Vlist.append(V[i]/prescales[i])
         else:
             Vlist.append(V[i])
-        sigmas[i] = der_snr(Vlist[i])
+
+    # Noise level estimation/parsing
+    sigmas = np.zeros(nSignals)
+    if noiselvl is None:
+        for i in range(nSignals):
+            sigmas[i] = der_snr(Vlist[i])
+    else: 
+        noiselvl = np.atleast_1d(noiselvl)
+        if len(noiselvl)!=nSignals: 
+            raise IndexError('The number of specified noise levels does not match the number of signals.')
+        sigmas = noiselvl/prescales
+
     V = np.concatenate(Vlist, axis=0) # ...concatenate them along the list 
 
-    
-
+    # -----------------------------------------------------------------
     def prepareKernel(K,nSignals):
         # If multiple kernels are specified as a list...
         if type(K) is tuple:
@@ -61,7 +69,7 @@ def parse_multidatasets(V_,K,weights,precondition=False):
         if nSignals!=nKernels:
             raise KeyError('The same number of kernels and signals must be specified as lists.')
         return K
-
+    # -----------------------------------------------------------------
     if type(K) is FunctionType:
         Kmulti = lambda p: prepareKernel(K(p),nSignals)
     else:
@@ -100,11 +108,11 @@ def parse_multidatasets(V_,K,weights,precondition=False):
         else:
             prev = subset[i-1][-1]+1
         subset[i] = np.arange(prev,prev+Ns[i])
-
+        
     if precondition:
-        return V,Kmulti,weights,subset,prescales
+        return V, Kmulti, weights, subset, sigmas, prescales
     else:
-        return V,Kmulti,weights,subset
+        return V, Kmulti, weights, subset, sigmas
 #===============================================================================
 
 #===============================================================================

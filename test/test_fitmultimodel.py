@@ -247,8 +247,6 @@ def test_confinter_parfit():
     assert_confidence_intervals(paruq.ci(50)[0:2,:],paruq.ci(95)[0:2,:],parfit,lbPpar,ubPpar)
 #=======================================================================
 
-
-
 def test_goodness_of_fit():
 #=======================================================================
     "Check the goodness-of-fit statistics are correct" 
@@ -256,13 +254,32 @@ def test_goodness_of_fit():
     r = np.linspace(2,6,300)
     t = np.linspace(-0.5,6,500)
     K = dipolarkernel(t,r)
+    parin = [4, 0.1]
+    P = dd_gauss(r,parin)
+    sigma = 0.03
+    V = K@P + whitegaussnoise(t,sigma,seed=1,rescale=True)
+
+    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc', noiselvl=sigma, uq=False)
+    stats= fit.stats
+    assert abs(stats['chi2red'] - 1) < 0.05
+#=======================================================================
+
+def test_goodness_of_fit_scaled():
+#=======================================================================
+    "Check the goodness-of-fit statistics are correct even with arbitrary scale" 
+        
+    r = np.linspace(2,6,300)
+    t = np.linspace(-0.5,6,500)
+    K = dipolarkernel(t,r)
     parin = [4, 0.05, 0.4, 4, 0.4, 0.4, 3, 0.15, 0.2]
     P = dd_gauss3(r,parin)
-    V = K@P + whitegaussnoise(t,0.01,seed=1)
+    V0 = 1e3
+    sigma = V0*0.03
+    V = V0*K@P + whitegaussnoise(t,sigma,seed=1)
 
-    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc', uq=False)
+    fit = fitmultimodel(V,K,r,dd_gauss,3,'aicc', noiselvl=sigma, uq=False)
     stats= fit.stats
-    assert abs(stats['chi2red'] - 1) < 0.3 and abs(stats['R2'] - 1) < 5e-2
+    assert abs(stats['chi2red'] - 1) < 0.05 
 #=======================================================================
 
 
