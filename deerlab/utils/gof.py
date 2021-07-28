@@ -5,6 +5,7 @@
 
 import numpy as np
 import deerlab as dl
+import warnings
 
 def goodness_of_fit(x,xfit,Ndof,sigma='auto'):
     r""" 
@@ -52,7 +53,10 @@ def goodness_of_fit(x,xfit,Ndof,sigma='auto'):
     chi2red = 1/Ndof*np.linalg.norm(x - xfit)**2/sigma**2
 
     # R-squared test
-    R2 = 1 - np.sum((x-xfit)**2)/np.sum((xfit-np.mean(xfit))**2)
+    with warnings.catch_warnings():
+        # Ignore divide by zero warning when all xfit are zero
+        warnings.filterwarnings("ignore", category=RuntimeWarning)
+        R2 = 1 - np.sum((x-xfit)**2)/np.sum((xfit-np.mean(xfit))**2)
 
     # Root-mean square dexiation
     rmsd = np.sqrt(np.sum((x-xfit)**2)/N)
