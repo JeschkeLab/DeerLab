@@ -59,7 +59,7 @@ def test_L1shape_noedges():
     assert L.shape==(n-1, n)
 #=======================================================================
 
-def test_L2shape():
+def test_L2shape_noedges():
 #=======================================================================
     "Check that L2 is returned with correct size if edges are excluded"
     
