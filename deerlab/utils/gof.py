@@ -5,6 +5,7 @@
 
 import numpy as np
 import deerlab as dl
+import warnings
 
 def goodness_of_fit(x,xfit,Ndof,noiselvl):
     r""" 

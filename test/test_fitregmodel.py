@@ -503,8 +503,8 @@ def test_global_weights():
     V1 = K@P1 + whitegaussnoise(t,0.01,seed=1)
     V2 = K@P2 + whitegaussnoise(t,0.01,seed=1)
 
-    fit1 = fitregmodel([V1,V2],[K,K],r,weights=[1,0])
-    fit2 = fitregmodel([V1,V2],[K,K],r,weights=[0,1])
+    fit1 = fitregmodel([V1,V2],[K,K],r,weights=[1,1e-10])
+    fit2 = fitregmodel([V1,V2],[K,K],r,weights=[1e-10,1])
 
     assert ovl(P1,fit1.P) > 0.95 and ovl(P2,fit2.P) > 0.95
 # ======================================================================

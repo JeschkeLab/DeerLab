@@ -548,8 +548,8 @@ def test_global_weights():
     V2 = scales[1]*V2
 
     Kmodel= lambda lam: [dipolarkernel(t,r,mod=lam)]*2
-    fit1 = snlls([V1,V2],Kmodel,par0=[0.2],lb=0,ub=1,lbl=np.zeros_like(r),weights=[1,0])
-    fit2 = snlls([V1,V2],Kmodel,par0=[0.2],lb=0,ub=1,lbl=np.zeros_like(r),weights=[0,1])
+    fit1 = snlls([V1,V2],Kmodel,par0=[0.2],lb=0,ub=1,lbl=np.zeros_like(r),weights=[1,1e-10])
+    fit2 = snlls([V1,V2],Kmodel,par0=[0.2],lb=0,ub=1,lbl=np.zeros_like(r),weights=[1e-10,1])
 
     assert ovl(P1,fit1.lin) > 0.95 and ovl(P2,fit2.lin) > 0.95
 # ======================================================================
