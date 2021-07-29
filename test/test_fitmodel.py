@@ -829,9 +829,8 @@ def test_global_weights():
     V1 = scales[0]*V1
     V2 = scales[1]*V2
 
-    Kmodel= lambda lam: [dl.dipolarkernel(t,r,mod=lam)]*2
-    fit1 = dl.fitmodel([V1,V2],[t,t],r,'P',None,dl.ex_4pdeer,weights=[1,0])
-    fit2 = dl.fitmodel([V1,V2],[t,t],r,'P',None,dl.ex_4pdeer,weights=[0,1])
+    fit1 = dl.fitmodel([V1,V2],[t,t],r,'P',None,dl.ex_4pdeer,weights=[1,1e-10],uq=None)
+    fit2 = dl.fitmodel([V1,V2],[t,t],r,'P',None,dl.ex_4pdeer,weights=[1e-10,1],uq=None)
 
     assert ovl(P1,fit1.P) > 0.95 and ovl(P2,fit2.P) > 0.95
 # ======================================================================
@@ -858,9 +857,8 @@ def test_global_weights_param():
     V1 = scales[0]*V1
     V2 = scales[1]*V2
 
-    Kmodel= lambda lam: [dl.dipolarkernel(t,r,mod=lam)]*2
-    fit1 = dl.fitmodel([V1,V2],[t,t],r,dd_gauss,None,dl.ex_4pdeer,weights=[1,0])
-    fit2 = dl.fitmodel([V1,V2],[t,t],r,dd_gauss,None,dl.ex_4pdeer,weights=[0,1])
+    fit1 = dl.fitmodel([V1,V2],[t,t],r,dd_gauss,None,dl.ex_4pdeer,weights=[1,1e-10],uq=None)
+    fit2 = dl.fitmodel([V1,V2],[t,t],r,dd_gauss,None,dl.ex_4pdeer,weights=[1e-10,1],uq=None)
 
     assert ovl(P1,fit1.P) > 0.95 and ovl(P2,fit2.P) > 0.95
 # ======================================================================

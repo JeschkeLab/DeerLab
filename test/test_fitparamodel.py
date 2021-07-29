@@ -314,8 +314,8 @@ def test_global_weights():
     lb = [1, 0.1]
     ub = [20, 1]
     model = lambda p: [K@dd_gauss(r,p)]*2
-    fit1 = fitparamodel([V1,V2],model,par0,lb,ub,weights=[1,0])
-    fit2 = fitparamodel([V1,V2],model,par0,lb,ub,weights=[0,1])
+    fit1 = fitparamodel([V1,V2],model,par0,lb,ub,weights=[1,1e-10])
+    fit2 = fitparamodel([V1,V2],model,par0,lb,ub,weights=[1e-10,1])
 
     assert all(abs(fit1.param/param1-1) < 0.03) and all(abs(fit2.param/param2-1) < 0.03)
 # ======================================================================
