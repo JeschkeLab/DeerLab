@@ -148,7 +148,7 @@ Notes
 
 **Model:**
 
-:math:`P(r) = \sqrt{\frac{2}{\pi}}\frac{1}{\sigma}\exp\left(-\frac{(r-\left<r\right>)^2}{\sigma^2}\right)`
+:math:`P(r) = \frac{1}{\sigma\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r\right>)^2}{2\sigma^2}\right)`
 
 ==============  ========================  =============  =============  =============  ===========================
 Variable        Symbol                    Start value    Lower bound    Upper bound    Description
@@ -184,7 +184,7 @@ Notes
 
 **Model:**
 
-:math:`P(r) = a_1\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_1}\exp\left(-\frac{(r-\left<r_1\right>)^2}{\sigma_1^2}\right) + a_2\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_2}\exp\left(-\frac{(r-\left<r_2\right>)^2}{\sigma_2^2}\right)`
+:math:`P(r) = a_1\frac{1}{\sigma_1\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_1\right>)^2}{2\sigma_1^2}\right) + a_2\frac{1}{\sigma_2\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_2\right>)^2}{2\sigma_2^2}\right)`
 
 
 ============== ========================= ============= ============= ============= ======================================
@@ -226,7 +226,7 @@ Notes
 
 **Model:**
 
-:math:`P(r) = a_1\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_1}\exp\left(-\frac{(r-\left<r_1\right>)^2}{\sigma_1^2}\right) + a_2\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_2}\exp\left(-\frac{(r-\left<r_2\right>)^2}{\sigma_2^2}\right) + a_3\sqrt{\frac{2}{\pi}}\frac{1}{\sigma_3}\exp\left(-\frac{(r-\left<r_3\right>)^2}{\sigma_3^2}\right)`
+:math:`P(r) = a_1\frac{1}{\sigma_1\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_1\right>)^2}{2\sigma_1^2}\right) + a_2\frac{1}{\sigma_2\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_2\right>)^2}{2\sigma_2^2}\right) + a_3\frac{1}{\sigma_3\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_3\right>)^2}{2\sigma_3^2}\right)`
 
 ============== ========================== ============= ============= ============= =======================================
 Variable         Symbol                   Start Value   Lower bound   Upper bound      Description
@@ -312,7 +312,7 @@ Notes
 .. image:: ../images/model_scheme_dd_skewgauss.png
     :width: 650px
 
-:math:`P(r) = \sqrt{\frac{2}{\pi}}\frac{1}{\sigma}\exp\left(-\frac{(r-\left<r\right>)^2}{\sqrt(2)\sigma^2}\right)\frac{1}{2}\left(1 + erf\left(\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
+:math:`P(r) = \frac{1}{\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r\right>)^2}{\sqrt(2)\sigma^2}\right)\frac{1}{2}\left(1 + \mathrm{erf}\left(\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
 
 ============== ============== ============= ============= ============= =========================
 Variable         Symbol       Start Value   Lower bound   Upper bound      Description
