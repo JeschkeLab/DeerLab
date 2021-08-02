@@ -1,8 +1,8 @@
 
 import numpy as np
-from deerlab import dipolarkernel, whitegaussnoise, fitparamodel, bootan
+from deerlab import dipolarkernel, whitegaussnoise, nlls, bootan
 from deerlab.dd_models import dd_gauss
-
+from deerlab.utils import assert_docstring
 
 def test_basics():
 # ======================================================================
@@ -16,12 +16,12 @@ def test_basics():
 
     par0 = [3, 0.5]
     Vmodel = lambda par: K@dd_gauss(r,par)
-    fit = fitparamodel(Vexp,Vmodel,par0)
+    fit = nlls(Vexp,Vmodel,par0)
     Vfit = Vmodel(fit.param)
 
 
     def bootfcn(V):
-        fit = fitparamodel(V,Vmodel,par0)
+        fit = nlls(V,Vmodel,par0)
         return fit.param
 
     paruq = bootan(bootfcn,Vexp,Vfit,10)
@@ -42,12 +42,12 @@ def test_resampling():
 
     par0 = [3, 0.5]
     Vmodel = lambda par: K@dd_gauss(r,par)
-    fit = fitparamodel(Vexp,Vmodel,par0)
+    fit = nlls(Vexp,Vmodel,par0)
     Vfit = Vmodel(fit.param)
 
 
     def bootfcn(V):
-        fit = fitparamodel(V,Vmodel,par0)
+        fit = nlls(V,Vmodel,par0)
         return fit.param
 
     paruq1 = bootan(bootfcn,Vexp,Vfit,5,resampling='residual')
@@ -70,12 +70,12 @@ def test_multiple_ouputs():
 
     par0 = [3, 0.5]
     Vmodel = lambda par: K@dd_gauss(r,par)
-    fit = fitparamodel(Vexp,Vmodel,par0)
+    fit = nlls(Vexp,Vmodel,par0)
     Vfit = Vmodel(fit.param)
 
 
     def bootfcn(V):
-        fit = fitparamodel(V,Vmodel,par0)
+        fit = nlls(V,Vmodel,par0)
         Pfit = dd_gauss(r,fit.param)
         return fit.param, Pfit
 
@@ -106,11 +106,11 @@ def test_multiple_datasets():
         return [V1,V2]
 
     par0 = [3, 0.5]
-    fit = fitparamodel([Vexp1,Vexp2],Vmodel,par0)
+    fit = nlls([Vexp1,Vexp2],Vmodel,par0)
     Vfit1,Vfit2 = Vmodel(fit.param)
 
     def bootfcn(V):
-        fit = fitparamodel(V,Vmodel,par0)
+        fit = nlls(V,Vmodel,par0)
         return fit.param
 
     paruq = bootan(bootfcn,[Vexp1,Vexp2],[Vfit1,Vfit2],5)
@@ -130,11 +130,11 @@ def test_parallelization():
 
     par0 = [3, 0.5]
     Vmodel = lambda par: K@dd_gauss(r,par)
-    fit = fitparamodel(Vexp,Vmodel,par0)
+    fit = nlls(Vexp,Vmodel,par0)
     Vfit = Vmodel(fit.param)
 
     def bootfcn(V):
-        fit = fitparamodel(V,Vmodel,par0)
+        fit = nlls(V,Vmodel,par0)
         return fit.param
 
     paruq = bootan(bootfcn,Vexp,Vfit,10,cores=-1)
@@ -142,3 +142,8 @@ def test_parallelization():
     assert all(abs(paruq.mean - fit.param) < 1.5e-2)
 # ======================================================================
 
+# ======================================================================
+def test_docstring():
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(bootan)
+# ======================================================================

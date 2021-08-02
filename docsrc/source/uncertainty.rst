@@ -70,10 +70,10 @@ Uncertainty Propagation
     The ``UQResult.propagate`` method provides a simple interface for propagation uncertainty to dependent models or functions. The method just takes as input the function or model to which you 
     want to propagate the uncertainty. Additionally if the model has some boundaries (e.g. a distance distribution with non-negative values) you can specify the lower and upper bounds as additional inputs. 
     
-    For example, if you fitted a Gaussian distribution with ``fitparamodel`` and obtained the uncertainty quantification for its parameters ::
+    For example, if you fitted a Gaussian distribution with ``nlls`` and obtained the uncertainty quantification for its parameters ::
 
         model  = lambda p: K@dl.dd_gauss(r,p) # Parametric model depending on p=[rmean,sigma] 
-        fit = dl.fitparamodel(V,model) # Fit dipolar signal with parametric model 
+        fit = dl.nlls(V,model) # Fit dipolar signal with parametric model 
         Pfit = dl.dd_gauss(r,fit.param) # Fitted distance distribution
 
         paramuq = fit.paramuq # Uncertainty quantification for fitted parameters
@@ -122,14 +122,14 @@ For routine analysis, the function ``fitmodel`` provides the option to switch fr
 
 However, in DeerLab you can calculate bootstrap uncertainty estimates of any quantities using the :ref:`bootan` function. The function takes the experimental data, the fit, and the analysis function. This analysis 
 function must be a function that takes the experimental data and returns the quantities whose uncertainties are to be calculated. For example, to bootstrap the distance distribution, dipolar signal, and 
-regularization parameter obtained from a 4-pulse DEER fit using ``fitregmodel`` you could use the following ::
+regularization parameter obtained from a 4-pulse DEER fit using ``rlls`` you could use the following ::
 
-    fit = dl.fitregmodel(Vexp,K,r,'tikh','aic')
+    fit = dl.rlls(Vexp,K,r,'tikh','aic')
     Vfit = K@fit.P # Fitted signal
     
     # Define the function to be bootstrapped
     def fitfcn(Vexp):
-        fit = dl.fitregmodel(Vexp,K,r,'tikh','aic')
+        fit = dl.rlls(Vexp,K,r,'tikh','aic')
         V = K@fit.P
         return fit.P, V, fit.regparam  # bootstrap the fitted distance distribution, dipolar signal and regularization parameter
 

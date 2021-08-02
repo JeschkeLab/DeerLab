@@ -1,6 +1,6 @@
 import numpy as np
 from deerlab import fftspec
-
+from deerlab.utils import assert_docstring
 
 def test_basic():
 # ======================================================================
@@ -28,4 +28,10 @@ def test_modes():
     _,specIm = fftspec(S,t,mode='imag')
 
     assert max(np.abs(np.sqrt(specRe**2 + specIm**2) - specAbs)) < 1e-10
+# ======================================================================
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(fftspec)
 # ======================================================================

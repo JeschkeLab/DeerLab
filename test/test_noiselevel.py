@@ -2,7 +2,7 @@ import numpy as np
 from deerlab import noiselevel, whitegaussnoise, dipolarkernel
 from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp
-
+from deerlab.utils import assert_docstring
 
 def test_filtered_movmean():
 #============================================================
@@ -111,7 +111,6 @@ def test_multiscan():
     assert abs(sigma - sigma_ref) < 1e-2
 #============================================================
 
-
 def test_complex():
 #============================================================
     "Check estimation of noiselevel using a complex signal"
@@ -134,3 +133,9 @@ def test_complex():
 
     assert abs(truelevel - approxlevel) < 1e-2
 #============================================================
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(noiselevel)
+# ======================================================================

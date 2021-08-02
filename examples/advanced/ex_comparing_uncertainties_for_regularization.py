@@ -34,13 +34,16 @@ V = K@P + dl.whitegaussnoise(t,0.01)    # signal with added noise
 # -------------------------------------
 #
 # Fit a Tikhonov model to the data, using AIC to select the regularization parameter
-fit = dl.fitregmodel(V,K,r,'tikhonov','aic')
-Pfit = fit.P        # fitted distribution
-Vfit = fit.V        # fitted DEER trace
+fit = dl.rlls(V,K,regparam='aic')
+
+Pfit = fit.param        # fitted distribution
+Vfit = fit.model        # fitted DEER trace
+normfactor = np.trapz(Pfit,r)
+Pfit = Pfit/normfactor
 
 # curvature matrix confidence intervals for distribution
-Pci95_cm = fit.Puncert.ci(95)
-Pci50_cm = fit.Puncert.ci(50)
+Pci95_cm = fit.paramUncert.ci(95)/normfactor
+Pci50_cm = fit.paramUncert.ci(50)/normfactor
 
 # %% [markdown]
 # Bootstrapped confidence intervals
@@ -51,8 +54,11 @@ Pci50_cm = fit.Puncert.ci(50)
 # the outputs of interest (``Pfit`` in our example).
 
 def mybootfcn(V):
-    fit = dl.fitregmodel(V,K,r,'tikhonov','aic')
-    return fit.P
+    fit = dl.rlls(V,K,regparam='aic')
+    Pfit = fit.param
+    Pfit = Pfit/np.trapz(Pfit,r)
+    return Pfit
+
 
 # Launch bootstrapping
 Nsamples = 100

@@ -68,7 +68,7 @@ def Bmodel(par):
 par0 = [0.5,   0.5, 3]
 lb   = [0.1,    0,  1]
 ub   = [1,      5,  6]
-fit = dl.fitparamodel(V[mask],Bmodel,par0,lb,ub,fitscale=False)
+fit = dl.nlls(V[mask],Bmodel,par0,lb,ub,fitscale=False)
 
 lamfit,kappa,d = fit.param
 Bfit = dl.bg_strexp(t,[kappa,d])
@@ -78,8 +78,9 @@ Vcorr = (V/Bfit - 1 + lamfit)/lamfit
 
 # Tikhonov regularization using the L-curve criterion
 K = dl.dipolarkernel(t,r)
-fit = dl.fitregmodel(Vcorr,K,r,'tikhonov','lr',)
-Pfit = fit.P
+fit = dl.rlls(Vcorr,K,regparam='lr',)
+Pfit = fit.param
+Pfit = Pfit/np.trapz(Pfit,r)
 
 # %% [markdown]
 # Plots

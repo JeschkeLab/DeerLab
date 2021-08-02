@@ -4,6 +4,7 @@ from numpy import pi, inf, NaN
 from deerlab.bg_models import bg_hom3d,bg_exp
 from deerlab.dd_models import dd_gauss
 from deerlab.dipolarkernel import dipolarkernel,elementarykernel
+from deerlab.utils import assert_docstring
 ge = 2.00231930436256 # free-electron g factor
 
 
@@ -465,3 +466,9 @@ def test_orisel_value_integral():
     
     assert abs(K - Kref) < 1e-4
 #=======================================================================
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(dipolarkernel)
+# ======================================================================

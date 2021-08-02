@@ -2,6 +2,7 @@ import os
 import pytest
 import numpy as np 
 from deerlab import deerload
+from deerlab.utils import assert_docstring
 
 #==================================================================================
 @pytest.fixture
@@ -55,5 +56,10 @@ def test_multiple_labs(rootdir):
     assert np.all(successfull)
 #==================================================================================
 
+# ======================================================================
+def test_docstring():
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(deerload)
+# ======================================================================
 
 

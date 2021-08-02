@@ -3,8 +3,11 @@ import warnings
 import numpy as np
 import scipy as scp
 import scipy.optimize as opt
+from scipy.linalg import block_diag
 from types import FunctionType 
 from functools import wraps
+
+from scipy.sparse.construct import block_diag
 
 def parse_multidatasets(V_, K, weights, noiselvl, precondition=False):
 #===============================================================================
@@ -49,9 +52,10 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False):
         noiselvl = np.atleast_1d(noiselvl)
         if len(noiselvl)!=nSignals: 
             raise IndexError('The number of specified noise levels does not match the number of signals.')
-        sigmas = noiselvl/prescales
+        sigmas = noiselvl.copy()
 
-    V = np.concatenate(Vlist, axis=0) # ...concatenate them along the list 
+    # Concatenate the datasets along the list axis
+    V = np.concatenate(Vlist, axis=0)
 
     # -----------------------------------------------------------------
     def prepareKernel(K,nSignals):
@@ -137,7 +141,7 @@ def der_snr(V):
 #===============================================================================
 
 #===============================================================================
-def hccm(J,*args):
+def hccm(J,residual,mode='HC1'):
     """
     Heteroscedasticity Consistent Covariance Matrix (HCCM)
     ======================================================
@@ -201,13 +205,6 @@ def hccm(J,*args):
     Theory and Methods, 36(10), 1877-1888. DOI: 10.1080/03610920601126589
     """
 
-    # Unpack inputs
-    if len(args)==2:
-        res,mode = args
-        V = []
-    elif len(args)==1:
-        V = args[0]
-
     # Hat matrix
     H = J@np.linalg.pinv(J.T@J)@J.T
     # Get leverage
@@ -215,43 +212,44 @@ def hccm(J,*args):
     # Number of parameters (k) & Number of variables (n)
     n,k = np.shape(J)
 
-    if isempty(V):
-        # Select estimation method using established nomenclature
-        if mode.upper() == 'HC0': # White,(1980),[1]
-            # Estimate the data covariance matrix
-            V = np.diag(res**2)
+    # Select estimation method using established nomenclature
+    if mode.upper() == 'HC0': # White,(1980),[1]
+        # Estimate the data covariance matrix
+        V = np.diag(residual**2)
+        
+    elif mode.upper() == 'HC1': # MacKinnon and White,(1985),[2]
+        # Estimate the data covariance matrix
+        V = n/(n-k)*np.diag(residual**2)
+        
+    elif mode.upper() == 'HC2': # MacKinnon and White,(1985),[2]
+        # Estimate the data covariance matrix
+        V = np.diag(residual**2/(1-h))
+        
+    elif mode.upper() == 'HC3': # Davidson and MacKinnon,(1993),[3]
+        # Estimate the data covariance matrix
+        V = np.diag(residual/(1-h))**2
+        
+    elif mode.upper() == 'HC4': # Cribari-Neto,(2004),[4]
+        # Compute discount factor
+        delta = np.minimum(4,n*h/k)
+        # Estimate the data covariance matrix
+        V = np.diag(residual**2./((1 - h)**delta))
+        
+    elif mode.upper() == 'HC5': # Cribari-Neto,(2007),[5]
+        # Compute inflation factor
+        k = 0.7
+        alpha = np.minimum(np.maximum(4,k*max(h)/np.mean(h)),h/np.mean(h))
+        # Estimate the data covariance matrix
+        V = np.diag(residual**2./(np.sqrt((1 - h)**alpha)))
             
-        elif mode.upper() == 'HC1': # MacKinnon and White,(1985),[2]
-            # Estimate the data covariance matrix
-            V = n/(n-k)*np.diag(res**2)
-            
-        elif mode.upper() == 'HC2': # MacKinnon and White,(1985),[2]
-            # Estimate the data covariance matrix
-            V = np.diag(res**2/(1-h))
-            
-        elif mode.upper() == 'HC3': # Davidson and MacKinnon,(1993),[3]
-            # Estimate the data covariance matrix
-            V = np.diag(res/(1-h))**2
-            
-        elif mode.upper() == 'HC4': # Cribari-Neto,(2004),[4]
-            # Compute discount factor
-            delta = np.minimum(4,n*h/k)
-            # Estimate the data covariance matrix
-            V = np.diag(res**2./((1 - h)**delta))
-            
-        elif mode.upper() == 'HC5': # Cribari-Neto,(2007),[5]
-            # Compute inflation factor
-            k = 0.7
-            alpha = np.minimum(np.maximum(4,k*max(h)/np.mean(h)),h/np.mean(h))
-            # Estimate the data covariance matrix
-            V = np.diag(res**2./(np.sqrt((1 - h)**alpha)))
-                
-        else:
-            raise KeyError('HCCM estimation mode not found.')
-
+    else:
+        raise KeyError('HCCM estimation mode not found.')
 
     # Heteroscedasticity Consistent Covariance Matrix (HCCM) estimator
     C = np.linalg.pinv(J.T@J)@J.T@V@J@np.linalg.pinv(J.T@J)
+
+    # Ensure that the covariance matrix is positive semi-definite
+    C = nearest_psd(C)
 
     return C
 #===============================================================================
@@ -485,6 +483,22 @@ def ovl(A,B):
     return metric
 #===============================================================================
 
+#===============================================================================
+def nearest_psd(A):
+    """ 
+    Find the nearest positive semi-definite matrix. 
+    Source: modified from https://stackoverflow.com/a/63131250/16396391
+    """ 
+    # Symmetrize the matrix
+    Asym = (A + A.T)/2
+    # Construct positive semi-definite matrix via eigenvalue decomposition
+    eigval, eigvec = np.linalg.eig(Asym)
+    eigval[eigval < 0] = 0
+    Cpsd = np.real(eigvec.dot(np.diag(eigval)).dot(eigvec.T))
+    # Avoid round-off errors
+    Cpsd[abs(Cpsd)<=np.finfo(float).eps] = 0
+    return Cpsd
+#===============================================================================
 
 def isempty(A):
 #===============================================================================Q
@@ -537,4 +551,21 @@ try:
 
         return decorator_func
     #===============================================================================
+
+
+    import inspect
+    #===============================================================================
+    def assert_docstring(function):
+        input_args = inspect.getfullargspec(function).args
+        docstring = function.__doc__
+
+        for arg in input_args:
+            try:
+                assert arg in docstring
+            except: 
+                raise AssertionError(f'The argument {arg} is not documented.')
+    #===============================================================================
+
+
+
 except: pass

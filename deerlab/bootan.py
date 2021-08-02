@@ -62,8 +62,8 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, 
     containing all of them::
 
         def myfcn(V):
-            Pfit1 = dl.fitparamodel(V,dl.dd_gauss,r,K)
-            Pfit2 = dl.fitparamodel(V,dl.dd_randcoil,r,K)
+            Pfit1 = dl.nlls(V,dl.dd_gauss,r,K)
+            Pfit2 = dl.nlls(V,dl.dd_randcoil,r,K)
             return Pfit1,Pfit2
 
         bootuq = bootan(myfcn,V,Vfit)

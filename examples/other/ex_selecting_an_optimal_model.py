@@ -58,7 +58,7 @@ models = [dl.dd_rice,dl.dd_rice2,dl.dd_rice3,dl.dd_gauss,dl.dd_gauss2,dl.dd_gaus
 # dictionary which contains (amongst other estimators) likelihood estimators such as the Akaike information criterion (AIC).
 # The model with the lowers AIC value can be considered to most likely to be the optimal model.
 #
-# To do this, we just have to evaluate the parametric models with ``fitparamodel`` while looping over all the distribution models
+# To do this, we just have to evaluate the parametric models with ``nlls`` while looping over all the distribution models
 # we listed above, and collecting the AIC-values for each model.
  
 r = np.linspace(2,6,200)                     # distance axis, nm
@@ -71,7 +71,7 @@ for model in models:
     # Fit the signal
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        fit = dl.fitparamodel(V,Vmodel,par0=model.start,lb=model.lower,ub=model.upper,multistart=5)
+        fit = dl.nlls(V,Vmodel,par0=model.start,lb=model.lower,ub=model.upper,multistart=5)
     stats = fit.stats
     # Add current AIC value to the list
     aic.append(stats['aic'])

@@ -1,6 +1,6 @@
 import numpy as np
-from deerlab.nnls import fnnls, cvxnnls, nnlsbpp
-from deerlab import lsqcomponents, dipolarkernel, regoperator
+from deerlab.solvers import fnnls, cvxnnls, nnlsbpp, _lsqcomponents
+from deerlab import dipolarkernel, regoperator
 from deerlab.dd_models import dd_gauss,dd_gauss2
 
 
@@ -26,7 +26,7 @@ def assert_multigauss_problem(solver):
     K[:,0] = K0@P1
     K[:,1] = K0@P2
     L = regoperator(range(K.shape[1]),1)
-    KtK,KtV = lsqcomponents(V,K,L,0,1)
+    KtK,KtV = _lsqcomponents(V,K,L,0,1)
     amps = solver(KtK,KtV)
     assert max(abs(amps - [amp1, amp2])) < 1e-8
 

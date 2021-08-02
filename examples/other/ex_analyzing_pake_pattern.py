@@ -41,7 +41,7 @@ plt.show()
 # 
 # First we proceed to fit the background function using some time-domain parametric 
 # model. In this example we will use an exponential function (``bg_exp``). 
-# Using the ``fitparamodel`` function we obtain the fitted background as well as 
+# Using the ``nlls`` function we obtain the fitted background as well as 
 # the fitted modulation depth.
 
 # %%

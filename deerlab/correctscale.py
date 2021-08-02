@@ -4,7 +4,7 @@
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from deerlab import fitparamodel, dipolarkernel
+from deerlab import nlls, dipolarkernel
 from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp
 from deerlab.utils import isempty
@@ -77,7 +77,7 @@ Vc : ndarray
         raise KeyError(f"Unknown model '{model}'")
 
     # Run the parametric model fitting
-    fit = fitparamodel(V_,fitmodel,par0,lb,ub,fitscale=False,uq=False)
+    fit = nlls(V_,fitmodel,par0,lb,ub,fitscale=False,uq=False)
 
     # Get the fitted signal amplitude and scale the signal
     V0 = Amp0*fit.param[0]

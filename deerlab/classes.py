@@ -2,7 +2,7 @@
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from deerlab.utils import Jacobian
+from deerlab.utils import Jacobian, nearest_psd
 from scipy.stats import norm
 from scipy.signal import fftconvolve
 from scipy.linalg import block_diag
@@ -392,7 +392,7 @@ class UQResult:
         modelfit = np.minimum(modelfit,ubm)
 
         # Error progation
-        modelcovmat = J@self.covmat@J.T
+        modelcovmat = nearest_psd(J@self.covmat@J.T)
         
         # Construct new CI-structure for the model
         return  UQResult('covariance',modelfit,modelcovmat,lbm,ubm)
