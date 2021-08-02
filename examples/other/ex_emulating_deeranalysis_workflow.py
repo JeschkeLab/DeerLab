@@ -78,8 +78,9 @@ Vcorr = (V/Bfit - 1 + lamfit)/lamfit
 
 # Tikhonov regularization using the L-curve criterion
 K = dl.dipolarkernel(t,r)
-fit = dl.rlls(Vcorr,K,r,'tikhonov','lr',)
-Pfit = fit.P
+fit = dl.rlls(Vcorr,K,regparam='lr',)
+Pfit = fit.param
+Pfit = Pfit/np.trapz(Pfit,r)
 
 # %% [markdown]
 # Plots
