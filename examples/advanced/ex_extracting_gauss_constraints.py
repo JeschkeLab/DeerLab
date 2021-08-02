@@ -57,7 +57,6 @@ plt.show()
 # From the fit results, extract the distribution and the covariance matrix
 Pfit = fit.P
 Pfit_uq = fit.Puncert
-Pfit_covmat = Pfit_uq.covmat
 
 # %% [markdown]
 #Fit a 2-Gauss model to the fitted parameter-free distribution:
@@ -75,7 +74,7 @@ lb = dl.dd_gauss2.lower
 ub = dl.dd_gauss2.upper
 
 # Fit the Gaussians
-fit = dl.nlls(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat,fitscale=False)
+fit = dl.nlls(Pfit,Pmodel,par0,lb,ub,fitscale=False)
 
 # Extract the fit results
 parfit = fit.param
@@ -87,12 +86,7 @@ par95 = paruq.ci(95)
 # ... and print the results
 print('\nGaussian components:')
 for i in range(len(parfit)):
-    print(f'  parfit[{i}] = {parfit[i]:2.2f} ({par95[i,0]:2.2f}, {par95[i,1]:2.2f}) {dl.dd_gauss2.parameters[i]}')
-
-# Now propagate the error of the Gaussian parameters to the distribution
-lb = np.zeros_like(r) # non-negativity constraint
-PGauss_uq = paruq.propagate(lambda par: dl.dd_gauss2(r,par),lb)
-PGauss95 = PGauss_uq.ci(95)
+    print(f'  parfit[{i}] = {parfit[i]:2.2f} {dl.dd_gauss2.parameters[i]}')
 
 # %%
 # sphinx_gallery_thumbnail_number = 2
@@ -102,7 +96,6 @@ plt.plot(r,Pfit,'r',linewidth=1.5,label='non-param. fit')
 plt.fill_between(r,Pfit_uq.ci(95)[:,0], Pfit_uq.ci(95)[:,1],facecolor='r',linestyle='None',alpha=0.2,label=r'95% confidence intervals')
 
 plt.plot(r,PGauss,'b',linewidth=1.5,label='2-Gauss fit to nonparam. fit')
-plt.fill_between(r,PGauss95[:,0], PGauss95[:,1],facecolor='b',linestyle='None',alpha=0.2,label=r'95% confidence interval')
 
 plt.xlabel('Distance (nm)')
 plt.ylabel('P (nm⁻¹)')
