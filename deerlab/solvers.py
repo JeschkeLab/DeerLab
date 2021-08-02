@@ -677,7 +677,7 @@ def rlls(y, A, lb=None, ub=None, regparam='aic', regop=None, solver='cvx', reg='
     # Determine an optimal value of the regularization parameter if requested
     if includeRegularization:
         if type(regparam) is str:
-            alpha = dl.selregparam(y, A, ax, regparam, L=L, weights=weights, noiselvl=noiselvl)
+            alpha = dl.selregparam(y, A, linSolver, regparam, regop=L, weights=weights, noiselvl=noiselvl)
         else:
             alpha = regparam
     else: alpha=None
@@ -969,7 +969,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         
         # Optimiza the regularization parameter only if needed
         if optimize_alpha:
-            alpha = dl.selregparam(y, A, ax, regparam, weights=weights, L=L)
+            alpha = dl.selregparam(y, A, linSolver, regparam, weights=weights, regop=L)
 
         # Components for linear least-squares
         AtA, Aty = _lsqcomponents(y, A, L, alpha, weights=weights)

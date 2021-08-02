@@ -4,6 +4,7 @@ import numpy as np
 from deerlab import dipolarkernel, regoperator, regparamrange, selregparam, whitegaussnoise
 from deerlab.dd_models import dd_gauss,dd_gauss2
 from deerlab.utils import assert_docstring
+from deerlab.solvers import cvxnnls
 
 def test_compensate_condition():
 #=======================================================================
@@ -16,13 +17,13 @@ def test_compensate_condition():
     t1 = np.linspace(0,3,200)
     K1 = dipolarkernel(t1,r)
     V1 = K1@P
-    alpha1 = selregparam(V1,K1,r,method='aic')
+    alpha1 = selregparam(V1,K1,cvxnnls,method='aic')
 
     # Larger condition number
     t2 = np.linspace(0,3,400)
     K2 = dipolarkernel(t2,r)
     V2 = K2@P
-    alpha2 = selregparam(V2,K2,r,method='aic')
+    alpha2 = selregparam(V2,K2,cvxnnls,method='aic')
 
     assert alpha2 > alpha1
 #=======================================================================
@@ -33,9 +34,10 @@ def get_alpha_from_method(method):
     r = np.linspace(2,5,80)
     P = dd_gauss(r,[3,0.16986436005760383])
     K = dipolarkernel(t,r)
+    L = regoperator(r,2)
     V = K@P
 
-    alpha = selregparam(V,K,r,method=method,noiselvl=0)
+    alpha = selregparam(V,K,cvxnnls,method=method,noiselvl=0,regop=L)
     return np.log10(alpha)
 
 def test_aic_value():
@@ -186,10 +188,11 @@ def test_algorithms():
     r = np.linspace(2,5,80)
     P = dd_gauss(r,[3,0.16986436005760383])
     K = dipolarkernel(t,r)
+    L = regoperator(r,2)
     V = K@P
 
-    alpha_grid = selregparam(V,K,r,method='aic',algorithm='grid')
-    alpha_brent = selregparam(V,K,r,method='aic',algorithm='brent')
+    alpha_grid = selregparam(V,K,cvxnnls,method='aic',algorithm='grid',regop=L)
+    alpha_brent = selregparam(V,K,cvxnnls,method='aic',algorithm='brent',regop=L)
 
     assert abs(1-alpha_grid/alpha_brent) < 0.1
 #=======================================================================
@@ -203,9 +206,10 @@ def test_nonuniform_r():
     r = np.sqrt(np.linspace(1,7**2,200))
     P = dd_gauss(r,[3,0.2])
     K = dipolarkernel(t,r)
+    L = regoperator(r,2)
     V = K@P
 
-    logalpha = np.log10(selregparam(V,K,r,method='aic'))
+    logalpha = np.log10(selregparam(V,K,cvxnnls,method='aic',regop=L))
     logalpharef = -6.8517
 
     assert abs(1 - logalpha/logalpharef) < 0.2 
@@ -229,12 +233,13 @@ def test_tikh_global():
     S2 = K2@P + whitegaussnoise(t2,0.02)
     K3 = dipolarkernel(t3,r)
     S3 = K3@P + whitegaussnoise(t3,0.02)
+    L = regoperator(r,2)
 
-    logalpha = np.log10(selregparam([S1,S2,S3],[K1,K2,K3],r,method='aic',weights=[1,2,2]))
+    logalpha = np.log10(selregparam([S1,S2,S3],[K1,K2,K3],cvxnnls,method='aic',weights=[1,2,2],regop=L))
     logalpharef = -3.273
 
     assert abs(1 - logalpha/logalpharef) < 0.1
-
+#=======================================================================
 
 def assert_full_output(method):
 
@@ -242,9 +247,10 @@ def assert_full_output(method):
     r = np.linspace(2,5,80)
     P = dd_gauss(r,[3,0.4])
     K = dipolarkernel(t,r)
+    L = regoperator(r,2)
     V = K@P
 
-    alpha,alphas_evaled,functional,residuals,penalties = selregparam(V,K,r,method='aic',algorithm=method,full_output=True)
+    alpha,alphas_evaled,functional,residuals,penalties = selregparam(V,K,cvxnnls,method='aic',algorithm=method,full_output=True,regop=L)
     errors = []
     if np.size(alpha)!=1:
         errors.append("alphaopt is not a scalar")
@@ -261,13 +267,14 @@ def test_full_output_brent():
     "Check that the full output argument works using the grid algorithm"
 
     assert_full_output('brent')
+#=======================================================================
 
 def test_full_output_grid():
 #=======================================================================
     "Check that the full output argument works using the grid algorithm"
 
     assert_full_output('grid')
-
+#=======================================================================
 
 def test_unconstrained():
 #=======================================================================
@@ -277,9 +284,10 @@ def test_unconstrained():
     r = np.linspace(2,5,80)
     P = dd_gauss(r,[3,0.15])
     K = dipolarkernel(t,r)
+    L = regoperator(r,2)
     V = K@P
 
-    logalpha = np.log10(selregparam(V,K,r,method='aic',nonnegativity=False))
+    logalpha = np.log10(selregparam(V,K,np.linalg.solve,method='aic',regop=L))
     logalpharef = -8.87
 
     assert abs(1 - logalpha/logalpharef) < 0.1
@@ -297,8 +305,8 @@ def test_manual_candidates():
     alphas = regparamrange(K,L)
     V = K@P
 
-    alpha_manual = np.log10(selregparam(V,K,r,method='aic',candidates=alphas))
-    alpha_auto = np.log10(selregparam(V,K,r,method='aic'))
+    alpha_manual = np.log10(selregparam(V,K,cvxnnls,method='aic',candidates=alphas,regop=L))
+    alpha_auto = np.log10(selregparam(V,K,cvxnnls,method='aic',regop=L))
 
     assert abs(alpha_manual-alpha_auto)<1e-4
 #=======================================================================
@@ -313,8 +321,9 @@ def test_tikh_value():
     P = dd_gauss(r,[3,0.15])
     K = dipolarkernel(t,r)
     V = K@P + whitegaussnoise(t,0.01)
+    L = regoperator(r,2)
 
-    alpha = selregparam(V,K,r,method='aic')
+    alpha = selregparam(V,K,cvxnnls,method='aic',regop=L)
     loga = np.log10(alpha)
     logaref = -3.51  # Computed with DeerLab-Matlab (0.9.2)
 

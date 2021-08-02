@@ -8,22 +8,21 @@ import scipy.optimize as opt
 import math as m
 import deerlab as dl
 
-def selregparam(V, K, r, method='aic', algorithm='brent', noiselvl=None,
-                nonnegativity=True, L=None, weights=None, full_output=False,
-                candidates=None):
+def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
+                regop=None, weights=None, full_output=False, candidates=None):
     r"""
     Selection of optimal regularization parameter based on a selection criterion.
 
     Parameters 
     ----------
-    V : array_like or list of array_like
+    y : array_like or list of array_like
         Dipolar signal, multiple datasets can be globally evaluated by passing a list of signals.
 
-    K : 2D-array_like or list of 2D-array_like
+    A : 2D-array_like or list of 2D-array_like
         Dipolar kernel, if a list of signals is specified, a corresponding list of kernels must be passed as well.
 
-    r : array-like
-        Distance axis, in nanometers.
+    solver : callable
+        Linear least-squares solver. Must be a callable function with signature ``solver(AtA,Aty)``.
 
     regtype : string
         Regularization functional type: 
@@ -61,8 +60,8 @@ def selregparam(V, K, r, method='aic', algorithm='brent', noiselvl=None,
         If not specified, these are automatically computed from the GSVD of the 
         dipolar kernel and regularization operator.
 
-    regorder : int scalar, optional
-        Order of the regularization operator, the default is 2.
+    regop : 2D array_like, optional
+        Regularization operator matrix, the default is the second-order differential operator.
 
     algorithm : string, optional
         Search algorithm: 
@@ -103,28 +102,26 @@ def selregparam(V, K, r, method='aic', algorithm='brent', noiselvl=None,
         Returned if full_output is True.
     """
 #=========================================================           
-    # Ensure the use of numpy-arrays
-    r = np.atleast_1d(r)
 
     # If multiple datasets are passed, concatenate the signals and kernels
-    V, K, weights,_, noiselvl = dl.utils.parse_multidatasets(V, K, weights, noiselvl)
+    y, A, weights,_, noiselvl = dl.utils.parse_multidatasets(y, A, weights, noiselvl)
 
     # The L-curve criteria require a grid-evaluation
     if method == 'lr' or method == 'lc':
         algorithm = 'grid'
 
-    if L is None:
-        L = dl.regoperator(r,2)
-        
+    if regop is None:
+        L = dl.regoperator(np.arange(np.shape(A)[1]),2)
+    else: 
+        L = regop
     # Get range of potential alpha values candidates
     if candidates is None:
-        alphaCandidates = dl.regparamrange(K,L)
+        alphaCandidates = dl.regparamrange(A,L)
     else: 
         alphaCandidates = np.atleast_1d(candidates)
 
-
     # Create function handle
-    evalalpha = lambda alpha: _evalalpha(alpha, V, K, L, method, nonnegativity, noiselvl, weights)
+    evalalpha = lambda alpha: _evalalpha(alpha, y, A, L, solver, method, noiselvl, weights)
 
     # Evaluate functional over search range, using specified search method
     if algorithm == 'brent':
@@ -187,26 +184,21 @@ def selregparam(V, K, r, method='aic', algorithm='brent', noiselvl=None,
 
 
 #=========================================================
-def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,weights):
+def _evalalpha(alpha,y,A,L,solver,selmethod,noiselvl,weights):
     "Evaluation of the selection functional at a given regularization parameter value"
 
     # Prepare LSQ components
-    KtKreg, KtV = dl.solvers._lsqcomponents(V,K,L,alpha,weights)
+    AtAreg, Aty = dl.solvers._lsqcomponents(y,A,L,alpha,weights)
     # Solve linear LSQ problem
-    if nonneg:
-        # Non-negative solution
-        P = dl.solvers.cvxnnls(KtKreg,KtV)
-    else:
-        # Unconstrained solution
-        P = np.linalg.solve(KtKreg,KtV)
+    P = solver(AtAreg,Aty)
 
     # Moore-PeNose pseudoinverse
-    pK = np.linalg.inv(KtKreg)@K.T
+    pA = np.linalg.inv(AtAreg)@A.T
     # Influence matrix
-    H = K@pK
+    H = A@pA
 
     # Residual term
-    residuals = weights*(K@P - V)
+    residuals = weights*(A@P - y)
     Residual = np.linalg.norm(residuals)
     # Regularization penalty term
     Penalty = np.linalg.norm(L@P)
@@ -215,7 +207,7 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,weights):
     #-----------------------------------------------------------------------
     
     functional = 0
-    N = len(V)
+    N = len(y)
 
     # Cross validation (CV)
     if  selmethod =='cv': 
@@ -233,7 +225,7 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,weights):
     # Strong Robust Generalized Cross Validation (srGCV)
     elif  selmethod =='srgcv':
         tuning = 0.8
-        f_ = Residual**2/((1 - np.trace(H)/N)**2)*(tuning + (1 - tuning)*np.trace(pK.T@pK)/N)
+        f_ = Residual**2/((1 - np.trace(H)/N)**2)*(tuning + (1 - tuning)*np.trace(pA.T@pA)/N)
             
     # Akaike information criterion (AIC)
     elif  selmethod =='aic': 
@@ -252,12 +244,12 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,weights):
     
     # Residual method (RM)
     elif  selmethod =='rm':
-        scale = K.T@(np.eye(np.shape(H)[0],np.shape(H)[1]) - H)
+        scale = A.T@(np.eye(np.shape(H)[0],np.shape(H)[1]) - H)
         f_ = Residual**2/np.sqrt(np.trace(scale.T@scale))
 
     # Extrapolated Error (EE)          
     elif  selmethod =='ee': 
-        f_ = Residual**2/np.linalg.norm(K.T@(residuals))
+        f_ = Residual**2/np.linalg.norm(A.T@(residuals))
 
     # Normalized Cumulative Periodogram (NCP)
     elif selmethod == 'ncp': 
@@ -275,7 +267,7 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,weights):
         eigs,_ = np.linalg.eig(np.eye(np.shape(H)[0],np.shape(H)[1]) - H)
         eigs[eigs < Treshold] = 0
         nzeigs = np.real(eigs[eigs!=0])
-        f_ = V.T@(-residuals)/np.prod(nzeigs)**(1/len(nzeigs))
+        f_ = y.T@(-residuals)/np.prod(nzeigs)**(1/len(nzeigs))
 
     # Mallows' C_L (MCL)
     elif  selmethod == 'mcl':  
