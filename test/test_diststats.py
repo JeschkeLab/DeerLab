@@ -1,7 +1,9 @@
 
+from deerlab.utils.utils import assert_docstring
 import numpy as np
-from deerlab import dipolarkernel, diststats, fitregmodel
+from deerlab import dipolarkernel, diststats, rlls
 from deerlab.dd_models import dd_gauss
+from deerlab.utils import assert_docstring
 
 # Gaussian distribution parameters
 Pmean = 4 # nm
@@ -184,12 +186,12 @@ t = np.linspace(0,5,200)
 r = np.linspace(2,6,100)
 P = dd_gauss(r,[Pmean, Psigma])
 K = dipolarkernel(t,r)
-fit = fitregmodel(K@P,K,r)
+fit = rlls(K@P,K,lb=np.zeros_like(r))
 
 
 def assert_uncertainty(key):
 # ----------------------------------------------------------------------
-    desc,uq = diststats(r,fit.P,fit.Puncert)
+    desc,uq = diststats(r,fit.param,fit.paramUncert)
     desc = desc[key]
     ci = uq[key].ci(95)
     assert (desc >= ci[0]) & (desc <= ci[1])
@@ -450,4 +452,10 @@ def test_nonuniform_r_moment4():
 
     truth = 3
     assert_descriptor_nonuniform_r('moment4',truth)
+# ======================================================================
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(diststats)
 # ======================================================================

@@ -33,7 +33,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
     Parameters
     ----------
-    V : array_like or list of array_like
+    Vexp : array_like or list of array_like
         Time-domain signal(s) to fit.
     
     t : array_like or list of array_like
@@ -42,7 +42,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
     r : array_like
         Distance axis, in nanometers.
     
-    dd : callable or string
+    dd_model : callable or string
         Distance distribution model, the following modes are allowed:
 
         * A string ``'P'`` to indicate a non-parametric distribution
@@ -51,7 +51,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         The default is ``'P'``.
 
-    bg : callable or string
+    bg_model : callable or string
         Background model, the following modes are allowed:
 
         * A callable function of a DeerLab parametric background model (e.g. ``bg_hom3d``).
@@ -59,7 +59,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
 
         The default is ``bg_hom3d``.
 
-    ex : callable or string
+    ex_model : callable or string
         Experiment model, the following modes are allowed:
 
         * Function handle to experiment model (e.g. ``ex_4pdeer``)
@@ -498,11 +498,22 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Ks = [dl.dipolarkernel(ts,r) for ts in t]
         
         # Linear regularization fit
-        fit = dl.fitregmodel(Vexp,Ks,r,'tikhonov',regparam, weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter,noiselvl=noiselvl)
-        Pfit = fit.P
-        Pfit_uq = fit.Puncert
+        lb = np.zeros_like(r)
+        fit = dl.rlls(Vexp,Ks,lb=lb,regparam=regparam, weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter,noiselvl=noiselvl)
+        Pfit = fit.param
+        Pfit_uq = fit.paramUncert
         scales = np.atleast_1d(fit.scale)
         alphaopt = fit.regparam
+
+        # Normalize distribution
+        # -----------------------
+        Pscale = np.trapz(Pfit,r)
+        Pfit /= Pscale
+        scales = np.atleast_1d([scale*Pscale for scale in scales])
+        if uqanalysis and uq=='covariance':
+            # scale CIs accordingly
+            Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
+            Pfit_uq = Pfit_uq_.propagate(lambda P: P/Pscale,lbm=lb)
 
         # Get fitted models
         Vfit = [scale*K@Pfit for K,scale in zip(Ks,scales)]
@@ -531,7 +542,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
         Vmodel =lambda par: [K@Pfcn(par) for K in multiPathwayModel(par)[0]]
 
         # Non-linear parametric fit
-        fit = dl.fitparamodel(Vexp,Vmodel,par0,lb,ub,weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter,noiselvl=noiselvl)
+        fit = dl.nlls(Vexp,Vmodel,par0,lb,ub,weights=weights,uq=uqanalysis,tol=tol,maxiter=maxiter,noiselvl=noiselvl)
         parfit = fit.param
         param_uq = fit.paramUncert
         scales = np.atleast_1d(fit.scale)
@@ -607,6 +618,7 @@ def fitmodel(Vexp, t, r, dd_model='P', bg_model=bg_hom3d, ex_model=ex_4pdeer,
             # scale CIs accordingly
             Pfit_uq_ = copy.deepcopy(Pfit_uq) # need a copy to avoid infite recursion on next step
             Pfit_uq = Pfit_uq_.propagate(lambda P: P/Pscale,lbm=lbl)
+
 
         # Get the fitted models
         Kfit,Bfit = multiPathwayModel(parfit)

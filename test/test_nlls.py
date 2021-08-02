@@ -1,8 +1,8 @@
 
 import numpy as np
-from deerlab import dipolarkernel, whitegaussnoise, fitparamodel
-from deerlab.dd_models import dd_gauss, dd_rice
-from deerlab.utils import skip_on
+from deerlab import dipolarkernel, whitegaussnoise, nlls, regoperator
+from deerlab.dd_models import dd_gauss, dd_gauss2, dd_rice
+from deerlab.utils import skip_on, ovl, assert_docstring
 
 def test_gaussian():
 # ======================================================================
@@ -20,7 +20,7 @@ def test_gaussian():
     lb = [1, 0.1]
     ub = [20, 1]
     model = lambda p: K@dd_gauss(r,p)
-    fit = fitparamodel(V,model,par0,lb,ub)
+    fit = nlls(V,model,par0,lb,ub)
 
     assert all(abs(par - fit.param) < 1e-2)
 # ======================================================================
@@ -42,7 +42,7 @@ def test_rice():
     lb = dd_rice.lower
     ub = dd_rice.upper
     model = lambda p: K@dd_rice(r,p)
-    fit = fitparamodel(V,model,par0,lb,ub)
+    fit = nlls(V,model,par0,lb,ub)
 
     assert all(abs(par - fit.param) < 1e-2)
 # ======================================================================
@@ -62,7 +62,7 @@ def test_unconstrained():
 
     par0 = [5, 0.5]
     model = lambda p: K@dd_gauss(r,p)
-    fit = fitparamodel(V,model,par0)
+    fit = nlls(V,model,par0)
 
     assert all(abs(par - fit.param) < 1e-2)
 # =======================================================================
@@ -84,8 +84,8 @@ def test_rescaling():
     ub = [20, 5]
     mymodel = lambda param: dipolarkernel(t,r)@dd_gauss(r,param)
 
-    fit1 = fitparamodel(V*scale,mymodel,par0,lb,ub,fitscale=True)
-    fit2 = fitparamodel(V,mymodel,par0,lb,ub,fitscale=False)
+    fit1 = nlls(V*scale,mymodel,par0,lb,ub,fitscale=True)
+    fit2 = nlls(V,mymodel,par0,lb,ub,fitscale=False)
 
     assert all(abs(fit1.param - fit2.param) < 1e-2)
 # =======================================================================
@@ -131,7 +131,7 @@ def test_confinter_Pfit():
     lb = [1, 0.1]
     ub = [20, 1]
     model = lambda p: K@dd_gauss(r,p)
-    fit = fitparamodel(V,model,par0,lb,ub)
+    fit = nlls(V,model,par0,lb,ub)
     paruq = fit.paramUncert
     parfit = fit.param
 
@@ -156,8 +156,8 @@ def test_manual_covmatrix():
     lb   = [2, 0.05]
     ub   = [5, 0.70]
     model = lambda p: K@dd_gauss(r,p)
-    fitmanual = fitparamodel(V,model,par0,lb,ub, covmatrix = covmat)
-    fitauto = fitparamodel(V,model,par0,lb,ub)
+    fitmanual = nlls(V,model,par0,lb,ub, covmatrix = covmat)
+    fitauto = nlls(V,model,par0,lb,ub)
 
     paruq_manual = fitmanual.paramUncert
     paruq_auto = fitauto.paramUncert
@@ -193,7 +193,7 @@ def test_globalfit():
     par0 = [5, 0.5]
     lb = [1, 0.1]
     ub = [20, 1]
-    fit = fitparamodel([V1,V2],Vmodel,par0,lb,ub)
+    fit = nlls([V1,V2],Vmodel,par0,lb,ub)
 
     assert all(abs(par - fit.param) < 1e-2)
 # ======================================================================
@@ -220,7 +220,7 @@ def test_globalfit_scales():
     par0 = [5, 0.5]
     lb = [1, 0.1]
     ub = [20, 1]
-    fit = fitparamodel([V1,V2],Vmodel,par0,lb,ub,weights=[1,1])
+    fit = nlls([V1,V2],Vmodel,par0,lb,ub,weights=[1,1])
 
     assert max(abs(np.asarray(scales)/np.asarray(fit.scale) - 1)) < 1e-2 
 #============================================================
@@ -242,7 +242,7 @@ def test_plot():
     lb = [1, 0.1]
     ub = [20, 1]
     model = lambda p: K@dd_gauss(r,p)
-    fit = fitparamodel(V,model,par0,lb,ub)
+    fit = nlls(V,model,par0,lb,ub)
     
     fig = fit.plot(show=False)
     assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
@@ -264,7 +264,7 @@ def test_cost_value():
     lb = [1, 0.1]
     ub = [20, 1]
     model = lambda p: K@dd_gauss(r,p)
-    fit = fitparamodel(V,model,par0,lb,ub)
+    fit = nlls(V,model,par0,lb,ub)
     assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
 # ======================================================================
 
@@ -287,7 +287,7 @@ def test_confinter_values():
                 [1.8953902386010164, 2.322276885466784], 
                 [2.0029218541761944, 2.214745269892137]]
     
-    fit = fitparamodel(y,lambda p: p[0]*x + p[1],[0.1,1],fitscale=False)
+    fit = nlls(y,lambda p: p[0]*x + p[1],[0.1,1],fitscale=False)
     a_ci = [fit.paramUncert.ci(cov[i])[0,:] for i in range(3)]
     b_ci = [fit.paramUncert.ci(cov[i])[1,:] for i in range(3)]
 
@@ -314,8 +314,8 @@ def test_global_weights():
     lb = [1, 0.1]
     ub = [20, 1]
     model = lambda p: [K@dd_gauss(r,p)]*2
-    fit1 = fitparamodel([V1,V2],model,par0,lb,ub,weights=[1,1e-10])
-    fit2 = fitparamodel([V1,V2],model,par0,lb,ub,weights=[1e-10,1])
+    fit1 = nlls([V1,V2],model,par0,lb,ub,weights=[1,1e-10])
+    fit2 = nlls([V1,V2],model,par0,lb,ub,weights=[1e-10,1])
 
     assert all(abs(fit1.param/param1-1) < 0.03) and all(abs(fit2.param/param2-1) < 0.03)
 # ======================================================================
@@ -338,7 +338,7 @@ def test_global_weights_default():
     lb = [1, 0.1]
     ub = [20, 1]
     model = lambda p: [K@dd_gauss(r,p)]*2
-    fit = fitparamodel([V1,V2],model,par0,lb,ub,weights=[1,0])
+    fit = nlls([V1,V2],model,par0,lb,ub,weights=[1,0])
 
     assert all(abs(fit.param/param-1) < 0.03)
 # ======================================================================
@@ -357,7 +357,7 @@ def test_goodness_of_fit():
 
     par0 = [5, 0.5]
     model = lambda p: K@dd_gauss(r,p)
-    fit = fitparamodel(V, model, par0, lb=[1, 0.1], ub=[20, 1], noiselvl=sigma)
+    fit = nlls(V, model, par0, lb=[1, 0.1], ub=[20, 1], noiselvl=sigma)
     
     assert abs(fit.stats['chi2red'] - 1) < 0.05
 # ======================================================================
@@ -377,7 +377,44 @@ def test_goodness_of_fit_scaled():
 
     par0 = [5, 0.5]
     model = lambda p: K@dd_gauss(r,p)
-    fit = fitparamodel(V, model, par0, lb=[1, 0.1], ub=[20, 1], noiselvl=sigma)
+    fit = nlls(V, model, par0, lb=[1, 0.1], ub=[20, 1], noiselvl=sigma)
     
     assert abs(fit.stats['chi2red'] - 1) < 0.05
 # ======================================================================
+
+def test_extrapenalty():
+# ======================================================================
+    "Check that custom penalties can be passed and act on the solution"
+        
+    t = np.linspace(0,3,300)
+    r = np.linspace(2,5,200)
+    par = np.array([3.5,0.5,0.5,4,0.1,0.5])
+    P = dd_gauss2(r,par)
+    K = dipolarkernel(t,r)
+    V = K@P + whitegaussnoise(t,0.1,seed=1)
+
+    par0 = [2.5, 0.01, 0.1, 4.5, 0.01, 0.6]
+    lb = [1, 0.01, 0, 1, 0.01, 0]
+    ub = [20, 1, 1, 20, 1, 1]
+    # Fit case it fails, stuck at "spicky" Gaussians
+    model = lambda p: K@dd_gauss2(r,p)
+    fit = nlls(V,model,par0,lb,ub)
+
+    # Fit with Tikhonov penalty on the Gaussians model
+    L = regoperator(r,2)
+    alpha = 5e-5
+    tikhonov = lambda p: alpha*L@dd_gauss2(r,p)
+    fit_tikh = nlls(V,model,par0,lb,ub, extrapenalty=tikhonov)
+
+    Pfit = dd_gauss2(r,fit.param)
+    Pfit_tikh = dd_gauss2(r,fit_tikh.param)
+
+    assert  ovl(P,Pfit)<ovl(P,Pfit_tikh)
+# ======================================================================
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(nlls)
+# ======================================================================
+

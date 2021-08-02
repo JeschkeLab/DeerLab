@@ -1,6 +1,8 @@
 
+from deerlab.utils.utils import assert_docstring
 import numpy as np
 from deerlab import dipolarkernel, regoperator, regparamrange
+from deerlab.utils import assert_docstring
 
 def test_resolution():
 #=======================================================================
@@ -33,3 +35,10 @@ def test_values():
     print(alpha, alpharef)
     assert np.all(abs(alpha - alpharef) < 1e-4)
 #=======================================================================
+
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(regparamrange)
+# ======================================================================

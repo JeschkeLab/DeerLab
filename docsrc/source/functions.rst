@@ -46,8 +46,8 @@ This class of functions can be used and/or combined to create fitting routines o
     ./functions/snlls
     ./functions/fitmodel
     ./functions/fitmultimodel
-    ./functions/fitparamodel
-    ./functions/fitregmodel
+    ./functions/nlls
+    ./functions/rlls
     ./functions/regoperator
     ./functions/bootan
 
@@ -57,12 +57,9 @@ This class of functions can be used and/or combined to create fitting routines o
 =============================================  ============================================================
 Function                                         Description
 =============================================  ============================================================
-:ref:`snlls`                                     Separable non-linear least squares solver
 :ref:`fitmodel`                                 Full model signal fitting engine
 :ref:`bootan`                                    Bootstrap uncertainty analysis
 :ref:`fitmultimodel`                             Multi-component model fitting engine
-:ref:`fitparamodel`                              Parametric model fitting engine
-:ref:`fitregmodel`                               Regularization fitting engine
 :ref:`regoperator`                               Regularization operator constructor
 =============================================  ============================================================
 
@@ -113,6 +110,31 @@ Function                                         Description
 =============================================  ============================================================
 :ref:`selregparam`                              Regularization parameter selector
 :ref:`regparamrange`                            Regularization parameter range selector
+=============================================  ============================================================
+
+Solvers
+=========================================
+
+This class of functions is composed of general least-squares solvers suited for specific situations.
+
+.. toctree::
+    :hidden:
+    :glob:
+    :maxdepth: 1
+
+    ./functions/snlls
+    ./functions/nlls
+    ./functions/rlls
+
+
+.. rst-class:: func-list
+
+=============================================  ============================================================
+Function                                         Description
+=============================================  ============================================================
+:ref:`snlls`                                     Separable non-linear least-squares solver
+:ref:`nlls`                                      Non-linear least-squares solver
+:ref:`rlls`                                      Regularized linear least-squares solver
 =============================================  ============================================================
 
 

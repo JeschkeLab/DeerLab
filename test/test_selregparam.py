@@ -1,7 +1,9 @@
 
+from deerlab.utils.utils import assert_docstring
 import numpy as np
 from deerlab import dipolarkernel, regoperator, regparamrange, selregparam, whitegaussnoise
 from deerlab.dd_models import dd_gauss,dd_gauss2
+from deerlab.utils import assert_docstring
 
 def test_compensate_condition():
 #=======================================================================
@@ -14,13 +16,13 @@ def test_compensate_condition():
     t1 = np.linspace(0,3,200)
     K1 = dipolarkernel(t1,r)
     V1 = K1@P
-    alpha1 = selregparam(V1,K1,r,'tikhonov','aic')
+    alpha1 = selregparam(V1,K1,r,method='aic')
 
     # Larger condition number
     t2 = np.linspace(0,3,400)
     K2 = dipolarkernel(t2,r)
     V2 = K2@P
-    alpha2 = selregparam(V2,K2,r,'tikhonov','aic')
+    alpha2 = selregparam(V2,K2,r,method='aic')
 
     assert alpha2 > alpha1
 #=======================================================================
@@ -33,7 +35,7 @@ def get_alpha_from_method(method):
     K = dipolarkernel(t,r)
     V = K@P
 
-    alpha = selregparam(V,K,r,'tikhonov',method,noiselvl=0)
+    alpha = selregparam(V,K,r,method=method,noiselvl=0)
     return np.log10(alpha)
 
 def test_aic_value():
@@ -186,8 +188,8 @@ def test_algorithms():
     K = dipolarkernel(t,r)
     V = K@P
 
-    alpha_grid = selregparam(V,K,r,'tikhonov','aic',algorithm='grid')
-    alpha_brent = selregparam(V,K,r,'tikhonov','aic',algorithm='brent')
+    alpha_grid = selregparam(V,K,r,method='aic',algorithm='grid')
+    alpha_brent = selregparam(V,K,r,method='aic',algorithm='brent')
 
     assert abs(1-alpha_grid/alpha_brent) < 0.1
 #=======================================================================
@@ -203,7 +205,7 @@ def test_nonuniform_r():
     K = dipolarkernel(t,r)
     V = K@P
 
-    logalpha = np.log10(selregparam(V,K,r,'tikhonov','aic'))
+    logalpha = np.log10(selregparam(V,K,r,method='aic'))
     logalpharef = -6.8517
 
     assert abs(1 - logalpha/logalpharef) < 0.2 
@@ -228,54 +230,8 @@ def test_tikh_global():
     K3 = dipolarkernel(t3,r)
     S3 = K3@P + whitegaussnoise(t3,0.02)
 
-    logalpha = np.log10(selregparam([S1,S2,S3],[K1,K2,K3],r,'tikhonov','aic',weights=[1,2,2]))
+    logalpha = np.log10(selregparam([S1,S2,S3],[K1,K2,K3],r,method='aic',weights=[1,2,2]))
     logalpharef = -3.273
-
-    assert abs(1 - logalpha/logalpharef) < 0.1
-
-def test_tv_global():
-#=======================================================================
-    "Check the value returned when using global TV regularization"
-
-    t1 = np.linspace(0,4,50)
-    t2 = np.linspace(0,3,80)
-    t3 = np.linspace(0,4,70)
-
-    r = np.linspace(2,5,80)
-    P = dd_gauss2(r,[3,0.15,0.3,3.5,0.15,0.7])
-
-    K1 = dipolarkernel(t1,r)
-    S1 = K1@P + whitegaussnoise(t1,0.03)
-    K2 = dipolarkernel(t2,r)
-    S2 = K2@P + whitegaussnoise(t2,0.02)
-    K3 = dipolarkernel(t3,r)
-    S3 = K3@P + whitegaussnoise(t3,0.02)
-
-    logalpha = np.log10(selregparam([S1,S2,S3],[K1,K2,K3],r,'tv','aic',weights=[1,2,2]))
-    logalpharef = -4.574
-
-    assert abs(1 - logalpha/logalpharef) < 0.1
-
-def test_huber_global():
-#=======================================================================
-    "Check the value returned when using global Huber regularization"
-
-    t1 = np.linspace(0,4,50)
-    t2 = np.linspace(0,3,80)
-    t3 = np.linspace(0,4,70)
-
-    r = np.linspace(2,5,80)
-    P = dd_gauss2(r,[3,0.15,0.3,3.5,0.15,0.7])
-
-    K1 = dipolarkernel(t1,r)
-    S1 = K1@P + whitegaussnoise(t1,0.03)
-    K2 = dipolarkernel(t2,r)
-    S2 = K2@P + whitegaussnoise(t2,0.02)
-    K3 = dipolarkernel(t3,r)
-    S3 = K3@P + whitegaussnoise(t3,0.02)
-
-    logalpha = np.log10(selregparam([S1,S2,S3],[K1,K2,K3],r,'huber','aic',weights=[1,2,2]))
-    logalpharef = -3.114
 
     assert abs(1 - logalpha/logalpharef) < 0.1
 
@@ -288,7 +244,7 @@ def assert_full_output(method):
     K = dipolarkernel(t,r)
     V = K@P
 
-    alpha,alphas_evaled,functional,residuals,penalties = selregparam(V,K,r,'tikhonov','aic',algorithm=method,full_output=True)
+    alpha,alphas_evaled,functional,residuals,penalties = selregparam(V,K,r,method='aic',algorithm=method,full_output=True)
     errors = []
     if np.size(alpha)!=1:
         errors.append("alphaopt is not a scalar")
@@ -323,7 +279,7 @@ def test_unconstrained():
     K = dipolarkernel(t,r)
     V = K@P
 
-    logalpha = np.log10(selregparam(V,K,r,'tikhonov','aic',nonnegativity=False))
+    logalpha = np.log10(selregparam(V,K,r,method='aic',nonnegativity=False))
     logalpharef = -8.87
 
     assert abs(1 - logalpha/logalpharef) < 0.1
@@ -341,14 +297,16 @@ def test_manual_candidates():
     alphas = regparamrange(K,L)
     V = K@P
 
-    alpha_manual = np.log10(selregparam(V,K,r,'tikhonov','aic',candidates=alphas))
-    alpha_auto = np.log10(selregparam(V,K,r,'tikhonov','aic'))
+    alpha_manual = np.log10(selregparam(V,K,r,method='aic',candidates=alphas))
+    alpha_auto = np.log10(selregparam(V,K,r,method='aic'))
 
     assert abs(alpha_manual-alpha_auto)<1e-4
 #=======================================================================
 
-def get_alpha_from_regtype(regtype):
-
+def test_tikh_value():
+#=======================================================================
+    "Check that the value returned by Tikhonov regularization"
+    
     np.random.seed(1)
     t = np.linspace(0,5,500)
     r = np.linspace(2,5,80)
@@ -356,35 +314,16 @@ def get_alpha_from_regtype(regtype):
     K = dipolarkernel(t,r)
     V = K@P + whitegaussnoise(t,0.01)
 
-    alpha = selregparam(V,K,r,regtype,'aic')
-    return np.log10(alpha)
-
-def test_tikh_value():
-#=======================================================================
-    "Check that the value returned by Tikhonov regularization"
-    
-    loga = get_alpha_from_regtype('tikhonov')
+    alpha = selregparam(V,K,r,method='aic')
+    loga = np.log10(alpha)
     logaref = -3.51  # Computed with DeerLab-Matlab (0.9.2)
 
     assert abs(1-loga/logaref) < 0.02 # less than 2% error
 #=======================================================================
 
-def test_tv_value():
-#=======================================================================
-    "Check that the value returned by TV regularization"
-    
-    loga = get_alpha_from_regtype('tv')
-    logaref = -4.3632  # Computed with DeerLab (0.11.0)
 
-    assert abs(1-loga/logaref) < 0.02 # less than 2% error
-#=======================================================================
-
-def test_huber_value():
-#=======================================================================
-    "Check that the value returned by Huber regularization"
-    
-    loga = get_alpha_from_regtype('huber')
-    logaref = -3.27  # Computed with DeerLab-Matlab (0.9.2)
-
-    assert abs(1-loga/logaref) < 0.02 # less than 2% error
-#=======================================================================
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(selregparam)
+# ======================================================================

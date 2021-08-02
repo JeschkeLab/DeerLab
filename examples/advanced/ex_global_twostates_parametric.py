@@ -91,7 +91,7 @@ upper =  [10,     10,     0.6,   0.6,   1,    1,     1]
 model = lambda par: ABmodel(par)[0] # call ABmodel and take the first output (V)
 
 # Fit the model to all traces simultaneously (global fit)
-fit = dl.fitparamodel(Vexp,model,par0,lower,upper,multistart=40)
+fit = dl.nlls(Vexp,model,par0,lower,upper,multistart=40)
 # The use of the option 'multistart' helps the solver to find the
 # global minimum and not to get stuck in a local minimum.
 

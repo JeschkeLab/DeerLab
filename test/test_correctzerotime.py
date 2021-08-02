@@ -1,6 +1,7 @@
 
 import numpy as np
 from deerlab import correctzerotime
+from deerlab.utils import assert_docstring
 
 def test_correction():
 #=======================================================================
@@ -66,3 +67,9 @@ def test_last_element():
 
     assert max(abs(t_corr - t_truth)) < 1e-10
 #=======================================================================
+
+# ======================================================================
+def test_docstring():
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(correctzerotime)
+# ======================================================================

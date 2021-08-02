@@ -3,7 +3,7 @@ import numpy as np
 from deerlab import dipolarkernel, fitmultimodel, whitegaussnoise
 from deerlab.dd_models import dd_gengauss, dd_gauss, dd_rice, dd_gauss2, dd_rice3, dd_gauss3
 from deerlab.bg_models import bg_exp
-from deerlab.utils import ovl, skip_on
+from deerlab.utils import ovl, skip_on, assert_docstring
 
 def test_multigauss():
 #=======================================================================
@@ -510,4 +510,10 @@ def test_custom_kernel():
     fit = fitmultimodel(V, K, r, dd_gauss, 3,  lb=lb, ub=ub, lbK=[0], ubK=[1])
 
     assert ovl(P,fit.P) > 0.95
+# ======================================================================
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(fitmultimodel)
 # ======================================================================

@@ -93,7 +93,7 @@ K = dl.dipolarkernel(t,r)
 Vmodel = lambda par: K@gausswlc(r,par)
 
 # Fit the model to the data
-fit = dl.fitparamodel(V,Vmodel,par0=gausswlc.start,lb=gausswlc.lower,ub=gausswlc.upper,multistart=10)
+fit = dl.nlls(V,Vmodel,par0=gausswlc.start,lb=gausswlc.lower,ub=gausswlc.upper,multistart=10)
 fitpar = fit.param
 
 # %% [markdown]

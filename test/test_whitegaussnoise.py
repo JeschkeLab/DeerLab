@@ -1,5 +1,7 @@
+from deerlab.utils.utils import assert_docstring
 import numpy as np
 from deerlab import whitegaussnoise
+from deerlab.utils import assert_docstring
 
 def test_length():
 # ======================================================================
@@ -52,4 +54,10 @@ def test_noseed():
     noise2 = whitegaussnoise(t,sig,seed=None)
     
     assert not np.array_equal(noise1,noise2)
+# ======================================================================
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(whitegaussnoise)
 # ======================================================================

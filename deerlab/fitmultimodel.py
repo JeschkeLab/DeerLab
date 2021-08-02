@@ -54,7 +54,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     ub : array_like, optional
         Upper bounds for the distribution basis model parameters. If not specified, parameters are unbounded.
     
-    ubK : array_like, optional
+    lbK : array_like, optional
         Lower bounds for the kernel model parameters. If not specified, parameters are unbounded.
     
     ubK : array_like, optional
@@ -429,7 +429,7 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
         
         # Separable non-linear least-squares (SNLLS) fit
         upscale = 1e2
-        fit = dl.snlls(V*upscale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, noiselvl=noiselvl,
+        fit = dl.snlls(V*upscale,Knonlin,par0,nlin_lb,nlin_ub,lin_lb,lin_ub, noiselvl=noiselvl*upscale/prescales,
                         weights=weights, reg=False, nonlin_tol=tol, nonlin_maxiter=maxiter)
         pnonlin = fit.nonlin
         plin = fit.lin
@@ -521,38 +521,21 @@ def fitmultimodel(V, Kmodel, r, model, maxModels, method='aic', lb=None, ub=None
     for i in range(len(Vsubsets)): 
         scales.append(prescales[i]*postscale)
 
-    # Get fitted signals and their uncertainty
-    modelfit, modelfituq = [],[]
-    for i,subset in enumerate(Vsubsets): 
-        V[subset] = V[subset]*prescales[i]
-        noiselvl[i] = noiselvl[i]*prescales[i] 
-        modelfit.append(  scales[i]*fit.model[subset] )
-        if uq: 
-            modelfituq.append( fit.modelUncert.propagate(lambda V: scales[i]*V[subset]) )
-        else:
-            modelfituq.append(dl.UQResult('void'))
-
     # Goodness of fit
-    stats = []
-    for i,subset in enumerate(Vsubsets): 
-        Ndof = len(V[subset]) - (nKparam + nparam + Nopt)
-        stats.append(goodness_of_fit(V[subset],modelfit[i],Ndof,noiselvl[i]))
+    stats = fit.stats
 
     # Results display function
     def plotfcn(show=True):
-        fig = _plot(Vsubsets,V,modelfit,modelfituq,r,Pfit,Puq,fcnals,maxModels,method,uq,show)
+        fig = _plot(Vsubsets,V,fit.model,fit.modelUncert,r,Pfit,Puq,fcnals,maxModels,method,uq,show)
         return fig
 
     # If just one dataset, return vector instead of list
-    if len(Vsubsets)==1: 
-        stats = stats[0]
+    if len(Vsubsets)==1:
         scales = scales[0]
-        modelfit = modelfit[0]
-        modelfituq = modelfituq[0]
 
 
-    return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, V=modelfit, Puncert=Puq, 
-                    paramUncert=paramuq, Vuncert=modelfituq, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
+    return FitResult(P=Pfit, Pparam=fitparam_P, Kparam=fitparam_K, amps=fitparam_amp, V=fit.model, Puncert=Puq, 
+                    paramUncert=paramuq, Vuncert=fit.modelUncert, selfun=fcnals, Nopt=Nopt, Pn=Peval, scale=scales, plot=plotfcn,
                     stats=stats, cost=fit.cost, residuals=fit.residuals, success=fit.success)
 # =========================================================================
 

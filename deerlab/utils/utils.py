@@ -49,7 +49,7 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False):
         noiselvl = np.atleast_1d(noiselvl)
         if len(noiselvl)!=nSignals: 
             raise IndexError('The number of specified noise levels does not match the number of signals.')
-        sigmas = noiselvl/prescales
+        sigmas = noiselvl.copy()
 
     V = np.concatenate(Vlist, axis=0) # ...concatenate them along the list 
 
@@ -252,6 +252,9 @@ def hccm(J,*args):
 
     # Heteroscedasticity Consistent Covariance Matrix (HCCM) estimator
     C = np.linalg.pinv(J.T@J)@J.T@V@J@np.linalg.pinv(J.T@J)
+
+    # Ensure that the covariance matrix is positive semi-definite
+    C = nearest_psd(C)
 
     return C
 #===============================================================================
@@ -485,6 +488,22 @@ def ovl(A,B):
     return metric
 #===============================================================================
 
+#===============================================================================
+def nearest_psd(A):
+    """ 
+    Find the nearest positive semi-definite matrix. 
+    Source: modified from https://stackoverflow.com/a/63131250/16396391
+    """ 
+    # Symmetrize the matrix
+    Asym = (A + A.T)/2
+    # Construct positive semi-definite matrix via eigenvalue decomposition
+    eigval, eigvec = np.linalg.eig(Asym)
+    eigval[eigval < 0] = 0
+    Cpsd = np.real(eigvec.dot(np.diag(eigval)).dot(eigvec.T))
+    # Avoid round-off errors
+    Cpsd[abs(Cpsd)<=np.finfo(float).eps] = 0
+    return Cpsd
+#===============================================================================
 
 def isempty(A):
 #===============================================================================Q
@@ -537,4 +556,21 @@ try:
 
         return decorator_func
     #===============================================================================
+
+
+    import inspect
+    #===============================================================================
+    def assert_docstring(function):
+        input_args = inspect.getfullargspec(function).args
+        docstring = function.__doc__
+
+        for arg in input_args:
+            try:
+                assert arg in docstring
+            except: 
+                raise AssertionError(f'The argument {arg} is not documented.')
+    #===============================================================================
+
+
+
 except: pass

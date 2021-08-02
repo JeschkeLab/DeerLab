@@ -8,9 +8,9 @@ import scipy.optimize as opt
 import math as m
 import deerlab as dl
 
-def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent', noiselvl=None,
-                nonnegativity=True, regorder=2, weights=None, full_output=False,
-                huberparam=1.35, candidates=None):
+def selregparam(V, K, r, method='aic', algorithm='brent', noiselvl=None,
+                nonnegativity=True, L=None, weights=None, full_output=False,
+                candidates=None):
     r"""
     Selection of optimal regularization parameter based on a selection criterion.
 
@@ -113,16 +113,18 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent', no
     if method == 'lr' or method == 'lc':
         algorithm = 'grid'
 
-    # Get regularization operator
-    L = dl.regoperator(r,regorder)
+    if L is None:
+        L = dl.regoperator(r,2)
+        
     # Get range of potential alpha values candidates
     if candidates is None:
         alphaCandidates = dl.regparamrange(K,L)
     else: 
         alphaCandidates = np.atleast_1d(candidates)
 
+
     # Create function handle
-    evalalpha = lambda alpha: _evalalpha(alpha, V, K, L, method, nonnegativity, noiselvl, regtype, weights, huberparam)
+    evalalpha = lambda alpha: _evalalpha(alpha, V, K, L, method, nonnegativity, noiselvl, weights)
 
     # Evaluate functional over search range, using specified search method
     if algorithm == 'brent':
@@ -185,15 +187,15 @@ def selregparam(V, K, r, regtype='tikhonov', method='aic', algorithm='brent', no
 
 
 #=========================================================
-def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParameter):
+def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,weights):
     "Evaluation of the selection functional at a given regularization parameter value"
 
     # Prepare LSQ components
-    KtKreg, KtV = dl.lsqcomponents(V,K,L,alpha,weights, regtype=regtype, huberparam=HuberParameter)
+    KtKreg, KtV = dl.solvers._lsqcomponents(V,K,L,alpha,weights)
     # Solve linear LSQ problem
     if nonneg:
         # Non-negative solution
-        P = dl.cvxnnls(KtKreg,KtV)
+        P = dl.solvers.cvxnnls(KtKreg,KtV)
     else:
         # Unconstrained solution
         P = np.linalg.solve(KtKreg,KtV)
@@ -207,14 +209,7 @@ def _evalalpha(alpha,V,K,L,selmethod,nonneg,noiselvl,regtype,weights,HuberParame
     residuals = weights*(K@P - V)
     Residual = np.linalg.norm(residuals)
     # Regularization penalty term
-    if regtype.lower() == 'tikhonov':
-        Penalty = np.linalg.norm(L@P)
-    elif regtype.lower() == 'tv':
-        Penalty = np.sum(np.sqrt((L@P)**2 + np.finfo(float).eps))
-    elif regtype.lower() == 'huber':
-        Penalty = np.sum(np.sqrt((L@P/HuberParameter)**2 + 1 ) - 1)
-    else:
-        raise KeyError("Regularization type not valid. Must be 'tikhonov','tv' or 'huber'")
+    Penalty = np.linalg.norm(L@P)
     #-----------------------------------------------------------------------
     #  Selection methods for optimal regularization parameter
     #-----------------------------------------------------------------------

@@ -44,12 +44,12 @@ plt.show()
 # Fit Gaussians to the distance distribution
 # ------------------------------------------
 # Next, we fit a multi-Gauss distribution to the fitted non-parametric
-# distribution. We can do this by using the ``fitparamodel()`` function (in
+# distribution. We can do this by using the ``nlls()`` function (in
 # this example, fitting a two-Gauss model). 
 #
 # However, in order to get the correct uncertainty quantification, we need
 # to specify the covariance matrix of the fitted distribution.
-# ``fitparamodel()`` can then use that information to propagate the error in
+# ``nlls()`` can then use that information to propagate the error in
 # ``Pfit`` to the Gauss constraints that we then fit.
 
 # %%
@@ -75,7 +75,7 @@ lb = dl.dd_gauss2.lower
 ub = dl.dd_gauss2.upper
 
 # Fit the Gaussians
-fit = dl.fitparamodel(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat,fitscale=False)
+fit = dl.nlls(Pfit,Pmodel,par0,lb,ub,covmatrix=Pfit_covmat,fitscale=False)
 
 # Extract the fit results
 parfit = fit.param

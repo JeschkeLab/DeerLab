@@ -34,7 +34,7 @@ V = K@P + dl.whitegaussnoise(t,0.01)    # signal with added noise
 # -------------------------------------
 #
 # Fit a Tikhonov model to the data, using AIC to select the regularization parameter
-fit = dl.fitregmodel(V,K,r,'tikhonov','aic')
+fit = dl.rlls(V,K,r,'tikhonov','aic')
 Pfit = fit.P        # fitted distribution
 Vfit = fit.V        # fitted DEER trace
 
@@ -51,7 +51,7 @@ Pci50_cm = fit.Puncert.ci(50)
 # the outputs of interest (``Pfit`` in our example).
 
 def mybootfcn(V):
-    fit = dl.fitregmodel(V,K,r,'tikhonov','aic')
+    fit = dl.rlls(V,K,r,'tikhonov','aic')
     return fit.P
 
 # Launch bootstrapping

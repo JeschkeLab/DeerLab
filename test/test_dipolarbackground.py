@@ -2,7 +2,7 @@
 import numpy as np
 from deerlab.bg_models import bg_hom3d, bg_exp
 from deerlab.dipolarbackground import dipolarbackground
-
+from deerlab.utils import assert_docstring
 
 def test_basic():
 #==================================================================================
@@ -172,3 +172,9 @@ def test_phenomenological():
 
     assert max(abs(B-Bref) < 1e-8)
 #==================================================================================
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(dipolarbackground)
+# ======================================================================

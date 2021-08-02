@@ -1,7 +1,7 @@
 import numpy as np
 from deerlab import dipolarkernel,dd_gauss,dd_gauss2,snlls,whitegaussnoise
 from deerlab.bg_models import bg_exp
-from deerlab.utils import ovl, skip_on
+from deerlab.utils import ovl, skip_on, assert_docstring
 
 def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
     # Prepare test data
@@ -372,7 +372,10 @@ def test_goodness_of_fit_scaled():
 #============================================================
 
 
-def assert_reg_type(regtype):    
+def test_reg_tikhonov():
+#============================================================
+    "Check that Tikhonov regularization of linear problem works"
+
     # Prepare test data
     r = np.linspace(1,8,80)
     t = np.linspace(0,4,100)
@@ -391,31 +394,12 @@ def assert_reg_type(regtype):
     lbl = np.zeros(len(r))
     ubl = []
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl,regtype = regtype, uq=False)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl,uq=False)
     Pfit = fit.lin
     
     assert  np.max(abs(P - Pfit)) < 4e-2
+#============================================================
 
-def test_reg_tikh():
-#=======================================================================
-    "Check that SNLLS using Tikhonov regularization works"
-
-    assert_reg_type(regtype='tikhonov')
-#=======================================================================
-
-def test_reg_tv():
-#=======================================================================
-    "Check that SNLLS using total variation regularization works"
-
-    assert_reg_type(regtype='tv')
-#=======================================================================
-
-def test_reg_huber():
-#=======================================================================
-    "Check that SNNLS using Huber regularization works"
-
-    assert_reg_type(regtype='huber')
-#=======================================================================
 
 @skip_on('_tkinter.TclError', reason="A problem with the Tk backend occured")
 def test_plot():
@@ -613,4 +597,11 @@ def test_multiple_penalties():
     fitmoved = snlls(V,Kmodel,par0=0.2,lb=0,ub=1,lbl=np.zeros_like(r),extrapenalty=[compactness_penalty,radial_penalty])
     
     assert ovl(P,fit0.lin) > ovl(P,fitmoved.lin)
+# ======================================================================
+
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(snlls)
 # ======================================================================

@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import pi
 from deerlab import correctphase
+from deerlab.utils import assert_docstring
 
 def test_basics():
 #============================================================
@@ -70,3 +71,10 @@ def test_mode_close():
 
     assert max(np.real(V) - np.real(Vcorr)) < 1e-4
 #============================================================
+
+
+# ======================================================================
+def test_docstring():
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(correctphase)
+# ======================================================================

@@ -62,7 +62,7 @@ lower =      [0.10, 2.0,  0.1, 0.1 ] # lower bounds
 upper =      [0.50, 7.0,  0.5, 1500] # upper bounds
 
 # Finally we can run the fit and get the fitted parameters and their uncertainties
-fit = dl.fitparamodel(V,Vmodel,par0,lower,upper)
+fit = dl.nlls(V,Vmodel,par0,lower,upper)
 
 parfit = fit.param
 paruq = fit.paramUncert

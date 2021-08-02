@@ -7,7 +7,7 @@ from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp, bg_hom3d
 from deerlab.ex_models import ex_4pdeer, ex_5pdeer, ex_7pdeer, ex_ovl4pdeer
 import deerlab as dl
-from deerlab.utils import ovl, skip_on
+from deerlab.utils import ovl, skip_on, assert_docstring
 
 
 def assert_experiment_model(model):
@@ -896,4 +896,10 @@ def test_goodness_of_fit_scaled():
     fit = fitmodel(V,t,r,'P',bg_exp,ex_4pdeer,uq=None, noiselvl=sigma)
     
     assert abs(fit.stats['chi2red'] - 1) < 0.05
+# ======================================================================
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(fitmodel)
 # ======================================================================

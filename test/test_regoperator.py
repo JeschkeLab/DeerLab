@@ -2,6 +2,7 @@
 import numpy as np
 from numpy import pi
 from deerlab import regoperator
+from deerlab.utils import assert_docstring
 
 def test_L0shape():
 #=======================================================================
@@ -218,3 +219,9 @@ def test_nonuniform_3rd_derivative():
     
     compare_analytical_derivative(3,nonuniform=True)
 #=======================================================================
+
+def test_docstring():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(regoperator)
+# ======================================================================
