@@ -424,7 +424,7 @@ def nlls(y, model, par0, lb=None, ub=None, weights=None, noiselvl=None,
                 raise TypeError("The keyword argument 'extrapenalty' must be a callable function or a list thereof.")
 
     # Preprare multiple start global optimization if requested
-    if multistart>1 and boundedParams:
+    if multistart>1 and not boundedParams:
         raise ValueError('multistart optimization cannot be used with unconstrained parameters.')
     multistarts_par0 = multistarts(multistart,par0,lb,ub)
 
