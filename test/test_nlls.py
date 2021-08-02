@@ -138,36 +138,6 @@ def test_confinter_Pfit():
     assert_confidence_intervals(paruq.ci(50),paruq.ci(95),parfit,lb,ub)
 # ======================================================================
 
-def test_manual_covmatrix():
-# ======================================================================
-    "Check that covariance matrix can be manually specified"
-    
-    t = np.linspace(0,3,300)
-    r = np.linspace(2,5,200)
-    par = np.array([3,0.2])
-    P = dd_gauss(r,par)
-
-    K = dipolarkernel(t,r)
-    sig = 0.01
-    V = K@P + whitegaussnoise(t,sig,seed=1)
-    covmat = sig**2*np.eye(len(t))
-
-    par0 = [5, 0.50]
-    lb   = [2, 0.05]
-    ub   = [5, 0.70]
-    model = lambda p: K@dd_gauss(r,p)
-    fitmanual = nlls(V,model,par0,lb,ub, covmatrix = covmat)
-    fitauto = nlls(V,model,par0,lb,ub)
-
-    paruq_manual = fitmanual.paramUncert
-    paruq_auto = fitauto.paramUncert
-
-    ci_manual = paruq_manual.ci(95)
-    ci_auto = paruq_auto.ci(95)
-
-    assert np.all(abs(ci_manual - ci_auto) < 1e-2)
-# ======================================================================
-
 def test_globalfit():
 # ======================================================================
     "Check that global fitting yields correct results"
@@ -391,7 +361,7 @@ def test_extrapenalty():
     par = np.array([3.5,0.5,0.5,4,0.1,0.5])
     P = dd_gauss2(r,par)
     K = dipolarkernel(t,r)
-    V = K@P + whitegaussnoise(t,0.1,seed=1)
+    V = K@P + whitegaussnoise(t,0.15,seed=1)
 
     par0 = [2.5, 0.01, 0.1, 4.5, 0.01, 0.6]
     lb = [1, 0.01, 0, 1, 0.01, 0]
@@ -402,7 +372,7 @@ def test_extrapenalty():
 
     # Fit with Tikhonov penalty on the Gaussians model
     L = regoperator(r,2)
-    alpha = 5e-5
+    alpha = 1e-4
     tikhonov = lambda p: alpha*L@dd_gauss2(r,p)
     fit_tikh = nlls(V,model,par0,lb,ub, extrapenalty=tikhonov)
 

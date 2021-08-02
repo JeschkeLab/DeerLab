@@ -8,6 +8,7 @@ import numpy as np
 import cvxopt as cvx
 import matplotlib.pyplot as plt
 from scipy.optimize import least_squares, lsq_linear
+from scipy.sparse.construct import block_diag
 # DeerLab dependencies
 import deerlab as dl
 from deerlab.classes import UQResult, FitResult
@@ -259,7 +260,7 @@ def _optimize_scale(y,yfit,subsets):
 
 def nlls(y, model, par0, lb=None, ub=None, weights=None, noiselvl=None,
                  multistart=1, tol=1e-10, maxiter=3000, extrapenalty=None,
-                 fitscale=True, uq=True, covmatrix=None):
+                 fitscale=True, uq=True):
     r""" 
     Non-linear least squares (NLLS) solver
 
@@ -317,10 +318,6 @@ def nlls(y, model, par0, lb=None, ub=None, weights=None, noiselvl=None,
     
     maxiter : scalar, optional
         Maximum number of optimizer iterations, the default is 3000.
-    
-    covmatrix : array_like with shape(n,n), optional
-        Covariance matrix of the noise in the dataset(s). If not specified it is automatically computed.
-
 
     Returns
     -------
@@ -487,12 +484,7 @@ def nlls(y, model, par0, lb=None, ub=None, weights=None, noiselvl=None,
         J = Jacobian(lsqresiduals,parfit,lb,ub)
 
         # Estimate the heteroscedasticity-consistent covariance matrix
-        if covmatrix is None:
-            # Use estimated data covariance matrix
-            covmatrix = hccm(J,residuals,'HC1')
-        else:
-            # Use user-given data covariance matrix
-            covmatrix = hccm(J,covmatrix)
+        covmatrix = hccm(J,residuals)
         # Construct confidence interval structure
         paramuq = UQResult('covariance',parfit,covmatrix,lb,ub)
     else:
@@ -718,7 +710,7 @@ def rlls(y, A, lb=None, ub=None, regparam='aic', regop=None, solver='cvx', reg='
     # Uncertainty quantification
     # ----------------------------------------------------------------
     if uq:
-        covmat = hccm(J,res,'HC1')
+        covmat = hccm(J,res)
         paramuq = UQResult('covariance',xfit,covmat,lb,ub)
     else:
         paramuq = UQResult('void')
@@ -1116,7 +1108,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         J = np.concatenate((Jnonlin,Jlin),axis=1)
 
         # Calculate the heteroscedasticity consistent covariance matrix
-        covmatrix = hccm(J, res, 'HC1')
+        covmatrix = hccm(J, res)
 
         # Get combined parameter sets and boundaries
         parfit = np.concatenate((nonlinfit, linfit))
