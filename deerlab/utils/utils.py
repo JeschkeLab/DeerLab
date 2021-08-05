@@ -212,6 +212,9 @@ def hccm(J,residual,mode='HC1'):
     # Number of parameters (k) & Number of variables (n)
     n,k = np.shape(J)
 
+    # IF the number of parameters and variables are equal default to the HC0 mode to avoid zero-division
+    if n==k: mode='HC0'
+
     # Select estimation method using established nomenclature
     if mode.upper() == 'HC0': # White,(1980),[1]
         # Estimate the data covariance matrix
