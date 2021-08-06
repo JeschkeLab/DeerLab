@@ -270,3 +270,72 @@ def test_fit_nonparametric():
     
     assert np.allclose(fit.model,mock_data,atol=1e-3)
 #================================================================
+
+def test_freeze():
+#================================================================
+    "Check that a model parameter can be frozen to a fixed value"
+    model = Model(gauss)
+    model.mean.freeze(3)
+
+    assert model.mean.value==3 and model.mean.frozen==True
+#================================================================
+
+def test_unfreeze():
+#================================================================
+    "Check that a model parameter can be frozen and then reversed"
+    model = Model(gauss)
+    model.mean.freeze(3)
+    model.mean.unfreeze()
+
+    assert model.mean.frozen==False and model.mean.value==None
+#================================================================
+
+
+def test_fit_parametric_frozen(): 
+#================================================================
+    "Check that a parametric model can be correctly fitted"
+    model = Model(gauss2)
+    model.mean1.set(lb=0, ub=10, par0=2)
+    model.mean2.set(lb=0, ub=10, par0=4)
+    model.width1.set(lb=0.01, ub=5, par0=0.2)
+    model.width2.set(lb=0.01, ub=5, par0=0.2)
+    model.amp1.set(lb=0, ub=5, par0=1)
+    model.amp2.set(lb=0, ub=5, par0=1)
+
+    model.mean1.freeze(3)
+
+    fit = model.fit(mock_data)
+    
+    assert np.allclose(fit.model,mock_data)
+#================================================================
+
+def test_fit_semiparametric_frozen(): 
+#================================================================
+    "Check that a semiparametric model can be correctly fitted"
+    model = Model(gauss2_design)
+    model.mean1.set(lb=0, ub=10, par0=2)
+    model.mean2.set(lb=0, ub=10, par0=4)
+    model.width1.set(lb=0.01, ub=5, par0=0.2)
+    model.width2.set(lb=0.01, ub=5, par0=0.2)
+    model.addlinear('amp1',lb=0, ub=5)
+    model.addlinear('amp2',lb=0, ub=5)
+
+    model.mean1.freeze(3)
+
+    fit = model.fit(mock_data)
+    
+    assert np.allclose(fit.model,mock_data)
+#================================================================
+
+def test_fit_nonparametric_frozen(): 
+#================================================================
+    "Check that a semiparametric model can be correctly fitted"
+    model = Model(gauss2_design(3,4,0.5,0.2))
+    model.addlinear('amp1',lb=0)
+    model.addlinear('amp2',lb=0)
+    model.amp1.freeze(0.5)
+    fit = model.fit(mock_data)
+    
+    assert np.allclose(fit.model,mock_data)
+#================================================================
+
