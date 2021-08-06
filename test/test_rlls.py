@@ -343,7 +343,7 @@ def test_global_weights_default():
     P = dd_gauss(r,[4.5, 0.25])
 
     K = dipolarkernel(t,r)
-    scales = [1e3,1e9]
+    scales = [1e3,1e3]
     V1 = scales[0]*K@P + whitegaussnoise(t,0.001,seed=1)
     V2 = scales[1]*K@P + whitegaussnoise(t,0.1,seed=1)
     
@@ -357,4 +357,20 @@ def test_docstring():
 # ======================================================================
     "Check that the docstring includes all variables and keywords."
     assert_docstring(rlls)
+# ======================================================================
+
+def test_frozen_values():
+# ======================================================================
+    "Check that linear parameters can be frozen during the optimization"
+    x = np.linspace(0,6,100)
+    def gauss(mean,width): 
+        return np.exp(-(x-mean)**2/width**2/2)
+    A = np.squeeze(np.atleast_2d([gauss(3,0.4), gauss(4,0.2)]).T)
+    y = A@np.array([0.5,0.6])
+
+    # Freeze the first linear parameters
+    xfrozen = [0.5,None]
+    fit = rlls(y,A,lb=np.zeros(2),frozen=xfrozen)
+
+    assert np.allclose(fit.model,y)
 # ======================================================================

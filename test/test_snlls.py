@@ -52,7 +52,6 @@ def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
     parin = np.asarray(parin)
     assert np.all(abs(parout - parin) < 1e-1)
 
-
 def test_const_nonlin_const_lin():
 #=======================================================================
     "Check SNLLS of a nonlinear-constrained + linear-constrained problem"
@@ -599,9 +598,27 @@ def test_multiple_penalties():
     assert ovl(P,fit0.lin) > ovl(P,fitmoved.lin)
 # ======================================================================
 
-
 def test_docstring():
 # ======================================================================
     "Check that the docstring includes all variables and keywords."
     assert_docstring(snlls)
+# ======================================================================
+
+def test_frozen_param():
+# ======================================================================
+    "Check that linear and nonlinear parameters can be frozen during the optimization"
+    r = np.linspace(0,6,90)
+    def Amodel(p):
+        mean1,mean2,width1,width2 = p
+        return np.atleast_2d([dd_gauss(r,[mean1,width1]), dd_gauss(r,[mean2,width2])]).T
+
+    x = np.array([0.5,0.6])
+    y = Amodel([3,5,0.2,0.3])@x
+
+    nonlin_frozen = [None,5,None,None]
+    lin_frozen = [0.5,None]
+    fit = snlls(y,Amodel,par0=[2,4,0.2,0.2],lb=[0,0,0.01,0.01],ub=[10,10,5,5],lbl=[0,0],
+            nonlin_frozen=nonlin_frozen, lin_frozen=lin_frozen)
+    
+    assert np.allclose(fit.model,y,atol=1e-2)
 # ======================================================================

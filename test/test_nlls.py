@@ -25,7 +25,6 @@ def test_gaussian():
     assert all(abs(par - fit.param) < 1e-2)
 # ======================================================================
 
-
 def test_rice():
 # ======================================================================
     "Check the fit of a dipolar evolution function originating from a random coil"
@@ -388,3 +387,21 @@ def test_docstring():
     assert_docstring(nlls)
 # ======================================================================
 
+def test_frozen_param():
+# ======================================================================
+    "Check that parameters can be frozen during the optimization"
+    r = np.linspace(0,6,300)
+    def model(param):
+        mean1,mean2,width1,width2,amp1,amp2 = param
+        return amp1*dd_gauss(r,[mean1,width1]) + amp2*dd_gauss(r,[mean2,width2])
+
+    y = model([3,4,0.2,0.3,0.5,0.6])
+    par0 = [2,2,0.5,0.5,0.5,0.5]
+    lb = [0,0,0.01,0.01,0,0]
+    ub = [10,10,5,5,1,1]
+
+    frozenpars = [None,4,None,0.3,None,None]
+    fit = nlls(y,model,par0,lb,ub, frozen=frozenpars)
+
+    assert np.allclose(fit.model,y)
+# ======================================================================
