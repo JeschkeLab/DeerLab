@@ -93,7 +93,7 @@ def _check_frozen(frozen,N=None,par0=None):
         frozen = np.full(N,False)
         xfrozen = np.full(N,None)
     else:
-        frozen = np.atleast_1d(frozen)
+        frozen = np.atleast_1d(frozen.copy())
         xfrozen = frozen.copy()
         frozen[np.where(frozen!=None)[0]] = True
         frozen[np.where(frozen==None)[0]] = False
