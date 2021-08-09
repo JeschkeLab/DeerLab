@@ -2,6 +2,7 @@ import numpy as np
 import deerlab as dl
 import matplotlib.pyplot as plt 
 from deerlab.solvers import rlls,nlls,snlls
+from deerlab.classes import FitResult, UQResult
 from deerlab import bootan
 import inspect 
 
@@ -213,13 +214,18 @@ class Model():
     #---------------------------------------------------------------------------------------
 
     #-----------------------------------------------------------------------------
-    def _getparamuq(uq_full,paramidx,param_lb,param_ub):
+    def _getparamuq(self,uq_full,paramidx):
         "Get the uncertainty quantification of an individual parameter"
-
         subset_model = lambda x: x[paramidx]
-        uq_subset = uq_full.propagate(subset_model,lbm=param_lb, ubm=param_ub)
+        param_lb =  self._vecsort(self._getvector('lb'))[paramidx]
+        param_ub =  self._vecsort(self._getvector('ub'))[paramidx]
+        frozen = self._vecsort(self._getvector('frozen'))[paramidx]
+        if frozen: 
+            param_uq = UQResult('void')
+        else:
+            param_uq = uq_full.propagate(subset_model,lbm=param_lb, ubm=param_ub)
 
-        return uq_subset
+        return param_uq
     #-----------------------------------------------------------------------------
 
     #=======================================================================================
@@ -387,33 +393,32 @@ class Model():
             raise AssertionError(f'The model has no parameters to fit.')
 
         # Run the fitting algorithm 
-        fitResult = fitfcn(y)
-        param_fit = fitResult.param 
-        param_uq  = fitResult.paramUncert
+        fitresults = fitfcn(y)
 
         # If requested, perform a bootstrap analysis
         if bootstrap>0: 
-            def bootstrap_fcn(y): 
-                fit = fitfcn(y)
+            def bootstrap_fcn(ysim): 
+                fit = fitfcn(ysim)
                 return fit.param,fit.model
             # Bootstrapped uncertainty quantification
-            param_uq = bootan(bootstrap_fcn,y,fitResult.model,samples=bootstrap)
+            param_uq = bootan(bootstrap_fcn,y,fitresults.model,samples=bootstrap)
             # Substitute the fitted values by the bootsrapped median estimate
-            param_fit = param_uq.median
+            fitresults.param = param_uq[0].median
+            fitresults.paramUncert = param_uq[0]
+            fitresults.model = param_uq[1].median
+            fitresults.modelUncert = param_uq[1]
 
         # Get some basic information on the parameter vector
         keys = self._parameter_list(order='vector')
         param_idx =  self._vecsort(self._getvector('idx'))
-        param_lb =  self._vecsort(self._getvector('lb'))
-        param_ub =  self._vecsort(self._getvector('ub'))
         # Dictionary of parameter names and fitted values
-        FitResult_param = {key : fitvalue for key,fitvalue in zip(keys,param_fit)}
+        FitResult_param = {key : fitvalue for key,fitvalue in zip(keys,fitresults.param)}
         # Dictionary of parameter names and fit uncertainties
-        FitResult_paramuq = {f'{key}Uncert': _getparamuq(param_uq,idx,lb,ub) for key,idx,lb,ub in zip(keys,param_idx,param_lb,param_ub)}
+        FitResult_paramuq = {f'{key}Uncert': self._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
         # Dictionary of other fit quantities of interest
-        FitResult_dict = {key: getattr(fitResult,key) for key in ['model','modelUncert','scale','cost','plot','residuals']}
+        FitResult_dict = {key: getattr(fitresults,key) for key in ['model','modelUncert','scale','cost','plot','residuals']}
         # Generate FitResult object from all the dictionaries
-        fit = dl.classes.FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict }) 
+        fit = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict }) 
 
         return fit
     #---------------------------------------------------------------------------------------

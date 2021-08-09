@@ -228,16 +228,36 @@ def test_mixed_vector_call_positional():
     assert np.allclose(response,reference)
 #================================================================
 
+
+#----------------------------------------------------------------
+def _getmodel(type):
+    if type=='parametric':
+        model = Model(gauss2)
+        model.mean1.set(lb=0, ub=10, par0=2)
+        model.mean2.set(lb=0, ub=10, par0=4)
+        model.width1.set(lb=0.01, ub=5, par0=0.2)
+        model.width2.set(lb=0.01, ub=5, par0=0.2)
+        model.amp1.set(lb=0, ub=5, par0=1)
+        model.amp2.set(lb=0, ub=5, par0=1)
+    elif type=='semiparametric': 
+        model = Model(gauss2_design)
+        model.mean1.set(lb=0, ub=10, par0=2)
+        model.mean2.set(lb=0, ub=10, par0=4)
+        model.width1.set(lb=0.01, ub=5, par0=0.2)
+        model.width2.set(lb=0.01, ub=5, par0=0.2)
+        model.addlinear('amp1',lb=0, ub=5)
+        model.addlinear('amp2',lb=0, ub=5)
+    elif type=='nonparametric':
+        model = Model(gauss2_design(3,4,0.5,0.2))
+        model.addlinear('amp1',lb=0)
+        model.addlinear('amp2',lb=0)
+    return model
+#----------------------------------------------------------------
+
 def test_fit_parametric(): 
 #================================================================
     "Check that a parametric model can be correctly fitted"
-    model = Model(gauss2)
-    model.mean1.set(lb=0, ub=10, par0=2)
-    model.mean2.set(lb=0, ub=10, par0=4)
-    model.width1.set(lb=0.01, ub=5, par0=0.2)
-    model.width2.set(lb=0.01, ub=5, par0=0.2)
-    model.amp1.set(lb=0, ub=5, par0=1)
-    model.amp2.set(lb=0, ub=5, par0=1)
+    model = _getmodel('parametric')
 
     fit = model.fit(mock_data)
     
@@ -247,13 +267,7 @@ def test_fit_parametric():
 def test_fit_semiparametric(): 
 #================================================================
     "Check that a semiparametric model can be correctly fitted"
-    model = Model(gauss2_design)
-    model.mean1.set(lb=0, ub=10, par0=2)
-    model.mean2.set(lb=0, ub=10, par0=4)
-    model.width1.set(lb=0.01, ub=5, par0=0.2)
-    model.width2.set(lb=0.01, ub=5, par0=0.2)
-    model.addlinear('amp1',lb=0, ub=5)
-    model.addlinear('amp2',lb=0, ub=5)
+    model = _getmodel('semiparametric')
 
     fit = model.fit(mock_data)
     
@@ -263,10 +277,9 @@ def test_fit_semiparametric():
 def test_fit_nonparametric(): 
 #================================================================
     "Check that a semiparametric model can be correctly fitted"
-    model = Model(gauss2_identity)
-    model.addlinear('gaussian',vec=len(x),lb=np.zeros_like(x))
+    model = _getmodel('nonparametric')
 
-    fit = model.fit(mock_data,reg=True)
+    fit = model.fit(mock_data)
     
     assert np.allclose(fit.model,mock_data,atol=1e-3)
 #================================================================
@@ -294,13 +307,7 @@ def test_unfreeze():
 def test_fit_parametric_frozen(): 
 #================================================================
     "Check that a parametric model can be correctly fitted"
-    model = Model(gauss2)
-    model.mean1.set(lb=0, ub=10, par0=2)
-    model.mean2.set(lb=0, ub=10, par0=4)
-    model.width1.set(lb=0.01, ub=5, par0=0.2)
-    model.width2.set(lb=0.01, ub=5, par0=0.2)
-    model.amp1.set(lb=0, ub=5, par0=1)
-    model.amp2.set(lb=0, ub=5, par0=1)
+    model = _getmodel('parametric')
 
     model.mean1.freeze(3)
 
@@ -312,13 +319,7 @@ def test_fit_parametric_frozen():
 def test_fit_semiparametric_frozen(): 
 #================================================================
     "Check that a semiparametric model can be correctly fitted"
-    model = Model(gauss2_design)
-    model.mean1.set(lb=0, ub=10, par0=2)
-    model.mean2.set(lb=0, ub=10, par0=4)
-    model.width1.set(lb=0.01, ub=5, par0=0.2)
-    model.width2.set(lb=0.01, ub=5, par0=0.2)
-    model.addlinear('amp1',lb=0, ub=5)
-    model.addlinear('amp2',lb=0, ub=5)
+    model = _getmodel('semiparametric')
 
     model.mean1.freeze(3)
 
@@ -330,12 +331,87 @@ def test_fit_semiparametric_frozen():
 def test_fit_nonparametric_frozen(): 
 #================================================================
     "Check that a semiparametric model can be correctly fitted"
-    model = Model(gauss2_design(3,4,0.5,0.2))
-    model.addlinear('amp1',lb=0)
-    model.addlinear('amp2',lb=0)
+    model = _getmodel('nonparametric')
+
     model.amp1.freeze(0.5)
     fit = model.fit(mock_data)
     
     assert np.allclose(fit.model,mock_data)
 #================================================================
 
+#----------------------------------------------------------------
+def assert_attributes_cis(fitobject,attributes):
+    for attr in attributes: 
+        parfit = getattr(fitobject,attr)
+        parci = getattr(fitobject,f'{attr}Uncert').ci(95)
+        ci_lower = parci[:,0]
+        ci_upper = parci[:,1]
+        assert parfit<=ci_upper and parfit>=ci_lower 
+#----------------------------------------------------------------
+
+def test_CIs_parametric(): 
+#================================================================
+    "Check the default confidence intervals of the fitted parameters"
+    model = _getmodel('parametric')
+
+    fit = model.fit(mock_data)
+    
+    assert_attributes_cis(fit,['mean1','mean2','width1','width2','amp1','amp2'])
+#================================================================
+
+def test_CIs_semiparametric(): 
+#================================================================
+    "Check the default confidence intervals of the fitted parameters"
+    model = _getmodel('semiparametric')
+
+    fit = model.fit(mock_data)
+    
+    assert_attributes_cis(fit,['mean1','mean2','width1','width2','amp1','amp2'])
+#================================================================
+
+def test_CIs_nonparametric(): 
+#================================================================
+    "Check the default confidence intervals of the fitted parameters"
+    model = _getmodel('semiparametric')
+
+    fit = model.fit(mock_data)
+    
+    assert_attributes_cis(fit,['amp1','amp2'])
+#================================================================
+
+
+def test_bootCIs_parametric(): 
+#================================================================
+    "Check the bootstrapped confidence intervals of the fitted parameters"
+    model = _getmodel('parametric')
+
+    noisydata = mock_data + whitegaussnoise(0.01,seed=1)
+    fit = model.fit(noisydata,bootstrap=3)
+    
+    assert_attributes_cis(fit,['mean1','mean2','width1','width2','amp1','amp2'])
+#================================================================
+
+def test_bootCIs_semiparametric(): 
+#================================================================
+    "Check the bootstrapped confidence intervals of the fitted parameters"
+    model = _getmodel('semiparametric')
+
+    noisydata = mock_data + whitegaussnoise(0.01,seed=1)
+    fit = model.fit(noisydata,bootstrap=3)
+    
+    assert_attributes_cis(fit,['mean1','mean2','width1','width2','amp1','amp2'])
+#================================================================
+
+def test_bootCIs_nonparametric(): 
+#================================================================
+    "Check the bootstrapped confidence intervals of the fitted parameters"
+    model = _getmodel('semiparametric')
+
+    noisydata = mock_data + whitegaussnoise(0.01,seed=1)
+    fit = model.fit(noisydata,bootstrap=3)
+    
+    assert_attributes_cis(fit,['amp1','amp2'])
+#================================================================
+
+
+test_bootCIs_parametric()
