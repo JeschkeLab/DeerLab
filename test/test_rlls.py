@@ -374,3 +374,20 @@ def test_frozen_values():
 
     assert np.allclose(fit.model,y)
 # ======================================================================
+
+
+def test_frozen_Nparam():
+# ======================================================================
+    "Check that the correct number of parameters are returned even with frozen parameters"
+    x = np.linspace(0,6,100)
+    def gauss(mean,width): 
+        return np.exp(-(x-mean)**2/width**2/2)
+    A = np.squeeze(np.atleast_2d([gauss(3,0.4), gauss(4,0.2)]).T)
+    y = A@np.array([0.5,0.6])
+    xfrozen = [0.5,None]
+
+    fit = rlls(y,A,lb=np.zeros(2))
+    fit_frozen = rlls(y,A,lb=np.zeros(2),frozen=xfrozen)
+
+    assert len(fit.param)==2 and len(fit_frozen.param)==2
+# ======================================================================

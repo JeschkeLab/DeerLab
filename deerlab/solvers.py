@@ -277,6 +277,13 @@ def _unfrozen_subset(param,frozen,parfrozen):
 # ===========================================================================================
 
 # ===========================================================================================
+def _insertfrozen(parfit,parfrozen,frozen):
+    _parfit = parfrozen.copy()
+    _parfit[~frozen] = parfit
+    return _parfit.astype(float)
+# ===========================================================================================
+
+# ===========================================================================================
 # ===========================================================================================
 # ===========================================================================================
 # ===========================================================================================
@@ -461,13 +468,13 @@ def nlls(y, model, par0, lb=None, ub=None, weights=None, noiselvl=None,
     _model = model
     model = lambda param: _model(_unfrozen_subset(param,frozen,parfrozen))
     # Reduce the boundaries to the unfrozen subset
-    ub,lb,par0 = [var[~frozen] for var in [ub,lb,par0]]
+    ub_red,lb_red,par0_red = [var[~frozen] for var in [ub,lb,par0]]
 
 
     # Preprare multiple start global optimization if requested
     if multistart>1 and not boundedParams:
         raise ValueError('multistart optimization cannot be used with unconstrained parameters.')
-    multistarts_par0 = multistarts(multistart,par0,lb,ub)
+    multistarts_par0 = multistarts(multistart,par0_red,lb_red,ub_red)
 
 
 
@@ -509,25 +516,35 @@ def nlls(y, model, par0, lb=None, ub=None, weights=None, noiselvl=None,
     fvals = []
     parfits = []
     sols = []
+    scalefits = []
     for par0 in multistarts_par0:
         # Solve the non-linear least squares (NLLS) problem 
-        sol = least_squares(lsqresiduals,par0, bounds=(lb,ub), max_nfev=int(maxiter), ftol=tol, method='dogbox')
+        sol = least_squares(lsqresiduals,par0, bounds=(lb_red,ub_red), max_nfev=int(maxiter), ftol=tol, method='dogbox')
         sols.append(sol)
         parfits.append(sol.x)
         fvals.append(2*sol.cost) # least_squares uses 0.5*sum(residual**2)          
+        scalefits.append(scales)
 
     # Find global minimum from multiple runs
     globmin = np.argmin(fvals)
     parfit = parfits[globmin]
     sol = sols[globmin]
+    scalefits = scalefits[globmin]
+
+    # Insert frozen parameters back into the nonlinear parameter vector   
+    parfit = _insertfrozen(parfit,parfrozen,frozen)
+
+    # Use again the model function defined for the full parameter vector 
+    model = _model
 
     # Compute residual vector
-    residuals = lsqresiduals(parfit)
+    _lsqresiduals = lambda param: lsqresiduals(_unfrozen_subset(param,frozen,parfrozen))
+    residuals = _lsqresiduals(parfit)
 
     # Calculate parameter confidence intervals
     if uq:
                 
-        J = Jacobian(lsqresiduals,parfit,lb,ub)
+        J = Jacobian(_lsqresiduals,parfit,lb,ub)
 
         # Estimate the heteroscedasticity-consistent covariance matrix
         covmatrix = hccm(J,residuals)
@@ -537,7 +554,7 @@ def nlls(y, model, par0, lb=None, ub=None, weights=None, noiselvl=None,
         paramuq = UQResult('void')
 
     # Evaluate fitted model and propagate the uncertainty
-    def ymodel(n): return lambda p: scales[n]*model(p)[subsets[n]]
+    def ymodel(n): return lambda p: scalefits[n]*model(p)[subsets[n]]
     ymodels = [ymodel(n) for n in range(Nsignals)]
     modelfit,modelfituq = _model_evaluation(ymodels,parfit,paramuq,uq)
 
@@ -561,7 +578,7 @@ def nlls(y, model, par0, lb=None, ub=None, weights=None, noiselvl=None,
         modelfituq = modelfituq[0]
 
     return FitResult(
-            param=parfit, model=modelfit, paramUncert=paramuq, modelUncert=modelfituq, scale=scales, stats=stats, cost=fvals,
+            param=parfit, model=modelfit, paramUncert=paramuq, modelUncert=modelfituq, scale=scalefits, stats=stats, cost=fvals,
             plot=plotfcn, residuals=residuals, success=sol.success)
 
 
@@ -753,7 +770,7 @@ def rlls(y, A, lb=None, ub=None, regparam='aic', regop=None, solver='cvx', reg='
     result = parseResult(result)
     xfit = validateResult(result)
 
-    xfit = np.insert(xfit,np.where(frozen)[0],xfrozen[frozen])
+    xfit = _insertfrozen(xfit,xfrozen,frozen)
 
     # Get fit final status
     success = ~np.all(xfit==0)
@@ -1027,11 +1044,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     nonlin_frozen,nonlin_parfrozen = _check_frozen(nonlin_frozen,par0=par0)
     lin_frozen,lin_parfrozen = _check_frozen(lin_frozen,N=Nlin)
 
-    lb,ub,par0 = [var[~nonlin_frozen] for var in [lb,ub,par0]]
+    lb_red,ub_red,par0_red = [var[~nonlin_frozen] for var in [lb,ub,par0]]
     lbl_red,ubl_red = [var[~lin_frozen] for var in [lbl,ubl]]
-    Nnonlin -= np.sum(nonlin_frozen)
 
     # Redefine model to take just the unfrozen parameter subset
+
     _Amodel = Amodel
     Amodel = lambda param: _Amodel(_unfrozen_subset(param,nonlin_frozen,nonlin_parfrozen))
 
@@ -1118,7 +1135,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         xfit,alpha = linear_problem(y-yfrozen,Ared,optimize_alpha,alpha)
         regparam_prev = alpha
 
-        xfit = np.insert(xfit,np.where(lin_frozen)[0],lin_parfrozen[lin_frozen])
+        xfit = _insertfrozen(xfit,lin_parfrozen,lin_frozen)
 
         # Evaluate full model residual
         yfit = A@xfit
@@ -1148,31 +1165,37 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
     # Preprare multiple start global optimization if requested
     if multistart > 1 and not nonLinearBounded:
         raise TypeError('Multistart optimization cannot be used with unconstrained non-linear parameters.')
-    multiStartPar0 = dl.utils.multistarts(multistart, par0, lb, ub)
+    multiStartPar0 = dl.utils.multistarts(multistart, par0_red, lb_red, ub_red)
 
     # Pre-allocate containers for multi-start run
-    fvals, nonlinfits, linfits, sols = ([] for _ in range(4))
+    fvals, nonlinfits, linfits, sols, scalefits = ([] for _ in range(5))
 
     # Multi-start global optimization
     for par0 in multiStartPar0:
         # Run the non-linear solver
-        sol = least_squares(ResidualsFcn, par0, bounds=(lb, ub), max_nfev=int(nonlin_maxiter), ftol=nonlin_tol)
+        sol = least_squares(ResidualsFcn, par0, bounds=(lb_red, ub_red), max_nfev=int(nonlin_maxiter), ftol=nonlin_tol)
         nonlinfits.append(sol.x)
         linfits.append(xfit)
         fvals.append(2*sol.cost) # least_squares uses 0.5*sum(residual**2)          
         sols.append(sol)
+        scalefits.append(scales)
 
     # Find global minimum from multiple runs
     globmin = np.argmin(fvals)
     linfit = linfits[globmin]
     nonlinfit = nonlinfits[globmin]
     sol = sols[globmin]
+    scalefits = scalefits[globmin]
     Afit = Amodel(nonlinfit)
 
+    # Insert frozen parameters back into the nonlinear parameter vector   
+    nonlinfit = _insertfrozen(nonlinfit,nonlin_parfrozen,nonlin_frozen)
+    # Use again the model function defined for the full parameter vector 
+    Amodel = _Amodel
+
     scales_vec = np.zeros_like(y) 
-    for subset,scale in zip(subsets,scales): 
+    for subset,scale in zip(subsets,scalefits): 
         scales_vec[subset] = scale 
-    yfit = scales_vec*(Afit@linfit)
 
     # Uncertainty analysis
     #---------------------
@@ -1189,10 +1212,11 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         #-----------------------------------------------------------------------------
         
         # Compute the fit residual
-        res = ResidualsFcn(nonlinfit)
+        _ResidualsFcn = lambda nonlinfit: ResidualsFcn(_unfrozen_subset(nonlinfit,nonlin_frozen,nonlin_parfrozen))
+        res = _ResidualsFcn(nonlinfit)
         
         # Jacobian (non-linear part)
-        Jnonlin = Jacobian(ResidualsFcn,nonlinfit,lb,ub)
+        Jnonlin = Jacobian(_ResidualsFcn,nonlinfit,lb,ub)
         # Jacobian (linear part)
         Jlin = scales_vec[:,np.newaxis]*Amodel(nonlinfit)
         if includeExtrapenalty:
@@ -1226,13 +1250,13 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         paramuq = UQResult('void')
 
     for i in range(len(subsets)):
-        scales[i] *= prescales[i]
+        scalefits[i] *= prescales[i]
 
     # Get fitted signals and their uncertainty
     parfit = np.concatenate((nonlinfit, linfit))
     nonlin_idx = np.arange(len(nonlinfit))
     lin_idx = np.arange(len(nonlinfit),len(parfit))
-    def ymodel(n): return lambda p: scales[n]*((Amodel(p[nonlin_idx])@p[lin_idx])[subsets[n]]) 
+    def ymodel(n): return lambda p: scalefits[n]*((Amodel(p[nonlin_idx])@p[lin_idx])[subsets[n]]) 
     ymodels = [ymodel(n) for n in range(len(subsets))]
     modelfit,modelfituq = _model_evaluation(ymodels,parfit,paramuq,uq)
 
@@ -1257,7 +1281,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     return FitResult(nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
                      linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,
-                     stats=stats, cost=fvals, residuals=sol.fun, success=sol.success, scale=scales)
+                     stats=stats, cost=fvals, residuals=sol.fun, success=sol.success, scale=scalefits)
 # ===========================================================================================
 
 

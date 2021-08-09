@@ -396,12 +396,32 @@ def test_frozen_param():
         return amp1*dd_gauss(r,[mean1,width1]) + amp2*dd_gauss(r,[mean2,width2])
 
     y = model([3,4,0.2,0.3,0.5,0.6])
+    par0 = [3.1,4.2,0.2,0.3,0.5,0.6]
+    lb = [0,0,0.01,0.01,0,0]
+    ub = [10,10,5,5,1,1]
+
+    frozenpars = [None,4,None,0.3,None,None]
+    fit = nlls(y,model,par0,lb,ub)
+    fit_frozen = nlls(y,model,par0,lb,ub, frozen=frozenpars)
+
+    assert np.allclose(fit_frozen.model,fit.model) and np.allclose(fit_frozen.model,y)
+# ======================================================================
+
+def test_frozen_Nparam():
+# ======================================================================
+    "Check that the correct number of parameters are returned even with frozen parameters"
+    r = np.linspace(0,6,300)
+    def model(param):
+        mean1,mean2,width1,width2,amp1,amp2 = param
+        return amp1*dd_gauss(r,[mean1,width1]) + amp2*dd_gauss(r,[mean2,width2])
+    y = model([3,4,0.2,0.3,0.5,0.6])
     par0 = [2,2,0.5,0.5,0.5,0.5]
     lb = [0,0,0.01,0.01,0,0]
     ub = [10,10,5,5,1,1]
 
     frozenpars = [None,4,None,0.3,None,None]
-    fit = nlls(y,model,par0,lb,ub, frozen=frozenpars)
+    fit = nlls(y,model,par0,lb,ub)
+    fit_frozen = nlls(y,model,par0,lb,ub, frozen=frozenpars)
 
-    assert np.allclose(fit.model,y)
+    assert len(fit.param)==6 and len(fit_frozen.param)==6
 # ======================================================================

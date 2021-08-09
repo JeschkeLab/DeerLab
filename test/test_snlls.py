@@ -607,7 +607,7 @@ def test_docstring():
 def test_frozen_param():
 # ======================================================================
     "Check that linear and nonlinear parameters can be frozen during the optimization"
-    r = np.linspace(0,6,90)
+    r = np.linspace(0,6,300)
     def Amodel(p):
         mean1,mean2,width1,width2 = p
         return np.atleast_2d([dd_gauss(r,[mean1,width1]), dd_gauss(r,[mean2,width2])]).T
@@ -617,8 +617,29 @@ def test_frozen_param():
 
     nonlin_frozen = [None,5,None,None]
     lin_frozen = [0.5,None]
+    fit = snlls(y,Amodel,par0=[3.2,5.2,0.2,0.3],lb=[0,0,0.01,0.01],ub=[10,10,5,5],lbl=[0,0])
+    fit_frozen = snlls(y,Amodel,par0=[3.2,5.2,0.2,0.3],lb=[0,0,0.01,0.01],ub=[10,10,5,5],lbl=[0,0],
+            nonlin_frozen=nonlin_frozen, lin_frozen=lin_frozen)
+    
+    assert np.allclose(fit_frozen.model,y,atol=1e-2) and np.allclose(fit_frozen.model,fit.model,atol=1e-2)
+# ======================================================================
+
+def test_frozen_Nparam():
+# ======================================================================
+    "Check that the correct number of linear and nonlinear parameters are return even when freezing"
+    r = np.linspace(0,6,90)
+    def Amodel(p):
+        mean1,mean2,width1,width2 = p
+        return np.atleast_2d([dd_gauss(r,[mean1,width1]), dd_gauss(r,[mean2,width2])]).T
+    x = np.array([0.5,0.6])
+    y = Amodel([3,5,0.2,0.3])@x
+    nonlin_frozen = [None,5,None,None]
+    lin_frozen = [0.5,None]
+
     fit = snlls(y,Amodel,par0=[2,4,0.2,0.2],lb=[0,0,0.01,0.01],ub=[10,10,5,5],lbl=[0,0],
             nonlin_frozen=nonlin_frozen, lin_frozen=lin_frozen)
     
-    assert np.allclose(fit.model,y,atol=1e-2)
+    fit_frozen = snlls(y,Amodel,par0=[2,4,0.2,0.2],lb=[0,0,0.01,0.01],ub=[10,10,5,5],lbl=[0,0])
+    
+    assert len(fit.nonlin)==4 and len(fit.lin)==2 and len(fit_frozen.nonlin)==4 and len(fit_frozen.lin)==2
 # ======================================================================
