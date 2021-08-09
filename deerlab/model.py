@@ -147,7 +147,7 @@ class Model():
     #---------------------------------------------------------------------------------------
 
     #=======================================================================================
-    #                                    Auxiliary functions
+    #                                    Private methods
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
@@ -173,9 +173,14 @@ class Model():
     #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
-    def _parameter_list(self):
+    def _parameter_list(self, order='alphabetical'):
         "Get the list of parameters defined in the model sorted alphabetically"
-        return [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
+        if order=='alphabetical':
+            keylist =  [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
+        elif order=='vector':
+            keylist = np.concatenate([np.atleast_1d([param]*len(np.atleast_1d(getattr(self,param).idx))) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
+            keylist = np.unique(keylist)
+        return keylist
     #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
@@ -272,7 +277,7 @@ class Model():
 
     def fit(self,y,par0=None,**kwargs):
     #---------------------------------------------------------------------------------------
-        """
+        r"""
         Fit the model to the data ``y`` via one of the three following approaches: 
         
         - Non-linear least-squares 
@@ -348,33 +353,62 @@ class Model():
             # ---------------------------------------------------------
             # Linear LSQ  
             # ---------------------------------------------------------
-
             # Get the design matrix
             Amatrix = self.nonlinmodel()
             # Run penalized LSQ solver
             fitResult = rlls(y,Amatrix,lbl,ubl,frozen=linfrozen,**kwargs)
+            fitparam = fitResult.param
+
 
         elif self.Nlin>0 and self.Nnonlin>0:        
             # ---------------------------------------------------------
             # Separable non-linear LSQ  
             # ---------------------------------------------------------
-
             Amodel_fcn = lambda param: np.atleast_2d(self.nonlinmodel(*param))
             fitResult = snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,**kwargs)        
+            fitparam = np.concatenate([fitResult.nonlin,fitResult.lin])
+
 
         elif self.Nlin==0 and self.Nnonlin>0:       
             # ---------------------------------------------------------
             # Non-linear LSQ  
             # ---------------------------------------------------------
-
             model_fcn = lambda param: self.nonlinmodel(*param)
             fitResult = nlls(y,model_fcn,par0,lb,ub,frozen=nonlinfrozen,**kwargs)
+            fitparam = fitResult.param
+
         else:
             raise AssertionError(f'The model has no parameters to fit.')
             
-        return fitResult
+        keys = self._parameter_list(order='vector')
+        FitResult_param = {key : fitvalue for key,fitvalue in zip(keys,fitparam)}
+        FitResult_dict = {key: getattr(fitResult,key) for key in ['model','modelUncert','scale','cost','plot','residuals']}
+        fit = dl.classes.FitResult({**FitResult_param,**FitResult_dict }) 
+        return fit
     #---------------------------------------------------------------------------------------
     
+    def __repr__(self):
+    #---------------------------------------------------------------------------------------
+        string = inspect.cleandoc(f"""
+        <Model> 
+        Total number of parameters: {self.Nparam}
+        Number of non-linear parameters: {self.Nnonlin}
+        Number of linear parameters: {self.Nlin}
+          
+        <Parameter List>
+        --------------------------------------------------------------------------------
+           Name       Lower   Upper      Type      Units     Description  
+        --------------------------------------------------------------------------------""")
+        for n,paramname in enumerate(self._vecsort(self._parameter_list())): 
+            string += f'\n   {paramname:7s}'
+            string += f'  {getattr(self,paramname).lb:5.3g}'
+            string += f'  {getattr(self,paramname).ub:5.3g}'
+            string += f'        {"linear" if getattr(self,paramname).linear else "nonlin"}'
+            string += f'     {str(getattr(self,paramname).units):s}'
+            string += f'      {str(getattr(self,paramname).name):s}'
+        string += '\n--------------------------------------------------------------------------------'
+        return string
+    #---------------------------------------------------------------------------------------
 
 
 #===================================================================================
