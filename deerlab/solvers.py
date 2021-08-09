@@ -963,12 +963,16 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         Fitted non-linear parameters.
     lin : ndarray
         Fitted linear parameters.
+    param : ndarray
+        Fitted full parameter set. 
     model : ndarray
         Fitted model.
     nonlinUncert : :ref:`UQResult`
         Uncertainty quantification of the non-linear parameter set.
     linUncert : :ref:`UQResult`
         Uncertainty quantification of the linear parameter set.
+    paramUncert : :ref:`UQResult`
+        Uncertainty quantification of the full parameter set.
     modelUncert : :ref:`UQResult`
         Uncertainty quantification of the fitted model.
     regparam : scalar
@@ -1251,8 +1255,8 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
         modelfit = modelfit[0]
         modelfituq = modelfituq[0]
 
-    return FitResult(nonlin=nonlinfit, lin=linfit, model=modelfit, nonlinUncert=paramuq_nonlin,
-                     linUncert=paramuq_lin, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,
+    return FitResult(nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
+                     linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,
                      stats=stats, cost=fvals, residuals=sol.fun, success=sol.success, scale=scales)
 # ===========================================================================================
 
