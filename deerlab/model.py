@@ -2,6 +2,7 @@ import numpy as np
 import deerlab as dl
 import matplotlib.pyplot as plt 
 from deerlab.solvers import rlls,nlls,snlls
+from deerlab import bootan
 import inspect 
 
 
@@ -211,6 +212,16 @@ class Model():
         return [getattr(getattr(self,param),attribute) for param in dir(self) if isinstance(getattr(self,param),Parameter)]
     #---------------------------------------------------------------------------------------
 
+    #-----------------------------------------------------------------------------
+    def _getparamuq(uq_full,paramidx,param_lb,param_ub):
+        "Get the uncertainty quantification of an individual parameter"
+
+        subset_model = lambda x: x[paramidx]
+        uq_subset = uq_full.propagate(subset_model,lbm=param_lb, ubm=param_ub)
+
+        return uq_subset
+    #-----------------------------------------------------------------------------
+
     #=======================================================================================
     #                                         Methods
     #=======================================================================================
@@ -275,7 +286,7 @@ class Model():
     #---------------------------------------------------------------------------------------
 
 
-    def fit(self,y,par0=None,**kwargs):
+    def fit(self,y,par0=None,bootstrap=0,**kwargs):
     #---------------------------------------------------------------------------------------
         r"""
         Fit the model to the data ``y`` via one of the three following approaches: 
@@ -356,34 +367,54 @@ class Model():
             # Get the design matrix
             Amatrix = self.nonlinmodel()
             # Run penalized LSQ solver
-            fitResult = rlls(y,Amatrix,lbl,ubl,frozen=linfrozen,**kwargs)
-            fitparam = fitResult.param
-
+            fitfcn = lambda y: rlls(y,Amatrix,lbl,ubl,frozen=linfrozen,**kwargs)
 
         elif self.Nlin>0 and self.Nnonlin>0:        
             # ---------------------------------------------------------
             # Separable non-linear LSQ  
             # ---------------------------------------------------------
             Amodel_fcn = lambda param: np.atleast_2d(self.nonlinmodel(*param))
-            fitResult = snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,**kwargs)        
-            fitparam = np.concatenate([fitResult.nonlin,fitResult.lin])
-
+            fitfcn = lambda y: snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,**kwargs)        
 
         elif self.Nlin==0 and self.Nnonlin>0:       
             # ---------------------------------------------------------
             # Non-linear LSQ  
             # ---------------------------------------------------------
             model_fcn = lambda param: self.nonlinmodel(*param)
-            fitResult = nlls(y,model_fcn,par0,lb,ub,frozen=nonlinfrozen,**kwargs)
-            fitparam = fitResult.param
+            fitfcn = lambda y: nlls(y,model_fcn,par0,lb,ub,frozen=nonlinfrozen,**kwargs)
 
         else:
             raise AssertionError(f'The model has no parameters to fit.')
-            
+
+        # Run the fitting algorithm 
+        fitResult = fitfcn(y)
+        param_fit = fitResult.param 
+        param_uq  = fitResult.paramUncert
+
+        # If requested, perform a bootstrap analysis
+        if bootstrap>0: 
+            def bootstrap_fcn(y): 
+                fit = fitfcn(y)
+                return fit.param,fit.model
+            # Bootstrapped uncertainty quantification
+            param_uq = bootan(bootstrap_fcn,y,fitResult.model,samples=bootstrap)
+            # Substitute the fitted values by the bootsrapped median estimate
+            param_fit = param_uq.median
+
+        # Get some basic information on the parameter vector
         keys = self._parameter_list(order='vector')
-        FitResult_param = {key : fitvalue for key,fitvalue in zip(keys,fitparam)}
+        param_idx =  self._vecsort(self._getvector('idx'))
+        param_lb =  self._vecsort(self._getvector('lb'))
+        param_ub =  self._vecsort(self._getvector('ub'))
+        # Dictionary of parameter names and fitted values
+        FitResult_param = {key : fitvalue for key,fitvalue in zip(keys,param_fit)}
+        # Dictionary of parameter names and fit uncertainties
+        FitResult_paramuq = {f'{key}Uncert': _getparamuq(param_uq,idx,lb,ub) for key,idx,lb,ub in zip(keys,param_idx,param_lb,param_ub)}
+        # Dictionary of other fit quantities of interest
         FitResult_dict = {key: getattr(fitResult,key) for key in ['model','modelUncert','scale','cost','plot','residuals']}
-        fit = dl.classes.FitResult({**FitResult_param,**FitResult_dict }) 
+        # Generate FitResult object from all the dictionaries
+        fit = dl.classes.FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict }) 
+
         return fit
     #---------------------------------------------------------------------------------------
     
