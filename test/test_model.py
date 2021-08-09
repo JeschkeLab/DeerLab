@@ -413,5 +413,105 @@ def test_bootCIs_nonparametric():
     assert_attributes_cis(fit,['amp1','amp2'])
 #================================================================
 
+# Simple non-linear function for testing
+def gauss_axis(axis,mean,width): 
+    return np.exp(-(axis-mean)**2/width**2/2)
 
-test_bootCIs_parametric()
+# Non-linear definition
+def gauss2_axis(axis,mean1,mean2,width1,width2,amp1,amp2):
+    return amp1*gauss_axis(axis,mean1,width1) + amp2*gauss_axis(axis,mean2,width2)
+
+# Linear + Non-linear definition
+def gauss2_design_axis(axis,mean1,mean2,width1,width2):
+    return np.atleast_2d([gauss_axis(axis,mean1,width1), gauss_axis(axis,mean2,width2)]).T
+
+# Linear + Non-linear definition
+def gauss2_identity_axis(axis):
+    return np.eye(len(axis))
+
+mock_data_fcn = lambda axis: gauss2_axis(axis,mean1=3,mean2=4,width1=0.5,width2=0.2,amp1=0.5,amp2=0.6)
+
+
+def test_model_with_axis_positional(): 
+#================================================================
+    "Check that a model with axis can be defined and called"
+    model = Model(gauss_axis,axis='axis')
+
+    x = np.linspace(0,10,300)
+    reference = gauss_axis(x,3,0.5)
+    response = model(x,3,0.5)
+        
+    assert np.allclose(reference,response)
+#================================================================
+
+def test_model_with_axis_keywords(): 
+#================================================================
+    "Check that a model with axis can be defined and called via keywords"
+    model = Model(gauss_axis,axis='axis')
+
+    x = np.linspace(0,10,300)
+    reference = gauss_axis(x,3,0.5)
+    response = model(axis=x, mean=3, width=0.5)
+        
+    assert np.allclose(reference,response)
+#================================================================
+
+
+#----------------------------------------------------------------
+def _getmodel_axis(type):
+    if type=='parametric':
+        model = Model(gauss2_axis,axis='axis')
+        model.mean1.set(lb=0, ub=10, par0=2)
+        model.mean2.set(lb=0, ub=10, par0=4)
+        model.width1.set(lb=0.01, ub=5, par0=0.2)
+        model.width2.set(lb=0.01, ub=5, par0=0.2)
+        model.amp1.set(lb=0, ub=5, par0=1)
+        model.amp2.set(lb=0, ub=5, par0=1)
+    elif type=='semiparametric': 
+        model = Model(gauss2_design_axis,axis='axis')
+        model.mean1.set(lb=0, ub=10, par0=2)
+        model.mean2.set(lb=0, ub=10, par0=4)
+        model.width1.set(lb=0.01, ub=5, par0=0.2)
+        model.width2.set(lb=0.01, ub=5, par0=0.2)
+        model.addlinear('amp1',lb=0, ub=5)
+        model.addlinear('amp2',lb=0, ub=5)
+    elif type=='nonparametric':
+        model = Model(lambda x: gauss2_design_axis(x,3,4,0.5,0.2),axis='x')
+        model.addlinear('amp1',lb=0)
+        model.addlinear('amp2',lb=0)
+    return model
+#----------------------------------------------------------------
+
+def test_fit_parametric_axis(): 
+#================================================================
+    "Check that a parametric model can be correctly fitted while specifying an axis"
+    model = _getmodel_axis('parametric')
+
+    x = np.linspace(0,10,200)
+    fit = model.fit(mock_data_fcn(x),x)
+    
+    assert np.allclose(fit.model,mock_data_fcn(x))
+#================================================================
+
+def test_fit_semiparametric_axis(): 
+#================================================================
+    "Check that a semiparametric model can be correctly fitted while specifying an axis"
+    model = _getmodel_axis('semiparametric')
+
+    x = np.linspace(0,10,200)
+    fit = model.fit(mock_data_fcn(x),x)
+    
+    assert np.allclose(fit.model,mock_data_fcn(x))
+#================================================================
+
+def test_fit_nonparametric_axis(): 
+#================================================================
+    "Check that a semiparametric model can be correctly fitted while specifying an axis"
+    model = _getmodel_axis('nonparametric')
+
+    x = np.linspace(0,10,200)
+    fit = model.fit(mock_data_fcn(x),x)
+    
+    assert np.allclose(fit.model,mock_data_fcn(x),atol=1e-3)
+#================================================================
+test_fit_nonparametric_axis()

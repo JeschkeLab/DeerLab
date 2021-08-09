@@ -3,7 +3,7 @@ import deerlab as dl
 import matplotlib.pyplot as plt 
 from deerlab.solvers import rlls,nlls,snlls
 from deerlab.classes import FitResult, UQResult
-from deerlab import bootan
+from deerlab.bootan import bootan
 import inspect 
 
 
@@ -128,15 +128,35 @@ class Model():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def __init__(self,Amodel): 
+    def __init__(self,Amodel,axis=None): 
         """
         Model object constructor
         """
         if not callable(Amodel):
             Amatrix = Amodel.copy()
-            Amodel = lambda: Amatrix 
+            Amodel = lambda *_: Amatrix 
         self.nonlinmodel = Amodel
+        self.name = None
+        self.axis_argument = None
+
+        # Get list of parameter names from the function signature
         parameters = inspect.getfullargspec(Amodel).args
+
+        # Check if one of the arguments is an axis argument        
+        for n,par in enumerate(parameters): 
+            if par==axis: 
+                parameters.remove(axis)
+                self.axis_argument = [axis,n]         
+
+        # Use a wrapper function to facilitate internal arguments manipulation        
+        #-----------------------------------
+        def model_with_axis(axis,*θ):
+            args = list(θ)
+            if self.axis_argument is not None:
+                args.insert(self.axis_argument[1],axis)
+            return Amodel(*args)
+        #-----------------------------------    
+        self.nonlinmodel = model_with_axis
 
         # Update the number of parameters in the model
         self.Nparam = len(parameters)
@@ -259,7 +279,7 @@ class Model():
             Physical units of the parameter.
         """
         if vec is not None: 
-            idx = np.arange(self.Nparam,self.Nparam+vec)
+            idx = np.arange(self.Nparam,self.Nparam+vec) 
             self.Nparam += vec        
             self.Nlin += vec
             newparam = Parameter(linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), units=units, name=name)
@@ -276,23 +296,36 @@ class Model():
         if kargs and args: 
             raise SyntaxError('The model must be called either with positional or keyword arguments. Not both.')
         
-        if args: 
+        if args:         
+            if self.axis_argument is not None:
+                axis = np.atleast_1d(args[self.axis_argument[1]])
+            else: 
+                axis = None
+            args_list = [np.atleast_1d(arg) for arg in args]
+            args_list = [ np.atleast_1d(arg) for arg in args_list if not (arg==axis).all()]
             # Values are already ordered
-            θ = np.concatenate([np.atleast_1d(arg) for arg in args]) 
+            θ = np.concatenate(args_list) 
         elif kargs:
-            θ = np.concatenate([np.atleast_1d(kargs[param]) for param in self._parameter_list()])
-            θ = self._vecsort(θ)
+            if self.axis_argument is not None:
+                axis = np.atleast_1d(kargs[self.axis_argument[0]])
+            else: 
+                axis = None
+            args_list = [np.atleast_1d(kargs[param]) for param in self._parameter_list()]
+            args_list = [ arg for arg in args_list if not (arg==axis).all()]
+            # Values must be ordered
+            θ = self._vecsort(np.concatenate(args_list))
 
         # Determine which parameters are linear and which nonlinear
         θlin, θnonlin = self._split_linear(θ)
         # If there are no linear parameters defined
         if len(θlin)==0: 
             θlin = 1
-        return self._core_model(self.nonlinmodel,θnonlin,θlin)
+
+        return self._core_model(lambda *θ: self.nonlinmodel(axis,*θ),θnonlin,θlin)
     #---------------------------------------------------------------------------------------
 
 
-    def fit(self,y,par0=None,bootstrap=0,**kwargs):
+    def fit(self,y,axis=None,par0=None,bootstrap=0,**kwargs):
     #---------------------------------------------------------------------------------------
         r"""
         Fit the model to the data ``y`` via one of the three following approaches: 
@@ -347,6 +380,11 @@ class Model():
         cost : float
             Value of the cost function at the solution.
         """
+        if axis is None:
+            axis = np.arange(len(y))
+        else: 
+            axis = np.atleast_1d(axis)
+            
         # Get boundaries and conditions for the linear and nonlinear parameters
         ubl,ub = self._split_linear(self._vecsort(self._getvector('ub')))
         lbl,lb = self._split_linear(self._vecsort(self._getvector('lb')))
@@ -371,7 +409,7 @@ class Model():
             # Linear LSQ  
             # ---------------------------------------------------------
             # Get the design matrix
-            Amatrix = self.nonlinmodel()
+            Amatrix = self.nonlinmodel(axis)
             # Run penalized LSQ solver
             fitfcn = lambda y: rlls(y,Amatrix,lbl,ubl,frozen=linfrozen,**kwargs)
 
@@ -379,14 +417,14 @@ class Model():
             # ---------------------------------------------------------
             # Separable non-linear LSQ  
             # ---------------------------------------------------------
-            Amodel_fcn = lambda param: np.atleast_2d(self.nonlinmodel(*param))
+            Amodel_fcn = lambda param: np.atleast_2d(self.nonlinmodel(axis,*param))
             fitfcn = lambda y: snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,**kwargs)        
 
         elif self.Nlin==0 and self.Nnonlin>0:       
             # ---------------------------------------------------------
             # Non-linear LSQ  
             # ---------------------------------------------------------
-            model_fcn = lambda param: self.nonlinmodel(*param)
+            model_fcn = lambda param: self.nonlinmodel(axis,*param)
             fitfcn = lambda y: nlls(y,model_fcn,par0,lb,ub,frozen=nonlinfrozen,**kwargs)
 
         else:
@@ -425,10 +463,21 @@ class Model():
     
     def __repr__(self):
     #---------------------------------------------------------------------------------------
+        if self.Nlin==0: 
+            modeltype = 'Parametric'
+        elif self.Nlin>0 and self.Nnonlin>0:
+            modeltype = 'Semiparametric'
+        else:
+            modeltype = 'Nonparametric'
+
         string = inspect.cleandoc(f"""
         <Model> 
+
+        Name: {self.name}
+        Type: {modeltype}
+
         Total number of parameters: {self.Nparam}
-        Number of non-linear parameters: {self.Nnonlin}
+        self.name = None
         Number of linear parameters: {self.Nlin}
           
         <Parameter List>
