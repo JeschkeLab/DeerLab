@@ -1,8 +1,7 @@
 from collections import namedtuple
 from deerlab.whitegaussnoise import whitegaussnoise
+from deerlab.model import Model, fit
 import numpy as np 
-import pytest
-from deerlab.model import Model
 
 # Simple non-linear function for testing
 x = np.linspace(0,5,100)
@@ -259,9 +258,9 @@ def test_fit_parametric():
     "Check that a parametric model can be correctly fitted"
     model = _getmodel('parametric')
 
-    fit = model.fit(mock_data)
+    fitResult = fit(model,mock_data)
     
-    assert np.allclose(fit.model,mock_data)
+    assert np.allclose(fitResult.model,mock_data)
 #================================================================
 
 def test_fit_semiparametric(): 
@@ -269,9 +268,9 @@ def test_fit_semiparametric():
     "Check that a semiparametric model can be correctly fitted"
     model = _getmodel('semiparametric')
 
-    fit = model.fit(mock_data)
+    fitResult = fit(model,mock_data)
     
-    assert np.allclose(fit.model,mock_data)
+    assert np.allclose(fitResult.model,mock_data)
 #================================================================
 
 def test_fit_nonparametric(): 
@@ -279,9 +278,9 @@ def test_fit_nonparametric():
     "Check that a semiparametric model can be correctly fitted"
     model = _getmodel('nonparametric')
 
-    fit = model.fit(mock_data)
+    fitResult = fit(model,mock_data)
     
-    assert np.allclose(fit.model,mock_data,atol=1e-3)
+    assert np.allclose(fitResult.model,mock_data,atol=1e-3)
 #================================================================
 
 def test_freeze():
@@ -311,9 +310,9 @@ def test_fit_parametric_frozen():
 
     model.mean1.freeze(3)
 
-    fit = model.fit(mock_data)
+    fitResult = fit(model,mock_data)
     
-    assert np.allclose(fit.model,mock_data)
+    assert np.allclose(fitResult.model,mock_data)
 #================================================================
 
 def test_fit_semiparametric_frozen(): 
@@ -323,9 +322,9 @@ def test_fit_semiparametric_frozen():
 
     model.mean1.freeze(3)
 
-    fit = model.fit(mock_data)
+    fitResult = fit(model,mock_data)
     
-    assert np.allclose(fit.model,mock_data)
+    assert np.allclose(fitResult.model,mock_data)
 #================================================================
 
 def test_fit_nonparametric_frozen(): 
@@ -334,9 +333,9 @@ def test_fit_nonparametric_frozen():
     model = _getmodel('nonparametric')
 
     model.amp1.freeze(0.5)
-    fit = model.fit(mock_data)
+    fitResult = fit(model,mock_data)
     
-    assert np.allclose(fit.model,mock_data)
+    assert np.allclose(fitResult.model,mock_data)
 #================================================================
 
 #----------------------------------------------------------------
@@ -354,9 +353,9 @@ def test_CIs_parametric():
     "Check the default confidence intervals of the fitted parameters"
     model = _getmodel('parametric')
 
-    fit = model.fit(mock_data)
+    fitResult = fit(model,mock_data)
     
-    assert_attributes_cis(fit,['mean1','mean2','width1','width2','amp1','amp2'])
+    assert_attributes_cis(fitResult,['mean1','mean2','width1','width2','amp1','amp2'])
 #================================================================
 
 def test_CIs_semiparametric(): 
@@ -364,9 +363,9 @@ def test_CIs_semiparametric():
     "Check the default confidence intervals of the fitted parameters"
     model = _getmodel('semiparametric')
 
-    fit = model.fit(mock_data)
+    fitResult = fit(model,mock_data)
     
-    assert_attributes_cis(fit,['mean1','mean2','width1','width2','amp1','amp2'])
+    assert_attributes_cis(fitResult,['mean1','mean2','width1','width2','amp1','amp2'])
 #================================================================
 
 def test_CIs_nonparametric(): 
@@ -374,9 +373,9 @@ def test_CIs_nonparametric():
     "Check the default confidence intervals of the fitted parameters"
     model = _getmodel('semiparametric')
 
-    fit = model.fit(mock_data)
+    fitResult = fit(model,mock_data)
     
-    assert_attributes_cis(fit,['amp1','amp2'])
+    assert_attributes_cis(fitResult,['amp1','amp2'])
 #================================================================
 
 
@@ -386,9 +385,9 @@ def test_bootCIs_parametric():
     model = _getmodel('parametric')
 
     noisydata = mock_data + whitegaussnoise(0.01,seed=1)
-    fit = model.fit(noisydata,bootstrap=3)
+    fitResult = fit(model,noisydata,bootstrap=3)
     
-    assert_attributes_cis(fit,['mean1','mean2','width1','width2','amp1','amp2'])
+    assert_attributes_cis(fitResult,['mean1','mean2','width1','width2','amp1','amp2'])
 #================================================================
 
 def test_bootCIs_semiparametric(): 
@@ -397,9 +396,9 @@ def test_bootCIs_semiparametric():
     model = _getmodel('semiparametric')
 
     noisydata = mock_data + whitegaussnoise(0.01,seed=1)
-    fit = model.fit(noisydata,bootstrap=3)
+    fitResult = fit(model,noisydata,bootstrap=3)
     
-    assert_attributes_cis(fit,['mean1','mean2','width1','width2','amp1','amp2'])
+    assert_attributes_cis(fitResult,['mean1','mean2','width1','width2','amp1','amp2'])
 #================================================================
 
 def test_bootCIs_nonparametric(): 
@@ -408,9 +407,9 @@ def test_bootCIs_nonparametric():
     model = _getmodel('semiparametric')
 
     noisydata = mock_data + whitegaussnoise(0.01,seed=1)
-    fit = model.fit(noisydata,bootstrap=3)
+    fitResult = fit(model,noisydata,bootstrap=3)
     
-    assert_attributes_cis(fit,['amp1','amp2'])
+    assert_attributes_cis(fitResult,['amp1','amp2'])
 #================================================================
 
 # Simple non-linear function for testing
@@ -488,9 +487,9 @@ def test_fit_parametric_axis():
     model = _getmodel_axis('parametric')
 
     x = np.linspace(0,10,200)
-    fit = model.fit(mock_data_fcn(x),x)
+    fitResult = fit(model,mock_data_fcn(x),x)
     
-    assert np.allclose(fit.model,mock_data_fcn(x))
+    assert np.allclose(fitResult.model,mock_data_fcn(x))
 #================================================================
 
 def test_fit_semiparametric_axis(): 
@@ -499,9 +498,9 @@ def test_fit_semiparametric_axis():
     model = _getmodel_axis('semiparametric')
 
     x = np.linspace(0,10,200)
-    fit = model.fit(mock_data_fcn(x),x)
+    fitResult = fit(model,mock_data_fcn(x),x)
     
-    assert np.allclose(fit.model,mock_data_fcn(x))
+    assert np.allclose(fitResult.model,mock_data_fcn(x))
 #================================================================
 
 def test_fit_nonparametric_axis(): 
@@ -510,8 +509,8 @@ def test_fit_nonparametric_axis():
     model = _getmodel_axis('nonparametric')
 
     x = np.linspace(0,10,200)
-    fit = model.fit(mock_data_fcn(x),x)
+    fitResult = fit(model,mock_data_fcn(x),x)
     
-    assert np.allclose(fit.model,mock_data_fcn(x),atol=1e-3)
+    assert np.allclose(fitResult.model,mock_data_fcn(x),atol=1e-3)
 #================================================================
-test_fit_nonparametric_axis()
+
