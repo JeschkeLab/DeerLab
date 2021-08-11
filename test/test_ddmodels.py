@@ -9,52 +9,32 @@ def assert_ddmodel(model):
     rnus = np.sqrt(np.linspace(1.5,6**2,500))
 
     # Extract model information
-    par0 = model.start
-    lower = model.lower
-    upper = model.upper
+    meta = model.getmetadata()
+    par0 = meta['par0']
+    lower = meta['lb']
+    upper = meta['ub']
     nParam = len(par0)
 
+    lower[np.isinf(lower)] = -1e5
+    upper[np.isinf(upper)] = +1e5
+
     # Calculate under different conditions
-    P1 = model(r,par0)
-    P2 = model(r.T,par0)
-    P3 = model(r,lower)
-    P4 = model(r,upper)
-    P5 = model(rnus,par0)
+    P1 = model(r,*par0)
+    P2 = model(r.T,*par0)
+    P3 = model(r,*lower)
+    P4 = model(r,*upper)
+    P5 = model(rnus,*par0)
 
     # Assert
-    passed = np.zeros(9, dtype=bool)
-    passed[0] = all(P1 == P2)
-    passed[1] = all(P1 >= 0)
-    passed[2] = all(P1 >= 0) and all(P2 >= 0)
-    passed[3] = all(~np.isnan(P1)) and all(~np.isnan(P2)) and all(~np.isnan(P3)) and all(~np.isnan(P4))
-    passed[4] = np.round(np.trapz(P5,rnus),2) == 1
-    passed[5] = len(lower)==nParam
-    passed[6] = len(upper)==nParam
-    passed[7] = len(model.parameters)==nParam
-    passed[8] = len(model.units)==nParam
-    
-    errors = []
-    if not passed[0]:
-        errors.append("Dimensionality is not correct")
-    if not passed[1]:
-        errors.append("Start values violate non-negativity constraint")
-    if not passed[2]:
-        errors.append("Boundary values violate non-negativity constraint")
-    if not passed[3]:
-        errors.append("Some conditions have returned NaN values")
-    if not passed[4]:
-        errors.append("Non-uniform trapezoidal integration failed")
-    if not passed[5]:
-        errors.append("model.lower has the wrong number of elements")
-    if not passed[6]:
-        errors.append("model.upper has the wrong number of elements")
-    if not passed[7]:
-        errors.append("model.parameters has the wrong number of elements")
-    if not passed[8]:
-        errors.append("model.units has the wrong number of elements")
-
-    # assert no error message has been registered, else print messages
-    assert not errors, f"Errors occured:\n{chr(10).join(errors)}"
+    assert all(P1 == P2)
+    assert all(P1 >= 0)
+    assert all(P1 >= 0) and all(P2 >= 0)
+    assert all(~np.isnan(P1)) and all(~np.isnan(P2)) and all(~np.isnan(P3)) and all(~np.isnan(P4))
+    assert np.round(np.trapz(P5,rnus),2) == 1
+    assert len(lower)==nParam
+    assert len(upper)==nParam
+    assert len(meta['names'])==nParam
+    assert len(meta['units'])==nParam
 #=============================================================================
 
 def test_dd_gauss():
