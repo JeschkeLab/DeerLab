@@ -1,6 +1,9 @@
+# model.py - Model object class
+# ---------------------------------------------------------------------------
+# This file is a part of DeerLab. License is MIT (see LICENSE.md). 
+# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
+
 import numpy as np
-import deerlab as dl
-import matplotlib.pyplot as plt 
 from deerlab.solvers import rlls,nlls,snlls
 from deerlab.classes import FitResult, UQResult
 from deerlab.bootan import bootan
@@ -49,11 +52,11 @@ class Parameter():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def __init__(self, parent=None, idx=None, name=None, par0=None, frozen=False, lb=-np.inf, ub=np.inf,value=None, units=None, linear=False): 
+    def __init__(self, parent=None, idx=None, description=None, par0=None, frozen=False, lb=-np.inf, ub=np.inf,value=None, units=None, linear=False): 
         # Attributes
         self._parent = parent # Parent 
         self.idx = idx
-        self.name = name      # Name
+        self.description = description # Description
         self.units = units    # Units
         self.par0 = par0      # Start values
         self.lb = lb          # Lower bounds
@@ -79,6 +82,8 @@ class Parameter():
             For example ``parameter.set(lb=0,ub=1)`` to set both the ``lb`` and ``ub`` attributes.
         """
         for key in attributes:
+            if not hasattr(self,key):
+                raise AttributeError(f"'{key}' is not a valid parameter attribute.")
             setattr(self,key,attributes[key])
         return 
     #---------------------------------------------------------------------------------------
@@ -136,7 +141,7 @@ class Model():
             Amatrix = Amodel.copy()
             Amodel = lambda *_: Amatrix 
         self.nonlinmodel = Amodel
-        self.name = None
+        self.description = None
         self.axis_argument = None
 
         # Get list of parameter names from the function signature
@@ -196,12 +201,12 @@ class Model():
 
     #---------------------------------------------------------------------------------------
     def _parameter_list(self, order='alphabetical'):
-        "Get the list of parameters defined in the model sorted alphabetically"
+        "Get the list of parameters defined in the model sorted alphabetically or by vector definition"
         if order=='alphabetical':
-            keylist =  [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
+            keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
         elif order=='vector':
-            keylist = np.concatenate([np.atleast_1d([param]*len(np.atleast_1d(getattr(self,param).idx))) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
-            keylist = np.unique(keylist)
+            keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
+            keylist = self._vecsort(keylist)
         return keylist
     #---------------------------------------------------------------------------------------
 
@@ -210,7 +215,7 @@ class Model():
         "Sort vectorized parameters attributes from alphabetical ordering to vector indexing"
         list = np.squeeze(np.atleast_1d(list))
         indices = np.concatenate([np.atleast_1d(getattr(self,param).idx) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
-        orderedlist = list.copy()
+        orderedlist = np.atleast_1d(list.copy())
         orderedlist[indices] = list
 
         return orderedlist
@@ -253,7 +258,7 @@ class Model():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def addlinear(self, key, vec=None, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None):
+    def addlinear(self, key, vec=None, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None, description=None):
         """
         Add a new linear :ref:`Parameter` object. 
 
@@ -282,12 +287,12 @@ class Model():
             idx = np.arange(self.Nparam,self.Nparam+vec) 
             self.Nparam += vec        
             self.Nlin += vec
-            newparam = Parameter(linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), units=units, name=name)
+            newparam = Parameter(linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), units=units, description=description)
         else:
             idx = self.Nparam
             self.Nparam += 1
             self.Nlin += 1
-            newparam = Parameter(linear=True, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, units=units, name=name)
+            newparam = Parameter(linear=True, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, units=units, description=description)
         setattr(self,key,newparam)
     #---------------------------------------------------------------------------------------
 
@@ -324,176 +329,162 @@ class Model():
         return self._core_model(lambda *θ: self.nonlinmodel(axis,*θ),θnonlin,θlin)
     #---------------------------------------------------------------------------------------
 
-
-    def fit(self,y,axis=None,par0=None,bootstrap=0,**kwargs):
     #---------------------------------------------------------------------------------------
-        r"""
-        Fit the model to the data ``y`` via one of the three following approaches: 
-        
-        - Non-linear least-squares 
-        - Regularized linear-least-squares 
-        - Separable non-linear least-squares
-
-        The most appropiate solver is chosen automatically based on the model structure. 
-
-        Parameters
-        ----------
-        y : array_like 
-            Data to be fitted. 
-        par0 : array_like, optional 
-            Value at which to initialize the parameter at the start of a fit routine. 
-            Must be specified if not defined in the model. Otherwise, it overrides the definition in the model. 
-
-        Any additional solver-specific keyword arguments can be specified. See :ref:`nlls`, :ref:`rlls` and :ref:`snlls` for a full reference. 
-
-        Returns
-        -------
-        :ref:`FitResult` with the following fields defined:
-        nonlin : ndarray
-            Fitted non-linear parameters.
-        lin : ndarray
-            Fitted linear parameters.
-        model : ndarray
-            Fitted model.
-        nonlinUncert : :ref:`UQResult`
-            Uncertainty quantification of the non-linear parameter set.
-        linUncert : :ref:`UQResult`
-            Uncertainty quantification of the linear parameter set.
-        modelUncert : :ref:`UQResult`
-            Uncertainty quantification of the fitted model.
-        regparam : scalar
-            Regularization parameter value used for the regularization of the linear parameters.
-        plot : callable
-            Function to display the results. It will display the fitted data.
-            The function returns the figure object (``matplotlib.figure.Figure``)
-            object as output, which can be modified. Using ``fig = plot(show=False)`` 
-            will not render the figure unless ``display(fig)`` is called. 
-        stats : dict
-            Goodness of fit statistical estimators
-
-            * ``stats['chi2red']`` - Reduced \chi^2 test
-            * ``stats['r2']`` - R^2 test
-            * ``stats['rmsd']`` - Root-mean squared deviation (RMSD)
-            * ``stats['aic']`` - Akaike information criterion
-            * ``stats['aicc']`` - Corrected Akaike information criterion
-            * ``stats['bic']`` - Bayesian information criterion
-        cost : float
-            Value of the cost function at the solution.
+    def getmetadata(self):
         """
-        if axis is None:
-            axis = np.arange(len(y))
-        else: 
-            axis = np.atleast_1d(axis)
-            
-        # Get boundaries and conditions for the linear and nonlinear parameters
-        ubl,ub = self._split_linear(self._vecsort(self._getvector('ub')))
-        lbl,lb = self._split_linear(self._vecsort(self._getvector('lb')))
-        frozenl,frozen = self._split_linear(self._vecsort(self._getvector('frozen')))
-        valuesl,values = self._split_linear(self._vecsort(self._getvector('value')))
-
-        # Check the initial conditions and whether they are defined
-        if par0 is None:
-            _,par0 = self._split_linear(self._vecsort(self._getvector('par0')))
-        if np.any(par0==None):
-            raise RuntimeError(f"It appears some start values (par0) have not been specified. Either specify them in the model definition or using the keyword.")
-
-        linfrozen = np.full(self.Nlin,None)
-        linfrozen[frozenl] = valuesl[frozenl]
-        nonlinfrozen = np.full(self.Nnonlin,None)
-        nonlinfrozen[frozen] = values[frozen]
-
-
-        # Determine the class of least-squares problem to solve
-        if self.Nlin>0 and self.Nnonlin==0:      
-            # ---------------------------------------------------------
-            # Linear LSQ  
-            # ---------------------------------------------------------
-            # Get the design matrix
-            Amatrix = self.nonlinmodel(axis)
-            # Run penalized LSQ solver
-            fitfcn = lambda y: rlls(y,Amatrix,lbl,ubl,frozen=linfrozen,**kwargs)
-
-        elif self.Nlin>0 and self.Nnonlin>0:        
-            # ---------------------------------------------------------
-            # Separable non-linear LSQ  
-            # ---------------------------------------------------------
-            Amodel_fcn = lambda param: np.atleast_2d(self.nonlinmodel(axis,*param))
-            fitfcn = lambda y: snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,**kwargs)        
-
-        elif self.Nlin==0 and self.Nnonlin>0:       
-            # ---------------------------------------------------------
-            # Non-linear LSQ  
-            # ---------------------------------------------------------
-            model_fcn = lambda param: self.nonlinmodel(axis,*param)
-            fitfcn = lambda y: nlls(y,model_fcn,par0,lb,ub,frozen=nonlinfrozen,**kwargs)
-
-        else:
-            raise AssertionError(f'The model has no parameters to fit.')
-
-        # Run the fitting algorithm 
-        fitresults = fitfcn(y)
-
-        # If requested, perform a bootstrap analysis
-        if bootstrap>0: 
-            def bootstrap_fcn(ysim): 
-                fit = fitfcn(ysim)
-                return fit.param,fit.model
-            # Bootstrapped uncertainty quantification
-            param_uq = bootan(bootstrap_fcn,y,fitresults.model,samples=bootstrap)
-            # Substitute the fitted values by the bootsrapped median estimate
-            fitresults.param = param_uq[0].median
-            fitresults.paramUncert = param_uq[0]
-            fitresults.model = param_uq[1].median
-            fitresults.modelUncert = param_uq[1]
-
-        # Get some basic information on the parameter vector
-        keys = self._parameter_list(order='vector')
-        param_idx =  self._vecsort(self._getvector('idx'))
-        # Dictionary of parameter names and fitted values
-        FitResult_param = {key : fitvalue for key,fitvalue in zip(keys,fitresults.param)}
-        # Dictionary of parameter names and fit uncertainties
-        FitResult_paramuq = {f'{key}Uncert': self._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
-        # Dictionary of other fit quantities of interest
-        FitResult_dict = {key: getattr(fitresults,key) for key in ['model','modelUncert','scale','cost','plot','residuals']}
-        # Generate FitResult object from all the dictionaries
-        fit = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict }) 
-
-        return fit
+        Utility function to quickly request all metadata attributes of the model in vector form. 
+        All elements are sorted according to the model function signature.
+        """
+        return {
+            'names': self._parameter_list(order='vector'),
+            'ub' : self._vecsort(self._getvector('ub')),
+            'lb' : self._vecsort(self._getvector('lb')),
+            'par0' : self._vecsort(self._getvector('par0')),
+            'frozen' : self._vecsort(self._getvector('frozen')),
+            'values' : self._vecsort(self._getvector('value')),
+            'units' : self._vecsort(self._getvector('units')),
+            }
     #---------------------------------------------------------------------------------------
-    
-    def __repr__(self):
-    #---------------------------------------------------------------------------------------
-        if self.Nlin==0: 
-            modeltype = 'Parametric'
-        elif self.Nlin>0 and self.Nnonlin>0:
-            modeltype = 'Semiparametric'
-        else:
-            modeltype = 'Nonparametric'
-
-        string = inspect.cleandoc(f"""
-        <Model> 
-
-        Name: {self.name}
-        Type: {modeltype}
-
-        Total number of parameters: {self.Nparam}
-        self.name = None
-        Number of linear parameters: {self.Nlin}
-          
-        <Parameter List>
-        --------------------------------------------------------------------------------
-           Name       Lower   Upper      Type      Units     Description  
-        --------------------------------------------------------------------------------""")
-        for n,paramname in enumerate(self._vecsort(self._parameter_list())): 
-            string += f'\n   {paramname:7s}'
-            string += f'  {getattr(self,paramname).lb:5.3g}'
-            string += f'  {getattr(self,paramname).ub:5.3g}'
-            string += f'        {"linear" if getattr(self,paramname).linear else "nonlin"}'
-            string += f'     {str(getattr(self,paramname).units):s}'
-            string += f'      {str(getattr(self,paramname).name):s}'
-        string += '\n--------------------------------------------------------------------------------'
-        return string
-    #---------------------------------------------------------------------------------------
-
-
 #===================================================================================
+
+
+
+def fit(model,y,axis=None,par0=None,bootstrap=0,**kwargs):
+#---------------------------------------------------------------------------------------
+    r"""
+    Fit the model to the data ``y`` via one of the three following approaches: 
+    
+    - Non-linear least-squares 
+    - Regularized linear-least-squares 
+    - Separable non-linear least-squares
+
+    The most appropiate solver is chosen automatically based on the model structure. 
+
+    Parameters
+    ----------
+    y : array_like 
+        Data to be fitted. 
+    par0 : array_like, optional 
+        Value at which to initialize the parameter at the start of a fit routine. 
+        Must be specified if not defined in the model. Otherwise, it overrides the definition in the model. 
+
+    Any additional solver-specific keyword arguments can be specified. See :ref:`nlls`, :ref:`rlls` and :ref:`snlls` for a full reference. 
+
+    Returns
+    -------
+    :ref:`FitResult` with the following fields defined:
+    nonlin : ndarray
+        Fitted non-linear parameters.
+    lin : ndarray
+        Fitted linear parameters.
+    model : ndarray
+        Fitted model.
+    nonlinUncert : :ref:`UQResult`
+        Uncertainty quantification of the non-linear parameter set.
+    linUncert : :ref:`UQResult`
+        Uncertainty quantification of the linear parameter set.
+    modelUncert : :ref:`UQResult`
+        Uncertainty quantification of the fitted model.
+    regparam : scalar
+        Regularization parameter value used for the regularization of the linear parameters.
+    plot : callable
+        Function to display the results. It will display the fitted data.
+        The function returns the figure object (``matplotlib.figure.Figure``)
+        object as output, which can be modified. Using ``fig = plot(show=False)`` 
+        will not render the figure unless ``display(fig)`` is called. 
+    stats : dict
+        Goodness of fit statistical estimators
+
+        * ``stats['chi2red']`` - Reduced \chi^2 test
+        * ``stats['r2']`` - R^2 test
+        * ``stats['rmsd']`` - Root-mean squared deviation (RMSD)
+        * ``stats['aic']`` - Akaike information criterion
+        * ``stats['aicc']`` - Corrected Akaike information criterion
+        * ``stats['bic']`` - Bayesian information criterion
+    cost : float
+        Value of the cost function at the solution.
+    """
+
+    if not isinstance(model,Model):
+        raise TypeError('The input model must be a valid deerlab.Model object.')
+
+    if axis is None:
+        axis = np.arange(len(y))
+    else: 
+        axis = np.atleast_1d(axis)
+        
+    # Get boundaries and conditions for the linear and nonlinear parameters
+    ubl,ub = model._split_linear(model._vecsort(model._getvector('ub')))
+    lbl,lb = model._split_linear(model._vecsort(model._getvector('lb')))
+    frozenl,frozen = model._split_linear(model._vecsort(model._getvector('frozen')))
+    valuesl,values = model._split_linear(model._vecsort(model._getvector('value')))
+
+    # Check the initial conditions and whether they are defined
+    if par0 is None:
+        _,par0 = model._split_linear(model._vecsort(model._getvector('par0')))
+    if np.any(par0==None):
+        raise RuntimeError(f"It appears some start values (par0) have not been specified. Either specify them in the model definition or using the keyword.")
+
+    linfrozen = np.full(model.Nlin,None)
+    linfrozen[frozenl] = valuesl[frozenl]
+    nonlinfrozen = np.full(model.Nnonlin,None)
+    nonlinfrozen[frozen] = values[frozen]
+
+
+    # Determine the class of least-squares problem to solve
+    if model.Nlin>0 and model.Nnonlin==0:      
+        # ---------------------------------------------------------
+        # Linear LSQ  
+        # ---------------------------------------------------------
+        # Get the design matrix
+        Amatrix = model.nonlinmodel(axis)
+        # Run penalized LSQ solver
+        fitfcn = lambda y: rlls(y,Amatrix,lbl,ubl,frozen=linfrozen,**kwargs)
+
+    elif model.Nlin>0 and model.Nnonlin>0:        
+        # ---------------------------------------------------------
+        # Separable non-linear LSQ  
+        # ---------------------------------------------------------
+        Amodel_fcn = lambda param: np.atleast_2d(model.nonlinmodel(axis,*param))
+        fitfcn = lambda y: snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,**kwargs)        
+
+    elif model.Nlin==0 and model.Nnonlin>0:       
+        # ---------------------------------------------------------
+        # Non-linear LSQ  
+        # ---------------------------------------------------------
+        model_fcn = lambda param: model.nonlinmodel(axis,*param)
+        fitfcn = lambda y: nlls(y,model_fcn,par0,lb,ub,frozen=nonlinfrozen,**kwargs)
+
+    else:
+        raise AssertionError(f'The model has no parameters to fit.')
+
+    # Run the fitting algorithm 
+    fitresults = fitfcn(y)
+
+    # If requested, perform a bootstrap analysis
+    if bootstrap>0: 
+        def bootstrap_fcn(ysim): 
+            fit = fitfcn(ysim)
+            return fit.param,fit.model
+        # Bootstrapped uncertainty quantification
+        param_uq = bootan(bootstrap_fcn,y,fitresults.model,samples=bootstrap)
+        # Substitute the fitted values by the bootsrapped median estimate
+        fitresults.param = param_uq[0].median
+        fitresults.paramUncert = param_uq[0]
+        fitresults.model = param_uq[1].median
+        fitresults.modelUncert = param_uq[1]
+
+    # Get some basic information on the parameter vector
+    keys = model._parameter_list(order='vector')
+    param_idx =  model._vecsort(model._getvector('idx'))
+    # Dictionary of parameter names and fitted values
+    FitResult_param = {key : fitvalue for key,fitvalue in zip(keys,fitresults.param)}
+    # Dictionary of parameter names and fit uncertainties
+    FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
+    # Dictionary of other fit quantities of interest
+    FitResult_dict = {key: getattr(fitresults,key) for key in ['model','modelUncert','scale','cost','plot','residuals']}
+    # Generate FitResult object from all the dictionaries
+    fit = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict }) 
+
+    return fit
+#---------------------------------------------------------------------------------------
