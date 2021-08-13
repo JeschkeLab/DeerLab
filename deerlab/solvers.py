@@ -1046,7 +1046,7 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     lb_red,ub_red,par0_red = [var[~nonlin_frozen] for var in [lb,ub,par0]]
     lbl_red,ubl_red = [var[~lin_frozen] for var in [lbl,ubl]]
-    A0red = A0[:,lin_frozen]
+    A0red = A0[:,~lin_frozen]
     # Redefine model to take just the unfrozen parameter subset
 
     _Amodel = Amodel
