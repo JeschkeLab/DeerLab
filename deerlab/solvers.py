@@ -1046,14 +1046,14 @@ def snlls(y, Amodel, par0, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx
 
     lb_red,ub_red,par0_red = [var[~nonlin_frozen] for var in [lb,ub,par0]]
     lbl_red,ubl_red = [var[~lin_frozen] for var in [lbl,ubl]]
-
+    A0red = A0[:,lin_frozen]
     # Redefine model to take just the unfrozen parameter subset
 
     _Amodel = Amodel
     Amodel = lambda param: _Amodel(_unfrozen_subset(param,nonlin_frozen,nonlin_parfrozen))
 
     # Prepare the optimal solver setup for the linear problem
-    ax, L, linSolver, parseResult, validateResult, includeRegularization = _prepare_linear_lsq(A0,lbl_red,ubl_red,reg,regop,lin_tol,lin_maxiter,nnlsSolver)
+    ax, L, linSolver, parseResult, validateResult, includeRegularization = _prepare_linear_lsq(A0red,lbl_red,ubl_red,reg,regop,lin_tol,lin_maxiter,nnlsSolver)
 
     # Pre-allocate nonlocal variables
     check = False
