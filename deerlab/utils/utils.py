@@ -9,7 +9,7 @@ from functools import wraps
 
 from scipy.sparse.construct import block_diag
 
-def parse_multidatasets(V_, K, weights, noiselvl, precondition=False):
+def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, subsets=None):
 #===============================================================================
     
     # Make copies to avoid modifying the originals

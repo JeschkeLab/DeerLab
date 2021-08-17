@@ -430,33 +430,24 @@ def fit(model,y,axis=None,par0=None,bootstrap=0,**kwargs):
     nonlinfrozen = np.full(model.Nnonlin,None)
     nonlinfrozen[frozen] = values[frozen]
 
+    if len(linfrozen)==0: linfrozen = [1]
 
-    # Determine the class of least-squares problem to solve
-    if model.Nlin>0 and model.Nnonlin==0:      
-        # ---------------------------------------------------------
-        # Linear LSQ  
-        # ---------------------------------------------------------
-        # Get the design matrix
-        Amatrix = model.nonlinmodel(axis)
-        # Run penalized LSQ solver
-        fitfcn = lambda y: rlls(y,Amatrix,lbl,ubl,frozen=linfrozen,**kwargs)
+    if model._getNparents()==1:
+        y = [y]            
+    nprev = 0
+    ysubsets = []
+    for yset in y:
+        ysubsets.append(np.arange(nprev,nprev+len(yset)))
+        nprev = nprev+len(yset)
+    y = np.concatenate(y)
 
-    elif model.Nlin>0 and model.Nnonlin>0:        
-        # ---------------------------------------------------------
-        # Separable non-linear LSQ  
-        # ---------------------------------------------------------
-        Amodel_fcn = lambda param: np.atleast_2d(model.nonlinmodel(axis,*param))
-        fitfcn = lambda y: snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,**kwargs)        
 
-    elif model.Nlin==0 and model.Nnonlin>0:       
-        # ---------------------------------------------------------
-        # Non-linear LSQ  
-        # ---------------------------------------------------------
-        model_fcn = lambda param: model.nonlinmodel(axis,*param)
-        fitfcn = lambda y: nlls(y,model_fcn,par0,lb,ub,frozen=nonlinfrozen,**kwargs)
+    if model.Nlin==0 and model.Nnonlin==0:
+        raise AssertionError(f'The model has no parameters to fit.')    
 
-    else:
-        raise AssertionError(f'The model has no parameters to fit.')
+    # Prepare the separable non-linear least-squares solver
+    Amodel_fcn = lambda param: model.nonlinmodel(axis,*param)
+    fitfcn = lambda y: snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,subsets=ysubsets,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,**kwargs)        
 
     # Run the fitting algorithm 
     fitresults = fitfcn(y)
@@ -482,9 +473,223 @@ def fit(model,y,axis=None,par0=None,bootstrap=0,**kwargs):
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
-    FitResult_dict = {key: getattr(fitresults,key) for key in ['model','modelUncert','scale','cost','plot','residuals']}
+    FitResult_dict = {key: getattr(fitresults,key) for key in ['model','modelUncert','cost','plot','residuals']}
     # Generate FitResult object from all the dictionaries
     fit = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict }) 
 
     return fit
-#---------------------------------------------------------------------------------------
+#==============================================================================================
+
+def _importparameter(parameter):
+    return {
+        'lb' : parameter.lb,
+        'ub' : parameter.ub,
+        'par0' : parameter.par0,
+        'description' : parameter.description,
+        'units' : parameter.units,
+        'frozen' : parameter.frozen,
+        'value' : parameter.value,
+    }
+
+#==============================================================================================
+def combine(*inputmodels,**links): 
+
+    # ==============================================================================
+    def _linkParameters(model,link_names,newname):
+
+        # Get a list of parameter names in the model
+        model_parameters = model._parameter_list(order='vector')
+
+        link_parameters,link_indices = [],[]
+        for param in link_names: 
+            # Make list of parameter objects
+            link_parameters.append(getattr(model,param))
+            # Make list of parameter indices
+            link_indices.append(getattr(model,param).idx)
+
+        # Get the names of the parameters to be linked
+        link_names = list(link_names)
+        # Remove the first from the list as it will be kept
+        link_names.pop(0)
+        # Get the vector index of the parameter to be linked to
+        nlink = link_indices[0]
+
+        nnew = 0
+        mapping = np.zeros(model.Nnonlin,dtype=int)
+        # Loop over all parameters in the model
+        for n,param in enumerate(model_parameters):
+            # If the parameter is to be linked...
+            if param in link_names:
+                # Update the number of parameters in the model
+                model.Nparam -= 1
+                if getattr(model,param).linear:
+                    model.Nlin -= 1
+                else: 
+                    model.Nnonlin -= 1
+                # Delete the linked parameter from the model
+                delattr(model,param)
+                # Update the parameter vector map
+                mapping[n] = nlink
+            # Otherwise...
+            else:
+                # Update the index of the parameter in the new vector 
+                getattr(model,param).idx = nnew
+                if not getattr(model,param).linear:
+                    mapping[n] = nnew
+                nnew += 1
+
+        # Create a copy of the linked parameter with the new name
+        setattr(model,newname,getattr(model,model_parameters[nlink]))
+        # Delete the old copy with the old name
+        delattr(model,model_parameters[nlink])
+
+        # Wrap the evaluation function         
+        nonlinfcn = model.nonlinmodel
+        # ---------------------------------------------------------------------
+        def linked_model_with_axis(axis,*θ):
+            # Redistribute the input parameter vector according to the mapping vector
+            θ = np.atleast_1d(θ)[mapping]
+            args = list(θ)
+            if model.axis_argument is not None:
+                args.insert(model.axis_argument[1],axis)
+            return nonlinfcn(*args)
+        # ---------------------------------------------------------------------
+        model.nonlinmodel = linked_model_with_axis
+
+        # Return the updated model with the linked parameters
+        return model
+    # ==============================================================================
+
+    # Initialize empty containers
+    subsets_nonlin,arguments,arelinear = [],[],[]
+    nprev = 0
+
+    # Make deep-copies of the models to avoid modifying them
+    models = [deepcopy(model) for model in inputmodels]
+
+    # Loop over all models to be combined
+    for n,model in enumerate(models): 
+        
+        # If one of the models has linear parameters, but not the others
+        # add a dummy unity linear parameter 
+        if model.Nlin==0:
+            model.addlinear('scale',par0=1,lb=0)
+
+        # Determine the subset of parameters for the current model
+        subset = np.arange(nprev,nprev+model.Nnonlin,1)
+        nprev += model.Nnonlin
+        # From that subset, determine the non-linear subset
+        subset_nonlin = subset[np.arange(model.Nnonlin)]
+        subsets_nonlin.append(subset_nonlin)
+
+        # Determine which parameters are linear
+        arelinear = np.concatenate([arelinear,model._vecsort(model._getvector('linear'))])
+
+        newarguments = model._parameter_list(order='vector').tolist()  
+        # If there is more than one model, append a string to identify the origin
+        if len(models)>1: 
+            newarguments = [arg+f'_{n+1}' for arg in newarguments] 
+
+        # Map the link parameter objects to the new model names for later
+        oldargs = inputmodels[n]._parameter_list(order='vector').tolist()  
+        newarguments_ = newarguments.copy()
+        for link in links: 
+            for i,param in enumerate(links[link]):        
+                for oldarg,newarg in zip(oldargs,newarguments_):
+                    if getattr(inputmodels[n],oldarg)==param:
+                        links[link][i] = newarg 
+                        newarguments_.remove(newarg)
+                        oldargs.remove(oldarg)
+
+
+        # Add the submodel arguments to the combined model signature
+        arguments += newarguments
+
+    #---------------------------------------------------------------------
+    def _combined_nonlinmodel(axes,*param):
+        """Evaluates the nonlinear functions of the submodels and 
+        concatenates them into a single design matrix"""
+
+        # Parse the inputs
+        if len(models)==1:
+            axes = [axes]            
+        N = np.sum([len(axis) for axis in axes])
+        nprev = 0
+        param = np.atleast_1d(param)
+        
+        # Determine the indices to access the individual subsets
+        ysubsets = []
+        for axis in axes:
+            ysubsets.append(np.arange(nprev,nprev+len(axis)))
+            nprev = nprev+len(axis)
+
+        # Loop over the submodels in the model
+        for n,model in enumerate(models):
+            # Empty container
+            Vnonlin = np.zeros((N,np.maximum(model.Nlin,1)))
+            # Evaluate the submodel
+            Amatrix = np.atleast_2d(model.nonlinmodel(axes[n],*param[subsets_nonlin[n]]))
+            if Amatrix.shape[0]!=len(ysubsets[n]): Amatrix = Amatrix.T
+            # Concatenate to the full design matrix                
+            Vnonlin[ysubsets[n],:] = Amatrix
+            if n>0:
+                Vnonlin_full = np.concatenate([Vnonlin_full,Vnonlin],axis=1)
+            else:
+                Vnonlin_full = Vnonlin
+        if not any(arelinear):
+            Vnonlin_full = np.sum(Vnonlin_full,1)
+
+        return Vnonlin_full
+    #---------------------------------------------------------------------
+    
+    #---------------------------------------------------------------------
+    def _split_output(axes,y):
+        if len(models)==1:
+            axes = [axes]            
+        nprev = 0
+        Vsubsets = []
+        for axis in axes:
+            Vsubsets.append(np.arange(nprev,nprev+len(axis)))
+            nprev = nprev+len(axis)    
+        return [y[Vsubsets[n]] for n in range(len(axes))]
+    #---------------------------------------------------------------------
+   
+    # Preparation of the combined model signature    
+    arelinear = np.asarray(arelinear).astype(bool)
+    arguments = np.array(arguments)
+    lin_params = arguments[arelinear]
+    nonlin_params = arguments[~arelinear]
+
+    # Account for the axis argument
+    arguments = np.insert(nonlin_params,0,'axes').tolist()
+
+    # Create the model object
+    combinedModel = Model(_combined_nonlinmodel,axis='axes',signature=arguments)
+
+    # Add parent models 
+    combinedModel.parents = models
+
+    # Add post-evalution function for splitting of the call outputs
+    setattr(combinedModel,'_posteval_fcn',_split_output) 
+
+    # Add the linear parameters from the subset models    
+    for lparam in lin_params:
+        combinedModel.addlinear(lparam)
+
+    parameters = np.concatenate([arguments,lin_params])
+    # Import all parameter information from the subset models
+    for name,param in zip(combinedModel._parameter_list(order='vector'),parameters):
+        if '_' in name:
+            param,n = name.split('_')
+            n = int(n)-1
+        else:
+            param,n = name,0
+        getattr(combinedModel,name).set(**_importparameter(getattr(models[n],param)))
+
+    # Perform links of parameters if requested
+    for link_name in links: 
+        combinedModel = _linkParameters(combinedModel,links[link_name],link_name)
+
+    # Return the new combined model object
+    return combinedModel    
+#==============================================================================================
