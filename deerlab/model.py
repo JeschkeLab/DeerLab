@@ -4,11 +4,13 @@
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from deerlab.solvers import rlls,nlls,snlls
+from numpy.core.shape_base import atleast_1d
+from deerlab.solvers import snlls
 from deerlab.classes import FitResult, UQResult
 from deerlab.bootan import bootan
 import inspect 
-
+from copy import deepcopy
+import difflib
 
 #===================================================================================
 class Parameter(): 
@@ -133,7 +135,7 @@ class Model():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def __init__(self,Amodel,axis=None): 
+    def __init__(self,Amodel,axis=None,signature=None): 
         """
         Model object constructor
         """
@@ -143,10 +145,12 @@ class Model():
         self.nonlinmodel = Amodel
         self.description = None
         self.axis_argument = None
-
-        # Get list of parameter names from the function signature
-        parameters = inspect.getfullargspec(Amodel).args
-
+        self.parents = None
+        if signature is None:
+            # Get list of parameter names from the function signature
+            parameters = inspect.getfullargspec(Amodel).args
+        else: 
+            parameters = signature.copy()
         # Check if one of the arguments is an axis argument        
         for n,par in enumerate(parameters): 
             if par==axis: 
@@ -173,9 +177,33 @@ class Model():
             setattr(self,param,newparam)
     #---------------------------------------------------------------------------------------
 
+    # Gets called when an attribute is accessed
+    #--------------------------------------------------------------------------------
+    def __getattribute__(self, attr):
+        try:
+            return super(Model, self).__getattribute__(attr)
+        except AttributeError:
+            errstr = f'The model has no attribute {attr}.'
+            attributes = [key for key in self.__dict__]
+            proposal = difflib.get_close_matches(attr, attributes)
+            if len(proposal)>0:
+                errstr += f' \n Did you mean: {proposal} ?'
+            raise AttributeError(errstr)
+    #--------------------------------------------------------------------------------
+
+
+
     #=======================================================================================
     #                                    Private methods
     #=======================================================================================
+
+    #---------------------------------------------------------------------------------------
+    def _getNparents(self):
+        if self.parents is None: 
+            return 1
+        else: 
+            return len(self.parents)
+    #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
     def _core_model(self,Amodel,θnonlin,θlin): 
@@ -192,11 +220,17 @@ class Model():
         A = np.atleast_2d(A)
         θlin = np.atleast_1d(np.squeeze(θlin))
 
+        # If there are no linear parameters defined
+        if len(θlin)==0: 
+            θlin = np.array([1])
+
         if A.shape[1]!=len(θlin): 
             A = A.T
 
         # Full model calculation 
-        return A@θlin
+        y = A@θlin
+        
+        return y
     #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
@@ -301,13 +335,20 @@ class Model():
         if kargs and args: 
             raise SyntaxError('The model must be called either with positional or keyword arguments. Not both.')
         
+        Nrequired = len(self._parameter_list())
+        if self.axis_argument is not None:
+            Nrequired += 1
+
+        if len(args)!=Nrequired and len(kargs)!=Nrequired:
+            raise SyntaxError(f'The model requires {Nrequired} arguments and only {len(args)+len(kargs)} have been specified.')
+
         if args:         
             if self.axis_argument is not None:
                 axis = np.atleast_1d(args[self.axis_argument[1]])
             else: 
                 axis = None
             args_list = [np.atleast_1d(arg) for arg in args]
-            args_list = [ np.atleast_1d(arg) for arg in args_list if not (arg==axis).all()]
+            args_list = [np.atleast_1d(arg) for arg in args_list if not (arg==axis).all()]
             # Values are already ordered
             θ = np.concatenate(args_list) 
         elif kargs:
@@ -320,13 +361,20 @@ class Model():
             # Values must be ordered
             θ = self._vecsort(np.concatenate(args_list))
 
+        if len(θ)!=self.Nparam:
+            raise SyntaxError(f'The model requires {self.Nparam} parameters, but {len(θ)} were specified.')   
+            
+
         # Determine which parameters are linear and which nonlinear
         θlin, θnonlin = self._split_linear(θ)
-        # If there are no linear parameters defined
-        if len(θlin)==0: 
-            θlin = 1
 
-        return self._core_model(lambda *θ: self.nonlinmodel(axis,*θ),θnonlin,θlin)
+        # Evaluate the core model
+        y = self._core_model(lambda *θ: self.nonlinmodel(axis,*θ),θnonlin,θlin)
+
+        # Evaluate whether the response has 
+        if hasattr(self,'_posteval_fcn'):
+            y = self._posteval_fcn(axis,y)
+        return y
     #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
@@ -341,6 +389,7 @@ class Model():
             'lb' : self._vecsort(self._getvector('lb')),
             'par0' : self._vecsort(self._getvector('par0')),
             'frozen' : self._vecsort(self._getvector('frozen')),
+            'linear' : self._vecsort(self._getvector('linear')),
             'values' : self._vecsort(self._getvector('value')),
             'units' : self._vecsort(self._getvector('units')),
             }
@@ -349,8 +398,9 @@ class Model():
 
 
 
+
+#==============================================================================================
 def fit(model,y,axis=None,par0=None,bootstrap=0,**kwargs):
-#---------------------------------------------------------------------------------------
     r"""
     Fit the model to the data ``y`` via one of the three following approaches: 
     
