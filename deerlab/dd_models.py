@@ -12,11 +12,11 @@ from deerlab.model import Model
 def _docstring(model,notes):
 #---------------------------------------------------------------------------------------
     args = model._parameter_list(order='vector').tolist()
-    args.insert(model.axis_argument[1],model.axis_argument[0])
+    args.insert(model._constantsInfo[0]['argidx'],model._constantsInfo[0]['argkey'])
 
     parameters = ''
     for arg in args:
-        if arg==model.axis_argument[0]:
+        if arg==model._constantsInfo[0]['argkey']:
             type = 'array_like'
             parameters += f'\n    {arg} : {type} \n        Distance axis, in nanometers.'
         elif len(np.atleast_1d(getattr(model,arg).idx))>1:
@@ -139,7 +139,7 @@ where `\left<r\right>` is the mean distance and `\sigma` the standard deviation.
 def gauss(r,mean,width):
     return _multigaussfun(r,mean,width)
 # Create model
-dd_gauss = Model(gauss,axis='r')
+dd_gauss = Model(gauss,constants='r')
 dd_gauss.description = 'Gaussian distribution model'
 # Parameters
 dd_gauss.mean.set(description='Mean', lb=1.0, ub=20, par0=3.5, units='nm')
@@ -162,7 +162,7 @@ where `\left<r\right>_i` are the mean distances, `\sigma_i` the standard deviati
 def gauss2(r,mean1,width1,mean2,width2):
     return _multigaussfun(r,[mean1,mean2],[width1,width2])
 # Create model
-dd_gauss2 = Model(gauss2,axis='r')
+dd_gauss2 = Model(gauss2,constants='r')
 dd_gauss2.description = 'Sum of two Gaussian distributions model'
 # Parameters
 dd_gauss2.mean1.set(description='1st Gaussian mean', lb=1.0, ub=20, par0=2.5, units='nm')
@@ -189,7 +189,7 @@ where `\left<r\right>_i` are the mean distances, `\sigma_i` the standard deviati
 def gauss3(r,mean1,width1,mean2,width2,mean3,width3):
     return _multigaussfun(r,[mean1,mean2,mean3],[width1,width2,width3])
 # Create model
-dd_gauss3 = Model(gauss3,axis='r')
+dd_gauss3 = Model(gauss3,constants='r')
 dd_gauss3.description = 'Sum of three Gaussian distributions model'
 # Parameters
 dd_gauss3.mean1.set(description='1st Gaussian mean', lb=1.0, ub=20, par0=2.5, units='nm')
@@ -223,7 +223,7 @@ def gengauss(r,mean,width,kurt):
     P = kurt/(2*width*spc.gamma(1/kurt))*np.exp(-abs(r-mean)/width**kurt)
     return _normalize(r,P) 
 # Create model
-dd_gengauss = Model(gengauss,axis='r')
+dd_gengauss = Model(gengauss,constants='r')
 dd_gengauss.description = 'Generalized Gaussian distribution model'
 # Parameters
 dd_gengauss.mean.set(description='Mean', lb=1.0, ub=20, par0=3.5, units='nm')
@@ -252,7 +252,7 @@ def skewgauss(r,center,width,skew):
     P = 1/np.sqrt(2*np.pi)*np.exp(-x**2)*(1 + spc.erf(skew*x))
     return _normalize(r,P) 
 # Create model
-dd_skewgauss = Model(skewgauss,axis='r')
+dd_skewgauss = Model(skewgauss,constants='r')
 dd_skewgauss.description = 'Skew Gaussian distribution model'
 # Parameters
 dd_skewgauss.center.set(description='Center', lb=1.0, ub=20, par0=3.5, units='nm')
@@ -276,7 +276,7 @@ where :math:`\nu` is the location of the distribution, :math:`\sigma` its spread
 def rice(r,location,spread): 
     return _multirice3dfun(r,[location],[spread])
 # Create model
-dd_rice = Model(gauss,axis='r')
+dd_rice = Model(gauss,constants='r')
 dd_rice.description = '3D-Rice distribution model'
 # Parameters
 dd_rice.mean.set(description='Mean', lb=1.0, ub=20, par0=3.5, units='nm')
@@ -302,7 +302,7 @@ This is a three-dimensional non-central chi distribution, the 3D generalization 
 def rice2(r,location1,spread1,location2,spread2): 
     return _multirice3dfun(r,[location1,location2],[spread1,spread2])
 # Create model
-dd_rice2 = Model(rice2,axis='r')
+dd_rice2 = Model(rice2,constants='r')
 dd_rice2.description = 'Sum of two 3D-Rice distributions model'
 # Parameters
 dd_rice2.location1.set(description='1st Rician location', lb=1.0, ub=20, par0=2.5, units='nm')
@@ -332,7 +332,7 @@ This is a three-dimensional non-central chi distribution, the 3D generalization 
 def rice3(r,location1,spread1,location2,spread2,location3,spread3): 
     return _multirice3dfun(r,[location1,location2,location3],[spread1,spread2,spread3])
 # Create model
-dd_rice3 = Model(rice3,axis='r')
+dd_rice3 = Model(rice3,constants='r')
 dd_rice3.description = 'Sum of two 3D-Rice distributions model'
 # Parameters
 dd_rice3.location1.set(description='1st Rician location', lb=1.0, ub=20, par0=2.5, units='nm')
@@ -372,7 +372,7 @@ def randcoil(r,Nres,scaling,length):
     P = _normalize(r,P)
     return P
 # Create model
-dd_randcoil = Model(randcoil,axis='r')
+dd_randcoil = Model(randcoil,constants='r')
 dd_randcoil.description = 'Random-coil model for an unfolded peptide/protein'
 # Parameters
 dd_randcoil.Nres.set(description='Number of residues', lb=2.0, ub=1000, par0=50, units='')
@@ -402,7 +402,7 @@ def circle(r,center,radius):
     P = _normalize(r,P)
     return P
 # Create model
-dd_circle = Model(circle,axis='r')
+dd_circle = Model(circle,constants='r')
 dd_circle.description = 'Semicircle distribution model'
 # Parameters
 dd_circle.center.set(description='Center', lb=1, ub=20, par0=3, units='nm')
@@ -430,7 +430,7 @@ def rcos(r,center,fwhm):
     P = _normalize(r,P)
     return P
 # Create model
-dd_cos = Model(rcos,axis='r')
+dd_cos = Model(rcos,constants='r')
 dd_cos.description = 'Raised-cosine parametric model'
 # Parameters
 dd_cos.center.set(description='Center', lb=1, ub=20, par0=3, units='nm')
@@ -510,7 +510,7 @@ def shell(r,radius,thickness):
     P = _normalize(r,P)
     return P
 # Create model
-dd_shell = Model(shell,axis='r')
+dd_shell = Model(shell,constants='r')
 dd_shell.description = 'Uniform distribution of particles on a spherical shell'
 # Parameters
 dd_shell.radius.set(description='Inner shell radius', lb=0.1, ub=20, par0=1.5, units='nm')
@@ -548,7 +548,7 @@ def spherepoint(r,radius,dist):
     P = _normalize(r,P)
     return P
 # Create model
-dd_spherepoint = Model(spherepoint,axis='r')
+dd_spherepoint = Model(spherepoint,constants='r')
 dd_spherepoint.description = 'One particle distanced from particles uniformly distributed on a sphere'
 # Parameters
 dd_spherepoint.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=1.5, units='nm')
@@ -585,7 +585,7 @@ def spheresurf(r,radius):
     P = _normalize(r,P)
     return P
 # Create model
-dd_spheresurf = Model(spheresurf,axis='r')
+dd_spheresurf = Model(spheresurf,constants='r')
 dd_spheresurf.description = "Particles uniformly distributed on a sphere's surface."
 # Parameters
 dd_spheresurf.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=2.5, units='nm')
@@ -641,7 +641,7 @@ def shellshell(r,radius,thickness1,thickness2):
     P = _normalize(r,P)
     return P
 # Create model
-dd_shellshell = Model(shellshell,axis='r')
+dd_shellshell = Model(shellshell,constants='r')
 dd_shellshell.description = 'Particles uniformly distributed on a spherical shell and on another concentric spherical shell.'
 # Parameters
 dd_shellshell.radius.set(description='Inner shell radius', lb=0.1, ub=20, par0=1.5, units='nm')
@@ -683,7 +683,7 @@ def shellsphere(r,radius,thickness):
     P = _normalize(r,P)
     return P
 # Create model
-dd_shellsphere = Model(shellsphere,axis='r')
+dd_shellsphere = Model(shellsphere,constants='r')
 dd_shellsphere.description = 'Particles uniformly distributed on a sphere and on an outer spherical shell.'
 # Parameters
 dd_shellsphere.radius.set(description='Inner shell radius', lb=0.1, ub=20, par0=1.5, units='nm')
@@ -749,7 +749,7 @@ def shellvoidshell(r,radius,thickness1,thickness2,separation):
     P = _normalize(r,P)
     return P
 # Create model
-dd_shellvoidshell = Model(shellvoidshell,axis='r')
+dd_shellvoidshell = Model(shellvoidshell,constants='r')
 dd_shellvoidshell.description = 'Particles uniformly distributed on a spherical shell and on another concentric spherical shell separated by a void.'
 # Parameters
 dd_shellvoidshell.radius.set(description='Inner shell radius', lb=0.1, ub=20, par0=0.75, units='nm')
@@ -811,7 +811,7 @@ def shellvoidsphere(r,radius,thickness,separation):
     P = _normalize(r,P)
     return P
 # Create model
-dd_shellvoidsphere = Model(shellvoidsphere,axis='r')
+dd_shellvoidsphere = Model(shellvoidsphere,constants='r')
 dd_shellvoidsphere.description = 'Particles uniformly distributed on a sphere and on a concentric outer spherical shell separated by a void.'
 # Parameters
 dd_shellvoidsphere.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=1.5, units='nm')
@@ -847,7 +847,7 @@ def sphere(r,radius):
     P = _normalize(r,P)
     return P
 # Create model
-dd_sphere = Model(sphere,axis='r')
+dd_sphere = Model(sphere,constants='r')
 dd_sphere.description = 'Particles uniformly distributed on a sphere.'
 # Parameters
 dd_sphere.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=2.5, units='nm')
@@ -882,7 +882,7 @@ def triangle(r,mode,left,right):
     P = _normalize(r,P)
     return P
 # Create model
-dd_triangle = Model(triangle,axis='r')
+dd_triangle = Model(triangle,constants='r')
 dd_triangle.description = 'Triangular distribution model.'
 # Parameters
 dd_triangle.mode.set(description='Mode', lb=1, ub=20, par0=3.5, units='nm')
@@ -910,7 +910,7 @@ def uniform(r,left,right):
     P = _normalize(r,P)
     return P
 # Create model
-dd_uniform = Model(uniform,axis='r')
+dd_uniform = Model(uniform,constants='r')
 dd_uniform.description = 'Uniform distribution model.'
 # Parameters
 dd_uniform.left.set(description='Left edge', lb=0.1, ub=6, par0=2.5, units='nm')
@@ -956,7 +956,7 @@ def wormchain(r,contour,persistence):
     P = _normalize(r,P)
     return P
 # Create model
-dd_wormchain = Model(wormchain,axis='r')
+dd_wormchain = Model(wormchain,constants='r')
 dd_wormchain.description = 'Worm-like chain model near the rigid limit.'
 # Parameters
 dd_wormchain.contour.set(description='Contour length', lb=1.5, ub=10, par0=3.7, units='nm')
@@ -993,7 +993,7 @@ def wormgauss(r,contour,persistence,width):
     P = _normalize(r,P)
     return P
 # Create model
-dd_wormgauss = Model(wormgauss,axis='r')
+dd_wormgauss = Model(wormgauss,constants='r')
 dd_wormgauss.description = 'Worm-like chain model near the rigid limit with Gaussian convolution.'
 # Parameters
 dd_wormgauss.contour.set(description='Contour length', lb=1.5, ub=10, par0=3.7, units='nm')

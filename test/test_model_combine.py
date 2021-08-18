@@ -94,10 +94,11 @@ def test_two_models():
     ref1 = model1(x,3,0.2)
     ref2 = model2(x,4,0.5)
 
-    response = model([x,x],3,0.2,4,0.5,1,1)
+    response = model(x,x,3,0.2,4,0.5,1,1)
 
     assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
 # ======================================================================
+test_two_models()
 
 # ======================================================================
 def test_three_models(): 
@@ -111,7 +112,7 @@ def test_three_models():
     ref2 = model2(x,4,0.5)
     ref3 = model3(x,2,0.1)
 
-    response = model([x,x,x],3,0.2,4,0.5,2,0.1,1,1,1)
+    response = model(x,x,x,3,0.2,4,0.5,2,0.1,1,1,1)
 
     assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2,ref3])])
 # ======================================================================
@@ -124,7 +125,7 @@ def test_fit_model():
     model = combine(model1,model2)
     x = np.linspace(0,10,400)
     truth = [model1(x,3,0.2),model2(x,4,0.5)]
-    result = fit(model,truth,[x,x])
+    result = fit(model,truth,x,x)
 
     assert np.allclose(result.model[0],truth[0]) and np.allclose(result.model[1],truth[1])
 # ======================================================================
@@ -198,7 +199,7 @@ def test_link_call():
     ref1 = model1(x,3,0.2)
     ref2 = model2(x,4,0.5,3,0.4,1,1)
 
-    response = model([x,x],3,0.2,4,0.5,0.4,1,1,1)
+    response = model(x,x,3,0.2,4,0.5,0.4,1,1,1)
 
     assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
 # ======================================================================
@@ -221,7 +222,7 @@ def test_link_fit():
     ref2 = model2(x,5,0.2)
     ref3 = model3(x,5,0.5,3,0.4,1,1)
 
-    result = fit(model,[ref1,ref2,ref3],[x,x,x])
+    result = fit(model,[ref1,ref2,ref3],x,x,x)
     
     assert all([np.allclose(result.model[n],ref) for n,ref in enumerate([ref1,ref2,ref3])])
 # ======================================================================

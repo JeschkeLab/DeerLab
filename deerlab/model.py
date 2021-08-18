@@ -135,7 +135,7 @@ class Model():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def __init__(self,Amodel,axis=None,signature=None): 
+    def __init__(self,Amodel,constants=None,signature=None): 
         """
         Model object constructor
         """
@@ -144,28 +144,40 @@ class Model():
             Amodel = lambda *_: Amatrix 
         self.nonlinmodel = Amodel
         self.description = None
-        self.axis_argument = None
+        self._constantsInfo = []
         self.parents = None
         if signature is None:
             # Get list of parameter names from the function signature
             parameters = inspect.getfullargspec(Amodel).args
         else: 
             parameters = signature.copy()
-        # Check if one of the arguments is an axis argument        
-        for n,par in enumerate(parameters): 
-            if par==axis: 
-                parameters.remove(axis)
-                self.axis_argument = [axis,n]         
+        # Check if one of the arguments is an axis argument     
+        if constants is not None:
+            if not isinstance(constants,list):
+                constants = [constants]
+            for argname in constants:
+                for n,par in enumerate(parameters): 
+                    if par==argname: 
+                        self._constantsInfo.append({"argkey":argname,'argidx':n})
+            for argname in constants:
+                for n,par in enumerate(parameters): 
+                    if par==argname: 
+                        parameters.remove(argname)
+        Nconstants = len(self._constantsInfo)
+
 
         # Use a wrapper function to facilitate internal arguments manipulation        
         #-----------------------------------
-        def model_with_axis(axis,*θ):
+        def model_with_constants(*inputargs):
+            constants = inputargs[:Nconstants]
+            θ = inputargs[Nconstants:]
             args = list(θ)
-            if self.axis_argument is not None:
-                args.insert(self.axis_argument[1],axis)
+            if self._constantsInfo is not None:
+                for info,constant in zip(self._constantsInfo,constants):
+                    args.insert(info['argidx'],constant)
             return Amodel(*args)
         #-----------------------------------    
-        self.nonlinmodel = model_with_axis
+        self.nonlinmodel = model_with_constants
 
         # Update the number of parameters in the model
         self.Nparam = len(parameters)
@@ -336,28 +348,21 @@ class Model():
             raise SyntaxError('The model must be called either with positional or keyword arguments. Not both.')
         
         Nrequired = len(self._parameter_list())
-        if self.axis_argument is not None:
-            Nrequired += 1
+        Nrequired += len(self._constantsInfo)
 
         if len(args)!=Nrequired and len(kargs)!=Nrequired:
             raise SyntaxError(f'The model requires {Nrequired} arguments and {len(args)+len(kargs)} have been specified.')
 
         if args:         
-            if self.axis_argument is not None:
-                axis = np.atleast_1d(args[self.axis_argument[1]])
-            else: 
-                axis = None
+            constants= [np.atleast_1d(args[info['argidx']]) for info in self._constantsInfo]
             args_list = [np.atleast_1d(arg) for arg in args]
-            args_list = [np.atleast_1d(arg) for arg in args_list if not (arg==axis).all()]
+            args_list = [np.atleast_1d(arg) for arg in args_list  if not np.any([(arg==constant).all() for constant in constants]) ]
             # Values are already ordered
             θ = np.concatenate(args_list) 
         elif kargs:
-            if self.axis_argument is not None:
-                axis = np.atleast_1d(kargs[self.axis_argument[0]])
-            else: 
-                axis = None
+            constants = [np.atleast_1d(kargs[info['argkey']]) for info in self._constantsInfo]
             args_list = [np.atleast_1d(kargs[param]) for param in self._parameter_list()]
-            args_list = [ arg for arg in args_list if not (arg==axis).all()]
+            args_list = [ arg for arg in args_list  if not np.any([(arg==constant).all() for constant in constants]) ]
             # Values must be ordered
             θ = self._vecsort(np.concatenate(args_list))
 
@@ -369,11 +374,11 @@ class Model():
         θlin, θnonlin = self._split_linear(θ)
 
         # Evaluate the core model
-        y = self._core_model(lambda *θ: self.nonlinmodel(axis,*θ),θnonlin,θlin)
+        y = self._core_model(lambda *θ: self.nonlinmodel(*constants,*θ),θnonlin,θlin)
 
         # Evaluate whether the response has 
         if hasattr(self,'_posteval_fcn'):
-            y = self._posteval_fcn(axis,y)
+            y = self._posteval_fcn(constants,y)
         return y
     #---------------------------------------------------------------------------------------
 
@@ -400,13 +405,13 @@ class Model():
 
 
 #==============================================================================================
-def fit(model,y,axis=None,par0=None,bootstrap=0,**kwargs):
+def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
     r"""
     Fit the model to the data ``y`` via one of the three following approaches: 
     
     - Non-linear least-squares 
     - Regularized linear-least-squares 
-    - Separable non-linear least-squares
+    - Separable non-linear least-squares 
 
     The most appropiate solver is chosen automatically based on the model structure. 
 
@@ -458,10 +463,8 @@ def fit(model,y,axis=None,par0=None,bootstrap=0,**kwargs):
     if not isinstance(model,Model):
         raise TypeError('The input model must be a valid deerlab.Model object.')
 
-    if axis is None:
-        axis = np.arange(len(y))
-    else: 
-        axis = np.atleast_1d(axis)
+    if len(constants)>0:
+        constants = np.atleast_1d(constants)
         
     # Get boundaries and conditions for the linear and nonlinear parameters
     ubl,ub = model._split_linear(model._vecsort(model._getvector('ub')))
@@ -496,7 +499,7 @@ def fit(model,y,axis=None,par0=None,bootstrap=0,**kwargs):
         raise AssertionError(f'The model has no parameters to fit.')    
 
     # Prepare the separable non-linear least-squares solver
-    Amodel_fcn = lambda param: model.nonlinmodel(axis,*param)
+    Amodel_fcn = lambda param: model.nonlinmodel(*constants,*param)
     fitfcn = lambda y: snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,subsets=ysubsets,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,**kwargs)        
 
     # Run the fitting algorithm 
@@ -622,18 +625,22 @@ def link(model,**links):
         nonlinfcn = model.nonlinmodel
 
         linear_reduce_idx = [np.where(mapping_linear==n)[0].tolist() for n in np.unique(mapping_linear) ]
+        Nconstants = len(model._constantsInfo)
         # ---------------------------------------------------------------------
-        def linked_model_with_axis(axis,*θ):
+        def linked_model_with_constants(*inputargs):
             # Redistribute the input parameter vector according to the mapping vector
+            constants = inputargs[:Nconstants]
+            θ = inputargs[Nconstants:]
             θ = np.atleast_1d(θ)[mapping]
             args = list(θ)
-            if model.axis_argument is not None:
-                args.insert(model.axis_argument[1],axis)
+            if model._constantsInfo is not None:
+                for info,constant in zip(model._constantsInfo,constants):
+                    args.insert(info['argidx'],constant)                
             A = nonlinfcn(*args)
             Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
             return Amapped
         # ---------------------------------------------------------------------
-        model.nonlinmodel = linked_model_with_axis
+        model.nonlinmodel = linked_model_with_constants
 
         # Return the updated model with the linked parameters
         return model
@@ -696,30 +703,46 @@ def combine(*inputmodels,**links):
         # Add the submodel arguments to the combined model signature
         arguments += newarguments
 
+
+    # Preparation of the combined model signature    
+    arelinear = np.asarray(arelinear).astype(bool)
+    arguments = np.array(arguments)
+    lin_params = arguments[arelinear]
+    nonlin_params = arguments[~arelinear]
+
+    # Account for the axis argument
+    constants = []
+    const_subsets = []
+    for n,model in enumerate(models):
+        subset = []
+        for info in model._constantsInfo:
+            constants.append(f"{info['argkey']}_{n+1}")
+            subset.append(len(constants)-1)
+        const_subsets.append(subset)
+    signature = np.insert(nonlin_params,0,constants).tolist()
+    Nconst = len(constants)
+    Nsubsets = len(models)
+
     #---------------------------------------------------------------------
-    def _combined_nonlinmodel(axes,*param):
+    def _combined_nonlinmodel(*inputargs):
         """Evaluates the nonlinear functions of the submodels and 
         concatenates them into a single design matrix"""
+        constants = inputargs[:Nconst]
+        param = inputargs[Nconst:]
 
-        # Parse the inputs
-        if len(models)==1:
-            axes = [axes]            
-        N = np.sum([len(axis) for axis in axes])
         nprev = 0
         param = np.atleast_1d(param)
-        
         # Determine the indices to access the individual subsets
         ysubsets = []
-        for axis in axes:
+        for axis in constants:
             ysubsets.append(np.arange(nprev,nprev+len(axis)))
             nprev = nprev+len(axis)
-
         # Loop over the submodels in the model
         for n,model in enumerate(models):
             # Empty container
-            Vnonlin = np.zeros((N,np.maximum(model.Nlin,1)))
+            Vnonlin = np.zeros((nprev,np.maximum(model.Nlin,1)))
             # Evaluate the submodel
-            Amatrix = np.atleast_2d(model.nonlinmodel(axes[n],*param[subsets_nonlin[n]]))
+            Amatrix = np.atleast_2d(model.nonlinmodel(*np.array(constants)[const_subsets[n],:],*param[subsets_nonlin[n]]))
             if Amatrix.shape[0]!=len(ysubsets[n]): Amatrix = Amatrix.T
             # Concatenate to the full design matrix                
             Vnonlin[ysubsets[n],:] = Amatrix
@@ -745,17 +768,9 @@ def combine(*inputmodels,**links):
         return [y[Vsubsets[n]] for n in range(len(axes))]
     #---------------------------------------------------------------------
    
-    # Preparation of the combined model signature    
-    arelinear = np.asarray(arelinear).astype(bool)
-    arguments = np.array(arguments)
-    lin_params = arguments[arelinear]
-    nonlin_params = arguments[~arelinear]
-
-    # Account for the axis argument
-    arguments = np.insert(nonlin_params,0,'axes').tolist()
 
     # Create the model object
-    combinedModel = Model(_combined_nonlinmodel,axis='axes',signature=arguments)
+    combinedModel = Model(_combined_nonlinmodel,constants=constants,signature=signature)
 
     # Add parent models 
     combinedModel.parents = models

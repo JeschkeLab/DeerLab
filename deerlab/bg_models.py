@@ -25,11 +25,11 @@ D = (μ0/4/pi)*(μB*ge)**2/hbar   # dipolar constant, m^3 s^-1
 def _docstring(model,notes):
 #---------------------------------------------------------------------------------------
     args = model._parameter_list(order='vector').tolist()
-    args.insert(model.axis_argument[1],model.axis_argument[0])
+    args.insert(model._constantsInfo[0]['argidx'],model._constantsInfo[0]['argkey'])
 
     parameters = ''
     for arg in args:
-        if arg==model.axis_argument[0]:
+        if arg==model._constantsInfo[0]['argkey']:
             type = 'array_like'
             parameters += f'\n    {arg} : {type} \n        Time vector, in microseconds.'
         elif len(np.atleast_1d(getattr(model,arg).idx))>1:
@@ -107,7 +107,7 @@ def hom3d_fcn(t,conc,lam):
     return B
 #---------------------------------------------------------------------------------------
 # Create model
-bg_hom3d = Model(hom3d_fcn,axis='t')
+bg_hom3d = Model(hom3d_fcn,constants='t')
 bg_hom3d.description = 'Background from homogeneous distribution of spins in a 3D medium'
 # Parameters
 bg_hom3d.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
@@ -164,7 +164,7 @@ def hom3dex(t,conc,rexcl,lam):
     B = np.exp(-lam*conc*K) # Eq.(13)
     return B
 # Create model
-bg_hom3dex = Model(hom3dex,axis='t')
+bg_hom3dex = Model(hom3dex,constants='t')
 bg_hom3dex.description = 'Background from homogeneous distribution of spins with excluded-volume effects'
 # Parameters
 bg_hom3dex.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
@@ -203,7 +203,7 @@ def homfractal(t,fconc,fdim,lam):
     return B
  # ======================================================================
 # Create model
-bg_homfractal = Model(homfractal,axis='t')
+bg_homfractal = Model(homfractal,constants='t')
 bg_homfractal.description = 'Background from homogeneous distribution of spins in a fractal medium'
 # Parameters
 bg_homfractal.fconc.set(description='Fractal concentration of spins', lb=0.01, ub=5000, par0=50, units='μmol/dmᵈ')
@@ -229,7 +229,7 @@ parameter is a decay rate constant and not a spin concentration like for ``bg_ho
 def exp(t,decay):
     return np.exp(-decay*np.abs(t))
 # Create model
-bg_exp = Model(exp,axis='t')
+bg_exp = Model(exp,constants='t')
 bg_exp.description = 'Exponential background model'
 # Parameters
 bg_exp.decay.set(description='Decay rate', lb=0, ub=200, par0=0.35, units='μs⁻¹')
@@ -254,7 +254,7 @@ first parameter is a decay rate constant and not a spin concentration like for `
 def strexp(t,decay,stretch):
     return np.exp(-decay*abs(t)**stretch)
 # Create model
-bg_strexp = Model(strexp,axis='t')
+bg_strexp = Model(strexp,constants='t')
 bg_strexp.description = 'Stretched exponential background model'
 # Parameters
 bg_strexp.decay.set(description='Decay rate', lb=0, ub=200, par0=0.25, units='μs⁻¹')
@@ -277,7 +277,7 @@ def prodstrexp(t,decay1,stretch1,decay2,stretch2):
     strexp2 = np.exp(-decay2*abs(t)**stretch2)
     return strexp1*strexp2
 # Create model
-bg_prodstrexp = Model(prodstrexp,axis='t')
+bg_prodstrexp = Model(prodstrexp,constants='t')
 bg_prodstrexp.description = 'Product of two stretched exponentials background model'
 # Parameters
 bg_prodstrexp.decay1.set(description='Decay rate of 1st component', lb=0, ub=200, par0=0.25, units='μs⁻¹')
@@ -302,7 +302,7 @@ def sumstrexp(t,decay1,stretch1,weight1,decay2,stretch2):
     strexp2 = np.exp(-decay2*abs(t)**stretch2)
     return weight1*strexp1 + (1-weight1)*strexp2
 # Create model
-bg_sumstrexp = Model(sumstrexp,axis='t')
+bg_sumstrexp = Model(sumstrexp,constants='t')
 bg_sumstrexp.description = 'Sum of two stretched exponentials background model'
 # Parameters
 bg_sumstrexp.decay1.set(description='Decay rate of 1st component', lb=0, ub=200, par0=0.25, units='μs⁻¹')
@@ -325,7 +325,7 @@ notes =  r"""
 def poly1(t,p0,p1):
     return np.polyval([p1,p0],abs(t))
 # Create model
-bg_poly1 = Model(poly1,axis='t')
+bg_poly1 = Model(poly1,constants='t')
 bg_poly1.description = 'Polynomial 1st-order background model'
 # Parameters
 bg_poly1.p0.set(description='Intercept', lb=0, ub=200, par0=1, units='')
@@ -346,7 +346,7 @@ notes =  r"""
 def poly2(t,p0,p1,p2):
     return np.polyval([p2,p1,p0],abs(t))
 # Create model
-bg_poly2 = Model(poly2,axis='t')
+bg_poly2 = Model(poly2,constants='t')
 bg_poly2.description = 'Polynomial 2nd-order background model'
 # Parameters
 bg_poly2.p0.set(description='Intercept', lb=0, ub=200, par0=1, units='')
@@ -367,7 +367,7 @@ notes =  r"""
 def poly3(t,p0,p1,p2,p3):
     return np.polyval([p3,p2,p1,p0],abs(t))
 # Create model
-bg_poly3 = Model(poly3,axis='t')
+bg_poly3 = Model(poly3,constants='t')
 bg_poly3.description = 'Polynomial 3rd-order background model'
 # Parameters
 bg_poly3.p0.set(description='Intercept', lb=0, ub=200, par0=1, units='')

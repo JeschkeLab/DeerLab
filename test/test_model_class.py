@@ -262,7 +262,7 @@ def test_fit_parametric():
     
     assert np.allclose(fitResult.model,mock_data)
 #================================================================
-test_fit_parametric()
+
 def test_fit_semiparametric(): 
 #================================================================
     "Check that a semiparametric model can be correctly fitted"
@@ -434,7 +434,7 @@ mock_data_fcn = lambda axis: gauss2_axis(axis,mean1=3,mean2=4,width1=0.5,width2=
 def test_model_with_axis_positional(): 
 #================================================================
     "Check that a model with axis can be defined and called"
-    model = Model(gauss_axis,axis='axis')
+    model = Model(gauss_axis,constants='axis')
 
     x = np.linspace(0,10,300)
     reference = gauss_axis(x,3,0.5)
@@ -446,7 +446,7 @@ def test_model_with_axis_positional():
 def test_model_with_axis_keywords(): 
 #================================================================
     "Check that a model with axis can be defined and called via keywords"
-    model = Model(gauss_axis,axis='axis')
+    model = Model(gauss_axis,constants='axis')
 
     x = np.linspace(0,10,300)
     reference = gauss_axis(x,3,0.5)
@@ -459,7 +459,7 @@ def test_model_with_axis_keywords():
 #----------------------------------------------------------------
 def _getmodel_axis(type):
     if type=='parametric':
-        model = Model(gauss2_axis,axis='axis')
+        model = Model(gauss2_axis,constants='axis')
         model.mean1.set(lb=0, ub=10, par0=2)
         model.mean2.set(lb=0, ub=10, par0=4)
         model.width1.set(lb=0.01, ub=5, par0=0.2)
@@ -467,7 +467,7 @@ def _getmodel_axis(type):
         model.amp1.set(lb=0, ub=5, par0=1)
         model.amp2.set(lb=0, ub=5, par0=1)
     elif type=='semiparametric': 
-        model = Model(gauss2_design_axis,axis='axis')
+        model = Model(gauss2_design_axis,constants='axis')
         model.mean1.set(lb=0, ub=10, par0=2)
         model.mean2.set(lb=0, ub=10, par0=4)
         model.width1.set(lb=0.01, ub=5, par0=0.2)
@@ -475,7 +475,7 @@ def _getmodel_axis(type):
         model.addlinear('amp1',lb=0, ub=5)
         model.addlinear('amp2',lb=0, ub=5)
     elif type=='nonparametric':
-        model = Model(lambda x: gauss2_design_axis(x,3,4,0.5,0.2),axis='x')
+        model = Model(lambda x: gauss2_design_axis(x,3,4,0.5,0.2),constants='x')
         model.addlinear('amp1',lb=0)
         model.addlinear('amp2',lb=0)
     return model
@@ -514,3 +514,42 @@ def test_fit_nonparametric_axis():
     assert np.allclose(fitResult.model,mock_data_fcn(x),atol=1e-3)
 #================================================================
 
+
+def gauss_multiaxis(axis1,axis2,mean,width): 
+    return np.exp(-(axis1-mean)**2/width**2/2)
+
+def gauss2_multiaxis(axis1,axis2,mean1,mean2,width1,width2,amp1,amp2):
+    return amp1*gauss_axis(axis1,mean1,width1) + amp2*gauss_axis(axis2,mean2,width2)
+
+
+def test_model_with_multiple_axes(): 
+#================================================================
+    "Check that a model with axis can be defined and called"
+    model = Model(gauss_multiaxis,constants=['axis1','axis2'])
+
+    x1 = np.linspace(0,5,300)
+    x2 = np.linspace(5,10,300)
+    reference = gauss_multiaxis(x1,x2,3,0.5)
+    response = model(x1,x2,3,0.5)
+        
+    assert np.allclose(reference,response)
+#================================================================
+
+
+def test_model_with_multiple_axes_fit(): 
+#================================================================
+    "Check that a model with axis can be defined and called"
+    model = Model(gauss2_multiaxis,constants=['axis1','axis2'])
+    model.mean1.set(lb=0, ub=10, par0=2)
+    model.mean2.set(lb=0, ub=10, par0=4)
+    model.width1.set(lb=0.01, ub=5, par0=0.2)
+    model.width2.set(lb=0.01, ub=5, par0=0.2)
+    model.amp1.set(lb=0, ub=5, par0=1)
+    model.amp2.set(lb=0, ub=5, par0=1)
+    
+    x = np.linspace(0,10,300)
+    x1 = np.linspace(0,10,300)
+    x2 = np.linspace(0,10,300)
+    fitResult = fit(model,mock_data_fcn(x),x1,x2)
+    assert np.allclose(fitResult.model,mock_data_fcn(x))        
+#================================================================
