@@ -349,12 +349,6 @@ def test_extrapenalty():
     assert  ovl(P,Pfit)<ovl(P,Pfit_tikh)
 # ======================================================================
 
-def test_docstring():
-# ======================================================================
-    "Check that the docstring includes all variables and keywords."
-    assert_docstring(snlls)
-# ======================================================================
-
 def test_frozen_param():
 # ======================================================================
     "Check that parameters can be frozen during the optimization"

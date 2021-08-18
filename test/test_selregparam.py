@@ -11,7 +11,7 @@ def test_compensate_condition():
     "Check that alpha compensates for larger condition numbers"
     
     r = np.linspace(2,6,100)
-    P = dd_gauss(r,[3,0.2])
+    P = dd_gauss(r,3,0.2)
 
     # Lower condition number    
     t1 = np.linspace(0,3,200)
@@ -32,7 +32,7 @@ def get_alpha_from_method(method):
 
     t = np.linspace(0,5,500)
     r = np.linspace(2,5,80)
-    P = dd_gauss(r,[3,0.16986436005760383])
+    P = dd_gauss(r,3.0,0.16986436005760383)
     K = dipolarkernel(t,r)
     L = regoperator(r,2)
     V = K@P
@@ -186,7 +186,7 @@ def test_algorithms():
     
     t = np.linspace(0,5,80)
     r = np.linspace(2,5,80)
-    P = dd_gauss(r,[3,0.16986436005760383])
+    P = dd_gauss(r,3,0.16986436005760383)
     K = dipolarkernel(t,r)
     L = regoperator(r,2)
     V = K@P
@@ -204,7 +204,7 @@ def test_nonuniform_r():
     
     t = np.linspace(0,3,200)
     r = np.sqrt(np.linspace(1,7**2,200))
-    P = dd_gauss(r,[3,0.2])
+    P = dd_gauss(r,3,0.2)
     K = dipolarkernel(t,r)
     L = regoperator(r,2)
     V = K@P
@@ -225,17 +225,17 @@ def test_tikh_global():
     t3 = np.linspace(0,4,70)
 
     r = np.linspace(2,5,80)
-    P = dd_gauss2(r,[3,0.15,0.3,3.5,0.15,0.7])
-
+    P = dd_gauss2(r,3,0.15,0.3,3.5,0.15,0.7)
+    P /= np.trapz(P,r)
+    
     K1 = dipolarkernel(t1,r)
     S1 = K1@P + whitegaussnoise(t1,0.03)
     K2 = dipolarkernel(t2,r)
     S2 = K2@P + whitegaussnoise(t2,0.02)
     K3 = dipolarkernel(t3,r)
     S3 = K3@P + whitegaussnoise(t3,0.02)
-    L = regoperator(r,2)
 
-    logalpha = np.log10(selregparam([S1,S2,S3],[K1,K2,K3],cvxnnls,method='aic',weights=[1,2,2],regop=L))
+    logalpha = np.log10(selregparam([S1,S2,S3],[K1,K2,K3],cvxnnls,method='aic',weights=[1,2,2]))
     logalpharef = -3.273
 
     assert abs(1 - logalpha/logalpharef) < 0.1
@@ -245,7 +245,7 @@ def assert_full_output(method):
 
     t = np.linspace(0,5,80)
     r = np.linspace(2,5,80)
-    P = dd_gauss(r,[3,0.4])
+    P = dd_gauss(r,3,0.4)
     K = dipolarkernel(t,r)
     L = regoperator(r,2)
     V = K@P
@@ -282,7 +282,7 @@ def test_unconstrained():
     
     t = np.linspace(0,5,80)
     r = np.linspace(2,5,80)
-    P = dd_gauss(r,[3,0.15])
+    P = dd_gauss(r,3,0.15)
     K = dipolarkernel(t,r)
     L = regoperator(r,2)
     V = K@P
@@ -299,7 +299,7 @@ def test_manual_candidates():
     
     t = np.linspace(0,5,80)
     r = np.linspace(2,5,80)
-    P = dd_gauss(r,[3,0.15])
+    P = dd_gauss(r,3,0.15)
     K = dipolarkernel(t,r)
     L = regoperator(r,2)
     alphas = regparamrange(K,L)
@@ -318,7 +318,7 @@ def test_tikh_value():
     np.random.seed(1)
     t = np.linspace(0,5,500)
     r = np.linspace(2,5,80)
-    P = dd_gauss(r,[3,0.15])
+    P = dd_gauss(r,3,0.15)
     K = dipolarkernel(t,r)
     V = K@P + whitegaussnoise(t,0.01)
     L = regoperator(r,2)

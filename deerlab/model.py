@@ -340,7 +340,7 @@ class Model():
             Nrequired += 1
 
         if len(args)!=Nrequired and len(kargs)!=Nrequired:
-            raise SyntaxError(f'The model requires {Nrequired} arguments and only {len(args)+len(kargs)} have been specified.')
+            raise SyntaxError(f'The model requires {Nrequired} arguments and {len(args)+len(kargs)} have been specified.')
 
         if args:         
             if self.axis_argument is not None:

@@ -1,6 +1,6 @@
 
 import numpy as np
-from deerlab import rlls,dipolarkernel, regoperator, whitegaussnoise, snlls
+from deerlab import dipolarkernel, regoperator, whitegaussnoise, snlls
 from deerlab.dd_models import dd_gauss,dd_gauss2
 from deerlab.utils import ovl, skip_on, assert_docstring
 
@@ -343,13 +343,6 @@ def test_global_weights_default():
     fit = snlls([V1,V2],[K,K],lbl=np.zeros_like(r))
 
     assert ovl(P,fit.param)>0.95
-# ======================================================================
-
-
-def test_docstring():
-# ======================================================================
-    "Check that the docstring includes all variables and keywords."
-    assert_docstring(rlls)
 # ======================================================================
 
 def test_frozen_values():

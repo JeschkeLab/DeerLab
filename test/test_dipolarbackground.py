@@ -13,7 +13,7 @@ def test_basic():
     lam = 0.5
 
     #Reference
-    Bref = bg_hom3d(t,lam*conc)
+    Bref = bg_hom3d(t,conc,lam)
 
     #Output
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
@@ -35,7 +35,7 @@ def test_singletime():
     lam = 0.5
 
     #Reference
-    Bref = bg_hom3d(t,lam*conc)
+    Bref = bg_hom3d(t,conc,lam)
 
     #Output
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
@@ -57,7 +57,7 @@ def test_harmonics():
     lam = 0.5
     n = 2
     #Reference
-    Bref = bg_hom3d(n*t,lam*conc)
+    Bref = bg_hom3d(n*t,conc,lam)
 
     #Output
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
@@ -164,7 +164,7 @@ def test_phenomenological():
     Bref = bg_exp(t,0.3)
 
     #Output
-    Bmodel = lambda t: bg_hom3d(t,kappa)
+    Bmodel = lambda t: bg_hom3d(t,kappa,1)
     path = [[],[]]
     path[0] = [1-lam]
     path[1] = [lam, 0]

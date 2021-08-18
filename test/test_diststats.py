@@ -1,7 +1,7 @@
 
 from deerlab.utils.utils import assert_docstring
 import numpy as np
-from deerlab import dipolarkernel, diststats, rlls
+from deerlab import dipolarkernel, diststats, snlls
 from deerlab.dd_models import dd_gauss
 from deerlab.utils import assert_docstring
 
@@ -15,7 +15,7 @@ def assert_descriptor(key,truth):
     r = np.linspace(2,6,2000)
     dr = np.mean(np.diff(r))
     # Gaussian distribution
-    P = dd_gauss(r,[Pmean, Psigma])
+    P = dd_gauss(r,Pmean, Psigma)
     
     descriptor = diststats(r,P)[0][key]
     
@@ -184,9 +184,9 @@ def test_moment4():
 
 t = np.linspace(0,5,200)
 r = np.linspace(2,6,100)
-P = dd_gauss(r,[Pmean, Psigma])
+P = dd_gauss(r,Pmean, Psigma)
 K = dipolarkernel(t,r)
-fit = rlls(K@P,K,lb=np.zeros_like(r))
+fit = snlls(K@P,K,lbl=np.zeros_like(r))
 
 
 def assert_uncertainty(key):
@@ -288,7 +288,7 @@ def assert_descriptor_nonuniform_r(key,truth):
     r = np.sqrt(np.linspace(2**2,6**2,2000))
     dr = np.min(np.diff(r))
     # Gaussian distribution
-    P = dd_gauss(r,[Pmean, Psigma])
+    P = dd_gauss(r,Pmean, Psigma)
     
     descriptor = diststats(r,P)[0][key]
     assert abs(descriptor - truth) < dr

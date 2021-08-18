@@ -11,7 +11,7 @@ def test_filtered_movmean():
     np.random.seed(1)
     t = np.linspace(0,3,200)
     r = np.linspace(2,6,100)
-    P = dd_gauss(r,[3, 0.5])
+    P = dd_gauss(r,3, 0.5)
     lam = 0.25
     B = bg_exp(t,1.5)
     noise = whitegaussnoise(t,0.05)
@@ -32,7 +32,7 @@ def test_der():
     np.random.seed(1)
     t = np.linspace(0,3,200)
     r = np.linspace(2,6,100)
-    P = dd_gauss(r,[3, 0.5])
+    P = dd_gauss(r,3, 0.5)
     lam = 0.25
     B = bg_exp(t,1.5)
     noise = whitegaussnoise(t,0.05)
@@ -54,7 +54,7 @@ def test_reference():
     np.random.seed(1)
     t = np.linspace(0,3,200)
     r = np.linspace(2,6,100)
-    P = dd_gauss(r,[3, 0.5])
+    P = dd_gauss(r,3, 0.5)
     lam = 0.25
     B = bg_exp(t,1.5)
     Vref = dipolarkernel(t,r,mod=lam,bg=B)@P
@@ -76,7 +76,7 @@ def test_filtered_savgol():
     np.random.seed(1)
     t = np.linspace(0,3,200)
     r = np.linspace(2,6,100)
-    P = dd_gauss(r,[3, 0.5])
+    P = dd_gauss(r,3,0.5)
     lam = 0.25
     B = bg_exp(t,1.5)
     noise = whitegaussnoise(t,0.03)
@@ -97,7 +97,7 @@ def test_multiscan():
     np.random.seed(1)
     t = np.linspace(0,5,300)
     r = np.linspace(2,6,200)
-    P = dd_gauss(r,[4, 0.4])
+    P = dd_gauss(r,4, 0.4)
     K = dipolarkernel(t,r)
 
     sigma_ref = 0.1
@@ -117,7 +117,7 @@ def test_complex():
 
     t = np.linspace(0,3,200)
     r = np.linspace(2,6,100)
-    P = dd_gauss(r,[4, 0.4])
+    P = dd_gauss(r,4, 0.4)
     lam = 0.25
     B = bg_exp(t,1.5)
 

@@ -336,7 +336,7 @@ ddmodel = dd_gauss
 bgmodel = bg_exp
 
 r = np.linspace(2,6,40)
-P = ddmodel(r,[4.5, 0.25])
+P = ddmodel(r,4.5,0.25)
 
 parIn = exmodel.start
 pathways = exmodel(parIn)
@@ -348,7 +348,7 @@ t = np.linspace(0,5,100)
 np.random.seed(0)
 V = dipolarkernel(t,r,pathways=pathways,bg=Bmodel)@P + whitegaussnoise(t,0.01)
 
-fit = fitmodel(V,t,r,ddmodel,bgmodel,exmodel,uq='covariance')
+#fit = fitmodel(V,t,r,ddmodel,bgmodel,exmodel,uq='covariance')
 #----------------------------------------------------------------------
 
 def assert_confinter_param(subset):
@@ -398,7 +398,7 @@ exmodel = ex_4pdeer
 bgmodel = bg_exp
 
 r = np.linspace(2,6,40)
-P = dd_gauss(r,[4.5, 0.25])
+P = dd_gauss(r,4.5, 0.25)
 
 parIn = exmodel.start
 pathways = exmodel(parIn)
@@ -410,8 +410,8 @@ t = np.linspace(0,5,100)
 np.random.seed(0)
 V = dipolarkernel(t,r,pathways=pathways,bg=Bmodel)@P + whitegaussnoise(t,0.03)
 
-fit_Pparam = fitmodel(V,t,r,ddmodel,bgmodel,exmodel,uq='covariance')
-fit_Pfree = fitmodel(V,t,r,'P',bgmodel,exmodel,uq='covariance')
+#fit_Pparam = fitmodel(V,t,r,ddmodel,bgmodel,exmodel,uq='covariance')
+#fit_Pfree = fitmodel(V,t,r,'P',bgmodel,exmodel,uq='covariance')
 #----------------------------------------------------------------------
 
 def assert_confinter_models(subset):
@@ -704,7 +704,7 @@ def test_cost_value():
     bgmodel = bg_exp
 
     r = np.linspace(2,6,40)
-    P = dd_gauss(r,[4.5, 0.25])
+    P = dd_gauss(r,4.5, 0.25)
 
     parIn = exmodel.start
     pathways = exmodel(parIn)
