@@ -541,31 +541,49 @@ def _importparameter(parameter):
         'value' : parameter.value,
     }
 
-#==============================================================================================
-def combine(*inputmodels,**links): 
+def _aresame(obj1,obj2):
+    a = obj1.__dict__
+    a = {key:val for key, val in a.items() if key not in ['_parent','idx']}
+    b = obj2.__dict__
+    b = {key:val for key, val in b.items() if key not in ['_parent','idx']}
+    return a==b
 
-    # ==============================================================================
-    def _linkParameters(model,link_names,newname):
+# ==============================================================================
+def link(model,**links):
 
+    def _linkparameter(model,parameters,newname):
+    # ---------------------------------------------------------------------  
         # Get a list of parameter names in the model
         model_parameters = model._parameter_list(order='vector')
 
         link_parameters,link_indices = [],[]
-        for param in link_names: 
+        for param in parameters:
+            if not isinstance(param,Parameter) and isinstance(param,str):
+                param = getattr(model,param)
             # Make list of parameter objects
-            link_parameters.append(getattr(model,param))
+            link_parameters.append(param)
             # Make list of parameter indices
-            link_indices.append(getattr(model,param).idx)
+            link_indices.append(param.idx)
 
         # Get the names of the parameters to be linked
-        link_names = list(link_names)
+        link_names = []
+        for param in parameters:
+            if isinstance(param,Parameter):
+                for mparam in model_parameters:
+                    if _aresame(param,getattr(model,mparam)):
+                        link_names.append(mparam)
+            else: 
+                link_names.append(param)
         # Remove the first from the list as it will be kept
         link_names.pop(0)
+
         # Get the vector index of the parameter to be linked to
         nlink = link_indices[0]
 
         nnew = 0
         mapping = np.zeros(model.Nnonlin,dtype=int)
+        mapping_linear = np.zeros(model.Nlin,dtype=int)
+        Nnl = model.Nnonlin
         # Loop over all parameters in the model
         for n,param in enumerate(model_parameters):
             # If the parameter is to be linked...
@@ -577,24 +595,33 @@ def combine(*inputmodels,**links):
                 else: 
                     model.Nnonlin -= 1
                 # Delete the linked parameter from the model
+                if not getattr(model,param).linear:
+                    # Update the parameter vector map
+                    mapping[n] = nlink
+                else: 
+                    mapping_linear[n-Nnl] = nlink - Nnl                    
                 delattr(model,param)
-                # Update the parameter vector map
-                mapping[n] = nlink
+
             # Otherwise...
             else:
                 # Update the index of the parameter in the new vector 
                 getattr(model,param).idx = nnew
                 if not getattr(model,param).linear:
                     mapping[n] = nnew
+                else: 
+                    mapping_linear[n-Nnl] = nnew - Nnl  
                 nnew += 1
 
-        # Create a copy of the linked parameter with the new name
-        setattr(model,newname,getattr(model,model_parameters[nlink]))
         # Delete the old copy with the old name
+        paramobj = getattr(model,model_parameters[nlink])
         delattr(model,model_parameters[nlink])
+        # Create a copy of the linked parameter with the new name
+        setattr(model,newname,paramobj)
 
         # Wrap the evaluation function         
         nonlinfcn = model.nonlinmodel
+
+        linear_reduce_idx = [np.where(mapping_linear==n)[0].tolist() for n in np.unique(mapping_linear) ]
         # ---------------------------------------------------------------------
         def linked_model_with_axis(axis,*θ):
             # Redistribute the input parameter vector according to the mapping vector
@@ -602,13 +629,27 @@ def combine(*inputmodels,**links):
             args = list(θ)
             if model.axis_argument is not None:
                 args.insert(model.axis_argument[1],axis)
-            return nonlinfcn(*args)
+            A = nonlinfcn(*args)
+            Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
+            return Amapped
         # ---------------------------------------------------------------------
         model.nonlinmodel = linked_model_with_axis
 
         # Return the updated model with the linked parameters
         return model
-    # ==============================================================================
+    # ---------------------------------------------------------------------
+
+    if not isinstance(model,Model):
+        raise TypeError('The first argument must be a Model object.')
+    newmodel = deepcopy(model)
+    for link_name in links: 
+        newmodel = _linkparameter(newmodel,links[link_name],link_name)
+    return newmodel
+#==============================================================================================
+
+
+#==============================================================================================
+def combine(*inputmodels,**links): 
 
     # Initialize empty containers
     subsets_nonlin,arguments,arelinear = [],[],[]
@@ -643,11 +684,11 @@ def combine(*inputmodels,**links):
         # Map the link parameter objects to the new model names for later
         oldargs = inputmodels[n]._parameter_list(order='vector').tolist()  
         newarguments_ = newarguments.copy()
-        for link in links: 
-            for i,param in enumerate(links[link]):        
+        for linkkey in links: 
+            for i,param in enumerate(links[linkkey]):        
                 for oldarg,newarg in zip(oldargs,newarguments_):
                     if getattr(inputmodels[n],oldarg)==param:
-                        links[link][i] = newarg 
+                        links[linkkey][i] = newarg 
                         newarguments_.remove(newarg)
                         oldargs.remove(oldarg)
 
@@ -737,8 +778,7 @@ def combine(*inputmodels,**links):
         getattr(combinedModel,name).set(**_importparameter(getattr(models[n],param)))
 
     # Perform links of parameters if requested
-    for link_name in links: 
-        combinedModel = _linkParameters(combinedModel,links[link_name],link_name)
+    combinedModel = link(combinedModel,**links)
 
     # Return the new combined model object
     return combinedModel    

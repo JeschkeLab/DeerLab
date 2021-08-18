@@ -1,6 +1,5 @@
 import numpy as np
 import deerlab as dl 
-import matplotlib.pyplot as plt
 from deerlab.model import Model,fit,combine
 
 # ======================================================================
