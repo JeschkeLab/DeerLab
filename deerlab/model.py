@@ -4,7 +4,8 @@
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from numpy.core.shape_base import atleast_1d
+from numpy.core.shape_base import atleast_1d, block
+from scipy.sparse.construct import block_diag
 from deerlab.solvers import snlls
 from deerlab.classes import FitResult, UQResult
 from deerlab.bootan import bootan
@@ -378,7 +379,7 @@ class Model():
 
         # Evaluate whether the response has 
         if hasattr(self,'_posteval_fcn'):
-            y = self._posteval_fcn(constants,y)
+            y = self._posteval_fcn(y,*constants,*θ)
         return y
     #---------------------------------------------------------------------------------------
 
@@ -730,44 +731,47 @@ def combine(*inputmodels,**links):
         constants = inputargs[:Nconst]
         param = inputargs[Nconst:]
 
-        nprev = 0
         param = np.atleast_1d(param)
-        # Determine the indices to access the individual subsets
-        ysubsets = []
-        for axis in constants:
-            ysubsets.append(np.arange(nprev,nprev+len(axis)))
-            nprev = nprev+len(axis)
+        constants = np.atleast_1d(constants)
         # Loop over the submodels in the model
+        Amatrices = []
         for n,model in enumerate(models):
-            # Empty container
-            Vnonlin = np.zeros((nprev,np.maximum(model.Nlin,1)))
             # Evaluate the submodel
-            Amatrix = np.atleast_2d(model.nonlinmodel(*np.array(constants)[const_subsets[n],:],*param[subsets_nonlin[n]]))
-            if Amatrix.shape[0]!=len(ysubsets[n]): Amatrix = Amatrix.T
-            # Concatenate to the full design matrix                
-            Vnonlin[ysubsets[n],:] = Amatrix
-            if n>0:
-                Vnonlin_full = np.concatenate([Vnonlin_full,Vnonlin],axis=1)
-            else:
-                Vnonlin_full = Vnonlin
-        if not any(arelinear):
-            Vnonlin_full = np.sum(Vnonlin_full,1)
+            Amatrix = np.atleast_2d(model.nonlinmodel(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
+            if np.shape(Amatrix)[1]!=model.Nlin: Amatrix = Amatrix.T
+            Amatrices.append(Amatrix)
+        
+        model._subsets = 'adfsdfdafds'
 
-        return Vnonlin_full
+        Anonlin_full = block_diag(Amatrices).toarray()
+
+        if not any(arelinear):
+            Anonlin_full = np.sum(Anonlin_full,1)
+
+        return Anonlin_full
     #---------------------------------------------------------------------
     
     #---------------------------------------------------------------------
-    def _split_output(axes,y):
-        if len(models)==1:
-            axes = [axes]            
+    def _split_output(y,*inputargs):
+        constants = inputargs[:Nconst]
+        param = inputargs[Nconst:]
+
+        param = np.atleast_1d(param)
+        constants = np.atleast_1d(constants)
+        # Loop over the submodels in the model
+        Amatrices = []
+        for n,model in enumerate(models):
+            # Evaluate the submodel
+            Amatrix = np.atleast_2d(model.nonlinmodel(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
+            if np.shape(Amatrix)[1]!=model.Nlin: Amatrix = Amatrix.T
+            Amatrices.append(Amatrix)         
         nprev = 0
-        Vsubsets = []
-        for axis in axes:
-            Vsubsets.append(np.arange(nprev,nprev+len(axis)))
-            nprev = nprev+len(axis)    
-        return [y[Vsubsets[n]] for n in range(len(axes))]
+        ysubsets = []
+        for A in Amatrices:
+            ysubsets.append(np.arange(nprev,nprev+A.shape[0]))
+            nprev = nprev+A.shape[0]
+        return [y[ysubsets[n]] for n in range(len(Amatrices))]
     #---------------------------------------------------------------------
-   
 
     # Create the model object
     combinedModel = Model(_combined_nonlinmodel,constants=constants,signature=signature)

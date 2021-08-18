@@ -98,7 +98,6 @@ def test_two_models():
 
     assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
 # ======================================================================
-test_two_models()
 
 # ======================================================================
 def test_three_models(): 
@@ -203,6 +202,7 @@ def test_link_call():
 
     assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
 # ======================================================================
+test_link_call()
 
 # ======================================================================
 def test_link_fit(): 
