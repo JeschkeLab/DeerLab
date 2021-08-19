@@ -4,7 +4,7 @@ from deerlab.model import Model,fit,combine
 
 # ======================================================================
 def test_type(): 
-    "Check that the functionr returns a valid model type"
+    "Check that the function returns a valid model type"
     model1 = dl.dd_gauss
     model2 = dl.bg_hom3d
 

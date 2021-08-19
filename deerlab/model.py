@@ -1,4 +1,4 @@
-# model.py - Model object class
+# model.py - DeerLab's modelling interface
 # ---------------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md). 
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
@@ -149,9 +149,9 @@ class Model():
         self.parents = None
         if signature is None:
             # Get list of parameter names from the function signature
-            parameters = inspect.getfullargspec(Amodel).args
-        else: 
-            parameters = signature.copy()
+            signature = inspect.getfullargspec(Amodel).args
+
+        parameters = signature.copy()
         # Check if one of the arguments is an axis argument     
         if constants is not None:
             if not isinstance(constants,list):
@@ -188,6 +188,7 @@ class Model():
         for n,param in enumerate(parameters): 
             newparam = Parameter(parent=self, idx=n)
             setattr(self,param,newparam)
+        self.signature = signature
     #---------------------------------------------------------------------------------------
 
     # Gets called when an attribute is accessed
@@ -253,7 +254,14 @@ class Model():
             keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
         elif order=='vector':
             keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
+            # If there are any parameters in vector form...
+            for n,key in enumerate(keylist): 
+                if isinstance(getattr(self,key).idx,np.ndarray):
+                    # ...insert the key string for the same number of linear parameters in that vector 
+                    keylist = np.insert(keylist,n*np.ones(len(getattr(self,key).idx)-1,dtype=int),key)  
             keylist = self._vecsort(keylist)
+        # Remove any duplicates
+        keylist = list(dict.fromkeys(keylist))
         return keylist
     #---------------------------------------------------------------------------------------
 
@@ -282,7 +290,7 @@ class Model():
     #---------------------------------------------------------------------------------------
     def _getvector(self,attribute):
         "Get the list of parameters attributes defined in the model sorted alphabetically"
-        return [getattr(getattr(self,param),attribute) for param in dir(self) if isinstance(getattr(self,param),Parameter)]
+        return np.concatenate([np.atleast_1d(getattr(getattr(self,param),attribute)) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
     #---------------------------------------------------------------------------------------
 
     #-----------------------------------------------------------------------------
@@ -292,7 +300,7 @@ class Model():
         param_lb =  self._vecsort(self._getvector('lb'))[paramidx]
         param_ub =  self._vecsort(self._getvector('ub'))[paramidx]
         frozen = self._vecsort(self._getvector('frozen'))[paramidx]
-        if frozen: 
+        if np.all(frozen): 
             param_uq = UQResult('void')
         else:
             param_uq = uq_full.propagate(subset_model,lbm=param_lb, ubm=param_ub)
@@ -305,7 +313,7 @@ class Model():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def addlinear(self, key, vec=None, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None, description=None):
+    def addlinear(self, key, vec=1, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None, description=None):
         """
         Add a new linear :ref:`Parameter` object. 
 
@@ -330,7 +338,7 @@ class Model():
         units : string, optional
             Physical units of the parameter.
         """
-        if vec is not None: 
+        if vec>1: 
             idx = np.arange(self.Nparam,self.Nparam+vec) 
             self.Nparam += vec        
             self.Nlin += vec
@@ -341,6 +349,7 @@ class Model():
             self.Nlin += 1
             newparam = Parameter(linear=True, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, units=units, description=description)
         setattr(self,key,newparam)
+        self.signature.append(key)
     #---------------------------------------------------------------------------------------
 
     def __call__(self,*args,**kargs):
@@ -352,20 +361,20 @@ class Model():
         Nrequired += len(self._constantsInfo)
 
         if len(args)!=Nrequired and len(kargs)!=Nrequired:
-            raise SyntaxError(f'The model requires {Nrequired} arguments and {len(args)+len(kargs)} have been specified.')
+            raise SyntaxError(f'The model requires {Nrequired} arguments, but {len(args)+len(kargs)} have been specified.')
 
         if args:         
             constants= [np.atleast_1d(args[info['argidx']]) for info in self._constantsInfo]
             args_list = [np.atleast_1d(arg) for arg in args]
-            args_list = [np.atleast_1d(arg) for arg in args_list  if not np.any([(arg==constant).all() for constant in constants]) ]
+            args_list = [np.atleast_1d(arg) for arg in args_list  if not np.any([np.all(arg==constant) for constant in constants]) ]
             # Values are already ordered
             θ = np.concatenate(args_list) 
         elif kargs:
             constants = [np.atleast_1d(kargs[info['argkey']]) for info in self._constantsInfo]
-            args_list = [np.atleast_1d(kargs[param]) for param in self._parameter_list()]
-            args_list = [ arg for arg in args_list  if not np.any([(arg==constant).all() for constant in constants]) ]
+            args_list = [np.atleast_1d(kargs[param]) for param in self._parameter_list(order='vector')]
+            args_list = [ arg for arg in args_list  if not np.any([np.all(arg==constant) for constant in constants]) ]
             # Values must be ordered
-            θ = self._vecsort(np.concatenate(args_list))
+            θ = np.concatenate(args_list)
 
         if len(θ)!=self.Nparam:
             raise SyntaxError(f'The model requires {self.Nparam} parameters, but {len(θ)} were specified.')   
@@ -521,9 +530,9 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
 
     # Get some basic information on the parameter vector
     keys = model._parameter_list(order='vector')
-    param_idx =  model._vecsort(model._getvector('idx'))
+    param_idx = [np.atleast_1d(getattr(model,param).idx) for param in model._parameter_list('vector')]
     # Dictionary of parameter names and fitted values
-    FitResult_param = {key : fitvalue for key,fitvalue in zip(keys,fitresults.param)}
+    FitResult_param = {key : fitvalue for key,fitvalue in zip(keys,[fitresults.param[idx] for idx in param_idx])}
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
@@ -551,7 +560,6 @@ def _aresame(obj1,obj2):
     b = obj2.__dict__
     b = {key:val for key, val in b.items() if key not in ['_parent','idx']}
     return a==b
-
 # ==============================================================================
 def link(model,**links):
 
@@ -684,13 +692,13 @@ def combine(*inputmodels,**links):
         # Determine which parameters are linear
         arelinear = np.concatenate([arelinear,model._vecsort(model._getvector('linear'))])
 
-        newarguments = model._parameter_list(order='vector').tolist()  
+        newarguments = model._parameter_list(order='vector') 
         # If there is more than one model, append a string to identify the origin
         if len(models)>1: 
             newarguments = [arg+f'_{n+1}' for arg in newarguments] 
 
         # Map the link parameter objects to the new model names for later
-        oldargs = inputmodels[n]._parameter_list(order='vector').tolist()  
+        oldargs = inputmodels[n]._parameter_list(order='vector')
         newarguments_ = newarguments.copy()
         for linkkey in links: 
             for i,param in enumerate(links[linkkey]):        

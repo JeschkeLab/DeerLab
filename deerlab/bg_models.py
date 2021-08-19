@@ -24,7 +24,7 @@ D = (μ0/4/pi)*(μB*ge)**2/hbar   # dipolar constant, m^3 s^-1
 
 def _docstring(model,notes):
 #---------------------------------------------------------------------------------------
-    args = model._parameter_list(order='vector').tolist()
+    args = model._parameter_list(order='vector')
     args.insert(model._constantsInfo[0]['argidx'],model._constantsInfo[0]['argkey'])
 
     parameters = ''
