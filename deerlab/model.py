@@ -55,8 +55,9 @@ class Parameter():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def __init__(self, parent=None, idx=None, description=None, par0=None, frozen=False, lb=-np.inf, ub=np.inf,value=None, units=None, linear=False): 
+    def __init__(self, name=None, parent=None, idx=None, description=None, par0=None, frozen=False, lb=-np.inf, ub=np.inf,value=None, units=None, linear=False): 
         # Attributes
+        self.name = name
         self._parent = parent # Parent 
         self.idx = idx
         self.description = description # Description
@@ -186,7 +187,7 @@ class Model():
         self.Nlin = 0
 
         for n,param in enumerate(parameters): 
-            newparam = Parameter(parent=self, idx=n)
+            newparam = Parameter(parent=self, idx=n, name=param)
             setattr(self,param,newparam)
         self.signature = signature
     #---------------------------------------------------------------------------------------
@@ -258,7 +259,7 @@ class Model():
             for n,key in enumerate(keylist): 
                 if isinstance(getattr(self,key).idx,np.ndarray):
                     # ...insert the key string for the same number of linear parameters in that vector 
-                    keylist = np.insert(keylist,n*np.ones(len(getattr(self,key).idx)-1,dtype=int),key)  
+                    keylist = np.insert(keylist,n*np.ones(len(np.atleast_1d(getattr(self,key).idx))-1,dtype=int),key)  
             keylist = self._vecsort(keylist)
         # Remove any duplicates
         keylist = list(dict.fromkeys(keylist))
@@ -342,12 +343,12 @@ class Model():
             idx = np.arange(self.Nparam,self.Nparam+vec) 
             self.Nparam += vec        
             self.Nlin += vec
-            newparam = Parameter(linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), units=units, description=description)
+            newparam = Parameter(name=key, linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), units=units, description=description)
         else:
             idx = self.Nparam
             self.Nparam += 1
             self.Nlin += 1
-            newparam = Parameter(linear=True, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, units=units, description=description)
+            newparam = Parameter(name=key, linear=True, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, units=units, description=description)
         setattr(self,key,newparam)
         self.signature.append(key)
     #---------------------------------------------------------------------------------------
@@ -559,7 +560,11 @@ def _aresame(obj1,obj2):
     a = {key:val for key, val in a.items() if key not in ['_parent','idx']}
     b = obj2.__dict__
     b = {key:val for key, val in b.items() if key not in ['_parent','idx']}
-    return a==b
+    try:
+        np.testing.assert_equal(a,b)
+        return True
+    except Exception:
+        return False
 # ==============================================================================
 def link(model,**links):
 
@@ -584,55 +589,79 @@ def link(model,**links):
                 for mparam in model_parameters:
                     if _aresame(param,getattr(model,mparam)):
                         link_names.append(mparam)
+                        break
             else: 
                 link_names.append(param)
         # Remove the first from the list as it will be kept
         link_names.pop(0)
 
         # Get the vector index of the parameter to be linked to
-        nlink = link_indices[0]
+        nlink = np.atleast_1d(link_indices[0])
 
         nnew = 0
+        # Initialize the maps linked->unlinked
         mapping = np.zeros(model.Nnonlin,dtype=int)
         mapping_linear = np.zeros(model.Nlin,dtype=int)
+
+        # Get the indices of the unlinked parameters in the maps
+        unlinked_linear_idx = np.full(len(model_parameters),None)
+        unlinked_nonlinear_idx = np.full(len(model_parameters),None)
+        linked_linear_idx = np.full(len(model_parameters),None)
+        linked_nonlinear_idx = np.full(len(model_parameters),None)
+        q = 0
+        nnew = 0
+        for n,param in enumerate(model_parameters):
+            if np.all(getattr(model,param).linear):
+                m =  len(np.atleast_1d(getattr(model,param).idx)) 
+                unlinked_linear_idx[n]= np.arange(q,q+m)
+                q += m
+                if param not in link_names:
+                    linked_linear_idx[n]= np.arange(nnew,nnew+m)
+            else:
+                unlinked_nonlinear_idx[n] = np.array(n)
+                if param not in link_names: 
+                    linked_nonlinear_idx[n] = np.array(nnew)
+                    m = 1
+            if param not in link_names: 
+                nnew += m
         Nnl = model.Nnonlin
+        
         # Loop over all parameters in the model
         for n,param in enumerate(model_parameters):
             # If the parameter is to be linked...
             if param in link_names:
                 # Update the number of parameters in the model
-                model.Nparam -= 1
-                if getattr(model,param).linear:
-                    model.Nlin -= 1
-                else: 
-                    model.Nnonlin -= 1
-                # Delete the linked parameter from the model
-                if not getattr(model,param).linear:
+                Nremoved = len(np.atleast_1d(getattr(model,param).idx))
+                model.Nparam -= Nremoved
+                if np.all(getattr(model,param).linear):
+                    model.Nlin -= Nremoved
                     # Update the parameter vector map
-                    mapping[n] = nlink
+                    mapping_linear[unlinked_linear_idx[n]] = nlink - Nnl                    
                 else: 
-                    mapping_linear[n-Nnl] = nlink - Nnl                    
+                    model.Nnonlin -= Nremoved
+                    # Update the parameter vector map
+                    mapping[unlinked_nonlinear_idx[n]] = nlink
+                # Delete the linked parameter from the model
                 delattr(model,param)
 
-            # Otherwise...
+            # Otherwise if the parameter is not linked...
             else:
                 # Update the index of the parameter in the new vector 
-                getattr(model,param).idx = nnew
-                if not getattr(model,param).linear:
-                    mapping[n] = nnew
+                if not np.all(getattr(model,param).linear):
+                    getattr(model,param).idx = linked_nonlinear_idx[n]
+                    mapping[unlinked_nonlinear_idx[n]] = linked_nonlinear_idx[n]
                 else: 
-                    mapping_linear[n-Nnl] = nnew - Nnl  
-                nnew += 1
+                    getattr(model,param).idx = linked_linear_idx[n]
+                    mapping_linear[unlinked_linear_idx[n]] = linked_linear_idx[n]-Nnl
 
         # Delete the old copy with the old name
-        paramobj = getattr(model,model_parameters[nlink])
-        delattr(model,model_parameters[nlink])
+        paramobj = getattr(model,model_parameters[nlink[0]])
+        delattr(model,model_parameters[nlink[0]])
         # Create a copy of the linked parameter with the new name
         setattr(model,newname,paramobj)
 
-        # Wrap the evaluation function         
+        # Monkey-patch the evaluation function         
         nonlinfcn = model.nonlinmodel
-
         linear_reduce_idx = [np.where(mapping_linear==n)[0].tolist() for n in np.unique(mapping_linear) ]
         Nconstants = len(model._constantsInfo)
         # ---------------------------------------------------------------------
@@ -697,6 +726,12 @@ def combine(*inputmodels,**links):
         if len(models)>1: 
             newarguments = [arg+f'_{n+1}' for arg in newarguments] 
 
+        oldargs = inputmodels[n]._parameter_list(order='vector')
+        for i,(oldkey,newkey) in enumerate(zip(oldargs,newarguments)): 
+            if isinstance(getattr(model,oldkey).idx,np.ndarray):
+                newarguments = np.insert(newarguments,i*np.ones(len(getattr(model,oldkey).idx)-1,dtype=int),newkey).tolist()
+
+
         # Map the link parameter objects to the new model names for later
         oldargs = inputmodels[n]._parameter_list(order='vector')
         newarguments_ = newarguments.copy()
@@ -707,7 +742,6 @@ def combine(*inputmodels,**links):
                         links[linkkey][i] = newarg 
                         newarguments_.remove(newarg)
                         oldargs.remove(oldarg)
-
 
         # Add the submodel arguments to the combined model signature
         arguments += newarguments
@@ -730,7 +764,6 @@ def combine(*inputmodels,**links):
         const_subsets.append(subset)
     signature = np.insert(nonlin_params,0,constants).tolist()
     Nconst = len(constants)
-    Nsubsets = len(models)
 
     #---------------------------------------------------------------------
     def _combined_nonlinmodel(*inputargs):
@@ -749,8 +782,6 @@ def combine(*inputmodels,**links):
             if np.shape(Amatrix)[1]!=model.Nlin: Amatrix = Amatrix.T
             Amatrices.append(Amatrix)
         
-        model._subsets = 'adfsdfdafds'
-
         Anonlin_full = block_diag(Amatrices).toarray()
 
         if not any(arelinear):
@@ -790,9 +821,13 @@ def combine(*inputmodels,**links):
     # Add post-evalution function for splitting of the call outputs
     setattr(combinedModel,'_posteval_fcn',_split_output) 
 
-    # Add the linear parameters from the subset models    
-    for lparam in lin_params:
-        combinedModel.addlinear(lparam)
+    # Add the linear parameters from the subset models   
+    lin_param_set = []
+    for param in set(lin_params):
+        lin_param_set.append({'name':param, 'vec':np.sum(lin_params==param)})
+
+    for lparam in lin_param_set:
+        combinedModel.addlinear(lparam['name'], vec=lparam['vec'])
 
     parameters = np.concatenate([arguments,lin_params])
     # Import all parameter information from the subset models

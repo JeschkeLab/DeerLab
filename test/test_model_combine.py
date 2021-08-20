@@ -202,7 +202,6 @@ def test_link_call():
 
     assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
 # ======================================================================
-test_link_call()
 
 # ======================================================================
 def test_link_fit(): 
@@ -235,4 +234,62 @@ def test_link_single():
     model = combine(model1,means=[model1.mean1,model1.mean2])
 
     assert model.Nparam == model1.Nparam - 1
+# ======================================================================
+
+model_vec = Model(lambda r: np.eye(len(r)),constants='r')
+model_vec.addlinear('Pvec',vec=100,lb=0)
+
+# ======================================================================
+def test_vec_Nparam_nonlin(): 
+    "Check that the combined model with a vector-form parameter has the right number of parameters"
+    model1 = dl.dd_gauss
+    model2 = model_vec
+
+    model = combine(model1,model2)
+    assert model.Nnonlin == model1.Nnonlin + model2.Nnonlin
+# ======================================================================
+
+# ======================================================================
+def test_vec_Nparam_lin(): 
+    "Check that the combined model with a vector-form parameter has the right number of parameters"
+    model1 = dl.dd_gauss2
+    model2 = model_vec
+
+    model = combine(model1,model2)
+    assert model.Nlin == model1.Nlin + model2.Nlin
+# ======================================================================
+
+# ======================================================================
+def test_vec_Nparam(): 
+    "Check that the combined model a vector-form parameter has the right number of parameters"
+    model1 = dl.dd_gauss2
+    model2 = model_vec
+
+    model = combine(model1,model2)
+    assert model.Nparam == model1.Nparam + model2.Nparam
+# ======================================================================
+
+# ======================================================================
+def test_vec_param_names(): 
+    "Check that the combined model has the adjusted parameter names"
+    model1 = dl.dd_gauss
+    model2 = model_vec
+
+    model = combine(model1,model2)
+    assert all([ str in model._parameter_list() for str in ['mean_1','width_1','Pvec_2'] ])
+# ======================================================================
+
+# ======================================================================
+def test_vec_two_models(): 
+    "Check that that combine works correctly for two models"
+    model1 = dl.dd_gauss
+    model2 = model_vec
+    model = combine(model1,model2)
+    x = np.linspace(0,10,100)
+    ref1 = model1(x,3,0.2)
+    ref2 = model2(r=x,Pvec=model1(x,4,0.3))
+
+    response = model(x,x,3,0.2,1,model1(x,4,0.3))
+
+    assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
 # ======================================================================
