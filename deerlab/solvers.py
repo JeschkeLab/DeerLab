@@ -596,16 +596,20 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         # Check whether optimization of the regularization parameter is needed
         if includeRegularization :
             if type(regparam) is str:
-                # If the parameter vector has not changed by much...
-                if check and all(abs(par_prev-p)/p < alphareopt):
-                    # ...use the alpha optimized in the previous iteration
-                    optimize_alpha = False
-                    alpha = regparam_prev
+                if Nnonlin_notfrozen>0:
+                    # If the parameter vector has not changed by much...
+                    if check and all(abs(par_prev-p)/p < alphareopt):
+                        # ...use the alpha optimized in the previous iteration
+                        optimize_alpha = False
+                        alpha = regparam_prev
+                    else:
+                        # ...otherwise optimize with current settings
+                        alpha = regparam
+                        optimize_alpha = True
+                        check = True
                 else:
-                    # ...otherwise optimize with current settings
                     alpha = regparam
                     optimize_alpha = True
-                    check = True
             else:
                 # Fixed regularization parameter
                 alpha = regparam
@@ -646,7 +650,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # -------------------------------------------------------------------
     #  Only linear parameters
     # -------------------------------------------------------------------
-    if Nnonlin==0 and Nlin>0:
+    if Nnonlin_notfrozen==0 and Nlin_notfrozen>0:
         if type(regparam) is str and includeRegularization:
             # Optimized regularization parameter
             alpha = regparam
@@ -668,7 +672,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # -------------------------------------------------------------------
     #  With non-linear parameters
     # -------------------------------------------------------------------
-    elif Nnonlin>0:
+    elif Nnonlin_notfrozen>0:
 
         # Preprare multiple start global optimization if requested
         if multistart > 1 and not nonLinearBounded:
