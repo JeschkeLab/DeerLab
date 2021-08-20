@@ -573,7 +573,7 @@ def link(model,**links):
         # Get a list of parameter names in the model
         model_parameters = model._parameter_list(order='vector')
 
-        link_parameters,link_indices = [],[]
+        link_parameters,link_indices,link_param_idx = [],[],[]
         for param in parameters:
             if not isinstance(param,Parameter) and isinstance(param,str):
                 param = getattr(model,param)
@@ -592,11 +592,17 @@ def link(model,**links):
                         break
             else: 
                 link_names.append(param)
+
         # Remove the first from the list as it will be kept
-        link_names.pop(0)
+        linked_name = link_names.pop(0)
+        
+        for n,name in enumerate(model_parameters):
+            if name==linked_name: link_param_idx = n
+
+        
 
         # Get the vector index of the parameter to be linked to
-        nlink = np.atleast_1d(link_indices[0])
+        link_indices = np.atleast_1d(link_indices[0])
 
         nnew = 0
         # Initialize the maps linked->unlinked
@@ -636,11 +642,11 @@ def link(model,**links):
                 if np.all(getattr(model,param).linear):
                     model.Nlin -= Nremoved
                     # Update the parameter vector map
-                    mapping_linear[unlinked_linear_idx[n]] = nlink - Nnl                    
+                    mapping_linear[unlinked_linear_idx[n]] = link_indices-Nnl                
                 else: 
                     model.Nnonlin -= Nremoved
                     # Update the parameter vector map
-                    mapping[unlinked_nonlinear_idx[n]] = nlink
+                    mapping[unlinked_nonlinear_idx[n]] = link_indices
                 # Delete the linked parameter from the model
                 delattr(model,param)
 
@@ -655,8 +661,8 @@ def link(model,**links):
                     mapping_linear[unlinked_linear_idx[n]] = linked_linear_idx[n]-Nnl
 
         # Delete the old copy with the old name
-        paramobj = getattr(model,model_parameters[nlink[0]])
-        delattr(model,model_parameters[nlink[0]])
+        paramobj = getattr(model,model_parameters[link_param_idx])
+        delattr(model,model_parameters[link_param_idx])
         # Create a copy of the linked parameter with the new name
         setattr(model,newname,paramobj)
 
@@ -773,7 +779,7 @@ def combine(*inputmodels,**links):
         param = inputargs[Nconst:]
 
         param = np.atleast_1d(param)
-        constants = np.atleast_1d(constants)
+        constants = np.atleast_2d(constants)
         # Loop over the submodels in the model
         Amatrices = []
         for n,model in enumerate(models):
@@ -796,7 +802,7 @@ def combine(*inputmodels,**links):
         param = inputargs[Nconst:]
 
         param = np.atleast_1d(param)
-        constants = np.atleast_1d(constants)
+        constants = np.atleast_2d(constants)
         # Loop over the submodels in the model
         Amatrices = []
         for n,model in enumerate(models):
