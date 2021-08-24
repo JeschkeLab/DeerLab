@@ -357,29 +357,28 @@ class Model():
     #---------------------------------------------------------------------------------------
         if kargs and args: 
             raise SyntaxError('The model must be called either with positional or keyword arguments. Not both.')
-        
+
+        # Check that the correct number of arguments have been specified
         Nrequired = len(self._parameter_list())
         Nrequired += len(self._constantsInfo)
-
         if len(args)!=Nrequired and len(kargs)!=Nrequired:
             raise SyntaxError(f'The model requires {Nrequired} arguments, but {len(args)+len(kargs)} have been specified.')
 
-        if args:         
+        if args:  
+            # Positional arguments       
             constants= [np.atleast_1d(args[info['argidx']]) for info in self._constantsInfo]
-            args_list = [np.atleast_1d(arg) for arg in args]
-            args_list = [np.atleast_1d(arg) for arg in args_list  if not np.any([np.all(arg==constant) for constant in constants]) ]
-            # Values are already ordered
-            θ = np.concatenate(args_list) 
+            args_list = [np.atleast_1d(arg) for idx,arg in enumerate(args) if idx not in [info['argidx'] for info in self._constantsInfo]]
         elif kargs:
+            # Keywords arguments
             constants = [np.atleast_1d(kargs[info['argkey']]) for info in self._constantsInfo]
             args_list = [np.atleast_1d(kargs[param]) for param in self._parameter_list(order='vector')]
-            args_list = [ arg for arg in args_list  if not np.any([np.all(arg==constant) for constant in constants]) ]
-            # Values must be ordered
-            θ = np.concatenate(args_list)
 
+        # Concatente all parameter into a single vector
+        θ = np.concatenate(args_list)
+
+        # Check that all parameters have been passed
         if len(θ)!=self.Nparam:
-            raise SyntaxError(f'The model requires {self.Nparam} parameters, but {len(θ)} were specified.')   
-            
+            raise SyntaxError(f'The model requires {self.Nparam} parameters, but {len(args_list)} were specified.')   
 
         # Determine which parameters are linear and which nonlinear
         θlin, θnonlin = self._split_linear(θ)
@@ -496,7 +495,7 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
 
     if len(linfrozen)==0: linfrozen = [1]
 
-    if model._getNparents()==1:
+    if not isinstance(y,list):
         y = [y]            
     nprev = 0
     ysubsets = []
@@ -700,7 +699,7 @@ def link(model,**links):
 
 
 #==============================================================================================
-def combine(*inputmodels,**links): 
+def _combinemodels(mode,*inputmodels,**links): 
 
     # Initialize empty containers
     subsets_nonlin,arguments,arelinear = [],[],[]
@@ -787,11 +786,13 @@ def combine(*inputmodels,**links):
             Amatrix = np.atleast_2d(model.nonlinmodel(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
             if np.shape(Amatrix)[1]!=model.Nlin: Amatrix = Amatrix.T
             Amatrices.append(Amatrix)
-        
-        Anonlin_full = block_diag(Amatrices).toarray()
+        if mode=='expand':
+            Anonlin_full = block_diag(Amatrices).toarray()
+            if not any(arelinear):
+                Anonlin_full = np.sum(Anonlin_full,1)
 
-        if not any(arelinear):
-            Anonlin_full = np.sum(Anonlin_full,1)
+        elif mode=='combine':
+            Anonlin_full = np.hstack(Amatrices)
 
         return Anonlin_full
     #---------------------------------------------------------------------
@@ -824,8 +825,9 @@ def combine(*inputmodels,**links):
     # Add parent models 
     combinedModel.parents = models
 
-    # Add post-evalution function for splitting of the call outputs
-    setattr(combinedModel,'_posteval_fcn',_split_output) 
+    if mode=='expand':
+        # Add post-evalution function for splitting of the call outputs
+        setattr(combinedModel,'_posteval_fcn',_split_output) 
 
     # Add the linear parameters from the subset models   
     lin_param_set = []
@@ -850,4 +852,127 @@ def combine(*inputmodels,**links):
 
     # Return the new combined model object
     return combinedModel    
+#==============================================================================================
+
+#==============================================================================================
+def expand(*inputmodels,**links):
+    return _combinemodels('expand',*inputmodels,**links)
+#==============================================================================================
+
+#==============================================================================================
+def combine(*inputmodels,**links):
+    return _combinemodels('combine',*inputmodels,**links)
+#==============================================================================================
+
+
+
+def relate(model,**links):
+
+    def _relate(model,function,dependent_name):
+    # ---------------------------------------------------------------------  
+        # Get a list of parameter names in the model
+        model_parameters =np.array(model._parameter_list(order='vector'))
+
+        # Get the index of the parameter which will be made dependent
+        dependent_idx = np.where(model_parameters==dependent_name)
+
+        # Get the names and indices of the parameters taken by the dependent's function
+        arguments_names = inspect.getfullargspec(function).args
+        arguments_idx = [np.where(model_parameters==name)[0] for name in arguments_names]
+
+        if dependent_name not in model_parameters:
+            raise KeyError(f"The assigned parameter '{dependent_name}' is not a parameter of the input model.")
+
+        if getattr(model,dependent_name).linear:
+            raise TypeError(f"Linear parameters cannot be used.")
+
+        for arg in arguments_names:
+            if arg not in model_parameters:
+                raise KeyError(f"The function argument '{arg}' is not a parameter of the input model.")
+            if getattr(model,arg).linear:
+                raise TypeError(f"Linear parameters cannot be used.")
+
+        nnew = 0
+        # Initialize the maps linked->unlinked
+        mapping = np.zeros(model.Nnonlin,dtype=int)
+        mapping_linear = np.zeros(model.Nlin,dtype=int)
+
+        # Get the indices of the unlinked parameters in the maps
+        unlinked_linear_idx = np.full(len(model_parameters),None)
+        unlinked_nonlinear_idx = np.full(len(model_parameters),None)
+        linked_linear_idx = np.full(len(model_parameters),None)
+        linked_nonlinear_idx = np.full(len(model_parameters),None)
+        q = 0
+        nnew = 0
+        for n,param in enumerate(model_parameters):
+            if np.all(getattr(model,param).linear):
+                m =  len(np.atleast_1d(getattr(model,param).idx)) 
+                unlinked_linear_idx[n]= np.arange(q,q+m)
+                q += m
+                if param != dependent_name:
+                    linked_linear_idx[n]= np.arange(nnew,nnew+m)
+            else:
+                unlinked_nonlinear_idx[n] = np.array(n)
+                if param != dependent_name: 
+                    linked_nonlinear_idx[n] = np.array(nnew)
+                    m = 1
+            if param != dependent_name: 
+                nnew += m
+        Nnl = model.Nnonlin
+        
+        # Loop over all parameters in the model
+        for n,param in enumerate(model_parameters):
+            # If the parameter is to be linked...
+            if param == dependent_name:
+                # Update the number of parameters in the model
+                Nremoved = len(np.atleast_1d(getattr(model,param).idx))
+                model.Nparam -= Nremoved
+                if np.all(getattr(model,param).linear):
+                    model.Nlin -= Nremoved
+                else: 
+                    model.Nnonlin -= Nremoved
+                # Delete the linked parameter from the model
+                delattr(model,param)
+
+            # Otherwise if the parameter is not linked...
+            else:
+                # Update the index of the parameter in the new vector 
+                if not np.all(getattr(model,param).linear):
+                    getattr(model,param).idx = linked_nonlinear_idx[n]
+                    mapping[unlinked_nonlinear_idx[n]] = linked_nonlinear_idx[n]
+                else: 
+                    getattr(model,param).idx = linked_linear_idx[n]
+                    mapping_linear[unlinked_linear_idx[n]] = linked_linear_idx[n]-Nnl
+
+        # Monkey-patch the evaluation function         
+        nonlinfcn = model.nonlinmodel
+        linear_reduce_idx = [np.where(mapping_linear==n)[0].tolist() for n in np.unique(mapping_linear) ]
+        Nconstants = len(model._constantsInfo)
+        # ---------------------------------------------------------------------
+        def dependency_model_with_constants(*inputargs):
+            # Redistribute the input parameter vector according to the mapping vector
+            constants = inputargs[:Nconstants]
+            θ = inputargs[Nconstants:]
+            θ = np.atleast_1d(θ).astype(float)[mapping]
+            θ[dependent_idx] = function(θ[arguments_idx])
+            args = list(θ)
+            if model._constantsInfo is not None:
+                for info,constant in zip(model._constantsInfo,constants):
+                    args.insert(info['argidx'],constant)                
+            A = nonlinfcn(*args)
+            #Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
+            return A
+        # ---------------------------------------------------------------------
+        model.nonlinmodel = dependency_model_with_constants
+
+        # Return the updated model with the linked parameters
+        return model
+    # ---------------------------------------------------------------------
+
+    if not isinstance(model,Model):
+        raise TypeError('The first argument must be a Model object.')
+    newmodel = deepcopy(model)
+    for link_name in links: 
+        newmodel = _relate(newmodel,links[link_name],link_name)
+    return newmodel
 #==============================================================================================

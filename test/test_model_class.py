@@ -431,7 +431,7 @@ def gauss2_identity_axis(axis):
 mock_data_fcn = lambda axis: gauss2_axis(axis,mean1=3,mean2=4,width1=0.5,width2=0.2,amp1=0.5,amp2=0.6)
 
 
-def test_model_with_axis_positional(): 
+def test_model_with_constant_positional(): 
 #================================================================
     "Check that a model with axis can be defined and called"
     model = Model(gauss_axis,constants='axis')
@@ -443,7 +443,7 @@ def test_model_with_axis_positional():
     assert np.allclose(reference,response)
 #================================================================
 
-def test_model_with_axis_keywords(): 
+def test_model_with_constant_keywords(): 
 #================================================================
     "Check that a model with axis can be defined and called via keywords"
     model = Model(gauss_axis,constants='axis')
@@ -481,7 +481,7 @@ def _getmodel_axis(type):
     return model
 #----------------------------------------------------------------
 
-def test_fit_parametric_axis(): 
+def test_fit_parametric_constant(): 
 #================================================================
     "Check that a parametric model can be correctly fitted while specifying an axis"
     model = _getmodel_axis('parametric')
@@ -492,7 +492,7 @@ def test_fit_parametric_axis():
     assert np.allclose(fitResult.model,mock_data_fcn(x))
 #================================================================
 
-def test_fit_semiparametric_axis(): 
+def test_fit_semiparametric_constant(): 
 #================================================================
     "Check that a semiparametric model can be correctly fitted while specifying an axis"
     model = _getmodel_axis('semiparametric')
@@ -503,7 +503,7 @@ def test_fit_semiparametric_axis():
     assert np.allclose(fitResult.model,mock_data_fcn(x))
 #================================================================
 
-def test_fit_nonparametric_axis(): 
+def test_fit_nonparametric_constant(): 
 #================================================================
     "Check that a semiparametric model can be correctly fitted while specifying an axis"
     model = _getmodel_axis('nonparametric')
@@ -522,7 +522,7 @@ def gauss2_multiaxis(axis1,axis2,mean1,mean2,width1,width2,amp1,amp2):
     return amp1*gauss_axis(axis1,mean1,width1) + amp2*gauss_axis(axis2,mean2,width2)
 
 
-def test_model_with_multiple_axes(): 
+def test_model_with_multiple_constants(): 
 #================================================================
     "Check that a model with axis can be defined and called"
     model = Model(gauss_multiaxis,constants=['axis1','axis2'])
@@ -536,7 +536,7 @@ def test_model_with_multiple_axes():
 #================================================================
 
 
-def test_model_with_multiple_axes_fit(): 
+def test_model_with_multiple_constants_fit(): 
 #================================================================
     "Check that a model with axis can be defined and called"
     model = Model(gauss2_multiaxis,constants=['axis1','axis2'])
@@ -552,4 +552,26 @@ def test_model_with_multiple_axes_fit():
     x2 = np.linspace(0,10,300)
     fitResult = fit(model,mock_data_fcn(x),x1,x2)
     assert np.allclose(fitResult.model,mock_data_fcn(x))        
+#================================================================
+
+def test_model_constant_same_values_keywords(): 
+#================================================================
+    "Check that a model with axis can be defined and called with same values as parameters"
+    model = Model(gauss_axis,constants='axis')
+
+    reference = gauss_axis(axis=3,mean=3,width=0.5)
+    response = model(axis=3,mean=3,width=0.5)
+        
+    assert np.allclose(reference,response)
+#================================================================
+
+def test_model_constant_same_values_positional(): 
+#================================================================
+    "Check that a model with axis can be defined and called with same values as parameters"
+    model = Model(gauss_axis,constants='axis')
+
+    reference = gauss_axis(3,3,0.5)
+    response = model(3,3,0.5)
+        
+    assert np.allclose(reference,response)
 #================================================================
