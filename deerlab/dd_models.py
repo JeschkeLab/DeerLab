@@ -125,6 +125,16 @@ def _multirice3dfun(r,nu,sig):
     return P
 # =================================================================
 
+def freedist(r):
+    def nonparametric():
+        return np.eye(len(r))
+    # Create model
+    dd_nonparametric = Model(nonparametric,constants='r')
+    dd_nonparametric.description = 'Non-parametric distribution model'
+    # Parameters
+    dd_nonparametric.addlinear('P',vec=len(r),lb=0,par0=0,description='Non-parametric distance distribution')
+    return dd_nonparametric
+
 
 #=======================================================================================
 #                                     dd_gauss

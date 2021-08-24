@@ -235,5 +235,5 @@ def test_fit_Pnonparametric():
     
     result = fit(Vmodel,V1path,nonlin_tol=1e-3)
 
-    assert np.allclose(result.model,V1path) and np.allclose(result.P/1e5,Pr)
+    assert np.allclose(result.model,V1path) and np.allclose(result.P/1e5,Pr,atol=1e-3)
 # ======================================================================

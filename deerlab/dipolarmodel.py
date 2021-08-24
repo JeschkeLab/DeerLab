@@ -5,6 +5,7 @@
 
 import numpy as np
 from deerlab.dipolarkernel import dipolarkernel  
+from deerlab.dd_models import freedist
 from deerlab.model import Model
 from deerlab import bg_hom3d
 
@@ -75,14 +76,9 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
     PathsModel = Model(dipolarpathways,signature=variables)
 
     if Pmodel is None:
-        def nonparametric(r):
-            return np.eye(len(r))
-        # Create model
-        dd_nonparametric = Model(nonparametric,constants='r')
-        dd_nonparametric.description = 'Non-parametric distribution model'
-        # Parameters
-        dd_nonparametric.addlinear('P',vec=len(r),lb=0,par0=0,description='Non-parametric distance distribution')
-        Pmodel = dd_nonparametric
+        Pmodel = freedist(r)
+
+    Pfree = Pmodel.Nnonlin==0
 
     # Populate the basic information on the dipolar pathways parameters
     if npathways==1:
@@ -140,8 +136,8 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
         # Construct the dipolar kernel
         Kdipolar = dipolarkernel(t,r,pathways=pathways, bg=Bfcn)
         # Compute the non-linear part of the distance distribution
-        if Pmodel is None:        
-            Pnonlin = np.eye(r)
+        if Pfree:       
+            Pnonlin =  Pmodel.nonlinmodel()
         else: 
             Pnonlin = Pmodel.nonlinmodel(r,*nonlin[Psubset])
         # Forward calculation of the non-linear part of the dipolar signal
@@ -150,7 +146,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
     #------------------------------------------------------------------------
 
     # Create the dipolar model object
-    DipolarSignal =Model(Vnonlinear_fcn,signature=signature)
+    DipolarSignal = Model(Vnonlinear_fcn,signature=signature)
 
     # Add the linear parameters from the subset models            
     for lparam in linearparam:
