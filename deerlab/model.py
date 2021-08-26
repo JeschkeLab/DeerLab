@@ -756,9 +756,18 @@ def link(model,**links):
     return newmodel
 #==============================================================================================
 
+def _unique_ordered(vec):
+    uniques = []
+    for v in vec: 
+        if v not in uniques:
+            uniques.append(v)
+    return uniques
+
+import types
+
 
 #==============================================================================================
-def _combinemodels(mode,*inputmodels,**links): 
+def _combinemodels(mode,*inputmodels,addweights=False): 
 
     # Initialize empty containers
     subsets_nonlin,arguments,arelinear = [],[],[]
@@ -766,6 +775,26 @@ def _combinemodels(mode,*inputmodels,**links):
 
     # Make deep-copies of the models to avoid modifying them
     models = [deepcopy(model) for model in inputmodels]
+
+    if addweights:
+
+        for n,(model,nonlinfcn) in enumerate(zip(models,[model.nonlinmodel for model in models])):
+            signature = model._nonlinsignature
+            signature.append('weight')
+            def make_weighted_comb(nonlinfcn):
+                def weighted_comb(*inputargs):
+                    weight = inputargs[-1]
+                    param = np.atleast_1d(inputargs[:-1])
+                    return weight*nonlinfcn(*param)
+                return weighted_comb
+            constants = [entry['argkey'] for entry in model._constantsInfo]
+            weightedModel = Model(make_weighted_comb(nonlinfcn),constants=constants,signature=signature)
+            for name in model._parameter_list(order='vector'):
+                if np.any(getattr(model,name).linear):
+                    weightedModel.addlinear(name,vec=len(getattr(model,name).idx))                    
+                getattr(weightedModel,name).set(**_importparameter(getattr(model,name)))
+            getattr(weightedModel,'weight').set(lb=0,par0=1,description='Weighting factor')
+            models[n] = deepcopy(weightedModel)
 
     # Loop over all models to be combined
     for n,model in enumerate(models): 
@@ -790,26 +819,15 @@ def _combinemodels(mode,*inputmodels,**links):
         if len(models)>1: 
             newarguments = [arg+f'_{n+1}' for arg in newarguments] 
 
-        oldargs = inputmodels[n]._parameter_list(order='vector')
-        for i,(oldkey,newkey) in enumerate(zip(oldargs,newarguments)): 
+        oldargs = models[n]._parameter_list(order='vector')
+        i = 0
+        for oldkey,newkey in zip(oldargs,newarguments): 
             if isinstance(getattr(model,oldkey).idx,np.ndarray):
                 newarguments = np.insert(newarguments,i*np.ones(len(getattr(model,oldkey).idx)-1,dtype=int),newkey).tolist()
-
-
-        # Map the link parameter objects to the new model names for later
-        oldargs = inputmodels[n]._parameter_list(order='vector')
-        newarguments_ = newarguments.copy()
-        for linkkey in links: 
-            for i,param in enumerate(links[linkkey]):        
-                for oldarg,newarg in zip(oldargs,newarguments_):
-                    if getattr(inputmodels[n],oldarg)==param:
-                        links[linkkey][i] = newarg 
-                        newarguments_.remove(newarg)
-                        oldargs.remove(oldarg)
+            i += len(np.atleast_1d(getattr(model,oldkey).idx))
 
         # Add the submodel arguments to the combined model signature
         arguments += newarguments
-
 
     # Preparation of the combined model signature    
     arelinear = np.asarray(arelinear).astype(bool)
@@ -817,7 +835,7 @@ def _combinemodels(mode,*inputmodels,**links):
     lin_params = arguments[arelinear]
     nonlin_params = arguments[~arelinear]
 
-    # Account for the axis argument
+    # Account for the constant arguments
     constants = []
     const_subsets = []
     for n,model in enumerate(models):
@@ -825,10 +843,11 @@ def _combinemodels(mode,*inputmodels,**links):
         for info in model._constantsInfo:
             constants.append(f"{info['argkey']}_{n+1}")
             subset.append(len(constants)-1)
-        const_subsets.append(subset)
+        const_subsets.append(subset)        
     signature = np.insert(nonlin_params,0,constants).tolist()
     Nconst = len(constants)
-
+    nonlinfcns = [model.nonlinmodel for model in models]
+    Nlins = [model.Nlin for model in models]
     #---------------------------------------------------------------------
     def _combined_nonlinmodel(*inputargs):
         """Evaluates the nonlinear functions of the submodels and 
@@ -840,10 +859,10 @@ def _combinemodels(mode,*inputmodels,**links):
         constants = np.atleast_2d(constants)
         # Loop over the submodels in the model
         Amatrices = []
-        for n,model in enumerate(models):
+        for n,nonlinfcn in enumerate(nonlinfcns):
             # Evaluate the submodel
-            Amatrix = np.atleast_2d(model.nonlinmodel(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
-            if np.shape(Amatrix)[1]!=model.Nlin: Amatrix = Amatrix.T
+            Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
+            if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
             Amatrices.append(Amatrix)
         if mode=='expand':
             Anonlin_full = block_diag(Amatrices).toarray()
@@ -865,10 +884,10 @@ def _combinemodels(mode,*inputmodels,**links):
         constants = np.atleast_2d(constants)
         # Loop over the submodels in the model
         Amatrices = []
-        for n,model in enumerate(models):
+        for n,nonlinfcn in enumerate(nonlinfcns):
             # Evaluate the submodel
-            Amatrix = np.atleast_2d(model.nonlinmodel(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
-            if np.shape(Amatrix)[1]!=model.Nlin: Amatrix = Amatrix.T
+            Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
+            if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
             Amatrices.append(Amatrix)         
         nprev = 0
         ysubsets = []
@@ -890,7 +909,7 @@ def _combinemodels(mode,*inputmodels,**links):
 
     # Add the linear parameters from the subset models   
     lin_param_set = []
-    for param in set(lin_params):
+    for param in _unique_ordered(lin_params):
         lin_param_set.append({'name':param, 'vec':np.sum(lin_params==param)})
 
     for lparam in lin_param_set:
@@ -900,27 +919,25 @@ def _combinemodels(mode,*inputmodels,**links):
     # Import all parameter information from the subset models
     for name,param in zip(combinedModel._parameter_list(order='vector'),parameters):
         if '_' in name:
-            param,n = name.split('_')
+            param = name.rsplit('_',1)[0]
+            n = name.rsplit('_',1)[-1]
             n = int(n)-1
         else:
             param,n = name,0
         getattr(combinedModel,name).set(**_importparameter(getattr(models[n],param)))
-
-    # Perform links of parameters if requested
-    combinedModel = link(combinedModel,**links)
 
     # Return the new combined model object
     return combinedModel    
 #==============================================================================================
 
 #==============================================================================================
-def expand(*inputmodels,**links):
-    return _combinemodels('expand',*inputmodels,**links)
+def expand(*inputmodels,addweights=False):
+    return _combinemodels('expand',*inputmodels,addweights=addweights)
 #==============================================================================================
 
 #==============================================================================================
-def combine(*inputmodels,**links):
-    return _combinemodels('combine',*inputmodels,**links)
+def combine(*inputmodels,addweights=False):
+    return _combinemodels('combine',*inputmodels,addweights=addweights)
 #==============================================================================================
 
 
