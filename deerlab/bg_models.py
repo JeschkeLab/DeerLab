@@ -98,7 +98,7 @@ where `c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this ex
 .. math::
    D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
 """  
-def hom3d_fcn(t,conc,lam):
+def _hom3d_fcn(t,conc,lam):
 #---------------------------------------------------------------------------------------
     # Units conversion    
     conc = conc*1e-6*1e3*Nav # umol/L -> mol/L -> mol/m^3 -> spins/m^3
@@ -107,7 +107,7 @@ def hom3d_fcn(t,conc,lam):
     return B
 #---------------------------------------------------------------------------------------
 # Create model
-bg_hom3d = Model(hom3d_fcn,constants='t')
+bg_hom3d = Model(_hom3d_fcn,constants='t')
 bg_hom3d.description = 'Background from homogeneous distribution of spins in a 3D medium'
 # Parameters
 bg_hom3d.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
@@ -137,7 +137,7 @@ where :math:`c_s` is the spin concentration (entered in spins/m\ :sup:`3` into t
 
 The function :math:`\alpha(R)` of the exclusion distance :math:`R` captures the excluded-volume effect. It is a smooth function, but doesn't have an analytical representation. For details, see `Kattnig et al, J.Phys.Chem.B 2013, 117, 16542 <https://pubs.acs.org/doi/abs/10.1021/jp408338q>`_.
 """  
-def hom3dex(t,conc,rexcl,lam):    
+def _hom3dex(t,conc,rexcl,lam):    
     # Load precalculated reduction factor look-up table (Kattnig Eq.(18))
     dR_tab,alphas_tab = load_exvolume_redfactor()
 
@@ -164,7 +164,7 @@ def hom3dex(t,conc,rexcl,lam):
     B = np.exp(-lam*conc*K) # Eq.(13)
     return B
 # Create model
-bg_hom3dex = Model(hom3dex,constants='t')
+bg_hom3dex = Model(_hom3dex,constants='t')
 bg_hom3dex.description = 'Background from homogeneous distribution of spins with excluded-volume effects'
 # Parameters
 bg_hom3dex.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
@@ -182,7 +182,7 @@ notes = r"""
 
 This implements the background due to a homogeneous distribution of spins in a d-dimensional space, with d-dimensional spin concentration ``c_d``.
 """  
-def homfractal(t,fconc,fdim,lam):
+def _homfractal(t,fconc,fdim,lam):
     # Unpack model paramters
     d = float(fdim)     # fractal dimension    
 
@@ -203,7 +203,7 @@ def homfractal(t,fconc,fdim,lam):
     return B
  # ======================================================================
 # Create model
-bg_homfractal = Model(homfractal,constants='t')
+bg_homfractal = Model(_homfractal,constants='t')
 bg_homfractal.description = 'Background from homogeneous distribution of spins in a fractal medium'
 # Parameters
 bg_homfractal.fconc.set(description='Fractal concentration of spins', lb=0.01, ub=5000, par0=50, units='μmol/dmᵈ')
@@ -226,10 +226,10 @@ notes= r"""
 Although the ``bg_exp`` model has the same functional form as ``bg_hom3d``, it is distinct since its 
 parameter is a decay rate constant and not a spin concentration like for ``bg_hom3d``. 
     """  
-def exp(t,decay):
+def _exp(t,decay):
     return np.exp(-decay*np.abs(t))
 # Create model
-bg_exp = Model(exp,constants='t')
+bg_exp = Model(_exp,constants='t')
 bg_exp.description = 'Exponential background model'
 # Parameters
 bg_exp.decay.set(description='Decay rate', lb=0, ub=200, par0=0.35, units='μs⁻¹')
@@ -251,10 +251,10 @@ notes = r"""
 Although the ``bg_strexp`` model has the same functional form as ``bg_homfractal``, it is distinct since its
 first parameter is a decay rate constant and not a spin concentration like for ``bg_homfractal``.
 """  
-def strexp(t,decay,stretch):
+def _strexp(t,decay,stretch):
     return np.exp(-decay*abs(t)**stretch)
 # Create model
-bg_strexp = Model(strexp,constants='t')
+bg_strexp = Model(_strexp,constants='t')
 bg_strexp.description = 'Stretched exponential background model'
 # Parameters
 bg_strexp.decay.set(description='Decay rate', lb=0, ub=200, par0=0.25, units='μs⁻¹')
@@ -272,12 +272,12 @@ notes = r"""
 
 :math:`B(t) = \exp\left(-\kappa_1 \vert t \vert^{d_1}\right) \exp\left(-\kappa_2 \vert t\vert^{d_2}\right)`
 """  
-def prodstrexp(t,decay1,stretch1,decay2,stretch2):
+def _prodstrexp(t,decay1,stretch1,decay2,stretch2):
     strexp1 = np.exp(-decay1*abs(t)**stretch1)
     strexp2 = np.exp(-decay2*abs(t)**stretch2)
     return strexp1*strexp2
 # Create model
-bg_prodstrexp = Model(prodstrexp,constants='t')
+bg_prodstrexp = Model(_prodstrexp,constants='t')
 bg_prodstrexp.description = 'Product of two stretched exponentials background model'
 # Parameters
 bg_prodstrexp.decay1.set(description='Decay rate of 1st component', lb=0, ub=200, par0=0.25, units='μs⁻¹')
@@ -297,12 +297,12 @@ notes = r"""
 
 :math:`B(t) = A_1\exp \left(-\kappa_1 \vert t \vert^{d_1}\right) + (1-A_1)\exp\left(-\kappa_2 \vert t \vert^{d_2}\right)`
 """ 
-def sumstrexp(t,decay1,stretch1,weight1,decay2,stretch2):
+def _sumstrexp(t,decay1,stretch1,weight1,decay2,stretch2):
     strexp1 = np.exp(-decay1*abs(t)**stretch1)
     strexp2 = np.exp(-decay2*abs(t)**stretch2)
     return weight1*strexp1 + (1-weight1)*strexp2
 # Create model
-bg_sumstrexp = Model(sumstrexp,constants='t')
+bg_sumstrexp = Model(_sumstrexp,constants='t')
 bg_sumstrexp.description = 'Sum of two stretched exponentials background model'
 # Parameters
 bg_sumstrexp.decay1.set(description='Decay rate of 1st component', lb=0, ub=200, par0=0.25, units='μs⁻¹')
@@ -322,10 +322,10 @@ notes =  r"""
 
 :math:`B(t) = p_0 + p_1 t`
 """  
-def poly1(t,p0,p1):
+def _poly1(t,p0,p1):
     return np.polyval([p1,p0],abs(t))
 # Create model
-bg_poly1 = Model(poly1,constants='t')
+bg_poly1 = Model(_poly1,constants='t')
 bg_poly1.description = 'Polynomial 1st-order background model'
 # Parameters
 bg_poly1.p0.set(description='Intercept', lb=0, ub=200, par0=1, units='')
@@ -343,10 +343,10 @@ notes =  r"""
 
 :math:`B(t) = p_0 + p_1 t + p_2 t^2`
 """  
-def poly2(t,p0,p1,p2):
+def _poly2(t,p0,p1,p2):
     return np.polyval([p2,p1,p0],abs(t))
 # Create model
-bg_poly2 = Model(poly2,constants='t')
+bg_poly2 = Model(_poly2,constants='t')
 bg_poly2.description = 'Polynomial 2nd-order background model'
 # Parameters
 bg_poly2.p0.set(description='Intercept', lb=0, ub=200, par0=1, units='')
@@ -364,10 +364,10 @@ notes =  r"""
 
 :math:`B(t) = p_0 + p_1 t + p_2 t^2 + p_3 t^3`
 """  
-def poly3(t,p0,p1,p2,p3):
+def _poly3(t,p0,p1,p2,p3):
     return np.polyval([p3,p2,p1,p0],abs(t))
 # Create model
-bg_poly3 = Model(poly3,constants='t')
+bg_poly3 = Model(_poly3,constants='t')
 bg_poly3.description = 'Polynomial 3rd-order background model'
 # Parameters
 bg_poly3.p0.set(description='Intercept', lb=0, ub=200, par0=1, units='')
