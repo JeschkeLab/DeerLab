@@ -24,7 +24,7 @@ def test_preserve_original():
 # ======================================================================
 
 # ======================================================================
-def test_Nparam_nonlin(): 
+def test_twomodels_Nparam_nonlin(): 
     "Check that the combined model has the right number of parameters"
     model1 = dl.dd_gauss
     model2 = dl.dd_rice
@@ -34,7 +34,7 @@ def test_Nparam_nonlin():
 # ======================================================================
 
 # ======================================================================
-def test_Nparam_lin(): 
+def test_twomodels_Nparam_lin(): 
     "Check that the combined model has the right number of parameters"
     model1 = dl.dd_gauss2
     model2 = dl.dd_gauss3
@@ -44,7 +44,7 @@ def test_Nparam_lin():
 # ======================================================================
 
 # ======================================================================
-def test_Nparam(): 
+def test_twomodels_Nparam(): 
     "Check that the combined model has the right number of parameters"
     model1 = dl.dd_gauss3
     model2 = dl.dd_gauss2
@@ -54,7 +54,7 @@ def test_Nparam():
 # ======================================================================
 
 # ======================================================================
-def test_Nparam_list(): 
+def test_twomodels_Nparam_list(): 
     "Check that the combined model has the right number of parameters"
     model1 = dl.dd_gauss3
     model2 = dl.dd_gauss2
@@ -64,7 +64,7 @@ def test_Nparam_list():
 # ======================================================================
 
 # ======================================================================
-def test_param_names(): 
+def test_twomodels_param_names(): 
     "Check that the combined model has the adjusted parameter names"
     model1 = dl.dd_gauss
     model2 = dl.dd_gauss
@@ -74,7 +74,7 @@ def test_param_names():
 # ======================================================================
 
 # ======================================================================
-def test_default_linear(): 
+def test_twomodels_default_linear(): 
     """Check that the default linear scaling parameter is added if there 
     are no linear parameters on one of the models"""
     model1 = dl.dd_gauss2
@@ -85,7 +85,48 @@ def test_default_linear():
 # ======================================================================
 
 # ======================================================================
-def test_two_models(): 
+def test_twomodels_addweights(): 
+    "Check that that weights can be introduced properly"
+    model1 = dl.dd_gauss
+    model2 = dl.dd_gauss
+    model = combine(model1,model2,addweights=True)
+    x = np.linspace(0,10,400)
+    ref = model1(x,3,0.2) + model2(x,4,0.5)
+
+    response = model(r_1=x,r_2=x,mean_1=3,width_1=0.2,
+                         mean_2=4,width_2=0.5,
+                         scale_1=1,scale_2=1,
+                         weight_1=1,weight_2=1)
+
+    assert np.allclose(response,ref)
+# ======================================================================
+
+# ======================================================================
+def test_twomodels_addweights_values(): 
+    "Check that that weights values work properly"
+    model1 = dl.dd_gauss
+    model2 = dl.dd_gauss
+    model = combine(model1,model2,addweights=True)
+    x = np.linspace(0,10,400)
+    ref1 = model1(x,3,0.2) 
+    ref2 = model2(x,4,0.5)
+
+    response1 = model(r_1=x,r_2=x,mean_1=3,width_1=0.2,
+                         mean_2=4,width_2=0.5,
+                         scale_1=1,scale_2=1,
+                         weight_1=1,weight_2=0)
+
+    response2 = model(r_1=x,r_2=x,mean_1=3,width_1=0.2,
+                         mean_2=4,width_2=0.5,
+                         scale_1=1,scale_2=1,
+                         weight_1=0,weight_2=1)
+
+    assert np.allclose(response1,ref1) and np.allclose(response2,ref2)
+# ======================================================================
+
+
+# ======================================================================
+def test_twomodels_call(): 
     "Check that that combine works correctly for two models"
     model1 = dl.dd_gauss
     model2 = dl.dd_rice
@@ -101,7 +142,128 @@ def test_two_models():
 # ======================================================================
 
 # ======================================================================
-def test_three_models(): 
+def test_threemodels_Nparam_nonlin(): 
+    "Check that the combined model has the right number of parameters"
+    model1 = dl.dd_gauss
+    model2 = dl.dd_rice
+    model3 = dl.dd_gauss2
+
+    model = combine(model1,model2,model3)
+    assert model.Nnonlin == model1.Nnonlin + model2.Nnonlin + model3.Nnonlin
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_Nparam_lin(): 
+    "Check that the combined model has the right number of parameters"
+    model1 = dl.dd_gauss2
+    model2 = dl.dd_gauss3
+    model3 = dl.dd_gauss2
+
+    model = combine(model1,model2,model3)
+    assert model.Nlin == model1.Nlin + model2.Nlin + model3.Nlin
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_Nparam(): 
+    "Check that the combined model has the right number of parameters"
+    model1 = dl.dd_gauss3
+    model2 = dl.dd_gauss2
+    model3 = dl.dd_gauss2
+
+    model = combine(model1,model2,model3)
+    assert model.Nparam == model1.Nparam + model2.Nparam + model3.Nparam
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_Nparam_list(): 
+    "Check that the combined model has the right number of parameters"
+    model1 = dl.dd_gauss3
+    model2 = dl.dd_gauss2
+    model3 = dl.dd_gauss2
+
+    model = combine(model1,model2,model3)
+    assert model.Nparam == len(model._parameter_list())
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_param_names(): 
+    "Check that the combined model has the adjusted parameter names"
+    model1 = dl.dd_gauss
+    model2 = dl.dd_gauss
+    model3 = dl.dd_gauss
+    model = combine(model1,model2,model3)
+
+    assert all([ str in model._parameter_list() for str in ['mean_1','mean_2','mean_3','width_1','width_2','width_3'] ])
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_default_linear(): 
+    """Check that the default linear scaling parameter is added if there 
+    are no linear parameters on one of the models"""
+    model1 = dl.dd_gauss
+    model2 = dl.dd_gauss
+    model3 = dl.dd_gauss
+    model = combine(model1,model2,model3)
+
+    assert [scale_par in model._parameter_list() for scale_par in ['scale_1','scale_2','scale_3']]
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_addweights(): 
+    "Check that that weights can be introduced properly"
+    model1 = dl.dd_gauss
+    model2 = dl.dd_rice
+    model3 = dl.dd_wormchain
+    model = combine(model1,model2,model3,addweights=True)
+    x = np.linspace(0,10,400)
+    ref = model1(x,3,0.2) + model2(x,4,0.5) + model3(x,3.7,10)
+
+    response = model(r_1=x,r_2=x,r_3=x,
+                    mean_1=3,width_1=0.2,
+                    location_2=4,spread_2=0.5,
+                    contour_3=3.7,persistence_3=10,
+                    scale_1=1,scale_2=1,scale_3=1,
+                    weight_1=1,weight_2=1,weight_3=1)
+
+    assert np.allclose(response,ref)
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_addweights_values(): 
+    "Check that that weights values work properly"
+    model1 = dl.dd_gauss
+    model2 = dl.dd_rice
+    model3 = dl.dd_gauss
+    model = combine(model1,model2,model3,addweights=True)
+    x = np.linspace(0,10,400)
+    ref1 = model1(x,3,0.2) 
+    ref2 = model2(x,4,0.5)
+    ref3 = model3(x,5,0.1)
+
+    response1 = model(r_1=x,r_2=x,r_3=x,
+                         mean_1=3,width_1=0.2,
+                         location_2=4,spread_2=0.5,
+                         mean_3=5,width_3=0.1, 
+                         scale_1=1,scale_2=1,scale_3=1,
+                         weight_1=1,weight_2=0,weight_3=0)
+    response2 = model(r_1=x,r_2=x,r_3=x,
+                         mean_1=3,width_1=0.2,
+                         location_2=4,spread_2=0.5,
+                         mean_3=5,width_3=0.1, 
+                         scale_1=1,scale_2=1,scale_3=1,
+                         weight_1=0,weight_2=1,weight_3=0)
+    response3 = model(r_1=x,r_2=x,r_3=x,
+                         mean_1=3,width_1=0.2,
+                         location_2=4,spread_2=0.5,
+                         mean_3=5,width_3=0.1, 
+                         scale_1=1,scale_2=1,scale_3=1,
+                         weight_1=0,weight_2=0,weight_3=1)
+
+    assert all([np.allclose(response,ref) for response,ref in zip([response1,response2,response3],[ref1,ref2,ref3]) ])
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_call(): 
     "Check that that combine works correctly for three models"
     model1 = dl.dd_gauss
     model2 = dl.dd_rice
@@ -126,118 +288,13 @@ def test_fit_model():
     model = combine(model1,model2)
     x = np.linspace(0,10,400)
     truth = model1(x,3,0.2)+model2(x,4,0.5)
+
+
+    model.mean_1.par0=3
+    model.location_2.par0=4
     result = fit(model,truth,x,x)
 
     assert np.allclose(result.model,truth)
-# ======================================================================
-
-# ======================================================================
-def test_link_same_name(): 
-    "Check that the parameters with the same name are linked properly"
-    model1 = dl.dd_gauss
-    model2 = dl.dd_gauss
-
-    model = combine(model1,model2,mean=[model1.mean,model2.mean])
-
-    assert hasattr(model,'mean') and not hasattr(model,'mean_1') and not hasattr(model,'mean_2')
-# ======================================================================
-
-# ======================================================================
-def test_link_name(): 
-    "Check that the parameters are linked to the proper name"
-    model1 = dl.dd_gauss
-    model2 = dl.dd_gauss2
-
-    model = combine(model1,model2,mean=[model1.mean,model2.mean1])
-
-    assert hasattr(model,'mean') and not hasattr(model,'mean_1') and not hasattr(model,'mean1_2')
-# ======================================================================
-
-# ======================================================================
-def test_link_Nparam(): 
-    "Check that the parameters are linked resulting in proper number of parameters"
-    model1 = dl.dd_gauss3
-    model2 = dl.dd_gauss2
-
-    model = combine(model1,model2,mean1=[model1.mean2,model2.mean1])
-
-    assert model.Nparam == model1.Nparam + model2.Nparam - 1
-# ======================================================================
-
-# ======================================================================
-def test_link_Nparam_list(): 
-    "Check that the combined model has the right number of parameters"
-    model1 = dl.dd_gauss3
-    model2 = dl.dd_gauss2
-
-    model = combine(model1,model2,mean1=[model1.mean2,model2.mean1])
-    assert model.Nparam == len(model._parameter_list())
-# ======================================================================
-
-# ======================================================================
-def test_link_multiple(): 
-    "Check that multiple links can be established"
-    model1 = dl.dd_gauss3
-    model2 = dl.dd_gauss2
-
-    model = combine(model1,model2,
-            mean1=[model1.mean1,model2.mean1],
-            mean2=[model1.mean2,model2.mean2],
-            width2=[model1.width2,model2.width2])
-
-    assert model.Nparam == model1.Nparam + model2.Nparam - 3
-# ======================================================================
-
-# ======================================================================
-def test_link_call(): 
-    "Check that linked parameter models return the correct responses"
-    model1 = dl.dd_gauss
-    model2 = dl.dd_gauss2
-
-    model = combine(model1,model2,mean=[model1.mean,model2.mean2])
-
-    x = np.linspace(0,10,400)
-    ref1 = model1(x,3,0.2)
-    ref2 = model2(x,4,0.5,3,0.4,1,1)
-    ref = ref1 + ref2
-    response = model(x,x,3,0.2,4,0.5,0.4,1,1,1)
-
-    assert np.allclose(response,ref)
-# ======================================================================
-
-# ======================================================================
-def test_link_fit(): 
-    "Check that linked parameter models can be properly fitted"
-    model1 = dl.dd_gauss
-    model2 = dl.dd_gauss
-    model3 = dl.dd_gauss2
-
-    model = combine(model1,model2,model3,
-                    mean1=[model1.mean,model3.mean1],
-                    mean2=[model2.mean,model3.mean2],
-                    width1=[model1.width,model2.width])
-    model.mean1.par0 = 3
-    model.mean2.par0 = 5
-    
-    x = np.linspace(0,10,300)
-    ref1 = model1(x,3,0.2)
-    ref2 = model2(x,5,0.2)
-    ref3 = model3(x,5,0.2,3,0.2,1,1)
-    ref = ref1 + ref2 + ref3
-
-    result = fit(model,ref,x,x,x)
-    
-    assert np.allclose(result.model,ref)
-# ======================================================================
-
-# ======================================================================
-def test_link_single(): 
-    "Check that the parameters can be linked within a single model"
-    model1 = dl.dd_gauss2
-
-    model = combine(model1,means=[model1.mean1,model1.mean2])
-
-    assert model.Nparam == model1.Nparam - 1
 # ======================================================================
 
 model_vec = Model(lambda r: np.eye(len(r)),constants='r')
@@ -281,6 +338,23 @@ def test_vec_param_names():
 
     model = combine(model1,model2)
     assert all([ str in model._parameter_list() for str in ['mean_1','width_1','Pvec_2'] ])
+# ======================================================================
+
+# ======================================================================
+def test_vec_addweights(): 
+    "Check that that weights can be introduced properly"
+    model1 = model_vec
+    model2 = model_vec
+    model = combine(model1,model2,addweights=True)
+    x = np.linspace(0,10,100)
+    ref1 = dl.dd_gauss(x,3,0.2)
+    ref2 = dl.dd_gauss(x,4,0.2)
+    ref = ref1+ref2
+
+    response = model(r_1=x,r_2=x,Pvec_1=ref1,Pvec_2=ref2,
+                         weight_1=1,weight_2=1)
+
+    assert np.allclose(response,ref)
 # ======================================================================
 
 # ======================================================================

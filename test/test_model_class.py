@@ -228,6 +228,60 @@ def test_mixed_vector_call_positional():
 #================================================================
 
 
+def test_addnonlinear_length():
+#================================================================
+    "Check that the model is contructed correctly with the appropiate number of parameters"
+    model = Model(gauss)
+    model.addnonlinear('trivial1',lb=0)
+    model.addnonlinear('trivial2',lb=0)
+
+    assert model.Nparam==4
+#================================================================
+
+def test_addnonlinear_names():
+#================================================================
+    "Check that linear parameters can be properly added"
+    model = Model(gauss)
+    model.addnonlinear('trivial1',lb=0)
+    model.addnonlinear('trivial2',lb=0)
+
+    assert hasattr(model,'trivial1') and hasattr(model,'trivial2')
+#================================================================
+
+def test_addnonlinear_set():
+#================================================================
+    "Check that attributes of the linear parameters are editable"
+    model = Model(gauss)
+    model.addnonlinear('trivial1')
+    model.trivial1.set(lb=0,ub=10)
+
+    assert getattr(model.trivial1,'lb')==0 and getattr(model.trivial1,'ub')==10 
+#================================================================
+
+def test_addnonlinear_call_keywords():
+#================================================================
+    "Check that calling the model with parameters returns the correct response"
+    model = Model(gauss)
+    model.addnonlinear('trivial1')
+    model.addnonlinear('trivial2')
+    response = model(mean=3,width=0.2,trivial1=1,trivial2=1)
+    reference = gauss(mean=3,width=0.2)
+
+    assert np.allclose(response,reference)
+#================================================================
+
+def test_addnonlinear_call_positional():
+#================================================================
+    "Check that calling the model with parameters returns the correct response"
+    model = Model(gauss)
+    model.addnonlinear('trivial1')
+    model.addnonlinear('trivial2')
+    response = model(3,0.2,1,1)
+    reference = gauss(3,0.2)
+
+    assert np.allclose(response,reference)
+#================================================================
+
 #----------------------------------------------------------------
 def _getmodel(type):
     if type=='parametric':

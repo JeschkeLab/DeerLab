@@ -24,7 +24,7 @@ def test_preserve_original():
 # ======================================================================
 
 # ======================================================================
-def test_Nparam_nonlin(): 
+def test_twomodels_Nparam_nonlin(): 
     "Check that the expandd model has the right number of parameters"
     model1 = dl.dd_gauss
     model2 = dl.dd_rice
@@ -34,7 +34,7 @@ def test_Nparam_nonlin():
 # ======================================================================
 
 # ======================================================================
-def test_Nparam_lin(): 
+def test_twomodels_Nparam_lin(): 
     "Check that the expandd model has the right number of parameters"
     model1 = dl.dd_gauss2
     model2 = dl.dd_gauss3
@@ -44,7 +44,7 @@ def test_Nparam_lin():
 # ======================================================================
 
 # ======================================================================
-def test_Nparam(): 
+def test_twomodels_Nparam(): 
     "Check that the expandd model has the right number of parameters"
     model1 = dl.dd_gauss3
     model2 = dl.dd_gauss2
@@ -54,7 +54,7 @@ def test_Nparam():
 # ======================================================================
 
 # ======================================================================
-def test_Nparam_list(): 
+def test_twomodels_Nparam_list(): 
     "Check that the expandd model has the right number of parameters"
     model1 = dl.dd_gauss3
     model2 = dl.dd_gauss2
@@ -64,7 +64,7 @@ def test_Nparam_list():
 # ======================================================================
 
 # ======================================================================
-def test_param_names(): 
+def test_twomodels_param_names(): 
     "Check that the expandd model has the adjusted parameter names"
     model1 = dl.dd_gauss
     model2 = dl.dd_gauss
@@ -74,7 +74,7 @@ def test_param_names():
 # ======================================================================
 
 # ======================================================================
-def test_default_linear(): 
+def test_twomodels_default_linear(): 
     """Check that the default linear scaling parameter is added if there 
     are no linear parameters on one of the models"""
     model1 = dl.dd_gauss2
@@ -85,7 +85,25 @@ def test_default_linear():
 # ======================================================================
 
 # ======================================================================
-def test_two_models(): 
+def test_twomodels_addweights(): 
+    "Check that that weights can be introduced properly"
+    model1 = dl.dd_gauss
+    model2 = dl.dd_gauss
+    model = expand(model1,model2,addweights=True)
+    x = np.linspace(0,10,400)
+    ref1 = model1(x,3,0.2)
+    ref2 = model2(x,4,0.5)
+
+    response = model(r_1=x,r_2=x,mean_1=3,width_1=0.2,
+                         mean_2=4,width_2=0.5,
+                         scale_1=1,scale_2=1,
+                         weight_1=1,weight_2=1)
+
+    assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
+# ======================================================================
+
+# ======================================================================
+def test_twomodels_call(): 
     "Check that that expand works correctly for two models"
     model1 = dl.dd_gauss
     model2 = dl.dd_rice
@@ -100,7 +118,98 @@ def test_two_models():
 # ======================================================================
 
 # ======================================================================
-def test_three_models(): 
+def test_threemodels_Nparam_nonlin(): 
+    "Check that the expandd model has the right number of parameters"
+    model1 = dl.dd_gauss2
+    model2 = dl.dd_gauss2
+    model3 = dl.dd_gauss3
+
+    model = expand(model1,model2,model3)
+
+    assert model.Nnonlin == model1.Nnonlin + model2.Nnonlin + model3.Nnonlin
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_Nparam_lin(): 
+    "Check that the expandd model has the right number of parameters"
+    model1 = dl.dd_gauss2
+    model2 = dl.dd_gauss2
+    model3 = dl.dd_gauss3
+
+    model = expand(model1,model2,model3)
+    
+    assert model.Nlin == model1.Nlin + model2.Nlin + model3.Nlin
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_Nparam(): 
+    "Check that the expandd model has the right number of parameters"
+    model1 = dl.dd_gauss2
+    model2 = dl.dd_gauss2
+    model3 = dl.dd_gauss3
+
+    model = expand(model1,model2,model3)
+
+    assert model.Nparam == model1.Nparam + model2.Nparam + model3.Nparam
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_Nparam_list(): 
+    "Check that the expandd model has the right number of parameters"
+    model1 = dl.dd_gauss2
+    model2 = dl.dd_gauss2
+    model3 = dl.dd_gauss3
+
+    model = expand(model1,model2,model3)
+
+    assert model.Nparam == len(model._parameter_list())
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_param_names(): 
+    "Check that the expandd model has the adjusted parameter names"
+    model1 = dl.dd_gauss
+    model2 = dl.dd_gauss
+    model3 = dl.dd_gauss
+
+    model = expand(model1,model2,model3)
+
+    assert all([ str in model._parameter_list() for str in ['mean_1','mean_2','mean_3','width_1','width_2','width_3'] ])
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_default_linear(): 
+    """Check that the default linear scaling parameter is added if there 
+    are no linear parameters on one of the models"""
+    model1 = dl.dd_gauss
+    model2 = dl.dd_rice
+    model3 = dl.dd_shell
+
+    model = expand(model1,model2,model3)
+
+    assert [scaleparam in model._parameter_list() for scaleparam in ['scale_1','scale_2','scale_3']]
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_addweights(): 
+    "Check that that weights can be introduced properly"
+    model1 = dl.dd_gauss
+    model2 = dl.dd_gauss
+    model = expand(model1,model2,addweights=True)
+    x = np.linspace(0,10,400)
+    ref1 = model1(x,3,0.2)
+    ref2 = model2(x,4,0.5)
+
+    response = model(r_1=x,r_2=x,mean_1=3,width_1=0.2,
+                         mean_2=4,width_2=0.5,
+                         scale_1=1,scale_2=1,
+                         weight_1=1,weight_2=1)
+
+    assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
+# ======================================================================
+
+# ======================================================================
+def test_threemodels_call(): 
     "Check that that expand works correctly for three models"
     model1 = dl.dd_gauss
     model2 = dl.dd_rice
@@ -127,113 +236,6 @@ def test_fit_model():
     result = fit(model,truth,x,x)
 
     assert np.allclose(result.model[0],truth[0]) and np.allclose(result.model[1],truth[1])
-# ======================================================================
-
-# ======================================================================
-def test_link_same_name(): 
-    "Check that the parameters with the same name are linked properly"
-    model1 = dl.dd_gauss
-    model2 = dl.dd_gauss
-
-    model = expand(model1,model2,mean=[model1.mean,model2.mean])
-
-    assert hasattr(model,'mean') and not hasattr(model,'mean_1') and not hasattr(model,'mean_2')
-# ======================================================================
-
-# ======================================================================
-def test_link_name(): 
-    "Check that the parameters are linked to the proper name"
-    model1 = dl.dd_gauss
-    model2 = dl.dd_gauss2
-
-    model = expand(model1,model2,mean=[model1.mean,model2.mean1])
-
-    assert hasattr(model,'mean') and not hasattr(model,'mean_1') and not hasattr(model,'mean1_2')
-# ======================================================================
-
-# ======================================================================
-def test_link_Nparam(): 
-    "Check that the parameters are linked resulting in proper number of parameters"
-    model1 = dl.dd_gauss3
-    model2 = dl.dd_gauss2
-
-    model = expand(model1,model2,mean1=[model1.mean2,model2.mean1])
-
-    assert model.Nparam == model1.Nparam + model2.Nparam - 1
-# ======================================================================
-
-# ======================================================================
-def test_link_Nparam_list(): 
-    "Check that the expandd model has the right number of parameters"
-    model1 = dl.dd_gauss3
-    model2 = dl.dd_gauss2
-
-    model = expand(model1,model2,mean1=[model1.mean2,model2.mean1])
-    assert model.Nparam == len(model._parameter_list())
-# ======================================================================
-
-# ======================================================================
-def test_link_multiple(): 
-    "Check that multiple links can be established"
-    model1 = dl.dd_gauss3
-    model2 = dl.dd_gauss2
-
-    model = expand(model1,model2,
-            mean1=[model1.mean1,model2.mean1],
-            mean2=[model1.mean2,model2.mean2],
-            width2=[model1.width2,model2.width2])
-
-    assert model.Nparam == model1.Nparam + model2.Nparam - 3
-# ======================================================================
-
-# ======================================================================
-def test_link_call(): 
-    "Check that linked parameter models return the correct responses"
-    model1 = dl.dd_gauss
-    model2 = dl.dd_gauss2
-
-    model = expand(model1,model2,mean=[model1.mean,model2.mean2])
-
-    x = np.linspace(0,10,400)
-    ref1 = model1(x,3,0.2)
-    ref2 = model2(x,4,0.5,3,0.4,1,1)
-
-    response = model(x,x,3,0.2,4,0.5,0.4,1,1,1)
-
-    assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
-# ======================================================================
-
-# ======================================================================
-def test_link_fit(): 
-    "Check that linked parameter models can be properly fitted"
-    model1 = dl.dd_gauss
-    model2 = dl.dd_gauss
-    model3 = dl.dd_gauss2
-
-    model = expand(model1,model2,model3,
-                    mean1=[model1.mean,model3.mean1],
-                    mean2=[model2.mean,model3.mean2])
-    model.mean1.par0 = 3
-    model.mean2.par0 = 5
-
-    x = np.linspace(0,10,400)
-    ref1 = model1(x,3,0.2)
-    ref2 = model2(x,5,0.2)
-    ref3 = model3(x,5,0.5,3,0.4,1,1)
-
-    result = fit(model,[ref1,ref2,ref3],x,x,x)
-    
-    assert all([np.allclose(result.model[n],ref) for n,ref in enumerate([ref1,ref2,ref3])])
-# ======================================================================
-
-# ======================================================================
-def test_link_single(): 
-    "Check that the parameters can be linked within a single model"
-    model1 = dl.dd_gauss2
-
-    model = expand(model1,means=[model1.mean1,model1.mean2])
-
-    assert model.Nparam == model1.Nparam - 1
 # ======================================================================
 
 model_vec = Model(lambda r: np.eye(len(r)),constants='r')
@@ -280,16 +282,32 @@ def test_vec_param_names():
 # ======================================================================
 
 # ======================================================================
-def test_vec_two_models(): 
-    "Check that that expand works correctly for two models"
+def test_vec_twomodels(): 
+    "Check that that expand works correctly for two vector-based models"
+    model1 = model_vec
+    model2 = model_vec
+    model = expand(model1,model2)
+    x = np.linspace(0,10,100)
+    ref1 = model1(r=x,Pvec=dl.dd_gauss(x,5,0.2))
+    ref2 = model2(r=x,Pvec=dl.dd_gauss(x,4,0.3))
+
+    response = model(x,x,dl.dd_gauss(x,5,0.2),dl.dd_gauss(x,4,0.3))
+
+    assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
+# ======================================================================
+
+# ======================================================================
+def test_vec_twomodels_mixed(): 
+    "Check that that expand works correctly for two vector-based models"
     model1 = dl.dd_gauss
     model2 = model_vec
     model = expand(model1,model2)
     x = np.linspace(0,10,100)
     ref1 = model1(x,3,0.2)
-    ref2 = model2(r=x,Pvec=model1(x,4,0.3))
+    ref2 = model2(r=x,Pvec=dl.dd_gauss(x,4,0.3))
 
-    response = model(x,x,3,0.2,1,model1(x,4,0.3))
+    response = model(x,x,3,0.2,1,dl.dd_gauss(x,4,0.3))
 
     assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
 # ======================================================================
+
