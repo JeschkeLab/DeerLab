@@ -5,6 +5,7 @@
 
 import numpy as np
 from numpy.core.shape_base import atleast_1d, block
+from scipy.optimize import nonlin
 from scipy.sparse.construct import block_diag
 from deerlab.solvers import snlls
 from deerlab.classes import FitResult, UQResult
@@ -954,7 +955,6 @@ def relate(model,**links):
 
         # Get the names and indices of the parameters taken by the dependent's function
         arguments_names = inspect.getfullargspec(function).args
-        arguments_idx = [np.where(model_parameters==name)[0] for name in arguments_names]
 
         if dependent_name not in model_parameters:
             raise KeyError(f"The assigned parameter '{dependent_name}' is not a parameter of the input model.")
@@ -968,75 +968,47 @@ def relate(model,**links):
             if getattr(model,arg).linear:
                 raise TypeError(f"Linear parameters cannot be used.")
 
-        nnew = 0
-        # Initialize the maps linked->unlinked
-        mapping = np.zeros(model.Nnonlin,dtype=int)
-        mapping_linear = np.zeros(model.Nlin,dtype=int)
-
-        # Get the indices of the unlinked parameters in the maps
-        unlinked_linear_idx = np.full(len(model_parameters),None)
-        unlinked_nonlinear_idx = np.full(len(model_parameters),None)
-        linked_linear_idx = np.full(len(model_parameters),None)
-        linked_nonlinear_idx = np.full(len(model_parameters),None)
-        q = 0
-        nnew = 0
-        for n,param in enumerate(model_parameters):
-            if np.all(getattr(model,param).linear):
-                m =  len(np.atleast_1d(getattr(model,param).idx)) 
-                unlinked_linear_idx[n]= np.arange(q,q+m)
-                q += m
-                if param != dependent_name:
-                    linked_linear_idx[n]= np.arange(nnew,nnew+m)
-            else:
-                unlinked_nonlinear_idx[n] = np.array(n)
-                if param != dependent_name: 
-                    linked_nonlinear_idx[n] = np.array(nnew)
-                    m = 1
-            if param != dependent_name: 
-                nnew += m
-        Nnl = model.Nnonlin
-        
+        param_idx = 0
         # Loop over all parameters in the model
-        for n,param in enumerate(model_parameters):
-            # If the parameter is to be linked...
-            if param == dependent_name:
-                # Update the number of parameters in the model
-                Nremoved = len(np.atleast_1d(getattr(model,param).idx))
-                model.Nparam -= Nremoved
-                if np.all(getattr(model,param).linear):
-                    model.Nlin -= Nremoved
-                else: 
-                    model.Nnonlin -= Nremoved
-                # Delete the linked parameter from the model
-                delattr(model,param)
+        for param in model_parameters:
+            Nidx = len(np.atleast_1d(getattr(model,param).idx))
+            # Update the index of the parameter in the new vector 
+            if not np.all(getattr(model,param).linear):
+                getattr(model,param).idx = np.array(param_idx) 
+            else: 
+                getattr(model,param).idx = np.arange(param_idx,param_idx+Nidx)
 
-            # Otherwise if the parameter is not linked...
-            else:
-                # Update the index of the parameter in the new vector 
-                if not np.all(getattr(model,param).linear):
-                    getattr(model,param).idx = linked_nonlinear_idx[n]
-                    mapping[unlinked_nonlinear_idx[n]] = linked_nonlinear_idx[n]
-                else: 
-                    getattr(model,param).idx = linked_linear_idx[n]
-                    mapping_linear[unlinked_linear_idx[n]] = linked_linear_idx[n]-Nnl
+            if param != dependent_name:
+                param_idx += Nidx
+
+        # If the parameter is to be linked...
+        Nremove = len(np.atleast_1d(getattr(model,dependent_name).idx))
+        # Update the number of parameters in the model
+        model.Nparam -= Nremove
+        if np.all(getattr(model,dependent_name).linear):
+            model.Nlin -= Nremove
+        else: 
+            model.Nnonlin -= Nremove
+        # Delete the linked parameter from the model
+        delattr(model,dependent_name)
 
         # Monkey-patch the evaluation function         
         nonlinfcn = model.nonlinmodel
-        linear_reduce_idx = [np.where(mapping_linear==n)[0].tolist() for n in np.unique(mapping_linear) ]
         Nconstants = len(model._constantsInfo)
+        nonlinparams = np.array([param for param in model._parameter_list('vector') if not np.all(getattr(model,param).linear)])
+        arguments_idx = np.concatenate([np.where(nonlinparams==name)[0] for name in arguments_names])
+        dependent_idx = dependent_idx[0]
         # ---------------------------------------------------------------------
         def dependency_model_with_constants(*inputargs):
             # Redistribute the input parameter vector according to the mapping vector
             constants = inputargs[:Nconstants]
-            θ = inputargs[Nconstants:]
-            θ = np.atleast_1d(θ).astype(float)[mapping]
-            θ[dependent_idx] = function(θ[arguments_idx])
+            θ = np.atleast_1d(inputargs[Nconstants:]).astype(float)
+            θ = np.insert(θ,dependent_idx,function(*θ[arguments_idx]))  
             args = list(θ)
             if model._constantsInfo is not None:
                 for info,constant in zip(model._constantsInfo,constants):
                     args.insert(info['argidx'],constant)                
             A = nonlinfcn(*args)
-            #Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
             return A
         # ---------------------------------------------------------------------
         model.nonlinmodel = dependency_model_with_constants
