@@ -152,6 +152,7 @@ class Model():
             # Get list of parameter names from the function signature
             signature = inspect.getfullargspec(Amodel).args
 
+        self._nonlinsignature = signature.copy()
         parameters = signature.copy()
         # Check if one of the arguments is an axis argument     
         if constants is not None:
@@ -256,10 +257,13 @@ class Model():
         elif order=='vector':
             keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
             # If there are any parameters in vector form...
-            for n,key in enumerate(keylist): 
+            n = 0
+            for key in keylist: 
                 if isinstance(getattr(self,key).idx,np.ndarray):
                     # ...insert the key string for the same number of linear parameters in that vector 
                     keylist = np.insert(keylist,n*np.ones(len(np.atleast_1d(getattr(self,key).idx))-1,dtype=int),key)  
+                n += len(np.atleast_1d(getattr(self,key).idx))
+
             keylist = self._vecsort(keylist)
         # Remove any duplicates
         keylist = list(dict.fromkeys(keylist))
@@ -309,9 +313,63 @@ class Model():
         return param_uq
     #-----------------------------------------------------------------------------
 
+    #-----------------------------------------------------------------------------
+    def _check_if_already_exists(self,key):
+        if hasattr(self,key):
+            raise KeyError(f'The model already has a "{key}" parameter.')
+    #-----------------------------------------------------------------------------
+    
+    
     #=======================================================================================
     #                                         Methods
     #=======================================================================================
+
+    #---------------------------------------------------------------------------------------
+    def addnonlinear(self, key, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None, description=None):
+        """
+        Add a new non-linear :ref:`Parameter` object. 
+
+        Parameters
+        ----------
+        key : string
+            identifier of the parameter.
+
+        lb : float or array_like, optional
+            Lower bound of the parameter. For vectorized parameters, must be a vector with ``vec`` elements. 
+
+        ub : float or array_like, optional
+            Lower bound of the parameter. For vectorized parameters, must be a vector with ``vec`` elements. 
+
+        description : string, optional 
+            Name/descriptrion of the parameter. 
+
+        units : string, optional
+            Physical units of the parameter.
+        """
+        self._check_if_already_exists(key)
+        idx = self.Nparam
+        self.Nparam += 1
+        self.Nnonlin += 1
+        newparam = Parameter(name=key, linear=False, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, units=units, description=description)
+        setattr(self,key,newparam)
+        Nconstants = len(self._constantsInfo)
+        Amodel = self.nonlinmodel
+        topop = self.Nnonlin-1
+        #------------------------------------------------
+        def model_with_constants_and_added_nonlin(*inputargs):
+            constants = inputargs[:Nconstants]
+            θ = inputargs[Nconstants:]
+            args = list(θ)
+            args.pop(topop)
+            if self._constantsInfo is not None:
+                for info,constant in zip(self._constantsInfo,constants):
+                    args.insert(info['argidx'],constant)
+            return Amodel(*args)
+        #------------------------------------------------
+        self.nonlinmodel = model_with_constants_and_added_nonlin
+        self.signature.append(key)
+    #---------------------------------------------------------------------------------------
+
 
     #---------------------------------------------------------------------------------------
     def addlinear(self, key, vec=1, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None, description=None):
@@ -333,12 +391,13 @@ class Model():
         ub : float or array_like, optional
             Lower bound of the parameter. For vectorized parameters, must be a vector with ``vec`` elements. 
 
-        name : string, optional 
+        description : string, optional 
             Name/descriptrion of the parameter. 
 
         units : string, optional
             Physical units of the parameter.
         """
+        self._check_if_already_exists(key)
         if vec>1: 
             idx = np.arange(self.Nparam,self.Nparam+vec) 
             self.Nparam += vec        
