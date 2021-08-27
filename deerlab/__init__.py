@@ -11,7 +11,6 @@ from .dipolarmodel import dipolarmodel
 from .solvers import snlls
 from .regoperator import regoperator
 from .correctphase import correctphase
-from .mixmodels import mixmodels
 from .correctzerotime import correctzerotime
 from .noiselevel import noiselevel
 from .whitegaussnoise import whitegaussnoise
