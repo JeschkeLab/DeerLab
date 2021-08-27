@@ -941,12 +941,13 @@ def combine(*inputmodels,addweights=False):
     return _combinemodels('combine',*inputmodels,addweights=addweights)
 #==============================================================================================
 
+import itertools    
 
-
-def relate(model,**links):
+def relate(model,**functions):
 
     def _relate(model,function,dependent_name):
     # ---------------------------------------------------------------------  
+        
         # Get a list of parameter names in the model
         model_parameters =np.array(model._parameter_list(order='vector'))
 
@@ -1018,9 +1019,39 @@ def relate(model,**links):
     # ---------------------------------------------------------------------
 
     if not isinstance(model,Model):
-        raise TypeError('The first argument must be a Model object.')
+        raise TypeError('The first argument must be a deerlab.Model object.')
     newmodel = deepcopy(model)
-    for link_name in links: 
-        newmodel = _relate(newmodel,links[link_name],link_name)
+
+    # Get the dependent's names and their function arguments
+    dependents = [dependent for dependent in functions]
+    arguments = [inspect.getfullargspec(functions[dependent]).args for dependent in dependents]
+
+    # Check and correct the order to of functionalization
+    maxtrials = 2*len(dependents)
+    # Run for a maximum number of trials
+    for _ in range(maxtrials):
+        # Loop over all dependent variables... 
+        for n,dependent in enumerate(dependents):
+            # ...and check wheter there is a conflict with the other arguments
+            for m in range(n,len(arguments)):
+                # If a dependent is to be used as an argument later, there is a conflict
+                conflict = dependent in arguments[m]
+                if conflict: break
+            if conflict: break
+        else: 
+            # If there are no conflicts, proceed with the functionalization
+            break
+        # If there is a conflict, swap the order of the dependents and check again
+        dependents[n],dependents[m] = dependents[m],dependents[n] 
+        arguments[n],arguments[m] = arguments[m],arguments[n] 
+    else: 
+        # If no solution could be found (due to cyclic relations), raise an error
+        raise RuntimeError('There are cyclic relationships in the parameter definitions that could not be resolved.')
+
+    # Loop over all parameter functionalizations...
+    for dependent in dependents: 
+        # ...and functionalize them one by one
+        newmodel = _relate(newmodel,functions[dependent],dependent)
+
     return newmodel
 #==============================================================================================

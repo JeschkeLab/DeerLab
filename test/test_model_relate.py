@@ -110,7 +110,6 @@ def test_relate_two_nonlinear_2():
     assert np.allclose(response,ref)
 # ======================================================================
 
-
 # ======================================================================
 def test_relate_fit(): 
     "Check that that combine works correctly for one related parameter"
@@ -138,5 +137,28 @@ def test_relate_addednonlinear():
     response = newmodel(r=x,mean=4,factor=1,amp=5)
 
     assert np.allclose(response,ref)
+# ======================================================================
+
+# ======================================================================
+def test_relate_conflict_order(): 
+    "Check that even if the user specifies a conflicted order, it runs"
+    model = dl.dd_gauss2
+    x = np.linspace(0,10,400)
+    ref = model(x,4,0.2,5,0.4,1,1)
+
+    # No conflict, there parameters are ordered correctly
+    newmodel = relate(model, 
+                    width2=lambda width1: width1*2,
+                    width1=lambda mean1: mean1/20,)
+
+    # Conflict: width1 is deleted first, but width2 depends on it
+    conflictmodel = relate(model, 
+                    width1=lambda mean1: mean1/20,
+                    width2=lambda width1: width1*2)
+    
+    response1 = newmodel(r=x,mean1=4,mean2=5,amp1=1,amp2=1)
+    response2 = conflictmodel(r=x,mean1=4,mean2=5,amp1=1,amp2=1)
+
+    assert np.allclose(response1,ref) and np.allclose(response2,ref)
 # ======================================================================
 
