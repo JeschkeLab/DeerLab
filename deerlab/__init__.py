@@ -15,9 +15,7 @@ from .mixmodels import mixmodels
 from .correctzerotime import correctzerotime
 from .noiselevel import noiselevel
 from .whitegaussnoise import whitegaussnoise
-from .fitmultimodel import fitmultimodel
 from .bootan import bootan
-from .fitmodel import fitmodel
 from .correctscale import correctscale
 from .fftspec import fftspec
 from .time2dist import time2dist
