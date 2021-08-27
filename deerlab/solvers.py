@@ -598,7 +598,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
             if type(regparam) is str:
                 if Nnonlin_notfrozen>0:
                     # If the parameter vector has not changed by much...
-                    if check and all(abs(par_prev-p)/p < alphareopt):
+                    if check and all(abs(par_prev-p)/(p+np.finfo(np.float64).eps) < alphareopt):
                         # ...use the alpha optimized in the previous iteration
                         optimize_alpha = False
                         alpha = regparam_prev
