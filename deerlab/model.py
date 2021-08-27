@@ -4,10 +4,9 @@
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from numpy.core.shape_base import atleast_1d, block
-from scipy.optimize import nonlin
 from scipy.sparse.construct import block_diag
 from deerlab.solvers import snlls
+from deerlab.correctphase import correctphase
 from deerlab.classes import FitResult, UQResult
 from deerlab.bootan import bootan
 import inspect 
@@ -472,8 +471,6 @@ class Model():
 #===================================================================================
 
 
-
-
 #==============================================================================================
 def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
     r"""
@@ -536,6 +533,9 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
     if len(constants)>0:
         constants = np.atleast_1d(constants)
         
+    if np.all(np.iscomplex(y)): 
+        y = correctphase(y)
+
     # Get boundaries and conditions for the linear and nonlinear parameters
     ubl,ub = model._split_linear(model._vecsort(model._getvector('ub')))
     lbl,lb = model._split_linear(model._vecsort(model._getvector('lb')))
@@ -757,14 +757,14 @@ def link(model,**links):
     return newmodel
 #==============================================================================================
 
+# ---------------------------------------------------------------------
 def _unique_ordered(vec):
     uniques = []
     for v in vec: 
         if v not in uniques:
             uniques.append(v)
     return uniques
-
-import types
+# ---------------------------------------------------------------------
 
 
 #==============================================================================================
@@ -941,8 +941,8 @@ def combine(*inputmodels,addweights=False):
     return _combinemodels('combine',*inputmodels,addweights=addweights)
 #==============================================================================================
 
-import itertools    
 
+#==============================================================================================
 def relate(model,**functions):
 
     def _relate(model,function,dependent_name):
