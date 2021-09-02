@@ -308,7 +308,7 @@ class Model():
         if np.all(frozen): 
             param_uq = UQResult('void')
         else:
-            param_uq = uq_full.propagate(subset_model,lbm=param_lb, ubm=param_ub)
+            param_uq = uq_full.propagate(subset_model,lb=param_lb, ub=param_ub)
 
         return param_uq
     #-----------------------------------------------------------------------------

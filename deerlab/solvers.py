@@ -717,7 +717,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
             "Get the uncertainty quantification for a subset of parameters"
 
             subset_model = lambda x: x[subset]
-            uq_subset = uq_full.propagate(subset_model,lbm=subset_lb, ubm=subset_ub)
+            uq_subset = uq_full.propagate(subset_model,lb=subset_lb, ub=subset_ub)
 
             return uq_subset
         #-----------------------------------------------------------------------------

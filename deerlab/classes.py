@@ -231,10 +231,6 @@ class UQResult:
             x = np.linspace(xmean-4*sig,xmean+4*sig,500)
             pdf = 1/sig/np.sqrt(2*np.pi)*np.exp(-((x-xmean)/sig)**2/2)
             
-            # Clip the distributions at outside the boundaries
-            pdf[x < self.__lb[n]] = 0
-            pdf[x > self.__ub[n]] = 0
-
         if self.type == 'bootstrap':
             # Get bw using silverman's rule (1D only)
             samplen = self.samples[:, n]
@@ -257,6 +253,10 @@ class UQResult:
 
             # Set x coordinate of pdf to midpoint of bin
             x = edges[:-1] + delta
+
+        # Clip the distributions at outside the boundaries
+        pdf[x < self.__lb[n]] = 0
+        pdf[x > self.__ub[n]] = 0
 
         # Ensure normalization of the probability density function
         pdf /= np.trapz(pdf, x)
@@ -338,13 +338,15 @@ class UQResult:
                 x[:,0] = np.minimum(self.percentile(p*100), np.amax(self.samples))
                 x[:,1] = np.maximum(self.percentile((1-p)*100), np.amin(self.samples))
 
+        # Remove singleton dimensions
+        x = np.squeeze(x)
         return x
 
 
 
     # Error Propagation (covariance-based only)
     #--------------------------------------------------------------------------------
-    def propagate(self,model,lbm=None,ubm=None):
+    def propagate(self,model,lb=None,ub=None,samples=None):
         """
         Uncertainty propagation. This function takes the uncertainty analysis of the 
         parameters and propagates it to another functon depending on those parameters.
@@ -367,35 +369,62 @@ class UQResult:
         -----
         Uncertainty propagation is covariance-based and so will be the resulting uncertainty analysis.
         """
-
         parfit = self.mean
         # Evaluate model with fit parameters
         modelfit = model(parfit)
         
         # Validate input boundaries
-        if lbm is None:
-            lbm = np.full(np.size(modelfit), -np.inf)
+        if lb is None:
+            lb = np.full(np.size(modelfit), -np.inf)
 
-        if ubm is None:
-            ubm = np.full(np.size(modelfit), np.inf)
+        if ub is None:
+            ub = np.full(np.size(modelfit), np.inf)
 
-        lbm,ubm = (np.atleast_1d(var) for var in [lbm,ubm])
+        lb,ub = (np.atleast_1d(var) for var in [lb,ub])
 
-        if np.size(modelfit)!=np.size(lbm) or np.size(modelfit)!=np.size(ubm):
+        if np.size(modelfit)!=np.size(lb) or np.size(modelfit)!=np.size(ub):
             raise IndexError ('The 2nd and 3rd input arguments must have the same number of elements as the model output.')
-        
-        # Get jacobian of model to be propagated with respect to parameters
-        J = Jacobian(model,parfit,self.__lb,self.__ub)
 
-        # Clip at boundaries
-        modelfit = np.maximum(modelfit,lbm)
-        modelfit = np.minimum(modelfit,ubm)
+        if samples is None:
+            Nsamples = 1000
+        else:
+            Nsamples = samples
 
-        # Error progation
-        modelcovmat = nearest_psd(J@self.covmat@J.T)
-        
-        # Construct new CI-structure for the model
-        return  UQResult('covariance',modelfit,modelcovmat,lbm,ubm)
+        if self.type=='covariance':
+
+            # Get jacobian of model to be propagated with respect to parameters
+            J = Jacobian(model,parfit,self.__lb,self.__ub)
+
+            # Clip at boundaries
+            modelfit = np.maximum(modelfit,lb)
+            modelfit = np.minimum(modelfit,ub)
+
+            # Error progation
+            modelcovmat = nearest_psd(J@self.covmat@J.T)
+
+            # Construct new uncertainty object
+            return  UQResult('covariance',modelfit,modelcovmat,lb,ub)
+
+        elif self.type=='bootstrap':
+
+            sampled_parameters = [[]]*self.nparam
+            for n in range(self.nparam):
+                # Get the parameter uncertainty distribution
+                values,pdf = self.pardist(n)
+                # Random sampling form the uncertainty distribution
+                sampled_parameters[n] =  [np.random.choice(values, p=pdf/sum(pdf)) for _ in range(Nsamples)]
+            # Convert to matrix
+            sampled_parameters = np.atleast_2d(sampled_parameters)
+
+            # Bootstrap sampling of the model response
+            sampled_model = [model(sampled_parameters[:,n]) for n in range(Nsamples)]
+
+            # Convert to matrix
+            sampled_model = np.atleast_2d(sampled_model)
+
+            # Construct new uncertainty object
+            return  UQResult('bootstrap',data=sampled_model,lb=lb,ub=ub)
+ 
     #--------------------------------------------------------------------------------
 
 # =========================================================================
