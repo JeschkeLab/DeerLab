@@ -293,6 +293,17 @@ class Model():
     #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
+    def _merge_linear(self,variable_nonlin,variable_lin):
+        "Merge a vector's non-linear and linear parameter subset vectors"
+        variable = np.zeros(len(variable_nonlin)+len(variable_lin))
+        linear = np.concatenate([np.atleast_1d(getattr(self,param).linear) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
+        linear = self._vecsort(linear)
+        variable[~linear] = variable_nonlin
+        variable[linear] = variable_lin
+        return variable
+    #---------------------------------------------------------------------------------------
+
+    #---------------------------------------------------------------------------------------
     def _getvector(self,attribute):
         "Get the list of parameters attributes defined in the model sorted alphabetically"
         return np.concatenate([np.atleast_1d(getattr(getattr(self,param),attribute)) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
@@ -598,13 +609,22 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
             fitresults.modelUncert = fitresults.modelUncert[0]
     # Get some basic information on the parameter vector
     keys = model._parameter_list(order='vector')
-    param_idx = [np.atleast_1d(getattr(model,param).idx) for param in model._parameter_list('vector')]
+
+    # Get parameter indices in the order spitted out by the solver
+    param_idx = [[]]*len(model._parameter_list('vector'))
+    idxprev = 0
+    for islinear in [False,True]:
+        for n,param in enumerate(model._parameter_list('vector')):
+            if np.all(getattr(model,param).linear == islinear):
+                N = len(np.atleast_1d(getattr(model,param).idx))
+                param_idx[n] = np.arange(idxprev,idxprev + N)
+                idxprev += N   
     # Dictionary of parameter names and fitted values
-    FitResult_param = {key : fitvalue for key,fitvalue in zip(keys,[fitresults.param[idx] for idx in param_idx])}
+    FitResult_param = {key : fitvalue if len(fitvalue)>1 else fitvalue[0] for key,fitvalue in zip(keys,[fitresults.param[idx] for idx in param_idx])}
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
-    FitResult_dict = {key: getattr(fitresults,key) for key in ['model','modelUncert','cost','plot','residuals']}
+    FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','modelUncert','cost','plot','residuals','stats']}
     # Generate FitResult object from all the dictionaries
     fit = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict }) 
 
