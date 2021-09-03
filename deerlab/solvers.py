@@ -25,21 +25,29 @@ def _plot(ys,yfits,show):
     Plots the input dataset(s), their fits, and uncertainty bands.
     """
     nSignals = len(ys)
-    fig,axs = plt.subplots(nSignals,figsize=[7,3*nSignals])
+    fig,axs = plt.subplots(nSignals,figsize=[7,4*nSignals])
     axs = np.atleast_1d(axs)
-    for i,(y,yfit) in enumerate(zip(ys,yfits)): 
+
+    if axis is None: 
+        axis = [np.arange(len(y)) for y in ys]
+    if not isinstance(axis,list): 
+        axis = [axis]
+    axis = [np.real(ax) for ax in axis]
+    if xlabel is None: 
+        xlabel = 'Array elements'
+
+
+    for i,(y,yfit,yuq) in enumerate(zip(ys,yfits,yuqs)): 
         # Plot the experimental signal and fit
-        axs[i].plot(y,'.',color='grey',alpha=0.5)
-        axs[i].plot(yfit,'tab:blue')
-        axs[i].grid(alpha=0.3)
-        axs[i].set_xlabel('Array elements')
-        axs[i].set_ylabel(f'Data #{i}')
-        axs[i].legend(('Data','Fit'))
+        axs[i].plot(axis[i],y,'.',color='grey')
+        axs[i].plot(axis[i],yfit)
+        axs[i].fill_between(axis[i],yuq.ci(95)[:,0],yuq.ci(95)[:,1],alpha=0.4)
+        axs[i].set_xlabel(xlabel)
+        axs[i].set_ylabel(f'Dataset #{i+1}')
+        axs[i].legend(('Data','Fit','95%-CI'),loc='best',frameon=False)
     plt.tight_layout()
-    if show:
-        plt.show()
-    else:
-        plt.close()
+    plt.autoscale(enable=True, axis='both', tight=True)
+
     return fig
 # ===========================================================================================
 
