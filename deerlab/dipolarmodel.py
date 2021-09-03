@@ -128,8 +128,11 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
         # Construct the basis function of the intermolecular contribution
         if Bmodel is None: 
             Bfcn = np.ones_like(t)
-        else:
+        elif hasattr(Bmodel,'lam'):
             Bfcn = lambda t,lam: Bmodel.nonlinmodel(t,*np.concatenate([nonlin[Bsubset],[lam]]))
+        else:
+            
+            Bfcn = lambda t,_: Bmodel.nonlinmodel(t,*nonlin[Bsubset])
         # Construct the definition of the dipolar pathways
         pathways = PathsModel.nonlinmodel(*nonlin[PathsSubset])
         # Construct the dipolar kernel

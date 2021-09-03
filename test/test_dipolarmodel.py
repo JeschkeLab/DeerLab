@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from deerlab.model import Model,fit
 from deerlab.dipolarmodel import dipolarmodel
-from deerlab import dd_gauss,dd_gauss2,bg_hom3d
+from deerlab import dd_gauss,dd_gauss2,bg_hom3d,bg_exp
 import deerlab as dl 
 
 # ======================================================================
@@ -59,10 +59,12 @@ def test_names():
 t = np.linspace(-0.5,5,100)
 r = np.linspace(2,5,50)
 Bfcn = lambda t,lam: bg_hom3d(t,50,lam)
+Bfcn_pheno = lambda t,_: bg_exp(t,0.1)
 Pr = dd_gauss(r,3,0.2)
 V1path = 1e5*dipolarkernel(t,r,mod=0.3,bg=Bfcn)@Pr
 V1path_noB = 1e5*dipolarkernel(t,r,mod=0.3)@Pr
-V2path = 1e5*dipolarkernel(t,r,pathways=[[0.5],[0.3,0],[0.1,2]],bg=Bfcn)@Pr
+V1path_phenoB = 1e5*dipolarkernel(t,r,mod=0.3,bg=Bfcn_pheno)@Pr
+V2path = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,0],[0.1,2]],bg=Bfcn)@Pr
 V3path = 1e5*dipolarkernel(t,r,pathways=[[0.5],[0.3,0],[0.1,2],[0.1,5]],bg=Bfcn)@Pr
 
 
@@ -86,6 +88,17 @@ def test_call_keywords():
     Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,width=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V1path)
+# ======================================================================
+
+# ======================================================================
+def test_phenomenological_Bmodel(): 
+    "Check model generation of a dipolar signal with a phenomelogical background"
+
+    Vmodel = dipolarmodel(t,r,dd_gauss,Bmodel=bg_exp,npathways=1)
+    
+    Vsim = Vmodel(mod=0.3,reftime=0.0,mean=3,width=0.2,decay=0.1,scale=1e5)
+
+    assert np.allclose(Vsim,V1path_phenoB)
 # ======================================================================
 
 # ======================================================================
