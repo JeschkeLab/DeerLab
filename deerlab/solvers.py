@@ -16,7 +16,7 @@ from deerlab.classes import UQResult, FitResult
 from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian, isempty
 
 
-def _plot(ys,yfits,show):
+def _plot(ys,yfits,yuqs,axis=None,xlabel=None):
 # ===========================================================================================
     """
     Plot method for the FitResult object
@@ -700,11 +700,11 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
             fvals.append(2*sol.cost) # least_squares uses 0.5*sum(residual**2)          
             sols.append(sol)
 
-            # Find global minimum from multiple runs
-            globmin = np.argmin(fvals)
-            linfit = linfits[globmin]
-            nonlinfit = nonlinfits[globmin]
-            fvals = np.min(fvals)
+        # Find global minimum from multiple runs
+        globmin = np.argmin(fvals)
+        linfit = linfits[globmin]
+        nonlinfit = nonlinfits[globmin]
+        fvals = np.min(fvals)
             
     # Insert frozen parameters back into the nonlinear parameter vector   
     nonlinfit = _insertfrozen(nonlinfit,nonlin_parfrozen,nonlin_frozen)
@@ -775,6 +775,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # Make lists of data and fits
     ys = [y[subset] for n,subset in enumerate(subsets)]
     yfits = modelfit.copy()
+    yuq = modelfituq.copy()
 
     # Goodness-of-fit
     # ---------------
@@ -782,8 +783,8 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     stats = _goodness_of_fit_stats(ys,yfits,noiselvl,Ndof)
     
     # Display function
-    def plotfcn(show=False):
-        fig = _plot(ys,yfits,show)
+    def plotfcn(show=False,axis=None,xlabel=None):
+        fig = _plot(ys,yfits,yuq,axis,xlabel)
         return fig
 
     if len(stats) == 1: 
