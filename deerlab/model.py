@@ -308,8 +308,12 @@ class Model():
         if np.all(frozen): 
             param_uq = UQResult('void')
         else:
-            param_uq = uq_full.propagate(subset_model,lb=param_lb, ub=param_ub)
-
+            if uq_full.type=='covariance':
+                param_uq = uq_full.propagate(subset_model,lb=param_lb, ub=param_ub)
+            elif uq_full.type=='bootstrap':
+                param_uq = UQResult('bootstrap',data=uq_full.samples[:,paramidx])
+            else:
+                param_uq = UQResult('void')
         return param_uq
     #-----------------------------------------------------------------------------
 
@@ -562,6 +566,7 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
     for yset in y:
         ysubsets.append(np.arange(nprev,nprev+len(yset)))
         nprev = nprev+len(yset)
+    ysplit = y.copy()
     y = np.concatenate(y)
 
 
@@ -578,16 +583,19 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
     # If requested, perform a bootstrap analysis
     if bootstrap>0: 
         def bootstrap_fcn(ysim): 
-            fit = fitfcn(ysim)
-            return fit.param,fit.model
+            fit = fitfcn(np.concatenate(ysim))
+            if not isinstance(fit.model,list): fit.model = [fit.model]
+            return fit.param,*fit.model
         # Bootstrapped uncertainty quantification
-        param_uq = bootan(bootstrap_fcn,y,fitresults.model,samples=bootstrap)
+        param_uq = bootan(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap)
         # Substitute the fitted values by the bootsrapped median estimate
         fitresults.param = param_uq[0].median
         fitresults.paramUncert = param_uq[0]
-        fitresults.model = param_uq[1].median
-        fitresults.modelUncert = param_uq[1]
-
+        fitresults.model = [param_uq[n].median for n in range(1,len(param_uq))]
+        fitresults.modelUncert = [param_uq[n] for n in range(1,len(param_uq))]
+        if len(fitresults.model)==1: 
+            fitresults.model = fitresults.model[0]
+            fitresults.modelUncert = fitresults.modelUncert[0]
     # Get some basic information on the parameter vector
     keys = model._parameter_list(order='vector')
     param_idx = [np.atleast_1d(getattr(model,param).idx) for param in model._parameter_list('vector')]
@@ -774,6 +782,9 @@ def _combinemodels(mode,*inputmodels,addweights=False):
     subsets_nonlin,arguments,arelinear = [],[],[]
     nprev = 0
 
+    if len(inputmodels)==1:
+        return inputmodels[0]
+
     # Make deep-copies of the models to avoid modifying them
     models = [deepcopy(model) for model in inputmodels]
 
@@ -849,10 +860,15 @@ def _combinemodels(mode,*inputmodels,addweights=False):
     Nconst = len(constants)
     nonlinfcns = [model.nonlinmodel for model in models]
     Nlins = [model.Nlin for model in models]
+    ysizes = [[]]*len(models)
+
     #---------------------------------------------------------------------
     def _combined_nonlinmodel(*inputargs):
         """Evaluates the nonlinear functions of the submodels and 
         concatenates them into a single design matrix"""
+
+        nonlocal ysizes
+
         constants = inputargs[:Nconst]
         param = inputargs[Nconst:]
 
@@ -866,6 +882,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
             if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
             Amatrices.append(Amatrix)
         if mode=='expand':
+            ysizes = [A.shape[0] for A in Amatrices]
             Anonlin_full = block_diag(Amatrices).toarray()
             if not any(arelinear):
                 Anonlin_full = np.sum(Anonlin_full,1)

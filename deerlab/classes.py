@@ -125,6 +125,11 @@ class UQResult:
         
         if ub is None:
             ub = np.full(nParam, np.inf)
+            
+        # Set private variables
+        self.__lb = lb
+        self.__ub = ub
+        self.nparam = nParam
 
         # Create confidence intervals structure
         if uqtype=='covariance':
@@ -138,21 +143,17 @@ class UQResult:
             means = np.mean(samples,0)
             covmat = np.squeeze(samples).T@np.squeeze(samples)/np.shape(samples)[0] - means*means.T
             self.mean = means
-            self.median = np.squeeze(np.median(samples,0))
+            self.median = self.percentile(50)
             self.std = np.squeeze(np.std(samples,0))
             self.covmat = covmat
 
-        # Set private variables
-        self.__lb = lb
-        self.__ub = ub
-        self.nparam = nParam
 
     # Gets called when an attribute is accessed
     #--------------------------------------------------------------------------------
     def __getattribute__(self, attr):
         try:
             # Calling the super class to avoid recursion
-            if super(UQResult, self).__getattribute__('type') == 'void':
+            if attr!='type' and super(UQResult, self).__getattribute__('type') == 'void':
                 # Check if the uncertainty quantification has been done, if not report that there is nothing in the object
                 raise ValueError('The requested attribute/method is not available. Uncertainty quantification has not been calculated during the fit by using the `uq=None` keyword.')
         except AttributeError:
@@ -234,32 +235,38 @@ class UQResult:
         if self.type == 'bootstrap':
             # Get bw using silverman's rule (1D only)
             samplen = self.samples[:, n]
-            sigma = np.std(samplen, ddof=1)
-            bw = sigma*(len(samplen)*3/4.0)**(-1/5)
 
-            # Make histogram
-            maxbin = np.maximum(np.max(samplen),np.mean(samplen)+3*sigma)
-            minbin = np.minimum(np.min(samplen),np.mean(samplen)-3*sigma)
-            bins = np.linspace(minbin,maxbin, 2**10 + 1)
-            count, edges = np.histogram(samplen, bins=bins)
+            if np.all(samplen == samplen[0]):
+                # Dirac's delta distribution 
+                x = np.array([0.9*samplen[0],samplen[0],1.1*samplen[0]])
+                pdf = np.array([0,1,0])
+            else:
+                sigma = np.std(samplen, ddof=1)
+                bw = sigma*(len(samplen)*3/4.0)**(-1/5)
 
-            # Generate kernel
-            delta = np.maximum(np.finfo(float).eps,(edges.max() - edges.min()) / (len(edges) - 1))
-            kernel_x = np.arange(-4 * bw, 4 * bw + delta, delta)
-            kernel = norm(0, bw).pdf(kernel_x)
+                # Make histogram
+                maxbin = np.maximum(np.max(samplen),np.mean(samplen)+3*sigma)
+                minbin = np.minimum(np.min(samplen),np.mean(samplen)-3*sigma)
+                bins = np.linspace(minbin,maxbin, 2**10 + 1)
+                count, edges = np.histogram(samplen, bins=bins)
 
-            # Convolve
-            pdf = fftconvolve(count, kernel, mode='same')
+                # Generate kernel
+                delta = np.maximum(np.finfo(float).eps,(edges.max() - edges.min()) / (len(edges) - 1))
+                kernel_x = np.arange(-4*bw, 4*bw + delta, delta)
+                kernel = norm(0, bw).pdf(kernel_x)
 
-            # Set x coordinate of pdf to midpoint of bin
-            x = edges[:-1] + delta
+                # Convolve
+                pdf = fftconvolve(count, kernel, mode='same')
 
-        # Clip the distributions at outside the boundaries
+                # Set x coordinate of pdf to midpoint of bin
+                x = edges[:-1] + delta
+
+        # Clip the distributions outside the boundaries
         pdf[x < self.__lb[n]] = 0
         pdf[x > self.__ub[n]] = 0
 
         # Ensure normalization of the probability density function
-        pdf /= np.trapz(pdf, x)
+        pdf = pdf/np.trapz(pdf, x)
         
         return x, pdf
     #--------------------------------------------------------------------------------
@@ -335,8 +342,8 @@ class UQResult:
         elif self.type=='bootstrap':
                 # Compute bootstrap-based confidence intervals
                 # Clip possible artifacts from the percentile estimation
-                x[:,0] = np.minimum(self.percentile(p*100), np.amax(self.samples))
-                x[:,1] = np.maximum(self.percentile((1-p)*100), np.amin(self.samples))
+                x[:,0] = np.minimum(self.percentile((1-p)*100), np.amax(self.samples))
+                x[:,1] = np.maximum(self.percentile(p*100), np.amin(self.samples))
 
         # Remove singleton dimensions
         x = np.squeeze(x)
