@@ -41,7 +41,8 @@ def _plot(ys,yfits,yuqs,axis=None,xlabel=None):
         # Plot the experimental signal and fit
         axs[i].plot(axis[i],y,'.',color='grey')
         axs[i].plot(axis[i],yfit)
-        axs[i].fill_between(axis[i],yuq.ci(95)[:,0],yuq.ci(95)[:,1],alpha=0.4)
+        if yuq.type!='void': 
+            axs[i].fill_between(axis[i],yuq.ci(95)[:,0],yuq.ci(95)[:,1],alpha=0.4)
         axs[i].set_xlabel(xlabel)
         axs[i].set_ylabel(f'Dataset #{i+1}')
         axs[i].legend(('Data','Fit','95%-CI'),loc='best',frameon=False)
