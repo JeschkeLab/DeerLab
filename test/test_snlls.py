@@ -181,13 +181,13 @@ def test_confinter_nonlinear():
     # Linear parameters: non-negativity
     lbl = np.zeros(len(r))
     ubl = np.full(len(r), np.inf)
-    # Separable LSQ fit
 
+    # Separable LSQ fit
     fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl)
     parfit = fit.nonlin
     uq = fit.nonlinUncert
-    parci50 = uq.ci(50)
-    parci95 = uq.ci(95)
+    parci50 = np.atleast_2d(uq.ci(50))
+    parci95 = np.atleast_2d(uq.ci(95))
 
     assert_confidence_intervals(parci50,parci95,parfit,lb,ub)
 #=======================================================================

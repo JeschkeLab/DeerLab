@@ -322,7 +322,7 @@ class Model():
             if uq_full.type=='covariance':
                 param_uq = uq_full.propagate(subset_model,lb=param_lb, ub=param_ub)
             elif uq_full.type=='bootstrap':
-                param_uq = UQResult('bootstrap',data=uq_full.samples[:,paramidx])
+                param_uq = UQResult('bootstrap',data=uq_full.samples[:,paramidx],lb=param_lb, ub=param_ub)
             else:
                 param_uq = UQResult('void')
         return param_uq
@@ -584,6 +584,16 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
     if model.Nlin==0 and model.Nnonlin==0:
         raise AssertionError(f'The model has no parameters to fit.')    
 
+    # Get parameter indices in the order spitted out by the solver
+    param_idx = [[]]*len(model._parameter_list('vector'))
+    idxprev = 0
+    for islinear in [False,True]:
+        for n,param in enumerate(model._parameter_list('vector')):
+            if np.all(getattr(model,param).linear == islinear):
+                N = len(np.atleast_1d(getattr(model,param).idx))
+                param_idx[n] = np.arange(idxprev,idxprev + N)
+                idxprev += N  
+
     # Prepare the separable non-linear least-squares solver
     Amodel_fcn = lambda param: model.nonlinmodel(*constants,*param)
     fitfcn = lambda y: snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,subsets=ysubsets,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,**kwargs)        
@@ -599,9 +609,12 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
             return fit.param,*fit.model
         # Bootstrapped uncertainty quantification
         param_uq = bootan(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap)
-        # Substitute the fitted values by the bootsrapped median estimate
-        fitresults.param = param_uq[0].median
-        fitresults.paramUncert = param_uq[0]
+        # Include information on the boundaries for better uncertainty estimates
+        paramlb = model._vecsort(model._getvector('lb'))[np.concatenate(param_idx)] 
+        paramub = model._vecsort(model._getvector('ub'))[np.concatenate(param_idx)] 
+        fitresults.paramUncert = UQResult('bootstrap',data=param_uq[0].samples,lb=paramlb,ub=paramub)
+        fitresults.param = fitresults.paramUncert.median
+        # Get the uncertainty estimates for the model response
         fitresults.model = [param_uq[n].median for n in range(1,len(param_uq))]
         fitresults.modelUncert = [param_uq[n] for n in range(1,len(param_uq))]
         if len(fitresults.model)==1: 
@@ -609,24 +622,55 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
             fitresults.modelUncert = fitresults.modelUncert[0]
     # Get some basic information on the parameter vector
     keys = model._parameter_list(order='vector')
-
-    # Get parameter indices in the order spitted out by the solver
-    param_idx = [[]]*len(model._parameter_list('vector'))
-    idxprev = 0
-    for islinear in [False,True]:
-        for n,param in enumerate(model._parameter_list('vector')):
-            if np.all(getattr(model,param).linear == islinear):
-                N = len(np.atleast_1d(getattr(model,param).idx))
-                param_idx[n] = np.arange(idxprev,idxprev + N)
-                idxprev += N   
+ 
     # Dictionary of parameter names and fitted values
     FitResult_param = {key : fitvalue if len(fitvalue)>1 else fitvalue[0] for key,fitvalue in zip(keys,[fitresults.param[idx] for idx in param_idx])}
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
     FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','modelUncert','cost','plot','residuals','stats']}
+
+    _paramlist = model._parameter_list('vector')
+    def propagate(model,*constants,lb=None,ub=None):
+    # ----------------------------------------------------------------------------
+        # Get the parameter names of the input model
+        if isinstance(model,Model):
+            modelparam = model._parameter_list('vector')
+        elif callable(model):
+            modelparam = inspect.getfullargspec(model).args
+        else: 
+            raise TypeError('The input must be a deerlab.Model object or a callable.')
+
+        # Check that all parameters are in the fit object
+        for param in modelparam:
+            if not hasattr(fit,param): 
+                raise KeyError(f'The fit object does not contain the {param} parameter.')
+        # Determine the indices of the subset of parameters the model depends on
+        subset = [param_idx[np.where(np.asarray(_paramlist)==param)[0][0]] for param in modelparam]
+        subset = np.concatenate(subset)   
+        # Propagate the uncertainty from that subset to the model
+        modeluq = fitresults.paramUncert.propagate(lambda param: model(*constants,*param[subset]),lb,ub)
+        return modeluq
+    # ----------------------------------------------------------------------------
+    def evaluate(model,*constants):
+    # ----------------------------------------------------------------------------
+        # Get the parameter names of the input model
+        modelparam = model._parameter_list('vector')
+
+        # Check that all parameters are in the fit object
+        for param in modelparam:
+            if not hasattr(fit,param): 
+                raise KeyError(f'The fit object does not contain the {param} parameter.')
+        # Determine the indices of the subset of parameters the model depends on
+        subset = [np.where(np.asarray(_paramlist)==param)[0][0] for param in modelparam]
+        # Propagate the uncertainty from that subset to the model
+        modeluq = model(*constants,*fitresults.param[subset])
+        return modeluq
+    # ----------------------------------------------------------------------------
+
+
     # Generate FitResult object from all the dictionaries
-    fit = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict }) 
+    fit = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict, 'propagate': propagate, 'evaluate': evaluate}) 
 
     return fit
 #==============================================================================================

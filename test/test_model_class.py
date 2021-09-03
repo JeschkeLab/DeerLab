@@ -52,15 +52,6 @@ def test_parameters_set():
     assert getattr(model.mean,'lb')==0 and getattr(model.mean,'ub')==10 
 #================================================================
 
-def test_parameters_set():
-#================================================================
-    "Check that attributes of the parameters are editable"
-    model = Model(gauss)
-    model.mean.set(lb=0,ub=10)
-
-    assert getattr(model.mean,'lb')==0 and getattr(model.mean,'ub')==10 
-#================================================================
-
 def test_call_keywords():
 #================================================================
     "Check that calling the model with parameter returns the correct response"
@@ -397,8 +388,10 @@ def assert_attributes_cis(fitobject,attributes):
     for attr in attributes: 
         parfit = getattr(fitobject,attr)
         parci = getattr(fitobject,f'{attr}Uncert').ci(95)
-        ci_lower = parci[:,0]
-        ci_upper = parci[:,1]
+        ci_lower = parci[0]
+        ci_upper = parci[1]
+        if getattr(fitobject,f'{attr}Uncert').type=='bootstrap':
+            assert np.allclose(parfit,getattr(fitobject,f'{attr}Uncert').median)
         assert parfit<=ci_upper and parfit>=ci_lower 
 #----------------------------------------------------------------
 
