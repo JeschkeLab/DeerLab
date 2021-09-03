@@ -792,7 +792,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
             weightedModel = Model(make_weighted_comb(nonlinfcn),constants=constants,signature=signature)
             for name in model._parameter_list(order='vector'):
                 if np.any(getattr(model,name).linear):
-                    weightedModel.addlinear(name,vec=len(getattr(model,name).idx))                    
+                    weightedModel.addlinear(name,vec=len(np.atleast_1d(getattr(model,name).idx)))                    
                 getattr(weightedModel,name).set(**_importparameter(getattr(model,name)))
             getattr(weightedModel,'weight').set(lb=0,par0=1,description='Weighting factor')
             models[n] = deepcopy(weightedModel)
@@ -824,7 +824,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
         i = 0
         for oldkey,newkey in zip(oldargs,newarguments): 
             if isinstance(getattr(model,oldkey).idx,np.ndarray):
-                newarguments = np.insert(newarguments,i*np.ones(len(getattr(model,oldkey).idx)-1,dtype=int),newkey).tolist()
+                newarguments = np.insert(newarguments,i*np.ones(len(np.atleast_1d(getattr(model,oldkey).idx))-1,dtype=int),newkey).tolist()
             i += len(np.atleast_1d(getattr(model,oldkey).idx))
 
         # Add the submodel arguments to the combined model signature
