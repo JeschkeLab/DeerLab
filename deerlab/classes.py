@@ -265,6 +265,9 @@ class UQResult:
         pdf[x < self.__lb[n]] = 0
         pdf[x > self.__ub[n]] = 0
 
+        # Enforce non-negativity (takes care of negative round-off errors)
+        pdf = np.maximum(pdf,0)
+
         # Ensure normalization of the probability density function
         pdf = pdf/np.trapz(pdf, x)
         
