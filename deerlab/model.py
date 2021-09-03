@@ -878,24 +878,13 @@ def _combinemodels(mode,*inputmodels,addweights=False):
     
     #---------------------------------------------------------------------
     def _split_output(y,*inputargs):
-        constants = inputargs[:Nconst]
-        param = inputargs[Nconst:]
-
-        param = np.atleast_1d(param)
-        constants = np.atleast_2d(constants)
-        # Loop over the submodels in the model
-        Amatrices = []
-        for n,nonlinfcn in enumerate(nonlinfcns):
-            # Evaluate the submodel
-            Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
-            if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
-            Amatrices.append(Amatrix)         
+        nonlocal ysizes
         nprev = 0
         ysubsets = []
-        for A in Amatrices:
-            ysubsets.append(np.arange(nprev,nprev+A.shape[0]))
-            nprev = nprev+A.shape[0]
-        return [y[ysubsets[n]] for n in range(len(Amatrices))]
+        for x in ysizes:
+            ysubsets.append(np.arange(nprev,nprev+x))
+            nprev = nprev+x
+        return [y[ysubsets[n]] for n in range(len(ysizes))]
     #---------------------------------------------------------------------
 
     # Create the model object
