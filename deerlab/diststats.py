@@ -213,7 +213,7 @@ def _propagation(Puq,fcn):
     
     uq = copy.deepcopy(uq_)
     def ci(p):
-        paramci = uq_.ci(p)
+        paramci = np.atleast_2d(uq_.ci(p))
         return [paramci[:,0][0],paramci[:,1][0]]
     # Wrap the ci() method to simplify array
     uq.ci = ci
