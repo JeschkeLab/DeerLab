@@ -513,6 +513,7 @@ def isempty(A):
 
 def multistarts(n,x0,lb,ub):
 #===============================================================================
+    x0 = np.squeeze(x0)
 
     if n<0:
         raise ValueError('The number of requested starting points must be n>0.') 
@@ -520,11 +521,16 @@ def multistarts(n,x0,lb,ub):
     if len(x0) != len(lb) or len(x0) != len(ub):
         raise ValueError('The lower/upper bound size(s) are not compatible with the initial guess vector x0.') 
 
+    _x0 = x0.copy()
     # Generate n-1 new starting points within the bounds
     if n>1:
-        x0 = np.linspace(lb,ub,n-1)
+        x0 = np.linspace(lb,ub,n+2)[1:-1,:]
     else:
         x0 = [x0]
+
+    for x, in zip(x0):
+        x[np.isnan(x)] = _x0[np.isnan(x)]
+    
     return x0
 #===============================================================================
 
