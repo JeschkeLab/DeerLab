@@ -67,29 +67,6 @@ def test_unconstrained():
     assert all(abs(par - fit.nonlin) < 1e-2)
 # =======================================================================
 
-
-def test_rescaling():
-# =======================================================================
-    "Check that rescaling does not alter the results"
-
-    t = np.linspace(0,5,100)
-    r = np.linspace(2,6,100)
-    P = dd_gauss(r,4, 0.2)
-    K = dipolarkernel(t,r)
-
-    scale = 1e9
-    V = K@P
-    par0 = [3, 0.3]
-    lb = [1, 0.1]
-    ub = [20, 5]
-    mymodel = lambda param: dipolarkernel(t,r)@dd_gauss(r,*param)
-
-    fit1 = snlls(V*scale,mymodel,par0,lb,ub,fitscale=True)
-    fit2 = snlls(V,mymodel,par0,lb,ub,fitscale=False)
-
-    assert all(abs(fit1.nonlin - fit2.nonlin) < 1e-2)
-# =======================================================================
-
  
 def assert_confidence_intervals(pci50,pci95,pfit,lb,ub):
 # ----------------------------------------------------------------------

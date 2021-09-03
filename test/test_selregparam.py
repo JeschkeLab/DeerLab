@@ -215,32 +215,6 @@ def test_nonuniform_r():
     assert abs(1 - logalpha/logalpharef) < 0.2 
 #=======================================================================
 
-
-def test_tikh_global():
-#=======================================================================
-    "Check the value returned when using global Tikhonov regularization"
-
-    t1 = np.linspace(0,4,50)
-    t2 = np.linspace(0,3,80)
-    t3 = np.linspace(0,4,70)
-
-    r = np.linspace(2,5,80)
-    P = dd_gauss2(r,3,0.15,0.3,3.5,0.15,0.7)
-    P /= np.trapz(P,r)
-    
-    K1 = dipolarkernel(t1,r)
-    S1 = K1@P + whitegaussnoise(t1,0.03)
-    K2 = dipolarkernel(t2,r)
-    S2 = K2@P + whitegaussnoise(t2,0.02)
-    K3 = dipolarkernel(t3,r)
-    S3 = K3@P + whitegaussnoise(t3,0.02)
-
-    logalpha = np.log10(selregparam([S1,S2,S3],[K1,K2,K3],cvxnnls,method='aic',weights=[1,2,2]))
-    logalpharef = -3.273
-
-    assert abs(1 - logalpha/logalpharef) < 0.1
-#=======================================================================
-
 def assert_full_output(method):
 
     t = np.linspace(0,5,80)
