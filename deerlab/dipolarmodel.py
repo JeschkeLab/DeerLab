@@ -77,8 +77,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
 
     if Pmodel is None:
         Pmodel = freedist(r)
-
-    Pfree = Pmodel.Nnonlin==0
+    Nconstants = len(Pmodel._constantsInfo)
 
     # Populate the basic information on the dipolar pathways parameters
     if npathways==1:
@@ -138,10 +137,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
         # Construct the dipolar kernel
         Kdipolar = dipolarkernel(t,r,pathways=pathways, bg=Bfcn)
         # Compute the non-linear part of the distance distribution
-        if not Pmodel._constantsInfo:       
-            Pnonlin =  Pmodel.nonlinmodel(*nonlin[Psubset])
-        else: 
-            Pnonlin = Pmodel.nonlinmodel(r,*nonlin[Psubset])
+        Pnonlin = Pmodel.nonlinmodel(*[r]*Nconstants,*nonlin[Psubset])
         # Forward calculation of the non-linear part of the dipolar signal
         Vnonlin = Kdipolar@Pnonlin
         return Vnonlin
