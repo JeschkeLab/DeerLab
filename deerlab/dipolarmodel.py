@@ -168,3 +168,72 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
 
     return DipolarSignal
 #===============================================================================
+
+
+# -----------------------------------------------------------------------------------------
+def _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways):
+    # Generate the dipolar model
+    Vmodel = dipolarmodel(t,r,Pmodel,Bmodel,npathways=npathways)
+
+    # Set prior knowledge on the parameters
+    if npathways>1:
+        for n in range(npathways):
+            getattr(Vmodel,f'reftime{n+1}').set(par0=reftimes[n], lb=reftimes[n]-0.1, ub=reftimes[n]+0.1)
+            getattr(Vmodel,f'lam{n+1}').set(par0=lams_par0[n])   
+    else:
+        getattr(Vmodel,f'reftime').set(par0=reftimes[0], lb=reftimes[0]-0.1, ub=reftimes[0]+0.1)
+        getattr(Vmodel,f'mod').set(par0=lams_par0[0])   
+    return Vmodel     
+# -----------------------------------------------------------------------------------------
+
+
+#===============================================================================
+def model3pdeer(t,r,tau,Pmodel=None,Bmodel=bg_hom3d,npathways=2):
+
+    # Check number of pathways does not exceed reality
+    if npathways>2: 
+        raise ValueError('A 3-pulse DEER signal can have up to two dipolar pathways.')
+    # Theoretical refocusing pathways
+    reftimes = [ tau, 0]
+    # Initial guesses for the pathway amplitudes
+    lams_par0 = [ 0.3, 0.05]
+
+
+    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways)
+    Vmodel.description = f'3-pulse DEER dipolar model ({npathways} dipolar pathways)'
+    return Vmodel
+#===============================================================================
+
+#===============================================================================
+def model4pdeer(t,r,tau1,tau2,Pmodel=None,Bmodel=bg_hom3d,npathways=2):
+
+    # Check number of pathways does not exceed reality
+    if npathways>4: 
+        raise ValueError('A 4-pulse DEER signal can have up to four dipolar pathways.')
+    # Theoretical refocusing pathways
+    reftimes = [ tau1, tau1+tau2, 0, tau2 ]
+    # Initial guesses for the pathway amplitudes
+    lams_par0 = [ 0.3, 0.05, 0.05, 0.05]
+
+    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways)
+    Vmodel.description = f'4-pulse DEER dipolar model ({npathways} dipolar pathways)'
+    return Vmodel
+#===============================================================================
+
+#===============================================================================
+def model5pdeer(t,r,tau1,tau2,t2,Pmodel=None,Bmodel=bg_hom3d,npathways=2):
+
+    # Check number of pathways does not exceed reality
+    if npathways>8: 
+        raise ValueError('A 5-pulse DEER signal can have up to eight dipolar pathways.')
+    # Theoretical refocusing pathways
+    reftimes = [ t2, tau2, tau2-t2, tau1+t2, 0, tau1+tau2, tau1+tau2-t2, tau1]
+    # Initial guesses for the pathway amplitudes
+    lams_par0 = [ 0.3, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
+
+    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways)
+    Vmodel.description = f'5-pulse DEER dipolar model ({npathways} dipolar pathways)'
+    return Vmodel
+#===============================================================================
+
+

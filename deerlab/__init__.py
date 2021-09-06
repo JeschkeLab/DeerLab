@@ -7,7 +7,7 @@ from .selregparam import selregparam
 from .regparamrange import regparamrange
 from .dipolarkernel import dipolarkernel
 from .dipolarbackground import dipolarbackground
-from .dipolarmodel import dipolarmodel
+from .dipolarmodel import dipolarmodel, model4pdeer,model3pdeer,model5pdeer
 from .solvers import snlls
 from .regoperator import regoperator
 from .correctphase import correctphase
