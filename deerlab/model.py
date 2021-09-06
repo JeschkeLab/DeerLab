@@ -551,6 +551,9 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
     if np.all(np.iscomplex(y)): 
         y = correctphase(y)
 
+    if model.Nlin==0:
+        model.addlinear('scale',lb=-np.inf,ub=np.inf,description='Scaling factor')
+
     # Get boundaries and conditions for the linear and nonlinear parameters
     ubl,ub = model._split_linear(model._vecsort(model._getvector('ub')))
     lbl,lb = model._split_linear(model._vecsort(model._getvector('lb')))
