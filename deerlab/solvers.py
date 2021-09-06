@@ -741,11 +741,10 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         if includeRegularization:
             Jlin = np.concatenate((Jlin, _penalty_augmentation(alpha, L, linfit,'Jacobian')))
         # Full Jacobian
-        J = np.concatenate((Jnonlin,Jlin),axis=1)
+        J = np.concatenate((Jnonlin/np.max(y),Jlin),axis=1)
 
         # Calculate the heteroscedasticity consistent covariance matrix
         covmatrix = hccm(J, res)
-
         # Get combined parameter sets and boundaries
         parfit = np.concatenate((nonlinfit, linfit))
         lbs = np.concatenate((lb, lbl))
