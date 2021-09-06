@@ -1,107 +1,75 @@
 # %% [markdown]
 """
-Fitting Gaussians to a non-parametric distance distribution
+Fitting Gaussians to a non-parametric distance distribution fit
 ============================================================================
 
-This example shows how to fit Gaussians to a non-parametric distance
-distribution obtained via Tikhonov regularization and how to calculate
-the corresponding uncertainty.
+This example shows how to fit multi-Gaussian model to a non-parametric distance
+distribution calculated from Tikhonov regularization.  
 """ 
 # %%
 
+# Import the required libraries
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
+# Use the seaborn style for nicer plots
+from seaborn import set_theme
+set_theme()
 
 # %%
-
-# Simulate a 4pDEER signal
-
-def simulatedata():
-    r = np.linspace(1,7,200)   # distance axis, nm
-    P = dl.dd_gauss3(r,[4.5, 0.35, 0.4, 3, 0.25, 0.3, 4, 0.4, 0.5])  # distance distribution
-    lam = 0.3                  # modulation depth
-    conc = 80                  # spin concentration, µM
-    t = np.linspace(0,5,250)   # time axis, µs
-    B = dl.bg_hom3d(t,conc,lam)                   # background
-    K = dl.dipolarkernel(t,r,mod=lam,bg=B)        # kernel matrix
-    V = K@P + dl.whitegaussnoise(t,0.01,seed=0)   # DEER trace, with added noise
-    return t, V
     
-t, V = simulatedata()
+# Load the experimental dataset
+t,V = np.load('../data/example_data_#1.npy')
 
-# %% [markdown]
-# Fit the dipolar signal
-#----------------------
-# First, we fit the non-parametric distance distribution using ``fitmodel()``
-# %%
-r = np.linspace(1,7,200)
-fit = dl.fitmodel(V,t,r,'P',dl.bg_exp,dl.ex_4pdeer)
-fit.plot()
-plt.show() 
+# Construct the dipolar signal model
+r = np.linspace(1,7,100)
+Vmodel = dl.dipolarmodel(t,r)
 
-# %% [markdown]
-# Fit Gaussians to the distance distribution
-# ------------------------------------------
-# Next, we fit a multi-Gauss distribution to the fitted non-parametric
-# distribution. We can do this by using the ``nlls()`` function (in
-# this example, fitting a two-Gauss model). 
-#
-# However, in order to get the correct uncertainty quantification, we need
-# to specify the covariance matrix of the fitted distribution.
-# ``nlls()`` can then use that information to propagate the error in
-# ``Pfit`` to the Gauss constraints that we then fit.
-
-# %%
+# Fit the model to the data
+fit = dl.fit(Vmodel,V)
+fit.plot(axis=t)
+plt.ylabel('V(t)')
+plt.xlabel('Time $t$ (μs)')
+plt.show()
 
 # From the fit results, extract the distribution and the covariance matrix
 Pfit = fit.P
-Pfit_uq = fit.Puncert
+Pci95 = fit.PUncert.ci(95)
 
-# %% [markdown]
-#Fit a 2-Gauss model to the fitted parameter-free distribution:
-#
-#    - ``parfit```: will contain the Gaussian constraints
-#    - ``PGauss```: the corresponding distribution
-#    - ``paruq```: the uncertainty quantification of our constraints
+# Select a bimodal Gaussian model for the distance distribution
+Pmodel = dl.dd_gauss2
 
-# %%
-Pmodel = lambda par: dl.dd_gauss2(r,par)
-
-# Get information on the model
-par0 = dl.dd_gauss2.start
-lb = dl.dd_gauss2.lower
-ub = dl.dd_gauss2.upper
-
-# Fit the Gaussians
-fit = dl.nlls(Pfit,Pmodel,par0,lb,ub,fitscale=False)
+# Fit the Gaussian model to the non-parametric distance distribution
+fit = dl.fit(Pmodel,Pfit,r)
 
 # Extract the fit results
-parfit = fit.param
-paruq = fit.paramUncert
-PGauss = dl.dd_gauss2(r,parfit)
+PGauss = fit.model
+PGauss_ci95 = fit.modelUncert.ci(95)
 
-# Extract the 95%-confidence intervals...
-par95 = paruq.ci(95)
-# ... and print the results
-print('\nGaussian components:')
-for i in range(len(parfit)):
-    print(f'  parfit[{i}] = {parfit[i]:2.2f} {dl.dd_gauss2.parameters[i]}')
+# Print the parameters nicely
+print(f'Gaussian components with (95%-confidence intervals):')
+print(f'       mean1 = {fit.mean1:2.2f} ({fit.mean1Uncert.ci(95)[0]:2.2f}-{fit.mean1Uncert.ci(95)[1]:2.2f}) nm')
+print(f'       mean2 = {fit.mean2:2.2f} ({fit.mean2Uncert.ci(95)[0]:2.2f}-{fit.mean2Uncert.ci(95)[1]:2.2f}) nm')
+print(f'      width1 = {fit.width1:2.2f} ({fit.width1Uncert.ci(95)[0]:2.2f}-{fit.width1Uncert.ci(95)[1]:2.2f}) nm')
+print(f'      width2 = {fit.width2:2.2f} ({fit.width2Uncert.ci(95)[0]:2.2f}-{fit.width2Uncert.ci(95)[1]:2.2f}) nm')
+print(f'  amplitude1 = {fit.amp1:2.2f} ({fit.amp1Uncert.ci(95)[0]:2.2f}-{fit.amp1Uncert.ci(95)[1]:2.2f})')
+print(f'  amplitude2 = {fit.amp2:2.2f} ({fit.amp2Uncert.ci(95)[0]:2.2f}-{fit.amp2Uncert.ci(95)[1]:2.2f})')
 
 # %%
+
 # sphinx_gallery_thumbnail_number = 2
 
 # Plot the fitted constraints model on top of the non-parametric case
-plt.plot(r,Pfit,'r',linewidth=1.5,label='non-param. fit')
-plt.fill_between(r,Pfit_uq.ci(95)[:,0], Pfit_uq.ci(95)[:,1],facecolor='r',linestyle='None',alpha=0.2,label=r'95% confidence intervals')
-
-plt.plot(r,PGauss,'b',linewidth=1.5,label='2-Gauss fit to nonparam. fit')
-
+plt.plot(r,Pfit,linewidth=1.5,label='Non-param. fit')
+plt.fill_between(r,Pci95[:,0],Pci95[:,1],alpha=0.4,linewidth=0)
+plt.plot(r,PGauss,linewidth=1.5,label='2-Gauss fit to non-param. fit',color='green')
+plt.fill_between(r,PGauss_ci95[:,0],PGauss_ci95[:,1],alpha=0.2,linewidth=0,color='green')
+# Formatting settings 
 plt.xlabel('Distance (nm)')
-plt.ylabel('P (nm⁻¹)')
+plt.ylabel('P (nm$^{-1}$)')
+plt.autoscale(enable=True, axis='both', tight=True)
+plt.legend(loc='best',frameon=False)
 plt.tight_layout()
-plt.grid(alpha=0.3)
-plt.legend()
 plt.show()
 
 # %%

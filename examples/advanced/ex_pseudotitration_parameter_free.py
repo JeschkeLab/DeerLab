@@ -1,254 +1,125 @@
-# %% [markdown]
+# %% 
 """
 Analyzing pseudo-titration (dose-response) curves with non-parametric distributions 
 ======================================================================================
 
-How to use separable non-linear least squares (SNLLS)
-to fit a pseudo-titration curve to multiple DEER datsets, using
+How to fit a pseudo-titration curve to multiple DEER datsets, using
 non-parametric distance distributions.
+
+In this example we will simulate a protein system in their states 
+A (natural) and B (changed upon addition of a ligand L) given by
+the chemical equilibrium  A + L <-> B.
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-import deerlab as dl
-
-# %% [markdown]
-# Generating multiple datasets
-#-----------------------------------------------------------------------------
-# First, let's prepare the chemical desciption of the problem. In this example we will
-# simulate a protein system in their states A (natural) and B (changed upon addition
-# of a ligand L) given by the chemical equilibrium  A + L <-> B.
-
-# %%
+from re import X
+import deerlab as dl 
+import matplotlib.pyplot as plt 
+import numpy as np 
+# Use the seaborn style for nicer plots
+from seaborn import set_theme
+set_theme()
 
 def chemicalequilibrium(Kdis,L):
     """Prepare equilibrium of type: A + L <-> B"""
     Ctot = 1 # total protein concentration, µM
-
-    # # Get fraction of state B
     Kb = 1/Kdis
-    xB = np.zeros_like(L)
-    for q in range(len(L)):
-        xB_ = np.roots([Kb, -(Kb*L[q] + Kb*Ctot + 1), Kb*L[q]])
-        try:
-            xB[q] = xB_[(xB_<=1) & (xB_>=0)]
-        except:
-            xB[q] = np.minimum(1,np.maximum(0,xB_[0]))    
-    # Get fraction of state A
-    xA = 1 - xB
+    xB = np.roots([Kb, -(Kb*L + Kb*Ctot + 1), Kb*L])
+    xB = xB[(xB<=1) & (xB>=0)]
+    return xB
 
-    return xA,xB
 
-# %% [markdown]
-# Next, we define the dipolar kernel model as the non-linear function of the
-# SNLLS problem. This function needs to take the parameters and return a
-# cell-array of kernels, each one for the corresponding datasets that we
-# have. 
-# Since we have a total distribution of the form 
-#
-#     ``P = xA*PA + xB*PB``
-#
-# we can define an augmented kernel as
-#
-#     ``K = [xA*KA xB*KB]``
-#
-# such that 
-#
-#     ``K@[PA PB] = V``
-#
-# and the vector ``[PA PB]`` constitutes the linear part fitted by SNLLS.
+t1,V1 = np.load('../data/example_data_titration_#1.npy')
+t2,V2 = np.load('../data/example_data_titration_#2.npy')
+t3,V3 = np.load('../data/example_data_titration_#3.npy')
+t4,V4 = np.load('../data/example_data_titration_#4.npy')
+t5,V5 = np.load('../data/example_data_titration_#5.npy')
 
-# %%
+ts = [t1,t2,t3,t4,t5]
+Vs = [V1,V2,V3,V4,V5]
 
-def Kmodel(par,ts,rA,rB,L):
+# Total ligand concentrations used in experiments
+L = [0.3, 3, 10, 30, 300] # µM
 
-    Nsignals = len(ts)
+# Distance vector
+r = np.linspace(1.5,6,90)
 
-    # Unpack parameters
-    lam,k,Kdis = par
+# Construct a non-parametric distance distribution that is a
+# linear combination of two non-parametric distributions
+PAmodel = dl.freedist(r)
+PBmodel = dl.freedist(r)
+Pmodel = dl.combine(PAmodel,PBmodel,addweights=True)
 
-    # Get fractions for given KD
-    [xA,xB] = chemicalequilibrium(Kdis,L)
+# Construct the dipolar models of the individual signals
+Vmodels = [dl.dipolarmodel(t,r,Pmodel) for t in ts]
 
-    Ks = [[]]*Nsignals
-    # General the dipolar kernels
-    for i in range(Nsignals):
-        B = dl.bg_exp(ts[i],k)
-        # Kernel for fraction A
-        KstateA = dl.dipolarkernel(ts[i],rA,mod=lam,bg=B)
-        # Kernel for fraction B
-        KstateB = dl.dipolarkernel(ts[i],rB,mod=lam,bg=B)
-        Ks[i] = np.concatenate((xA[i]*KstateA, xB[i]*KstateB),axis=1)
+# Create the global model
+titrmodel = dl.expand(*Vmodels)
+# Make the two components of the distance distriution global
+titrmodel = dl.link(titrmodel, 
+                PA = [titrmodel.P_1_1, titrmodel.P_1_2, titrmodel.P_1_3, titrmodel.P_1_4, titrmodel.P_1_5],
+                PB = [titrmodel.P_2_1, titrmodel.P_2_2, titrmodel.P_2_3, titrmodel.P_2_4, titrmodel.P_2_5])
 
-    return Ks
+# FUnctionalize the chemical equilibrium model
+titrmodel.addnonlinear('Kdis',lb=3,ub=7,par0=5,description='Dissociation constant')
 
-# %% [markdown]
-# Now, we can simulate multiple signals corresponding to different concentrations
-# of added ligand. 
+titrmodel = dl.relate(titrmodel, 
+            weight_2_1 = lambda weight_1_1: 1-weight_1_1, weight_1_1 = lambda Kdis: chemicalequilibrium(Kdis,L[0]),
+            weight_2_2 = lambda weight_1_2: 1-weight_1_2, weight_1_2 = lambda Kdis: chemicalequilibrium(Kdis,L[1]),
+            weight_2_3 = lambda weight_1_3: 1-weight_1_3, weight_1_3 = lambda Kdis: chemicalequilibrium(Kdis,L[2]),
+            weight_2_4 = lambda weight_1_4: 1-weight_1_4, weight_1_4 = lambda Kdis: chemicalequilibrium(Kdis,L[3]),
+            weight_2_5 = lambda weight_1_5: 1-weight_1_5, weight_1_5 = lambda Kdis: chemicalequilibrium(Kdis,L[4]))
+            
+# Fit the model to the data
+fit = dl.fit(titrmodel,Vs)
 
 # %%
 
-# Time axes
-ts = [[]]*7
-ts[0] = np.linspace(-0.2,3,100)
-ts[1] = np.linspace(-0.1,5,300)
-ts[2] = np.linspace(-0.5,2,200)
-ts[3] = np.linspace(-0.1,1,100)
-ts[4] = np.linspace(-0.2,6,300)
-ts[5] = np.linspace(-0.2,3,300)
-ts[6] = np.linspace(-0.1,4,100)
-Nsignals = len(ts)
+# Evaluate the dose-response curve at the fit with confidence bands
+xAfcn = lambda Kdis: np.squeeze(np.array([chemicalequilibrium(Kdis,Ln) for Ln in L]))
+xBfcn = lambda Kdis: np.squeeze(np.array([1 - chemicalequilibrium(Kdis,Ln) for Ln in L]))
+xAfit = xAfcn(fit.Kdis)
+xBfit = xBfcn(fit.Kdis)
+xAci = fit.propagate(xAfcn,lb=np.zeros_like(L),ub=np.ones_like(L)).ci(95)
+xBci = fit.propagate(xBfcn,lb=np.zeros_like(L),ub=np.ones_like(L)).ci(95)
 
-# Distance axes for states A and B
-rA = np.linspace(1,8,100)
-rB = np.linspace(1,8,100)
+# Plot the dose-reponse curve
+plt.plot(L,xAfit,'-o')
+plt.fill_between(L,xAci[:,0],xAci[:,1],alpha=0.5)
+plt.plot(L,xBfit,'-o')
+plt.fill_between(L,xBci[:,0],xBci[:,1],alpha=0.5)
+plt.xscale('log')
+plt.xlabel('Ligand concentration (μM)')
+plt.ylabel('Molar fraction')
+plt.legend(['State A (natural)','State B (ligand)'],frameon=False,loc='best')
+plt.title(r'$K_\mathrm{dis}$'+f' = {fit.Kdis:.2f} ({fit.KdisUncert.ci(95)[0]:.2f}-{fit.KdisUncert.ci(95)[1]:.2f})'+' µM$^{-1}$')
+plt.autoscale(enable=True, axis='both', tight=True)
+plt.show() 
 
-# Distributions for states A and B
-PstateA = dl.dd_gauss(rA,[5.5, 0.25])
-PstateB = dl.dd_gauss2(rB,[4.5, 0.4, 0.4, 3.5, 0.35, 0.6])
+# Plot the fitted signals and distance distributions
+plt.figure(figsize=[10,10])
 
-L = [0.3, 1, 3, 10, 30, 100, 300] # total ligand concentration, µM
-Kdis = 5.65  # dissociation constant, µM
-
-# Populations of states A and B
-[xA,xB] = chemicalequilibrium(Kdis,L)
-
-# Global kernel model
-Ks = Kmodel([0.25, 0.1, Kdis],ts,rA,rB,L)
-
-# Simulate dipolar signals
-Vs = [[]]*Nsignals
-for i in range(Nsignals):
-    Vs[i] = Ks[i]@np.concatenate((PstateA, PstateB)) + dl.whitegaussnoise(ts[i],0.05,seed=i)
-
-# %% [markdown]
-# Psuedotitration SNLLS Analysis
-#-----------------------------------------------------------------------------
-# For simplification, we will assume that all DEER traces have the same
-# background function and modulation depth. Thus, we will fit the
-# modulations depth (lam) and background decay constant (k) globally along
-# the dissociation constant (KD).
-
-# %%
-
-# Non-linear parameters:
-#       lam  k   KD
-par0 = [0.5, 0.5,  5]  # start values 
-lb   = [ 0,   0,   1]  # lower bounds
-ub   = [ 1,   1,  10] # upper bounds
-
-# Linear parameters:
-#     |-------PA--------||--------PB--------|
-lbl = np.concatenate((np.zeros_like(rA), np.zeros_like(rB))) # Non-negativity constraint
-ubl = [] # Unconstrained
-
-# Run SNLLS optimization
-fit = dl.snlls(Vs,lambda p: Kmodel(p,ts,rA,rB,L),par0,lb,ub,lbl,ubl)
-# Extract fit results
-parfit = fit.nonlin
-Pfit = fit.lin
-
-# Extract the fitted disociation constant value and its 95#-confidence interval
-Kdisfit = parfit[2]
-parci = fit.nonlinUncert.ci(95)
-KDci = parci[2,:]
-
-# Print the fitted dissociation constant with confidence intervals
-print(f'Kdis = {Kdisfit:.2f}({KDci[0]:.2f}-{KDci[1]:.2f})µM')
-
-# %%
-
-# Plot results
-plt.figure(figsize=(12,12))
-
-# Plot the fitted signals with confidence bands
 plt.subplot(121)
-for i in range(Nsignals):
-    Vci = fit.modelUncert[i].ci(95)
-    Vfit = fit.model[i]
-    plt.plot(ts[i],Vs[i]+i/3,'.',color='grey',alpha=0.7,linestyle=None)
-    plt.plot(ts[i],Vfit+i/3,'b',linewidth=1.5)
-    plt.fill_between(ts[i],Vci[:,0]+i/3,Vci[:,1]+i/3,color='b',alpha=0.2)
-plt.grid(alpha =0.3)
-plt.xlabel('t (µs)')
-plt.ylabel('V (arb.u.)')
-plt.legend(['data','fit'])
-
-# Get fitted fractions with confidence intervals
-xAfit,xBfit = chemicalequilibrium(Kdisfit,L)
-xA_model = lambda param: chemicalequilibrium(param[2],L)[0]
-xB_model = lambda param: chemicalequilibrium(param[2],L)[1]
-xA_uq = fit.nonlinUncert.propagate(xA_model)
-xB_uq = fit.nonlinUncert.propagate(xB_model)
-xA_ci = xA_uq.ci(95)
-xB_ci = xB_uq.ci(95)
-
-# Combine the uncertainties of the distance distributions and the molar fractions
-joinedA_uq = fit.linUncert.join(xA_uq)
-joinedB_uq = fit.linUncert.join(xB_uq)
-
-# We now deal with a combined paramter vector containing (PAfit,PBfit,xfit)
-# Let's define the indices of the diferent quantities to access the elements of the 
-# array easier 
-rA_idx = np.arange(0,len(rA))
-rB_idx = np.arange(len(rA),len(rB)+len(rA))
-xA_idx = np.arange(len(rB)+len(rA),len(rB)+len(rA)+len(xAfit))
-xB_idx = np.arange(len(rB)+len(rA),len(rB)+len(rA)+len(xBfit))
+for n,(t,Vexp,Vfit) in enumerate(zip(ts,Vs,fit.model)):
+    plt.plot(t,n/2 + Vexp,'.',color='grey')
+    plt.plot(t,n/2 + Vfit,'k',linewidth=2)
+plt.legend(['Data','Fit'],frameon=False,loc='best')
+plt.xlabel('Time $t$ (μs)')
+plt.ylabel('$V(t)$ (arb.u.)')
 
 plt.subplot(122)
-for i in range(Nsignals):
+for n,(xA,xB) in enumerate(zip(xAfit,xBfit)): 
 
-    # Model of the distance distribution of the A state
-    def PAfit_model(param):
-        PAfit = param[rA_idx]
-        xAfit = param[xA_idx][i]
-        return xAfit*PAfit
-        
-    # Model of the distance distribution of the B state
-    def PBfit_model(param):
-        PBfit = param[rB_idx]
-        xBfit = param[xB_idx][i] 
-        return xBfit*PBfit
+    Pfit = Pmodel(P_1=fit.PA,P_2=fit.PB,weight_1=xA,weight_2=xB)
+    Pfit /= np.trapz(Pfit,r)
+    if n>1: label=None
+    plt.plot(r,2*n + Pfit,'k',label='Total contribution' if n<1 else None)
+    plt.fill(r,2*n + xA*fit.PA,color='tab:blue',alpha=0.5,label='State A (natural)' if n<1 else None)
+    plt.fill(r,2*n + xB*fit.PB,color='tab:orange',alpha=0.5,label='State B (ligand)' if n<1 else None)
 
-    PAfit = PAfit_model(np.concatenate([Pfit,xAfit]))
-    PBfit = PBfit_model(np.concatenate([Pfit,xBfit]))
-    
-    # Propagate the uncertainty in the fits to the fraction distance distribution models...
-    PAfit_uq = joinedA_uq.propagate(PAfit_model)
-    PBfit_uq = joinedB_uq.propagate(PBfit_model)
-    # ... and get the 95% confidence intervals
-    PAci = PAfit_uq.ci(95)
-    PBci = PBfit_uq.ci(95)
+plt.legend(frameon=False,loc='best')
+plt.ylabel('$P(r)$')
+plt.xlabel('Distance $r$ (nm)')
+plt.show() 
 
-    # Plot the fitted distributions with confidence bands
-    plt.plot(rA,PAfit+1.2*i,'tab:red',rB,PBfit+1.2*i,'tab:blue',linewidth=1.5)
-    plt.fill_between(rA,PAci[:,0]+1.2*i,PAci[:,1]+1.2*i,color='tab:red',alpha=0.2)
-    plt.fill_between(rB,PBci[:,0]+1.2*i,PBci[:,1]+1.2*i,color='tab:blue',alpha=0.2)
-plt.grid(alpha =0.3)
-plt.xlabel('r (nm)')
-plt.ylabel('P (nm⁻¹)')
-plt.legend(['state A','state B'])
-plt.xlim([2,7])
 
-plt.tight_layout()
-plt.show()
-# %%
-
-# sphinx_gallery_thumbnail_number = 2
-
-# Plot dose-response curve with confidence bands
-plt.figure()
-plt.plot(np.log10(L),xA,'tab:red',np.log10(L),xB,'tab:blue')
-plt.plot(np.log10(L),xAfit,'o',color='tab:red')
-plt.plot(np.log10(L),xBfit,'o',color='tab:blue')
-plt.fill_between(np.log10(L),xA_ci[:,0],xA_ci[:,1],color='tab:red',alpha=0.2)
-plt.fill_between(np.log10(L),xB_ci[:,0],xB_ci[:,1],color='tab:blue',alpha=0.2)
-plt.grid(alpha =0.3)
-plt.xlabel('log$_{10}$([L])')
-plt.ylabel('Fractions')
-plt.legend(['state A','state B'])
-plt.ylim([0,1])
-
-plt.tight_layout()
-plt.show()
 # %%

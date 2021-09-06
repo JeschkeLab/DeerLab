@@ -1,6 +1,6 @@
 # %% [markdown]
 """ 
-Basic analysis of a 4-pulse DEER signal
+Basic analysis of a 4-pulse DEER signal with multiple dipolar pathays
 -------------------------------------------------------------------------
 
 Fit a simple 4-pulse DEER signal with a model with a non-parametric
@@ -17,13 +17,18 @@ set_theme()
 # %%
 
 # Load the experimental data
-t,Vexp = np.load('../data/example_4pdeer_#1.npy')
+t,Vexp = np.load('../data/example_data_#3.npy')
 
 # Distance vector
 r = np.linspace(2,5,100) # nm
 
 # Construct the model
-Vmodel = dl.dipolarmodel(t,r)
+Vmodel = dl.dipolarmodel(t,r,npathways=3)
+
+# Adjust the boundaries for the refocusing times
+Vmodel.reftime1.set(par0=0.5, lb=0.0, ub=1.0) # Main pathway contribution
+Vmodel.reftime2.set(par0=0.0, lb=0.0, ub=0.2) # Pathway refocusing at the start of the signal
+Vmodel.reftime3.set(par0=4.5, lb=4.0, ub=5.0) # Pathway refocusing at the end of the signal
 
 # Fit the model to the data
 fit = dl.fit(Vmodel,Vexp)
@@ -41,10 +46,6 @@ Pci95 = fit.PUncert.ci(95)/scale
 Pci50 = fit.PUncert.ci(50)/scale
 Pfit =  Pfit/scale
 
-# Extract the unmodulated contribution
-Bfcn = lambda mod,conc: scale*(1-mod)*dl.bg_hom3d(t,conc,mod)
-Bfit = Bfcn(fit.mod,fit.conc)
-Bci = fit.propagate(Bfcn).ci(95)
 
 plt.figure(figsize=[6,7])
 plt.subplot(211)
@@ -53,8 +54,6 @@ plt.plot(t,Vexp,'.',color='grey',label='Data')
 # Plot the fitted signal 
 plt.plot(t,Vfit,linewidth=3,label='Fit')
 plt.fill_between(t,Vci[:,0],Vci[:,1],alpha=0.3)
-plt.plot(t,Bfit,'--',linewidth=3,label='Unmodulated contribution')
-plt.fill_between(t,Bci[:,0],Bci[:,1],alpha=0.3)
 plt.legend(frameon=False,loc='best')
 plt.xlabel('Time $t$ (μs)')
 plt.ylabel('$V(t)$ (arb.u.)')
