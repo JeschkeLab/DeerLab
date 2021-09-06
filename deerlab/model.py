@@ -429,26 +429,26 @@ class Model():
 
     def __call__(self,*args,**kargs):
     #---------------------------------------------------------------------------------------
-        if kargs and args: 
-            raise SyntaxError('The model must be called either with positional or keyword arguments. Not both.')
 
         # Check that the correct number of arguments have been specified
         Nrequired = len(self._parameter_list())
         Nrequired += len(self._constantsInfo)
-        if len(args)!=Nrequired and len(kargs)!=Nrequired:
+        if (len(args)+len(kargs))!=Nrequired:
             raise SyntaxError(f'The model requires {Nrequired} arguments, but {len(args)+len(kargs)} have been specified.')
 
-        if args:  
-            # Positional arguments       
-            constants= [np.atleast_1d(args[info['argidx']]) for info in self._constantsInfo]
-            args_list = [np.atleast_1d(arg) for idx,arg in enumerate(args) if idx not in [info['argidx'] for info in self._constantsInfo]]
-        elif kargs:
-            # Keywords arguments
-            constants = [np.atleast_1d(kargs[info['argkey']]) for info in self._constantsInfo]
-            args_list = [np.atleast_1d(kargs[param]) for param in self._parameter_list(order='vector')]
+        # Positional arguments       
+        args_constants= [np.atleast_1d(args[info['argidx']]) for info in self._constantsInfo if info['argidx']<len(args)]
+        args_list = [np.atleast_1d(arg) for idx,arg in enumerate(args) if idx not in [info['argidx'] for info in self._constantsInfo]]
+
+        # Keywords arguments
+        kargs_constants = [np.atleast_1d(kargs[info['argkey']]) for info in self._constantsInfo  if info['argkey'] in kargs] 
+        kargs_list = [np.atleast_1d(kargs[param]) for param in self._parameter_list(order='vector')[len(args_list):]]
+        
+        constants = args_constants + kargs_constants
+        param_list = args_list + kargs_list
 
         # Concatente all parameter into a single vector
-        θ = np.concatenate(args_list)
+        θ = np.concatenate(param_list)
 
         # Check that all parameters have been passed
         if len(θ)!=self.Nparam:

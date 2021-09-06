@@ -72,6 +72,16 @@ def test_call_positional():
     assert np.allclose(response,reference)
 #================================================================
 
+def test_call_mixed():
+#================================================================
+    "Check that calling the model with parameter returns the correct response"
+    model = Model(gauss)
+    response  = model(3,width=0.5)
+    reference = gauss(3,0.5)
+
+    assert np.allclose(response,reference)
+#================================================================
+
 
 def test_addlinear_length():
 #================================================================
@@ -115,6 +125,7 @@ def test_addlinear_call_keywords():
     assert np.allclose(response,reference)
 #================================================================
 
+
 def test_addlinear_call_positional():
 #================================================================
     "Check that calling the model with parameters returns the correct response"
@@ -126,6 +137,20 @@ def test_addlinear_call_positional():
 
     assert np.allclose(response,reference)
 #================================================================
+
+
+def test_addlinear_call_mixed():
+#================================================================
+    "Check that calling the model with parameters returns the correct response"
+    model = Model(gauss2_design)
+    model.addlinear('amp1')
+    model.addlinear('amp2')
+    response = model(3,4,0.2,width2=0.3,amp1=0.5,amp2=0.4)
+    reference = gauss2(3,4,0.2,width2=0.3,amp1=0.5,amp2=0.4)
+
+    assert np.allclose(response,reference)
+#================================================================
+
 
 #================================================================
 def test_addlinear_vector_length():
@@ -502,6 +527,17 @@ def test_model_with_constant_keywords():
     assert np.allclose(reference,response)
 #================================================================
 
+def test_model_with_constant_mixed(): 
+#================================================================
+    "Check that a model with axis can be defined and called via keywords"
+    model = Model(gauss_axis,constants='axis')
+
+    x = np.linspace(0,10,300)
+    reference = gauss_axis(x,3,0.5)
+    response = model(x, mean=3, width=0.5)
+        
+    assert np.allclose(reference,response)
+#================================================================
 
 #----------------------------------------------------------------
 def _getmodel_axis(type):
