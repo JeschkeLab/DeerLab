@@ -31,7 +31,7 @@ def test_Nparam_2():
 
     model = dipolarmodel(t,r,dd_gauss2,bg_hom3d,npathways=2)
 
-    assert model.Nnonlin==10 and model.Nlin==2 and model.Nparam==12
+    assert model.Nnonlin==9 and model.Nlin==2 and model.Nparam==11
 # ======================================================================
 
 # ======================================================================
@@ -129,7 +129,7 @@ def test_model_2pathways():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=2)
     
-    Vsim = Vmodel(Lam0=0.5,lam1=0.3,reftime1=0.0,lam2=0.1,
+    Vsim = Vmodel(lam1=0.3,reftime1=0.0,lam2=0.1,
                     reftime2=2,conc=50,mean=3,width=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V2path)
@@ -141,7 +141,7 @@ def test_model_3pathways():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=3)
     
-    Vsim = Vmodel(Lam0=0.5,lam1=0.3,reftime1=0.0,
+    Vsim = Vmodel(lam1=0.3,reftime1=0.0,
                 lam2=0.1,reftime2=2, lam3=0.1, reftime3=5,
                 conc=50,mean=3,width=0.2,scale=1e5)
 
@@ -190,7 +190,7 @@ def test_fit_3pathways():
 
 
 V1harm = 1e5*dipolarkernel(t,r,pathways=[[0.7],[0.3,0,1]],bg=Bfcn)@Pr
-V2harm = 1e5*dipolarkernel(t,r,pathways=[[0.5],[0.3,0,1],[0.1,2,2]],bg=Bfcn)@Pr
+V2harm = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,0,1],[0.1,2,2]],bg=Bfcn)@Pr
 V3harm = 1e5*dipolarkernel(t,r,pathways=[[0.5],[0.3,0,1],[0.1,2,2],[0.1,5,3]],bg=Bfcn)@Pr
 
 
@@ -211,7 +211,7 @@ def test_model_2harmonics():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=2,harmonics=[1,2])
     
-    Vsim = Vmodel(Lam0=0.5,lam1=0.3,reftime1=0.0,lam2=0.1,
+    Vsim = Vmodel(lam1=0.3,reftime1=0.0,lam2=0.1,
                     reftime2=2,conc=50,mean=3,width=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V2harm)
@@ -223,7 +223,7 @@ def test_model_3harmonics():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=3,harmonics=[1,2,3])
     
-    Vsim = Vmodel(Lam0=0.5,lam1=0.3,reftime1=0.0,
+    Vsim = Vmodel(lam1=0.3,reftime1=0.0,
                 lam2=0.1,reftime2=2, lam3=0.1, reftime3=5,
                 conc=50,mean=3,width=0.2,scale=1e5)
 
@@ -248,5 +248,5 @@ def test_fit_Pnonparametric():
     
     result = fit(Vmodel,V1path,nonlin_tol=1e-3)
 
-    assert np.allclose(result.model,V1path) and np.allclose(result.P/1e5,Pr,atol=1e-3)
+    assert np.allclose(result.model,V1path,atol=1e-2) and np.allclose(result.P/1e5,Pr,atol=1e-3)
 # ======================================================================
