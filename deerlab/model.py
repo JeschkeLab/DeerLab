@@ -130,6 +130,29 @@ class Parameter():
 
 class Model():
 #===================================================================================
+    r"""Represents a model.
+
+    Attributes
+    ----------
+    <parameter_name> : :ref:`Parameter`
+        Model parameter object. 
+    description : string 
+        Description of the model.
+    signature : string 
+        Call signature (keyword arguments in order) of the model. 
+    nonlinmodel : callable
+        Function of the non-linear part of the model.
+    Nnonlin : int scalar
+        Number of non-linear parameters in the model.
+    Nlin : int scalar
+        Number of linear parameters in the model.
+    Nparam : int scalar
+        Number of parameters in the model.
+
+    Methods
+    -------
+
+    """
 
 
     #=======================================================================================
@@ -139,7 +162,30 @@ class Model():
     #---------------------------------------------------------------------------------------
     def __init__(self,Amodel,constants=None,signature=None): 
         """
-        Model object constructor
+        Construct a new model from a non-linear function. 
+
+        Parameters
+        ----------
+
+        Amodel : callable 
+            Function that takes a set of non-linear parameters and 
+            returns either a the full model response or the design matrix 
+            of the model response. A parameter will be added to the new model for each 
+            input argument defined in the function signature.   
+        
+        constants : string or list thereof
+            Names of the constant variables (non-parameter variables) taken
+            by the ``Amodel`` function. These will not be added as parameters to the new model.
+
+        signature : list of strings
+            Signature of the ``Amodel`` function to manually specify the names of the input arguments.
+
+        Returns
+        -------
+
+        model : `Model` object 
+            Model object instance that takes the parameters defined for ``Amodel`` and returns the output of ``Amodel``.
+
         """
         if not callable(Amodel):
             Amatrix = Amodel.copy()
@@ -212,14 +258,6 @@ class Model():
     #=======================================================================================
     #                                    Private methods
     #=======================================================================================
-
-    #---------------------------------------------------------------------------------------
-    def _getNparents(self):
-        if self.parents is None: 
-            return 1
-        else: 
-            return len(self.parents)
-    #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
     def _core_model(self,Amodel,θnonlin,θlin): 
@@ -429,7 +467,12 @@ class Model():
 
     def __call__(self,*args,**kargs):
     #---------------------------------------------------------------------------------------
+        """
+        Evaluate the model for a given set of parameters. 
 
+        Takes the constant variables and (non-linear and linear) parameter variables as positional
+        or keyword arguments and evaluateds the model.
+        """
         # Check that the correct number of arguments have been specified
         Nrequired = len(self._parameter_list())
         Nrequired += len(self._constantsInfo)
@@ -489,7 +532,7 @@ class Model():
 #==============================================================================================
 def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
     r"""
-    Fit the model to the data ``y`` via one of the three following approaches: 
+    Fit the input model to the data ``y`` via one of the three following approaches: 
     
     - Non-linear least-squares 
     - Regularized linear-least-squares 
@@ -499,36 +542,38 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
 
     Parameters
     ----------
+    model : :ref:`Model`
+        Model object. 
     y : array_like 
         Data to be fitted. 
     par0 : array_like, optional 
         Value at which to initialize the parameter at the start of a fit routine. 
         Must be specified if not defined in the model. Otherwise, it overrides the definition in the model. 
 
-    Any additional solver-specific keyword arguments can be specified. See :ref:`nlls`, :ref:`rlls` and :ref:`snlls` for a full reference. 
+    Any additional solver-specific keyword arguments can be specified. See :ref:`snlls` for a full reference. 
 
     Returns
     -------
     :ref:`FitResult` with the following fields defined:
-    nonlin : ndarray
-        Fitted non-linear parameters.
-    lin : ndarray
-        Fitted linear parameters.
-    model : ndarray
-        Fitted model.
-    nonlinUncert : :ref:`UQResult`
-        Uncertainty quantification of the non-linear parameter set.
-    linUncert : :ref:`UQResult`
-        Uncertainty quantification of the linear parameter set.
+    <parameter_name> : :ref:`Parameter`
+        Fitted value of the <parameter_name> model parameter.
+    <parameter_name>Uncert : :ref:`UQResult`
+        Uncertainty quantification of the <parameter_name> model parameter.
+    param : ndarray
+        Fitted parameter vector ordered according to the model parameter indices.
     modelUncert : :ref:`UQResult`
-        Uncertainty quantification of the fitted model.
+        Uncertainty quantification of the parameter vector ordered according to the model parameter indices.
+    model : ndarray
+        Fitted model response.
+    modelUncert : :ref:`UQResult`
+        Uncertainty quantification of the fitted model response.        
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
     plot : callable
         Function to display the results. It will display the fitted data.
         The function returns the figure object (``matplotlib.figure.Figure``)
-        object as output, which can be modified. Using ``fig = plot(show=False)`` 
-        will not render the figure unless ``display(fig)`` is called. 
+        object as output, which can be modified. A vector for the x-axis and its label can
+        be specified by calling ``FitResult.plot(axis=axis,xlabel='xlabel')``.
     stats : dict
         Goodness of fit statistical estimators
 
@@ -631,7 +676,7 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
-    FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','modelUncert','cost','plot','residuals','stats']}
+    FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','modelUncert','cost','plot','residuals','stats','regparam']}
 
     _paramlist = model._parameter_list('vector')
     def propagate(model,*constants,lb=None,ub=None):
@@ -701,7 +746,28 @@ def _aresame(obj1,obj2):
         return False
 # ==============================================================================
 def link(model,**links):
+    """
+    Link model parameters. 
 
+    Parameters
+    ----------
+    model : :ref:`Model`
+        Model object. 
+    links : keyword-argument pairs 
+        Keyword-argument pairs, where the arguments must be lists of model parameter names. 
+        The corresponding model parameter will be assigned to new parameter whose name is given 
+        by the keyword name. For example:: 
+
+            newmodel = link(model,parC = [model.parA,model.parB])
+
+        will return a new model where the values of ``parA`` and ``parB`` will be given by the
+        new model parameter ``parC``. 
+
+    Returns
+    -------
+    newmodel : :ref:`Model`
+        New model object without the linked parameter and with the newly defined parameters. 
+    """
     def _linkparameter(model,parameters,newname):
     # ---------------------------------------------------------------------  
         # Get a list of parameter names in the model
@@ -1006,18 +1072,91 @@ def _combinemodels(mode,*inputmodels,addweights=False):
 
 #==============================================================================================
 def expand(*inputmodels,addweights=False):
+    """
+    Create a multi-response model from multiple individual models. 
+
+    Parameters
+    ----------
+    inputmodels : :ref:`Model` objects
+        Model objects to be combined. If one of the models has no linear parameters, a linear 
+        scaling factor parameters will be added. The names of the ``N``-th input model parameter will be 
+        changed by a suffix ``_N`` in the new model. Example:: 
+
+            newmodel = expand(model1,model2)
+            newmodel.parA_1 # Originally parA from model1
+            newmodel.parA_2 # Originally parA from model2
+
+
+    addweights : boolean, optional 
+        If true, the function will add a non-linear weight parameter for each model response
+        even if the individual models have linear parameters. 
+
+    Returns
+    -------
+    newmodel : :ref:`Model`
+        New model object taking the combined parameter set and returning a list of model reponses
+        correponding to each of the input models. 
+    """
     return _combinemodels('expand',*inputmodels,addweights=addweights)
 #==============================================================================================
 
 #==============================================================================================
 def combine(*inputmodels,addweights=False):
+    """
+    Create model whose response is a linear combination of multiple individual model responses. 
+
+    Parameters
+    ----------
+    inputmodels : :ref:`Model` objects
+        Model objects whose linear responses are to be linearly combined. If one of the models 
+        has no linear parameters, a linear scaling factor parameters will be added. The names 
+        of the ``N``-th input model parameter will be changed by a suffix ``_N`` in the new model. Example:: 
+
+            newmodel = expand(model1,model2)
+            newmodel.parA_1 # Originally parA from model1
+            newmodel.parA_2 # Originally parA from model2
+
+    addweights : boolean, optional 
+        If true, the function will add a non-linear weight parameter for each model response
+        even if the individual models have linear parameters. 
+
+    Returns
+    -------
+    newmodel : :ref:`Model`
+        New model object taking the combined parameter set and returning a response that is a linear
+        combination of the input models.
+    """
     return _combinemodels('combine',*inputmodels,addweights=addweights)
 #==============================================================================================
 
 
 #==============================================================================================
 def relate(model,**functions):
+    """
+    Create functional relationships between model parameters. 
 
+    Parameters
+    ----------
+    model : :ref:`Model`
+        Model object. 
+    functions : keyword-callable pairs 
+        Functions describing the relationship between parameters. The keyword represents the parameter
+        which will be funtionalized. The keyword argument must be a callable function taking a number 
+        of model parameters (names must match any of the model parameter names) as input and returning
+        the value to be assigned to the functionalized parameter. For example::
+
+            newmodel = relate(model, parA = lambda parB: 2*parB)
+
+        will create a new model ``newmodel`` based on ``model`` where the parameter ``parA`` is now 
+        given by twice the value of parameter ``parB``. The model ``newmodel`` will no longer have ``parA`` 
+        as a model parameter and will have a parameter less than ``model``. 
+        Multiple parameters can be functionalized by specifying multiple keyword-callable pairs.
+
+    Returns
+    -------
+    newmodel : :ref:`Model`
+        New model object without the functionalized parameters. 
+    """
     def _relate(model,function,dependent_name):
     # ---------------------------------------------------------------------  
         

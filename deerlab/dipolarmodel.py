@@ -11,6 +11,33 @@ from deerlab import bg_hom3d
 
 #===============================================================================
 def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
+    """
+    Construct a dipolar EPR signal model. 
+
+    Parameters
+    ----------
+    t : array_like 
+        Vector of dipolar time increments, in microseconds.
+    r : array_like 
+        Vector of intraspin distances, in nanometeres.
+    Pmodel : :ref:`Model`, optional 
+        Model for the distance distribution. If not speficied, a non-parametric
+        distance distribution is assumed. 
+    Bmodel : :ref:`Model`, optional 
+        Model for the intermolecular (background) contribution. If not specified, 
+        a background arising from a homogenous 3D distribution of spins is assumed. 
+    npathways : integer scalar
+        Number of dipolar pathways. If not specified, a single dipolar pathway is assumed. 
+    harmonics: list of integers 
+        Harmonics of the dipolar pathways. Must be a list with `npathways` harmonics for each
+        defined dipolar pathway.  
+
+    Returns
+    -------
+    Vmodel : :ref:`Model`
+        Dipolar signal model object.
+    """
+
 
     # Input parsing and validation
     if not isinstance(Pmodel,Model) and Pmodel is not None:

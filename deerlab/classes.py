@@ -374,10 +374,6 @@ class UQResult:
         -------
         modeluq : :ref:`UQResult`
             New uncertainty quantification analysis for the ouputs of ``model``.
-
-        Notes
-        -----
-        Uncertainty propagation is covariance-based and so will be the resulting uncertainty analysis.
         """
         parfit = self.mean
         # Evaluate model with fit parameters
