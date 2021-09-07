@@ -26,7 +26,7 @@ set_theme()
 # %%
 
 # Load the experimental data
-t,Vexp = np.load(r'C:\Users\Luis\polybox\projects\DeerLab\DeerLab\examples\data/example_4pdeer_#1.npy')
+t,Vexp = np.load('../data/example_4pdeer_#1.npy')
 
 # Distance vector
 r = np.linspace(2,5,100) # nm
