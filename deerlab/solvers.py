@@ -720,6 +720,10 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # Uncertainty analysis
     #---------------------
     if uq:
+        
+        # Define the indices of the parameter subsets
+        nonlin_subset = np.arange(0,Nnonlin)
+        lin_subset = np.arange(Nnonlin,Nnonlin+Nlin)
 
         def uq_subset(uq_full,subset,subset_lb,subset_ub):
         #-----------------------------------------------------------------------------
@@ -730,32 +734,36 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
             return uq_subset
         #-----------------------------------------------------------------------------
-        
+
         # Jacobian (non-linear part)
         Jnonlin = Jacobian(_ResidualsFcn,nonlinfit,lb,ub)
         # Jacobian (linear part)
+        scale = np.trapz(linfit,ax)
         Jlin = weights[:,np.newaxis]*Amodel(nonlinfit)
         if includeExtrapenalty:
             for penalty in extrapenalty:
                 Jlin = np.concatenate((Jlin, Jacobian(lambda plin: penalty(nonlinfit,plin),linfit,lbl,ubl)))
         if includeRegularization:
             Jlin = np.concatenate((Jlin, _penalty_augmentation(alpha, L, linfit,'Jacobian')))
+        Jlin *= scale
         # Full Jacobian
-        J = np.concatenate((Jnonlin/np.max(y),Jlin),axis=1)
+        J = np.concatenate((Jnonlin,Jlin),axis=1)
 
         # Calculate the heteroscedasticity consistent covariance matrix
         covmatrix = hccm(J, res)
+
         # Get combined parameter sets and boundaries
         parfit = np.concatenate((nonlinfit, linfit))
         lbs = np.concatenate((lb, lbl))
         ubs = np.concatenate((ub, ubl))
 
+        # Account for scale of linear parameters since covariance matrix is scale invariant
+        covmatrix[np.ix_(lin_subset,lin_subset)] *= scale**2
+
         # Construct the uncertainty quantification object
         paramuq = UQResult('covariance', parfit, covmatrix, lbs, ubs)
 
         # Split the uncertainty quantification of nonlinear/linear parts
-        nonlin_subset = np.arange(0,Nnonlin)
-        lin_subset = np.arange(Nnonlin,Nnonlin+Nlin)
         paramuq_nonlin = uq_subset(paramuq,nonlin_subset,lb,ub)
         paramuq_lin = uq_subset(paramuq,lin_subset,lbl,ubl)
 

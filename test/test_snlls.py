@@ -465,7 +465,7 @@ def test_confinter_values():
                 [1.8384482433779732, 2.0515346381926847], 
                 [1.8899306688797555, 1.9961521871803736]]
 
-    fit = snlls(y,A,[1,0.5],reg=False)
+    fit = snlls(y,A,[0.5,0.2],reg=False)
     a_ci = [fit.nonlinUncert.ci(cov[i])[0,:] for i in range(3)]
     b_ci = [fit.nonlinUncert.ci(cov[i])[1,:] for i in range(3)]
 
@@ -498,12 +498,21 @@ def test_confinter_scaling():
     fit1 = snlls(V*V0_1,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,nonlin_tol=1e-2)
     fit2 = snlls(V*V0_2,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,nonlin_tol=1e-2)
 
+    # Assess linear parameter uncertainties
     ci1 = fit1.linUncert.ci(95)
     ci2 = fit2.linUncert.ci(95)
     ci1[ci1==0] = 1e-16
     ci2[ci2==0] = 1e-16
 
-    assert np.max(abs(ci2/V0_2 - ci1)) < 0.002 
+    assert np.max(abs(ci2/V0_2 - ci1)) < 1e-6
+
+    # Assess nonlinear parameter uncertainties
+    ci1 = fit1.nonlinUncert.ci(95)
+    ci2 = fit2.nonlinUncert.ci(95)
+    ci1[ci1==0] = 1e-16
+    ci2[ci2==0] = 1e-16
+
+    assert np.max(abs(ci2 - ci1)) < 1e-6    
 #============================================================
 
 def test_global_weights():
