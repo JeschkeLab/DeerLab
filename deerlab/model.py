@@ -526,6 +526,38 @@ class Model():
             'units' : self._vecsort(self._getvector('units')),
             }
     #---------------------------------------------------------------------------------------
+
+    def _parameter_table(self):
+        string = inspect.cleandoc(f"""
+    Model information 
+    -----------------
+
+    Model description: {self.description}
+    Model call signature: {','.join(self.signature)}
+    Constants: {[entry['argkey'] for entry in self._constantsInfo]}
+
+    Parameter Table 
+    ---------------
+
+    ============ ========= ========== =========== ======== ========== ==========================
+        Name       Lower     Upper      Type       Frozen   Units     Description  
+    ============ ========= ========== =========== ======== ========== ==========================""")
+        for n,paramname in enumerate(self._parameter_list(order='vector')): 
+            string += f'\n   {paramname:7s}'
+            string += f'     {np.atleast_1d(getattr(self,paramname).lb)[0]:5.3g}'
+            string += f'     {np.atleast_1d(getattr(self,paramname).ub)[0]:5.3g}'
+            string += f'      {"linear" if np.all(getattr(self,paramname).linear) else "nonlin"}'
+            string += f'      {"Yes" if np.all(getattr(self,paramname).frozen) else "No":3s}'
+            string += f'       {str(getattr(self,paramname).units):6s}'
+            string += f'   {str(getattr(self,paramname).description):s}'
+        string += f'\n============ ========= ========== =========== ======== ========== =========================='
+        return string
+
+    def __str__(self):
+        return self._parameter_table()
+    def __repr__(self):
+        return self._parameter_table()        
+
 #===================================================================================
 
 
