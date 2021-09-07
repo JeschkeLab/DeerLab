@@ -713,6 +713,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     Amodel = _Amodel
 
     # Compute the fit residual
+    par_prev = nonlinfit
     _ResidualsFcn = lambda nonlinfit: ResidualsFcn(_unfrozen_subset(nonlinfit,nonlin_frozen,nonlin_parfrozen))
     res = _ResidualsFcn(nonlinfit)
 
