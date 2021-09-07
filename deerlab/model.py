@@ -654,7 +654,7 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
         def bootstrap_fcn(ysim): 
             fit = fitfcn(np.concatenate(ysim))
             if not isinstance(fit.model,list): fit.model = [fit.model]
-            return fit.param,*fit.model
+            return (fit.param,*fit.model)
         # Bootstrapped uncertainty quantification
         param_uq = bootan(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap)
         # Include information on the boundaries for better uncertainty estimates
