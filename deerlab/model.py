@@ -929,7 +929,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
             def make_weighted_comb(nonlinfcn):
                 def weighted_comb(*inputargs):
                     weight = inputargs[-1]
-                    param = np.atleast_1d(inputargs[:-1])
+                    param = inputargs[:-1]
                     return weight*nonlinfcn(*param)
                 return weighted_comb
             constants = [entry['argkey'] for entry in model._constantsInfo]
