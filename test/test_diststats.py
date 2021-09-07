@@ -8,6 +8,7 @@ from deerlab.utils import assert_docstring
 # Gaussian distribution parameters
 Pmean = 4 # nm
 Psigma = 0.4 # nm
+integral = 1e5
 
 def assert_descriptor(key,truth):
 # ----------------------------------------------------------------------
@@ -15,7 +16,7 @@ def assert_descriptor(key,truth):
     r = np.linspace(2,6,2000)
     dr = np.mean(np.diff(r))
     # Gaussian distribution
-    P = dd_gauss(r,Pmean, Psigma)
+    P = integral*dd_gauss(r,Pmean, Psigma)
     
     descriptor = diststats(r,P)[0][key]
     
@@ -42,7 +43,7 @@ def test_int():
 # ======================================================================
     "Check that the distribution integral is correctly computed"
 
-    truth = 1
+    truth = integral
     assert_descriptor('int',truth)
 # ======================================================================
 
@@ -288,7 +289,7 @@ def assert_descriptor_nonuniform_r(key,truth):
     r = np.sqrt(np.linspace(2**2,6**2,2000))
     dr = np.min(np.diff(r))
     # Gaussian distribution
-    P = dd_gauss(r,Pmean, Psigma)
+    P = 1e5*dd_gauss(r,Pmean, Psigma)
     
     descriptor = diststats(r,P)[0][key]
     assert abs(descriptor - truth) < dr
@@ -314,7 +315,7 @@ def test_nonuniform_r_int():
 # ======================================================================
     "Check that the distribution integral is correctly computed"
 
-    truth = 1
+    truth = integral
     assert_descriptor_nonuniform_r('int',truth)
 # ======================================================================
 
