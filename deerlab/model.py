@@ -624,9 +624,6 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
 
     if len(constants)>0:
         constants = np.atleast_1d(constants)
-        
-    if np.all(np.iscomplex(y)): 
-        y = correctphase(y)
 
     if model.Nlin==0:
         model.addlinear('scale',lb=-np.inf,ub=np.inf,description='Scaling factor')

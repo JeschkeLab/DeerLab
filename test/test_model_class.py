@@ -658,3 +658,42 @@ def test_model_constant_same_values_positional():
         
     assert np.allclose(reference,response)
 #================================================================
+
+
+def model(phase, center, width):
+    y = gauss(center, width)
+    y = y*np.exp(-1j*phase)
+    return y
+mymodel = Model(model)
+mymodel.phase.set(par0=2*np.pi/5, lb=-np.pi, ub=np.pi)
+mymodel.center.set(par0=4, lb=1, ub=6)
+mymodel.width.set(par0=0.2, lb=0.05, ub=5)
+
+y = mymodel(phase=np.pi/5, center=3, width=0.5)     
+
+def test_complex_model_complex_data():
+# ======================================================================
+    "Check the fit of a complex-valued model to complex-valued data"
+    fitResult = fit(mymodel,y)
+
+    assert np.allclose(fitResult.model.real,y.real) and np.allclose(fitResult.model.imag,y.imag)
+# ======================================================================
+
+def test_complex_model_real_data():
+# ======================================================================
+    "Check the fit of a complex-valued model to real-valued data"
+    fitResult = fit(mymodel,y.real)
+
+    assert np.allclose(fitResult.model.real,y.real) and np.allclose(fitResult.model.imag,np.zeros_like(y.real))
+# ======================================================================
+
+def test_real_model_complex_data():
+# ======================================================================
+    "Check the fit of a real-valued model to complex-valued data"
+    mymodel = Model(gauss)
+    mymodel.mean.set(par0=4, lb=1, ub=6)
+    mymodel.width.set(par0=0.2, lb=0.05, ub=5)
+    fitResult = fit(mymodel,y.real + 1j*np.zeros_like(y.imag))
+
+    assert np.allclose(fitResult.model.real,y.real) and np.allclose(fitResult.model.imag,np.zeros_like(y.real))
+# ======================================================================

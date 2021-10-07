@@ -1,5 +1,6 @@
 import numpy as np
 from deerlab import dipolarkernel,dd_gauss,dd_gauss2,snlls,whitegaussnoise
+
 from deerlab.bg_models import bg_exp
 from deerlab.utils import ovl, skip_on, assert_docstring
 
@@ -649,3 +650,44 @@ def test_frozen_Nparam():
     
     assert len(fit.nonlin)==4 and len(fit.lin)==2 and len(fit_frozen.nonlin)==4 and len(fit_frozen.lin)==2
 # ======================================================================
+
+def test_complex_model_complex_data():
+# ======================================================================
+    "Check the fit of a real-valued model to complex-valued data"
+
+    x = np.linspace(0,7,100)
+    def model(p):
+        phase, center, width = p
+        y = dd_gauss(x,center, width)
+        y = y*np.exp(-1j*phase)
+        return y
+
+    y = model([np.pi/5, 3, 0.5])     
+
+    fitResult = snlls(y,model,par0=[2*np.pi/5,4,0.2],lb=[-np.pi,1,0.05],ub=[np.pi,6,5])
+
+    assert np.allclose(fitResult.model.real,y.real) and np.allclose(fitResult.model.imag, y.imag)
+# ======================================================================
+
+def test_complex_model_uncertainty():
+# ======================================================================
+    "Check the fit of a real-valued model to complex-valued data"
+
+    x = np.linspace(0,7,100)
+    def model(p):
+        phase, center, width = p
+        y = dd_gauss(x,center, width)
+        y = y*np.exp(-1j*phase)
+        return y
+
+    y = model([np.pi/5, 3, 0.5])     
+
+    y = y + whitegaussnoise(x,0.01)
+    y = y + 1j*whitegaussnoise(x,0.05)
+
+    fitResult = snlls(y,model,par0=[2*np.pi/5,4,0.2],lb=[-np.pi,1,0.05],ub=[np.pi,6,5])
+    ciwidth = np.sum(fitResult.modelUncert.ci(95)[:,1] - fitResult.modelUncert.ci(95)[:,0])
+
+    assert (ciwidth.real < ciwidth.imag).all()
+# ======================================================================
+ 

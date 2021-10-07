@@ -7,6 +7,7 @@
 import numpy as np
 import cvxopt as cvx
 import matplotlib.pyplot as plt
+from numpy.lib.type_check import imag
 from scipy.optimize import least_squares, lsq_linear
 from scipy.sparse.construct import block_diag
 # DeerLab dependencies
@@ -24,8 +25,12 @@ def _plot(ys,yfits,yuqs,axis=None,xlabel=None):
 
     Plots the input dataset(s), their fits, and uncertainty bands.
     """
+
+    complexy = np.any([np.iscomplex(y).any() for y in ys])
+
     nSignals = len(ys)
-    fig,axs = plt.subplots(nSignals,figsize=[7,4*nSignals])
+    ncols = 2 if complexy else 1
+    fig,axs = plt.subplots(nSignals,ncols,figsize=[7*ncols,4*nSignals])
     axs = np.atleast_1d(axs)
 
     if axis is None: 
@@ -37,15 +42,28 @@ def _plot(ys,yfits,yuqs,axis=None,xlabel=None):
         xlabel = 'Array elements'
 
 
+    n = 0
     for i,(y,yfit,yuq) in enumerate(zip(ys,yfits,yuqs)): 
         # Plot the experimental signal and fit
-        axs[i].plot(axis[i],y,'.',color='grey')
-        axs[i].plot(axis[i],yfit)
+        axs[n].plot(axis[i],y.real,'.',color='grey')
+        axs[n].plot(axis[i],yfit.real)
         if yuq.type!='void': 
-            axs[i].fill_between(axis[i],yuq.ci(95)[:,0],yuq.ci(95)[:,1],alpha=0.4)
-        axs[i].set_xlabel(xlabel)
-        axs[i].set_ylabel(f'Dataset #{i+1}')
-        axs[i].legend(('Data','Fit','95%-CI'),loc='best',frameon=False)
+            axs[i].fill_between(axis[i],yuq.ci(95)[:,0].real,yuq.ci(95)[:,1].real,alpha=0.4,linewidth=0)
+        axs[n].set_xlabel(xlabel)
+        axs[n].set_ylabel(f'Dataset #{i+1}')
+        axs[n].legend(('Data (real)','Fit','95%-CI'),loc='best',frameon=False)
+        n += 1
+        
+        if complexy: 
+            axs[n].plot(axis[i],y.imag,'.',color='grey')
+            axs[n].plot(axis[i],yfit.imag,color='tab:orange')
+            if yuq.type!='void': 
+                axs[n].fill_between(axis[i],yuq.ci(95)[:,0].imag,yuq.ci(95)[:,1].imag,alpha=0.4,color='tab:orange',linewidth=0)
+            axs[n].set_xlabel(xlabel)
+            axs[n].set_ylabel(f'Dataset #{i+1}')
+            axs[n].legend(('Data (imag)','Fit','95%-CI'),loc='best',frameon=False)
+            n += 1
+
     plt.tight_layout()
     plt.autoscale(enable=True, axis='both', tight=True)
 
@@ -508,6 +526,29 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         Amodel = lambda p: np.atleast_2d(Amodel_(p)).T
         A0 = Amodel(par0)
 
+    complexy = np.iscomplexobj(y)
+    imagsubsets = []
+    if complexy: 
+        # If the data is complex-valued
+        for subset in subsets:
+            imagsubsets.append(subset + len(y))
+        y = np.concatenate([y.real,y.imag])
+        weights = np.concatenate([weights,weights])   
+    Amodel__ = Amodel
+    if np.iscomplexobj(A0):
+       # If the design matrix is complex-valued
+        Amodel = lambda p: np.concatenate([Amodel__(p).real,Amodel__(p).imag]) 
+        A0 = np.concatenate([A0.real,A0.imag]) 
+        A0 = Amodel(par0)
+        if not complexy: 
+            # If the data is not complex-valued
+            y = np.concatenate([y,np.zeros_like(y)])  
+            weights = np.concatenate([weights,weights])   
+    elif complexy:
+        # If the design matrix is not complex-valued, but the data is
+        Amodel = lambda p: np.concatenate([Amodel__(p),np.zeros_like(A0)]) 
+
+
     Nnonlin = len(par0)
     Nlin = np.shape(A0)[1]
 
@@ -574,7 +615,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         # Components for linear least-squares
         AtA, Aty = _lsqcomponents(y-yfrozen, Ared, L, alpha, weights=weights)
 
-        Ndof = np.trace(Ared@np.linalg.pinv(AtA))
+        Ndof = np.maximum(0,np.trace(Ared@np.linalg.pinv(AtA)))
 
         # Solve the linear least-squares problem
         result = linSolver(AtA, Aty)
@@ -777,12 +818,17 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     parfit = np.concatenate((nonlinfit, linfit))
     nonlin_idx = np.arange(len(nonlinfit))
     lin_idx = np.arange(len(nonlinfit),len(parfit))
-    def ymodel(n): return lambda p: ((Amodel(p[nonlin_idx])@p[lin_idx])[subsets[n]]) 
+    def ymodel(n): return lambda p: (Amodel(p[nonlin_idx])@p[lin_idx])[subsets[n]]
+    if complexy: 
+        ymodel_ = ymodel
+        def ymodel(n): return lambda p: ymodel_(n)(p) + 1j*(Amodel(p[nonlin_idx])@p[lin_idx])[imagsubsets[n]]
     ymodels = [ymodel(n) for n in range(len(subsets))]
     modelfit,modelfituq = _model_evaluation(ymodels,parfit,paramuq,uq)
 
     # Make lists of data and fits
     ys = [y[subset] for n,subset in enumerate(subsets)]
+    if complexy: 
+        ys = [ys[n] + 1j*y[imagsubset] for n,imagsubset in enumerate(imagsubsets)]
     yfits = modelfit.copy()
     yuq = modelfituq.copy()
 

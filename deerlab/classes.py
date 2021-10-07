@@ -331,17 +331,24 @@ class UQResult:
         """
         if coverage>100 or coverage<0:
             raise ValueError('The input must be a number between 0 and 100')
+        iscomplex = np.iscomplexobj(self.mean)
         
         alpha = 1 - coverage/100
         p = 1 - alpha/2 # percentile
         
         x = np.zeros((self.nparam,2))
+        if iscomplex: x = x.astype(complex)
+
         if self.type=='covariance':
                 # Compute covariance-based confidence intervals
                 # Clip at specified box boundaries
-                x[:,0] = np.maximum(self.__lb, self.mean - norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
-                x[:,1] = np.minimum(self.__ub, self.mean + norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
-                
+                standardError = norm.ppf(p)*np.sqrt(np.diag(self.covmat))
+                x[:,0] = np.maximum(self.__lb, self.mean.real - standardError)
+                x[:,1] = np.minimum(self.__ub, self.mean.real + standardError)
+                if iscomplex:
+                    x[:,0] = x[:,0] + 1j*np.maximum(self.__lb, self.mean.imag - standardError)
+                    x[:,1] = x[:,1] + 1j*np.minimum(self.__ub, self.mean.imag + standardError)
+
         elif self.type=='bootstrap':
                 # Compute bootstrap-based confidence intervals
                 # Clip possible artifacts from the percentile estimation
@@ -378,7 +385,8 @@ class UQResult:
         parfit = self.mean
         # Evaluate model with fit parameters
         modelfit = model(parfit)
-        
+        iscomplex = np.iscomplexobj(modelfit)
+
         # Validate input boundaries
         if lb is None:
             lb = np.full(np.size(modelfit), -np.inf)
@@ -398,6 +406,10 @@ class UQResult:
 
         if self.type=='covariance':
 
+            if iscomplex:
+                model_ = model 
+                model = lambda p: np.concatenate([model_(p).real,model_(p).imag])
+
             # Get jacobian of model to be propagated with respect to parameters
             J = Jacobian(model,parfit,self.__lb,self.__ub)
 
@@ -407,6 +419,12 @@ class UQResult:
 
             # Error progation
             modelcovmat = nearest_psd(J@self.covmat@J.T)
+
+            if iscomplex:
+                N = modelcovmat.shape[0]
+                Nreal = np.arange(0,N/2).astype(int)
+                Nimag = np.arange(N/2,N).astype(int)
+                modelcovmat = modelcovmat[np.ix_(Nreal,Nreal)] + 1j* modelcovmat[np.ix_(Nimag,Nimag)]
 
             # Construct new uncertainty object
             return  UQResult('covariance',modelfit,modelcovmat,lb,ub)
