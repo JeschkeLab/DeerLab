@@ -234,7 +234,7 @@ class UQResult:
             
         if self.type == 'bootstrap':
             # Get bw using silverman's rule (1D only)
-            samplen = self.samples[:, n]
+            samplen = self.samples[:, n].real
 
             if np.all(samplen == samplen[0]):
                 # Dirac's delta distribution 

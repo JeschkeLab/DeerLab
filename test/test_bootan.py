@@ -84,7 +84,6 @@ def test_multiple_ouputs():
 
     assert len(paruq1)==2
 # ======================================================================
-test_multiple_ouputs()
 
 def test_multiple_datasets():
 # ======================================================================
@@ -146,4 +145,28 @@ def test_parallelization():
 def test_docstring():
     "Check that the docstring includes all variables and keywords."
     assert_docstring(bootan)
+# ======================================================================
+
+def test_complex_values():
+# ======================================================================
+    "Check the functionality of the bootstrapping with complex-valued outputs"
+
+    t = np.linspace(0,5,200)
+    r = np.linspace(2,6,300)
+    P = dd_gauss(r,4, 0.8)
+    K = dipolarkernel(t,r)
+    Vexp = K@P + whitegaussnoise(t,0.01,seed=1) 
+    Vexp = Vexp + 1j*whitegaussnoise(t,0.01,seed=1) 
+    par0 = [3, 0.5]
+    Vmodel = lambda par: K@dd_gauss(r,*par) + 1j*np.zeros_like(t) 
+    fit = snlls(Vexp,Vmodel,par0)
+    Vfit = fit.model
+
+    def bootfcn(V):
+        fit = snlls(V,Vmodel,par0)
+        return fit.nonlin
+
+    paruq = bootan(bootfcn,Vexp,Vfit,3)
+
+    assert all(abs(paruq.mean - fit.nonlin) < 1.5e-2)
 # ======================================================================
