@@ -1,6 +1,6 @@
-# %% [markdown]
+# %% 
 """ 
-Global fitting of multiple different DEER signals, non-parametric distribution
+Global fitting of multiple different DEER signals
 -------------------------------------------------------------------------------
 
 How to fit multiple signals from different DEER experiments to a model with a non-parametric
@@ -10,63 +10,70 @@ distribution and a homogeneous background, using Tikhonov regularization.
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
-
-# %% [markdown]
-# Load and pre-process data
-# ---------------------------
-#
-# Uncomment and use the following lines if you have experimental data::
-# 
-#   datasets = ('file1.DTA','file2.DTA','file3.DTA')
-#   data = [dl.deerload(ds) for ds in datasets]
-#   t = [_[0] for _ in data]
-#   V = [_[1] for _ in data]
-# 
-
-# %% [markdown]
-# Simulate data
-# --------------
-#
-# In this example we will use two simulated signals (one 4-pulse DEER signal and one 5-pulse DEER signal) instead:
-
+# Use the seaborn style for nicer plots
+from seaborn import set_theme
+set_theme()
 #%%
 
-# Define a function that generates synthetic data
-def generatedata():
-    r = np.linspace(2,5,150)                # distance axis, nm
-    param = [3, 0.1, 0.2, 3.5, 0.1, 0.65]   # parameters for three-Gaussian model
-    P = dl.dd_gauss2(r,param)               # model distance distribution
+# Load the experimental 4-pulse and 5-pulse DEER datasets
+t4p, V4p = np.load('../data/example_4pdeer_#2.npy')
+t5p, V5p = np.load('../data/example_5pdeer_#2.npy')
 
-    t1 = np.linspace(-0.2,3,200)             # time axis 1, µs
-    t2 = np.linspace(-0.1,6,400)             # time axis 2, µs
-
-    path4p = dl.ex_4pdeer(0.3)                      # 4-pulse DEER pathways
-    path5p = dl.ex_5pdeer([0.6, 0.3, 0.1, 3.2])     # 5-pulse DEER pathways
-
-    K1 = dl.dipolarkernel(t1,r,pathways=path4p,bg=lambda t,lam: dl.bg_hom3d(t1,100,lam))  # dipolar kernel 1
-    K2 = dl.dipolarkernel(t2,r,pathways=path5p,bg=lambda t,lam: dl.bg_hom3d(t2,20,lam))   # dipolar kernel 2
-
-    V1 = K1@P + dl.whitegaussnoise(t1,0.005,seed=1) # simulated signal 1
-    V2 = K2@P + dl.whitegaussnoise(t2,0.01,seed=2) # simulated signal 2
-    
-    return [t1,t2], [V1,V2]
-
-t, V = generatedata()
-
-# %% [markdown]
-# When doing global fitting, you must specify a list of the signals as well as a list of the corresponding time axes. 
-# Then, a model type for the global distance distribution model and finally a list of models for the background and experiment.
-# In this case we assume that both signals can be modelled as 3D-homogenous distributions of spins. 
-# Since we know that the 
-
-#%%
-
-# Change the start values of the 5-pulse DEER model to reflect the experimental data
-dl.ex_5pdeer.start = [0.3, 0.3, 0.3, 3.2]
+# Since they have different scales, normalize both datasets
+V4p = V4p/np.max(V4p)
+V5p = V5p/np.max(V5p)
 
 # Run fit
-r = np.linspace(2,5,150)
-fit = dl.fitmodel(V,t,r,'P',[dl.bg_hom3d,dl.bg_hom3d],[dl.ex_4pdeer,dl.ex_5pdeer],verbose=True,weights=[2,1])
-fit.plot();
+r = np.linspace(2,4.5,100)
+
+# Construct the individual dipolar signal models
+V4pmodel = dl.dipolarmodel(t4p,r,npathways=1)
+V5pmodel = dl.dipolarmodel(t5p,r,npathways=2)
+V5pmodel.reftime2.set(lb=3,ub=3.5,par0=3.2)
+
+# Make the joint model with the distribution as a global parameters
+globalmodel = dl.expand(V4pmodel,V5pmodel)  
+globalmodel = dl.link(globalmodel, P = [globalmodel.P_1,globalmodel.P_2])
+
+# Fit the model to the data (with fixed regularization parameter)
+fit = dl.fit(globalmodel,[V4p,V5p],regparam=0.5)
+
+# %%
+
+plt.figure(figsize=[10,7])
+
+# Extract fitted distance distribution
+Pfit = fit.P
+scale = np.trapz(Pfit,r)
+Pci95 = fit.PUncert.ci(95)/scale
+Pci50 = fit.PUncert.ci(50)/scale
+Pfit =  Pfit/scale
+for n,(t,V) in enumerate(zip([t4p,t5p],[V4p,V5p])):
+
+    # Extract fitted dipolar signal
+    Vfit = fit.model[n]
+    Vci = fit.modelUncert[n].ci(95)
+
+    plt.subplot(2,2,n+1)
+    # Plot experimental data
+    plt.plot(t,V,'.',color='grey',label='Data')
+    # Plot the fitted signal 
+    plt.plot(t,Vfit,linewidth=3,label='Fit')
+    plt.fill_between(t,Vci[:,0],Vci[:,1],alpha=0.3)
+    plt.legend(frameon=False,loc='best')
+    plt.xlabel('Time $t$ (μs)')
+    plt.ylabel('$V(t)$ (arb.u.)')
+
+# Plot the distance distribution
+plt.subplot(212)
+plt.plot(r,Pfit,linewidth=3,label='Fit')
+plt.fill_between(r,Pci95[:,0],Pci95[:,1],alpha=0.3,color='tab:blue',label='95%-Conf. Inter.',linewidth=0)
+plt.fill_between(r,Pci50[:,0],Pci50[:,1],alpha=0.5,color='tab:blue',label='50%-Conf. Inter.',linewidth=0)
+plt.legend(frameon=False,loc='best')
+plt.autoscale(enable=True, axis='both', tight=True)
+plt.xlabel('Distance $r$ (nm)')
+plt.ylabel('$P(r)$ (nm$^{-1}$)')
+plt.tight_layout()
+plt.show()
 
 # %%

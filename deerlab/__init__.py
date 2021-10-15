@@ -7,18 +7,17 @@ from .selregparam import selregparam
 from .regparamrange import regparamrange
 from .dipolarkernel import dipolarkernel
 from .dipolarbackground import dipolarbackground
-from .solvers import rlls, nlls, snlls
+from .dipolarmodel import dipolarmodel, model4pdeer,model3pdeer,model5pdeer
+from .solvers import snlls
 from .regoperator import regoperator
 from .correctphase import correctphase
-from .mixmodels import mixmodels
 from .correctzerotime import correctzerotime
 from .noiselevel import noiselevel
 from .whitegaussnoise import whitegaussnoise
-from .fitmultimodel import fitmultimodel
 from .bootan import bootan
-from .fitmodel import fitmodel
 from .correctscale import correctscale
 from .fftspec import fftspec
 from .time2dist import time2dist
 from .classes import FitResult, UQResult
 from .diststats import diststats
+from .model import Model, link, combine, expand, relate, fit

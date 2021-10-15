@@ -395,7 +395,7 @@ def test_nonuniform_r():
 
     t = 0
     r = np.sqrt(np.linspace(1,7**2,200))
-    P = dd_gauss(r,[3,0.5])
+    P = dd_gauss(r,3,0.5)
     K = dipolarkernel(t,r)
     V0 = K@P
     assert np.round(V0,3) == 1

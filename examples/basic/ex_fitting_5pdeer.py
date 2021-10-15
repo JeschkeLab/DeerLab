@@ -1,69 +1,86 @@
 # %% [markdown]
 """
-Basic fitting of a 5-pulse DEER signal, non-parametric distribution
+Basic fitting of a 5-pulse DEER signal
 ====================================================================
 
-This example shows how to fit a 5-pulse DEER signal with a non-parametric
-distribution, a background, and all pathways parameters.
+This example shows how to model and fit a 5-pulse DEER signal, including
+the typically present additional dipolar pathway.  
+
+Now, the simple 5pDEER models contain 3 additional parameters compared to 4pDEER (due
+to the additional dipolar pathway present in the signal). However, the
+refocusing time of the second dipolar pathway is very easy to constrain
+and strongly helps stabilizing the fit. 
+ 
+This pathway can even estimated visually from the signal or estimated from the 
+pulse sequence timings. Thus, we can strongly constraint this parameters while leaving the
+pathway amplitudes pretty much unconstrained.
 """ 
 # %%
+# Import required packages
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
-
-# %% [markdown]
-# Load and pre-process data
-# ---------------------------
-#
-# Uncomment and use the following lines if you have experimental data::
-# 
-#   t,Vexp = dl.deerload('my\path\5pdeer_data.DTA')
-#   Vexp = dl.correctphase(Vexp)
-#   t = dl.correctzerotime(Vexp,t)
-# 
-# In this example we will use simulated data instead.
-
-# %%
-# Generate data
-#--------------
-
-# Define a function that generates synthetic data
-def generatedata():
-    t = np.linspace(-0.1,6.5,200)      # time axis, µs
-    r = np.linspace(2,5,200)           # distance axis, nm
-    param0 = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Gaussian model
-    P = dl.dd_gauss3(r,param0)         # model distance distribution
-    B = lambda t,lam: dl.bg_hom3d(t,300,lam) # background decay
-    exparam = [0.6, 0.3, 0.1, 3.2]     # parameters for 5pDEER experiment
-    pathways = dl.ex_5pdeer(exparam)   # pathways information
-    K = dl.dipolarkernel(t,r,pathways=pathways,bg=B)
-    Vexp = K@P + dl.whitegaussnoise(t,0.005,seed=1)
-    return t, Vexp
-
-t, Vexp = generatedata()
-
-# %% [markdown]
-# Now, 5pDEER data contain 3 additional parameters compared to 4pDEER (due
-# to the additional dipolar pathway present in the signal). However, the
-# refocusing time of the second dipolar pathway is very easy to constrain
-# and strongly helps stabilizing the fit. 
-# 
-# This pathway can even estimated visually from the signal or estimated from the 
-# pulse sequence timings. Thus, we can strongly constraint this parameters while leaving the
-# pathway amplitudes pretty much unconstrained.
-# 
-
-# %%
-
-# Define initial values and bounds for model parameters
-ex_lb   = [ 0,   0,   0,  max(t)/2-1] # lower bounds
-ex_ub   = [1, 1, 1, max(t)/2+1] # upper bounds
-ex_par0 = [0.5, 0.5, 0.5, max(t)/2  ] # start values
+# Use the seaborn style for nicer plots
+from seaborn import set_theme
+set_theme()
 
 # %% 
 
-# Run the fit with a 5-pulse DEER signal model
-r = np.linspace(2,5,200)
-fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_5pdeer,
-                  ex_par0=ex_par0,ex_lb=ex_lb,ex_ub=ex_ub,verbose=True)
-fit.plot();
+# Load the experimental data
+t,Vexp = np.load('../data/example_5pdeer_#1.npy')
+
+# Distance vector
+r = np.linspace(2,5,200) # nm
+
+# Construct dipolar model with two dipolar pathways
+Vmodel = dl.dipolarmodel(t,r,npathways=2)
+
+# The refocusing time of the second pathway can be well estimated by visual inspection
+Vmodel.reftime2.set(lb=3, ub=4, par0=3.5)
+
+# Fit the model to the data
+fit = dl.fit(Vmodel,Vexp)
+
+# %%
+
+# Extract fitted dipolar signal
+Vfit = fit.model
+Vci = fit.modelUncert.ci(95)
+
+# Extract fitted distance distribution
+Pfit = fit.P
+scale = np.trapz(Pfit,r)
+Pci95 = fit.PUncert.ci(95)/scale
+Pci50 = fit.PUncert.ci(50)/scale
+Pfit =  Pfit/scale
+
+# Extract the unmodulated contribution
+Bfcn = lambda lam1,lam2,reftime1,reftime2,conc: scale*(1-lam1-lam2)*dl.bg_hom3d(t-reftime1,conc,lam1)*dl.bg_hom3d(t-reftime2,conc,lam2)
+Bfit = Bfcn(fit.lam1,fit.lam2,fit.reftime1,fit.reftime2,fit.conc)
+Bci = fit.propagate(Bfcn).ci(95)
+
+plt.figure(figsize=[6,7])
+plt.subplot(211)
+# Plot experimental data
+plt.plot(t,Vexp,'.',color='grey',label='Data')
+# Plot the fitted signal 
+plt.plot(t,Vfit,linewidth=3,label='Fit')
+plt.fill_between(t,Vci[:,0],Vci[:,1],alpha=0.3)
+plt.plot(t,Bfit,'--',linewidth=3,label='Unmodulated contribution')
+plt.fill_between(t,Bci[:,0],Bci[:,1],alpha=0.3)
+plt.legend(frameon=False,loc='best')
+plt.xlabel('Time $t$ (μs)')
+plt.ylabel('$V(t)$ (arb.u.)')
+# Plot the distance distribution
+plt.subplot(212)
+plt.plot(r,Pfit,linewidth=3,label='Fit')
+plt.fill_between(r,Pci95[:,0],Pci95[:,1],alpha=0.3,color='tab:blue',label='95%-Conf. Inter.',linewidth=0)
+plt.fill_between(r,Pci50[:,0],Pci50[:,1],alpha=0.5,color='tab:blue',label='50%-Conf. Inter.',linewidth=0)
+plt.legend(frameon=False,loc='best')
+plt.autoscale(enable=True, axis='both', tight=True)
+plt.xlabel('Distance $r$ (nm)')
+plt.ylabel('$P(r)$ (nm$^{-1}$)')
+plt.tight_layout()
+plt.show()
+
+# %%

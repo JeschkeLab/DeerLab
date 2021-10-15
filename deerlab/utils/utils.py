@@ -9,7 +9,7 @@ from functools import wraps
 
 from scipy.sparse.construct import block_diag
 
-def parse_multidatasets(V_, K, weights, noiselvl, precondition=False):
+def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, subsets=None):
 #===============================================================================
     
     # Make copies to avoid modifying the originals
@@ -211,6 +211,9 @@ def hccm(J,residual,mode='HC1'):
     h = np.diag(H)
     # Number of parameters (k) & Number of variables (n)
     n,k = np.shape(J)
+
+    # IF the number of parameters and variables are equal default to the HC0 mode to avoid zero-division
+    if n==k: mode='HC0'
 
     # Select estimation method using established nomenclature
     if mode.upper() == 'HC0': # White,(1980),[1]
@@ -507,9 +510,18 @@ def isempty(A):
     return boolean
 #===============================================================================
 
+def isnumeric(obj):
+#===============================================================================
+    attrs = ['__add__', '__sub__', '__mul__', '__truediv__', '__pow__']
+    return all(hasattr(obj, attr) for attr in attrs)
+#===============================================================================
 
 def multistarts(n,x0,lb,ub):
 #===============================================================================
+    # Ensure a 1D-vector
+    x0 = np.atleast_1d(np.squeeze(x0)).astype(float)
+    lb = np.atleast_1d(np.squeeze(lb)).astype(float)
+    ub = np.atleast_1d(np.squeeze(ub)).astype(float)
 
     if n<0:
         raise ValueError('The number of requested starting points must be n>0.') 
@@ -517,11 +529,17 @@ def multistarts(n,x0,lb,ub):
     if len(x0) != len(lb) or len(x0) != len(ub):
         raise ValueError('The lower/upper bound size(s) are not compatible with the initial guess vector x0.') 
 
-    # Generate n-1 new starting points within the bounds
+    _x0 = x0.copy()
+    # Generate n-1 new starting points within the bounds (excluding the bounds)
     if n>1:
-        x0 = np.linspace(lb,ub,n-1)
+        x0 = np.linspace(lb,ub,n+2)[1:-1,:]
     else:
         x0 = [x0]
+
+    # If there is some NaN value (just put the original start value)
+    for x, in zip(x0):
+        x[np.isnan(x)] = _x0[np.isnan(x)]
+    
     return x0
 #===============================================================================
 

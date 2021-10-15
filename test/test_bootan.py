@@ -1,6 +1,6 @@
 
 import numpy as np
-from deerlab import dipolarkernel, whitegaussnoise, nlls, bootan
+from deerlab import dipolarkernel, whitegaussnoise, bootan, snlls
 from deerlab.dd_models import dd_gauss
 from deerlab.utils import assert_docstring
 
@@ -10,23 +10,23 @@ def test_basics():
 
     t = np.linspace(0,5,200)
     r = np.linspace(2,6,300)
-    P = dd_gauss(r,[4, 0.8])
+    P = dd_gauss(r,4, 0.8)
     K = dipolarkernel(t,r)
     Vexp = K@P + whitegaussnoise(t,0.01,seed=1)
 
     par0 = [3, 0.5]
-    Vmodel = lambda par: K@dd_gauss(r,par)
-    fit = nlls(Vexp,Vmodel,par0)
-    Vfit = Vmodel(fit.param)
+    Vmodel = lambda par: K@dd_gauss(r,*par)
+    fit = snlls(Vexp,Vmodel,par0)
+    Vfit = fit.model
 
 
     def bootfcn(V):
-        fit = nlls(V,Vmodel,par0)
-        return fit.param
+        fit = snlls(V,Vmodel,par0)
+        return fit.nonlin
 
     paruq = bootan(bootfcn,Vexp,Vfit,10)
 
-    assert all(abs(paruq.mean - fit.param) < 1.5e-2)
+    assert all(abs(paruq.mean - fit.nonlin) < 1.5e-2)
 # ======================================================================
 
 
@@ -36,19 +36,19 @@ def test_resampling():
 
     t = np.linspace(0,5,200)
     r = np.linspace(2,6,300)
-    P = dd_gauss(r,[4, 0.8])
+    P = dd_gauss(r,4, 0.8)
     K = dipolarkernel(t,r)
     Vexp = K@P + whitegaussnoise(t,0.01,seed=1)
 
     par0 = [3, 0.5]
-    Vmodel = lambda par: K@dd_gauss(r,par)
-    fit = nlls(Vexp,Vmodel,par0)
-    Vfit = Vmodel(fit.param)
+    Vmodel = lambda par: K@dd_gauss(r,*par)
+    fit = snlls(Vexp,Vmodel,par0)
+    Vfit = fit.model
 
 
     def bootfcn(V):
-        fit = nlls(V,Vmodel,par0)
-        return fit.param
+        fit = snlls(V,Vmodel,par0)
+        return fit.nonlin
 
     paruq1 = bootan(bootfcn,Vexp,Vfit,5,resampling='residual')
     paruq2 = bootan(bootfcn,Vexp,Vfit,5,resampling='gaussian')
@@ -64,27 +64,26 @@ def test_multiple_ouputs():
 
     t = np.linspace(0,5,200)
     r = np.linspace(2,6,300)
-    P = dd_gauss(r,[4, 0.8])
+    P = dd_gauss(r,4, 0.8)
     K = dipolarkernel(t,r)
     Vexp = K@P + whitegaussnoise(t,0.01,seed=1)
 
     par0 = [3, 0.5]
-    Vmodel = lambda par: K@dd_gauss(r,par)
-    fit = nlls(Vexp,Vmodel,par0)
-    Vfit = Vmodel(fit.param)
+    Vmodel = lambda par: K@dd_gauss(r,*par)
+    fit = snlls(Vexp,Vmodel,par0)
+    Vfit = fit.model
 
 
     def bootfcn(V):
-        fit = nlls(V,Vmodel,par0)
-        Pfit = dd_gauss(r,fit.param)
-        return fit.param, Pfit
+        fit = snlls(V,Vmodel,par0)
+        Pfit = dd_gauss(r,*fit.nonlin)
+        return fit.nonlin, Pfit
 
     paruq1 = bootan(bootfcn,Vexp,Vfit,4)
 
 
     assert len(paruq1)==2
 # ======================================================================
-
 
 def test_multiple_datasets():
 # ======================================================================
@@ -93,7 +92,7 @@ def test_multiple_datasets():
     t1 = np.linspace(0,5,200)
     t2 = np.linspace(-0.5,3,300)
     r = np.linspace(2,6,300)
-    P = dd_gauss(r,[4, 0.8])
+    P = dd_gauss(r,4, 0.8)
     K1 = dipolarkernel(t1,r)
     K2 = dipolarkernel(t2,r)
 
@@ -101,21 +100,21 @@ def test_multiple_datasets():
     Vexp2 = K2@P + whitegaussnoise(t2,0.02,seed=2)
 
     def Vmodel(par):
-        V1 = K1@dd_gauss(r,par)
-        V2 = K2@dd_gauss(r,par)
+        V1 = K1@dd_gauss(r,*par)
+        V2 = K2@dd_gauss(r,*par)
         return [V1,V2]
 
     par0 = [3, 0.5]
-    fit = nlls([Vexp1,Vexp2],Vmodel,par0)
-    Vfit1,Vfit2 = Vmodel(fit.param)
+    fit = snlls([Vexp1,Vexp2],Vmodel,par0)
+    Vfit1,Vfit2 = fit.model
 
     def bootfcn(V):
-        fit = nlls(V,Vmodel,par0)
-        return fit.param
+        fit = snlls(V,Vmodel,par0)
+        return fit.nonlin
 
     paruq = bootan(bootfcn,[Vexp1,Vexp2],[Vfit1,Vfit2],5)
 
-    assert all(abs(paruq.mean - fit.param) < 1.5e-2)
+    assert all(abs(paruq.mean - fit.nonlin) < 1.5e-2)
 # ======================================================================
 
 def test_parallelization():
@@ -124,26 +123,50 @@ def test_parallelization():
 
     t = np.linspace(0,5,200)
     r = np.linspace(2,6,300)
-    P = dd_gauss(r,[4, 0.8])
+    P = dd_gauss(r,4, 0.8)
     K = dipolarkernel(t,r)
     Vexp = K@P + whitegaussnoise(t,0.01)
 
     par0 = [3, 0.5]
-    Vmodel = lambda par: K@dd_gauss(r,par)
-    fit = nlls(Vexp,Vmodel,par0)
-    Vfit = Vmodel(fit.param)
+    Vmodel = lambda par: K@dd_gauss(r,*par)
+    fit = snlls(Vexp,Vmodel,par0)
+    Vfit = fit.model
 
     def bootfcn(V):
-        fit = nlls(V,Vmodel,par0)
-        return fit.param
+        fit = snlls(V,Vmodel,par0)
+        return fit.nonlin
 
     paruq = bootan(bootfcn,Vexp,Vfit,10,cores=-1)
 
-    assert all(abs(paruq.mean - fit.param) < 1.5e-2)
+    assert all(abs(paruq.mean - fit.nonlin) < 1.5e-2)
 # ======================================================================
 
 # ======================================================================
 def test_docstring():
     "Check that the docstring includes all variables and keywords."
     assert_docstring(bootan)
+# ======================================================================
+
+def test_complex_values():
+# ======================================================================
+    "Check the functionality of the bootstrapping with complex-valued outputs"
+
+    t = np.linspace(0,5,200)
+    r = np.linspace(2,6,300)
+    P = dd_gauss(r,4, 0.8)
+    K = dipolarkernel(t,r)
+    Vexp = K@P + whitegaussnoise(t,0.01,seed=1) 
+    Vexp = Vexp + 1j*whitegaussnoise(t,0.01,seed=1) 
+    par0 = [3, 0.5]
+    Vmodel = lambda par: K@dd_gauss(r,*par) + 1j*np.zeros_like(t) 
+    fit = snlls(Vexp,Vmodel,par0)
+    Vfit = fit.model
+
+    def bootfcn(V):
+        fit = snlls(V,Vmodel,par0)
+        return fit.nonlin
+
+    paruq = bootan(bootfcn,Vexp,Vfit,3)
+
+    assert all(abs(paruq.mean - fit.nonlin) < 1.5e-2)
 # ======================================================================

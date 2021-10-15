@@ -1,6 +1,6 @@
 # %% [markdown]
 """ 
-Basic analysis of a 4-pulse DEER signal, non-parametric distribution
+Basic analysis of a 4-pulse DEER signal
 -------------------------------------------------------------------------
 
 Fit a simple 4-pulse DEER signal with a model with a non-parametric
@@ -10,43 +10,64 @@ distribution and a homogeneous background, using Tikhonov regularization.
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
+# Use the seaborn style for nicer plots
+from seaborn import set_theme
+set_theme()
 
-# %% [markdown]
-# Load and pre-process data
-# ---------------------------
-#
-# Uncomment and use the following lines if you have experimental data::
-# 
-#   t, Vexp = dl.deerload('my\path\4pdeer_data.DTA')
-#   Vexp = dl.correctphase(Vexp)
-#   t = dl.correctzerotime(Vexp,t)
-# 
-# In this example we will use simulated data instead.
+# %%
 
-# %% [markdown]
-# Generate data
-#--------------
-#
+# Load the experimental data
+t,Vexp = np.load('../data/example_4pdeer_#1.npy')
 
-# Define a function that generates synthetic data
-def generatedata():
-    t = np.linspace(-0.1,4,250)        # time axis, µs
-    r = np.linspace(2,5,200)           # distance axis, nm
-    param = [3, 0.1, 0.2, 3.5, 0.1, 0.65, 3.8, 0.05, 0.15] # parameters for three-Gaussian model
-    P = dl.dd_gauss3(r,param)          # model distance distribution
-    lam = 0.5                          # modulation depth
-    B = dl.bg_hom3d(t,300,lam)         # background decay
-    K = dl.dipolarkernel(t,r,mod=lam,bg=B)    # kernel matrix
-    Vexp = K@P + dl.whitegaussnoise(t,0.01,seed=0)  # DEER signal with added noise
-    return t, Vexp
+# Distance vector
+r = np.linspace(2,5,100) # nm
 
-t, Vexp = generatedata()
+# Construct the model
+Vmodel = dl.dipolarmodel(t,r)
 
-# %% [markdown]
-# Run fit
-#---------
-r = np.linspace(2,5,200)           # distance axis, nm
-fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,verbose=True)
-fit.plot();
+# Fit the model to the data
+fit = dl.fit(Vmodel,Vexp)
+
+#%%
+
+# Extract fitted dipolar signal
+Vfit = fit.model
+Vci = fit.modelUncert.ci(95)
+
+# Extract fitted distance distribution
+Pfit = fit.P
+scale = np.trapz(Pfit,r)
+Pci95 = fit.PUncert.ci(95)/scale
+Pci50 = fit.PUncert.ci(50)/scale
+Pfit =  Pfit/scale
+
+# Extract the unmodulated contribution
+Bfcn = lambda mod,conc: scale*(1-mod)*dl.bg_hom3d(t,conc,mod)
+Bfit = Bfcn(fit.mod,fit.conc)
+Bci = fit.propagate(Bfcn).ci(95)
+
+plt.figure(figsize=[6,7])
+plt.subplot(211)
+# Plot experimental data
+plt.plot(t,Vexp,'.',color='grey',label='Data')
+# Plot the fitted signal 
+plt.plot(t,Vfit,linewidth=3,label='Fit')
+plt.fill_between(t,Vci[:,0],Vci[:,1],alpha=0.3)
+plt.plot(t,Bfit,'--',linewidth=3,label='Unmodulated contribution')
+plt.fill_between(t,Bci[:,0],Bci[:,1],alpha=0.3)
+plt.legend(frameon=False,loc='best')
+plt.xlabel('Time $t$ (μs)')
+plt.ylabel('$V(t)$ (arb.u.)')
+# Plot the distance distribution
+plt.subplot(212)
+plt.plot(r,Pfit,linewidth=3,label='Fit')
+plt.fill_between(r,Pci95[:,0],Pci95[:,1],alpha=0.3,color='tab:blue',label='95%-Conf. Inter.',linewidth=0)
+plt.fill_between(r,Pci50[:,0],Pci50[:,1],alpha=0.5,color='tab:blue',label='50%-Conf. Inter.',linewidth=0)
+plt.legend(frameon=False,loc='best')
+plt.autoscale(enable=True, axis='both', tight=True)
+plt.xlabel('Distance $r$ (nm)')
+plt.ylabel('$P(r)$ (nm$^{-1}$)')
+plt.tight_layout()
+plt.show()
 
 # %%

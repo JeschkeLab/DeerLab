@@ -95,15 +95,18 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
 
     # Auxiliary functions
     # -------------------
+    int = np.trapz(P,r)
+    def normalize(P): 
+        return P/int
     # Percentile function
     def pctile(r,P,p):
-        cdf = cumtrapz(P,r,initial=0)
+        cdf = cumtrapz(normalize(P),r,initial=0)
         cdf, index = np.lib.arraysetops.unique(cdf,return_index=True)
         rpctile = np.interp(p/100,cdf,r[index])
         return rpctile
     # Expectation operator function
     def E(x,P,r):
-        return np.trapz(x*P,r)
+        return np.trapz(x*normalize(P),r)
 
     # Location estimators
     # -------------------
@@ -114,7 +117,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     # Interquartile mean
     def iqmfcn(P):
         IQrange = (r>pctile(r,P,25)) & (r<pctile(r,P,75))
-        return E(r[IQrange],P[IQrange]/np.trapz(P[IQrange],r[IQrange]),r[IQrange]) 
+        return E(r[IQrange],P[IQrange]/np.trapz(normalize(P)[IQrange],r[IQrange]),r[IQrange]) 
     # Mode
     modefcn = lambda P: r[np.argmax(P)]
     # Modes
@@ -127,11 +130,11 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     # Mean absolute deviation
     madfcn = lambda P: E(abs(r - meanfcn(P)),P,r)
     # 2nd moment - Variance
-    variancefcn = lambda P: E(r**2 - meanfcn(P)**2,P,r)
+    variancefcn = lambda P: E((r - meanfcn(P))**2,P,r)
     # 2nd moment - Standard deviation
     stdfcn = lambda P: np.sqrt(variancefcn(P))
     # Entropy (information theory)
-    entropyfcn = lambda P: -E(np.log(np.maximum(np.finfo(float).eps,P)),P,r)
+    entropyfcn = lambda P: -E(np.log(np.maximum(np.finfo(float).eps,normalize(P))),P,r)
 
     # Shape estimators
     # ----------------
@@ -213,7 +216,7 @@ def _propagation(Puq,fcn):
     
     uq = copy.deepcopy(uq_)
     def ci(p):
-        paramci = uq_.ci(p)
+        paramci = np.atleast_2d(uq_.ci(p))
         return [paramci[:,0][0],paramci[:,1][0]]
     # Wrap the ci() method to simplify array
     uq.ci = ci

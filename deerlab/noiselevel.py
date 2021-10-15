@@ -5,7 +5,7 @@
 
 from numpy import isreal, std, mean, shape, atleast_1d
 from deerlab.utils import movmean, der_snr
-from deerlab import correctphase
+from deerlab.correctphase import correctphase
 from scipy.signal import savgol_filter
 import warnings
 import numpy as np

@@ -8,6 +8,7 @@ import types
 from tqdm.auto import tqdm
 from joblib import Parallel, delayed
 from deerlab.classes import UQResult
+from deerlab.utils import isnumeric
 
 def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, cores=1):
     r""" 
@@ -118,7 +119,7 @@ def bootan(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, 
 
     # Assert that all outputs are strictly numerical
     for var in varargout:
-        if not all((isinstance(x,(float,int)) for x in var)):
+        if not all(isnumeric(x) for x in var):
             raise ValueError('Non-numeric output arguments by the analyzed function are not accepted.')
     
     # Get ndarray shapes of all outputs

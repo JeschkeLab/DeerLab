@@ -11,25 +11,23 @@ def assert_multigauss_problem(solver):
     t = np.linspace(0,4,200)
     K0 = dipolarkernel(t,r)
     par = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
-    P = dd_gauss2(r,par)
-    np.random.seed(0)
-    V = K0@P
-
     r1, w1, amp1, r2, w2, amp2  = par
     # Generate basic kernel
     K0 = dipolarkernel(t,r)
     # Get Gauss basis functions
-    P1 = dd_gauss(r,[r1,w1])
-    P2 = dd_gauss(r,[r2,w2])
-    # Combine all non-linear functions into one
-    K = np.zeros((len(t),2))
-    K[:,0] = K0@P1
-    K[:,1] = K0@P2
-    L = regoperator(range(K.shape[1]),1)
-    KtK,KtV = _lsqcomponents(V,K,L,0,1)
-    amps = solver(KtK,KtV)
-    assert max(abs(amps - [amp1, amp2])) < 1e-8
+    P1 = dd_gauss(r,r1,w1)
+    P2 = dd_gauss(r,r2,w2)
 
+    amps = np.array([0.3,0.6])
+
+    # Combine all non-linear functions into one
+    A = np.zeros((len(t),2))
+    A[:,0] = K0@P1
+    A[:,1] = K0@P2
+    V = A@amps
+    KtK,KtV = _lsqcomponents(V,A)
+    ampsfit = solver(KtK,KtV)
+    assert max(abs(amps - ampsfit)) < 1e-8
 
 def test_multigauss_problem_fnnls():
 #=======================================================================
@@ -37,6 +35,7 @@ def test_multigauss_problem_fnnls():
 
     assert_multigauss_problem(fnnls)
 #=======================================================================
+test_multigauss_problem_fnnls()
 
 def test_multigauss_problem_nnlsbpp():
 #=======================================================================

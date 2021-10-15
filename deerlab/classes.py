@@ -125,6 +125,11 @@ class UQResult:
         
         if ub is None:
             ub = np.full(nParam, np.inf)
+            
+        # Set private variables
+        self.__lb = lb
+        self.__ub = ub
+        self.nparam = nParam
 
         # Create confidence intervals structure
         if uqtype=='covariance':
@@ -138,21 +143,17 @@ class UQResult:
             means = np.mean(samples,0)
             covmat = np.squeeze(samples).T@np.squeeze(samples)/np.shape(samples)[0] - means*means.T
             self.mean = means
-            self.median = np.squeeze(np.median(samples,0))
+            self.median = self.percentile(50)
             self.std = np.squeeze(np.std(samples,0))
             self.covmat = covmat
 
-        # Set private variables
-        self.__lb = lb
-        self.__ub = ub
-        self.nparam = nParam
 
     # Gets called when an attribute is accessed
     #--------------------------------------------------------------------------------
     def __getattribute__(self, attr):
         try:
             # Calling the super class to avoid recursion
-            if super(UQResult, self).__getattribute__('type') == 'void':
+            if attr!='type' and super(UQResult, self).__getattribute__('type') == 'void':
                 # Check if the uncertainty quantification has been done, if not report that there is nothing in the object
                 raise ValueError('The requested attribute/method is not available. Uncertainty quantification has not been calculated during the fit by using the `uq=None` keyword.')
         except AttributeError:
@@ -231,35 +232,44 @@ class UQResult:
             x = np.linspace(xmean-4*sig,xmean+4*sig,500)
             pdf = 1/sig/np.sqrt(2*np.pi)*np.exp(-((x-xmean)/sig)**2/2)
             
-            # Clip the distributions at outside the boundaries
-            pdf[x < self.__lb[n]] = 0
-            pdf[x > self.__ub[n]] = 0
-
         if self.type == 'bootstrap':
             # Get bw using silverman's rule (1D only)
-            samplen = self.samples[:, n]
-            sigma = np.std(samplen, ddof=1)
-            bw = sigma*(len(samplen)*3/4.0)**(-1/5)
+            samplen = self.samples[:, n].real
 
-            # Make histogram
-            maxbin = np.maximum(np.max(samplen),np.mean(samplen)+3*sigma)
-            minbin = np.minimum(np.min(samplen),np.mean(samplen)-3*sigma)
-            bins = np.linspace(minbin,maxbin, 2**10 + 1)
-            count, edges = np.histogram(samplen, bins=bins)
+            if np.all(samplen == samplen[0]):
+                # Dirac's delta distribution 
+                x = np.array([0.9*samplen[0],samplen[0],1.1*samplen[0]])
+                pdf = np.array([0,1,0])
+            else:
+                sigma = np.std(samplen, ddof=1)
+                bw = sigma*(len(samplen)*3/4.0)**(-1/5)
 
-            # Generate kernel
-            delta = np.maximum(np.finfo(float).eps,(edges.max() - edges.min()) / (len(edges) - 1))
-            kernel_x = np.arange(-4 * bw, 4 * bw + delta, delta)
-            kernel = norm(0, bw).pdf(kernel_x)
+                # Make histogram
+                maxbin = np.maximum(np.max(samplen),np.mean(samplen)+3*sigma)
+                minbin = np.minimum(np.min(samplen),np.mean(samplen)-3*sigma)
+                bins = np.linspace(minbin,maxbin, 2**10 + 1)
+                count, edges = np.histogram(samplen, bins=bins)
 
-            # Convolve
-            pdf = fftconvolve(count, kernel, mode='same')
+                # Generate kernel
+                delta = np.maximum(np.finfo(float).eps,(edges.max() - edges.min()) / (len(edges) - 1))
+                kernel_x = np.arange(-4*bw, 4*bw + delta, delta)
+                kernel = norm(0, bw).pdf(kernel_x)
 
-            # Set x coordinate of pdf to midpoint of bin
-            x = edges[:-1] + delta
+                # Convolve
+                pdf = fftconvolve(count, kernel, mode='same')
+
+                # Set x coordinate of pdf to midpoint of bin
+                x = edges[:-1] + delta
+
+        # Clip the distributions outside the boundaries
+        pdf[x < self.__lb[n]] = 0
+        pdf[x > self.__ub[n]] = 0
+
+        # Enforce non-negativity (takes care of negative round-off errors)
+        pdf = np.maximum(pdf,0)
 
         # Ensure normalization of the probability density function
-        pdf /= np.trapz(pdf, x)
+        pdf = pdf/np.trapz(pdf, x)
         
         return x, pdf
     #--------------------------------------------------------------------------------
@@ -321,30 +331,39 @@ class UQResult:
         """
         if coverage>100 or coverage<0:
             raise ValueError('The input must be a number between 0 and 100')
+        iscomplex = np.iscomplexobj(self.mean)
         
         alpha = 1 - coverage/100
         p = 1 - alpha/2 # percentile
         
         x = np.zeros((self.nparam,2))
+        if iscomplex: x = x.astype(complex)
+
         if self.type=='covariance':
                 # Compute covariance-based confidence intervals
                 # Clip at specified box boundaries
-                x[:,0] = np.maximum(self.__lb, self.mean - norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
-                x[:,1] = np.minimum(self.__ub, self.mean + norm.ppf(p)*np.sqrt(np.diag(self.covmat)))
-                
+                standardError = norm.ppf(p)*np.sqrt(np.diag(self.covmat))
+                x[:,0] = np.maximum(self.__lb, self.mean.real - standardError)
+                x[:,1] = np.minimum(self.__ub, self.mean.real + standardError)
+                if iscomplex:
+                    x[:,0] = x[:,0] + 1j*np.maximum(self.__lb, self.mean.imag - standardError)
+                    x[:,1] = x[:,1] + 1j*np.minimum(self.__ub, self.mean.imag + standardError)
+
         elif self.type=='bootstrap':
                 # Compute bootstrap-based confidence intervals
                 # Clip possible artifacts from the percentile estimation
-                x[:,0] = np.minimum(self.percentile(p*100), np.amax(self.samples))
-                x[:,1] = np.maximum(self.percentile((1-p)*100), np.amin(self.samples))
+                x[:,0] = np.minimum(self.percentile((1-p)*100), np.amax(self.samples))
+                x[:,1] = np.maximum(self.percentile(p*100), np.amin(self.samples))
 
+        # Remove singleton dimensions
+        x = np.squeeze(x)
         return x
 
 
 
     # Error Propagation (covariance-based only)
     #--------------------------------------------------------------------------------
-    def propagate(self,model,lbm=None,ubm=None):
+    def propagate(self,model,lb=None,ub=None,samples=None):
         """
         Uncertainty propagation. This function takes the uncertainty analysis of the 
         parameters and propagates it to another functon depending on those parameters.
@@ -362,40 +381,74 @@ class UQResult:
         -------
         modeluq : :ref:`UQResult`
             New uncertainty quantification analysis for the ouputs of ``model``.
-
-        Notes
-        -----
-        Uncertainty propagation is covariance-based and so will be the resulting uncertainty analysis.
         """
-
         parfit = self.mean
         # Evaluate model with fit parameters
         modelfit = model(parfit)
-        
+        iscomplex = np.iscomplexobj(modelfit)
+
         # Validate input boundaries
-        if lbm is None:
-            lbm = np.full(np.size(modelfit), -np.inf)
+        if lb is None:
+            lb = np.full(np.size(modelfit), -np.inf)
 
-        if ubm is None:
-            ubm = np.full(np.size(modelfit), np.inf)
+        if ub is None:
+            ub = np.full(np.size(modelfit), np.inf)
 
-        lbm,ubm = (np.atleast_1d(var) for var in [lbm,ubm])
+        lb,ub = (np.atleast_1d(var) for var in [lb,ub])
 
-        if np.size(modelfit)!=np.size(lbm) or np.size(modelfit)!=np.size(ubm):
+        if np.size(modelfit)!=np.size(lb) or np.size(modelfit)!=np.size(ub):
             raise IndexError ('The 2nd and 3rd input arguments must have the same number of elements as the model output.')
-        
-        # Get jacobian of model to be propagated with respect to parameters
-        J = Jacobian(model,parfit,self.__lb,self.__ub)
 
-        # Clip at boundaries
-        modelfit = np.maximum(modelfit,lbm)
-        modelfit = np.minimum(modelfit,ubm)
+        if samples is None:
+            Nsamples = 1000
+        else:
+            Nsamples = samples
 
-        # Error progation
-        modelcovmat = nearest_psd(J@self.covmat@J.T)
-        
-        # Construct new CI-structure for the model
-        return  UQResult('covariance',modelfit,modelcovmat,lbm,ubm)
+        if self.type=='covariance':
+
+            if iscomplex:
+                model_ = model 
+                model = lambda p: np.concatenate([model_(p).real,model_(p).imag])
+
+            # Get jacobian of model to be propagated with respect to parameters
+            J = Jacobian(model,parfit,self.__lb,self.__ub)
+
+            # Clip at boundaries
+            modelfit = np.maximum(modelfit,lb)
+            modelfit = np.minimum(modelfit,ub)
+
+            # Error progation
+            modelcovmat = nearest_psd(J@self.covmat@J.T)
+
+            if iscomplex:
+                N = modelcovmat.shape[0]
+                Nreal = np.arange(0,N/2).astype(int)
+                Nimag = np.arange(N/2,N).astype(int)
+                modelcovmat = modelcovmat[np.ix_(Nreal,Nreal)] + 1j* modelcovmat[np.ix_(Nimag,Nimag)]
+
+            # Construct new uncertainty object
+            return  UQResult('covariance',modelfit,modelcovmat,lb,ub)
+
+        elif self.type=='bootstrap':
+
+            sampled_parameters = [[]]*self.nparam
+            for n in range(self.nparam):
+                # Get the parameter uncertainty distribution
+                values,pdf = self.pardist(n)
+                # Random sampling form the uncertainty distribution
+                sampled_parameters[n] =  [np.random.choice(values, p=pdf/sum(pdf)) for _ in range(Nsamples)]
+            # Convert to matrix
+            sampled_parameters = np.atleast_2d(sampled_parameters)
+
+            # Bootstrap sampling of the model response
+            sampled_model = [model(sampled_parameters[:,n]) for n in range(Nsamples)]
+
+            # Convert to matrix
+            sampled_model = np.atleast_2d(sampled_model)
+
+            # Construct new uncertainty object
+            return  UQResult('bootstrap',data=sampled_model,lb=lb,ub=ub)
+ 
     #--------------------------------------------------------------------------------
 
 # =========================================================================

@@ -46,8 +46,6 @@ This class of functions can be used and/or combined to create fitting routines o
     ./functions/snlls
     ./functions/fitmodel
     ./functions/fitmultimodel
-    ./functions/nlls
-    ./functions/rlls
     ./functions/regoperator
     ./functions/bootan
 
@@ -123,9 +121,6 @@ This class of functions is composed of general least-squares solvers suited for 
     :maxdepth: 1
 
     ./functions/snlls
-    ./functions/nlls
-    ./functions/rlls
-
 
 .. rst-class:: func-list
 
@@ -133,8 +128,6 @@ This class of functions is composed of general least-squares solvers suited for 
 Function                                         Description
 =============================================  ============================================================
 :ref:`snlls`                                     Separable non-linear least-squares solver
-:ref:`nlls`                                      Non-linear least-squares solver
-:ref:`rlls`                                      Regularized linear least-squares solver
 =============================================  ============================================================
 
 

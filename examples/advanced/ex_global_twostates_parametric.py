@@ -1,4 +1,4 @@
-# %% [markdown]
+# %% 
 """
 Global fitting of a two-state model to a series of DEER traces
 =================================================================
@@ -14,125 +14,88 @@ parameters needed for individual samples traces (the fractional populations).
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
+# Use the seaborn style for nicer plots
+from seaborn import set_theme
+set_theme()
 
-# %% [markdown]
-# Generate datasets
-#-----------------------------------------------------------------------------
-# For this example, we generate synthetic data.
+# Load experimental datasets
+t1,Vexp1 = np.load('../data/example_twostate_data1.npy')
+t2,Vexp2 = np.load('../data/example_twostate_data2.npy')
+t3,Vexp3 = np.load('../data/example_twostate_data3.npy')
 
-# Parameters for the distance distibutions for states A and B
-rmeanA = 3.45  # mean distance state A, in nm
-rmeanB = 5.05  # mean distance state B, in nm
-sigmaA = 0.3   # standard deviation state A, in nm
-sigmaB = 0.2   # standard deviation state B, in nm
-r = np.linspace(2,6,300)  # distance axis, in nm
+# Puts them all into lists
+ts = [t1,t2,t3]
+Vexps = [Vexp1,Vexp2,Vexp3]
 
-fracA = [0.8, 0.5, 0.1] # molar fraction of state A for each sample
+# Define the distance vector
+r = np.linspace(2,7,200)
+# Define a custom distance distribution model function
+def Ptwostates(meanA,meanB,widthA,widthB,fracA):
+    PA = fracA*dl.dd_gauss(r,meanA,widthA)
+    PB = (1-fracA)*dl.dd_gauss(r,meanB,widthB)
+    P = PA + PB
+    P /= np.trapz(P)
+    return P
+# Construct the model object
+Pmodel = dl.Model(Ptwostates)
+# Set the parameter boundaries and start values
+Pmodel.meanA.set(  lb=2,    ub=7,   par0=5)
+Pmodel.meanB.set(  lb=2,    ub=7,   par0=3)
+Pmodel.widthA.set( lb=0.05, ub=0.8, par0=0.1)
+Pmodel.widthB.set( lb=0.05, ub=0.8, par0=0.1)
+Pmodel.fracA.set(  lb=0,    ub=1,   par0=0.5)
 
-# Model parameters
-par0 = [rmeanA, rmeanB, sigmaA, sigmaB] + fracA
+# Generate the individual dipolar signal models
+Nsignals = len(Vexps)
+Vmodels = [[]]*Nsignals
+for n in range(Nsignals): 
+    Vmodels[n] = dl.dipolarmodel(ts[n], r, Pmodel)
+    Vmodels[n].reftime.set(lb=0,ub=0.5,par0=0.2)
 
-# Generate list of time axes
-tmin = [-0.2, -0.2, -0.2]   # start times, in µs
-tmax = [4, 5, 4]            # end times, in µs
-nt = [200, 150, 150]        # number of time-domain points
-N = len(tmin)               # number of DEER traces
-t = [np.linspace(tmin[i],tmax[i],nt[i]) for i in range(N)]
+# Combine the individual signal models into a single global models
+globalmodel = dl.expand(*Vmodels)
+# Link the global parameters toghether
+globalmodel = dl.link(globalmodel,
+        meanA = [globalmodel.meanA_1, globalmodel.meanA_2, globalmodel.meanA_3],
+        meanB = [globalmodel.meanB_1, globalmodel.meanB_2, globalmodel.meanB_3],
+        widthA = [globalmodel.widthA_1, globalmodel.widthA_2, globalmodel.widthA_3],
+        widthB = [globalmodel.widthB_1, globalmodel.widthB_2, globalmodel.widthB_3])
 
-# Generate the corresponding dipolar kernels
-# (for the sake of simplicity, no background and 100% modulation depth are assumed)
-K = [dl.dipolarkernel(t_,r) for t_ in t]
+# Fit the datasets to the model globally
+fit = dl.fit(globalmodel,Vexps)
 
-# Model functions for V and P (needs K and r)
-def ABmodel(par):
+# Extract the fitted fractions
+fracAfit = [fit.fracA_1,fit.fracA_2,fit.fracA_3]
+fracBfit = [1-fit.fracA_1,1-fit.fracA_2,1-fit.fracA_3]
 
-    # Unpack parameters
-    rmeanA, rmeanB, sigmaA, sigmaB, *fracA = par
-    
-    N = len(fracA) # number of traces
-    
-    # Generate the state distributions
-    PA = dl.dd_gauss(r,[rmeanA, sigmaA])
-    PB = dl.dd_gauss(r,[rmeanB, sigmaB])
-    
-    # Generate distributions and signals for each sample
-    P = [fA*PA+(1-fA)*PB for fA in fracA]
-    V = [K[i]@P[i] for i in range(N)]
+plt.figure(figsize=(10,8))
+for i in range(Nsignals):
 
-    return V, P
+    # Get the fitted signals and confidence bands
+    Vfit = fit.model[i]
+    Vfit_ci = fit.modelUncert[i].ci(95)
 
-# Generate noise-free synthetic traces and distributions
-V0, P0 = ABmodel(par0)
+    # Get the fitted distributions of the two states
+    PAfit = fracAfit[i]*dl.dd_gauss(r,fit.meanA,fit.widthA)
+    PBfit = fracBfit[i]*dl.dd_gauss(r,fit.meanB,fit.widthB)
 
-# Add noise
-noiselevel = [0.05, 0.1, 0.1]
-Vexp = [V0[i] + dl.whitegaussnoise(t[i],noiselevel[i],seed=i) for i in range(N)]
+    # Plot
+    plt.subplot(Nsignals,2,2*i+1)
+    plt.plot(ts[i],Vexps[i],'.',color='grey')
+    plt.plot(ts[i],Vfit,'tab:red')
+    plt.fill_between(ts[i],Vfit_ci[:,0],Vfit_ci[:,1],color='tab:red',alpha=0.3)
+    plt.xlabel('Time t (µs)')
+    plt.ylabel(f'V$_{i+1}$(t) (arb.u)')
+    plt.legend(['Data','Fit'],loc='best',frameon=False)
 
-
-# %% [markdown]
-# Global fit
-# ----------
-# We now want to fit the model to the generated data. The fit parameters are
-# the distribution parameters for the two states (rmeanA, rmeanB, sigmaA, sigmaB)
-# and the fractional population of state A in each sample (fracA)
-
-# Set starting values and bounds of fit parameters 
-#        [rmeanA rmeanB sigmaA sigmaB fracA1 fracA2 fracA3]
-par0 =   [2,       2,     0.3,   0.3,   0.5,  0.5,  0.5]
-lower =  [1,       1,     0.05,  0.05,  0,    0,     0]
-upper =  [10,     10,     0.6,   0.6,   1,    1,     1]
-
-# %% [markdown]
-# Out model function ``ABmodel`` returns multiple outputs, V and P.
-# This is useful for later obtaining boht V and P, but the fit function requires
-# just one model output. Therefore, we  create a small wrapper function that just
-# takes the first ouput argument of ``ABmodel``.
-
-model = lambda par: ABmodel(par)[0] # call ABmodel and take the first output (V)
-
-# Fit the model to all traces simultaneously (global fit)
-fit = dl.nlls(Vexp,model,par0,lb=lower,ub=upper,multistart=40)
-# The use of the option 'multistart' helps the solver to find the
-# global minimum and not to get stuck in a local minimum.
-
-# Display fitted parameters and their uncertainties (standard deviations)
-list(zip(fit.param, fit.paramUncert.std))
-
-# %%
-# Get the fitted model traces and distributions
-Vfit, Pfit = ABmodel(fit.param)
-
-# Get 95% confidence intervals of the fitted traces
-Vfit_ci = [fit.modelUncert[i].ci(95) for i in range(N)]
-
-# Propagate parameter uncertainty to the distribution models, accounting for non-negativity
-Pfit_uq = [fit.paramUncert.propagate(lambda param: ABmodel(param)[1][i],lbm=np.zeros_like(r)) for i in range(N)]
-
-# Get their 95% confidence intervals 
-Pfit_ci = [Pfit_uq[i].ci(95) for i in range(N)]
-
-# %% [markdown]
-# Plot results
-# ------------
-
-plt.figure(figsize=(8,6))
-for i in range(N):
-    plt.subplot(N,2,2*i+1)
-    plt.plot(t[i],V0[i],'.',color='grey')
-    plt.plot(t[i],Vfit[i],'tab:red')
-    plt.fill_between(t[i],Vfit_ci[i][:,0],Vfit_ci[i][:,1],color='tab:red',alpha=0.3)
-    plt.grid(alpha=0.3)
-    plt.xlabel('t (µs)')
-    plt.ylabel('V')
-    plt.title(f'Trace {i+1}')
-
-    plt.subplot(N,2,2*i+2)
-    plt.plot(r,P0[i],'k',r,Pfit[i],'tab:red')
-    plt.fill_between(r,Pfit_ci[i][:,0],Pfit_ci[i][:,1],color='tab:red',alpha=0.3)
-    plt.grid(alpha=0.3)
-    plt.xlabel('r (nm)')
-    plt.ylabel('P (nm⁻¹)')
-    plt.legend(['truth','fit'])
+    plt.subplot(Nsignals,2,2*i+2)
+    plt.fill(r,PAfit,alpha=0.6)
+    plt.fill(r,PBfit,alpha=0.6)
+    plt.xlabel('Distance r (nm)')
+    plt.ylabel('P(r) (nm$^{-1}$)')
+    plt.legend(['State A','State B'],loc='best',frameon=False)
+    plt.ylim([0,2])
+    plt.autoscale(enable=True, axis='x', tight=True)
 
 plt.tight_layout()
 plt.show()
