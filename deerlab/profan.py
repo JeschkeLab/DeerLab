@@ -10,7 +10,7 @@ from deerlab import noiselevel,UQResult
 import warnings 
 from tqdm import tqdm
 
-def profan(model,y, *args, samples=50,noiselvl=None,verbose=False,**kargs):
+def profan(model,y, *args, parameters='all', samples=50, noiselvl=None, verbose=False,**kargs):
     r""" 
     Profile likelihood analysis for uncertainty quantification
 
@@ -21,6 +21,9 @@ def profan(model,y, *args, samples=50,noiselvl=None,verbose=False,**kargs):
 
     y : array_like or list of array_like
         Experimental dataset(s).
+
+    parameters : string or list thereof
+        Model parameters to profile. If set to ``'all'`` all non-linear parameters in the model are analyzed. 
 
     samples : integer scalar
         Number of points to take to estimate the profile function.
@@ -52,7 +55,10 @@ def profan(model,y, *args, samples=50,noiselvl=None,verbose=False,**kargs):
 
     # Loop over all parameters in the model
     uqresults = {}
-    parameters = model._parameter_list()
+    if parameters=='all':
+        parameters = model._parameter_list()
+    elif not isinstance(parameters,list):
+        parameters = [parameters]
     for parameter in parameters:
         if np.any(getattr(model,parameter).linear):
             uqresults[parameter] = None
