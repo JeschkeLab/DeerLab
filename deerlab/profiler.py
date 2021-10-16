@@ -10,7 +10,7 @@ from deerlab import noiselevel,UQResult
 import warnings 
 from tqdm import tqdm
 
-def profan(model,y, *args, parameters='all', samples=50, noiselvl=None, verbose=False,**kargs):
+def profiler(model,y, *args, parameters='all', samples=50, noiselvl=None, verbose=False,**kargs):
     r""" 
     Profile likelihood analysis for uncertainty quantification
 

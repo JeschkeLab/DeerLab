@@ -21,4 +21,4 @@ from .fftspec import fftspec
 from .time2dist import time2dist
 from .classes import FitResult, UQResult
 from .diststats import diststats
-from .profan import profan
+from .profiler import profiler
