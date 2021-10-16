@@ -298,7 +298,7 @@ class UQResult:
 
             # Generate kernel
             sigma = np.sum(x*pdf/np.sum(pdf))
-            bw = sigma*(1000*3/4.0)**(-1/5)
+            bw = sigma*(1e12*3/4.0)**(-1/5)
             delta = np.maximum(np.finfo(float).eps,(x.max() - x.min()) / (len(x) - 1))
             kernel_x = np.arange(-5*bw, 5*bw + delta, delta)
             kernel = norm(0, bw).pdf(kernel_x)
