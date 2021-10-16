@@ -22,6 +22,10 @@ def profan(model,y, *args, parameters='all', samples=50, noiselvl=None, verbose=
     y : array_like or list of array_like
         Experimental dataset(s).
 
+    args : positional arguments
+        Any other positional arguments to be passed to the ``fit`` function. See the 
+        documentation of the ``fit`` function for further details. 
+
     parameters : string or list thereof
         Model parameters to profile. If set to ``'all'`` all non-linear parameters in the model are analyzed. 
 
@@ -34,6 +38,7 @@ def profan(model,y, *args, parameters='all', samples=50, noiselvl=None, verbose=
     verbose : boolean, optional
         Specifies whether to print the progress of the bootstrap analysis on the 
         command window, the default is false.
+
     kargs : keyword-argument pairs
         Any other keyword-argument pairs to be passed to the ``fit`` function. See the 
         documentation of the ``fit`` function for further details. 
@@ -92,4 +97,5 @@ def profan(model,y, *args, parameters='all', samples=50, noiselvl=None, verbose=
         profile = {'x':np.squeeze(varvals),'y':profile}
         uqresults[parameter] = UQResult('profile', data=getattr(fitresult,parameter), profiles=profile, threshold=threshold, noiselvl=noiselvl)
         uqresults[parameter].profile = uqresults[parameter].profile[0]
+        
     return uqresults
