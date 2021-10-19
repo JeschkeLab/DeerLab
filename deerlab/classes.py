@@ -6,6 +6,8 @@ from deerlab.utils import Jacobian, nearest_psd
 from scipy.stats import norm
 from scipy.signal import fftconvolve
 from scipy.linalg import block_diag
+from scipy.optimize import brentq
+from scipy.interpolate import interp1d
 import copy
 
 class FitResult(dict):
@@ -96,7 +98,7 @@ class UQResult:
 
     """
 
-    def __init__(self,uqtype,data=None,covmat=None,lb=None,ub=None):
+    def __init__(self,uqtype,data=None,covmat=None,lb=None,ub=None,threshold=None,profiles=None,noiselvl=None):
 
         #Parse inputs schemes
         if uqtype=='covariance':
@@ -105,12 +107,23 @@ class UQResult:
             parfit = data
             nParam = len(parfit)
             
+        elif uqtype == 'profile':
+            # Scheme 2: UQResult('profile',profiles)
+            if not isinstance(profiles,list):
+                profiles = [profiles]
+            self.type = uqtype
+            self.__parfit = data
+            self.__noiselvl = noiselvl
+            self.profile = profiles
+            self.threshold = threshold
+            nParam = len(np.atleast_1d(data))
+
         elif uqtype == 'bootstrap':
             # Scheme 2: UQResult('bootstrap',samples)
             self.type = uqtype
             samples = data
             self.samples = samples
-            nParam = np.shape(samples)[1]
+            nParam = np.shape(samples)[1]            
 
         elif uqtype=='void':
             # Scheme 2: UQResult('void')
@@ -137,6 +150,17 @@ class UQResult:
             self.median = parfit
             self.std = np.sqrt(np.diag(covmat))
             self.covmat = covmat
+
+        # Profile-based CI specific fields
+        elif uqtype == 'profile':
+            xs = [self.pardist(n)[0] for n in range(nParam)]
+            pardists = [self.pardist(n)[1] for n in range(nParam)]
+            means = [np.trapz(pardist*x,x) for x,pardist in zip(xs,pardists)]
+            std = [np.sqrt(np.trapz(pardist*(x-mean)**2,x)) for x,pardist,mean in zip(xs,pardists,means)]
+            self.mean = means
+            self.median = self.percentile(50)
+            self.std = std
+            self.covmat = np.diag(np.array(std)**2)
                 
         # Bootstrap-based CI specific fields
         elif uqtype == 'bootstrap':
@@ -206,7 +230,7 @@ class UQResult:
 
     # Parameter distributions
     #--------------------------------------------------------------------------------
-    def pardist(self,n):
+    def pardist(self,n=0):
         """
         Generate the uncertainty distribution of the n-th parameter
 
@@ -257,9 +281,30 @@ class UQResult:
 
                 # Convolve
                 pdf = fftconvolve(count, kernel, mode='same')
-
+                
                 # Set x coordinate of pdf to midpoint of bin
                 x = edges[:-1] + delta
+
+        if self.type=='profile':
+            if not isinstance(self.profile,list) and n==0:
+                profile = self.profile
+            else:
+                profile = self.profile[n] 
+            σ = self.__noiselvl
+            obj2likelihood = lambda f: 1/np.sqrt(σ*2*np.pi)*np.exp(-1/2*f/σ**2)
+            profileinterp = interp1d(profile['x'], profile['y'], kind='slinear', fill_value=1e6,bounds_error=False)
+            x = np.linspace(np.min(profile['x']), np.max(profile['x']), 2**10 + 1)
+            pdf = obj2likelihood(profileinterp(x)) 
+
+            # Generate kernel
+            sigma = np.sum(x*pdf/np.sum(pdf))
+            bw = sigma*(1e12*3/4.0)**(-1/5)
+            delta = np.maximum(np.finfo(float).eps,(x.max() - x.min()) / (len(x) - 1))
+            kernel_x = np.arange(-5*bw, 5*bw + delta, delta)
+            kernel = norm(0, bw).pdf(kernel_x)
+
+            # Convolve
+            pdf = fftconvolve(pdf, kernel, mode='same')
 
         # Clip the distributions outside the boundaries
         pdf[x < self.__lb[n]] = 0
@@ -331,33 +376,62 @@ class UQResult:
         """
         if coverage>100 or coverage<0:
             raise ValueError('The input must be a number between 0 and 100')
-        iscomplex = np.iscomplexobj(self.mean)
+        value = self.mean if hasattr(self,'mean') else self.__parfit
+        iscomplex = np.iscomplexobj(value)
         
         alpha = 1 - coverage/100
         p = 1 - alpha/2 # percentile
         
-        x = np.zeros((self.nparam,2))
-        if iscomplex: x = x.astype(complex)
+        confint = np.zeros((self.nparam,2))
+        if iscomplex: confint = confint.astype(complex)
 
         if self.type=='covariance':
-                # Compute covariance-based confidence intervals
-                # Clip at specified box boundaries
-                standardError = norm.ppf(p)*np.sqrt(np.diag(self.covmat))
-                x[:,0] = np.maximum(self.__lb, self.mean.real - standardError)
-                x[:,1] = np.minimum(self.__ub, self.mean.real + standardError)
-                if iscomplex:
-                    x[:,0] = x[:,0] + 1j*np.maximum(self.__lb, self.mean.imag - standardError)
-                    x[:,1] = x[:,1] + 1j*np.minimum(self.__ub, self.mean.imag + standardError)
+            # Compute covariance-based confidence intervals
+            # Clip at specified box boundaries
+            standardError = norm.ppf(p)*np.sqrt(np.diag(self.covmat))
+            confint[:,0] = np.maximum(self.__lb, self.mean.real - standardError)
+            confint[:,1] = np.minimum(self.__ub, self.mean.real + standardError)
+            if iscomplex:
+                confint[:,0] = confint[:,0] + 1j*np.maximum(self.__lb, self.mean.imag - standardError)
+                confint[:,1] = confint[:,1] + 1j*np.minimum(self.__ub, self.mean.imag + standardError)
 
         elif self.type=='bootstrap':
-                # Compute bootstrap-based confidence intervals
-                # Clip possible artifacts from the percentile estimation
-                x[:,0] = np.minimum(self.percentile((1-p)*100), np.amax(self.samples))
-                x[:,1] = np.maximum(self.percentile(p*100), np.amin(self.samples))
+            # Compute bootstrap-based confidence intervals
+            # Clip possible artifacts from the percentile estimation
+            confint[:,0] = np.minimum(self.percentile((1-p)*100), np.amax(self.samples))
+            confint[:,1] = np.maximum(self.percentile(p*100), np.amin(self.samples))
+
+        elif self.type=='profile':
+            # Compute likelihood-profile-based confidence intervals
+            for n,profile in enumerate(self.profile):
+                
+                # Construct interpolator for the profile
+                profileinterp = interp1d(profile['x'], profile['y'], kind='slinear', fill_value=1e6,bounds_error=False)
+
+                #-----------------------------------------------------------------
+                def getCIbound(boundary,optimum):
+                    def getprofile_at(value):
+                        return profileinterp(value) - self.threshold(coverage/100)
+                    # Evaluate the profile function
+                    fbound = getprofile_at(boundary)
+                    f0 = getprofile_at(optimum)
+                    
+                    # Check the signs of the shifted profile
+                    if np.sign(fbound)==np.sign(f0):
+                        # If both edges have the same sign return one of the edges
+                        ci_bound = boundary
+                    else:
+                        searchrange = [boundary,optimum] if boundary<optimum else [optimum,boundary]
+                        ci_bound = brentq(getprofile_at, *searchrange,maxiter=int(1e4))
+                    return ci_bound
+                #-----------------------------------------------------------------
+                # Get the upper and lower bounds of the confidence interval
+                confint[n,0] = getCIbound(profile['x'].min(),self.__parfit[n])
+                confint[n,1] = getCIbound(profile['x'].max(),self.__parfit[n])
 
         # Remove singleton dimensions
-        x = np.squeeze(x)
-        return x
+        confint = np.squeeze(confint)
+        return confint
 
 
 
