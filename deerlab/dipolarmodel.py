@@ -5,12 +5,14 @@
 
 import numpy as np
 from deerlab.dipolarkernel import dipolarkernel  
+from deerlab.regoperator import regoperator
 from deerlab.dd_models import freedist
 from deerlab.model import Model
 from deerlab import bg_hom3d
 
 #===============================================================================
-def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
+def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,
+                     compactness=False, smoothness=False):
     """
     Construct a dipolar EPR signal model. 
 
@@ -28,10 +30,18 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
         a background arising from a homogenous 3D distribution of spins is assumed. 
     npathways : integer scalar
         Number of dipolar pathways. If not specified, a single dipolar pathway is assumed. 
-    harmonics: list of integers 
+    harmonics : list of integers 
         Harmonics of the dipolar pathways. Must be a list with `npathways` harmonics for each
         defined dipolar pathway.  
-
+    compactness : boolean, optional
+        Whether to add a weighted penalty to induce compactness of the distance distribution, optimized 
+        via the informational complexity criterion (ICC).
+        Adds a :ref:`Penalty` object to the model accessible via the attribute ``model.compactness``. 
+    smoothness : boolean, optional
+        Whether to add a weighted penalty to induce smoothness of the distance distribution, optimized 
+        via the Akaike information criterion (AIC).          
+        Adds a :ref:`Penalty` object to the model accessible via the attribute ``model.smoothness``.
+        
     Returns
     -------
     Vmodel : :ref:`Model`
@@ -187,6 +197,31 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
     # Import all parameter information from the subset models
     for name,param in zip(DipolarSignal._parameter_list(order='vector'),parameters):
         getattr(DipolarSignal,name).set(**_importparameter(param))
+
+    # If include compactness penalty
+    if compactness:
+        # Define the compactness penalty function
+        def compactness_penalty(*args): 
+            P = Pmodel(*[r]*Nconstants,*args)
+            P = P/np.trapz(P,r)
+            return np.sqrt(P*(r - np.trapz(P*r,r))**2*np.mean(np.diff(r)))
+        # Add the penalty to the model
+        DipolarSignal.addpenalty('compactness',compactness_penalty,'icc',
+                    signature = Pmodel._parameter_list(),
+                    description = 'Distance distribution compactness penalty')
+        DipolarSignal.compactness.weight.set(lb=1e-6, ub=1e1)
+
+    # If include smoothness penalty
+    if smoothness:
+        # Define the smoothness penalty function
+        L = regoperator(r,2)
+        def smoothness_penalty(*args): 
+            return L@Pmodel(*[r]*Nconstants,*args)
+        # Add the penalty to the model
+        DipolarSignal.addpenalty('smoothness',smoothness_penalty,'aic',
+                    signature = Pmodel._parameter_list(),
+                    description = 'Distance distribution smoothness penalty')
+        DipolarSignal.smoothness.weight.set(lb=1e-9, ub=1e3)
 
     # Set other dipolar model specific attributes
     DipolarSignal.Pmodel = Pmodel
