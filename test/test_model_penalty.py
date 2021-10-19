@@ -72,7 +72,7 @@ def test_functionals_aicc():
 # ======================================================================
 def test_addpenalty_attr(): 
     "Check that the penalty is added to the model as an attribute"
-    model = dd_gauss
+    model = deepcopy(dd_gauss)
     model.addpenalty('compactness',penalty_fcn,'icc')
 
     assert hasattr(model,'compactness')
@@ -81,7 +81,7 @@ def test_addpenalty_attr():
 # ======================================================================
 def test_addpenalty_type(): 
     "Check the penalty attribute is of the right type"
-    model = dd_gauss
+    model = deepcopy(dd_gauss)
     model.addpenalty('compactness',penalty_fcn,'icc')
 
     assert isinstance(model.compactness,Penalty)
@@ -90,7 +90,7 @@ def test_addpenalty_type():
 # ======================================================================
 def test_weight_boundaries(): 
     "Check that the penalty weight boundaries can be adjusted"
-    model = dd_gauss
+    model = deepcopy(dd_gauss)
     model.addpenalty('compactness',penalty_fcn,'icc')
     model.compactness.weight.set(lb=1e-10,ub=1e1)
 
@@ -100,7 +100,7 @@ def test_weight_boundaries():
 # ======================================================================
 def test_weight_freeze(): 
     "Check that the penalty weight can be frozen to a value"
-    model = dd_gauss
+    model = deepcopy(dd_gauss)
     model.addpenalty('compactness',penalty_fcn,'icc')
     model.compactness.weight.freeze(0.5)
 
