@@ -530,7 +530,7 @@ class Model():
     #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
-    def addpenalty(self,key,penaltyfcn,functional,description=None):
+    def addpenalty(self,key,penaltyfcn,functional,**kargs):
         """
         Add a new linear :ref:`Penalty` object. 
 
@@ -557,8 +557,7 @@ class Model():
         """        
 
         # Create penalty object
-        penalty = Penalty(penaltyfcn,functional)
-        penalty.description = description
+        penalty = Penalty(penaltyfcn,functional,**kargs)
         for arg in penalty.signature: 
             if arg not in self._parameter_list():
                 raise KeyError(f'The penalty argument {arg} does not correspond to any valid model parameter.')
@@ -615,7 +614,7 @@ class Model():
 class Penalty():
 
     #--------------------------------------------------------------------------
-    def __init__(self,penaltyfcn,selection):
+    def __init__(self,penaltyfcn,selection,description=None,signature=None):
 
         #-------------------------------------------------------------------------------
         def selectionfunctional(fitfcn,y,sigma,log10weight):
@@ -635,7 +634,10 @@ class Penalty():
                 covmat = covmat/(fitpars[np.newaxis,:]*fitpars[:,np.newaxis])
 
                 # Informational complexity criterion (ICC)
-                icc = np.sum((y - yfit)**2/sigma**2) + np.sum(np.log(np.diag(covmat))) + np.linalg.slogdet(covmat)[1]
+                if not np.all(covmat==0):
+                    icc = np.sum((y - yfit)**2/sigma**2) + np.sum(np.log(np.diag(covmat))) + np.linalg.slogdet(covmat)[1]
+                else:
+                    icc = np.sum((y - yfit)**2/sigma**2)
                 return icc 
 
             elif selection=='aic':
@@ -657,10 +659,13 @@ class Penalty():
         self.selectionfcn = selectionfunctional
         self.selection = selection
         # Prepare empty attributes
-        self.description = None
+        self.description = description
 
         # Get the penalty signature
-        self.signature =  inspect.getfullargspec(penaltyfcn).args
+        if signature is None:
+            self.signature =  inspect.getfullargspec(penaltyfcn).args
+        else: 
+            self.signature = signature
 
         # Create parameter object for the penalty weight
         newparam = Parameter(parent=self, idx=0, name='weight')
