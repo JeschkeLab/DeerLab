@@ -56,8 +56,8 @@ Vmodels = [dl.dipolarmodel(t,r,Pmodel) for t in ts]
 titrmodel = dl.expand(*Vmodels)
 # Make the two components of the distance distriution global
 titrmodel = dl.link(titrmodel, 
-                PA = [titrmodel.P_1_1, titrmodel.P_1_2, titrmodel.P_1_3, titrmodel.P_1_4, titrmodel.P_1_5],
-                PB = [titrmodel.P_2_1, titrmodel.P_2_2, titrmodel.P_2_3, titrmodel.P_2_4, titrmodel.P_2_5])
+                PA = ['P_1_1', 'P_1_2', 'P_1_3', 'P_1_4', 'P_1_5'],
+                PB = ['P_2_1', 'P_2_2', 'P_2_3', 'P_2_4', 'P_2_5'])
 
 # FUnctionalize the chemical equilibrium model
 titrmodel.addnonlinear('Kdis',lb=3,ub=7,par0=5,description='Dissociation constant')

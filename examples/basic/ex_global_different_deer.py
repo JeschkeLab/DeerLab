@@ -33,7 +33,7 @@ V5pmodel.reftime2.set(lb=3,ub=3.5,par0=3.2)
 
 # Make the joint model with the distribution as a global parameters
 globalmodel = dl.expand(V4pmodel,V5pmodel)  
-globalmodel = dl.link(globalmodel, P = [globalmodel.P_1,globalmodel.P_2])
+globalmodel = dl.link(globalmodel, P = ['P_1','P_2'])
 
 # Fit the model to the data (with fixed regularization parameter)
 fit = dl.fit(globalmodel,[V4p,V5p],regparam=0.5)
