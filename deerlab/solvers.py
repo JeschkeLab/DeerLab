@@ -803,8 +803,9 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         covmatrix[np.ix_(lin_subset,lin_subset)] *= scale**2
         
         # Set rows/columns corresponding to frozen parameters to zero
-        nonfrozen = np.atleast_2d(np.concatenate([(~nonlin_frozen).astype(int),(~lin_frozen).astype(int)]))
-        covmatrix = covmatrix*nonfrozen*nonfrozen.T
+        frozen = np.concatenate([nonlin_frozen,lin_frozen])
+        covmatrix[frozen,:] = 0
+        covmatrix[:,frozen] = 0
 
         # Construct the uncertainty quantification object
         paramuq = UQResult('covariance', parfit, covmatrix, lbs, ubs)
