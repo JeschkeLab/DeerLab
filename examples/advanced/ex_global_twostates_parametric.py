@@ -56,10 +56,10 @@ for n in range(Nsignals):
 globalmodel = dl.expand(*Vmodels)
 # Link the global parameters toghether
 globalmodel = dl.link(globalmodel,
-        meanA = [globalmodel.meanA_1, globalmodel.meanA_2, globalmodel.meanA_3],
-        meanB = [globalmodel.meanB_1, globalmodel.meanB_2, globalmodel.meanB_3],
-        widthA = [globalmodel.widthA_1, globalmodel.widthA_2, globalmodel.widthA_3],
-        widthB = [globalmodel.widthB_1, globalmodel.widthB_2, globalmodel.widthB_3])
+        meanA = ['meanA_1', 'meanA_2', 'meanA_3'],
+        meanB = ['meanB_1', 'meanB_2', 'meanB_3'],
+        widthA = ['widthA_1', 'widthA_2', 'widthA_3'],
+        widthB = ['widthB_1', 'widthB_2', 'widthB_3'])
 
 # Fit the datasets to the model globally
 fit = dl.fit(globalmodel,Vexps)

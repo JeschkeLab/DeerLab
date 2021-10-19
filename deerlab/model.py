@@ -795,7 +795,7 @@ def link(model,**links):
         The corresponding model parameter will be assigned to new parameter whose name is given 
         by the keyword name. For example:: 
 
-            newmodel = link(model,parC = [model.parA,model.parB])
+            newmodel = link(model,parC = ['parA','parB'])
 
         will return a new model where the values of ``parA`` and ``parB`` will be given by the
         new model parameter ``parC``. 
@@ -930,8 +930,9 @@ def link(model,**links):
     if not isinstance(model,Model):
         raise TypeError('The first argument must be a Model object.')
     newmodel = deepcopy(model)
-    for link_name in links: 
-        newmodel = _linkparameter(newmodel,links[link_name],link_name)
+    for link_newname in links: 
+        to_link = [getattr(newmodel,parname) for parname in links[link_newname]]
+        newmodel = _linkparameter(newmodel,to_link,link_newname)
     return newmodel
 #==============================================================================================
 
