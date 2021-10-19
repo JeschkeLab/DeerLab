@@ -47,10 +47,10 @@ def dropletmodel(t):
     # Create a dipolar signal model that is a linear combination of both components
     Vmodel = dl.combine(Vdis_model,Vld_model, addweights=True)
     Vmodel = dl.link(Vmodel,
-                    reftime1=[Vmodel.reftime1_1,Vmodel.reftime1_2],
-                    reftime2=[Vmodel.reftime2_1,Vmodel.reftime2_2],
-                    lam1=[Vmodel.lam1_1,Vmodel.lam1_2],
-                    lam2=[Vmodel.lam2_1,Vmodel.lam2_2])
+                    reftime1=['reftime1_1','reftime1_2'],
+                    reftime2=['reftime2_1','reftime2_2'],
+                    lam1=['lam1_1','lam1_2'],
+                    lam2=['lam2_1','lam2_2'])
     # Make the second weight dependent on the first one
     Vmodel = dl.relate(Vmodel,weight_2 = lambda weight_1: 1 - weight_1)
     return Vmodel,Vdis_model,Vld_model
@@ -64,17 +64,17 @@ Vmodel2,Vdismodel2,Vldmodel2 = dropletmodel(ts[1])
 globalModel = dl.expand(Vmodel1,Vmodel2)
 # Link global parameters toghether with new names
 globalModel = dl.link(globalModel,
-                eta = [globalModel.weight_1_1,globalModel.weight_1_2],
-                kdis = [globalModel.decay_1_1,globalModel.decay_1_2],
-                kld = [globalModel.decay_2_1,globalModel.decay_2_2],
-                Dld = [globalModel.stretch_2_1,globalModel.stretch_2_2],
-                rmean_dis = [globalModel.mean_1_1,globalModel.mean_1_2],
-                rmean_ld = [globalModel.mean_2_1,globalModel.mean_2_2],
-                width_dis = [globalModel.width_1_1,globalModel.width_1_2],
-                width_ld = [globalModel.width_2_1,globalModel.width_2_2],
-                lam1 = [globalModel.lam1_1,globalModel.lam1_2],
-                lam2 = [globalModel.lam2_1,globalModel.lam2_2],
-                reftime1 = [globalModel.reftime1_1,globalModel.reftime1_2])
+                eta = ['weight_1_1','weight_1_2'],
+                kdis = ['decay_1_1','decay_1_2'],
+                kld = ['decay_2_1','decay_2_2'],
+                Dld = ['stretch_2_1','stretch_2_2'],
+                rmean_dis = ['mean_1_1','mean_1_2'],
+                rmean_ld = ['mean_2_1','mean_2_2'],
+                width_dis = ['width_1_1','width_1_2'],
+                width_ld = ['width_2_1','width_2_2'],
+                lam1 = ['lam1_1','lam1_2'],
+                lam2 = ['lam2_1','lam2_2'],
+                reftime1 = ['reftime1_1','reftime1_2'])
 
 # Specify parameter boundaries and initial conditions 
 globalModel.eta.set(       lb=0.468, ub=0.57, par0=0.520)
