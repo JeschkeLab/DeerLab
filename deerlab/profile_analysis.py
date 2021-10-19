@@ -1,4 +1,4 @@
-# profan.py - Likelihood/Objective function profiler
+# profile_analysis.py - Likelihood/Objective function
 # --------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
@@ -10,7 +10,7 @@ from deerlab import noiselevel,UQResult
 import warnings 
 from tqdm import tqdm
 
-def profiler(model,y, *args, parameters='all', samples=50, noiselvl=None, verbose=False,**kargs):
+def profile_analysis(model,y, *args, parameters='all', samples=50, noiselvl=None, verbose=False,**kargs):
     r""" 
     Profile likelihood analysis for uncertainty quantification
 

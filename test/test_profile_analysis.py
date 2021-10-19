@@ -1,7 +1,7 @@
 from numpy.random.mtrand import rand
 from deerlab.classes import UQResult
 import numpy as np 
-from deerlab import profiler, dd_gauss, whitegaussnoise, expand, link
+from deerlab import profile_analysis, dd_gauss, whitegaussnoise, expand, link
 from deerlab.utils import assert_docstring
 
 def test_types():
@@ -15,7 +15,7 @@ def test_types():
 
     y = model(r,mean=3,width=0.2,scale=1) + whitegaussnoise(r,sigma,seed=1)
 
-    profuq = profiler(model,y,r,samples=3,noiselvl=sigma)
+    profuq = profile_analysis(model,y,r,samples=3,noiselvl=sigma)
 
     assert isinstance(profuq['mean'],UQResult) and profuq['scale'] is None
 # ======================================================================
@@ -29,7 +29,7 @@ def test_basics():
     model = dd_gauss
     y = model(r,mean=3,width=0.2) + whitegaussnoise(r,sigma,seed=1)
     
-    profuq = profiler(model,y,r,samples=3,noiselvl=sigma)
+    profuq = profile_analysis(model,y,r,samples=3,noiselvl=sigma)
 
     x,pdf = profuq['mean'].pardist()
     mean_mean = x[np.argmax(pdf)]
@@ -56,7 +56,7 @@ def test_globalmodel():
     y[0] += whitegaussnoise(r,sigma,seed=1)      
     y[1] += whitegaussnoise(r,sigma,seed=1)
 
-    profuq = profiler(model,y,r,r,samples=3,noiselvl=sigma)
+    profuq = profile_analysis(model,y,r,r,samples=3,noiselvl=sigma)
 
     x,pdf = profuq['mean'].pardist()
     mean_mean = x[np.argmax(pdf)]
@@ -79,7 +79,7 @@ def test_types():
 
     y = model(r,mean=3,width=0.2,scale=1) + whitegaussnoise(r,sigma,seed=1)
 
-    profuq = profiler(model,y,r,samples=3,noiselvl=sigma)
+    profuq = profile_analysis(model,y,r,samples=3,noiselvl=sigma)
 
     assert isinstance(profuq['mean'],UQResult) and profuq['scale'] is None
 # ======================================================================
@@ -95,7 +95,7 @@ def test_specific_parameters():
 
     y = model(r,mean=3,width=0.2) + whitegaussnoise(r,sigma,seed=1)
 
-    profuq = profiler(model,y,r,samples=3,noiselvl=sigma,parameters='mean')
+    profuq = profile_analysis(model,y,r,samples=3,noiselvl=sigma,parameters='mean')
 
     assert 'mean'in profuq.keys() and not 'width' in profuq.keys()
 # ======================================================================
@@ -104,5 +104,5 @@ def test_specific_parameters():
 # ======================================================================
 def test_docstring():
     "Check that the docstring includes all variables and keywords."
-    assert_docstring(profiler)
+    assert_docstring(profile_analysis)
 # ======================================================================
