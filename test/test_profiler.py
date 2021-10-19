@@ -50,8 +50,8 @@ def test_globalmodel():
     modelB = dd_gauss.copy()
     model = expand(modelA,modelB)
     model = link(model,
-            mean=[model.mean_1,model.mean_2],
-            width=[model.width_1,model.width_2])
+            mean=['mean_1','mean_2'],
+            width=['width_1','width_2'])
     y = model(r,r,mean=3,width=0.2,scale_1=1,scale_2=1)
     y[0] += whitegaussnoise(r,sigma,seed=1)      
     y[1] += whitegaussnoise(r,sigma,seed=1)
