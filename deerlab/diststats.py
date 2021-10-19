@@ -80,7 +80,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
             rmode = dl.diststats(fit.P,r)[0]['mode']
             return rmode
         # Bootstrap analysis of distance mode
-        rmode_uq = dl.bootan(V,Vfit,analyze_rmode)
+        rmode_uq = dl.bootstrap_analysis(V,Vfit,analyze_rmode)
 
     """
 

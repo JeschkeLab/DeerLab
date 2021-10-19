@@ -14,7 +14,7 @@ from .correctphase import correctphase
 from .correctzerotime import correctzerotime
 from .noiselevel import noiselevel
 from .whitegaussnoise import whitegaussnoise
-from .bootan import bootan
+from .bootstrap_analysis import bootstrap_analysis
 from .correctscale import correctscale
 from .fftspec import fftspec
 from .time2dist import time2dist

@@ -47,7 +47,7 @@ This class of functions can be used and/or combined to create fitting routines o
     ./functions/fitmodel
     ./functions/fitmultimodel
     ./functions/regoperator
-    ./functions/bootan
+    ./functions/bootstrap_analysis
 
 
 .. rst-class:: func-list
@@ -56,7 +56,7 @@ This class of functions can be used and/or combined to create fitting routines o
 Function                                         Description
 =============================================  ============================================================
 :ref:`fitmodel`                                 Full model signal fitting engine
-:ref:`bootan`                                    Bootstrap uncertainty analysis
+:ref:`bootstrap_analysis`                                    Bootstrap uncertainty analysis
 :ref:`fitmultimodel`                             Multi-component model fitting engine
 :ref:`regoperator`                               Regularization operator constructor
 =============================================  ============================================================
