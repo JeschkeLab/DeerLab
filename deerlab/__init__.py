@@ -2,6 +2,7 @@
 from .dd_models import *
 from .bg_models import *
 from .ex_models import *
+from .model import Model, link, combine, expand, relate, fit
 from .deerload import deerload
 from .selregparam import selregparam
 from .regparamrange import regparamrange
@@ -20,4 +21,4 @@ from .fftspec import fftspec
 from .time2dist import time2dist
 from .classes import FitResult, UQResult
 from .diststats import diststats
-from .model import Model, link, combine, expand, relate, fit
+from .profile_analysis import profile_analysis

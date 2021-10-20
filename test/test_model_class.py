@@ -323,6 +323,18 @@ def _getmodel(type):
     return model
 #----------------------------------------------------------------
 
+# ======================================================================
+def test_preserve_original(): 
+    "Check that the original model is not changed by the function"
+    model = Model(gauss)
+    model.mean.par0 = 3
+    model.width.par0 = 0.2
+    
+    _ = fit(model,mock_data)
+    assert model._parameter_list() == ['mean','width']
+# ======================================================================
+
+
 def test_fit_parametric(): 
 #================================================================
     "Check that a parametric model can be correctly fitted"

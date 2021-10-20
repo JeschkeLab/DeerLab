@@ -37,7 +37,7 @@ globalmodel = dl.expand(V1model,V2model,V3model)
 
 # Link the distance distribution into a global parameter 
 globalmodel = dl.link(globalmodel,
-        P=[globalmodel.P_1,globalmodel.P_2,globalmodel.P_3])
+        P=['P_1','P_2','P_3'])
 
 # Fit the model to the data
 fit = dl.fit(globalmodel,Vs)
