@@ -19,7 +19,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
     t : array_like 
         Vector of dipolar time increments, in microseconds.
     r : array_like 
-        Vector of intraspin distances, in nanometeres.
+        Vector of intraspin distances, in nanometers.
     Pmodel : :ref:`Model`, optional 
         Model for the distance distribution. If not speficied, a non-parametric
         distance distribution is assumed. 
@@ -30,7 +30,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
         Number of dipolar pathways. If not specified, a single dipolar pathway is assumed. 
     harmonics: list of integers 
         Harmonics of the dipolar pathways. Must be a list with `npathways` harmonics for each
-        defined dipolar pathway.  
+        defined dipolar pathway. 
 
     Returns
     -------
@@ -198,11 +198,12 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
 
 
 # -----------------------------------------------------------------------------------------
-def _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways):
+def _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,**kargs):
     # Generate the dipolar model
-    Vmodel = dipolarmodel(t,r,Pmodel,Bmodel,npathways=npathways)
+    Vmodel = dipolarmodel(t,r,**kargs)
 
     # Set prior knowledge on the parameters
+    npathways = kargs['npathways']
     if npathways>1:
         for n in range(npathways):
             getattr(Vmodel,f'reftime{n+1}').set(par0=reftimes[n], lb=reftimes[n]-0.1, ub=reftimes[n]+0.1)
@@ -215,8 +216,41 @@ def _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,np
 
 
 #===============================================================================
-def model3pdeer(t,r,tau,Pmodel=None,Bmodel=bg_hom3d,npathways=2):
+def model3pdeer(t,r,tau,npathways=1,**kargs):
+    r"""
+    Generate a 3-pulse DEER dipolar model. 
+    
+    The theoretically predicted refocusing times of its dipolar pathways are
+    automatically computed from the pulse sequence delays and set into the model.  
 
+    Parameters 
+    ----------
+    t : array_like 
+        Vector of dipolar time increments, in microseconds.
+
+    r : array_like 
+        Vector of intraspin distances, in nanometers.
+
+    tau : float scalar
+        Static interpulse delay. 
+
+    npathways : integer scalar, optional
+        Number of dipolar pathways. If not specified, a single dipolar pathway is assumed. 
+
+    Pmodel : :ref:`Model`, optional 
+        Model for the distance distribution. If not speficied, a non-parametric
+        distance distribution is assumed. 
+
+    Bmodel : :ref:`Model`, optional 
+        Model for the intermolecular (background) contribution. If not specified, 
+        a background arising from a homogenous 3D distribution of spins is assumed. 
+
+    Returns
+    -------
+    Vmodel : :ref:`Model`
+        Dipolar signal model object.
+
+    """
     # Check number of pathways does not exceed reality
     if npathways>2: 
         raise ValueError('A 3-pulse DEER signal can have up to two dipolar pathways.')
@@ -226,13 +260,50 @@ def model3pdeer(t,r,tau,Pmodel=None,Bmodel=bg_hom3d,npathways=2):
     lams_par0 = [ 0.3, 0.05]
 
 
-    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways)
+    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,kargs)
     Vmodel.description = f'3-pulse DEER dipolar model ({npathways} dipolar pathways)'
     return Vmodel
 #===============================================================================
 
 #===============================================================================
-def model4pdeer(t,r,tau1,tau2,Pmodel=None,Bmodel=bg_hom3d,npathways=2):
+def model4pdeer(t,r,tau1,tau2,npathways=1,**kargs):
+    r"""
+    Generate a 4-pulse DEER dipolar model. 
+    
+    The theoretically predicted refocusing times of its dipolar pathways are
+    automatically computed from the pulse sequence delays and set into the model.  
+
+    Parameters 
+    ----------
+    t : array_like 
+        Vector of dipolar time increments, in microseconds.
+   
+    r : array_like 
+        Vector of intraspin distances, in nanometers.
+   
+    tau1 : float scalar
+        1st static interpulse delay. 
+   
+    tau2 : float scalar
+        2nd static interpulse delay. 
+   
+    npathways : integer scalar, optional
+        Number of dipolar pathways. If not specified, a single dipolar pathway is assumed. 
+   
+    Pmodel : :ref:`Model`, optional 
+        Model for the distance distribution. If not speficied, a non-parametric
+        distance distribution is assumed. 
+   
+    Bmodel : :ref:`Model`, optional 
+        Model for the intermolecular (background) contribution. If not specified, 
+        a background arising from a homogenous 3D distribution of spins is assumed. 
+
+    Returns
+    -------
+    Vmodel : :ref:`Model`
+        Dipolar signal model object.
+
+    """
 
     # Check number of pathways does not exceed reality
     if npathways>4: 
@@ -242,23 +313,63 @@ def model4pdeer(t,r,tau1,tau2,Pmodel=None,Bmodel=bg_hom3d,npathways=2):
     # Initial guesses for the pathway amplitudes
     lams_par0 = [ 0.3, 0.05, 0.05, 0.05]
 
-    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways)
+    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,npathways,**kargs)
     Vmodel.description = f'4-pulse DEER dipolar model ({npathways} dipolar pathways)'
     return Vmodel
 #===============================================================================
 
 #===============================================================================
-def model5pdeer(t,r,tau1,tau2,t2,Pmodel=None,Bmodel=bg_hom3d,npathways=2):
+def model5pdeer(t,r,tau1,tau2,tau3,npathways=1,**kargs):
+    r"""
+    Generate a 5-pulse DEER dipolar model. 
+    
+    The theoretically predicted refocusing times of its dipolar pathways are
+    automatically computed from the pulse sequence delays and set into the model.  
 
+    Parameters 
+    ----------
+  
+    t : array_like 
+        Vector of dipolar time increments, in microseconds.
+  
+    r : array_like 
+        Vector of intraspin distances, in nanometers.
+  
+    tau1 : float scalar
+        1st static interpulse delay. 
+  
+    tau2 : float scalar
+        2nd static interpulse delay. 
+  
+    tau3 : float scalar
+        3rd static interpulse delay. 
+  
+    npathways : integer scalar, optional
+        Number of dipolar pathways. If not specified, a single dipolar pathway is assumed. 
+
+    Pmodel : :ref:`Model`, optional 
+        Model for the distance distribution. If not speficied, a non-parametric
+        distance distribution is assumed. 
+  
+    Bmodel : :ref:`Model`, optional 
+        Model for the intermolecular (background) contribution. If not specified, 
+        a background arising from a homogenous 3D distribution of spins is assumed. 
+  
+    Returns
+    -------
+    Vmodel : :ref:`Model`
+        Dipolar signal model object.
+
+    """
     # Check number of pathways does not exceed reality
     if npathways>8: 
         raise ValueError('A 5-pulse DEER signal can have up to eight dipolar pathways.')
     # Theoretical refocusing pathways
-    reftimes = [ t2, tau2, tau2-t2, tau1+t2, 0, tau1+tau2, tau1+tau2-t2, tau1]
+    reftimes = [ tau3, tau2, tau2-tau3, tau1+tau3, 0, tau1+tau2, tau1+tau2-tau3, tau1]
     # Initial guesses for the pathway amplitudes
     lams_par0 = [ 0.3, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
 
-    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways)
+    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,**kargs)
     Vmodel.description = f'5-pulse DEER dipolar model ({npathways} dipolar pathways)'
     return Vmodel
 #===============================================================================
