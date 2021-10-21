@@ -535,10 +535,51 @@ class Model():
             }
     #---------------------------------------------------------------------------------------
 
+        
+    #---------------------------------------------------------------------------------------
+    def addregularization(self,functional='aic',description=None):
+        """ 
+        Add a new :ref:`Regularization` object to impose Tikhonov regularization upon 
+        the linear parameters of the model.
+
+        Parameters
+        ----------
+        key : string
+            Identifier of the parameter.
+
+        functional : string 
+            Method for the automatic selection of the optimal regularization parameter/weight:
+
+            * ``'lr'`` - L-curve minimum-radius method (LR)
+            * ``'lc'`` - L-curve maximum-curvature method (LC)
+            * ``'cv'`` - Cross validation (CV)
+            * ``'gcv'`` - Generalized Cross Validation (GCV)
+            * ``'rgcv'`` - Robust Generalized Cross Validation (rGCV)
+            * ``'srgcv'`` - Strong Robust Generalized Cross Validation (srGCV)
+            * ``'aic'`` - Akaike information criterion (AIC)
+            * ``'bic'`` - Bayesian information criterion (BIC)
+            * ``'aicc'`` - Corrected Akaike information criterion (AICC)
+            * ``'rm'`` - Residual method (RM)
+            * ``'ee'`` - Extrapolated Error (EE)
+            * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
+            * ``'gml'`` - Generalized Maximum Likelihood (GML)
+            * ``'mcl'`` - Mallows' C_L (MCL)
+        
+            The default ``'aic'``.
+
+        description : string, optional 
+            Description of the penalty. 
+        """
+        if np.any([isinstance(getattr(self,attr),Regularization) for attr in dir(self)]):
+            raise RuntimeError('The model already has a Regularization attribute.')
+        self.regularization = Regularization(functional,description)
+    #---------------------------------------------------------------------------------------
+        
+
     #---------------------------------------------------------------------------------------
     def addpenalty(self,key,penaltyfcn,functional,**kargs):
         """
-        Add a new linear :ref:`Penalty` object. 
+        Add a new :ref:`Penalty` object. 
 
         Parameters
         ----------
@@ -559,7 +600,7 @@ class Model():
             * ``'icc'`` - Informational complexity criterion (ICC) 
 
         description : string, optional 
-            Descriptrion of the penalty. 
+            Description of the penalty. 
         """        
 
         # Create penalty object
@@ -614,6 +655,19 @@ class Model():
         return self._parameter_table()        
 
 #===================================================================================
+
+#==============================================================================
+class Regularization():
+    def __init__(self,functional,description):
+        self.weight = Parameter(parent=self, idx=0, name='weight',description='Regularization parameter/weight')
+        self.weight.lb = np.finfo(float).eps
+        self.weight.ub = 1/np.finfo(float).eps
+        delattr(self.weight,'par0')
+        delattr(self.weight,'linear')
+
+        self.selection = functional 
+        self.description = description
+#==============================================================================
 
 
 #==============================================================================
@@ -870,9 +924,26 @@ def fit(model,y,*constants,par0=None,bootstrap=0, noiselvl=None,**kwargs):
         # If there are no penalties in the model
         extrapenalties = lambda *_: None
 
+    # Unless specified by the model, disable regularization of linear parameters
+    regparam,regparamrange,reg = None,None,False
+    # If there is regularization added to the model
+    if np.any([isinstance(getattr(model,attr),Regularization) for attr in dir(model)]):
+        regularization_object = getattr(model,[attr for attr in dir(model) if isinstance(getattr(model,attr),Regularization)][0])
+        reg = True
+        if regularization_object.weight.frozen: 
+            # Regularization parameter is fixed
+            regparam = regularization_object.weight.value 
+        else: 
+            # Regularization parameter is optimized
+            regparam = regularization_object.selection 
+            regparamrange = [regularization_object.weight.lb, regularization_object.weight.ub]
+
     # Prepare the separable non-linear least-squares solver
     Amodel_fcn = lambda param: model.nonlinmodel(*constants,*param)
-    fitfcn = lambda y,penweights: snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,subsets=ysubsets,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,extrapenalty=extrapenalties(penweights),**kwargs)        
+    fitfcn = lambda y,penweights: snlls(y, Amodel_fcn, par0, lb=lb, ub=ub, lbl=lbl, ubl=ubl, 
+                                                subsets=ysubsets, lin_frozen=linfrozen, nonlin_frozen=nonlinfrozen,
+                                                regparam=regparam, reg=reg, regparamrange=regparamrange,
+                                                extrapenalty=extrapenalties(penweights), **kwargs)        
 
     # Prepare outer optimization of the penalty weights, if necessary
     fitfcn = _outerOptimization(fitfcn,penalty_objects,y,sigmas)

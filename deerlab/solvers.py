@@ -324,7 +324,7 @@ def _insertfrozen(parfit,parfrozen,frozen):
 
 
 def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=None,
-          regparam='aic', multistart=1, regop=None, alphareopt=1e-3, extrapenalty=None, subsets=None,
+          regparam='aic', regparamrange=None, multistart=1, regop=None, alphareopt=1e-3, extrapenalty=None, subsets=None,
           nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, noiselvl=None, lin_frozen=None,
           nonlin_frozen=None, uq=True):
     r""" Separable non-linear least squares (SNLLS) solver
@@ -396,6 +396,10 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         
         The regularization parameter can be manually specified by passing a scalar value
         instead of a string. The default ``'aic'``.
+
+    regparamrange : array_like, optional 
+        Search range for the optimization of the regularization parameter. Must be specified as a list ``[regparam_lb,regparam_ub]`` 
+        with the lower/upper boundaries of the regularization parameter. 
 
     regop : 2D array_like, optional
         Regularization operator matrix, the default is the second-order differential operator.
@@ -610,7 +614,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
         # Optimiza the regularization parameter only if needed
         if optimize_alpha:
-            alpha = dl.selregparam(y-yfrozen, Ared, linSolver, regparam, weights=weights, regop=L)
+            alpha = dl.selregparam(y-yfrozen, Ared, linSolver, regparam, weights=weights, regop=L, candidates=regparamrange)
 
         # Components for linear least-squares
         AtA, Aty = _lsqcomponents(y-yfrozen, Ared, L, alpha, weights=weights)

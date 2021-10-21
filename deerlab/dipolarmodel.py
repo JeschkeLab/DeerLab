@@ -112,7 +112,8 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,
     # Create the dipolar pathways model object
     PathsModel = Model(dipolarpathways,signature=variables)
 
-    if Pmodel is None:
+    Pnonparametric = Pmodel is None
+    if Pnonparametric:
         Pmodel = freedist(r)
     Nconstants = len(Pmodel._constantsInfo)
 
@@ -198,6 +199,11 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,
     for name,param in zip(DipolarSignal._parameter_list(order='vector'),parameters):
         getattr(DipolarSignal,name).set(**_importparameter(param))
 
+    # If P(r) is non-parametric, impose regularization 
+    if Pnonparametric: 
+        DipolarSignal.addregularization(functional='aic',description='Tikhonov regularization of the distance distribution.')
+        DipolarSignal.regularization.weight.set(lb=1e-9,ub=1e3)
+        
     # If include compactness penalty
     if compactness:
         # Define the compactness penalty function
@@ -208,7 +214,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,
         # Add the penalty to the model
         DipolarSignal.addpenalty('compactness',compactness_penalty,'icc',
                     signature = Pmodel._parameter_list(),
-                    description = 'Distance distribution compactness penalty')
+                    description = 'Distance distribution compactness penalty.')
         DipolarSignal.compactness.weight.set(lb=1e-6, ub=1e1)
 
     # If include smoothness penalty
@@ -220,7 +226,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,
         # Add the penalty to the model
         DipolarSignal.addpenalty('smoothness',smoothness_penalty,'aic',
                     signature = Pmodel._parameter_list(),
-                    description = 'Distance distribution smoothness penalty')
+                    description = 'Distance distribution smoothness penalty.')
         DipolarSignal.smoothness.weight.set(lb=1e-9, ub=1e3)
 
     # Set other dipolar model specific attributes
