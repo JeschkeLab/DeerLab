@@ -628,7 +628,7 @@ class Model():
     -----------------
 
     Model description: {self.description}
-    Model call signature: {','.join(self.signature)}
+    Model call signature: ({','.join(self.signature)})
     Constants: {[entry['argkey'] for entry in self._constantsInfo]}
 
     Parameter Table 
@@ -645,7 +645,28 @@ class Model():
             string += f'      {"Yes" if np.all(getattr(self,paramname).frozen) else "No":3s}'
             string += f'       {str(getattr(self,paramname).units):6s}'
             string += f'   {str(getattr(self,paramname).description):s}'
-        string += f'\n============ ========= ========== =========== ======== ========== =========================='
+        string += f'\n============ ========= ========== =========== ======== ========== ==========================\n\n'
+
+        if np.any([isinstance(getattr(self,attr),Regularization) or isinstance(getattr(self,attr),Penalty) for attr in dir(self)]):
+            string += inspect.cleandoc(f"""
+
+        Penalties
+        ---------
+
+        ====================== ============= ============== ======== ============ ==========================
+            Name                Weight Lower  Weight Upper   Frozen   Selection     Description  
+        ====================== ============= ============== ======== ============ ==========================""")
+            penaltynames = [attr for attr in dir(self) if isinstance(getattr(self,attr),Penalty)]
+            penaltynames.append([attr for attr in dir(self) if isinstance(getattr(self,attr),Regularization)][0])
+            for n,penaltyname in enumerate(penaltynames): 
+                string += f'\n   {penaltyname:7s}'
+                string += f'        {np.atleast_1d(getattr(self,penaltyname).weight.lb)[0]:5.3g}'
+                string += f'        {np.atleast_1d(getattr(self,penaltyname).weight.ub)[0]:5.3g}'
+                string += f'           {"Yes" if np.all(getattr(self,penaltyname).weight.frozen) else "No":3s}'
+                string += f'       {str(getattr(self,penaltyname).selection):6s}'
+                string += f'       {str(getattr(self,penaltyname).description):s}'
+            string += f'\n====================== ============= ============== ======== ============ =========================='
+
         return string
     #---------------------------------------------------------------------------------------
 
