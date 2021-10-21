@@ -467,6 +467,12 @@ class Model():
         self.signature.append(key)
     #---------------------------------------------------------------------------------------
 
+    #---------------------------------------------------------------------------------------
+    def copy(self): 
+        "Generate a deep copy of the model."
+        return deepcopy(self)
+    #---------------------------------------------------------------------------------------
+
     def __call__(self,*args,**kargs):
     #---------------------------------------------------------------------------------------
         """
@@ -793,6 +799,8 @@ def fit(model,y,*constants,par0=None,bootstrap=0, noiselvl=None,**kwargs):
 
     if not isinstance(model,Model):
         raise TypeError('The input model must be a valid deerlab.Model object.')
+    else:
+        model = model.copy()
 
     if len(constants)>0:
         constants = np.atleast_1d(constants)
