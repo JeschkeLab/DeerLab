@@ -56,7 +56,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     method : string, optional
         Numerical method for kernel matrix calculation: 
 
-            * ``'fresnel'`` - uses Fresnel integrals for the kernel (default)
+            * ``'fresnel'`` - uses Fresnel integrals for the kernel (fast, accurate)
             * ``'integral'`` - uses explicit integration function (slow, accurate)
             * ``'grid'`` - powder average via explicit grid integration (slow, inaccurate)
         
@@ -81,20 +81,20 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         ampliude ``V(t=0)=1``. Enabled by default.
     
     nKnots : scalar, optional
-        Number of knots for the grid of powder orientations to be used in the ``'grid'`` kernel calculation method.
+        Number of knots for the grid of powder orientations to be used in the ``'grid'`` kernel calculation method. By default set to 5001 knots.
         
     clearcache : boolean, optional
-        Clear the cached dipolar kernels at the beginning of the function. Disabled by default.
+        Clear the cached dipolar kernels at the beginning of the function to save memory. Disabled by default.
 
     Returns
     --------
     K : ndarray
-        Dipolar kernel operator, such that for a distance distribution (P), the dipolar signal is ``V = K@P``
+        Dipolar kernel operator, such that for a distance distribution ``P``, the dipolar signal is ``V = K@P``
 
     Notes
     -----
-    For a multi-pathway DEER [1]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` contains a list of modulation depths (amplitudes) and refocusing times (in microseconds).
-    The background function specified as ''B'' is used as basis function, and the actual multipathway background included into the kernel is compued using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [2]_. 
+    For a multi-pathway DEER [1]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` contains a list of pathway amplitudes and refocusing times (in microseconds).
+    The background function specified as ``B`` is used as basis function, and the actual multipathway background included into the kernel is compued using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [2]_. 
     Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals [3]_. If not given, the harmonic is 1 for all pathways. 
 
 
