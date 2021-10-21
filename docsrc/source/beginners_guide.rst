@@ -78,7 +78,7 @@ Call ``deerload`` with either of these two paths: ::
 
     t,V = dl.deerload(filepath)   # load experimental data
 
-The function returns two outputs: the first is the time-axis of your experiment, and the second is the raw experimental data as saved by your spectrometer. Here, we store them in variables named ``t`` and ``V``.
+The function returns two outputs: the first is the dipolar time-axis of your experiment (a vector of pulse increments), and the second is the raw experimental data as saved by your spectrometer. Here, we store them in variables named ``t`` and ``V``.
 
 Both ``t`` and ``V`` are 1D Numpy arrays with ``N`` elements. To load an additional file, load it into different variables: ::
 
@@ -91,59 +91,43 @@ Both ``t`` and ``V`` are 1D Numpy arrays with ``N`` elements. To load an additio
 
 ---------------
 
-Pre-Processing
----------------
+Phase-correction
+-----------------
 
-After loading, the experimental dipolar EPR spectroscopy data pre-processing in a series of steps:
+Experimental dipolar signals are most often aquired in quadrature, with the in-phase and the out-of-phase component stored as the real and the imaginary part of a complex-valued signal. If the out-of-phase components are of no relevance, it is recommendable to perform a phase correction which minimizes the imaginary component and maximizes the real component. If the signal is not complex-valued or the out-of-phase component is important, skip this step. The phase correction function ``correctphase`` takes the complex-valued signal and returns the real-valued phase-corrected dipolar signal: ::
 
-Phase correction
-    Experimental dipolar signals are most often aquired in quadrature, with the in-phase and the out-of-phase component stored as the real and the imaginary part of a complex-valued signal. The first step is to perform a phase correction which minimizes the imaginary component and maximize the real component. If the signal is not complex-valued, skip this step. The phase correction function ``correctphase`` takes the complex-valued signal and returns the real-valued phase-corrected dipolar signal: ::
+    V = dl.correctphase(V)    # phase correction of experimental data
 
-        V = dl.correctphase(V)    # phase correction of experimental data
+The correction is based on an optimization approach. This works well in most cases. Should it fail for a specific case, the phase adjustment can also be done manually: ::
 
-    Note that all other DeerLab functions do not behave properly or might lead to errors if the dipolar signal is complex-valued.
-
-Zero-time correction
-    In dipolar EPR spectroscopy models, we define the zero-time as that time, where the dipolar signal has its largest contribution or amplitude. In the raw data, the numerical values of time axis are often shifted relative to this due to details such as pulse lengths and time delays. The function ``correctzerotime`` takes the raw time-axis ``t`` and dipolar signal ``V`` and returns a time axis shifted such that the zero time corresponds to the signal's maximum (taking into account noise in
-    the data): ::
-
-        t = dl.correctzerotime(V,t)  # zero-time correction
-
-In both steps, the corrections are based on optimization approaches. These work well in most cases. Should either fail for a specific case, the phase adjustment and time-axis shift can also be done manually: ::
-
-    t = t - t0                          # manual zero-time correction 
     V = np.real(V*np.exp(-1j*phase))    # manual phase correction
 
-All analysis and fitting functions in DeeLab assume the dipolar signals and their corresponding time-axes to be properly pre-processed.
-
 ---------------
 
-Fitting Dipolar Signals
------------------------
-
-DeerLab provides a wide range of functionality to analyze experimental dipolar EPR data using least-squares fitting. The main fit function of DeerLab is ``fitmodel``. This function can fit models with either non-parametric and parametric distance distributions to the data. This fitting is done in a one-step process, such that all model parameters (e.g. distance distribution, modulation depth, background decay rate, spin concentration, etc.) are obtained at the same time. It also provides uncertainty estimates for all fitted quantities (see later).
-
 Picking the right model
-***********************
+-------------------------
 
-DeerLab provides a very flexible framework to model dipolar signals originating from many different dipolar EPR spectroscopy experiments. Choosing a model that properly describes your sample and experiment is of paramount importance. In ``fitmodel`` the main structure of the model is already defined, with the following components:     
+DeerLab provides a very flexible framework to model dipolar signals originating from any dipolar EPR spectroscopy experiments. Choosing a model that properly describes your sample and experiment is of paramount importance. The DeerLab function ``dipolarmodel`` already defines the core model structure based on dipolar pathways, with the following components to be chosen:     
 
-* **Distance range**: Also called the distance-axis, is the range of distances where the distribution is defined. 
+* **Distance range**: Also called the interspin distance axis, is the range of distances where the distribution is defined. 
+
 * **Distribution model**: Describes the intra-molecular distance distribution in either a parametric (e.g. a Gaussian distribution) or a non-parametric way. 
+
 * **Background model**: Describes the dipolar background signal arising from the inter-molecular contributions. 
-* **Experiment model**: Describes the experiment-specific shape of the dipolar signal.
+
+* **Number of pathways**: Sets the number of dipolar pathways contributing to the dipolar signal.
 
 For each of these four components, a choice needs to be made: 
 
 (1) **Choose a distance range**
 
-    The distance range :math:`[r_\mathrm{min},r_\mathrm{max}]` is an important choice, as any distance distribution is truncated to this range, i.e. :math:`P(r)=0` for :math:`r<r_\mathrm{min}` and :math:`r>r_\mathrm{max}`. The lower limit of the distance range is determined by the bandwidth of the pulses, and also by the time increment. Typically, 1.5 nm is a reasonable choice. The upper limit depends on the length of the experimental time trace and on the distances in your sample. The number of points in ``r`` is usually set equal to the number of time points. Such a distance-axis is usually defined as ``r`` is most easily defined using the ``linspace`` function from NumPy: ::
+    The distance range :math:`[r_\mathrm{min},r_\mathrm{max}]` is an important choice, as any distance distribution is truncated to this range, i.e. :math:`P(r)=0` for :math:`r<r_\mathrm{min}` and :math:`r>r_\mathrm{max}`. The lower limit of the distance range is determined by the bandwidth of the pulses, and also by the time increment. Typically, 1.5 nm is a reasonable choice. The upper limit depends on the distances in your sample. The number of points in ``r`` is usually set to a certain resolution (typically 0.01-0.05nm). Such a distance-axis is usually defined as ``r`` is most easily defined using the ``linspace`` function from NumPy: ::
 
-        r = np.linspace(1.5,6,len(t))  # define distance range form 1.5nm to 6nm with the same amount of points as t
+        r = np.linspace(1.5,6.5,100)  # define distance range from 1.5nm to 6.5nm with a resolution of 0.05nm
 
 (2) **Choose a distribution model**
 
-    A non-parametric distribution is specified using the string ``'P'`` in ``fitmodel``. In a non-parametric distribution, each element :math:`P_i` of the distribution is a parameter. Non-parametric distributions are obtained via methods such as Tikhonov regularization. If there are reasons to believe that the distance distribution has a specific shape (e.g. Gaussian, Rice, random-coil, etc.), or if there is very little information in the data, use a parametric distance distribution model from the :ref:`list of available models<modelsref_dd>`. If a sample does not have a intra-molecular distance distribution (if there are no doubly labelled molecules), set the distribution model to ``None``.
+    A non-parametric distribution is specified by setting the choice of ``Pmodel`` keyword in ``dipolarmodel`` to ``None``. In a non-parametric distribution, each element :math:`P_i` of the distribution is a linear parameter. Non-parametric distributions are obtained via methods such as Tikhonov regularization. If there are reasons to believe that the distance distribution has a specific shape (e.g. Gaussian, Rice, random-coil, etc.), or if there is very little information in the data, use a parametric distance distribution model from the :ref:`list of available models<modelsref_dd>`.
 
 (3) **Choose a background model**
 
@@ -277,7 +261,7 @@ Here is an example script to load experimental time trace, pre-process it, and f
     t = dl.correctzerotime(V,t)   # zero-time shift
 
     # Distance range
-    r = np.linspace(1.5,6,len(t))   # define distance range from 1.5nm to 6nm with the same number of points as t
+    r = np.linspace(1.5,6.5,100)   # define distance range from 1.5nm to 6nm with a resolution of 0.05nm
 
     # Fit
     fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,verbose=True)   # 4pDEER fit using non-parametric distance distribution
