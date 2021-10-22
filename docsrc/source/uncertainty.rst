@@ -120,7 +120,7 @@ For routine analysis, the function ``fitmodel`` provides the option to switch fr
     fit = dl.fitmodel(Vexp,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,uq=['bootstrap',Nsamples],verbose=True)
     Puq = fit.Puncert # bootstrapped uncertainty quantification of fitted P(r)
 
-However, in DeerLab you can calculate bootstrap uncertainty estimates of any quantities using the :ref:`bootan` function. The function takes the experimental data, the fit, and the analysis function. This analysis 
+However, in DeerLab you can calculate bootstrap uncertainty estimates of any quantities using the :ref:`bootstrap_analysis` function. The function takes the experimental data, the fit, and the analysis function. This analysis 
 function must be a function that takes the experimental data and returns the quantities whose uncertainties are to be calculated. For example, to bootstrap the distance distribution, dipolar signal, and 
 regularization parameter obtained from a 4-pulse DEER fit using ``rlls`` you could use the following ::
 
@@ -133,7 +133,7 @@ regularization parameter obtained from a 4-pulse DEER fit using ``rlls`` you cou
         V = K@fit.P
         return fit.P, V, fit.regparam  # bootstrap the fitted distance distribution, dipolar signal and regularization parameter
 
-    bootuq = dl.bootan(fitfcn,Vexp,Vfit,samples=1000,verbose=True) # Bootstrap uncertainty quantification
+    bootuq = dl.bootstrap_analysis(fitfcn,Vexp,Vfit,samples=1000,verbose=True) # Bootstrap uncertainty quantification
 
 The output of ``bootuq`` is an ``UQResult`` object equivalent to the ones obtained for covariance-based uncertainty analysis. If the fit procedure is slow or
 costly, it is very recommendable to use the ``cores`` option to assign multiple CPU cores to the bootstrapping, in order to run different bootstrap samples in parallel, speeding
