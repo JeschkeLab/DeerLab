@@ -1,9 +1,10 @@
 from deerlab.dipolarkernel import dipolarkernel
+from deerlab.utils.utils import ovl
 from deerlab.whitegaussnoise import whitegaussnoise
 import numpy as np
 import matplotlib.pyplot as plt
 from deerlab.model import Model,fit
-from deerlab.dipolarmodel import dipolarmodel
+from deerlab.dipolarmodel import ExperimentInfo, dipolarmodel, ex_4pdeer, ex_3pdeer, ex_5pdeer
 from deerlab import dd_gauss,dd_gauss2,bg_hom3d,bg_exp
 import deerlab as dl 
 
@@ -249,4 +250,69 @@ def test_fit_Pnonparametric():
     result = fit(Vmodel,V1path,nonlin_tol=1e-3)
 
     assert np.allclose(result.model,V1path,atol=1e-2) and np.allclose(result.P/1e5,Pr,atol=1e-3)
+# ======================================================================
+
+tau1,tau2,tau3 = 1,2,3
+V3pulse = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,0],[0.1,tau1]],bg=Bfcn)@Pr
+V4pulse = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,tau1],[0.1,tau1+tau2]],bg=Bfcn)@Pr
+V5pulse = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,tau3],[0.1,tau2]],bg=Bfcn)@Pr
+
+# ======================================================================
+def test_ex_3pdeer_type(): 
+    "Check the 3-pulse DEER experimental model."
+
+    experiment = ex_3pdeer(tau1)
+
+    assert isinstance(experiment,ExperimentInfo) 
+# ======================================================================
+
+# ======================================================================
+def test_ex_3pdeer_fit(): 
+    "Check the 3-pulse DEER experimental model."
+
+    experiment = ex_3pdeer(tau1)
+    Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=2,experiment=experiment)
+    result = fit(Vmodel,V3pulse,nonlin_tol=1e-3)
+
+    assert np.allclose(V3pulse,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_ex_4pdeer_type(): 
+    "Check the 4-pulse DEER experimental model."
+
+    experiment = ex_4pdeer(tau1,tau2)
+
+    assert isinstance(experiment,ExperimentInfo) 
+# ======================================================================
+
+# ======================================================================
+def test_ex_4pdeer_fit(): 
+    "Check the 4-pulse DEER experimental model."
+
+    experiment = ex_4pdeer(tau1,tau2)
+    Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=2,experiment=experiment)
+    result = fit(Vmodel,V4pulse,nonlin_tol=1e-3)
+
+    assert np.allclose(V4pulse,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_ex_5pdeer_type(): 
+    "Check the 5-pulse DEER experimental model."
+
+    experiment = ex_5pdeer(tau1,tau2)
+
+    assert isinstance(experiment,ExperimentInfo) 
+# ======================================================================
+
+# ======================================================================
+def test_ex_4pdeer_fit(): 
+    "Check the 5-pulse DEER experimental model in fitting."
+
+    experiment = ex_5pdeer(tau1,tau2,tau3)
+    Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=2,experiment=experiment)
+    result = fit(Vmodel,V5pulse,nonlin_tol=1e-3)
+
+    assert np.allclose(V5pulse,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
