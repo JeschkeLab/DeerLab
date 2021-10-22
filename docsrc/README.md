@@ -10,13 +10,13 @@ In order to compile the documentation the following steps must be followed:
 
 2) Install DeerLab (see installation instructions)
 
-3) Install Sphinx v1.8.3
+3) Install Sphinx
 
-        pip install sphinx==1.8.3
+        pip install sphinx
 
-4) Install Read-the-Docs Sphinx theme
+4) Install PyData Sphinx theme
     
-        pip install sphinx_rtd_theme
+        pip install pydata-sphinx-theme
 
 5) Install HTTP sphinx-domain
     
@@ -37,10 +37,6 @@ In order to compile the documentation the following steps must be followed:
 9) Install M2R-2
     
         pip install m2r2
-
-10) Force Sphinx version (in case it is updated by another package)
-
-        pip install sphinx==1.8.3 --force-reinstall
 
 11) Download and install dvissvgm from https://dvisvgm.de/Downloads/
 		

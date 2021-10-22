@@ -1,4 +1,5 @@
-﻿
+﻿.. warning:: DeerLab is currently in the pre-release stage (version numbers v0.x.y) and under active development. Major changes are likely before the first stable version (v1.0.0) is released.
+
 .. raw:: html 
 
     <style>
@@ -28,7 +29,6 @@ DeerLab :blueish:`Docs`
     <br>
 
 
-.. warning:: DeerLab is currently in the pre-release stage (version numbers v0.x.y) and under active development. Major changes are likely before the first stable version (v1.0.0) is released.
 
 
 -------
@@ -86,39 +86,33 @@ DeerLab :blueish:`Docs`
 
 .. toctree::
     :hidden:
-    :caption: Documentation
-    :maxdepth: 0
+    :caption: User Guide
 
-    Home <self>
+    ./user_guide
 
 .. toctree::
     :hidden:
-    :caption: User Guide
-    :maxdepth: 0
+    :caption: Examples
 
-    ./installation
-    ./basics
-    ./beginners_guide
-    ./uncertainty
     ./examples
+
 
 .. toctree::
     :hidden:
     :caption: Reference
-    :maxdepth: 0
 
-    ./functions
-    ./modelsref
-    ./theory
+    ./reference
 
 .. toctree::
     :hidden:
     :caption: Others
-    :maxdepth: 1
 
-    ./contributing
-    ./license
-    ./funding
+    ./others
+
+.. toctree::
+    :hidden:
+    :caption: Release Notes
+    
     ./changelog
 
 .. Indices and tables

@@ -41,6 +41,7 @@ sphinx_gallery_conf = {
     'examples_dirs': '../../examples',   # path to your example scripts
     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
     'remove_config_comments': True,
+    'download_all_examples': False,
     'subsection_order': ExplicitOrder(['../../examples/basic',
                                        '../../examples/advanced',
                                        '../../examples/other']),
@@ -69,10 +70,10 @@ master_doc = 'index'
 suppress_warnings = ['image.nonlocal_uri']
 pygments_style = 'default'
 intersphinx_mapping = {
-    'rtd': ('https://docs.readthedocs.io/en/latest/', None),
     'sphinx': ('http://www.sphinx-doc.org/en/stable/', None),
 }
-html_theme = 'sphinx_rtd_theme'
+#html_theme = 'sphinx_rtd_theme'
+html_theme = "pydata_sphinx_theme"
 
 # Integrate version control system
 # -------------------------------------------------------------
@@ -88,16 +89,36 @@ html_context = {
 # Read-the-Docs options configuration
 # -------------------------------------------------------------
 html_theme_options = {
-    'sticky_navigation': False,
-    'titles_only': False,
-    'collapse_navigation': False,
-    'logo_only': True,
-    'navigation_depth':1,
-    #'style_nav_header_background': '#2a7bf8'
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/JeschkeLab/DeerLab",
+            "icon": "fab fa-github",
+        },
+        {
+            "name": "Twitter",
+            "url": "https://twitter.com/DeerLab",
+            "icon": "fab fa-twitter",
+        },
+        {
+            "name": "Issues",
+            "url": "https://github.com/JeschkeLab/DeerLab/issues",
+            "icon": "fas fa-bug",
+        },
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/DeerLab/",
+            "icon": "fas fa-cube",
+        },
+    ],
+    #"navbar_end": ["navbar-icon-links.html", "search-field.html"],
+    #"navbar_align": "left"
 }
+#html_sidebars = {
+#  "**": []
+#}
 html_copy_source = False
 html_theme_path = ["../.."]
-html_logo = "demo/static/logo-wordmark-light.svg"
 html_show_sourcelink = True
 html_favicon = '_static/favicon.ico'
 html_static_path = ['_static']
@@ -106,8 +127,8 @@ html_static_path = ['_static']
 def setup(app):
     from sphinx.domains.python import PyField
     from sphinx.util.docfields import Field
-    app.add_css_file('/source/_static/custom.css')
-    app.add_stylesheet('/source/_static/theme_override.css')
+    #app.add_css_file('/source/_static/custom.css')
+    #app.add_stylesheet('/source/_static/theme_override.css')
     app.add_object_type(
         'confval',
         'confval',
@@ -139,27 +160,27 @@ def setup(app):
     import deerlab
     import numpy
     import inspect
-    python_lexer = python.PythonLexer()
-    dd_functions = [o[0] for o in inspect.getmembers(bg_models) if inspect.isfunction(o[1])]
-    bg_functions = [o[0] for o in inspect.getmembers(dd_models) if inspect.isfunction(o[1])]
-    pl_functions = [o[0] for o in inspect.getmembers(plt) if inspect.isfunction(o[1])]
-    dl_functions = [o[0] for o in inspect.getmembers(deerlab) if inspect.isfunction(o[1])]
-    np_functions = [o[0] for o in inspect.getmembers(numpy) if inspect.isfunction(o[1])]
+    #python_lexer = python.PythonLexer()
+    #dd_functions = [o[0] for o in inspect.getmembers(bg_models) if inspect.isfunction(o[1])]
+    #bg_functions = [o[0] for o in inspect.getmembers(dd_models) if inspect.isfunction(o[1])]
+    #pl_functions = [o[0] for o in inspect.getmembers(plt) if inspect.isfunction(o[1])]
+    #dl_functions = [o[0] for o in inspect.getmembers(deerlab) if inspect.isfunction(o[1])]
+    #np_functions = [o[0] for o in inspect.getmembers(numpy) if inspect.isfunction(o[1])]
 
-    python_lexer.add_filter(NameHighlightFilter(
-            names= dl_functions + dd_functions + bg_functions + pl_functions + np_functions,
-            tokentype=Name.Function,
-            ))
-    app.add_lexer('python', python_lexer)
+    #python_lexer.add_filter(NameHighlightFilter(
+    #        names= dl_functions + dd_functions + bg_functions + pl_functions + np_functions,
+    #        tokentype=Name.Function,
+    #        ))
+    #app.add_lexer('python', python_lexer)
 
 # These folders are copied to the documentation's HTML output
 html_static_path = ['_static']
 
 # Add path to custom CSS file to overwrite some of the default CSS settings
 html_css_files = [
-    'custom.css',
-    'table_util.css',
-    'table_main.css',
+#    'custom.css',
+#    'table_util.css',
+#    'table_main.css',
     'theme_override.css'
 ]
 
@@ -173,13 +194,13 @@ default_role = 'math'  # with this, :math:`\psi` can be written simply as `\psi`
 
 
 # -- Options for HTML output -------------------------------------------------
-html_theme = "sphinx_rtd_theme"
-html_theme_path = ["_themes", ]
+#html_theme = "sphinx_rtd_theme"
+#html_theme_path = ["_themes", ]
 html_static_path = ['_static']
 html_title = 'DeerLab'
 highlight_language = 'python'
 primary_domain = 'py'
-html_logo = '_static/logo.png'
+html_logo = '_static/logo_docs.png'
 
 
 # Design pygments patch for MATLAB true code highlighting
@@ -220,5 +241,5 @@ def pygments_monkeypatch_style(mod_name, cls):
     from pygments.styles import STYLE_MAP
     STYLE_MAP[mod_name] = mod_name + "::" + cls_name
 
-pygments_monkeypatch_style("my_fancy_style", MyFancyStyle)
-pygments_style = "my_fancy_style"
+#pygments_monkeypatch_style("my_fancy_style", MyFancyStyle)
+#pygments_style = "my_fancy_style"

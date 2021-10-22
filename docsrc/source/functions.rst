@@ -94,8 +94,7 @@ This class of functions helps to find an optimal choice of model or model parame
 
 .. toctree::
     :hidden:
-    :glob:
-    :maxdepth: 1
+    :maxdepth: 2
 
     ./functions/selregparam
     ./functions/regparamrange

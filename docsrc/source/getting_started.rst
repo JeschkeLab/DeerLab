@@ -37,7 +37,7 @@ Another important package is `Matplotlib <https://matplotlib.org/>`_, a library 
 
 
 Python lists and NumPy arrays
----------------------------------------------------------------
+*******************************
 In DeerLab, many functions accept Python lists, NumPy arrays, or both as inputs. While a Python list can contain different data types within a single list, all of the elements in a NumPy array (a so called ndarray) should share the same data type. For example: ::
 
     a = [1,2,3] # is a list-type
@@ -142,7 +142,7 @@ The models that have an associated parametric function, e.g. ``bg_hom3d``, must 
     Vmodel = dl.dipolarmodel(t, r, Pmodel=None, Bmodel=dl.bg_hom3d, npathways=1)  # Single-pathway 4pDEER model
 
 Manipulating the model
-*****************
+***********************
 
 The parameters and penalties associated to this model can be inspected by printing the model: ::
 
