@@ -7,7 +7,7 @@ import numpy as np
 from deerlab.dipolarkernel import dipolarkernel  
 from deerlab.regoperator import regoperator
 from deerlab.dd_models import freedist
-from deerlab.model import Model
+from deerlab.model import Model,Penalty
 from deerlab import bg_hom3d
 
 #===============================================================================
@@ -199,36 +199,6 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,
     for name,param in zip(DipolarSignal._parameter_list(order='vector'),parameters):
         getattr(DipolarSignal,name).set(**_importparameter(param))
 
-    # If P(r) is non-parametric, impose regularization 
-    if Pnonparametric: 
-        DipolarSignal.addregularization(functional='aic',description='Tikhonov regularization of the distance distribution.')
-        DipolarSignal.regularization.weight.set(lb=1e-9,ub=1e3)
-        
-    # If include compactness penalty
-    if compactness:
-        # Define the compactness penalty function
-        def compactness_penalty(*args): 
-            P = Pmodel(*[r]*Nconstants,*args)
-            P = P/np.trapz(P,r)
-            return np.sqrt(P*(r - np.trapz(P*r,r))**2*np.mean(np.diff(r)))
-        # Add the penalty to the model
-        DipolarSignal.addpenalty('compactness',compactness_penalty,'icc',
-                    signature = Pmodel._parameter_list(),
-                    description = 'Distance distribution compactness penalty.')
-        DipolarSignal.compactness.weight.set(lb=1e-6, ub=1e1)
-
-    # If include smoothness penalty
-    if smoothness:
-        # Define the smoothness penalty function
-        L = regoperator(r,2)
-        def smoothness_penalty(*args): 
-            return L@Pmodel(*[r]*Nconstants,*args)
-        # Add the penalty to the model
-        DipolarSignal.addpenalty('smoothness',smoothness_penalty,'aic',
-                    signature = Pmodel._parameter_list(),
-                    description = 'Distance distribution smoothness penalty.')
-        DipolarSignal.smoothness.weight.set(lb=1e-9, ub=1e3)
-
     # Set other dipolar model specific attributes
     DipolarSignal.Pmodel = Pmodel
     DipolarSignal.Bmodel = Pmodel
@@ -237,6 +207,50 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,
     return DipolarSignal
 #===============================================================================
 
+#===============================================================================
+def dipolarpenalty(model,axis,type,selection=None):
+
+    if model is None: 
+        model = freedist(axis)
+    Nconstants = len(model._constantsInfo)
+
+    # If include compactness penalty
+    if type=='compactness':
+
+        if selection is None: 
+            selection = 'icc'
+
+        # Define the compactness penalty function
+        def compactness_penalty(*args): 
+            P = model(*[axis]*Nconstants,*args)
+            P = P/np.trapz(P,axis)
+            return np.sqrt(P*(axis - np.trapz(P*axis,axis))**2*np.mean(np.diff(axis)))
+        # Add the penalty to the model
+        penalty = Penalty(compactness_penalty,selection,
+                    signature = model._parameter_list(),
+                    description = 'Distance distribution compactness penalty.')
+        penalty.weight.set(lb=1e-6, ub=1e1)
+
+    # If include smoothness penalty
+    elif type=='smoothness':
+        if selection is None: 
+            selection = 'aic'
+
+        # Define the smoothness penalty function
+        L = regoperator(axis,2)
+        def smoothness_penalty(*args): 
+            return L@model(*[axis]*Nconstants,*args)
+        # Add the penalty to the model
+        penalty = Penalty(smoothness_penalty,selection,
+                    signature = model._parameter_list(),
+                    description = 'Distance distribution smoothness penalty.')
+        penalty.weight.set(lb=1e-9, ub=1e3)
+
+    else:
+        raise KeyError(f"The requested {type} is not a valid penalty. Must be 'compactness' or 'smoothness'.")
+
+    return penalty
+#===============================================================================
 
 # -----------------------------------------------------------------------------------------
 def _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways):
