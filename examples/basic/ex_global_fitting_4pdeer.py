@@ -33,7 +33,7 @@ V2model = dl.dipolarmodel(ts[1],r)
 V3model = dl.dipolarmodel(ts[2],r)
 
 # Make the global model by joining the individual models
-globalmodel = dl.expand(V1model,V2model,V3model)
+globalmodel = dl.merge(V1model,V2model,V3model)
 
 # Link the distance distribution into a global parameter 
 globalmodel = dl.link(globalmodel,
