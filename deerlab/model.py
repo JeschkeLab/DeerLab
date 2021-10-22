@@ -1206,13 +1206,13 @@ def _combinemodels(mode,*inputmodels,addweights=False):
             Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
             if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
             Amatrices.append(Amatrix)
-        if mode=='expand':
+        if mode=='merge':
             ysizes = [A.shape[0] for A in Amatrices]
             Anonlin_full = block_diag(Amatrices).toarray()
             if not any(arelinear):
                 Anonlin_full = np.sum(Anonlin_full,1)
 
-        elif mode=='combine':
+        elif mode=='lincombine':
             Anonlin_full = np.hstack(Amatrices)
 
         return Anonlin_full
@@ -1235,7 +1235,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
     # Add parent models 
     combinedModel.parents = models
 
-    if mode=='expand':
+    if mode=='merge':
         # Add post-evalution function for splitting of the call outputs
         setattr(combinedModel,'_posteval_fcn',_split_output) 
 
@@ -1263,7 +1263,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
 #==============================================================================================
 
 #==============================================================================================
-def expand(*inputmodels,addweights=False):
+def merge(*inputmodels,addweights=False):
     """
     Create a multi-response model from multiple individual models. 
 
@@ -1274,7 +1274,7 @@ def expand(*inputmodels,addweights=False):
         scaling factor parameters will be added. The names of the ``N``-th input model parameter will be 
         changed by a suffix ``_N`` in the new model. Example:: 
 
-            newmodel = expand(model1,model2)
+            newmodel = merge(model1,model2)
             newmodel.parA_1 # Originally parA from model1
             newmodel.parA_2 # Originally parA from model2
 
@@ -1289,11 +1289,11 @@ def expand(*inputmodels,addweights=False):
         New model object taking the combined parameter set and returning a list of model reponses
         correponding to each of the input models. 
     """
-    return _combinemodels('expand',*inputmodels,addweights=addweights)
+    return _combinemodels('merge',*inputmodels,addweights=addweights)
 #==============================================================================================
 
 #==============================================================================================
-def combine(*inputmodels,addweights=False):
+def lincombine(*inputmodels,addweights=False):
     """
     Create model whose response is a linear combination of multiple individual model responses. 
 
@@ -1304,7 +1304,7 @@ def combine(*inputmodels,addweights=False):
         has no linear parameters, a linear scaling factor parameters will be added. The names 
         of the ``N``-th input model parameter will be changed by a suffix ``_N`` in the new model. Example:: 
 
-            newmodel = expand(model1,model2)
+            newmodel = lincombine(model1,model2)
             newmodel.parA_1 # Originally parA from model1
             newmodel.parA_2 # Originally parA from model2
 
@@ -1318,7 +1318,7 @@ def combine(*inputmodels,addweights=False):
         New model object taking the combined parameter set and returning a response that is a linear
         combination of the input models.
     """
-    return _combinemodels('combine',*inputmodels,addweights=addweights)
+    return _combinemodels('lincombine',*inputmodels,addweights=addweights)
 #==============================================================================================
 
 
