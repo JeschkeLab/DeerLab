@@ -45,7 +45,7 @@ def dropletmodel(t):
     # Liquid-droplet-state component model
     Vld_model = dl.dipolarmodel(t,r, Pmodel=dl.dd_gauss, Bmodel=dl.bg_strexp, npathways=2)
     # Create a dipolar signal model that is a linear combination of both components
-    Vmodel = dl.combine(Vdis_model,Vld_model, addweights=True)
+    Vmodel = dl.lincombine(Vdis_model,Vld_model, addweights=True)
     Vmodel = dl.link(Vmodel,
                     reftime1=['reftime1_1','reftime1_2'],
                     reftime2=['reftime2_1','reftime2_2'],
@@ -61,7 +61,7 @@ Vmodel1,Vdismodel1,Vldmodel1 = dropletmodel(ts[0])
 Vmodel2,Vdismodel2,Vldmodel2 = dropletmodel(ts[1])
 
 # Create the global model
-globalModel = dl.expand(Vmodel1,Vmodel2)
+globalModel = dl.merge(Vmodel1,Vmodel2)
 # Link global parameters toghether with new names
 globalModel = dl.link(globalModel,
                 eta = ['weight_1_1','weight_1_2'],
