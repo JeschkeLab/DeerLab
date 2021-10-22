@@ -53,7 +53,7 @@ for n in range(Nsignals):
     Vmodels[n].reftime.set(lb=0,ub=0.5,par0=0.2)
 
 # Combine the individual signal models into a single global models
-globalmodel = dl.expand(*Vmodels)
+globalmodel = dl.merge(*Vmodels)
 # Link the global parameters toghether
 globalmodel = dl.link(globalmodel,
         meanA = ['meanA_1', 'meanA_2', 'meanA_3'],

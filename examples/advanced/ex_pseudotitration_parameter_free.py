@@ -47,13 +47,13 @@ r = np.linspace(1.5,6,90)
 # linear combination of two non-parametric distributions
 PAmodel = dl.freedist(r)
 PBmodel = dl.freedist(r)
-Pmodel = dl.combine(PAmodel,PBmodel,addweights=True)
+Pmodel = dl.lincombine(PAmodel,PBmodel,addweights=True)
 
 # Construct the dipolar models of the individual signals
 Vmodels = [dl.dipolarmodel(t,r,Pmodel) for t in ts]
 
 # Create the global model
-titrmodel = dl.expand(*Vmodels)
+titrmodel = dl.merge(*Vmodels)
 # Make the two components of the distance distriution global
 titrmodel = dl.link(titrmodel, 
                 PA = ['P_1_1', 'P_1_2', 'P_1_3', 'P_1_4', 'P_1_5'],

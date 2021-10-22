@@ -37,7 +37,7 @@ basisModel = dl.dd_gauss
 # Model construction
 for n in range(Nmax):
     # Construct the n-Gaussian model
-    Pmodels[n] = dl.combine(*[basisModel]*(n+1))
+    Pmodels[n] = dl.lincombine(*[basisModel]*(n+1))
     # Construct the corresponding dipolar signal model
     Vmodels[n] = dl.dipolarmodel(t,r,Pmodel=Pmodels[n])    
 
