@@ -32,7 +32,7 @@ def test_Nparam_nonlin():
 
 # ======================================================================
 def test_Nparam_lin(): 
-    "Check that the combined model has the right number of parameters"
+    "Check that the related model has the right number of parameters"
     model = dl.dd_gauss2
 
     newmodel = relate(model, width1 = lambda mean1: mean1/2)
@@ -42,7 +42,7 @@ def test_Nparam_lin():
 
 # ======================================================================
 def test_Nparam(): 
-    "Check that the combined model has the right number of parameters"
+    "Check that the related model has the right number of parameters"
     model = dl.dd_gauss2
 
     newmodel = relate(model, width1 = lambda mean1: mean1/2)
@@ -51,7 +51,7 @@ def test_Nparam():
 
 # ======================================================================
 def test_Nparam_list(): 
-    "Check that the combined model has the right number of parameters"
+    "Check that the related model has the right number of parameters"
     model = dl.dd_gauss3
 
     newmodel = relate(model, width1 = lambda mean1: mean1/2)
@@ -60,7 +60,7 @@ def test_Nparam_list():
 
 # ======================================================================
 def test_param_names(): 
-    "Check that the combined model has the adjusted parameter names"
+    "Check that the related model has the adjusted parameter names"
     model = dl.dd_gauss
 
     newmodel = relate(model, width = lambda mean: mean/2)
@@ -69,7 +69,7 @@ def test_param_names():
 
 # ======================================================================
 def test_relate_one_nonlinear(): 
-    "Check that that combine works correctly for one related parameter"
+    "Check that the method works correctly for one related parameter"
     model = dl.dd_gauss
     x = np.linspace(0,10,400)
     ref = model(x,4,0.2)
@@ -82,7 +82,7 @@ def test_relate_one_nonlinear():
 
 # ======================================================================
 def test_relate_two_nonlinear(): 
-    "Check that that combine works correctly for two related parameters"
+    "Check that the method works correctly for two related parameters"
     model = dl.dd_gauss2
     x = np.linspace(0,10,400)
     ref = model(x,3,0.2,6,0.1,1,1)
@@ -97,7 +97,7 @@ def test_relate_two_nonlinear():
 
 # ======================================================================
 def test_relate_two_nonlinear_2(): 
-    "Check that that combine works correctly for two related parameters"
+    "Check that the method works correctly for two related parameters"
     model = dl.dd_gauss2
     x = np.linspace(0,10,400)
     ref = model(x,3,0.2,3,0.1,1,1)
@@ -112,7 +112,7 @@ def test_relate_two_nonlinear_2():
 
 # ======================================================================
 def test_relate_fit(): 
-    "Check that that combine works correctly for one related parameter"
+    "Check that the method works correctly for one related parameter"
     model = dl.dd_gauss
     x = np.linspace(0,10,400)
     ref = model(x,4,0.2)

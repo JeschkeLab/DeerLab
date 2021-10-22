@@ -1,7 +1,7 @@
 from numpy.random.mtrand import rand
 from deerlab.classes import UQResult
 import numpy as np 
-from deerlab import profile_analysis, dd_gauss, whitegaussnoise, expand, link
+from deerlab import profile_analysis, dd_gauss, whitegaussnoise, merge, link
 from deerlab.utils import assert_docstring
 
 def test_types():
@@ -48,7 +48,7 @@ def test_globalmodel():
     sigma = 0.1
     modelA = dd_gauss.copy()
     modelB = dd_gauss.copy()
-    model = expand(modelA,modelB)
+    model = merge(modelA,modelB)
     model = link(model,
             mean=['mean_1','mean_2'],
             width=['width_1','width_2'])
