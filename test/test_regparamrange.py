@@ -26,7 +26,7 @@ def test_values():
     t = np.linspace(0,3,100)
     r = np.linspace(2,6,5)
     K = dipolarkernel(t,r,integralop=False)
-    L = regoperator(r,2)
+    L = regoperator(r,2,includeedges=True)
 
     alpharef = [0.39810, 0.50119,  0.63096,  0.79432,  1.00000, 1.25893,
                 1.58489, 1.99526,  2.51189,  3.16228,  3.98107, 5.01187,

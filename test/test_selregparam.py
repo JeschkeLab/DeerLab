@@ -34,7 +34,7 @@ def get_alpha_from_method(method):
     r = np.linspace(2,5,80)
     P = dd_gauss(r,3.0,0.16986436005760383)
     K = dipolarkernel(t,r)
-    L = regoperator(r,2)
+    L = regoperator(r,2,includeedges=True)
     V = K@P
 
     alpha = selregparam(V,K,cvxnnls,method=method,noiselvl=0,regop=L)
@@ -258,7 +258,7 @@ def test_unconstrained():
     r = np.linspace(2,5,80)
     P = dd_gauss(r,3,0.15)
     K = dipolarkernel(t,r)
-    L = regoperator(r,2)
+    L = regoperator(r,2,includeedges=True)
     V = K@P
 
     logalpha = np.log10(selregparam(V,K,np.linalg.solve,method='aic',regop=L))
@@ -275,7 +275,7 @@ def test_manual_candidates():
     r = np.linspace(2,5,80)
     P = dd_gauss(r,3,0.15)
     K = dipolarkernel(t,r)
-    L = regoperator(r,2)
+    L = regoperator(r,2,includeedges=True)
     alphas = regparamrange(K,L)
     V = K@P
 
@@ -295,7 +295,7 @@ def test_tikh_value():
     P = dd_gauss(r,3,0.15)
     K = dipolarkernel(t,r)
     V = K@P + whitegaussnoise(t,0.01)
-    L = regoperator(r,2)
+    L = regoperator(r,2,includeedges=True)
 
     alpha = selregparam(V,K,cvxnnls,method='aic',regop=L)
     loga = np.log10(alpha)
