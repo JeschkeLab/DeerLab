@@ -301,13 +301,13 @@ def test_ex_4pdeer_fit():
 def test_ex_5pdeer_type(): 
     "Check the 5-pulse DEER experimental model."
 
-    experiment = ex_5pdeer(tau1,tau2)
+    experiment = ex_5pdeer(tau1,tau2,tau3)
 
     assert isinstance(experiment,ExperimentInfo) 
 # ======================================================================
 
 # ======================================================================
-def test_ex_4pdeer_fit(): 
+def test_ex_5pdeer_fit(): 
     "Check the 5-pulse DEER experimental model in fitting."
 
     experiment = ex_5pdeer(tau1,tau2,tau3)
