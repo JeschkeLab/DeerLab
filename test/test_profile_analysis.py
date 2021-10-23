@@ -47,8 +47,8 @@ def test_globalmodel():
 
     r = np.linspace(2,6,300)
     sigma = 0.1
-    modelA = dd_gauss.copy()
-    modelB = dd_gauss.copy()
+    modelA = deepcopy(dd_gauss)
+    modelB = deepcopy(dd_gauss)
     model = merge(modelA,modelB)
     model = link(model,
             mean=['mean_1','mean_2'],
