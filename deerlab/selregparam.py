@@ -140,7 +140,7 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
         
         # Get range of potential alpha values candidates
         if candidates is None:
-            alphaCandidates = dl.regparamrange(A,L)
+            alphaCandidates = np.linspace(np.log10(searchrange[0]),np.log10(searchrange[1]),60)
         else: 
             alphaCandidates = np.atleast_1d(candidates)
 
