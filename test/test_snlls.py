@@ -301,13 +301,6 @@ def test_nnls_fnnls():
     assert_solver(solver='fnnls')
 #=======================================================================
 
-def test_nnls_nnlsbpp():
-#=======================================================================
-    "Check that the 'nnlsbpp' algorithm used for the NNLS subproblem work"
-
-    assert_solver(solver='nnlsbpp')
-#=======================================================================
-
 def test_goodness_of_fit():
 #============================================================
     "Check the goodness-of-fit statistics are correct"
