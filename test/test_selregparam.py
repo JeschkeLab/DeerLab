@@ -189,12 +189,12 @@ def test_algorithms():
     P = dd_gauss(r,3,0.2)
     K = dipolarkernel(t,r)
     L = regoperator(r,2)
-    V = K@P + whitegaussnoise(t,0.02)
+    V = K@P + whitegaussnoise(t,0.02,seed=1)
 
     alpha_grid = selregparam(V,K,cvxnnls,method='aic',algorithm='grid',regop=L)
     alpha_brent = selregparam(V,K,cvxnnls,method='aic',algorithm='brent',regop=L)
 
-    assert abs(1-alpha_grid/alpha_brent) < 0.1
+    assert abs(1-alpha_grid/alpha_brent) < 0.15
 #=======================================================================
 
 
