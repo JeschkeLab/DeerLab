@@ -1,7 +1,7 @@
 
 from deerlab.utils.utils import assert_docstring
 import numpy as np
-from deerlab import dipolarkernel, regoperator, regparamrange, selregparam, whitegaussnoise
+from deerlab import dipolarkernel, regoperator, selregparam, whitegaussnoise
 from deerlab.dd_models import dd_gauss,dd_gauss2
 from deerlab.utils import assert_docstring
 from deerlab.solvers import cvxnnls
@@ -165,7 +165,7 @@ def test_lr_value():
     "Check that the value returned by the LR selection method is correct"
     
     loga = get_alpha_from_method('lr')
-    logaref = -0.50  # Computed with DeerLab (0.11.0)
+    logaref = -7.66  # Computed with DeerLab (0.11.0)
 
     assert abs(1-loga/logaref) < 0.15
 #=======================================================================
@@ -186,10 +186,10 @@ def test_algorithms():
     
     t = np.linspace(0,5,80)
     r = np.linspace(2,5,80)
-    P = dd_gauss(r,3,0.16986436005760383)
+    P = dd_gauss(r,3,0.2)
     K = dipolarkernel(t,r)
     L = regoperator(r,2)
-    V = K@P
+    V = K@P + whitegaussnoise(t,0.02)
 
     alpha_grid = selregparam(V,K,cvxnnls,method='aic',algorithm='grid',regop=L)
     alpha_brent = selregparam(V,K,cvxnnls,method='aic',algorithm='brent',regop=L)
@@ -276,7 +276,7 @@ def test_manual_candidates():
     P = dd_gauss(r,3,0.15)
     K = dipolarkernel(t,r)
     L = regoperator(r,2)
-    alphas = regparamrange(K,L)
+    alphas = np.linspace(-8,2,60)
     V = K@P
 
     alpha_manual = np.log10(selregparam(V,K,cvxnnls,method='aic',candidates=alphas,regop=L))
