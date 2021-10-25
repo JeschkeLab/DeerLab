@@ -5,7 +5,6 @@ from .ex_models import *
 from .model import Model, link, lincombine, merge, relate, fit
 from .deerload import deerload
 from .selregparam import selregparam
-from .regparamrange import regparamrange
 from .dipolarkernel import dipolarkernel
 from .dipolarbackground import dipolarbackground
 from .dipolarmodel import dipolarmodel, model4pdeer,model3pdeer,model5pdeer
