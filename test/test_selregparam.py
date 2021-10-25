@@ -135,7 +135,7 @@ def test_ncp_value():
     "Check that the value returned by the NCP selection method is correct"
     
     loga = get_alpha_from_method('ncp')
-    logaref = -1.7574 # Computed with DeerLab-Matlab (0.9.2)
+    logaref = 1.7574 # Computed with DeerLab-Matlab (0.9.2)
 
     assert abs(1-loga/logaref) < 0.1
 #=======================================================================

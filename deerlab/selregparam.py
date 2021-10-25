@@ -9,7 +9,7 @@ import math as m
 import deerlab as dl
 
 def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
-                regop=None, weights=None, full_output=False, candidates=None):
+                searchrange=[1e-8,1e2],regop=None, weights=None, full_output=False, candidates=None):
     r"""
     Selection of optimal regularization parameter based on a selection criterion.
 
@@ -23,15 +23,6 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
 
     solver : callable
         Linear least-squares solver. Must be a callable function with signature ``solver(AtA,Aty)``.
-
-    regtype : string
-        Regularization functional type: 
-    
-        * ``'tikhonov'`` - Tikhonov regularizaton
-        * ``'tv'`` - Total variation regularization
-        * ``'huber'`` - Huber regularization
-        
-        The default is ``'tikhonov'``.
 
     method : string
         Method for the selection of the optimal regularization parameter.
@@ -55,14 +46,6 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
         Array of weighting coefficients for the individual signals in global fitting.
         If not specified all datasets are weighted inversely proportional to their noise levels.
 
-    candidates : list, optional
-        List or array of candidate regularization parameter values to be evaluated. 
-        If not specified, these are automatically computed from the GSVD of the 
-        dipolar kernel and regularization operator.
-
-    regop : 2D array_like, optional
-        Regularization operator matrix, the default is the second-order differential operator.
-
     algorithm : string, optional
         Search algorithm: 
         
@@ -70,6 +53,19 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
         * ``'brent'`` - Brent-algorithm, fast.
         
         The default is ``'brent'``.
+
+    searchrange : two-element list, optional 
+        Search range for the optimization of the regularization parameter with the ``'brent'`` algorithm.
+        If not specified the default search range defaults to ``[1e-8,1e2]``.
+
+    candidates : list, optional
+        List or array of candidate regularization parameter values to be evaluated with the ``'grid'`` algorithm. 
+        If not specified, these are automatically computed from the GSVD of the 
+        dipolar kernel and regularization operator. 
+
+    regop : 2D array_like, optional
+        Regularization operator matrix, the default is the second-order differential operator.
+
         
     full_output : boolean, optional
         If enabled the function will return additional output arguments in a tuple, the default is False.
@@ -80,9 +76,6 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
     noiselvl : float scalar, optional
         Estimate of the noise standard deviation, if not specified it is estimated automatically.
         Used for the MCL selection method.  
-
-    huberparam : float scalar, optional
-        Value of the Huber parameter used in Huber regularization, the default is 1.35.
 
     Returns
     -------
@@ -114,11 +107,6 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
         L = dl.regoperator(np.arange(np.shape(A)[1]),2)
     else: 
         L = regop
-    # Get range of potential alpha values candidates
-    if candidates is None:
-        alphaCandidates = dl.regparamrange(A,L)
-    else: 
-        alphaCandidates = np.atleast_1d(candidates)
 
     # Create function handle
     evalalpha = lambda alpha: _evalalpha(alpha, y, A, L, solver, method, noiselvl, weights)
@@ -127,8 +115,8 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
     if algorithm == 'brent':
                     
         # Search boundaries
-        lga_min = m.log10(min(alphaCandidates))
-        lga_max = m.log10(max(alphaCandidates))
+        lga_min = m.log10(searchrange[0])
+        lga_max = m.log10(searchrange[1])
 
         # Create containers for non-local variables
         functional,residuals,penalties,alphas_evaled = (np.array(0) for _ in range(4))
@@ -150,6 +138,12 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
 
     elif algorithm=='grid':
         
+        # Get range of potential alpha values candidates
+        if candidates is None:
+            alphaCandidates = dl.regparamrange(A,L)
+        else: 
+            alphaCandidates = np.atleast_1d(candidates)
+
         # Evaluate the full grid of alpha-candidates 
         functional,residuals,penalties,alphas_evaled = tuple(zip(*[evalalpha(alpha) for alpha in alphaCandidates]))
 
