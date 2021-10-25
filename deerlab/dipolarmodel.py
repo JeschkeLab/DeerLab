@@ -10,7 +10,7 @@ from deerlab.model import Model
 from deerlab import bg_hom3d
 
 #===============================================================================
-def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
+def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,experiment=None):
     """
     Construct a dipolar EPR signal model. 
 
@@ -188,6 +188,35 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None):
     for name,param in zip(DipolarSignal._parameter_list(order='vector'),parameters):
         getattr(DipolarSignal,name).set(**_importparameter(param))
 
+    # Set prior knowledge on the parameters if experiment is specified
+    if experiment is not None:
+        if not isinstance(experiment,ExperimentInfo): 
+            raise TypeError('The experiment must be a valid deerlab.ExperimentInfo object.')
+
+        # Check that the number of requested pathways does not exceed the theoretical limit of the experiment
+        maxpathways = len(experiment.reftimes)
+        if npathways>maxpathways:
+            raise ValueError(f'The {experiment.name} experiment can only have up to {maxpathways} dipolar pathways.')
+
+        # Compile the parameter names to change in the model
+        if npathways>1:
+            reftime_names = [f'reftime{n+1}' for n in range(npathways)]
+            lams_names = [f'lam{n+1}' for n in range(npathways)]
+        else: 
+            reftime_names = ['reftime']
+            lams_names = ['mod']
+
+        # Specify start values and boundaries according to experimental timings
+        for n in range(npathways):
+            getattr(DipolarSignal,reftime_names[n]).set(
+                par0=experiment.reftimes[n]['par0'],
+                lb=experiment.reftimes[n]['lb'],
+                ub=experiment.reftimes[n]['ub'])
+            getattr(DipolarSignal,lams_names[n]).set(
+                par0=experiment.lams[n]['par0'],
+                lb=experiment.lams[n]['lb'],
+                ub=experiment.lams[n]['ub'])
+
     # Set other dipolar model specific attributes
     DipolarSignal.Pmodel = Pmodel
     DipolarSignal.Bmodel = Pmodel
@@ -215,52 +244,119 @@ def _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,np
 
 
 #===============================================================================
-def model3pdeer(t,r,tau,Pmodel=None,Bmodel=bg_hom3d,npathways=2):
+class ExperimentInfo():
+    def __init__(self,name,reftimes,lams):
+        self.reftimes = []
+        for reftime in reftimes:
+            self.reftimes.append({
+                'par0': reftime,
+                'lb': reftime - 0.1,
+                'ub': reftime + 0.1
+            })
+        self.lams = []
+        for lam in lams:
+            self.lams.append({
+                'par0': lam,
+                'lb': 0,
+                'ub': 1
+            })
+        self.name = name
+#===============================================================================
 
-    # Check number of pathways does not exceed reality
-    if npathways>2: 
-        raise ValueError('A 3-pulse DEER signal can have up to two dipolar pathways.')
+#===============================================================================
+def ex_3pdeer(tau):
+    r"""
+    Generate a 3-pulse DEER dipolar experiment model. 
+    
+    The theoretically predicted refocusing times of its dipolar pathways are
+    automatically computed from the pulse sequence delays.  
+
+    Parameters 
+    ----------
+
+    tau : float scalar
+        Static interpulse delay. 
+
+    Returns
+    -------
+    experiment : :ref:`Experiment`
+        Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
+        constraints into the model.
+
+    """
+
     # Theoretical refocusing pathways
     reftimes = [ tau, 0]
     # Initial guesses for the pathway amplitudes
     lams_par0 = [ 0.3, 0.05]
 
-
-    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways)
-    Vmodel.description = f'3-pulse DEER dipolar model ({npathways} dipolar pathways)'
-    return Vmodel
+    return ExperimentInfo('3-pulse DEER',reftimes,lams_par0)
 #===============================================================================
 
 #===============================================================================
-def model4pdeer(t,r,tau1,tau2,Pmodel=None,Bmodel=bg_hom3d,npathways=2):
+def ex_4pdeer(tau1,tau2):
+    r"""
+    Generate a 4-pulse DEER dipolar experiment model. 
+    
+    The theoretically predicted refocusing times of its dipolar pathways are
+    automatically computed from the pulse sequence delays.  
 
-    # Check number of pathways does not exceed reality
-    if npathways>4: 
-        raise ValueError('A 4-pulse DEER signal can have up to four dipolar pathways.')
+    Parameters 
+    ----------
+
+    tau1 : float scalar
+        1st static interpulse delay. 
+   
+    tau2 : float scalar
+        2nd static interpulse delay. 
+
+    Returns
+    -------
+    experiment : :ref:`Experiment`
+        Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
+        constraints into the model.
+
+    """
     # Theoretical refocusing pathways
     reftimes = [ tau1, tau1+tau2, 0, tau2 ]
     # Initial guesses for the pathway amplitudes
     lams_par0 = [ 0.3, 0.05, 0.05, 0.05]
 
-    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways)
-    Vmodel.description = f'4-pulse DEER dipolar model ({npathways} dipolar pathways)'
-    return Vmodel
+    return ExperimentInfo('4-pulse DEER',reftimes,lams_par0)
 #===============================================================================
 
 #===============================================================================
-def model5pdeer(t,r,tau1,tau2,t2,Pmodel=None,Bmodel=bg_hom3d,npathways=2):
+def ex_5pdeer(tau1,tau2,tau3):
+    r"""
+    Generate a 5-pulse DEER dipolar experiment model. 
+    
+    The theoretically predicted refocusing times of its dipolar pathways are
+    automatically computed from the pulse sequence delays.  
 
-    # Check number of pathways does not exceed reality
-    if npathways>8: 
-        raise ValueError('A 5-pulse DEER signal can have up to eight dipolar pathways.')
+    Parameters 
+    ----------
+
+    tau1 : float scalar
+        1st static interpulse delay. 
+   
+    tau2 : float scalar
+        2nd static interpulse delay. 
+
+    tau3 : float scalar
+        3rd static interpulse delay. 
+
+    Returns
+    -------
+    experiment : :ref:`Experiment`
+        Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
+        constraints into the model.
+
+    """
     # Theoretical refocusing pathways
-    reftimes = [ t2, tau2, tau2-t2, tau1+t2, 0, tau1+tau2, tau1+tau2-t2, tau1]
+    reftimes = [ tau3, tau2, tau2-tau3, tau1+tau3, 0, tau1+tau2, tau1+tau2-tau3, tau1]
     # Initial guesses for the pathway amplitudes
     lams_par0 = [ 0.3, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
-
-    Vmodel = _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways)
-    Vmodel.description = f'5-pulse DEER dipolar model ({npathways} dipolar pathways)'
-    return Vmodel
+    
+    return ExperimentInfo('5-pulse DEER',reftimes,lams_par0)
 #===============================================================================
-
 
