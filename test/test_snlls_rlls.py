@@ -26,13 +26,6 @@ def test_tikh_solver_fnnls():
     assert_solver('fnnls')
 #============================================================
 
-def test_tikh_solver_nnlsbpp():
-#============================================================
-    "Check that 'nnlsbpp' solves a Tikhonov regularization problem"
-
-    assert_solver('nnlsbpp')
-#============================================================
-
 def test_tikh_solver_cvx():
 #============================================================
     "Check that 'cvx' solves a Tikhonov regularization problem"

@@ -1,5 +1,5 @@
 import numpy as np
-from deerlab.solvers import fnnls, cvxnnls, nnlsbpp, _lsqcomponents
+from deerlab.solvers import fnnls, cvxnnls, _lsqcomponents
 from deerlab import dipolarkernel, regoperator
 from deerlab.dd_models import dd_gauss,dd_gauss2
 
@@ -35,18 +35,10 @@ def test_multigauss_problem_fnnls():
 
     assert_multigauss_problem(fnnls)
 #=======================================================================
-test_multigauss_problem_fnnls()
-
-def test_multigauss_problem_nnlsbpp():
-#=======================================================================
-    "Check nnlsbpp can solve the linear part of a multi-Gauss problem"
-
-    assert_multigauss_problem(nnlsbpp)
-#=======================================================================
 
 def test_multigauss_problem_cvxnnls():
 #=======================================================================
-    "Check nnlsbpp can solve the linear part of a multi-Gauss problem"
+    "Check cvxnnls can solve the linear part of a multi-Gauss problem"
 
     assert_multigauss_problem(cvxnnls)
 #=======================================================================
