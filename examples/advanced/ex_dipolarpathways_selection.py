@@ -34,7 +34,8 @@ r = np.linspace(2,6,100)
 Nmax = 4
 
 # Create the 4-pulse DEER signal models with increasing number of pathways
-Vmodels = [dl.model4pdeer(t,r,𝜏1,𝜏2,npathways=n+1) for n in range(Nmax)]
+experiment = dl.ex_4pdeer(𝜏1,𝜏2)
+Vmodels = [dl.dipolarmodel(t, r, npathways=n+1, experiment=experiment) for n in range(Nmax)]
 
 # Fit the individual models to the data
 fits = [[]]*Nmax

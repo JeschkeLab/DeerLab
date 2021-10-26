@@ -225,7 +225,6 @@ def test_goodness_of_fit_global():
 
     assert (abs(stats[0]['chi2red'] - 1) < 5e-2) and (abs(stats[1]['chi2red'] - 1) < 5e-2)
 #============================================================
-test_goodness_of_fit_global()
 
 @skip_on('_tkinter.TclError', reason="A problem with the Tk backend occured")
 def test_plot():
