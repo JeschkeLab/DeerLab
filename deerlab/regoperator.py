@@ -6,7 +6,7 @@
 
 import numpy as np
 
-def regoperator(r,d=2,includeedges=True):
+def regoperator(r,d=2,includeedges=False):
     r""" Computes the discrete approximation to the derivative operators used as regularization operators.
 
     Parameters
@@ -17,7 +17,7 @@ def regoperator(r,d=2,includeedges=True):
         Derivative order, the default is 2.
     includeedges :  boolean, optional
         Determines whether the first and last point of the distance range are included in the derivative.
-        The default is True.
+        The default is False.
 
     Returns
     -------

@@ -20,8 +20,8 @@ def test_L1shape():
     "Check that L1 is returned with correct size"
     
     n = 100
-    r = np.linspace(2,6,n)
-    L = regoperator(r,1)
+    r = np.linspace(2, 6, n)
+    L = regoperator(r, 1, includeedges=True)
 
     assert L.shape==(n, n)
 #=======================================================================
@@ -31,8 +31,8 @@ def test_L2shape():
     "Check that L2 is returned with correct size"
     
     n = 100
-    r = np.linspace(2,6,n)
-    L = regoperator(r,2)
+    r = np.linspace(2, 6, n)
+    L = regoperator(r, 2, includeedges=True)
 
     assert L.shape==(n, n)
 #=======================================================================
@@ -77,7 +77,7 @@ def test_edge_smoothing():
 
     r = np.arange(5)
     n = len(r)
-    L = regoperator(r,2)
+    L = regoperator(r, 2, includeedges=True)
     Lref = (np.eye(n, n)*(-2) + np.eye(n, n, k=-1) + np.eye(n, n, k=1))
 
     assert np.max(np.abs(L - Lref)) < 1e-10
@@ -117,8 +117,8 @@ def compare_analytical_derivative(n,nonuniform=False):
     elif n==3:
         dPnref = -((rn - rmean)**3 - 3*((rn - rmean))*sig**2)/sig**7/np.sqrt(2*pi)*np.exp(-(rn - rmean)**2/2/sig**2)
 
-    # Numerical finitie difference operators
-    Ln = regoperator(r,n)
+    # Numerical finite-difference operators
+    Ln = regoperator(r, n, includeedges=True)
 
     # Estimated derivatives of the Gaussian function
     dPn = Ln@P
