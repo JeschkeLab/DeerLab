@@ -24,15 +24,6 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
     solver : callable
         Linear least-squares solver. Must be a callable function with signature ``solver(AtA,Aty)``.
 
-    regtype : string
-        Regularization functional type: 
-    
-        * ``'tikhonov'`` - Tikhonov regularizaton
-        * ``'tv'`` - Total variation regularization
-        * ``'huber'`` - Huber regularization
-        
-        The default is ``'tikhonov'``.
-
     method : string
         Method for the selection of the optimal regularization parameter.
 
