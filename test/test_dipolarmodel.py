@@ -1,10 +1,10 @@
 from deerlab.dipolarkernel import dipolarkernel
+from deerlab.utils.utils import ovl
 from deerlab.whitegaussnoise import whitegaussnoise
 import numpy as np
 import matplotlib.pyplot as plt
 from deerlab.model import Model,fit
-from deerlab.dipolarmodel import dipolarmodel
-from deerlab.utils import ovl
+from deerlab.dipolarmodel import ExperimentInfo, dipolarmodel, ex_4pdeer, ex_3pdeer, ex_5pdeer
 from deerlab import dd_gauss,dd_gauss2,bg_hom3d,bg_exp
 import deerlab as dl 
 
@@ -252,50 +252,67 @@ def test_fit_Pnonparametric():
     assert np.allclose(result.model,V1path,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
-# ======================================================================
-def test_compactness_penalty_Pnonparametric(): 
-    "Check the fitting with a nonparametric distribution and the compactness penalty"
-
-    Vmodel = dipolarmodel(t,r,compactness=True)
-    Vmodel.compactness.weight.freeze(0.05)
-
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),nonlin_tol=1e-3)
-
-    assert ovl(result.P/1e5,Pr)>0.975
-# ======================================================================
+tau1,tau2,tau3 = 1,2,3
+V3pulse = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,0],[0.1,tau1]],bg=Bfcn)@Pr
+V4pulse = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,tau1],[0.1,tau1+tau2]],bg=Bfcn)@Pr
+V5pulse = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,tau3],[0.1,tau2]],bg=Bfcn)@Pr
 
 # ======================================================================
-def test_compactness_penalty_Pparametric(): 
-    "Check the fitting with a parametric distribution and the compactness penalty"
+def test_ex_3pdeer_type(): 
+    "Check the 3-pulse DEER experimental model."
 
-    Vmodel = dipolarmodel(t,r,Pmodel=dd_gauss,compactness=True)
-    Vmodel.compactness.weight.freeze(0.05)
-    
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),nonlin_tol=1e-3)
+    experiment = ex_3pdeer(tau1)
 
-    assert ovl(result.evaluate(dd_gauss,r),Pr)>0.975
+    assert isinstance(experiment,ExperimentInfo) 
 # ======================================================================
 
 # ======================================================================
-def test_smoothness_penalty_Pnonparametric(): 
-    "Check the fitting with a nonparametric distribution and the smoothness penalty"
+def test_ex_3pdeer_fit(): 
+    "Check the 3-pulse DEER experimental model."
 
-    Vmodel = dipolarmodel(t,r,smoothness=True)
-    Vmodel.smoothness.weight.freeze(0.00005)
+    experiment = ex_3pdeer(tau1)
+    Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=2,experiment=experiment)
+    result = fit(Vmodel,V3pulse,nonlin_tol=1e-3)
 
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),nonlin_tol=1e-3)
-
-    assert ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(V3pulse,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
-def test_compactness_penalty_Pparametric(): 
-    "Check the fitting with a parametric distribution and the smoothness penalty"
+def test_ex_4pdeer_type(): 
+    "Check the 4-pulse DEER experimental model."
 
-    Vmodel = dipolarmodel(t,r,Pmodel=dd_gauss,smoothness=True)
-    Vmodel.smoothness.weight.freeze(0.005)
-    
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),nonlin_tol=1e-3)
+    experiment = ex_4pdeer(tau1,tau2)
 
-    assert ovl(result.evaluate(dd_gauss,r),Pr)>0.975
+    assert isinstance(experiment,ExperimentInfo) 
+# ======================================================================
+
+# ======================================================================
+def test_ex_4pdeer_fit(): 
+    "Check the 4-pulse DEER experimental model."
+
+    experiment = ex_4pdeer(tau1,tau2)
+    Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=2,experiment=experiment)
+    result = fit(Vmodel,V4pulse,nonlin_tol=1e-3)
+
+    assert np.allclose(V4pulse,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_ex_5pdeer_type(): 
+    "Check the 5-pulse DEER experimental model."
+
+    experiment = ex_5pdeer(tau1,tau2,tau3)
+
+    assert isinstance(experiment,ExperimentInfo) 
+# ======================================================================
+
+# ======================================================================
+def test_ex_5pdeer_fit(): 
+    "Check the 5-pulse DEER experimental model in fitting."
+
+    experiment = ex_5pdeer(tau1,tau2,tau3)
+    Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=2,experiment=experiment)
+    result = fit(Vmodel,V5pulse,nonlin_tol=1e-3)
+
+    assert np.allclose(V5pulse,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
