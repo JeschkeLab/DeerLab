@@ -6,7 +6,6 @@ Others
 
 .. toctree::
 
-    ./contributing
     ./license
     ./funding
 

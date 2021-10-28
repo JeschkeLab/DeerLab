@@ -3,7 +3,6 @@
 
 import sys
 import os
-import re
 
 sys.path.append(os.path.abspath('.'))
 
@@ -13,7 +12,7 @@ from sphinx_rtd_theme import __version__
 
 # Project details
 project = 'DeerLab'
-copyright = '2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others'
+copyright = '2019-2021, Luis Fábregas-Ibáñez, Stefan Stoll, and others'
 author = 'Fabregas Ibanez'
 language = 'en'
 
@@ -32,8 +31,15 @@ extensions = [
     'numpydoc',
     'sphinx_gallery.gen_gallery',
     'sphinx.ext.autosummary',
-    'm2r2'
+    'sphinx.ext.autodoc',
+    'm2r2',
+    'sphinx_copybutton'
 ]
+
+#sys.path.append('../../deerlab')
+#autosummary_mock_imports = ['deerlab']
+add_module_names = False
+autosummary_generate = True  # Turn on sphinx.ext.autosummary
 
 from sphinx_gallery.sorting import ExplicitOrder
 sphinx_gallery_conf = {
@@ -47,13 +53,15 @@ sphinx_gallery_conf = {
                                        '../../examples/other']),
 }
 
+copybutton_prompt_text = ">>> "
+
 # Warnings suppression
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 exclude_patterns = ['.', './functions']
 numpydoc_show_class_members = False
 # Render Latex math equations as svg instead of rendering with JavaScript
-imgmath_image_format = 'svg'
+imgmath_image_format = 'png' if os.name=='nt' else 'svg'
 imgmath_dvisvgm = 'dvisvgm'
 imgmath_latex_preamble = r'''
 \newcommand{\mr}[1]{\mathrm{#1}}
@@ -210,23 +218,21 @@ html_logo = '_static/logo_docs.png'
 from pygments.style import Style
 from pygments.token import Keyword, Name, Comment, String, Error, Number, Operator, Generic, Text, Other, Comment, Whitespace
 
-# Define custom style for the MATLAB highlighting
-
 class MyFancyStyle(Style):
-    background_color = "#4f566b"
     default_style = "default"
     styles = {
         Text:                   '#fff',
-        Comment:                '#c1c9d2',
-        Keyword:                '#a4cdfe',
-        Operator.Word:          '#a4cdfe',
+        Comment:                '#6a737d',
+        Keyword:                '#d73a49',
+        Operator.Word:          '#d73a49',
         Name.Variable:          '#dddee4',
-        Name.Function:          '#a4cdfe',
+        Name.Function:          '#9065e2',
         Name.Class:             '#0000FF',
-        Name.Builtin:           '#a4cdfe',
+        Name.Builtin:           '#9065e2',
+        Name.Attribute:         '#9065e2',
         String:                 '#85d996',
-        Operator:               '#a4cdfe',
-        Number:                 '#f8b886',
+        Operator:               '#005cc5',
+        Number:                 '#0e56b1',
     }
 
 # Create patch for applying the style 	
@@ -241,5 +247,5 @@ def pygments_monkeypatch_style(mod_name, cls):
     from pygments.styles import STYLE_MAP
     STYLE_MAP[mod_name] = mod_name + "::" + cls_name
 
-#pygments_monkeypatch_style("my_fancy_style", MyFancyStyle)
-#pygments_style = "my_fancy_style"
+pygments_monkeypatch_style("my_fancy_style", MyFancyStyle)
+pygments_style = "my_fancy_style"

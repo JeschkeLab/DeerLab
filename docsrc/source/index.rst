@@ -105,6 +105,13 @@ DeerLab :blueish:`Docs`
 
 .. toctree::
     :hidden:
+    :caption: Contributing
+
+    ./contributing
+
+
+.. toctree::
+    :hidden:
     :caption: Others
 
     ./others

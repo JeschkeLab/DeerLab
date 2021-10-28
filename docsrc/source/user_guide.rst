@@ -5,9 +5,10 @@ User Guide
 
 
 .. toctree::
+    :maxdepth: 2
 
     ./installation
-    ./basics
-    ./getting_started
+    ./modelling_guide
+    ./fitting_guide
     ./uncertainty
-    ./theory
+    ./dipolar_epr_guide

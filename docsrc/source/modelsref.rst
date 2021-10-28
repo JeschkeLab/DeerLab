@@ -1,7 +1,13 @@
 .. _modelsref:
 
+
 Models
 ======================
+
+
+.. automodule:: deerlab.dd_models
+  :members:
+
 
 .. _modelsref_dd:
 

@@ -31,19 +31,19 @@ Next, install DeerLab and all its dependencies via::
 
 DeerLab installs the following packages:
 
-	* `matplotlib <https://matplotlib.org/>`_ - A comprehensive library for creating data visualizations with Python
-	* `memoization <https://pypi.org/project/memoization/>`_ - A powerful caching library for Python
-	* `pytest <https://docs.pytest.org/en/stable/>`_ - A Python testing framework
-	* `cvxopt <https://cvxopt.org/index.html>`_ - Free software package for convex optimization
-	* `numpy <https://numpy.org/>`_ -  Base N-dimensional array package 
-	* `scipy <https://www.scipy.org/>`_ - Fundamental library for scientific computing
-	* `joblib <https://joblib.readthedocs.io/en/latest/>`_ - Library lightweight pipelining and parallelization.
+* `matplotlib <https://matplotlib.org/>`_ - A comprehensive library for creating data visualizations with Python
+* `memoization <https://pypi.org/project/memoization/>`_ - A powerful caching library for Python
+* `pytest <https://docs.pytest.org/en/stable/>`_ - A Python testing framework
+* `cvxopt <https://cvxopt.org/index.html>`_ - Free software package for convex optimization
+* `numpy <https://numpy.org/>`_ -  Base N-dimensional array package 
+* `scipy <https://www.scipy.org/>`_ - Fundamental library for scientific computing
+* `joblib <https://joblib.readthedocs.io/en/latest/>`_ - Library lightweight pipelining and parallelization.
 
 The installed numerical packages (numpy, scipy, cvxopt) are linked against different BLAS libraries depending on the OS:
 
-	* Windows: linked against the Intel Matrix Kernel Library (MKL)
-	* Linux: linked against OpenBLAS
-	* Mac: linked against BLAS/LAPACK from the Accelerate framework
+* Windows: linked against the Intel Matrix Kernel Library (MKL)
+* Linux: linked against OpenBLAS
+* Mac: linked against BLAS/LAPACK from the Accelerate framework
 
 If an error occurs during or after the installation, please consult `this section <./installation_failed.html>`_ for a possible solution.
 

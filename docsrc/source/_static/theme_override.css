@@ -30,6 +30,9 @@
     --breakpoint-md:720px;
     --breakpoint-lg:960px;
     --breakpoint-xl:1200px;
+    --pst-font-size-h3: 17pt;
+    --pst-color-h1:black;
+    --pst-color-h2:black;
     --font-family-sans-serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
     --font-family-monospace:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace
    }
@@ -1002,8 +1005,8 @@
      max-width:16.66667%
     }
     .col-md-3 {
-     flex:0 0 25%;
-     max-width:25%
+     flex:0 0 21%;
+     max-width:21%
     }
     .col-md-4 {
      flex:0 0 33.33333%;
@@ -1192,8 +1195,8 @@
      max-width:66.66667%
     }
     .col-lg-9 {
-     flex:0 0 75%;
-     max-width:75%
+    flex: 0 0 79%;
+    max-width: 79%;
     }
     .col-lg-10 {
      flex:0 0 83.33333%;
@@ -1330,8 +1333,8 @@
      max-width:8.33333%
     }
     .col-xl-2 {
-     flex:0 0 16.66667%;
-     max-width:16.66667%
+     flex:0 0 20.66667%;
+     max-width:20.66667%
     }
     .col-xl-3 {
      flex:0 0 25%;
@@ -8766,13 +8769,13 @@
    p {
     margin-bottom:1.15rem;
     font-size:1em;
-    color:rgba(var(--pst-color-paragraph),1)
+    color: #464a51
    }
    p.rubric {
     border-bottom:1px solid #c9c9c9
    }
    a {
-    color:rgba(var(--pst-color-link),1);
+    color: #11a456;
     text-decoration:none
    }
    a:hover {
@@ -8843,14 +8846,13 @@
     color: #252930
    }
    pre {
-    margin:1.5em 0;
-    padding:10px;
-    background-color:rgba(var(--pst-color-preformatted-background),1);
-    color:rgba(var(--pst-color-preformatted-text),1);
-    line-height:1.2em;
-    border:1px solid #c9c9c9;
-    border-radius:.2rem;
-    box-shadow:1px 1px 1px #d8d8d8
+    padding: 10px;
+    background-color: #fbfbfb;
+    color: rgba(var(--pst-color-preformatted-text),1);
+    line-height: 1.4em;
+    border: 1px solid #c9c9c9;
+    border-radius: 0.4rem;
+    box-shadow: 1px 1px 1px #d8d8d8;
    }
    dd {
     margin-top:3px;
@@ -9097,7 +9099,8 @@
     white-space:nowrap
    }
    .sig {
-    font-family:var(--pst-font-family-monospace)
+    font-family:var(--pst-font-family-monospace);
+    background-color: #edf9f3;
    }
    .sig-inline.c-texpr,
    .sig-inline.cpp-texpr {
@@ -9116,7 +9119,7 @@
     color:rgba(var(--pst-color-text-base),1)
    }
    .sig-name {
-    color:rgba(var(--pst-color-inline-code),1)
+    color: #48c281;
    }
    blockquote {
     padding:0 1em;
@@ -9590,4 +9593,19 @@ div.sphx-glr-download a {
     display: inline;
     max-width: 200px;
     width: 100%;
+}
+.toctree-wrapper.compound a:hover {
+    color: #48c281;
+}
+.toctree-wrapper.compound a {
+    color: #130654;
+}
+img.align-center, figure.align-center, .figure.align-center, object.align-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+dt:target, span.highlighted {
+    background-color: #f1faf6;
 }

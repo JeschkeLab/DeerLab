@@ -6,7 +6,7 @@ The DeerLab documentation/website is written in restructured-text (RST) format a
 
 In order to compile the documentation the following steps must be followed:
 
-1) Install and setup python environment from https://www.python.org/
+1) Install and setup Python environment from https://www.python.org/
 
 2) Install DeerLab (see installation instructions)
 
@@ -38,7 +38,7 @@ In order to compile the documentation the following steps must be followed:
     
         pip install m2r2
 
-11) Download and install dvissvgm from https://dvisvgm.de/Downloads/
+10) Download and install dvissvgm from https://dvisvgm.de/Downloads/
 		
 ### Runnning the Sphinx builder
 

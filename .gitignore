@@ -24,6 +24,7 @@ dist/
 build/
 .debugging.py
 multidocs/**/*
+docsrc/source/_auto_*/**/*
 docsrc/source/auto_examples/**/*
 docsrc/plot_directive/
 docsrc/source/_build/
