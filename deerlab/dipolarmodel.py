@@ -7,7 +7,7 @@ import numpy as np
 from deerlab.dipolarkernel import dipolarkernel  
 from deerlab.regoperator import regoperator
 from deerlab.dd_models import freedist
-from deerlab.model import Model
+from deerlab.model import Model,Penalty
 from deerlab import bg_hom3d
 
 #===============================================================================
@@ -236,23 +236,50 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
     return DipolarSignal
 #===============================================================================
 
+#===============================================================================
+def dipolarpenalty(model,axis,type,selection=None):
 
-# -----------------------------------------------------------------------------------------
-def _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,**kargs):
-    # Generate the dipolar model
-    Vmodel = dipolarmodel(t,r,**kargs)
+    if model is None: 
+        model = freedist(axis)
+    Nconstants = len(model._constantsInfo)
 
-    # Set prior knowledge on the parameters
-    npathways = kargs['npathways']
-    if npathways>1:
-        for n in range(npathways):
-            getattr(Vmodel,f'reftime{n+1}').set(par0=reftimes[n], lb=reftimes[n]-0.1, ub=reftimes[n]+0.1)
-            getattr(Vmodel,f'lam{n+1}').set(par0=lams_par0[n])   
+    # If include compactness penalty
+    if type=='compactness':
+
+        if selection is None: 
+            selection = 'icc'
+
+        # Define the compactness penalty function
+        def compactness_penalty(*args): 
+            P = model(*[axis]*Nconstants,*args)
+            P = P/np.trapz(P,axis)
+            return np.sqrt(P*(axis - np.trapz(P*axis,axis))**2*np.mean(np.diff(axis)))
+        # Add the penalty to the model
+        penalty = Penalty(compactness_penalty,selection,
+                    signature = model._parameter_list(),
+                    description = 'Distance distribution compactness penalty.')
+        penalty.weight.set(lb=1e-6, ub=1e1)
+
+    # If include smoothness penalty
+    elif type=='smoothness':
+        if selection is None: 
+            selection = 'aic'
+
+        # Define the smoothness penalty function
+        L = regoperator(axis,2)
+        def smoothness_penalty(*args): 
+            return L@model(*[axis]*Nconstants,*args)
+        # Add the penalty to the model
+        penalty = Penalty(smoothness_penalty,selection,
+                    signature = model._parameter_list(),
+                    description = 'Distance distribution smoothness penalty.')
+        penalty.weight.set(lb=1e-9, ub=1e3)
+
     else:
-        getattr(Vmodel,f'reftime').set(par0=reftimes[0], lb=reftimes[0]-0.1, ub=reftimes[0]+0.1)
-        getattr(Vmodel,f'mod').set(par0=lams_par0[0])   
-    return Vmodel     
-# -----------------------------------------------------------------------------------------
+        raise KeyError(f"The requested {type} is not a valid penalty. Must be 'compactness' or 'smoothness'.")
+
+    return penalty
+#===============================================================================
 
 
 #===============================================================================

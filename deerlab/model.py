@@ -7,11 +7,12 @@ import numpy as np
 from scipy.sparse.construct import block_diag
 from scipy.optimize import fminbound
 from deerlab.solvers import snlls
-from deerlab.correctphase import correctphase
 from deerlab.classes import FitResult, UQResult
+from deerlab.noiselevel import noiselevel
 from deerlab.bootstrap_analysis import bootstrap_analysis
 import inspect 
-from copy import deepcopy
+from copy import copy,deepcopy
+from types import ModuleType
 import difflib
 
 #===================================================================================
@@ -255,7 +256,6 @@ class Model():
     #--------------------------------------------------------------------------------
 
 
-
     #=======================================================================================
     #                                    Private methods
     #=======================================================================================
@@ -466,11 +466,6 @@ class Model():
         self.signature.append(key)
     #---------------------------------------------------------------------------------------
 
-    #---------------------------------------------------------------------------------------
-    def copy(self): 
-        "Generate a deep copy of the model."
-        return deepcopy(self)
-    #---------------------------------------------------------------------------------------
 
     def __call__(self,*args,**kargs):
     #---------------------------------------------------------------------------------------
@@ -536,91 +531,6 @@ class Model():
 
         
     #---------------------------------------------------------------------------------------
-    def addregularization(self,functional='aic',description=None):
-        """ 
-        Add a new :ref:`Regularization` object to impose Tikhonov regularization upon 
-        the linear parameters of the model.
-
-        Parameters
-        ----------
-        key : string
-            Identifier of the parameter.
-
-        functional : string 
-            Method for the automatic selection of the optimal regularization parameter/weight:
-
-            * ``'lr'`` - L-curve minimum-radius method (LR)
-            * ``'lc'`` - L-curve maximum-curvature method (LC)
-            * ``'cv'`` - Cross validation (CV)
-            * ``'gcv'`` - Generalized Cross Validation (GCV)
-            * ``'rgcv'`` - Robust Generalized Cross Validation (rGCV)
-            * ``'srgcv'`` - Strong Robust Generalized Cross Validation (srGCV)
-            * ``'aic'`` - Akaike information criterion (AIC)
-            * ``'bic'`` - Bayesian information criterion (BIC)
-            * ``'aicc'`` - Corrected Akaike information criterion (AICC)
-            * ``'rm'`` - Residual method (RM)
-            * ``'ee'`` - Extrapolated Error (EE)
-            * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
-            * ``'gml'`` - Generalized Maximum Likelihood (GML)
-            * ``'mcl'`` - Mallows' C_L (MCL)
-        
-            The default ``'aic'``.
-
-        description : string, optional 
-            Description of the penalty. 
-        """
-        if np.any([isinstance(getattr(self,attr),Regularization) for attr in dir(self)]):
-            raise RuntimeError('The model already has a Regularization attribute.')
-        self.regularization = Regularization(functional,description)
-    #---------------------------------------------------------------------------------------
-        
-
-    #---------------------------------------------------------------------------------------
-    def addpenalty(self,key,penaltyfcn,functional,**kargs):
-        """
-        Add a new :ref:`Penalty` object. 
-
-        Parameters
-        ----------
-        key : string
-            Identifier of the parameter.
-
-        penaltyfcn : callable 
-            Penalty functiona taking model parameters as inputs. Must return a vector which will be squared and appended 
-            to the residual vector during the fitting of the model. A penalty weight will be added automatically to the 
-            output vector.
-
-        functional : string 
-            Selection functional for optimization of the penalty weight. Must be a string from the following: 
-
-            * ``'aic'`` - Akaike information criterion (AIC)
-            * ``'aicc'`` - Corrected Akaike information criterion (AICc)
-            * ``'bic'`` - Bayesian complexity criterion (BIC)
-            * ``'icc'`` - Informational complexity criterion (ICC) 
-
-        description : string, optional 
-            Description of the penalty. 
-        """        
-
-        # Create penalty object
-        penalty = Penalty(penaltyfcn,functional,**kargs)
-        for arg in penalty.signature: 
-            if arg not in self._parameter_list():
-                raise KeyError(f'The penalty argument {arg} does not correspond to any valid model parameter.')
-
-        # Get the parameter names of the model
-        modelparam = self._parameter_list('vector')
-        # Determine the indices of the subset of parameters the model depends on
-        subsets = [getattr(self,modelparam[np.where(np.asarray(modelparam)==param)[0][0]]).idx for param in penalty.signature]
-        # Adapt the signature of penaltyfcn for snlls
-        penaltyfcn_ = penalty.penaltyfcn
-        penalty.penaltyfcn = lambda pnonlin,plin,weight: penaltyfcn_(weight,*[np.concatenate([pnonlin,plin])[subset] for subset in subsets])
-
-        # Store penalty object as model attribute
-        setattr(self,key,penalty)
-    #---------------------------------------------------------------------------------------
-
-    #---------------------------------------------------------------------------------------
     def _parameter_table(self):
         string = inspect.cleandoc(f"""
     Model information 
@@ -675,20 +585,6 @@ class Model():
         return self._parameter_table()        
 
 #===================================================================================
-
-#==============================================================================
-class Regularization():
-    def __init__(self,functional,description):
-        self.weight = Parameter(parent=self, idx=0, name='weight',description='Regularization parameter/weight')
-        self.weight.lb = np.finfo(float).eps
-        self.weight.ub = 1/np.finfo(float).eps
-        delattr(self.weight,'par0')
-        delattr(self.weight,'linear')
-
-        self.selection = functional 
-        self.description = description
-#==============================================================================
-
 
 #==============================================================================
 class Penalty():
@@ -783,7 +679,7 @@ class Penalty():
         # Get the fit result
         fitresult = fitfcn(optweight)
 
-        return fitresult
+        return fitresult,optweight
     #--------------------------------------------------------------------------
 #==============================================================================
 
@@ -796,16 +692,16 @@ def _outerOptimization(fitfcn,penalty_objects,y,sigma):
 
     # Otherwise, prepare to solve multiobjective problem 
     elif len(penalty_objects)==3:
-        thirdfcn = lambda y,*param: penalty_objects[2].optimize(lambda weight: fitfcn(y,[*param,weight]),y,sigma)
-        secondfcn = lambda y,*param: penalty_objects[1].optimize(lambda weight: fitfcn(y,[*param,weight,thirdfcn(y,*param,weight)]),y,sigma)
-        fitfcn_ = lambda y: penalty_objects[0].optimize(lambda weight: fitfcn(y,[weight,secondfcn(y,weight),thirdfcn(y,weight,secondfcn(weight))]),y,sigma)
+        thirdfcn = lambda y,*param: penalty_objects[2].optimize(lambda weight: fitfcn(y,[*param,weight]),y,sigma)[1]
+        secondfcn = lambda y,*param: penalty_objects[1].optimize(lambda weight: fitfcn(y,[*param,weight,thirdfcn(y,*param,weight)]),y,sigma)[1]
+        fitfcn_ = lambda y: penalty_objects[0].optimize(lambda weight: fitfcn(y,[weight,secondfcn(y,weight),thirdfcn(y,weight,secondfcn(weight))]),y,sigma)[0]
 
     elif len(penalty_objects)==2:
-        secondfcn = lambda y,*param: penalty_objects[1].optimize(lambda weight: fitfcn(y,[*param,weight]),y,sigma)
-        fitfcn_ = lambda y: penalty_objects[0].optimize(lambda weight: fitfcn(y,[weight,secondfcn(y,weight)]),y,sigma) 
+        secondfcn = lambda y,*param: penalty_objects[1].optimize(lambda weight: fitfcn(y,[*param,weight]),y,sigma)[1]
+        fitfcn_ = lambda y: penalty_objects[0].optimize(lambda weight: fitfcn(y,[weight,secondfcn(y,weight)]),y,sigma)[0]
 
     elif len(penalty_objects)==1:
-        fitfcn_ = lambda y: penalty_objects[0].optimize(lambda weight: fitfcn(y,[weight]),y,sigma)
+        fitfcn_ = lambda y: penalty_objects[0].optimize(lambda weight: fitfcn(y,[weight]),y,sigma)[0]
     else: 
         raise RuntimeError('The fit() function can only handle up to three penalties.')
 
@@ -814,7 +710,8 @@ def _outerOptimization(fitfcn,penalty_objects,y,sigma):
 
 
 #==============================================================================================
-def fit(model,y,*constants,par0=None,bootstrap=0, noiselvl=None,**kwargs):
+def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None,
+                regparam='aic',reg='auto',regparamrange=None,**kwargs):
     r"""
     Fit the input model to the data ``y`` via one of the three following approaches: 
     
@@ -871,10 +768,10 @@ def fit(model,y,*constants,par0=None,bootstrap=0, noiselvl=None,**kwargs):
         Value of the cost function at the solution.
     """
 
-    if not isinstance(model,Model):
+    if not isinstance(model_,Model):
         raise TypeError('The input model must be a valid deerlab.Model object.')
     else:
-        model = model.copy()
+        model = copy(model_)
 
     if len(constants)>0:
         constants = np.atleast_1d(constants)
@@ -932,31 +829,24 @@ def fit(model,y,*constants,par0=None,bootstrap=0, noiselvl=None,**kwargs):
                 idxprev += N  
 
     # If there are penalties in the model
-    if np.any([isinstance(getattr(model,attr),Penalty) for attr in dir(model)]):
-        penalty_names = [attr for attr in dir(model) if isinstance(getattr(model,attr),Penalty)]
-        penalty_objects = [getattr(model,penalty) for penalty in penalty_names]
-        # Get the penalty functions
-        penalties = [penalty.penaltyfcn for penalty in penalty_objects]
-        # Prepare the penalties to input to snlls
-        extrapenalties = lambda *weights: [lambda nonlin,lin: penalty(nonlin,lin,weight) for penalty,weight in zip(penalties,weights)]
-    else: 
-        penalty_objects = []
-        # If there are no penalties in the model
-        extrapenalties = lambda *_: None
+    if penalties is not None:
+        if not hasattr(penalties, '__iter__'): 
+            penalties = [penalties]
+        # Get the parameter names of the model
+        modelparam = model._parameter_list('vector')
+        penaltyfcns = []
+        for penalty in penalties:
+            # Determine the indices of the subset of parameters the model depends on
+            subsets = [getattr(model,modelparam[np.where(np.asarray(modelparam)==param)[0][0]]).idx for param in penalty.signature]
+            # Adapt the signature of penaltyfcn for snlls
+            penaltyfcns.append(lambda pnonlin,plin,weight: penalty.penaltyfcn(weight,*[np.concatenate([pnonlin,plin])[subset] for subset in subsets]))
 
-    # Unless specified by the model, disable regularization of linear parameters
-    regparam,regparamrange,reg = None,None,False
-    # If there is regularization added to the model
-    if np.any([isinstance(getattr(model,attr),Regularization) for attr in dir(model)]):
-        regularization_object = getattr(model,[attr for attr in dir(model) if isinstance(getattr(model,attr),Regularization)][0])
-        reg = True
-        if regularization_object.weight.frozen: 
-            # Regularization parameter is fixed
-            regparam = regularization_object.weight.value 
-        else: 
-            # Regularization parameter is optimized
-            regparam = regularization_object.selection 
-            regparamrange = [regularization_object.weight.lb, regularization_object.weight.ub]
+        # Prepare the penalties to input to snlls
+        extrapenalties = lambda weights: [lambda nonlin,lin: penaltyfcn(nonlin,lin,weight) for penaltyfcn,weight in zip(penaltyfcns,weights)]
+    else: 
+        # If there are no penalties in the model
+        penalties = []
+        extrapenalties = lambda *_: None
 
     # Prepare the separable non-linear least-squares solver
     Amodel_fcn = lambda param: model.nonlinmodel(*constants,*param)
@@ -966,7 +856,7 @@ def fit(model,y,*constants,par0=None,bootstrap=0, noiselvl=None,**kwargs):
                                                 extrapenalty=extrapenalties(penweights), **kwargs)        
 
     # Prepare outer optimization of the penalty weights, if necessary
-    fitfcn = _outerOptimization(fitfcn,penalty_objects,y,sigmas)
+    fitfcn = _outerOptimization(fitfcn,penalties,y,sigmas)
 
     # Run the fitting algorithm 
     fitresults = fitfcn(y)

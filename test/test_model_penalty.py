@@ -68,53 +68,35 @@ def test_functionals_aicc():
     assert penaltyobj.selection=='aicc'
 # ======================================================================
 
-
-# ======================================================================
-def test_addpenalty_attr(): 
-    "Check that the penalty is added to the model as an attribute"
-    model = deepcopy(dd_gauss)
-    model.addpenalty('compactness',penalty_fcn,'icc')
-
-    assert hasattr(model,'compactness')
-# ======================================================================
-
-# ======================================================================
-def test_addpenalty_type(): 
-    "Check the penalty attribute is of the right type"
-    model = deepcopy(dd_gauss)
-    model.addpenalty('compactness',penalty_fcn,'icc')
-
-    assert isinstance(model.compactness,Penalty)
-# ======================================================================
-
 # ======================================================================
 def test_weight_boundaries(): 
     "Check that the penalty weight boundaries can be adjusted"
-    model = deepcopy(dd_gauss)
-    model.addpenalty('compactness',penalty_fcn,'icc')
-    model.compactness.weight.set(lb=1e-10,ub=1e1)
 
-    assert model.compactness.weight.lb==1e-10 and model.compactness.weight.ub==1e1
+    penaltyobj = Penalty(penalty_fcn,'icc')
+    penaltyobj.weight.set(lb=1e-10,ub=1e1)
+
+    assert penaltyobj.weight.lb==1e-10 and penaltyobj.weight.ub==1e1
 # ======================================================================
 
 # ======================================================================
 def test_weight_freeze(): 
     "Check that the penalty weight can be frozen to a value"
-    model = deepcopy(dd_gauss)
-    model.addpenalty('compactness',penalty_fcn,'icc')
-    model.compactness.weight.freeze(0.5)
 
-    assert model.compactness.weight.frozen==True and model.compactness.weight.value==0.5
+    penaltyobj = Penalty(penalty_fcn,'icc')
+    penaltyobj.weight.freeze(0.5)
+
+    assert penaltyobj.weight.frozen==True and penaltyobj.weight.value==0.5
 # ======================================================================
 
 # ======================================================================
 def test_fit_icc(): 
     "Check fitting with a penalty with ICC-selected weight"
-    model = deepcopy(dd_gauss)
-    model.addpenalty('compactness',penalty_fcn,'icc')
-    model.compactness.weight.set(lb=1e-6,ub=1e1)
 
-    result = fit(model,mock_data,x)
+    model = deepcopy(dd_gauss)
+    penaltyobj = Penalty(penalty_fcn,'icc')
+    penaltyobj.weight.set(lb=1e-6,ub=1e1)
+
+    result = fit(model,mock_data,x,penalties=penaltyobj)
 
     assert ovl(result.model,mock_data)>0.975
 # ======================================================================
@@ -122,11 +104,12 @@ def test_fit_icc():
 # ======================================================================
 def test_fit_aic(): 
     "Check fitting with a penalty with AIC-selected weight"
-    model = deepcopy(dd_gauss)
-    model.addpenalty('compactness',penalty_fcn,'aic')
-    model.compactness.weight.set(lb=1e-6,ub=1e1)
 
-    result = fit(model,mock_data,x)
+    model = deepcopy(dd_gauss)
+    penaltyobj = Penalty(penalty_fcn,'aic')
+    penaltyobj.weight.set(lb=1e-6,ub=1e1)
+
+    result = fit(model,mock_data,x,penalties=penaltyobj)
 
     assert ovl(result.model,mock_data)>0.975
 # ======================================================================
@@ -134,11 +117,12 @@ def test_fit_aic():
 # ======================================================================
 def test_fit_bic(): 
     "Check fitting with a penalty with AIC-selected weight"
+ 
     model = deepcopy(dd_gauss)
-    model.addpenalty('compactness',penalty_fcn,'bic')
-    model.compactness.weight.set(lb=1e-6,ub=1e1)
+    penaltyobj = Penalty(penalty_fcn,'bic')
+    penaltyobj.weight.set(lb=1e-6,ub=1e1)
 
-    result = fit(model,mock_data,x)
+    result = fit(model,mock_data,x,penalties=penaltyobj)
 
     assert ovl(result.model,mock_data)>0.975
 # ======================================================================
@@ -146,11 +130,12 @@ def test_fit_bic():
 # ======================================================================
 def test_fit_aicc(): 
     "Check fitting with a penalty with AICc-selected weight"
-    model = deepcopy(dd_gauss)
-    model.addpenalty('compactness',penalty_fcn,'aicc')
-    model.compactness.weight.set(lb=1e-6,ub=1e1)
 
-    result = fit(model,mock_data,x)
+    model = deepcopy(dd_gauss)
+    penaltyobj = Penalty(penalty_fcn,'aicc')
+    penaltyobj.weight.set(lb=1e-6,ub=1e1)
+
+    result = fit(model,mock_data,x,penalties=penaltyobj)
 
     assert ovl(result.model,mock_data)>0.975
 # ======================================================================
@@ -158,11 +143,12 @@ def test_fit_aicc():
 # ======================================================================
 def test_fit_weight_bounded(): 
     "Check fitting with a penalty with bounded weight"
+    
     model = deepcopy(dd_gauss)
-    model.addpenalty('compactness',penalty_fcn,'icc')
-    model.compactness.weight.set(lb=1e-10,ub=1e1)
+    penaltyobj = Penalty(penalty_fcn,'aicc')
+    penaltyobj.weight.set(lb=1e-10,ub=1e1)
 
-    result = fit(model,mock_data,x)
+    result = fit(model,mock_data,x,penalties=penaltyobj)
 
     assert ovl(result.model,mock_data)>0.975
 # ======================================================================
@@ -170,10 +156,11 @@ def test_fit_weight_bounded():
 # ======================================================================
 def test_fit_weight_unbounded(): 
     "Check fitting with a penalty with unbounded weight"
+    
     model = deepcopy(dd_gauss)
-    model.addpenalty('compactness',penalty_fcn,'icc')
+    penaltyobj = Penalty(penalty_fcn,'icc')
 
-    result = fit(model,mock_data,x)
+    result = fit(model,mock_data,x,penalties=penaltyobj)
 
     assert not ovl(result.model,mock_data)>0.975
 # ======================================================================
@@ -181,11 +168,27 @@ def test_fit_weight_unbounded():
 # ======================================================================
 def test_fit_weight_frozen(): 
     "Check fitting with a penalty with frozen weight"
+    
     model = deepcopy(dd_gauss)
-    model.addpenalty('compactness',penalty_fcn,'icc')
-    model.compactness.weight.freeze(0.00001)
+    penaltyobj = Penalty(penalty_fcn,'icc')
+    penaltyobj.weight.freeze(0.00001)
 
-    result = fit(model,mock_data,x)
+    result = fit(model,mock_data,x,penalties=penaltyobj)
+
+    assert ovl(result.model,mock_data)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_fit_multiple_penalties(): 
+    "Check fitting with multiple penalties"
+    
+    model = deepcopy(dd_gauss)
+    penaltyobj = Penalty(penalty_fcn,'icc')
+    penaltyobj2 = deepcopy(penaltyobj)
+    penaltyobj.weight.freeze(0.00001)
+    penaltyobj2.weight.freeze(0.00001)
+
+    result = fit(model,mock_data,x,penalties=[penaltyobj,penaltyobj2])
 
     assert ovl(result.model,mock_data)>0.975
 # ======================================================================
