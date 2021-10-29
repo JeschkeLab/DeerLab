@@ -742,7 +742,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         Uncertainty quantification of the <parameter_name> model parameter.
     param : ndarray
         Fitted parameter vector ordered according to the model parameter indices.
-    modelUncert : :ref:`UQResult`
+    paramUncert : :ref:`UQResult`
         Uncertainty quantification of the parameter vector ordered according to the model parameter indices.
     model : ndarray
         Fitted model response.

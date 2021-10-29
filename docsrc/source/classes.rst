@@ -10,7 +10,9 @@ Classes
     Model
     Parameter
     Penalty
+    ExperimentInfo
     FitResult
+    UQResult
 
 
 .. toctree::

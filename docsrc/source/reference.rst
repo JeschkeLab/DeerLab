@@ -18,7 +18,10 @@ API Reference
     Model
     Parameter
     Penalty
+    ExperimentInfo
     FitResult
+    UQResult
+
 
 
 .. rubric:: Functions

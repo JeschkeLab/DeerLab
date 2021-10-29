@@ -18,7 +18,13 @@ language = 'en'
 
 
 version = open(os.path.join('..','..','VERSION')).read().splitlines()[0]
-rst_epilog = f'.. |version| replace:: {version}'
+rst_epilog = f""" 
+.. role:: raw-html(raw)
+   :format: html
+
+.. |title_version| replace:: :raw-html:`<p class="titlep"><span class="title1">DeerLab</span><span class="title2">Docs</span><span class="version">{version}</span></p>`
+"""
+
 
 # Add sphinx extensions
 extensions = [
@@ -91,6 +97,7 @@ html_context = {
     "github_repo": "DeerLab", # Repo name
     "github_version": "master", # Version
     "conf_py_path": "/source/", # Path in the checkout to the docs root
+    'version' : version,                                  
 }
 
 
@@ -105,7 +112,7 @@ html_theme_options = {
         },
         {
             "name": "Twitter",
-            "url": "https://twitter.com/DeerLab",
+            "url": "https://twitter.com",
             "icon": "fab fa-twitter",
         },
         {
@@ -125,6 +132,9 @@ html_theme_options = {
 #html_sidebars = {
 #  "**": []
 #}
+html_sidebars = {
+    "index": []
+}
 html_copy_source = False
 html_theme_path = ["../.."]
 html_show_sourcelink = True

@@ -104,6 +104,8 @@ where `A(\theta_\mathrm{nonlin})` is a non-linear function which takes the model
 Before constructing any ``Model`` object, the underlying model function must be brought to this form to identify the terms listed above. 
 
 
+.. _modelling_construction:
+
 Model construction 
 ------------------
 

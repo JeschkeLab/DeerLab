@@ -10,5 +10,5 @@ User Guide
     ./installation
     ./modelling_guide
     ./fitting_guide
-    ./uncertainty
+    ./uncertainty_guide
     ./dipolar_epr_guide
