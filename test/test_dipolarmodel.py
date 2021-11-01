@@ -362,7 +362,7 @@ def test_smoothness_penalty_Pnonparametric():
 def test_compactness_penalty_Pparametric(): 
     "Check the fitting with a parametric distribution and the smoothness penalty"
 
-    Vmodel = dipolarmodel(t,r,Pmodel=dd_gauss,smoothness=True)
+    Vmodel = dipolarmodel(t,r,Pmodel=dd_gauss)
     smoothness = dipolarpenalty(dd_gauss,r,'smoothness')
     smoothness.weight.freeze(0.00005)
     
