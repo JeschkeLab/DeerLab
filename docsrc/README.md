@@ -38,7 +38,11 @@ In order to compile the documentation the following steps must be followed:
     
         pip install sphinx-issues
 
-10) Download and install dvissvgm from https://dvisvgm.de/Downloads/
+10) Install Sphinx-Copy Button
+
+        pip install sphinx-copybutton 
+
+11) Download and install dvissvgm from https://dvisvgm.de/Downloads/
 		
 ### Runnning the Sphinx builder
 

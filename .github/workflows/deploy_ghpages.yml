@@ -32,6 +32,7 @@ jobs:
            python -m pip install sphinxcontrib-httpdomain
            python -m pip install sphinxcontrib-ghcontributors
            python -m pip install sphinx-issues
+           python -m pip install sphinx-copybutton  
            python -m pip install sphinx==1.8.4
            sudo apt install texlive-extra-utils
            sudo apt-get install texlive-latex-extra
