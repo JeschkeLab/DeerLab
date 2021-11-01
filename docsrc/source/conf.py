@@ -41,6 +41,16 @@ rst_epilog = f"""
    :format: html
 
 .. |title_version| replace:: {string}
+
+.. |fix| replace:: :raw-html:`<span class="badge changelog_fix">Fix</span>`
+
+.. |efficiency| replace:: :raw-html:`<span class="badge changelog_efficiency">Efficiency</span>`
+
+.. |enhancement| replace:: :raw-html:`<span class="badge changelog_enhancement">Enhancement</span>`
+
+.. |feature| replace:: :raw-html:`<span class="badge changelog_feature">Feature</span>`
+
+.. |api| replace:: :raw-html:`<span class="badge changelog_api">API Change</span>`
 """
 
 # Add any paths that contain templates here, relative to this directory.
@@ -58,9 +68,18 @@ extensions = [
     'sphinx_gallery.gen_gallery',
     'sphinx.ext.autosummary',
     'sphinx.ext.autodoc',
-    'm2r2',
+    'sphinx_issues',
     'sphinx_copybutton'
 ]
+
+
+# GitHub repo
+issues_github_path = "JeschkeLab/deerlab"
+
+# equivalent to
+issues_uri = "https://github.com/JeschkeLab/deerlab/issues/{issue}"
+issues_pr_uri = "https://github.com/JeschkeLab/deerlab/pull/{pr}"
+issues_commit_uri = "https://github.com/JeschkeLab/deerlab/commit/{commit}"
 
 #sys.path.append('../../deerlab')
 #autosummary_mock_imports = ['deerlab']
