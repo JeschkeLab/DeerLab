@@ -18,7 +18,7 @@ def install_dependencies(develop_mode=False):
     # able to be handled by pip automatically. 
 
     # DeerLab dependencies on the PyPI
-    dependencies = ["memoization","matplotlib","seaborn","tqdm","joblib"] 
+    dependencies = ["memoization","matplotlib","tqdm","joblib"] 
 
     if platform.system() == 'Windows':
         # Use own forked pipwin repo for self-patched fixes 

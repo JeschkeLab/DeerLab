@@ -22,9 +22,7 @@ https://doi.org/10.1038/s41589-021-00752-3
 import deerlab as dl 
 import numpy as np
 import matplotlib.pyplot as plt 
-# Use the seaborn style for nicer plots
-from seaborn import set_theme
-set_theme()
+
 
 # Load experimental data
 t1,Vexp1 = np.load('../data/example_droplets_data_#1.npy')

@@ -16,9 +16,7 @@ account, whereas the curvature matrix CIs do not.
 import numpy as np 
 import matplotlib.pyplot as plt
 import deerlab as dl
-# Use the seaborn style for nicer plots
-from seaborn import set_theme
-set_theme()
+
 
 # %% 
 

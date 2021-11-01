@@ -13,9 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, InsetPosition
 import deerlab as dl
-# Use the seaborn style for nicer plots
-from seaborn import set_theme
-set_theme()
+
 
 
 #%%
