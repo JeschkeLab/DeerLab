@@ -81,16 +81,16 @@ From the location of the script, you have two ways to access the data files: usi
 
 Call ``deerload`` with either of these two paths: ::
 
-    t,V = dl.deerload(filepath)   # load experimental data
+    t,Vexp = dl.deerload(filepath)   # load experimental data
 
-The function returns two outputs: the first is the dipolar time-axis of your experiment (a vector of pulse increments), and the second is the raw experimental data as saved by your spectrometer. Here, we store them in variables named ``t`` and ``V``.
+The function returns two outputs: the first is the dipolar time-axis of your experiment (a vector of pulse increments), and the second is the raw experimental data as saved by your spectrometer. Here, we store them in variables named ``t`` and ``Vexp``.
 
-Both ``t`` and ``V`` are 1D Numpy arrays with ``N`` elements. To load an additional file, load it into different variables: ::
+Both ``t`` and ``Vexp`` are 1D Numpy arrays with ``N`` elements. To load an additional file, load it into different variables: ::
 
     filepath1 = '/home/experiments/DEER4p_experiment.DTA'   # absolute path to 1st file
     filepath2 = '/home/experiments/DEER5p_experiment.DTA'   # absolute path to 2nd file
-    t1,V2 = dl.deerload(filepath1)   # load 1st set of experimental data
-    t2,V2 = dl.deerload(filepath2)   # load 2nd set of experimental data
+    t1,Vexp2 = dl.deerload(filepath1)   # load 1st set of experimental data
+    t2,Vexp2 = dl.deerload(filepath2)   # load 2nd set of experimental data
 
 ``deerload`` attempts to return the experiment time-axis ``t`` in units of microseconds, but might not be able to do so for all file formats. For more details about ``deerload`` see the :ref:`reference documentation <deerload>`.
 
@@ -99,11 +99,11 @@ Phase-correction
 
 Experimental dipolar signals are most often aquired in quadrature, with the in-phase and the out-of-phase component stored as the real and the imaginary part of a complex-valued signal. If the out-of-phase components are of no relevance, it is recommendable to perform a phase correction which minimizes the imaginary component and maximizes the real component. If the signal is not complex-valued or the out-of-phase component is important, skip this step. The phase correction function ``correctphase`` takes the complex-valued signal and returns the real-valued phase-corrected dipolar signal: ::
 
-    V = dl.correctphase(V)    # phase correction of experimental data
+    Vexp = dl.correctphase(Vexp)    # phase correction of experimental data
 
 The correction is based on an optimization approach. This works well in most cases. Should it fail for a specific case, the phase adjustment can also be done manually: ::
 
-    V = np.real(V*np.exp(-1j*phase))    # manual phase correction
+    Vexp = np.real(Vexp*np.exp(-1j*phase))    # manual phase correction
 
 ---------------
 
@@ -172,8 +172,6 @@ By default, the function ``dipolarmodel`` assumes a non-parametric distance dist
     Vmodel = dl.dipolarmodel(t, r, experiment=expinfo) 
 
 
-
-
 Example: Two-pathway 5-pulse DEER model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 For example, a 5pDEER signal with non-parametric distance distribution and homogenous 3D background can be constructed using ::
@@ -213,11 +211,42 @@ Fitting
 -------
 Next, the model ``Vmodel`` can be fitted to the experimental data ``V`` by calling the ``fit`` function: ::
 
-    result = dl.fit(Vmodel,V)  # Fit the model to the experimental data
+    result = dl.fit(Vmodel,Vexp)  # Fit the model to the experimental data
 
 
 After ``fit`` has found a solution, it returns an object that we assigned to ``result``. This object contains fields with all quantities of interest with the fit results, such as the fitted model and parameters, goodness-of-fit statistics, and uncertainty information. Check out the :ref:`fitting guide <fitting_fitresult>` for more details on the quantities provided in ``result``.
 
+
+Adding penalties
+*****************
+
+Penalty terms can be added to the objective function to impose certain properties upon the solution. While DeerLab can take any kind of penalty function (see the :ref:`fitting guide <fitting_guide>` for details), for dipolar models it provides a specialized function ``dipolarpenalty`` which easily generates penalties based on the distance distribution. 
+
+To generate such a penalty, you must provide the model ``Pmodel`` for the distance distribution (as provided in ``dipolarmodel``), as well as the distance axis vector ``r``. Next, the type of penalty must be specified: 
+
+- ``'compactness'``: Imposes compactness of the distance distribution. A compact distribution avoid having distribution mass spread towards the edges of the distance axis vector. 
+- ``'smoothness'``: Imposes smoothness of the distance distribution. This is particularly useful for imposing smoothness of parametric models of the distance distribution. For non-parametric distributions, smoothness is already imposed by the regularization criterion, making this penalty unnecessary. 
+
+All penalties are weighted by a weighting parameter, which is optimized according to a selection criterion which must be specified to the ``dipolarpenalty method``. For the ``smoothness`` penalty, the ``'aic'`` criterion is recommended, while for the ``smoothness`` criterion, the ``'icc'`` criterion is recommended.
+
+The ``dipolarpenalty`` function will return a ``Penalty`` object which can be passed to the fit function through the ``penalties`` keyword argument. 
+
+
+Example: Fitting a non-parametric distribution with a compactness criterion
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For example, to introduce compactness in the fit of a dipolar model with a non-parametric distance distribution we must set the distribution model to ``None`` to indicate a non-parametric distribution ::
+
+    compactness_penalty = dl.dipolarpenalty(None, r, 'compactness', 'icc')
+    result = dl.fit(Vmodel,Vexp, penalties=compactness_penalty)
+
+Example: Fitting a Gaussian distribution with a compactness criterion
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For example, to introduce compactness in the fit of a dipolar model with a Gaussian distance distribution we must set the distribution model to ``dd_gauss`` to indicate the parametric distribution ::
+
+    compactness_penalty = dl.dipolarpenalty(dl.dd_gauss, r, 'compactness', 'icc')
+    result = dl.fit(Vmodel,Vexp, penalties=compactness_penalty)
 
 Displaying the results
 **********************
@@ -230,33 +259,18 @@ For just a quick display of the results, you can use the ``plot()`` method of th
 .. image:: ./images/beginners_guide1.png
    :width: 450px
 
-The ``fitresults`` output contains additional information, for example:
+The ``result`` output contains additional information. For each parameter in the model, the ``result`` output contains an attribute ``result.<parameter>`` named after the parameter containing the fitted value of that parameter, as well as another attribute ``result.<parameter>Uncert`` containing the uncertainty estimates of that parameter, from which confidence intervals can be constructed (the :ref:`uncertainty guide <uncertainty>` for details). For example: :: 
 
-    * ``fit.V``, ``fit.B``, and ``fit.P`` contain the arrays of the fitted dipolar signal, background, and distance distribution, respectively. 
-    * ``fit.exparam``, ``fit.bgparam``, and ``fit.ddparam`` contain the arrays of fitted model parameters for the experiment, background, and distribution models. 
-    * ``fit.scale`` contains the fitted overall scale of the dipolar signal.
+    # Distance distribution 
+    result.P # Fitted distance distribution 
+    result.PUncert.ci(95) # Distance distribution 95% confidence intervals
 
-In addition to the distance distribution fit, it is important to check and report the fitted model parameters and their uncertainties. While this can be computed manually, a summary can be easily requested by enabling the ``verbose`` option of ``fitmodel``. By using ::
+    # Modulation depth 
+    result.mod # Fitted modulation depth 
+    result.modUncert.ci(95) # Modulation depth 95% confidence intervals
 
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,verbose=True)  # 4pDEER fit and report parameter fits
 
-after the function has fitted your data, it will print a summary the results, including goodness-of-fit estimators
-and fitted parameters with uncertainties. Here is an example output
 
-.. code-block:: text
-
-    -----------------------------------------------------------------------------------------
-    Goodness of fit
-    Vexp[0]: 𝛘2 = 25.510184  RMSD  = 1.953580e+07
-    -----------------------------------------------------------------------------------------
-    Fitted parameters and 95%-confidence intervals
-    Vfit[0]:
-    V0:  3.551e+07  Signal scale (arb.u.)
-    bgparam[0]:   145.3121342  (111.0809911, 179.5432773)  Concentration of pumped spins (μM)
-    exparam[0]:   0.4066627  (0.3630338, 0.4502916)  Modulation depth ()
-    -----------------------------------------------------------------------------------------
-
-where there are no distribution parameters (``ddparam``) due to the distribution model being non-parametric. 
 
 
 Exporting the figure and the data
