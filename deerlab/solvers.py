@@ -877,22 +877,44 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 def fnnls(AtA, Atb, tol=None, maxiter=None, verbose=False):
 #=====================================================================================
     r"""
-    FNNLS   Fast non-negative least-squares algorithm.
-    x = fnnls(AtA,Atb) solves the problem min ||b - Ax|| if
-        AtA = A'*A and Atb = A'*b.
-    A default tolerance of TOL = MAX(SIZE(AtA)) * NORM(AtA,1) * EPS
-    is used for deciding when elements of x are less than zero.
-    This can be overridden with x = fnnls(AtA,Atb,TOL).
+    Fast non-negative least-squares (NNLS) solver.
 
-    [x,w] = fnnls(AtA,Atb) also returns dual vector w where
-        w(i) < 0 where x(i) = 0 and w(i) = 0 where x(i) > 0.
+    Solves the problem 
     
-    For the FNNLS algorithm, see
-        R. Bro, S. De Jong
+    .. math:: \min \Vert b - Ax \Vert^2 
+    
+    where ``AtA`` `= A^TA` and ``Atb`` `= A^Tb` using the fast 
+    non-negative least-squares (FNNLS) algorithm [1]_, [2]_.
+
+    Parameters
+    ----------
+    AtA : matrix_like 
+        Matrix `A^TA`
+    Atb : array_like 
+        Vector `A^Tb`
+    tol : float scalar 
+        Tolerance  used for deciding when elements of x are less than zero.
+        The default is ``tol = max(shape(AtA))*norm(AtA,1)*eps``. 
+    maxiter : integer scalar 
+        Maximum number of iterations. The default is ``maxiter = 5*max(shape(AtA))``
+    verbose : boolean
+        If set to ``True``, display the iteration details during the optimization.
+
+    Returns
+    -------
+    x : ndarray 
+        Solution vector.
+
+    References
+    ----------
+    .. [1] R. Bro, S. De Jong,
         A Fast Non-Negativity-Constrained Least Squares Algorithm
         Journal of Chemometrics 11 (1997) 393-401
-    The algorithm FNNLS is based on is from
-        Lawson and Hanson, "Solving Least Squares Problems", Prentice-Hall, 1974.
+        
+    .. [2] Lawson and Hanson,
+        Solving Least Squares Problems
+        Prentice-Hall, 1974.
+
     """
 
     unsolvable = False
@@ -983,18 +1005,47 @@ def fnnls(AtA, Atb, tol=None, maxiter=None, verbose=False):
 
 def cvxnnls(AtA, Atb, tol=None, maxiter=None):
 #=====================================================================================
-    """
-    NNLS problem solved via CVXOPT
-    
-        
-    References:
-    -----------
-    [1] 
-    Rein, Lewe, Andrade, Kacprzak and Weber. J. Magn. Reson., 295 (2018) 17–26.
-    Global analysis of complex PELDOR time traces
-    https://doi.org/10.1016/j.jmr.2018.07.015
-    """
+    r"""
+    Non-negative least-squares (NNLS) via the CVXOPT package.
 
+    Solves the problem 
+    
+    .. math:: \min \Vert b - Ax \Vert^2 
+    
+    where ``AtA`` `= A^TA` and ``Atb`` `= A^Tb` using the non-linear convex programming 
+    tools from CVXOPT [1]_, [2]_.
+
+    Parameters
+    ----------
+    AtA : matrix_like 
+        Matrix `A^TA`
+    Atb : array_like 
+        Vector `A^Tb`
+    tol : float scalar 
+        Tolerance  used for deciding when elements of x are less than zero.
+        The default is ``tol = max(shape(AtA))*norm(AtA,1)*eps``. 
+    maxiter : integer scalar 
+        Maximum number of iterations. The default is ``maxiter = 5*max(shape(AtA))``
+    verbose : boolean
+        If set to ``True``, display the iteration details during the optimization.
+        
+    Returns
+    -------
+    x : ndarray 
+        Solution vector.
+
+    References
+    ----------
+    .. [1] M. Andersen, J. Dahl, and L. Vandenberghen,
+       CVXOPT, Python Software for Convex Optimization 
+       http://cvxopt.org/
+        
+    .. [2] Rein, Lewe, Andrade, Kacprzak and Weber
+        J. Magn. Reson., 295 (2018) 17–26.
+        Global analysis of complex PELDOR time traces
+
+    """
+        
     N = np.shape(AtA)[1]
     if tol is None:
         eps = np.finfo(float).eps

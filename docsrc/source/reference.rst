@@ -3,39 +3,33 @@
 API Reference
 ============================================================
 
+
 .. currentmodule:: deerlab
+
 .. rubric:: Classes
 
-.. toctree::
-   :hidden:
-
-   ./classes
-
 .. autosummary::
-    :template: class.rst
+    :toctree: _autosummary
+    :template: custom_class_template.rst
     :nosignatures:
-
+    
     Model
     Parameter
     Penalty
-    ExperimentInfo
     FitResult
     UQResult
 
 
+.. currentmodule:: deerlab
 
 .. rubric:: Functions
 
-.. toctree::
-   :hidden:
-
-   ./functions
-
-
 .. autosummary::
-    :template: function.rst
+    :toctree: _autosummary
+    :template: custom_function_template.rst
     :nosignatures:
 
+    fit
     merge
     link 
     lincombine
@@ -48,16 +42,15 @@ API Reference
     correctphase
     bootstrap_analysis
     profile_analysis 
+    snlls 
+    fnnls
+    cvxnnls
 
 .. rubric:: Dipolar EPR functions
 
-.. toctree::
-   :hidden:
-
-   ./dipolarfunctions
-
 .. autosummary::
-    :template: function.rst
+    :toctree: _autosummary
+    :template: custom_function_template.rst
     :nosignatures:
 
     dipolarmodel 

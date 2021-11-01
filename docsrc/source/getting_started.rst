@@ -3,12 +3,15 @@
 Getting Started
 ============================================================
 
-This is the introductory guide to DeerLab.
+This is the introductory guide to DeerLab for any dipolar electron paramagnetic resonance (EPR) spectroscopy applications.
 
 --------
 
+Importing all packages
+----------------------
+
 Importing DeerLab
--------------------
+*****************
 
 DeerLab is a Python package. In order to use it, you need to import it. For this, use the import statement: ::
 
@@ -16,14 +19,12 @@ DeerLab is a Python package. In order to use it, you need to import it. For this
 
 This makes DeerLab functions accessible via the abbreviated name ``dl``. For example, the function ``deerload`` can be called via ``dl.deerload``. We recommend to use ``dl`` as the standard import abbreviation for DeerLab.
 
---------
-
 Importing other packages
------------------------------
+*************************
 
 Other packages need to be imported as well. The most important one is ::
 
-   import numpy as np                # NumPy: vectors, matrices, linear algebra
+   import numpy as np  # NumPy: vectors, matrices, linear algebra
    
 `NumPy <https://numpy.org/doc/stable/index.html>`_ is the fundamental package for scientific computing in Python. It is a Python library that provides multidimensional arrays (vectors, matrices, etc) and many array functions, including mathematical, logical, shape manipulation, sorting, selecting, I/O, discrete Fourier transforms, basic linear algebra, basic statistical operations, random number generators, and much more.
 
@@ -33,11 +34,12 @@ If you have experience with MATLAB, have a look at `Numpy for MATLAB users <http
 
 Another important package is `Matplotlib <https://matplotlib.org/>`_, a library that provides plotting capabilities. It contains many modules, of which ``pyplot`` is the most important for basic plotting. Import it with ::
 
-   import matplotlib.pyplot as plt   # Matplotlib: plotting
+   import matplotlib.pyplot as plt  # Matplotlib: plotting
 
 
 Python lists and NumPy arrays
-*******************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 In DeerLab, many functions accept Python lists, NumPy arrays, or both as inputs. While a Python list can contain different data types within a single list, all of the elements in a NumPy array (a so called ndarray) should share the same data type. For example: ::
 
     a = [1,2,3] # is a list-type
@@ -52,8 +54,11 @@ Note that Python is a 0-indexed language, meaning that the first element of any 
 
 --------
 
-Loading Spectrometer Files
---------------------------
+Loading data and pre-processing
+-------------------------------
+
+Loading spectrometer files
+***************************
 
 DeerLab provides the function ``deerload`` that can load dipolar EPR data from most spectrometer file formats. It works for 1D and 2D datasets, both real- or complex-valued.
 
@@ -89,10 +94,8 @@ Both ``t`` and ``V`` are 1D Numpy arrays with ``N`` elements. To load an additio
 
 ``deerload`` attempts to return the experiment time-axis ``t`` in units of microseconds, but might not be able to do so for all file formats. For more details about ``deerload`` see the :ref:`reference documentation <deerload>`.
 
----------------
-
 Phase-correction
------------------
+****************
 
 Experimental dipolar signals are most often aquired in quadrature, with the in-phase and the out-of-phase component stored as the real and the imaginary part of a complex-valued signal. If the out-of-phase components are of no relevance, it is recommendable to perform a phase correction which minimizes the imaginary component and maximizes the real component. If the signal is not complex-valued or the out-of-phase component is important, skip this step. The phase correction function ``correctphase`` takes the complex-valued signal and returns the real-valued phase-corrected dipolar signal: ::
 
@@ -104,7 +107,7 @@ The correction is based on an optimization approach. This works well in most cas
 
 ---------------
 
-Picking the right model
+Dipolar modelling
 -------------------------
 
 DeerLab provides a very flexible framework to model dipolar signals originating from any dipolar EPR spectroscopy experiments. Choosing a model that properly describes your sample and experiment is of paramount importance. The DeerLab function ``dipolarmodel`` already defines the core model structure based on dipolar pathways, with the following components to be chosen:     
@@ -119,38 +122,71 @@ DeerLab provides a very flexible framework to model dipolar signals originating 
 
 For each of these four components, a choice needs to be made: 
 
-(1) **Choose a distance range**
+Choosing a distance range
+*************************
 
-    The distance range :math:`[r_\mathrm{min},r_\mathrm{max}]` is an important choice, as any distance distribution is truncated to this range, i.e. :math:`P(r)=0` for :math:`r<r_\mathrm{min}` and :math:`r>r_\mathrm{max}`. The lower limit of the distance range is determined by the bandwidth of the pulses, and also by the time increment. Typically, 1.5 nm is a reasonable choice. The upper limit depends on the distances in your sample. The number of points in ``r`` is usually set to a certain resolution (typically 0.01-0.05nm). Such a distance-axis is usually defined as ``r`` is most easily defined using the ``linspace`` function from NumPy: ::
+The distance range :math:`[r_\mathrm{min},r_\mathrm{max}]` is an important choice, as any distance distribution is truncated to this range, i.e. :math:`P(r)=0` for :math:`r<r_\mathrm{min}` and :math:`r>r_\mathrm{max}`. The lower limit of the distance range is determined by the bandwidth of the pulses, and also by the time increment. Typically, 1.5 nm is a reasonable choice. The upper limit depends on the distances in your sample. The number of points in ``r`` is usually set to a certain resolution (typically 0.01-0.05nm). Such a distance-axis is usually defined as ``r`` is most easily defined using the ``linspace`` function from NumPy: ::
 
-        r = np.linspace(1.5,6.5,100)  # define distance range from 1.5nm to 6.5nm with a resolution of 0.05nm
+    r = np.linspace(1.5,6.5,100)  # define distance range from 1.5nm to 6.5nm with a resolution of 0.05nm
 
-(2) **Choose a distribution model**
+Choosing a distribution model
+******************************
 
-    A non-parametric distribution is specified by setting the choice of ``Pmodel`` keyword in ``dipolarmodel`` to ``None``. In a non-parametric distribution, each element :math:`P_i` of the distribution is a linear parameter. Non-parametric distributions are obtained via methods such as Tikhonov regularization. If there are reasons to believe that the distance distribution has a specific shape (e.g. Gaussian, Rice, random-coil, etc.), or if there is very little information in the data, use a parametric distance distribution model from the :ref:`list of available models<modelsref_dd>`.
+A non-parametric distribution is specified by setting the choice of ``Pmodel`` keyword in ``dipolarmodel`` to ``None``. In a non-parametric distribution, each element :math:`P_i` of the distribution is a linear parameter. Non-parametric distributions are obtained via methods such as Tikhonov regularization. If there are reasons to believe that the distance distribution has a specific shape (e.g. Gaussian, Rice, random-coil, etc.), or if there is very little information in the data, use a parametric distance distribution model from the :ref:`list of available models<modelsref_dd>`.
 
-(3) **Choose a background model**
+Choose a background model
+*************************
 
-    Typically, a background model of a homogenous 3D distribution of spins is appropriate. The associated parametric model function is :ref:`bg_hom3d`. In some cases, depending on the properties of your sample, other background models might be needed, such as backgrounds arising from distributions of spins in fractal dimensions or when  accounting for volume-exclusion effects. In such cases, use the associated parametric background models from the :ref:`list of available models<modelsref_bg>`. If there is no inter-molecular background in your sample, or it is negligible, set the background model to ``None``.
+Typically, a background model of a homogenous 3D distribution of spins is appropriate. The associated parametric model function is :ref:`bg_hom3d`. In some cases, depending on the properties of your sample, other background models might be needed, such as backgrounds arising from distributions of spins in fractal dimensions or when  accounting for volume-exclusion effects. In such cases, use the associated parametric background models from the :ref:`list of available models<modelsref_bg>`. If there is no inter-molecular background in your sample, or it is negligible, set the background model to ``None``.
 
-(4) **Choose an experiment model**
 
-    This decision should be based on the experiment you used to acquire the data. In the case of 4-pulse DEER data, when analyzing a standard 4-pulse DEER signal without 2+1 component at the end, use :ref:`ex_4pdeer`. If the 2+1 component (appearing at the right edge of the time trace) should be fitted as well, use the :ref:`ex_ovl4pdeer` model. There are experiment models for more complicated signals, such as 5-pulse DEER or 7-pulse DEER. Use the associated parametric experiment models from the :ref:`list of available models<modelsref_ex>`. If you want to model simple dipolar oscillations without any additional effects (modulation depth, secondary pathways), set the experiment model to ``None``.
 
-The models that have an associated parametric function, e.g. ``bg_hom3d``, must be passed directly as inputs to ``fitmodel``. In Python, functions can be passed as inputs to other functions. For example, a 4pDEER signal with non-parametric distance distribution and homogenous 3D background can be constructed using ::
+Choosing the number of dipolar pathways
+*************************************** 
 
-    Vmodel = dl.dipolarmodel(t, r, Pmodel=None, Bmodel=dl.bg_hom3d, npathways=1)  # Single-pathway 4pDEER model
+This decision should be based on the experiment you used to acquire the data and the type of pulses you used. In the case of 4-pulse DEER data, when analyzing a standard 4-pulse DEER signal without 2+1 component at the end a single pathway suffices. If the 2+1 component (appearing at the right edge of the time trace) is present, then it should be fitted as well, including its counterpart appearing at negative times, making a total of three dipolar pathways. Experiments such as 5-pulse DEER typically require at least two dipolar pathways to be properly modelled. 
+
+
+Using experimental pulse delays
+******************************** 
+
+The dipolar pathways of a newly constructed dipolar model are initialized at arbitrary refocusing times and fully unconstrained. The refocusing times can be strongly constrained by knowing the experimental pulse sequence delays used to acquire the data. If the experiment used to acquire the data is known, as well as its pulse delays, then it is strongly recommended do so.  
+ 
+DeerLab provides a selection of experimental information generators for some of the most widely employed experimental methods (see the of :ref:`list of available experiments <modelsref_ex>`). These are functions that take the pulse sequence delays, and return an ``ExperimentInfo`` object. This can be passed to the ``dipolarmodel`` function via the ``experiment`` keyword argument, to incorporate the experiment information on the model and constrain some of its parameters. 
+
+Constructing the dipolar model 
+*******************************
+
+Once all the decisions above have been made, the dipolar model can be constructed using the ``dipolarmodel`` function. The models that have an associated parametric function, e.g. ``bg_hom3d``, must be passed directly as inputs to ``dipolarmodel``. In Python, functions can be passed as inputs to other functions.  See the :ref:`details <dipolarmodel>` on ``dipolarmodel`` for more information. 
+
+Example: Single-pathway 4-pulse DEER model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+For example, a 4pDEER signal with non-parametric distance distribution and homogenous 3D background can be constructed using ::
+
+    expinfo = dl.ex_4pdeer(tau1=0.5, tau2=5.5)
+    Vmodel = dl.dipolarmodel(t, r, Pmodel=None, Bmodel=dl.bg_hom3d, npathways=1, experiment=expinfo) 
+
+By default, the function ``dipolarmodel`` assumes a non-parametric distance distribution, a homogenous 3D background and a single pathway. Thus the above is equivalent to ::
+
+    expinfo = dl.ex_4pdeer(tau1=0.5, tau2=5.5)
+    Vmodel = dl.dipolarmodel(t, r, experiment=expinfo) 
+
+
+
+
+Example: Two-pathway 5-pulse DEER model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+For example, a 5pDEER signal with non-parametric distance distribution and homogenous 3D background can be constructed using ::
+
+    expinfo = dl.ex_5pdeer(tau1=0.5, tau2=5.5, tau3=0.2)
+    Vmodel = dl.dipolarmodel(t, r, Pmodel=None, Bmodel=dl.bg_hom3d, npathways=2, , experiment=expinfo)
 
 Manipulating the model
 ***********************
 
-The parameters and penalties associated to this model can be inspected by printing the model: ::
+A full summary of the constructed model(s) can be inspected by printing the model object ::
 
-    print(Vmodel)
-
-
-.. code-block:: text
-
+    >>> print(Vmodel)
     Model information 
     -----------------
 
@@ -162,38 +198,31 @@ The parameters and penalties associated to this model can be inspected by printi
     ---------------
 
     ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper      Type       Frozen   Units     Description  
+        Name       Lower     Upper       Type      Frozen    Units      Description  
     ============ ========= ========== =========== ======== ========== ==========================
-    mod             0         1         nonlin      No                 Modulation depth
-    reftime      -inf        inf        nonlin      No        μs       Refocusing time
-    conc         0.01        5e+03      nonlin      No        μM       Spin concentration
-    P               0        inf        linear      No        None     Non-parametric distance distribution
+      mod           0         1          nonlin      No                 Modulation depth
+      reftime       -inf      inf        nonlin      No       μs        Refocusing time
+      conc          0.01      5e+03      nonlin      No       μM        Spin concentration
+      P             0         inf        linear      No       None      Non-parametric distance distribution
     ============ ========= ========== =========== ======== ========== ==========================
 
-    Penalties
-    ---------
 
-    ====================== ============= ============== ======== ============ ==========================
-        Name                Weight Lower  Weight Upper   Frozen   Selection     Description  
-    ====================== ============= ============== ======== ============ ==========================
-    regularization        1e-09        1e+03           No        aic          Tikhonov regularization of the distance distribution.
-    ====================== ============= ============== ======== ============ ==========================
-
+From this point on, the model can be modified, manipulated and expanded freely as any other DeerLab model. Check out the :ref:`modelling guide <modelling_guide>` for more details and instructions on model manipulation.
 
 Fitting
 -------
 Next, the model ``Vmodel`` can be fitted to the experimental data ``V`` by calling the ``fit`` function: ::
 
-    fitresult = dl.fit(Vmodel,V)  # Fit the model to the experimental data
+    result = dl.fit(Vmodel,V)  # Fit the model to the experimental data
 
 
-After ``fit`` has found a solution, it returns an object that we assigned to ``fitresult``. This object contains fields with all quantities of interest with the fit results, such as the fitted model and parameters, goodness-of-fit statistics, and uncertainty information.
+After ``fit`` has found a solution, it returns an object that we assigned to ``result``. This object contains fields with all quantities of interest with the fit results, such as the fitted model and parameters, goodness-of-fit statistics, and uncertainty information. Check out the :ref:`fitting guide <fitting_fitresult>` for more details on the quantities provided in ``result``.
 
 
 Displaying the results
 **********************
 
-For just a quick display of the results, you can use the ``plot()`` method of the ``fit`` object that will display a figure with you experimental data, the corresponding fit, and the fitted distance distribution including confidence bands. :: 
+For just a quick display of the results, you can use the ``plot()`` method of the ``fit`` object that will display a figure with you experimental data, the corresponding fit including confidence bands. :: 
 
     fitresults.plot() # display results
 
@@ -261,21 +290,23 @@ Here is an example script to load experimental time trace, pre-process it, and f
     import numpy as np
     import deerlab as dl
 
-    # Data import
-    filepath = '/home/experiments/DEERexperiment.DTA'  # file path
-    t,V = dl.deerload(filepath)   # load experimental data
+    # Optional, if experimental delays known
+    expinfo = dl.ex_4pdeer(tau1=0.5,tau2=5.5)
 
-    # Pre-processing
-    V = dl.correctphase(V)   # phase correction 
-    t = dl.correctzerotime(V,t)   # zero-time shift
+    # Data import and pre-processing
+    filepath = '/home/experiments/DEERexperiment.DTA' # File path
+    t,Vexp = dl.deerload(filepath) # Load experimental data
+    Vexp = dl.correctphase(Vexp) # Phase correction 
 
     # Distance range
-    r = np.linspace(1.5,6.5,100)   # define distance range from 1.5nm to 6nm with a resolution of 0.05nm
-
-    # Fit
-    fit = dl.fitmodel(V,t,r,'P',dl.bg_hom3d,dl.ex_4pdeer,verbose=True)   # 4pDEER fit using non-parametric distance distribution
-    fit.plot() # display results
+    r = np.linspace(1.5,6.5,100) # Define distance range from 1.5nm to 6nm with a resolution of 0.05nm
     
+    # Construct the dipolar model 
+    Vmodel = dl.dipolarmodel(t,r) # Non-parametric P(r), homogenous 3D background, single-pathway
+
+    # Fit the model to the data
+    result = dl.fit(Vmodel,Vexp)
+
     # Print figure
-    figure = fit.plot()
+    figure = result.plot()
     figure.savefig('DEERfig.pdf')

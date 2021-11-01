@@ -57,24 +57,23 @@ def _docstring(model,notes):
     Notes
     -----
 
-    **Parameter List**
+    **Parameter Table**
 
-    ============ ========= ========== =========== ========== ==========================
-        Name       Lower     Upper      Type        Units     Description  
-    ============ ========= ========== =========== ========== ==========================""")
+    ============ ========= ========== =========== ================= ===================================================
+        Name       Lower     Upper      Type        Units                 Description  
+    ============ ========= ========== =========== ================= ===================================================""")
     for n,paramname in enumerate(model._parameter_list(order='vector')): 
         string += f'\n   {paramname:7s}'
         string += f'     {getattr(model,paramname).lb:5.3g}'
         string += f'     {getattr(model,paramname).ub:5.3g}'
         string += f'      {"linear" if getattr(model,paramname).linear else "nonlin"}'
-        string += f'       {str(getattr(model,paramname).units):6s}'
-        string += f'   {str(getattr(model,paramname).description):s}'
-    string += f'\n============ ========= ========== =========== ========== =========================='
+        string += f'       {str(getattr(model,paramname).units):15s}'
+        string += f'              {str(getattr(model,paramname).description):s}'
+    string += f'\n============ ========= ========== =========== ================= ==================================================='
 
     string += f'\n{notes}'
 
-    model.__doc__ = string
-    return model
+    return string
 #---------------------------------------------------------------------------------------
 
 #=======================================================================================

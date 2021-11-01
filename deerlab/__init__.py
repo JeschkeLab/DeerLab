@@ -8,7 +8,7 @@ from .selregparam import selregparam
 from .dipolarkernel import dipolarkernel
 from .dipolarbackground import dipolarbackground
 from .dipolarmodel import dipolarmodel,ExperimentInfo,dipolarpenalty, ex_4pdeer,ex_3pdeer,ex_5pdeer
-from .solvers import snlls
+from .solvers import snlls, fnnls, cvxnnls
 from .regoperator import regoperator
 from .correctphase import correctphase
 from .correctzerotime import correctzerotime

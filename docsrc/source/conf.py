@@ -16,15 +16,35 @@ copyright = '2019-2021, Luis Fábregas-Ibáñez, Stefan Stoll, and others'
 author = 'Fabregas Ibanez'
 language = 'en'
 
-
+# Print the HTML code for the landing page with dynamically compiled version number
 version = open(os.path.join('..','..','VERSION')).read().splitlines()[0]
+string = f"""
+:raw-html:`<div class="topfloatcontainer">
+        <div class="illustration">
+            <img src="_static/landingpage.svg" alt="DeerLab Illustration">
+        </div>
+        <div class="title">
+            <p class="titlep"><span class="title1">DeerLab</span><span class="title2">Docs</span><span class="version">{version}</span></p>
+            <span style="color:#586069; font-size:20px; line-height:1.5;">
+            DeerLab is a comprehensive free scientific software package for Python focused on modelling, penalized least-squares regression, and uncertainty quantification. It also provides specialized models and tools for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy techniques such as DEER (double electron-electron resonance), and others. 
+            </span>
+        <br>
+        <a href="./user_guide.html" class="btn-quick", style="margin-top:20px;">   Get started → </a>
+        <br>
+        </div>
+    </div>`
+"""
+import re
+string = re.sub('\s+',' ',string)
 rst_epilog = f""" 
 .. role:: raw-html(raw)
    :format: html
 
-.. |title_version| replace:: :raw-html:`<p class="titlep"><span class="title1">DeerLab</span><span class="title2">Docs</span><span class="version">{version}</span></p>`
+.. |title_version| replace:: {string}
 """
 
+# Add any paths that contain templates here, relative to this directory.
+templates_path = ['_templates']
 
 # Add sphinx extensions
 extensions = [
@@ -218,7 +238,7 @@ html_static_path = ['_static']
 html_title = 'DeerLab'
 highlight_language = 'python'
 primary_domain = 'py'
-html_logo = '_static/logo_docs.png'
+html_logo = '_static/logo_docs.svg'
 
 
 # Design pygments patch for MATLAB true code highlighting
@@ -240,7 +260,7 @@ class MyFancyStyle(Style):
         Name.Class:             '#0000FF',
         Name.Builtin:           '#9065e2',
         Name.Attribute:         '#9065e2',
-        String:                 '#85d996',
+        String:                 '#244679',
         Operator:               '#005cc5',
         Number:                 '#0e56b1',
     }

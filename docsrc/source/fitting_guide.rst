@@ -187,6 +187,7 @@ By default, the program will use the specified selection functional to optimize 
 
 This will fix the value throughout the whole fitting approach and skip the outer optimization entirely (if no other penalties are passed). 
 
+.. _fitting_fitresult:
 
 The ``FitResult`` object
 -------------------------

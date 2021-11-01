@@ -39,32 +39,32 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
         
         General parameters
 
-            * ``'rmin'`` - Minimum distance in the distribution range, in nm
-            * ``'rmax'`` - Maximum distance in the distribution range, in nm
-            * ``'int'`` - Integral of the distance distribution
+        * ``'rmin'`` - Minimum distance in the distribution range, in nm
+        * ``'rmax'`` - Maximum distance in the distribution range, in nm
+        * ``'int'`` - Integral of the distance distribution
 
         Location parameters
 
-            * ``'mean'`` or ``'moment1'`` - Mean distance, in nm (see `more <https://en.wikipedia.org/wiki/Mean>`__)
-            * ``'median'`` - Median distance, in nm (see `more <https://en.wikipedia.org/wiki/Median>`__)
-            * ``'iqm'`` - Interquartile mean (IQM) distance, in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_mean>`__)
-            * ``'mode'`` - First modal distance, in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`__)
-            * ``'modes'`` - All modal distances, in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`__)
+        * ``'mean'`` or ``'moment1'`` - Mean distance, in nm (see `more <https://en.wikipedia.org/wiki/Mean>`__)
+        * ``'median'`` - Median distance, in nm (see `more <https://en.wikipedia.org/wiki/Median>`__)
+        * ``'iqm'`` - Interquartile mean (IQM) distance, in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_mean>`__)
+        * ``'mode'`` - First modal distance, in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`__)
+        * ``'modes'`` - All modal distances, in nm (see `more <https://en.wikipedia.org/wiki/Mode_(statistics)>`__)
 
         Spread parameters
 
-            * ``'iqr'`` - Interquartile range, in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_range>`__)
-            * ``'mad'`` - Mean absolute deviation (MAD), in nm (see `more <https://en.wikipedia.org/wiki/Average_absolute_deviation>`__)
-            * ``'std'`` - Standard deviation, in nm (see `more <https://en.wikipedia.org/wiki/Standard_deviation>`__)
-            * ``'var'`` or ``'moment2'`` - Variance, in nm² (see `more <https://en.wikipedia.org/wiki/Variance>`__)
-            * ``'entropy'`` - Shannon entropy, in nat (see `more <https://en.wikipedia.org/wiki/Entropy_(information_theory)>`__)
+        * ``'iqr'`` - Interquartile range, in nm (see `more <https://en.wikipedia.org/wiki/Interquartile_range>`__)
+        * ``'mad'`` - Mean absolute deviation (MAD), in nm (see `more <https://en.wikipedia.org/wiki/Average_absolute_deviation>`__)
+        * ``'std'`` - Standard deviation, in nm (see `more <https://en.wikipedia.org/wiki/Standard_deviation>`__)
+        * ``'var'`` or ``'moment2'`` - Variance, in nm² (see `more <https://en.wikipedia.org/wiki/Variance>`__)
+        * ``'entropy'`` - Shannon entropy, in nat (see `more <https://en.wikipedia.org/wiki/Entropy_(information_theory)>`__)
 
         Shape parameters
 
-            * ``'modality'`` - Modality (number of modes)
-            * ``'skewness'`` or ``'moment3'`` - Skewness (see `more <https://en.wikipedia.org/wiki/Skewness>`__)
-            * ``'kurtosis'`` - Excess kurtosis (see `more <https://en.wikipedia.org/wiki/Kurtosis>`__)
-            * ``'moment4'`` - 4th moment (kurtosis) (see `more <https://en.wikipedia.org/wiki/Kurtosis>`__)
+        * ``'modality'`` - Modality (number of modes)
+        * ``'skewness'`` or ``'moment3'`` - Skewness (see `more <https://en.wikipedia.org/wiki/Skewness>`__)
+        * ``'kurtosis'`` - Excess kurtosis (see `more <https://en.wikipedia.org/wiki/Kurtosis>`__)
+        * ``'moment4'`` - 4th moment (kurtosis) (see `more <https://en.wikipedia.org/wiki/Kurtosis>`__)
 
     uq : dict of :ref:`UQResult`
         Dictionary of the parameters covariance-based uncertainty quantifications. 
@@ -73,7 +73,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     Notes
     -----
     For the ``'mode'``, ``'modes'`` and ``'modality'`` parameters, covariance-based uncertainties are not 
-    available. Unvertainties can, however, be calculated via bootsrapping of these quantities, e.g. ::
+    available. Uncertainties can, however, be calculated via bootsrapping of these quantities, e.g. ::
 
         def analyze_rmode(V):
             fit = dl.fitmodel(V,t,r)

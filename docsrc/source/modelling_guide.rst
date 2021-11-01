@@ -1,3 +1,5 @@
+.. _modelling_guide:
+
 Modeling Guide
 =========================================
 

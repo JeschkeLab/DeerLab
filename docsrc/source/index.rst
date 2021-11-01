@@ -1,5 +1,4 @@
-﻿.. warning:: DeerLab is currently in the pre-release stage (version numbers v0.x.y) and under active development. Major changes are likely before the first stable version (v1.0.0) is released.
-
+﻿
 .. raw:: html 
 
     <style>
@@ -9,9 +8,12 @@
     .title1 {font-size:65px; font-family: "Berlin Sans FB"} 
     .col-xl-2 {flex: 0 0 3.66667%; max-width:  3.667%}
     .col-xl-8 {flex: 0 0 90.6667%; max-width: 90.667%}
-    .titlep {margin-top: -75px;}
+    .titlep {margin-top: -100px;margin-bottom: -10px;}
     .invisibletitle {font-size:0px}
     .prev-next-area a.right-next {float: right;visibility: hidden;}
+    .title {padding-top: 110px;padding-left: 22px;width:60%}
+    .illustration {width: 45%;}
+    .topfloatcontainer {float: initial;display: flex;margin-top: -60px;margin-bottom: 25px;}
     </style> 
 
 .. role:: title1
@@ -24,18 +26,7 @@
 |title_version|
 
 
-
-.. raw:: html 
-
-    <div style="width:100%">
-    <span style="color:#586069; font-size:20px; line-height:1.5;">
-    DeerLab is a comprehensive free software Python package for modelling, penalized least-squares regression, and uncertainty quantification. It provides specialized models and tools for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy techniques such as DEER (double electron-electron resonance), and others. 
-    </span></div>
-    <br>
-    <a href="./user_guide.html" class="btn-quick">   Get started → </a>
-    <br>
-    <br>
-
+.. warning:: DeerLab is currently in the pre-release stage (version numbers v0.x.y) and under active development. Major changes are likely before the first stable version (v1.0.0) is released.
 
 
 .. raw:: html 
@@ -73,6 +64,14 @@
     :caption: Examples
 
     ./examples
+
+
+
+.. toctree::
+    :hidden:
+    :caption: Models
+
+    ./modelsref
 
 
 .. toctree::

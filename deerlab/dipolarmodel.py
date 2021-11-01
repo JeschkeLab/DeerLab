@@ -32,14 +32,6 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
     harmonics : list of integers 
         Harmonics of the dipolar pathways. Must be a list with `npathways` harmonics for each
         defined dipolar pathway.  
-    compactness : boolean, optional
-        Whether to add a weighted penalty to induce compactness of the distance distribution, optimized 
-        via the informational complexity criterion (ICC).
-        Adds a :ref:`Penalty` object to the model accessible via the attribute ``model.compactness``. 
-    smoothness : boolean, optional
-        Whether to add a weighted penalty to induce smoothness of the distance distribution, optimized 
-        via the Akaike information criterion (AIC).          
-        Adds a :ref:`Penalty` object to the model accessible via the attribute ``model.smoothness``.
         
     Returns
     -------
@@ -237,11 +229,38 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
 #===============================================================================
 
 #===============================================================================
-def dipolarpenalty(model,axis,type,selection=None):
+def dipolarpenalty(Pmodel,r,type,selection=None):
+    r"""
+    Construct penalties based on the distance distribution.
 
-    if model is None: 
-        model = freedist(axis)
-    Nconstants = len(model._constantsInfo)
+    Parameters
+    ----------
+    Pmodel : ``Model`` object 
+        The Pmodel of the distance distribution.
+    r : array_like 
+        Distance axis vector, in nanometers. 
+    type : string
+        Type of property to be imposed by the penalty. 
+        
+        - ``'smoothness'`` : Smoothness of the distance distribution
+        - ``'compactness'`` : Compactness of the distance distribution   
+    selection : string 
+        Selection functional for the outer optimization of the penalty weight. 
+
+            - ``'aic'`` - Akaike information criterion
+            - ``'bic'`` - Bayesian information criterion
+            - ``'aicc'`` - COrrected Akaike information criterion
+            - ``'icc'`` - Informational complexity criterion 
+
+    Returns
+    -------
+    penalty : ``Penalty`` object 
+        Penalty object to be passed to the ``fit`` function.
+    """
+
+    if Pmodel is None: 
+        Pmodel = freedist(r)
+    Nconstants = len(Pmodel._constantsInfo)
 
     # If include compactness penalty
     if type=='compactness':
@@ -251,12 +270,12 @@ def dipolarpenalty(model,axis,type,selection=None):
 
         # Define the compactness penalty function
         def compactness_penalty(*args): 
-            P = model(*[axis]*Nconstants,*args)
-            P = P/np.trapz(P,axis)
-            return np.sqrt(P*(axis - np.trapz(P*axis,axis))**2*np.mean(np.diff(axis)))
-        # Add the penalty to the model
+            P = Pmodel(*[r]*Nconstants,*args)
+            P = P/np.trapz(P,r)
+            return np.sqrt(P*(r - np.trapz(P*r,r))**2*np.mean(np.diff(r)))
+        # Add the penalty to the Pmodel
         penalty = Penalty(compactness_penalty,selection,
-                    signature = model._parameter_list(),
+                    signature = Pmodel._parameter_list(),
                     description = 'Distance distribution compactness penalty.')
         penalty.weight.set(lb=1e-6, ub=1e1)
 
@@ -266,12 +285,12 @@ def dipolarpenalty(model,axis,type,selection=None):
             selection = 'aic'
 
         # Define the smoothness penalty function
-        L = regoperator(axis,2)
+        L = regoperator(r,2)
         def smoothness_penalty(*args): 
-            return L@model(*[axis]*Nconstants,*args)
-        # Add the penalty to the model
+            return L@Pmodel(*[r]*Nconstants,*args)
+        # Add the penalty to the Pmodel
         penalty = Penalty(smoothness_penalty,selection,
-                    signature = model._parameter_list(),
+                    signature = Pmodel._parameter_list(),
                     description = 'Distance distribution smoothness penalty.')
         penalty.weight.set(lb=1e-9, ub=1e3)
 
@@ -306,7 +325,12 @@ class ExperimentInfo():
 def ex_3pdeer(tau):
     r"""
     Generate a 3-pulse DEER dipolar experiment model. 
-    
+
+
+    .. image:: ../images/sequence_3pdeer.svg
+        :width: 450px
+
+
     The theoretically predicted refocusing times of its dipolar pathways are
     automatically computed from the pulse sequence delays.  
 
@@ -337,6 +361,9 @@ def ex_4pdeer(tau1,tau2):
     r"""
     Generate a 4-pulse DEER dipolar experiment model. 
     
+    .. image:: ../images/sequence_4pdeer.svg
+        :width: 450px
+
     The theoretically predicted refocusing times of its dipolar pathways are
     automatically computed from the pulse sequence delays.  
 
@@ -369,6 +396,9 @@ def ex_5pdeer(tau1,tau2,tau3):
     r"""
     Generate a 5-pulse DEER dipolar experiment model. 
     
+    .. image:: ../images/sequence_5pdeer.svg
+        :width: 450px
+
     The theoretically predicted refocusing times of its dipolar pathways are
     automatically computed from the pulse sequence delays.  
 
