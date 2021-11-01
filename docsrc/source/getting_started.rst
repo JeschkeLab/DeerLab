@@ -230,8 +230,6 @@ For just a quick display of the results, you can use the ``plot()`` method of th
 .. image:: ./images/beginners_guide1.png
    :width: 450px
 
-These confidence bands are covariance-based and might represent an overestimation of the true uncertainty on the results (see :ref:`uncertainty <uncertainty>` for further details). It is important to always report confidence bands with fitted distance distributions.
-
 The ``fitresults`` output contains additional information, for example:
 
     * ``fit.V``, ``fit.B``, and ``fit.P`` contain the arrays of the fitted dipolar signal, background, and distance distribution, respectively. 

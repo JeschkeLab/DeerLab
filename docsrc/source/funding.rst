@@ -3,11 +3,12 @@ Funding
 
 DeerLab is a project that has been funded by the following sources:
     
+.. rubric:: ETH Zurich
+
 .. raw:: html 
 
     <div style="height:100px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
-         <div style="width=40%; margin-right:8%; font-size:14px">
-            <h3 style="font-size:110%">  ETH Zurich </h3> 
+         <div style="margin-right:2%; font-size:14px">
             Grant ETH-35 18-2
         </div>
         <div style="height:70%; width=30%">
@@ -15,12 +16,12 @@ DeerLab is a project that has been funded by the following sources:
         </div>
     </div>    
     
+.. rubric:: National Institutes of Health 
 
 .. raw:: html 
 
     <div style="height:100px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
          <div style="margin-right:2%; font-size:14px">
-         <h3 style="font-size:110%">  National Institutes of Health </h3> 
             Grant GM125753 <br>
             Grant GM127325
         </div>
@@ -29,12 +30,12 @@ DeerLab is a project that has been funded by the following sources:
         </div>
     </div>    
     
+.. rubric:: National Science Foundation
 
 .. raw:: html 
 
     <div style="height:100px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
         <div style="margin-right:2%; font-size:14px">
-            <h3 style="font-size:110%">  National Science Foundation </h3> 
             Grant CHE-1452967
         </div>
         <div style="height:70%; width=30%">

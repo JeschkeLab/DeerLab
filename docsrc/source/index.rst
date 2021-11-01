@@ -89,15 +89,9 @@
 
 .. toctree::
     :hidden:
-    :caption: Others
+    :caption: More
 
     ./others
-
-.. toctree::
-    :hidden:
-    :caption: Release Notes
-    
-    ./changelog
 
 .. Indices and tables
 .. ==================
