@@ -22,6 +22,16 @@ def test_preserve_original():
 # ======================================================================
 
 # ======================================================================
+def test_relate_signature(): 
+    "Check the model signature after relate"
+    model = dl.dd_gauss2
+
+    newmodel = relate(model,mean1= lambda mean2: mean2)
+
+    assert newmodel.signature==['r', 'mean1', 'width1', 'width2', 'amp1', 'amp2']
+# ======================================================================
+
+# ======================================================================
 def test_Nparam_nonlin(): 
     "Check that the output model has the right number of parameters"
     model = dl.dd_gauss

@@ -33,6 +33,16 @@ def test_link_Nparam_list():
 # ======================================================================
 
 # ======================================================================
+def test_link_signature(): 
+    "Check the model signature after linking"
+    model = dl.dd_gauss2
+
+    linkedmodel = link(model,mean=['mean1','mean2'])
+
+    assert linkedmodel.signature==['r', 'mean', 'width1', 'width2', 'amp1', 'amp2']
+# ======================================================================
+
+# ======================================================================
 def test_link_multiple(): 
     "Check that multiple links can be established"
     model = dl.dd_gauss3
