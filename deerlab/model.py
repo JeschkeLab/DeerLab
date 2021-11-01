@@ -930,9 +930,16 @@ def link(model,**links):
     if not isinstance(model,Model):
         raise TypeError('The first argument must be a Model object.')
     newmodel = deepcopy(model)
+    # Perform the linking, one by one
     for link_newname in links: 
         to_link = [getattr(newmodel,parname) for parname in links[link_newname]]
         newmodel = _linkparameter(newmodel,to_link,link_newname)
+    # Update the new model signature
+    for key in links.keys():
+        newmodel.signature = [key if arg==links[key][0] else arg for arg in newmodel.signature]
+        for arg in links[key]:
+            if arg in newmodel.signature: 
+                newmodel.signature.remove(arg)
     return newmodel
 #==============================================================================================
 
@@ -1275,6 +1282,11 @@ def relate(model,**functions):
     # Get the dependent's names and their function arguments
     dependents = [dependent for dependent in functions]
     arguments = [inspect.getfullargspec(functions[dependent]).args for dependent in dependents]
+
+    # Update the new model signature
+    for arg in [item for sublist in arguments for item in sublist]:
+        if arg in newmodel.signature: 
+            newmodel.signature.remove(arg)
 
     # Check and correct the order to of functionalization
     maxtrials = 2*len(dependents)
