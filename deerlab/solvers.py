@@ -46,9 +46,9 @@ def _plot(ys,yfits,yuqs,axis=None,xlabel=None):
     for i,(y,yfit,yuq) in enumerate(zip(ys,yfits,yuqs)): 
         # Plot the experimental signal and fit
         axs[n].plot(axis[i],y.real,'.',color='grey')
-        axs[n].plot(axis[i],yfit.real)
+        axs[n].plot(axis[i],yfit.real,color='#4550e6')
         if yuq.type!='void': 
-            axs[i].fill_between(axis[i],yuq.ci(95)[:,0].real,yuq.ci(95)[:,1].real,alpha=0.4,linewidth=0)
+            axs[i].fill_between(axis[i],yuq.ci(95)[:,0].real,yuq.ci(95)[:,1].real,alpha=0.4,linewidth=0,color='#4550e6')
         axs[n].set_xlabel(xlabel)
         axs[n].set_ylabel(f'Dataset #{i+1}')
         axs[n].legend(('Data (real)','Fit','95%-CI'),loc='best',frameon=False)
