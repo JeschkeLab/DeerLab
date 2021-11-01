@@ -6,9 +6,7 @@ import os
 
 sys.path.append(os.path.abspath('.'))
 
-# Import Read-the-Docs (RTD) theme
 from sphinx.locale import _
-from sphinx_rtd_theme import __version__
 
 # Project details
 project = 'DeerLab'
@@ -125,7 +123,6 @@ pygments_style = 'default'
 intersphinx_mapping = {
     'sphinx': ('http://www.sphinx-doc.org/en/stable/', None),
 }
-#html_theme = 'sphinx_rtd_theme'
 html_theme = "pydata_sphinx_theme"
 
 # Integrate version control system
@@ -251,8 +248,6 @@ default_role = 'math'  # with this, :math:`\psi` can be written simply as `\psi`
 
 
 # -- Options for HTML output -------------------------------------------------
-#html_theme = "sphinx_rtd_theme"
-#html_theme_path = ["_themes", ]
 html_static_path = ['_static']
 html_title = 'DeerLab'
 highlight_language = 'python'
