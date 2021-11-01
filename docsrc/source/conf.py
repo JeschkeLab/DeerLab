@@ -3,10 +3,18 @@
 
 import sys
 import os
-
-sys.path.append(os.path.abspath('.'))
-
+import re
 from sphinx.locale import _
+import warnings
+
+# Get DeerLab version
+version = open(os.path.join('..','..','VERSION')).read().splitlines()[0]
+
+# Warnings suppression
+warnings.filterwarnings("ignore", category=FutureWarning)
+
+# Add path
+sys.path.append(os.path.abspath('.'))
 
 # Project details
 project = 'DeerLab'
@@ -14,47 +22,8 @@ copyright = '2019-2021, Luis Fábregas-Ibáñez, Stefan Stoll, and others'
 author = 'Fabregas Ibanez'
 language = 'en'
 
-# Print the HTML code for the landing page with dynamically compiled version number
-version = open(os.path.join('..','..','VERSION')).read().splitlines()[0]
-string = f"""
-:raw-html:`<div class="topfloatcontainer">
-        <div class="illustration">
-            <img src="_static/landingpage.svg" alt="DeerLab Illustration">
-        </div>
-        <div class="title">
-            <p class="titlep"><span class="title1">DeerLab</span><span class="title2">Docs</span><span class="version">{version}</span></p>
-            <span style="color:#586069; font-size:20px; line-height:1.5;">
-            DeerLab is a comprehensive free scientific software package for Python focused on modelling, penalized least-squares regression, and uncertainty quantification. It also provides specialized models and tools for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy techniques such as DEER (double electron-electron resonance), and others. 
-            </span>
-        <br>
-        <a href="./user_guide.html" class="btn-quick", style="margin-top:20px;">   Get started → </a>
-        <br>
-        </div>
-    </div>`
-"""
-import re
-string = re.sub('\s+',' ',string)
-rst_epilog = f""" 
-.. role:: raw-html(raw)
-   :format: html
-
-.. |title_version| replace:: {string}
-
-.. |fix| replace:: :raw-html:`<span class="badge changelog_fix">Fix</span>`
-
-.. |efficiency| replace:: :raw-html:`<span class="badge changelog_efficiency">Efficiency</span>`
-
-.. |enhancement| replace:: :raw-html:`<span class="badge changelog_enhancement">Enhancement</span>`
-
-.. |feature| replace:: :raw-html:`<span class="badge changelog_feature">Feature</span>`
-
-.. |api| replace:: :raw-html:`<span class="badge changelog_api">API Change</span>`
-"""
-
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
-
-# Add sphinx extensions
+# Sphinx extensions
+# ----------------------------------------------------------------------
 extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
@@ -70,20 +39,26 @@ extensions = [
     'sphinx_copybutton'
 ]
 
-
+# Configureation of Sphinx-Issues
+# ----------------------------------------------------------------------
 # GitHub repo
 issues_github_path = "JeschkeLab/deerlab"
-
 # equivalent to
 issues_uri = "https://github.com/JeschkeLab/deerlab/issues/{issue}"
 issues_pr_uri = "https://github.com/JeschkeLab/deerlab/pull/{pr}"
 issues_commit_uri = "https://github.com/JeschkeLab/deerlab/commit/{commit}"
 
-#sys.path.append('../../deerlab')
-#autosummary_mock_imports = ['deerlab']
-add_module_names = False
-autosummary_generate = True  # Turn on sphinx.ext.autosummary
 
+# Configuration of Sphinx-Autosymmary
+# ----------------------------------------------------------------------
+add_module_names = False
+# Turn on sphinx.ext.autosummary
+autosummary_generate = True 
+# Add any paths that contain templates here, relative to this directory.
+templates_path = ['_templates']
+
+# Configuration of the Sphinx-Gallery
+# ----------------------------------------------------------------------
 from sphinx_gallery.sorting import ExplicitOrder
 sphinx_gallery_conf = {
     'filename_pattern': 'ex_',
@@ -96,13 +71,14 @@ sphinx_gallery_conf = {
                                        '../../examples/other']),
 }
 
+# Configuration of Sphinx-CopyButton
+# ----------------------------------------------------------------------
 copybutton_prompt_text = ">>> "
 
-# Warnings suppression
-import warnings
-warnings.filterwarnings("ignore", category=FutureWarning)
-exclude_patterns = ['.', './functions']
-numpydoc_show_class_members = False
+
+
+# Configuration of Latex-to-SVG
+# ----------------------------------------------------------------------
 # Render Latex math equations as svg instead of rendering with JavaScript
 imgmath_image_format = 'png' if os.name=='nt' else 'svg'
 imgmath_dvisvgm = 'dvisvgm'
@@ -113,20 +89,18 @@ imgmath_latex_preamble = r'''
 \DeclareMathOperator*{\argmin}{\arg\!\min}
 '''
 
+# Configuration of the HTML Theme Template
+# ----------------------------------------------------------------------
 # Setup template stuff
-templates_path = ['_templates']
+exclude_patterns = ['.', './functions']
+numpydoc_show_class_members = False
+html_theme = "pydata_sphinx_theme"
 source_suffix = '.rst'
 exclude_patterns = []
 master_doc = 'index'
 suppress_warnings = ['image.nonlocal_uri']
 pygments_style = 'default'
-intersphinx_mapping = {
-    'sphinx': ('http://www.sphinx-doc.org/en/stable/', None),
-}
-html_theme = "pydata_sphinx_theme"
-
-# Integrate version control system
-# -------------------------------------------------------------
+intersphinx_mapping = {'sphinx': ('http://www.sphinx-doc.org/en/stable/', None)}
 html_context = {
     "display_github": False, # Integrate GitHub
     "github_user": "JeschkeLab", # Username
@@ -135,10 +109,6 @@ html_context = {
     "conf_py_path": "/source/", # Path in the checkout to the docs root
     'version' : version,                                  
 }
-
-
-# Read-the-Docs options configuration
-# -------------------------------------------------------------
 html_theme_options = {
     "icon_links": [
         {
@@ -161,13 +131,8 @@ html_theme_options = {
             "url": "https://pypi.org/project/DeerLab/",
             "icon": "fas fa-cube",
         },
-    ],
-    #"navbar_end": ["navbar-icon-links.html", "search-field.html"],
-    #"navbar_align": "left"
+    ]
 }
-#html_sidebars = {
-#  "**": []
-#}
 html_sidebars = {
     "index": []
 }
@@ -181,8 +146,6 @@ html_static_path = ['_static']
 def setup(app):
     from sphinx.domains.python import PyField
     from sphinx.util.docfields import Field
-    #app.add_css_file('/source/_static/custom.css')
-    #app.add_stylesheet('/source/_static/theme_override.css')
     app.add_object_type(
         'confval',
         'confval',
@@ -204,60 +167,24 @@ def setup(app):
             ),
         ]
     )
-    # Patch the MATLAB lexer to correct wrong highlighting
-    from sphinx.highlighting import lexers
-    from pygments.lexers import python
-    from pygments.token import Name
-    from pygments.filters import NameHighlightFilter
-    from deerlab import dd_models, bg_models
-    import matplotlib.pyplot as plt 
-    import deerlab
-    import numpy
-    import inspect
-    #python_lexer = python.PythonLexer()
-    #dd_functions = [o[0] for o in inspect.getmembers(bg_models) if inspect.isfunction(o[1])]
-    #bg_functions = [o[0] for o in inspect.getmembers(dd_models) if inspect.isfunction(o[1])]
-    #pl_functions = [o[0] for o in inspect.getmembers(plt) if inspect.isfunction(o[1])]
-    #dl_functions = [o[0] for o in inspect.getmembers(deerlab) if inspect.isfunction(o[1])]
-    #np_functions = [o[0] for o in inspect.getmembers(numpy) if inspect.isfunction(o[1])]
-
-    #python_lexer.add_filter(NameHighlightFilter(
-    #        names= dl_functions + dd_functions + bg_functions + pl_functions + np_functions,
-    #        tokentype=Name.Function,
-    #        ))
-    #app.add_lexer('python', python_lexer)
 
 # These folders are copied to the documentation's HTML output
 html_static_path = ['_static']
 
 # Add path to custom CSS file to overwrite some of the default CSS settings
 html_css_files = [
-#    'custom.css',
-#    'table_util.css',
-#    'table_main.css',
     'theme_override.css'
 ]
-
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
-
 # Default role
 default_role = 'math'  # with this, :math:`\psi` can be written simply as `\psi`
-
-
-# -- Options for HTML output -------------------------------------------------
-html_static_path = ['_static']
 html_title = 'DeerLab'
 highlight_language = 'python'
 primary_domain = 'py'
 html_logo = '_static/logo_docs.svg'
 
 
-# Design pygments patch for MATLAB true code highlighting
+# Patch Code highlighting
 # --------------------------------------------------------
-
 # Import the pygments python library
 from pygments.style import Style
 from pygments.token import Keyword, Name, Comment, String, Error, Number, Operator, Generic, Text, Other, Comment, Whitespace
@@ -293,3 +220,39 @@ def pygments_monkeypatch_style(mod_name, cls):
 
 pygments_monkeypatch_style("my_fancy_style", MyFancyStyle)
 pygments_style = "my_fancy_style"
+
+
+# Print the HTML code for the landing page with dynamically compiled version number
+string = f"""
+:raw-html:`<div class="topfloatcontainer">
+        <div class="illustration">
+            <img src="_static/landingpage.svg" alt="DeerLab Illustration">
+        </div>
+        <div class="title">
+            <p class="titlep"><span class="title1">DeerLab</span><span class="title2">Docs</span><span class="version">{version}</span></p>
+            <span style="color:#586069; font-size:20px; line-height:1.5;">
+            DeerLab is a comprehensive free scientific software package for Python focused on modelling, penalized least-squares regression, and uncertainty quantification. It also provides specialized models and tools for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy techniques such as DEER (double electron-electron resonance), and others. 
+            </span>
+        <br>
+        <a href="./user_guide.html" class="btn-quick", style="margin-top:20px;">   Get started → </a>
+        <br>
+        </div>
+    </div>`
+"""
+string = re.sub('\s+',' ',string)
+rst_epilog = f""" 
+.. role:: raw-html(raw)
+   :format: html
+
+.. |title_version| replace:: {string}
+
+.. |fix| replace:: :raw-html:`<span class="badge changelog_fix">Fix</span>`
+
+.. |efficiency| replace:: :raw-html:`<span class="badge changelog_efficiency">Efficiency</span>`
+
+.. |enhancement| replace:: :raw-html:`<span class="badge changelog_enhancement">Enhancement</span>`
+
+.. |feature| replace:: :raw-html:`<span class="badge changelog_feature">Feature</span>`
+
+.. |api| replace:: :raw-html:`<span class="badge changelog_api">API Change</span>`
+"""
