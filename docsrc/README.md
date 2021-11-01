@@ -34,9 +34,9 @@ In order to compile the documentation the following steps must be followed:
 
         pip install sphinxcontrib-ghcontributors
 
-9) Install M2R-2
+9) Install Sphinx-Issues
     
-        pip install m2r2
+        pip install sphinx-issues
 
 10) Download and install dvissvgm from https://dvisvgm.de/Downloads/
 		
