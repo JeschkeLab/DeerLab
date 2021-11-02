@@ -209,8 +209,6 @@ def _prepare_linear_lsq(A,lb,ub,reg,L,tol,maxiter,nnlsSolver):
         # Non-negative linear LSQ
         if nnlsSolver == 'fnnls':
             linSolver = lambda AtA, Aty: fnnls(AtA, Aty, tol=tol, maxiter=maxiter)
-        elif nnlsSolver == 'nnlsbpp':
-            linSolver = lambda AtA, Aty: nnlsbpp(AtA, Aty, np.linalg.solve(AtA, Aty))
         elif nnlsSolver == 'cvx':
             linSolver = lambda AtA, Aty: cvxnnls(AtA, Aty, tol=tol, maxiter=maxiter)
         parseResult = lambda result: result
@@ -419,7 +417,6 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
         * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
-        * ``'nnlsbpp'`` - Optimization using the block principal pivoting NNLS algorithm.
         
         The default is ``'cvx'``.
 
@@ -984,9 +981,6 @@ def fnnls(AtA, Atb, tol=None, maxiter=None, verbose=False):
 
 #=====================================================================================
 
-
-
-
 def cvxnnls(AtA, Atb, tol=None, maxiter=None):
 #=====================================================================================
     """
@@ -1025,116 +1019,4 @@ def cvxnnls(AtA, Atb, tol=None, maxiter=None):
     P = cvx.solvers.qp(cAtA, cAtb, I, lb, initvals=cvx.matrix(x0))['x']
     P = np.squeeze(np.asarray(P))
     return P
-#=====================================================================================
-
-
-def nnlsbpp(AtA, AtB, x0=None):
-#=====================================================================================
-    """
-    Non-Negative Least Squares using Block Principal Pivoting
-    ==========================================================
-
-    Usage:
-    ------
-        x = nnlsbpp(AtA,AtB,x0)
-
-    Arguments: 
-    ----------
-    AtA (NxN-element matrix)
-
-    AtB (Nx1-element array or Nxk matrix)
-    
-    x0  (Nx1 vector or Nxk matrix) 
-        Initial guess(es) vector
-    
-    Returns:
-    --------
-    x (Nx1-element array or Nxk matrix)
-        Solution vector(s)
-
-    References:
-    -----------
-    [1] 
-    Portugal, Judice, Vicente, Mathematics of Computation, 1994, 63, 625-643
-    A comparison of block pivoting and interior-point algorithms for linear
-    least squares problems with nonnegative variables
-    https://doi.org/10.1090/S0025-5718-1994-1250776-4
-    
-    [2]
-    Kim, Park,SIAM J. Sci. Comput. 2011, 33(6), 3261-3281
-    Fast Nonnegative Matrix Factorization: An Active-Set-Like Method and Comparisons
-    https://doi.org/10.1137/110821172
-    """
-
-    # Size checks
-    #-------------------------------------------------------------------------------
-    n1,n2 = np.shape(AtA)
-
-    if n1 is not n2:
-        raise TypeError('AtA must be a square matrix. You gave a ',n1,'x',n2,' matrix.')
-    n = np.size(AtB)
-    k = 1
-    if n is not n1:
-        raise TypeError('AtB must have the same number of rows as AtA. You gave ',n,' instead of ',n1)
-
-    if x0 is None:
-        x0 = np.linalg.solve(AtA,AtB)
-
-    # Loop over multiple right-hand sides
-    #-------------------------------------------------------------------------------
-    if k > 1:
-        x = np.zeros((n1,k))
-        for k_ in reversed(range(k)):
-            x[:,k_] = nnlsbpp(AtA,AtB[:,k_],x0[:,k_])
-        return  x
-
-    # Calculate initial solution
-    #-------------------------------------------------------------------------------
-    x = np.zeros(n)
-    if not np.all(x0):
-        Fset = np.full((n,1),False)
-        y = -AtB
-    else:
-        Fset = x0 > 0
-        x = np.zeros(n)
-        x[Fset] = np.linalg.solve(AtA[np.ix_(Fset,Fset)],AtB[Fset])
-        y = AtA@x - AtB
- 
-    # Determine infeasible variables ( = variables with negative values)
-    xFnegative = (x < 0) & Fset
-    yGnegative = (y < 0) & ~Fset
-    nInfeasible = sum(xFnegative | yGnegative)
-
-    # Iterative algorithm
-    #-------------------------------------------------------------------------------
-    p = 3
-    t = np.inf
-    while nInfeasible > 0: # iterate until no infeasible variables left
-    
-        # Swap full blocks in/out of F set or swap a single element as backup plan.
-        if nInfeasible < t:
-            t = nInfeasible
-            p = 3
-            Fset[xFnegative] = False
-            Fset[yGnegative] = True
-        else:
-            if p >= 1:
-                p = p - 1
-                Fset[xFnegative] = False
-                Fset[yGnegative] = True
-            else:
-                idx_ = np.where(xFnegative | yGnegative)[-1]
-                Fset[idx_] = ~Fset[idx_]
-        
-        # Solve linear system over F set
-        x = np.zeros(n)
-        x[Fset] = np.linalg.solve(AtA[np.ix_(Fset,Fset)],AtB[Fset])
-        y = AtA@x - AtB
-        
-        # Determine infeasible variables
-        xFnegative = (x < 0) & Fset
-        yGnegative = (y < 0) & ~Fset
-        nInfeasible = sum(xFnegative | yGnegative)
-
-    return x
 #=====================================================================================

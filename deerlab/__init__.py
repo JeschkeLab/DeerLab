@@ -5,10 +5,9 @@ from .ex_models import *
 from .model import Model, link, lincombine, merge, relate, fit
 from .deerload import deerload
 from .selregparam import selregparam
-from .regparamrange import regparamrange
 from .dipolarkernel import dipolarkernel
 from .dipolarbackground import dipolarbackground
-from .dipolarmodel import dipolarmodel, dipolarpenalty, model4pdeer,model3pdeer,model5pdeer
+from .dipolarmodel import dipolarmodel, dipolarpenalty, ex_4pdeer,ex_3pdeer,ex_5pdeer
 from .solvers import snlls
 from .regoperator import regoperator
 from .correctphase import correctphase
