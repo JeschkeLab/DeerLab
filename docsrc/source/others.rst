@@ -1,4 +1,4 @@
-.. _user_guide:
+.. _more:
 
 More
 ============================================================
@@ -6,7 +6,7 @@ More
 
 .. toctree::
     :maxdepth: 1
-    
+
     ./changelog
     ./funding
     ./license

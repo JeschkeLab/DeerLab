@@ -1,3 +1,5 @@
+.. _fitting_guide: 
+
 Fitting Guide
 =========================================
 
@@ -170,7 +172,7 @@ Upon constructing the penalty, the penalty weight is introduced in the backgroun
 Example: Gaussian smoothness penalty
 *************************************
 
-In this example, let us construct a penalty that imposes the smoothness of a Gaussian function. As a model, we will take the ``gauss`` model defined in :ref:`another example <_modelling_example1>`. The function has to penalize roughness for imposing smoothness, which can be quantified by a discrete differential operator of second order (which we can generate using DeerLab's ``regoperator``). As a selection criterion, we will use the AIC functional.  ::
+In this example, let us construct a penalty that imposes the smoothness of a Gaussian function. As a model, we will take the ``gauss`` model defined in :ref:`another example <modelling_example1>`. The function has to penalize roughness for imposing smoothness, which can be quantified by a discrete differential operator of second order (which we can generate using DeerLab's ``regoperator``). As a selection criterion, we will use the AIC functional.  ::
 
     # Differential operator of second order
     L = dl.regoperator(x,2)
@@ -221,7 +223,7 @@ Penalty and regularization weights (``FitResult.regparam`` and ``FitResult.penwe
 Evaluating and propagating from the results
 *******************************************
 
-The ``FitResul`` object provides commodity methods ``evaluate`` and ``propagate`` to quickly evaluate other models that might depend on the fitted parameters and propagate the uncertainty in the parameter estimates to those models. To evaluate a model ``modelB`` that shares parameters with ``modelA`` (which has been fitted), we can use the ``evaluate method :: 
+The ``FitResul`` object provides commodity methods ``evaluate`` and ``propagate`` to quickly evaluate other models that might depend on the fitted parameters and propagate the uncertainty in the parameter estimates to those models. To evaluate a model ``modelB`` that shares parameters with ``modelA`` (which has been fitted), we can use the ``evaluate`` method :: 
 
     # Fit modelA to the data
     fitresult = dl.fit(modelA,y)

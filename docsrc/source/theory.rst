@@ -11,27 +11,35 @@ Assumptions
 The theory underlying DeerLab is not fully general and makes a series of assumptions about the sample and the experiment. The important ones are:
 
 .. rubric:: Spins-1/2
+
 All spin labels are spin-1/2 or can be treated as such. High-spin systems are not handled by DeerLab.
 
 .. rubric:: No multi-spin effects
+
 There are no more than two spin labels on a protein (or other cluster). Multi-spin effects are not handled by DeerLab.
 
 .. rubric:: No delocalization
+
 The unpaired electron spin density on the spin labels can be treated as localized in a single point. Delocalized spin systems are not handled by DeerLab.
 
 .. rubric:: Isotropic g-values
+
 All spins have essentially isotropic g values close to 2.00232. Spins with large g shifts and anisotropic g tensors are not handled by DeerLab.
 
 .. rubric:: No exchange coupling
+
 There is no exchange coupling between any spins. The only interaction is through-space dipolar coupling. Exchange coupling is not handled by DeerLab.
 
 .. rubric:: Weak-coupling
+
 The dipolar coupling between spins is in the weak-coupling regime, i.e. it is weaker than the difference between their resonance frequencies. Intermediate- and strong-coupling regimes are not handled by DeerLab.
 
 .. rubric:: Relaxation times
+
 All spins relax with the same phase memory time. Systems with rotamer-specific relaxation rates are not handled by DeerLab.
 
 .. rubric:: No ESEEM modulation
+
 The signal is free of modulations due to hyperfine couplings (ESEEM).
 
 .. warning:: 

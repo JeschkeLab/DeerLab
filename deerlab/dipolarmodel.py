@@ -303,6 +303,9 @@ def dipolarpenalty(Pmodel,r,type,selection=None):
 
 #===============================================================================
 class ExperimentInfo():
+    r"""
+    Represents theoretical information on a dipolar EPR experiment"""
+
     def __init__(self,name,reftimes,lams):
         self.reftimes = []
         for reftime in reftimes:
@@ -342,7 +345,7 @@ def ex_3pdeer(tau):
 
     Returns
     -------
-    experiment : :ref:`Experiment`
+    experiment : ``ExperimentInfo`` object
         Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 
@@ -378,7 +381,7 @@ def ex_4pdeer(tau1,tau2):
 
     Returns
     -------
-    experiment : :ref:`Experiment`
+    experiment : ``ExperimentInfo`` object
         Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 
@@ -416,7 +419,7 @@ def ex_5pdeer(tau1,tau2,tau3):
 
     Returns
     -------
-    experiment : :ref:`Experiment`
+    experiment : ``ExperimentInfo`` object
         Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 

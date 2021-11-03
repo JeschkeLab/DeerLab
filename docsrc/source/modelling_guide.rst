@@ -297,7 +297,7 @@ The new parameter ``linparam1`` will now refer to the whole `N`-element vector o
 .. _modelling_example3:
 
 Example: Gaussian convolution of a non-parametric distribution
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For example, let us construct a model describing the Gaussian convolution of a non-parametric distribution, which we can write as: 
 
@@ -616,7 +616,7 @@ As always, we can check the results of the operation by printing the model for a
       scale_2         0        inf      linear       No       None      None
     ============ ========= ========== =========== ======== ========== ==========================
 
-We can see that the merge has been successful. The model now takes the parameters of both ``gauss`` models, and their names have been adapted with the respective suffixes described above—the newly introduced linear parameters ``scale_1`` and ``scale_2``work as linear combination weights. 
+We can see that the merge has been successful. The model now takes the parameters of both ``gauss`` models, and their names have been adapted with the respective suffixes described above—the newly introduced linear parameters ``scale_1`` and ``scale_2`` work as linear combination weights. 
 
 
 Now we can evaluate the bimodal Gauss model by calling ``bigauss``, for instance in a case where the second Gaussian is weighted doubly in the linear combination with respect to the first one :: 

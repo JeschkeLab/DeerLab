@@ -65,7 +65,7 @@ This group of distribution models represents spin labels in simple partitions of
 
 .. autosummary:: 
   :toctree: _autosummary
-  :template: function.rst
+  :template: custom_data_template.rst
   :nosignatures:
 
   dd_sphere

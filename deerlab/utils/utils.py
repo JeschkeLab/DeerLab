@@ -136,12 +136,12 @@ def der_snr(y):
     sigma : float scalar 
         Noise standard deviation. 
 
-    References:
-    ------------ 
-    [1] F. Stoehr, R. White, M. Smith, I. Kamp, R. Thompson, D. Durand, W. Freudling,
-    D. Fraquelli, J. Haase, R. Hook, T. Kimball, M. Kummel, K. Levay, M. Lombardi, A. Micol, T. Rogers 
-    DERSNR: A Simple & General Spectroscopic Signal-to-Noise Measurement Algorithm
-    Astronomical Data Analysis Software and Systems XVII, ASP Conference Series, Vol. 30, 2008, p5.4
+    References
+    ---------- 
+    .. [1] F. Stoehr, R. White, M. Smith, I. Kamp, R. Thompson, D. Durand, W. Freudling,
+       D. Fraquelli, J. Haase, R. Hook, T. Kimball, M. Kummel, K. Levay, M. Lombardi, A. Micol, T. Rogers 
+       DERSNR: A Simple & General Spectroscopic Signal-to-Noise Measurement Algorithm
+       Astronomical Data Analysis Software and Systems XVII, ASP Conference Series, Vol. 30, 2008, p5.4
     """
 
     n = len(y)

@@ -47,7 +47,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     
     mod : scalar  or ``None``, optional
         Modulation depth for the simplified 4-pulse DEER model. If neither ``pathways`` or ``mod`` are specified (or ``None``),
-        it is assumed to be ``mod=1`. 
+        it is assumed to be ``mod=1``. 
         
     bg : callable or array_like or ``None``, optional
         For a single-pathway model, the numerical background decay can be passed as an array. 
@@ -142,7 +142,6 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     .. [4] J. E. Banham, C. M. Baker, S. Ceola, I. J. Day, G.H. Grant, E. J. J. Groenen, C. T. Rodgers, G. Jeschke, C. R. Timmel
         Distance measurements in the borderline region of applicability of CW EPR and DEER: A model study on a homologous series of spin-labelled peptides, Journal of Magnetic Resonance, 191, 2, 2008, 202-218
-    
     """
     # Clear cache of memoized function is requested
     if clearcache:
