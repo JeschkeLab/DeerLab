@@ -76,18 +76,20 @@ Example of the model evaluated at the start values of the parameters:
     import deerlab as dl
     import matplotlib.pyplot as plt 
     import numpy as np 
+
     model = dl.{fcnstr}
-    r = np.linspace(2,5,400)
-    par0 = model.start
-    P = model(r,par0)
+    r = np.linspace(1,6,400)
+    par0 = model.getmetadata()['par0']
+    P = model(r,*par0)
     plt.figure(figsize=[6,3])
-    plt.plot(r,P)
+    plt.plot(r,P,color='#4550e6')
     plt.xlabel('r (nm)',fontsize=13)
     plt.ylabel('P (nm⁻¹)',fontsize=13)
     plt.grid(alpha=0.4)
     plt.tick_params(labelsize=12)
     plt.tick_params(labelsize=12)
     plt.tight_layout()
+    plt.show()
 """
 # =================================================================
 
@@ -158,7 +160,7 @@ dd_gauss.description = 'Gaussian distribution model'
 dd_gauss.mean.set(description='Mean', lb=1.0, ub=20, par0=3.5, units='nm')
 dd_gauss.width.set(description='Standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
 # Add documentation
-dd_gauss.__doc__ = _dd_docstring(dd_gauss,notes)
+dd_gauss.__doc__ = _dd_docstring(dd_gauss,notes) + docstr_example('dd_gauss')
 
 
 
@@ -185,7 +187,7 @@ dd_gauss2.width2.set(description='2nd Gaussian standard deviation', lb=0.05, ub=
 dd_gauss2.addlinear('amp1',description='1st Gaussian amplitude', lb=0, par0=1, units='')
 dd_gauss2.addlinear('amp2',description='2nd Gaussian amplitude', lb=0, par0=1, units='')
 # Add documentation
-dd_gauss2.__doc__ = _dd_docstring(dd_gauss2,notes)
+dd_gauss2.__doc__ = _dd_docstring(dd_gauss2,notes) + docstr_example('dd_gauss2')
 
 
 
@@ -215,7 +217,7 @@ dd_gauss3.addlinear('amp1',description='1st Gaussian amplitude', lb=0, par0=1, u
 dd_gauss3.addlinear('amp2',description='2nd Gaussian amplitude', lb=0, par0=1, units='')
 dd_gauss3.addlinear('amp3',description='3rd Gaussian amplitude', lb=0, par0=1, units='')
 # Add documentation
-dd_gauss3.__doc__ = _dd_docstring(dd_gauss3,notes)
+dd_gauss3.__doc__ = _dd_docstring(dd_gauss3,notes) +  docstr_example('dd_gauss3')
 
 
 
@@ -243,7 +245,7 @@ dd_gengauss.mean.set(description='Mean', lb=1.0, ub=20, par0=3.5, units='nm')
 dd_gengauss.width.set(description='Standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
 dd_gengauss.kurt.set(description='Kurtosis', lb=0.25, ub=15, par0=5.0, units='')
 # Add documentation
-dd_gengauss.__doc__ = _dd_docstring(dd_gengauss,notes)
+dd_gengauss.__doc__ = _dd_docstring(dd_gengauss,notes) +  docstr_example('dd_gengauss')
 
     
 
@@ -272,7 +274,7 @@ dd_skewgauss.center.set(description='Center', lb=1.0, ub=20, par0=3.5, units='nm
 dd_skewgauss.width.set(description='Spread', lb=0.05, ub=2.5, par0=0.2, units='nm')
 dd_skewgauss.skew.set(description='Skewness', lb=-25, ub=25, par0=5, units='')
 # Add documentation
-dd_skewgauss.__doc__ = _dd_docstring(dd_skewgauss,notes)
+dd_skewgauss.__doc__ = _dd_docstring(dd_skewgauss,notes) +  docstr_example('dd_skewgauss')
 
 
 
@@ -295,7 +297,7 @@ dd_rice.description = '3D-Rice distribution model'
 dd_rice.location.set(description='Location', lb=1.0, ub=20, par0=3.5, units='nm')
 dd_rice.spread.set(description='Spread', lb=0.1, ub=5, par0=0.7, units='nm')
 # Add documentation
-dd_rice.__doc__ = _dd_docstring(dd_rice,notes)
+dd_rice.__doc__ = _dd_docstring(dd_rice,notes) +  docstr_example('dd_rice')
     
 
 
@@ -325,7 +327,7 @@ dd_rice2.spread2.set(description='2nd Rician spread', lb=0.05, ub=2.5, par0=0.2,
 dd_rice2.addlinear('amp1',description='1st Rician amplitude', lb=0, par0=1, units='')
 dd_rice2.addlinear('amp2',description='2nd Rician amplitude', lb=0, par0=1, units='')
 # Add documentation
-dd_rice2.__doc__ = _dd_docstring(dd_rice2,notes)
+dd_rice2.__doc__ = _dd_docstring(dd_rice2,notes) +  docstr_example('dd_rice2')
     
 
 
@@ -358,7 +360,7 @@ dd_rice3.addlinear('amp2',description='2nd Rician amplitude', lb=0, par0=1,  uni
 dd_rice3.addlinear('amp1',description='1st Rician amplitude', lb=0, par0=1, units='')
 dd_rice3.addlinear('amp3',description='3rd Rician amplitude', lb=0, par0=1, units='')
 # Add documentation
-dd_rice3.__doc__ = _dd_docstring(dd_rice3,notes)
+dd_rice3.__doc__ = _dd_docstring(dd_rice3,notes) +  docstr_example('dd_rice3')
 
 
 
@@ -392,7 +394,7 @@ dd_randcoil.Nres.set(description='Number of residues', lb=2.0, ub=1000, par0=50,
 dd_randcoil.scaling.set(description='Segment length', lb=0.1, ub=0.4, par0=0.2, units='nm')
 dd_randcoil.length.set(description='Scaling exponent', lb=0.33, ub=1.00, par0=0.602, units='')
 # Add documentation
-dd_randcoil.__doc__ = _dd_docstring(dd_randcoil,notes)
+dd_randcoil.__doc__ = _dd_docstring(dd_randcoil,notes) +  docstr_example('dd_randcoil')
 
 
 
@@ -421,7 +423,7 @@ dd_circle.description = 'Semicircle distribution model'
 dd_circle.center.set(description='Center', lb=1, ub=20, par0=3, units='nm')
 dd_circle.radius.set(description='Radius', lb=0.1, ub=5, par0=0.5, units='nm')
 # Add documentation
-dd_circle.__doc__ = _dd_docstring(dd_circle,notes)
+dd_circle.__doc__ = _dd_docstring(dd_circle,notes) +  docstr_example('dd_circle')
 
 
 
@@ -449,7 +451,7 @@ dd_cos.description = 'Raised-cosine parametric model'
 dd_cos.center.set(description='Center', lb=1, ub=20, par0=3, units='nm')
 dd_cos.fwhm.set(description='FWHM', lb=0.1, ub=5, par0=0.5, units='nm')
 # Add documentation
-dd_cos.__doc__ = _dd_docstring(dd_cos,notes)
+dd_cos.__doc__ = _dd_docstring(dd_cos,notes) +  docstr_example('dd_cos')
 
 
 #------------------------------------------------------------------
@@ -529,7 +531,7 @@ dd_shell.description = 'Uniform distribution of particles on a spherical shell'
 dd_shell.radius.set(description='Inner shell radius', lb=0.1, ub=20, par0=1.5, units='nm')
 dd_shell.thickness.set(description='Shell thickness', lb=0.1, ub=20, par0=0.5, units='nm')
 # Add documentation
-dd_shell.__doc__ = _dd_docstring(dd_shell,notes)
+dd_shell.__doc__ = _dd_docstring(dd_shell,notes) +  docstr_example('dd_shell')
 
 
 
@@ -567,7 +569,7 @@ dd_spherepoint.description = 'One particle distanced from particles uniformly di
 dd_spherepoint.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=1.5, units='nm')
 dd_spherepoint.dist.set(description='Distance to point', lb=0.1, ub=20, par0=3.5, units='nm')
 # Add documentation
-dd_spherepoint.__doc__ = _dd_docstring(dd_spherepoint,notes)
+dd_spherepoint.__doc__ = _dd_docstring(dd_spherepoint,notes) +  docstr_example('dd_spherepoint')
 
 
 
@@ -603,7 +605,7 @@ dd_spheresurf.description = "Particles uniformly distributed on a sphere's surfa
 # Parameters
 dd_spheresurf.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=2.5, units='nm')
 # Add documentation
-dd_spheresurf.__doc__ = _dd_docstring(dd_spheresurf,notes)
+dd_spheresurf.__doc__ = _dd_docstring(dd_spheresurf,notes) +  docstr_example('dd_spheresurf')
 
 
 
@@ -661,7 +663,7 @@ dd_shellshell.radius.set(description='Inner shell radius', lb=0.1, ub=20, par0=1
 dd_shellshell.thickness1.set(description='Inner shell thickness', lb=0.1, ub=20, par0=0.5, units='nm')
 dd_shellshell.thickness2.set(description='Outer shell thickness', lb=0.1, ub=20, par0=0.5, units='nm')
 # Add documentation
-dd_shellshell.__doc__ = _dd_docstring(dd_shellshell,notes)
+dd_shellshell.__doc__ = _dd_docstring(dd_shellshell,notes) +  docstr_example('dd_shellshell')
 
 
 #=======================================================================================
@@ -702,7 +704,7 @@ dd_shellsphere.description = 'Particles uniformly distributed on a sphere and on
 dd_shellsphere.radius.set(description='Inner shell radius', lb=0.1, ub=20, par0=1.5, units='nm')
 dd_shellsphere.thickness.set(description='Inner shell thickness', lb=0.1, ub=20, par0=0.5, units='nm')
 # Add documentation
-dd_shellsphere.__doc__ = _dd_docstring(dd_shellsphere,notes)
+dd_shellsphere.__doc__ = _dd_docstring(dd_shellsphere,notes) +  docstr_example('dd_shellsphere')
 
 
 
@@ -770,7 +772,7 @@ dd_shellvoidshell.thickness1.set(description='Inner shell thickness', lb=0.1, ub
 dd_shellvoidshell.thickness2.set(description='Outer shell thickness', lb=0.1, ub=20, par0=1.0, units='nm')
 dd_shellvoidshell.separation.set(description='Shell-shell separation', lb=0.1, ub=20, par0=0.5, units='nm')
 # Add documentation
-dd_shellvoidshell.__doc__ = _dd_docstring(dd_shellvoidshell,notes)
+dd_shellvoidshell.__doc__ = _dd_docstring(dd_shellvoidshell,notes) +  docstr_example('dd_shellvoidshell')
 
 
 
@@ -831,7 +833,7 @@ dd_shellvoidsphere.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=1
 dd_shellvoidsphere.thickness.set(description='Outer shell thickness', lb=0.1, ub=20, par0=1.0, units='nm')
 dd_shellvoidsphere.separation.set(description='Shell-sphere separation', lb=0.1, ub=20, par0=0.5, units='nm')
 # Add documentation
-dd_shellvoidsphere.__doc__ = _dd_docstring(dd_shellvoidsphere,notes)
+dd_shellvoidsphere.__doc__ = _dd_docstring(dd_shellvoidsphere,notes) +  docstr_example('dd_shellvoidsphere')
 
 
 
@@ -865,7 +867,7 @@ dd_sphere.description = 'Particles uniformly distributed on a sphere.'
 # Parameters
 dd_sphere.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=2.5, units='nm')
 # Add documentation
-dd_sphere.__doc__ = _dd_docstring(dd_sphere,notes)
+dd_sphere.__doc__ = _dd_docstring(dd_sphere,notes) +  docstr_example('dd_sphere')
 
 
 
@@ -902,7 +904,7 @@ dd_triangle.mode.set(description='Mode', lb=1, ub=20, par0=3.5, units='nm')
 dd_triangle.left.set(description='Left width', lb=0.1, ub=5, par0=0.3, units='nm')
 dd_triangle.right.set(description='Right width', lb=0.1, ub=5, par0=0.3, units='nm')
 # Add documentation
-dd_triangle.__doc__ = _dd_docstring(dd_triangle,notes)
+dd_triangle.__doc__ = _dd_docstring(dd_triangle,notes) +  docstr_example('dd_triangle')
 
 
 
@@ -929,7 +931,7 @@ dd_uniform.description = 'Uniform distribution model.'
 dd_uniform.left.set(description='Left edge', lb=0.1, ub=6, par0=2.5, units='nm')
 dd_uniform.right.set(description='Right edge', lb=0.2, ub=20, par0=3.5, units='nm')
 # Add documentation
-dd_uniform.__doc__ = _dd_docstring(dd_uniform,notes)
+dd_uniform.__doc__ = _dd_docstring(dd_uniform,notes) +  docstr_example('dd_uniform')
 
 
 
@@ -976,7 +978,7 @@ dd_wormchain.description = 'Worm-like chain model near the rigid limit.'
 dd_wormchain.contour.set(description='Contour length', lb=1.5, ub=10, par0=3.7, units='nm')
 dd_wormchain.persistence.set(description='Persistence length', lb=2, ub=100, par0=10, units='nm')
 # Add documentation
-dd_wormchain.__doc__ = _dd_docstring(dd_wormchain,notes)
+dd_wormchain.__doc__ = _dd_docstring(dd_wormchain,notes) +  docstr_example('dd_wormchain')
 
 
 
@@ -1014,4 +1016,4 @@ dd_wormgauss.contour.set(description='Contour length', lb=1.5, ub=10, par0=3.7, 
 dd_wormgauss.persistence.set(description='Persistence length', lb=2, ub=100, par0=10, units='nm')
 dd_wormgauss.width.set(description='Gaussian standard deviation', lb=0.01, ub=5, par0=0.2, units='nm')
 # Add documentation
-dd_wormgauss.__doc__ = _dd_docstring(dd_wormgauss,notes)
+dd_wormgauss.__doc__ = _dd_docstring(dd_wormgauss,notes) +  docstr_example('dd_wormgauss')
