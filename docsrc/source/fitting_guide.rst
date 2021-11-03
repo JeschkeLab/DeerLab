@@ -38,6 +38,17 @@ If the model has parameters without assigned start values, the ``fit`` function 
 
 However, the list must be ordered according to the model parameter ordering. Therefore, we recommend specifying the start values on the model (as shown :ref:`here <modelling_modifying_parameters>`).  
 
+Specifying the noise level(s)
+*****************************
+
+The ``fit`` function (and other functions in the pipeline) employ the noise level of the dataset(s), i.e. the standard deviation of the white Gaussian noise superimposed on the data, at various stages of the model optimization and ucertainty estimation. Therefore, the analysis profits strongly from accurate estimates of the noise level(s). These can be specified via the ``noiselvl`` keyword argument of the ``fit`` function ::
+    
+    y = yclean + dl.whitegaussnoise(x, 0.05)
+    # Fit the model (with two constants) to the data
+    result = dl.fit(model, y, constant1, constant2, noiselvl=0.05) 
+
+IF not specified, the program will estimate it from the dataset(s) directly using the :ref:`noiselevel` function. While, these estimates can be relatively accurate, it is better to specify the noise level if a trusted estimate is known.
+
 Fitting models with constants
 *****************************
 
