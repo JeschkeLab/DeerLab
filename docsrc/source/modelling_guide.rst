@@ -56,22 +56,16 @@ Documentation (``<parameter>.description`` and ``<parameter>.units``)
 A summary of the model and all its parameters and related attributes can be quickly accessed by printing the ``Model`` object. For example :: 
 
     >>>print(dl.dd_gauss)
-    Model information 
-    -----------------
-
-    Model description: Gaussian distribution model
-    Model call signature: (r,mean,width)
-    Constants: ['r']
-
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper      Type       Frozen   Units     Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-    mean            1        20      nonlin      No        nm       Mean
-    width        0.05       2.5      nonlin      No        nm       Standard deviation
-    ============ ========= ========== =========== ======== ========== ==========================
+    Description: Gaussian distribution model
+    Signature: (r, mean, width)
+    Constants: [r]
+    Parameter Table: 
+    ======= ======= ======= ======== ======== ======= ==================== 
+     Name    Lower   Upper    Type    Frozen   Units   Description         
+    ======= ======= ======= ======== ======== ======= ==================== 
+     mean        1      20   nonlin     No      nm     Mean                
+     width    0.05     2.5   nonlin     No      nm     Standard deviation  
+    ======= ======= ======= ======== ======== ======= ==================== 
 
 .. _modelling_modifying_parameters:
 
@@ -158,22 +152,16 @@ centered about `\langle x \rangle`, and with a width given by `\sigma`. The func
 To control that the model has been properly constructed, we can print the model :: 
 
     >>> print(gauss)
-    Model information 
-    -----------------
-
-    Model description: None
-    Model call signature: (center,width)
+    Description: None
+    Signature: (center, width)
     Constants: []
-
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper       Type      Frozen    Units     Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-      center       -inf       inf        nonlin      No      None       None
-      width        -inf       inf        nonlin      No      None       None
-    ============ ========= ========== =========== ======== ========== ==========================
+    Parameter Table: 
+    ======== ======= ======= ======== ======== ======= ============= 
+     Name     Lower   Upper    Type    Frozen   Units   Description  
+    ======== ======= ======= ======== ======== ======= ============= 
+     center    -inf     inf   nonlin     No     None    None         
+     width     -inf     inf   nonlin     No     None    None         
+    ======== ======= ======= ======== ======== ======= ============= 
 
 We can see that the model has properly introduced the two non-linear parameters ``center`` and ``width``. By default, all new parameters are initialized unbounded (i.e. ``lb=-np.inf`` and  ``ub=+np.inf``). Any attributes can be changed freely after the model has been generated. For example ::
 
@@ -248,26 +236,20 @@ Therefore, we could define the following function: ::
 As before, we can check the state of the model by printing the ``mymodel`` object: ::
 
     >>> print(bigauss)
-    Model information 
-    -----------------
-
-    Model description: None
-    Model call signature: (center1,width1,center2,width2,amplitude1,amplitude2)
+    Description: None
+    Signature: (center1, width1, center2, width2, weight1, weight2)
     Constants: []
-
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper       Type      Frozen     Units     Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-      center1      -inf       inf       nonlin       No       None      None
-      width1       -inf       inf       nonlin       No       None      None
-      center2      -inf       inf       nonlin       No       None      None
-      width2       -inf       inf       nonlin       No       None      None
-      weight1        0        inf       linear       No       None      None
-      weight2        0        inf       linear       No       None      None
-    ============ ========= ========== =========== ======== ========== ==========================
+    Parameter Table: 
+    ========= ======= ======= ======== ======== ======= ============= 
+     Name      Lower   Upper    Type    Frozen   Units   Description  
+    ========= ======= ======= ======== ======== ======= ============= 
+     center1    -inf     inf   nonlin     No     None    None         
+     width1     -inf     inf   nonlin     No     None    None         
+     center2    -inf     inf   nonlin     No     None    None         
+     width2     -inf     inf   nonlin     No     None    None         
+     weight1       0     inf   linear     No     None    None         
+     weight2       0     inf   linear     No     None    None         
+    ========= ======= ======= ======== ======== ======= ============= 
 
 We can see that the model has been correctly built, with four non-linear parameters (``center1``, ``center2``, ``width1``, and ``width2``) 
 and with two linear parameters (``weight1`` and ``weight2``), as indicated by the ``Type`` column. We can check whether a parameter is linear or non-linear by accessing its ``linear`` attribute, e.g.  :: 
@@ -332,22 +314,17 @@ The model can be constructed as follows: ::
 By printing the model, we can check that the model has only two parameters: ::
 
     >>> print(gaussconv)
-    Model information 
-    -----------------
-
-    Model description: None
-    Model call signature: (sigma,dist)
+    Description: None
+    Signature: (sigma, dist)
     Constants: []
+    Parameter Table: 
+    ======= ======= ======= ======== ======== ======= ============= 
+     Name    Lower   Upper    Type    Frozen   Units   Description  
+    ======= ======= ======= ======== ======== ======= ============= 
+     sigma    -inf     inf   nonlin     No     None    None         
+     dist        0     inf   linear     No     None    None         
+    ======= ======= ======= ======== ======== ======= ============= 
 
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper       Type      Frozen    Units      Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-      sigma        -inf       inf       nonlin       No       None        None
-      dist            0       inf       linear       No       None        None
-    ============ ========= ========== =========== ======== ========== ==========================
 
 .. _modelling_constants:
 
@@ -387,24 +364,18 @@ centered about `\langle x \rangle`, with a width given by `\sigma`. The function
 Let us print the model to examine the resulting model: ::
 
     >>>print(xgauss)
-    Model information 
-    -----------------
+    Description: None
+    Signature: (x, center, width)
+    Constants: [x]
+    Parameter Table: 
+    ======== ======= ======= ======== ======== ======= ============= 
+     Name     Lower   Upper    Type    Frozen   Units   Description  
+    ======== ======= ======= ======== ======== ======= ============= 
+     center    -inf     inf   nonlin     No     None    None         
+     width     -inf     inf   nonlin     No     None    None         
+    ======== ======= ======= ======== ======== ======= ============= 
 
-    Model description: None
-    Model call signature: (x,center,width)
-    Constants: ['x']
-
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper       Type      Frozen    Units      Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-      center       -inf       inf       nonlin       No       None      None
-      width        -inf       inf       nonlin       No       None      None
-    ============ ========= ========== =========== ======== ========== ==========================
-
-We can see that the model has only the two non-linear parameters as expected, and under ``Constants`` we can see that ``x`` has been adequately defined. From the ``Model call signature`` we can also check that the ``x`` constant can be passed to evaluate the model. 
+We can see that the model has only the two non-linear parameters as expected, and under ``Constants`` we can see that ``x`` has been adequately defined. From the ``Signature`` we can also check that the ``x`` constant can be passed to evaluate the model. 
 
 
 .. _modelling_evaluation: 
@@ -415,24 +386,18 @@ Model evaluation
 All ``Model`` objects can be called as normal functions by specifying the parameters and constants required by the model. These can be specified as positional and/or keyword arguments. If unsure of the model's parameter names or their order, the easiest way to get all the information required to call a model is to print the model object. For example ::
 
     >>>print(xgauss)
-    Model information 
-    -----------------
+    Description: None
+    Signature: (x, center, width)
+    Constants: [x]
+    Parameter Table: 
+    ======== ======= ======= ======== ======== ======= ============= 
+     Name     Lower   Upper    Type    Frozen   Units   Description  
+    ======== ======= ======= ======== ======== ======= ============= 
+     center    -inf     inf   nonlin     No     None    None         
+     width     -inf     inf   nonlin     No     None    None         
+    ======== ======= ======= ======== ======== ======= ============= 
 
-    Model description: None
-    Model call signature: (x,center,width)
-    Constants: ['x']
-
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper       Type      Frozen    Units      Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-      center       -inf       inf       nonlin       No       None      None
-      width        -inf       inf       nonlin       No       None      None
-    ============ ========= ========== =========== ======== ========== ==========================
-
-In the model printout, under ``Model call signature`` the exact signature of the model is given. The order and names of the arguments are as shown there.
+In the model printout, under ``Signature`` the exact signature of the model is given. The order and names of the arguments are as shown there.
 
 
 Calling with keyword arguments
@@ -518,26 +483,20 @@ Let us take a straightforward example, where we merge two Gaussian models, takin
 As always, we can check the results of the operation by printing the model for a summary: :: 
 
     >>>print(mergemodel)
-    Model information 
-    -----------------
-
-    Model description: None
-    Model call signature: (center_1,width_1,center_2,width_2,scale_1,scale_2)
+    Description: None
+    Signature: (center_1, width_1, center_2, width_2, scale_1, scale_2)
     Constants: []
-
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper       Type      Frozen     Units     Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-      center_1     -inf       inf       nonlin      No        None      None
-      width_1      -inf       inf       nonlin      No        None      None
-      center_2     -inf       inf       nonlin      No        None      None
-      width_2      -inf       inf       nonlin      No        None      None
-      scale_1        0        inf       linear      No        None      None
-      scale_2        0        inf       linear      No        None      None
-    ============ ========= ========== =========== ======== ========== ==========================
+    Parameter Table: 
+    ========== ======= ======= ======== ======== ======= ============= 
+     Name       Lower   Upper    Type    Frozen   Units   Description  
+    ========== ======= ======= ======== ======== ======= ============= 
+     center_1    -inf     inf   nonlin     No     None    None         
+     width_1     -inf     inf   nonlin     No     None    None         
+     center_2    -inf     inf   nonlin     No     None    None         
+     width_2     -inf     inf   nonlin     No     None    None         
+     scale_1        0     inf   linear     No     None    None         
+     scale_2        0     inf   linear     No     None    None         
+    ========== ======= ======= ======== ======== ======= ============= 
 
 
 We can see that the merge has been successful. The model now takes the parameters of both ``gauss`` models, and their names have been adapted with the respective suffixes as described above. Now we can call the ``mergemodel`` to get both Gaussians responses, both centered equally, but the second being twice as broad as the first one: ::
@@ -595,26 +554,20 @@ In this example, let us construct the model of a bimodal Gaussian from the linea
 As always, we can check the results of the operation by printing the model for a summary: :: 
 
     >>>print(bigauss)
-    Model information 
-    -----------------
-
-    Model description: None
-    Model call signature: (center_1,width_1,center_2,width_2,scale_1,scale_2)
+    Description: None
+    Signature: (center_1, width_1, center_2, width_2, scale_1, scale_2)
     Constants: []
-
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower      Upper      Type      Frozen     Units     Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-      center_1      -inf       inf      nonlin       No       None      None
-      width_1       -inf       inf      nonlin       No       None      None
-      center_2      -inf       inf      nonlin       No       None      None
-      width_2       -inf       inf      nonlin       No       None      None
-      scale_1         0        inf      linear       No       None      None
-      scale_2         0        inf      linear       No       None      None
-    ============ ========= ========== =========== ======== ========== ==========================
+    Parameter Table: 
+    ========== ======= ======= ======== ======== ======= ============= 
+     Name       Lower   Upper    Type    Frozen   Units   Description  
+    ========== ======= ======= ======== ======== ======= ============= 
+     center_1    -inf     inf   nonlin     No     None    None         
+     width_1     -inf     inf   nonlin     No     None    None         
+     center_2    -inf     inf   nonlin     No     None    None         
+     width_2     -inf     inf   nonlin     No     None    None         
+     scale_1        0     inf   linear     No     None    None         
+     scale_2        0     inf   linear     No     None    None         
+    ========== ======= ======= ======== ======== ======= ============= 
 
 We can see that the merge has been successful. The model now takes the parameters of both ``gauss`` models, and their names have been adapted with the respective suffixes described above—the newly introduced linear parameters ``scale_1`` and ``scale_2`` work as linear combination weights. 
 
@@ -632,31 +585,26 @@ Example: Weighted linear combination of two non-parametric distributions
 In this example, we will construct a model describing a linear combination of two non-parametric distributions. For the sake of simplicity, we will use the Gaussian-convoluted non-parametric distribution ``gaussconv`` model defined in :ref:`a previous example <modelling_example3>`. Now, we do not want the weighting of the linear combination to arise from the linear parameters. For that purpose, we must use the ``addweights`` keyword argument when doing the linear combination :: 
 
     # Linearly combine both models with non-linear weighting parameters
-    combmodel = lincombine(gaussconv, gaussconv, addweights=True)
+    combmodel = dl.lincombine(gaussconv, gaussconv, addweights=True)
 
 and we can check the resulting model ::
 
     >>>print(combmodel)
-    Model information 
-    -----------------
-
-    Model description: None
-    Model call signature: (sigma_1,weight_1,sigma_2,weight_2,dist_1,dist_2)
+    Description: None
+    Signature: (sigma_1, weight_1, sigma_2, weight_2, dist_1, dist_2)
     Constants: []
+    Parameter Table: 
+    ========== ======= ======= ======== ======== ======= ================== 
+     Name       Lower   Upper    Type    Frozen   Units   Description       
+    ========== ======= ======= ======== ======== ======= ================== 
+     sigma_1     -inf     inf   nonlin     No     None    None              
+     weight_1       0     inf   nonlin     No     None    Weighting factor  
+     sigma_2     -inf     inf   nonlin     No     None    None              
+     weight_2       0     inf   nonlin     No     None    Weighting factor  
+     dist_1         0     inf   linear     No     None    None              
+     dist_2         0     inf   linear     No     None    None              
+    ========== ======= ======= ======== ======== ======= ================== 
 
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper       Type      Frozen     Units     Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-      sigma_1      -inf       inf       nonlin      No        None      None
-      weight_1       0        inf       nonlin      No        None      Weighting factor
-      sigma_2      -inf       inf       nonlin      No        None      None
-      weight_2       0        inf       nonlin      No        None      Weighting factor
-      dist_1         0        inf       linear      No        None      None
-      dist_2         0        inf       linear      No        None      None
-    ============ ========= ========== =========== ======== ========== ==========================
 
 The linearly combined model has been successfully constructed, and the non-linear weighting parameters ``weight_1`` and ``weight_2`` have also been included in the model as requested. 
 
@@ -692,25 +640,20 @@ To enforce equality of widths for the two Gaussians in the ``bigauss`` model, we
 and check the model by printing it :: 
 
     >>>print(bigauss_linked)
-    Model information 
-    -----------------
-
-    Model description: None
-    Model call signature: (center1,width,center2,amplitude1,amplitude2)
+    Description: None
+    Signature: (center1, width, center2, weight1, weight2)
     Constants: []
+    Parameter Table: 
+    ========= ======= ======= ======== ======== ======= ============= 
+     Name      Lower   Upper    Type    Frozen   Units   Description  
+    ========= ======= ======= ======== ======== ======= ============= 
+     center1    -inf     inf   nonlin     No     None    None         
+     width      -inf     inf   nonlin     No     None    None         
+     center2    -inf     inf   nonlin     No     None    None         
+     weight1       0     inf   linear     No     None    None         
+     weight2       0     inf   linear     No     None    None         
+    ========= ======= ======= ======== ======== ======= ============= 
 
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper       Type      Frozen    Units      Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-     center1       -inf       inf       nonlin      No       None       None
-     width         -inf       inf       nonlin      No       None       None
-     center2       -inf       inf       nonlin      No       None       None
-     amplitude1      0        inf       linear      No       None       None
-     amplitude2      0        inf       linear      No       None       None
-    ============ ========= ========== =========== ======== ========== ==========================
 
 The model now has the new ``width`` parameter instead of the ``width1`` and ``width2`` parameters. The linkage can be checked by comparing the two models ::
 
@@ -763,25 +706,19 @@ To enforce the functional relationship between the widths of the two Gaussians i
 and check the model by printing it :: 
 
     >>>print(bigauss_related)
-    Model information 
-    -----------------
-
-    Model description: None
-    Model call signature: (center1,center2,width2,amplitude1,amplitude2)
+    Description: None
+    Signature: (center1, width1, center2, weight1, weight2)
     Constants: []
-
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper      Type       Frozen    Units      Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-     center1       -inf       inf       nonlin      No       None       None
-     center2       -inf       inf       nonlin      No       None       None
-     width2        -inf       inf       nonlin      No       None       None
-     amplitude1      0        inf       linear      No       None       None
-     amplitude2      0        inf       linear      No       None       None
-    ============ ========= ========== =========== ======== ========== ==========================
+    Parameter Table: 
+    ========= ======= ======= ======== ======== ======= ============= 
+     Name      Lower   Upper    Type    Frozen   Units   Description  
+    ========= ======= ======= ======== ======== ======= ============= 
+     center1    -inf     inf   nonlin     No     None    None         
+     center2    -inf     inf   nonlin     No     None    None         
+     width2     -inf     inf   nonlin     No     None    None         
+     weight1       0     inf   linear     No     None    None         
+     weight2       0     inf   linear     No     None    None         
+    ========= ======= ======= ======== ======== ======= ============= 
 
 The ``width1`` parameter has been removed from the parameter list as it is now given twice the value of ``width2``.
 

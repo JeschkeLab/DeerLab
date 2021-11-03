@@ -30,22 +30,16 @@ Parametric distance distributions
         To programmatically get information on a particular distance distribution :ref:`model<modelsref_dd>` and its parameters, print the model, which will return information on the model itself, its call signature, and a parameter table containing all the model parameters, its boundaries, start values and other useful information ::
 
                 >>>print(dl.dd_gauss)
-                Model information 
-                -----------------
-
-                Model description: Gaussian distribution model
-                Model call signature: (r,mean,width)
-                Constants: ['r']
-
-                Parameter Table 
-                ---------------
-
-                ============ ========= ========== =========== ======== ========== ==========================
-                  Name         Lower     Upper      Type       Frozen    Units      Description  
-                ============ ========= ========== =========== ======== ========== ==========================
-                  mean            1        20       nonlin      No        nm        Mean
-                  width        0.05       2.5       nonlin      No        nm        Standard deviation
-                ============ ========= ========== =========== ======== ========== ==========================
+                Description: Gaussian distribution model
+                Signature: (r, mean, width)
+                Constants: [r]
+                Parameter Table: 
+                ======= ======= ======= ======== ======== ======= ==================== 
+                Name    Lower   Upper    Type    Frozen   Units   Description         
+                ======= ======= ======= ======== ======== ======= ==================== 
+                mean        1      20   nonlin     No      nm     Mean                
+                width    0.05     2.5   nonlin     No      nm     Standard deviation  
+                ======= ======= ======= ======== ======== ======= ==================== 
 
                 
 In least-squares fitting, non-parametric distance distributions make fewer assumptions about the distribution than parametric distance distributions. They are more flexible and introduce less bias.
@@ -59,22 +53,16 @@ Dipolar background
 In DeerLab, all inter-molecular contributions to the dipolar modulation (i.e. the echo modulation function due to randomly distributed spins in the sample that are not part of the spin-labeled protein or object) are referred to as the dipolar background. DeerLab has a range of parametric models for the background. All these background :ref:`model's <modelsref_bg>` names start with the prefix ``bg_``. They take the time axis vector ``t`` (in microseconds) and a parameter vector ``param`` as inputs. The output is a background vector ``B`` defined over ``t``. To get information on the model and its parameters, print the model ::
 
         >>>print(dl.bg_hom3d)
-        Model information 
-        -----------------
-
-        Model description: Background from homogeneous distribution of spins in a 3D medium
-        Model call signature: (t,conc,lam)
-        Constants: ['t']
-
-        Parameter Table 
-        ---------------
-
-        ============ ========= ========== =========== ======== ========== ==========================
-          Name         Lower     Upper      Type       Frozen   Units      Description  
-        ============ ========= ========== =========== ======== ========== ==========================
-          conc         0.01     5e+03      nonlin      No        μM        Spin concentration
-          lam             0         1      nonlin      No                  Pathway amplitude
-        ============ ========= ========== =========== ======== ========== ==========================
+        Description: Background from homogeneous distribution of spins in a 3D medium
+        Signature: (t, conc, lam)
+        Constants: [t]
+        Parameter Table: 
+        ====== ======= ======= ======== ======== ======= ==================== 
+         Name   Lower   Upper    Type    Frozen   Units   Description         
+        ====== ======= ======= ======== ======== ======= ==================== 
+         conc    0.01   5e+03   nonlin     No      μM     Spin concentration  
+         lam        0       1   nonlin     No             Pathway amplitude   
+        ====== ======= ======= ======== ======== ======= ==================== 
 
 
 DeerLab's :ref:`background models<modelsref_bg>` fall into two categories, physical and phenomenological: 

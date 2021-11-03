@@ -8,7 +8,7 @@ import math as m
 import scipy as scp
 from numpy import pi
 import inspect
-from deerlab.utils import load_exvolume_redfactor
+from deerlab.utils import load_exvolume_redfactor,formatted_table
 from deerlab.model import Model
 
 # Natural constants
@@ -58,18 +58,22 @@ def _docstring(model,notes):
     -----
 
     **Parameter Table**
-
-    ============ ========= ========== =========== ================= ===================================================
-        Name       Lower     Upper      Type        Units                 Description  
-    ============ ========= ========== =========== ================= ===================================================""")
+    """) 
+    string += '\n'
+    string += '\n'
+    table = []
+    table.append(['Name','Lower','Upper','Type','Frozen','Units','Description'])  
     for n,paramname in enumerate(model._parameter_list(order='vector')): 
-        string += f'\n   {paramname:7s}'
-        string += f'     {getattr(model,paramname).lb:5.3g}'
-        string += f'     {getattr(model,paramname).ub:5.3g}'
-        string += f'      {"linear" if getattr(model,paramname).linear else "nonlin"}'
-        string += f'       {str(getattr(model,paramname).units):15s}'
-        string += f'              {str(getattr(model,paramname).description):s}'
-    string += f'\n============ ========= ========== =========== ================= ==================================================='
+        param_str = f'``{paramname}``'
+        lb_str = f'{np.atleast_1d(getattr(model,paramname).lb)[0]:5.3g}'
+        ub_str = f'{np.atleast_1d(getattr(model,paramname).ub)[0]:5.3g}'
+        linear_str = "linear" if np.all(getattr(model,paramname).linear) else "nonlin"
+        frozen_str = "Yes" if np.all(getattr(model,paramname).frozen) else "No"
+        units_str = str(getattr(model,paramname).units)
+        desc_str = str(getattr(model,paramname).description)
+        table.append([param_str,lb_str,ub_str,linear_str,frozen_str,units_str,desc_str])
+    string += formatted_table(table)
+    string += f'\n{notes}'
 
     string += f'\n{notes}'
 

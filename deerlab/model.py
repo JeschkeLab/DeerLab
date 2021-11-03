@@ -10,6 +10,7 @@ from deerlab.solvers import snlls
 from deerlab.classes import FitResult, UQResult
 from deerlab.noiselevel import noiselevel
 from deerlab.bootstrap_analysis import bootstrap_analysis
+from deerlab.utils import formatted_table
 import inspect 
 from copy import copy,deepcopy
 from types import ModuleType
@@ -556,29 +557,25 @@ class Model():
     #---------------------------------------------------------------------------------------
     def _parameter_table(self):
         string = inspect.cleandoc(f"""
-    Model information 
-    -----------------
-
-    Model description: {self.description}
-    Model call signature: ({','.join(self.signature)})
-    Constants: {[entry['argkey'] for entry in self._constantsInfo]}
-
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper      Type       Frozen   Units     Description  
-    ============ ========= ========== =========== ======== ========== ==========================""")
+    Description: {self.description}
+    Signature: ({', '.join(self.signature)})
+    Constants: [{', '.join([entry['argkey'] for entry in self._constantsInfo])}]
+    Parameter Table: 
+    """)
+        string += '\n'
+        table = []
+        table.append(['Name','Lower','Upper','Type','Frozen','Units','Description'])  
+        alignment = ['<','^','^','^','^','^','<']
         for n,paramname in enumerate(self._parameter_list(order='vector')): 
-            string += f'\n   {paramname:7s}'
-            string += f'     {np.atleast_1d(getattr(self,paramname).lb)[0]:5.3g}'
-            string += f'     {np.atleast_1d(getattr(self,paramname).ub)[0]:5.3g}'
-            string += f'      {"linear" if np.all(getattr(self,paramname).linear) else "nonlin"}'
-            string += f'      {"Yes" if np.all(getattr(self,paramname).frozen) else "No":3s}'
-            string += f'       {str(getattr(self,paramname).units):6s}'
-            string += f'   {str(getattr(self,paramname).description):s}'
-        string += f'\n============ ========= ========== =========== ======== ========== ==========================\n\n'
-
+            param_str = paramname
+            lb_str = f'{np.atleast_1d(getattr(self,paramname).lb)[0]:5.3g}'
+            ub_str = f'{np.atleast_1d(getattr(self,paramname).ub)[0]:5.3g}'
+            linear_str = "linear" if np.all(getattr(self,paramname).linear) else "nonlin"
+            frozen_str = "Yes" if np.all(getattr(self,paramname).frozen) else "No"
+            units_str = str(getattr(self,paramname).units)
+            desc_str = str(getattr(self,paramname).description)
+            table.append([param_str,lb_str,ub_str,linear_str,frozen_str,units_str,desc_str])
+        string += formatted_table(table,alignment)
         return string
     #---------------------------------------------------------------------------------------
 

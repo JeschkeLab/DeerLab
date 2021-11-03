@@ -120,6 +120,32 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, subsets=No
 #===============================================================================
 
 #===============================================================================
+def formatted_table(table,align=None):
+    N = []
+    for column in range(len(table[0])):    
+        N.append(max([len(str(row[column])) for row in table]))
+
+    table_lines = ''
+    formatter = ''
+    if align is None:
+        align = ['<']*len(N)
+    for n,a in zip(N,align):
+        table_lines += "="*(n+2) 
+        table_lines += ' '
+        formatter = formatter + ' {:' + f'{a}' + f'{n}' + '}  ' 
+
+    table2print = ''
+    table2print += table_lines + '\n'
+    table2print += formatter.format(*table.pop(0)) + '\n'
+    table2print += table_lines  + '\n'
+    for row in table:
+        table2print += formatter.format(*row) + '\n'
+    table2print += table_lines  + '\n'
+    return table2print
+#===============================================================================
+
+
+#===============================================================================
 def der_snr(y):
     """
     DER-SNR noise estimation 
