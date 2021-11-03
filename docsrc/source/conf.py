@@ -117,9 +117,9 @@ html_theme_options = {
             "icon": "fab fa-github",
         },
         {
-            "name": "Twitter",
-            "url": "https://twitter.com",
-            "icon": "fab fa-twitter",
+            "name": "Discussions",
+            "url": "https://github.com/JeschkeLab/DeerLab/discussions",
+            "icon": "fas fa-comments",
         },
         {
             "name": "Issues",
