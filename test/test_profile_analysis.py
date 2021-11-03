@@ -3,6 +3,7 @@ from deerlab.classes import UQResult
 import numpy as np 
 from deerlab import profile_analysis, dd_gauss, whitegaussnoise, merge, link
 from deerlab.utils import assert_docstring
+from copy import deepcopy
 
 def test_types():
 # ======================================================================
@@ -10,7 +11,7 @@ def test_types():
 
     r = np.linspace(2,6,300)
     sigma = 0.1
-    model = dd_gauss.copy()
+    model = deepcopy(dd_gauss)
     model.addlinear('scale',par0 = 1)
 
     y = model(r,mean=3,width=0.2,scale=1) + whitegaussnoise(r,sigma,seed=1)
@@ -46,8 +47,8 @@ def test_globalmodel():
 
     r = np.linspace(2,6,300)
     sigma = 0.1
-    modelA = dd_gauss.copy()
-    modelB = dd_gauss.copy()
+    modelA = deepcopy(dd_gauss)
+    modelB = deepcopy(dd_gauss)
     model = merge(modelA,modelB)
     model = link(model,
             mean=['mean_1','mean_2'],
@@ -74,7 +75,7 @@ def test_types():
 
     r = np.linspace(2,6,300)
     sigma = 0.1
-    model = dd_gauss.copy()
+    model = deepcopy(dd_gauss)
     model.addlinear('scale',par0 = 1)
 
     y = model(r,mean=3,width=0.2,scale=1) + whitegaussnoise(r,sigma,seed=1)
@@ -91,7 +92,7 @@ def test_specific_parameters():
 
     r = np.linspace(2,6,300)
     sigma = 0.1
-    model = dd_gauss.copy()
+    model = deepcopy(dd_gauss)
 
     y = model(r,mean=3,width=0.2) + whitegaussnoise(r,sigma,seed=1)
 

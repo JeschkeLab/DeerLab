@@ -5,12 +5,14 @@
 
 import numpy as np
 from scipy.sparse.construct import block_diag
+from scipy.optimize import fminbound
 from deerlab.solvers import snlls
-from deerlab.correctphase import correctphase
 from deerlab.classes import FitResult, UQResult
+from deerlab.noiselevel import noiselevel
 from deerlab.bootstrap_analysis import bootstrap_analysis
 import inspect 
-from copy import deepcopy
+from copy import copy,deepcopy
+from types import ModuleType
 import difflib
 
 #===================================================================================
@@ -254,7 +256,6 @@ class Model():
     #--------------------------------------------------------------------------------
 
 
-
     #=======================================================================================
     #                                    Private methods
     #=======================================================================================
@@ -465,11 +466,6 @@ class Model():
         self.signature.append(key)
     #---------------------------------------------------------------------------------------
 
-    #---------------------------------------------------------------------------------------
-    def copy(self): 
-        "Generate a deep copy of the model."
-        return deepcopy(self)
-    #---------------------------------------------------------------------------------------
 
     def __call__(self,*args,**kargs):
     #---------------------------------------------------------------------------------------
@@ -533,6 +529,8 @@ class Model():
             }
     #---------------------------------------------------------------------------------------
 
+        
+    #---------------------------------------------------------------------------------------
     def _parameter_table(self):
         string = inspect.cleandoc(f"""
     Model information 
@@ -558,6 +556,7 @@ class Model():
             string += f'   {str(getattr(self,paramname).description):s}'
         string += f'\n============ ========= ========== =========== ======== ========== =========================='
         return string
+    #---------------------------------------------------------------------------------------
 
     def __str__(self):
         return self._parameter_table()
@@ -566,9 +565,132 @@ class Model():
 
 #===================================================================================
 
+#==============================================================================
+class Penalty():
+
+    #--------------------------------------------------------------------------
+    def __init__(self,penaltyfcn,selection,description=None,signature=None):
+
+        #-------------------------------------------------------------------------------
+        def selectionfunctional(fitfcn,y,sigma,log10weight):
+            # Penalty weight: linear-scale -> log-scale
+            weight = 10**log10weight
+
+            # Run the fit
+            fitresult = fitfcn(weight)
+
+            if selection=='icc':
+                # Get the fitted model
+                yfit = fitresult.model
+
+                # Get non-linear parameters covariance submatrix
+                fitpars = fitresult.nonlin + 1e-16
+                covmat = fitresult.nonlinUncert.covmat
+                covmat = covmat/(fitpars[np.newaxis,:]*fitpars[:,np.newaxis])
+
+                # Informational complexity criterion (ICC)
+                if not np.all(covmat==0):
+                    icc = np.sum((y - yfit)**2/sigma**2) + np.sum(np.log(np.diag(covmat))) + np.linalg.slogdet(covmat)[1]
+                else:
+                    icc = np.sum((y - yfit)**2/sigma**2)
+                return icc 
+
+            elif selection=='aic':
+                aic = fitresult.stats['aic']
+                return aic
+
+            elif selection=='aicc':
+                aicc = fitresult.stats['aicc']
+                return aicc
+
+            elif selection=='bic':
+                bic = fitresult.stats['bic']
+                return bic
+        #-------------------------------------------------------------------------------
+
+        # Set the weighted penalty function
+        self.penaltyfcn = lambda weight,*args: weight*penaltyfcn(*args)
+        # Set the selection functional
+        self.selectionfcn = selectionfunctional
+        self.selection = selection
+        # Prepare empty attributes
+        self.description = description
+
+        # Get the penalty signature
+        if signature is None:
+            self.signature =  inspect.getfullargspec(penaltyfcn).args
+        else: 
+            self.signature = signature
+
+        # Create parameter object for the penalty weight
+        newparam = Parameter(parent=self, idx=0, name='weight')
+        
+        # Add to the penalty object
+        setattr(self,'weight',newparam)
+        self.weight.lb = np.finfo(float).eps
+
+        # Remove useless attributes
+        delattr(self.weight,'par0')
+        delattr(self.weight,'linear')
+    #--------------------------------------------------------------------------
+
+    #--------------------------------------------------------------------------
+    def optimize(self,fitfcn,y,sigma):
+
+        if not self.weight.frozen:
+            # Extract optimization range from model penalty
+            searchrange = np.array([np.log10(self.weight.lb), np.log10(self.weight.ub)])
+            searchrange[np.isinf(searchrange)] = 20
+            # Construct the selection functional
+            selectionFunctional = lambda log10weight: self.selectionfcn(fitfcn,y,sigma,log10weight)
+
+            # Minimization of the selection functional
+            log10optweight = fminbound(selectionFunctional,*searchrange, xtol=0.1)
+
+            # Logscale -> linear-scale
+            optweight = 10**log10optweight
+        else: 
+            optweight = self.weight.value
+
+        # Update optimized value to object
+        self.optweight = optweight
+
+        # Get the fit result
+        fitresult = fitfcn(optweight)
+
+        return fitresult,optweight
+    #--------------------------------------------------------------------------
+#==============================================================================
+
+#--------------------------------------------------------------------------
+def _outerOptimization(fitfcn,penalty_objects,y,sigma):
+
+    # If there are no penalties
+    if len(penalty_objects)==0:
+        fitfcn_ = lambda y: fitfcn(y,[None])
+
+    # Otherwise, prepare to solve multiobjective problem 
+    elif len(penalty_objects)==3:
+        thirdfcn = lambda y,*param: penalty_objects[2].optimize(lambda weight: fitfcn(y,[*param,weight]),y,sigma)[1]
+        secondfcn = lambda y,*param: penalty_objects[1].optimize(lambda weight: fitfcn(y,[*param,weight,thirdfcn(y,*param,weight)]),y,sigma)[1]
+        fitfcn_ = lambda y: penalty_objects[0].optimize(lambda weight: fitfcn(y,[weight,secondfcn(y,weight),thirdfcn(y,weight,secondfcn(weight))]),y,sigma)[0]
+
+    elif len(penalty_objects)==2:
+        secondfcn = lambda y,*param: penalty_objects[1].optimize(lambda weight: fitfcn(y,[*param,weight]),y,sigma)[1]
+        fitfcn_ = lambda y: penalty_objects[0].optimize(lambda weight: fitfcn(y,[weight,secondfcn(y,weight)]),y,sigma)[0]
+
+    elif len(penalty_objects)==1:
+        fitfcn_ = lambda y: penalty_objects[0].optimize(lambda weight: fitfcn(y,[weight]),y,sigma)[0]
+    else: 
+        raise RuntimeError('The fit() function can only handle up to three penalties.')
+
+    return fitfcn_
+#--------------------------------------------------------------------------
+
 
 #==============================================================================================
-def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
+def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None,
+                regparam='aic',reg='auto',regparamrange=None,**kwargs):
     r"""
     Fit the input model to the data ``y`` via one of the three following approaches: 
     
@@ -625,10 +747,10 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
         Value of the cost function at the solution.
     """
 
-    if not isinstance(model,Model):
+    if not isinstance(model_,Model):
         raise TypeError('The input model must be a valid deerlab.Model object.')
     else:
-        model = model.copy()
+        model = copy(model_)
 
     if len(constants)>0:
         constants = np.atleast_1d(constants)
@@ -659,11 +781,17 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
         y = [y]            
     nprev = 0
     ysubsets = []
-    for yset in y:
+    sigmas = []
+    for n,yset in enumerate(y):
         ysubsets.append(np.arange(nprev,nprev+len(yset)))
+        if noiselvl is None:
+            sigmas.append(noiselevel(yset)*np.ones(len(yset)))
+        else: 
+            sigmas.append(noiselvl[n]*np.ones(len(yset)))
         nprev = nprev+len(yset)
     ysplit = y.copy()
     y = np.concatenate(y)
+    sigmas = np.concatenate(sigmas)
 
 
     if model.Nlin==0 and model.Nnonlin==0:
@@ -679,9 +807,35 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
                 param_idx[n] = np.arange(idxprev,idxprev + N)
                 idxprev += N  
 
+    # If there are penalties in the model
+    if penalties is not None:
+        if not hasattr(penalties, '__iter__'): 
+            penalties = [penalties]
+        # Get the parameter names of the model
+        modelparam = model._parameter_list('vector')
+        penaltyfcns = []
+        for penalty in penalties:
+            # Determine the indices of the subset of parameters the model depends on
+            subsets = [getattr(model,modelparam[np.where(np.asarray(modelparam)==param)[0][0]]).idx for param in penalty.signature]
+            # Adapt the signature of penaltyfcn for snlls
+            penaltyfcns.append(lambda pnonlin,plin,weight: penalty.penaltyfcn(weight,*[np.concatenate([pnonlin,plin])[subset] for subset in subsets]))
+
+        # Prepare the penalties to input to snlls
+        extrapenalties = lambda weights: [lambda nonlin,lin: penaltyfcn(nonlin,lin,weight) for penaltyfcn,weight in zip(penaltyfcns,weights)]
+    else: 
+        # If there are no penalties in the model
+        penalties = []
+        extrapenalties = lambda *_: None
+
     # Prepare the separable non-linear least-squares solver
     Amodel_fcn = lambda param: model.nonlinmodel(*constants,*param)
-    fitfcn = lambda y: snlls(y,Amodel_fcn,par0,lb,ub,lbl,ubl,subsets=ysubsets,lin_frozen=linfrozen,nonlin_frozen=nonlinfrozen,**kwargs)        
+    fitfcn = lambda y,penweights: snlls(y, Amodel_fcn, par0, lb=lb, ub=ub, lbl=lbl, ubl=ubl, 
+                                                subsets=ysubsets, lin_frozen=linfrozen, nonlin_frozen=nonlinfrozen,
+                                                regparam=regparam, reg=reg, regparamrange=regparamrange,
+                                                extrapenalty=extrapenalties(penweights), **kwargs)        
+
+    # Prepare outer optimization of the penalty weights, if necessary
+    fitfcn = _outerOptimization(fitfcn,penalties,y,sigmas)
 
     # Run the fitting algorithm 
     fitresults = fitfcn(y)
@@ -748,7 +902,7 @@ def fit(model,y,*constants,par0=None,bootstrap=0,**kwargs):
                 raise KeyError(f'The fit object does not contain the {param} parameter.')
         # Determine the indices of the subset of parameters the model depends on
         subset = [np.where(np.asarray(_paramlist)==param)[0][0] for param in modelparam]
-        # Propagate the uncertainty from that subset to the model
+        # Evaluate the input model
         modeluq = model(*constants,*fitresults.param[subset])
         return modeluq
     # ----------------------------------------------------------------------------
