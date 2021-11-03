@@ -60,4 +60,22 @@ API Reference
     dipolarbackground
     fftspec
 
+.. rubric:: Utility functions 
 
+All functions in ``deerlab.utils`` are private functions used internally by other functions.
+Stable functionality is not guaranteed.
+
+.. currentmodule:: deerlab.utils
+
+.. autosummary::
+    :toctree: _autosummary
+    :template: custom_function_template.rst
+    :nosignatures:
+
+    hccm
+    Jacobian
+    nearest_psd
+    movmean
+    ovl
+    der_snr
+    

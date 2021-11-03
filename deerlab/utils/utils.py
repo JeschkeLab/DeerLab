@@ -120,11 +120,21 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, subsets=No
 #===============================================================================
 
 #===============================================================================
-def der_snr(V):
+def der_snr(y):
     """
-    DER_SNR Method
-    ==============
-    Estimates the noise level (standard deviation) in a signal.
+    DER-SNR noise estimation 
+
+    Estimate the noise level using the DER_SNR method [1]_.
+    
+    Parameters
+    ----------
+    y : array_like 
+        Noisy dataset.
+
+    Returns 
+    -------
+    sigma : float scalar 
+        Noise standard deviation. 
 
     References:
     ------------ 
@@ -134,8 +144,8 @@ def der_snr(V):
     Astronomical Data Analysis Software and Systems XVII, ASP Conference Series, Vol. 30, 2008, p5.4
     """
 
-    n = len(V)
-    sigma  = 1.482602/np.sqrt(6)*np.median(abs(2.0*V[2:n-2] - V[0:n-4] - V[4:n]))
+    n = len(y)
+    sigma  = 1.482602/np.sqrt(6)*np.median(abs(2.0*y[2:n-2] - y[0:n-4] - y[4:n]))
     
     return sigma
 #===============================================================================
@@ -144,65 +154,55 @@ def der_snr(V):
 def hccm(J,residual,mode='HC1'):
     """
     Heteroscedasticity Consistent Covariance Matrix (HCCM)
-    ======================================================
 
     Computes the heteroscedasticity consistent covariance matrix (HCCM) of
-    a given LSQ problem given by the Jacobian matrix (J) and the covariance
-    matrix of the data (V). If the residual (res) is specified, the
-    covariance matrix is estimated using some of the methods specified in
-    (mode). The HCCM are valid for both heteroscedasticit and
+    a given LSQ problem given by the Jacobian matrix and the residual vector
+    of a least-squares problem. The HCCM are valid for both heteroscedasticit and
     homoscedasticit residual vectors. 
 
-    Usage:
-    ------
-    C = hccm(J,V)
-    C = hccm(J,res,mode)
-
-    Arguments:
+    Parameters
     ----------
-    J (NxM-element array)
+    J : NxM-element ndarray
         Jacobian matrix of the residual vector
-    res (N-element array)
+    residual : N-element ndarray
         Vector of residuals
-    mode (string)
-        HCCM estimator, options are:
-            'HC0' - White, H. (1980)
-            'HC1' - MacKinnon and White, (1985)
-            'HC2' - MacKinnon and White, (1985)
-            'HC3' - Davidson and MacKinnon, (1993)
-            'HC4' - Cribari-Neto, (2004)
-            'HC5' - Cribari-Neto, (2007)
+    mode : string, optional
+        HCCM estimation method:
 
-    Returns:
-    --------
-    C (MxM-element array) 
+        * ``'HC0'`` - White, 1980 [1]_
+        * ``'HC1'`` - MacKinnon and White, 1985 [2]_
+        * ``'HC2'`` - MacKinnon and White, 1985 [2]_
+        * ``'HC3'`` - Davidson and MacKinnon, 1993 [3]_
+        * ``'HC4'`` - Cribari-Neto, 2004 [4]_
+        * ``'HC5'`` - Cribari-Neto, 2007 [5]_
+
+        If not specified, it defaults to ``'HC1'``
+
+    Returns
+    -------
+    C : MxM-element ndarray
        Heteroscedasticity consistent covariance matrix 
 
-    References:
-    ------------ 
-    [1] 
-    White, H. (1980). A heteroskedasticity-consistent covariance matrix
-    estimator and a direct test for heteroskedasticity. Econometrica, 48(4), 817-838
-    DOI: 10.2307/1912934
+    References
+    ---------- 
+    .. [1] White, H. (1980). A heteroskedasticity-consistent covariance matrix
+       estimator and a direct test for heteroskedasticity. Econometrica, 48(4), 817-838
+       DOI: 10.2307/1912934
 
-    [2] 
-    MacKinnon and White, (1985). Some heteroskedasticity-consistent covariance
-    matrix estimators with improved finite sample properties. Journal of Econometrics, 29 (1985), 
-    pp. 305-325. DOI: 10.1016/0304-4076(85)90158-7
+    .. [2] MacKinnon and White, (1985). Some heteroskedasticity-consistent covariance
+       matrix estimators with improved finite sample properties. Journal of Econometrics, 29 (1985), 
+       pp. 305-325. DOI: 10.1016/0304-4076(85)90158-7
 
-    [3] 
-    Davidson and MacKinnon, (1993). Estimation and Inference in Econometrics
-    Oxford University Press, New York. 
+    .. [3] Davidson and MacKinnon, (1993). Estimation and Inference in Econometrics
+       Oxford University Press, New York. 
 
-    [4] 
-    Cribari-Neto, F. (2004). Asymptotic inference under heteroskedasticity of
-    unknown form. Computational Statistics & Data Analysis, 45(1), 215-233
-    DOI: 10.1016/s0167-9473(02)00366-3
+    .. [4] Cribari-Neto, F. (2004). Asymptotic inference under heteroskedasticity of
+       unknown form. Computational Statistics & Data Analysis, 45(1), 215-233
+       DOI: 10.1016/s0167-9473(02)00366-3
 
-    [5] 
-    Cribari-Neto, F., Souza, T. C., & Vasconcellos, K. L. P. (2007). Inference
-    under heteroskedasticity and leveraged data. Communications in Statistics –
-    Theory and Methods, 36(10), 1877-1888. DOI: 10.1080/03610920601126589
+    .. [5] Cribari-Neto, F., Souza, T. C., & Vasconcellos, K. L. P. (2007). Inference
+       under heteroskedasticity and leveraged data. Communications in Statistics –
+       Theory and Methods, 36(10), 1877-1888. DOI: 10.1080/03610920601126589
     """
 
     # Hat matrix
@@ -397,7 +397,7 @@ def diagf(X):
 #===============================================================================
 def diagp(Y,X,k):
     """
-    DIAGP  Diagonal positive.
+    Diagonal positive matrix.
     Y,X = diagp(Y,X,k) scales the columns of Y and the rows of X by
     unimodular factors to make the k-th diagonal of X real and positive.
     """
@@ -414,11 +414,27 @@ def diagp(Y,X,k):
 def Jacobian(fcn, x0, lb, ub):
     """ 
     Finite difference Jacobian estimation 
-    Estimates the Jacobian matrix of a vector-valued function ``fcn`` at the 
-    point ``x0`` taking into consideration box-constraints defined by the lower
-    and upper bounds ``lb`` and ``ub``.
+     
+    Estimates the Jacobian matrix of a vector-valued function `f(x)` at the 
+    point `x_0` taking into consideration box-constraints of the vector-valued variable ``x`` defined by its lower
+    and upper bounds.
 
-    This is a wrapper around the ``scipy.optimize._numdiff.approx_derivative`` function.
+    Parameters
+    ----------
+    fcn : callable 
+        Function `f(x)` to be differentiated.     
+    x0 : ndarray
+        Point `x_0` at which to differentiate. 
+    lb : ndarray 
+        Lower bounds of `x`.  
+    ub : ndarray 
+        Upper bounds of `x`. 
+
+    Notes
+    -----
+
+    This is a wrapper around the ``scipy.optimize._numdiff.approx_derivative``
+    function of the Scipy package.
 
     """
     J = opt._numdiff.approx_derivative(fcn,x0,method='2-point',bounds=(lb,ub))
@@ -429,25 +445,21 @@ def Jacobian(fcn, x0, lb, ub):
 #===============================================================================
 def movmean(x, N):
     """
-    Moving mean
-    ===========
+    Moving mean filter
 
-    Returns an array of local N-point mean values, where each mean is calculated over a sliding window of length k across neighboring elements of x.
+    Returns an array of local `N`-point mean values, where each mean is calculated
+    over a sliding window of length `k` across neighboring elements of `x`.
 
-    Usage:
-    ------
-        xfilt = movmean(x,N)
-
-    Arguments:
+    Parameters
     ----------
-    x (array)
+    x : ndarray
         Array to be filtered
-    N (scalar)
+    N : integer scalar
         Window size
     
-    Returns:
-    --------
-    xfilt (array)
+    Returns
+    -------
+    xfilt : ndarray
         Filtered array
     
     """
@@ -458,25 +470,20 @@ def movmean(x, N):
 #===============================================================================
 def ovl(A,B):
     """
-    Overlap metric
-    ==============
+    Overlap index
 
-    Returns the overlap between two vectors A and B.
+    Returns the overlap index between two vectors A and B with respect to zero.
 
-    Usage:
-    ------
-        metric = ovl(A,B)
-
-    Arguments:
+    Parameters
     ----------
-    A (N-element array)
+    A : N-element ndarray
         First vector
-    B (N-element array)
+    B : N-element ndarray
         Second vector
     
-    Returns:
-    --------
-    metric (array)
+    Returns
+    -------
+    metric : array
         Overlap metric
 
     """
@@ -489,8 +496,29 @@ def ovl(A,B):
 #===============================================================================
 def nearest_psd(A):
     """ 
-    Find the nearest positive semi-definite matrix. 
-    Source: modified from https://stackoverflow.com/a/63131250/16396391
+    Find the nearest positive semi-definite matrix
+
+    Parameters
+    ----------
+    A : ndarray 
+        Matrix
+
+    Returns
+    -------
+    Cpsd : ndarray 
+        Nearest positive semi-definite matrix 
+
+    Notes
+    -----
+
+    Modified from the algorithm in [1]_.
+
+    References
+    ----------
+
+    .. [1] tjiagoM (2020, July 28th), 
+       How can I calculate the nearest positive semi-definite matrix? 
+       StackOverflow, https://stackoverflow.com/a/63131250/16396391
     """ 
     # Symmetrize the matrix
     Asym = (A + A.T)/2
