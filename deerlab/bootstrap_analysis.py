@@ -10,7 +10,7 @@ from joblib import Parallel, delayed
 from deerlab.classes import UQResult
 from deerlab.utils import isnumeric
 
-def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, cores=1, memorylimit=12):
+def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, cores=1, memorylimit=8):
     r""" 
     Bootstrap analysis for uncertainty quantification
 

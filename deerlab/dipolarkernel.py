@@ -26,7 +26,7 @@ def ω0(g):
     return (μ0/2)*μB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> rad μs^-1 nm^3
 
 def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, orisel=None, g=[ge,ge], 
-                  integralop=True, nKnots=5001, clearcache=False, memorylimit=12):
+                  integralop=True, nKnots=5001, clearcache=False, memorylimit=8):
 #===================================================================================================
     r"""Compute the dipolar kernel operator which enables the linear transformation from
     distance-domain to time-domain data. 
