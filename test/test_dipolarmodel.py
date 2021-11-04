@@ -368,3 +368,17 @@ def test_ex_5pdeer_fit():
 
     assert np.allclose(V5pulse,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
+
+# ======================================================================
+def test_orisel(): 
+    "Check that dipolr models with orientation selection work"
+
+    Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
+    Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,orisel=lambda theta: np.ones_like(theta))
+
+    Vref = Vmodel(mean=3,width=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
+    Vorisel = Vmodelorisel(mean=3,width=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
+
+    assert np.allclose(Vref,Vorisel,rtol=1e-4)
+# ======================================================================
+
