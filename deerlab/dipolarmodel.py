@@ -251,16 +251,17 @@ def dipolarpenalty(Pmodel,r,type,selection=None):
             - ``'bic'`` - Bayesian information criterion
             - ``'aicc'`` - COrrected Akaike information criterion
             - ``'icc'`` - Informational complexity criterion 
-
+   
     Returns
     -------
     penalty : ``Penalty`` object 
         Penalty object to be passed to the ``fit`` function.
     """
+def dipolarpenalty(model,axis,type,selection=None):
 
-    if Pmodel is None: 
-        Pmodel = freedist(r)
-    Nconstants = len(Pmodel._constantsInfo)
+    if model is None: 
+        model = freedist(axis)
+    Nconstants = len(model._constantsInfo)
 
     # If include compactness penalty
     if type=='compactness':
@@ -270,12 +271,12 @@ def dipolarpenalty(Pmodel,r,type,selection=None):
 
         # Define the compactness penalty function
         def compactness_penalty(*args): 
-            P = Pmodel(*[r]*Nconstants,*args)
-            P = P/np.trapz(P,r)
-            return np.sqrt(P*(r - np.trapz(P*r,r))**2*np.mean(np.diff(r)))
-        # Add the penalty to the Pmodel
+            P = model(*[axis]*Nconstants,*args)
+            P = P/np.trapz(P,axis)
+            return np.sqrt(P*(axis - np.trapz(P*axis,axis))**2*np.mean(np.diff(axis)))
+        # Add the penalty to the model
         penalty = Penalty(compactness_penalty,selection,
-                    signature = Pmodel._parameter_list(),
+                    signature = model._parameter_list(),
                     description = 'Distance distribution compactness penalty.')
         penalty.weight.set(lb=1e-6, ub=1e1)
 
@@ -285,12 +286,12 @@ def dipolarpenalty(Pmodel,r,type,selection=None):
             selection = 'aic'
 
         # Define the smoothness penalty function
-        L = regoperator(r,2)
+        L = regoperator(axis,2)
         def smoothness_penalty(*args): 
-            return L@Pmodel(*[r]*Nconstants,*args)
-        # Add the penalty to the Pmodel
+            return L@model(*[axis]*Nconstants,*args)
+        # Add the penalty to the model
         penalty = Penalty(smoothness_penalty,selection,
-                    signature = Pmodel._parameter_list(),
+                    signature = model._parameter_list(),
                     description = 'Distance distribution smoothness penalty.')
         penalty.weight.set(lb=1e-9, ub=1e3)
 

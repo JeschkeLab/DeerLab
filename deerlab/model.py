@@ -908,6 +908,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     for n,yset in enumerate(y):
         ysubsets.append(np.arange(nprev,nprev+len(yset)))
         sigmas.append(noiselvl[n]*np.ones(len(yset)))
+
         nprev = nprev+len(yset)
     ysplit = y.copy()
     y = np.concatenate(y)
