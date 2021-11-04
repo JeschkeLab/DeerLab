@@ -10,7 +10,7 @@ from joblib import Parallel, delayed
 from deerlab.classes import UQResult
 from deerlab.utils import isnumeric
 
-def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, cores=1):
+def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, cores=1, memorylimit=8):
     r""" 
     Bootstrap analysis for uncertainty quantification
 
@@ -50,6 +50,9 @@ def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbo
         Specifies whether to print the progress of the bootstrap analysis on the 
         command window, the default is false.
 
+    memorylimit : 
+        Memory limit to be allocated for the full boostrap analysis. If the requested analysis exceeds this limit, the 
+        execution will be stopped. The default is 12GB.  
 
     Returns
     -------
@@ -122,6 +125,11 @@ def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbo
         if not all(isnumeric(x) for x in var):
             raise ValueError('Non-numeric output arguments by the analyzed function are not accepted.')
     
+    # Check that the full bootstrap analysis will not exceed the memory limits
+    memory_requirements = np.sum([nSamples*np.atleast_1d(var).size*np.atleast_1d(var).itemsize])/1e9 # GB
+    if memory_requirements > memorylimit: 
+        raise MemoryError(f'The requested bootstrap analysis requires {memory_requirements:.2f}GB, exceeding the current memory limit {memorylimit:.2f}GB.')
+
     # Get ndarray shapes of all outputs
     shapeout = []
     evals = []
