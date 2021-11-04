@@ -170,3 +170,16 @@ def test_complex_values():
 
     assert all(abs(paruq.mean - fit.nonlin) < 1.5e-2)
 # ======================================================================
+
+import pytest
+# ======================================================================
+def test_memory_limit():
+    "Check that the memory limit works for too large analyses"
+    # Request one million samples, approx. 80GB
+    yfit = np.linspace(0,1,int(1e4))    
+    yexp = yfit + whitegaussnoise(yfit,0.01)
+    def bootfcn(y):
+        return y
+    with pytest.raises(MemoryError):
+        paruq = bootstrap_analysis(bootfcn,yexp,yfit,1e6)
+# ======================================================================

@@ -317,55 +317,16 @@ def test_ex_5pdeer_fit():
     assert np.allclose(V5pulse,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
-
 # ======================================================================
-def test_compactness_penalty_Pnonparametric(): 
-    "Check the fitting with a nonparametric distribution and the compactness penalty"
+def test_orisel(): 
+    "Check that dipolr models with orientation selection work"
 
-    Vmodel = dipolarmodel(t,r)
-    compactness = dipolarpenalty(None,r,'compactness')
-    compactness.weight.freeze(0.05)
+    Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
+    Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,orisel=lambda theta: np.ones_like(theta))
 
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),penalties=compactness,nonlin_tol=1e-3)
+    Vref = Vmodel(mean=3,width=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
+    Vorisel = Vmodelorisel(mean=3,width=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
 
-    assert ovl(result.P/1e5,Pr)>0.975
-# ======================================================================
-
-# ======================================================================
-def test_compactness_penalty_Pparametric(): 
-    "Check the fitting with a parametric distribution and the compactness penalty"
-
-    Vmodel = dipolarmodel(t,r,Pmodel=dd_gauss)
-    compactness = dipolarpenalty(dd_gauss,r,'compactness')
-    compactness.weight.freeze(0.05)
-    
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),penalties=compactness,nonlin_tol=1e-3)
-
-    assert ovl(result.evaluate(dd_gauss,r),Pr)>0.975
+    assert np.allclose(Vref,Vorisel,rtol=1e-4)
 # ======================================================================
 
-# ======================================================================
-def test_smoothness_penalty_Pnonparametric(): 
-    "Check the fitting with a nonparametric distribution and the smoothness penalty"
-
-    Vmodel = dipolarmodel(t,r)
-    smoothness = dipolarpenalty(None,r,'smoothness')
-    smoothness.weight.freeze(0.00005)
-
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),penalties=smoothness,nonlin_tol=1e-3)
-
-    assert ovl(result.P/1e5,Pr)>0.975
-# ======================================================================
-
-# ======================================================================
-def test_compactness_penalty_Pparametric(): 
-    "Check the fitting with a parametric distribution and the smoothness penalty"
-
-    Vmodel = dipolarmodel(t,r,Pmodel=dd_gauss)
-    smoothness = dipolarpenalty(dd_gauss,r,'smoothness')
-    smoothness.weight.freeze(0.00005)
-    
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),penalties=smoothness,nonlin_tol=1e-3)
-
-    assert ovl(result.evaluate(dd_gauss,r),Pr)>0.975
-# ======================================================================
