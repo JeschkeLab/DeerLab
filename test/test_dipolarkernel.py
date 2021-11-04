@@ -472,3 +472,15 @@ def test_docstring():
     "Check that the docstring includes all variables and keywords."
     assert_docstring(dipolarkernel)
 # ======================================================================
+
+import pytest 
+
+def test_memory_limit():
+# ======================================================================
+    "Check that the memory limiter works"
+    # Construct 12GB kernel (should fit in RAM)
+    t = np.linspace(0,5,int(3e4))
+    r = np.linspace(1,6,int(5e4))
+    with pytest.raises(MemoryError):
+        K = dipolarkernel(t,r)
+# ======================================================================
