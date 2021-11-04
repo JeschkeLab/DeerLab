@@ -766,15 +766,22 @@ def _outerOptimization(fitfcn,penalty_objects,y,sigma):
     return fitfcn_
 #--------------------------------------------------------------------------
 
+#--------------------------------------------------------------------------
 def _print_fitresults(fitresult,model):
+    """Construct summary table of fit results to print"""
+
+    # Start printout string
     string = ''
+    # Get number of models in the fit
     modelfits = fitresult.model
     if not isinstance(modelfits,list):
         modelfits = [modelfits]
     Ndatasets = len(modelfits)
+
+    # Construct table of goodness-of-fit statistics
     table = []
-    table.append([f'Dataset','Noise level','Reduced 𝛘2','RMSD','AIC'])
-    alignment = ['^','^','^','^','^']
+    table.append([f'Dataset','Noise level','Reduced 𝛘2','RMSD','AIC']) # Header
+    alignment = ['^','^','^','^','^'] # Tab alignment
     stats = np.atleast_1d(fitresult.stats)
     noiselevels = np.atleast_1d(fitresult.noiselvl)
     for n in range(Ndatasets):
@@ -784,26 +791,40 @@ def _print_fitresults(fitresult,model):
         aic = stats[n]['aic']
         noiselvl,chi2red,rmsd,aic = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [noiselvl,chi2red,rmsd,aic]] 
         table.append([f'#{1+n}',noiselvl,chi2red,rmsd,aic])
+    # Add auto-formatted table string
     string += 'Goodness-of-fit: \n'
     string += formatted_table(table,alignment) + '\n'
 
+    # Construct table of model parameters fits
     table = []
-    table.append([f'Parameter','Value','95%-Confidence interval','Units','Description'])
-    alignment = ['<','<','<','^','<']
+    table.append([f'Parameter','Value','95%-Confidence interval','Units','Description']) # Header
+    alignment = ['<','<','<','^','<'] # Alignment
     for param in model._parameter_list('vector'):
         if len(np.atleast_1d(getattr(model,param).idx))==1:
-            value = getattr(fitresult,param)
-            ci_lower,ci_upper = getattr(fitresult,param+'Uncert').ci(95)
-            value,ci_lower,ci_upper = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [value,ci_lower,ci_upper]]
+            if np.any(getattr(model,param).frozen): 
+                # If parameter is frozen, print just the value
+                value = getattr(model,param).value
+                if hasattr(value,'__len__'): value = value[0]
+                value = f'{value:.3f}' if value<1e4 else f'{value:.3g}'
+                ci = '(frozen)'
+            else:
+                # If parameter is scalar, report values and CIs
+                value = getattr(fitresult,param)
+                ci_lower,ci_upper = getattr(fitresult,param+'Uncert').ci(95)
+                value,ci_lower,ci_upper = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [value,ci_lower,ci_upper]]
+                ci = f'({ci_lower},{ci_upper})'
         else:
+            # If parameter is vectorial, print just dots
             value = '...'
-            ci_lower,ci_upper = '...','...'
+            ci = '(...,...)'
         units = str(getattr(model,param).units)
         description = str(getattr(model,param).description)
-        table.append([f'{param}',value,f'({ci_lower},{ci_upper})',units,description])
+        table.append([f'{param}',value,ci,units,description])
+    # Add auto-formatted table string
     string += 'Model parameters: \n'
     string += formatted_table(table,alignment)
     return string
+#--------------------------------------------------------------------------
 
 #==============================================================================================
 def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None,
@@ -1003,7 +1024,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
         # Check that all parameters are in the fit object
         for param in modelparam:
-            if not hasattr(fit,param): 
+            if not param in FitResult_param: 
                 raise KeyError(f'The fit object does not contain the {param} parameter.')
         # Determine the indices of the subset of parameters the model depends on
         subset = [param_idx[np.where(np.asarray(_paramlist)==param)[0][0]] for param in modelparam]
@@ -1019,7 +1040,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
         # Check that all parameters are in the fit object
         for param in modelparam:
-            if not hasattr(fit,param): 
+            if not param in FitResult_param: 
                 raise KeyError(f'The fit object does not contain the {param} parameter.')
         # Determine the indices of the subset of parameters the model depends on
         subset = [np.where(np.asarray(_paramlist)==param)[0][0] for param in modelparam]

@@ -121,26 +121,36 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, subsets=No
 
 #===============================================================================
 def formatted_table(table,align=None):
+    """Generate auto-formatted table in string form from a list of rows."""
+    
+    # Determine the maximal number of characters in each column
     N = []
     for column in range(len(table[0])):    
         N.append(max([len(str(row[column])) for row in table]))
 
-    table_lines = ''
-    formatter = ''
+    # If not specified, use left-alignment
     if align is None:
         align = ['<']*len(N)
+
+    # Construct string for row-separator
+    table_lines = ''
     for n,a in zip(N,align):
         table_lines += "="*(n+2) 
         table_lines += ' '
+
+    # Construct row formatter string
+    formatter = ''
+    for n,a in zip(N,align):
         formatter = formatter + ' {:' + f'{a}' + f'{n}' + '}  ' 
 
-    table2print = ''
-    table2print += table_lines + '\n'
-    table2print += formatter.format(*table.pop(0)) + '\n'
-    table2print += table_lines  + '\n'
+    # Construct the table
+    table2print = '' 
+    table2print += table_lines + '\n'  # Add a line
+    table2print += formatter.format(*table.pop(0)) + '\n' # Add a header 
+    table2print += table_lines  + '\n' # Add a line
     for row in table:
-        table2print += formatter.format(*row) + '\n'
-    table2print += table_lines 
+        table2print += formatter.format(*row) + '\n' # Add data rows
+    table2print += table_lines # Add a line
     return table2print
 #===============================================================================
 

@@ -174,7 +174,6 @@ def test_fit_2pathways():
     assert np.allclose(result.model,V2path)
 # ======================================================================
 
-
 # ======================================================================
 def test_fit_3pathways(): 
     "Check that the model can be correctly fitted with three dipolar pathways"
@@ -369,3 +368,4 @@ def test_compactness_penalty_Pparametric():
     result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),penalties=smoothness,nonlin_tol=1e-3)
 
     assert ovl(result.evaluate(dd_gauss,r),Pr)>0.975
+# ======================================================================
