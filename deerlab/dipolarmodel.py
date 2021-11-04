@@ -9,9 +9,11 @@ from deerlab.regoperator import regoperator
 from deerlab.dd_models import freedist
 from deerlab.model import Model,Penalty
 from deerlab import bg_hom3d
+ge = 2.00231930436256 # free-electron g factor
 
 #===============================================================================
-def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,experiment=None):
+def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,experiment=None,
+                    excbandwidth=np.inf, orisel=None, g=[ge,ge]):
     """
     Construct a dipolar EPR signal model. 
 
@@ -40,7 +42,15 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
         Whether to add a weighted penalty to induce smoothness of the distance distribution, optimized 
         via the Akaike information criterion (AIC).          
         Adds a :ref:`Penalty` object to the model accessible via the attribute ``model.smoothness``.
-        
+    orisel : callable  or ``None``, optional 
+        Probability distribution of possible orientations of the interspin vector to account for orientation selection. Must be 
+        a function taking a value of the angle θ∈[0,π/2] between the interspin vector and the external magnetic field and returning
+        the corresponding probability density. If specified as ``None`` (by default), a uniform distribution is assumed. 
+    excbandwidth : scalar, optional
+        Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth.
+    g : scalar, 2-element array, optional
+        Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, ``[g, g]`` is assumed 
+            
     Returns
     -------
     Vmodel : :ref:`Model`
@@ -156,6 +166,8 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
                 if param in model._parameter_list(order='vector'):
                     subset[getattr(model,param).idx] = idx
 
+    kernelmethod = 'fresnel' if orisel is None else 'grid' 
+
     #------------------------------------------------------------------------
     def Vnonlinear_fcn(*nonlin):
         """ Non-linear part of the dipolar signal function """
@@ -172,7 +184,9 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
         # Construct the definition of the dipolar pathways
         pathways = PathsModel.nonlinmodel(*nonlin[PathsSubset])
         # Construct the dipolar kernel
-        Kdipolar = dipolarkernel(t,r,pathways=pathways, bg=Bfcn)
+        Kdipolar = dipolarkernel(t,r,pathways=pathways, bg=Bfcn,
+                                 excbandwidth=excbandwidth, orisel=orisel,
+                                  g=g, method=kernelmethod)
         # Compute the non-linear part of the distance distribution
         Pnonlin = Pmodel.nonlinmodel(*[r]*Nconstants,*nonlin[Psubset])
         # Forward calculation of the non-linear part of the dipolar signal
