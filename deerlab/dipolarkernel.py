@@ -26,7 +26,7 @@ def ω0(g):
     return (μ0/2)*μB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> rad μs^-1 nm^3
 
 def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, orisel=None, g=[ge,ge], 
-                  integralop=True, nKnots=5001, clearcache=False):
+                  integralop=True, nKnots=5001, clearcache=False, memorylimit=12):
 #===================================================================================================
     r"""Compute the dipolar kernel operator which enables the linear transformation from
     distance-domain to time-domain data. 
@@ -85,6 +85,10 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         
     clearcache : boolean, optional
         Clear the cached dipolar kernels at the beginning of the function. Disabled by default.
+
+    memorylimit : 
+        Memory limit to be allocated for the dipolar kernel. If the requested kernel exceeds this limit, the 
+        execution will be stopped. The default is 12GB.  
 
     Returns
     --------
@@ -151,6 +155,10 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     # Ensure that inputs are Numpy arrays
     r,t,g = np.atleast_1d(r,t,g)
+
+    memory_requirement = 8*len(t)*len(r)/1e9 # GB
+    if memory_requirement > memorylimit: 
+        raise MemoryError(f'The requested kernel requires {memory_requirement:.2f}GB, exceeding the current memory limit {memorylimit:.2f}GB.')
 
     # Check validity of some inputs
     if len(g) == 1:
