@@ -137,14 +137,14 @@ Example: Gaussian model
 
 For example, let's consider a Gaussian function given by: 
 
-.. math:: y(\langle x \rangle,\sigma) = \exp\left(\frac{(x - \langle x \rangle)^2}{2\sigma^2} \right)
+.. math:: y(\langle x \rangle,\sigma) = \exp\left(-\frac{(x - \langle x \rangle)^2}{2\sigma^2} \right)
 
 centered about `\langle x \rangle`, and with a width given by `\sigma`. The function has two non-linear parameters (`\langle x \rangle` and `\sigma`), and no linear parameters. Therefore, we could define the following function: ::
 
     x = np.linspace(0,10,500)
     # Define the non-linear function 
     def gaussian_fcn(center,width):
-        y = np.exp((x-center)**2/(2*width**2))
+        y = np.exp(-(x-center)**2/(2*width**2))
         return y 
     # Construct the model
     gauss = dl.Model(gaussian_fcn)
@@ -204,15 +204,15 @@ Example: Bimodal Gaussian model
 
 For example, let's consider a bimodal Gaussian function given by: 
 
-.. math:: y = w_1\exp\left(\frac{(x - \langle x \rangle_1)^2}{2\sigma_1^2} \right) + w_2\exp\left(\frac{(x - \langle x \rangle_2)^2}{2\sigma_2^2} \right)
+.. math:: y = w_1\exp\left(-\frac{(x - \langle x \rangle_1)^2}{2\sigma_1^2} \right) + w_2\exp\left(-\frac{(x - \langle x \rangle_2)^2}{2\sigma_2^2} \right)
 
 where `\langle x \rangle_n` are the centers, `\sigma_n` the width, and `w_n` the amplitudes of the Gaussian components. First, we need to bring this in the form `y = A(\theta_\mathrm{nonlin})\theta_\mathrm{lin}`, we can write the model function above in a linear algebra form 
 
 .. math::
 
     y = \begin{bmatrix}
-            \exp\left(\frac{(x - \langle x \rangle_1)^2}{2\sigma_1^2} \right) \\
-            \exp\left(\frac{(x - \langle x \rangle_2)^2}{2\sigma_2^2} \right)
+            \exp\left(-\frac{(x - \langle x \rangle_1)^2}{2\sigma_1^2} \right) \\
+            \exp\left(-\frac{(x - \langle x \rangle_2)^2}{2\sigma_2^2} \right)
         \end{bmatrix}
     \begin{bmatrix} w_1 \\ w_2   \end{bmatrix} 
 
@@ -223,8 +223,8 @@ Therefore, we could define the following function: ::
     x = np.linspace(0,10,500)
     # Define the non-linear function 
     def bigaussian_fcn(center1,width1,center2,width2):
-        gauss1 = np.exp((x-center1)**2/(2*width1**2)) # First Gaussian component
-        gauss2 = np.exp((x-center2)**2/(2*width2**2)) # Second Gaussian component
+        gauss1 = np.exp(-(x-center1)**2/(2*width1**2)) # First Gaussian component
+        gauss2 = np.exp(-(x-center2)**2/(2*width2**2)) # Second Gaussian component
         Anonlin = np.vstack(y1,y2) # Stack them vertically into a matrix
         return Anonlin
     # Construct the model
@@ -285,7 +285,7 @@ For example, let us construct a model describing the Gaussian convolution of a n
 
 .. math::
 
-        y(x,\sigma) = \int dz \exp\left( \frac{(x-z)^2}{2\sigma^2} \right) P(z) = \int dz K(x,z) P(z)
+        y(x,\sigma) = \int dz \exp\left(-\frac{(x-z)^2}{2\sigma^2} \right) P(z) = \int dz K(x,z) P(z)
 
 where `K(x,z,\sigma)` is the Gaussian kernel, and `P(z)` is the non-parametric distribution. Such an integral equation can be quickly be brought into matrix form 
 
@@ -350,13 +350,13 @@ Example: Gaussian model with a variable axis
 
 For example, let's model a Gaussian function defined on an arbitrary axis: 
 
-.. math:: y(x,\langle x \rangle,\sigma) = \exp\left(\frac{(x - \langle x \rangle)^2}{2\sigma^2} \right)
+.. math:: y(x,\langle x \rangle,\sigma) = \exp\left(-\frac{(x - \langle x \rangle)^2}{2\sigma^2} \right)
 
 centered about `\langle x \rangle`, with a width given by `\sigma`. The function has two non-linear parameters (`\langle x \rangle` and `\sigma`), and no linear parameters. The axis `x` should be modifiable but not a parameter. Therefore, we could define the following function with the axis set as a constant: ::
 
     # Define the non-linear function 
     def gaussian_fcn(x,center,width):
-        y = np.exp((x-center)**2/(2*width**2))
+        y = np.exp(-(x-center)**2/(2*width**2))
         return y 
     # Construct the model
     xgauss = dl.Model(gaussian_fcn, constants='x')

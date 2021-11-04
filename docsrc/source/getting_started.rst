@@ -185,24 +185,18 @@ Manipulating the model
 A full summary of the constructed model(s) can be inspected by printing the model object ::
 
     >>> print(Vmodel)
-    Model information 
-    -----------------
-
-    Model description: Dipolar signal model
-    Model call signature: (mod,reftime,conc,P)
+    Description: Dipolar signal model
+    Signature: (mod, reftime, conc, P)
     Constants: []
-
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper       Type      Frozen    Units      Description  
-    ============ ========= ========== =========== ======== ========== ==========================
-      mod           0         1          nonlin      No                 Modulation depth
-      reftime       -inf      inf        nonlin      No       μs        Refocusing time
-      conc          0.01      5e+03      nonlin      No       μM        Spin concentration
-      P             0         inf        linear      No       None      Non-parametric distance distribution
-    ============ ========= ========== =========== ======== ========== ==========================
+    Parameter Table: 
+    ========= ======= ======= ======== ======== ======= ====================================== 
+     Name      Lower   Upper    Type    Frozen   Units   Description                           
+    ========= ======= ======= ======== ======== ======= ====================================== 
+     mod           0       1   nonlin     No             Modulation depth                      
+     reftime     0.4     0.6   nonlin     No      μs     Refocusing time                       
+     conc       0.01   5e+03   nonlin     No      μM     Spin concentration                    
+     P             0     inf   linear     No     None    Non-parametric distance distribution  
+    ========= ======= ======= ======== ======== ======= ====================================== 
 
 
 From this point on, the model can be modified, manipulated and expanded freely as any other DeerLab model. Check out the :ref:`modelling guide <modelling_guide>` for more details and instructions on model manipulation.
@@ -238,7 +232,7 @@ Example: Fitting a non-parametric distribution with a compactness criterion
 For example, to introduce compactness in the fit of a dipolar model with a non-parametric distance distribution we must set the distribution model to ``None`` to indicate a non-parametric distribution ::
 
     compactness_penalty = dl.dipolarpenalty(None, r, 'compactness', 'icc')
-    result = dl.fit(Vmodel,Vexp, penalties=compactness_penalty)
+    results = dl.fit(Vmodel,Vexp, penalties=compactness_penalty)
 
 Example: Fitting a Gaussian distribution with a compactness criterion
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -246,30 +240,47 @@ Example: Fitting a Gaussian distribution with a compactness criterion
 For example, to introduce compactness in the fit of a dipolar model with a Gaussian distance distribution we must set the distribution model to ``dd_gauss`` to indicate the parametric distribution ::
 
     compactness_penalty = dl.dipolarpenalty(dl.dd_gauss, r, 'compactness', 'icc')
-    result = dl.fit(Vmodel,Vexp, penalties=compactness_penalty)
+    results = dl.fit(Vmodel,Vexp, penalties=compactness_penalty)
 
 Displaying the results
 **********************
 
 For just a quick display of the results, you can use the ``plot()`` method of the ``fit`` object that will display a figure with you experimental data, the corresponding fit including confidence bands. :: 
 
-    fitresults.plot() # display results
+    results.plot(axis=t,xlabel='Time (μs)') # display results
 
 
 .. image:: ./images/beginners_guide1.png
    :width: 450px
 
-The ``result`` output contains additional information. For each parameter in the model, the ``result`` output contains an attribute ``result.<parameter>`` named after the parameter containing the fitted value of that parameter, as well as another attribute ``result.<parameter>Uncert`` containing the uncertainty estimates of that parameter, from which confidence intervals can be constructed (the :ref:`uncertainty guide <uncertainty>` for details). For example: :: 
+For a quick summary of the fit results, including goodness-of-fit statistics and the fitted model parameter values (including 95% confidence intervals), can be accessed by just printing the ``results`` object :: 
+
+    >>>print(results)
+    Goodness-of-fit: 
+    ========= ============= ============ ========== ========== 
+    Dataset   Noise level   Reduced 𝛘2     RMSD       AIC     
+    ========= ============= ============ ========== ========== 
+       #1       1426.905       1.036      1443.706   3631.484  
+    ========= ============= ============ ========== ========== 
+    Model parameters: 
+    =========== ========= ========================= ======= ====================================== 
+     Parameter   Value     95%-Confidence interval   Units   Description                           
+    =========== ========= ========================= ======= ====================================== 
+     mod         0.505     (0.494,0.516)                     Modulation depth                      
+     reftime     0.096     (0.092,0.100)              μs     Refocusing time                       
+     conc        295.909   (279.412,312.405)          μM     Spin concentration                    
+     P           ...       (...,...)                 None    Non-parametric distance distribution  
+    =========== ========= ========================= ======= ====================================== 
+
+Any specific quantities can be extracted from the ``results`` object. For each parameter in the model, the ``results`` output contains an attribute ``results.<parameter>`` named after the parameter containing the fitted value of that parameter, as well as another attribute ``results.<parameter>Uncert`` containing the uncertainty estimates of that parameter, from which confidence intervals can be constructed (the :ref:`uncertainty guide <uncertainty>` for details). For example: :: 
 
     # Distance distribution 
-    result.P # Fitted distance distribution 
-    result.PUncert.ci(95) # Distance distribution 95% confidence intervals
+    results.P # Fitted distance distribution 
+    results.PUncert.ci(95) # Distance distribution 95% confidence intervals
 
     # Modulation depth 
-    result.mod # Fitted modulation depth 
-    result.modUncert.ci(95) # Modulation depth 95% confidence intervals
-
-
+    results.mod # Fitted modulation depth 
+    results.modUncert.ci(95) # Modulation depth 95% confidence intervals
 
 
 
@@ -317,8 +328,11 @@ Here is an example script to load experimental time trace, pre-process it, and f
     Vmodel = dl.dipolarmodel(t,r) # Non-parametric P(r), homogenous 3D background, single-pathway
 
     # Fit the model to the data
-    result = dl.fit(Vmodel,Vexp)
+    results = dl.fit(Vmodel,Vexp)
+
+    # Print fit summary 
+    print(results)
 
     # Print figure
-    figure = result.plot()
+    figure = results.plot(axis=t,xlabel='Time (μs)')
     figure.savefig('DEERfig.pdf')

@@ -202,8 +202,30 @@ This will fix the value throughout the whole fitting approach and skip the outer
 
 .. _fitting_fitresult:
 
+Examining the results 
+---------------------
+
+A summary of the fit can be accessed by printing the ``FitResult`` object as returned by the ``fit`` function ::
+
+    >>>print(result)
+    Goodness-of-fit: 
+    ========= ============= ============ ======= =========== 
+    Dataset   Noise level   Reduced 𝛘2   RMSD       AIC     
+    ========= ============= ============ ======= =========== 
+       #1         0.049        1.058      0.050   -3002.842  
+    ========= ============= ============ ======= =========== 
+    Model parameters: 
+    =========== ======= ========================= ======= ================ 
+     Parameter   Value   95%-Confidence interval   Units   Description     
+    =========== ======= ========================= ======= ================ 
+     center      5.002   (4.995,5.010)             None    None            
+     width       0.204   (0.196,0.212)             None    None            
+     scale       0.999   (0.999,0.999)             None    Scaling factor  
+    =========== ======= ========================= ======= ================ 
+    
+
 The ``FitResult`` object
--------------------------
+************************
 
 Once the fitting routine is finished, the ``fit`` function will return a ``FitResult`` object containing multiple quantities of interest. 
 

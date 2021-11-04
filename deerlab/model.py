@@ -766,6 +766,44 @@ def _outerOptimization(fitfcn,penalty_objects,y,sigma):
     return fitfcn_
 #--------------------------------------------------------------------------
 
+def _print_fitresults(fitresult,model):
+    string = ''
+    modelfits = fitresult.model
+    if not isinstance(modelfits,list):
+        modelfits = [modelfits]
+    Ndatasets = len(modelfits)
+    table = []
+    table.append([f'Dataset','Noise level','Reduced 𝛘2','RMSD','AIC'])
+    alignment = ['^','^','^','^','^']
+    stats = np.atleast_1d(fitresult.stats)
+    noiselevels = np.atleast_1d(fitresult.noiselvl)
+    for n in range(Ndatasets):
+        noiselvl = noiselevels[n]
+        chi2red = stats[n]['chi2red']
+        rmsd = stats[n]['rmsd']
+        aic = stats[n]['aic']
+        noiselvl,chi2red,rmsd,aic = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [noiselvl,chi2red,rmsd,aic]] 
+        table.append([f'#{1+n}',noiselvl,chi2red,rmsd,aic])
+    string += 'Goodness-of-fit: \n'
+    string += formatted_table(table,alignment) + '\n'
+
+    table = []
+    table.append([f'Parameter','Value','95%-Confidence interval','Units','Description'])
+    alignment = ['<','<','<','^','<']
+    for param in model._parameter_list('vector'):
+        if len(np.atleast_1d(getattr(model,param).idx))==1:
+            value = getattr(fitresult,param)
+            ci_lower,ci_upper = getattr(fitresult,param+'Uncert').ci(95)
+            value,ci_lower,ci_upper = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [value,ci_lower,ci_upper]]
+        else:
+            value = '...'
+            ci_lower,ci_upper = '...','...'
+        units = str(getattr(model,param).units)
+        description = str(getattr(model,param).description)
+        table.append([f'{param}',value,f'({ci_lower},{ci_upper})',units,description])
+    string += 'Model parameters: \n'
+    string += formatted_table(table,alignment)
+    return string
 
 #==============================================================================================
 def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None,
@@ -863,12 +901,13 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     nprev = 0
     ysubsets = []
     sigmas = []
+    if noiselvl is None:
+        noiselvl = []
+        for n,yset in enumerate(y):
+            noiselvl.append(noiselevel(yset))
     for n,yset in enumerate(y):
         ysubsets.append(np.arange(nprev,nprev+len(yset)))
-        if noiselvl is None:
-            sigmas.append(noiselevel(yset)*np.ones(len(yset)))
-        else: 
-            sigmas.append(noiselvl[n]*np.ones(len(yset)))
+        sigmas.append(noiselvl[n]*np.ones(len(yset)))
         nprev = nprev+len(yset)
     ysplit = y.copy()
     y = np.concatenate(y)
@@ -910,7 +949,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
     # Prepare the separable non-linear least-squares solver
     Amodel_fcn = lambda param: model.nonlinmodel(*constants,*param)
-    fitfcn = lambda y,penweights: snlls(y, Amodel_fcn, par0, lb=lb, ub=ub, lbl=lbl, ubl=ubl, 
+    fitfcn = lambda y,penweights: snlls(y, Amodel_fcn, par0, lb=lb, ub=ub, lbl=lbl, ubl=ubl,
                                                 subsets=ysubsets, lin_frozen=linfrozen, nonlin_frozen=nonlinfrozen,
                                                 regparam=regparam, reg=reg, regparamrange=regparamrange,
                                                 extrapenalty=extrapenalties(penweights), **kwargs)        
@@ -988,11 +1027,14 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         return modeluq
     # ----------------------------------------------------------------------------
 
+    if len(noiselvl)==1: 
+        noiselvl = noiselvl[0]
 
     # Generate FitResult object from all the dictionaries
-    fit = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict, 'propagate': propagate, 'evaluate': evaluate}) 
+    fitresult = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict,'noiselvl':noiselvl, 'propagate': propagate, 'evaluate': evaluate}) 
+    fitresult._summary = _print_fitresults(fitresult,model)
 
-    return fit
+    return fitresult
 #==============================================================================================
 
 def _importparameter(parameter):

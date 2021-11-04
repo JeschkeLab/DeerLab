@@ -140,7 +140,7 @@ def formatted_table(table,align=None):
     table2print += table_lines  + '\n'
     for row in table:
         table2print += formatter.format(*row) + '\n'
-    table2print += table_lines  + '\n'
+    table2print += table_lines 
     return table2print
 #===============================================================================
 

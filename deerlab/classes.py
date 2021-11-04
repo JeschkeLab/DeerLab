@@ -54,9 +54,12 @@ class FitResult(dict):
             return self[name]
         except KeyError:
             raise AttributeError(name)
-
+    
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
+
+    def __str__(self): 
+        return self._summary
 
     def __repr__(self):
         if self.keys():
