@@ -35,17 +35,17 @@
     <div class="boxcontainer">
         <h3>What is new?</h3>
         <p>Check the Release Notes for the changes introduced in the latest releases.</p>
-        <a class="boxlink" href="http://google.com">Learn more →</a>
+        <a class="boxlink" href="./changelog.html">Learn more →</a>
     </div>
     <div class="boxcontainer">
         <h3>How to cite?</h3>
-        <p>When you use DeerLab in your work, please cite the following publication</p>
-        <a class="boxlink" href="http://google.com">Publication →</a>
+        <p>When you use DeerLab in scientific work, please cite the following publication</p>
+        <a class="boxlink" href="https://mr.copernicus.org/articles/1/209/2020/">Publication →</a>
     </div>
     <div class="boxcontainer">
         <h3>Contributing</h3>
         <p>DeerLab is hosted on Github. Look at the contribution guidelines. </p>
-        <a class="boxlink" href="http://google.com">Contribute →</a>
+        <a class="boxlink" href="https://github.com/JeschkeLab/DeerLab">Contribute →</a>
     </div>     
     </div>
 
