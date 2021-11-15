@@ -148,7 +148,7 @@ def freedist(r):
 #                                     dd_gauss
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 :math:`P(r) = \frac{1}{\sigma\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r\right>)^2}{2\sigma^2}\right)`
 
@@ -171,7 +171,7 @@ dd_gauss.__doc__ = _dd_docstring(dd_gauss,notes) + docstr_example('dd_gauss')
 #                                     dd_gauss2
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 :math:`P(r) = a_1\frac{1}{\sigma_1\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_1\right>)^2}{2\sigma_1^2}\right) + a_2\frac{1}{\sigma_2\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_2\right>)^2}{2\sigma_2^2}\right)`
 
@@ -198,7 +198,7 @@ dd_gauss2.__doc__ = _dd_docstring(dd_gauss2,notes) + docstr_example('dd_gauss2')
 #                                     dd_gauss3
 #=======================================================================================
 ntoes = r"""
-**Model:**
+**Model**
 
 :math:`P(r) = a_1\frac{1}{\sigma_1\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_1\right>)^2}{2\sigma_1^2}\right) + a_2\frac{1}{\sigma_2\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_2\right>)^2}{2\sigma_2^2}\right) + a_3\frac{1}{\sigma_3\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_3\right>)^2}{2\sigma_3^2}\right)`
 
@@ -228,10 +228,12 @@ dd_gauss3.__doc__ = _dd_docstring(dd_gauss3,notes) +  docstr_example('dd_gauss3'
 #                                     dd_gengauss
 #=======================================================================================
 notes =  r"""
-**Model:**
+**Model**
 
-.. image:: ../images/model_scheme_dd_gengauss.png
-    :width: 450px
+.. raw:: html 
+    
+    <img src="../_images/model_scheme_dd_gengauss.png", style="width: 50%">
+    <br><br><br>    
 
 :math:`P(r) = \frac{\beta}{2\sigma\Gamma(1/\beta)}\exp\left(-\left(\frac{(r-\left<r\right>)}{\sigma}\right)^\beta \right)`
 
@@ -256,10 +258,12 @@ dd_gengauss.__doc__ = _dd_docstring(dd_gengauss,notes) +  docstr_example('dd_gen
 #                                     dd_skewgauss
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
-.. image:: ../images/model_scheme_dd_skewgauss.png
-    :width: 650px
+.. raw:: html 
+    
+    <img src="../_images/model_scheme_dd_skewgauss.png", style="width: 50%">
+    <br><br><br>  
 
 :math:`P(r) = \frac{1}{\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r\right>)^2}{\sqrt(2)\sigma^2}\right)\frac{1}{2}\left(1 + \mathrm{erf}\left(\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
 
@@ -285,7 +289,7 @@ dd_skewgauss.__doc__ = _dd_docstring(dd_skewgauss,notes) +  docstr_example('dd_s
 #                                     dd_rice
 #=======================================================================================
 notes = r"""
-**Model:** 
+**Model** 
 
 :math:`P(r) = \frac{\nu^{n/2-1}}{\sigma^2}r^{n/2}\exp\left(-\frac{(r^2+\nu^2)}{2\sigma^2}\right)I_{n/2-1}\left(\frac{r\nu}{\sigma^2} \right)`
 
@@ -308,7 +312,7 @@ dd_rice.__doc__ = _dd_docstring(dd_rice,notes) +  docstr_example('dd_rice')
 #                                     dd_rice2
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 :math:`P(r) = a_1 R(r,\nu_1,\sigma_1) + a_2 R(r,\nu_2,\sigma_2)`
 
@@ -338,7 +342,7 @@ dd_rice2.__doc__ = _dd_docstring(dd_rice2,notes) +  docstr_example('dd_rice2')
 #                                     dd_rice3
 #=======================================================================================
 notes =  r"""
-**Model:**
+**Model**
     
 :math:`P(r) = a_1 R(r,\nu_1,\sigma_1) + a_2 R(r,\nu_2,\sigma_2) + a_3 R(r,\nu_3,\sigma_3)`
 
@@ -371,14 +375,16 @@ dd_rice3.__doc__ = _dd_docstring(dd_rice3,notes) +  docstr_example('dd_rice3')
 #                                     dd_randcoil
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
+
+.. raw:: html 
     
-.. image:: ../images/model_scheme_dd_randcoil.png
-    :width: 25%
+    <img src="../_images/model_scheme_dd_randcoil.png", style="width: 50%">
+    <br><br><br>
 
 :math:`P(r) = \frac{3}{(2\pi\nu_0)^{3/2}}4\pi r^2\exp(-\frac{3 r^2}{\nu_0})`
 
-where :math:`\nu_0 = 3/(12\pi r_0 N \nu)^{3/2}, and `N` is the number of residues, `R_0` 
+where `\nu_0 = 3/(12\pi r_0 N \nu)^{3/2}`, and `N` is the number of residues, `R_0` 
 is the segment length, and `\nu` is the scaling exponent.
 """  
 def _randcoil(r,Nres,scaling,length):
@@ -406,7 +412,7 @@ dd_randcoil.__doc__ = _dd_docstring(dd_randcoil,notes) +  docstr_example('dd_ran
 #                                     dd_circle
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 This provides a `semi-circle distribution <https://en.wikipedia.org/wiki/Wigner_semicircle_distribution>`_, defined by
 
@@ -435,7 +441,7 @@ dd_circle.__doc__ = _dd_docstring(dd_circle,notes) +  docstr_example('dd_circle'
 #                                     dd_cos
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 This provides a `raised-cosine distribution <https://en.wikipedia.org/wiki/Raised_cosine_distribution>`_, defined by 
 :math:`P(r) = \frac{1}{2w}\cos\left(\frac{r-r_0}{w}\pi\right)` for :math:`r_0-w \le r \le r_0+w`, and zero otherwise.
@@ -492,10 +498,12 @@ def _pbs(r,R1,R2):
 #                                     dd_shell
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
     
-.. image:: ../images/model_scheme_dd_shell.png
-    :width: 25%
+.. raw:: html 
+    
+    <img src="../_images/model_scheme_dd_shell.png", style="width: 50%">
+    <br><br><br>
 
 :math:`P(r) = \left(R_2^6 P_\mathrm{B}(r|R_2) - R_1^6 P_\mathrm{B}(r|R_1) - 2(r_2^3 - r_1^3)P_\mathrm{BS}(r|R_1,R_2)\right)/(R_2^3 - R_1^3)^2`
 
@@ -543,10 +551,12 @@ dd_shell.__doc__ = _dd_docstring(dd_shell,notes) +  docstr_example('dd_shell')
 #                                     dd_spherepoint
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
-.. image:: ../images/model_scheme_dd_spherepoint.png
-    :width: 25%
+.. raw:: html 
+    
+    <img src="../_images/model_scheme_dd_spherepoint.png", style="width: 50%">
+    <br><br><br>
 
 :math:`P(r) = \begin{cases} \frac{3r(R^2-(d-r)^2)}{4dR^3} \quad \text{for} \quad d-R \leq r < d+R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
 
@@ -581,10 +591,12 @@ dd_spherepoint.__doc__ = _dd_docstring(dd_spherepoint,notes) +  docstr_example('
 #                                     dd_spheresurf
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
+
+.. raw:: html 
     
-.. image:: ../images/model_scheme_dd_spheresurf.png
-    :width: 25%
+    <img src="../_images/model_scheme_dd_spheresurf.png", style="width: 50%">
+    <br><br><br>
 
 :math:`P(r) = \begin{cases} \frac{r}{2R^2} \quad \text{for} \quad 0 \leq r < 2R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
 
@@ -616,10 +628,12 @@ dd_spheresurf.__doc__ = _dd_docstring(dd_spheresurf,notes) +  docstr_example('dd
 #                                     dd_shellshell
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
+
+.. raw:: html 
     
-.. image:: ../images/model_scheme_dd_shellshell.png
-    :width: 25%
+    <img src="../_images/model_scheme_dd_shellshell.png", style="width: 50%">
+    <br><br><br>    
 
 :math:`P(r) = (R_1^3(R_2^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_2) - R_1^3(R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - R_2^3(R_3^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_3))/((R_3^3 - R_2^3)(R_2^3 - R_1^3))`
 
@@ -673,10 +687,12 @@ dd_shellshell.__doc__ = _dd_docstring(dd_shellshell,notes) +  docstr_example('dd
 #                                     dd_shellsphere
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
     
-.. image:: ../images/model_scheme_dd_sphereshell.png
-    :width: 25%
+.. raw:: html 
+    
+    <img src="../_images/model_scheme_dd_sphereshell.png", style="width: 50%">
+    <br><br><br>     
 
 :math:`P(r) = \frac{3}{16R_1^3(R_2^3 - R_1^3)}\begin{cases} 12r^3R_1^2 - r^5  \quad \text{for} \quad 0\leq r < \min(2R_1,R_2 - R_1) \\ 8r^2(R_2^3 - R_1^3) - 3r(R_2^2 - R_1^2)^2 - 6r^3(R_2 - R_1)(R_2 + R_1) \quad \text{for} \quad R_2-R_1 \leq r < 2R_1 \\ 16r^2R_1^3 \quad \text{for} \quad 2R_1\leq r < R_2 - R_1  \\  r^5 - 6r^3(R_2^2 + R_1^2) + 8r^2(R_2^3 + R_1^3) - 3r(R_2^2 - R1_2)^2 \quad \text{for} \quad \max(R_2-R_1,2R_1) \leq r < R_1+R_2 \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
 
@@ -715,10 +731,12 @@ dd_shellsphere.__doc__ = _dd_docstring(dd_shellsphere,notes) +  docstr_example('
 #                                     dd_shellvoidshell
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
     
-.. image:: ../images/model_scheme_dd_shellvoidshell.png
-    :width: 25%
+.. raw:: html 
+    
+    <img src="../_images/model_scheme_dd_shellvoidshell.png", style="width: 50%">
+    <br><br><br>    
 
 :math:`P(r) = \left(R_1^3((R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - (R_4^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_4)) + R_2^3((R_4^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_4) - (R_3^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_3)) \right)/((R_4^3 - R_3^3)(R_2^3 - R_1^3))`
 
@@ -784,10 +802,13 @@ dd_shellvoidshell.__doc__ = _dd_docstring(dd_shellvoidshell,notes) +  docstr_exa
 #                                     dd_shellvoidsphere
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
     
-.. image:: ../images/model_scheme_dd_shellvoidsphere.png
-    :width: 25%
+.. raw:: html 
+    
+    <img src="../_images/model_scheme_dd_shellvoidsphere.png", style="width: 50%">
+    <br><br><br>    
+
 
 :math:`P(r) = ((R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - (R_2^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_2) )/(R_3^3 - R_2^3)`
 
@@ -846,10 +867,12 @@ dd_shellvoidsphere.__doc__ = _dd_docstring(dd_shellvoidsphere,notes) +  docstr_e
 #                                     dd_sphere
 #=======================================================================================
 notes =  r"""
-**Model:**
+**Model**
     
-.. image:: ../images/model_scheme_dd_sphere.png
-    :width: 25%
+.. raw:: html 
+    
+    <img src="../_images/model_scheme_dd_sphere.png", style="width: 50%">
+    <br><br><br>    
 
 :math:`P(r) = \begin{cases} \frac{3r^5}{16R^6} - \frac{9r^3}{4R^4} + \frac{3r^2}{R^3} \quad \text{for} \quad 0 \leq r < 2R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
 
@@ -879,7 +902,7 @@ dd_sphere.__doc__ = _dd_docstring(dd_sphere,notes) +  docstr_example('dd_sphere'
 #                                     dd_triangle
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 This provides a simple `triangular distribution <https://en.wikipedia.org/wiki/Triangular_distribution>`_.
 
@@ -916,7 +939,7 @@ dd_triangle.__doc__ = _dd_docstring(dd_triangle,notes) +  docstr_example('dd_tri
 #                                     dd_uniform
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
     
 This provides a simple uniform distribution.
 """  
