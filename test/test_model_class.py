@@ -304,16 +304,16 @@ def _getmodel(type):
         model = Model(gauss2)
         model.mean1.set(lb=0, ub=10, par0=2)
         model.mean2.set(lb=0, ub=10, par0=4)
-        model.width1.set(lb=0.01, ub=5, par0=0.2)
-        model.width2.set(lb=0.01, ub=5, par0=0.2)
+        model.width1.set(lb=0.1, ub=5, par0=0.2)
+        model.width2.set(lb=0.1, ub=5, par0=0.2)
         model.amp1.set(lb=0, ub=5, par0=1)
         model.amp2.set(lb=0, ub=5, par0=1)
     elif type=='semiparametric': 
         model = Model(gauss2_design)
         model.mean1.set(lb=0, ub=10, par0=2)
         model.mean2.set(lb=0, ub=10, par0=4)
-        model.width1.set(lb=0.01, ub=5, par0=0.2)
-        model.width2.set(lb=0.01, ub=5, par0=0.2)
+        model.width1.set(lb=0.1, ub=5, par0=0.2)
+        model.width2.set(lb=0.1, ub=5, par0=0.2)
         model.addlinear('amp1',lb=0, ub=5)
         model.addlinear('amp2',lb=0, ub=5)
     elif type=='nonparametric':
@@ -391,6 +391,35 @@ def test_fit_parametric_frozen():
     model = _getmodel('parametric')
 
     model.mean1.freeze(3)
+
+    fitResult = fit(model,mock_data)
+    
+    assert np.allclose(fitResult.model,mock_data)
+#================================================================
+
+def test_fit_fullyfrozen_linear(): 
+#================================================================
+    "Check that a model with all linear parameters frozen can be fitted"
+
+    model = _getmodel('semiparametric')
+    model.amp1.freeze(0.5)
+    model.amp2.freeze(0.6)
+
+    fitResult = fit(model,mock_data)
+    
+    assert np.allclose(fitResult.model,mock_data)
+#================================================================
+test_fit_fullyfrozen_linear()
+
+def test_fit_fullyfrozen_nonlinear(): 
+#================================================================
+    "Check that a model with all nonlinear parameters frozen can be fitted"
+
+    model = _getmodel('semiparametric')
+    model.mean1.freeze(3)
+    model.mean2.freeze(4)
+    model.width1.freeze(0.5)
+    model.width2.freeze(0.2)
 
     fitResult = fit(model,mock_data)
     
