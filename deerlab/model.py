@@ -752,7 +752,10 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     else:
         model = copy(model_)
 
-    if len(constants)>0:
+    required = len(model._constantsInfo)
+    if len(constants)!=required: 
+        raise SyntaxError(f'The input model requires {required} constant(s) to be specified. Specify them via fit(model,y,*constants).')
+    elif len(constants)>0:
         constants = np.atleast_1d(constants)
 
     if model.Nlin==0:
