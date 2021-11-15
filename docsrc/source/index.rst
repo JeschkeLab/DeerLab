@@ -97,6 +97,12 @@
 
 .. toctree::
     :hidden:
+    :caption: Release Notes
+
+    ./changelog
+
+.. toctree::
+    :hidden:
     :caption: More
 
     ./others
