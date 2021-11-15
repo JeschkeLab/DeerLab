@@ -59,6 +59,14 @@
 
     ./user_guide
 
+
+.. toctree::
+    :hidden:
+    :caption: Advanced
+
+    ./advanced_guide
+
+
 .. toctree::
     :hidden:
     :caption: Examples

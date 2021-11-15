@@ -11,10 +11,6 @@ and can be manipulated and expanded as described in the :ref:`Modelling guide <m
 
 .. _modelsref_dd:
 
-
-Dipolar EPR models
-------------------------------------
-
 These are models particularly oriented towards the modelling of dipolar EPR spectroscopy data. 
 
 Distance distribution models 
@@ -22,8 +18,8 @@ Distance distribution models
 
 These models provide parametrizations of the interspin distance distributions. 
 
-Basis functions
-........................................
+.. rubric:: Basis functions
+
 
 This group of distribution models is based on functions that can serve as basis functions for modeling more general distributions.
 
@@ -42,8 +38,7 @@ This group of distribution models is based on functions that can serve as basis 
   dd_skewgauss
   dd_cos
 
-Disordered physical models
-........................................
+.. rubric:: Disordered physical models
 
 This group of distribution models represents spin labels attached to disordered macromolecular structures.
 
@@ -58,8 +53,7 @@ This group of distribution models represents spin labels attached to disordered 
 
 
 
-Sphere/shell models
-........................................
+.. rubric:: Sphere/shell models
 
 This group of distribution models represents spin labels in simple partitions of 3D space.
 
@@ -79,8 +73,7 @@ This group of distribution models represents spin labels in simple partitions of
 
 
 
-Toy models
-........................................
+.. rubric:: Toy models
 
 This group contains distribution models that have absolutely no physical relevance. They are useful for testing numerical algorithms.
 
@@ -98,12 +91,11 @@ This group contains distribution models that have absolutely no physical relevan
 .. _modelsref_bg:
 
 Background models
-**********************
+******************
 
 These models provide parametrizations of the signal contribution arising from intermolecular dipolar interactions.
 
-Physical models
-...........................................
+.. rubric:: Physical models
 
 This category involves models that describe particular distributions of spin labels in space. These models depend on physical parameters such as spin concentration, exclusion distances, and dimensionality.
 
@@ -117,8 +109,7 @@ This category involves models that describe particular distributions of spin lab
   bg_homfractal
 
 
-Phenomenological models
-...........................................
+.. rubric:: Phenomenological models
 
 This category comprises phenomenological models that represent various mathematical functions that are intended to mimick the background decay, without reference to a particular spatial distribution of spins. The parameters of these models do no have direct physical meaning.
 

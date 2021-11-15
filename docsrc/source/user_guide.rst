@@ -3,12 +3,15 @@
 User Guide
 ============================================================
 
+This is the introductory guide to DeerLab for any dipolar electron paramagnetic resonance (EPR) spectroscopy applications.
 
 .. toctree::
     :maxdepth: 2
 
     ./installation
-    ./modelling_guide
-    ./fitting_guide
-    ./uncertainty_guide
-    ./dipolar_epr_guide
+    ./basics
+    ./getting_started
+    ./dipolar_guide_modelling
+    ./dipolar_guide_fitting
+    ./theory
+

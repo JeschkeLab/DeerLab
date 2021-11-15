@@ -134,8 +134,14 @@ html_theme_options = {
     ]
 }
 html_sidebars = {
-    "index": []
+    "index": [],
+    "modelsref": ["search-field"],
+    "reference": ["search-field"],
+    "_autosummary/**": ["search-field"],
+    "examples": ["search-field"],
+    "auto_examples/**": ["search-field"],
 }
+
 html_copy_source = False
 html_theme_path = ["../.."]
 html_show_sourcelink = True

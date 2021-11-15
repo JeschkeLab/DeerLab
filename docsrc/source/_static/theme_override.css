@@ -1009,8 +1009,8 @@
      max-width:16.66667%
     }
     .col-md-3 {
-     flex:0 0 21%;
-     max-width:21%
+     flex:0 0 15%;
+     max-width:15%
     }
     .col-md-4 {
      flex:0 0 33.33333%;
@@ -1357,8 +1357,8 @@
      max-width:50%
     }
     .col-xl-7 {
-     flex:0 0 58.33333%;
-     max-width:58.33333%
+     flex:0 0 64.333%;
+     max-width:64.33333%
     }
     .col-xl-8 {
      flex:0 0 66.66667%;
@@ -9724,7 +9724,7 @@ box-shadow: 0 0 15px rgba(142, 176, 202, 0.5);
 bottom: 0;
 display: block;
 left: 0;
-padding: 160px 10px 0;
+padding: 75% 10px 0;
 position: absolute;
 right: 0;
 top: 0;

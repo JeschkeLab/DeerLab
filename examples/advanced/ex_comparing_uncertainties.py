@@ -23,6 +23,8 @@ import deerlab as dl
 # Load the experimental data
 t,Vexp = np.load('../data/example_data_#1.npy')
 
+# Pre-process
+Vexp = dl.correctphase(Vexp)
 Vexp = Vexp/np.max(Vexp)
 
 # Distance vector
@@ -68,6 +70,8 @@ ax[0].legend(['Median','50%-CI','95%-CI'],frameon=False,loc='best')
 ax[1].set_xlabel('Distance $r$ (nm)')
 ax[1].set_title('Bootstrapped CI')
 ax[1].legend(['Median','50%-CI','95%-CI'],frameon=False,loc='best')
+
+plt.autoscale(enable=True, axis='both', tight=True)
 plt.tight_layout()
 plt.show()
 # %%

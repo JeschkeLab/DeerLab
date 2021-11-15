@@ -225,7 +225,7 @@ Therefore, we could define the following function: ::
     def bigaussian_fcn(center1,width1,center2,width2):
         gauss1 = np.exp(-(x-center1)**2/(2*width1**2)) # First Gaussian component
         gauss2 = np.exp(-(x-center2)**2/(2*width2**2)) # Second Gaussian component
-        Anonlin = np.vstack(y1,y2) # Stack them vertically into a matrix
+        Anonlin = np.vstack([y1,y2]) # Stack them vertically into a matrix
         return Anonlin
     # Construct the model
     bigauss = dl.Model(bigaussian_fcn)
