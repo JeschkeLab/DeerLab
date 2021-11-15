@@ -604,6 +604,10 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         constrained, unconstrained, or regularized.
         """
 
+        # If all linear parameters are frozen, do not optimize 
+        if Nlin_notfrozen==0:
+            return lin_parfrozen.astype(float), None, 0
+
         # Remove columns corresponding to frozen linear parameters 
         Ared = A[:,~lin_frozen]
         # Frozen component of the model response
@@ -673,12 +677,8 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
             optimize_alpha = False
             alpha = 0
 
-        if Nlin_notfrozen>0:
-            xfit,alpha,Ndof_lin = linear_problem(y,A,optimize_alpha,alpha)
-            regparam_prev = alpha
-        else: 
-            xfit = np.ones(A.shape[1])
-            alpha = None 
+        xfit,alpha,Ndof_lin = linear_problem(y,A,optimize_alpha,alpha)
+        regparam_prev = alpha
 
         # Compute residual vector
         res = weights*(Amodel(p)@xfit - y)
@@ -781,7 +781,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         # Jacobian (non-linear part)
         Jnonlin = Jacobian(_ResidualsFcn,nonlinfit,lb,ub)
         # Jacobian (linear part)
-        scale = np.trapz(linfit,ax)
+        scale = np.trapz(linfit,np.arange(Nlin))
         Jlin = weights[:,np.newaxis]*Amodel(nonlinfit)
         if includeExtrapenalty:
             for penalty in extrapenalty:
