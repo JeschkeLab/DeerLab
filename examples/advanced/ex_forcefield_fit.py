@@ -12,9 +12,7 @@ from a dipolar signal.
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
-# Use the seaborn style for nicer plots
-from seaborn import set_theme
-set_theme()
+
 #%%
 
 # Constants
@@ -45,8 +43,10 @@ def forcefield_P(c0,c1,c2,c3):
 
 # Load experimental data
 t,Vexp = np.load('../data/example_data_#1.npy')
-# Normalize the data (aesthetic)
-Vexp /= max(Vexp.real)
+
+# Pre-process
+Vexp = dl.correctphase(Vexp)
+Vexp /= max(Vexp)
 
 # Construct the energy and distance distribution models
 forcefield_energymodel = dl.Model(forcefield_energy)

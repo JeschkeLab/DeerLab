@@ -22,9 +22,7 @@ https://doi.org/10.1038/s41589-021-00752-3
 import deerlab as dl 
 import numpy as np
 import matplotlib.pyplot as plt 
-# Use the seaborn style for nicer plots
-from seaborn import set_theme
-set_theme()
+
 
 # Load experimental data
 t1,Vexp1 = np.load('../data/example_droplets_data_#1.npy')
@@ -96,6 +94,8 @@ fit = dl.fit(globalModel,Vs,nonlin_tol=1e-3)
 
 # Plot the results
 plt.figure(figsize=[9,9])
+violet = '#4550e6'
+orange = 'tab:orange'
 
 plt.subplot(3,2,1)
 plt.plot(ts[0],Vs[0],'.',color='grey',label='Data')
@@ -111,8 +111,8 @@ ax2 = plt.subplot(3,2,2)
 Vdis_fit = Vdismodel1(decay=fit.kdis,mean=fit.rmean_dis,width=fit.width_dis,reftime1=fit.reftime1,reftime2=fit.reftime2_1,lam1=fit.lam1,lam2=fit.lam2,scale=1)
 Vld_fit = Vldmodel1(decay=fit.kld,stretch=fit.Dld,mean=fit.rmean_ld,width=fit.width_ld,reftime1=fit.reftime1,reftime2=fit.reftime2_1,lam1=fit.lam1,lam2=fit.lam2,scale=1)
 
-ax2.plot(ts[0],Vdis_fit,label=f'Dispersed fraction {fit.eta*100:n}%')
-ax2.plot(ts[0],Vld_fit,label=f'Liquid-droplet fraction {(1-fit.eta)*100:n}%')
+ax2.plot(ts[0],Vdis_fit,color=violet,label=f'Dispersed fraction {fit.eta*100:.1f}%')
+ax2.plot(ts[0],Vld_fit,color=orange,label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%')
 ax2.set_yticklabels([])
 ax2.legend(frameon=False,loc='best')
 ax2.set_ylim([0.2,1])
@@ -133,8 +133,8 @@ ax4 = plt.subplot(3,2,4)
 Vdis_fit = Vdismodel2(decay=fit.kdis,mean=fit.rmean_dis,width=fit.width_dis,reftime1=fit.reftime1,reftime2=fit.reftime2_2,lam1=fit.lam1,lam2=fit.lam2,scale=1)
 Vld_fit = Vldmodel2(decay=fit.kld,stretch=fit.Dld,mean=fit.rmean_ld,width=fit.width_ld,reftime1=fit.reftime1,reftime2=fit.reftime2_2,lam1=fit.lam1,lam2=fit.lam2,scale=1)
 
-ax4.plot(ts[1],Vdis_fit,label=f'Dispersed fraction {fit.eta*100:n}%')
-ax4.plot(ts[1],Vld_fit,label=f'Liquid-droplet fraction {(1-fit.eta)*100:n}%')
+ax4.plot(ts[1],Vdis_fit,color=violet,label=f'Dispersed fraction {fit.eta*100:.1f}%')
+ax4.plot(ts[1],Vld_fit,color=orange,label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%')
 ax4.set_yticklabels([])
 ax4.legend(frameon=False,loc='best')
 ax4.set_xlabel('Time t (μs)')
@@ -148,10 +148,10 @@ Pld_fcn = lambda rmean_ld,width_ld: dl.dd_gauss(r,rmean_ld,width_ld)
 Pdis_uq = fit.propagate(Pdis_fcn,lb=np.zeros_like(r))
 Pld_uq = fit.propagate(Pld_fcn,lb=np.zeros_like(r))
 
-plt.plot(r,Pdis_fcn(fit.rmean_dis,fit.width_dis),label=f'Dispersed fraction {fit.eta*100:n}%')
-plt.fill_between(r,Pdis_uq.ci(95)[:,0],Pdis_uq.ci(95)[:,1],alpha=0.3,linewidth=0)
-plt.plot(r,Pld_fcn(fit.rmean_ld,fit.width_ld),label=f'Liquid-droplet fraction {(1-fit.eta)*100:n}%')
-plt.fill_between(r,Pld_uq.ci(95)[:,0],Pld_uq.ci(95)[:,1],alpha=0.3,linewidth=0)
+plt.plot(r,Pdis_fcn(fit.rmean_dis,fit.width_dis),label=f'Dispersed fraction {fit.eta*100:.1f}%',color=violet)
+plt.fill_between(r,Pdis_uq.ci(95)[:,0],Pdis_uq.ci(95)[:,1],alpha=0.3,linewidth=0,color=violet)
+plt.plot(r,Pld_fcn(fit.rmean_ld,fit.width_ld),label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%',color=orange)
+plt.fill_between(r,Pld_uq.ci(95)[:,0],Pld_uq.ci(95)[:,1],alpha=0.3,linewidth=0,color=orange)
 
 plt.legend(frameon=False,loc='best')
 plt.xlabel('Distance r (nm)')

@@ -8,7 +8,7 @@ import math as m
 import scipy as scp
 from numpy import pi
 import inspect
-from deerlab.utils import load_exvolume_redfactor
+from deerlab.utils import load_exvolume_redfactor,formatted_table
 from deerlab.model import Model
 
 # Natural constants
@@ -57,31 +57,34 @@ def _docstring(model,notes):
     Notes
     -----
 
-    **Parameter List**
-
-    ============ ========= ========== =========== ========== ==========================
-        Name       Lower     Upper      Type        Units     Description  
-    ============ ========= ========== =========== ========== ==========================""")
+    **Parameter Table**
+    """) 
+    string += '\n'
+    string += '\n'
+    table = []
+    table.append(['Name','Lower','Upper','Type','Frozen','Units','Description'])  
     for n,paramname in enumerate(model._parameter_list(order='vector')): 
-        string += f'\n   {paramname:7s}'
-        string += f'     {getattr(model,paramname).lb:5.3g}'
-        string += f'     {getattr(model,paramname).ub:5.3g}'
-        string += f'      {"linear" if getattr(model,paramname).linear else "nonlin"}'
-        string += f'       {str(getattr(model,paramname).units):6s}'
-        string += f'   {str(getattr(model,paramname).description):s}'
-    string += f'\n============ ========= ========== =========== ========== =========================='
+        param_str = f'``{paramname}``'
+        lb_str = f'{np.atleast_1d(getattr(model,paramname).lb)[0]:5.3g}'
+        ub_str = f'{np.atleast_1d(getattr(model,paramname).ub)[0]:5.3g}'
+        linear_str = "linear" if np.all(getattr(model,paramname).linear) else "nonlin"
+        frozen_str = "Yes" if np.all(getattr(model,paramname).frozen) else "No"
+        units_str = str(getattr(model,paramname).units)
+        desc_str = str(getattr(model,paramname).description)
+        table.append([param_str,lb_str,ub_str,linear_str,frozen_str,units_str,desc_str])
+    string += formatted_table(table)
+    string += f'\n{notes}'
 
     string += f'\n{notes}'
 
-    model.__doc__ = string
-    return model
+    return string
 #---------------------------------------------------------------------------------------
 
 #=======================================================================================
 #                                     bg_hom3d
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 This model describes the inter-molecular interaction of one observer spin with a 3D homogenous distribution of spins of concentration `c_s`
 
@@ -120,7 +123,7 @@ bg_hom3d.__doc__ = _docstring(bg_hom3d,notes)
 #                                     bg_hom3dex
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 .. image:: ../images/model_scheme_bg_hom3dex.png
    :width: 350px
@@ -178,7 +181,7 @@ bg_hom3dex.__doc__ = _docstring(bg_hom3dex,notes)
 #                                     bg_homfractal
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 This implements the background due to a homogeneous distribution of spins in a d-dimensional space, with d-dimensional spin concentration ``c_d``.
 """  
@@ -217,7 +220,7 @@ bg_homfractal.__doc__ = _docstring(bg_homfractal,notes)
 #                                     bg_exp
 #=======================================================================================
 notes= r"""
-**Model:**
+**Model**
 
 .. math::
 
@@ -242,7 +245,7 @@ bg_exp.__doc__ = _docstring(bg_exp,notes)
 #                                     bg_strexp
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 .. math::
 
@@ -268,7 +271,7 @@ bg_strexp.__doc__ = _docstring(bg_strexp,notes)
 #                                     bg_prodstrexp
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 :math:`B(t) = \exp\left(-\kappa_1 \vert t \vert^{d_1}\right) \exp\left(-\kappa_2 \vert t\vert^{d_2}\right)`
 """  
@@ -293,7 +296,7 @@ bg_prodstrexp.__doc__ = _docstring(bg_prodstrexp,notes)
 #                                     bg_sumstrexp
 #=======================================================================================
 notes = r"""
-**Model:**
+**Model**
 
 :math:`B(t) = A_1\exp \left(-\kappa_1 \vert t \vert^{d_1}\right) + (1-A_1)\exp\left(-\kappa_2 \vert t \vert^{d_2}\right)`
 """ 
@@ -318,7 +321,7 @@ bg_sumstrexp.__doc__ = _docstring(bg_sumstrexp,notes)
 #                                     bg_poly1
 #=======================================================================================
 notes =  r"""
-**Model:**
+**Model**
 
 :math:`B(t) = p_0 + p_1 t`
 """  
@@ -339,7 +342,7 @@ bg_poly1.__doc__ = _docstring(bg_poly1,notes)
 #                                     bg_poly2
 #=======================================================================================
 notes =  r"""
-**Model:**
+**Model**
 
 :math:`B(t) = p_0 + p_1 t + p_2 t^2`
 """  
@@ -360,7 +363,7 @@ bg_poly2.__doc__ = _docstring(bg_poly2,notes)
 #                                     bg_poly2
 #=======================================================================================
 notes =  r"""
-**Model:**
+**Model**
 
 :math:`B(t) = p_0 + p_1 t + p_2 t^2 + p_3 t^3`
 """  

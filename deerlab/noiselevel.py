@@ -11,6 +11,8 @@ import warnings
 import numpy as np
 def noiselevel(V,mode='der',*args):
     r"""
+    Estimate the noise level in a dataset.
+
     Returns the standard deviation estimation of the noise in a given signal using different methods:
 
     * ``sigma = noiselevel(V,'der')``: Employs the DER_SNR [1] method for estimating the noise standard deviation.

@@ -6,17 +6,17 @@ The DeerLab documentation/website is written in restructured-text (RST) format a
 
 In order to compile the documentation the following steps must be followed:
 
-1) Install and setup python environment from https://www.python.org/
+1) Install and setup Python environment from https://www.python.org/
 
 2) Install DeerLab (see installation instructions)
 
-3) Install Sphinx v1.8.3
+3) Install Sphinx
 
-        pip install sphinx==1.8.3
+        pip install sphinx
 
-4) Install Read-the-Docs Sphinx theme
+4) Install PyData Sphinx theme
     
-        pip install sphinx_rtd_theme
+        pip install pydata-sphinx-theme
 
 5) Install HTTP sphinx-domain
     
@@ -34,13 +34,13 @@ In order to compile the documentation the following steps must be followed:
 
         pip install sphinxcontrib-ghcontributors
 
-9) Install M2R-2
+9) Install Sphinx-Issues
     
-        pip install m2r2
+        pip install sphinx-issues
 
-10) Force Sphinx version (in case it is updated by another package)
+10) Install Sphinx-Copy Button
 
-        pip install sphinx==1.8.3 --force-reinstall
+        pip install sphinx-copybutton 
 
 11) Download and install dvissvgm from https://dvisvgm.de/Downloads/
 		

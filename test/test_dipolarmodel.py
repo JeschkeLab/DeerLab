@@ -4,7 +4,7 @@ from deerlab.whitegaussnoise import whitegaussnoise
 import numpy as np
 import matplotlib.pyplot as plt
 from deerlab.model import Model,fit
-from deerlab.dipolarmodel import ExperimentInfo, dipolarpenalty,dipolarmodel, ex_4pdeer, ex_3pdeer, ex_5pdeer
+from deerlab.dipolarmodel import ExperimentInfo,dipolarpenalty, dipolarmodel, ex_4pdeer, ex_3pdeer, ex_5pdeer
 from deerlab import dd_gauss,dd_gauss2,bg_hom3d,bg_exp
 import deerlab as dl 
 
@@ -174,7 +174,6 @@ def test_fit_2pathways():
     assert np.allclose(result.model,V2path)
 # ======================================================================
 
-
 # ======================================================================
 def test_fit_3pathways(): 
     "Check that the model can be correctly fitted with three dipolar pathways"
@@ -252,58 +251,6 @@ def test_fit_Pnonparametric():
     assert np.allclose(result.model,V1path,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
-# ======================================================================
-def test_compactness_penalty_Pnonparametric(): 
-    "Check the fitting with a nonparametric distribution and the compactness penalty"
-
-    Vmodel = dipolarmodel(t,r)
-    compactness = dipolarpenalty(None,r,'compactness')
-    compactness.weight.freeze(0.05)
-
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),penalties=compactness,nonlin_tol=1e-3)
-
-    assert ovl(result.P/1e5,Pr)>0.975
-# ======================================================================
-
-# ======================================================================
-def test_compactness_penalty_Pparametric(): 
-    "Check the fitting with a parametric distribution and the compactness penalty"
-
-    Vmodel = dipolarmodel(t,r,Pmodel=dd_gauss)
-    compactness = dipolarpenalty(dd_gauss,r,'compactness')
-    compactness.weight.freeze(0.05)
-    
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),penalties=compactness,nonlin_tol=1e-3)
-
-    assert ovl(result.evaluate(dd_gauss,r),Pr)>0.975
-# ======================================================================
-
-# ======================================================================
-def test_smoothness_penalty_Pnonparametric(): 
-    "Check the fitting with a nonparametric distribution and the smoothness penalty"
-
-    Vmodel = dipolarmodel(t,r)
-    smoothness = dipolarpenalty(None,r,'smoothness')
-    smoothness.weight.freeze(0.00005)
-
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),penalties=smoothness,nonlin_tol=1e-3)
-
-    assert ovl(result.P/1e5,Pr)>0.975
-# ======================================================================
-
-# ======================================================================
-def test_compactness_penalty_Pparametric(): 
-    "Check the fitting with a parametric distribution and the smoothness penalty"
-
-    Vmodel = dipolarmodel(t,r,Pmodel=dd_gauss)
-    smoothness = dipolarpenalty(dd_gauss,r,'smoothness')
-    smoothness.weight.freeze(0.00005)
-    
-    result = fit(Vmodel,V1path+whitegaussnoise(t,0.01,seed=1),penalties=smoothness,nonlin_tol=1e-3)
-
-    assert ovl(result.evaluate(dd_gauss,r),Pr)>0.975
-# ======================================================================
-
 tau1,tau2,tau3 = 1,2,3
 V3pulse = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,0],[0.1,tau1]],bg=Bfcn)@Pr
 V4pulse = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,tau1],[0.1,tau1+tau2]],bg=Bfcn)@Pr
@@ -337,6 +284,7 @@ def test_ex_4pdeer_type():
 
     assert isinstance(experiment,ExperimentInfo) 
 # ======================================================================
+
 
 # ======================================================================
 def test_ex_4pdeer_fit(): 

@@ -12,14 +12,16 @@ distribution calculated from Tikhonov regularization.
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
-# Use the seaborn style for nicer plots
-from seaborn import set_theme
-set_theme()
+
 
 # %%
     
 # Load the experimental dataset
 t,V = np.load('../data/example_data_#1.npy')
+
+# Pre-process
+V = dl.correctphase(V)
+V = V/np.max(V)
 
 # Construct the dipolar signal model
 r = np.linspace(1,7,100)
@@ -60,10 +62,12 @@ print(f'  amplitude2 = {fit.amp2:2.2f} ({fit.amp2Uncert.ci(95)[0]:2.2f}-{fit.amp
 # sphinx_gallery_thumbnail_number = 2
 
 # Plot the fitted constraints model on top of the non-parametric case
-plt.plot(r,Pfit,linewidth=1.5,label='Non-param. fit')
-plt.fill_between(r,Pci95[:,0],Pci95[:,1],alpha=0.4,linewidth=0)
-plt.plot(r,PGauss,linewidth=1.5,label='2-Gauss fit to non-param. fit',color='green')
-plt.fill_between(r,PGauss_ci95[:,0],PGauss_ci95[:,1],alpha=0.2,linewidth=0,color='green')
+violet = '#4550e6'
+orange = 'tab:orange'
+plt.plot(r,Pfit,linewidth=1.5,label='Non-param. fit',color=violet)
+plt.fill_between(r,Pci95[:,0],Pci95[:,1],alpha=0.4,linewidth=0,color=violet)
+plt.plot(r,PGauss,linewidth=1.5,label='2-Gauss fit to non-param. fit',color=orange)
+plt.fill_between(r,PGauss_ci95[:,0],PGauss_ci95[:,1],alpha=0.2,linewidth=0,color=orange)
 # Formatting settings 
 plt.xlabel('Distance (nm)')
 plt.ylabel('P (nm$^{-1}$)')

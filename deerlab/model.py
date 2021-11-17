@@ -10,6 +10,7 @@ from deerlab.solvers import snlls
 from deerlab.classes import FitResult, UQResult
 from deerlab.noiselevel import noiselevel
 from deerlab.bootstrap_analysis import bootstrap_analysis
+from deerlab.utils import formatted_table
 import inspect 
 from copy import copy,deepcopy
 from types import ModuleType
@@ -22,7 +23,10 @@ class Parameter():
     Attributes
     ----------
     name : string 
-        Name/description of the parameter
+        Name of the parameter
+
+    description : string 
+        Description of the parameter
 
     units : string 
         Physical units of the parameter
@@ -79,13 +83,23 @@ class Parameter():
     #---------------------------------------------------------------------------------------
     def set(self,**attributes):
         """
-        Set multiple attributes for a parameter. 
+        Set one or multiple attributes for a parameter. See list of attributes for a reference list. 
 
         Parameters
         ----------
         attributes : keyword/values pairs
             Pairs of keywords defining the parameter attribute and the value to be assignes.
-            For example ``parameter.set(lb=0,ub=1)`` to set both the ``lb`` and ``ub`` attributes.
+
+        Examples
+        --------
+        Setting a parameter's start value ::
+
+            parameter.set(par0=0.5)
+
+        Setting both the lower bound and upper bound values :: 
+
+            parameter.set(lb=0, ub=1)
+
         """
         for key in attributes:
             if not hasattr(self,key):
@@ -97,7 +111,7 @@ class Parameter():
     #---------------------------------------------------------------------------------------
     def freeze(self,value):
         """
-        Freeze a parameter during a fit/optimization.
+        Freeze a parameter during a fit/optimization to a given value. Does not affect model evaluation. 
 
         Parameters
         ----------
@@ -116,7 +130,7 @@ class Parameter():
     #---------------------------------------------------------------------------------------
     def unfreeze(self):
         """
-        Release a frozen parameter during a fit/optimization.
+        Release a frozen parameter's value during a fit/optimization. Does not affect model evaluation.
         """
         N = len(np.atleast_1d(self.frozen))
         if N>1:
@@ -136,8 +150,9 @@ class Model():
 
     Attributes
     ----------
-    <parameter_name> : :ref:`Parameter`
-        Model parameter object. 
+    <parameter_name> : :ref:`Parameter` 
+        Model parameter. One :ref:`Parameter` instance is assigned for each
+        parameter (with name ``<parameter_name>``) in the model.  
     description : string 
         Description of the model.
     signature : string 
@@ -150,10 +165,6 @@ class Model():
         Number of linear parameters in the model.
     Nparam : int scalar
         Number of parameters in the model.
-
-    Methods
-    -------
-
     """
 
 
@@ -162,43 +173,45 @@ class Model():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def __init__(self,Amodel,constants=None,signature=None): 
+    def __init__(self,nonlinfcn,constants=None,signature=None): 
         """
         Construct a new model from a non-linear function. 
 
         Parameters
         ----------
 
-        Amodel : callable 
+        nonlinfcn : callable 
             Function that takes a set of non-linear parameters and 
             returns either a the full model response or the design matrix 
             of the model response. A parameter will be added to the new model for each 
             input argument defined in the function signature.   
         
         constants : string or list thereof
-            Names of the constant variables (non-parameter variables) taken
-            by the ``Amodel`` function. These will not be added as parameters to the new model.
+            Names of the arguments taken by the ``nonlinfcn`` function to be defined as
+            constants. These will not be added as parameters to the new model.
 
         signature : list of strings
-            Signature of the ``Amodel`` function to manually specify the names of the input arguments.
+            Signature of the ``nonlinfcn`` function to manually specify the names
+            of the input arguments. For internal use (mostly).
 
         Returns
         -------
 
-        model : `Model` object 
-            Model object instance that takes the parameters defined for ``Amodel`` and returns the output of ``Amodel``.
+        model : ``Model`` object 
+            Model object instance that takes the parameters defined for ``nonlinfcn``
+            and returns the output of ``nonlinfcn``.
 
         """
-        if not callable(Amodel):
-            Amatrix = Amodel.copy()
-            Amodel = lambda *_: Amatrix 
-        self.nonlinmodel = Amodel
+        if not callable(nonlinfcn):
+            Amatrix = nonlinfcn.copy()
+            nonlinfcn = lambda *_: Amatrix 
+        self.nonlinmodel = nonlinfcn
         self.description = None
         self._constantsInfo = []
         self.parents = None
         if signature is None:
             # Get list of parameter names from the function signature
-            signature = inspect.getfullargspec(Amodel).args
+            signature = inspect.getfullargspec(nonlinfcn).args
 
         self._nonlinsignature = signature.copy()
         parameters = signature.copy()
@@ -226,7 +239,7 @@ class Model():
             if self._constantsInfo is not None:
                 for info,constant in zip(self._constantsInfo,constants):
                     args.insert(info['argidx'],constant)
-            return Amodel(*args)
+            return nonlinfcn(*args)
         #-----------------------------------    
         self.nonlinmodel = model_with_constants
 
@@ -381,21 +394,22 @@ class Model():
     #---------------------------------------------------------------------------------------
     def addnonlinear(self, key, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None, description=None):
         """
-        Add a new non-linear :ref:`Parameter` object. 
+        Add a new non-linear parameter (:ref:`Parameter` object) to the model. 
 
         Parameters
         ----------
         key : string
-            identifier of the parameter.
+            Identifier of the parameter. This name will be used to refer
+            to the parameter in the model.
 
         lb : float or array_like, optional
-            Lower bound of the parameter. For vectorized parameters, must be a vector with ``vec`` elements. 
+            Lower bound of the parameter. If not specified, it is set to ``-np.inf``.
 
         ub : float or array_like, optional
-            Lower bound of the parameter. For vectorized parameters, must be a vector with ``vec`` elements. 
+            Lower bound of the parameter. If not specified, it is set to ``+np.inf``.
 
         description : string, optional 
-            Name/descriptrion of the parameter. 
+            Descriptrion of the parameter. 
 
         units : string, optional
             Physical units of the parameter.
@@ -428,25 +442,28 @@ class Model():
     #---------------------------------------------------------------------------------------
     def addlinear(self, key, vec=1, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None, description=None):
         """
-        Add a new linear :ref:`Parameter` object. 
+        Add a new linear parameter (:ref:`Parameter` object) to the model. 
 
         Parameters
         ----------
         key : string
-            identifier of the parameter.
+            Identifier of the parameter. This name will be used to refer
+            to the parameter in the model.
 
         vec : int scalar, optional
             Number of elements in the parameter. If ``vec>1`` then the parameter will represent a 
-            vector of linear parameters of length ``vec``. 
+            vector of linear parameters of length ``vec``. By default, a scalar parameter is defined.
 
         lb : float or array_like, optional
-            Lower bound of the parameter. For vectorized parameters, must be a vector with ``vec`` elements. 
+            Lower bound of the parameter. For vectorized parameters, must be a 
+            vector with ``vec`` elements. If not specified, it is set to ``-np.inf``.
 
         ub : float or array_like, optional
-            Lower bound of the parameter. For vectorized parameters, must be a vector with ``vec`` elements. 
+            Lower bound of the parameter. For vectorized parameters, must be a
+            vector with ``vec`` elements.  If not specified, it is set to ``+np.inf``.
 
         description : string, optional 
-            Name/descriptrion of the parameter. 
+            Descriptrion of the parameter. 
 
         units : string, optional
             Physical units of the parameter.
@@ -516,6 +533,13 @@ class Model():
         """
         Utility function to quickly request all metadata attributes of the model in vector form. 
         All elements are sorted according to the model function signature.
+
+        Returns
+        -------
+        metadata : dict
+            Dictionary containing all the model's metadata in ordered vectors. The model keys 
+            correspond to the model attributes, e.g. ``metadata['lb']`` corresponds to the model's
+            parameters lower boundaries. 
         """
         return {
             'names': self._parameter_list(order='vector'),
@@ -533,44 +557,80 @@ class Model():
     #---------------------------------------------------------------------------------------
     def _parameter_table(self):
         string = inspect.cleandoc(f"""
-    Model information 
-    -----------------
-
-    Model description: {self.description}
-    Model call signature: {','.join(self.signature)}
-    Constants: {[entry['argkey'] for entry in self._constantsInfo]}
-
-    Parameter Table 
-    ---------------
-
-    ============ ========= ========== =========== ======== ========== ==========================
-        Name       Lower     Upper      Type       Frozen   Units     Description  
-    ============ ========= ========== =========== ======== ========== ==========================""")
+    Description: {self.description}
+    Signature: ({', '.join(self.signature)})
+    Constants: [{', '.join([entry['argkey'] for entry in self._constantsInfo])}]
+    Parameter Table: 
+    """)
+        string += '\n'
+        table = []
+        table.append(['Name','Lower','Upper','Type','Frozen','Units','Description'])  
+        alignment = ['<','^','^','^','^','^','<']
         for n,paramname in enumerate(self._parameter_list(order='vector')): 
-            string += f'\n   {paramname:7s}'
-            string += f'     {np.atleast_1d(getattr(self,paramname).lb)[0]:5.3g}'
-            string += f'     {np.atleast_1d(getattr(self,paramname).ub)[0]:5.3g}'
-            string += f'      {"linear" if np.all(getattr(self,paramname).linear) else "nonlin"}'
-            string += f'      {"Yes" if np.all(getattr(self,paramname).frozen) else "No":3s}'
-            string += f'       {str(getattr(self,paramname).units):6s}'
-            string += f'   {str(getattr(self,paramname).description):s}'
-        string += f'\n============ ========= ========== =========== ======== ========== =========================='
+            param_str = paramname
+            lb_str = f'{np.atleast_1d(getattr(self,paramname).lb)[0]:5.3g}'
+            ub_str = f'{np.atleast_1d(getattr(self,paramname).ub)[0]:5.3g}'
+            linear_str = "linear" if np.all(getattr(self,paramname).linear) else "nonlin"
+            frozen_str = "Yes" if np.all(getattr(self,paramname).frozen) else "No"
+            units_str = str(getattr(self,paramname).units)
+            desc_str = str(getattr(self,paramname).description)
+            table.append([param_str,lb_str,ub_str,linear_str,frozen_str,units_str,desc_str])
+        string += formatted_table(table,alignment)
         return string
     #---------------------------------------------------------------------------------------
 
     def __str__(self):
         return self._parameter_table()
-    def __repr__(self):
-        return self._parameter_table()        
+    #def __repr__(self):
+    #    return self._parameter_table()        
 
 #===================================================================================
 
 #==============================================================================
 class Penalty():
+    r"""Represents a penalty term of the objective function.  
 
+    Attributes
+    ----------
+    weight : ``Parameter`` instance  
+        Penalty weight parameter (a ``Parameter`` object instance without the
+        ``linear`` and ``par0`` attributes). 
+    description : string 
+        Description of the penalty. 
+    selection : string 
+        Name of the selection functional for the penalty weight optimization. 
+
+    """
     #--------------------------------------------------------------------------
     def __init__(self,penaltyfcn,selection,description=None,signature=None):
+        r"""
+        Construct a new penalty object. 
 
+        Parameters
+        ----------
+        penaltyfcn : callable 
+            Function that takes a set of parameters and returns a vector that
+            will internally be squared and appended to the least-squares 
+            residual vector. The names of the arguments defined in the function
+            signature must match the names of the parameter in the model used along
+            the penalty. 
+        
+        selection : string 
+            Selection functional for the outer optimization of the penalty weight. 
+
+            - ``'aic'`` - Akaike information criterion
+            - ``'bic'`` - Bayesian information criterion
+            - ``'aicc'`` - COrrected Akaike information criterion
+            - ``'icc'`` - Informational complexity criterion 
+
+        description : string, optional 
+            Description of the penalty.
+        
+        signature : list of strings
+            Signature of the ``penaltyfcn`` function to manually specify the names
+            of the input arguments. For internal use (mostly).
+
+        """ 
         #-------------------------------------------------------------------------------
         def selectionfunctional(fitfcn,y,sigma,log10weight):
             # Penalty weight: linear-scale -> log-scale
@@ -636,7 +696,26 @@ class Penalty():
 
     #--------------------------------------------------------------------------
     def optimize(self,fitfcn,y,sigma):
+        r"""
+        Optimize the penalty weight. 
 
+        Parameters
+        ----------
+        fitfcn : callable
+            Fit function taking a penalty weight value. Must return
+            a :ref:`FitResult` object.
+        y : array_like 
+            Dataset being fitted 
+        sigma : scalar 
+            Estimated noise level (standard deviation). 
+        
+        Returns 
+        -------
+        fit : :ref:`FitResult`
+            Fit at the optimized penalty weight. 
+        weightopt : scalar 
+            Optimized penalty weight.
+        """
         if not self.weight.frozen:
             # Extract optimization range from model penalty
             searchrange = np.array([np.log10(self.weight.lb), np.log10(self.weight.ub)])
@@ -687,11 +766,72 @@ def _outerOptimization(fitfcn,penalty_objects,y,sigma):
     return fitfcn_
 #--------------------------------------------------------------------------
 
+#--------------------------------------------------------------------------
+def _print_fitresults(fitresult,model):
+    """Construct summary table of fit results to print"""
+
+    # Start printout string
+    string = ''
+    # Get number of models in the fit
+    modelfits = fitresult.model
+    if not isinstance(modelfits,list):
+        modelfits = [modelfits]
+    Ndatasets = len(modelfits)
+
+    # Construct table of goodness-of-fit statistics
+    table = []
+    table.append([f'Dataset','Noise level','Reduced 𝛘2','RMSD','AIC']) # Header
+    alignment = ['^','^','^','^','^'] # Tab alignment
+    stats = np.atleast_1d(fitresult.stats)
+    noiselevels = np.atleast_1d(fitresult.noiselvl)
+    for n in range(Ndatasets):
+        noiselvl = noiselevels[n]
+        chi2red = stats[n]['chi2red']
+        rmsd = stats[n]['rmsd']
+        aic = stats[n]['aic']
+        noiselvl,chi2red,rmsd,aic = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [noiselvl,chi2red,rmsd,aic]] 
+        table.append([f'#{1+n}',noiselvl,chi2red,rmsd,aic])
+    # Add auto-formatted table string
+    string += 'Goodness-of-fit: \n'
+    string += formatted_table(table,alignment) + '\n'
+
+    # Construct table of model parameters fits
+    table = []
+    table.append([f'Parameter','Value','95%-Confidence interval','Units','Description']) # Header
+    alignment = ['<','<','<','^','<'] # Alignment
+    for param in model._parameter_list('vector'):
+        if len(np.atleast_1d(getattr(model,param).idx))==1:
+            if np.any(getattr(model,param).frozen): 
+                # If parameter is frozen, print just the value
+                value = getattr(model,param).value
+                if hasattr(value,'__len__'): value = value[0]
+                value = f'{value:.3f}' if value<1e4 else f'{value:.3g}'
+                ci = '(frozen)'
+            else:
+                # If parameter is scalar, report values and CIs
+                value = getattr(fitresult,param)
+                ci_lower,ci_upper = getattr(fitresult,param+'Uncert').ci(95)
+                value,ci_lower,ci_upper = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [value,ci_lower,ci_upper]]
+                ci = f'({ci_lower},{ci_upper})'
+        else:
+            # If parameter is vectorial, print just dots
+            value = '...'
+            ci = '(...,...)'
+        units = str(getattr(model,param).units)
+        description = str(getattr(model,param).description)
+        table.append([f'{param}',value,ci,units,description])
+    # Add auto-formatted table string
+    string += 'Model parameters: \n'
+    string += formatted_table(table,alignment)
+    return string
+#--------------------------------------------------------------------------
 
 #==============================================================================================
 def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None,
                 regparam='aic',reg='auto',regparamrange=None,**kwargs):
     r"""
+    Fit the model(s) to the dataset(s)
+
     Fit the input model to the data ``y`` via one of the three following approaches: 
     
     - Non-linear least-squares 
@@ -721,7 +861,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         Uncertainty quantification of the <parameter_name> model parameter.
     param : ndarray
         Fitted parameter vector ordered according to the model parameter indices.
-    modelUncert : :ref:`UQResult`
+    paramUncert : :ref:`UQResult`
         Uncertainty quantification of the parameter vector ordered according to the model parameter indices.
     model : ndarray
         Fitted model response.
@@ -785,12 +925,14 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     nprev = 0
     ysubsets = []
     sigmas = []
+    if noiselvl is None:
+        noiselvl = []
+        for n,yset in enumerate(y):
+            noiselvl.append(noiselevel(yset))
     for n,yset in enumerate(y):
         ysubsets.append(np.arange(nprev,nprev+len(yset)))
-        if noiselvl is None:
-            sigmas.append(noiselevel(yset)*np.ones(len(yset)))
-        else: 
-            sigmas.append(noiselvl[n]*np.ones(len(yset)))
+        sigmas.append(noiselvl[n]*np.ones(len(yset)))
+
         nprev = nprev+len(yset)
     ysplit = y.copy()
     y = np.concatenate(y)
@@ -832,7 +974,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
     # Prepare the separable non-linear least-squares solver
     Amodel_fcn = lambda param: model.nonlinmodel(*constants,*param)
-    fitfcn = lambda y,penweights: snlls(y, Amodel_fcn, par0, lb=lb, ub=ub, lbl=lbl, ubl=ubl, 
+    fitfcn = lambda y,penweights: snlls(y, Amodel_fcn, par0, lb=lb, ub=ub, lbl=lbl, ubl=ubl,
                                                 subsets=ysubsets, lin_frozen=linfrozen, nonlin_frozen=nonlinfrozen,
                                                 regparam=regparam, reg=reg, regparamrange=regparamrange,
                                                 extrapenalty=extrapenalties(penweights), **kwargs)        
@@ -885,7 +1027,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
         # Check that all parameters are in the fit object
         for param in modelparam:
-            if not hasattr(fit,param): 
+            if not param in FitResult_param: 
                 raise KeyError(f'The fit object does not contain the {param} parameter.')
         # Determine the indices of the subset of parameters the model depends on
         subset = [param_idx[np.where(np.asarray(_paramlist)==param)[0][0]] for param in modelparam]
@@ -901,7 +1043,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
         # Check that all parameters are in the fit object
         for param in modelparam:
-            if not hasattr(fit,param): 
+            if not param in FitResult_param: 
                 raise KeyError(f'The fit object does not contain the {param} parameter.')
         # Determine the indices of the subset of parameters the model depends on
         subset = [np.where(np.asarray(_paramlist)==param)[0][0] for param in modelparam]
@@ -910,11 +1052,14 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         return modeluq
     # ----------------------------------------------------------------------------
 
+    if len(noiselvl)==1: 
+        noiselvl = noiselvl[0]
 
     # Generate FitResult object from all the dictionaries
-    fit = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict, 'propagate': propagate, 'evaluate': evaluate}) 
+    fitresult = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict,'noiselvl':noiselvl, 'propagate': propagate, 'evaluate': evaluate}) 
+    fitresult._summary = _print_fitresults(fitresult,model)
 
-    return fit
+    return fitresult
 #==============================================================================================
 
 def _importparameter(parameter):
@@ -941,7 +1086,7 @@ def _aresame(obj1,obj2):
 # ==============================================================================
 def link(model,**links):
     """
-    Link model parameters. 
+    Create equality relationships between parameters 
 
     Parameters
     ----------

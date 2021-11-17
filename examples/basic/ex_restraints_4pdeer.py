@@ -17,9 +17,7 @@ values to get confidence intervals on the restraints.
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
-# Use the seaborn style for nicer plots
-from seaborn import set_theme
-set_theme()
+
 
 #%% 
 
@@ -54,11 +52,12 @@ print(f'Standard deviation: {r_std:.3f} ({r_std_ci[0]:.3f}-{r_std_ci[1]:.3f}) nm
 # For display, you can plot the mean distance with its confidence intervals without further calculations.
 
 # Plot distribution and confidence bands
+violet = '#4550e6'
 Pci95 = fit.PUncert.ci(95)/np.trapz(fit.P,r)
 Pci50 = fit.PUncert.ci(50)/np.trapz(fit.P,r)
-plt.plot(r,fit.P/np.trapz(fit.P,r),linewidth=2,label='Distance distribution fit')
-plt.fill_between(r,Pci95[:,0],Pci95[:,1],color='tab:blue',alpha=0.3)
-plt.fill_between(r,Pci50[:,0],Pci50[:,1],color='tab:blue',alpha=0.4)
+plt.plot(r,fit.P/np.trapz(fit.P,r),linewidth=2,color=violet,label='Distance distribution fit')
+plt.fill_between(r,Pci95[:,0],Pci95[:,1],color=violet,alpha=0.3)
+plt.fill_between(r,Pci50[:,0],Pci50[:,1],color=violet,alpha=0.4)
 
 # Plot mean distance and confidence interval
 plt.vlines(rmean,0,max(Pci95[:,1]),color='tab:red',linestyles='dotted',linewidth=3,label='Mean distance')

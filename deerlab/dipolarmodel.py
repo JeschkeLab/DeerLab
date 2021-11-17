@@ -22,7 +22,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
     t : array_like 
         Vector of dipolar time increments, in microseconds.
     r : array_like 
-        Vector of intraspin distances, in nanometeres.
+        Vector of intraspin distances, in nanometers.
     Pmodel : :ref:`Model`, optional 
         Model for the distance distribution. If not speficied, a non-parametric
         distance distribution is assumed. 
@@ -34,14 +34,6 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
     harmonics : list of integers 
         Harmonics of the dipolar pathways. Must be a list with `npathways` harmonics for each
         defined dipolar pathway.  
-    compactness : boolean, optional
-        Whether to add a weighted penalty to induce compactness of the distance distribution, optimized 
-        via the informational complexity criterion (ICC).
-        Adds a :ref:`Penalty` object to the model accessible via the attribute ``model.compactness``. 
-    smoothness : boolean, optional
-        Whether to add a weighted penalty to induce smoothness of the distance distribution, optimized 
-        via the Akaike information criterion (AIC).          
-        Adds a :ref:`Penalty` object to the model accessible via the attribute ``model.smoothness``.
     orisel : callable  or ``None``, optional 
         Probability distribution of possible orientations of the interspin vector to account for orientation selection. Must be 
         a function taking a value of the angle θ∈[0,π/2] between the interspin vector and the external magnetic field and returning
@@ -50,7 +42,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
         Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth.
     g : scalar, 2-element array, optional
         Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, ``[g, g]`` is assumed 
-            
+
     Returns
     -------
     Vmodel : :ref:`Model`
@@ -242,6 +234,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
                 ub=experiment.lams[n]['ub'])
 
     # Set other dipolar model specific attributes
+    DipolarSignal.description = 'Dipolar signal model'
     DipolarSignal.Pmodel = Pmodel
     DipolarSignal.Bmodel = Pmodel
     DipolarSignal.Npathways = npathways
@@ -250,6 +243,34 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
 #===============================================================================
 
 #===============================================================================
+def dipolarpenalty(Pmodel,r,type,selection=None):
+    r"""
+    Construct penalties based on the distance distribution.
+
+    Parameters
+    ----------
+    Pmodel : ``Model`` object 
+        The Pmodel of the distance distribution.
+    r : array_like 
+        Distance axis vector, in nanometers. 
+    type : string
+        Type of property to be imposed by the penalty. 
+        
+        - ``'smoothness'`` : Smoothness of the distance distribution
+        - ``'compactness'`` : Compactness of the distance distribution   
+    selection : string 
+        Selection functional for the outer optimization of the penalty weight. 
+
+            - ``'aic'`` - Akaike information criterion
+            - ``'bic'`` - Bayesian information criterion
+            - ``'aicc'`` - COrrected Akaike information criterion
+            - ``'icc'`` - Informational complexity criterion 
+   
+    Returns
+    -------
+    penalty : ``Penalty`` object 
+        Penalty object to be passed to the ``fit`` function.
+    """
 def dipolarpenalty(model,axis,type,selection=None):
 
     if model is None: 
@@ -294,25 +315,12 @@ def dipolarpenalty(model,axis,type,selection=None):
     return penalty
 #===============================================================================
 
-# -----------------------------------------------------------------------------------------
-def _dipolarmodel_with_prior_information(t,r,reftimes,lams_par0,Pmodel,Bmodel,npathways):
-    # Generate the dipolar model
-    Vmodel = dipolarmodel(t,r,Pmodel,Bmodel,npathways=npathways)
-
-    # Set prior knowledge on the parameters
-    if npathways>1:
-        for n in range(npathways):
-            getattr(Vmodel,f'reftime{n+1}').set(par0=reftimes[n], lb=reftimes[n]-0.1, ub=reftimes[n]+0.1)
-            getattr(Vmodel,f'lam{n+1}').set(par0=lams_par0[n])   
-    else:
-        getattr(Vmodel,f'reftime').set(par0=reftimes[0], lb=reftimes[0]-0.1, ub=reftimes[0]+0.1)
-        getattr(Vmodel,f'mod').set(par0=lams_par0[0])   
-    return Vmodel     
-# -----------------------------------------------------------------------------------------
-
 
 #===============================================================================
 class ExperimentInfo():
+    r"""
+    Represents theoretical information on a dipolar EPR experiment"""
+
     def __init__(self,name,reftimes,lams):
         self.reftimes = []
         for reftime in reftimes:
@@ -335,7 +343,12 @@ class ExperimentInfo():
 def ex_3pdeer(tau):
     r"""
     Generate a 3-pulse DEER dipolar experiment model. 
-    
+
+
+    .. image:: ../images/sequence_3pdeer.svg
+        :width: 450px
+
+
     The theoretically predicted refocusing times of its dipolar pathways are
     automatically computed from the pulse sequence delays.  
 
@@ -347,7 +360,7 @@ def ex_3pdeer(tau):
 
     Returns
     -------
-    experiment : :ref:`Experiment`
+    experiment : ``ExperimentInfo`` object
         Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 
@@ -366,6 +379,9 @@ def ex_4pdeer(tau1,tau2):
     r"""
     Generate a 4-pulse DEER dipolar experiment model. 
     
+    .. image:: ../images/sequence_4pdeer.svg
+        :width: 450px
+
     The theoretically predicted refocusing times of its dipolar pathways are
     automatically computed from the pulse sequence delays.  
 
@@ -380,7 +396,7 @@ def ex_4pdeer(tau1,tau2):
 
     Returns
     -------
-    experiment : :ref:`Experiment`
+    experiment : ``ExperimentInfo`` object
         Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 
@@ -398,6 +414,9 @@ def ex_5pdeer(tau1,tau2,tau3):
     r"""
     Generate a 5-pulse DEER dipolar experiment model. 
     
+    .. image:: ../images/sequence_5pdeer.svg
+        :width: 450px
+
     The theoretically predicted refocusing times of its dipolar pathways are
     automatically computed from the pulse sequence delays.  
 
@@ -415,7 +434,7 @@ def ex_5pdeer(tau1,tau2,tau3):
 
     Returns
     -------
-    experiment : :ref:`Experiment`
+    experiment : ``ExperimentInfo`` object
         Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 
