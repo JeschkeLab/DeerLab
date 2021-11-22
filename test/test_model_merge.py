@@ -311,3 +311,22 @@ def test_vec_twomodels_mixed():
     assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
 # ======================================================================
 
+# ======================================================================
+def test_merge_linked():
+    "Check that that merge works correctly for models with linked parameters"
+    submodel1 = dl.dd_gauss
+    submodel2 = dl.dd_gauss2
+    submodel2 = dl.link(submodel2, mean=['mean1','mean2'], width=['width1','width2'])
+
+    x = np.linspace(0,10,100)
+    ref1 = submodel1(x,3,0.2)
+    ref2 = submodel1(x,4,0.3)
+
+    # Create a global model
+    model = dl.merge(submodel1,submodel2, addweights=True)
+
+    response = model(x,x,mean_1=3,width_1=0.2,mean_2=4,width_2=0.3,amp1_2=1,amp2_2=1,scale_1=1, weight_1=1, weight_2=1)
+    assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
+# ======================================================================
+
+

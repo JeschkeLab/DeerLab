@@ -1271,7 +1271,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
     if addweights:
 
         for n,(model,nonlinfcn) in enumerate(zip(models,[model.nonlinmodel for model in models])):
-            signature = model._nonlinsignature
+            signature = [param for param in model.signature if not np.any(getattr(model,param).linear)]
             signature.append('weight')
             def make_weighted_comb(nonlinfcn):
                 def weighted_comb(*inputargs):
