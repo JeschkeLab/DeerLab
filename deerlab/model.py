@@ -1272,8 +1272,14 @@ def _combinemodels(mode,*inputmodels,addweights=False):
 
         for n,(model,nonlinfcn) in enumerate(zip(models,[model.nonlinmodel for model in models])):
             constants = [constant['argkey'] for constant in model._constantsInfo]
-            signature = [arg for arg in model.signature if arg not in constants]
-            signature = [param for param in signature if not np.any(getattr(model,param).linear)]
+            signature = []
+            for param in model.signature: 
+                if param in constants:
+                    signature.append(param)                        
+                else:
+                    if not np.any(getattr(model,param).linear):
+                        signature.append(param)                        
+    
             signature.append('weight')
             def make_weighted_comb(nonlinfcn):
                 def weighted_comb(*inputargs):
