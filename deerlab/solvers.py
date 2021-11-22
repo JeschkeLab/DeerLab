@@ -520,6 +520,9 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         Amodel = lambda _: Amatrix
         par0 = np.array([])
 
+    if regparamrange is None: 
+        regparamrange = [1e-8,1e2]
+
     # Get info on the problem parameters and non-linear operator
     A0 = Amodel(par0)
     if len(np.shape(A0))!=2:
@@ -615,7 +618,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
         # Optimiza the regularization parameter only if needed
         if optimize_alpha:
-            alpha = dl.selregparam(y-yfrozen, Ared, linSolver, regparam, weights=weights, regop=L, candidates=regparamrange)
+            alpha = dl.selregparam(y-yfrozen, Ared, linSolver, regparam, weights=weights, regop=L, candidates=regparamrange, searchrange=regparamrange)
 
         # Components for linear least-squares
         AtA, Aty = _lsqcomponents(y-yfrozen, Ared, L, alpha, weights=weights)
