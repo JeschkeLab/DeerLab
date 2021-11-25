@@ -440,7 +440,7 @@ def ex_5pdeer(tau1,tau2,tau3):
 
     """
     # Theoretical refocusing pathways
-    reftimes = [ tau3, tau2, tau2-tau3, tau1+tau3, 0, tau1+tau2, tau1+tau2-tau3, tau1]
+    reftimes = [ tau3, tau2, tau2-tau3, tau1+tau3, tau1+tau2-tau3, 0, tau1+tau2, tau1]
     # Initial guesses for the pathway amplitudes
     lams_par0 = [ 0.3, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
     
