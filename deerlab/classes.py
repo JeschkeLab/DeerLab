@@ -170,7 +170,7 @@ class UQResult:
             means = np.mean(samples,0)
             covmat = np.squeeze(samples).T@np.squeeze(samples)/np.shape(samples)[0] - means*means.T
             self.mean = means
-            self.median = self.percentile(50)
+            self.median = np.median(samples,0)
             self.std = np.squeeze(np.std(samples,0))
             self.covmat = covmat
 
