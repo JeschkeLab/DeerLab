@@ -966,8 +966,8 @@ def _wlc(r,L,Lp):
     
     P = np.zeros(len(r))
     
-    kappa = Lp/L
-    rnorm = r/L
+    kappa = Lp/np.maximum(L,1e-16)
+    rnorm = r/np.maximum(L,1e-16)
     crit  = kappa*(1 - rnorm)
 
     idx = crit>0.2
