@@ -15,7 +15,17 @@ import deerlab as dl
 from deerlab.noiselevel import noiselevel
 from deerlab.classes import UQResult, FitResult
 from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian, isempty
+import time 
 
+def timestamp():
+# ===========================================================================================
+    # Get the seconds since epoch
+    secondsSinceEpoch = time.time()
+    # Convert seconds since epoch to struct_time
+    timeObj = time.localtime(secondsSinceEpoch)
+    # get the current timestamp elements from struct_time object i.e.
+    return '[%d-%d-%d %d:%d:%d]' % ( timeObj.tm_mday, timeObj.tm_mon, timeObj.tm_year, timeObj.tm_hour, timeObj.tm_min, timeObj.tm_sec)
+# ===========================================================================================
 
 def _plot(ys,yfits,yuqs,axis=None,xlabel=None):
 # ===========================================================================================
@@ -321,9 +331,9 @@ def _insertfrozen(parfit,parfrozen,frozen):
 # ===========================================================================================
 
 
-def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=None,
+def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=None, verbose=0,
           regparam='aic', regparamrange=None, multistart=1, regop=None, alphareopt=1e-3, extrapenalty=None, subsets=None,
-          nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, noiselvl=None, lin_frozen=None,
+          nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, noiselvl=None, lin_frozen=None, mask=None,
           nonlin_frozen=None, uq=True):
     r""" Separable non-linear least squares (SNLLS) solver
 
@@ -402,7 +412,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     regop : 2D array_like, optional
         Regularization operator matrix, the default is the second-order differential operator.
 
-    extrapenalty: callable or list thereof
+    extrapenalty: callable or list thereof, optional
         Custom penalty function(s) to impose upon the solution. A single penalty must be specified as a callable function. 
         Multiple penalties can be specified as a list of callable functons. Each function must take two inputs, a vector of non-linear parameters
         and a vector of linear parameters, and return a vector to be added to the residual vector (``pen = fcn(pnonlin,plin)``).  
@@ -410,7 +420,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
     alphareopt : float scalar, optional
         Relative parameter change threshold for reoptimizing the regularization parameter
-        when using a selection method, the default is 1e-3.
+        when using a selection method, the default is ``1e-3``.
 
     nnlsSolver : string, optional
         Solver used to solve a non-negative least-squares problem (if applicable):
@@ -423,24 +433,29 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     noiselvl : array_like, optional
         Noise standard deviation of the input signal(s), if not specified it is estimated automatically. 
 
+    mask : arrau_like or list thereof, optional
+        Array (or list of arrays) containing boolean (True/False) values defining a mask over one or multiple datasets.
+        All dataset point with enabled mask values (True) will be acoounted for during the fitting procedure. All disabled
+        values (False) will not be inlcuded. This does not affect model evaluation and uncertainty propagation.   
+
     weights : array_like, optional
         Array of weighting coefficients for the individual signals in global fitting.
         If not specified all datasets are weighted inversely proportional to their noise levels.
 
     multistart : int scalar, optional
-        Number of starting points for global optimization, the default is 1.
+        Number of starting points for global optimization, the default is ``1``.
         
     nonlin_maxiter : float scalar, optional
-        Non-linear solver maximal number of iterations, the default is 1e8.
+        Non-linear solver maximal number of iterations, the default is ``1e8``.
 
     nonlin_tol : float scalar, optional
-        Non-linear solver function tolerance, the default is 1e-9.
+        Non-linear solver function tolerance, the default is ``1e-9``.
 
     lin_maxiter : float scalar, optional
-        Linear solver maximal number of iterations, the default is 1e4.
+        Linear solver maximal number of iterations, the default is ``1e4``.
 
     lin_tol : float scalar, optional
-        Linear solver function tolerance, the default is 1e-15.
+        Linear solver function tolerance, the default is ``1e-15``.
 
     nonlin_frozen : array_like 
         Values for non-linear parameters to be frozen during the optimization. If set to ``None`` a non-linear parameter 
@@ -455,6 +470,13 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
     subsets : array_like, optional 
         Vector of dataset subset indices, if the datasets are passed concatenated instead of a list.
+
+    verbose : scalar integer, optional
+        Level of verbosity during the analysis:
+
+            * ``0`` : Work silently (default).
+            * ``1`` : Display progress including the non-linear least-squares' solver termination report.
+            * ``2`` : Display progress including the non-linear least-squares' solver iteration details.
 
     Returns
     -------
@@ -499,22 +521,17 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         Vector of residuals at the solution.
 
     """
+        
+    if verbose>0: 
+        print(f'{timestamp()} Preparing the SNLLS analysis...')
+
+    
     # Ensure that all arrays are numpy.nparray
     par0 = np.atleast_1d(par0)
-
     
-    if subsets is None: 
-        # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
-        y, Amodel, weights, _subsets, noiselvl = dl.utils.parse_multidatasets(y, Amodel, weights, noiselvl)    
-        subsets = _subsets
+    # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
+    y, Amodel, weights, mask, subsets, noiselvl = dl.utils.parse_multidatasets(y, Amodel, weights, noiselvl, masks=mask, subsets=subsets)    
     
-    else:
-        # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
-        y, Amodel, weights, _, noiselvl = dl.utils.parse_multidatasets(y, Amodel, weights, noiselvl)
-        noiselvl = [noiselevel(y[subset]) for subset in subsets]
-        prescales = np.ones(len(subsets))
-    Ndatasets = len(subsets)    
-
     if not callable(Amodel):
         Amatrix = Amodel.copy()
         Amodel = lambda _: Amatrix
@@ -538,6 +555,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
             imagsubsets.append(subset + len(y))
         y = np.concatenate([y.real,y.imag])
         weights = np.concatenate([weights,weights])   
+        mask = np.concatenate([mask,mask])   
     Amodel__ = Amodel
     if np.iscomplexobj(A0):
        # If the design matrix is complex-valued
@@ -547,7 +565,8 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         if not complexy: 
             # If the data is not complex-valued
             y = np.concatenate([y,np.zeros_like(y)])  
-            weights = np.concatenate([weights,weights])   
+            weights = np.concatenate([weights,weights])
+            mask = np.concatenate([mask,mask])      
     elif complexy:
         # If the design matrix is not complex-valued, but the data is
         Amodel = lambda p: np.concatenate([Amodel__(p),np.zeros_like(A0)]) 
@@ -586,7 +605,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # Prepare the optimal solver setup for the linear problem
 
     if Nlin_notfrozen>0:
-        ax, L, linSolver, parseResult, validateResult, includeRegularization = _prepare_linear_lsq(A0red,lbl_red,ubl_red,reg,regop,lin_tol,lin_maxiter,nnlsSolver)
+        _, L, linSolver, parseResult, validateResult, includeRegularization = _prepare_linear_lsq(A0red,lbl_red,ubl_red,reg,regop,lin_tol,lin_maxiter,nnlsSolver)
     else: 
         includeRegularization = False
 
@@ -597,6 +616,10 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     alpha = None
     xfit = np.zeros(Nlin)
     Ndof_lin = 0
+
+    if verbose>0: 
+        print(f'{timestamp()} Preparations completed.')
+
 
     def linear_problem(y,A,optimize_alpha,alpha):
     #===========================================================================
@@ -618,10 +641,12 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
         # Optimiza the regularization parameter only if needed
         if optimize_alpha:
-            alpha = dl.selregparam(y-yfrozen, Ared, linSolver, regparam, weights=weights, regop=L, candidates=regparamrange, searchrange=regparamrange)
+            alpha = dl.selregparam((y-yfrozen)[mask], Ared[mask,:], linSolver, regparam, 
+                                        weights=weights[mask], regop=L, candidates=regparamrange, 
+                                        noiselvl=noiselvl,searchrange=regparamrange)
 
         # Components for linear least-squares
-        AtA, Aty = _lsqcomponents(y-yfrozen, Ared, L, alpha, weights=weights)
+        AtA, Aty = _lsqcomponents((y-yfrozen)[mask], Ared[mask,:], L, alpha, weights=weights[mask])
 
         Ndof = np.maximum(0,np.trace(Ared@np.linalg.pinv(AtA)))
 
@@ -686,6 +711,9 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         # Compute residual vector
         res = weights*(Amodel(p)@xfit - y)
 
+        # Apply mask to residual
+        res = res[mask]
+
         # Compute residual from user-defined penalties
         if includeExtrapenalty:
             for penalty in extrapenalty:
@@ -705,6 +733,10 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     #  Only linear parameters
     # -------------------------------------------------------------------
     if Nnonlin_notfrozen==0 and Nlin_notfrozen>0:
+
+        if verbose>0: 
+            print(f'{timestamp()} Linear least-squares routine in progress...')
+    
         if type(regparam) is str and includeRegularization:
             # Optimized regularization parameter
             alpha = regparam
@@ -728,6 +760,9 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # -------------------------------------------------------------------
     elif Nnonlin_notfrozen>0:
 
+        if verbose>0: 
+            print(f'{timestamp()} Non-linear least-squares routine in progress...')
+
         # Preprare multiple start global optimization if requested
         if multistart > 1 and not nonLinearBounded:
             raise TypeError('Multistart optimization cannot be used with unconstrained non-linear parameters.')
@@ -740,7 +775,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         for par0 in multiStartPar0:
 
             # Run the non-linear solver
-            sol = least_squares(ResidualsFcn, par0, bounds=(lb_red, ub_red), max_nfev=int(nonlin_maxiter), ftol=nonlin_tol)
+            sol = least_squares(ResidualsFcn, par0, bounds=(lb_red, ub_red), max_nfev=int(nonlin_maxiter), ftol=nonlin_tol, verbose=verbose)
             nonlinfits.append(sol.x)
             linfits.append(xfit)
             fvals.append(2*sol.cost) # least_squares uses 0.5*sum(residual**2)          
@@ -762,11 +797,16 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     _ResidualsFcn = lambda nonlinfit: ResidualsFcn(_unfrozen_subset(nonlinfit,nonlin_frozen,nonlin_parfrozen))
     res = _ResidualsFcn(nonlinfit)
 
+    if verbose>0: 
+        print(f'{timestamp()} Least-squares routine finished.')
 
     # Uncertainty analysis
     #---------------------
     if uq:
         
+        if verbose>0: 
+            print(f'{timestamp()} Uncertainty analysis in progress...')
+
         # Define the indices of the parameter subsets
         nonlin_subset = np.arange(0,Nnonlin)
         lin_subset = np.arange(Nnonlin,Nnonlin+Nlin)
@@ -785,7 +825,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         Jnonlin = Jacobian(_ResidualsFcn,nonlinfit,lb,ub)
         # Jacobian (linear part)
         scale = np.trapz(linfit,np.arange(Nlin))
-        Jlin = weights[:,np.newaxis]*Amodel(nonlinfit)
+        Jlin = (weights[:,np.newaxis]*Amodel(nonlinfit))[mask,:]
         if includeExtrapenalty:
             for penalty in extrapenalty:
                 Jlin = np.concatenate((Jlin, Jacobian(lambda plin: penalty(nonlinfit,plin),linfit,lbl,ubl)))
@@ -823,6 +863,10 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         paramuq_lin = UQResult('void')
         paramuq = UQResult('void')
 
+    if verbose>0: 
+        print(f'{timestamp()} Uncertainty analysis completed.')
+        print(f'{timestamp()} Model evaluation in progress...')
+
     # Get fitted signals and their uncertainty
     parfit = np.concatenate((nonlinfit, linfit))
     nonlin_idx = np.arange(len(nonlinfit))
@@ -835,17 +879,20 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     modelfit,modelfituq = _model_evaluation(ymodels,parfit,paramuq,uq)
 
     # Make lists of data and fits
-    ys = [y[subset] for n,subset in enumerate(subsets)]
+    ys = [y[subset] for subset in subsets]
     if complexy: 
         ys = [ys[n] + 1j*y[imagsubset] for n,imagsubset in enumerate(imagsubsets)]
     yfits = modelfit.copy()
     yuq = modelfituq.copy()
 
+    if verbose>0: 
+        print(f'{timestamp()} Model evaluation completed.')
+
     # Goodness-of-fit
     # ---------------
     Ndof = Nnonlin + Ndof_lin 
     stats = _goodness_of_fit_stats(ys,yfits,noiselvl,Ndof)
-    
+
     # Display function
     def plotfcn(show=False,axis=None,xlabel=None):
         fig = _plot(ys,yfits,yuq,axis,xlabel)

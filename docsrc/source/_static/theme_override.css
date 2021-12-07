@@ -8786,14 +8786,14 @@
     color: var(--main-color);
    }
    a.headerlink {
-    color:rgba(var(--pst-color-headerlink),1);
+    color:#4550e6;
     font-size:.8em;
     padding:0 4px;
-    text-decoration:none
+    text-decoration:none    
    }
    a.headerlink:hover {
-    background-color:rgba(var(--pst-color-headerlink),1);
-    color:rgba(var(--pst-color-headerlink-hover),1)
+    background-color: #888fed;
+    color: #4550e6;
    }
    .heading-style,
    h1,

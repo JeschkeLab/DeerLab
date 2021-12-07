@@ -9,19 +9,11 @@ from functools import wraps
 
 from scipy.sparse.construct import block_diag
 
-def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, subsets=None):
+def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None, subsets=None):
 #===============================================================================
     
     # Make copies to avoid modifying the originals
     V = V_.copy()
-    # Identify if the signals have already been processed by this function
-    if type(V) is not list:
-        if V.size == np.atleast_1d(weights).size:
-            # If so, just return without doing anything
-            if precondition:
-                return V,K,weights,[np.arange(0,len(V))],noiselvl,[1]
-            else:
-                return V,K,weights,[np.arange(0,len(V))],noiselvl
 
     Vlist = []
     # If multiple signals are specified as a list...
@@ -43,16 +35,35 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, subsets=No
         else:
             Vlist.append(V[i])
 
+    # Get the indices to extract the subsets again
+    Ns = [len(V) for V in Vlist]
+    if subsets is None:
+        subset = [None]*nSignals
+        for i in  range(len(Vlist)):
+            if i==0:
+                prev = 0
+            else:
+                prev = subset[i-1][-1]+1
+            subset[i] = np.arange(prev,prev+Ns[i])
+    else: 
+        subset = subsets.copy()        
+
     # Noise level estimation/parsing
-    sigmas = np.zeros(nSignals)
+    sigmas = np.zeros(len(subset))
     if noiselvl is None:
-        for i in range(nSignals):
+        for i in range(len(subset)):
             sigmas[i] = der_snr(Vlist[i])
     else: 
         noiselvl = np.atleast_1d(noiselvl)
-        if len(noiselvl)!=nSignals: 
-            raise IndexError('The number of specified noise levels does not match the number of signals.')
         sigmas = noiselvl.copy()
+
+    if masks is None: 
+        masks = [np.full_like(V,True).astype(bool) for V in Vlist]
+    elif not isinstance(masks,list):
+        masks = [masks]
+    if len(masks)!= len(Vlist): 
+        raise SyntaxError('The number of masks does not match the number of signals.')
+    mask = np.concatenate(masks, axis=0) 
 
     # Concatenate the datasets along the list axis
     V = np.concatenate(Vlist, axis=0)
@@ -76,47 +87,40 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, subsets=No
     # -----------------------------------------------------------------
     if type(K) is FunctionType:
         Kmulti = lambda p: prepareKernel(K(p),nSignals)
+    elif K is None: 
+        Kmulti = None
     else:
         Kmulti = prepareKernel(K,nSignals)
 
     # If global weights are not specified, set default based on noise levels
     if weights is None:
-        if nSignals==1:
+        if len(subset)==1:
             weights=1
         else:
-            weights = np.zeros(nSignals)
-            for i in range(nSignals):
+            weights = np.zeros(len(subset))
+            for i in range(len(subset)):
                 weights[i] = 1/sigmas[i]
 
     # If multiple weights are specified as a list...
     if type(weights) is list or type(weights) is np.ndarray or not hasattr(weights, "__len__"):
         weights = np.atleast_1d(weights)
         if len(weights)==1:
-                weights = np.repeat(weights,nSignals)
-        weights = weights/sum(weights)
-        if len(weights)!=nSignals:
+                weights = np.repeat(weights,len(subset))
+        if len(weights)!=len(Vlist) and len(weights)!=np.sum([len(V) for V in Vlist]):
             raise KeyError('If multiple signals are passed, the same number of weights are required.')
-        weights_ = []
-        for i in range(len(weights)):
-            weights_ = np.concatenate((weights_,weights[i]*np.ones(len(Vlist[i]))))
-        weights = weights_
+        if len(weights)!=np.sum([len(V) for V in Vlist]):
+            weights_ = []
+            for i in range(len(weights)):
+                weights_ = np.concatenate((weights_,weights[i]*np.ones(len(Vlist[i]))))
+            weights = weights_
     else:
         raise TypeError('The input weights(s) must be numpy array or a list of numpy arrays.')
 
-    # Get the indices to extract the subsets again
-    Ns = [len(V) for V in Vlist]
-    subset = [None]*nSignals
-    for i in  range(nSignals):
-        if i==0:
-            prev = 0
-        else:
-            prev = subset[i-1][-1]+1
-        subset[i] = np.arange(prev,prev+Ns[i])
-        
+
     if precondition:
-        return V, Kmulti, weights, subset, sigmas, prescales
+        return V, Kmulti, weights, mask, subset, sigmas, prescales
     else:
-        return V, Kmulti, weights, subset, sigmas
+        return V, Kmulti, weights, mask, subset, sigmas
 #===============================================================================
 
 #===============================================================================

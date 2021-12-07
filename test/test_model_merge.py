@@ -232,8 +232,9 @@ def test_fit_model():
     model2 = dl.dd_rice
     model = merge(model1,model2)
     x = np.linspace(0,10,400)
-    truth = [model1(x,3,0.2),model2(x,4,0.5)]
-    result = fit(model,truth,x,x)
+    truth = [model1(x,3,0.2),
+             model2(x,4,0.5)]
+    result = fit(model,truth,x,x,weights=[1,1])
 
     assert np.allclose(result.model[0],truth[0]) and np.allclose(result.model[1],truth[1])
 # ======================================================================

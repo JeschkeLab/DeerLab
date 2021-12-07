@@ -684,3 +684,25 @@ def test_complex_model_uncertainty():
     assert (ciwidth.real < ciwidth.imag).all()
 # ======================================================================
  
+def test_masking():
+# ======================================================================
+    "Check that datapoints can be masked out"
+
+    x = np.linspace(0,7,100)
+    def model(p):
+        center, width = p
+        y = dd_gauss(x,center, width)
+        return y
+
+    mask = np.ones_like(x).astype(bool)   
+    mask[(x>2.5) & (x<3.5)] = False 
+
+    y = model([3, 0.5])  
+    yref = y.copy()
+    y[~mask] = 0 
+
+    fitmasked = snlls(y,model,par0=[4,0.2],lb=[1,0.05],ub=[6,5], mask=mask)
+    fit = snlls(y,model,par0=[4,0.2],lb=[1,0.05],ub=[6,5])
+
+    assert np.allclose(fitmasked.model,yref) and not np.allclose(fit.model,yref) 
+# ======================================================================

@@ -10,7 +10,7 @@ from deerlab.solvers import snlls
 from deerlab.classes import FitResult, UQResult
 from deerlab.noiselevel import noiselevel
 from deerlab.bootstrap_analysis import bootstrap_analysis
-from deerlab.utils import formatted_table
+from deerlab.utils import formatted_table, parse_multidatasets
 import inspect 
 from copy import copy,deepcopy
 from types import ModuleType
@@ -826,8 +826,28 @@ def _print_fitresults(fitresult,model):
     return string
 #--------------------------------------------------------------------------
 
+def insert_snlls_optionals():
+    # Get the documentation for the optional keyword arguments in snlls.py also used by fit()
+    text = snlls.__doc__
+    text = text.split('\n\n')
+    # Exclude arguments already set by the outer function
+    exclude = ['lb','ub','lbl','ubl','subsets','lin_frozen','nonlin_frozen','regparam','reg','regparamrange', 'extrapenalty']
+    paragraphs = [s for s in text if not any(e in s for e in exclude)]
+    # Concatenate the arguments
+    snlls_keyargs_docs = ''
+    for paragraph in paragraphs: 
+        # Only keep optional keyword arguments
+        if 'optional' in paragraph:
+            snlls_keyargs_docs += paragraph + '\n' 
+
+    def decorator(func):
+        func.__doc__ = func.__doc__.replace('snlls_keyargs_docs',snlls_keyargs_docs)
+        return func
+    return decorator
+
 #==============================================================================================
-def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None,
+@insert_snlls_optionals()
+def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None, mask=None, weights=None,
                 regparam='aic',reg='auto',regparamrange=None,**kwargs):
     r"""
     Fit the model(s) to the dataset(s)
@@ -849,8 +869,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     par0 : array_like, optional 
         Value at which to initialize the parameter at the start of a fit routine. 
         Must be specified if not defined in the model. Otherwise, it overrides the definition in the model. 
-
-    Any additional solver-specific keyword arguments can be specified. See :ref:`snlls` for a full reference. 
+    snlls_keyargs_docs
 
     Returns
     -------
@@ -920,23 +939,10 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
     if len(linfrozen)==0: linfrozen = [1]
 
-    if not isinstance(y,list):
-        y = [y]            
-    nprev = 0
-    ysubsets = []
-    sigmas = []
-    if noiselvl is None:
-        noiselvl = []
-        for n,yset in enumerate(y):
-            noiselvl.append(noiselevel(yset))
-    for n,yset in enumerate(y):
-        ysubsets.append(np.arange(nprev,nprev+len(yset)))
-        sigmas.append(noiselvl[n]*np.ones(len(yset)))
-
-        nprev = nprev+len(yset)
+    if type(y) is not list: y = [y]
     ysplit = y.copy()
-    y = np.concatenate(y)
-    sigmas = np.concatenate(sigmas)
+    y, _, weights, mask, ysubsets, noiselvl = parse_multidatasets(y, None, weights, noiselvl, precondition=False, masks=mask)
+    sigmas = np.concatenate([np.full_like(yset,sigma) for sigma,yset in zip(noiselvl,ysplit)])
 
 
     if model.Nlin==0 and model.Nnonlin==0:
@@ -974,9 +980,9 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
     # Prepare the separable non-linear least-squares solver
     Amodel_fcn = lambda param: model.nonlinmodel(*constants,*param)
-    fitfcn = lambda y,penweights: snlls(y, Amodel_fcn, par0, lb=lb, ub=ub, lbl=lbl, ubl=ubl,
+    fitfcn = lambda y,penweights: snlls(y, Amodel_fcn, par0, lb=lb, ub=ub, lbl=lbl, ubl=ubl, mask=mask, weights=weights, 
                                                 subsets=ysubsets, lin_frozen=linfrozen, nonlin_frozen=nonlinfrozen,
-                                                regparam=regparam, reg=reg, regparamrange=regparamrange,
+                                                regparam=regparam, reg=reg, regparamrange=regparamrange, noiselvl=noiselvl,
                                                 extrapenalty=extrapenalties(penweights), **kwargs)        
 
     # Prepare outer optimization of the penalty weights, if necessary
