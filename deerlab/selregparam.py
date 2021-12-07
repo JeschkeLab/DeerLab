@@ -97,7 +97,7 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
 #=========================================================           
 
     # If multiple datasets are passed, concatenate the signals and kernels
-    y, A, weights,_, noiselvl = dl.utils.parse_multidatasets(y, A, weights, noiselvl)
+    y, A, weights,_,__, noiselvl = dl.utils.parse_multidatasets(y, A, weights, noiselvl)
 
     # The L-curve criteria require a grid-evaluation
     if method == 'lr' or method == 'lc':

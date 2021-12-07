@@ -409,7 +409,6 @@ def test_fit_fullyfrozen_linear():
     
     assert np.allclose(fitResult.model,mock_data)
 #================================================================
-test_fit_fullyfrozen_linear()
 
 def test_fit_fullyfrozen_nonlinear(): 
 #================================================================

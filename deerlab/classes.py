@@ -295,7 +295,7 @@ class UQResult:
             else:
                 profile = self.profile[n] 
             σ = self.__noiselvl
-            obj2likelihood = lambda f: 1/np.sqrt(σ*2*np.pi)*np.exp(-1/2*f/σ**2)
+            obj2likelihood = lambda f: 1/np.sqrt(σ*2*np.pi)*np.exp(-1/2*(f-np.min(f))/σ**2)
             profileinterp = interp1d(profile['x'], profile['y'], kind='slinear', fill_value=1e6,bounds_error=False)
             x = np.linspace(np.min(profile['x']), np.max(profile['x']), 2**10 + 1)
             pdf = obj2likelihood(profileinterp(x)) 
