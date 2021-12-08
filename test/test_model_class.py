@@ -580,7 +580,7 @@ def test_model_with_constant_mixed():
 #================================================================
 
 #----------------------------------------------------------------
-def _getmodel_axis(type):
+def _getmodel_axis(type,vec=50):
     if type=='parametric':
         model = Model(gauss2_axis,constants='axis')
         model.mean1.set(lb=0, ub=10, par0=2)
@@ -597,10 +597,20 @@ def _getmodel_axis(type):
         model.width2.set(lb=0.01, ub=5, par0=0.2)
         model.addlinear('amp1',lb=0, ub=5)
         model.addlinear('amp2',lb=0, ub=5)
+    elif type=='semiparametric_vec': 
+        model = Model(gauss2_design_axis,constants='axis')
+        model.mean1.set(lb=0, ub=10, par0=2)
+        model.mean2.set(lb=0, ub=10, par0=4)
+        model.width1.set(lb=0.01, ub=5, par0=0.2)
+        model.width2.set(lb=0.01, ub=5, par0=0.2)
+        model.addlinear('amps',lb=0, ub=5, vec=2)
     elif type=='nonparametric':
         model = Model(lambda x: gauss2_design_axis(x,3,4,0.5,0.2),constants='x')
         model.addlinear('amp1',lb=0)
         model.addlinear('amp2',lb=0)
+    elif type=='nonparametric_vec':
+        model = Model(lambda x: np.eye(len(x)),constants='x')
+        model.addlinear('dist',lb=0,vec=vec)
     return model
 #----------------------------------------------------------------
 
@@ -628,7 +638,7 @@ def test_fit_semiparametric_constant():
 
 def test_fit_nonparametric_constant(): 
 #================================================================
-    "Check that a semiparametric model can be correctly fitted while specifying an axis"
+    "Check that a vectorized nonparametric model can be correctly fitted while specifying an axis"
     model = _getmodel_axis('nonparametric')
 
     x = np.linspace(0,10,200)
@@ -637,6 +647,27 @@ def test_fit_nonparametric_constant():
     assert np.allclose(fitResult.model,mock_data_fcn(x),atol=1e-3)
 #================================================================
 
+def test_fit_nonparametric_vec_constant(): 
+#================================================================
+    "Check that a vectorized nonparametric model can be correctly fitted while specifying an axis"
+    model = _getmodel_axis('nonparametric_vec',vec=80)
+
+    x = np.linspace(0,10,80)
+    fitResult = fit(model,mock_data_fcn(x),x,noiselvl=1e-10)
+    
+    assert np.allclose(fitResult.model,mock_data_fcn(x),atol=1e-3)
+#================================================================
+
+def test_fit_semiparametric_vec_constant(): 
+#================================================================
+    "Check that a vectorized semiparametric model can be correctly fitted while specifying an axis"
+    model = _getmodel_axis('semiparametric_vec')
+
+    x = np.linspace(0,10,100)
+    fitResult = fit(model,mock_data_fcn(x),x,noiselvl=1e-10)
+    
+    assert np.allclose(fitResult.model,mock_data_fcn(x),atol=1e-3)
+#================================================================
 
 def gauss_multiaxis(axis1,axis2,mean,width): 
     return np.exp(-(axis1-mean)**2/width**2/2)
@@ -737,3 +768,171 @@ def test_real_model_complex_data():
 
     assert np.allclose(fitResult.model.real,y.real) and np.allclose(fitResult.model.imag,np.zeros_like(y.real))
 # ======================================================================
+
+def test_fit_evaluate_parametric(): 
+#================================================================
+    "Check the evaluate method of the fitResult object for evaluation of a parametric model"
+    model = _getmodel_axis('parametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    response = fitResult.scale*fitResult.evaluate(model,x)
+
+    assert np.allclose(response,mock_data_fcn(x))
+#================================================================
+
+def test_fit_evaluate_nonparametric(): 
+#================================================================
+    "Check the evaluate method of the fitResult object for evaluation of a nonparametric model"
+    model = _getmodel_axis('nonparametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    response = fitResult.evaluate(model,x)
+
+    assert np.allclose(response,mock_data_fcn(x))
+#================================================================
+
+def test_fit_evaluate_nonparametric_vec(): 
+#================================================================
+    "Check the evaluate method of the fitResult object for evaluation of a vectorized nonparametric model"
+    model = _getmodel_axis('nonparametric_vec',vec=80)
+
+    x = np.linspace(0,10,80)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    response = fitResult.evaluate(model,x)
+
+    assert np.allclose(response,mock_data_fcn(x))
+#================================================================
+
+def test_fit_evaluate_semiparametric(): 
+#================================================================
+    "Check the evaluate method of the fitResult object for evaluation of a semiparametric model"
+    model = _getmodel_axis('semiparametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    response = fitResult.evaluate(model,x)
+
+    assert np.allclose(response,mock_data_fcn(x))
+#================================================================
+
+def test_fit_evaluate_semiparametric_vec(): 
+#================================================================
+    "Check the evaluate method of the fitResult object for evaluation of a vectorized semiparametric model"
+    model = _getmodel_axis('semiparametric_vec')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    response = fitResult.evaluate(model,x)
+
+    assert np.allclose(response,mock_data_fcn(x))
+#================================================================
+
+def test_fit_evaluate_callable(): 
+#================================================================
+    "Check the evaluate method of the fitResult object for evaluation of a callable function"
+    model = _getmodel_axis('semiparametric_vec')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    fcn = lambda mean1,mean2,width1,width2,amps: gauss2_design_axis(x,mean1,mean2,width1,width2)@amps
+    response = fitResult.evaluate(fcn)
+
+    assert np.allclose(response,mock_data_fcn(x))
+#================================================================
+
+#----------------------------------------------------------------
+def assert_cis(argUncert):
+    arg = argUncert.mean
+    parci = argUncert.ci(95)
+    ci_lower = parci[:,0]
+    ci_upper = parci[:,1]
+    assert np.all(arg<=ci_upper) and np.all(arg>=ci_lower) 
+#----------------------------------------------------------------
+
+
+def test_fit_propagate_parametric(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a parametric model"
+    model = _getmodel_axis('parametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_nonparametric(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a nonparametric model"
+    model = _getmodel_axis('nonparametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_nonparametric_vec(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a vectorized nonparametric model"
+    model = _getmodel_axis('nonparametric_vec',vec=80)
+
+    x = np.linspace(0,10,80)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_semiparametric(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a semiparametric model"
+    model = _getmodel_axis('semiparametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_semiparametric_vec(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a vectorized semiparametric model"
+    model = _getmodel_axis('semiparametric_vec')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_callable(): 
+#================================================================
+    "Check the evaluate method of the fitResult object for evaluation of a callable function"
+    model = _getmodel_axis('semiparametric_vec')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    fcn = lambda mean1,mean2,width1,width2,amps: gauss2_design_axis(x,mean1,mean2,width1,width2)@amps
+    modeluq = fitResult.propagate(fcn, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
