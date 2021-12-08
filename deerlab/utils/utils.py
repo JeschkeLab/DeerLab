@@ -612,7 +612,7 @@ def multistarts(n,x0,lb,ub):
     return x0
 #===============================================================================
 
-# This is only required for the developers version which install pytest automatically
+# This is only required for the developers version which installs pytest automatically
 try:
     import pytest     
     #===============================================================================
