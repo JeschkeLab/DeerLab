@@ -604,9 +604,10 @@ def multistarts(n,x0,lb,ub):
     else:
         x0 = [x0]
 
-    # If there is some NaN value (just put the original start value)
+    # If there is some NaN or inf value (just put the original start value)
     for x, in zip(x0):
         x[np.isnan(x)] = _x0[np.isnan(x)]
+        x[np.isinf(x)] = _x0[np.isinf(x)]
     
     return x0
 #===============================================================================
