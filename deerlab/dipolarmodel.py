@@ -31,6 +31,10 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
         a background arising from a homogenous 3D distribution of spins is assumed. 
     npathways : integer scalar
         Number of dipolar pathways. If not specified, a single dipolar pathway is assumed. 
+    experiment : :ref:`ExperimentInfo`, optional 
+        Experimental information obtained from experiment models (``ex_``). If specified, the 
+        boundaries and start values of the dipolar pathways' refocusing times and amplitudes 
+        will be refined based on the specific experiment's delays.
     harmonics : list of integers 
         Harmonics of the dipolar pathways. Must be a list with `npathways` harmonics for each
         defined dipolar pathway.  
