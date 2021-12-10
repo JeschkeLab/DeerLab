@@ -171,7 +171,7 @@ class UQResult:
             covmat = np.squeeze(samples).T@np.squeeze(samples)/np.shape(samples)[0] - means*means.T
             self.mean = means 
             self.median = self.percentile(50)
-            self.median = np.array([nth_samples[n,0] if np.all(nth_samples==nth_samples[0]) else self.median[n] for n,nth_samples in enumerate(samples.T)])
+            self.median = np.array([nth_samples[0] if np.all(nth_samples==nth_samples[0]) else self.median[n] for n,nth_samples in enumerate(samples.T)])
             self.std = np.squeeze(np.std(samples,0))
             self.covmat = covmat
 
