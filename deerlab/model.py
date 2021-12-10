@@ -1354,7 +1354,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
         # If one of the models has linear parameters, but not the others
         # add a dummy unity linear parameter 
         if model.Nlin==0:
-            model.addlinear('scale',par0=1,lb=0)
+            model.addlinear('scale',par0=1,lb=0, description='Scaling factor')
 
         # Determine the subset of parameters for the current model
         subset = np.arange(nprev,nprev+model.Nnonlin,1)
