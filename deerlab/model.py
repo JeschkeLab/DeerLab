@@ -826,7 +826,7 @@ def _print_fitresults(fitresult,model):
     return string
 #--------------------------------------------------------------------------
 
-def insert_snlls_optionals():
+def insert_snlls_optionals_docstrings():
     # Get the documentation for the optional keyword arguments in snlls.py also used by fit()
     text = snlls.__doc__
     text = text.split('\n\n')
@@ -841,12 +841,12 @@ def insert_snlls_optionals():
             snlls_keyargs_docs += paragraph + '\n' 
 
     def decorator(func):
-        func.__doc__ = func.__doc__.replace('snlls_keyargs_docs',snlls_keyargs_docs)
+        func.__doc__ = func.__doc__.replace('snlls_keyargs_docstrings',snlls_keyargs_docs)
         return func
     return decorator
 
 #==============================================================================================
-@insert_snlls_optionals()
+@insert_snlls_optionals_docstrings()
 def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None, mask=None, weights=None,
                 regparam='aic',reg='auto',regparamrange=None,**kwargs):
     r"""
@@ -869,7 +869,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     par0 : array_like, optional 
         Value at which to initialize the parameter at the start of a fit routine. 
         Must be specified if not defined in the model. Otherwise, it overrides the definition in the model. 
-    snlls_keyargs_docs
+    snlls_keyargs_docstrings
 
     Returns
     -------
@@ -1020,9 +1020,32 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     # Dictionary of other fit quantities of interest
     FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','modelUncert','cost','plot','residuals','stats','regparam']}
 
+
     _paramlist = model._parameter_list('vector')
     def propagate(model,*constants,lb=None,ub=None):
     # ----------------------------------------------------------------------------
+        """
+        Propagate the uncertainty in the fit results to a model's response.
+
+        Parameters
+        ----------
+
+        model : :ref:`Model` or callable
+            Model object or callable function to be evaluated. All the parameters in the model or in the callable definition
+            must match their corresponding parameter names in the ``FitResult`` object.   
+        constants : array_like 
+            Model constants. 
+        lb : array_like, optional 
+            Lower bounds of the model response.
+        ub : array_like, optional 
+            Upper bounds of the model response.   
+
+        Returns
+        -------
+
+        responseUncert : :ref:`UQResult`
+            Uncertainty quantification of the model's response.
+        """
         # Get the parameter names of the input model
         if isinstance(model,Model):
             modelparam = model._parameter_list('vector')
@@ -1037,25 +1060,47 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
                 raise KeyError(f'The fit object does not contain the {param} parameter.')
         # Determine the indices of the subset of parameters the model depends on
         subset = [param_idx[np.where(np.asarray(_paramlist)==param)[0][0]] for param in modelparam]
-        subset = np.concatenate(subset)   
         # Propagate the uncertainty from that subset to the model
-        modeluq = fitresults.paramUncert.propagate(lambda param: model(*constants,*param[subset]),lb,ub)
+        modeluq = fitresults.paramUncert.propagate(lambda param: model(*constants,*[param[s] for s in subset]),lb,ub)
         return modeluq
     # ----------------------------------------------------------------------------
+
     def evaluate(model,*constants):
     # ----------------------------------------------------------------------------
-        # Get the parameter names of the input model
-        modelparam = model._parameter_list('vector')
+        """
+        Evaluate a model at the fitted parameter values. 
+
+        Parameters
+        ----------
+
+        model : :ref:`Model` or callable
+            Model object or callable function to be evaluated. All the parameters in the model or in the callable definition
+            must match their corresponding parameter names in the ``FitResult`` object.   
+        constants : array_like 
+            Any model constants present required by the model.  
+        
+        Returns
+        -------
+
+        response : array_like 
+            Model response at the fitted parameter values. 
+        """
+        if isinstance(model,Model):
+            modelparam = model._parameter_list('vector')
+        elif callable(model):
+            modelparam = inspect.getfullargspec(model).args
+        else: 
+            raise TypeError('The input must be a deerlab.Model object or a callable.')
 
         # Check that all parameters are in the fit object
         for param in modelparam:
             if not param in FitResult_param: 
                 raise KeyError(f'The fit object does not contain the {param} parameter.')
         # Determine the indices of the subset of parameters the model depends on
-        subset = [np.where(np.asarray(_paramlist)==param)[0][0] for param in modelparam]
+        parameters = {param: FitResult_param[param] for param in modelparam}
         # Evaluate the input model
-        modeluq = model(*constants,*fitresults.param[subset])
-        return modeluq
+        response = model(*constants,**parameters)
+        return response
     # ----------------------------------------------------------------------------
 
     if len(noiselvl)==1: 
