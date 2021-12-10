@@ -42,7 +42,8 @@ def goodness_of_fit(x,xfit,Ndof,noiselvl):
 
     """
     sigma = noiselvl
-
+    Ndof = np.maximum(Ndof,1)
+    
     # Get number of xariables
     N = len(x)
     # Extrapolate number of parameters
