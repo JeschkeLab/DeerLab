@@ -314,6 +314,14 @@ def _unfrozen_subset(param,frozen,parfrozen):
 # ===========================================================================================
 
 # ===========================================================================================
+def _unfrozen_subset_inv(param,frozen):
+    param,frozen = np.atleast_1d(param,frozen)
+    # Account for frozen parameters
+    return np.atleast_1d([param[n] for n in range(len(frozen)) if not frozen[n] ])
+# ===========================================================================================
+
+
+# ===========================================================================================
 def _insertfrozen(parfit,parfrozen,frozen):
     _parfit = parfrozen.copy()
     _parfit[~frozen] = parfit
@@ -602,6 +610,10 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     _Amodel = Amodel
     Amodel = lambda param: _Amodel(_unfrozen_subset(param,nonlin_frozen,nonlin_parfrozen))
 
+    if includeExtrapenalty:
+        extrapenalty_ = [penalty for penalty in extrapenalty]
+        extrapenalty = [lambda pnonlin, plin: penalty(_unfrozen_subset(pnonlin,nonlin_frozen,nonlin_parfrozen), plin) for penalty in extrapenalty_]
+
     # Prepare the optimal solver setup for the linear problem
 
     if Nlin_notfrozen>0:
@@ -612,7 +624,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # Pre-allocate nonlocal variables
     check = False
     regparam_prev = 0
-    par_prev = [0]*len(par0)
+    par_prev = [0]*len(par0_red)
     alpha = None
     xfit = np.zeros(Nlin)
     Ndof_lin = 0
@@ -788,13 +800,11 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         fvals = np.min(fvals)
             
     # Insert frozen parameters back into the nonlinear parameter vector   
+    par_prev = nonlinfit.copy()
     nonlinfit = _insertfrozen(nonlinfit,nonlin_parfrozen,nonlin_frozen)
-    # Use again the model function defined for the full parameter vector 
-    Amodel = _Amodel
 
     # Compute the fit residual
-    par_prev = nonlinfit.copy()
-    _ResidualsFcn = lambda nonlinfit: ResidualsFcn(_unfrozen_subset(nonlinfit,nonlin_frozen,nonlin_parfrozen))
+    _ResidualsFcn = lambda nonlinfit: ResidualsFcn(_unfrozen_subset_inv(nonlinfit,nonlin_frozen))
     res = _ResidualsFcn(nonlinfit)
 
     if verbose>0: 
@@ -871,6 +881,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     parfit = np.concatenate((nonlinfit, linfit))
     nonlin_idx = np.arange(len(nonlinfit))
     lin_idx = np.arange(len(nonlinfit),len(parfit))
+    Amodel = _Amodel # Use the model with the full parameter set
     def ymodel(n): return lambda p: (Amodel(p[nonlin_idx])@p[lin_idx])[subsets[n]]
     if complexy: 
         ymodel_ = ymodel
