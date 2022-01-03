@@ -252,7 +252,8 @@ class UQResult:
         """
         if n > self.nparam or n < 0:
             raise ValueError('The input must be a valid integer number.')
-        
+        isdelta = False
+
         if self.type == 'covariance':
             # Generate Gaussian distribution based on covariance matrix
             sig = np.sqrt(self.covmat[n,n])
@@ -268,6 +269,7 @@ class UQResult:
                 # Dirac's delta distribution 
                 x = np.array([0.9*samplen[0],samplen[0],1.1*samplen[0]])
                 pdf = np.array([0,1,0]).astype(float)
+                isdelta = True 
             else:
                 sigma = np.std(samplen, ddof=1)
                 bw = sigma*(len(samplen)*3/4.0)**(-1/5)
@@ -318,7 +320,7 @@ class UQResult:
         pdf = np.maximum(pdf,0)
 
         # Ensure normalization of the probability density function (if not a Dirac delta function)
-        if not np.all(pdf==np.array([0,1,0])):
+        if not isdelta:
             pdf = pdf/np.trapz(pdf, x)
         
         return x, pdf
