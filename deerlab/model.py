@@ -644,8 +644,8 @@ class Penalty():
                 yfit = fitresult.model
 
                 # Get non-linear parameters covariance submatrix
-                fitpars = fitresult.nonlin + 1e-16
-                covmat = fitresult.nonlinUncert.covmat
+                fitpars = fitresult.nonlin + np.finfo(float).eps
+                covmat = fitresult.nonlinUncert.covmat + np.finfo(float).eps
                 covmat = covmat/(fitpars[np.newaxis,:]*fitpars[:,np.newaxis])
 
                 # Informational complexity criterion (ICC)
