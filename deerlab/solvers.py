@@ -799,8 +799,9 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         nonlinfit = nonlinfits[globmin]
         fvals = np.min(fvals)
             
-    # Insert frozen parameters back into the nonlinear parameter vector   
-    par_prev = nonlinfit.copy()
+    # Insert frozen parameters back into the nonlinear parameter vector  
+    if nonlinfit is not None: 
+        par_prev = nonlinfit.copy()
     nonlinfit = _insertfrozen(nonlinfit,nonlin_parfrozen,nonlin_frozen)
 
     # Compute the fit residual

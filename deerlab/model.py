@@ -730,6 +730,7 @@ class Penalty():
             optweight = 10**log10optweight
         else: 
             optweight = self.weight.value
+            self._weight_value = optweight
 
         # Update optimized value to object
         self.optweight = optweight
