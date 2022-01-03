@@ -18,7 +18,7 @@ def test_types():
 
     profuq = profile_analysis(model,y,r,samples=3,noiselvl=sigma)
 
-    assert isinstance(profuq['mean'],UQResult) and profuq['scale'] is None
+    assert isinstance(profuq['mean'],UQResult) and profuq['scale'] is None and isinstance(profuq,dict)
 # ======================================================================
 
 # ======================================================================
@@ -67,25 +67,6 @@ def test_globalmodel():
     assert np.allclose([mean_mean,width_mean],[3,0.2],rtol=1e-2)
 # ======================================================================
 
-
-
-# ======================================================================
-def test_types():
-    "Check that the correct data types are returned"
-
-    r = np.linspace(2,6,300)
-    sigma = 0.1
-    model = deepcopy(dd_gauss)
-    model.addlinear('scale',par0 = 1)
-
-    y = model(r,mean=3,width=0.2,scale=1) + whitegaussnoise(r,sigma,seed=1)
-
-    profuq = profile_analysis(model,y,r,samples=3,noiselvl=sigma)
-
-    assert isinstance(profuq['mean'],UQResult) and profuq['scale'] is None
-# ======================================================================
-
-
 # ======================================================================
 def test_specific_parameters():
     "Check that parameters can be specified via keywords"
@@ -107,3 +88,21 @@ def test_docstring():
     "Check that the docstring includes all variables and keywords."
     assert_docstring(profile_analysis)
 # ======================================================================
+
+
+# ======================================================================
+def test_grids():
+    "Check that grids can be specified"
+
+    r = np.linspace(2,6,300)
+    sigma = 0.1
+    model = dd_gauss
+    y = model(r,mean=3,width=0.2) + whitegaussnoise(r,sigma,seed=1)
+    grid = {'mean':np.linspace(3,5,3)}
+    profuq = profile_analysis(model,y,r,parameters='mean',grids=grid,noiselvl=sigma)
+
+    x = profuq['mean'].profile['x']
+
+    assert np.allclose(x,grid['mean'])
+# ======================================================================
+
