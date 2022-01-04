@@ -24,8 +24,6 @@ def chemicalequilibrium(Kdis,L):
     xB = xB[(xB<=1) & (xB>=0)]
     return xB
 
-import os 
-os.chdir(r'C:\Users\Luis\polybox\projects\DeerLab\DeerLab\examples\advanced')
 t1,V1 = np.load('../data/example_data_titration_#1.npy')
 t2,V2 = np.load('../data/example_data_titration_#2.npy')
 t3,V3 = np.load('../data/example_data_titration_#3.npy')
