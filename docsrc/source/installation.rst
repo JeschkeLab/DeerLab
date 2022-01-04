@@ -50,9 +50,6 @@ The installed numerical computing packages (numpy, scipy, cvxopt) are linked aga
 * Linux: linked against OpenBLAS
 * Mac: linked against BLAS/LAPACK from the Accelerate framework
 
-If an error occurs during or after the installation, please consult `this section <./installation_failed.html>`_ for a possible solution.
-
-
 Installing from Anaconda
 *************************
 
@@ -126,3 +123,63 @@ In order to install DeerLab but be able to edit the code or update frequently wi
 
 Any changes made to the source code will then immediate effect.
 
+Installation failed 
+--------------------
+
+Under certain cirucumstances the installation following some of the methods described above may fail due to secific technical reasons. 
+This is a selection of some of the known issues that may arise during installation of DeerLab along with instructions to solve them. 
+
+
+.. rubric:: Known Issue #1: DLL load failed
+
+On a **Windows** computer, if you are trying to run a DeerLab function, you might get the following message:
+
+.. code-block:: text
+
+    ImportError: DLL load failed: The specified module could not be found.
+
+This happens when the MKL libraries have not been properly linked in ``numpy``, ``scipy`` or ``cvxopt`` 
+installations (typically ``numpy``). This can happen due to firewall restrictions,
+user rights, or internet connection issues during the DeerLab installation. To solve this, the
+best solution is to manually install as follows. 
+
+1) Go to https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
+
+2) Download the appropiate ``numpy`` wheels file according to your installed Python version and Windows system:
+
+.. code-block:: text
+
+                Python version (3.x)
+    Package name       |         Windows architecture (32-64 bit)
+    |                  |          |
+    v                  v          v
+    numpy-1.19.1+mkl-cp36-cp36m-win_amd64.whl
+
+
+3) Once downloaded, open a terminal at the location of the ``.whl`` file and run the command: ::
+
+	python -m pip install "numpy-1.19.1+mkl-cp36-cp36m-win_amd64.whl"
+
+   making sure that the name of the ``.whl`` file matches the one that you downloaded.
+
+This will install ``numpy`` and properly link all MKL DLL files. DeerLab should work now. Should the error persists, repeat this process for the ``scipy`` and ``cvxopt`` packages (in that order).
+
+
+.. rubric:: Known Issue #2: ``__path__`` attribute not found
+
+During installation on certain systems (e.g. some computation clusters) using one of the following commands ::
+
+    python -m setup.py install
+    python -m setup.py develop
+
+the following error might be raised during the installation:
+
+.. code-block:: text
+
+    Error while finding module specification for 'setup.py'
+    (ModuleNotFoundError: __path__ attribute not found on 'setup' while trying to find 'setup.py')
+
+In such cases, the error can be avoided by omitting the ``-m`` argument in the installation command, i.e. ::
+
+    python setup.py install
+    python setup.py develop

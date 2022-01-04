@@ -635,7 +635,7 @@ class Penalty():
         def selectionfunctional(fitfcn,y,sigma,log10weight):
             # Penalty weight: linear-scale -> log-scale
             weight = 10**log10weight
-
+            self._weight_value = weight
             # Run the fit
             fitresult = fitfcn(weight)
 
@@ -644,8 +644,8 @@ class Penalty():
                 yfit = fitresult.model
 
                 # Get non-linear parameters covariance submatrix
-                fitpars = fitresult.nonlin + 1e-16
-                covmat = fitresult.nonlinUncert.covmat
+                fitpars = fitresult.nonlin + np.finfo(float).eps
+                covmat = fitresult.nonlinUncert.covmat + np.finfo(float).eps
                 covmat = covmat/(fitpars[np.newaxis,:]*fitpars[:,np.newaxis])
 
                 # Informational complexity criterion (ICC)
@@ -730,6 +730,7 @@ class Penalty():
             optweight = 10**log10optweight
         else: 
             optweight = self.weight.value
+            self._weight_value = optweight
 
         # Update optimized value to object
         self.optweight = optweight
@@ -1106,8 +1107,10 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
 
+    penweights = [penalty._weight_value for penalty in penalties]
+
     # Generate FitResult object from all the dictionaries
-    fitresult = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict,'noiselvl':noiselvl, 'propagate': propagate, 'evaluate': evaluate}) 
+    fitresult = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict,'penweights':penweights,'noiselvl':noiselvl, 'propagate': propagate, 'evaluate': evaluate}) 
     fitresult._summary = _print_fitresults(fitresult,model)
 
     return fitresult

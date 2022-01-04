@@ -11,7 +11,6 @@ A (natural) and B (changed upon addition of a ligand L) given by
 the chemical equilibrium  A + L <-> B.
 """
 
-from re import X
 import deerlab as dl 
 import matplotlib.pyplot as plt 
 import numpy as np 
@@ -21,10 +20,9 @@ def chemicalequilibrium(Kdis,L):
     """Prepare equilibrium of type: A + L <-> B"""
     Ctot = 1 # total protein concentration, µM
     Kb = 1/Kdis
-    xB = np.roots([Kb, -(Kb*L + Kb*Ctot + 1), Kb*L])
+    xB = np.roots(np.squeeze([Kb, -(Kb*L + Kb*Ctot + 1), Kb*L]))
     xB = xB[(xB<=1) & (xB>=0)]
     return xB
-
 
 t1,V1 = np.load('../data/example_data_titration_#1.npy')
 t2,V2 = np.load('../data/example_data_titration_#2.npy')
@@ -57,7 +55,7 @@ titrmodel = dl.link(titrmodel,
                 PA = ['P_1_1', 'P_1_2', 'P_1_3', 'P_1_4', 'P_1_5'],
                 PB = ['P_2_1', 'P_2_2', 'P_2_3', 'P_2_4', 'P_2_5'])
 
-# FUnctionalize the chemical equilibrium model
+# Functionalize the chemical equilibrium model
 titrmodel.addnonlinear('Kdis',lb=3,ub=7,par0=5,description='Dissociation constant')
 
 titrmodel = dl.relate(titrmodel, 
@@ -68,7 +66,7 @@ titrmodel = dl.relate(titrmodel,
             weight_2_5 = lambda weight_1_5: 1-weight_1_5, weight_1_5 = lambda Kdis: chemicalequilibrium(Kdis,L[4]))
             
 # Fit the model to the data
-fit = dl.fit(titrmodel,Vs)
+fit = dl.fit(titrmodel,Vs,regparam = 0.5)
 
 # %%
 
