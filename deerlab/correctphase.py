@@ -58,19 +58,20 @@ def correctphase(V, phase='posrealint', full_output=False):
     # Calculate sine function fitting 3 points
     offset = (costs[:, 0] + costs[:, 2]) / 2
     phase_shift = np.arctan2(costs[:, 0] - offset, costs[:, 1] - offset)
+    amp = np.sqrt((costs[:, 0] - offset) ** 2 + (costs[:, 1] - offset) ** 2)
 
-    # Calculate extrema by the first derivative 0 and minima using the second derivative
-    possible_phis = np.array([(np.pi / 2 - phase_shift) / 2, (3 * np.pi / 2 - phase_shift) / 2]).T
-    second_deriv = -np.sin(2 * possible_phis + phase_shift[:, None])
-    phaseopt = possible_phis[second_deriv > 0]
+    # Calculate minima by setting the first derivative 0
+    phis = (3 * np.pi / 2 - phase_shift) / 2
+    phis[amp < 0] -= np.pi / 2
+    phis[phis < 0] += np.pi
 
-    tempspec = V_2d * np.exp(1j * phaseopt)[:, None]
+    tempspec = V_2d * np.exp(1j * phis)[:, None]
     if phase == 'posrealint':
-        phaseopt[tempspec.sum(axis=1) < 0] += np.pi
+        phis[tempspec.sum(axis=1) < 0] += np.pi
     elif phase == 'negrealint':
-        phaseopt[tempspec.sum(axis=1) > 0] -= np.pi
+        phis[tempspec.sum(axis=1) > 0] -= np.pi
 
-    V_2d = V_2d * np.exp(1j * phaseopt)[:, None]
+    V_2d = V_2d * np.exp(1j * phis)[:, None]
 
     V_2d = np.squeeze(V_2d.T)
 
@@ -79,7 +80,7 @@ def correctphase(V, phase='posrealint', full_output=False):
     Vimag = np.imag(V_2d)
 
     # Map phase angle to [-pi,pi) interval
-    phase = phaseopt
+    phase = phis
 
     if full_output:
         return Vreal,Vimag,phase
