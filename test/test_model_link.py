@@ -85,7 +85,7 @@ def test_link_fit():
 
     result = fit(model,ref,x)
     
-    assert np.allclose(result.model,ref)
+    assert np.allclose(result.model,ref,atol=1e-5)
 # ======================================================================
 
 # ======================================================================

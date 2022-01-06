@@ -171,7 +171,7 @@ class UQResult:
             covmat = np.squeeze(samples).T@np.squeeze(samples)/np.shape(samples)[0] - means*means.T
             self.mean = means 
             self.median = self.percentile(50)
-            self.median = np.array([nth_samples[n,0] if np.all(nth_samples==nth_samples[0]) else self.median[n] for n,nth_samples in enumerate(samples.T)])
+            self.median = np.array([nth_samples[0] if np.all(nth_samples==nth_samples[0]) else self.median[n] for n,nth_samples in enumerate(samples.T)])
             self.std = np.squeeze(np.std(samples,0))
             self.covmat = covmat
 
@@ -252,7 +252,8 @@ class UQResult:
         """
         if n > self.nparam or n < 0:
             raise ValueError('The input must be a valid integer number.')
-        
+        isdelta = False
+
         if self.type == 'covariance':
             # Generate Gaussian distribution based on covariance matrix
             sig = np.sqrt(self.covmat[n,n])
@@ -267,7 +268,8 @@ class UQResult:
             if np.all(samplen == samplen[0]):
                 # Dirac's delta distribution 
                 x = np.array([0.9*samplen[0],samplen[0],1.1*samplen[0]])
-                pdf = np.array([0,1,0])
+                pdf = np.array([0,1,0]).astype(float)
+                isdelta = True 
             else:
                 sigma = np.std(samplen, ddof=1)
                 bw = sigma*(len(samplen)*3/4.0)**(-1/5)
@@ -317,8 +319,9 @@ class UQResult:
         # Enforce non-negativity (takes care of negative round-off errors)
         pdf = np.maximum(pdf,0)
 
-        # Ensure normalization of the probability density function
-        pdf = pdf/np.trapz(pdf, x)
+        # Ensure normalization of the probability density function (if not a Dirac delta function)
+        if not isdelta:
+            pdf = pdf/np.trapz(pdf, x)
         
         return x, pdf
     #--------------------------------------------------------------------------------

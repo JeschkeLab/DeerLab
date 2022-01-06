@@ -31,6 +31,10 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
         a background arising from a homogenous 3D distribution of spins is assumed. 
     npathways : integer scalar
         Number of dipolar pathways. If not specified, a single dipolar pathway is assumed. 
+    experiment : :ref:`ExperimentInfo`, optional 
+        Experimental information obtained from experiment models (``ex_``). If specified, the 
+        boundaries and start values of the dipolar pathways' refocusing times and amplitudes 
+        will be refined based on the specific experiment's delays.
     harmonics : list of integers 
         Harmonics of the dipolar pathways. Must be a list with `npathways` harmonics for each
         defined dipolar pathway.  
@@ -250,7 +254,7 @@ def dipolarpenalty(Pmodel,r,type,selection=None):
     Parameters
     ----------
     Pmodel : ``Model`` object 
-        The Pmodel of the distance distribution.
+        The Pmodel of the distance distribution, where ``None`` represents a non-parametric distance distribution. 
     r : array_like 
         Distance axis vector, in nanometers. 
     type : string
@@ -271,11 +275,9 @@ def dipolarpenalty(Pmodel,r,type,selection=None):
     penalty : ``Penalty`` object 
         Penalty object to be passed to the ``fit`` function.
     """
-def dipolarpenalty(model,axis,type,selection=None):
-
-    if model is None: 
-        model = freedist(axis)
-    Nconstants = len(model._constantsInfo)
+    if Pmodel is None: 
+        Pmodel = freedist(r)
+    Nconstants = len(Pmodel._constantsInfo)
 
     # If include compactness penalty
     if type=='compactness':
@@ -285,12 +287,12 @@ def dipolarpenalty(model,axis,type,selection=None):
 
         # Define the compactness penalty function
         def compactness_penalty(*args): 
-            P = model(*[axis]*Nconstants,*args)
-            P = P/np.trapz(P,axis)
-            return np.sqrt(P*(axis - np.trapz(P*axis,axis))**2*np.mean(np.diff(axis)))
-        # Add the penalty to the model
+            P = Pmodel(*[r]*Nconstants,*args)
+            P = P/np.trapz(P,r)
+            return np.sqrt(P*(r - np.trapz(P*r,r))**2*np.mean(np.diff(r)))
+        # Add the penalty to the Pmodel
         penalty = Penalty(compactness_penalty,selection,
-                    signature = model._parameter_list(),
+                    signature = Pmodel._parameter_list(),
                     description = 'Distance distribution compactness penalty.')
         penalty.weight.set(lb=1e-6, ub=1e1)
 
@@ -300,12 +302,12 @@ def dipolarpenalty(model,axis,type,selection=None):
             selection = 'aic'
 
         # Define the smoothness penalty function
-        L = regoperator(axis,2)
+        L = regoperator(r,2)
         def smoothness_penalty(*args): 
-            return L@model(*[axis]*Nconstants,*args)
-        # Add the penalty to the model
+            return L@Pmodel(*[r]*Nconstants,*args)
+        # Add the penalty to the Pmodel
         penalty = Penalty(smoothness_penalty,selection,
-                    signature = model._parameter_list(),
+                    signature = Pmodel._parameter_list(),
                     description = 'Distance distribution smoothness penalty.')
         penalty.weight.set(lb=1e-9, ub=1e3)
 

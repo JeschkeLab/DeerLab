@@ -46,46 +46,41 @@ def correctphase(V, phase='posrealint', full_output=False):
 
     V_2d = V.copy()
     if V_2d.ndim == 1:
-        Ntraces = 1
-        V_2d = V_2d[:,np.newaxis]
-    else:
-        Ntraces = V_2d.shape[1]
-    n = V_2d.shape[0]
- 
-    phaseopt = np.zeros(Ntraces)
-    for i in range(Ntraces):
-        V_ = V_2d[:,i]
+        V_2d = V_2d[:, np.newaxis]
 
-        # Get the average phase in the signal
-        phaseav = np.mean(np.angle(V_))
+    V_2d = V_2d.T
 
-        # Objective function for optimization of the phase
-        phase_objfcn = lambda phase: np.linalg.norm(np.imag(V_*np.exp(-1j*phase)))
+    # Calculate 3 points of cost function which should be a smooth, continuous sine wave with a frequency of 2 * phi
+    phis = np.array([0, np.pi / 2, np.pi]) / 2
+    costs = np.imag(V_2d[:, None] * np.exp(1j * phis)[None, :, None])
+    costs = (costs * costs).sum(axis=-1)
 
-        pars = opt.fmin(phase_objfcn,phaseav,maxfun=1e5,maxiter=1e5,disp=False)
-        
-        # Get the two phases that minimize the imaginary part
-        phases = [pars[0], pars[0]+np.pi]
-        realint = [np.sum(V_*np.exp(-1j*phase)) for phase in phases]
-            
-        if phase == 'posrealint':
-            phaseopt[i] =  phases[np.argmax(realint)]
-        elif phase == 'negrealint':
-            phaseopt[i] =  phases[np.argmin(realint)]
-        elif phase == 'close':
-            phaseopt[i] =  phases[np.argmin(abs(phases - phaseav))]
+    # Calculate sine function fitting 3 points
+    offset = (costs[:, 0] + costs[:, 2]) / 2
+    phase_shift = np.arctan2(costs[:, 0] - offset, costs[:, 1] - offset)
+    amp = np.sqrt((costs[:, 0] - offset) ** 2 + (costs[:, 1] - offset) ** 2)
 
-        # Apply phase
-        V_2d[:,i] = V_*np.exp(-1j*phaseopt[i])
+    # Calculate minima by setting the first derivative 0
+    phis = (3 * np.pi / 2 - phase_shift) / 2
+    phis[amp < 0] -= np.pi / 2
+    phis[phis < 0] += np.pi
 
-    if Ntraces==1:
-        V_2d = np.squeeze(V_2d)
+    tempspec = V_2d * np.exp(1j * phis)[:, None]
+    if phase == 'posrealint':
+        phis[tempspec.sum(axis=1) < 0] += np.pi
+    elif phase == 'negrealint':
+        phis[tempspec.sum(axis=1) > 0] -= np.pi
+
+    V_2d = V_2d * np.exp(1j * phis)[:, None]
+
+    V_2d = np.squeeze(V_2d.T)
 
     # Output
     Vreal = np.real(V_2d)
     Vimag = np.imag(V_2d)
+
     # Map phase angle to [-pi,pi) interval
-    phase = np.angle(np.exp(-1j*phaseopt)) 
+    phase = phis
 
     if full_output:
         return Vreal,Vimag,phase

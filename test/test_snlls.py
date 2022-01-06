@@ -486,11 +486,11 @@ def test_confinter_scaling():
     # Linear parameters: non-negativity
     lbl = np.zeros(len(r))
     V0_1 = 1
-    V0_2 = 1e9
+    V0_2 = 1e8
 
     # Separable LSQ fit
-    fit1 = snlls(V*V0_1,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,nonlin_tol=1e-2)
-    fit2 = snlls(V*V0_2,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,nonlin_tol=1e-2)
+    fit1 = snlls(V*V0_1,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,nonlin_tol=1e-3)
+    fit2 = snlls(V*V0_2,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,nonlin_tol=1e-3)
 
     # Assess linear parameter uncertainties
     ci1 = fit1.linUncert.ci(95)
