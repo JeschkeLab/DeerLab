@@ -111,13 +111,52 @@ def _hom3d_fcn(t,conc,lam):
 #---------------------------------------------------------------------------------------
 # Create model
 bg_hom3d = Model(_hom3d_fcn,constants='t')
-bg_hom3d.description = 'Background from homogeneous distribution of spins in a 3D medium'
+bg_hom3d.description = 'Background from a homogeneous distribution of spins in a 3D medium'
 # Parameters
 bg_hom3d.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
 bg_hom3d.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
 # Add documentation
 bg_hom3d.__doc__ = _docstring(bg_hom3d,notes)
 
+
+#=======================================================================================
+#                                     bg_hom3doop
+#=======================================================================================
+notes = r"""
+**Model**
+
+This model describes the out-of-phase inter-molecular interaction of one observer spin with a 3D homogenous distribution of spins of concentration `c_s`
+
+.. image:: ../images/model_scheme_bg_hom3d.png
+   :width: 350px
+
+The expression for this model is
+
+.. math::
+   B(t) = \mathrm{exp}\left(-\frac{8\pi^2}{9\sqrt{3}}\frac{\sqrt{3} + ln(2 - \sqrt{3})}{\pi}\lambda c_s D |t|\right)`
+
+where `c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this expression) and D is the dipolar constant
+
+.. math::
+   D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
+"""  
+def _hom3doop_fcn(t,conc,lam):
+#---------------------------------------------------------------------------------------
+    # Units conversion    
+    conc = conc*1e-6*1e3*Nav # umol/L -> mol/L -> mol/m^3 -> spins/m^3
+    # Compute background function
+    B = np.exp(-lam*conc*(-8*pi**2/9/m.sqrt(3)*(np.sqrt(3)+np.log(2-np.sqrt(3)))/np.pi*D*(t*1e-6)))
+
+    return B
+#---------------------------------------------------------------------------------------
+# Create model
+bg_hom3doop = Model(_hom3doop_fcn,constants='t')
+bg_hom3doop.description = 'Out-of-phase background from a homogeneous distribution of spins in a 3D medium'
+# Parameters
+bg_hom3doop.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
+bg_hom3doop.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
+# Add documentation
+bg_hom3doop.__doc__ = _docstring(bg_hom3d,notes)
 
 #=======================================================================================
 #                                     bg_hom3dex
