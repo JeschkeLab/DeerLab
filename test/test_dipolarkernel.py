@@ -44,6 +44,30 @@ def test_singledist():
 #=======================================================================
 
 
+def test_complex_type_fresnel():
+#=======================================================================
+    "Test that the values are complex-valued if requested."
+
+    # Generate kernel numerically
+    t = 1 # µs
+    r = 1 # nm
+    K = dipolarkernel(t,r,method='fresnel',complex=True)
+
+    assert isinstance(K[0,0],np.complex128)
+#=======================================================================
+
+def test_complex_type_grid():
+#=======================================================================
+    "Test that the values are complex-valued if requested."
+
+    # Generate kernel numerically
+    t = 1 # µs
+    r = 1 # nm
+    K = dipolarkernel(t,r,method='grid',complex=True)
+
+    assert isinstance(K[0,0],np.complex128)
+#=======================================================================
+
 def test_negative_time_fresnel():
 #=======================================================================
     "Check that kernel is constructed properly for negative times using the fresnel method"
@@ -91,7 +115,6 @@ def test_negative_time_integral():
     assert np.all(delta<1e-12)
 #=======================================================================
 
-
 def test_value_fresnel():
 #=======================================================================
     "Test whether kernel matrix element (calculated using Fresnel integrals) is correct."
@@ -108,6 +131,38 @@ def test_value_fresnel():
     assert abs(K-Kref) < 1e-14
 #=======================================================================
 
+def test_complex_value_fresnel():
+#=======================================================================
+    "Test whether comple-valued kernel matrix element (calculated using Fresnel integrals) is correct."
+
+    # Generate kernel numerically
+    t = 1 # µs
+    r = 1 # nm
+    K = dipolarkernel(t,r,method='fresnel',complex=True)
+
+    # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
+    # and CODATA 2018 values for ge, muB, mu0, and h.
+    Kref = 0.0246978198952619 + 1j*0.01380433055548875
+
+    assert abs(K-Kref) < 1e-14
+#=======================================================================
+
+
+def test_complex_value_fresnel_negative_time():
+#=======================================================================
+    "Test whether comple-valued kernel matrix element (calculated using Fresnel integrals) is correct."
+
+    # Generate kernel numerically
+    t = -1 # µs
+    r = 1 # nm
+    K = dipolarkernel(t,r,method='fresnel',complex=True)
+
+    # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
+    # and CODATA 2018 values for ge, muB, mu0, and h.
+    Kref = 0.0246978198952619 - 1j*0.01380433055548875
+
+    assert abs(K-Kref) < 1e-14
+#=======================================================================
 
 def test_value_grid():
 #=======================================================================
@@ -126,6 +181,39 @@ def test_value_grid():
 #=======================================================================
 
 
+def test_complex_value_grid():
+#=======================================================================
+    "Test whether comple-valued kernel matrix element (calculated using the grid method) is correct."
+
+    # Generate kernel numerically
+    t = 1 # µs
+    r = 1 # nm
+    K = dipolarkernel(t,r,method='grid',nKnots=2e6,complex=True)
+
+    # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
+    # and CODATA 2018 values for ge, muB, mu0, and h.
+    Kref = 0.0246978198952619 + 1j*0.01380433055548875
+
+    assert abs(K-Kref) < 1e-6
+#=======================================================================
+
+
+def test_complex_value_grid_negative_time():
+#=======================================================================
+    "Test whether comple-valued kernel matrix element (calculated using the grid method) is correct."
+
+    # Generate kernel numerically
+    t = -1 # µs
+    r = 1 # nm
+    K = dipolarkernel(t,r,method='grid',nKnots=2e6,complex=True)
+
+    # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
+    # and CODATA 2018 values for ge, muB, mu0, and h.
+    Kref = 0.0246978198952619 - 1j*0.01380433055548875
+
+    assert abs(K-Kref) < 1e-6
+#=======================================================================
+
 def test_value_integral():
 #=======================================================================
     "Test whether kernel matrix element (calculated using the integal method) is correct."
@@ -141,7 +229,6 @@ def test_value_integral():
 
     assert abs(K-Kref) < 1e-7
 #=======================================================================
-
 
 def test_lambda():
 #=======================================================================
@@ -205,7 +292,7 @@ def test_multipath():
 
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None)
+            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
 
     assert np.all(abs(K-Kref) < 1e-3)
 #=======================================================================
@@ -229,7 +316,7 @@ def test_multipath_background():
     # Reference
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None)
+            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
     Kref = Kref
     
     Bref = 1
@@ -273,7 +360,7 @@ def test_multipath_harmonics():
 
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge],None)
+            Kref = Kref + lam[p]*elementarykernel(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge],None,False)
     Kref = Kref
 
     assert np.max(K-Kref) < 1e-3
