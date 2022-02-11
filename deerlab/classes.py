@@ -169,7 +169,7 @@ class UQResult:
         elif uqtype == 'bootstrap':
             means = np.mean(samples,0)
             covmat = np.squeeze(samples).T@np.squeeze(samples)/np.shape(samples)[0] - means*means.T
-            self.mean = means 
+            self.mean = means
             self.median = self.percentile(50)
             self.median = np.array([nth_samples[0] if np.all(nth_samples==nth_samples[0]) else self.median[n] for n,nth_samples in enumerate(samples.T)])
             self.std = np.squeeze(np.std(samples,0))
@@ -321,7 +321,8 @@ class UQResult:
 
         # Ensure normalization of the probability density function (if not a Dirac delta function)
         if not isdelta:
-            pdf = pdf/np.trapz(pdf, x)
+            if np.trapz(pdf, x)!=0:
+                pdf = pdf/np.trapz(pdf, x)
         
         return x, pdf
     #--------------------------------------------------------------------------------
@@ -523,10 +524,12 @@ class UQResult:
 
             # Bootstrap sampling of the model response
             sampled_model = [model(sampled_parameters[:,n]) for n in range(Nsamples)]
+            sampled_model = [np.maximum(sample,lb) for sample in sampled_model]
+            sampled_model = [np.minimum(sample,ub) for sample in sampled_model]
 
             # Convert to matrix
             sampled_model = np.atleast_2d(sampled_model)
-
+            
             # Construct new uncertainty object
             return  UQResult('bootstrap',data=sampled_model,lb=lb,ub=ub)
  
