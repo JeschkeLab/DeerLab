@@ -8,8 +8,19 @@ import math as m
 import scipy as scp
 from numpy import pi
 import inspect
-from deerlab.utils import load_exvolume_redfactor,formatted_table
+from deerlab.dipolarkernel import dipolarkernel
+from deerlab.utils import formatted_table
 from deerlab.model import Model
+from scipy.special import gamma, hyp2f1, sici
+
+#---------------------------------------------------------------------------------------
+def hyp2f1_repro(a,b,c,z): 
+    """
+    Gauss Hypegeometric 2F1 function for |z|>1 and non-integer (a-b) based on its "reprocication" form"
+    Reference: https://functions.wolfram.com/07.23.17.0057.01
+    """
+    return gamma(b - a)*gamma(c)/(gamma(b)*gamma(c - a)*(-z)**a)*hyp2f1(a, a - c + 1, a - b + 1, 1/z) + (gamma(a - b)*gamma(c))/(gamma(a)*gamma(c - b)*(-z)**b)*hyp2f1(b, b - c + 1, b - a + 1, 1/z)
+#---------------------------------------------------------------------------------------
 
 # Natural constants
 Nav = 6.02214076e23      # Avogadro constant, mol^-1
@@ -101,16 +112,15 @@ where `c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this ex
 .. math::
    D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
 """  
-def _hom3d_fcn(t,conc,lam):
-#---------------------------------------------------------------------------------------
+def _hom3d(t,conc,lam):
     # Units conversion    
     conc = conc*1e-6*1e3*Nav # umol/L -> mol/L -> mol/m^3 -> spins/m^3
     # Compute background function
-    B = np.exp(-8*pi**2/9/m.sqrt(3)*lam*conc*D*np.abs(t*1e-6))
+    κ = 8*pi**2/9/m.sqrt(3)
+    B = np.exp(-κ*lam*conc*D*np.abs(t*1e-6))
     return B
-#---------------------------------------------------------------------------------------
 # Create model
-bg_hom3d = Model(_hom3d_fcn,constants='t')
+bg_hom3d = Model(_hom3d,constants='t')
 bg_hom3d.description = 'Background from a homogeneous distribution of spins in a 3D medium'
 # Parameters
 bg_hom3d.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
@@ -120,12 +130,12 @@ bg_hom3d.__doc__ = _docstring(bg_hom3d,notes)
 
 
 #=======================================================================================
-#                                     bg_hom3doop
+#                                     bg_hom3d_phase
 #=======================================================================================
 notes = r"""
 **Model**
 
-This model describes the out-of-phase inter-molecular interaction of one observer spin with a 3D homogenous distribution of spins of concentration `c_s`
+This model describes the phase shift due to inter-molecular interactions between one observer spin with a 3D homogenous distribution of spins of concentration `c_s`
 
 .. image:: ../images/model_scheme_bg_hom3d.png
    :width: 350px
@@ -140,23 +150,22 @@ where `c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this ex
 .. math::
    D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
 """  
-def _hom3doop_fcn(t,conc,lam):
-#---------------------------------------------------------------------------------------
+def _hom3dphase(t,conc,lam):
     # Units conversion    
     conc = conc*1e-6*1e3*Nav # umol/L -> mol/L -> mol/m^3 -> spins/m^3
     # Compute background function
-    B = np.exp(-lam*conc*(-8*pi**2/9/m.sqrt(3)*(np.sqrt(3)+np.log(2-np.sqrt(3)))/np.pi*D*(t*1e-6)))
+    ξ = 8*pi**2/9/np.sqrt(3)*(np.sqrt(3)+np.log(2-np.sqrt(3)))/np.pi*D
+    B = np.exp(-1j*ξ*lam*conc*(t*1e-6))
 
     return B
-#---------------------------------------------------------------------------------------
 # Create model
-bg_hom3doop = Model(_hom3doop_fcn,constants='t')
-bg_hom3doop.description = 'Out-of-phase background from a homogeneous distribution of spins in a 3D medium'
+bg_hom3d_phase = Model(_hom3dphase,constants='t')
+bg_hom3d_phase.description = 'Phase shift of the background from a homogeneous distribution of spins in a 3D medium'
 # Parameters
-bg_hom3doop.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
-bg_hom3doop.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
+bg_hom3d_phase.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
+bg_hom3d_phase.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
 # Add documentation
-bg_hom3doop.__doc__ = _docstring(bg_hom3d,notes)
+bg_hom3d_phase.__doc__ = _docstring(bg_hom3d_phase,notes)
 
 #=======================================================================================
 #                                     bg_hom3dex
@@ -167,53 +176,101 @@ notes = r"""
 .. image:: ../images/model_scheme_bg_hom3dex.png
    :width: 350px
 
-This implements a hard-shell excluded-volume model, with spin concentration ``c_s`` (first parameter, in μM) and distance of closest approach ``R`` (second parameter, in nm).
+This implements a hard-shell excluded-volume model, with spin concentration `c_s` (in μM) and the radius of the spherical excluded volume `R_\mathrm{ex}` (in nm).
 
 The expression for this model is
 
-.. math:: B(t) = \mathrm{exp}\left(-\frac{8\pi^2}{9\sqrt{3}}\alpha(R) \lambda c_s D |t|\right)`
+.. math:: B(t) = \exp \Bigg(- c_\mathrm{s}\lambda_k \bigg( V_\mathrm{ex} K_0(t, R_\mathrm{ex}) + \mathcal{I}_\mathrm{S}(t) \bigg) 
 
-where :math:`c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this expression) and :math:`D` is the dipolar constant
+where `\mathcal{I}_\mathrm{S}(t)` is an integral without analytical form given by 
+
+.. math:: \mathcal{I}_\mathrm{S}(t) = \frac{4\pi}{3} D\,t \int_0^1 \mathrm{d}z~(1 - 3z^2) ~ \mathrm{S_i}\left( \frac{D\,t (1 - 3z^2)}{R_\mathrm{ex}^3 } \right)  
+
+where `\mathrm{S_i}` is the sine integral function and `D` is the dipolar constant
 
 .. math:: D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
 
-The function :math:`\alpha(R)` of the exclusion distance :math:`R` captures the excluded-volume effect. It is a smooth function, but doesn't have an analytical representation. For details, see `Kattnig et al, J.Phys.Chem.B 2013, 117, 16542 <https://pubs.acs.org/doi/abs/10.1021/jp408338q>`_.
 """  
-def _hom3dex(t,conc,rexcl,lam):    
-    # Load precalculated reduction factor look-up table (Kattnig Eq.(18))
-    dR_tab,alphas_tab = load_exvolume_redfactor()
-
+def _hom3dex(t,conc,rex,lam):    
     # Conversion: umol/L -> mol/L -> mol/m^3 -> spins/m^3
     conc = conc*1e-6*1e3*Nav 
 
-    A = (μ0/4/pi)*(ge*μB)**2/hbar # Eq.(6) m^3 s^-1
+    # Excluded volume
+    Vex = 4*np.pi/3*(rex*1e-9)**3
 
-    # Calculate reduction factor (Eq.(18))
-    if rexcl==0:
-        alpha = 1
-    else:
-        dR = A*abs(t*1e-6)/(rexcl*1e-9)**3 # unitless
-        
-        # Use interpolation of look-up table for small dR
-        small = dR < max(dR_tab)
-        alpha = np.zeros(np.shape(dR))
-        alpha[small] = np.interp(dR[small], dR_tab, alphas_tab)
-        
-        # For large dR, use limiting dR->inf expression
-        alpha[~small] = 1 - (3/2/pi)*np.sqrt(3)/dR[~small]
+    # Averaging integral
+    z = np.linspace(0,1,1000)[np.newaxis,:]
+    Dt = D*t[:,np.newaxis]*1e-6
+    Is =  4*np.pi/3*np.trapz(Dt*(1-3*z**2)*sici((Dt*(1-3*z**2))/((rex*1e-9)**3))[0],z,axis=1)
+    
+    # Background function
+    C_k = -Vex + Is + np.squeeze(Vex*(dipolarkernel(t,rex,integralop=False)))
+    B = np.exp(-lam*conc*C_k)
 
-    K = 8*pi**2/9/np.sqrt(3)*A*abs(t*1e-6)*alpha # Eq.(17)
-    B = np.exp(-lam*conc*K) # Eq.(13)
     return B
 # Create model
 bg_hom3dex = Model(_hom3dex,constants='t')
-bg_hom3dex.description = 'Background from homogeneous distribution of spins with excluded-volume effects'
+bg_hom3dex.description = 'Background from a homogeneous distribution of spins with excluded volume'
 # Parameters
 bg_hom3dex.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
-bg_hom3dex.rexcl.set(description='Exclusion distance', lb=0.01, ub=20, par0=1, units='nm')
+bg_hom3dex.rex.set(description='Exclusion radius', lb=0.01, ub=20, par0=1, units='nm')
 bg_hom3dex.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
 # Add documentation
 bg_hom3dex.__doc__ = _docstring(bg_hom3dex,notes)
+
+
+
+#=======================================================================================
+#                                     bg_hom3dex_phase
+#=======================================================================================
+notes = r"""
+**Model**
+
+.. image:: ../images/model_scheme_bg_hom3dex.png
+   :width: 350px
+
+This implements the phase-shift arising from a hard-shell excluded-volume model, with spin concentration `c_s` (in μM) and the radius of the spherical excluded volume `R_\mathrm{ex}` (in nm).
+
+The expression for this model is
+
+.. math:: B(t) = \exp \Bigg(- \ii c_\mathrm{s}\lambda_k \bigg( V_\mathrm{ex} \mathrm{Im}\{\mathcal{K}_0(t, R_\mathrm{ex})\} + \mathcal{I}_\mathrm{C}(t) \bigg) 
+
+where `\mathcal{I}_\mathrm{S}(t)` is an integral without analytical form given by 
+
+.. math:: \mathcal{I}_\mathrm{C}(t) = \frac{4\pi}{3} D\,t \int_0^1 \mathrm{d}z~(1 - 3z^2) ~ \mathrm{C_i}\left( \frac{D\,t (1 - 3z^2)}{R_\mathrm{ex}^3 } \right)  
+
+where `\mathrm{S_i}` is the sine integral function and `D` is the dipolar constant
+
+.. math:: D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
+
+"""  
+def _hom3dex_phase(t,conc,rex,lam):    
+    # Conversion: umol/L -> mol/L -> mol/m^3 -> spins/m^3
+    conc = conc*1e-6*1e3*Nav 
+
+    # Excluded volume
+    Vex = 4*np.pi/3*(rex*1e-9)**3
+
+    # Averaging integral
+    ξ = 8*pi**2/9/np.sqrt(3)*(np.sqrt(3)+np.log(2-np.sqrt(3)))/np.pi*D
+    z = np.linspace(0,1,1000)[np.newaxis,:]
+    Dt = D*t[:,np.newaxis]*1e-6
+    Ic =  -ξ*(t*1e-6) + 4*np.pi/3*np.trapz(Dt*(1-3*z**2)*sici((Dt*np.abs(1-3*z**2))/((rex*1e-9)**3))[1],z,axis=1)
+    
+    # Background function
+    C_k = - Ic - np.squeeze(Vex*(dipolarkernel(t,rex,integralop=False,complex=True)).imag)
+    B = np.exp(-1j*lam*conc*C_k)
+
+    return B
+# Create model
+bg_hom3dex_phase = Model(_hom3dex_phase,constants='t')
+bg_hom3dex_phase.description = 'Phase shift from the background from a homogeneous distribution of spins with excluded volume'
+# Parameters
+bg_hom3dex_phase.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
+bg_hom3dex_phase.rex.set(description='Exclusion radius', lb=0.01, ub=20, par0=1, units='nm')
+bg_hom3dex_phase.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
+# Add documentation
+bg_hom3dex_phase.__doc__ = _docstring(bg_hom3dex_phase,notes)
 
 
 #=======================================================================================
@@ -222,37 +279,88 @@ bg_hom3dex.__doc__ = _docstring(bg_hom3dex,notes)
 notes = r"""
 **Model**
 
-This implements the background due to a homogeneous distribution of spins in a d-dimensional space, with d-dimensional spin concentration ``c_d``.
+This implements the background due to a homogeneous distribution of spins in a `d`-dimensional space, with `d`-dimensional spin concentration ``c_d``.
 """  
 def _homfractal(t,fconc,fdim,lam):
-    # Unpack model paramters
-    d = float(fdim)     # fractal dimension    
+    # Fractal dimension (not defined for d=[0, 1.5, 3, 4.5, 6])
+    d = float(fdim) 
+    
 
     # Units conversion of concentration    
     conc = fconc*1e-6*(np.power(10,d))*Nav # umol/dm^d -> mol/m^d -> spins/m^d
 
-    # Compute constants
-    if d==3:
-        c = -pi/2
-        Λ = 4/3/np.sqrt(3)
+    # Compute constant
+    if d==3: 
+        κd = -D**(d/3)*8*np.pi**2/9/np.sqrt(3) # Limit of d->3 of equation below 
+    elif d==1.5: 
+        κd = -8.71135*D**(d/3) # Limit of d->1.5 of equation below 
+    elif d==4.5:
+        κd = -5.35506*D**(d/3) # Limit of d->4.5 of equation below 
     else:
-        c = np.cos(d*pi/6)*scp.special.gamma(-d/3)
-        integrand = lambda z: abs(1-3*z**2)**(d/3)
-        Λ,_ = scp.integrate.quad(integrand,0,1,limit=1000)
+        κd = -D**(d/3)*2/9*(-1)**(-d/3)*pi*np.cos(d*pi/6)*gamma(-d/3)*(
+                (-1 + (-1)**(d/3))*np.sqrt(3*np.pi)*gamma(1+d/3)/gamma(3/2 + d/3)
+                + 6*hyp2f1_repro(1/2, -d/3, 3/2, 3)
+            ) 
+    κd = κd.real # Imaginary part is always negligible 
 
     # Compute background function
-    B = np.exp(4*pi/3*c*Λ*lam*conc*D**(d/3)*abs(t*1e-6)**(d/3))
+    B = np.exp(-κd*lam*conc*abs(t*1e-6)**(d/3))
     return B
  # ======================================================================
 # Create model
 bg_homfractal = Model(_homfractal,constants='t')
 bg_homfractal.description = 'Background from homogeneous distribution of spins in a fractal medium'
 # Parameters
-bg_homfractal.fconc.set(description='Fractal concentration of spins', lb=0.01, ub=5000, par0=50, units='μmol/dmᵈ')
-bg_homfractal.fdim.set(description='Fractal dimensionality', lb=0.01, ub=5.99, par0=3, units='')
+bg_homfractal.fconc.set(description='Fractal concentration of spins', lb=1e-20, ub=1e20, par0=1.0e-6, units='μmol/dmᵈ')
+bg_homfractal.fdim.set(description='Fractal dimensionality', lb=0.01, ub=5.99, par0=2.2, units='')
 bg_homfractal.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
 # Add documentation
 bg_homfractal.__doc__ = _docstring(bg_homfractal,notes)
+
+
+
+
+#=======================================================================================
+#                                     bg_homfractal_phase
+#=======================================================================================
+notes = r"""
+**Model**
+
+This implements the phase shift due to a homogeneous distribution of spins in a `d`-dimensional space, with `d`-dimensional spin concentration ``c_d``.
+"""  
+def _homfractal_phase(t,fconc,fdim,lam):
+    # Fractal dimension (not defined for d=[0, 1.5, 3, 4.5, 6])
+    d = float(fdim) 
+
+    # Units conversion of concentration    
+    fconc = fconc*1e-6*(np.power(10,d))*Nav # umol/dm^d -> mol/m^d -> spins/m^d
+
+    # Compute constant
+    if d==3: 
+        ξd = 0.33462*D**(d/3) # Limit of d->3 of equation below 
+    elif d==1.5: 
+        ξd = 1j*np.inf # Limit of d->1.5 of equation below 
+    elif d==4.5:
+        ξd = 1j*np.inf # Limit of d->4.5 of equation below 
+    else:
+        ξd = D**(d/3)*pi**(3/2)/9/gamma(3/2 + d/3) * (
+                np.sqrt(3)*pi*np.cos(d*pi/6)/np.cos(d*pi/3) 
+                - 2**(2+2*d/3)*3**(1 + d/3)*gamma(-1-2*d/3)*np.sin(d*pi/6)*gamma(3/2+d/3)*hyp2f1((-3-2*d)/6, -d/3, (3-2*d)/6, 1/3)/gamma((3-2*d)/6) 
+            ) 
+
+    # Compute background function
+    B = np.exp(-1j*ξd*fconc*lam*np.sign(t)*abs(t*1e-6)**(d/3))
+    return B
+ # ======================================================================
+# Create model
+bg_homfractal_phase = Model(_homfractal_phase,constants='t')
+bg_homfractal_phase.description = 'Phase shift of the background from a homogeneous distribution of spins in a fractal medium'
+# Parameters
+bg_homfractal_phase.fconc.set(description='Fractal concentration of spins', lb=1e-20, ub=1e20, par0=1.0e-6, units='μmol/dmᵈ')
+bg_homfractal_phase.fdim.set(description='Fractal dimensionality', lb=0.01, ub=5.99, par0=2.2, units='')
+bg_homfractal_phase.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
+# Add documentation
+bg_homfractal_phase.__doc__ = _docstring(bg_homfractal_phase,notes)
 
 
 #=======================================================================================
