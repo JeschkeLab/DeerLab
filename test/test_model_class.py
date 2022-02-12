@@ -854,9 +854,9 @@ def assert_cis(argUncert):
     parci = argUncert.ci(95)
     ci_lower = parci[:,0]
     ci_upper = parci[:,1]
-    ci_lower = ci_lower[arg>1e-10]
-    ci_upper = ci_upper[arg>1e-10]
-    arg = arg[arg>1e-10]
+    ci_lower = ci_lower[arg>1e-6]
+    ci_upper = ci_upper[arg>1e-6]
+    arg = arg[arg>1e-6]
     assert np.all(arg<=ci_upper) and np.all(arg>=ci_lower) 
 #----------------------------------------------------------------
 
