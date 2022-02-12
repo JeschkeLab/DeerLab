@@ -26,9 +26,9 @@ def ω0(g):
     return (μ0/2)*μB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> rad μs^-1 nm^3
 
 def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, orisel=None, g=[ge,ge], 
-                  integralop=True, nKnots=5001, clearcache=False, memorylimit=8):
+                  integralop=True, nKnots=5001, complex=False, clearcache=False, memorylimit=8):
 #===================================================================================================
-    r"""Compute the dipolar kernel operator which enables the linear transformation from
+    r"""Compute the (multi-pathway) dipolar kernel operator which enables the linear transformation from
     distance-domain to time-domain data. 
 
     Parameters
@@ -40,7 +40,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         Distance axis, in nanometers.
     
     pathways : list of lists  or ``None``, optional
-        List of pathways. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time in microseconds (T0), 
+        List of dipolar pathways [1]_. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time in microseconds (T0), 
         and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]``. If n is not given, it is assumed to be 1. 
         For a unmodulated pathway, specify only the amplitude, i.e. ``[Lambda0]``. If neither ``pathways`` or ``mod`` are specified
         (or ``None``), full-modulation is assumed ``pathways=[[1,0]]``.
@@ -69,14 +69,19 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         Requires the ``'grid'`` or ``'integral'`` methods.
 
     excbandwidth : scalar, optional
-        Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth [4]_.
+        Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth [5]_.
         Requires the ``'grid'`` or ``'integral'`` methods.
 
     g : scalar, 2-element array, optional
         Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, ``[g, g]`` is assumed 
-    
+
+    complex : boolean, optional 
+        Return the complex-valued kernel such that the matrix operation ``V=K@P`` with a distance distribution yields the in-phase 
+        and out-of-phase components of the dipolar signal ``V``. Disabled by default. 
+        Requires the ``'fresnel'`` or ``'grid'`` methods.
+
     integralop : boolean, optional
-        Whether to return K as an integral operator (i.e ``K = K*dr``) or not (``K``). Usage as an integral operator means that the 
+        Return the kernel as an integral operator (i.e ``K = K*dr``) or not (``K``). Usage as an integral operator means that the 
         matrix operation ``V=K@P`` with a normalized distance distribution (i.e. ``trapz(r,P)==1``) leads to a signal ``V`` with 
         ampliude ``V(t=0)=1``. Enabled by default.
     
@@ -97,9 +102,9 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     Notes
     -----
-    For a multi-pathway DEER [1]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` contains a list of pathway amplitudes and refocusing times (in microseconds).
-    The background function specified as ``B`` is used as basis function, and the actual multipathway background included into the kernel is compued using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [2]_. 
-    Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals [3]_. If not given, the harmonic is 1 for all pathways. 
+    For a multi-pathway DEER [1]_, [2]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` contains a list of pathway amplitudes and refocusing times (in microseconds).
+    The background function specified as ``B`` is used as basis function, and the actual multipathway background included into the kernel is compued using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [3]_. 
+    Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals [4]_. If not given, the harmonic is 1 for all pathways. 
 
 
     Examples
@@ -135,16 +140,19 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     References
     ----------
-    .. [1] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. 
+    .. [1] L. Fábregas Ibáñez, M. H. Tessmer, G. Jeschke, and S. Stoll. 
+        Dipolar pathways in dipolar EPR spectroscopy, Phys. Chem. Chem. Phys., 2022, Advance Article
+
+    .. [2] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. 
         DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson., 1, 209–224, 2020 
 
-    .. [2] L. Fábregas Ibáñez, and G. Jeschke
+    .. [3] L. Fábregas Ibáñez, and G. Jeschke
         Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.
 
-    .. [3] K. Keller, V. Mertens, M. Qi, A. I. Nalepa, A. Godt, A. Savitsky, G. Jeschke, and M. Yulikov
+    .. [4] K. Keller, V. Mertens, M. Qi, A. I. Nalepa, A. Godt, A. Savitsky, G. Jeschke, and M. Yulikov
         Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19
 
-    .. [4] J. E. Banham, C. M. Baker, S. Ceola, I. J. Day, G.H. Grant, E. J. J. Groenen, C. T. Rodgers, G. Jeschke, C. R. Timmel
+    .. [5] J. E. Banham, C. M. Baker, S. Ceola, I. J. Day, G.H. Grant, E. J. J. Groenen, C. T. Rodgers, G. Jeschke, C. R. Timmel
         Distance measurements in the borderline region of applicability of CW EPR and DEER: A model study on a homologous series of spin-labelled peptides, Journal of Magnetic Resonance, 191, 2, 2008, 202-218
     """
     # Clear cache of memoized function is requested
@@ -174,6 +182,9 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
             raise KeyError("Excitation bandwidths can only be specified with the 'grid' or 'integral' methods.")
         if orisel is not None:
             raise KeyError("Orientation selection weights can only be specified with  the 'grid' or 'integral' methods.")
+    if method=='integral':
+        if complex:
+            raise KeyError("Complex-valued kernels cannot be computed by the 'integral' method.")
 
     # Check whether the full pathways or the modulation depth have been passed
     pathways_passed =  pathways is not None
@@ -210,7 +221,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
             raise KeyError(f'The pathway #{i} must be a list of two or three elements [λ, T0] or [λ, T0, n]') 
 
     # Define kernel matrix auxiliary function
-    K0 = lambda t: elementarykernel(t,r,method,excbandwidth,nKnots,g,orisel)
+    K0 = lambda t: elementarykernel(t,r,method,excbandwidth,nKnots,g,orisel,complex)
 
     # Build dipolar kernel matrix, summing over all pathways
     K = Λ0
@@ -241,11 +252,14 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 #==============================================================================
 
 @cached(max_size=5)
-def _Cgrid(ωr,t,ωex,q):
+def _Cgrid(ωr,t,ωex,q,complex):
 #==============================================================================
     "Evaluates the costly 3D powder kernel matrix (cached for speed)"
     # Vectorized 3D-grid evaluation (t,r,powder averaging)
-    C = np.cos(ωr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:]*abs(t[:,np.newaxis,np.newaxis]))
+    if complex: 
+        C = np.exp(-1j*ωr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:]*t[:,np.newaxis,np.newaxis])
+    else:
+        C = np.cos(ωr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:]*abs(t[:,np.newaxis,np.newaxis]))
     # If given, include limited excitation bandwidth
     if not np.isinf(ωex):
         C = C*np.exp(-(ωr[np.newaxis,:,np.newaxis]*q[np.newaxis,np.newaxis,:])**2/ωex**2)
@@ -253,7 +267,7 @@ def _Cgrid(ωr,t,ωex,q):
 #==============================================================================
 
 @cached(max_size=100)
-def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
+def elementarykernel(t,r,method,ωex,nKnots,g,Pθ,complex):
 #==============================================================================
     "Calculates the elementary dipolar kernel (cached for speed)"
 
@@ -281,15 +295,22 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
         """Calculate kernel using Fresnel integrals (fast and accurate)"""
 
        # Calculation using Fresnel integrals
-        ɸ = np.outer(np.abs(t), ωr)
-        κ = np.sqrt(6*ɸ/π)
-        
-        # Supress divide by 0 warning        
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            S, C = fresnel(κ)/κ
-        
-        K0 = C*np.cos(ɸ) + S*np.sin(ɸ)
+        if complex:
+            ɸ = np.outer(t, ωr)
+            κ = np.lib.scimath.sqrt(6*ɸ/π)
+            S, C = fresnel(κ)
+            K0 = np.exp(-1j*ɸ)*(C + 1j*S)
+
+        else:
+            ɸ = np.outer(np.abs(t), ωr)
+            κ = np.lib.scimath.sqrt(6*ɸ/π)
+            S, C = fresnel(κ)
+            K0 = C*np.cos(ɸ) + S*np.sin(ɸ)
+
+        # Supress divide by 0 warning       
+        with warnings.catch_warnings(): 
+            warnings.simplefilter("ignore")
+            K0 = K0/κ
 
         # Limit of K0(t,r) as t->0
         K0[t==0] = 1 
@@ -307,10 +328,10 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ):
 
         if orientationselection:
             # Integrate over the orientations distribution Pθ
-            K0 = np.dot(_Cgrid(ωr,t,ωex,q),Pθ(np.arccos(cosθ)))/nKnots
+            K0 = np.dot(_Cgrid(ωr,t,ωex,q,complex),Pθ(np.arccos(cosθ)))/nKnots
         else: 
             # Elementary kernel without orientation selection
-            K0 = np.sum(_Cgrid(ωr,t,ωex,q),axis=2)/nKnots
+            K0 = np.sum(_Cgrid(ωr,t,ωex,q,complex),axis=2)/nKnots
         return K0
     #==========================================================================
 
