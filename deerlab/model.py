@@ -991,6 +991,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
     # Run the fitting algorithm 
     fitresults = fitfcn(y)
+    penweights = [penalty._weight_value for penalty in penalties]
 
     # If requested, perform a bootstrap analysis
     if bootstrap>0: 
@@ -1106,8 +1107,6 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
-
-    penweights = [penalty._weight_value for penalty in penalties]
 
     # Generate FitResult object from all the dictionaries
     fitresult = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict,'penweights':penweights,'noiselvl':noiselvl, 'propagate': propagate, 'evaluate': evaluate}) 

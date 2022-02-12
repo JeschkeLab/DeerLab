@@ -83,7 +83,7 @@ setup(
     include_package_data = True,
     keywords='data analysis EPR spectroscopy DEER PELDOR'.split(),
     description='Comprehensive package for data analysis of dipolar EPR spectroscopy',
-    long_description=open('README.md').read(),
+    long_description=open('README.md', encoding='utf-8').read(),
     long_description_content_type="text/markdown",
     cmdclass={
         'install': install_routine,

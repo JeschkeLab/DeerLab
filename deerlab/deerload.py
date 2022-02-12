@@ -279,7 +279,7 @@ def read_description_file(DSCFileName):
     reDeviceHeader = re.compile(r"\.DVC\W+(\w+),\W+(\d+\.\d+)")
     reKeyValue = re.compile(r"(\w+)\W+(.*)")
     
-    for line in allLines:
+    for nline,line in enumerate(allLines):
 
         if 'MANIPULATION HISTORY LAYER' in line:
             break
@@ -305,7 +305,9 @@ def read_description_file(DSCFileName):
         # Key/value entry
         mo3 = reKeyValue.search(line)
         if not mo3:
-            raise ValueError("Key/value pair expected.")        
+            warn(f"Key/value pair expected on line {nline}.")
+            continue 
+               
         if not SectionName:
             raise ValueError("Found a line with key/value pair outside any layer.")
         if SectionName=="DSL" and not DeviceName:

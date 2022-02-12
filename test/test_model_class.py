@@ -850,10 +850,13 @@ def test_fit_evaluate_callable():
 
 #----------------------------------------------------------------
 def assert_cis(argUncert):
-    arg = argUncert.mean
+    arg = argUncert.median  
     parci = argUncert.ci(95)
     ci_lower = parci[:,0]
     ci_upper = parci[:,1]
+    ci_lower = ci_lower[arg>1e-10]
+    ci_upper = ci_upper[arg>1e-10]
+    arg = arg[arg>1e-10]
     assert np.all(arg<=ci_upper) and np.all(arg>=ci_lower) 
 #----------------------------------------------------------------
 
@@ -930,6 +933,85 @@ def test_fit_propagate_callable():
 
     x = np.linspace(0,10,200)
     fitResult = fit(model,mock_data_fcn(x),x)
+    
+    fcn = lambda mean1,mean2,width1,width2,amps: gauss2_design_axis(x,mean1,mean2,width1,width2)@amps
+    modeluq = fitResult.propagate(fcn, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_parametric_bootstrapped(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a parametric model"
+    model = _getmodel_axis('parametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_nonparametric_bootstrapped(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a nonparametric model"
+    model = _getmodel_axis('nonparametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_nonparametric_vec_bootstrapped(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a vectorized nonparametric model"
+    model = _getmodel_axis('nonparametric_vec',vec=80)
+
+    x = np.linspace(0,10,80)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_semiparametric_bootstrapped(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a semiparametric model"
+    model = _getmodel_axis('semiparametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_semiparametric_vec_bootstrapped(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a vectorized semiparametric model"
+    model = _getmodel_axis('semiparametric_vec')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_callable_bootstrapped(): 
+#================================================================
+    "Check the evaluate method of the fitResult object for evaluation of a callable function"
+    model = _getmodel_axis('semiparametric_vec')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
     
     fcn = lambda mean1,mean2,width1,width2,amps: gauss2_design_axis(x,mean1,mean2,width1,width2)@amps
     modeluq = fitResult.propagate(fcn, lb=np.zeros_like(x))

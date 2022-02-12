@@ -807,6 +807,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # Compute the fit residual
     _ResidualsFcn = lambda nonlinfit: ResidualsFcn(_unfrozen_subset_inv(nonlinfit,nonlin_frozen))
     res = _ResidualsFcn(nonlinfit)
+    fvals = np.sum(res**2) 
 
     if verbose>0: 
         print(f'{timestamp()} Least-squares routine finished.')
@@ -1128,8 +1129,10 @@ def cvxnnls(AtA, Atb, tol=None, maxiter=None):
     cvx.solvers.options['max_iters'] = maxiter
     cvx.solvers.options['abstol'] = tol
     cvx.solvers.options['reltol'] = tol
-
-    P = cvx.solvers.qp(cAtA, cAtb, I, lb, initvals=cvx.matrix(x0))['x']
-    P = np.squeeze(np.asarray(P))
+    try:
+        P = cvx.solvers.qp(cAtA, cAtb, I, lb, initvals=cvx.matrix(x0))['x']
+        P = np.squeeze(np.asarray(P))
+    except: 
+        P = x0
     return P
 #=====================================================================================

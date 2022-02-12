@@ -3,11 +3,9 @@ import warnings
 import numpy as np
 import scipy as scp
 import scipy.optimize as opt
-from scipy.linalg import block_diag
 from types import FunctionType 
 from functools import wraps
 
-from scipy.sparse.construct import block_diag
 
 def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None, subsets=None):
 #===============================================================================
