@@ -125,17 +125,17 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
     # Populate the basic information on the dipolar pathways parameters
     if npathways==1:
         # Special case: use modulation depth notation instead of general pathway amplitude
-        getattr(PathsModel,f'mod').set(lb=0,ub=1,par0=0.2,description=f'Modulation depth',units='')
+        getattr(PathsModel,f'mod').set(lb=0,ub=1,par0=0.01,description=f'Modulation depth',units='')
         getattr(PathsModel,f'reftime').set(par0=0,description=f'Refocusing time',units='μs')
     else:
         # General case: use pathway ampltiudes and refocusing times
         for n in range(npathways):
-            getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.2,description=f'Amplitude of pathway #{n+1}',units='')
+            getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of pathway #{n+1}',units='')
             getattr(PathsModel,f'reftime{n+1}').set(par0=0,lb=-20,ub=20,description=f'Refocusing time of pathway #{n+1}',units='μs')
 
     # Construct the signature of the dipolar signal model function
     signature = []
-    parameters,linearparam,vecparam = [],[],[]
+    parameters,linearparam = [],[]
     for model in [PathsModel,Bmodel,Pmodel]:
         if model is not None:
             for param in model._parameter_list(order='vector'):
@@ -371,7 +371,7 @@ def ex_3pdeer(tau):
     # Theoretical refocusing pathways
     reftimes = [ tau, 0]
     # Initial guesses for the pathway amplitudes
-    lams_par0 = [ 0.3, 0.05]
+    lams_par0 = [ 0.01, 0.01]
 
     return ExperimentInfo('3-pulse DEER',reftimes,lams_par0)
 #===============================================================================
@@ -406,7 +406,7 @@ def ex_4pdeer(tau1,tau2):
     # Theoretical refocusing pathways
     reftimes = [ tau1, tau1+tau2, 0, tau2 ]
     # Initial guesses for the pathway amplitudes
-    lams_par0 = [ 0.3, 0.05, 0.05, 0.05]
+    lams_par0 = [ 0.01, 0.01, 0.01, 0.01]
 
     return ExperimentInfo('4-pulse DEER',reftimes,lams_par0)
 #===============================================================================
@@ -444,7 +444,7 @@ def ex_5pdeer(tau1,tau2,tau3):
     # Theoretical refocusing pathways
     reftimes = [ tau3, tau2, tau2-tau3, tau1+tau3, tau1+tau2-tau3, 0, tau1+tau2, tau1]
     # Initial guesses for the pathway amplitudes
-    lams_par0 = [ 0.3, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
+    lams_par0 = [ 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
     
     return ExperimentInfo('5-pulse DEER',reftimes,lams_par0)
 #===============================================================================
