@@ -52,3 +52,7 @@ To build the documentation from the source, call the Makefile or make.bat script
         ./docsrc/make.bat    
         # To compile from scratch
         ./docsrc/make.bat clean    
+
+If the `sphinx-build` command is not found, the documentation can be built with the following command 
+
+        python -m sphinx.cmd.build -d ./cache -b html ./source ../docs

@@ -138,7 +138,7 @@ to refine the dipolar signal models by introducing experimental information.
 
 .. autosummary:: 
   :toctree: _autosummary
-  :template: function.rst
+  :template: custom_data_template.rst
   :nosignatures:
 
   ex_3pdeer
