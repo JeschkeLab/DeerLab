@@ -850,13 +850,11 @@ def test_fit_evaluate_callable():
 
 #----------------------------------------------------------------
 def assert_cis(argUncert):
-    arg = argUncert.median  
     parci = argUncert.ci(95)
     ci_lower = parci[:,0]
     ci_upper = parci[:,1]
 
-    assert np.greater_equal(arg,ci_lower,out=np.full_like(arg,True,dtype=bool),where=(arg>=1e-7)).all()
-    assert np.less_equal(arg,ci_upper,out=np.full_like(arg,True,dtype=bool),where=(arg>=1e-7)).all()
+    assert np.less_equal(ci_lower,ci_upper).all()
 #----------------------------------------------------------------
 
 
