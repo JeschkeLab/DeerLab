@@ -8,7 +8,7 @@ from deerlab.utils import movmean, der_snr
 from deerlab.correctphase import correctphase
 from scipy.signal import savgol_filter
 import warnings
-import numpy as np
+
 def noiselevel(V,mode='der',*args):
     r"""
     Estimate the noise level in a dataset.

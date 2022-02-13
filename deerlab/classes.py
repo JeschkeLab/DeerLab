@@ -8,7 +8,6 @@ from scipy.signal import fftconvolve
 from scipy.linalg import block_diag
 from scipy.optimize import brentq
 from scipy.interpolate import interp1d
-import copy
 
 class FitResult(dict):
 # ========================================================================
