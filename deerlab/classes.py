@@ -8,7 +8,6 @@ from scipy.signal import fftconvolve
 from scipy.linalg import block_diag
 from scipy.optimize import brentq
 from scipy.interpolate import interp1d
-import copy
 
 class FitResult(dict):
 # ========================================================================
@@ -518,6 +517,7 @@ class UQResult:
                 # Get the parameter uncertainty distribution
                 values,pdf = self.pardist(n)
                 # Random sampling form the uncertainty distribution
+                np.random.seed(0)
                 sampled_parameters[n] =  [np.random.choice(values, p=pdf/sum(pdf)) for _ in range(Nsamples)]
             # Convert to matrix
             sampled_parameters = np.atleast_2d(sampled_parameters)

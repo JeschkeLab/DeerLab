@@ -5,7 +5,6 @@
  
 import numpy as np
 import math as m
-import scipy as scp
 from numpy import pi
 import inspect
 from deerlab.dipolarkernel import dipolarkernel

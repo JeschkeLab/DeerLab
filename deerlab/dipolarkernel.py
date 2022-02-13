@@ -8,7 +8,6 @@ import numpy as np
 from numpy import pi,inf
 import scipy.integrate
 from scipy.special import fresnel
-from scipy.interpolate import interp1d
 # Other packages
 import types
 import warnings

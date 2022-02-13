@@ -4,7 +4,7 @@
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from scipy.sparse.construct import block_diag
+from scipy.sparse import block_diag
 from scipy.optimize import fminbound
 from deerlab.solvers import snlls
 from deerlab.classes import FitResult, UQResult
