@@ -855,8 +855,8 @@ def assert_cis(argUncert):
     ci_lower = parci[:,0]
     ci_upper = parci[:,1]
 
-    assert np.greater_equal(arg,ci_lower,out=np.full_like(arg,True,dtype=bool),where=(arg>=1e-9)).all()
-    assert np.less_equal(arg,ci_upper,out=np.full_like(arg,True,dtype=bool),where=(arg>=1e-9)).all()
+    assert np.greater_equal(arg,ci_lower,out=np.full_like(arg,True,dtype=bool),where=(arg>=1e-7)).all()
+    assert np.less_equal(arg,ci_upper,out=np.full_like(arg,True,dtype=bool),where=(arg>=1e-7)).all()
 #----------------------------------------------------------------
 
 
