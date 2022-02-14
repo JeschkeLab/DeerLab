@@ -56,3 +56,7 @@ To build the documentation from the source, call the Makefile or make.bat script
 If the `sphinx-build` command is not found, the documentation can be built with the following command 
 
         python -m sphinx.cmd.build -d ./cache -b html ./source ../docs
+
+To skip running the examples with the Sphinx Gallery extension (can be very long on a first build) use the option `-D  plot_gallery=0`, e.g.
+
+        python -m sphinx.cmd.build -E -b html ./source ../docs -D  plot_gallery=0  

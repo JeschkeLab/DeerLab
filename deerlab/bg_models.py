@@ -86,8 +86,6 @@ def _docstring(model,notes):
     string += formatted_table(table)
     string += f'\n{notes}'
 
-    string += f'\n{notes}'
-
     return string
 #---------------------------------------------------------------------------------------
 
@@ -137,30 +135,28 @@ notes = r"""
 
 This model describes the phase shift due to inter-molecular interactions between one observer spin with a 3D homogenous distribution of spins of concentration `c_s`
 
-.. image:: ../images/model_scheme_bg_hom3d.png
-   :width: 350px
-
 The expression for this model is
 
 .. math::
-   B(t) = \mathrm{exp}\left(-\frac{8\pi^2}{9\sqrt{3}}\frac{\sqrt{3} + ln(2 - \sqrt{3})}{\pi}\lambda c_s D |t|\right)`
+   B(t) = \mathrm{exp}\left(-\ii\frac{8\pi}{9\sqrt{3}}(\sqrt{3} + \mathrm{ln}(2-\sqrt{3}))\lambda c_s D |t|\right)`
 
 where `c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this expression) and D is the dipolar constant
 
 .. math::
    D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
+
 """  
 def _hom3dphase(t,conc,lam):
     # Units conversion    
     conc = conc*1e-6*1e3*Nav # umol/L -> mol/L -> mol/m^3 -> spins/m^3
     # Compute background function
-    ξ = 8*pi**2/9/np.sqrt(3)*(np.sqrt(3)+np.log(2-np.sqrt(3)))/np.pi*D
+    ξ = 8*pi/9/np.sqrt(3)*(np.sqrt(3)+np.log(2-np.sqrt(3)))*D
     B = np.exp(-1j*ξ*lam*conc*(t*1e-6))
 
     return B
 # Create model
 bg_hom3d_phase = Model(_hom3dphase,constants='t')
-bg_hom3d_phase.description = 'Phase shift of the background from a homogeneous distribution of spins in a 3D medium'
+bg_hom3d_phase.description = 'Phase shift from a homogeneous distribution of spins in a 3D medium'
 # Parameters
 bg_hom3d_phase.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
 bg_hom3d_phase.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
@@ -235,11 +231,11 @@ The expression for this model is
 
 .. math:: B(t) = \exp \Bigg(- \ii c_\mathrm{s}\lambda_k \bigg( V_\mathrm{ex} \mathrm{Im}\{\mathcal{K}_0(t, R_\mathrm{ex})\} + \mathcal{I}_\mathrm{C}(t) \bigg) 
 
-where `\mathcal{I}_\mathrm{S}(t)` is an integral without analytical form given by 
+where `\mathcal{I}_\mathrm{C}(t)` is an integral without analytical form given by 
 
 .. math:: \mathcal{I}_\mathrm{C}(t) = \frac{4\pi}{3} D\,t \int_0^1 \mathrm{d}z~(1 - 3z^2) ~ \mathrm{C_i}\left( \frac{D\,t (1 - 3z^2)}{R_\mathrm{ex}^3 } \right)  
 
-where `\mathrm{S_i}` is the sine integral function and `D` is the dipolar constant
+where `\mathrm{C_i}` is the cosine integral function and `D` is the dipolar constant
 
 .. math:: D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
 
@@ -264,7 +260,7 @@ def _hom3dex_phase(t,conc,rex,lam):
     return B
 # Create model
 bg_hom3dex_phase = Model(_hom3dex_phase,constants='t')
-bg_hom3dex_phase.description = 'Phase shift from the background from a homogeneous distribution of spins with excluded volume'
+bg_hom3dex_phase.description = 'Phase shift from a homogeneous distribution of spins with excluded volume'
 # Parameters
 bg_hom3dex_phase.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
 bg_hom3dex_phase.rex.set(description='Exclusion radius', lb=0.01, ub=20, par0=1, units='nm')
@@ -354,7 +350,7 @@ def _homfractal_phase(t,fconc,fdim,lam):
  # ======================================================================
 # Create model
 bg_homfractal_phase = Model(_homfractal_phase,constants='t')
-bg_homfractal_phase.description = 'Phase shift of the background from a homogeneous distribution of spins in a fractal medium'
+bg_homfractal_phase.description = 'Phase shift from a homogeneous distribution of spins in a fractal medium'
 # Parameters
 bg_homfractal_phase.fconc.set(description='Fractal concentration of spins', lb=1e-20, ub=1e20, par0=1.0e-6, units='μmol/dmᵈ')
 bg_homfractal_phase.fdim.set(description='Fractal dimensionality', lb=0.01, ub=5.99, par0=2.2, units='')
