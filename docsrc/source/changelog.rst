@@ -52,6 +52,7 @@ Release v0.14.0 - December 2021
 - |feature| Added support for analyzing and fitting complex-valued models and data (:issue:`127`, :pr:`218`).
 - |feature| Orientation selection in dipolar signals can now be simulated for arbitrary orientation weights distributions via the ``orisel`` keyword argument in the new ``dipolarmodel`` or the ``dipolarkernel`` functions (:pr:`183`, :pr:`203`). 
 - |feature| Re-purposed the ``ex_`` models. Each of these function represents a specific dipolar EPR experiment. These now take the experimental time delays as input, and return a new ``ExperimentInfo`` object. This can be passed to ``dipolarmodel`` via the optional keyword argument ``experiment`` to refine the boundaries and start values of the dipolar pathway refocusing times and amplitudes based on the experimental setup (:pr:`225`). 
+- |feature| Implemented masking of datasets during optimization (:pr:`250`).
 - |enhancement| Overhaul of the DeerLab documentation website (:pr:`235`).
 
   * Full HTML/CSS overhaul. The new web design based on the PyData theme has a clearer design, with more readable pages and code blocks.
@@ -75,6 +76,7 @@ Release v0.14.0 - December 2021
 - |api| Deprecated the ``regparamrange`` function (:pr:`232`). It depended on home-written code for the GSVD, which (as shown in previous issues) was prone to LAPACK backend problems and other bugs. This function was still a derelict from DeerAnalysis methodology.
 - |fix| When using the ``multistart`` keyword argument, no longer includes the parameter boundaries in the set of multiple start values (:pr:`218`). 
 - |fix| Fixed error (manifesting as ``nan`` values in the confidence intervals) caused by a division-by-zero in the covariance matrix estimation (:pr:`218`).
+- |fix| Fix encoding error during installation (:pr:`252`). This error could disrupt the installation in OS with default encoding different from CP-1252.
 - |fix| Implement a new function to ensure that estimated Jacobians are positive semi-definite matrices. This fixes the appearance of warnings and bugs when calculating confidence intervals (:pr:`216`).
 - |fix| Corrected the scale invariance behavior of the covariance-based uncertainty estimates (:pr:`218`).
 - |fix| Fixed multiple ``numpy.VisibleDeprecationWarning`` and ``RunTime`` warnings (:issue:`207`, :pr:`212`).
@@ -82,13 +84,20 @@ Release v0.14.0 - December 2021
 - |fix| Corrected the behavior of dataset weights. These are no longer normalized at runtime and kept as specified by the users (:issue:`248`, :pr:`250`).
 - |fix| While testing, now skips a unit test if an error with the Tk backend of Matplotlib occurs (:pr:`211`).
 - |fix| Fix multiple bugs and errors related to the new modelling and fitting system (:pr:`226`, :issue:`233`, :pr:`235`, :issue:`241`, :pr:`242`, :issue:`244`, :pr:`245`, :pr:`246`, :pr:`249`).
+- |fix| Correct behavior of multistart optimization for one-sided parameter boundaries (:pr:`252`).
 
 .. rubric:: ``bootstrap_analysis``
 - |efficiency| Added a new keyword argument ``memorylimit`` to specify the maximal memory used by the boostrap analysis (by default 8GB). If the total analysis is expected to exceed the memory limit, the function will abort the execution (:issue:`200`, :pr:`238`).
 
 .. rubric:: ``dipolarkernel``
+- |feature| Added a new option `complex` to request the complex-valued dipolar kernel to simulate the out-of-phase contributions to the dipolar signals (:pr:`258`).
 - |efficiency| Added a new keyword argument ``memorylimit`` to specify the maximal memory used by the dipolar kernel (by default 8GB). If the dipolar kernel is expected to exceed the memory limit, the function will abort the execution (:issue:`200`, :pr:`238`).
 - |fix| Prompts error if wrong method is selected when specifying a limited excitation bandwidth (:issue:`181`, :pr:`183`). 
+
+.. rubric:: ``bg_models``
+- |feature| Implemented the time-dependent phase shifts for all the built-in physical backgound models, namely `bg_hon3d_phase`, `bg_hom3dex_phase`, and `bg_homfractal_phase` (:pr:`258`).   
+- |enhancement| Changed the implementation of `bg_hom3dex` (:pr:`258`). This avoids the use of tabulated pre-calculated values. Accordingly the utility functions `calculate_exvolume_redfactor` and `load_exvolume_redfactor` have been removed.
+- |fix| Improved the implementation and behavior of the `bg_homfractal` moddel (:pr:`258`).
 
 .. rubric:: ``diststats``
 - |fix| Fixed the behavior when dealing with distributions with arbitrary integral values
@@ -102,6 +111,14 @@ Release v0.14.0 - December 2021
 .. rubric:: ``UQResult``
 - |fix| Ensures non-negativity of estimated parameter uncertainty probability density functions.
 - |enhancement| Improve the behavior of ``UQresult.propagate()`` for bootstrapped uncertainty results. Now, instead of propagating bootstrapped uncertainty via the estimated covariance matrix, the uncertainty is propagated by bootstrapping from the bootstrapped uncertainty distributions (:pr:`218`). 
+- |fix| Fix behavior of the bootstrap median (:pr:`254`).
+- |fix| Suppress multiple ``DeprecationWarning`` warnings during uncertainty calculations (:pr:`255`).
+
+.. rubric:: ``correctphase``
+- |fix| Altered the implementation to include a vectorized analytical solution, resulting in a 30-150x speedup (:pr:`256`).
+
+.. rubric:: ``deerload``
+- |fix| Raise warning instead of exception when parsing lines without key-value pairs (:pr:`256`). This avoid errors when trying to load BES3T files with PulseSPEL scripts edited in different OS systems.
 
 
 Release v0.13.2 - July 2021
