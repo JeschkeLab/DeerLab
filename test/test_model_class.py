@@ -2,6 +2,7 @@ from collections import namedtuple
 from deerlab.whitegaussnoise import whitegaussnoise
 from deerlab.model import Model, fit
 import numpy as np 
+import pytest
 
 # Simple non-linear function for testing
 x = np.linspace(0,5,100)
@@ -372,6 +373,24 @@ def test_freeze():
     model.mean.freeze(3)
 
     assert model.mean.value==3 and model.mean.frozen==True
+#================================================================
+
+def test_freeze_outofbounds():
+#================================================================
+    "Check that a parameter cannot be frozen outside of the bounds"
+    model = Model(gauss)
+    model.mean.set(lb=0,ub=10)
+    with pytest.raises(ValueError):
+        model.mean.freeze(-10)
+#================================================================
+
+def test_freeze_vec_outofbounds():
+#================================================================
+    "Check that a parameter cannot be frozen outside of the bounds"
+    model = Model(gauss2_identity)
+    model.addlinear('gaussian', vec=100, lb=0)
+    with pytest.raises(ValueError):
+        model.gaussian.freeze(np.full(100,-10))
 #================================================================
 
 def test_unfreeze():
