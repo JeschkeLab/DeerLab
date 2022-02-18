@@ -2,6 +2,7 @@ from collections import namedtuple
 from deerlab.whitegaussnoise import whitegaussnoise
 from deerlab.model import Model, fit
 import numpy as np 
+import pytest
 
 # Simple non-linear function for testing
 x = np.linspace(0,5,100)
@@ -372,6 +373,24 @@ def test_freeze():
     model.mean.freeze(3)
 
     assert model.mean.value==3 and model.mean.frozen==True
+#================================================================
+
+def test_freeze_outofbounds():
+#================================================================
+    "Check that a parameter cannot be frozen outside of the bounds"
+    model = Model(gauss)
+    model.mean.set(lb=0,ub=10)
+    with pytest.raises(ValueError):
+        model.mean.freeze(-10)
+#================================================================
+
+def test_freeze_vec_outofbounds():
+#================================================================
+    "Check that a parameter cannot be frozen outside of the bounds"
+    model = Model(gauss2_identity)
+    model.addlinear('gaussian', vec=100, lb=0)
+    with pytest.raises(ValueError):
+        model.gaussian.freeze(np.full(100,-10))
 #================================================================
 
 def test_unfreeze():
@@ -850,11 +869,11 @@ def test_fit_evaluate_callable():
 
 #----------------------------------------------------------------
 def assert_cis(argUncert):
-    arg = argUncert.mean
     parci = argUncert.ci(95)
     ci_lower = parci[:,0]
     ci_upper = parci[:,1]
-    assert np.all(arg<=ci_upper) and np.all(arg>=ci_lower) 
+
+    assert np.less_equal(ci_lower,ci_upper).all()
 #----------------------------------------------------------------
 
 
@@ -930,6 +949,85 @@ def test_fit_propagate_callable():
 
     x = np.linspace(0,10,200)
     fitResult = fit(model,mock_data_fcn(x),x)
+    
+    fcn = lambda mean1,mean2,width1,width2,amps: gauss2_design_axis(x,mean1,mean2,width1,width2)@amps
+    modeluq = fitResult.propagate(fcn, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_parametric_bootstrapped(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a parametric model"
+    model = _getmodel_axis('parametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_nonparametric_bootstrapped(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a nonparametric model"
+    model = _getmodel_axis('nonparametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_nonparametric_vec_bootstrapped(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a vectorized nonparametric model"
+    model = _getmodel_axis('nonparametric_vec',vec=80)
+
+    x = np.linspace(0,10,80)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_semiparametric_bootstrapped(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a semiparametric model"
+    model = _getmodel_axis('semiparametric')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_semiparametric_vec_bootstrapped(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a vectorized semiparametric model"
+    model = _getmodel_axis('semiparametric_vec')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_callable_bootstrapped(): 
+#================================================================
+    "Check the evaluate method of the fitResult object for evaluation of a callable function"
+    model = _getmodel_axis('semiparametric_vec')
+
+    x = np.linspace(0,10,200)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
     
     fcn = lambda mean1,mean2,width1,width2,amps: gauss2_design_axis(x,mean1,mean2,width1,width2)@amps
     modeluq = fitResult.propagate(fcn, lb=np.zeros_like(x))

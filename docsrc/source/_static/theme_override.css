@@ -181,6 +181,8 @@
    }
    img {
     border-style:none;
+    margin-top: 20px;
+    margin-bottom: 20px;
    }
    img,
    svg {
@@ -8886,7 +8888,9 @@
    .navbar-brand img {
     max-width:100%;
     height:100%;
-    width:auto
+    width:auto;
+    margin-top: 0px;
+    margin-bottom: 0px;
    }
    .navbar-light {
     background:#fff!important;

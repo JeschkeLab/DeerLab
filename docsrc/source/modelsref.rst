@@ -109,6 +109,17 @@ This category involves models that describe particular distributions of spin lab
   bg_homfractal
 
 
+Additionally, the following models describe the time-dependent phase-shifts arising from these particular distributions of spin labels in space. 
+
+.. autosummary:: 
+  :toctree: _autosummary
+  :template: custom_data_template.rst
+  :nosignatures:
+
+  bg_hom3d_phase
+  bg_hom3dex_phase
+  bg_homfractal_phase
+
 .. rubric:: Phenomenological models
 
 This category comprises phenomenological models that represent various mathematical functions that are intended to mimick the background decay, without reference to a particular spatial distribution of spins. The parameters of these models do no have direct physical meaning.
@@ -138,9 +149,12 @@ to refine the dipolar signal models by introducing experimental information.
 
 .. autosummary:: 
   :toctree: _autosummary
-  :template: function.rst
+  :template: custom_function_template.rst
   :nosignatures:
 
   ex_3pdeer
   ex_4pdeer
-  ex_5pdeer
+  ex_rev5pdeer
+  ex_fwd5pdeer
+  ex_sifter
+  ex_ridme
