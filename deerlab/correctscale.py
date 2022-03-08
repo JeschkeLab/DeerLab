@@ -9,43 +9,44 @@ from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp
 from deerlab.utils import isempty
 
-def correctscale(V,t,tmax=[],model='deer'):
+def correctscale(V, t, tmax=None, model='deer'):
     r""" 
-Amplitude scale correction
+    Amplitude scale correction
 
-Takes the experimental dipolar signal (V) on a given time axis (t) and
-rescales it so that it is 1 at time zero, taking into account the noise.
-It fits a model specified in (model) over the interval ``abs(t)<tmax`` around time zero.
-It returns the rescaled signal (Vc) and the scaling factor (V0).
+    Takes the experimental dipolar signal (V) on a given time axis (t) and
+    rescales it so that it is 1 at time zero, taking into account the noise.
+    It fits a model specified in (model) over the interval ``-tmax < t < tmax``
+    around time zero. It returns the rescaled signal (Vc) and the scaling factor (V0).
 
-Parameters
-----------
-V : array_like
-    Experimenal signal.
-    
-t : array_like 
-    Time axis, in microseconds. 
+    Parameters
+    ----------
+    V : array_like
+        Experimenal signal.
+        
+    t : array_like 
+        Time axis, in microseconds. 
 
-tmax : scalar, optional
-    Time cutoff for fit range, in microseconds.
+    tmax : scalar, optional
+        Time cutoff for fit range, in microseconds. If not specified, no cutoff is used.
 
-model : string, optional
-    Model to fit over ``abs(t)<tmax``
-    * ``'deer'`` - DEER model with Gaussian distribution.
-    * ``'gauss'`` - Raised Gaussian.
-    
-    The default is ``'deer'``
+    model : string, optional
+        Model to fit over ``abs(t)<tmax``
+        * ``'deer'`` - DEER model with Gaussian distribution.
+        * ``'gauss'`` - Raised Gaussian.
+        
+        The default is ``'deer'``
 
-Returns
--------
-Vc : ndarray
+    Returns
+    -------
+    Vc : ndarray
     Rescaled signal.
     """
     if not all(np.isreal(V)):
         raise ValueError('Input signal cannot be complex.') 
 
-    if isempty(tmax):
+    if tmax is None:
         tmax = max(t)
+
     # Approximate scaling
     Amp0 = max(V)
     V_ = V/Amp0
@@ -74,7 +75,7 @@ Vc : ndarray
         lb = [1e-3, 1e-3, 1e-3]
         ub = [10, 1000, 10000]
     else: 
-        raise KeyError(f"Unknown model '{model}'")
+        raise KeyError(f"Unknown model '{model}'.")
 
     # Run the parametric model fitting
     fit = snlls(V_,fitmodel,par0,lb,ub,uq=False,lin_frozen=[1])
