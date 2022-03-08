@@ -7,15 +7,15 @@ def correctphase(V, phase='posrealint', full_output=False):
     Phase correction of complex-valued data
 
     Performs a phase optimization on the complex-valued data ``V`` by determining a phase
-    rotation of ``V`` that minimizes the imaginary component.
+    rotation of ``V`` that minimizes its imaginary component.
     
-    Two-dimensional datasets ``V2D``, e.g. from multiple scans measurements, can be provided, 
+    Two-dimensional datasets ``V2D``, e.g. from measurements with multiple scans, can be provided, 
     and the phase correction will be done on each trace individually. The first dimension ``V2D[:,i]``
     must contain the single traces. An array of phases ``phases`` can be specified to manually correct the traces.
 
     Parameters
     ----------
-    V : array_like or list of array_like
+    V : array_like, or list of array_like
         Complex-valued signals or list thereof.
 
     phase : string, optional
@@ -28,7 +28,7 @@ def correctphase(V, phase='posrealint', full_output=False):
         The default behaviour is ``'posrealint'``.
 
     full_output : boolean, optional
-        If enabled, the function will return additional output arguments, by default disabled.
+        If True, the function will return additional output arguments, by default False.
 
     Returns
     -------
@@ -38,8 +38,8 @@ def correctphase(V, phase='posrealint', full_output=False):
     Vi : ndarray (if full_output==True)
         Imaginary part of the phase corrected dataset.
 
-    phase : float scalar (if full_output==True)
-        Fitted phase used for correction, in radians.    
+    phase : float scalar or ndarray (if full_output==True)
+        Fitted phase used for correction, in radians.
 
     """
 
@@ -70,7 +70,7 @@ def correctphase(V, phase='posrealint', full_output=False):
     elif phase == 'negrealint':
         phis[tempspec.sum(axis=1) > 0] -= np.pi
 
-    V_2d = V_2d * np.exp(1j * phis)[:, None]
+    V_2d *= np.exp(1j * phis)[:, None]
 
     V_2d = np.squeeze(V_2d.T)
 
@@ -82,7 +82,7 @@ def correctphase(V, phase='posrealint', full_output=False):
     phase = phis
 
     if full_output:
-        return Vreal,Vimag,phase
+        return Vreal, Vimag, phase
     else:
         return Vreal
 

@@ -33,7 +33,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     Parameters
     ----------
     t : array_like
-        Dipolar time axis, in microseconds.
+        Dipolar evolution time axis, in microseconds.
     
     r : array_like
         Distance axis, in nanometers.
@@ -42,11 +42,11 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         List of dipolar pathways [1]_. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time in microseconds (T0), 
         and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]``. If n is not given, it is assumed to be 1. 
         For a unmodulated pathway, specify only the amplitude, i.e. ``[Lambda0]``. If neither ``pathways`` or ``mod`` are specified
-        (or ``None``), full-modulation is assumed ``pathways=[[1,0]]``.
+        (or ``None``), ``pathways=[[1,0]]`` is used as the default.
     
     mod : scalar  or ``None``, optional
         Modulation depth for the simplified 4-pulse DEER model. If neither ``pathways`` or ``mod`` are specified (or ``None``),
-        it is assumed to be ``mod=1``. 
+        ``mod=1`` is used as the default.
         
     bg : callable or array_like or ``None``, optional
         For a single-pathway model, the numerical background decay can be passed as an array. 
@@ -69,10 +69,12 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     excbandwidth : scalar, optional
         Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth [5]_.
+        If not specified, an infinite excitation bandwidth is used.
         Requires the ``'grid'`` or ``'integral'`` methods.
 
     g : scalar, 2-element array, optional
-        Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, ``[g, g]`` is assumed 
+        Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, ``[g, g]`` is used.
+        If not specified, g = 2.002319... is used for both spins.
 
     complex : boolean, optional 
         Return the complex-valued kernel such that the matrix operation ``V=K@P`` with a distance distribution yields the in-phase 
@@ -82,7 +84,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     integralop : boolean, optional
         Return the kernel as an integral operator (i.e ``K = K*dr``) or not (``K``). Usage as an integral operator means that the 
         matrix operation ``V=K@P`` with a normalized distance distribution (i.e. ``trapz(r,P)==1``) leads to a signal ``V`` with 
-        ampliude ``V(t=0)=1``. Enabled by default.
+        ampliude ``V(t=0)=1``. The default is ``True``.
     
     nKnots : scalar, optional
         Number of knots for the grid of powder orientations to be used in the ``'grid'`` kernel calculation method. By default set to 5001 knots.
@@ -90,14 +92,14 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     clearcache : boolean, optional
         Clear the cached dipolar kernels at the beginning of the function to save memory. Disabled by default.
 
-    memorylimit : 
+    memorylimit : scalar, optional
         Memory limit to be allocated for the dipolar kernel. If the requested kernel exceeds this limit, the 
         execution will be stopped. The default is 12GB.  
 
     Returns
     --------
     K : ndarray
-        Dipolar kernel operator, such that for a distance distribution ``P``, the dipolar signal is ``V = K@P``
+        Dipolar kernel operator matrix, such that for a distance distribution ``P``, the dipolar signal is ``V = K@P``
 
     Notes
     -----
@@ -245,7 +247,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         dr[-1] = r[-1] - r[-2]
         dr[1:-1] = r[2:] - r[0:-2]
         dr = dr/2
-        K = K*dr
+        K *= dr
     
     return K
 #==============================================================================
