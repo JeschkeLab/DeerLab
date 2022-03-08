@@ -17,7 +17,7 @@ from .whitegaussnoise import whitegaussnoise
 from .bootstrap_analysis import bootstrap_analysis
 from .correctscale import correctscale
 from .fftspec import fftspec
-from .time2dist import time2dist
+from .distancerange import distancerange
 from .classes import FitResult, UQResult
 from .diststats import diststats
 from .profile_analysis import profile_analysis

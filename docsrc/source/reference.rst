@@ -59,6 +59,7 @@ API Reference
     dipolarkernel 
     dipolarbackground
     fftspec
+    distancerange
 
 .. rubric:: Utility functions 
 
