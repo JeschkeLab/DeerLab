@@ -65,14 +65,14 @@ def test_docstring():
 # ======================================================================
 
 
-def test_requiredstdev():
+def test_requiredstd():
 # ======================================================================
     "Check that the standard deviation is a required argument"
 
     N = 10
     t = np.linspace(0,3,N)
     
-    with pytest.raises(SyntaxError):
+    with pytest.raises(TypeError):
         noise = whitegaussnoise(t)
     
 # ======================================================================

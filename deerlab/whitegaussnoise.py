@@ -1,6 +1,6 @@
 import numpy as np
 
-def whitegaussnoise(t, stdev=None, rescale=False, seed=None):
+def whitegaussnoise(t, std, rescale=False, seed=None):
     r"""
     Generates a vector of white Gaussian (normal) noise
     
@@ -8,12 +8,12 @@ def whitegaussnoise(t, stdev=None, rescale=False, seed=None):
     ----------
     t : array_like
         Time axis.
-    stdev : float scalar
+    std : float scalar
         Noise level, i.e. standard deviation of underlying Gaussian distribution.
     rescale : boolean, optional
         If ``True``, rescales the noise vector such that its standard deviation is exactly equal
-        to ``stdev``. If ``False`` (default), the standard deviation of the noise vector can deviate
-        slightly from ``stdev``, particularly for short vectors.
+        to ``std``. If ``False`` (default), the standard deviation of the noise vector can deviate
+        slightly from ``std``, particularly for short vectors.
     seed : integer scalar, optional
         If ``None`` (default), do not seed the random number generator. If an integer scalar is
         given (e.g. ``seed=137``), seed the random number generator with this number.
@@ -32,20 +32,16 @@ def whitegaussnoise(t, stdev=None, rescale=False, seed=None):
     with some integer number ``k`` before calling ``whitegaussnoise``.
     """
     
-    # Require standard deviation
-    if stdev is None:
-        raise SyntaxError('Noise standard deviation (second input) is missing.')
-    
     # Seed RNG if wanted
     if seed is not None:
         np.random.seed(seed)
     
-    # Draw from standard normal distribution
+    # Draw from normal distribution
     N = len(np.atleast_1d(t))
-    noise = np.random.normal(0, stdev, N)
+    noise = np.random.normal(0, std, N)
     
     # Rescale to sample std if wanted
     if rescale:
-        noise *= stdev/np.std(noise)
+        noise *= std/np.std(noise)
     
     return noise
