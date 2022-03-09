@@ -515,7 +515,7 @@ def test_bootCIs_parametric():
     "Check the bootstrapped confidence intervals of the fitted parameters"
     model = _getmodel('parametric')
 
-    noisydata = mock_data + whitegaussnoise(0.01,seed=1)
+    noisydata = mock_data + whitegaussnoise(x,0.01,seed=1)
     fitResult = fit(model,noisydata,bootstrap=3)
     
     assert_attributes_cis(fitResult,['mean1','mean2','width1','width2','amp1','amp2'])
@@ -526,7 +526,7 @@ def test_bootCIs_semiparametric():
     "Check the bootstrapped confidence intervals of the fitted parameters"
     model = _getmodel('semiparametric')
 
-    noisydata = mock_data + whitegaussnoise(0.01,seed=1)
+    noisydata = mock_data + whitegaussnoise(x,0.01,seed=1)
     fitResult = fit(model,noisydata,bootstrap=3)
     
     assert_attributes_cis(fitResult,['mean1','mean2','width1','width2','amp1','amp2'])
@@ -537,7 +537,7 @@ def test_bootCIs_nonparametric():
     "Check the bootstrapped confidence intervals of the fitted parameters"
     model = _getmodel('semiparametric')
 
-    noisydata = mock_data + whitegaussnoise(0.01,seed=1)
+    noisydata = mock_data + whitegaussnoise(x,0.01,seed=1)
     fitResult = fit(model,noisydata,bootstrap=3)
     
     assert_attributes_cis(fitResult,['amp1','amp2'])
