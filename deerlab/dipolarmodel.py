@@ -86,7 +86,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
             'ub' : parameter.ub,
             'par0' : parameter.par0,
             'description' : parameter.description,
-            'units' : parameter.units,
+            'unit' : parameter.unit,
             'linear' : parameter.linear
         }
     #------------------------------------------------------------------------
@@ -142,13 +142,13 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
     # Populate the basic information on the dipolar pathways parameters
     if npathways==1:
         # Special case: use modulation depth notation instead of general pathway amplitude
-        getattr(PathsModel,f'mod').set(lb=0,ub=1,par0=0.01,description=f'Modulation depth',units='')
-        getattr(PathsModel,f'reftime').set(par0=0,description=f'Refocusing time',units='μs')
+        getattr(PathsModel,f'mod').set(lb=0,ub=1,par0=0.01,description=f'Modulation depth',unit='')
+        getattr(PathsModel,f'reftime').set(par0=0,description=f'Refocusing time',unit='μs')
     else:
         # General case: use pathway ampltiudes and refocusing times
         for n in range(npathways):
-            getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of pathway #{n+1}',units='')
-            getattr(PathsModel,f'reftime{n+1}').set(par0=0,lb=-20,ub=20,description=f'Refocusing time of pathway #{n+1}',units='μs')
+            getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of pathway #{n+1}',unit='')
+            getattr(PathsModel,f'reftime{n+1}').set(par0=0,lb=-20,ub=20,description=f'Refocusing time of pathway #{n+1}',unit='μs')
 
     # Construct the signature of the dipolar signal model function
     signature = []

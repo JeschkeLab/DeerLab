@@ -72,16 +72,16 @@ def _docstring(model,notes):
     string += '\n'
     string += '\n'
     table = []
-    table.append(['Name','Lower','Upper','Type','Frozen','Units','Description'])  
+    table.append(['Name','Lower','Upper','Type','Frozen','Unit','Description'])  
     for n,paramname in enumerate(model._parameter_list(order='vector')): 
         param_str = f'``{paramname}``'
         lb_str = f'{np.atleast_1d(getattr(model,paramname).lb)[0]:5.3g}'
         ub_str = f'{np.atleast_1d(getattr(model,paramname).ub)[0]:5.3g}'
         linear_str = "linear" if np.all(getattr(model,paramname).linear) else "nonlin"
         frozen_str = "Yes" if np.all(getattr(model,paramname).frozen) else "No"
-        units_str = str(getattr(model,paramname).units)
+        unit_str = str(getattr(model,paramname).unit)
         desc_str = str(getattr(model,paramname).description)
-        table.append([param_str,lb_str,ub_str,linear_str,frozen_str,units_str,desc_str])
+        table.append([param_str,lb_str,ub_str,linear_str,frozen_str,unit_str,desc_str])
     string += formatted_table(table)
     string += f'\n{notes}'
 
@@ -110,7 +110,7 @@ where `c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this ex
    D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}
 """  
 def _hom3d(t,conc,lam):
-    # Units conversion    
+    # Unit conversion    
     conc = conc*1e-6*1e3*Nav # umol/L -> mol/L -> mol/m^3 -> spins/m^3
     # Compute background function
     κ = 8*pi**2/9/m.sqrt(3)
@@ -120,8 +120,8 @@ def _hom3d(t,conc,lam):
 bg_hom3d = Model(_hom3d,constants='t')
 bg_hom3d.description = 'Background from a homogeneous distribution of spins in a 3D medium'
 # Parameters
-bg_hom3d.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
-bg_hom3d.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
+bg_hom3d.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, unit='μM')
+bg_hom3d.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, unit='')
 # Add documentation
 bg_hom3d.__doc__ = _docstring(bg_hom3d,notes)
 
@@ -146,7 +146,7 @@ where `c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this ex
 
 """  
 def _hom3dphase(t,conc,lam):
-    # Units conversion    
+    # Unit conversion    
     conc = conc*1e-6*1e3*Nav # umol/L -> mol/L -> mol/m^3 -> spins/m^3
     # Compute background function
     ξ = 8*pi/9/np.sqrt(3)*(np.sqrt(3)+np.log(2-np.sqrt(3)))*D
@@ -157,8 +157,8 @@ def _hom3dphase(t,conc,lam):
 bg_hom3d_phase = Model(_hom3dphase,constants='t')
 bg_hom3d_phase.description = 'Phase shift from a homogeneous distribution of spins in a 3D medium'
 # Parameters
-bg_hom3d_phase.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
-bg_hom3d_phase.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
+bg_hom3d_phase.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, unit='μM')
+bg_hom3d_phase.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, unit='')
 # Add documentation
 bg_hom3d_phase.__doc__ = _docstring(bg_hom3d_phase,notes)
 
@@ -207,9 +207,9 @@ def _hom3dex(t,conc,rex,lam):
 bg_hom3dex = Model(_hom3dex,constants='t')
 bg_hom3dex.description = 'Background from a homogeneous distribution of spins with excluded volume'
 # Parameters
-bg_hom3dex.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
-bg_hom3dex.rex.set(description='Exclusion radius', lb=0.01, ub=20, par0=1, units='nm')
-bg_hom3dex.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
+bg_hom3dex.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, unit='μM')
+bg_hom3dex.rex.set(description='Exclusion radius', lb=0.01, ub=20, par0=1, unit='nm')
+bg_hom3dex.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, unit='')
 # Add documentation
 bg_hom3dex.__doc__ = _docstring(bg_hom3dex,notes)
 
@@ -261,9 +261,9 @@ def _hom3dex_phase(t,conc,rex,lam):
 bg_hom3dex_phase = Model(_hom3dex_phase,constants='t')
 bg_hom3dex_phase.description = 'Phase shift from a homogeneous distribution of spins with excluded volume'
 # Parameters
-bg_hom3dex_phase.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, units='μM')
-bg_hom3dex_phase.rex.set(description='Exclusion radius', lb=0.01, ub=20, par0=1, units='nm')
-bg_hom3dex_phase.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
+bg_hom3dex_phase.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, unit='μM')
+bg_hom3dex_phase.rex.set(description='Exclusion radius', lb=0.01, ub=20, par0=1, unit='nm')
+bg_hom3dex_phase.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, unit='')
 # Add documentation
 bg_hom3dex_phase.__doc__ = _docstring(bg_hom3dex_phase,notes)
 
@@ -281,7 +281,7 @@ def _homfractal(t,fconc,fdim,lam):
     d = float(fdim) 
     
 
-    # Units conversion of concentration    
+    # Unit conversion of concentration    
     conc = fconc*1e-6*(np.power(10,d))*Nav # umol/dm^d -> mol/m^d -> spins/m^d
 
     # Compute constant
@@ -306,9 +306,9 @@ def _homfractal(t,fconc,fdim,lam):
 bg_homfractal = Model(_homfractal,constants='t')
 bg_homfractal.description = 'Background from homogeneous distribution of spins in a fractal medium'
 # Parameters
-bg_homfractal.fconc.set(description='Fractal concentration of spins', lb=1e-20, ub=1e20, par0=1.0e-6, units='μmol/dmᵈ')
-bg_homfractal.fdim.set(description='Fractal dimensionality', lb=0.01, ub=5.99, par0=2.2, units='')
-bg_homfractal.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
+bg_homfractal.fconc.set(description='Fractal concentration of spins', lb=1e-20, ub=1e20, par0=1.0e-6, unit='μmol/dmᵈ')
+bg_homfractal.fdim.set(description='Fractal dimensionality', lb=0.01, ub=5.99, par0=2.2, unit='')
+bg_homfractal.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, unit='')
 # Add documentation
 bg_homfractal.__doc__ = _docstring(bg_homfractal,notes)
 
@@ -327,7 +327,7 @@ def _homfractal_phase(t,fconc,fdim,lam):
     # Fractal dimension (not defined for d=[0, 1.5, 3, 4.5, 6])
     d = float(fdim) 
 
-    # Units conversion of concentration    
+    # Unit conversion of concentration    
     fconc = fconc*1e-6*(np.power(10,d))*Nav # umol/dm^d -> mol/m^d -> spins/m^d
 
     # Compute constant
@@ -351,9 +351,9 @@ def _homfractal_phase(t,fconc,fdim,lam):
 bg_homfractal_phase = Model(_homfractal_phase,constants='t')
 bg_homfractal_phase.description = 'Phase shift from a homogeneous distribution of spins in a fractal medium'
 # Parameters
-bg_homfractal_phase.fconc.set(description='Fractal concentration of spins', lb=1e-20, ub=1e20, par0=1.0e-6, units='μmol/dmᵈ')
-bg_homfractal_phase.fdim.set(description='Fractal dimensionality', lb=0.01, ub=5.99, par0=2.2, units='')
-bg_homfractal_phase.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, units='')
+bg_homfractal_phase.fconc.set(description='Fractal concentration of spins', lb=1e-20, ub=1e20, par0=1.0e-6, unit='μmol/dmᵈ')
+bg_homfractal_phase.fdim.set(description='Fractal dimensionality', lb=0.01, ub=5.99, par0=2.2, unit='')
+bg_homfractal_phase.lam.set(description='Pathway amplitude', lb=0, ub=1, par0=1, unit='')
 # Add documentation
 bg_homfractal_phase.__doc__ = _docstring(bg_homfractal_phase,notes)
 
@@ -377,7 +377,7 @@ def _exp(t,decay):
 bg_exp = Model(_exp,constants='t')
 bg_exp.description = 'Exponential background model'
 # Parameters
-bg_exp.decay.set(description='Decay rate', lb=0, ub=200, par0=0.35, units='μs⁻¹')
+bg_exp.decay.set(description='Decay rate', lb=0, ub=200, par0=0.35, unit='μs⁻¹')
 # Add documentation
 bg_exp.__doc__ = _docstring(bg_exp,notes)
 
@@ -402,8 +402,8 @@ def _strexp(t,decay,stretch):
 bg_strexp = Model(_strexp,constants='t')
 bg_strexp.description = 'Stretched exponential background model'
 # Parameters
-bg_strexp.decay.set(description='Decay rate', lb=0, ub=200, par0=0.25, units='μs⁻¹')
-bg_strexp.stretch.set(description='Stretch factor', lb=0, ub=6, par0=1, units='')
+bg_strexp.decay.set(description='Decay rate', lb=0, ub=200, par0=0.25, unit='μs⁻¹')
+bg_strexp.stretch.set(description='Stretch factor', lb=0, ub=6, par0=1, unit='')
 # Add documentation
 bg_strexp.__doc__ = _docstring(bg_strexp,notes)
 
@@ -425,10 +425,10 @@ def _prodstrexp(t,decay1,stretch1,decay2,stretch2):
 bg_prodstrexp = Model(_prodstrexp,constants='t')
 bg_prodstrexp.description = 'Product of two stretched exponentials background model'
 # Parameters
-bg_prodstrexp.decay1.set(description='Decay rate of 1st component', lb=0, ub=200, par0=0.25, units='μs⁻¹')
-bg_prodstrexp.decay2.set(description='Decay rate of 2nd component', lb=0, ub=200, par0=0.25, units='μs⁻¹')
-bg_prodstrexp.stretch1.set(description='Stretch factor of 1st component', lb=0, ub=6, par0=1, units='')
-bg_prodstrexp.stretch2.set(description='Stretch factor of 2nd component', lb=0, ub=6, par0=1, units='')
+bg_prodstrexp.decay1.set(description='Decay rate of 1st component', lb=0, ub=200, par0=0.25, unit='μs⁻¹')
+bg_prodstrexp.decay2.set(description='Decay rate of 2nd component', lb=0, ub=200, par0=0.25, unit='μs⁻¹')
+bg_prodstrexp.stretch1.set(description='Stretch factor of 1st component', lb=0, ub=6, par0=1, unit='')
+bg_prodstrexp.stretch2.set(description='Stretch factor of 2nd component', lb=0, ub=6, par0=1, unit='')
 # Add documentation
 bg_prodstrexp.__doc__ = _docstring(bg_prodstrexp,notes)
 
@@ -450,11 +450,11 @@ def _sumstrexp(t,decay1,stretch1,weight1,decay2,stretch2):
 bg_sumstrexp = Model(_sumstrexp,constants='t')
 bg_sumstrexp.description = 'Sum of two stretched exponentials background model'
 # Parameters
-bg_sumstrexp.decay1.set(description='Decay rate of 1st component', lb=0, ub=200, par0=0.25, units='μs⁻¹')
-bg_sumstrexp.decay2.set(description='Decay rate of 2nd component', lb=0, ub=200, par0=0.25, units='μs⁻¹')
-bg_sumstrexp.weight1.set(description='Weight of the 1st component', lb=0, ub=1, par0=0.5, units='')
-bg_sumstrexp.stretch1.set(description='Stretch factor of 1st component', lb=0, ub=6, par0=1, units='')
-bg_sumstrexp.stretch2.set(description='Stretch factor of 2nd component', lb=0, ub=6, par0=1, units='')
+bg_sumstrexp.decay1.set(description='Decay rate of 1st component', lb=0, ub=200, par0=0.25, unit='μs⁻¹')
+bg_sumstrexp.decay2.set(description='Decay rate of 2nd component', lb=0, ub=200, par0=0.25, unit='μs⁻¹')
+bg_sumstrexp.weight1.set(description='Weight of the 1st component', lb=0, ub=1, par0=0.5, unit='')
+bg_sumstrexp.stretch1.set(description='Stretch factor of 1st component', lb=0, ub=6, par0=1, unit='')
+bg_sumstrexp.stretch2.set(description='Stretch factor of 2nd component', lb=0, ub=6, par0=1, unit='')
 # Add documentation
 bg_sumstrexp.__doc__ = _docstring(bg_sumstrexp,notes)
 
@@ -473,8 +473,8 @@ def _poly1(t,p0,p1):
 bg_poly1 = Model(_poly1,constants='t')
 bg_poly1.description = 'Polynomial 1st-order background model'
 # Parameters
-bg_poly1.p0.set(description='Intercept', lb=0, ub=200, par0=1, units='')
-bg_poly1.p1.set(description='1st order weight', lb=-200, ub=200, par0=-1, units='μs⁻¹')
+bg_poly1.p0.set(description='Intercept', lb=0, ub=200, par0=1, unit='')
+bg_poly1.p1.set(description='1st order weight', lb=-200, ub=200, par0=-1, unit='μs⁻¹')
 # Add documentation
 bg_poly1.__doc__ = _docstring(bg_poly1,notes)
 
@@ -494,9 +494,9 @@ def _poly2(t,p0,p1,p2):
 bg_poly2 = Model(_poly2,constants='t')
 bg_poly2.description = 'Polynomial 2nd-order background model'
 # Parameters
-bg_poly2.p0.set(description='Intercept', lb=0, ub=200, par0=1, units='')
-bg_poly2.p1.set(description='1st order weight', lb=-200, ub=200, par0=-1, units=r'μs\ :sup:`-1`')
-bg_poly2.p2.set(description='2nd order weight', lb=-200, ub=200, par0=-1, units=r'μs\ :sup:`-2`')
+bg_poly2.p0.set(description='Intercept', lb=0, ub=200, par0=1, unit='')
+bg_poly2.p1.set(description='1st order weight', lb=-200, ub=200, par0=-1, unit=r'μs\ :sup:`-1`')
+bg_poly2.p2.set(description='2nd order weight', lb=-200, ub=200, par0=-1, unit=r'μs\ :sup:`-2`')
 # Add documentation
 bg_poly2.__doc__ = _docstring(bg_poly2,notes)
 
@@ -515,9 +515,9 @@ def _poly3(t,p0,p1,p2,p3):
 bg_poly3 = Model(_poly3,constants='t')
 bg_poly3.description = 'Polynomial 3rd-order background model'
 # Parameters
-bg_poly3.p0.set(description='Intercept', lb=0, ub=200, par0=1, units='')
-bg_poly3.p1.set(description='1st order weight', lb=-200, ub=200, par0=-1, units=r'μs\ :sup:`-1`')
-bg_poly3.p2.set(description='2nd order weight', lb=-200, ub=200, par0=-1, units=r'μs\ :sup:`-2`')
-bg_poly3.p3.set(description='3rd order weight', lb=-200, ub=200, par0=-1, units=r'μs\ :sup:`-3`')
+bg_poly3.p0.set(description='Intercept', lb=0, ub=200, par0=1, unit='')
+bg_poly3.p1.set(description='1st order weight', lb=-200, ub=200, par0=-1, unit=r'μs\ :sup:`-1`')
+bg_poly3.p2.set(description='2nd order weight', lb=-200, ub=200, par0=-1, unit=r'μs\ :sup:`-2`')
+bg_poly3.p3.set(description='3rd order weight', lb=-200, ub=200, par0=-1, unit=r'μs\ :sup:`-3`')
 # Add documentation
 bg_poly3.__doc__ = _docstring(bg_poly3,notes)
