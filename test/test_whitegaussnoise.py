@@ -1,5 +1,6 @@
 from deerlab.utils.utils import assert_docstring
 import numpy as np
+import pytest
 from deerlab import whitegaussnoise
 from deerlab.utils import assert_docstring
 
@@ -56,8 +57,24 @@ def test_noseed():
     assert not np.array_equal(noise1,noise2)
 # ======================================================================
 
+
 def test_docstring():
 # ======================================================================
     "Check that the docstring includes all variables and keywords."
     assert_docstring(whitegaussnoise)
 # ======================================================================
+
+
+def test_requiredstd():
+# ======================================================================
+    "Check that the standard deviation is a required argument"
+
+    N = 10
+    t = np.linspace(0,3,N)
+    
+    with pytest.raises(TypeError):
+        noise = whitegaussnoise(t)
+    
+# ======================================================================
+
+
