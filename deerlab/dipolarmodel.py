@@ -9,8 +9,7 @@ from deerlab.regoperator import regoperator
 from deerlab.dd_models import freedist
 from deerlab.model import Model,Penalty
 from deerlab import bg_hom3d
-
-ge = 2.00231930436256 # free-electron g factor
+from deerlab.constants import *
 
 #===============================================================================
 def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None, experiment=None,

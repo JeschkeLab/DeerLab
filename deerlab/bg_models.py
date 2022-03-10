@@ -11,6 +11,7 @@ from deerlab.dipolarkernel import dipolarkernel
 from deerlab.utils import formatted_table
 from deerlab.model import Model
 from scipy.special import gamma, hyp2f1, sici
+from deerlab.constants import *
 
 #---------------------------------------------------------------------------------------
 def hyp2f1_repro(a,b,c,z): 
@@ -20,16 +21,6 @@ def hyp2f1_repro(a,b,c,z):
     """
     return gamma(b - a)*gamma(c)/(gamma(b)*gamma(c - a)*(-z)**a)*hyp2f1(a, a - c + 1, a - b + 1, 1/z) + (gamma(a - b)*gamma(c))/(gamma(a)*gamma(c - b)*(-z)**b)*hyp2f1(b, b - c + 1, b - a + 1, 1/z)
 #---------------------------------------------------------------------------------------
-
-# Natural constants
-Nav = 6.02214076e23      # Avogadro constant, mol^-1
-μB = 9.2740100783e-24  # Bohr magneton, J/T (CODATA 2018 value)
-μ0 = 1.25663706212e-6  # magnetic constant, N A^-2 = T^2 m^3 J^-1 (CODATA 2018)
-h = 6.62607015e-34      # Planck constant, J/Hz (CODATA 2018)
-ge = 2.00231930436256   # free-electron g factor (CODATA 2018 value)
-hbar = h/2/pi         # reduced Planck constant, J/(rad/s)
-
-D = (μ0/4/pi)*(μB*ge)**2/hbar   # dipolar constant, m^3 s^-1
 
 
 def _docstring(model,notes):
