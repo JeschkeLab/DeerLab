@@ -28,8 +28,8 @@ class Parameter():
     description : string 
         Description of the parameter
 
-    units : string 
-        Physical units of the parameter
+    unit : string 
+        Physical unit of the parameter
 
     par0 : float or array_like 
         Value at which to initialize the parameter at the start of a fit routine. 
@@ -61,18 +61,18 @@ class Parameter():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def __init__(self, name=None, parent=None, idx=None, description=None, par0=None, frozen=False, lb=-np.inf, ub=np.inf,value=None, units=None, linear=False): 
+    def __init__(self, name=None, parent=None, idx=None, description=None, par0=None, frozen=False, lb=-np.inf, ub=np.inf,value=None, unit=None, linear=False): 
         # Attributes
         self.name = name
         self._parent = parent # Parent 
         self.idx = idx
         self.description = description # Description
-        self.units = units    # Units
+        self.unit = unit    # Unit
         self.par0 = par0      # Start values
         self.lb = lb          # Lower bounds
         self.ub = ub          # Upper bounds
         self.value = value
-        self.frozen = frozen   # Frozen
+        self.frozen = frozen  # Frozen
         self.linear = linear  # Linearity
     #---------------------------------------------------------------------------------------
 
@@ -189,15 +189,15 @@ class Model():
 
         nonlinfcn : callable 
             Function that takes a set of non-linear parameters and 
-            returns either a the full model response or the design matrix 
+            returns either the full model response or the design matrix 
             of the model response. A parameter will be added to the new model for each 
             input argument defined in the function signature.   
         
-        constants : string or list thereof
+        constants : string or list thereof, optional
             Names of the arguments taken by the ``nonlinfcn`` function to be defined as
             constants. These will not be added as parameters to the new model.
 
-        signature : list of strings
+        signature : list of strings, optional
             Signature of the ``nonlinfcn`` function to manually specify the names
             of the input arguments. For internal use (mostly).
 
@@ -399,7 +399,7 @@ class Model():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def addnonlinear(self, key, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None, description=None):
+    def addnonlinear(self, key, lb=-np.inf, ub=np.inf, par0=None, name=None, unit=None, description=None):
         """
         Add a new non-linear parameter (:ref:`Parameter` object) to the model. 
 
@@ -418,14 +418,14 @@ class Model():
         description : string, optional 
             Descriptrion of the parameter. 
 
-        units : string, optional
-            Physical units of the parameter.
+        unit : string, optional
+            Physical unit of the parameter.
         """
         self._check_if_already_exists(key)
         idx = self.Nparam
         self.Nparam += 1
         self.Nnonlin += 1
-        newparam = Parameter(name=key, linear=False, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, units=units, description=description)
+        newparam = Parameter(name=key, linear=False, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, unit=unit, description=description)
         setattr(self,key,newparam)
         Nconstants = len(self._constantsInfo)
         Amodel = self.nonlinmodel
@@ -447,7 +447,7 @@ class Model():
 
 
     #---------------------------------------------------------------------------------------
-    def addlinear(self, key, vec=1, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None, description=None):
+    def addlinear(self, key, vec=1, lb=-np.inf, ub=np.inf, par0=None, name=None, unit=None, description=None):
         """
         Add a new linear parameter (:ref:`Parameter` object) to the model. 
 
@@ -472,20 +472,20 @@ class Model():
         description : string, optional 
             Descriptrion of the parameter. 
 
-        units : string, optional
-            Physical units of the parameter.
+        unit : string, optional
+            Physical unit of the parameter.
         """
         self._check_if_already_exists(key)
         if vec>1: 
             idx = np.arange(self.Nparam,self.Nparam+vec) 
             self.Nparam += vec        
             self.Nlin += vec
-            newparam = Parameter(name=key, linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), units=units, description=description)
+            newparam = Parameter(name=key, linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), unit=unit, description=description)
         else:
             idx = self.Nparam
             self.Nparam += 1
             self.Nlin += 1
-            newparam = Parameter(name=key, linear=True, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, units=units, description=description)
+            newparam = Parameter(name=key, linear=True, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, unit=unit, description=description)
         setattr(self,key,newparam)
         self.signature.append(key)
     #---------------------------------------------------------------------------------------
@@ -556,7 +556,7 @@ class Model():
             'frozen' : self._vecsort(self._getvector('frozen')),
             'linear' : self._vecsort(self._getvector('linear')),
             'values' : self._vecsort(self._getvector('value')),
-            'units' : self._vecsort(self._getvector('units')),
+            'units' : self._vecsort(self._getvector('unit')),
             }
     #---------------------------------------------------------------------------------------
 
@@ -571,7 +571,7 @@ class Model():
     """)
         string += '\n'
         table = []
-        table.append(['Name','Lower','Upper','Type','Frozen','Units','Description'])  
+        table.append(['Name','Lower','Upper','Type','Frozen','Unit','Description'])  
         alignment = ['<','^','^','^','^','^','<']
         for n,paramname in enumerate(self._parameter_list(order='vector')): 
             param_str = paramname
@@ -579,9 +579,9 @@ class Model():
             ub_str = f'{np.atleast_1d(getattr(self,paramname).ub)[0]:5.3g}'
             linear_str = "linear" if np.all(getattr(self,paramname).linear) else "nonlin"
             frozen_str = "Yes" if np.all(getattr(self,paramname).frozen) else "No"
-            units_str = str(getattr(self,paramname).units)
+            unit_str = str(getattr(self,paramname).unit)
             desc_str = str(getattr(self,paramname).description)
-            table.append([param_str,lb_str,ub_str,linear_str,frozen_str,units_str,desc_str])
+            table.append([param_str,lb_str,ub_str,linear_str,frozen_str,unit_str,desc_str])
         string += formatted_table(table,alignment)
         return string
     #---------------------------------------------------------------------------------------
@@ -805,7 +805,7 @@ def _print_fitresults(fitresult,model):
 
     # Construct table of model parameters fits
     table = []
-    table.append([f'Parameter','Value','95%-Confidence interval','Units','Description']) # Header
+    table.append([f'Parameter','Value','95%-Confidence interval','Unit','Description']) # Header
     alignment = ['<','<','<','^','<'] # Alignment
     for param in model._parameter_list('vector'):
         if len(np.atleast_1d(getattr(model,param).idx))==1:
@@ -825,9 +825,9 @@ def _print_fitresults(fitresult,model):
             # If parameter is vectorial, print just dots
             value = '...'
             ci = '(...,...)'
-        units = str(getattr(model,param).units)
+        unit = str(getattr(model,param).unit)
         description = str(getattr(model,param).description)
-        table.append([f'{param}',value,ci,units,description])
+        table.append([f'{param}',value,ci,unit,description])
     # Add auto-formatted table string
     string += 'Model parameters: \n'
     string += formatted_table(table,alignment)
@@ -1128,7 +1128,7 @@ def _importparameter(parameter):
         'ub' : parameter.ub,
         'par0' : parameter.par0,
         'description' : parameter.description,
-        'units' : parameter.units,
+        'unit' : parameter.unit,
         'frozen' : parameter.frozen,
         'value' : parameter.value,
     }

@@ -19,7 +19,7 @@ The function takes a list or array of parameters and returns the calculated expe
 The built-in information on the model can be accessed via its attributes::
 
         {fcnstr}.parameters  # String list of parameter names
-        {fcnstr}.units       # String list of metric units of parameters
+        {fcnstr}.unit        # String list of parameters units
         {fcnstr}.start       # List of values used as start values during optimization 
         {fcnstr}.lower       # List of values used as lower bounds during optimization
         {fcnstr}.upper       # List of values used as upper bounds during optimization 
