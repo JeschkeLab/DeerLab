@@ -20,7 +20,7 @@ def test_preserve_original():
     model2 = dl.bg_hom3d
 
     _ = merge(model1,model2)
-    assert model1._parameter_list() == ['mean','width'] and model2._parameter_list() == ['conc','lam']
+    assert model1._parameter_list() == ['mean','std'] and model2._parameter_list() == ['conc','lam']
 # ======================================================================
 
 # ======================================================================
@@ -70,7 +70,7 @@ def test_twomodels_param_names():
     model2 = dl.dd_gauss
 
     model = merge(model1,model2)
-    assert all([ str in model._parameter_list() for str in ['mean_1','mean_2','width_1','width_2'] ])
+    assert all([ str in model._parameter_list() for str in ['mean_1','mean_2','std_1','std_2'] ])
 # ======================================================================
 
 # ======================================================================
@@ -94,8 +94,8 @@ def test_twomodels_addweights():
     ref1 = model1(x,3,0.2)
     ref2 = model2(x,4,0.5)
 
-    response = model(r_1=x,r_2=x,mean_1=3,width_1=0.2,
-                         mean_2=4,width_2=0.5,
+    response = model(r_1=x,r_2=x,mean_1=3,std_1=0.2,
+                         mean_2=4,std_2=0.5,
                          scale_1=1,scale_2=1,
                          weight_1=1,weight_2=1)
 
@@ -174,7 +174,7 @@ def test_threemodels_param_names():
 
     model = merge(model1,model2,model3)
 
-    assert all([ str in model._parameter_list() for str in ['mean_1','mean_2','mean_3','width_1','width_2','width_3'] ])
+    assert all([ str in model._parameter_list() for str in ['mean_1','mean_2','mean_3','std_1','std_2','std_3'] ])
 # ======================================================================
 
 # ======================================================================
@@ -200,8 +200,8 @@ def test_threemodels_addweights():
     ref1 = model1(x,3,0.2)
     ref2 = model2(x,4,0.5)
 
-    response = model(r_1=x,r_2=x,mean_1=3,width_1=0.2,
-                         mean_2=4,width_2=0.5,
+    response = model(r_1=x,r_2=x,mean_1=3,std_1=0.2,
+                         mean_2=4,std_2=0.5,
                          scale_1=1,scale_2=1,
                          weight_1=1,weight_2=1)
 
@@ -279,7 +279,7 @@ def test_vec_param_names():
     model2 = model_vec
 
     model = merge(model1,model2)
-    assert all([ str in model._parameter_list() for str in ['mean_1','width_1','Pvec_2'] ])
+    assert all([ str in model._parameter_list() for str in ['mean_1','std_1','Pvec_2'] ])
 # ======================================================================
 
 # ======================================================================
@@ -317,7 +317,7 @@ def test_merge_linked():
     "Check that that merge works correctly for models with linked parameters"
     submodel1 = dl.dd_gauss
     submodel2 = dl.dd_gauss2
-    submodel2 = dl.link(submodel2, mean=['mean1','mean2'], width=['width1','width2'])
+    submodel2 = dl.link(submodel2, mean=['mean1','mean2'], std=['std1','std2'])
 
     x = np.linspace(0,10,100)
     ref1 = submodel1(x,3,0.2)
@@ -326,7 +326,7 @@ def test_merge_linked():
     # Create a global model
     model = dl.merge(submodel1,submodel2, addweights=True)
 
-    response = model(x,x,mean_1=3,width_1=0.2,mean_2=4,width_2=0.3,amp1_2=1,amp2_2=1,scale_1=1, weight_1=1, weight_2=1)
+    response = model(x,x,mean_1=3,std_1=0.2,mean_2=4,std_2=0.3,amp1_2=1,amp2_2=1,scale_1=1, weight_1=1, weight_2=1)
     assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
 # ======================================================================
 

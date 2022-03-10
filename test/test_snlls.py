@@ -609,8 +609,8 @@ def test_frozen_param():
     "Check that linear and nonlinear parameters can be frozen during the optimization"
     r = np.linspace(0,6,300)
     def Amodel(p):
-        mean1,mean2,width1,width2 = p
-        return np.atleast_2d([dd_gauss.nonlinmodel(r,mean1,width1), dd_gauss.nonlinmodel(r,mean2,width2)]).T
+        mean1,mean2,std1,std2 = p
+        return np.atleast_2d([dd_gauss.nonlinmodel(r,mean1,std1), dd_gauss.nonlinmodel(r,mean2,std2)]).T
 
     x = np.array([0.5,0.6])
     y = Amodel([3,5,0.2,0.3])@x
@@ -629,8 +629,8 @@ def test_frozen_Nparam():
     "Check that the correct number of linear and nonlinear parameters are return even when freezing"
     r = np.linspace(0,6,90)
     def Amodel(p):
-        mean1,mean2,width1,width2 = p
-        return np.atleast_2d([dd_gauss.nonlinmodel(r,mean1,width1), dd_gauss.nonlinmodel(r,mean2,width2)]).T
+        mean1,mean2,std1,std2 = p
+        return np.atleast_2d([dd_gauss.nonlinmodel(r,mean1,std1), dd_gauss.nonlinmodel(r,mean2,std2)]).T
     x = np.array([0.5,0.6])
     y = Amodel([3,5,0.2,0.3])@x
     nonlin_frozen = [None,5,None,None]
@@ -650,12 +650,12 @@ def test_complex_model_complex_data():
 
     x = np.linspace(0,7,100)
     def model(p):
-        phase, center, width = p
-        y = dd_gauss(x,center, width)
+        phase, center, std = p
+        y = dd_gauss(x,center, std)
         y = y*np.exp(-1j*phase)
         return y
 
-    y = model([np.pi/5, 3, 0.5])     
+    y = model([np.pi/5, 3, 0.5])
 
     fitResult = snlls(y,model,par0=[2*np.pi/5,4,0.2],lb=[-np.pi,1,0.05],ub=[np.pi,6,5])
 
@@ -668,8 +668,8 @@ def test_complex_model_uncertainty():
 
     x = np.linspace(0,7,100)
     def model(p):
-        phase, center, width = p
-        y = dd_gauss(x,center, width)
+        phase, center, std = p
+        y = dd_gauss(x,center, std)
         y = y*np.exp(-1j*phase)
         return y
 
@@ -690,8 +690,8 @@ def test_masking():
 
     x = np.linspace(0,7,100)
     def model(p):
-        center, width = p
-        y = dd_gauss(x,center, width)
+        center, std = p
+        y = dd_gauss(x,center, std)
         return y
 
     mask = np.ones_like(x).astype(bool)   

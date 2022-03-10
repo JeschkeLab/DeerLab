@@ -154,14 +154,14 @@ notes = r"""
 
 where `\left<r\right>` is the mean distance and `\sigma` the standard deviation.
 """  
-def _gauss(r,mean,width):
-    return _multigaussfun(r,mean,width)
+def _gauss(r,mean,std):
+    return _multigaussfun(r,mean,std)
 # Create model
 dd_gauss = Model(_gauss,constants='r')
 dd_gauss.description = 'Gaussian distribution model'
 # Parameters
 dd_gauss.mean.set(description='Mean', lb=1.0, ub=20, par0=3.5, units='nm')
-dd_gauss.width.set(description='Standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
+dd_gauss.std.set(description='Standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
 # Add documentation
 dd_gauss.__doc__ = _dd_docstring(dd_gauss,notes) + docstr_example('dd_gauss')
 
@@ -177,16 +177,16 @@ notes = r"""
 
 where `\left<r\right>_i` are the mean distances, `\sigma_i` the standard deviations, and `a_i` are the amplitudes of the Gaussians.
 """
-def _gauss2(r,mean1,width1,mean2,width2):
-    return _multigaussfun(r,[mean1,mean2],[width1,width2])
+def _gauss2(r,mean1,std1,mean2,std2):
+    return _multigaussfun(r,[mean1,mean2],[std1,std2])
 # Create model
 dd_gauss2 = Model(_gauss2,constants='r')
 dd_gauss2.description = 'Sum of two Gaussian distributions model'
 # Parameters
 dd_gauss2.mean1.set(description='1st Gaussian mean', lb=1.0, ub=20, par0=2.5, units='nm')
 dd_gauss2.mean2.set(description='2nd Gaussian mean', lb=1.0, ub=20, par0=4.5, units='nm')
-dd_gauss2.width1.set(description='1st Gaussian standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
-dd_gauss2.width2.set(description='2nd Gaussian standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
+dd_gauss2.std1.set(description='1st Gaussian standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
+dd_gauss2.std2.set(description='2nd Gaussian standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
 dd_gauss2.addlinear('amp1',description='1st Gaussian amplitude', lb=0, par0=1, units='')
 dd_gauss2.addlinear('amp2',description='2nd Gaussian amplitude', lb=0, par0=1, units='')
 # Add documentation
@@ -204,8 +204,8 @@ ntoes = r"""
 
 where `\left<r\right>_i` are the mean distances, `\sigma_i` the standard deviations, and `a_i` are the amplitudes of the Gaussians.
 """
-def _gauss3(r,mean1,width1,mean2,width2,mean3,width3):
-    return _multigaussfun(r,[mean1,mean2,mean3],[width1,width2,width3])
+def _gauss3(r,mean1,std1,mean2,std2,mean3,std3):
+    return _multigaussfun(r,[mean1,mean2,mean3],[std1,std2,std3])
 # Create model
 dd_gauss3 = Model(_gauss3,constants='r')
 dd_gauss3.description = 'Sum of three Gaussian distributions model'
@@ -213,9 +213,9 @@ dd_gauss3.description = 'Sum of three Gaussian distributions model'
 dd_gauss3.mean1.set(description='1st Gaussian mean', lb=1.0, ub=20, par0=2.5, units='nm')
 dd_gauss3.mean2.set(description='2nd Gaussian mean', lb=1.0, ub=20, par0=3.5, units='nm')
 dd_gauss3.mean3.set(description='3rd Gaussian mean', lb=1.0, ub=20, par0=5.0, units='nm')
-dd_gauss3.width1.set(description='1st Gaussian standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
-dd_gauss3.width2.set(description='2nd Gaussian standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
-dd_gauss3.width3.set(description='3rd Gaussian standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
+dd_gauss3.std1.set(description='1st Gaussian standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
+dd_gauss3.std2.set(description='2nd Gaussian standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
+dd_gauss3.std3.set(description='3rd Gaussian standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
 dd_gauss3.addlinear('amp1',description='1st Gaussian amplitude', lb=0, par0=1, units='')
 dd_gauss3.addlinear('amp2',description='2nd Gaussian amplitude', lb=0, par0=1, units='')
 dd_gauss3.addlinear('amp3',description='3rd Gaussian amplitude', lb=0, par0=1, units='')
@@ -239,15 +239,15 @@ notes =  r"""
 
 where `\left<r\right>` is the mean distance,`\sigma` is the standard deviation, and `\beta` is the kurtosis of the distribution.
 """  
-def _gengauss(r,mean,width,kurt):
-    P = kurt/(2*width*spc.gamma(1/kurt))*np.exp(-abs(r-mean)/width**kurt)
+def _gengauss(r,mean,std,kurt):
+    P = kurt/(2*std*spc.gamma(1/kurt))*np.exp(-abs(r-mean)/std**kurt)
     return _normalize(r,P) 
 # Create model
 dd_gengauss = Model(_gengauss,constants='r')
 dd_gengauss.description = 'Generalized Gaussian distribution model'
 # Parameters
 dd_gengauss.mean.set(description='Mean', lb=1.0, ub=20, par0=3.5, units='nm')
-dd_gengauss.width.set(description='Standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
+dd_gengauss.std.set(description='Standard deviation', lb=0.05, ub=2.5, par0=0.2, units='nm')
 dd_gengauss.kurt.set(description='Kurtosis', lb=0.25, ub=15, par0=5.0, units='')
 # Add documentation
 dd_gengauss.__doc__ = _dd_docstring(dd_gengauss,notes) +  docstr_example('dd_gengauss')
@@ -265,20 +265,20 @@ notes = r"""
     <img src="../_images/model_scheme_dd_skewgauss.png", style="width: 50%">
     <br><br><br>  
 
-:math:`P(r) = \frac{1}{\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r\right>)^2}{\sqrt(2)\sigma^2}\right)\frac{1}{2}\left(1 + \mathrm{erf}\left(\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
+:math:`P(r) = \frac{1}{\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r\right>)^2}{2\sigma^2}\right)\left(1 + \mathrm{erf}\left(\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
 
 where `\left<r\right>` is the center distance,`\sigma` is the spread, and `\alpha` is the skewness of the distribution.
-"""  
-def _skewgauss(r,center,width,skew):
-    x = (r-center)/width/np.sqrt(2)
-    P = 1/np.sqrt(2*np.pi)*np.exp(-x**2)*(1 + spc.erf(skew*x))
+"""
+def _skewgauss(r,center,std,skew):
+    x = (r-center)/std
+    P = 1/np.sqrt(2*np.pi)*np.exp(-x**2/2)*(1 + spc.erf(skew*x/np.sqrt(2)))
     return _normalize(r,P) 
 # Create model
 dd_skewgauss = Model(_skewgauss,constants='r')
 dd_skewgauss.description = 'Skew Gaussian distribution model'
 # Parameters
 dd_skewgauss.center.set(description='Center', lb=1.0, ub=20, par0=3.5, units='nm')
-dd_skewgauss.width.set(description='Spread', lb=0.05, ub=2.5, par0=0.2, units='nm')
+dd_skewgauss.std.set(description='Spread', lb=0.05, ub=2.5, par0=0.2, units='nm')
 dd_skewgauss.skew.set(description='Skewness', lb=-25, ub=25, par0=5, units='')
 # Add documentation
 dd_skewgauss.__doc__ = _dd_docstring(dd_skewgauss,notes) +  docstr_example('dd_skewgauss')
@@ -1018,12 +1018,11 @@ References
     Radial Distribution Function of Semiflexible Polymers
     Phys. Rev. Lett. 77(12), 2581-2584, 1996
 """  
-def _wormgauss(r,contour,persistence,width):
-    sigma = width
+def _wormgauss(r,contour,persistence,std):
     P = _wlc(r,contour,persistence)
     # Compute Gaussian convolution window
     idx = np.argmax(P)
-    gauss = np.exp(-((r - r[idx])/sigma)**2)
+    gauss = np.exp(-((r - r[idx])/std)**2)
     # Convolution with size retention
     P = np.convolve(gauss,P,mode='full')
     # Adjust new convoluted axis
@@ -1040,6 +1039,6 @@ dd_wormgauss.description = 'Worm-like chain model near the rigid limit with Gaus
 # Parameters
 dd_wormgauss.contour.set(description='Contour length', lb=1.5, ub=10, par0=3.7, units='nm')
 dd_wormgauss.persistence.set(description='Persistence length', lb=2, ub=100, par0=10, units='nm')
-dd_wormgauss.width.set(description='Gaussian standard deviation', lb=0.01, ub=5, par0=0.2, units='nm')
+dd_wormgauss.std.set(description='Gaussian standard deviation', lb=0.01, ub=5, par0=0.2, units='nm')
 # Add documentation
 dd_wormgauss.__doc__ = _dd_docstring(dd_wormgauss,notes) +  docstr_example('dd_wormgauss')

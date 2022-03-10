@@ -6,8 +6,8 @@ from copy import deepcopy
 
 x = np.linspace(0,4,50)
 mock_data = dd_gauss(x,2,0.2) + whitegaussnoise(x,0.005,seed=1)
-def penalty_fcn(mean,width): 
-    P = dd_gauss(x,mean,width)
+def penalty_fcn(mean,std): 
+    P = dd_gauss(x,mean,std)
     P = P/np.trapz(P,x)
     return np.sqrt(P*(x - np.trapz(P*x,x))**2*np.mean(np.diff(x)))
 
@@ -26,7 +26,7 @@ def test_signature():
     
     penaltyobj = Penalty(penalty_fcn,'icc')
 
-    assert np.all(penaltyobj.signature==['mean','width'])
+    assert np.all(penaltyobj.signature==['mean','std'])
 # ======================================================================
 
 # ======================================================================

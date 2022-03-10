@@ -177,8 +177,8 @@ In this example, let us construct a penalty that imposes the smoothness of a Gau
     # Differential operator of second order
     L = dl.regoperator(x,2)
     # Define the penalty function
-    def smoothness_fcn(center,width):
-        gaussian = gauss(center,width)
+    def smoothness_fcn(center,std):
+        gaussian = gauss(center,std)
         penalty_vector = L@gaussian 
         return penalty_vector
     # Construct the penalty 
@@ -219,7 +219,7 @@ A summary of the fit can be accessed by printing the ``FitResult`` object as ret
      Parameter   Value   95%-Confidence interval   Units   Description     
     =========== ======= ========================= ======= ================ 
      center      5.002   (4.995,5.010)             None    None            
-     width       0.204   (0.196,0.212)             None    None            
+     std         0.204   (0.196,0.212)             None    None            
      scale       0.999   (0.999,0.999)             None    Scaling factor  
     =========== ======= ========================= ======= ================ 
     

@@ -39,7 +39,7 @@ def test_link_signature():
 
     linkedmodel = link(model,mean=['mean1','mean2'])
 
-    assert linkedmodel.signature==['r', 'mean', 'width1', 'width2', 'amp1', 'amp2']
+    assert linkedmodel.signature==['r', 'mean', 'std1', 'std2', 'amp1', 'amp2']
 # ======================================================================
 
 # ======================================================================
@@ -49,7 +49,7 @@ def test_link_multiple():
 
     linkedmodel = link(model,
             mean1=['mean1','mean2'],
-            width2=['width2','width3'])
+            std2=['std2','std3'])
 
     assert linkedmodel.Nparam == model.Nparam - 2
 # ======================================================================
@@ -76,9 +76,9 @@ def test_link_fit():
 
     linkedmodel = link(model,
                 mean=['mean1','mean2'],
-                width=['width1','width2'])
+                std=['std1','std2'])
     linkedmodel.mean.par0 = 3
-    linkedmodel.width.par0 = 0.5
+    linkedmodel.std.par0 = 0.5
 
     x = np.linspace(0,10,400)
     ref = model(x,3,0.5,3,0.5,1,1)
