@@ -14,7 +14,7 @@ def test_types():
     model = deepcopy(dd_gauss)
     model.addlinear('scale',par0 = 1)
 
-    y = model(r,mean=3,width=0.2,scale=1) + whitegaussnoise(r,sigma,seed=1)
+    y = model(r,mean=3,std=0.2,scale=1) + whitegaussnoise(r,sigma,seed=1)
 
     profuq = profile_analysis(model,y,r,samples=3,noiselvl=sigma)
 
@@ -28,16 +28,16 @@ def test_basics():
     r = np.linspace(2,6,300)
     sigma = 0.1
     model = dd_gauss
-    y = model(r,mean=3,width=0.2) + whitegaussnoise(r,sigma,seed=1)
+    y = model(r,mean=3,std=0.2) + whitegaussnoise(r,sigma,seed=1)
     
     profuq = profile_analysis(model,y,r,samples=3,noiselvl=sigma)
 
     x,pdf = profuq['mean'].pardist()
     mean_mean = x[np.argmax(pdf)]
-    x,pdf = profuq['width'].pardist()
-    width_mean = x[np.argmax(pdf)]
+    x,pdf = profuq['std'].pardist()
+    std_mean = x[np.argmax(pdf)]
 
-    assert np.allclose([mean_mean,width_mean],[3,0.2],rtol=1e-2)
+    assert np.allclose([mean_mean,std_mean],[3,0.2],rtol=1e-2)
 # ======================================================================
 
 
@@ -52,16 +52,16 @@ def test_globalmodel():
     model = merge(modelA,modelB)
     model = link(model,
             mean=['mean_1','mean_2'],
-            width=['width_1','width_2'])
-    y = model(r,r,mean=3,width=0.2,scale_1=1,scale_2=1)
-    y[0] += whitegaussnoise(r,sigma,seed=1)      
+            std=['std_1','std_2'])
+    y = model(r,r,mean=3,std=0.2,scale_1=1,scale_2=1)
+    y[0] += whitegaussnoise(r,sigma,seed=1)
     y[1] += whitegaussnoise(r,sigma,seed=1)
 
     profuq = profile_analysis(model,y,r,r,samples=3,noiselvl=sigma)
 
     x,pdf = profuq['mean'].pardist()
     mean_mean = x[np.argmax(pdf)]
-    x,pdf = profuq['width'].pardist()
+    x,pdf = profuq['std'].pardist()
     width_mean = x[np.argmax(pdf)]
 
     assert np.allclose([mean_mean,width_mean],[3,0.2],rtol=1e-2)
@@ -75,11 +75,11 @@ def test_specific_parameters():
     sigma = 0.1
     model = deepcopy(dd_gauss)
 
-    y = model(r,mean=3,width=0.2) + whitegaussnoise(r,sigma,seed=1)
+    y = model(r,mean=3,std=0.2) + whitegaussnoise(r,sigma,seed=1)
 
     profuq = profile_analysis(model,y,r,samples=3,noiselvl=sigma,parameters='mean')
 
-    assert 'mean'in profuq.keys() and not 'width' in profuq.keys()
+    assert 'mean'in profuq.keys() and not 'std' in profuq.keys()
 # ======================================================================
 
 
@@ -97,7 +97,7 @@ def test_grids():
     r = np.linspace(2,6,300)
     sigma = 0.1
     model = dd_gauss
-    y = model(r,mean=3,width=0.2) + whitegaussnoise(r,sigma,seed=1)
+    y = model(r,mean=3,std=0.2) + whitegaussnoise(r,sigma,seed=1)
     grid = {'mean':np.linspace(3,5,3)}
     profuq = profile_analysis(model,y,r,parameters='mean',grids=grid,noiselvl=sigma)
 

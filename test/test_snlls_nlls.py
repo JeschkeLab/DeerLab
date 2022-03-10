@@ -331,8 +331,8 @@ def test_frozen_param():
     "Check that parameters can be frozen during the optimization"
     r = np.linspace(0,6,300)
     def model(param):
-        mean1,mean2,width1,width2,amp1,amp2 = param
-        return amp1*dd_gauss(r,mean1,width1) + amp2*dd_gauss(r,mean2,width2)
+        mean1,mean2,std1,std2,amp1,amp2 = param
+        return amp1*dd_gauss(r,mean1,std1) + amp2*dd_gauss(r,mean2,std2)
 
     y = model([3,4,0.2,0.3,0.5,0.6])
     par0 = [3.1,4.2,0.2,0.3,0.5,0.6]
@@ -351,8 +351,8 @@ def test_frozen_Nparam():
     "Check that the correct number of parameters are returned even with frozen parameters"
     r = np.linspace(0,6,300)
     def model(param):
-        mean1,mean2,width1,width2,amp1,amp2 = param
-        return amp1*dd_gauss(r,mean1,width1) + amp2*dd_gauss(r,mean2,width2)
+        mean1,mean2,std1,std2,amp1,amp2 = param
+        return amp1*dd_gauss(r,mean1,std1) + amp2*dd_gauss(r,mean2,std2)
     y = model([3,4,0.2,0.3,0.5,0.6])
     par0 = [2,2,0.5,0.5,0.5,0.5]
     lb = [0,0,0.01,0.01,0,0]

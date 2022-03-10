@@ -6,16 +6,16 @@ import pytest
 
 # Simple non-linear function for testing
 x = np.linspace(0,5,100)
-def gauss(mean,width): 
-    return np.exp(-(x-mean)**2/width**2/2)
+def gauss(mean,std): 
+    return np.exp(-(x-mean)**2/std**2/2)
 
 # Non-linear definition
-def gauss2(mean1,mean2,width1,width2,amp1,amp2):
-    return amp1*gauss(mean1,width1) + amp2*gauss(mean2,width2)
+def gauss2(mean1,mean2,std1,std2,amp1,amp2):
+    return amp1*gauss(mean1,std1) + amp2*gauss(mean2,std2)
 
 # Linear + Non-linear definition
-def gauss2_design(mean1,mean2,width1,width2):
-    return np.atleast_2d([gauss(mean1,width1), gauss(mean2,width2)]).T
+def gauss2_design(mean1,mean2,std1,std2):
+    return np.atleast_2d([gauss(mean1,std1), gauss(mean2,std2)]).T
 
 # Linear + Non-linear definition
 def gauss2_identity():
@@ -25,7 +25,7 @@ def gauss2_identity():
 def gauss2_scaled(scale):
     return scale*np.eye(len(x))
 
-mock_data = gauss2(mean1=3,mean2=4,width1=0.5,width2=0.2,amp1=0.5,amp2=0.6)
+mock_data = gauss2(mean1=3,mean2=4,std1=0.5,std2=0.2,amp1=0.5,amp2=0.6)
 
 
 def test_construction_length():
@@ -41,7 +41,7 @@ def test_construction_names():
     "Check that the model is contructed correctly with the correct parameter names"
     model = Model(gauss)
 
-    assert 'mean' in model.__dict__ and 'width' in model.__dict__
+    assert 'mean' in model.__dict__ and 'std' in model.__dict__
 #================================================================
 
 def test_parameters_set():
@@ -57,8 +57,8 @@ def test_call_keywords():
 #================================================================
     "Check that calling the model with parameter returns the correct response"
     model = Model(gauss)
-    response  = model(mean=3,width=0.5)
-    reference = gauss(mean=3,width=0.5)
+    response  = model(mean=3,std=0.5)
+    reference = gauss(mean=3,std=0.5)
 
     assert np.allclose(response,reference)
 #================================================================
@@ -77,7 +77,7 @@ def test_call_mixed():
 #================================================================
     "Check that calling the model with parameter returns the correct response"
     model = Model(gauss)
-    response  = model(3,width=0.5)
+    response  = model(3,std=0.5)
     reference = gauss(3,0.5)
 
     assert np.allclose(response,reference)
@@ -120,8 +120,8 @@ def test_addlinear_call_keywords():
     model = Model(gauss2_design)
     model.addlinear('amp1')
     model.addlinear('amp2')
-    response = model(mean1=3,mean2=4,width1=0.2,width2=0.3,amp1=0.5,amp2=0.4)
-    reference = gauss2(mean1=3,mean2=4,width1=0.2,width2=0.3,amp1=0.5,amp2=0.4)
+    response = model(mean1=3,mean2=4,std1=0.2,std2=0.3,amp1=0.5,amp2=0.4)
+    reference = gauss2(mean1=3,mean2=4,std1=0.2,std2=0.3,amp1=0.5,amp2=0.4)
 
     assert np.allclose(response,reference)
 #================================================================
@@ -146,8 +146,8 @@ def test_addlinear_call_mixed():
     model = Model(gauss2_design)
     model.addlinear('amp1')
     model.addlinear('amp2')
-    response = model(3,4,0.2,width2=0.3,amp1=0.5,amp2=0.4)
-    reference = gauss2(3,4,0.2,width2=0.3,amp1=0.5,amp2=0.4)
+    response = model(3,4,0.2,std2=0.3,amp1=0.5,amp2=0.4)
+    reference = gauss2(3,4,0.2,std2=0.3,amp1=0.5,amp2=0.4)
 
     assert np.allclose(response,reference)
 #================================================================
@@ -186,7 +186,7 @@ def test_addlinear_vector_call_keywords():
     "Check that calling the model with scalar and vector parameters returns the correct response"
     model = Model(gauss2_identity)
     model.addlinear('gaussian', vec=len(x))
-    reference = gauss2(mean1=3,mean2=4,width1=0.2,width2=0.3,amp1=0.5,amp2=0.4)
+    reference = gauss2(mean1=3,mean2=4,std1=0.2,std2=0.3,amp1=0.5,amp2=0.4)
     response = model(gaussian=reference)
 
     assert np.allclose(response,reference)
@@ -227,8 +227,8 @@ def test_mixed_vector_call_keywords():
     "Check that calling the model with scalar and vector parameters returns the correct response"
     model = Model(gauss2_scaled)
     model.addlinear('gaussian', vec=len(x))
-    reference = 5*gauss2(mean1=3,mean2=4,width1=0.2,width2=0.3,amp1=0.5,amp2=0.4)
-    response = model(scale=5,gaussian=gauss2(mean1=3,mean2=4,width1=0.2,width2=0.3,amp1=0.5,amp2=0.4))
+    reference = 5*gauss2(mean1=3,mean2=4,std1=0.2,std2=0.3,amp1=0.5,amp2=0.4)
+    response = model(scale=5,gaussian=gauss2(mean1=3,mean2=4,std1=0.2,std2=0.3,amp1=0.5,amp2=0.4))
 
     assert np.allclose(response,reference)
 #================================================================
@@ -281,8 +281,8 @@ def test_addnonlinear_call_keywords():
     model = Model(gauss)
     model.addnonlinear('trivial1')
     model.addnonlinear('trivial2')
-    response = model(mean=3,width=0.2,trivial1=1,trivial2=1)
-    reference = gauss(mean=3,width=0.2)
+    response = model(mean=3,std=0.2,trivial1=1,trivial2=1)
+    reference = gauss(mean=3,std=0.2)
 
     assert np.allclose(response,reference)
 #================================================================
@@ -305,16 +305,16 @@ def _getmodel(type):
         model = Model(gauss2)
         model.mean1.set(lb=0, ub=10, par0=2)
         model.mean2.set(lb=0, ub=10, par0=4)
-        model.width1.set(lb=0.1, ub=5, par0=0.2)
-        model.width2.set(lb=0.1, ub=5, par0=0.2)
+        model.std1.set(lb=0.1, ub=5, par0=0.2)
+        model.std2.set(lb=0.1, ub=5, par0=0.2)
         model.amp1.set(lb=0, ub=5, par0=1)
         model.amp2.set(lb=0, ub=5, par0=1)
     elif type=='semiparametric': 
         model = Model(gauss2_design)
         model.mean1.set(lb=0, ub=10, par0=2)
         model.mean2.set(lb=0, ub=10, par0=4)
-        model.width1.set(lb=0.1, ub=5, par0=0.2)
-        model.width2.set(lb=0.1, ub=5, par0=0.2)
+        model.std1.set(lb=0.1, ub=5, par0=0.2)
+        model.std2.set(lb=0.1, ub=5, par0=0.2)
         model.addlinear('amp1',lb=0, ub=5)
         model.addlinear('amp2',lb=0, ub=5)
     elif type=='nonparametric':
@@ -329,10 +329,10 @@ def test_preserve_original():
     "Check that the original model is not changed by the function"
     model = Model(gauss)
     model.mean.par0 = 3
-    model.width.par0 = 0.2
+    model.std.par0 = 0.2
     
     _ = fit(model,mock_data)
-    assert model._parameter_list() == ['mean','width']
+    assert model._parameter_list() == ['mean','std']
 # ======================================================================
 
 
@@ -436,8 +436,8 @@ def test_fit_fullyfrozen_nonlinear():
     model = _getmodel('semiparametric')
     model.mean1.freeze(3)
     model.mean2.freeze(4)
-    model.width1.freeze(0.5)
-    model.width2.freeze(0.2)
+    model.std1.freeze(0.5)
+    model.std2.freeze(0.2)
 
     fitResult = fit(model,mock_data)
     
@@ -486,7 +486,7 @@ def test_CIs_parametric():
 
     fitResult = fit(model,mock_data)
     
-    assert_attributes_cis(fitResult,['mean1','mean2','width1','width2','amp1','amp2'])
+    assert_attributes_cis(fitResult,['mean1','mean2','std1','std2','amp1','amp2'])
 #================================================================
 
 def test_CIs_semiparametric(): 
@@ -496,7 +496,7 @@ def test_CIs_semiparametric():
 
     fitResult = fit(model,mock_data)
     
-    assert_attributes_cis(fitResult,['mean1','mean2','width1','width2','amp1','amp2'])
+    assert_attributes_cis(fitResult,['mean1','mean2','std1','std2','amp1','amp2'])
 #================================================================
 
 def test_CIs_nonparametric(): 
@@ -518,7 +518,7 @@ def test_bootCIs_parametric():
     noisydata = mock_data + whitegaussnoise(x,0.01,seed=1)
     fitResult = fit(model,noisydata,bootstrap=3)
     
-    assert_attributes_cis(fitResult,['mean1','mean2','width1','width2','amp1','amp2'])
+    assert_attributes_cis(fitResult,['mean1','mean2','std1','std2','amp1','amp2'])
 #================================================================
 
 def test_bootCIs_semiparametric(): 
@@ -529,7 +529,7 @@ def test_bootCIs_semiparametric():
     noisydata = mock_data + whitegaussnoise(x,0.01,seed=1)
     fitResult = fit(model,noisydata,bootstrap=3)
     
-    assert_attributes_cis(fitResult,['mean1','mean2','width1','width2','amp1','amp2'])
+    assert_attributes_cis(fitResult,['mean1','mean2','std1','std2','amp1','amp2'])
 #================================================================
 
 def test_bootCIs_nonparametric(): 
@@ -544,22 +544,22 @@ def test_bootCIs_nonparametric():
 #================================================================
 
 # Simple non-linear function for testing
-def gauss_axis(axis,mean,width): 
-    return np.exp(-(axis-mean)**2/width**2/2)
+def gauss_axis(axis,mean,std): 
+    return np.exp(-(axis-mean)**2/std**2/2)
 
 # Non-linear definition
-def gauss2_axis(axis,mean1,mean2,width1,width2,amp1,amp2):
-    return amp1*gauss_axis(axis,mean1,width1) + amp2*gauss_axis(axis,mean2,width2)
+def gauss2_axis(axis,mean1,mean2,std1,std2,amp1,amp2):
+    return amp1*gauss_axis(axis,mean1,std1) + amp2*gauss_axis(axis,mean2,std2)
 
 # Linear + Non-linear definition
-def gauss2_design_axis(axis,mean1,mean2,width1,width2):
-    return np.atleast_2d([gauss_axis(axis,mean1,width1), gauss_axis(axis,mean2,width2)]).T
+def gauss2_design_axis(axis,mean1,mean2,std1,std2):
+    return np.atleast_2d([gauss_axis(axis,mean1,std1), gauss_axis(axis,mean2,std2)]).T
 
 # Linear + Non-linear definition
 def gauss2_identity_axis(axis):
     return np.eye(len(axis))
 
-mock_data_fcn = lambda axis: gauss2_axis(axis,mean1=3,mean2=4,width1=0.5,width2=0.2,amp1=0.5,amp2=0.6)
+mock_data_fcn = lambda axis: gauss2_axis(axis,mean1=3,mean2=4,std1=0.5,std2=0.2,amp1=0.5,amp2=0.6)
 
 
 def test_model_with_constant_positional(): 
@@ -581,7 +581,7 @@ def test_model_with_constant_keywords():
 
     x = np.linspace(0,10,300)
     reference = gauss_axis(x,3,0.5)
-    response = model(axis=x, mean=3, width=0.5)
+    response = model(axis=x, mean=3, std=0.5)
         
     assert np.allclose(reference,response)
 #================================================================
@@ -593,7 +593,7 @@ def test_model_with_constant_mixed():
 
     x = np.linspace(0,10,300)
     reference = gauss_axis(x,3,0.5)
-    response = model(x, mean=3, width=0.5)
+    response = model(x, mean=3, std=0.5)
         
     assert np.allclose(reference,response)
 #================================================================
@@ -604,24 +604,24 @@ def _getmodel_axis(type,vec=50):
         model = Model(gauss2_axis,constants='axis')
         model.mean1.set(lb=0, ub=10, par0=2)
         model.mean2.set(lb=0, ub=10, par0=4)
-        model.width1.set(lb=0.01, ub=5, par0=0.2)
-        model.width2.set(lb=0.01, ub=5, par0=0.2)
+        model.std1.set(lb=0.01, ub=5, par0=0.2)
+        model.std2.set(lb=0.01, ub=5, par0=0.2)
         model.amp1.set(lb=0, ub=5, par0=1)
         model.amp2.set(lb=0, ub=5, par0=1)
     elif type=='semiparametric': 
         model = Model(gauss2_design_axis,constants='axis')
         model.mean1.set(lb=0, ub=10, par0=2)
         model.mean2.set(lb=0, ub=10, par0=4)
-        model.width1.set(lb=0.01, ub=5, par0=0.2)
-        model.width2.set(lb=0.01, ub=5, par0=0.2)
+        model.std1.set(lb=0.01, ub=5, par0=0.2)
+        model.std2.set(lb=0.01, ub=5, par0=0.2)
         model.addlinear('amp1',lb=0, ub=5)
         model.addlinear('amp2',lb=0, ub=5)
     elif type=='semiparametric_vec': 
         model = Model(gauss2_design_axis,constants='axis')
         model.mean1.set(lb=0, ub=10, par0=2)
         model.mean2.set(lb=0, ub=10, par0=4)
-        model.width1.set(lb=0.01, ub=5, par0=0.2)
-        model.width2.set(lb=0.01, ub=5, par0=0.2)
+        model.std1.set(lb=0.01, ub=5, par0=0.2)
+        model.std2.set(lb=0.01, ub=5, par0=0.2)
         model.addlinear('amps',lb=0, ub=5, vec=2)
     elif type=='nonparametric':
         model = Model(lambda x: gauss2_design_axis(x,3,4,0.5,0.2),constants='x')
@@ -688,11 +688,11 @@ def test_fit_semiparametric_vec_constant():
     assert np.allclose(fitResult.model,mock_data_fcn(x),atol=1e-3)
 #================================================================
 
-def gauss_multiaxis(axis1,axis2,mean,width): 
-    return np.exp(-(axis1-mean)**2/width**2/2)
+def gauss_multiaxis(axis1,axis2,mean,std): 
+    return np.exp(-(axis1-mean)**2/std**2/2)
 
-def gauss2_multiaxis(axis1,axis2,mean1,mean2,width1,width2,amp1,amp2):
-    return amp1*gauss_axis(axis1,mean1,width1) + amp2*gauss_axis(axis2,mean2,width2)
+def gauss2_multiaxis(axis1,axis2,mean1,mean2,std1,std2,amp1,amp2):
+    return amp1*gauss_axis(axis1,mean1,std1) + amp2*gauss_axis(axis2,mean2,std2)
 
 
 def test_model_with_multiple_constants(): 
@@ -715,8 +715,8 @@ def test_model_with_multiple_constants_fit():
     model = Model(gauss2_multiaxis,constants=['axis1','axis2'])
     model.mean1.set(lb=0, ub=10, par0=2)
     model.mean2.set(lb=0, ub=10, par0=4)
-    model.width1.set(lb=0.01, ub=5, par0=0.2)
-    model.width2.set(lb=0.01, ub=5, par0=0.2)
+    model.std1.set(lb=0.01, ub=5, par0=0.2)
+    model.std2.set(lb=0.01, ub=5, par0=0.2)
     model.amp1.set(lb=0, ub=5, par0=1)
     model.amp2.set(lb=0, ub=5, par0=1)
     
@@ -732,8 +732,8 @@ def test_model_constant_same_values_keywords():
     "Check that a model with axis can be defined and called with same values as parameters"
     model = Model(gauss_axis,constants='axis')
 
-    reference = gauss_axis(axis=3,mean=3,width=0.5)
-    response = model(axis=3,mean=3,width=0.5)
+    reference = gauss_axis(axis=3,mean=3,std=0.5)
+    response = model(axis=3,mean=3,std=0.5)
         
     assert np.allclose(reference,response)
 #================================================================
@@ -750,16 +750,16 @@ def test_model_constant_same_values_positional():
 #================================================================
 
 
-def model(phase, center, width):
-    y = gauss(center, width)
+def model(phase, center, std):
+    y = gauss(center, std)
     y = y*np.exp(-1j*phase)
     return y
 mymodel = Model(model)
 mymodel.phase.set(par0=2*np.pi/5, lb=-np.pi, ub=np.pi)
 mymodel.center.set(par0=4, lb=1, ub=6)
-mymodel.width.set(par0=0.2, lb=0.05, ub=5)
+mymodel.std.set(par0=0.2, lb=0.05, ub=5)
 
-y = mymodel(phase=np.pi/5, center=3, width=0.5)     
+y = mymodel(phase=np.pi/5, center=3, std=0.5)     
 
 def test_complex_model_complex_data():
 # ======================================================================
@@ -782,7 +782,7 @@ def test_real_model_complex_data():
     "Check the fit of a real-valued model to complex-valued data"
     mymodel = Model(gauss)
     mymodel.mean.set(par0=4, lb=1, ub=6)
-    mymodel.width.set(par0=0.2, lb=0.05, ub=5)
+    mymodel.std.set(par0=0.2, lb=0.05, ub=5)
     fitResult = fit(mymodel,y.real + 1j*np.zeros_like(y.imag))
 
     assert np.allclose(fitResult.model.real,y.real) and np.allclose(fitResult.model.imag,np.zeros_like(y.real))
@@ -861,7 +861,7 @@ def test_fit_evaluate_callable():
     x = np.linspace(0,10,200)
     fitResult = fit(model,mock_data_fcn(x),x)
     
-    fcn = lambda mean1,mean2,width1,width2,amps: gauss2_design_axis(x,mean1,mean2,width1,width2)@amps
+    fcn = lambda mean1,mean2,std1,std2,amps: gauss2_design_axis(x,mean1,mean2,std1,std2)@amps
     response = fitResult.evaluate(fcn)
 
     assert np.allclose(response,mock_data_fcn(x))
@@ -950,7 +950,7 @@ def test_fit_propagate_callable():
     x = np.linspace(0,10,200)
     fitResult = fit(model,mock_data_fcn(x),x)
     
-    fcn = lambda mean1,mean2,width1,width2,amps: gauss2_design_axis(x,mean1,mean2,width1,width2)@amps
+    fcn = lambda mean1,mean2,std1,std2,amps: gauss2_design_axis(x,mean1,mean2,std1,std2)@amps
     modeluq = fitResult.propagate(fcn, lb=np.zeros_like(x))
 
     assert_cis(modeluq)
@@ -1029,7 +1029,7 @@ def test_fit_propagate_callable_bootstrapped():
     x = np.linspace(0,10,200)
     fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
     
-    fcn = lambda mean1,mean2,width1,width2,amps: gauss2_design_axis(x,mean1,mean2,width1,width2)@amps
+    fcn = lambda mean1,mean2,std1,std2,amps: gauss2_design_axis(x,mean1,mean2,std1,std2)@amps
     modeluq = fitResult.propagate(fcn, lb=np.zeros_like(x))
 
     assert_cis(modeluq)

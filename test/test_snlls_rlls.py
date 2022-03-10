@@ -341,8 +341,8 @@ def test_frozen_values():
 # ======================================================================
     "Check that linear parameters can be frozen during the optimization"
     x = np.linspace(0,6,100)
-    def gauss(mean,width): 
-        return np.exp(-(x-mean)**2/width**2/2)
+    def gauss(mean,std): 
+        return np.exp(-(x-mean)**2/std**2/2)
     A = np.squeeze(np.atleast_2d([gauss(3,0.4), gauss(4,0.2)]).T)
     y = A@np.array([0.5,0.6])
 
@@ -357,8 +357,8 @@ def test_frozen_Nparam():
 # ======================================================================
     "Check that the correct number of parameters are returned even with frozen parameters"
     x = np.linspace(0,6,100)
-    def gauss(mean,width): 
-        return np.exp(-(x-mean)**2/width**2/2)
+    def gauss(mean,std): 
+        return np.exp(-(x-mean)**2/std**2/2)
     A = np.squeeze(np.atleast_2d([gauss(3,0.4), gauss(4,0.2)]).T)
     y = A@np.array([0.5,0.6])
     xfrozen = [0.5,None]

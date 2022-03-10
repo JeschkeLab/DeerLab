@@ -50,7 +50,7 @@ def test_names():
     "Check that the model has correct parameter names"
 
     model = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
-    parameters = ['mean','width','conc','mod','reftime','scale']
+    parameters = ['mean','std','conc','mod','reftime','scale']
     
     for param in parameters:
         assert hasattr(model,param)
@@ -86,7 +86,7 @@ def test_call_keywords():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
     
-    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,width=0.2,scale=1e5)
+    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V1path)
 # ======================================================================
@@ -97,7 +97,7 @@ def test_phenomenological_Bmodel():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,Bmodel=bg_exp,npathways=1)
     
-    Vsim = Vmodel(mod=0.3,reftime=0.0,mean=3,width=0.2,decay=0.1,scale=1e5)
+    Vsim = Vmodel(mod=0.3,reftime=0.0,mean=3,std=0.2,decay=0.1,scale=1e5)
 
     assert np.allclose(Vsim,V1path_phenoB)
 # ======================================================================
@@ -108,7 +108,7 @@ def test_no_Bmodel():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,None,npathways=1)
     
-    Vsim = Vmodel(mod=0.3,reftime=0.0,mean=3,width=0.2,scale=1e5)
+    Vsim = Vmodel(mod=0.3,reftime=0.0,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V1path_noB)
 # ======================================================================
@@ -119,7 +119,7 @@ def test_model_1pathways():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
     
-    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,width=0.2,scale=1e5)
+    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V1path)
 # ======================================================================
@@ -131,7 +131,7 @@ def test_model_2pathways():
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=2)
     
     Vsim = Vmodel(lam1=0.3,reftime1=0.0,lam2=0.1,
-                    reftime2=2,conc=50,mean=3,width=0.2,scale=1e5)
+                    reftime2=2,conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V2path)
 # ======================================================================
@@ -144,7 +144,7 @@ def test_model_3pathways():
     
     Vsim = Vmodel(lam1=0.3,reftime1=0.0,
                 lam2=0.1,reftime2=2, lam3=0.1, reftime3=5,
-                conc=50,mean=3,width=0.2,scale=1e5)
+                conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V3path)
 # ======================================================================
@@ -200,7 +200,7 @@ def test_model_1harmonics():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,harmonics=1)
     
-    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,width=0.2,scale=1e5)
+    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V1harm)
 # ======================================================================
@@ -212,7 +212,7 @@ def test_model_2harmonics():
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=2,harmonics=[1,2])
     
     Vsim = Vmodel(lam1=0.3,reftime1=0.0,lam2=0.1,
-                    reftime2=2,conc=50,mean=3,width=0.2,scale=1e5)
+                    reftime2=2,conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V2harm)
 # ======================================================================
@@ -225,7 +225,7 @@ def test_model_3harmonics():
     
     Vsim = Vmodel(lam1=0.3,reftime1=0.0,
                 lam2=0.1,reftime2=2, lam3=0.1, reftime3=5,
-                conc=50,mean=3,width=0.2,scale=1e5)
+                conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V3harm)
 # ======================================================================
@@ -390,8 +390,8 @@ def test_orisel():
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
     Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,orisel=lambda theta: np.ones_like(theta))
 
-    Vref = Vmodel(mean=3,width=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
-    Vorisel = Vmodelorisel(mean=3,width=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
+    Vref = Vmodel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
+    Vorisel = Vmodelorisel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
 
     assert np.allclose(Vref,Vorisel,rtol=1e-4)
 # ======================================================================
