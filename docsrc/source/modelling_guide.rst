@@ -648,7 +648,7 @@ and check the model by printing it ::
      Name      Lower   Upper    Type    Frozen   Units   Description  
     ========= ======= ======= ======== ======== ======= ============= 
      center1    -inf     inf   nonlin     No     None    None         
-     ste        -inf     inf   nonlin     No     None    None         
+     std        -inf     inf   nonlin     No     None    None         
      center2    -inf     inf   nonlin     No     None    None         
      weight1       0     inf   linear     No     None    None         
      weight2       0     inf   linear     No     None    None         
