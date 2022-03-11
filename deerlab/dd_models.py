@@ -108,7 +108,7 @@ def _multigaussfun(r,r0,sig):
     "Compute a distribution with multiple Gaussians"    
     r,r0,sig = np.atleast_2d(r,r0,sig)
     P = np.sqrt(1/(2*np.pi))*1/sig*np.exp(-0.5*((r.T-r0)/sig)**2)
-    if not np.all(P)==0:
+    if not np.all(P==0):
         # Normalization
         P = np.squeeze(P)/np.sum([np.trapz(c,r) for c in P.T])
     else: 
