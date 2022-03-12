@@ -1,4 +1,4 @@
-.. _dipolar_guide_fitting.rst
+.. _dipolar_fitting:
 
 Fitting
 ============
