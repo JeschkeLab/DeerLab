@@ -1,4 +1,4 @@
-.. _dipolar_modelling
+.. _dipolar_modelling:
 
 Modelling
 =========================
