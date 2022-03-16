@@ -70,7 +70,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
         raise TypeError('The harmonics must be specified as a list of integer values.')
     if experiment is not None:
         if not isinstance(experiment,ExperimentInfo): 
-            raise TypeError('The experiment must be a valid deerlab. object.')
+            raise TypeError('The experiment must be a valid deerlab.ExperimentInfo object.')
         # Check that the number of requested pathways does not exceed the theoretical limit of the experiment
         npathways = experiment.npathways
         maxpathways = len(experiment.reftimes)
