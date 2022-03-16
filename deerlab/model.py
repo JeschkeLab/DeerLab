@@ -281,40 +281,12 @@ class Model():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def _core_model(self,Amodel,θnonlin,θlin): 
-        """ 
-        Calculates the core model response ``y`` based on the mathematical expression ``y = A(θnonlin)@θlin``.
-        """
-        # Calculate the design matrix
-        if len(θnonlin)>0:
-            A = Amodel(*θnonlin)
-        else:
-            A = Amodel()
-
-        # Ensure the proper matrix properties
-        A = np.atleast_2d(A)
-        θlin = np.atleast_1d(np.squeeze(θlin))
-
-        # If there are no linear parameters defined
-        if len(θlin)==0: 
-            θlin = np.array([1])
-
-        if A.shape[1]!=len(θlin): 
-            A = A.T
-
-        # Full model calculation 
-        y = A@θlin
-        
-        return y
-    #---------------------------------------------------------------------------------------
-
-    #---------------------------------------------------------------------------------------
     def _parameter_list(self, order='alphabetical'):
         "Get the list of parameters defined in the model sorted alphabetically or by vector definition"
+        keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
         if order=='alphabetical':
-            keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
+            pass
         elif order=='vector':
-            keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
             # If there are any parameters in vector form...
             n = 0
             for key in keylist: 
@@ -322,7 +294,6 @@ class Model():
                     # ...insert the key string for the same number of linear parameters in that vector 
                     keylist = np.insert(keylist,n*np.ones(len(np.atleast_1d(getattr(self,key).idx))-1,dtype=int),key)  
                 n += len(np.atleast_1d(getattr(self,key).idx))
-
             keylist = self._vecsort(keylist)
         # Remove any duplicates
         keylist = list(dict.fromkeys(keylist))
@@ -330,12 +301,12 @@ class Model():
     #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
-    def _vecsort(self,list):
+    def _vecsort(self, paramlist):
         "Sort vectorized parameters attributes from alphabetical ordering to vector indexing"
-        list = np.squeeze(np.atleast_1d(list))
+        paramlist = np.squeeze(np.atleast_1d(paramlist))
         indices = np.concatenate([np.atleast_1d(getattr(self,param).idx) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
-        orderedlist = np.atleast_1d(list.copy())
-        orderedlist[indices] = list
+        orderedlist = np.atleast_1d(paramlist.copy())
+        orderedlist[indices] = paramlist
 
         return orderedlist
     #---------------------------------------------------------------------------------------
@@ -388,8 +359,8 @@ class Model():
     #-----------------------------------------------------------------------------
 
     #-----------------------------------------------------------------------------
-    def _check_if_already_exists(self,key):
-        if hasattr(self,key):
+    def _error_if_already_exists(self, key):
+        if hasattr(self, key):
             raise KeyError(f'The model already has a "{key}" parameter.')
     #-----------------------------------------------------------------------------
     
@@ -421,7 +392,7 @@ class Model():
         unit : string, optional
             Physical unit of the parameter.
         """
-        self._check_if_already_exists(key)
+        self._error_if_already_exists(key)
         idx = self.Nparam
         self.Nparam += 1
         self.Nnonlin += 1
@@ -475,10 +446,10 @@ class Model():
         unit : string, optional
             Physical unit of the parameter.
         """
-        self._check_if_already_exists(key)
-        if vec>1: 
+        self._error_if_already_exists(key)
+        if vec>1:
             idx = np.arange(self.Nparam,self.Nparam+vec) 
-            self.Nparam += vec        
+            self.Nparam += vec
             self.Nlin += vec
             newparam = Parameter(name=key, linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), unit=unit, description=description)
         else:
@@ -526,8 +497,19 @@ class Model():
         # Determine which parameters are linear and which nonlinear
         θlin, θnonlin = self._split_linear(θ)
 
-        # Evaluate the core model
-        y = self._core_model(lambda *θ: self.nonlinmodel(*constants,*θ),θnonlin,θlin)
+        # Calculate the design matrix (possibly dependent on non-linear parameters)
+        A = self.nonlinmodel(*constants, *θnonlin)
+        A = np.atleast_2d(A)
+
+        # Ensure adequate linear-parameter vector shape
+        θlin = np.atleast_1d(np.squeeze(θlin))
+        if len(θlin)==0: 
+            θlin = np.array([1])
+        if A.shape[1]!=len(θlin): 
+            A = A.T
+
+        # Full model evaluation 
+        y = A@θlin
 
         # Evaluate whether the response has 
         if hasattr(self,'_posteval_fcn'):
