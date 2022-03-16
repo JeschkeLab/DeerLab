@@ -1,7 +1,6 @@
 # __init__.py
 from .dd_models import *
 from .bg_models import *
-from .ex_models import *
 from .model import Model, Penalty, Parameter, link, lincombine, merge, relate, fit
 from .deerload import deerload
 from .selregparam import selregparam
