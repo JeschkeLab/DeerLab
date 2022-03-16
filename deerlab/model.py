@@ -281,15 +281,6 @@ class Model():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def _evaluate(self, Amodel, θnonlin, θlin): 
-        """ 
-        Evaluates the model, returning ``y = A(θnonlin)@θlin``.
-        """
-
-        return y
-    #---------------------------------------------------------------------------------------
-
-    #---------------------------------------------------------------------------------------
     def _parameter_list(self, order='alphabetical'):
         "Get the list of parameters defined in the model sorted alphabetically or by vector definition"
         keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
