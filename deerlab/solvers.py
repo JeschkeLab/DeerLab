@@ -881,10 +881,12 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     nonlin_idx = np.arange(len(nonlinfit))
     lin_idx = np.arange(len(nonlinfit),len(parfit))
     Amodel = _Amodel # Use the model with the full parameter set
-    def ymodel(n): return lambda p: (Amodel(p[nonlin_idx])@p[lin_idx])[subsets[n]]
+    def ymodel(n):
+        return lambda p: (Amodel(p[nonlin_idx])@p[lin_idx])[subsets[n]]
     if complexy: 
         ymodel_ = ymodel
-        def ymodel(n): return lambda p: ymodel_(n)(p) + 1j*(Amodel(p[nonlin_idx])@p[lin_idx])[imagsubsets[n]]
+        def ymodel(n):
+            return lambda p: ymodel_(n)(p) + 1j*(Amodel(p[nonlin_idx])@p[lin_idx])[imagsubsets[n]]
     ymodels = [ymodel(n) for n in range(len(subsets))]
     modelfit,modelfituq = _model_evaluation(ymodels,parfit,paramuq,uq)
 

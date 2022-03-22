@@ -939,7 +939,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         raise AssertionError(f'The model has no parameters to fit.')    
 
     # Get parameter indices in the order spitted out by the solver
-    param_idx = [[]]*len(model._parameter_list('vector'))
+    param_idx = [[] for _ in model._parameter_list('vector')]
     idxprev = 0
     for islinear in [False,True]:
         for n,param in enumerate(model._parameter_list('vector')):
@@ -1391,7 +1391,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
     Nconst = len(constants)
     nonlinfcns = [model.nonlinmodel for model in models]
     Nlins = [model.Nlin for model in models]
-    ysizes = [[]]*len(models)
+    ysizes = [[] for _ in models]
 
     #---------------------------------------------------------------------
     def _combined_nonlinmodel(*inputargs):
