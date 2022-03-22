@@ -45,7 +45,7 @@ Pmodel.fracA.set(  lb=0,    ub=1,   par0=0.5)
 
 # Generate the individual dipolar signal models
 Nsignals = len(Vexps)
-Vmodels = [[]]*Nsignals
+Vmodels = [[] for _ in range(Nsignals)]
 for n in range(Nsignals): 
     Vmodels[n] = dl.dipolarmodel(ts[n], r, Pmodel)
     Vmodels[n].reftime.set(lb=0,ub=0.5,par0=0.2)

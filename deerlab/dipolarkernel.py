@@ -19,7 +19,7 @@ from deerlab.constants import *
 def ω0(g):
     return (μ0/2)*μB**2*g[0]*g[1]/h*1e21 # Hz m^3 -> MHz nm^3 -> rad μs^-1 nm^3
 
-def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, orisel=None, g=[ge,ge], 
+def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, orisel=None, g=None, 
                   integralop=True, nKnots=5001, complex=False, clearcache=False, memorylimit=8):
 #===================================================================================================
     r"""Compute the (multi-pathway) dipolar kernel operator which enables the linear transformation from
@@ -156,6 +156,9 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         elementarykernel.cache_clear()
         _Cgrid.cache_clear()
 
+    if g is None:
+        g = [ge, ge]
+
     # Ensure that inputs are Numpy arrays
     r,t,g = np.atleast_1d(r,t,g)
 
@@ -275,7 +278,7 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ,complex):
     nt = np.size(t)  
     K0 = np.zeros((nt,nr))
     ωr = ω0(g)/(r**3)  # rad μs^-1
-    
+
     orientationselection = Pθ is not None 
 
     if orientationselection:
@@ -334,13 +337,13 @@ def elementarykernel(t,r,method,ωex,nKnots,g,Pθ,complex):
     def elementarykernel_integral(t,ωex,Pθ):
     #==========================================================================
         """Calculate kernel using explicit numerical integration """
-        for ir in range(len(ωr)):
+        for ir, ωr_ in enumerate(ωr):
             #==================================================================
             def integrand(cosθ):
-                integ = np.cos(ωr[ir]*abs(t)*(1-3*cosθ**2))
+                integ = np.cos(ωr_*abs(t)*(1-3*cosθ**2))
                 # If given, include limited excitation bandwidth
                 if not np.isinf(ωex):
-                    integ = integ*np.exp(-(ωr[ir]*(1-3*cosθ**2))**2/ωex**2)
+                    integ = integ*np.exp(-(ωr_*(1-3*cosθ**2))**2/ωex**2)
                 # If given, include orientation selection
                 if orientationselection:
                     integ = integ*Pθ(np.arccos(cosθ))  

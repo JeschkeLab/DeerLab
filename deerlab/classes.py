@@ -512,7 +512,7 @@ class UQResult:
 
         elif self.type=='bootstrap':
 
-            sampled_parameters = [[]]*self.nparam
+            sampled_parameters = [[] for _ in range(self.nparam)]
             for n in range(self.nparam):
                 # Get the parameter uncertainty distribution
                 values,pdf = self.pardist(n)

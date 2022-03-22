@@ -302,8 +302,8 @@ The model can be constructed as follows: ::
     # Define the non-linear function 
     def gausskernel_fcn(sigma):
         gausskernel = np.zeros((len(x),len(z)))
-        for n in range(len(z)):
-            gausskernel[:,n] = np.exp(-(x-z[n])**2/(2*sigma**2))   
+        for n, z_ in enumerate(z):
+            gausskernel[:,n] = np.exp(-(x-z_)**2/(2*sigma**2))   
         return gausskernel
     # Construct the model
     gaussconv = dl.Model(gausskernel_fcn)
