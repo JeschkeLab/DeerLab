@@ -335,7 +335,7 @@ class ExperimentInfo():
 #===============================================================================
 
 #===============================================================================
-def ex_3pdeer(tau, pathways=[1,2]):
+def ex_3pdeer(tau, pathways=None):
     r"""
     Generate a 3-pulse DEER dipolar experiment model. 
 
@@ -379,14 +379,15 @@ def ex_3pdeer(tau, pathways=[1,2]):
     harmonics = [ 1, 1]
 
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
-    
+    if pathways is not None:
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways] 
+
     return ExperimentInfo('3-pulse DEER',reftimes,harmonics)
 #===============================================================================
 
 #===============================================================================
-def ex_4pdeer(tau1, tau2, pathways=[1,2,3,4]):
+def ex_4pdeer(tau1, tau2, pathways=None):
     r"""
     Generate a 4-pulse DEER dipolar experiment model. 
     
@@ -433,14 +434,15 @@ def ex_4pdeer(tau1, tau2, pathways=[1,2,3,4]):
     harmonics = [1, 1, 1, 1]
 
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
+    if pathways is not None:
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways] 
 
     return ExperimentInfo('4-pulse DEER', reftimes, harmonics)
 #===============================================================================
 
 #===============================================================================
-def ex_rev5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5,6,7,8]):
+def ex_rev5pdeer(tau1, tau2, tau3, pathways=None):
     r"""
     Generate a reverse 5-pulse DEER dipolar experiment model. 
     
@@ -493,15 +495,16 @@ def ex_rev5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5,6,7,8]):
     harmonics = [ 1, 1, 1, 1, 1, 1, 1, 1]
     
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
+    if pathways is not None:
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways]
     
     return ExperimentInfo('Reverse 5-pulse DEER',reftimes,harmonics)
 #===============================================================================
 
 
 #===============================================================================
-def ex_fwd5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5,6,7,8]):
+def ex_fwd5pdeer(tau1, tau2, tau3, pathways=None):
     r"""
     Generate a forward 5-pulse DEER dipolar experiment model. 
     
@@ -552,16 +555,17 @@ def ex_fwd5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5,6,7,8]):
     reftimes = [tau3, tau1, tau1-tau3, tau2+tau3, tau1+tau2-tau3, 0, tau1+tau2, tau2]
     # Theoretical dipolar harmonics
     harmonics = [1, 1, 1, 1, 1, 1, 1, 1]
-    
+
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
-    
+    if pathways is not None:
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways] 
+
     return ExperimentInfo('Forward 5-pulse DEER', reftimes, harmonics)
 #===============================================================================
 
 #===============================================================================
-def ex_sifter(tau1, tau2, pathways=[1,2,3]):
+def ex_sifter(tau1, tau2, pathways=None):
     r"""
     Generate a SIFTER dipolar experiment model. 
 
@@ -607,15 +611,16 @@ def ex_sifter(tau1, tau2, pathways=[1,2,3]):
     harmonics = [ 1, 1/2, 1/2]
 
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
-    
+    if pathways is not None:
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways]
+
     return ExperimentInfo('SIFTER',reftimes,harmonics)
 #===============================================================================
 
 
 #===============================================================================
-def ex_ridme(tau1, tau2, pathways=[1,2,3,4]):
+def ex_ridme(tau1, tau2, pathways=None):
     r"""
     Generate a RIDME dipolar experiment model. 
 
@@ -662,8 +667,9 @@ def ex_ridme(tau1, tau2, pathways=[1,2,3,4]):
     harmonics = [ 1, 1, 1, 1]
 
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
-    
+    if pathways is not None:
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways] 
+
     return ExperimentInfo('RIDME',reftimes,harmonics)
 #===============================================================================

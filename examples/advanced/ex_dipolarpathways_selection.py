@@ -36,7 +36,7 @@ experiment = dl.ex_4pdeer(𝜏1,𝜏2)
 Vmodels = [dl.dipolarmodel(t, r, npathways=n+1, experiment=experiment) for n in range(Nmax)]
 
 # Fit the individual models to the data
-fits = [[]]*Nmax
+fits = [[] for _ in range(Nmax)]
 for n,Vmodel in enumerate(Vmodels): 
     fits[n] = dl.fit(Vmodel,Vexp)
 

@@ -291,7 +291,7 @@ def test_multipath():
 
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
+        Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
 
     assert np.all(abs(K-Kref) < 1e-3)
 #=======================================================================
@@ -315,12 +315,12 @@ def test_multipath_background():
     # Reference
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
+        Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
     Kref = Kref
     
     Bref = 1
     for p in range(len(lam)):
-            Bref = Bref*Bmodel((t-T0[p]),lam[p])
+        Bref = Bref*Bmodel((t-T0[p]),lam[p])
     KBref = Kref*Bref[:,np.newaxis]
 
     paths = []
@@ -359,7 +359,7 @@ def test_multipath_harmonics():
 
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge],None,False)
+        Kref = Kref + lam[p]*elementarykernel(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge],None,False)
     Kref = Kref
 
     assert np.max(K-Kref) < 1e-3

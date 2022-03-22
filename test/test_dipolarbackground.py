@@ -89,7 +89,7 @@ def test_multipath_renorm():
     # Reference
     Bref = 1
     for p in range(len(lam)):
-            Bref = Bref*Bmodel((t-T0[p]),lam[p])
+        Bref = Bref*Bmodel((t-T0[p]),lam[p])
     
     paths = []
     paths.append(1-prob)
