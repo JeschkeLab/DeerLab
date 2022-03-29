@@ -14,7 +14,6 @@ from .correctzerotime import correctzerotime
 from .noiselevel import noiselevel
 from .whitegaussnoise import whitegaussnoise
 from .bootstrap_analysis import bootstrap_analysis
-from .correctscale import correctscale
 from .fftspec import fftspec
 from .distancerange import distancerange
 from .classes import FitResult, UQResult
