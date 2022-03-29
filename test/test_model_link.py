@@ -179,7 +179,7 @@ def test_vec_link_fit():
     x = np.linspace(0,10,40)
     ref = model(1,2,dl.dd_gauss(x,3,0.6),dl.dd_gauss(x,3,0.6))
 
-    result = fit(linkedmodel,ref,nonlin_tol=1e-3)
+    result = fit(linkedmodel,ref,ftol=1e-3)
     
     assert np.allclose(result.model,ref,atol=1e-2)
 # ======================================================================

@@ -90,7 +90,7 @@ globalModel.reftime2_1.set(lb=3.2,   ub=3.8,  par0=3.4)
 globalModel.reftime2_2.set(lb=2.0,   ub=2.5,  par0=2.2)
 
 # Fit the model to the data
-fit = dl.fit(globalModel,Vs,nonlin_tol=1e-3)
+fit = dl.fit(globalModel,Vs,ftol=1e-3)
 
 # Plot the results
 plt.figure(figsize=[9,9])

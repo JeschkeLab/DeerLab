@@ -156,7 +156,7 @@ def test_fit_1pathways():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
     
-    result = fit(Vmodel,V1path,nonlin_tol=1e-3)
+    result = fit(Vmodel,V1path,ftol=1e-3)
 
     assert np.allclose(result.model,V1path)
 # ======================================================================
@@ -169,7 +169,7 @@ def test_fit_2pathways():
     Vmodel.reftime1.freeze(0)
     Vmodel.reftime2.freeze(2)
     
-    result = fit(Vmodel,V2path,nonlin_tol=1e-3)
+    result = fit(Vmodel,V2path,ftol=1e-3)
 
     assert np.allclose(result.model,V2path)
 # ======================================================================
@@ -183,7 +183,7 @@ def test_fit_3pathways():
     Vmodel.reftime2.freeze(2)
     Vmodel.reftime3.freeze(5)
     
-    result = fit(Vmodel,V3path,nonlin_tol=1e-3)
+    result = fit(Vmodel,V3path,ftol=1e-3)
 
     assert np.allclose(result.model,V3path)
 # ======================================================================
@@ -246,7 +246,7 @@ def test_fit_Pnonparametric():
 
     Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=1)
     
-    result = fit(Vmodel,V1path,nonlin_tol=1e-5)
+    result = fit(Vmodel,V1path,ftol=1e-5)
 
     assert ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
@@ -277,7 +277,7 @@ def test_ex_3pdeer_fit():
 
     experiment = ex_3pdeer(tau1, pathways=[1,2])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,V3pdeer,nonlin_tol=1e-3)
+    result = fit(Vmodel,V3pdeer,ftol=1e-3)
 
     assert np.allclose(V3pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
@@ -297,7 +297,7 @@ def test_ex_4pdeer_fit():
 
     experiment = ex_4pdeer(tau1,tau2, pathways=[1,2])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,V4pdeer,nonlin_tol=1e-3)
+    result = fit(Vmodel,V4pdeer,ftol=1e-3)
 
     assert np.allclose(V4pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
@@ -317,7 +317,7 @@ def test_ex_rev5pdeer_fit():
 
     experiment = ex_rev5pdeer(tau1,tau2,tau3, pathways=[1,2,3])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,Vrev5pdeer,nonlin_tol=1e-3)
+    result = fit(Vmodel,Vrev5pdeer,ftol=1e-3)
 
     assert np.allclose(Vrev5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
@@ -338,7 +338,7 @@ def test_ex_fwd5pdeer_fit():
 
     experiment = ex_fwd5pdeer(tau1,tau2,tau3, pathways=[1,2,3])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,Vfwd5pdeer,nonlin_tol=1e-3)
+    result = fit(Vmodel,Vfwd5pdeer,ftol=1e-3)
 
     assert np.allclose(Vfwd5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
@@ -358,7 +358,7 @@ def test_ex_sifter_fit():
 
     experiment = ex_sifter(tau1,tau2)
     Vmodel = dipolarmodel(tsifter,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,Vsifter,nonlin_tol=1e-3)
+    result = fit(Vmodel,Vsifter,ftol=1e-3)
 
     assert np.allclose(Vsifter,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
@@ -378,7 +378,7 @@ def test_ex_ridme_fit():
 
     experiment = ex_ridme(tau1,tau2, pathways=[1,2,3])
     Vmodel = dipolarmodel(tridme,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,Vridme,nonlin_tol=1e-3)
+    result = fit(Vmodel,Vridme,ftol=1e-3)
 
     assert np.allclose(Vridme,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
