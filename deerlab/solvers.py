@@ -552,6 +552,9 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         Amodel = lambda p: np.atleast_2d(Amodel_(p)).T
         A0 = Amodel(par0)
 
+    if np.shape(A0)[0]!=np.shape(y)[0]:
+        raise RuntimeError(f"The number of elements ({np.shape(A0)[0]}) in the model's output does not match the number of elements ({np.shape(y)[0]}) in the data.")
+
     complexy = np.iscomplexobj(y)
     imagsubsets = []
     if complexy: 
