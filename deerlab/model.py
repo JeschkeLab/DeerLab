@@ -432,6 +432,11 @@ class Model():
             Number of elements in the parameter. If ``vec>1`` then the parameter will represent a 
             vector of linear parameters of length ``vec``. By default, a scalar parameter is defined.
 
+        normalization : callable, optional
+            Normalization function of the parameter. If specified, upon fitting the parameter will be normalized and 
+            an the normalization factor will be reported separately. Does not add an additional normalization factor parameter. 
+            Must be function taking the parameter and returning the normalized parameter.
+            
         lb : float or array_like, optional
             Lower bound of the parameter. For vectorized parameters, must be a 
             vector with ``vec`` elements. If not specified, it is set to ``-np.inf``.
@@ -439,6 +444,7 @@ class Model():
         ub : float or array_like, optional
             Lower bound of the parameter. For vectorized parameters, must be a
             vector with ``vec`` elements.  If not specified, it is set to ``+np.inf``.
+
 
         description : string, optional 
             Descriptrion of the parameter. 
