@@ -18,7 +18,7 @@ sys.path.append(os.path.abspath('.'))
 
 # Project details
 project = 'DeerLab'
-copyright = '2019-2021, Luis Fábregas-Ibáñez, Stefan Stoll, and others'
+copyright = '2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others'
 author = 'Fabregas Ibanez'
 language = 'en'
 
