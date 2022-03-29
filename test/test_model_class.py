@@ -114,6 +114,16 @@ def test_addlinear_set():
     assert getattr(model.amp1,'lb')==0 and getattr(model.amp1,'ub')==10 
 #================================================================
 
+def test_addlinear_normalization():
+#================================================================
+    "Check that linear parameters can be properly added with a normalization function"
+    model = Model(gauss2_design)
+    model.addlinear('amp1',lb=0, normalization=lambda x: 2*x)
+    model.addlinear('amp2',lb=0, normalization=lambda x: 3*x)
+
+    assert 'amp1' in model.__dict__ and 'amp2' in model.__dict__
+#================================================================
+
 def test_addlinear_call_keywords():
 #================================================================
     "Check that calling the model with parameters returns the correct response"
@@ -630,6 +640,9 @@ def _getmodel_axis(type,vec=50):
     elif type=='nonparametric_vec':
         model = Model(lambda x: np.eye(len(x)),constants='x')
         model.addlinear('dist',lb=0,vec=vec)
+    elif type=='nonparametric_vec_normalized':
+        model = Model(lambda x: np.eye(len(x)),constants='x')
+        model.addlinear('dist',lb=0,vec=vec,normalization=lambda dist:dist/np.sum(dist))
     return model
 #----------------------------------------------------------------
 
@@ -670,6 +683,17 @@ def test_fit_nonparametric_vec_constant():
 #================================================================
     "Check that a vectorized nonparametric model can be correctly fitted while specifying an axis"
     model = _getmodel_axis('nonparametric_vec',vec=80)
+
+    x = np.linspace(0,10,80)
+    fitResult = fit(model,mock_data_fcn(x),x,noiselvl=1e-10)
+    
+    assert np.allclose(fitResult.model,mock_data_fcn(x),atol=1e-3)
+#================================================================
+
+def test_fit_nonparametric_vec_normalized_constant(): 
+#================================================================
+    "Check that a vectorized nonparametric model can be correctly fitted while specifying an axis"
+    model = _getmodel_axis('nonparametric_vec_normalized',vec=80)
 
     x = np.linspace(0,10,80)
     fitResult = fit(model,mock_data_fcn(x),x,noiselvl=1e-10)
@@ -827,6 +851,19 @@ def test_fit_evaluate_nonparametric_vec():
     assert np.allclose(response,mock_data_fcn(x))
 #================================================================
 
+def test_fit_evaluate_nonparametric_vec_normalized(): 
+#================================================================
+    "Check the evaluate method of the fitResult object for evaluation of a vectorized nonparametric model"
+    model = _getmodel_axis('nonparametric_vec_normalized',vec=80)
+
+    x = np.linspace(0,10,80)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    response = fitResult.evaluate(model,x)
+
+    assert np.allclose(response,mock_data_fcn(x))
+#================================================================
+
 def test_fit_evaluate_semiparametric(): 
 #================================================================
     "Check the evaluate method of the fitResult object for evaluation of a semiparametric model"
@@ -916,6 +953,19 @@ def test_fit_propagate_nonparametric_vec():
     assert_cis(modeluq)
 #================================================================
 
+def test_fit_propagate_nonparametric_vec_normalized(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a vectorized nonparametric model"
+    model = _getmodel_axis('nonparametric_vec_normalized',vec=80)
+
+    x = np.linspace(0,10,80)
+    fitResult = fit(model,mock_data_fcn(x),x)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
 def test_fit_propagate_semiparametric(): 
 #================================================================
     "Check the propagate method of the fitResult object for evaluation of a semiparametric model"
@@ -986,6 +1036,19 @@ def test_fit_propagate_nonparametric_vec_bootstrapped():
 #================================================================
     "Check the propagate method of the fitResult object for evaluation of a vectorized nonparametric model"
     model = _getmodel_axis('nonparametric_vec',vec=80)
+
+    x = np.linspace(0,10,80)
+    fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)
+    
+    modeluq = fitResult.propagate(model, x, lb=np.zeros_like(x))
+
+    assert_cis(modeluq)
+#================================================================
+
+def test_fit_propagate_nonparametric_vec_normalized_bootstrapped(): 
+#================================================================
+    "Check the propagate method of the fitResult object for evaluation of a vectorized nonparametric model"
+    model = _getmodel_axis('nonparametric_vec_normalized',vec=80)
 
     x = np.linspace(0,10,80)
     fitResult = fit(model,mock_data_fcn(x),x,bootstrap=3)

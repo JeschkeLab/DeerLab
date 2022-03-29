@@ -242,6 +242,9 @@ def test_fit_model():
 model_vec = Model(lambda r: np.eye(len(r)),constants='r')
 model_vec.addlinear('Pvec',vec=100,lb=0)
 
+model_vec_normalized = Model(lambda r: np.eye(len(r)),constants='r')
+model_vec_normalized.addlinear('Pvec',vec=100,lb=0,normalization = lambda Pvec: Pvec/np.sum(Pvec))
+
 # ======================================================================
 def test_vec_Nparam_nonlin(): 
     "Check that the merged model with a vector-form parameter has the right number of parameters"
@@ -310,6 +313,55 @@ def test_vec_twomodels_mixed():
     response = model(x,x,3,0.2,1,dl.dd_gauss(x,4,0.3))
 
     assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
+# ======================================================================
+
+# ======================================================================
+def test_vec_twomodels_mixed_normalized(): 
+    "Check that that merge works correctly for mixed models"
+    model1 = dl.dd_gauss
+    model2 = model_vec_normalized
+    model = merge(model1,model2)
+    x = np.linspace(0,10,100)
+    ref1 = model1(x,3,0.2)
+    ref2 = model2(r=x,Pvec=dl.dd_gauss(x,4,0.3))
+
+    response = model(x,x,3,0.2,1,dl.dd_gauss(x,4,0.3))
+
+    assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
+# ======================================================================
+
+# ======================================================================
+def test_twomodels_normalization(): 
+    """Check that the normalization of linear parameter is maintained"""
+    model1 = model_vec_normalized
+    model2 = model_vec_normalized
+    model = merge(model1,model2)
+
+    x = np.linspace(0,10,100)
+    ref1 = model1(r=x,Pvec=dl.dd_gauss(x,4,0.3))
+    ref2 = model2(r=x,Pvec=dl.dd_gauss(x,4,0.3))
+
+    results = fit(model,[ref1,ref2],x,x)
+
+    assert hasattr(results,'Pvec_1_scale') and hasattr(results,'Pvec_2_scale')
+# ======================================================================
+
+# ======================================================================
+def test_twomodels_normalization_values(): 
+    """Check that the normalization of linear parameter is maintained"""
+    model1 = model_vec_normalized
+    model2 = model_vec_normalized
+    model = merge(model1,model2)
+
+    x = np.linspace(0,10,100)
+    scale1,scale2 = 55,79
+    dist = dl.dd_gauss(x,4,0.3)
+    ref1 = scale1*model1(r=x,Pvec=dist/np.sum(dist))
+    ref2 = scale2*model2(r=x,Pvec=dist/np.sum(dist))
+
+    results = fit(model,[ref1,ref2],x,x)
+
+    assert np.isclose(results.Pvec_1_scale,scale1) and np.isclose(results.Pvec_2_scale,scale2)
 # ======================================================================
 
 # ======================================================================
