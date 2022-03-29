@@ -25,7 +25,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
         Vector of spin-spin distances, in nanometers.
     Pmodel : :ref:`Model`, optional
         Model for the distance distribution. If not specified, a non-parametric
-        distance distribution defined over r is used.
+        distance distribution defined over ``r`` is used.
     Bmodel : :ref:`Model`, optional
         Model for the intermolecular (background) contribution. If not specified,
         a background arising from a homogenous 3D distribution of spins is used.
