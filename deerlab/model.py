@@ -1570,13 +1570,13 @@ def relate(model,**functions):
         if dependent_name not in model_parameters:
             raise KeyError(f"The assigned parameter '{dependent_name}' is not a parameter of the input model.")
 
-        if getattr(model,dependent_name).linear:
+        if np.all(getattr(model,dependent_name).linear):
             raise TypeError(f"Linear parameters cannot be used.")
 
         for arg in arguments_names:
             if arg not in model_parameters:
                 raise KeyError(f"The function argument '{arg}' is not a parameter of the input model.")
-            if getattr(model,arg).linear:
+            if np.all(getattr(model,arg).linear):
                 raise TypeError(f"Linear parameters cannot be used.")
 
         param_idx = 0
