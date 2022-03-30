@@ -257,7 +257,7 @@ def test_fit_Pnonparametric_normalization():
 
     Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=1)
     
-    result = fit(Vmodel,V1path,nonlin_tol=1e-5)
+    result = fit(Vmodel,V1path,ftol=1e-5)
 
     assert np.isclose(np.trapz(result.P,r),1)
 # ======================================================================
