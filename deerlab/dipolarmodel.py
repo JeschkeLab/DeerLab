@@ -25,7 +25,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
         Vector of spin-spin distances, in nanometers.
     Pmodel : :ref:`Model`, optional
         Model for the distance distribution. If not specified, a non-parametric
-        distance distribution defined over r is used.
+        distance distribution defined over ``r`` is used.
     Bmodel : :ref:`Model`, optional
         Model for the intermolecular (background) contribution. If not specified,
         a background arising from a homogenous 3D distribution of spins is used.
@@ -157,7 +157,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
             for param in model._parameter_list(order='vector'):
                 if np.any(getattr(model,param).linear):
                     parameters.append(getattr(model,param))
-                    linearparam.append({'name':param,'vec':len(np.atleast_1d(getattr(model,param).idx))})
+                    linearparam.append({'name':param,'vec':len(np.atleast_1d(getattr(model,param).idx)),'normalization':getattr(model,param).normalization})
                 elif not (model==Bmodel and param=='lam'):
                     signature.append(param)
                     parameters.append(getattr(model,param))
@@ -211,7 +211,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
 
     # Add the linear parameters from the subset models            
     for lparam in linearparam:
-        DipolarSignal.addlinear(lparam['name'],vec=lparam['vec'])
+        DipolarSignal.addlinear(lparam['name'],vec=lparam['vec'],normalization=lparam['normalization'])
 
     if Pmodel is None:
         DipolarSignal.addlinear()

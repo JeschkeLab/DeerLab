@@ -248,7 +248,18 @@ def test_fit_Pnonparametric():
     
     result = fit(Vmodel,V1path,nonlin_tol=1e-5)
 
-    assert ovl(result.P/1e5,Pr)>0.975
+    assert ovl(result.P,Pr)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_fit_Pnonparametric_normalization(): 
+    "Check that the model with one dipolar pathway is correct"
+
+    Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=1)
+    
+    result = fit(Vmodel,V1path,nonlin_tol=1e-5)
+
+    assert np.isclose(np.trapz(result.P,r),1)
 # ======================================================================
 
 tdeer = np.linspace(-0.5,5,300)

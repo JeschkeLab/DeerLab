@@ -140,7 +140,7 @@ def freedist(r):
     dd_nonparametric = Model(_nonparametric,constants='r')
     dd_nonparametric.description = 'Non-parametric distribution model'
     # Parameters
-    dd_nonparametric.addlinear('P',vec=len(r),lb=0,par0=0,description='Non-parametric distance distribution',unit="nm⁻¹")
+    dd_nonparametric.addlinear('P',vec=len(r),lb=0,par0=0,description='Non-parametric distance distribution',unit="nm⁻¹", normalization=lambda P: P/np.trapz(P,r))
     return dd_nonparametric
 
 
