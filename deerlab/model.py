@@ -415,7 +415,25 @@ class Model():
         self.nonlinmodel = model_with_constants_and_added_nonlin
         self.signature.append(key)
     #---------------------------------------------------------------------------------------
+    
+    #---------------------------------------------------------------------------------------
+    def rename_parameter(self, old, new):
+        """
+        Rename a parameter in the model. 
 
+        Parameters
+        ----------
+        old : string
+            Old parameter's name.
+        new : string
+            New parameter's name. 
+
+        """
+        if not hasattr(self,old):
+            raise KeyError(f'The model does not have a "{old}" parameter.')
+        setattr(self, new, getattr(self, old))
+        delattr(self, old)
+    #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
     def addlinear(self, name, vec=1, normalization=None, lb=-np.inf, ub=np.inf, par0=None, unit=None, description=None):
