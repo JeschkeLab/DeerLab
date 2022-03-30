@@ -1,5 +1,5 @@
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 from deerlab.utils import Jacobian, nearest_psd
@@ -182,7 +182,7 @@ class UQResult:
             # Calling the super class to avoid recursion
             if attr!='type' and super(UQResult, self).__getattribute__('type') == 'void':
                 # Check if the uncertainty quantification has been done, if not report that there is nothing in the object
-                raise ValueError('The requested attribute/method is not available. Uncertainty quantification has not been calculated during the fit by using the `uq=None` keyword.')
+                raise ValueError(f"The requested attribute/method ('{attr}') is not available. Uncertainty quantification has not been calculated during the fit by using the `uq=None` keyword.")
         except AttributeError:
             # Catch cases where 'type' attribute has still not been defined (e.g. when using copy.deepcopy)
             pass

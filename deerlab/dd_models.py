@@ -1,7 +1,7 @@
 # dd_models.py - Distance distribtion parametric models
 # ---------------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 
 import inspect
@@ -140,7 +140,7 @@ def freedist(r):
     dd_nonparametric = Model(_nonparametric,constants='r')
     dd_nonparametric.description = 'Non-parametric distribution model'
     # Parameters
-    dd_nonparametric.addlinear('P',vec=len(r),lb=0,par0=0,description='Non-parametric distance distribution',unit="nm⁻¹")
+    dd_nonparametric.addlinear('P',vec=len(r),lb=0,par0=0,description='Non-parametric distance distribution',unit="nm⁻¹", normalization=lambda P: P/np.trapz(P,r))
     return dd_nonparametric
 
 
