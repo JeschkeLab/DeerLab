@@ -37,7 +37,7 @@ Vs = [V1,V2,V3,V4,V5]
 L = [0.3, 3, 10, 30, 300] # µM
 
 # Distance vector
-r = np.linspace(1.5,6,90)
+r = np.linspace(1.5,5.5,150)
 
 # Construct a non-parametric distance distribution that is a
 # linear combination of two non-parametric distributions
@@ -52,8 +52,10 @@ Vmodels = [dl.dipolarmodel(t,r,Pmodel) for t in ts]
 titrmodel = dl.merge(*Vmodels)
 # Make the two components of the distance distriution global
 titrmodel = dl.link(titrmodel, 
-                PA = ['P_1_1', 'P_1_2', 'P_1_3', 'P_1_4', 'P_1_5'],
-                PB = ['P_2_1', 'P_2_2', 'P_2_3', 'P_2_4', 'P_2_5'])
+                reftime = [f'reftime_{n+1}' for n in range(len(Vs))],
+                P_1 = [f'P_1_{n+1}' for n in range(len(Vs))],
+                P_2 = [f'P_2_{n+1}' for n in range(len(Vs))]
+                )   
 
 # Functionalize the chemical equilibrium model
 titrmodel.addnonlinear('Kdis',lb=3,ub=7,par0=5,description='Dissociation constant')
@@ -64,9 +66,15 @@ titrmodel = dl.relate(titrmodel,
             weight_2_3 = lambda weight_1_3: 1-weight_1_3, weight_1_3 = lambda Kdis: chemicalequilibrium(Kdis,L[2]),
             weight_2_4 = lambda weight_1_4: 1-weight_1_4, weight_1_4 = lambda Kdis: chemicalequilibrium(Kdis,L[3]),
             weight_2_5 = lambda weight_1_5: 1-weight_1_5, weight_1_5 = lambda Kdis: chemicalequilibrium(Kdis,L[4]))
-            
+
+# Impose compactness upon the combined shape of the distribution
+Pshape =  dl.lincombine(PAmodel,PBmodel)
+compactness_penalty = dl.dipolarpenalty(Pshape,r,'compactness')
+compactness_penalty.weight.set(ub=1e7)
+compactness_penalty.weight.freeze(1e2) # Remove this line for automated optimization
+
 # Fit the model to the data
-fit = dl.fit(titrmodel,Vs,regparam = 0.5)
+fit = dl.fit(titrmodel,Vs,regparam = 0.3, verbose=2, ftol=1e-4,penalties=compactness_penalty)
 
 # %%
 
@@ -86,7 +94,7 @@ plt.fill_between(L,xBci[:,0],xBci[:,1],alpha=0.5)
 plt.xscale('log')
 plt.xlabel('Ligand concentration (μM)')
 plt.ylabel('Molar fraction')
-plt.legend(['State A (natural)','State B (ligand)'],frameon=False,loc='best')
+plt.legend(['State B (ligand)','State A (natural)'],frameon=False,loc='best')
 plt.title(r'$K_\mathrm{dis}$'+f' = {fit.Kdis:.2f} ({fit.KdisUncert.ci(95)[0]:.2f}-{fit.KdisUncert.ci(95)[1]:.2f})'+' µM$^{-1}$')
 plt.autoscale(enable=True, axis='both', tight=True)
 plt.show() 
@@ -105,12 +113,12 @@ plt.ylabel('$V(t)$ (arb.u.)')
 plt.subplot(122)
 for n,(xA,xB) in enumerate(zip(xAfit,xBfit)): 
 
-    Pfit = Pmodel(P_1=fit.PA,P_2=fit.PB,weight_1=xA,weight_2=xB)
+    Pfit = Pmodel(P_1=fit.P_1,P_2=fit.P_2,weight_1=xA,weight_2=xB)
     Pfit /= np.trapz(Pfit,r)
     if n>1: label=None
     plt.plot(r,2*n + Pfit,'k',label='Total contribution' if n<1 else None)
-    plt.fill(r,2*n + xA*fit.PA,color='tab:blue',alpha=0.5,label='State A (natural)' if n<1 else None)
-    plt.fill(r,2*n + xB*fit.PB,color='tab:orange',alpha=0.5,label='State B (ligand)' if n<1 else None)
+    plt.fill(r,2*n + xA*fit.P_1,color='tab:blue',alpha=0.5,label='State B (ligand)' if n<1 else None)
+    plt.fill(r,2*n + xB*fit.P_2,color='tab:orange',alpha=0.5,label='State A (natural)' if n<1 else None)
 
 plt.legend(frameon=False,loc='best')
 plt.ylabel('$P(r)$')
