@@ -45,7 +45,7 @@
     <div class="boxcontainer">
         <h3>Contributing</h3>
         <p>DeerLab is hosted on Github. Look at the contribution guidelines. </p>
-        <a class="boxlink" href="https://github.com/JeschkeLab/DeerLab">Contribute →</a>
+        <a class="boxlink" href="contributing.html">Contribute →</a>
     </div>     
     </div>
 
