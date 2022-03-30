@@ -1,7 +1,7 @@
 # model.py - DeerLab's modelling interface
 # ---------------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 from scipy.sparse import block_diag
@@ -418,13 +418,13 @@ class Model():
 
 
     #---------------------------------------------------------------------------------------
-    def addlinear(self, key, vec=1, lb=-np.inf, ub=np.inf, par0=None, name=None, unit=None, description=None):
+    def addlinear(self, name, vec=1, normalization=None, lb=-np.inf, ub=np.inf, par0=None, unit=None, description=None):
         """
         Add a new linear parameter (:ref:`Parameter` object) to the model. 
 
         Parameters
         ----------
-        key : string
+        name : string
             Identifier of the parameter. This name will be used to refer
             to the parameter in the model.
 
@@ -432,6 +432,11 @@ class Model():
             Number of elements in the parameter. If ``vec>1`` then the parameter will represent a 
             vector of linear parameters of length ``vec``. By default, a scalar parameter is defined.
 
+        normalization : callable, optional
+            Normalization function of the parameter. If specified, upon fitting the parameter will be normalized and 
+            an the normalization factor will be reported separately. Does not add an additional normalization factor parameter. 
+            Must be function taking the parameter and returning the normalized parameter.
+            
         lb : float or array_like, optional
             Lower bound of the parameter. For vectorized parameters, must be a 
             vector with ``vec`` elements. If not specified, it is set to ``-np.inf``.
@@ -440,25 +445,38 @@ class Model():
             Lower bound of the parameter. For vectorized parameters, must be a
             vector with ``vec`` elements.  If not specified, it is set to ``+np.inf``.
 
+
         description : string, optional 
             Descriptrion of the parameter. 
 
         unit : string, optional
             Physical unit of the parameter.
         """
-        self._error_if_already_exists(key)
+        # Check if the parameter already exists
+        self._error_if_already_exists(name)
+
+        # Check if the parameter is a vector
         if vec>1:
             idx = np.arange(self.Nparam,self.Nparam+vec) 
             self.Nparam += vec
             self.Nlin += vec
-            newparam = Parameter(name=key, linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), unit=unit, description=description)
+            newparam = Parameter(name=name, linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), unit=unit, description=description)
         else:
             idx = self.Nparam
             self.Nparam += 1
             self.Nlin += 1
-            newparam = Parameter(name=key, linear=True, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, unit=unit, description=description)
-        setattr(self,key,newparam)
-        self.signature.append(key)
+            newparam = Parameter(name=name, linear=True, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, unit=unit, description=description)
+
+        # Check if the normalization function is valid
+        newparam.normalization = normalization 
+        if newparam.normalization is not None:
+            if not callable(normalization):
+                raise TypeError('The normalization function must be a callable function.')
+                newparam.description = str(newparam.description) + ' (normalized)' 
+
+        # Add linear parameter to the model
+        setattr(self,name,newparam)
+        self.signature.append(name)
     #---------------------------------------------------------------------------------------
 
 
@@ -800,9 +818,12 @@ def _print_fitresults(fitresult,model):
             else:
                 # If parameter is scalar, report values and CIs
                 value = getattr(fitresult,param)
-                ci_lower,ci_upper = getattr(fitresult,param+'Uncert').ci(95)
-                value,ci_lower,ci_upper = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [value,ci_lower,ci_upper]]
-                ci = f'({ci_lower},{ci_upper})'
+                if getattr(fitresult,param+'Uncert').type == 'void':
+                    ci = ''
+                else:
+                    ci_lower,ci_upper = getattr(fitresult,param+'Uncert').ci(95)
+                    value,ci_lower,ci_upper = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [value,ci_lower,ci_upper]]
+                    ci = f'({ci_lower},{ci_upper})'
         else:
             # If parameter is vectorial, print just dots
             value = '...'
@@ -910,6 +931,15 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     if model.Nlin==0:
         model.addlinear('scale',lb=-np.inf,ub=np.inf,description='Scaling factor')
 
+    normalization = False
+    for key in model._parameter_list():
+        param = getattr(model,key)
+        if np.all(param.linear):
+            if param.normalization is not None:
+                model.addnonlinear(f'{key}_scale',lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
+                getattr(model,f'{key}_scale').freeze(1)
+                normalization = True
+
     # Get boundaries and conditions for the linear and nonlinear parameters
     ubl,ub = model._split_linear(model._vecsort(model._getvector('ub')))
     lbl,lb = model._split_linear(model._vecsort(model._getvector('lb')))
@@ -1003,14 +1033,13 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
             fitresults.modelUncert = fitresults.modelUncert[0]
     # Get some basic information on the parameter vector
     keys = model._parameter_list(order='vector')
- 
+
     # Dictionary of parameter names and fitted values
     FitResult_param = {key : fitvalue if len(fitvalue)>1 else fitvalue[0] for key,fitvalue in zip(keys,[fitresults.param[idx] for idx in param_idx])}
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
     FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','modelUncert','cost','plot','residuals','stats','regparam']}
-
 
     _paramlist = model._parameter_list('vector')
     def propagate(model,*constants,lb=None,ub=None):
@@ -1094,11 +1123,24 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         return response
     # ----------------------------------------------------------------------------
 
+    # Enforce normalization of the linear parameters (if needed) for the final output
+    FitResult_param_,FitResult_paramuq_ = FitResult_param.copy(),FitResult_paramuq.copy()
+    if normalization:
+        for key in keys:
+            param = getattr(model,key)
+            param.unfreeze()
+            if np.all(param.linear):
+                if param.normalization is not None:
+                    non_normalized = FitResult_param_[key] # Non-normalized value
+                    FitResult_param_[key] = param.normalization(FitResult_param_[key]) # Normalized value
+                    FitResult_param_[f'{key}_scale'] = np.mean(non_normalized/FitResult_param_[key]) # Normalization factor
+                    FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub) # Normalization of the uncertainty
+                    FitResult_paramuq_[f'{key}_scaleUncert'] = UQResult('void')
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
 
     # Generate FitResult object from all the dictionaries
-    fitresult = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict,'penweights':penweights,'noiselvl':noiselvl, 'propagate': propagate, 'evaluate': evaluate}) 
+    fitresult = FitResult({**FitResult_param_,**FitResult_paramuq_, **FitResult_dict,'penweights':penweights,'noiselvl':noiselvl, 'propagate': propagate, 'evaluate': evaluate}) 
     fitresult._summary = _print_fitresults(fitresult,model)
 
     return fitresult
@@ -1448,10 +1490,12 @@ def _combinemodels(mode,*inputmodels,addweights=False):
     # Add the linear parameters from the subset models   
     lin_param_set = []
     for param in _unique_ordered(lin_params):
-        lin_param_set.append({'name':param, 'vec':np.sum(lin_params==param)})
+        parname,idx = param.split('_')
+        normalization = getattr(models[int(idx)-1],parname).normalization
+        lin_param_set.append({'name':param, 'vec':np.sum(lin_params==param), 'normalization':normalization})
 
     for lparam in lin_param_set:
-        combinedModel.addlinear(lparam['name'], vec=lparam['vec'])
+        combinedModel.addlinear(lparam['name'], vec=lparam['vec'], normalization=lparam['normalization'])
 
     parameters = np.concatenate([arguments,lin_params])
     # Import all parameter information from the subset models
@@ -1570,13 +1614,13 @@ def relate(model,**functions):
         if dependent_name not in model_parameters:
             raise KeyError(f"The assigned parameter '{dependent_name}' is not a parameter of the input model.")
 
-        if getattr(model,dependent_name).linear:
+        if np.all(getattr(model,dependent_name).linear):
             raise TypeError(f"Linear parameters cannot be used.")
 
         for arg in arguments_names:
             if arg not in model_parameters:
                 raise KeyError(f"The function argument '{arg}' is not a parameter of the input model.")
-            if getattr(model,arg).linear:
+            if np.all(getattr(model,arg).linear):
                 raise TypeError(f"Linear parameters cannot be used.")
 
         param_idx = 0

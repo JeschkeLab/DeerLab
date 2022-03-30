@@ -175,7 +175,6 @@ Models with linear parameters
 Linear parameters do not take part in the non-linear function of the model and hence must be declared after the non-linear part of the model has been constructed (as described in the previous section). Using the ``addlinear`` method of the ``Model`` class, we can introduce any number of linear parameters to the model. The ``addlinear`` method takes the name of the parameter as its first argument. Other attributes of the linear parameter (such as boundaries) can be specified as additional keyword arguments. 
 It is important to note that the order in which the parameters are introduced must match the shape of the matrix returned by ``nonlinear_fcn``.
 
-
 Additionally, DeerLab introduces another distinction between linear parameters. In addition, linear parameters can be defined in scalar or vector form. 
 
 
@@ -325,6 +324,24 @@ By printing the model, we can check that the model has only two parameters: ::
      dist        0     inf   linear     No     None    None         
     ======= ======= ======= ======== ======== ======= ============= 
 
+
+
+Imposing normalization on the linear parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Sometimes, the linear parameters represent quantities that have certain normalization constraints. For example, a linear parameter representing a probability density function would require its trapezoidal integration to equal one. Such normalization criteria can be specified via the ``normalization`` optional argument of the ``addlinear`` method.   ::
+
+    # Definition of the non-linear function of the model
+    def nonlinear_fcn(nonlinparam1,nonlinparam2,*nonlinparamN):
+        y = ...
+        return y
+    # Construction of the model
+    mymodel = dl.Model(nonlinear_fcn)
+
+    # Add vector-form linear parameter (vector with N-elements) with a normalization condition
+    mymodel.addlinear('linparam1', vec=N, normalization= lambda linparam1: fcn(linparam1))
+
+Specifying normalization criteria does not affect the model evaluation or fitting. However, when the model is fitted and the fitted parameters are reported, the program will report the normalized value of ``linparam1`` as well as an additional value ``linparam1_scale`` which reports the normalization factor/scale of the linear parameter. 
 
 .. _modelling_constants:
 

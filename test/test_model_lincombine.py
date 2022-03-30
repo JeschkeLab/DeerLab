@@ -300,6 +300,9 @@ def test_fit_model():
 model_vec = Model(lambda r: np.eye(len(r)),constants='r')
 model_vec.addlinear('Pvec',vec=100,lb=0)
 
+model_vec_normalized = Model(lambda r: np.eye(len(r)),constants='r')
+model_vec_normalized.addlinear('Pvec',vec=100,lb=0,normalization=lambda Pvec: Pvec/np.sum(Pvec))
+
 # ======================================================================
 def test_vec_Nparam_nonlin(): 
     "Check that the combined model with a vector-form parameter has the right number of parameters"
@@ -371,4 +374,43 @@ def test_vec_two_models():
     response = model(x,x,3,0.2,1,model1(x,4,0.3))
 
     assert np.allclose(response,ref)
+# ======================================================================
+
+# ======================================================================
+def test_vec_twomodels_normalization(): 
+    """Check that the normalization of linear parameter is maintained"""
+    model1 = model_vec_normalized
+    model2 = model_vec_normalized
+    model = lincombine(model1,model2)
+
+    x = np.linspace(0,10,100)
+    ref1 = model1(r=x,Pvec=dl.dd_gauss(x,4,0.3))
+    ref2 = model2(r=x,Pvec=dl.dd_gauss(x,4,0.3))
+    ref = ref1 + ref2
+
+    results = fit(model,ref,x,x)
+
+    assert hasattr(results,'Pvec_1_scale') and hasattr(results,'Pvec_2_scale')
+# ======================================================================
+
+# ======================================================================
+def test_vec_twomodels_normalization_values(): 
+    """Check that the normalization of linear parameter is maintained"""
+    model1 = dl.dd_gauss
+    model2 = model_vec_normalized
+    model = lincombine(model1,model2)
+    model.scale_1.freeze(1)
+    model.mean_1.freeze(5)
+    model.std_1.freeze(0.3)
+
+    x = np.linspace(0,10,100)
+    scale2 = 79
+    dist2 = dl.dd_gauss(x,5,0.3)
+    ref1 = model1(r=x,mean=2,std=0.3)
+    ref2 = scale2*model2(r=x,Pvec=dist2/np.sum(dist2))
+    ref = ref1 + ref2
+
+    results = fit(model,ref,x,x)
+
+    assert np.isclose(results.Pvec_2_scale,scale2)
 # ======================================================================

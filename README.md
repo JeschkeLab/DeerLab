@@ -7,15 +7,17 @@
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/deerlab?color=brightgreen)
 
 ## About
-DeerLab is a Python package for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy data. Dipolar EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others. The documentation can be found [here](https://jeschkelab.github.io/DeerLab/index.html).
 
-DeerLab consists of a collection of functions for modelling, data processing, and least-squares fitting. They can be combined in scripts to build custom data analysis workflows. DeerLab supports both classes of distance distribution models: non-parametric (Tikhonov regularization and related) and parametric (multi-Gaussians etc). It also provides a selection of background and experiment models.
+DeerLab is a comprehensive free scientific software package for Python focused on modelling, penalized least-squares regression, and uncertainty quantification. 
+It provides highly specialized on the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy data. Dipolar EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others. 
+
+The documentation can be found [here](https://jeschkelab.github.io/DeerLab/index.html).
 
 The early versions of DeerLab (up to version 0.9.2) are written in MATLAB. The old MATLAB codebase is archived and can be found [here](https://github.com/JeschkeLab/DeerLab-Matlab).
 
 ## Requirements
 
-DeerLab is available for Windows, Mac and Linux systems and requires **Python 3.6**, **3.7**, **3.8**, or **3.9**.
+DeerLab is available for Windows, Mac and Linux systems and requires **Python 3.6**, **3.7**, **3.8**, **3.9**, or  **3.10**.
 
 All additional dependencies are automatically downloaded and installed during the setup.
  
@@ -61,4 +63,4 @@ Here is the citation in bibtex format:
 
 DeerLab is licensed under the [MIT License](LICENSE).
 
-Copyright © 2019-2021: Luis Fábregas Ibáñez, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).
+Copyright © 2019-2022: Luis Fábregas Ibáñez, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).

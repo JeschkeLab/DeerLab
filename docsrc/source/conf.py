@@ -18,7 +18,7 @@ sys.path.append(os.path.abspath('.'))
 
 # Project details
 project = 'DeerLab'
-copyright = '2019-2021, Luis Fábregas-Ibáñez, Stefan Stoll, and others'
+copyright = '2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others'
 author = 'Fabregas Ibanez'
 language = 'en'
 
@@ -91,6 +91,8 @@ imgmath_latex_preamble = r'''
 
 # Configuration of the HTML Theme Template
 # ----------------------------------------------------------------------
+templates_path = ['_templates']
+
 # Setup template stuff
 exclude_patterns = ['.', './functions']
 numpydoc_show_class_members = False
@@ -110,6 +112,9 @@ html_context = {
     'version' : version,                                  
 }
 html_theme_options = {
+    "navbar_start": ["navbar-logo"],
+    "navbar_center": ["nav"],
+    "navbar_end": ["search-field","navbar-icon-links"],
     "icon_links": [
         {
             "name": "GitHub",
@@ -135,11 +140,11 @@ html_theme_options = {
 }
 html_sidebars = {
     "index": [],
-    "modelsref": ["search-field"],
-    "reference": ["search-field"],
-    "_autosummary/**": ["search-field"],
-    "examples": ["search-field"],
-    "auto_examples/**": ["search-field"],
+    "modelsref": [],
+    "reference": [],
+    "_autosummary/**": [],
+    "examples": [],
+    "auto_examples/**": [],
 }
 
 html_copy_source = False
@@ -262,3 +267,5 @@ rst_epilog = f"""
 
 .. |api| replace:: :raw-html:`<span class="badge changelog_api">API Change</span>`
 """
+
+
