@@ -36,8 +36,8 @@ Vs = [Vexp1,Vexp2]
 r = np.linspace(0.05,7,200)
 
 # Model of a dipolar signal in arising from a dispersed and liquid-droplet states
-def dropletmodel(t):
 #----------------------------------------------------------------------------------
+def dropletmodel(t):
     # Dispersed-state component model
     Vdis_model = dl.dipolarmodel(t,r, Pmodel=dl.dd_gauss, Bmodel=dl.bg_exp, npathways=2)
     # Liquid-droplet-state component model
@@ -49,6 +49,8 @@ def dropletmodel(t):
                     reftime2=['reftime2_1','reftime2_2'],
                     lam1=['lam1_1','lam1_2'],
                     lam2=['lam2_1','lam2_2'])
+    Vmodel.scale_1.freeze(1)
+    Vmodel.scale_2.freeze(1)
     # Make the second weight dependent on the first one
     Vmodel = dl.relate(Vmodel,weight_2 = lambda weight_1: 1 - weight_1)
     return Vmodel,Vdis_model,Vld_model
@@ -80,9 +82,9 @@ globalModel.kdis.set(      lb=0.0,   ub=0.09, par0=0.01)
 globalModel.kld.set(       lb=0.0,   ub=1,    par0=0.12)
 globalModel.Dld.set(       lb=2,     ub=4,    par0=2.5)
 globalModel.rmean_dis.set( lb=3,     ub=6.35, par0=3.7)
-globalModel.rmean_ld.set(  lb=1,     ub=8,    par0=2.6)
-globalModel.std_dis.set( lb=0.25,  ub=0.74, par0=0.44)
-globalModel.std_ld.set(  lb=0.2,   ub=2,    par0=0.7)
+globalModel.rmean_ld.set(  lb=1,     ub=4.35, par0=2.6)
+globalModel.std_dis.set(   lb=0.25,  ub=0.74, par0=0.44)
+globalModel.std_ld.set(    lb=0.2,   ub=2,    par0=0.7)
 globalModel.lam1.set(      lb=0.3,   ub=0.5,  par0=0.4)
 globalModel.lam2.set(      lb=0.0,   ub=0.2,  par0=0.08)
 globalModel.reftime1.set(  lb=0.1,   ub=0.3,  par0=0.2)
@@ -90,7 +92,7 @@ globalModel.reftime2_1.set(lb=3.2,   ub=3.8,  par0=3.4)
 globalModel.reftime2_2.set(lb=2.0,   ub=2.5,  par0=2.2)
 
 # Fit the model to the data
-fit = dl.fit(globalModel,Vs,ftol=1e-3)
+fit = dl.fit(globalModel,Vs)
 
 # Plot the results
 plt.figure(figsize=[9,9])
