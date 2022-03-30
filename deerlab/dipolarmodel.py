@@ -266,6 +266,7 @@ def dipolarpenalty(Pmodel, r, type, selection=None):
         
         - ``'smoothness'`` : Smoothness of the distance distribution
         - ``'compactness'`` : Compactness of the distance distribution   
+        
     selection : string, optional
         Selection functional for the outer optimization of the penalty weight.
 
