@@ -18,7 +18,7 @@ import deerlab as dl
 t,Vexp = np.load('../data/example_data_#3.npy')
 
 # Distance vector
-r = np.linspace(2,5,100) # nm
+r = np.arange(2,5,0.025) # nm
 
 # Construct the model
 Vmodel = dl.dipolarmodel(t,r,npathways=3)
@@ -29,26 +29,23 @@ Vmodel.reftime2.set(par0=0.0, lb=0.0, ub=0.2) # Pathway refocusing at the start 
 Vmodel.reftime3.set(par0=4.5, lb=4.0, ub=5.0) # Pathway refocusing at the end of the signal
 
 # Fit the model to the data
-fit = dl.fit(Vmodel,Vexp)
+results = dl.fit(Vmodel,Vexp)
 
-fit.plot()
 #%%
 
 # Extract fitted dipolar signal
-Vfit = fit.model
-Vci = fit.modelUncert.ci(95)
+Vfit = results.model
+Vci = results.modelUncert.ci(95)
 
 # Extract fitted distance distribution
-Pfit = fit.P
-scale = np.trapz(Pfit,r)
-Pci95 = fit.PUncert.ci(95)/scale
-Pci50 = fit.PUncert.ci(50)/scale
-Pfit =  Pfit/scale
+Pfit = results.P
+Pci95 = results.PUncert.ci(95)
+Pci50 = results.PUncert.ci(50)
 
 
-plt.figure(figsize=[6,7])
+plt.figure(figsize=[6,9])
 violet = '#4550e6'
-plt.subplot(211)
+plt.subplot(311)
 # Plot experimental data
 plt.plot(t,Vexp,'.',color='grey',label='Data')
 # Plot the fitted signal 
@@ -57,8 +54,19 @@ plt.fill_between(t,Vci[:,0],Vci[:,1],color=violet,alpha=0.3)
 plt.legend(frameon=False,loc='best')
 plt.xlabel('Time $t$ (μs)')
 plt.ylabel('$V(t)$ (arb.u.)')
+
+plt.subplot(312)
+lams = [results.lam1, results.lam2, results.lam3]
+reftimes = [results.reftime1, results.reftime2, results.reftime3]
+for n,(lam,reftime) in enumerate(zip(lams,reftimes)):
+    Vpath = lam*dl.dipolarkernel(t-reftime,r)@Pfit
+    plt.plot(t,Vpath,linewidth=3,label=f'Pathway #{n+1}')
+plt.legend(frameon=False,loc='best')
+plt.xlabel('Time $t$ (μs)')
+plt.ylabel('$V(t)$ (arb.u.)')
+
 # Plot the distance distribution
-plt.subplot(212)
+plt.subplot(313)
 plt.plot(r,Pfit,linewidth=3,color=violet,label='Fit')
 plt.fill_between(r,Pci95[:,0],Pci95[:,1],alpha=0.3,color=violet,label='95%-Conf. Inter.',linewidth=0)
 plt.fill_between(r,Pci50[:,0],Pci50[:,1],alpha=0.5,color=violet,label='50%-Conf. Inter.',linewidth=0)

@@ -18,38 +18,35 @@ import deerlab as dl
 t,Vexp = np.load('../data/example_4pdeer_#1.npy')
 
 # Distance vector
-r = np.linspace(2,5,100) # nm
+r = np.arange(2,5,0.01) # nm
 
 # Construct the model
 Vmodel = dl.dipolarmodel(t,r)
 
 # Fit the model to the data
-fit = dl.fit(Vmodel,Vexp)
+results = dl.fit(Vmodel,Vexp)
 
 #%%
 
 # Extract fitted dipolar signal
-Vfit = fit.model
-Vci = fit.modelUncert.ci(95)
+Vfit = results.model
+Vci = results.modelUncert.ci(95)
 
 # Extract fitted distance distribution
-Pfit = fit.P
-scale = np.trapz(Pfit,r)
-Pci95 = fit.PUncert.ci(95)/scale
-Pci50 = fit.PUncert.ci(50)/scale
-Pfit =  Pfit/scale
+Pfit = results.P
+Pci95 = results.PUncert.ci(95)
+Pci50 = results.PUncert.ci(50)
 
 # Extract the unmodulated contribution
-Bfcn = lambda mod,conc: scale*(1-mod)*dl.bg_hom3d(t,conc,mod)
-Bfit = Bfcn(fit.mod,fit.conc)
-Bci = fit.propagate(Bfcn).ci(95)
+Bfcn = lambda mod,conc: results.P_scale*(1-mod)*dl.bg_hom3d(t,conc,mod)
+Bfit = Bfcn(results.mod,results.conc)
+Bci = results.propagate(Bfcn).ci(95)
 
 plt.figure(figsize=[6,7])
 violet = '#4550e6'
 plt.subplot(211)
-# Plot experimental data
+# Plot experimental and fitted data
 plt.plot(t,Vexp,'.',color='grey',label='Data')
-# Plot the fitted signal 
 plt.plot(t,Vfit,linewidth=3,color=violet,label='Fit')
 plt.fill_between(t,Vci[:,0],Vci[:,1],color=violet,alpha=0.3)
 plt.plot(t,Bfit,'--',linewidth=3,color=violet,label='Unmodulated contribution')

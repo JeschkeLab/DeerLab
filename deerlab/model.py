@@ -648,7 +648,7 @@ class Penalty():
 
             if selection=='icc':
                 # Get the fitted model
-                yfit = fitresult.model
+                yfit = np.concatenate(fitresult.model)
 
                 # Get non-linear parameters covariance submatrix
                 fitpars = fitresult.nonlin + np.finfo(float).eps

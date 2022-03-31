@@ -1,10 +1,10 @@
 # %% 
 """ 
-Global fitting of multiple different DEER signals
+Global fitting of different multi-pulse DEER signals
 -------------------------------------------------------------------------------
 
-How to fit multiple signals from different DEER experiments to a model with a non-parametric
-distribution and a homogeneous background, using Tikhonov regularization.
+How to fit multiple signals from different multi-pulse DEER experiments to a single
+global distance distribution.
 """ 
 
 import numpy as np
@@ -14,27 +14,31 @@ import deerlab as dl
 #%%
 
 # Load the experimental 4-pulse and 5-pulse DEER datasets
-t4p, V4p = np.load('../data/example_4pdeer_#2.npy')
-t5p, V5p = np.load('../data/example_5pdeer_#2.npy')
+t4p, V4p = np.load('D:\lufa\projects\DeerLab\DeerLab\examples/data/example_4pdeer_#1.npy')
+t5p, V5p = np.load('D:\lufa\projects\DeerLab\DeerLab\examples/data/example_5pdeer_#2.npy')
 
 # Since they have different scales, normalize both datasets
 V4p = V4p/np.max(V4p)
 V5p = V5p/np.max(V5p)
 
 # Run fit
-r = np.linspace(2,4.5,100)
+r = np.arange(2,5,0.025)
 
-# Construct the individual dipolar signal models
-V4pmodel = dl.dipolarmodel(t4p,r,npathways=1)
-V5pmodel = dl.dipolarmodel(t5p,r,npathways=2)
-V5pmodel.reftime2.set(lb=3,ub=3.5,par0=3.2)
+# Construct the individual dipolar signal models:
+# 4-pulse DEER model
+ex4pdeer = dl.ex_4pdeer(tau1=0.1,tau2=3.9,pathways=[1,2,3])
+V4pmodel = dl.dipolarmodel(t4p,r,experiment=ex4pdeer)
+# 5-pulse DEER model
+ex5pdeer = dl.ex_rev5pdeer(tau1=2.7,tau2=3.3,tau3=0.1,pathways=[1,2])
+V5pmodel = dl.dipolarmodel(t5p,r,experiment=ex5pdeer)
 
 # Make the joint model with the distribution as a global parameters
 globalmodel = dl.merge(V4pmodel,V5pmodel)  
 globalmodel = dl.link(globalmodel, P = ['P_1','P_2'])
 
 # Fit the model to the data (with fixed regularization parameter)
-fit = dl.fit(globalmodel,[V4p,V5p],regparam=0.5)
+compactness = dl.dipolarpenalty(Pmodel=None,r=r,type='compactness')
+fit = dl.fit(globalmodel,[V4p,V5p],penalties=compactness,regparam=0.3)
 
 # %%
 
@@ -43,10 +47,9 @@ violet = '#4550e6'
 
 # Extract fitted distance distribution
 Pfit = fit.P
-scale = np.trapz(Pfit,r)
-Pci95 = fit.PUncert.ci(95)/scale
-Pci50 = fit.PUncert.ci(50)/scale
-Pfit =  Pfit/scale
+Pci95 = fit.PUncert.ci(95)
+Pci50 = fit.PUncert.ci(50)
+
 for n,(t,V) in enumerate(zip([t4p,t5p],[V4p,V5p])):
 
     # Extract fitted dipolar signal
