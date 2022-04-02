@@ -338,7 +338,7 @@ def _insertfrozen(parfit,parfrozen,frozen):
 
 def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=None, verbose=0,
           regparam='aic', regparamrange=None, multistart=1, regop=None, alphareopt=1e-3, extrapenalty=None, subsets=None,
-          nonlin_tol=1e-9, nonlin_maxiter=1e8, lin_tol=1e-15, lin_maxiter=1e4, noiselvl=None, lin_frozen=None, mask=None,
+          ftol=1e-8, xtol=1e-8, max_nfev=1e8, lin_tol=1e-15, lin_maxiter=1e4, noiselvl=None, lin_frozen=None, mask=None,
           nonlin_frozen=None, uq=True):
     r""" Separable non-linear least squares (SNLLS) solver
 
@@ -449,18 +449,24 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
     multistart : int scalar, optional
         Number of starting points for global optimization, the default is ``1``.
-        
-    nonlin_maxiter : float scalar, optional
-        Non-linear solver maximal number of iterations, the default is ``1e8``.
 
-    nonlin_tol : float scalar, optional
-        Non-linear solver function tolerance, the default is ``1e-9``.
+    xtol : float scalar, optional
+        Tolerance for termination by the change of the independent variables. Default is 1e-8. The optimization process is stopped when ``norm(dx) < xtol * (xtol + norm(x))``.
+        If set to ``None``, the termination by this condition is disabled.
+
+    ftol : float scalar, optional
+        Tolerance for termination by the change of the cost function. Default is 1e-8. The optimization process is stopped when ``dF < ftol*F``, 
+        and there was an adequate agreement between a local quadratic model and the true model in the last step.
+        If set to ``None``, the termination by this condition is disabled.
+        
+    max_nfev : float scalar, optional
+        Maximum number of function evaluations before the termination. the default is ``1e8``.
 
     lin_maxiter : float scalar, optional
         Linear solver maximal number of iterations, the default is ``1e4``.
 
     lin_tol : float scalar, optional
-        Linear solver function tolerance, the default is ``1e-15``.
+        Linear solver tolerance to decide when a value is defined as a zero, the default is ``1e-15``.
 
     nonlin_frozen : array_like 
         Values for non-linear parameters to be frozen during the optimization. If set to ``None`` a non-linear parameter 
@@ -551,6 +557,9 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         Amodel_ = Amodel
         Amodel = lambda p: np.atleast_2d(Amodel_(p)).T
         A0 = Amodel(par0)
+
+    if np.shape(A0)[0]!=np.shape(y)[0]:
+        raise RuntimeError(f"The number of elements ({np.shape(A0)[0]}) in the model's output does not match the number of elements ({np.shape(y)[0]}) in the data.")
 
     complexy = np.iscomplexobj(y)
     imagsubsets = []
@@ -784,7 +793,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         for par0 in multiStartPar0:
 
             # Run the non-linear solver
-            sol = least_squares(ResidualsFcn, par0, bounds=(lb_red, ub_red), max_nfev=int(nonlin_maxiter), ftol=nonlin_tol, verbose=verbose)
+            sol = least_squares(ResidualsFcn, par0, bounds=(lb_red, ub_red), max_nfev=int(max_nfev), xtol=xtol, ftol=ftol, verbose=verbose)
             nonlinfits.append(sol.x)
             linfits.append(xfit)
             fvals.append(2*sol.cost) # least_squares uses 0.5*sum(residual**2)          

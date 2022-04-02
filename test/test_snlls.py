@@ -1,8 +1,8 @@
 import numpy as np
 from deerlab import dipolarkernel,dd_gauss,dd_gauss2,snlls,whitegaussnoise
-
 from deerlab.bg_models import bg_exp
 from deerlab.utils import ovl, skip_on, assert_docstring
+import pytest
 
 def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
     # Prepare test data
@@ -363,6 +363,27 @@ def test_goodness_of_fit_scaled():
     assert abs(stats['chi2red'] - 1) < 0.05
 #============================================================
 
+def test_size_control():
+#============================================================
+    "Check that the function checks the size of the input and output"
+
+    # Prepare test data
+    r = np.linspace(1,8,80)
+    t = np.linspace(0,4,100)
+    lam = 0.25
+    K = dipolarkernel(t,r,mod=lam)
+    parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
+    P = dd_gauss2(r,*parin)
+    V = K@P
+    nlpar0 = 0.2
+    lb = 0
+    ub = 1
+    lbl = np.zeros(len(r))
+
+    twrong = np.linspace(0,4,200)
+    with pytest.raises(RuntimeError):
+        fit = snlls(V,lambda lam: dipolarkernel(twrong,r,mod=lam),nlpar0,lb,ub,lbl,uq=False)
+#============================================================
 
 def test_reg_tikhonov():
 #============================================================
@@ -489,8 +510,8 @@ def test_confinter_scaling():
     V0_2 = 1e8
 
     # Separable LSQ fit
-    fit1 = snlls(V*V0_1,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,nonlin_tol=1e-3)
-    fit2 = snlls(V*V0_2,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,nonlin_tol=1e-3)
+    fit1 = snlls(V*V0_1,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ftol=1e-3)
+    fit2 = snlls(V*V0_2,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ftol=1e-3)
 
     # Assess linear parameter uncertainties
     ci1 = fit1.linUncert.ci(95)

@@ -415,7 +415,25 @@ class Model():
         self.nonlinmodel = model_with_constants_and_added_nonlin
         self.signature.append(key)
     #---------------------------------------------------------------------------------------
+    
+    #---------------------------------------------------------------------------------------
+    def rename_parameter(self, old, new):
+        """
+        Rename a parameter in the model. 
 
+        Parameters
+        ----------
+        old : string
+            Old parameter's name.
+        new : string
+            New parameter's name. 
+
+        """
+        if not hasattr(self,old):
+            raise KeyError(f'The model does not have a "{old}" parameter.')
+        setattr(self, new, getattr(self, old))
+        delattr(self, old)
+    #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
     def addlinear(self, name, vec=1, normalization=None, lb=-np.inf, ub=np.inf, par0=None, unit=None, description=None):
@@ -1344,7 +1362,7 @@ def _unique_ordered(vec):
 def _combinemodels(mode,*inputmodels,addweights=False): 
 
     # Initialize empty containers
-    subsets_nonlin,arguments,arelinear = [],[],[]
+    subsets_nonlin,arguments,arelinear,lin_normalizations = [],[],[],[]
     nprev = 0
 
     if len(inputmodels)==1:
@@ -1398,6 +1416,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
 
         # Determine which parameters are linear
         arelinear = np.concatenate([arelinear,model._vecsort(model._getvector('linear'))])
+        lin_normalizations += [getattr(model,param).normalization for param in model._parameter_list() if hasattr(getattr(model,param),'normalization') ]
 
         newarguments = model._parameter_list(order='vector') 
         # If there is more than one model, append a string to identify the origin
@@ -1489,10 +1508,8 @@ def _combinemodels(mode,*inputmodels,addweights=False):
 
     # Add the linear parameters from the subset models   
     lin_param_set = []
-    for param in _unique_ordered(lin_params):
-        parname,idx = param.split('_')
-        normalization = getattr(models[int(idx)-1],parname).normalization
-        lin_param_set.append({'name':param, 'vec':np.sum(lin_params==param), 'normalization':normalization})
+    for param, lin_normalization in zip(_unique_ordered(lin_params),lin_normalizations):
+        lin_param_set.append({'name':param, 'vec':np.sum(lin_params==param), 'normalization':lin_normalization})
 
     for lparam in lin_param_set:
         combinedModel.addlinear(lparam['name'], vec=lparam['vec'], normalization=lparam['normalization'])
