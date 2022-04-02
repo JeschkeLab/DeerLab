@@ -22,7 +22,7 @@ V4p = V4p/np.max(V4p)
 V5p = V5p/np.max(V5p)
 
 # Run fit
-r = np.arange(2,5,0.025)
+r = np.arange(2,5,0.05)
 
 # Construct the individual dipolar signal models:
 # 4-pulse DEER model
@@ -38,7 +38,7 @@ globalmodel = dl.link(globalmodel, P = ['P_1','P_2'])
 
 # Fit the model to the data (with fixed regularization parameter)
 compactness = dl.dipolarpenalty(Pmodel=None,r=r,type='compactness')
-fit = dl.fit(globalmodel,[V4p,V5p],penalties=compactness,regparam=0.3)
+fit = dl.fit(globalmodel,[V4p,V5p],regparam=0.1, penalties=compactness)
 
 # %%
 

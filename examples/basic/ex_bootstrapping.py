@@ -5,7 +5,7 @@ Bootstrapped confidence intervals in routine analysis
 
 How to obtain bootstrapped confidence intervals for simple routine operations.
 
-Unless specified otherwise, the function ``fitmodel`` will return asymptotic confidence intervals based on the covariance matrix 
+Unless specified otherwise, the function ``fit`` will return asymptotic confidence intervals based on the covariance matrix 
 of the objective function used to fit the data. These are quick to calculate and therefore very comfortable for quick estimates of
 the uncertainty during routine analysis or testing. 
 
@@ -33,27 +33,28 @@ r = np.linspace(2,5,100) # nm
 Vmodel = dl.dipolarmodel(t,r)
 
 # Fit the model to the data
-fit = dl.fit(Vmodel,Vexp,bootstrap=20)
+results = dl.fit(Vmodel,Vexp,bootstrap=20)
 
 # In this example, just for the sake of time, we will just use 20 bootstrap samples.  
+
+# Print results summary
+print(results)
 
 #%%
 
 # Extract fitted dipolar signal
-Vfit = fit.model
-Vci = fit.modelUncert.ci(95)
+Vfit = results.model
+Vci = results.modelUncert.ci(95)
 
 # Extract fitted distance distribution
-Pfit = fit.P
-scale = np.trapz(Pfit,r)
-Pci95 = fit.PUncert.ci(95)/scale
-Pci50 = fit.PUncert.ci(50)/scale
-Pfit =  Pfit/scale
+Pfit = results.P
+Pci95 = results.PUncert.ci(95)
+Pci50 = results.PUncert.ci(50)
 
 # Extract the unmodulated contribution
-Bfcn = lambda mod,conc: scale*(1-mod)*dl.bg_hom3d(t,conc,mod)
-Bfit = Bfcn(fit.mod,fit.conc)
-Bci = fit.propagate(Bfcn).ci(95)
+Bfcn = lambda mod,conc: results.P_scale*(1-mod)*dl.bg_hom3d(t,conc,mod)
+Bfit = Bfcn(results.mod,results.conc)
+Bci = results.propagate(Bfcn).ci(95)
 
 plt.figure(figsize=[6,7])
 violet = '#4550e6'

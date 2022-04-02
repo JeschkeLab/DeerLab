@@ -31,6 +31,9 @@ Vmodel.reftime3.set(par0=4.5, lb=4.0, ub=5.0) # Pathway refocusing at the end of
 # Fit the model to the data
 results = dl.fit(Vmodel,Vexp)
 
+# Print results summary
+print(results)
+
 #%%
 
 # Extract fitted dipolar signal

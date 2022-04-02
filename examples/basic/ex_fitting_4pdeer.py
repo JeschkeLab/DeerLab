@@ -26,6 +26,9 @@ Vmodel = dl.dipolarmodel(t,r)
 # Fit the model to the data
 results = dl.fit(Vmodel,Vexp)
 
+# Print results summary
+print(results)
+
 #%%
 
 # Extract fitted dipolar signal

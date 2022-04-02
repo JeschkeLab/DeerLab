@@ -40,6 +40,9 @@ Vmodel.reftime2.set(lb=3, ub=4, par0=3.5)
 # Fit the model to the data
 results = dl.fit(Vmodel,Vexp)
 
+# Print results summary
+print(results)
+
 # %%
 
 # Extract fitted dipolar signal

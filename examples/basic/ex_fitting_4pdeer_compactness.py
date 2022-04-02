@@ -29,6 +29,9 @@ compactness = dl.dipolarpenalty(Pmodel=None,r=r,type='compactness')
 # Fit the model to the data
 results = dl.fit(Vmodel,Vexp,penalties=compactness)
 
+# Print results summary
+print(results)
+
 #%%
 
 # Extract fitted dipolar signal
