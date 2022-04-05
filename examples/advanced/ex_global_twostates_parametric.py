@@ -14,7 +14,9 @@ parameters needed for individual samples traces (the fractional populations).
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
-
+green = '#3cb4c6' 
+red = '#f84862'
+violet = '#4550e6'
 
 # Load experimental datasets
 t1,Vexp1 = np.load('../data/example_twostate_data1.npy')
@@ -80,15 +82,15 @@ for i in range(Nsignals):
     # Plot
     plt.subplot(Nsignals,2,2*i+1)
     plt.plot(ts[i],Vexps[i],'.',color='grey')
-    plt.plot(ts[i],Vfit,'tab:blue')
-    plt.fill_between(ts[i],Vfit_ci[:,0],Vfit_ci[:,1],color='tab:blue',alpha=0.3)
+    plt.plot(ts[i],Vfit,color=violet)
+    plt.fill_between(ts[i],Vfit_ci[:,0],Vfit_ci[:,1],color=violet,alpha=0.3)
     plt.xlabel('Time t (µs)')
     plt.ylabel(f'V$_{i+1}$(t) (arb.u)')
     plt.legend(['Data','Fit'],loc='best',frameon=False)
 
     plt.subplot(Nsignals,2,2*i+2)
-    plt.fill(r,PAfit,alpha=0.6,color='#4550e6')
-    plt.fill(r,PBfit,alpha=0.6,color='tab:orange')
+    plt.fill(r,PAfit,alpha=0.6,color=green)
+    plt.fill(r,PBfit,alpha=0.6,color=red)
     plt.xlabel('Distance r (nm)')
     plt.ylabel('P(r) (nm$^{-1}$)')
     plt.legend(['State A','State B'],loc='best',frameon=False)

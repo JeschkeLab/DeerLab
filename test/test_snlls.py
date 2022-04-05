@@ -257,7 +257,7 @@ def test_regularized_global():
     ubl = []
 
     # Separable LSQ fit
-    fit = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl, uq=False)
+    fit = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl, uq=False, weights=[1,1])
     Pfit = fit.lin
 
     assert  ovl(P,Pfit) > 0.9

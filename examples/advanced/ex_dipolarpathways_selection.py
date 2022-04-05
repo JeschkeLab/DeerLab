@@ -1,10 +1,10 @@
 # %%
 """
-Optimal selection of dipolar pathways
+Dipolar pathways model selection
 ===========================================
 
-An example on how to perform a multi-Gauss analysis 
-of dipolar signals using optimal selection of the number of components.  
+An example on how to select the number of dipolar pathways to include in the model
+based on the Akaike information criterion.
 """
 
 # Import the required libraries
@@ -26,14 +26,13 @@ import deerlab as dl
 t,Vexp = np.load('../data/example_data_#3.npy')
 
 # Construct the distance vector
-r = np.linspace(2,6,100)
+r = np.arange(2,5,0.05)
 
 # 4-pulse DEER can have up to four different dipolar pathways
 Nmax = 4
 
 # Create the 4-pulse DEER signal models with increasing number of pathways
-experiment = dl.ex_4pdeer(𝜏1,𝜏2)
-Vmodels = [dl.dipolarmodel(t, r, npathways=n+1, experiment=experiment) for n in range(Nmax)]
+Vmodels = [dl.dipolarmodel(t, r, experiment=dl.ex_4pdeer(𝜏1,𝜏2,pathways=np.arange(n+1)+1)) for n in range(Nmax)]
 
 # Fit the individual models to the data
 fits = [[] for _ in range(Nmax)]
@@ -71,9 +70,10 @@ for n in range(Nmax):
     Pci = fits[n].PUncert.ci(95)
     # Setup the inset plot
     axins = inset_axes(ax1,width="30%", height="30%", loc='upper left')
-    ip = InsetPosition(ax1,[0.35, 0.15+0.24*n, 0.6, 0.1])
+    ip = InsetPosition(ax1,[0.35, 0.17+0.24*n, 0.6, 0.1])
     axins.set_axes_locator(ip)
     axins.yaxis.set_ticklabels([])
+    axins.yaxis.set_visible(False)
     # Plot the distance distributions and their confidence bands
     axins.plot(r,Pfit,color=colors[n])    
     axins.fill_between(r,Pci[:,0],Pci[:,1],alpha=0.4,color=colors[n])
@@ -84,6 +84,7 @@ ax2 = fig.add_subplot(gs[0,-1])
 ax2.plot(aic,np.arange(Nmax),'k--',alpha=0.3)
 for n in range(Nmax):
     ax2.semilogx(aic[n],n,'o',markersize=10)
+ax2.yaxis.set_visible(False)
 
 # Axes settings
 ax1.set_ylabel('V(t) (arb.u.)')

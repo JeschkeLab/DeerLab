@@ -382,4 +382,33 @@ def test_merge_linked():
     assert all([np.allclose(response[n],ref) for n,ref in enumerate([ref1,ref2])])
 # ======================================================================
 
+# ======================================================================
+def test_twomodels_vec_equal_global(): 
+    """Check that fitting two equal models results in the same fit as the local model"""
+    model = model_vec
+    globalmodel = merge(model,model)
+
+    x = np.linspace(0,10,100)
+    ref = model(r=x,Pvec=dl.dd_gauss(x,4,0.3))
+
+    results = fit(model,ref,x)
+    globalresults = fit(globalmodel,[ref,ref],x,x)
+
+    assert np.allclose(results.model,globalresults.model) and np.allclose(results.Pvec,globalresults.Pvec_1,globalresults.Pvec_2)
+# ======================================================================
+
+# ======================================================================
+def test_twomodels_equal_global(): 
+    "Check that that merge works correctly for two models"
+    model = dl.dd_gauss
+    globalmodel = merge(model,model)
+    x = np.linspace(0,10,400)
+    truth = model(x,3,0.2)
+
+    result = fit(model,truth,x)
+    globalresult = fit(globalmodel,[truth,truth],x,x)
+
+    assert np.allclose(result.model,truth,globalresult.model) and np.allclose(result.mean,globalresult.mean_1)
+# ======================================================================
+
 

@@ -56,12 +56,12 @@ Example: Single-pathway 4-pulse DEER model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 For example, a 4pDEER signal with non-parametric distance distribution and homogenous 3D background can be constructed using ::
 
-    expinfo = dl.ex_4pdeer(tau1=0.5, tau2=5.5)
-    Vmodel = dl.dipolarmodel(t, r, Pmodel=None, Bmodel=dl.bg_hom3d, npathways=1, experiment=expinfo) 
+    expinfo = dl.ex_4pdeer(tau1=0.5, tau2=5.5, pathways=[1])
+    Vmodel = dl.dipolarmodel(t, r, Pmodel=None, Bmodel=dl.bg_hom3d, experiment=expinfo) 
 
 By default, the function ``dipolarmodel`` assumes a non-parametric distance distribution, a homogenous 3D background and a single pathway. Thus the above is equivalent to ::
 
-    expinfo = dl.ex_4pdeer(tau1=0.5, tau2=5.5)
+    expinfo = dl.ex_4pdeer(tau1=0.5, tau2=5.5, pathways=[1])
     Vmodel = dl.dipolarmodel(t, r, experiment=expinfo) 
 
 
@@ -69,8 +69,8 @@ Example: Two-pathway 5-pulse DEER model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 For example, a 5pDEER signal with non-parametric distance distribution and homogenous 3D background can be constructed using ::
 
-    expinfo = dl.ex_5pdeer(tau1=0.5, tau2=5.5, tau3=0.2)
-    Vmodel = dl.dipolarmodel(t, r, Pmodel=None, Bmodel=dl.bg_hom3d, npathways=2, , experiment=expinfo)
+    expinfo = dl.ex_rev5pdeer(tau1=0.5, tau2=5.5, tau3=0.2, pathways=[1,2])
+    Vmodel = dl.dipolarmodel(t, r, Pmodel=None, Bmodel=dl.bg_hom3d, experiment=expinfo)
 
 Manipulating the model
 ***********************

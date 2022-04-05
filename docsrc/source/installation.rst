@@ -126,7 +126,7 @@ Any changes made to the source code will then immediate effect.
 Installation failed 
 --------------------
 
-Under certain cirucumstances the installation following some of the methods described above may fail due to secific technical reasons. 
+Under certain circumstances the installation using some of the methods described above may fail due to specific technical reasons. 
 This is a selection of some of the known issues that may arise during installation of DeerLab along with instructions to solve them. 
 
 
