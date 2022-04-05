@@ -183,13 +183,14 @@ def _evalalpha(alpha,y,A,L,solver,selmethod,noiselvl,weights):
 
     # Prepare LSQ components
     AtAreg, Aty = dl.solvers._lsqcomponents(y,A,L,alpha,weights)
+    wA = weights[:,np.newaxis]*A
     # Solve linear LSQ problem
     P = solver(AtAreg,Aty)
 
     # Moore-PeNose pseudoinverse
-    pA = np.linalg.inv(AtAreg)@A.T
+    pA = np.linalg.inv(AtAreg)@wA.T
     # Influence matrix
-    H = A@pA
+    H = wA@pA
 
     # Residual term
     residuals = weights*(A@P - y)

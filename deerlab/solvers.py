@@ -152,8 +152,10 @@ def _lsqcomponents(V, K, L=None, alpha=0, weights=None):
         weights = np.atleast_1d(weights)
         
     # Compute components of the LSQ normal equations
-    KtK = K.T@(weights[:,np.newaxis]*K)
-    KtV = K.T@(weights*V)
+    Kw = weights[:,np.newaxis]*K
+    Vw = weights*V
+    KtK = Kw.T@Kw
+    KtV = Kw.T@Vw
     
     # No regularization term -> done
     if L is None:
@@ -549,7 +551,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         par0 = np.array([])
 
     if regparamrange is None: 
-        regparamrange = [1e-8,1e2]
+        regparamrange = [1e-8,1e3]
 
     # Get info on the problem parameters and non-linear operator
     A0 = Amodel(par0)

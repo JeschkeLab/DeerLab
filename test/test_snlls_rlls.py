@@ -303,18 +303,18 @@ def test_global_weights():
     "Check that the global weights properly work when specified"
 
     t = np.linspace(0,5,300)
-    r = np.linspace(2,8,150)
+    r = np.linspace(2,8,200)
     K = dipolarkernel(t,r)
 
-    param1 = [3,0.2]
+    param1 = [3.5,0.3]
     param2 = [5,0.2]
     P1 = dd_gauss(r,*param1)
     P2 = dd_gauss(r,*param2)
     V1 = K@P1 + whitegaussnoise(t,0.01,seed=1)
     V2 = K@P2 + whitegaussnoise(t,0.01,seed=1)
 
-    fit1 = snlls([V1,V2],[K,K],lbl=np.zeros_like(r),weights=[1,1e-10])
-    fit2 = snlls([V1,V2],[K,K],lbl=np.zeros_like(r),weights=[1e-10,1])
+    fit1 = snlls([V1,V2],[K,K],lbl=np.zeros_like(r),weights=[1,0])
+    fit2 = snlls([V1,V2],[K,K],lbl=np.zeros_like(r),weights=[0,1])
 
     assert ovl(P1,fit1.param) > 0.95 and ovl(P2,fit2.param) > 0.95
 # ======================================================================
