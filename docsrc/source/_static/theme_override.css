@@ -8786,6 +8786,9 @@
    }
    a:hover {
     color: var(--main-color);
+    border-radius: 10px;
+    background-color: var(--main-color-light);
+    text-decoration: blink;
    }
    a.headerlink {
     color:#4550e6;
@@ -9732,11 +9735,15 @@ padding: 75% 10px 0;
 position: absolute;
 right: 0;
 top: 0;
+margin-top: 3%;
+text-decoration: none;
+color: rgba(var(--pst-color-h1),1);
 }
 /* Next one is to avoid Sphinx traditional theme to cover all the
 thumbnail with its default link Background color */
 .sphx-glr-thumbcontainer a.internal:hover {
 background-color: transparent;
+color: var(--main-color);
 }
 
 .sphx-glr-thumbcontainer p {
@@ -9752,17 +9759,17 @@ max-height: 100%;
 max-width: 100%;
 }
 .sphx-glr-thumbcontainer[tooltip]:hover:after {
-background: rgba(0, 0, 0, 0.8);
+background: rgba(40, 40, 40, 0.9);
 -webkit-border-radius: 5px;
 -moz-border-radius: 5px;
 border-radius: 5px;
 color: #fff;
 content: attr(tooltip);
-left: 95%;
+left: 93%;
 padding: 5px 15px;
 position: absolute;
 z-index: 98;
-width: 420px;
+width: 150%;
 display: inline-block; 
 word-wrap: break-word;
 height: auto;
@@ -9773,7 +9780,7 @@ border-color: #333 transparent;
 border-width: 18px 0 0 20px;
 bottom: 58%;
 content: '';
-left: 85%;
+left: 220px;
 position: absolute;
 z-index: 99;
 }
