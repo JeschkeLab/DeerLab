@@ -17,13 +17,13 @@ import deerlab as dl
 # %%
 
 # Load the experimental data
-t,Vexp = np.load('../data/example_data_#2.npy')
+t,Vexp = np.load('../data/example_4pdeer_#2.npy')
 
 # Maximal number of Gaussians in the models 
 Nmax = 5
 
 # Construct the distance axis
-r = np.linspace(2.5,4.5,200)
+r = np.linspace(1.5,6.5,500)
 
 # Pre-allocate the empty lists of models
 Pmodels = [[] for _ in range(Nmax)]

@@ -1,10 +1,9 @@
 # %% [markdown]
 """ 
-Basic analysis of a 4-pulse DEER signal with multiple dipolar pathays
+Analysis of a 4-pulse DEER signal with multiple dipolar pathays
 -------------------------------------------------------------------------
 
-Fit a simple 4-pulse DEER signal with a model with a non-parametric
-distribution and a homogeneous background, using Tikhonov regularization.
+Fit a 4-pulse DEER with multiple dipolar pathways and display the individual pathway contributions. 
 """ 
 
 import numpy as np
@@ -17,16 +16,16 @@ import deerlab as dl
 # Load the experimental data
 t,Vexp = np.load('../data/example_data_#3.npy')
 
+# Experimental time delays 
+tau1 = 0.4 # μs
+tau2 = 4.4 # μs
+
 # Distance vector
 r = np.arange(2,5,0.025) # nm
 
 # Construct the model
-Vmodel = dl.dipolarmodel(t,r,npathways=3)
-
-# Adjust the boundaries for the refocusing times
-Vmodel.reftime1.set(par0=0.5, lb=0.0, ub=1.0) # Main pathway contribution
-Vmodel.reftime2.set(par0=0.0, lb=0.0, ub=0.2) # Pathway refocusing at the start of the signal
-Vmodel.reftime3.set(par0=4.5, lb=4.0, ub=5.0) # Pathway refocusing at the end of the signal
+experiment = dl.ex_4pdeer(tau1,tau2, pathways=[1,2,3])
+Vmodel = dl.dipolarmodel(t,r,experiment=experiment)
 
 # Fit the model to the data
 results = dl.fit(Vmodel,Vexp)
@@ -45,10 +44,11 @@ Pfit = results.P
 Pci95 = results.PUncert.ci(95)
 Pci50 = results.PUncert.ci(50)
 
-
-plt.figure(figsize=[6,9])
+plt.figure(figsize=[8,6])
 violet = '#4550e6'
-plt.subplot(311)
+green = '#3cb4c6' 
+red = '#f84862'
+plt.subplot(221)
 # Plot experimental data
 plt.plot(t,Vexp,'.',color='grey',label='Data')
 # Plot the fitted signal 
@@ -58,18 +58,20 @@ plt.legend(frameon=False,loc='best')
 plt.xlabel('Time $t$ (μs)')
 plt.ylabel('$V(t)$ (arb.u.)')
 
-plt.subplot(312)
+plt.subplot(222)
 lams = [results.lam1, results.lam2, results.lam3]
 reftimes = [results.reftime1, results.reftime2, results.reftime3]
-for n,(lam,reftime) in enumerate(zip(lams,reftimes)):
-    Vpath = lam*dl.dipolarkernel(t-reftime,r)@Pfit
-    plt.plot(t,Vpath,linewidth=3,label=f'Pathway #{n+1}')
+colors= ['tab:blue',green, red] 
+Vinter = results.P_scale*(1-np.sum(lams))*np.prod([dl.bg_hom3d(t-reftime,results.conc,lam) for lam,reftime in zip(lams,reftimes)],axis=0)
+for n,(lam,reftime,color) in enumerate(zip(lams,reftimes,colors)):
+    Vpath = (1-np.sum(lams) + lam*dl.dipolarkernel(t-reftime,r)@Pfit)*Vinter
+    plt.plot(t,Vpath,linewidth=3,label=f'Pathway #{n+1}',color=color)
 plt.legend(frameon=False,loc='best')
 plt.xlabel('Time $t$ (μs)')
 plt.ylabel('$V(t)$ (arb.u.)')
 
 # Plot the distance distribution
-plt.subplot(313)
+plt.subplot(212)
 plt.plot(r,Pfit,linewidth=3,color=violet,label='Fit')
 plt.fill_between(r,Pci95[:,0],Pci95[:,1],alpha=0.3,color=violet,label='95%-Conf. Inter.',linewidth=0)
 plt.fill_between(r,Pci50[:,0],Pci50[:,1],alpha=0.5,color=violet,label='50%-Conf. Inter.',linewidth=0)
@@ -77,6 +79,7 @@ plt.legend(frameon=False,loc='best')
 plt.autoscale(enable=True, axis='both', tight=True)
 plt.xlabel('Distance $r$ (nm)')
 plt.ylabel('$P(r)$ (nm$^{-1}$)')
+
 plt.tight_layout()
 plt.show()
 
