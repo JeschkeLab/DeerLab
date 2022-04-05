@@ -9713,7 +9713,7 @@ border: solid #fff 1px;
 border-radius: 5px;
 box-shadow: none;
 float: left;
-margin: 5px;
+margin: 0px;
 min-height: 230px;
 padding-top: 5px;
 position: relative;
@@ -9744,7 +9744,7 @@ margin: 0 0 .1em 0;
 }
 .sphx-glr-thumbcontainer .figure {
 margin: 10px;
-width: 160px;
+width: 90%;
 }
 .sphx-glr-thumbcontainer img {
 display: inline;
@@ -10015,5 +10015,11 @@ font-size: 15px;
     text-decoration: none;
 } 
 
+/* Hide the paragraph symbol next to each header*/ 
+h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, h4:hover > a.headerlink, h5:hover > a.headerlink, h6:hover > a.headerlink, dt:hover > a.headerlink, caption:hover > a.headerlink, p.caption:hover > a.headerlink, div.code-block-caption:hover > a.headerlink {
+    visibility: hidden;
+}
 
-
+.sphx-glr-timing {
+margin-top: 50px;
+}
