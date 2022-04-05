@@ -324,6 +324,17 @@ def dipolarpenalty(Pmodel, r, type, selection=None):
 
 
 #===============================================================================
+def _checkpathways(pathways,Nmax):    
+    # Check that pathways are correctly specified
+    if len(pathways)>Nmax: 
+        raise ValueError(f"The number of pathways cannot exceed {Nmax}.")
+    if np.any(np.array(pathways)<1) or not np.all([not p%1 for p in pathways]): 
+        raise ValueError(f"The pathways must be specified by integer numbers in the range 1-{Nmax}.")
+#===============================================================================
+
+
+
+#===============================================================================
 class ExperimentInfo():
     r"""
     Represents information about a dipolar EPR experiment"""
@@ -381,6 +392,7 @@ def ex_3pdeer(tau, pathways=None):
 
     # Sort according to pathways order
     if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
 
@@ -436,6 +448,7 @@ def ex_4pdeer(tau1, tau2, pathways=None):
 
     # Sort according to pathways order
     if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
 
@@ -497,6 +510,7 @@ def ex_rev5pdeer(tau1, tau2, tau3, pathways=None):
     
     # Sort according to pathways order
     if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways]
     
@@ -559,6 +573,7 @@ def ex_fwd5pdeer(tau1, tau2, tau3, pathways=None):
 
     # Sort according to pathways order
     if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
 
@@ -613,6 +628,7 @@ def ex_sifter(tau1, tau2, pathways=None):
 
     # Sort according to pathways order
     if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways]
 
@@ -669,6 +685,7 @@ def ex_ridme(tau1, tau2, pathways=None):
 
     # Sort according to pathways order
     if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
 
