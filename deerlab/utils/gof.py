@@ -59,7 +59,7 @@ def goodness_of_fit(x,xfit,Ndof,noiselvl):
     rmsd = np.sqrt(np.sum((x-xfit)**2)/N)
 
     # Log-likelihood
-    loglike = N*np.log(np.linalg.norm(x - xfit)**2/N)
+    loglike = N*np.log(np.sum((x - xfit)**2))
 
     # Akaike information criterion
     aic =  loglike + 2*Q
