@@ -290,7 +290,7 @@ def test_ex_3pdeer_fit():
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,V3pdeer,ftol=1e-5)
 
-    assert np.allclose(V3pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(V3pdeer,result.model,atol=1e-1) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 test_ex_3pdeer_fit()
 # ======================================================================
