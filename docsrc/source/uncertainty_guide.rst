@@ -75,17 +75,6 @@ The covariance-based method is the default method. Therefore, the ``fit`` functi
 
 When using bootstrapping, the parameter fits ``fit.<parameter>`` will not correspond to the maximum-likelihood but to the median of the bootstrapped uncertainty quantification (a better and more accurate estimate).   
 
-
-Profile-likelihood method
-*************************************
-
-The bootstrap method can be requested upon fitting by passing the keyword argument ``profile`` to the ``fit`` function along with the number of optimization repeats to be taken: ::
-
-    # Fit the model to the data and quantify the uncertainty via profile-likelihood
-    fitresult = dl.fit(model, y, profile=50)
-
-When using bootstrapping, the parameter fits ``fit.<parameter>`` will not correspond to the maximum-likelihood but to the median of the bootstrapped uncertainty quantification (a better and more accurate estimate).   
-
 Bootstrap method
 *************************************
 

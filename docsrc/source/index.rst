@@ -101,12 +101,6 @@
 
     ./changelog
 
-.. toctree::
-    :hidden:
-    :caption: More
-
-    ./others
-
 .. Indices and tables
 .. ==================
 
