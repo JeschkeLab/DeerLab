@@ -665,8 +665,10 @@ class Penalty():
             fitresult = fitfcn(weight)
 
             if selection=='icc':
-                # Get the fitted model
-                yfit = np.concatenate(fitresult.model)
+                yfit = fitresult.model
+                if isinstance(yfit,list):
+                    # Get the fitted model
+                    yfit = np.concatenate(yfit)
 
                 # Get non-linear parameters covariance submatrix
                 fitpars = fitresult.nonlin + np.finfo(float).eps
