@@ -180,9 +180,9 @@ class UQResult:
     def __getattribute__(self, attr):
         try:
             # Calling the super class to avoid recursion
-            if attr!='type' and super(UQResult, self).__getattribute__('type') == 'void':
+            if (attr!='type' and not '__' in attr) and super(UQResult, self).__getattribute__('type') == 'void':
                 # Check if the uncertainty quantification has been done, if not report that there is nothing in the object
-                raise ValueError(f"The requested attribute/method ('{attr}') is not available. Uncertainty quantification has not been calculated during the fit by using the `uq=None` keyword.")
+                raise ValueError(f"The requested attribute/method ('{attr}') is not available. Uncertainty quantification has not been calculated during the fit.")
         except AttributeError:
             # Catch cases where 'type' attribute has still not been defined (e.g. when using copy.deepcopy)
             pass
