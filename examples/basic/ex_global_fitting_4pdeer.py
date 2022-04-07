@@ -16,8 +16,8 @@ import deerlab as dl
 # File location
 path = dl.__path__[0] + '/../examples/data/'
 files = [
-    'example_4pdeer_#3.DTA',
-    'example_4pdeer_#4.DTA',
+    'example_4pdeer_3.DTA',
+    'example_4pdeer_4.DTA',
     ]
 
 # Experimental parameters

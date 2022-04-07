@@ -43,7 +43,7 @@ def forcefield_P(c0,c1,c2,c3):
 
 # File location
 path = dl.__path__[0] + '/../examples/data/'
-file = 'example_4pdeer_#4.DTA'
+file = 'example_4pdeer_4.DTA'
 
 # Experimental parameters
 tau1 = 0.3      # First inter-pulse delay, μs

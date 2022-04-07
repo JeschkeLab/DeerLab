@@ -18,7 +18,7 @@ red = '#f84862'
 
 # File location
 path = dl.__path__[0] + '/../examples/data/'
-file = 'example_4pdeer_#1.DTA'
+file = 'example_4pdeer_1.DTA'
 
 # Experimental parameters
 tau1 = 0.3      # First inter-pulse delay, μs

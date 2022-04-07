@@ -21,9 +21,9 @@ violet = '#4550e6'
 # File location
 path = dl.__path__[0] + '/../examples/data/'
 files = [
-    'example_twostate_data_#1.DTA',
-    'example_twostate_data_#2.DTA',
-    'example_twostate_data_#3.DTA',
+    'example_twostate_data_1.DTA',
+    'example_twostate_data_2.DTA',
+    'example_twostate_data_3.DTA',
     ]
 
 # Experimental parameters

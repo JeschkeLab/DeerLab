@@ -20,7 +20,7 @@ import deerlab as dl
 
 # File location
 path = dl.__path__[0] + '/../examples/data/'
-file = 'example_4pdeer_#2.DTA'
+file = 'example_4pdeer_2.DTA'
 
 # Experimental parameters
 tau1 = 0.5      # First inter-pulse delay, μs

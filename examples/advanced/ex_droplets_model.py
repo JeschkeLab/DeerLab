@@ -25,8 +25,8 @@ import matplotlib.pyplot as plt
 
 
 # Load experimental data
-t1,Vexp1 = np.load('../data/example_droplets_data_#1.npy')
-t2,Vexp2 = np.load('../data/example_droplets_data_#2.npy')
+t1,Vexp1 = np.load('../data/example_droplets_data_1.npy')
+t2,Vexp2 = np.load('../data/example_droplets_data_2.npy')
 
 # Put all datasets into lists
 ts = [t1,t2]
