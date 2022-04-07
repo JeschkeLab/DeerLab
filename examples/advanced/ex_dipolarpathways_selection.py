@@ -18,12 +18,22 @@ import deerlab as dl
 
 #%%
 
-# Pulse sequence timings
-𝜏2 = 4.4 # μs
-𝜏1 = 0.4 # μs
+# File location
+path = dl.__path__[0] + '/../examples/data/'
+file = 'example_4pdeer_#2.DTA'
+
+# Experimental parameters
+tau1 = 0.5      # First inter-pulse delay, μs
+tau2 = 3.5      # Second inter-pulse delay, μs
+deadtime = 0.1  # Acquisition deadtime, μs
 
 # Load the experimental data
-t,Vexp = np.load('../data/example_data_#3.npy')
+t,Vexp = dl.deerload(path + file)
+
+# Pre-processing
+Vexp = dl.correctphase(Vexp) # Phase correction
+Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
+t = t + deadtime             # Account for deadtime
 
 # Construct the distance vector
 r = np.arange(2,5,0.05)
@@ -32,7 +42,7 @@ r = np.arange(2,5,0.05)
 Nmax = 4
 
 # Create the 4-pulse DEER signal models with increasing number of pathways
-Vmodels = [dl.dipolarmodel(t, r, experiment=dl.ex_4pdeer(𝜏1,𝜏2,pathways=np.arange(n+1)+1)) for n in range(Nmax)]
+Vmodels = [dl.dipolarmodel(t, r, experiment=dl.ex_4pdeer(tau1,tau2,pathways=np.arange(n+1)+1)) for n in range(Nmax)]
 
 # Fit the individual models to the data
 fits = [[] for _ in range(Nmax)]

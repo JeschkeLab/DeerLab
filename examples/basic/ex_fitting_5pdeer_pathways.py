@@ -13,19 +13,27 @@ import deerlab as dl
 
 # %%
 
-# Load the experimental data
-t,Vexp = np.load('../data/example_5pdeer_#1.npy')
+# File location
+path = dl.__path__[0] + '/../examples/data/'
+file = 'example_5pdeer_#3.DTA'
 
-# Experimental time delays 
-tau1 = 3.1 # μs
-tau2 = 3.4 # μs
-tau3 = 0.2 # μs
+# Experimental parameters (reversed 5pDEER)
+tau1 = 3.7               # First inter-pulse delay, μs
+tau2 = 3.5               # Second inter-pulse delay, μs
+tau3 = 0.3               # Third inter-pulse delay, μs
+deadtime = 0.1           # Acquisition deadtime, μs
+
+# Load the experimental data
+t,Vexp = dl.deerload(path + file)
+Vexp = dl.correctphase(Vexp)   # Phase correction
+Vexp = Vexp/np.max(Vexp)       # Rescaling (aesthetic)
+t = t + deadtime               # Account for deadtime
 
 # Distance vector
 r = np.arange(2,5,0.025) # nm
 
 # Construct the model
-experiment = dl.ex_rev5pdeer(tau1,tau2,tau3, pathways=[1,2])
+experiment = dl.ex_rev5pdeer(tau1,tau2,tau3, pathways=[1,2,3,4])
 Vmodel = dl.dipolarmodel(t,r,experiment=experiment)
 
 # Fit the model to the data
@@ -60,9 +68,9 @@ plt.xlabel('Time $t$ (μs)')
 plt.ylabel('$V(t)$ (arb.u.)')
 
 plt.subplot(222)
-lams = [results.lam1, results.lam2, results.lam2]
-reftimes = [results.reftime1, results.reftime2]
-colors= ['tab:blue',red] 
+lams = [results.lam1, results.lam2, results.lam3, results.lam4]
+reftimes = [results.reftime1, results.reftime2, results.reftime3, results.reftime4]
+colors= ['tab:blue','tab:orange', red, green] 
 Vinter = results.P_scale*(1-np.sum(lams))*np.prod([dl.bg_hom3d(t-reftime,results.conc,lam) for lam,reftime in zip(lams,reftimes)],axis=0)
 for n,(lam,reftime,color) in enumerate(zip(lams,reftimes,colors)):
     Vpath = (1-np.sum(lams) + lam*dl.dipolarkernel(t-reftime,r)@Pfit)*Vinter

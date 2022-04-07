@@ -18,17 +18,37 @@ green = '#3cb4c6'
 red = '#f84862'
 violet = '#4550e6'
 
-# Load experimental datasets
-t1,Vexp1 = np.load('../data/example_twostate_data1.npy')
-t2,Vexp2 = np.load('../data/example_twostate_data2.npy')
-t3,Vexp3 = np.load('../data/example_twostate_data3.npy')
+# File location
+path = dl.__path__[0] + '/../examples/data/'
+files = [
+    'example_twostate_data_#1.DTA',
+    'example_twostate_data_#2.DTA',
+    'example_twostate_data_#3.DTA',
+    ]
 
-# Puts them all into lists
-ts = [t1,t2,t3]
-Vexps = [Vexp1,Vexp2,Vexp3]
+# Experimental parameters
+tau1 = 0.4      # First inter-pulse delay, μs
+tau2 = 4.5      # Second inter-pulse delay, μs
+deadtime = 0.2  # Acquisition deadtime, μs
+
+Vmodels,ts,Vexps = [],[],[]
+for file in files: 
+
+    # Load the experimental data
+    t,Vexp = dl.deerload(path + file)
+
+    # Pre-processing
+    Vexp = dl.correctphase(Vexp) # Phase correction
+    Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
+    t = t + deadtime             # Account for deadtime
+
+    # Put the datasets into lists
+    ts.append(t)
+    Vexps.append(Vexp)
 
 # Define the distance vector
 r = np.linspace(2,7,200)
+
 # Define a custom distance distribution model function
 def Ptwostates(meanA,meanB,stdA,stdB,fracA):
     PA = fracA*dl.dd_gauss(r,meanA,stdA)
@@ -94,8 +114,9 @@ for i in range(Nsignals):
     plt.xlabel('Distance r (nm)')
     plt.ylabel('P(r) (nm$^{-1}$)')
     plt.legend(['State A','State B'],loc='best',frameon=False)
-    plt.ylim([0,2])
     plt.autoscale(enable=True, axis='x', tight=True)
 
 plt.tight_layout()
 plt.show()
+
+# %%

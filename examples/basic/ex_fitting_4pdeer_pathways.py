@@ -13,15 +13,25 @@ import deerlab as dl
 
 # %%
 
-# Load the experimental data
-t,Vexp = np.load('../data/example_data_#3.npy')
+# File location
+path = dl.__path__[0] + '/../examples/data/'
+file = 'example_4pdeer_#2.DTA'
 
-# Experimental time delays 
-tau1 = 0.4 # μs
-tau2 = 4.4 # μs
+# Experimental parameters
+tau1 = 0.5      # First inter-pulse delay, μs
+tau2 = 3.5      # Second inter-pulse delay, μs
+deadtime = 0.1  # Acquisition deadtime, μs
+
+# Load the experimental data
+t,Vexp = dl.deerload(path + file)
+
+# Pre-processing
+Vexp = dl.correctphase(Vexp) # Phase correction
+Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
+t = t + deadtime             # Account for deadtime
 
 # Distance vector
-r = np.arange(2,5,0.025) # nm
+r = np.arange(2.5,5.5,0.025) # nm
 
 # Construct the model
 experiment = dl.ex_4pdeer(tau1,tau2, pathways=[1,2,3])

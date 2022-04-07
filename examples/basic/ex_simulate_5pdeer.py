@@ -28,9 +28,10 @@ rstd = 0.4          # Distance standard deviation, nm
 rmin,rmax = 1.5,6   # Range of the distance axis, nm
 Δr = 0.05           # Distance resolution, nm
 Δt = 0.008          # Time resolution, μs 
+deadtime = 0.1      # Acquisition deadtime, μs
 
 # Experimental time vector
-t = np.arange(0,tau1+tau2+tau3,Δt)
+t = np.arange(deadtime,tau1+tau2+tau3,Δt)
 # Distance vector 
 r = np.arange(rmin,rmax,Δr)
 

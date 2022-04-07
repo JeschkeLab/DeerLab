@@ -13,25 +13,41 @@ import deerlab as dl
 
 # %%
 
-# Load the experimental data
-t1,Vexp1 = np.load('../data/example_4pdeer_#3.npy')
-t2,Vexp2 = np.load('../data/example_4pdeer_#4.npy')
+# File location
+path = dl.__path__[0] + '/../examples/data/'
+files = [
+    'example_4pdeer_#3.DTA',
+    'example_4pdeer_#4.DTA',
+    ]
 
-# Put the datasets into lists
-ts = [t1,t2]
-Vs = [Vexp1,Vexp2]
-# Normalize the datasets
-Vs = [V/np.max(V) for V in Vs]
+# Experimental parameters
+tau1s = [0.3, 0.5]      # First inter-pulse delay, μs
+tau2s = [2.0, 4.0]      # Second inter-pulse delay, μs
+deadtimes = [0.1, 0.3]  # Acquisition deadtime, μs
 
-# Distance vector
-r = np.arange(1.5,7,0.05) # nm
+Vmodels,ts,Vs = [],[],[]
+for file, tau1, tau2, deadtime in zip(files, tau1s, tau2s, deadtimes): 
 
-# Construct the dipolar models for the individual signals
-V1model = dl.dipolarmodel(ts[0],r)
-V2model = dl.dipolarmodel(ts[1],r)
+    # Load the experimental data
+    t,Vexp = dl.deerload(path + file)
+
+    # Pre-processing
+    Vexp = dl.correctphase(Vexp) # Phase correction
+    Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
+    t = t + deadtime             # Account for deadtime
+
+    # Distance vector
+    r = np.arange(1.5,7,0.05) # nm
+
+    # Put the datasets into lists
+    ts.append(t)
+    Vs.append(Vexp)
+
+    # Construct the dipolar models for the individual signals
+    Vmodels.append(dl.dipolarmodel(t,r, experiment=dl.ex_4pdeer(tau1,tau2,pathways=[1])) )
 
 # Make the global model by joining the individual models
-globalmodel = dl.merge(V1model,V2model)
+globalmodel = dl.merge(*Vmodels)
 
 # Link the distance distribution into a global parameter 
 globalmodel = dl.link(globalmodel,P=['P_1','P_2'])

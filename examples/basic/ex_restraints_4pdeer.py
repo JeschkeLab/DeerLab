@@ -21,14 +21,28 @@ import deerlab as dl
 
 #%% 
 
-# Load experimental data
-t,Vexp = np.load('../data/example_4pdeer_#1.npy')
+# File location
+path = dl.__path__[0] + '/../examples/data/'
+file = 'example_4pdeer_#1.DTA'
+
+# Experimental parameters
+tau1 = 0.3      # First inter-pulse delay, μs
+tau2 = 4.0      # Second inter-pulse delay, μs
+deadtime = 0.1  # Acquisition deadtime, μs
+
+# Load the experimental data
+t,Vexp = dl.deerload(path + file)
+
+# Pre-processing
+Vexp = dl.correctphase(Vexp) # Phase correction
+Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
+t = t + deadtime             # Account for deadtime
 
 # Distance vector
-r = np.linspace(2,5,100) # nm
+r = np.arange(2,6,0.05) # nm
 
 # Construct dipolar model
-Vmodel = dl.dipolarmodel(t,r)
+Vmodel = dl.dipolarmodel(t,r, experiment=dl.ex_4pdeer(tau1,tau2, pathways=[1]))
 
 # Fit the model to the data
 fit = dl.fit(Vmodel,Vexp)
@@ -39,6 +53,9 @@ estimators,uq = dl.diststats(r,fit.P,fit.PUncert,verbose=True)
 # Get the mean distance
 rmean = estimators['mean']
 rmean_ci = uq['mean'].ci(95)
+# Get the median distance
+rmedian = estimators['median']
+rmedian_ci = uq['median'].ci(95)
 # Get the standard deviation of distances
 r_std = estimators['std']
 r_std_ci = uq['std'].ci(95)
@@ -61,7 +78,9 @@ plt.fill_between(r,Pci50[:,0],Pci50[:,1],color=violet,alpha=0.4)
 
 # Plot mean distance and confidence interval
 plt.vlines(rmean,0,max(Pci95[:,1]),color='tab:red',linestyles='dotted',linewidth=3,label='Mean distance')
+plt.vlines(rmedian,0,max(Pci95[:,1]),color='tab:green',linestyles='dotted',linewidth=3,label='Median distance')
 plt.fill_between(rmean_ci,0,max(Pci95[:,1]),color='tab:red',alpha=0.3,linewidth=0)
+plt.fill_between(rmedian_ci,0,max(Pci95[:,1]),color='tab:green',alpha=0.3,linewidth=0)
 
 plt.legend(frameon=False,loc='best')
 

@@ -14,15 +14,29 @@ import deerlab as dl
 
 # %%
 
+# File location
+path = dl.__path__[0] + '/../examples/data/'
+file = 'example_4pdeer_#1.DTA'
+
+# Experimental parameters
+tau1 = 0.3      # First inter-pulse delay, μs
+tau2 = 4.0      # Second inter-pulse delay, μs
+deadtime = 0.1  # Acquisition deadtime, μs
+
 # Load the experimental data
-t,Vexp = np.load('../data/example_4pdeer_#2.npy')
+t,Vexp = dl.deerload(path + file)
+
+# Pre-processing
+Vexp = dl.correctphase(Vexp) # Phase correction
+Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
+t = t + deadtime             # Account for deadtime
 
 # Distance vector
 r = np.arange(1.5,6,0.01) # nm
 
 # Construct the model
 Pmodel= dl.dd_gauss2
-Vmodel = dl.dipolarmodel(t,r,Pmodel)
+Vmodel = dl.dipolarmodel(t,r,Pmodel, experiment=dl.ex_4pdeer(tau1,tau2, pathways=[1]))
 
 # Fit the model to the data
 results = dl.fit(Vmodel,Vexp,reg=False)
