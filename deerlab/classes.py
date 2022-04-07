@@ -447,7 +447,7 @@ class UQResult:
     def propagate(self,model,lb=None,ub=None,samples=None):
         """
         Uncertainty propagation. This function takes the uncertainty analysis of the 
-        parameters and propagates it to another functon depending on those parameters.
+        parameters and propagates it to another function depending on those parameters.
 
         Parameters
         ----------
@@ -461,7 +461,7 @@ class UQResult:
         Returns
         -------
         modeluq : :ref:`UQResult`
-            New uncertainty quantification analysis for the ouputs of ``model``.
+            New uncertainty quantification analysis for the outputs of ``model``.
         """
         parfit = self.mean
         # Evaluate model with fit parameters

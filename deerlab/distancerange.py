@@ -19,12 +19,12 @@ def distancerange(t, nr=None):
     Returns
     -------
     r : ndarray or tuple
-        Distance axis, in nanometers, running between empirical lower and upper limits rmin and rmax.
+        Distance axis, in nanometers, running between empirical lower and upper limits ``rmin`` and ``rmax``.
         Either an ndarray (if ``nr`` is given) or a tuple (if ``nr`` is not given).
 
     Notes
     -----
-    The minimal and maximal distances, rmin and rmax, are empirical values that determine the
+    The minimal and maximal distances, ``rmin`` and ``rmax``, are empirical values that determine the
     minimal and maximal distance for which the given time trace can provide reliable information.
 
     The minimum distance is determined by the time step :math:`\Delta t` and the Nyquist criterion:
