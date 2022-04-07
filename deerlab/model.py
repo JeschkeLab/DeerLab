@@ -88,7 +88,7 @@ class Parameter():
         Parameters
         ----------
         attributes : keyword/values pairs
-            Pairs of keywords defining the parameter attribute and the value to be assignes.
+            Pairs of keywords defining the parameter attribute and the value to be assigned.
 
         Examples
         --------
@@ -387,7 +387,7 @@ class Model():
             Lower bound of the parameter. If not specified, it is set to ``+np.inf``.
 
         description : string, optional 
-            Descriptrion of the parameter. 
+            Description of the parameter. 
 
         unit : string, optional
             Physical unit of the parameter.
@@ -465,7 +465,7 @@ class Model():
 
 
         description : string, optional 
-            Descriptrion of the parameter. 
+            Description of the parameter. 
 
         unit : string, optional
             Physical unit of the parameter.
@@ -504,7 +504,7 @@ class Model():
         Evaluate the model for a given set of parameters. 
 
         Takes the constant variables and (non-linear and linear) parameter variables as positional
-        or keyword arguments and evaluateds the model.
+        or keyword arguments and evaluates the model.
         """
         # Check that the correct number of arguments have been specified
         Nrequired = len(self._parameter_list())

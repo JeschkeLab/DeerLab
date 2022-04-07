@@ -79,7 +79,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     integralop : boolean, optional
         Return the kernel as an integral operator (i.e ``K = K*dr``) or not (``K``). Usage as an integral operator means that the 
         matrix operation ``V=K@P`` with a normalized distance distribution (i.e. ``trapz(r,P)==1``) leads to a signal ``V`` with 
-        ampliude ``V(t=0)=1``. The default is ``True``.
+        amplitude ``V(t=0)=1``. The default is ``True``.
     
     nKnots : scalar, optional
         Number of knots for the grid of powder orientations to be used in the ``'grid'`` kernel calculation method. By default set to 5001 knots.
@@ -99,7 +99,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     Notes
     -----
     For a multi-pathway DEER [1]_, [2]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` contains a list of pathway amplitudes and refocusing times (in microseconds).
-    The background function specified as ``B`` is used as basis function, and the actual multipathway background included into the kernel is compued using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [3]_. 
+    The background function specified as ``B`` is used as basis function, and the actual multipathway background included into the kernel is computed using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [3]_. 
     Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals [4]_. If not given, the harmonic is 1 for all pathways. 
 
 
