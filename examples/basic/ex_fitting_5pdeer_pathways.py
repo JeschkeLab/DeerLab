@@ -14,7 +14,7 @@ import deerlab as dl
 # %%
 
 # File location
-path = dl.__path__[0] + '/../examples/data/'
+path = '../data/'
 file = 'example_5pdeer_3.DTA'
 
 # Experimental parameters (reversed 5pDEER)

@@ -14,7 +14,7 @@ import deerlab as dl
 #%%
 
 # File location
-path = dl.__path__[0] + '/../examples/data/'
+path = '../data/'
 file4p = 'example_4pdeer_2.DTA'
 file5p = 'example_5pdeer_2.DTA'
 

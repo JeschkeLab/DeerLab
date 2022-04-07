@@ -42,7 +42,7 @@ def forcefield_P(c0,c1,c2,c3):
     return Pr
 
 # File location
-path = dl.__path__[0] + '/../examples/data/'
+path = '../data/'
 file = 'example_4pdeer_4.DTA'
 
 # Experimental parameters
