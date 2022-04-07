@@ -115,28 +115,6 @@ html_theme_options = {
     "navbar_start": ["navbar-logo"],
     "navbar_center": ["nav"],
     "navbar_end": ["search-field","navbar-icon-links"],
-    "icon_links": [
-        {
-            "name": "GitHub",
-            "url": "https://github.com/JeschkeLab/DeerLab",
-            "icon": "fab fa-github",
-        },
-        {
-            "name": "Discussions",
-            "url": "https://github.com/JeschkeLab/DeerLab/discussions",
-            "icon": "fas fa-comments",
-        },
-        {
-            "name": "Issues",
-            "url": "https://github.com/JeschkeLab/DeerLab/issues",
-            "icon": "fas fa-bug",
-        },
-        {
-            "name": "PyPI",
-            "url": "https://pypi.org/project/DeerLab/",
-            "icon": "fas fa-cube",
-        },
-    ]
 }
 html_sidebars = {
     "index": [],
