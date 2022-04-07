@@ -31,7 +31,7 @@ The following section will provide the basic concepts related to these methods:
 Covariance-based or asymptotic method 
 *************************************
 
-Covariance-baed uncertainty is the fastest method for uncertainty quantification available in DeerLab. Due to its readiness, the ``fit`` function in DeerLab will employ it by default unless another method is requested.
+Covariance-based uncertainty is the fastest method for uncertainty quantification available in DeerLab. Due to its readiness, the ``fit`` function in DeerLab will employ it by default unless another method is requested.
 
 This method estimates the uncertainty based on the curvature of the optimization surface. It assumes the uncertainty distributions of all parameters to be normally distributed, centered at the fitted values (i.e., the maximum-likelihood estimates), and their variance to be given by the curvature of the objective function. This curvature is determined via the Jacobian of the objective optimization function and the corresponding covariance matrix. 
 
@@ -119,4 +119,4 @@ Uncertainty distributions
     A complete description of the uncertainty is the uncertainty distributions for the fit parameter. These can be requested from the ``pardist`` method. Using ``pardist(n)`` will return the uncertainty probability density function and its abscissa values for the corresponding quantity's ``n``-th element. For example, ::
 
         pardist = fitresult.<parameter>Uncert.pardist(0) # Get the parameter uncertainty distribution
-        modeldist5 = fitresult.modelUncert.pardist(4) # Get the uncertainty distribution of the modelf's reponse 5th element
+        modeldist5 = fitresult.modelUncert.pardist(4) # Get the uncertainty distribution of the model's response 5th element

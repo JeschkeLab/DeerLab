@@ -122,7 +122,7 @@ Additionally, the following models describe the time-dependent phase-shifts aris
 
 .. rubric:: Phenomenological models
 
-This category comprises phenomenological models that represent various mathematical functions that are intended to mimick the background decay, without reference to a particular spatial distribution of spins. The parameters of these models do no have direct physical meaning.
+This category comprises phenomenological models that represent various mathematical functions that are intended to mimic the background decay, without reference to a particular spatial distribution of spins. The parameters of these models do no have direct physical meaning.
 
 .. autosummary:: 
   :toctree: _autosummary

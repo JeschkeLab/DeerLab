@@ -145,7 +145,7 @@ best solution is to manually install as follows.
 
 1) Go to https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
 
-2) Download the appropiate ``numpy`` wheels file according to your installed Python version and Windows system:
+2) Download the appropriate ``numpy`` wheels file according to your installed Python version and Windows system:
 
 .. code-block:: text
 

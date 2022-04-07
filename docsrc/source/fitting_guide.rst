@@ -43,7 +43,7 @@ However, the list must be ordered according to the model parameter ordering. The
 Specifying the noise level(s)
 *****************************
 
-The ``fit`` function (and other functions in the pipeline) employ the noise level of the dataset(s), i.e. the standard deviation of the white Gaussian noise superimposed on the data, at various stages of the model optimization and ucertainty estimation. Therefore, the analysis profits strongly from accurate estimates of the noise level(s). These can be specified via the ``noiselvl`` keyword argument of the ``fit`` function ::
+The ``fit`` function (and other functions in the pipeline) employ the noise level of the dataset(s), i.e. the standard deviation of the white Gaussian noise superimposed on the data, at various stages of the model optimization and uncertainty estimation. Therefore, the analysis profits strongly from accurate estimates of the noise level(s). These can be specified via the ``noiselvl`` keyword argument of the ``fit`` function ::
     
     y = yclean + dl.whitegaussnoise(x, 0.05)
     # Fit the model (with two constants) to the data

@@ -67,7 +67,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
         * ``'moment4'`` - 4th moment (kurtosis) (see `more <https://en.wikipedia.org/wiki/Kurtosis>`__)
 
     uq : dict of :ref:`UQResult`
-        Dictionary of the parameters covariance-based uncertainty quantifications. 
+        Dictionary of the parameters covariance-based uncertainty quantification. 
         See above for the dictionary keys. Only calculated if ``Puq`` is provided.
 
     Notes

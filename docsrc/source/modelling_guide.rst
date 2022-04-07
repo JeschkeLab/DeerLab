@@ -37,7 +37,7 @@ The ``Parameter`` object
 The ``Parameter`` object contains all the information related to a particular parameter, namely 
 
 Boundaries (``<parameter>.lb`` and ``<parameter>.ub``)
-    The upper/lower bounds of the parameter that constrain the parameter values during fitting and optimization. Built-in models models will have pre-defined boundaries, while newly constructed models will have fully unbounded parameters. A parameter is consiedered unbounded when any of its bounds is set to plus/minus infinity (using the Numpy infinity ``np.inf``). 
+    The upper/lower bounds of the parameter that constrain the parameter values during fitting and optimization. Built-in models models will have pre-defined boundaries, while newly constructed models will have fully unbounded parameters. A parameter is considered unbounded when any of its bounds is set to plus/minus infinity (using the Numpy infinity ``np.inf``). 
     Note that boundaries do not prevent the model from being :ref:`evaluated <modelling_evaluation>` outside the them. 
 
 Start values (``<parameter>.par0``)
@@ -50,8 +50,8 @@ Freezing (``<parameter>.frozen``)
     Whether a parameter is frozen to a specific value. Freezing refers to setting a parameter to a static value and to be omitted during the fitting routines. A parameter can be frozen to a certain value by using the method ``<parameter>.freeze(value)``, and set back by using the ``<parameter>.unfreeze()``. If a parameter is frozen, it will have an additional attribute ``<parameter>.value`` containing the value at which the parameter has been frozen. 
     Note that freezing does not prevent the model to be :ref:`evaluated <modelling_evaluation>` at values different than the one at which a parameter has been frozen.
 
-Documentation (``<parameter>.description`` and ``<parameter>.units``)
-    These attributes serve documentation and information purposes and do not affect neither the evaluation nor fitting of the model. Both can be edited as strings; ``<parameter>.description`` contains a brief description of the parameter and ``<parameter>.units`` contains the SI units of the parameter if any. For newly constructed models, both attributes are set to ``None`` and need ot be manually filled. 
+Documentation (``<parameter>.description`` and ``<parameter>.unit``)
+    These attributes serve documentation and information purposes and do not affect neither the evaluation nor fitting of the model. Both can be edited as strings; ``<parameter>.description`` contains a brief description of the parameter and ``<parameter>.unit`` contains the SI units of the parameter if any. For newly constructed models, both attributes are set to ``None`` and need ot be manually filled. 
 
 A summary of the model and all its parameters and related attributes can be quickly accessed by printing the ``Model`` object. For example :: 
 
@@ -80,7 +80,7 @@ Any editable parameter attribute can be modified by simple assigning the new val
     # Set a start value for the `std` parameter
     model.std.par0 = 10    
 
-The ``set`` method allows the assignment of multiple new attribute values to the same parameter. The attributes are specified as keywords and the values as argumes. For example: ::
+The ``set`` method allows the assignment of multiple new attribute values to the same parameter. The attributes are specified as keywords and the values as arguments. For example: ::
 
     # Set a new boundaries and start value for the `mean` parameters
     model.mean.set(lb=0, ub=10, par0=5, description='Mean value of a Gaussian')
@@ -524,8 +524,6 @@ We can see that the merge has been successful. The model now takes the parameter
 
 We can double-check that the responses are correct by comparing the ``gaussian1`` and ``gaussian2`` to the responses of the original ``gauss`` model evaluated with the parameter subsets and seeing that they are equal. 
 
-As in the ``merge`` function, since the names of the parameters of all the input models are inherited, to avoid duplicate parameter names, a numeric suffix ``_N``` will always be added to all parameter names (``N`` indicating the index of the model it originated from). Thus, suffix ``_1`` for all parameters from the first model passed on to ``lincombine``, ``_2`` for all parameters from the second model passed on to ``lincombine``, and so on (see the illustration above).  
-
 Linear combinations
 *******************
 
@@ -540,6 +538,7 @@ For example, take three models, ``model1``, ``model3``, and ``model3`` (illustra
     newmodel = dl.lincombine(model1, model2, model3)
 
 Upon merging to any input model not possessing linear parameters, a single ``scale`` linear parameter will be added to it to ensure that the mathematical model structure of the output model holds. 
+As in the ``merge`` function, since the names of the parameters of all the input models are inherited, to avoid duplicate parameter names, a numeric suffix ``_N``` will always be added to all parameter names (``N`` indicating the index of the model it originated from). Thus, suffix ``_1`` for all parameters from the first model passed on to ``lincombine``, ``_2`` for all parameters from the second model passed on to ``lincombine``, and so on (see the illustration above).  
 
 
 If the new model ``newmodel`` is called with the appropriate parameters, it will return a new response, which will be the sum of responses of all the original models ::
@@ -647,8 +646,7 @@ The output model ``newmodel`` will have a new parameter ``newparam`` instead of 
 Example: Two Gaussians of equal width 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For this example, we will model a bimodal Gaussian function where both Gaussian components have equal widths but are centered differently. We will use the ``bigauss`` from :ref:`a previous example <modelling_example2>` as the basis model.  
-
+s
 To enforce equality of widths for the two Gaussians in the ``bigauss`` model, we must link the ``std1`` and ``std2`` parameters together. Since there will only be one width parameter in the linked model, we will assign the link to a new ``std`` parameter :: 
 
     # Link the width parameters 
@@ -766,13 +764,13 @@ Let us assume that the amplitudes `a_1` and `a_2` of the two Gaussians can be mo
 
 where `k` is some constant that parametrizes the amplitudes. We can now implement the functionalization of ``amplitude1`` and ``amplitude2``. Since the constant `k` is not part of the model, we need to add the non-linear parameter using the ``addnonlinear`` method, and then define the functional relationships via the ``relate`` function :: 
 
-    # Add the constant that parametrizes the ampltidues (defined in range 0-1) 
+    # Add the constant that parametrizes the amplitudes (defined in range 0-1) 
     bigauss.addnonlinear('k', lb=0, ub=1)
     # Define the functional relationships
     bigauss_related = dl.relate(bigauss, amplitude1 = lambda k: k*(1-k),
                                          amplitude2 = lambda amplitude1: 1-amplitude1)
 
-Even though we have added a new parameter, ``k`` to the model, we have removed both the ``ampltiude1`` and ``ampltiude2``, effectively reducing the number of parameters in the model. 
+Even though we have added a new parameter, ``k`` to the model, we have removed both the ``amplitude1`` and ``amplitude2``, effectively reducing the number of parameters in the model. 
 
 Copying 
 ******* 
@@ -781,7 +779,7 @@ Copying models is important when performing several model manipulations to avoid
 
     modelA.description = 'Original'
     modelB = modelA # Assignment does not generate a copy 
-    modelB.desciption = 'Copy' # Will also modify modelA
+    modelB.description = 'Copy' # Will also modify modelA
 
     >>>print(modelA.description, modelB.description)
     'Copy', 'Copy'
@@ -791,7 +789,7 @@ To fully copy a ``Model`` object it is recommended to use the ``deepcopy`` funct
     from copy import deepcopy
     modelA.description = 'Original'
     modelB = deepcopy(modelA) # deepcopy the model to a new variable 
-    modelB.desciption = 'Copy' # Will not modify modelA
+    modelB.description = 'Copy' # Will not modify modelA
 
     >>>print(modelA.description, modelB.description)
     'Original', 'Copy'
