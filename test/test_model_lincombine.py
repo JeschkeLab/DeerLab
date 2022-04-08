@@ -20,7 +20,7 @@ def test_preserve_original():
     model2 = dl.bg_hom3d
 
     _ = lincombine(model1,model2)
-    assert model1._parameter_list() == ['mean','width'] and model2._parameter_list() == ['conc','lam']
+    assert model1._parameter_list() == ['mean','std'] and model2._parameter_list() == ['conc','lam']
 # ======================================================================
 
 # ======================================================================
@@ -70,7 +70,7 @@ def test_twomodels_param_names():
     model2 = dl.dd_gauss
 
     model = lincombine(model1,model2)
-    assert all([ str in model._parameter_list() for str in ['mean_1','mean_2','width_1','width_2'] ])
+    assert all([ str in model._parameter_list() for str in ['mean_1','mean_2','std_1','std_2'] ])
 # ======================================================================
 
 # ======================================================================
@@ -93,8 +93,8 @@ def test_twomodels_addweights():
     x = np.linspace(0,10,400)
     ref = model1(x,3,0.2) + model2(x,4,0.5)
 
-    response = model(r_1=x,r_2=x,mean_1=3,width_1=0.2,
-                         mean_2=4,width_2=0.5,
+    response = model(r_1=x,r_2=x,mean_1=3,std_1=0.2,
+                         mean_2=4,std_2=0.5,
                          scale_1=1,scale_2=1,
                          weight_1=1,weight_2=1)
 
@@ -111,13 +111,13 @@ def test_twomodels_addweights_values():
     ref1 = model1(x,3,0.2) 
     ref2 = model2(x,4,0.5)
 
-    response1 = model(r_1=x,r_2=x,mean_1=3,width_1=0.2,
-                         mean_2=4,width_2=0.5,
+    response1 = model(r_1=x,r_2=x,mean_1=3,std_1=0.2,
+                         mean_2=4,std_2=0.5,
                          scale_1=1,scale_2=1,
                          weight_1=1,weight_2=0)
 
-    response2 = model(r_1=x,r_2=x,mean_1=3,width_1=0.2,
-                         mean_2=4,width_2=0.5,
+    response2 = model(r_1=x,r_2=x,mean_1=3,std_1=0.2,
+                         mean_2=4,std_2=0.5,
                          scale_1=1,scale_2=1,
                          weight_1=0,weight_2=1)
 
@@ -193,7 +193,7 @@ def test_threemodels_param_names():
     model3 = dl.dd_gauss
     model = lincombine(model1,model2,model3)
 
-    assert all([ str in model._parameter_list() for str in ['mean_1','mean_2','mean_3','width_1','width_2','width_3'] ])
+    assert all([ str in model._parameter_list() for str in ['mean_1','mean_2','mean_3','std_1','std_2','std_3'] ])
 # ======================================================================
 
 # ======================================================================
@@ -219,7 +219,7 @@ def test_threemodels_addweights():
     ref = model1(x,3,0.2) + model2(x,4,0.5) + model3(x,3.7,10)
 
     response = model(r_1=x,r_2=x,r_3=x,
-                    mean_1=3,width_1=0.2,
+                    mean_1=3,std_1=0.2,
                     location_2=4,spread_2=0.5,
                     contour_3=3.7,persistence_3=10,
                     scale_1=1,scale_2=1,scale_3=1,
@@ -241,21 +241,21 @@ def test_threemodels_addweights_values():
     ref3 = model3(x,5,0.1)
 
     response1 = model(r_1=x,r_2=x,r_3=x,
-                         mean_1=3,width_1=0.2,
+                         mean_1=3,std_1=0.2,
                          location_2=4,spread_2=0.5,
-                         mean_3=5,width_3=0.1, 
+                         mean_3=5,std_3=0.1, 
                          scale_1=1,scale_2=1,scale_3=1,
                          weight_1=1,weight_2=0,weight_3=0)
     response2 = model(r_1=x,r_2=x,r_3=x,
-                         mean_1=3,width_1=0.2,
+                         mean_1=3,std_1=0.2,
                          location_2=4,spread_2=0.5,
-                         mean_3=5,width_3=0.1, 
+                         mean_3=5,std_3=0.1, 
                          scale_1=1,scale_2=1,scale_3=1,
                          weight_1=0,weight_2=1,weight_3=0)
     response3 = model(r_1=x,r_2=x,r_3=x,
-                         mean_1=3,width_1=0.2,
+                         mean_1=3,std_1=0.2,
                          location_2=4,spread_2=0.5,
-                         mean_3=5,width_3=0.1, 
+                         mean_3=5,std_3=0.1, 
                          scale_1=1,scale_2=1,scale_3=1,
                          weight_1=0,weight_2=0,weight_3=1)
 
@@ -300,6 +300,9 @@ def test_fit_model():
 model_vec = Model(lambda r: np.eye(len(r)),constants='r')
 model_vec.addlinear('Pvec',vec=100,lb=0)
 
+model_vec_normalized = Model(lambda r: np.eye(len(r)),constants='r')
+model_vec_normalized.addlinear('Pvec',vec=100,lb=0,normalization=lambda Pvec: Pvec/np.sum(Pvec))
+
 # ======================================================================
 def test_vec_Nparam_nonlin(): 
     "Check that the combined model with a vector-form parameter has the right number of parameters"
@@ -337,7 +340,7 @@ def test_vec_param_names():
     model2 = model_vec
 
     model = lincombine(model1,model2)
-    assert all([ str in model._parameter_list() for str in ['mean_1','width_1','Pvec_2'] ])
+    assert all([ str in model._parameter_list() for str in ['mean_1','std_1','Pvec_2'] ])
 # ======================================================================
 
 # ======================================================================
@@ -371,4 +374,43 @@ def test_vec_two_models():
     response = model(x,x,3,0.2,1,model1(x,4,0.3))
 
     assert np.allclose(response,ref)
+# ======================================================================
+
+# ======================================================================
+def test_vec_twomodels_normalization(): 
+    """Check that the normalization of linear parameter is maintained"""
+    model1 = model_vec_normalized
+    model2 = model_vec_normalized
+    model = lincombine(model1,model2)
+
+    x = np.linspace(0,10,100)
+    ref1 = model1(r=x,Pvec=dl.dd_gauss(x,4,0.3))
+    ref2 = model2(r=x,Pvec=dl.dd_gauss(x,4,0.3))
+    ref = ref1 + ref2
+
+    results = fit(model,ref,x,x)
+
+    assert hasattr(results,'Pvec_1_scale') and hasattr(results,'Pvec_2_scale')
+# ======================================================================
+
+# ======================================================================
+def test_vec_twomodels_normalization_values(): 
+    """Check that the normalization of linear parameter is maintained"""
+    model1 = dl.dd_gauss
+    model2 = model_vec_normalized
+    model = lincombine(model1,model2)
+    model.scale_1.freeze(1)
+    model.mean_1.freeze(5)
+    model.std_1.freeze(0.3)
+
+    x = np.linspace(0,10,100)
+    scale2 = 79
+    dist2 = dl.dd_gauss(x,5,0.3)
+    ref1 = model1(r=x,mean=2,std=0.3)
+    ref2 = scale2*model2(r=x,Pvec=dist2/np.sum(dist2))
+    ref = ref1 + ref2
+
+    results = fit(model,ref,x,x)
+
+    assert np.isclose(results.Pvec_2_scale,scale2)
 # ======================================================================

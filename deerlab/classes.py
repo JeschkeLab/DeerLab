@@ -1,5 +1,5 @@
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 from deerlab.utils import Jacobian, nearest_psd
@@ -180,9 +180,9 @@ class UQResult:
     def __getattribute__(self, attr):
         try:
             # Calling the super class to avoid recursion
-            if attr!='type' and super(UQResult, self).__getattribute__('type') == 'void':
+            if (attr!='type' and not '__' in attr) and super(UQResult, self).__getattribute__('type') == 'void':
                 # Check if the uncertainty quantification has been done, if not report that there is nothing in the object
-                raise ValueError('The requested attribute/method is not available. Uncertainty quantification has not been calculated during the fit by using the `uq=None` keyword.')
+                raise ValueError(f"The requested attribute/method ('{attr}') is not available. Uncertainty quantification has not been calculated during the fit.")
         except AttributeError:
             # Catch cases where 'type' attribute has still not been defined (e.g. when using copy.deepcopy)
             pass
@@ -447,7 +447,7 @@ class UQResult:
     def propagate(self,model,lb=None,ub=None,samples=None):
         """
         Uncertainty propagation. This function takes the uncertainty analysis of the 
-        parameters and propagates it to another functon depending on those parameters.
+        parameters and propagates it to another function depending on those parameters.
 
         Parameters
         ----------
@@ -461,7 +461,7 @@ class UQResult:
         Returns
         -------
         modeluq : :ref:`UQResult`
-            New uncertainty quantification analysis for the ouputs of ``model``.
+            New uncertainty quantification analysis for the outputs of ``model``.
         """
         parfit = self.mean
         # Evaluate model with fit parameters
@@ -512,7 +512,7 @@ class UQResult:
 
         elif self.type=='bootstrap':
 
-            sampled_parameters = [[]]*self.nparam
+            sampled_parameters = [[] for _ in range(self.nparam)]
             for n in range(self.nparam):
                 # Get the parameter uncertainty distribution
                 values,pdf = self.pardist(n)

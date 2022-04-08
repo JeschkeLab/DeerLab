@@ -37,7 +37,7 @@ The ``Parameter`` object
 The ``Parameter`` object contains all the information related to a particular parameter, namely 
 
 Boundaries (``<parameter>.lb`` and ``<parameter>.ub``)
-    The upper/lower bounds of the parameter that constrain the parameter values during fitting and optimization. Built-in models models will have pre-defined boundaries, while newly constructed models will have fully unbounded parameters. A parameter is consiedered unbounded when any of its bounds is set to plus/minus infinity (using the Numpy infinity ``np.inf``). 
+    The upper/lower bounds of the parameter that constrain the parameter values during fitting and optimization. Built-in models models will have pre-defined boundaries, while newly constructed models will have fully unbounded parameters. A parameter is considered unbounded when any of its bounds is set to plus/minus infinity (using the Numpy infinity ``np.inf``). 
     Note that boundaries do not prevent the model from being :ref:`evaluated <modelling_evaluation>` outside the them. 
 
 Start values (``<parameter>.par0``)
@@ -50,21 +50,21 @@ Freezing (``<parameter>.frozen``)
     Whether a parameter is frozen to a specific value. Freezing refers to setting a parameter to a static value and to be omitted during the fitting routines. A parameter can be frozen to a certain value by using the method ``<parameter>.freeze(value)``, and set back by using the ``<parameter>.unfreeze()``. If a parameter is frozen, it will have an additional attribute ``<parameter>.value`` containing the value at which the parameter has been frozen. 
     Note that freezing does not prevent the model to be :ref:`evaluated <modelling_evaluation>` at values different than the one at which a parameter has been frozen.
 
-Documentation (``<parameter>.description`` and ``<parameter>.units``)
-    These attributes serve documentation and information purposes and do not affect neither the evaluation nor fitting of the model. Both can be edited as strings; ``<parameter>.description`` contains a brief description of the parameter and ``<parameter>.units`` contains the SI units of the parameter if any. For newly constructed models, both attributes are set to ``None`` and need ot be manually filled. 
+Documentation (``<parameter>.description`` and ``<parameter>.unit``)
+    These attributes serve documentation and information purposes and do not affect neither the evaluation nor fitting of the model. Both can be edited as strings; ``<parameter>.description`` contains a brief description of the parameter and ``<parameter>.unit`` contains the SI units of the parameter if any. For newly constructed models, both attributes are set to ``None`` and need ot be manually filled. 
 
 A summary of the model and all its parameters and related attributes can be quickly accessed by printing the ``Model`` object. For example :: 
 
     >>>print(dl.dd_gauss)
     Description: Gaussian distribution model
-    Signature: (r, mean, width)
+    Signature: (r, mean, std)
     Constants: [r]
     Parameter Table: 
     ======= ======= ======= ======== ======== ======= ==================== 
      Name    Lower   Upper    Type    Frozen   Units   Description         
     ======= ======= ======= ======== ======== ======= ==================== 
      mean        1      20   nonlin     No      nm     Mean                
-     width    0.05     2.5   nonlin     No      nm     Standard deviation  
+     std      0.05     2.5   nonlin     No      nm     Standard deviation  
     ======= ======= ======= ======== ======== ======= ==================== 
 
 .. _modelling_modifying_parameters:
@@ -77,10 +77,10 @@ Any editable parameter attribute can be modified by simple assigning the new val
     model = dl.dd_gauss
     # Set a new value for the `mean` parameter upper boundary
     model.mean.ub = 10    
-    # Set a start value for the `width` parameter
-    model.width.par0 = 10    
+    # Set a start value for the `std` parameter
+    model.std.par0 = 10    
 
-The ``set`` method allows the assignment of multiple new attribute values to the same parameter. The attributes are specified as keywords and the values as argumes. For example: ::
+The ``set`` method allows the assignment of multiple new attribute values to the same parameter. The attributes are specified as keywords and the values as arguments. For example: ::
 
     # Set a new boundaries and start value for the `mean` parameters
     model.mean.set(lb=0, ub=10, par0=5, description='Mean value of a Gaussian')
@@ -143,8 +143,8 @@ centered about `\langle x \rangle`, and with a width given by `\sigma`. The func
 
     x = np.linspace(0,10,500)
     # Define the non-linear function 
-    def gaussian_fcn(center,width):
-        y = np.exp(-(x-center)**2/(2*width**2))
+    def gaussian_fcn(center,std):
+        y = np.exp(-(x-center)**2/(2*std**2))
         return y 
     # Construct the model
     gauss = dl.Model(gaussian_fcn)
@@ -153,28 +153,27 @@ To control that the model has been properly constructed, we can print the model 
 
     >>> print(gauss)
     Description: None
-    Signature: (center, width)
+    Signature: (center, std)
     Constants: []
     Parameter Table: 
     ======== ======= ======= ======== ======== ======= ============= 
      Name     Lower   Upper    Type    Frozen   Units   Description  
     ======== ======= ======= ======== ======== ======= ============= 
      center    -inf     inf   nonlin     No     None    None         
-     width     -inf     inf   nonlin     No     None    None         
+     std       -inf     inf   nonlin     No     None    None         
     ======== ======= ======= ======== ======== ======= ============= 
 
-We can see that the model has properly introduced the two non-linear parameters ``center`` and ``width``. By default, all new parameters are initialized unbounded (i.e. ``lb=-np.inf`` and  ``ub=+np.inf``). Any attributes can be changed freely after the model has been generated. For example ::
+We can see that the model has properly introduced the two non-linear parameters ``center`` and ``std``. By default, all new parameters are initialized unbounded (i.e. ``lb=-np.inf`` and  ``ub=+np.inf``). Any attributes can be changed freely after the model has been generated. For example ::
 
     # Set the boundaries of the model parameters
     gauss.center.set(lb=0, ub=10)
-    gauss.width.set(lb=0, ub=0.5)
+    gauss.std.set(lb=0, ub=0.5)
 
 
 Models with linear parameters 
 ******************************
 Linear parameters do not take part in the non-linear function of the model and hence must be declared after the non-linear part of the model has been constructed (as described in the previous section). Using the ``addlinear`` method of the ``Model`` class, we can introduce any number of linear parameters to the model. The ``addlinear`` method takes the name of the parameter as its first argument. Other attributes of the linear parameter (such as boundaries) can be specified as additional keyword arguments. 
 It is important to note that the order in which the parameters are introduced must match the shape of the matrix returned by ``nonlinear_fcn``.
-
 
 Additionally, DeerLab introduces another distinction between linear parameters. In addition, linear parameters can be defined in scalar or vector form. 
 
@@ -222,9 +221,9 @@ Therefore, we could define the following function: ::
 
     x = np.linspace(0,10,500)
     # Define the non-linear function 
-    def bigaussian_fcn(center1,width1,center2,width2):
-        gauss1 = np.exp(-(x-center1)**2/(2*width1**2)) # First Gaussian component
-        gauss2 = np.exp(-(x-center2)**2/(2*width2**2)) # Second Gaussian component
+    def bigaussian_fcn(center1,std1,center2,std2):
+        gauss1 = np.exp(-(x-center1)**2/(2*std1**2)) # First Gaussian component
+        gauss2 = np.exp(-(x-center2)**2/(2*std2**2)) # Second Gaussian component
         Anonlin = np.vstack([y1,y2]) # Stack them vertically into a matrix
         return Anonlin
     # Construct the model
@@ -237,21 +236,21 @@ As before, we can check the state of the model by printing the ``mymodel`` objec
 
     >>> print(bigauss)
     Description: None
-    Signature: (center1, width1, center2, width2, weight1, weight2)
+    Signature: (center1, std1, center2, std2, weight1, weight2)
     Constants: []
     Parameter Table: 
     ========= ======= ======= ======== ======== ======= ============= 
      Name      Lower   Upper    Type    Frozen   Units   Description  
     ========= ======= ======= ======== ======== ======= ============= 
      center1    -inf     inf   nonlin     No     None    None         
-     width1     -inf     inf   nonlin     No     None    None         
+     std1       -inf     inf   nonlin     No     None    None         
      center2    -inf     inf   nonlin     No     None    None         
-     width2     -inf     inf   nonlin     No     None    None         
+     std2       -inf     inf   nonlin     No     None    None         
      weight1       0     inf   linear     No     None    None         
      weight2       0     inf   linear     No     None    None         
     ========= ======= ======= ======== ======== ======= ============= 
 
-We can see that the model has been correctly built, with four non-linear parameters (``center1``, ``center2``, ``width1``, and ``width2``) 
+We can see that the model has been correctly built, with four non-linear parameters (``center1``, ``center2``, ``std1``, and ``std2``) 
 and with two linear parameters (``weight1`` and ``weight2``), as indicated by the ``Type`` column. We can check whether a parameter is linear or non-linear by accessing its ``linear`` attribute, e.g.  :: 
 
     >>> bigauss.center1.linear
@@ -302,8 +301,8 @@ The model can be constructed as follows: ::
     # Define the non-linear function 
     def gausskernel_fcn(sigma):
         gausskernel = np.zeros((len(x),len(z)))
-        for n in range(len(z)):
-            gausskernel[:,n] = np.exp(-(x-z[n])**2/(2*sigma**2))   
+        for n, z_ in enumerate(z):
+            gausskernel[:,n] = np.exp(-(x-z_)**2/(2*sigma**2))   
         return gausskernel
     # Construct the model
     gaussconv = dl.Model(gausskernel_fcn)
@@ -325,6 +324,24 @@ By printing the model, we can check that the model has only two parameters: ::
      dist        0     inf   linear     No     None    None         
     ======= ======= ======= ======== ======== ======= ============= 
 
+
+
+Imposing normalization on the linear parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Sometimes, the linear parameters represent quantities that have certain normalization constraints. For example, a linear parameter representing a probability density function would require its trapezoidal integration to equal one. Such normalization criteria can be specified via the ``normalization`` optional argument of the ``addlinear`` method.   ::
+
+    # Definition of the non-linear function of the model
+    def nonlinear_fcn(nonlinparam1,nonlinparam2,*nonlinparamN):
+        y = ...
+        return y
+    # Construction of the model
+    mymodel = dl.Model(nonlinear_fcn)
+
+    # Add vector-form linear parameter (vector with N-elements) with a normalization condition
+    mymodel.addlinear('linparam1', vec=N, normalization= lambda linparam1: fcn(linparam1))
+
+Specifying normalization criteria does not affect the model evaluation or fitting. However, when the model is fitted and the fitted parameters are reported, the program will report the normalized value of ``linparam1`` as well as an additional value ``linparam1_scale`` which reports the normalization factor/scale of the linear parameter. 
 
 .. _modelling_constants:
 
@@ -355,8 +372,8 @@ For example, let's model a Gaussian function defined on an arbitrary axis:
 centered about `\langle x \rangle`, with a width given by `\sigma`. The function has two non-linear parameters (`\langle x \rangle` and `\sigma`), and no linear parameters. The axis `x` should be modifiable but not a parameter. Therefore, we could define the following function with the axis set as a constant: ::
 
     # Define the non-linear function 
-    def gaussian_fcn(x,center,width):
-        y = np.exp(-(x-center)**2/(2*width**2))
+    def gaussian_fcn(x,center,std):
+        y = np.exp(-(x-center)**2/(2*std**2))
         return y 
     # Construct the model
     xgauss = dl.Model(gaussian_fcn, constants='x')
@@ -365,14 +382,14 @@ Let us print the model to examine the resulting model: ::
 
     >>>print(xgauss)
     Description: None
-    Signature: (x, center, width)
+    Signature: (x, center, std)
     Constants: [x]
     Parameter Table: 
     ======== ======= ======= ======== ======== ======= ============= 
      Name     Lower   Upper    Type    Frozen   Units   Description  
     ======== ======= ======= ======== ======== ======= ============= 
      center    -inf     inf   nonlin     No     None    None         
-     width     -inf     inf   nonlin     No     None    None         
+     std       -inf     inf   nonlin     No     None    None         
     ======== ======= ======= ======== ======== ======= ============= 
 
 We can see that the model has only the two non-linear parameters as expected, and under ``Constants`` we can see that ``x`` has been adequately defined. From the ``Signature`` we can also check that the ``x`` constant can be passed to evaluate the model. 
@@ -387,14 +404,14 @@ All ``Model`` objects can be called as normal functions by specifying the parame
 
     >>>print(xgauss)
     Description: None
-    Signature: (x, center, width)
+    Signature: (x, center, std)
     Constants: [x]
     Parameter Table: 
     ======== ======= ======= ======== ======== ======= ============= 
      Name     Lower   Upper    Type    Frozen   Units   Description  
     ======== ======= ======= ======== ======== ======= ============= 
      center    -inf     inf   nonlin     No     None    None         
-     width     -inf     inf   nonlin     No     None    None         
+     std       -inf     inf   nonlin     No     None    None         
     ======== ======= ======= ======== ======== ======= ============= 
 
 In the model printout, under ``Signature`` the exact signature of the model is given. The order and names of the arguments are as shown there.
@@ -408,23 +425,23 @@ Keyword arguments provide a simple way of specifying model arguments without nee
     # Define model parameters and constants
     axis = np.linspace(0,10,200)
     mycenter = 5 
-    mywidth = 0.3
+    mystd = 0.3
     # Evaluate using keyword arguments
-    y = model(x=axis, width=mywidth, center=mycenter)    
+    y = model(x=axis, std=mystd, center=mycenter)
 
 
 Calling with positional arguments
 *********************************
 
 Positional arguments do not require knowledge of the parameters'/constants' names but of the order, they are defined.
-In the example above, we would need to first pass ``x``, ``center`` and ``width`` in that exact order :: 
+In the example above, we would need to first pass ``x``, ``center`` and ``std`` in that exact order :: 
 
     # Define model parameters and constants
     axis = np.linspace(0,10,200)
     mycenter = 5 
-    mywidth = 0.3
+    mystd = 0.3
     # Evaluate using positional arguments
-    y = xgauss(axis,mycenter,mywidth)
+    y = xgauss(axis,mycenter,mystd)
 
 Calling with mixed arguments
 ****************************
@@ -434,9 +451,9 @@ A mixture of positional and keyword arguments can be used to specify the model a
     # Define model parameters and constants
     axis = np.linspace(0,10,200)
     mycenter = 5 
-    mywidth = 0.3
+    mystd = 0.3
     # Evaluate using mixed arguments
-    y = xgauss(axis,width=mywidth,center=mycenter)
+    y = xgauss(axis,std=mystd,center=mycenter)
 
 
 Model operations
@@ -507,8 +524,6 @@ We can see that the merge has been successful. The model now takes the parameter
 
 We can double-check that the responses are correct by comparing the ``gaussian1`` and ``gaussian2`` to the responses of the original ``gauss`` model evaluated with the parameter subsets and seeing that they are equal. 
 
-As in the ``merge`` function, since the names of the parameters of all the input models are inherited, to avoid duplicate parameter names, a numeric suffix ``_N``` will always be added to all parameter names (``N`` indicating the index of the model it originated from). Thus, suffix ``_1`` for all parameters from the first model passed on to ``lincombine``, ``_2`` for all parameters from the second model passed on to ``lincombine``, and so on (see the illustration above).  
-
 Linear combinations
 *******************
 
@@ -523,6 +538,7 @@ For example, take three models, ``model1``, ``model3``, and ``model3`` (illustra
     newmodel = dl.lincombine(model1, model2, model3)
 
 Upon merging to any input model not possessing linear parameters, a single ``scale`` linear parameter will be added to it to ensure that the mathematical model structure of the output model holds. 
+As in the ``merge`` function, since the names of the parameters of all the input models are inherited, to avoid duplicate parameter names, a numeric suffix ``_N``` will always be added to all parameter names (``N`` indicating the index of the model it originated from). Thus, suffix ``_1`` for all parameters from the first model passed on to ``lincombine``, ``_2`` for all parameters from the second model passed on to ``lincombine``, and so on (see the illustration above).  
 
 
 If the new model ``newmodel`` is called with the appropriate parameters, it will return a new response, which will be the sum of responses of all the original models ::
@@ -630,38 +646,37 @@ The output model ``newmodel`` will have a new parameter ``newparam`` instead of 
 Example: Two Gaussians of equal width 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For this example, we will model a bimodal Gaussian function where both Gaussian components have equal widths but are centered differently. We will use the ``bigauss`` from :ref:`a previous example <modelling_example2>` as the basis model.  
-
-To enforce equality of widths for the two Gaussians in the ``bigauss`` model, we must link the ``width1`` and ``width2`` parameters toghether. Since there will only be one width parameter in the linked model, we will assign the link to a new ``width`` parameter :: 
+s
+To enforce equality of widths for the two Gaussians in the ``bigauss`` model, we must link the ``std1`` and ``std2`` parameters together. Since there will only be one width parameter in the linked model, we will assign the link to a new ``std`` parameter :: 
 
     # Link the width parameters 
-    bigauss_linked = dl.link(bigauss, width=['width1','width2'])
+    bigauss_linked = dl.link(bigauss, std=['std1','std2'])
 
 and check the model by printing it :: 
 
     >>>print(bigauss_linked)
     Description: None
-    Signature: (center1, width, center2, weight1, weight2)
+    Signature: (center1, std, center2, weight1, weight2)
     Constants: []
     Parameter Table: 
     ========= ======= ======= ======== ======== ======= ============= 
      Name      Lower   Upper    Type    Frozen   Units   Description  
     ========= ======= ======= ======== ======== ======= ============= 
      center1    -inf     inf   nonlin     No     None    None         
-     width      -inf     inf   nonlin     No     None    None         
+     std        -inf     inf   nonlin     No     None    None         
      center2    -inf     inf   nonlin     No     None    None         
      weight1       0     inf   linear     No     None    None         
      weight2       0     inf   linear     No     None    None         
     ========= ======= ======= ======== ======== ======= ============= 
 
 
-The model now has the new ``width`` parameter instead of the ``width1`` and ``width2`` parameters. The linkage can be checked by comparing the two models ::
+The model now has the new ``std`` parameter instead of the ``std1`` and ``std2`` parameters. The linkage can be checked by comparing the two models ::
 
     # Evaluate the original model
-    response_unlinked = bigauss(center1=5, width1=0.3, amplitude1=1,
-                                center2=3, width2=0.3, amplitude1=2)
+    response_unlinked = bigauss(center1=5, std1=0.3, amplitude1=1,
+                                center2=3, std2=0.3, amplitude1=2)
     # Evaluate the linked model
-    response_linked = bigauss(center1=5, amplitude1=1, width=0.3
+    response_linked = bigauss(center1=5, amplitude1=1, std=0.3
                               center2=3, amplitude1=2)
 
 
@@ -698,16 +713,16 @@ Example: Two Gaussians of related width
 
 For this example, we will model a bimodal Gaussian function where one of the Gaussian components has twice the width of the other one. We will use the ``bigauss`` from :ref:`a previous example <modelling_example2>` as the basis model.  
 
-To enforce the functional relationship between the widths of the two Gaussians in the ``bigauss`` model, we must relate the ``width1`` parameter to the ``width2`` parameter, such that the former's value is twice the latter's value  ::  
+To enforce the functional relationship between the widths of the two Gaussians in the ``bigauss`` model, we must relate the ``std1`` parameter to the ``std2`` parameter, such that the former's value is twice the latter's value  ::  
 
     # Relate the width parameters 
-    bigauss_related = dl.relate(bigauss, width1 = lambda width2: 2*width2)
+    bigauss_related = dl.relate(bigauss, std1 = lambda std2: 2*std2)
 
 and check the model by printing it :: 
 
     >>>print(bigauss_related)
     Description: None
-    Signature: (center1, width1, center2, weight1, weight2)
+    Signature: (center1, std1, center2, weight1, weight2)
     Constants: []
     Parameter Table: 
     ========= ======= ======= ======== ======== ======= ============= 
@@ -715,12 +730,12 @@ and check the model by printing it ::
     ========= ======= ======= ======== ======== ======= ============= 
      center1    -inf     inf   nonlin     No     None    None         
      center2    -inf     inf   nonlin     No     None    None         
-     width2     -inf     inf   nonlin     No     None    None         
+     std2       -inf     inf   nonlin     No     None    None         
      weight1       0     inf   linear     No     None    None         
      weight2       0     inf   linear     No     None    None         
     ========= ======= ======= ======== ======== ======= ============= 
 
-The ``width1`` parameter has been removed from the parameter list as it is now given twice the value of ``width2``.
+The ``std1`` parameter has been removed from the parameter list as it is now given twice the value of ``std2``.
 
 Adding isolated non-linear parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -749,13 +764,13 @@ Let us assume that the amplitudes `a_1` and `a_2` of the two Gaussians can be mo
 
 where `k` is some constant that parametrizes the amplitudes. We can now implement the functionalization of ``amplitude1`` and ``amplitude2``. Since the constant `k` is not part of the model, we need to add the non-linear parameter using the ``addnonlinear`` method, and then define the functional relationships via the ``relate`` function :: 
 
-    # Add the constant that parametrizes the ampltidues (defined in range 0-1) 
+    # Add the constant that parametrizes the amplitudes (defined in range 0-1) 
     bigauss.addnonlinear('k', lb=0, ub=1)
     # Define the functional relationships
     bigauss_related = dl.relate(bigauss, amplitude1 = lambda k: k*(1-k),
                                          amplitude2 = lambda amplitude1: 1-amplitude1)
 
-Even though we have added a new parameter, ``k`` to the model, we have removed both the ``ampltiude1`` and ``ampltiude2``, effectively reducing the number of parameters in the model. 
+Even though we have added a new parameter, ``k`` to the model, we have removed both the ``amplitude1`` and ``amplitude2``, effectively reducing the number of parameters in the model. 
 
 Copying 
 ******* 
@@ -764,7 +779,7 @@ Copying models is important when performing several model manipulations to avoid
 
     modelA.description = 'Original'
     modelB = modelA # Assignment does not generate a copy 
-    modelB.desciption = 'Copy' # Will also modify modelA
+    modelB.description = 'Copy' # Will also modify modelA
 
     >>>print(modelA.description, modelB.description)
     'Copy', 'Copy'
@@ -774,7 +789,7 @@ To fully copy a ``Model`` object it is recommended to use the ``deepcopy`` funct
     from copy import deepcopy
     modelA.description = 'Original'
     modelB = deepcopy(modelA) # deepcopy the model to a new variable 
-    modelB.desciption = 'Copy' # Will not modify modelA
+    modelB.description = 'Copy' # Will not modify modelA
 
     >>>print(modelA.description, modelB.description)
     'Original', 'Copy'

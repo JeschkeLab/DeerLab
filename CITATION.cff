@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software in your work, please cite it as below."
+authors:
+- family-names: "Fábregas Ibáñez"
+  given-names: "Luis"
+  orcid: "https://orcid.org/0000-0002-8085-1256"
+- family-names: "Stoll"
+  given-names: "Stefan"
+  orcid: "https://orcid.org/0000-0003-4255-9550"
+- family-names: "Jeschke"
+  given-names: "Gunnar"
+  orcid: "https://orcid.org/0000-0001-6853-8585"
+title: "DeerLab"
+url: "https://github.com/JeschkeLab/DeerLab"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Fábregas Ibáñez"
+    given-names: "Luis"
+    orcid: "https://orcid.org/0000-0002-8085-1256"
+  - family-names: "Stoll"
+    given-names: "Stefan"
+    orcid: "https://orcid.org/0000-0003-4255-9550"
+  - family-names: "Jeschke"
+    given-names: "Gunnar"
+    orcid: "https://orcid.org/0000-0001-6853-8585"
+  doi: "10.5194/mr-1-209-2020"
+  journal: "Magnetic Resonance"
+  start: 209 # First page number
+  end: 224 # Last page number
+  title: "DeerLab: a comprehensive software package for analyzing dipolar electron paramagnetic resonance spectroscopy data"
+  volume: 1
+  year: 2020

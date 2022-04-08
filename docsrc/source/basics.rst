@@ -31,14 +31,14 @@ Parametric distance distributions
 
                 >>>print(dl.dd_gauss)
                 Description: Gaussian distribution model
-                Signature: (r, mean, width)
+                Signature: (r, mean, std)
                 Constants: [r]
                 Parameter Table: 
                 ======= ======= ======= ======== ======== ======= ==================== 
                 Name    Lower   Upper    Type    Frozen   Units   Description         
                 ======= ======= ======= ======== ======== ======= ==================== 
                 mean        1      20   nonlin     No      nm     Mean                
-                width    0.05     2.5   nonlin     No      nm     Standard deviation  
+                std      0.05     2.5   nonlin     No      nm     Standard deviation  
                 ======= ======= ======= ======== ======== ======= ==================== 
 
                 

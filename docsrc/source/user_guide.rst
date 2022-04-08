@@ -8,7 +8,6 @@ This is the introductory guide to DeerLab for any dipolar electron paramagnetic 
 .. toctree::
     :maxdepth: 2
 
-    ./installation
     ./basics
     ./getting_started
     ./dipolar_guide_modelling

@@ -17,17 +17,17 @@ import deerlab as dl
 # %%
 
 # Load the experimental data
-t,Vexp = np.load('../data/example_data_#2.npy')
+t,Vexp = np.load('../data/example_4pdeer_#2.npy')
 
 # Maximal number of Gaussians in the models 
 Nmax = 5
 
 # Construct the distance axis
-r = np.linspace(2.5,4.5,200)
+r = np.linspace(1.5,6.5,500)
 
 # Pre-allocate the empty lists of models
-Pmodels = [[]]*Nmax
-Vmodels = [[]]*Nmax
+Pmodels = [[] for _ in range(Nmax)]
+Vmodels = [[] for _ in range(Nmax)]
 
 # The basic model for the components (can be e.g. dl.dd_rice)
 basisModel = dl.dd_gauss
@@ -37,10 +37,10 @@ for n in range(Nmax):
     # Construct the n-Gaussian model
     Pmodels[n] = dl.lincombine(*[basisModel]*(n+1))
     # Construct the corresponding dipolar signal model
-    Vmodels[n] = dl.dipolarmodel(t,r,Pmodel=Pmodels[n])    
+    Vmodels[n] = dl.dipolarmodel(t,r,Pmodel=Pmodels[n])
 
 # Fit the models to the data
-fits = [[]]*Nmax
+fits = [[] for _ in range(Nmax)]
 for n in range(Nmax):
     fits[n] = dl.fit(Vmodels[n],Vexp,reg=False)
 

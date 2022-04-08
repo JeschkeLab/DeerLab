@@ -98,7 +98,7 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None
             weights = np.zeros(len(subset))
             for i in range(len(subset)):
                 weights[i] = 1/sigmas[i]
-
+    
     # If multiple weights are specified as a list...
     if type(weights) is list or type(weights) is np.ndarray or not hasattr(weights, "__len__"):
         weights = np.atleast_1d(weights)

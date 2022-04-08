@@ -50,7 +50,7 @@ def test_names():
     "Check that the model has correct parameter names"
 
     model = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
-    parameters = ['mean','width','conc','mod','reftime','scale']
+    parameters = ['mean','std','conc','mod','reftime','scale']
     
     for param in parameters:
         assert hasattr(model,param)
@@ -86,7 +86,7 @@ def test_call_keywords():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
     
-    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,width=0.2,scale=1e5)
+    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V1path)
 # ======================================================================
@@ -97,7 +97,7 @@ def test_phenomenological_Bmodel():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,Bmodel=bg_exp,npathways=1)
     
-    Vsim = Vmodel(mod=0.3,reftime=0.0,mean=3,width=0.2,decay=0.1,scale=1e5)
+    Vsim = Vmodel(mod=0.3,reftime=0.0,mean=3,std=0.2,decay=0.1,scale=1e5)
 
     assert np.allclose(Vsim,V1path_phenoB)
 # ======================================================================
@@ -108,7 +108,7 @@ def test_no_Bmodel():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,None,npathways=1)
     
-    Vsim = Vmodel(mod=0.3,reftime=0.0,mean=3,width=0.2,scale=1e5)
+    Vsim = Vmodel(mod=0.3,reftime=0.0,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V1path_noB)
 # ======================================================================
@@ -119,7 +119,7 @@ def test_model_1pathways():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
     
-    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,width=0.2,scale=1e5)
+    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V1path)
 # ======================================================================
@@ -131,7 +131,7 @@ def test_model_2pathways():
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=2)
     
     Vsim = Vmodel(lam1=0.3,reftime1=0.0,lam2=0.1,
-                    reftime2=2,conc=50,mean=3,width=0.2,scale=1e5)
+                    reftime2=2,conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V2path)
 # ======================================================================
@@ -144,7 +144,7 @@ def test_model_3pathways():
     
     Vsim = Vmodel(lam1=0.3,reftime1=0.0,
                 lam2=0.1,reftime2=2, lam3=0.1, reftime3=5,
-                conc=50,mean=3,width=0.2,scale=1e5)
+                conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V3path)
 # ======================================================================
@@ -156,7 +156,7 @@ def test_fit_1pathways():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
     
-    result = fit(Vmodel,V1path,nonlin_tol=1e-3)
+    result = fit(Vmodel,V1path,ftol=1e-4)
 
     assert np.allclose(result.model,V1path)
 # ======================================================================
@@ -169,7 +169,7 @@ def test_fit_2pathways():
     Vmodel.reftime1.freeze(0)
     Vmodel.reftime2.freeze(2)
     
-    result = fit(Vmodel,V2path,nonlin_tol=1e-3)
+    result = fit(Vmodel,V2path,ftol=1e-4)
 
     assert np.allclose(result.model,V2path)
 # ======================================================================
@@ -183,7 +183,7 @@ def test_fit_3pathways():
     Vmodel.reftime2.freeze(2)
     Vmodel.reftime3.freeze(5)
     
-    result = fit(Vmodel,V3path,nonlin_tol=1e-3)
+    result = fit(Vmodel,V3path,ftol=1e-4)
 
     assert np.allclose(result.model,V3path)
 # ======================================================================
@@ -200,7 +200,7 @@ def test_model_1harmonics():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,harmonics=1)
     
-    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,width=0.2,scale=1e5)
+    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V1harm)
 # ======================================================================
@@ -212,7 +212,7 @@ def test_model_2harmonics():
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=2,harmonics=[1,2])
     
     Vsim = Vmodel(lam1=0.3,reftime1=0.0,lam2=0.1,
-                    reftime2=2,conc=50,mean=3,width=0.2,scale=1e5)
+                    reftime2=2,conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V2harm)
 # ======================================================================
@@ -225,7 +225,7 @@ def test_model_3harmonics():
     
     Vsim = Vmodel(lam1=0.3,reftime1=0.0,
                 lam2=0.1,reftime2=2, lam3=0.1, reftime3=5,
-                conc=50,mean=3,width=0.2,scale=1e5)
+                conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V3harm)
 # ======================================================================
@@ -246,9 +246,20 @@ def test_fit_Pnonparametric():
 
     Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=1)
     
-    result = fit(Vmodel,V1path,nonlin_tol=1e-5)
+    result = fit(Vmodel,V1path,ftol=1e-5)
 
-    assert ovl(result.P/1e5,Pr)>0.975
+    assert ovl(result.P,Pr)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_fit_Pnonparametric_normalization(): 
+    "Check that the model with one dipolar pathway is correct"
+
+    Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=1)
+    
+    result = fit(Vmodel,V1path,ftol=1e-5)
+
+    assert np.isclose(np.trapz(result.P,r),1)
 # ======================================================================
 
 tdeer = np.linspace(-0.5,5,300)
@@ -277,11 +288,11 @@ def test_ex_3pdeer_fit():
 
     experiment = ex_3pdeer(tau1, pathways=[1,2])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,V3pdeer,nonlin_tol=1e-3)
+    result = fit(Vmodel,V3pdeer,ftol=1e-5)
 
-    assert np.allclose(V3pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(V3pdeer,result.model,atol=1e-1) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
-
+test_ex_3pdeer_fit()
 # ======================================================================
 def test_ex_4pdeer_type(): 
     "Check the 4-pulse DEER experimental model."
@@ -297,7 +308,7 @@ def test_ex_4pdeer_fit():
 
     experiment = ex_4pdeer(tau1,tau2, pathways=[1,2])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,V4pdeer,nonlin_tol=1e-3)
+    result = fit(Vmodel,V4pdeer,ftol=1e-4)
 
     assert np.allclose(V4pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
@@ -317,7 +328,7 @@ def test_ex_rev5pdeer_fit():
 
     experiment = ex_rev5pdeer(tau1,tau2,tau3, pathways=[1,2,3])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,Vrev5pdeer,nonlin_tol=1e-3)
+    result = fit(Vmodel,Vrev5pdeer,ftol=1e-4)
 
     assert np.allclose(Vrev5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
@@ -338,7 +349,7 @@ def test_ex_fwd5pdeer_fit():
 
     experiment = ex_fwd5pdeer(tau1,tau2,tau3, pathways=[1,2,3])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,Vfwd5pdeer,nonlin_tol=1e-3)
+    result = fit(Vmodel,Vfwd5pdeer,ftol=1e-4)
 
     assert np.allclose(Vfwd5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
@@ -358,7 +369,7 @@ def test_ex_sifter_fit():
 
     experiment = ex_sifter(tau1,tau2)
     Vmodel = dipolarmodel(tsifter,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,Vsifter,nonlin_tol=1e-3)
+    result = fit(Vmodel,Vsifter,ftol=1e-4)
 
     assert np.allclose(Vsifter,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
@@ -378,7 +389,7 @@ def test_ex_ridme_fit():
 
     experiment = ex_ridme(tau1,tau2, pathways=[1,2,3])
     Vmodel = dipolarmodel(tridme,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,Vridme,nonlin_tol=1e-3)
+    result = fit(Vmodel,Vridme,ftol=1e-4)
 
     assert np.allclose(Vridme,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
@@ -390,8 +401,8 @@ def test_orisel():
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
     Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,orisel=lambda theta: np.ones_like(theta))
 
-    Vref = Vmodel(mean=3,width=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
-    Vorisel = Vmodelorisel(mean=3,width=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
+    Vref = Vmodel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
+    Vorisel = Vmodelorisel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
 
     assert np.allclose(Vref,Vorisel,rtol=1e-4)
 # ======================================================================

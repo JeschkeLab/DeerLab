@@ -18,7 +18,7 @@ sys.path.append(os.path.abspath('.'))
 
 # Project details
 project = 'DeerLab'
-copyright = '2019-2021, Luis Fábregas-Ibáñez, Stefan Stoll, and others'
+copyright = '2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others'
 author = 'Fabregas Ibanez'
 language = 'en'
 
@@ -91,6 +91,8 @@ imgmath_latex_preamble = r'''
 
 # Configuration of the HTML Theme Template
 # ----------------------------------------------------------------------
+templates_path = ['_templates']
+
 # Setup template stuff
 exclude_patterns = ['.', './functions']
 numpydoc_show_class_members = False
@@ -110,36 +112,17 @@ html_context = {
     'version' : version,                                  
 }
 html_theme_options = {
-    "icon_links": [
-        {
-            "name": "GitHub",
-            "url": "https://github.com/JeschkeLab/DeerLab",
-            "icon": "fab fa-github",
-        },
-        {
-            "name": "Discussions",
-            "url": "https://github.com/JeschkeLab/DeerLab/discussions",
-            "icon": "fas fa-comments",
-        },
-        {
-            "name": "Issues",
-            "url": "https://github.com/JeschkeLab/DeerLab/issues",
-            "icon": "fas fa-bug",
-        },
-        {
-            "name": "PyPI",
-            "url": "https://pypi.org/project/DeerLab/",
-            "icon": "fas fa-cube",
-        },
-    ]
+    "navbar_start": ["navbar-logo"],
+    "navbar_center": ["nav"],
+    "navbar_end": ["search-field","navbar-icon-links"],
 }
 html_sidebars = {
     "index": [],
-    "modelsref": ["search-field"],
-    "reference": ["search-field"],
-    "_autosummary/**": ["search-field"],
-    "examples": ["search-field"],
-    "auto_examples/**": ["search-field"],
+    "modelsref": [],
+    "reference": [],
+    "_autosummary/**": [],
+    "examples": [],
+    "auto_examples/**": [],
 }
 
 html_copy_source = False
@@ -262,3 +245,5 @@ rst_epilog = f"""
 
 .. |api| replace:: :raw-html:`<span class="badge changelog_api">API Change</span>`
 """
+
+

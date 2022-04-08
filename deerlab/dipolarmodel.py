@@ -1,7 +1,7 @@
 # dipolarmodel.py - DeerLab's dipolar EPR model generator
 # ---------------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 from deerlab.dipolarkernel import dipolarkernel  
@@ -9,43 +9,46 @@ from deerlab.regoperator import regoperator
 from deerlab.dd_models import freedist
 from deerlab.model import Model,Penalty
 from deerlab import bg_hom3d
-ge = 2.00231930436256 # free-electron g factor
+from deerlab.constants import *
 
 #===============================================================================
-def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,experiment=None,
+def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None, experiment=None,
                     excbandwidth=np.inf, orisel=None, g=[ge,ge]):
     """
-    Construct a dipolar EPR signal model. 
+    Generate a dipolar EPR signal model.
 
     Parameters
     ----------
-    t : array_like 
-        Vector of dipolar time increments, in microseconds.
-    r : array_like 
-        Vector of intraspin distances, in nanometers.
-    Pmodel : :ref:`Model`, optional 
-        Model for the distance distribution. If not speficied, a non-parametric
-        distance distribution is assumed. 
-    Bmodel : :ref:`Model`, optional 
-        Model for the intermolecular (background) contribution. If not specified, 
-        a background arising from a homogenous 3D distribution of spins is assumed. 
-    npathways : integer scalar
-        Number of dipolar pathways. If not specified, a single dipolar pathway is assumed. 
-    experiment : :ref:`ExperimentInfo`, optional 
+    t : array_like
+        Vector of dipolar evolution times, in microseconds.
+    r : array_like
+        Vector of spin-spin distances, in nanometers.
+    Pmodel : :ref:`Model`, optional
+        Model for the distance distribution. If not specified, a non-parametric
+        distance distribution defined over ``r`` is used.
+    Bmodel : :ref:`Model`, optional
+        Model for the intermolecular (background) contribution. If not specified,
+        a background arising from a homogenous 3D distribution of spins is used.
+    npathways : integer scalar, optional
+        Number of dipolar pathways. If not specified, a single dipolar pathway is used.
+    experiment : :ref:`ExperimentInfo`, optional
         Experimental information obtained from experiment models (``ex_``). If specified, the 
         boundaries and start values of the dipolar pathways' refocusing times and amplitudes 
-        will be refined based on the specific experiment's delays.
-    harmonics : list of integers 
-        Harmonics of the dipolar pathways. Must be a list with ``npathways`` harmonics for each
-        defined dipolar pathway.  
-    orisel : callable  or ``None``, optional 
-        Probability distribution of possible orientations of the interspin vector to account for orientation selection. Must be 
-        a function taking a value of the angle θ∈[0,π/2] between the interspin vector and the external magnetic field and returning
-        the corresponding probability density. If specified as ``None`` (by default), a uniform distribution is assumed. 
+        are refined based on the specific experiment's delays.
+    harmonics : list of integers, optional
+        Harmonics of the dipolar pathways. Must be a list with ``npathways`` harmonics, one
+        for each pathway.
+    orisel : callable  or ``None``, optional
+        Probability distribution of possible orientations of the interspin vector to account
+        for orientation selection. Must be a function taking a value of the angle θ ∈ [0,π/2]
+        between the interspin vector and the external magnetic field and returning the corresponding
+        probability density. If specified as ``None`` (default), a uniform distribution is used.
     excbandwidth : scalar, optional
         Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth.
+        If not specified, an infinite excitation bandwidth is used.
     g : scalar, 2-element array, optional
-        Electron g-values of the spin centers ``[g1, g2]``. If a single g is specified, ``[g, g]`` is assumed 
+        Electron g-values of the two spins, ``[g1, g2]``. If a single g is specified, ``[g, g]`` is used.
+        If not specified, g = 2.002319... is used for both spins.
 
     Returns
     -------
@@ -60,16 +63,16 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
     if not isinstance(Bmodel,Model) and Bmodel is not None:
         raise TypeError('The argument Bmodel must be a valid Model object or None.')
     if not isinstance(npathways,int) or npathways<=0:
-        raise ValueError('The number of pathway must be an integer number larger than zero.')
+        raise ValueError('The number of pathways must be a positive integer.')
     if isinstance(harmonics,float) or isinstance(harmonics,int): 
         harmonics = [int(harmonics)]
     if not isinstance(harmonics,list) and harmonics is not None:
-        raise TypeError('The harmonics must be specified as a list of integer values.')    
+        raise TypeError('The harmonics must be specified as a list of integer values.')
     if experiment is not None:
-        npathways = experiment.npathways
         if not isinstance(experiment,ExperimentInfo): 
             raise TypeError('The experiment must be a valid deerlab.ExperimentInfo object.')
         # Check that the number of requested pathways does not exceed the theoretical limit of the experiment
+        npathways = experiment.npathways
         maxpathways = len(experiment.reftimes)
         if npathways>maxpathways:
             raise ValueError(f'The {experiment.name} experiment can only have up to {maxpathways} dipolar pathways.')
@@ -82,7 +85,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
             'ub' : parameter.ub,
             'par0' : parameter.par0,
             'description' : parameter.description,
-            'units' : parameter.units,
+            'unit' : parameter.unit,
             'linear' : parameter.linear
         }
     #------------------------------------------------------------------------
@@ -96,6 +99,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
 
     if len(harmonics)!=npathways: 
         raise ValueError('The number of harmonics must match the number of dipolar pathways.')
+
     #------------------------------------------------------------------------
     def dipolarpathways(*param):
         """ Parametric constructor of the dipolar pathways definition """
@@ -137,13 +141,13 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
     # Populate the basic information on the dipolar pathways parameters
     if npathways==1:
         # Special case: use modulation depth notation instead of general pathway amplitude
-        getattr(PathsModel,f'mod').set(lb=0,ub=1,par0=0.01,description=f'Modulation depth',units='')
-        getattr(PathsModel,f'reftime').set(par0=0,description=f'Refocusing time',units='μs')
+        getattr(PathsModel,f'mod').set(lb=0,ub=1,par0=0.01,description=f'Modulation depth',unit='')
+        getattr(PathsModel,f'reftime').set(par0=0,description=f'Refocusing time',unit='μs')
     else:
         # General case: use pathway ampltiudes and refocusing times
         for n in range(npathways):
-            getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of pathway #{n+1}',units='')
-            getattr(PathsModel,f'reftime{n+1}').set(par0=0,lb=-20,ub=20,description=f'Refocusing time of pathway #{n+1}',units='μs')
+            getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of pathway #{n+1}',unit='')
+            getattr(PathsModel,f'reftime{n+1}').set(par0=0,lb=-20,ub=20,description=f'Refocusing time of pathway #{n+1}',unit='μs')
 
     # Construct the signature of the dipolar signal model function
     signature = []
@@ -153,7 +157,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
             for param in model._parameter_list(order='vector'):
                 if np.any(getattr(model,param).linear):
                     parameters.append(getattr(model,param))
-                    linearparam.append({'name':param,'vec':len(np.atleast_1d(getattr(model,param).idx))})
+                    linearparam.append({'name':param,'vec':len(np.atleast_1d(getattr(model,param).idx)),'normalization':getattr(model,param).normalization})
                 elif not (model==Bmodel and param=='lam'):
                     signature.append(param)
                     parameters.append(getattr(model,param))
@@ -207,7 +211,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
 
     # Add the linear parameters from the subset models            
     for lparam in linearparam:
-        DipolarSignal.addlinear(lparam['name'],vec=lparam['vec'])
+        DipolarSignal.addlinear(lparam['name'],vec=lparam['vec'],normalization=lparam['normalization'])
 
     if Pmodel is None:
         DipolarSignal.addlinear()
@@ -247,7 +251,7 @@ def dipolarmodel(t,r,Pmodel=None,Bmodel=bg_hom3d,npathways=1,harmonics=None,expe
 #===============================================================================
 
 #===============================================================================
-def dipolarpenalty(Pmodel,r,type,selection=None):
+def dipolarpenalty(Pmodel, r, type, selection=None):
     r"""
     Construct penalties based on the distance distribution.
 
@@ -262,8 +266,9 @@ def dipolarpenalty(Pmodel,r,type,selection=None):
         
         - ``'smoothness'`` : Smoothness of the distance distribution
         - ``'compactness'`` : Compactness of the distance distribution   
-    selection : string 
-        Selection functional for the outer optimization of the penalty weight. 
+        
+    selection : string, optional
+        Selection functional for the outer optimization of the penalty weight.
 
             - ``'aic'`` - Akaike information criterion
             - ``'bic'`` - Bayesian information criterion
@@ -319,9 +324,20 @@ def dipolarpenalty(Pmodel,r,type,selection=None):
 
 
 #===============================================================================
+def _checkpathways(pathways,Nmax):    
+    # Check that pathways are correctly specified
+    if len(pathways)>Nmax: 
+        raise ValueError(f"The number of pathways cannot exceed {Nmax}.")
+    if np.any(np.array(pathways)<1) or not np.all([not p%1 for p in pathways]): 
+        raise ValueError(f"The pathways must be specified by integer numbers in the range 1-{Nmax}.")
+#===============================================================================
+
+
+
+#===============================================================================
 class ExperimentInfo():
     r"""
-    Represents theoretical information on a dipolar EPR experiment"""
+    Represents information about a dipolar EPR experiment"""
 
     def __init__(self,name,reftimes,harmonics):
         self.npathways = len(reftimes)
@@ -331,7 +347,7 @@ class ExperimentInfo():
 #===============================================================================
 
 #===============================================================================
-def ex_3pdeer(tau, pathways=[1,2]):
+def ex_3pdeer(tau, pathways=None):
     r"""
     Generate a 3-pulse DEER dipolar experiment model. 
 
@@ -359,12 +375,12 @@ def ex_3pdeer(tau, pathways=[1,2]):
 
     pathways :  array_like, optional 
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, all pathways are included and the pathways are ordered as in the table above.
+        By default, both pathways are included in the order given in the table above.
 
     Returns
     -------
     experiment : ``ExperimentInfo`` object
-        Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
+        Experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 
     """
@@ -375,14 +391,16 @@ def ex_3pdeer(tau, pathways=[1,2]):
     harmonics = [ 1, 1]
 
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
-    
+    if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways] 
+
     return ExperimentInfo('3-pulse DEER',reftimes,harmonics)
 #===============================================================================
 
 #===============================================================================
-def ex_4pdeer(tau1, tau2, pathways=[1,2,3,4]):
+def ex_4pdeer(tau1, tau2, pathways=None):
     r"""
     Generate a 4-pulse DEER dipolar experiment model. 
     
@@ -392,7 +410,7 @@ def ex_4pdeer(tau1, tau2, pathways=[1,2,3,4]):
 
     This experiment model has the following modulated dipolar pathways. The 
     theoretical refocusing times of the individual pathways are calculated 
-    from the input pulse sequence delays:    
+    from the input pulse sequence delays:
 
     ========= ================== ===========
      Pathway    Refocusing time    Harmonic
@@ -414,29 +432,31 @@ def ex_4pdeer(tau1, tau2, pathways=[1,2,3,4]):
 
     pathways :  array_like, optional 
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, all pathways are included and the pathways are ordered as in the table above.
+        By default, all 4 pathways are included in the order given in the table above.
 
     Returns
     -------
     experiment : ``ExperimentInfo`` object
-        Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
+        Experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 
     """
     # Theoretical refocusing pathways
-    reftimes = [ tau1, tau1+tau2, 0, tau2 ]
+    reftimes = [tau1, tau1+tau2, 0, tau2]
     # Theoretical dipolar harmonics
-    harmonics = [ 1, 1, 1, 1]
+    harmonics = [1, 1, 1, 1]
 
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
+    if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways] 
 
-    return ExperimentInfo('4-pulse DEER',reftimes,harmonics)
+    return ExperimentInfo('4-pulse DEER', reftimes, harmonics)
 #===============================================================================
 
 #===============================================================================
-def ex_rev5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5,6,7,8]):
+def ex_rev5pdeer(tau1, tau2, tau3, pathways=None):
     r"""
     Generate a reverse 5-pulse DEER dipolar experiment model. 
     
@@ -445,7 +465,7 @@ def ex_rev5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5,6,7,8]):
 
     This experiment model has the following modulated dipolar pathways. The 
     theoretical refocusing times of the individual pathways are calculated 
-    from the input pulse sequence delays:    
+    from the input pulse sequence delays:
 
     ========= ================== ===========
      Pathway    Refocusing time    Harmonic
@@ -474,12 +494,12 @@ def ex_rev5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5,6,7,8]):
 
     pathways :  array_like, optional 
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, all pathways are included and the pathways are ordered as in the table above.
+        By default, all 8 pathways are included in the order given in the table above.
 
     Returns
     -------
     experiment : ``ExperimentInfo`` object
-        Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
+        Experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 
     """
@@ -489,15 +509,17 @@ def ex_rev5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5,6,7,8]):
     harmonics = [ 1, 1, 1, 1, 1, 1, 1, 1]
     
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
+    if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways]
     
     return ExperimentInfo('Reverse 5-pulse DEER',reftimes,harmonics)
 #===============================================================================
 
 
 #===============================================================================
-def ex_fwd5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5,6,7,8]):
+def ex_fwd5pdeer(tau1, tau2, tau3, pathways=None):
     r"""
     Generate a forward 5-pulse DEER dipolar experiment model. 
     
@@ -535,29 +557,31 @@ def ex_fwd5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5,6,7,8]):
 
     pathways :  array_like, optional 
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, all pathways are included and the pathways are ordered as in the table above.
+        By default, all pathways are included in the order given in the table above.
 
     Returns
     -------
     experiment : ``ExperimentInfo`` object
-        Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
+        Experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 
     """
     # Theoretical refocusing pathways
-    reftimes = [ tau3, tau1, tau1-tau3, tau2+tau3, tau1+tau2-tau3, 0, tau1+tau2, tau2]
+    reftimes = [tau3, tau1, tau1-tau3, tau2+tau3, tau1+tau2-tau3, 0, tau1+tau2, tau2]
     # Theoretical dipolar harmonics
-    harmonics = [ 1, 1, 1, 1, 1, 1, 1, 1]
-    
+    harmonics = [1, 1, 1, 1, 1, 1, 1, 1]
+
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
-    
-    return ExperimentInfo('Forward 5-pulse DEER',reftimes,harmonics)
+    if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways] 
+
+    return ExperimentInfo('Forward 5-pulse DEER', reftimes, harmonics)
 #===============================================================================
 
 #===============================================================================
-def ex_sifter(tau1, tau2, pathways=[1,2,3]):
+def ex_sifter(tau1, tau2, pathways=None):
     r"""
     Generate a SIFTER dipolar experiment model. 
 
@@ -587,12 +611,12 @@ def ex_sifter(tau1, tau2, pathways=[1,2,3]):
 
     pathways :  array_like, optional 
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, all pathways are included and the pathways are ordered as in the table above.
+        By default, all 3 pathways are included and ordered as given in the table above.
 
     Returns
     -------
     experiment : ``ExperimentInfo`` object
-        Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
+        Experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 
     """
@@ -603,15 +627,17 @@ def ex_sifter(tau1, tau2, pathways=[1,2,3]):
     harmonics = [ 1, 1/2, 1/2]
 
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
-    
+    if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways]
+
     return ExperimentInfo('SIFTER',reftimes,harmonics)
 #===============================================================================
 
 
 #===============================================================================
-def ex_ridme(tau1, tau2, pathways=[1,2,3,4]):
+def ex_ridme(tau1, tau2, pathways=None):
     r"""
     Generate a RIDME dipolar experiment model. 
 
@@ -620,7 +646,7 @@ def ex_ridme(tau1, tau2, pathways=[1,2,3,4]):
 
     This experiment model has the following modulated dipolar pathways. The 
     theoretical refocusing times of the individual pathways are calculated 
-    from the input pulse sequence delays:    
+    from the input pulse sequence delays:
 
     ========= ================== ===========
      Pathway    Refocusing time    Harmonic
@@ -642,12 +668,12 @@ def ex_ridme(tau1, tau2, pathways=[1,2,3,4]):
 
     pathways :  array_like, optional 
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, all pathways are included and the pathways are ordered as in the table above.
+        By default, all 4 pathways are included in the order given in the table above.
 
     Returns
     -------
     experiment : ``ExperimentInfo`` object
-        Dipolar experiment object. Can be passed to ``dipolarmodel`` to introduce better
+        Experiment object. Can be passed to ``dipolarmodel`` to introduce better
         constraints into the model.
 
     """
@@ -658,8 +684,10 @@ def ex_ridme(tau1, tau2, pathways=[1,2,3,4]):
     harmonics = [ 1, 1, 1, 1]
 
     # Sort according to pathways order
-    reftimes = [reftimes[pathway-1] for pathway in pathways]
-    harmonics = [harmonics[pathway-1] for pathway in pathways] 
-    
+    if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways] 
+
     return ExperimentInfo('RIDME',reftimes,harmonics)
 #===============================================================================
