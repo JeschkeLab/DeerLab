@@ -36,8 +36,8 @@ Vs = [Vexp1,Vexp2]
 r = np.linspace(0.05,7,200)
 
 # Model of a dipolar signal in arising from a dispersed and liquid-droplet states
-def dropletmodel(t):
 #----------------------------------------------------------------------------------
+def dropletmodel(t):
     # Dispersed-state component model
     Vdis_model = dl.dipolarmodel(t,r, Pmodel=dl.dd_gauss, Bmodel=dl.bg_exp, npathways=2)
     # Liquid-droplet-state component model
@@ -49,6 +49,8 @@ def dropletmodel(t):
                     reftime2=['reftime2_1','reftime2_2'],
                     lam1=['lam1_1','lam1_2'],
                     lam2=['lam2_1','lam2_2'])
+    Vmodel.scale_1.freeze(1)
+    Vmodel.scale_2.freeze(1)
     # Make the second weight dependent on the first one
     Vmodel = dl.relate(Vmodel,weight_2 = lambda weight_1: 1 - weight_1)
     return Vmodel,Vdis_model,Vld_model
@@ -68,8 +70,8 @@ globalModel = dl.link(globalModel,
                 Dld = ['stretch_2_1','stretch_2_2'],
                 rmean_dis = ['mean_1_1','mean_1_2'],
                 rmean_ld = ['mean_2_1','mean_2_2'],
-                width_dis = ['width_1_1','width_1_2'],
-                width_ld = ['width_2_1','width_2_2'],
+                std_dis = ['std_1_1','std_1_2'],
+                std_ld = ['std_2_1','std_2_2'],
                 lam1 = ['lam1_1','lam1_2'],
                 lam2 = ['lam2_1','lam2_2'],
                 reftime1 = ['reftime1_1','reftime1_2'])
@@ -80,9 +82,9 @@ globalModel.kdis.set(      lb=0.0,   ub=0.09, par0=0.01)
 globalModel.kld.set(       lb=0.0,   ub=1,    par0=0.12)
 globalModel.Dld.set(       lb=2,     ub=4,    par0=2.5)
 globalModel.rmean_dis.set( lb=3,     ub=6.35, par0=3.7)
-globalModel.rmean_ld.set(  lb=1,     ub=8,    par0=2.6)
-globalModel.width_dis.set( lb=0.25,  ub=0.74, par0=0.44)
-globalModel.width_ld.set(  lb=0.2,   ub=2,    par0=0.7)
+globalModel.rmean_ld.set(  lb=1,     ub=4.35, par0=2.6)
+globalModel.std_dis.set(   lb=0.25,  ub=0.74, par0=0.44)
+globalModel.std_ld.set(    lb=0.2,   ub=2,    par0=0.7)
 globalModel.lam1.set(      lb=0.3,   ub=0.5,  par0=0.4)
 globalModel.lam2.set(      lb=0.0,   ub=0.2,  par0=0.08)
 globalModel.reftime1.set(  lb=0.1,   ub=0.3,  par0=0.2)
@@ -90,7 +92,7 @@ globalModel.reftime2_1.set(lb=3.2,   ub=3.8,  par0=3.4)
 globalModel.reftime2_2.set(lb=2.0,   ub=2.5,  par0=2.2)
 
 # Fit the model to the data
-fit = dl.fit(globalModel,Vs,nonlin_tol=1e-3)
+fit = dl.fit(globalModel,Vs)
 
 # Plot the results
 plt.figure(figsize=[9,9])
@@ -108,8 +110,8 @@ plt.ylabel('Dataset #1 V(t)')
 
 ax2 = plt.subplot(3,2,2)
 
-Vdis_fit = Vdismodel1(decay=fit.kdis,mean=fit.rmean_dis,width=fit.width_dis,reftime1=fit.reftime1,reftime2=fit.reftime2_1,lam1=fit.lam1,lam2=fit.lam2,scale=1)
-Vld_fit = Vldmodel1(decay=fit.kld,stretch=fit.Dld,mean=fit.rmean_ld,width=fit.width_ld,reftime1=fit.reftime1,reftime2=fit.reftime2_1,lam1=fit.lam1,lam2=fit.lam2,scale=1)
+Vdis_fit = Vdismodel1(decay=fit.kdis,mean=fit.rmean_dis,std=fit.std_dis,reftime1=fit.reftime1,reftime2=fit.reftime2_1,lam1=fit.lam1,lam2=fit.lam2,scale=1)
+Vld_fit = Vldmodel1(decay=fit.kld,stretch=fit.Dld,mean=fit.rmean_ld,std=fit.std_ld,reftime1=fit.reftime1,reftime2=fit.reftime2_1,lam1=fit.lam1,lam2=fit.lam2,scale=1)
 
 ax2.plot(ts[0],Vdis_fit,color=violet,label=f'Dispersed fraction {fit.eta*100:.1f}%')
 ax2.plot(ts[0],Vld_fit,color=orange,label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%')
@@ -130,8 +132,8 @@ plt.ylabel('Dataset #2 V(t)')
 
 ax4 = plt.subplot(3,2,4)
 
-Vdis_fit = Vdismodel2(decay=fit.kdis,mean=fit.rmean_dis,width=fit.width_dis,reftime1=fit.reftime1,reftime2=fit.reftime2_2,lam1=fit.lam1,lam2=fit.lam2,scale=1)
-Vld_fit = Vldmodel2(decay=fit.kld,stretch=fit.Dld,mean=fit.rmean_ld,width=fit.width_ld,reftime1=fit.reftime1,reftime2=fit.reftime2_2,lam1=fit.lam1,lam2=fit.lam2,scale=1)
+Vdis_fit = Vdismodel2(decay=fit.kdis,mean=fit.rmean_dis,std=fit.std_dis,reftime1=fit.reftime1,reftime2=fit.reftime2_2,lam1=fit.lam1,lam2=fit.lam2,scale=1)
+Vld_fit = Vldmodel2(decay=fit.kld,stretch=fit.Dld,mean=fit.rmean_ld,std=fit.std_ld,reftime1=fit.reftime1,reftime2=fit.reftime2_2,lam1=fit.lam1,lam2=fit.lam2,scale=1)
 
 ax4.plot(ts[1],Vdis_fit,color=violet,label=f'Dispersed fraction {fit.eta*100:.1f}%')
 ax4.plot(ts[1],Vld_fit,color=orange,label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%')
@@ -142,15 +144,15 @@ ax4.set_ylim([0.2,1])
 
 plt.subplot(3,1,3)
 
-Pdis_fcn = lambda rmean_dis,width_dis: dl.dd_gauss(r,rmean_dis,width_dis)
-Pld_fcn = lambda rmean_ld,width_ld: dl.dd_gauss(r,rmean_ld,width_ld)
+Pdis_fcn = lambda rmean_dis,std_dis: dl.dd_gauss(r,rmean_dis,std_dis)
+Pld_fcn = lambda rmean_ld,std_ld: dl.dd_gauss(r,rmean_ld,std_ld)
 
 Pdis_uq = fit.propagate(Pdis_fcn,lb=np.zeros_like(r))
 Pld_uq = fit.propagate(Pld_fcn,lb=np.zeros_like(r))
 
-plt.plot(r,Pdis_fcn(fit.rmean_dis,fit.width_dis),label=f'Dispersed fraction {fit.eta*100:.1f}%',color=violet)
+plt.plot(r,Pdis_fcn(fit.rmean_dis,fit.std_dis),label=f'Dispersed fraction {fit.eta*100:.1f}%',color=violet)
 plt.fill_between(r,Pdis_uq.ci(95)[:,0],Pdis_uq.ci(95)[:,1],alpha=0.3,linewidth=0,color=violet)
-plt.plot(r,Pld_fcn(fit.rmean_ld,fit.width_ld),label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%',color=orange)
+plt.plot(r,Pld_fcn(fit.rmean_ld,fit.std_ld),label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%',color=orange)
 plt.fill_between(r,Pld_uq.ci(95)[:,0],Pld_uq.ci(95)[:,1],alpha=0.3,linewidth=0,color=orange)
 
 plt.legend(frameon=False,loc='best')

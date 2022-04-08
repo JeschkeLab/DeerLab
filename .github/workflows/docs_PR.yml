@@ -1,4 +1,4 @@
-name: Docs Build PR test
+name: Test documentation build PR
 
 on: 
   pull_request:
@@ -8,6 +8,7 @@ on:
     - 'docsrc/**'
     - '.github/workflows/deploy_ghpages.yml'
     - '.github/workflows/docs_PR.yml'
+    - '.github/workflows/examples_PR.yml'
 jobs:
 
   deploy:
@@ -42,4 +43,4 @@ jobs:
            python -m pip install .
     - name: Build with Sphinx
       run: |
-           sphinx-build -E -b html ./docsrc/source ./docs
+           sphinx-build -E -b html ./docsrc/source ./docs -D  plot_gallery=0

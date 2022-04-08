@@ -5,8 +5,7 @@ from deerlab.bg_models import bg_hom3d,bg_exp
 from deerlab.dd_models import dd_gauss
 from deerlab.dipolarkernel import dipolarkernel,elementarykernel
 from deerlab.utils import assert_docstring
-ge = 2.00231930436256 # free-electron g factor
-
+from deerlab.constants import ge
 
 def test_matrixsize_fresnel():
 #=======================================================================
@@ -124,8 +123,8 @@ def test_value_fresnel():
     r = 1 # nm
     K = dipolarkernel(t,r,method='fresnel')
 
-    # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
-    # and CODATA 2018 values for ge, muB, mu0, and h.
+    # Kernel value for 1µs and 1nm computed using Mathematica (FresnelC and FresnelS) 
+    # and CODATA 2018 values for ge, µB, µ0, and h.
     Kref = 0.024697819895260188
 
     assert abs(K-Kref) < 1e-14
@@ -140,8 +139,8 @@ def test_complex_value_fresnel():
     r = 1 # nm
     K = dipolarkernel(t,r,method='fresnel',complex=True)
 
-    # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
-    # and CODATA 2018 values for ge, muB, mu0, and h.
+    # Kernel value for 1µs and 1nm computed using Mathematica (FresnelC and FresnelS) 
+    # and CODATA 2018 values for ge, µB, µ0, and h.
     Kref = 0.0246978198952619 + 1j*0.01380433055548875
 
     assert abs(K-Kref) < 1e-14
@@ -292,7 +291,7 @@ def test_multipath():
 
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
+        Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
 
     assert np.all(abs(K-Kref) < 1e-3)
 #=======================================================================
@@ -316,12 +315,12 @@ def test_multipath_background():
     # Reference
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
+        Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
     Kref = Kref
     
     Bref = 1
     for p in range(len(lam)):
-            Bref = Bref*Bmodel((t-T0[p]),lam[p])
+        Bref = Bref*Bmodel((t-T0[p]),lam[p])
     KBref = Kref*Bref[:,np.newaxis]
 
     paths = []
@@ -360,7 +359,7 @@ def test_multipath_harmonics():
 
     Kref = 1-prob
     for p in range(len(lam)):
-            Kref = Kref + lam[p]*elementarykernel(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge],None,False)
+        Kref = Kref + lam[p]*elementarykernel(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge],None,False)
     Kref = Kref
 
     assert np.max(K-Kref) < 1e-3

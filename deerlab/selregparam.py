@@ -1,7 +1,7 @@
 # selregparam.py - Regularization parameter selection
 # -----------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np 
 import scipy.optimize as opt
@@ -183,13 +183,14 @@ def _evalalpha(alpha,y,A,L,solver,selmethod,noiselvl,weights):
 
     # Prepare LSQ components
     AtAreg, Aty = dl.solvers._lsqcomponents(y,A,L,alpha,weights)
+    wA = weights[:,np.newaxis]*A
     # Solve linear LSQ problem
     P = solver(AtAreg,Aty)
 
     # Moore-PeNose pseudoinverse
-    pA = np.linalg.inv(AtAreg)@A.T
+    pA = np.linalg.inv(AtAreg)@wA.T
     # Influence matrix
-    H = A@pA
+    H = wA@pA
 
     # Residual term
     residuals = weights*(A@P - y)

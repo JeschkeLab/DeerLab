@@ -39,35 +39,13 @@ def test_multiple_datasets():
     assert np.max(np.real(V) - np.real(Vcorr)) < 1e-4
 #============================================================
 
-def test_mode_posrealint():
+def test_posrealsum():
 #============================================================
-    "Check the basic behaviour correcting a phased signal with maximal real integral"
+    "Check that real part of the phase signal has a positive average"
 
     V = np.arange(100)
     Vphased = V*np.exp(-1j*4/7*pi)
-    Vcorr = correctphase(Vphased,phase='posrealint')
-
-    assert max(np.real(V) - np.real(Vcorr)) < 1e-4
-#============================================================
-
-def test_mode_negrealint():
-#============================================================
-    "Check the basic behaviour correcting a phased signal with maximal negative real integral"
-
-    V = np.arange(100)
-    Vphased = V*np.exp(-1j*8/7*pi)
-    Vcorr = correctphase(Vphased,phase='negrealint')
-
-    assert max(np.real(V) - np.real(-Vcorr)) < 1e-4
-#============================================================
-
-def test_mode_close():
-#============================================================
-    "Check the basic behaviour correcting a phased signal with phase closest to average"
-
-    V = np.arange(100)
-    Vphased = V*np.exp(-1j*4/7*pi)
-    Vcorr = correctphase(Vphased,phase='close')
+    Vcorr = correctphase(Vphased)
 
     assert max(np.real(V) - np.real(Vcorr)) < 1e-4
 #============================================================

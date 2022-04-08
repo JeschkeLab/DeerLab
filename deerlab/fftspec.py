@@ -2,12 +2,12 @@
 # fftspec.py - Fast-Fourier transform spectrum
 # ---------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 from numpy.fft import fft, fftshift, fftfreq
 
-def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
+def fftspec(V, t, mode='abs', zerofilling='auto', apodization=True):
     r"""
     Fast-Fourier transform spectrum
  
@@ -22,7 +22,7 @@ def fftspec(V,t,mode='abs',zerofilling='auto',apodization=True):
     mode : string, optional
         Type of spectrum to be returned (``'real'``,``'imag'``,``'abs'``), the default is ``'abs'``.
     
-    zerofilling : scalar, optional
+    zerofilling : scalar or ``'auto'``, optional
         Number of elements in the output FFT spectrum, the default is ``2*len(V)``.
     
     apodization : boolean, optional

@@ -1,6 +1,6 @@
 
 import numpy as np
-from deerlab.bg_models import bg_hom3d, bg_exp
+from deerlab.bg_models import bg_hom3d, bg_exp, bg_homfractal
 from deerlab.dipolarbackground import dipolarbackground
 from deerlab.utils import assert_docstring
 
@@ -48,23 +48,25 @@ def test_singletime():
 #==================================================================================
 
 
-def test_harmonics():
+def test_fractalharmonics():
 #==================================================================================
-    "Check that one can generate a background with multiple higher pathway harmonics"
+    "Check that one can generate a background with higher pathway harmonics"
 
-    t = np.linspace(0,5,150)
-    conc = 50
-    lam = 0.5
-    n = 2
-    #Reference
-    Bref = bg_hom3d(n*t,conc,lam)
+    t = np.linspace(0, 5, 150)
 
-    #Output
-    Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
-    path = [[],[]]
-    path[0] = [1-lam]
-    path[1] = [lam, 0,2]
-    B = dipolarbackground(t,path,Bmodel)
+    conc = 500
+    lam = 0.423
+    delta = 2
+    t0 = 0.14
+    dim = 2.7
+
+    # Reference
+    Bref = bg_homfractal(delta*(t-t0), conc, dim, lam)
+
+    # Output
+    Bmodel = lambda t, lam: bg_homfractal(t, conc, dim, lam)
+    paths = [[1-lam], [lam, t0, delta]]
+    B = dipolarbackground(t, paths, Bmodel)
 
     assert max(abs(B-Bref)) < 1e-8
 #==================================================================================
@@ -87,7 +89,7 @@ def test_multipath_renorm():
     # Reference
     Bref = 1
     for p in range(len(lam)):
-            Bref = Bref*Bmodel((t-T0[p]),lam[p])
+        Bref = Bref*Bmodel((t-T0[p]),lam[p])
     
     paths = []
     paths.append(1-prob)

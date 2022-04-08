@@ -1,7 +1,7 @@
 # model.py - DeerLab's modelling interface
 # ---------------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 from scipy.sparse import block_diag
@@ -28,8 +28,8 @@ class Parameter():
     description : string 
         Description of the parameter
 
-    units : string 
-        Physical units of the parameter
+    unit : string 
+        Physical unit of the parameter
 
     par0 : float or array_like 
         Value at which to initialize the parameter at the start of a fit routine. 
@@ -61,18 +61,18 @@ class Parameter():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def __init__(self, name=None, parent=None, idx=None, description=None, par0=None, frozen=False, lb=-np.inf, ub=np.inf,value=None, units=None, linear=False): 
+    def __init__(self, name=None, parent=None, idx=None, description=None, par0=None, frozen=False, lb=-np.inf, ub=np.inf,value=None, unit=None, linear=False): 
         # Attributes
         self.name = name
         self._parent = parent # Parent 
         self.idx = idx
         self.description = description # Description
-        self.units = units    # Units
+        self.unit = unit    # Unit
         self.par0 = par0      # Start values
         self.lb = lb          # Lower bounds
         self.ub = ub          # Upper bounds
         self.value = value
-        self.frozen = frozen   # Frozen
+        self.frozen = frozen  # Frozen
         self.linear = linear  # Linearity
     #---------------------------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ class Parameter():
         Parameters
         ----------
         attributes : keyword/values pairs
-            Pairs of keywords defining the parameter attribute and the value to be assignes.
+            Pairs of keywords defining the parameter attribute and the value to be assigned.
 
         Examples
         --------
@@ -189,15 +189,15 @@ class Model():
 
         nonlinfcn : callable 
             Function that takes a set of non-linear parameters and 
-            returns either a the full model response or the design matrix 
+            returns either the full model response or the design matrix 
             of the model response. A parameter will be added to the new model for each 
             input argument defined in the function signature.   
         
-        constants : string or list thereof
+        constants : string or list thereof, optional
             Names of the arguments taken by the ``nonlinfcn`` function to be defined as
             constants. These will not be added as parameters to the new model.
 
-        signature : list of strings
+        signature : list of strings, optional
             Signature of the ``nonlinfcn`` function to manually specify the names
             of the input arguments. For internal use (mostly).
 
@@ -281,40 +281,12 @@ class Model():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def _core_model(self,Amodel,θnonlin,θlin): 
-        """ 
-        Calculates the core model response ``y`` based on the mathematical expression ``y = A(θnonlin)@θlin``.
-        """
-        # Calculate the design matrix
-        if len(θnonlin)>0:
-            A = Amodel(*θnonlin)
-        else:
-            A = Amodel()
-
-        # Ensure the proper matrix properties
-        A = np.atleast_2d(A)
-        θlin = np.atleast_1d(np.squeeze(θlin))
-
-        # If there are no linear parameters defined
-        if len(θlin)==0: 
-            θlin = np.array([1])
-
-        if A.shape[1]!=len(θlin): 
-            A = A.T
-
-        # Full model calculation 
-        y = A@θlin
-        
-        return y
-    #---------------------------------------------------------------------------------------
-
-    #---------------------------------------------------------------------------------------
     def _parameter_list(self, order='alphabetical'):
         "Get the list of parameters defined in the model sorted alphabetically or by vector definition"
+        keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
         if order=='alphabetical':
-            keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
+            pass
         elif order=='vector':
-            keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
             # If there are any parameters in vector form...
             n = 0
             for key in keylist: 
@@ -322,7 +294,6 @@ class Model():
                     # ...insert the key string for the same number of linear parameters in that vector 
                     keylist = np.insert(keylist,n*np.ones(len(np.atleast_1d(getattr(self,key).idx))-1,dtype=int),key)  
                 n += len(np.atleast_1d(getattr(self,key).idx))
-
             keylist = self._vecsort(keylist)
         # Remove any duplicates
         keylist = list(dict.fromkeys(keylist))
@@ -330,12 +301,12 @@ class Model():
     #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
-    def _vecsort(self,list):
+    def _vecsort(self, paramlist):
         "Sort vectorized parameters attributes from alphabetical ordering to vector indexing"
-        list = np.squeeze(np.atleast_1d(list))
+        paramlist = np.squeeze(np.atleast_1d(paramlist))
         indices = np.concatenate([np.atleast_1d(getattr(self,param).idx) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
-        orderedlist = np.atleast_1d(list.copy())
-        orderedlist[indices] = list
+        orderedlist = np.atleast_1d(paramlist.copy())
+        orderedlist[indices] = paramlist
 
         return orderedlist
     #---------------------------------------------------------------------------------------
@@ -388,8 +359,8 @@ class Model():
     #-----------------------------------------------------------------------------
 
     #-----------------------------------------------------------------------------
-    def _check_if_already_exists(self,key):
-        if hasattr(self,key):
+    def _error_if_already_exists(self, key):
+        if hasattr(self, key):
             raise KeyError(f'The model already has a "{key}" parameter.')
     #-----------------------------------------------------------------------------
     
@@ -399,7 +370,7 @@ class Model():
     #=======================================================================================
 
     #---------------------------------------------------------------------------------------
-    def addnonlinear(self, key, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None, description=None):
+    def addnonlinear(self, key, lb=-np.inf, ub=np.inf, par0=None, name=None, unit=None, description=None):
         """
         Add a new non-linear parameter (:ref:`Parameter` object) to the model. 
 
@@ -416,16 +387,16 @@ class Model():
             Lower bound of the parameter. If not specified, it is set to ``+np.inf``.
 
         description : string, optional 
-            Descriptrion of the parameter. 
+            Description of the parameter. 
 
-        units : string, optional
-            Physical units of the parameter.
+        unit : string, optional
+            Physical unit of the parameter.
         """
-        self._check_if_already_exists(key)
+        self._error_if_already_exists(key)
         idx = self.Nparam
         self.Nparam += 1
         self.Nnonlin += 1
-        newparam = Parameter(name=key, linear=False, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, units=units, description=description)
+        newparam = Parameter(name=key, linear=False, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, unit=unit, description=description)
         setattr(self,key,newparam)
         Nconstants = len(self._constantsInfo)
         Amodel = self.nonlinmodel
@@ -444,16 +415,34 @@ class Model():
         self.nonlinmodel = model_with_constants_and_added_nonlin
         self.signature.append(key)
     #---------------------------------------------------------------------------------------
+    
+    #---------------------------------------------------------------------------------------
+    def rename_parameter(self, old, new):
+        """
+        Rename a parameter in the model. 
 
+        Parameters
+        ----------
+        old : string
+            Old parameter's name.
+        new : string
+            New parameter's name. 
+
+        """
+        if not hasattr(self,old):
+            raise KeyError(f'The model does not have a "{old}" parameter.')
+        setattr(self, new, getattr(self, old))
+        delattr(self, old)
+    #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
-    def addlinear(self, key, vec=1, lb=-np.inf, ub=np.inf, par0=None, name=None, units=None, description=None):
+    def addlinear(self, name, vec=1, normalization=None, lb=-np.inf, ub=np.inf, par0=None, unit=None, description=None):
         """
         Add a new linear parameter (:ref:`Parameter` object) to the model. 
 
         Parameters
         ----------
-        key : string
+        name : string
             Identifier of the parameter. This name will be used to refer
             to the parameter in the model.
 
@@ -461,6 +450,11 @@ class Model():
             Number of elements in the parameter. If ``vec>1`` then the parameter will represent a 
             vector of linear parameters of length ``vec``. By default, a scalar parameter is defined.
 
+        normalization : callable, optional
+            Normalization function of the parameter. If specified, upon fitting the parameter will be normalized and 
+            an the normalization factor will be reported separately. Does not add an additional normalization factor parameter. 
+            Must be function taking the parameter and returning the normalized parameter.
+            
         lb : float or array_like, optional
             Lower bound of the parameter. For vectorized parameters, must be a 
             vector with ``vec`` elements. If not specified, it is set to ``-np.inf``.
@@ -469,25 +463,38 @@ class Model():
             Lower bound of the parameter. For vectorized parameters, must be a
             vector with ``vec`` elements.  If not specified, it is set to ``+np.inf``.
 
-        description : string, optional 
-            Descriptrion of the parameter. 
 
-        units : string, optional
-            Physical units of the parameter.
+        description : string, optional 
+            Description of the parameter. 
+
+        unit : string, optional
+            Physical unit of the parameter.
         """
-        self._check_if_already_exists(key)
-        if vec>1: 
+        # Check if the parameter already exists
+        self._error_if_already_exists(name)
+
+        # Check if the parameter is a vector
+        if vec>1:
             idx = np.arange(self.Nparam,self.Nparam+vec) 
-            self.Nparam += vec        
+            self.Nparam += vec
             self.Nlin += vec
-            newparam = Parameter(name=key, linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), units=units, description=description)
+            newparam = Parameter(name=name, linear=np.full(vec,True), parent=self, idx=idx, par0=np.full(vec,par0), lb=np.full(vec,lb), ub=np.full(vec,ub), value=np.full(vec,None),frozen=np.full(vec,False), unit=unit, description=description)
         else:
             idx = self.Nparam
             self.Nparam += 1
             self.Nlin += 1
-            newparam = Parameter(name=key, linear=True, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, units=units, description=description)
-        setattr(self,key,newparam)
-        self.signature.append(key)
+            newparam = Parameter(name=name, linear=True, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, unit=unit, description=description)
+
+        # Check if the normalization function is valid
+        newparam.normalization = normalization 
+        if newparam.normalization is not None:
+            if not callable(normalization):
+                raise TypeError('The normalization function must be a callable function.')
+                newparam.description = str(newparam.description) + ' (normalized)' 
+
+        # Add linear parameter to the model
+        setattr(self,name,newparam)
+        self.signature.append(name)
     #---------------------------------------------------------------------------------------
 
 
@@ -497,7 +504,7 @@ class Model():
         Evaluate the model for a given set of parameters. 
 
         Takes the constant variables and (non-linear and linear) parameter variables as positional
-        or keyword arguments and evaluateds the model.
+        or keyword arguments and evaluates the model.
         """
         # Check that the correct number of arguments have been specified
         Nrequired = len(self._parameter_list())
@@ -526,8 +533,19 @@ class Model():
         # Determine which parameters are linear and which nonlinear
         θlin, θnonlin = self._split_linear(θ)
 
-        # Evaluate the core model
-        y = self._core_model(lambda *θ: self.nonlinmodel(*constants,*θ),θnonlin,θlin)
+        # Calculate the design matrix (possibly dependent on non-linear parameters)
+        A = self.nonlinmodel(*constants, *θnonlin)
+        A = np.atleast_2d(A)
+
+        # Ensure adequate linear-parameter vector shape
+        θlin = np.atleast_1d(np.squeeze(θlin))
+        if len(θlin)==0: 
+            θlin = np.array([1])
+        if A.shape[1]!=len(θlin): 
+            A = A.T
+
+        # Full model evaluation 
+        y = A@θlin
 
         # Evaluate whether the response has 
         if hasattr(self,'_posteval_fcn'):
@@ -556,7 +574,7 @@ class Model():
             'frozen' : self._vecsort(self._getvector('frozen')),
             'linear' : self._vecsort(self._getvector('linear')),
             'values' : self._vecsort(self._getvector('value')),
-            'units' : self._vecsort(self._getvector('units')),
+            'units' : self._vecsort(self._getvector('unit')),
             }
     #---------------------------------------------------------------------------------------
 
@@ -571,7 +589,7 @@ class Model():
     """)
         string += '\n'
         table = []
-        table.append(['Name','Lower','Upper','Type','Frozen','Units','Description'])  
+        table.append(['Name','Lower','Upper','Type','Frozen','Unit','Description'])  
         alignment = ['<','^','^','^','^','^','<']
         for n,paramname in enumerate(self._parameter_list(order='vector')): 
             param_str = paramname
@@ -579,9 +597,9 @@ class Model():
             ub_str = f'{np.atleast_1d(getattr(self,paramname).ub)[0]:5.3g}'
             linear_str = "linear" if np.all(getattr(self,paramname).linear) else "nonlin"
             frozen_str = "Yes" if np.all(getattr(self,paramname).frozen) else "No"
-            units_str = str(getattr(self,paramname).units)
+            unit_str = str(getattr(self,paramname).unit)
             desc_str = str(getattr(self,paramname).description)
-            table.append([param_str,lb_str,ub_str,linear_str,frozen_str,units_str,desc_str])
+            table.append([param_str,lb_str,ub_str,linear_str,frozen_str,unit_str,desc_str])
         string += formatted_table(table,alignment)
         return string
     #---------------------------------------------------------------------------------------
@@ -647,8 +665,10 @@ class Penalty():
             fitresult = fitfcn(weight)
 
             if selection=='icc':
-                # Get the fitted model
                 yfit = fitresult.model
+                if isinstance(yfit,list):
+                    # Get the fitted model
+                    yfit = np.concatenate(yfit)
 
                 # Get non-linear parameters covariance submatrix
                 fitpars = fitresult.nonlin + np.finfo(float).eps
@@ -805,7 +825,7 @@ def _print_fitresults(fitresult,model):
 
     # Construct table of model parameters fits
     table = []
-    table.append([f'Parameter','Value','95%-Confidence interval','Units','Description']) # Header
+    table.append([f'Parameter','Value','95%-Confidence interval','Unit','Description']) # Header
     alignment = ['<','<','<','^','<'] # Alignment
     for param in model._parameter_list('vector'):
         if len(np.atleast_1d(getattr(model,param).idx))==1:
@@ -818,16 +838,19 @@ def _print_fitresults(fitresult,model):
             else:
                 # If parameter is scalar, report values and CIs
                 value = getattr(fitresult,param)
-                ci_lower,ci_upper = getattr(fitresult,param+'Uncert').ci(95)
-                value,ci_lower,ci_upper = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [value,ci_lower,ci_upper]]
-                ci = f'({ci_lower},{ci_upper})'
+                if getattr(fitresult,param+'Uncert').type == 'void':
+                    ci = ''
+                else:
+                    ci_lower,ci_upper = getattr(fitresult,param+'Uncert').ci(95)
+                    value,ci_lower,ci_upper = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [value,ci_lower,ci_upper]]
+                    ci = f'({ci_lower},{ci_upper})'
         else:
             # If parameter is vectorial, print just dots
             value = '...'
             ci = '(...,...)'
-        units = str(getattr(model,param).units)
+        unit = str(getattr(model,param).unit)
         description = str(getattr(model,param).description)
-        table.append([f'{param}',value,ci,units,description])
+        table.append([f'{param}',value,ci,unit,description])
     # Add auto-formatted table string
     string += 'Model parameters: \n'
     string += formatted_table(table,alignment)
@@ -928,6 +951,15 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     if model.Nlin==0:
         model.addlinear('scale',lb=-np.inf,ub=np.inf,description='Scaling factor')
 
+    normalization = False
+    for key in model._parameter_list():
+        param = getattr(model,key)
+        if np.all(param.linear):
+            if param.normalization is not None:
+                model.addnonlinear(f'{key}_scale',lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
+                getattr(model,f'{key}_scale').freeze(1)
+                normalization = True
+
     # Get boundaries and conditions for the linear and nonlinear parameters
     ubl,ub = model._split_linear(model._vecsort(model._getvector('ub')))
     lbl,lb = model._split_linear(model._vecsort(model._getvector('lb')))
@@ -957,7 +989,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         raise AssertionError(f'The model has no parameters to fit.')    
 
     # Get parameter indices in the order spitted out by the solver
-    param_idx = [[]]*len(model._parameter_list('vector'))
+    param_idx = [[] for _ in model._parameter_list('vector')]
     idxprev = 0
     for islinear in [False,True]:
         for n,param in enumerate(model._parameter_list('vector')):
@@ -1021,14 +1053,13 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
             fitresults.modelUncert = fitresults.modelUncert[0]
     # Get some basic information on the parameter vector
     keys = model._parameter_list(order='vector')
- 
+
     # Dictionary of parameter names and fitted values
     FitResult_param = {key : fitvalue if len(fitvalue)>1 else fitvalue[0] for key,fitvalue in zip(keys,[fitresults.param[idx] for idx in param_idx])}
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
     FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','modelUncert','cost','plot','residuals','stats','regparam']}
-
 
     _paramlist = model._parameter_list('vector')
     def propagate(model,*constants,lb=None,ub=None):
@@ -1112,11 +1143,24 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         return response
     # ----------------------------------------------------------------------------
 
+    # Enforce normalization of the linear parameters (if needed) for the final output
+    FitResult_param_,FitResult_paramuq_ = FitResult_param.copy(),FitResult_paramuq.copy()
+    if normalization:
+        for key in keys:
+            param = getattr(model,key)
+            param.unfreeze()
+            if np.all(param.linear):
+                if param.normalization is not None:
+                    non_normalized = FitResult_param_[key] # Non-normalized value
+                    FitResult_param_[key] = param.normalization(FitResult_param_[key]) # Normalized value
+                    FitResult_param_[f'{key}_scale'] = np.mean(non_normalized/FitResult_param_[key]) # Normalization factor
+                    FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub) # Normalization of the uncertainty
+                    FitResult_paramuq_[f'{key}_scaleUncert'] = UQResult('void')
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
 
     # Generate FitResult object from all the dictionaries
-    fitresult = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict,'penweights':penweights,'noiselvl':noiselvl, 'propagate': propagate, 'evaluate': evaluate}) 
+    fitresult = FitResult({**FitResult_param_,**FitResult_paramuq_, **FitResult_dict,'penweights':penweights,'noiselvl':noiselvl, 'propagate': propagate, 'evaluate': evaluate}) 
     fitresult._summary = _print_fitresults(fitresult,model)
 
     return fitresult
@@ -1128,7 +1172,7 @@ def _importparameter(parameter):
         'ub' : parameter.ub,
         'par0' : parameter.par0,
         'description' : parameter.description,
-        'units' : parameter.units,
+        'unit' : parameter.unit,
         'frozen' : parameter.frozen,
         'value' : parameter.value,
     }
@@ -1320,7 +1364,7 @@ def _unique_ordered(vec):
 def _combinemodels(mode,*inputmodels,addweights=False): 
 
     # Initialize empty containers
-    subsets_nonlin,arguments,arelinear = [],[],[]
+    subsets_nonlin,arguments,arelinear,lin_normalizations = [],[],[],[]
     nprev = 0
 
     if len(inputmodels)==1:
@@ -1374,6 +1418,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
 
         # Determine which parameters are linear
         arelinear = np.concatenate([arelinear,model._vecsort(model._getvector('linear'))])
+        lin_normalizations += [getattr(model,param).normalization for param in model._parameter_list() if hasattr(getattr(model,param),'normalization') ]
 
         newarguments = model._parameter_list(order='vector') 
         # If there is more than one model, append a string to identify the origin
@@ -1409,7 +1454,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
     Nconst = len(constants)
     nonlinfcns = [model.nonlinmodel for model in models]
     Nlins = [model.Nlin for model in models]
-    ysizes = [[]]*len(models)
+    ysizes = [[] for _ in models]
 
     #---------------------------------------------------------------------
     def _combined_nonlinmodel(*inputargs):
@@ -1465,11 +1510,11 @@ def _combinemodels(mode,*inputmodels,addweights=False):
 
     # Add the linear parameters from the subset models   
     lin_param_set = []
-    for param in _unique_ordered(lin_params):
-        lin_param_set.append({'name':param, 'vec':np.sum(lin_params==param)})
+    for param, lin_normalization in zip(_unique_ordered(lin_params),lin_normalizations):
+        lin_param_set.append({'name':param, 'vec':np.sum(lin_params==param), 'normalization':lin_normalization})
 
     for lparam in lin_param_set:
-        combinedModel.addlinear(lparam['name'], vec=lparam['vec'])
+        combinedModel.addlinear(lparam['name'], vec=lparam['vec'], normalization=lparam['normalization'])
 
     parameters = np.concatenate([arguments,lin_params])
     # Import all parameter information from the subset models
@@ -1588,13 +1633,13 @@ def relate(model,**functions):
         if dependent_name not in model_parameters:
             raise KeyError(f"The assigned parameter '{dependent_name}' is not a parameter of the input model.")
 
-        if getattr(model,dependent_name).linear:
+        if np.all(getattr(model,dependent_name).linear):
             raise TypeError(f"Linear parameters cannot be used.")
 
         for arg in arguments_names:
             if arg not in model_parameters:
                 raise KeyError(f"The function argument '{arg}' is not a parameter of the input model.")
-            if getattr(model,arg).linear:
+            if np.all(getattr(model,arg).linear):
                 raise TypeError(f"Linear parameters cannot be used.")
 
         param_idx = 0

@@ -8,7 +8,7 @@ Requirements
 
 To install DeerLab, first install Python on your computer. Python can be downloaded from the `official Python distribution <https://www.python.org/>`_. There are
 many online tutorials to guide you through the installation and setup (see `here <https://realpython.com/installing-python/>`_ for example). Make sure you install
-one of the Python versions compatible with DeerLab, either **Python 3.6**, **3.7**, **3.8**, or **3.9**  
+one of the Python versions compatible with DeerLab, either **Python 3.6**, **3.7**, **3.8**, **3.9**, or  **3.10**.  
 
 .. rubric:: Windows systems
 
@@ -43,6 +43,7 @@ DeerLab installs the following packages:
 * `numpy <https://numpy.org/>`_ -   The fundamental package for scientific computing with Python 
 * `scipy <https://www.scipy.org/>`_ - Fundamental library for scientific computing
 * `joblib <https://joblib.readthedocs.io/en/latest/>`_ - Library lightweight pipelining and parallelization.
+* `tqdm <https://github.com/tqdm/tqdm>`_ - A lightweight package for smart progress meters.
 
 The installed numerical computing packages (numpy, scipy, cvxopt) are linked against different BLAS libraries depending on the OS:
 
@@ -126,7 +127,7 @@ Any changes made to the source code will then immediate effect.
 Installation failed 
 --------------------
 
-Under certain cirucumstances the installation following some of the methods described above may fail due to secific technical reasons. 
+Under certain circumstances the installation using some of the methods described above may fail due to specific technical reasons. 
 This is a selection of some of the known issues that may arise during installation of DeerLab along with instructions to solve them. 
 
 
@@ -145,7 +146,7 @@ best solution is to manually install as follows.
 
 1) Go to https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
 
-2) Download the appropiate ``numpy`` wheels file according to your installed Python version and Windows system:
+2) Download the appropriate ``numpy`` wheels file according to your installed Python version and Windows system:
 
 .. code-block:: text
 

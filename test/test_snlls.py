@@ -1,8 +1,8 @@
 import numpy as np
 from deerlab import dipolarkernel,dd_gauss,dd_gauss2,snlls,whitegaussnoise
-
 from deerlab.bg_models import bg_exp
 from deerlab.utils import ovl, skip_on, assert_docstring
+import pytest
 
 def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
     # Prepare test data
@@ -257,7 +257,7 @@ def test_regularized_global():
     ubl = []
 
     # Separable LSQ fit
-    fit = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl, uq=False)
+    fit = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl, uq=False, weights=[1,1])
     Pfit = fit.lin
 
     assert  ovl(P,Pfit) > 0.9
@@ -363,6 +363,27 @@ def test_goodness_of_fit_scaled():
     assert abs(stats['chi2red'] - 1) < 0.05
 #============================================================
 
+def test_size_control():
+#============================================================
+    "Check that the function checks the size of the input and output"
+
+    # Prepare test data
+    r = np.linspace(1,8,80)
+    t = np.linspace(0,4,100)
+    lam = 0.25
+    K = dipolarkernel(t,r,mod=lam)
+    parin = [3.5, 0.4, 0.6, 4.5, 0.5, 0.4]
+    P = dd_gauss2(r,*parin)
+    V = K@P
+    nlpar0 = 0.2
+    lb = 0
+    ub = 1
+    lbl = np.zeros(len(r))
+
+    twrong = np.linspace(0,4,200)
+    with pytest.raises(RuntimeError):
+        fit = snlls(V,lambda lam: dipolarkernel(twrong,r,mod=lam),nlpar0,lb,ub,lbl,uq=False)
+#============================================================
 
 def test_reg_tikhonov():
 #============================================================
@@ -489,8 +510,8 @@ def test_confinter_scaling():
     V0_2 = 1e8
 
     # Separable LSQ fit
-    fit1 = snlls(V*V0_1,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,nonlin_tol=1e-3)
-    fit2 = snlls(V*V0_2,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,nonlin_tol=1e-3)
+    fit1 = snlls(V*V0_1,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ftol=1e-3)
+    fit2 = snlls(V*V0_2,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ftol=1e-3)
 
     # Assess linear parameter uncertainties
     ci1 = fit1.linUncert.ci(95)
@@ -609,8 +630,8 @@ def test_frozen_param():
     "Check that linear and nonlinear parameters can be frozen during the optimization"
     r = np.linspace(0,6,300)
     def Amodel(p):
-        mean1,mean2,width1,width2 = p
-        return np.atleast_2d([dd_gauss.nonlinmodel(r,mean1,width1), dd_gauss.nonlinmodel(r,mean2,width2)]).T
+        mean1,mean2,std1,std2 = p
+        return np.atleast_2d([dd_gauss.nonlinmodel(r,mean1,std1), dd_gauss.nonlinmodel(r,mean2,std2)]).T
 
     x = np.array([0.5,0.6])
     y = Amodel([3,5,0.2,0.3])@x
@@ -629,8 +650,8 @@ def test_frozen_Nparam():
     "Check that the correct number of linear and nonlinear parameters are return even when freezing"
     r = np.linspace(0,6,90)
     def Amodel(p):
-        mean1,mean2,width1,width2 = p
-        return np.atleast_2d([dd_gauss.nonlinmodel(r,mean1,width1), dd_gauss.nonlinmodel(r,mean2,width2)]).T
+        mean1,mean2,std1,std2 = p
+        return np.atleast_2d([dd_gauss.nonlinmodel(r,mean1,std1), dd_gauss.nonlinmodel(r,mean2,std2)]).T
     x = np.array([0.5,0.6])
     y = Amodel([3,5,0.2,0.3])@x
     nonlin_frozen = [None,5,None,None]
@@ -650,12 +671,12 @@ def test_complex_model_complex_data():
 
     x = np.linspace(0,7,100)
     def model(p):
-        phase, center, width = p
-        y = dd_gauss(x,center, width)
+        phase, center, std = p
+        y = dd_gauss(x,center, std)
         y = y*np.exp(-1j*phase)
         return y
 
-    y = model([np.pi/5, 3, 0.5])     
+    y = model([np.pi/5, 3, 0.5])
 
     fitResult = snlls(y,model,par0=[2*np.pi/5,4,0.2],lb=[-np.pi,1,0.05],ub=[np.pi,6,5])
 
@@ -668,8 +689,8 @@ def test_complex_model_uncertainty():
 
     x = np.linspace(0,7,100)
     def model(p):
-        phase, center, width = p
-        y = dd_gauss(x,center, width)
+        phase, center, std = p
+        y = dd_gauss(x,center, std)
         y = y*np.exp(-1j*phase)
         return y
 
@@ -690,8 +711,8 @@ def test_masking():
 
     x = np.linspace(0,7,100)
     def model(p):
-        center, width = p
-        y = dd_gauss(x,center, width)
+        center, std = p
+        y = dd_gauss(x,center, std)
         return y
 
     mask = np.ones_like(x).astype(bool)   

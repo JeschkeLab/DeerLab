@@ -24,7 +24,7 @@ Vs = [Vexp1,Vexp2]
 Vs = [V/np.max(V) for V in Vs]
 
 # Distance vector
-r = np.linspace(2,5,150) # nm
+r = np.arange(1.5,7,0.05) # nm
 
 # Construct the dipolar models for the individual signals
 V1model = dl.dipolarmodel(ts[0],r)
@@ -36,27 +36,28 @@ globalmodel = dl.merge(V1model,V2model)
 # Link the distance distribution into a global parameter 
 globalmodel = dl.link(globalmodel,P=['P_1','P_2'])
 
+# Compactness criterion for the global distance distribution
+compactness = dl.dipolarpenalty(Pmodel=None,r=r,type='compactness')
+
 # Fit the model to the data
-fit = dl.fit(globalmodel,Vs)
+results = dl.fit(globalmodel,Vs, weights=[1,1],penalties=compactness)
 
 # %%
 
 plt.figure(figsize=[10,7])
 violet = '#4550e6'
-for n in range(len(fit.model)):
+for n in range(len(results.model)):
 
     # Extract fitted dipolar signal
-    Vfit = fit.model[n]
-    Vci = fit.modelUncert[n].ci(95)
+    Vfit = results.model[n]
+    Vci = results.modelUncert[n].ci(95)
 
     # Extract fitted distance distribution
-    Pfit = fit.P
-    scale = np.trapz(Pfit,r)
-    Pci95 = fit.PUncert.ci(95)/scale
-    Pci50 = fit.PUncert.ci(50)/scale
-    Pfit =  Pfit/scale
+    Pfit = results.P
+    Pci95 = results.PUncert.ci(95)
+    Pci50 = results.PUncert.ci(50)
 
-    plt.subplot(2,2,n+1)
+    plt.subplot(2,2,2*n+1)
     # Plot experimental data
     plt.plot(ts[n],Vs[n],'.',color='grey',label='Data')
     # Plot the fitted signal 
@@ -67,8 +68,8 @@ for n in range(len(fit.model)):
     plt.ylabel('$V(t)$ (arb.u.)')
 
 # Plot the distance distribution
-plt.subplot(212)
-plt.plot(r,Pfit,linewidth=3,label='Fit')
+plt.subplot(122)
+plt.plot(r,Pfit,linewidth=3,label='Fit',color=violet)
 plt.fill_between(r,Pci95[:,0],Pci95[:,1],alpha=0.3,color=violet,label='95%-Conf. Inter.',linewidth=0)
 plt.fill_between(r,Pci50[:,0],Pci50[:,1],alpha=0.5,color=violet,label='50%-Conf. Inter.',linewidth=0)
 plt.legend(frameon=False,loc='best')

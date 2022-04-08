@@ -1,7 +1,7 @@
 # diststats.py - Distance distribution descriptors
 # -----------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 import warnings
@@ -67,7 +67,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
         * ``'moment4'`` - 4th moment (kurtosis) (see `more <https://en.wikipedia.org/wiki/Kurtosis>`__)
 
     uq : dict of :ref:`UQResult`
-        Dictionary of the parameters covariance-based uncertainty quantifications. 
+        Dictionary of the parameters covariance-based uncertainty quantification. 
         See above for the dictionary keys. Only calculated if ``Puq`` is provided.
 
     Notes

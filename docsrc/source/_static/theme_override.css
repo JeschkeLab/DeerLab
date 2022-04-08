@@ -8786,6 +8786,9 @@
    }
    a:hover {
     color: var(--main-color);
+    border-radius: 10px;
+    background-color: var(--main-color-light);
+    text-decoration: blink;
    }
    a.headerlink {
     color:#4550e6;
@@ -9713,7 +9716,7 @@ border: solid #fff 1px;
 border-radius: 5px;
 box-shadow: none;
 float: left;
-margin: 5px;
+margin: 0px;
 min-height: 230px;
 padding-top: 5px;
 position: relative;
@@ -9732,11 +9735,15 @@ padding: 75% 10px 0;
 position: absolute;
 right: 0;
 top: 0;
+margin-top: 3%;
+text-decoration: none;
+color: rgba(var(--pst-color-h1),1);
 }
 /* Next one is to avoid Sphinx traditional theme to cover all the
 thumbnail with its default link Background color */
 .sphx-glr-thumbcontainer a.internal:hover {
 background-color: transparent;
+color: var(--main-color);
 }
 
 .sphx-glr-thumbcontainer p {
@@ -9744,7 +9751,7 @@ margin: 0 0 .1em 0;
 }
 .sphx-glr-thumbcontainer .figure {
 margin: 10px;
-width: 160px;
+width: 90%;
 }
 .sphx-glr-thumbcontainer img {
 display: inline;
@@ -9752,17 +9759,17 @@ max-height: 100%;
 max-width: 100%;
 }
 .sphx-glr-thumbcontainer[tooltip]:hover:after {
-background: rgba(0, 0, 0, 0.8);
+background: rgba(40, 40, 40, 0.9);
 -webkit-border-radius: 5px;
 -moz-border-radius: 5px;
 border-radius: 5px;
 color: #fff;
 content: attr(tooltip);
-left: 95%;
+left: 93%;
 padding: 5px 15px;
 position: absolute;
 z-index: 98;
-width: 420px;
+width: 150%;
 display: inline-block; 
 word-wrap: break-word;
 height: auto;
@@ -9773,7 +9780,7 @@ border-color: #333 transparent;
 border-width: 18px 0 0 20px;
 bottom: 58%;
 content: '';
-left: 85%;
+left: 220px;
 position: absolute;
 z-index: 99;
 }
@@ -9949,3 +9956,77 @@ text-decoration: none;
     vertical-align: baseline;
     border-radius: .25rem;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+
+
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+position: relative;
+display: inline-block;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropbtn {
+    padding: 0 .5rem;
+    color: rgba(var(--pst-color-navbar-link),1);
+    }
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+display: none;
+position: absolute;
+background-color: #fff;
+box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+color: black;
+padding: 8px 12px;
+text-decoration: none;
+display: block;
+font-size: 15px;
+}
+
+.dropbtn::after {
+    display: inline-block;
+    margin-left: .255em;
+    vertical-align: .255em;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-bottom: 0;
+    border-left: .3em solid transparent;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+    background-color: var(--main-color-light);
+    color: var(--main-color);
+    font-size: 15px;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: var(--main-color-light);
+    color: var(--main-color);
+    border-radius: 10px;
+    text-decoration: none;
+} 
+
+/* Hide the paragraph symbol next to each header*/ 
+h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, h4:hover > a.headerlink, h5:hover > a.headerlink, h6:hover > a.headerlink, dt:hover > a.headerlink, caption:hover > a.headerlink, p.caption:hover > a.headerlink, div.code-block-caption:hover > a.headerlink {
+    visibility: hidden;
+}
+
+.sphx-glr-timing {
+margin-top: 50px;
+}

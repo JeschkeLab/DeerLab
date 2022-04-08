@@ -1,7 +1,7 @@
 # bootstrap_analysis.py - Bootstrap analysis for uncertainty estimation
 # --------------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 import types
@@ -89,7 +89,7 @@ def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbo
     nSignals = len(Vexp)
     for i in range(len(Vfit)):
         if len(Vexp[i])!=len(Vfit[i]):
-            raise KeyError(f'The V and Vfit #{i} must have the same number of elements.')
+            raise KeyError(f'The Vexp and Vfit #{i} must have the same number of elements.')
     if type(fcn) is not types.FunctionType:
         raise KeyError('The 1st argument must be a callable function accepting dataset(s) as input.')
 

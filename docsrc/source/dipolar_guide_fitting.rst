@@ -1,4 +1,4 @@
-.. _dipolar_guide_fitting.rst
+.. _dipolar_fitting:
 
 Fitting
 ============
@@ -74,7 +74,10 @@ For a quick summary of the fit results, including goodness-of-fit statistics and
      reftime     0.096     (0.092,0.100)              μs     Refocusing time                       
      conc        295.909   (279.412,312.405)          μM     Spin concentration                    
      P           ...       (...,...)                 None    Non-parametric distance distribution  
+     P_scale     1.001e5                             None    Normalization factor of P 
     =========== ========= ========================= ======= ====================================== 
+
+The values of vectorized parameters such as ``P`` are not shown in this summary and shown instead as ``...``. The additional value ``P_scale`` corresponds to the overall scaling factor of the distance distribution (and hence of the dipolar signal) since the fitted distance distribution is normalized such that ``trapz(P,r)==1``.    
 
 Any specific quantities can be extracted from the ``results`` object. For each parameter in the model, the ``results`` output contains an attribute ``results.<parameter>`` named after the parameter containing the fitted value of that parameter, as well as another attribute ``results.<parameter>Uncert`` containing the uncertainty estimates of that parameter, from which confidence intervals can be constructed (the :ref:`uncertainty guide <uncertainty>` for details). For example: :: 
 
