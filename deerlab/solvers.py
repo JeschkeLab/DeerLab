@@ -7,12 +7,9 @@
 import numpy as np
 import cvxopt as cvx
 import matplotlib.pyplot as plt
-from numpy.lib.type_check import imag
 from scipy.optimize import least_squares, lsq_linear
-from scipy.sparse.construct import block_diag
 # DeerLab dependencies
 import deerlab as dl
-from deerlab.noiselevel import noiselevel
 from deerlab.classes import UQResult, FitResult
 from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian, isempty
 import time 
@@ -538,7 +535,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     par0 = np.atleast_1d(par0)
     
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
-    y, Amodel, weights, mask, subsets, noiselvl = dl.utils.parse_multidatasets(y, Amodel, weights, noiselvl, masks=mask, subsets=subsets)    
+    y, Amodel, weights, mask, subsets, noiselvl = parse_multidatasets(y, Amodel, weights, noiselvl, masks=mask, subsets=subsets)    
     
     if not callable(Amodel):
         Amatrix = Amodel.copy()
@@ -778,7 +775,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         # Preprare multiple start global optimization if requested
         if multistart > 1 and not nonLinearBounded:
             raise TypeError('Multistart optimization cannot be used with unconstrained non-linear parameters.')
-        multiStartPar0 = dl.utils.multistarts(multistart, par0_red, lb_red, ub_red)
+        multiStartPar0 = multistarts(multistart, par0_red, lb_red, ub_red)
 
         # Pre-allocate containers for multi-start run
         fvals, nonlinfits, linfits, sols = [],[],[],[]
@@ -807,6 +804,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # Compute the fit residual
     _ResidualsFcn = lambda nonlinfit: ResidualsFcn(_unfrozen_subset_inv(nonlinfit,nonlin_frozen))
     res = _ResidualsFcn(nonlinfit)
+    fvals = np.sum(res**2) 
 
     if verbose>0: 
         print(f'{timestamp()} Least-squares routine finished.')
@@ -1128,8 +1126,10 @@ def cvxnnls(AtA, Atb, tol=None, maxiter=None):
     cvx.solvers.options['max_iters'] = maxiter
     cvx.solvers.options['abstol'] = tol
     cvx.solvers.options['reltol'] = tol
-
-    P = cvx.solvers.qp(cAtA, cAtb, I, lb, initvals=cvx.matrix(x0))['x']
-    P = np.squeeze(np.asarray(P))
+    try:
+        P = cvx.solvers.qp(cAtA, cAtb, I, lb, initvals=cvx.matrix(x0))['x']
+        P = np.squeeze(np.asarray(P))
+    except: 
+        P = x0
     return P
 #=====================================================================================

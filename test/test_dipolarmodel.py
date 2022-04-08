@@ -4,7 +4,7 @@ from deerlab.whitegaussnoise import whitegaussnoise
 import numpy as np
 import matplotlib.pyplot as plt
 from deerlab.model import Model,fit
-from deerlab.dipolarmodel import ExperimentInfo,dipolarpenalty, dipolarmodel, ex_4pdeer, ex_3pdeer, ex_5pdeer
+from deerlab.dipolarmodel import ExperimentInfo,dipolarpenalty, dipolarmodel, ex_4pdeer, ex_3pdeer,ex_fwd5pdeer, ex_rev5pdeer, ex_sifter, ex_ridme
 from deerlab import dd_gauss,dd_gauss2,bg_hom3d,bg_exp
 import deerlab as dl 
 
@@ -246,15 +246,21 @@ def test_fit_Pnonparametric():
 
     Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=1)
     
-    result = fit(Vmodel,V1path,nonlin_tol=1e-3)
+    result = fit(Vmodel,V1path,nonlin_tol=1e-5)
 
-    assert np.allclose(result.model,V1path,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
+tdeer = np.linspace(-0.5,5,300)
+tsifter = np.linspace(-2,4,300)
+tridme = np.linspace(-1,3,300)
 tau1,tau2,tau3 = 1,2,3
-V3pulse = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,0],[0.1,tau1]],bg=Bfcn)@Pr
-V4pulse = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,tau1],[0.1,tau1+tau2]],bg=Bfcn)@Pr
-V5pulse = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,tau3],[0.1,tau2]],bg=Bfcn)@Pr
+V3pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[[0.6],[0.3,0],[0.1,tau1]],bg=Bfcn)@Pr
+V4pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[[0.6],[0.3,tau1],[0.1,tau1+tau2]],bg=Bfcn)@Pr
+Vfwd5pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[[0.6],[0.3,tau3],[0.1,tau1]],bg=Bfcn)@Pr
+Vrev5pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[[0.6],[0.3,tau3],[0.1,tau2]],bg=Bfcn)@Pr
+Vsifter = 1e5*dipolarkernel(tsifter,r,pathways=[[0.3],[0.5,tau2-tau1,1],[0.1,2*tau2,1/2],[0.1,-2*tau1,1/2]],bg=Bfcn)@Pr
+Vridme  = 1e5*dipolarkernel(tridme,r,pathways=[[0.3],[0.5,0],[0.1,tau2],[0.1,-tau1]],bg=Bfcn)@Pr
 
 # ======================================================================
 def test_ex_3pdeer_type(): 
@@ -269,11 +275,11 @@ def test_ex_3pdeer_type():
 def test_ex_3pdeer_fit(): 
     "Check the 3-pulse DEER experimental model."
 
-    experiment = ex_3pdeer(tau1)
-    Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=2,experiment=experiment)
-    result = fit(Vmodel,V3pulse,nonlin_tol=1e-3)
+    experiment = ex_3pdeer(tau1, pathways=[1,2])
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
+    result = fit(Vmodel,V3pdeer,nonlin_tol=1e-3)
 
-    assert np.allclose(V3pulse,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(V3pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
@@ -285,41 +291,101 @@ def test_ex_4pdeer_type():
     assert isinstance(experiment,ExperimentInfo) 
 # ======================================================================
 
-
 # ======================================================================
 def test_ex_4pdeer_fit(): 
     "Check the 4-pulse DEER experimental model."
 
-    experiment = ex_4pdeer(tau1,tau2)
-    Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=2,experiment=experiment)
-    result = fit(Vmodel,V4pulse,nonlin_tol=1e-3)
+    experiment = ex_4pdeer(tau1,tau2, pathways=[1,2])
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
+    result = fit(Vmodel,V4pdeer,nonlin_tol=1e-3)
 
-    assert np.allclose(V4pulse,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(V4pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
-def test_ex_5pdeer_type(): 
-    "Check the 5-pulse DEER experimental model."
+def test_ex_rev5pdeer_type(): 
+    "Check the reverse 5-pulse DEER experimental model."
 
-    experiment = ex_5pdeer(tau1,tau2,tau3)
+    experiment = ex_rev5pdeer(tau1,tau2,tau3)
 
     assert isinstance(experiment,ExperimentInfo) 
 # ======================================================================
 
 # ======================================================================
-def test_ex_5pdeer_fit(): 
-    "Check the 5-pulse DEER experimental model in fitting."
+def test_ex_rev5pdeer_fit(): 
+    "Check the reverse 5-pulse DEER experimental model in fitting."
 
-    experiment = ex_5pdeer(tau1,tau2,tau3)
-    Vmodel = dipolarmodel(t,r,Bmodel=bg_hom3d,npathways=2,experiment=experiment)
-    result = fit(Vmodel,V5pulse,nonlin_tol=1e-3)
+    experiment = ex_rev5pdeer(tau1,tau2,tau3, pathways=[1,2,3])
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
+    result = fit(Vmodel,Vrev5pdeer,nonlin_tol=1e-3)
 
-    assert np.allclose(V5pulse,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(Vrev5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+# ======================================================================
+
+
+# ======================================================================
+def test_ex_fwd5pdeer_type(): 
+    "Check the forward 5-pulse DEER experimental model."
+
+    experiment = ex_fwd5pdeer(tau1,tau2,tau3)
+
+    assert isinstance(experiment,ExperimentInfo) 
+# ======================================================================
+
+# ======================================================================
+def test_ex_fwd5pdeer_fit(): 
+    "Check the forward 5-pulse DEER experimental model in fitting."
+
+    experiment = ex_fwd5pdeer(tau1,tau2,tau3, pathways=[1,2,3])
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
+    result = fit(Vmodel,Vfwd5pdeer,nonlin_tol=1e-3)
+
+    assert np.allclose(Vfwd5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_ex_sifter_type(): 
+    "Check the SIFTER experimental model."
+
+    experiment = ex_sifter(tau1,tau2)
+
+    assert isinstance(experiment,ExperimentInfo) 
+# ======================================================================
+
+# ======================================================================
+def test_ex_sifter_fit(): 
+    "Check the SIFTER experimental model in fitting."
+
+    experiment = ex_sifter(tau1,tau2)
+    Vmodel = dipolarmodel(tsifter,r,Bmodel=bg_hom3d,experiment=experiment)
+    result = fit(Vmodel,Vsifter,nonlin_tol=1e-3)
+
+    assert np.allclose(Vsifter,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_ex_ridme_type(): 
+    "Check the RIDME experimental model."
+
+    experiment = ex_ridme(tau1,tau2)
+
+    assert isinstance(experiment,ExperimentInfo) 
+# ======================================================================
+
+# ======================================================================
+def test_ex_ridme_fit(): 
+    "Check the RIDME experimental model in fitting."
+
+    experiment = ex_ridme(tau1,tau2, pathways=[1,2,3])
+    Vmodel = dipolarmodel(tridme,r,Bmodel=bg_hom3d,experiment=experiment)
+    result = fit(Vmodel,Vridme,nonlin_tol=1e-3)
+
+    assert np.allclose(Vridme,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
 def test_orisel(): 
-    "Check that dipolr models with orientation selection work"
+    "Check that dipolar models with orientation selection work"
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
     Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,orisel=lambda theta: np.ones_like(theta))

@@ -4,7 +4,7 @@
 # Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from scipy.sparse.construct import block_diag
+from scipy.sparse import block_diag
 from scipy.optimize import fminbound
 from deerlab.solvers import snlls
 from deerlab.classes import FitResult, UQResult
@@ -118,6 +118,13 @@ class Parameter():
         value : float or array_like
             Value at which to freeze the parameter during optimization.
         """
+
+        if np.any(value>self.ub) or np.any(value<self.lb):
+            if len(np.atleast_1d(value))>1:
+                raise ValueError(f"Frozen values are outside of the bounds.")
+            else: 
+                raise ValueError(f"Frozen value {value} is outside of the bounds {self.lb} and {self.ub}.")
+
         N = len(np.atleast_1d(self.frozen))
         if N>1:
             self.frozen = np.full(N,True)
@@ -991,6 +998,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
     # Run the fitting algorithm 
     fitresults = fitfcn(y)
+    penweights = [penalty._weight_value for penalty in penalties]
 
     # If requested, perform a bootstrap analysis
     if bootstrap>0: 
@@ -1106,8 +1114,6 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
 
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
-
-    penweights = [penalty._weight_value for penalty in penalties]
 
     # Generate FitResult object from all the dictionaries
     fitresult = FitResult({**FitResult_param,**FitResult_paramuq, **FitResult_dict,'penweights':penweights,'noiselvl':noiselvl, 'propagate': propagate, 'evaluate': evaluate}) 
