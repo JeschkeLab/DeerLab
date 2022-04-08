@@ -24,18 +24,28 @@ import deerlab as dl
 
 # %% 
 
+# File location
+path = '../data/'
+file = 'example_5pdeer_1.DTA'
+
+# Experimental parameters (reversed 5pDEER)
+tau1 = 3.9               # First inter-pulse delay, μs
+tau2 = 3.7               # Second inter-pulse delay, μs
+tau3 = 0.5               # Third inter-pulse delay, μs
+deadtime = 0.3           # Acquisition deadtime, μs
+
 # Load the experimental data
-t,Vexp = np.load('../data/example_5pdeer_#1.npy')
+t,Vexp = dl.deerload(path + file)
+Vexp = dl.correctphase(Vexp)    # Phase correction
+Vexp = Vexp/np.max(Vexp)         # Rescaling (aesthetic)
+t = t + deadtime       # Account for deadtime
 
 # Distance vector
-r = np.arange(2,5,0.025) # nm
+r = np.arange(3,5,0.025) # nm
 
 # Construct dipolar model with two dipolar pathways
-experimentInfo = dl.ex_rev5pdeer(tau1=3.5, tau2=3, tau3=0.2, pathways=[1,2])
+experimentInfo = dl.ex_rev5pdeer(tau1, tau2, tau3, pathways=[1,2])
 Vmodel = dl.dipolarmodel(t,r, experiment=experimentInfo)
-
-# The refocusing time of the second pathway can be well estimated by visual inspection
-Vmodel.reftime2.set(lb=3, ub=4, par0=3.5)
 
 # Fit the model to the data
 results = dl.fit(Vmodel,Vexp)

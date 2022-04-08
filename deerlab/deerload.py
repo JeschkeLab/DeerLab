@@ -58,7 +58,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
     if not os.path.exists(filename_dta):
         filename_dta = filename_dta[:-4] + filename_dta[-4:].lower()
         filename_dsc = filename_dsc[:-4] + filename_dsc[-4:].lower()
-    
+
     # Read descriptor file (contains key-value pairs)
     parameters = read_description_file(filename_dsc)
     parDESC = parameters["DESC"]
