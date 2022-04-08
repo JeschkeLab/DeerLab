@@ -16,46 +16,58 @@ import deerlab as dl
 
 # %%
     
-# Load the experimental dataset
-t,V = np.load('../data/example_data_#1.npy')
+# File location
+path = '../data/'
+file = 'example_4pdeer_1.DTA'
 
-# Pre-process
-V = dl.correctphase(V)
-V = V/np.max(V)
+# Experimental parameters
+tau1 = 0.3      # First inter-pulse delay, μs
+tau2 = 4.0      # Second inter-pulse delay, μs
+deadtime = 0.1  # Acquisition deadtime, μs
+
+# Load the experimental data
+t,Vexp = dl.deerload(path + file)
+
+# Pre-processing
+Vexp = dl.correctphase(Vexp) # Phase correction
+Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
+t = t + deadtime             # Account for deadtime
 
 # Construct the dipolar signal model
-r = np.linspace(1,7,100)
-Vmodel = dl.dipolarmodel(t,r)
+r = np.arange(2,6,0.02)
+Vmodel = dl.dipolarmodel(t,r, experiment = dl.ex_4pdeer(tau1,tau2, pathways=[1]))
 
 # Fit the model to the data
-fit = dl.fit(Vmodel,V)
-fit.plot(axis=t)
-plt.ylabel('V(t)')
-plt.xlabel('Time $t$ (μs)')
+results = dl.fit(Vmodel,Vexp)
+results.plot(axis=t,xlabel='Time $t$ (μs)')
 plt.show()
 
 # From the fit results, extract the distribution and the covariance matrix
-Pfit = fit.P
-Pci95 = fit.PUncert.ci(95)
+Pfit = results.P
+Pci50 = results.PUncert.ci(50)
+Pci95 = results.PUncert.ci(95)
 
 # Select a bimodal Gaussian model for the distance distribution
 Pmodel = dl.dd_gauss2
+Pmodel.mean1.par0=3.5
+Pmodel.mean2.par0=4.0
 
 # Fit the Gaussian model to the non-parametric distance distribution
-fit = dl.fit(Pmodel,Pfit,r)
+results = dl.fit(Pmodel,Pfit,r)
 
 # Extract the fit results
-PGauss = fit.model
-PGauss_ci95 = fit.modelUncert.ci(95)
+PGauss = results.model
+PGauss_ci50 = results.modelUncert.ci(50)
+PGauss_ci95 = results.modelUncert.ci(95)
 
 # Print the parameters nicely
 print(f'Gaussian components with (95%-confidence intervals):')
-print(f'       mean1 = {fit.mean1:2.2f} ({fit.mean1Uncert.ci(95)[0]:2.2f}-{fit.mean1Uncert.ci(95)[1]:2.2f}) nm')
-print(f'       mean2 = {fit.mean2:2.2f} ({fit.mean2Uncert.ci(95)[0]:2.2f}-{fit.mean2Uncert.ci(95)[1]:2.2f}) nm')
-print(f'        std1 = {fit.std1:2.2f} ({fit.std1Uncert.ci(95)[0]:2.2f}-{fit.std1Uncert.ci(95)[1]:2.2f}) nm')
-print(f'        std2 = {fit.std2:2.2f} ({fit.std2Uncert.ci(95)[0]:2.2f}-{fit.std2Uncert.ci(95)[1]:2.2f}) nm')
-print(f'  amplitude1 = {fit.amp1:2.2f} ({fit.amp1Uncert.ci(95)[0]:2.2f}-{fit.amp1Uncert.ci(95)[1]:2.2f})')
-print(f'  amplitude2 = {fit.amp2:2.2f} ({fit.amp2Uncert.ci(95)[0]:2.2f}-{fit.amp2Uncert.ci(95)[1]:2.2f})')
+print(f'       mean1 = {results.mean1:2.2f} ({results.mean1Uncert.ci(95)[0]:2.2f}-{results.mean1Uncert.ci(95)[1]:2.2f}) nm')
+print(f'       mean2 = {results.mean2:2.2f} ({results.mean2Uncert.ci(95)[0]:2.2f}-{results.mean2Uncert.ci(95)[1]:2.2f}) nm')
+print(f'        std1 = {results.std1:2.2f} ({results.std1Uncert.ci(95)[0]:2.2f}-{results.std1Uncert.ci(95)[1]:2.2f}) nm')
+print(f'        std2 = {results.std2:2.2f} ({results.std2Uncert.ci(95)[0]:2.2f}-{results.std2Uncert.ci(95)[1]:2.2f}) nm')
+print(f'  amplitude1 = {results.amp1:2.2f} ({results.amp1Uncert.ci(95)[0]:2.2f}-{results.amp1Uncert.ci(95)[1]:2.2f})')
+print(f'  amplitude2 = {results.amp2:2.2f} ({results.amp2Uncert.ci(95)[0]:2.2f}-{results.amp2Uncert.ci(95)[1]:2.2f})')
 
 # %%
 
@@ -63,11 +75,12 @@ print(f'  amplitude2 = {fit.amp2:2.2f} ({fit.amp2Uncert.ci(95)[0]:2.2f}-{fit.amp
 
 # Plot the fitted constraints model on top of the non-parametric case
 violet = '#4550e6'
-orange = 'tab:orange'
-plt.plot(r,Pfit,linewidth=1.5,label='Non-param. fit',color=violet)
-plt.fill_between(r,Pci95[:,0],Pci95[:,1],alpha=0.4,linewidth=0,color=violet)
-plt.plot(r,PGauss,linewidth=1.5,label='2-Gauss fit to non-param. fit',color=orange)
-plt.fill_between(r,PGauss_ci95[:,0],PGauss_ci95[:,1],alpha=0.2,linewidth=0,color=orange)
+red = 'tab:red'
+plt.plot(r,Pfit,linewidth=2,label='Non-param. fit',color=violet)
+plt.fill_between(r,Pci50[:,0],Pci50[:,1],alpha=0.2,linewidth=0,color=violet)
+plt.fill_between(r,Pci95[:,0],Pci95[:,1],alpha=0.2,linewidth=0,color=violet)
+plt.plot(r,PGauss,linewidth=2,label='2-Gauss fit to non-param. fit',color=red)
+plt.fill_between(r,PGauss_ci95[:,0],PGauss_ci95[:,1],alpha=0.2,linewidth=0,color=red)
 # Formatting settings 
 plt.xlabel('Distance (nm)')
 plt.ylabel('P (nm$^{-1}$)')

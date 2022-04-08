@@ -26,11 +26,11 @@ def chemicalequilibrium(Kdis,L):
     xB = xB[(xB<=1) & (xB>=0)]
     return xB
 
-t1,V1 = np.load('../data/example_data_titration_#1.npy')
-t2,V2 = np.load('../data/example_data_titration_#2.npy')
-t3,V3 = np.load('../data/example_data_titration_#3.npy')
-t4,V4 = np.load('../data/example_data_titration_#4.npy')
-t5,V5 = np.load('../data/example_data_titration_#5.npy')
+t1,V1 = np.load('../data/example_data_titration_1.npy')
+t2,V2 = np.load('../data/example_data_titration_2.npy')
+t3,V3 = np.load('../data/example_data_titration_3.npy')
+t4,V4 = np.load('../data/example_data_titration_4.npy')
+t5,V5 = np.load('../data/example_data_titration_5.npy')
 
 ts = [t1,t2,t3,t4,t5]
 Vs = [V1,V2,V3,V4,V5]

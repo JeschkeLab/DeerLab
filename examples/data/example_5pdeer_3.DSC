@@ -1,0 +1,23 @@
+* Exported from Matlab using EasySpin, 07-Apr-2022 17:54:00
+#DESC	1.2 * DESCRIPTOR INFORMATION ***********************
+DSRC	MAN
+BSEQ	BIG
+IKKF	CPLX
+IRFMT	D
+IIFMT	D
+XTYP	IDX
+YTYP	NODATA
+ZTYP	NODATA
+XPTS	926
+XMIN	0
+XWID	7400
+*
+************************************************************
+*
+#SPL	1.2 * STANDARD PARAMETER LAYER
+OPER	
+DATE	07/04/22
+TIME	17:54:00
+CMNT	
+SAMP	
+SFOR	

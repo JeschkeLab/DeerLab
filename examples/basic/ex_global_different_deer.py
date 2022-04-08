@@ -13,29 +13,45 @@ import deerlab as dl
 
 #%%
 
-# Load the experimental 4-pulse and 5-pulse DEER datasets
-t4p, V4p = np.load('../data/example_4pdeer_#2.npy')
-t5p, V5p = np.load('../data/example_5pdeer_#2.npy')
+# File location
+path = '../data/'
+file4p = 'example_4pdeer_2.DTA'
+file5p = 'example_5pdeer_2.DTA'
 
-# Since they have different scales, normalize both datasets
-V4p = V4p/np.max(V4p)
-V5p = V5p/np.max(V5p)
+# Experimental parameters (4pDEER)
+tau1_4p = 0.5               # First inter-pulse delay, μs
+tau2_4p = 3.5               # Second inter-pulse delay, μs
+deadtime_4p = 0.1           # Acquisition deadtime, μs
+# Experimental parameters (reversed 5pDEER)
+tau1_5p = 2.9               # First inter-pulse delay, μs
+tau2_5p = 3.3               # Second inter-pulse delay, μs
+tau3_5p = 0.3               # Third inter-pulse delay, μs
+deadtime_5p = 0.1           # Acquisition deadtime, μs
+
+# Load the experimental data (4pDEER)
+t4p,V4p = dl.deerload(path + file4p)
+V4p = dl.correctphase(V4p)    # Phase correction
+V4p = V4p/np.max(V4p)         # Rescaling (aesthetic)
+t4p = t4p + deadtime_4p       # Account for deadtime
+# Load the experimental data (reversed 5pDEER)
+t5p,V5p = dl.deerload(path + file5p)
+V5p = dl.correctphase(V5p)    # Phase correction
+V5p = V5p/np.max(V5p)         # Rescaling (aesthetic)
+t5p = t5p + deadtime_5p       # Account for deadtime
 
 # Run fit
-r = np.arange(1.5,6,0.05)
+r = np.arange(2.5,6,0.05)
 
 # Construct the individual dipolar signal models
-V4pmodel = dl.dipolarmodel(t4p,r,experiment=dl.ex_4pdeer(tau1=0.2,tau2=0.3,pathways=[1]))
-V5pmodel = dl.dipolarmodel(t5p,r,experiment=dl.ex_rev5pdeer(tau1=2.7,tau2=3.3,tau3=0.1,pathways=[1,2]))
+V4pmodel = dl.dipolarmodel(t4p,r,experiment=dl.ex_4pdeer(tau1=tau1_4p,tau2=tau2_4p,pathways=[1,2,3]))
+V5pmodel = dl.dipolarmodel(t5p,r,experiment=dl.ex_rev5pdeer(tau1=tau1_5p,tau2=tau2_5p,tau3=tau3_5p,pathways=[1,2]))
 
 # Make the joint model with the distribution as a global parameters
 globalmodel = dl.merge(V4pmodel,V5pmodel,addweights=True)  
 globalmodel = dl.link(globalmodel, P = ['P_1','P_2'])
-globalmodel.weight_1.set(par0=1,lb=0.95,ub=1.05)
-globalmodel.weight_2.set(par0=1,lb=0.95,ub=1.05)
 
 # Fit the model to the data (with fixed regularization parameter)
-results = dl.fit(globalmodel,[V4p,V5p], weights=[1,1], bootstrap=10)
+results = dl.fit(globalmodel,[V4p,V5p], weights=[1,1])
 
 # %%
 

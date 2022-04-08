@@ -20,33 +20,42 @@ import deerlab as dl
 
 # %% 
 
-# Load the experimental data
-t,Vexp = np.load('../data/example_data_#1.npy')
+# File location
+path = '../data/'
+file = 'example_4pdeer_1.DTA'
 
-# Pre-process
-Vexp = dl.correctphase(Vexp)
-Vexp = Vexp/np.max(Vexp)
+# Experimental parameters
+tau1 = 0.3      # First inter-pulse delay, μs
+tau2 = 4.0      # Second inter-pulse delay, μs
+deadtime = 0.1  # Acquisition deadtime, μs
+
+# Load the experimental data
+t,Vexp = dl.deerload(path + file)
+
+# Pre-processing
+Vexp = dl.correctphase(Vexp) # Phase correction
+Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
+t = t + deadtime             # Account for deadtime
 
 # Distance vector
-r = np.linspace(2,5.5,80)
+r = np.arange(2,6,0.05) # nm
 
-# Construct the 4-pulse DEER dipolar model
-Vmodel = dl.dipolarmodel(t,r)
-Vmodel.reftime.set(par0=0.5, lb=0.0, ub=1.0)
+# Construct dipolar model
+Vmodel = dl.dipolarmodel(t,r, experiment=dl.ex_4pdeer(tau1,tau2, pathways=[1]))
 
 # Fit the model to the data using covariane-based uncertainty
-fit_cm = dl.fit(Vmodel,Vexp)
+results_cm = dl.fit(Vmodel,Vexp)
 
 # Fit the model to the data using bootstrapped uncertainty
-fit_bs = dl.fit(Vmodel,Vexp,bootstrap=10)
+results_bs = dl.fit(Vmodel,Vexp,bootstrap=10)
 
 # Compute the covariance-based uncertainty bands of the distance distribution
-Pci50_cm = fit_cm.PUncert.ci(50)
-Pci95_cm = fit_cm.PUncert.ci(95)
+Pci50_cm = results_cm.PUncert.ci(50)
+Pci95_cm = results_cm.PUncert.ci(95)
 
 # Compute the bootstrapped uncertainty bands of the distance distribution
-Pci50_bs = fit_bs.PUncert.ci(50)
-Pci95_bs = fit_bs.PUncert.ci(95)
+Pci50_bs = results_bs.PUncert.ci(50)
+Pci95_bs = results_bs.PUncert.ci(95)
 
 #%%
 
@@ -54,11 +63,11 @@ Pci95_bs = fit_bs.PUncert.ci(95)
 fig, ax = plt.subplots(1,2,sharey=True)
 violet = '#4550e6'
 
-ax[0].plot(r,fit_cm.P,'tab:red',linewidth=1)
+ax[0].plot(r,results_cm.P,'tab:red',linewidth=1)
 ax[0].fill_between(r,Pci50_cm[:,0],Pci50_cm[:,1],color='tab:red',linestyle='None',alpha=0.45)
 ax[0].fill_between(r,Pci95_cm[:,0],Pci95_cm[:,1],color='tab:red',linestyle='None',alpha=0.25)
 
-ax[1].plot(r,fit_bs.P,color=violet,linewidth=1)
+ax[1].plot(r,results_bs.P,color=violet,linewidth=1)
 ax[1].fill_between(r,Pci50_bs[:,0],Pci50_bs[:,1],color=violet,linestyle='None',alpha=0.45)
 ax[1].fill_between(r,Pci95_bs[:,0],Pci95_bs[:,1],color=violet,linestyle='None',alpha=0.25)
 
