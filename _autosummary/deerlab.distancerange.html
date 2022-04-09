@@ -1,0 +1,285 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>deerlab.distancerange &#8212; DeerLab</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/theme_override.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="deerlab.utils.hccm" href="deerlab.utils.hccm.html" />
+    <link rel="prev" title="deerlab.fftspec" href="deerlab.fftspec.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../index.html">
+  <img src="../_static/logo_docs.svg" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+
+    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../basics.html">Basics</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../getting_started.html">Getting Started</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../dipolar_guide_modelling.html">Modelling</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../dipolar_guide_fitting.html">Fitting</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="sk-nav-dropdown-item dropdown-item" href="../modelling_guide.html">Modelling Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../fitting_guide.html">Fitting Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="sk-nav-link nav-link" href="../reference.html">Reference</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../changelog.html">Release Notes</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../contributing.html">Contributing</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../license.html">License</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <div class="col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-11 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="deerlab-distancerange">
+<span id="distancerange"></span><h1>deerlab.distancerange<a class="headerlink" href="#deerlab-distancerange" title="Permalink to this headline">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="deerlab.distancerange">
+<span class="sig-name descname"><span class="pre">distancerange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/distancerange.html#distancerange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.distancerange" title="Permalink to this definition">#</a></dt>
+<dd><p>Empirical distance range given a DEER time axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>t</strong><span class="classifier">array_like</span></dt><dd><p>Time axis, in microseconds.</p>
+</dd>
+<dt><strong>nr</strong><span class="classifier">scalar, integer</span></dt><dd><p>Length of output distance axis. If not given, only min and max distance are returned.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>r</strong><span class="classifier">ndarray or tuple</span></dt><dd><p>Distance axis, in nanometers, running between empirical lower and upper limits <code class="docutils literal notranslate"><span class="pre">rmin</span></code> and <code class="docutils literal notranslate"><span class="pre">rmax</span></code>.
+Either an ndarray (if <code class="docutils literal notranslate"><span class="pre">nr</span></code> is given) or a tuple (if <code class="docutils literal notranslate"><span class="pre">nr</span></code> is not given).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The minimal and maximal distances, <code class="docutils literal notranslate"><span class="pre">rmin</span></code> and <code class="docutils literal notranslate"><span class="pre">rmax</span></code>, are empirical values that determine the
+minimal and maximal distance for which the given time trace can provide reliable information.</p>
+<p>The minimum distance is determined by the time step <img class="math" src="../_images/math/5d0ab7038ed451d42b8c416750e16ae95d01727c.svg" alt="\Delta t"/> and the Nyquist criterion:</p>
+<div class="math">
+<p><img src="../_images/math/75dc2de164418f85db78bfb5757d6acb01e0d45f.svg" alt="r_\text{min} = \left( \frac{4\Delta t \nu_0}{0.85} \right)^{1/3}"/></p>
+</div><p>The maximum distance is determined by the requirement that at least half an oscillation
+should be observable over the measured time window from <img class="math" src="../_images/math/95b9cd46c8785d1929273b04ab0fee6b540a6e52.svg" alt="t_\text{min}"/>
+to <img class="math" src="../_images/math/69b83fa5570a572c084ef674808cd64365951120.svg" alt="t_\text{max}"/>.</p>
+<div class="math">
+<p><img src="../_images/math/de02b0c8e5ec5b8cf79c889f1783d038752d6cb8.svg" alt="r_\text{max} = 6\left( \frac{t_\text{max}-t_\text{min}}{2} \right)^{1/3}"/></p>
+</div><p>where <img class="math" src="../_images/math/f5486aae772023fd9227e1b9cbfebdb50cba2044.svg" alt="\nu_0"/> = 52.04 MHz nm^3.</p>
+<p>See Jeschke et al, Appl. Magn. Reson. 30, 473-498 (2006), <a class="reference external" href="https://doi.org/10.1007/BF03166213">https://doi.org/10.1007/BF03166213</a></p>
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="deerlab.fftspec.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">deerlab.fftspec</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="deerlab.utils.hccm.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">deerlab.utils.hccm</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

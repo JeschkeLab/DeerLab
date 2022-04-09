@@ -1,210 +1,208 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>deerlab.diststats &mdash; DeerLab</title>
-  
 
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-rendered-html.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>deerlab.diststats &#8212; DeerLab</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
-  
-  
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
 
-          
-            <a href="../../index.html">
-          
-
-          
-            
-            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                v0.13.2
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Others</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
-</ul>
-
-            
-          
-        </div>
-        
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">DeerLab</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
+    <!-- Google Analytics -->
     
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>deerlab.diststats</li>
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
     
     
-      <li class="wy-breadcrumbs-aside">
-        
-      </li>
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs.svg" class="logo" alt="logo">
+</a>
+
+
     
-  </ul>
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
   
-  <hr/>
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+
+    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="sk-nav-link nav-link" href="../../reference.html">Reference</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../license.html">License</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
             
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
   <h1>Source code for deerlab.diststats</h1><div class="highlight"><pre>
 <span></span><span class="c1"># diststats.py - Distance distribution descriptors</span>
 <span class="c1"># -----------------------------------------------</span>
 <span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md).</span>
-<span class="c1"># Copyright(c) 2019-2021: Luis Fabregas, Stefan Stoll and other contributors.</span>
+<span class="c1"># Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nf">copy</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">find_peaks</span>
 <span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">cumtrapz</span>
 
-<div class="viewcode-block" id="diststats"><a class="viewcode-back" href="../../functions/diststats.html#deerlab.diststats">[docs]</a><span class="k">def</span> <span class="nf">diststats</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">Puq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="diststats"><a class="viewcode-back" href="../../_autosummary/deerlab.diststats.html#deerlab.diststats">[docs]</a><span class="k">def</span> <span class="nf">diststats</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">Puq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes statistical quantities for the location, spread, and shape </span>
 <span class="sd">    of a distance distribution, with or without their corresponding uncertainties.</span>
 
@@ -234,71 +232,74 @@
 <span class="sd">        </span>
 <span class="sd">        General parameters</span>
 
-<span class="sd">            * ``&#39;rmin&#39;`` - Minimum distance in the distribution range, in nm</span>
-<span class="sd">            * ``&#39;rmax&#39;`` - Maximum distance in the distribution range, in nm</span>
-<span class="sd">            * ``&#39;int&#39;`` - Integral of the distance distribution</span>
+<span class="sd">        * ``&#39;rmin&#39;`` - Minimum distance in the distribution range, in nm</span>
+<span class="sd">        * ``&#39;rmax&#39;`` - Maximum distance in the distribution range, in nm</span>
+<span class="sd">        * ``&#39;int&#39;`` - Integral of the distance distribution</span>
 
 <span class="sd">        Location parameters</span>
 
-<span class="sd">            * ``&#39;mean&#39;`` or ``&#39;moment1&#39;`` - Mean distance, in nm (see `more &lt;https://en.wikipedia.org/wiki/Mean&gt;`__)</span>
-<span class="sd">            * ``&#39;median&#39;`` - Median distance, in nm (see `more &lt;https://en.wikipedia.org/wiki/Median&gt;`__)</span>
-<span class="sd">            * ``&#39;iqm&#39;`` - Interquartile mean (IQM) distance, in nm (see `more &lt;https://en.wikipedia.org/wiki/Interquartile_mean&gt;`__)</span>
-<span class="sd">            * ``&#39;mode&#39;`` - First modal distance, in nm (see `more &lt;https://en.wikipedia.org/wiki/Mode_(statistics)&gt;`__)</span>
-<span class="sd">            * ``&#39;modes&#39;`` - All modal distances, in nm (see `more &lt;https://en.wikipedia.org/wiki/Mode_(statistics)&gt;`__)</span>
+<span class="sd">        * ``&#39;mean&#39;`` or ``&#39;moment1&#39;`` - Mean distance, in nm (see `more &lt;https://en.wikipedia.org/wiki/Mean&gt;`__)</span>
+<span class="sd">        * ``&#39;median&#39;`` - Median distance, in nm (see `more &lt;https://en.wikipedia.org/wiki/Median&gt;`__)</span>
+<span class="sd">        * ``&#39;iqm&#39;`` - Interquartile mean (IQM) distance, in nm (see `more &lt;https://en.wikipedia.org/wiki/Interquartile_mean&gt;`__)</span>
+<span class="sd">        * ``&#39;mode&#39;`` - First modal distance, in nm (see `more &lt;https://en.wikipedia.org/wiki/Mode_(statistics)&gt;`__)</span>
+<span class="sd">        * ``&#39;modes&#39;`` - All modal distances, in nm (see `more &lt;https://en.wikipedia.org/wiki/Mode_(statistics)&gt;`__)</span>
 
 <span class="sd">        Spread parameters</span>
 
-<span class="sd">            * ``&#39;iqr&#39;`` - Interquartile range, in nm (see `more &lt;https://en.wikipedia.org/wiki/Interquartile_range&gt;`__)</span>
-<span class="sd">            * ``&#39;mad&#39;`` - Mean absolute deviation (MAD), in nm (see `more &lt;https://en.wikipedia.org/wiki/Average_absolute_deviation&gt;`__)</span>
-<span class="sd">            * ``&#39;std&#39;`` - Standard deviation, in nm (see `more &lt;https://en.wikipedia.org/wiki/Standard_deviation&gt;`__)</span>
-<span class="sd">            * ``&#39;var&#39;`` or ``&#39;moment2&#39;`` - Variance, in nm² (see `more &lt;https://en.wikipedia.org/wiki/Variance&gt;`__)</span>
-<span class="sd">            * ``&#39;entropy&#39;`` - Shannon entropy, in nat (see `more &lt;https://en.wikipedia.org/wiki/Entropy_(information_theory)&gt;`__)</span>
+<span class="sd">        * ``&#39;iqr&#39;`` - Interquartile range, in nm (see `more &lt;https://en.wikipedia.org/wiki/Interquartile_range&gt;`__)</span>
+<span class="sd">        * ``&#39;mad&#39;`` - Mean absolute deviation (MAD), in nm (see `more &lt;https://en.wikipedia.org/wiki/Average_absolute_deviation&gt;`__)</span>
+<span class="sd">        * ``&#39;std&#39;`` - Standard deviation, in nm (see `more &lt;https://en.wikipedia.org/wiki/Standard_deviation&gt;`__)</span>
+<span class="sd">        * ``&#39;var&#39;`` or ``&#39;moment2&#39;`` - Variance, in nm² (see `more &lt;https://en.wikipedia.org/wiki/Variance&gt;`__)</span>
+<span class="sd">        * ``&#39;entropy&#39;`` - Shannon entropy, in nat (see `more &lt;https://en.wikipedia.org/wiki/Entropy_(information_theory)&gt;`__)</span>
 
 <span class="sd">        Shape parameters</span>
 
-<span class="sd">            * ``&#39;modality&#39;`` - Modality (number of modes)</span>
-<span class="sd">            * ``&#39;skewness&#39;`` or ``&#39;moment3&#39;`` - Skewness (see `more &lt;https://en.wikipedia.org/wiki/Skewness&gt;`__)</span>
-<span class="sd">            * ``&#39;kurtosis&#39;`` - Excess kurtosis (see `more &lt;https://en.wikipedia.org/wiki/Kurtosis&gt;`__)</span>
-<span class="sd">            * ``&#39;moment4&#39;`` - 4th moment (kurtosis) (see `more &lt;https://en.wikipedia.org/wiki/Kurtosis&gt;`__)</span>
+<span class="sd">        * ``&#39;modality&#39;`` - Modality (number of modes)</span>
+<span class="sd">        * ``&#39;skewness&#39;`` or ``&#39;moment3&#39;`` - Skewness (see `more &lt;https://en.wikipedia.org/wiki/Skewness&gt;`__)</span>
+<span class="sd">        * ``&#39;kurtosis&#39;`` - Excess kurtosis (see `more &lt;https://en.wikipedia.org/wiki/Kurtosis&gt;`__)</span>
+<span class="sd">        * ``&#39;moment4&#39;`` - 4th moment (kurtosis) (see `more &lt;https://en.wikipedia.org/wiki/Kurtosis&gt;`__)</span>
 
 <span class="sd">    uq : dict of :ref:`UQResult`</span>
-<span class="sd">        Dictionary of the parameters covariance-based uncertainty quantifications. </span>
+<span class="sd">        Dictionary of the parameters covariance-based uncertainty quantification. </span>
 <span class="sd">        See above for the dictionary keys. Only calculated if ``Puq`` is provided.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    For the ``&#39;mode&#39;``, ``&#39;modes&#39;`` and ``&#39;modality&#39;`` parameters, covariance-based uncertainties are not </span>
-<span class="sd">    available. Unvertainties can, however, be calculated via bootsrapping of these quantities, e.g. ::</span>
+<span class="sd">    available. Uncertainties can, however, be calculated via bootsrapping of these quantities, e.g. ::</span>
 
 <span class="sd">        def analyze_rmode(V):</span>
 <span class="sd">            fit = dl.fitmodel(V,t,r)</span>
 <span class="sd">            rmode = dl.diststats(fit.P,r)[0][&#39;mode&#39;]</span>
 <span class="sd">            return rmode</span>
 <span class="sd">        # Bootstrap analysis of distance mode</span>
-<span class="sd">        rmode_uq = dl.bootan(V,Vfit,analyze_rmode)</span>
+<span class="sd">        rmode_uq = dl.bootstrap_analysis(V,Vfit,analyze_rmode)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">P</span><span class="p">,</span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">atleast_1d</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">P</span><span class="p">,</span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
 
     <span class="c1"># Check to avoid non-sensical results with syntax diststats(P,r)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nf">diff</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span> 
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;The distance axis (1st argument) must be a monotnously increasing vector.&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">max</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span>
 
     <span class="c1"># Auxiliary functions</span>
     <span class="c1"># -------------------</span>
+    <span class="nb">int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">P</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="n">P</span><span class="o">/</span><span class="nb">int</span>
     <span class="c1"># Percentile function</span>
     <span class="k">def</span> <span class="nf">pctile</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
-        <span class="n">cdf</span> <span class="o">=</span> <span class="n">cumtrapz</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">cdf</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">arraysetops</span><span class="o">.</span><span class="nf">unique</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">rpctile</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">interp</span><span class="p">(</span><span class="n">p</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span><span class="n">cdf</span><span class="p">,</span><span class="n">r</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+        <span class="n">cdf</span> <span class="o">=</span> <span class="n">cumtrapz</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">P</span><span class="p">),</span><span class="n">r</span><span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">cdf</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">arraysetops</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">rpctile</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">p</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span><span class="n">cdf</span><span class="p">,</span><span class="n">r</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">rpctile</span>
     <span class="c1"># Expectation operator function</span>
     <span class="k">def</span> <span class="nf">E</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="nf">trapz</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">normalize</span><span class="p">(</span><span class="n">P</span><span class="p">),</span><span class="n">r</span><span class="p">)</span>
 
     <span class="c1"># Location estimators</span>
     <span class="c1"># -------------------</span>
@@ -309,9 +310,9 @@
     <span class="c1"># Interquartile mean</span>
     <span class="k">def</span> <span class="nf">iqmfcn</span><span class="p">(</span><span class="n">P</span><span class="p">):</span>
         <span class="n">IQrange</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="o">&gt;</span><span class="n">pctile</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="mi">25</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">r</span><span class="o">&lt;</span><span class="n">pctile</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="mi">75</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">E</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">IQrange</span><span class="p">],</span><span class="n">P</span><span class="p">[</span><span class="n">IQrange</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="nf">trapz</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">IQrange</span><span class="p">],</span><span class="n">r</span><span class="p">[</span><span class="n">IQrange</span><span class="p">]),</span><span class="n">r</span><span class="p">[</span><span class="n">IQrange</span><span class="p">])</span> 
+        <span class="k">return</span> <span class="n">E</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">IQrange</span><span class="p">],</span><span class="n">P</span><span class="p">[</span><span class="n">IQrange</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">P</span><span class="p">)[</span><span class="n">IQrange</span><span class="p">],</span><span class="n">r</span><span class="p">[</span><span class="n">IQrange</span><span class="p">]),</span><span class="n">r</span><span class="p">[</span><span class="n">IQrange</span><span class="p">])</span> 
     <span class="c1"># Mode</span>
-    <span class="n">modefcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="nf">argmax</span><span class="p">(</span><span class="n">P</span><span class="p">)]</span>
+    <span class="n">modefcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">P</span><span class="p">)]</span>
     <span class="c1"># Modes</span>
     <span class="n">modesfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="n">find_peaks</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="n">threshold</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
 
@@ -322,16 +323,16 @@
     <span class="c1"># Mean absolute deviation</span>
     <span class="n">madfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="n">E</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">meanfcn</span><span class="p">(</span><span class="n">P</span><span class="p">)),</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
     <span class="c1"># 2nd moment - Variance</span>
-    <span class="n">variancefcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="n">E</span><span class="p">(</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">meanfcn</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">variancefcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="n">E</span><span class="p">((</span><span class="n">r</span> <span class="o">-</span> <span class="n">meanfcn</span><span class="p">(</span><span class="n">P</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
     <span class="c1"># 2nd moment - Standard deviation</span>
     <span class="n">stdfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">variancefcn</span><span class="p">(</span><span class="n">P</span><span class="p">))</span>
     <span class="c1"># Entropy (information theory)</span>
-    <span class="n">entropyfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="o">-</span><span class="n">E</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span><span class="n">P</span><span class="p">)),</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">entropyfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="o">-</span><span class="n">E</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span><span class="n">normalize</span><span class="p">(</span><span class="n">P</span><span class="p">))),</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
 
     <span class="c1"># Shape estimators</span>
     <span class="c1"># ----------------</span>
     <span class="c1"># Modality</span>
-    <span class="n">modalityfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span>  <span class="n">np</span><span class="o">.</span><span class="nf">size</span><span class="p">(</span><span class="n">modesfcn</span><span class="p">(</span><span class="n">P</span><span class="p">))</span>
+    <span class="n">modalityfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span>  <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">modesfcn</span><span class="p">(</span><span class="n">P</span><span class="p">))</span>
     <span class="c1"># 3rd moment - Skewness</span>
     <span class="n">skewnessfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="n">E</span><span class="p">(((</span><span class="n">r</span> <span class="o">-</span> <span class="n">meanfcn</span><span class="p">(</span><span class="n">P</span><span class="p">))</span><span class="o">/</span><span class="n">stdfcn</span><span class="p">(</span><span class="n">P</span><span class="p">))</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
     <span class="c1"># 4th moment - Kurtosis</span>
@@ -340,12 +341,12 @@
     <span class="n">exkurtosisfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">E</span><span class="p">(((</span><span class="n">r</span> <span class="o">-</span> <span class="n">meanfcn</span><span class="p">(</span><span class="n">P</span><span class="p">))</span><span class="o">/</span><span class="n">stdfcn</span><span class="p">(</span><span class="n">P</span><span class="p">))</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
         
     <span class="c1"># 0th moment  - Integral </span>
-    <span class="n">intfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="nf">trapz</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">intfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
 
     <span class="c1"># Calculate distribution estimators</span>
     <span class="n">estimators</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;rmin&#39;</span><span class="p">:</span> <span class="nf">min</span><span class="p">(</span><span class="n">r</span><span class="p">),</span>
-        <span class="s1">&#39;rmax&#39;</span><span class="p">:</span> <span class="nf">max</span><span class="p">(</span><span class="n">r</span><span class="p">),</span>
+        <span class="s1">&#39;rmin&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">r</span><span class="p">),</span>
+        <span class="s1">&#39;rmax&#39;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">r</span><span class="p">),</span>
         <span class="s1">&#39;int&#39;</span><span class="p">:</span> <span class="n">intfcn</span><span class="p">(</span><span class="n">P</span><span class="p">),</span>
         <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">meanfcn</span><span class="p">(</span><span class="n">P</span><span class="p">),</span>
         <span class="s1">&#39;median&#39;</span><span class="p">:</span> <span class="n">medianfcn</span><span class="p">(</span><span class="n">P</span><span class="p">),</span>
@@ -406,9 +407,9 @@
         <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
         <span class="n">uq_</span> <span class="o">=</span> <span class="n">Puq</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">fcn</span><span class="p">)</span>
     
-    <span class="n">uq</span> <span class="o">=</span> <span class="nf">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">uq_</span><span class="p">)</span>
+    <span class="n">uq</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">uq_</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ci</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
-        <span class="n">paramci</span> <span class="o">=</span> <span class="n">uq_</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">paramci</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">uq_</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">paramci</span><span class="p">[:,</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">paramci</span><span class="p">[:,</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
     <span class="c1"># Wrap the ci() method to simplify array</span>
     <span class="n">uq</span><span class="o">.</span><span class="n">ci</span> <span class="o">=</span> <span class="n">ci</span>
@@ -422,7 +423,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------------------------------------------------&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Distribution Statistics&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------------------------------------------------&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Range                    </span><span class="si">{</span><span class="nf">min</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="nf">max</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> nm&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Range                    </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> nm&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Integral                 </span><span class="si">{</span><span class="n">estimators</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------------------------------------------------&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Location&#39;</span><span class="p">)</span>
@@ -449,12 +450,12 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------------------------------------------------&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Distribution Statistics&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------------------------------------------------&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Range                    </span><span class="si">{</span><span class="nf">min</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="nf">max</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> nm&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Range                    </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> nm&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Integral                 </span><span class="si">{</span><span class="n">estimators</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------------------------------------------------&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Location&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------------------------------------------------&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Range                    </span><span class="si">{</span><span class="nf">min</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="nf">max</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> nm&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Range                    </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> nm&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mean                     </span><span class="si">{</span><span class="n">estimators</span><span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">uq</span><span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">uq</span><span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">) nm&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Median                   </span><span class="si">{</span><span class="n">estimators</span><span class="p">[</span><span class="s2">&quot;median&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">uq</span><span class="p">[</span><span class="s2">&quot;median&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">uq</span><span class="p">[</span><span class="s2">&quot;median&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">) nm&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Interquartile mean       </span><span class="si">{</span><span class="n">estimators</span><span class="p">[</span><span class="s2">&quot;iqm&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">uq</span><span class="p">[</span><span class="s2">&quot;iqm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">uq</span><span class="p">[</span><span class="s2">&quot;iqm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">) nm&#39;</span><span class="p">)</span>
@@ -475,47 +476,37 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------------------------------------------------&#39;</span><span class="p">)</span>
 </pre></div>
 
-           </div>
-           
-          </div>
-          <footer>
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
-
-    </p>
-  </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-        </div>
       </div>
-
-    </section>
-
-  </div>
+    </div>
   
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(false);
-      });
-  </script>
-
-  
-  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
     
-   
-
-</body>
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
 </html>

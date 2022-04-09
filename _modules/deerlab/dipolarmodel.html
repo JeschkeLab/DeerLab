@@ -1,0 +1,922 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>deerlab.dipolarmodel &#8212; DeerLab</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs.svg" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+
+    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="sk-nav-link nav-link" href="../../reference.html">Reference</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../license.html">License</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for deerlab.dipolarmodel</h1><div class="highlight"><pre>
+<span></span><span class="c1"># dipolarmodel.py - DeerLab&#39;s dipolar EPR model generator</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md). </span>
+<span class="c1"># Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">deerlab.dipolarkernel</span> <span class="kn">import</span> <span class="n">dipolarkernel</span>  
+<span class="kn">from</span> <span class="nn">deerlab.regoperator</span> <span class="kn">import</span> <span class="n">regoperator</span>
+<span class="kn">from</span> <span class="nn">deerlab.dd_models</span> <span class="kn">import</span> <span class="n">freedist</span>
+<span class="kn">from</span> <span class="nn">deerlab.model</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span><span class="n">Penalty</span>
+<span class="kn">from</span> <span class="nn">deerlab</span> <span class="kn">import</span> <span class="n">bg_hom3d</span>
+<span class="kn">from</span> <span class="nn">deerlab.constants</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="dipolarmodel"><a class="viewcode-back" href="../../_autosummary/deerlab.dipolarmodel.html#deerlab.dipolarmodel">[docs]</a><span class="k">def</span> <span class="nf">dipolarmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">Pmodel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Bmodel</span><span class="o">=</span><span class="n">bg_hom3d</span><span class="p">,</span> <span class="n">npathways</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">harmonics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">experiment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">excbandwidth</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">orisel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="p">[</span><span class="n">ge</span><span class="p">,</span><span class="n">ge</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a dipolar EPR signal model.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Vector of dipolar evolution times, in microseconds.</span>
+<span class="sd">    r : array_like</span>
+<span class="sd">        Vector of spin-spin distances, in nanometers.</span>
+<span class="sd">    Pmodel : :ref:`Model`, optional</span>
+<span class="sd">        Model for the distance distribution. If not specified, a non-parametric</span>
+<span class="sd">        distance distribution defined over ``r`` is used.</span>
+<span class="sd">    Bmodel : :ref:`Model`, optional</span>
+<span class="sd">        Model for the intermolecular (background) contribution. If not specified,</span>
+<span class="sd">        a background arising from a homogenous 3D distribution of spins is used.</span>
+<span class="sd">    npathways : integer scalar, optional</span>
+<span class="sd">        Number of dipolar pathways. If not specified, a single dipolar pathway is used.</span>
+<span class="sd">    experiment : :ref:`ExperimentInfo`, optional</span>
+<span class="sd">        Experimental information obtained from experiment models (``ex_``). If specified, the </span>
+<span class="sd">        boundaries and start values of the dipolar pathways&#39; refocusing times and amplitudes </span>
+<span class="sd">        are refined based on the specific experiment&#39;s delays.</span>
+<span class="sd">    harmonics : list of integers, optional</span>
+<span class="sd">        Harmonics of the dipolar pathways. Must be a list with ``npathways`` harmonics, one</span>
+<span class="sd">        for each pathway.</span>
+<span class="sd">    orisel : callable  or ``None``, optional</span>
+<span class="sd">        Probability distribution of possible orientations of the interspin vector to account</span>
+<span class="sd">        for orientation selection. Must be a function taking a value of the angle θ ∈ [0,π/2]</span>
+<span class="sd">        between the interspin vector and the external magnetic field and returning the corresponding</span>
+<span class="sd">        probability density. If specified as ``None`` (default), a uniform distribution is used.</span>
+<span class="sd">    excbandwidth : scalar, optional</span>
+<span class="sd">        Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth.</span>
+<span class="sd">        If not specified, an infinite excitation bandwidth is used.</span>
+<span class="sd">    g : scalar, 2-element array, optional</span>
+<span class="sd">        Electron g-values of the two spins, ``[g1, g2]``. If a single g is specified, ``[g, g]`` is used.</span>
+<span class="sd">        If not specified, g = 2.002319... is used for both spins.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Vmodel : :ref:`Model`</span>
+<span class="sd">        Dipolar signal model object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1"># Input parsing and validation</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Pmodel</span><span class="p">,</span><span class="n">Model</span><span class="p">)</span> <span class="ow">and</span> <span class="n">Pmodel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The argument Pmodel must be a valid Model object&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Bmodel</span><span class="p">,</span><span class="n">Model</span><span class="p">)</span> <span class="ow">and</span> <span class="n">Bmodel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The argument Bmodel must be a valid Model object or None.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">npathways</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">npathways</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of pathways must be a positive integer.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">harmonics</span><span class="p">,</span><span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">harmonics</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span> 
+        <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">harmonics</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">harmonics</span><span class="p">,</span><span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">harmonics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The harmonics must be specified as a list of integer values.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">experiment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span><span class="n">ExperimentInfo</span><span class="p">):</span> 
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The experiment must be a valid deerlab.ExperimentInfo object.&#39;</span><span class="p">)</span>
+        <span class="c1"># Check that the number of requested pathways does not exceed the theoretical limit of the experiment</span>
+        <span class="n">npathways</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">npathways</span>
+        <span class="n">maxpathways</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">npathways</span><span class="o">&gt;</span><span class="n">maxpathways</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> experiment can only have up to </span><span class="si">{</span><span class="n">maxpathways</span><span class="si">}</span><span class="s1"> dipolar pathways.&#39;</span><span class="p">)</span>
+
+    <span class="c1">#------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_importparameter</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Private function for importing a parameter&#39;s metadata &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;lb&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">lb</span><span class="p">,</span>
+            <span class="s1">&#39;ub&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">ub</span><span class="p">,</span>
+            <span class="s1">&#39;par0&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">par0</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="s1">&#39;unit&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span>
+            <span class="s1">&#39;linear&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">linear</span>
+        <span class="p">}</span>
+    <span class="c1">#------------------------------------------------------------------------</span>
+
+    <span class="c1"># Parse the harmonics of the dipolar pathways</span>
+    <span class="k">if</span> <span class="n">harmonics</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="n">experiment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">harmonics</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">harmonics</span><span class="p">)[:</span><span class="n">npathways</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">harmonics</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">npathways</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">harmonics</span><span class="p">)</span><span class="o">!=</span><span class="n">npathways</span><span class="p">:</span> 
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of harmonics must match the number of dipolar pathways.&#39;</span><span class="p">)</span>
+
+    <span class="c1">#------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">dipolarpathways</span><span class="p">(</span><span class="o">*</span><span class="n">param</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Parametric constructor of the dipolar pathways definition &quot;&quot;&quot;</span>
+        <span class="n">param</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">npathways</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Single-pathway model, use modulation depth notation</span>
+            <span class="n">lam</span><span class="p">,</span><span class="n">reftime</span> <span class="o">=</span> <span class="n">param</span>
+            <span class="n">pathways</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="o">-</span><span class="n">lam</span><span class="p">],[</span><span class="n">lam</span><span class="p">,</span><span class="n">reftime</span><span class="p">,</span><span class="n">harmonics</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Otherwise, use general notation</span>
+            <span class="n">lams</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">param</span><span class="p">),</span><span class="mi">2</span><span class="p">)]</span>
+            <span class="n">reftimes</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">param</span><span class="p">),</span><span class="mi">2</span><span class="p">)]</span>
+            <span class="n">Lam0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lams</span><span class="p">))</span> 
+            <span class="c1"># Unmodulated pathways ccontribution</span>
+            <span class="n">pathways</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Lam0</span><span class="p">]]</span>
+            <span class="c1"># Modulated pathways</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npathways</span><span class="p">):</span>
+                <span class="n">pathways</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">lams</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">reftimes</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">harmonics</span><span class="p">[</span><span class="n">n</span><span class="p">]])</span>    
+        <span class="k">return</span>  <span class="n">pathways</span>
+    <span class="c1">#------------------------------------------------------------------------</span>
+
+    <span class="c1"># Construct the signature of the dipolarpathways() function</span>
+    <span class="k">if</span> <span class="n">npathways</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mod&#39;</span><span class="p">,</span><span class="s1">&#39;reftime&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npathways</span><span class="p">):</span>
+            <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;lam</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;reftime</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Create the dipolar pathways model object</span>
+    <span class="n">PathsModel</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">dipolarpathways</span><span class="p">,</span><span class="n">signature</span><span class="o">=</span><span class="n">variables</span><span class="p">)</span>
+
+    <span class="n">Pnonparametric</span> <span class="o">=</span> <span class="n">Pmodel</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">Pnonparametric</span><span class="p">:</span>
+        <span class="n">Pmodel</span> <span class="o">=</span> <span class="n">freedist</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">Nconstants</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Pmodel</span><span class="o">.</span><span class="n">_constantsInfo</span><span class="p">)</span>
+
+    <span class="c1"># Populate the basic information on the dipolar pathways parameters</span>
+    <span class="k">if</span> <span class="n">npathways</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># Special case: use modulation depth notation instead of general pathway amplitude</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">PathsModel</span><span class="p">,</span><span class="sa">f</span><span class="s1">&#39;mod&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">par0</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Modulation depth&#39;</span><span class="p">,</span><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">PathsModel</span><span class="p">,</span><span class="sa">f</span><span class="s1">&#39;reftime&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">par0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Refocusing time&#39;</span><span class="p">,</span><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;μs&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># General case: use pathway ampltiudes and refocusing times</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npathways</span><span class="p">):</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">PathsModel</span><span class="p">,</span><span class="sa">f</span><span class="s1">&#39;lam</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">par0</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Amplitude of pathway #</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">PathsModel</span><span class="p">,</span><span class="sa">f</span><span class="s1">&#39;reftime</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">par0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">lb</span><span class="o">=-</span><span class="mi">20</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Refocusing time of pathway #</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;μs&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Construct the signature of the dipolar signal model function</span>
+    <span class="n">signature</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">parameters</span><span class="p">,</span><span class="n">linearparam</span> <span class="o">=</span> <span class="p">[],[]</span>
+    <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="n">PathsModel</span><span class="p">,</span><span class="n">Bmodel</span><span class="p">,</span><span class="n">Pmodel</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">linear</span><span class="p">):</span>
+                    <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">))</span>
+                    <span class="n">linearparam</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="n">param</span><span class="p">,</span><span class="s1">&#39;vec&#39;</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">idx</span><span class="p">)),</span><span class="s1">&#39;normalization&#39;</span><span class="p">:</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">normalization</span><span class="p">})</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="n">model</span><span class="o">==</span><span class="n">Bmodel</span> <span class="ow">and</span> <span class="n">param</span><span class="o">==</span><span class="s1">&#39;lam&#39;</span><span class="p">):</span>
+                    <span class="n">signature</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+                    <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">))</span>
+
+    <span class="c1"># Initialize lists of indices to access subsets of nonlinear parameters </span>
+    <span class="n">Psubset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Pmodel</span><span class="o">.</span><span class="n">Nnonlin</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">PathsSubset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">PathsModel</span><span class="o">.</span><span class="n">Nnonlin</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Bmodel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Bsubset</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Bsubset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Bmodel</span><span class="o">.</span><span class="n">Nnonlin</span><span class="o">-</span><span class="p">(</span><span class="s1">&#39;lam&#39;</span> <span class="ow">in</span> <span class="n">Bmodel</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">()),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># Determine subset indices based on main function signature</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">model</span><span class="p">,</span><span class="n">subset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">Pmodel</span><span class="p">,</span><span class="n">Bmodel</span><span class="p">,</span><span class="n">PathsModel</span><span class="p">],[</span><span class="n">Psubset</span><span class="p">,</span><span class="n">Bsubset</span><span class="p">,</span><span class="n">PathsSubset</span><span class="p">]):</span> 
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">param</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">signature</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">):</span>
+                    <span class="n">subset</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+
+    <span class="n">kernelmethod</span> <span class="o">=</span> <span class="s1">&#39;fresnel&#39;</span> <span class="k">if</span> <span class="n">orisel</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;grid&#39;</span> 
+
+    <span class="c1">#------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">Vnonlinear_fcn</span><span class="p">(</span><span class="o">*</span><span class="n">nonlin</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Non-linear part of the dipolar signal function &quot;&quot;&quot;</span>
+        <span class="c1"># Make input arguments as array to access subsets easily</span>
+        <span class="n">nonlin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">nonlin</span><span class="p">)</span>
+        <span class="c1"># Construct the basis function of the intermolecular contribution</span>
+        <span class="k">if</span> <span class="n">Bmodel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="n">Bfcn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Bmodel</span><span class="p">,</span><span class="s1">&#39;lam&#39;</span><span class="p">):</span>
+            <span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">lam</span><span class="p">:</span> <span class="n">Bmodel</span><span class="o">.</span><span class="n">nonlinmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">nonlin</span><span class="p">[</span><span class="n">Bsubset</span><span class="p">],[</span><span class="n">lam</span><span class="p">]]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            
+            <span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">_</span><span class="p">:</span> <span class="n">Bmodel</span><span class="o">.</span><span class="n">nonlinmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="o">*</span><span class="n">nonlin</span><span class="p">[</span><span class="n">Bsubset</span><span class="p">])</span>
+        <span class="c1"># Construct the definition of the dipolar pathways</span>
+        <span class="n">pathways</span> <span class="o">=</span> <span class="n">PathsModel</span><span class="o">.</span><span class="n">nonlinmodel</span><span class="p">(</span><span class="o">*</span><span class="n">nonlin</span><span class="p">[</span><span class="n">PathsSubset</span><span class="p">])</span>
+        <span class="c1"># Construct the dipolar kernel</span>
+        <span class="n">Kdipolar</span> <span class="o">=</span> <span class="n">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">pathways</span><span class="o">=</span><span class="n">pathways</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="n">Bfcn</span><span class="p">,</span>
+                                 <span class="n">excbandwidth</span><span class="o">=</span><span class="n">excbandwidth</span><span class="p">,</span> <span class="n">orisel</span><span class="o">=</span><span class="n">orisel</span><span class="p">,</span>
+                                  <span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">kernelmethod</span><span class="p">)</span>
+        <span class="c1"># Compute the non-linear part of the distance distribution</span>
+        <span class="n">Pnonlin</span> <span class="o">=</span> <span class="n">Pmodel</span><span class="o">.</span><span class="n">nonlinmodel</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">*</span><span class="n">Nconstants</span><span class="p">,</span><span class="o">*</span><span class="n">nonlin</span><span class="p">[</span><span class="n">Psubset</span><span class="p">])</span>
+        <span class="c1"># Forward calculation of the non-linear part of the dipolar signal</span>
+        <span class="n">Vnonlin</span> <span class="o">=</span> <span class="n">Kdipolar</span><span class="nd">@Pnonlin</span>
+        <span class="k">return</span> <span class="n">Vnonlin</span>
+    <span class="c1">#------------------------------------------------------------------------</span>
+
+    <span class="c1"># Create the dipolar model object</span>
+    <span class="n">DipolarSignal</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">Vnonlinear_fcn</span><span class="p">,</span><span class="n">signature</span><span class="o">=</span><span class="n">signature</span><span class="p">)</span>
+
+    <span class="c1"># Add the linear parameters from the subset models            </span>
+    <span class="k">for</span> <span class="n">lparam</span> <span class="ow">in</span> <span class="n">linearparam</span><span class="p">:</span>
+        <span class="n">DipolarSignal</span><span class="o">.</span><span class="n">addlinear</span><span class="p">(</span><span class="n">lparam</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span><span class="n">vec</span><span class="o">=</span><span class="n">lparam</span><span class="p">[</span><span class="s1">&#39;vec&#39;</span><span class="p">],</span><span class="n">normalization</span><span class="o">=</span><span class="n">lparam</span><span class="p">[</span><span class="s1">&#39;normalization&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">Pmodel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">DipolarSignal</span><span class="o">.</span><span class="n">addlinear</span><span class="p">()</span>
+
+    <span class="c1"># If there are no linear paramters, add a linear scaling parameter </span>
+    <span class="k">if</span> <span class="n">DipolarSignal</span><span class="o">.</span><span class="n">Nlin</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">DipolarSignal</span><span class="o">.</span><span class="n">addlinear</span><span class="p">(</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">par0</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Import all parameter information from the subset models</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span><span class="n">param</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">DipolarSignal</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">),</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">DipolarSignal</span><span class="p">,</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">_importparameter</span><span class="p">(</span><span class="n">param</span><span class="p">))</span>
+
+    <span class="c1"># Set prior knowledge on the parameters if experiment is specified</span>
+    <span class="k">if</span> <span class="n">experiment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># Compile the parameter names to change in the model</span>
+        <span class="k">if</span> <span class="n">npathways</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">reftime_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;reftime</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npathways</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">reftime_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;reftime&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Specify start values and boundaries according to experimental timings</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npathways</span><span class="p">):</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">DipolarSignal</span><span class="p">,</span><span class="n">reftime_names</span><span class="p">[</span><span class="n">n</span><span class="p">])</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="n">par0</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">[</span><span class="n">n</span><span class="p">],</span>
+                <span class="n">lb</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.05</span><span class="p">,</span>
+                <span class="n">ub</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.05</span>
+                <span class="p">)</span>
+
+    <span class="c1"># Set other dipolar model specific attributes</span>
+    <span class="n">DipolarSignal</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Dipolar signal model&#39;</span>
+    <span class="n">DipolarSignal</span><span class="o">.</span><span class="n">Pmodel</span> <span class="o">=</span> <span class="n">Pmodel</span>
+    <span class="n">DipolarSignal</span><span class="o">.</span><span class="n">Bmodel</span> <span class="o">=</span> <span class="n">Pmodel</span>
+    <span class="n">DipolarSignal</span><span class="o">.</span><span class="n">Npathways</span> <span class="o">=</span> <span class="n">npathways</span>
+
+    <span class="k">return</span> <span class="n">DipolarSignal</span></div>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="dipolarpenalty"><a class="viewcode-back" href="../../_autosummary/deerlab.dipolarpenalty.html#deerlab.dipolarpenalty">[docs]</a><span class="k">def</span> <span class="nf">dipolarpenalty</span><span class="p">(</span><span class="n">Pmodel</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct penalties based on the distance distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Pmodel : ``Model`` object </span>
+<span class="sd">        The Pmodel of the distance distribution, where ``None`` represents a non-parametric distance distribution. </span>
+<span class="sd">    r : array_like </span>
+<span class="sd">        Distance axis vector, in nanometers. </span>
+<span class="sd">    type : string</span>
+<span class="sd">        Type of property to be imposed by the penalty. </span>
+<span class="sd">        </span>
+<span class="sd">        - ``&#39;smoothness&#39;`` : Smoothness of the distance distribution</span>
+<span class="sd">        - ``&#39;compactness&#39;`` : Compactness of the distance distribution   </span>
+<span class="sd">        </span>
+<span class="sd">    selection : string, optional</span>
+<span class="sd">        Selection functional for the outer optimization of the penalty weight.</span>
+
+<span class="sd">            - ``&#39;aic&#39;`` - Akaike information criterion</span>
+<span class="sd">            - ``&#39;bic&#39;`` - Bayesian information criterion</span>
+<span class="sd">            - ``&#39;aicc&#39;`` - COrrected Akaike information criterion</span>
+<span class="sd">            - ``&#39;icc&#39;`` - Informational complexity criterion </span>
+<span class="sd">   </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    penalty : ``Penalty`` object </span>
+<span class="sd">        Penalty object to be passed to the ``fit`` function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">Pmodel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="n">Pmodel</span> <span class="o">=</span> <span class="n">freedist</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">Nconstants</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Pmodel</span><span class="o">.</span><span class="n">_constantsInfo</span><span class="p">)</span>
+
+    <span class="c1"># If include compactness penalty</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="o">==</span><span class="s1">&#39;compactness&#39;</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">selection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="n">selection</span> <span class="o">=</span> <span class="s1">&#39;icc&#39;</span>
+
+        <span class="c1"># Define the compactness penalty function</span>
+        <span class="k">def</span> <span class="nf">compactness_penalty</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span> 
+            <span class="n">P</span> <span class="o">=</span> <span class="n">Pmodel</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">*</span><span class="n">Nconstants</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="n">P</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">P</span><span class="o">*</span><span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">P</span><span class="o">*</span><span class="n">r</span><span class="p">,</span><span class="n">r</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">r</span><span class="p">)))</span>
+        <span class="c1"># Add the penalty to the Pmodel</span>
+        <span class="n">penalty</span> <span class="o">=</span> <span class="n">Penalty</span><span class="p">(</span><span class="n">compactness_penalty</span><span class="p">,</span><span class="n">selection</span><span class="p">,</span>
+                    <span class="n">signature</span> <span class="o">=</span> <span class="n">Pmodel</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(),</span>
+                    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Distance distribution compactness penalty.&#39;</span><span class="p">)</span>
+        <span class="n">penalty</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mf">1e1</span><span class="p">)</span>
+
+    <span class="c1"># If include smoothness penalty</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="o">==</span><span class="s1">&#39;smoothness&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">selection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="n">selection</span> <span class="o">=</span> <span class="s1">&#39;aic&#39;</span>
+
+        <span class="c1"># Define the smoothness penalty function</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">regoperator</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">smoothness_penalty</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span> 
+            <span class="k">return</span> <span class="n">L</span><span class="nd">@Pmodel</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">*</span><span class="n">Nconstants</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1"># Add the penalty to the Pmodel</span>
+        <span class="n">penalty</span> <span class="o">=</span> <span class="n">Penalty</span><span class="p">(</span><span class="n">smoothness_penalty</span><span class="p">,</span><span class="n">selection</span><span class="p">,</span>
+                    <span class="n">signature</span> <span class="o">=</span> <span class="n">Pmodel</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(),</span>
+                    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Distance distribution smoothness penalty.&#39;</span><span class="p">)</span>
+        <span class="n">penalty</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mf">1e3</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The requested </span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2"> is not a valid penalty. Must be &#39;compactness&#39; or &#39;smoothness&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">penalty</span></div>
+<span class="c1">#===============================================================================</span>
+
+
+<span class="c1">#===============================================================================</span>
+<span class="k">def</span> <span class="nf">_checkpathways</span><span class="p">(</span><span class="n">pathways</span><span class="p">,</span><span class="n">Nmax</span><span class="p">):</span>    
+    <span class="c1"># Check that pathways are correctly specified</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pathways</span><span class="p">)</span><span class="o">&gt;</span><span class="n">Nmax</span><span class="p">:</span> 
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The number of pathways cannot exceed </span><span class="si">{</span><span class="n">Nmax</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pathways</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="ow">not</span> <span class="n">p</span><span class="o">%</span><span class="mi">1</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]):</span> 
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The pathways must be specified by integer numbers in the range 1-</span><span class="si">{</span><span class="n">Nmax</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="c1">#===============================================================================</span>
+
+
+
+<span class="c1">#===============================================================================</span>
+<span class="k">class</span> <span class="nc">ExperimentInfo</span><span class="p">():</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents information about a dipolar EPR experiment&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">npathways</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reftimes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reftimes</span> <span class="o">=</span> <span class="n">reftimes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">harmonics</span> <span class="o">=</span> <span class="n">harmonics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="ex_3pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_3pdeer.html#deerlab.ex_3pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_3pdeer</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a 3-pulse DEER dipolar experiment model. </span>
+
+
+<span class="sd">    .. image:: ../images/sequence_3pdeer.svg</span>
+<span class="sd">        :width: 450px</span>
+
+
+<span class="sd">    This experiment model has the following modulated dipolar pathways. The </span>
+<span class="sd">    theoretical refocusing times of the individual pathways are calculated </span>
+<span class="sd">    from the input pulse sequence delays:    </span>
+
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">     Pathway    Refocusing time    Harmonic</span>
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">        1             0              1</span>
+<span class="sd">        2             𝜏              1</span>
+<span class="sd">    ========= ================== ===========</span>
+
+<span class="sd">    Parameters </span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    tau : float scalar</span>
+<span class="sd">        Static interpulse delay. </span>
+
+<span class="sd">    pathways :  array_like, optional </span>
+<span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
+<span class="sd">        By default, both pathways are included in the order given in the table above.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    experiment : ``ExperimentInfo`` object</span>
+<span class="sd">        Experiment object. Can be passed to ``dipolarmodel`` to introduce better</span>
+<span class="sd">        constraints into the model.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Theoretical refocusing times</span>
+    <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span> <span class="n">tau</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Theoretical dipolar harmonics</span>
+    <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Sort according to pathways order</span>
+    <span class="k">if</span> <span class="n">pathways</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_checkpathways</span><span class="p">(</span><span class="n">pathways</span><span class="p">,</span><span class="n">Nmax</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">reftimes</span><span class="p">))</span>
+        <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
+        <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span> 
+
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;3-pulse DEER&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">)</span></div>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="ex_4pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_4pdeer.html#deerlab.ex_4pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_4pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a 4-pulse DEER dipolar experiment model. </span>
+<span class="sd">    </span>
+<span class="sd">    .. image:: ../images/sequence_4pdeer.svg</span>
+<span class="sd">        :width: 450px</span>
+
+
+<span class="sd">    This experiment model has the following modulated dipolar pathways. The </span>
+<span class="sd">    theoretical refocusing times of the individual pathways are calculated </span>
+<span class="sd">    from the input pulse sequence delays:</span>
+
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">     Pathway    Refocusing time    Harmonic</span>
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">        1            𝜏1              1</span>
+<span class="sd">        2          𝜏1 + 𝜏2           1</span>
+<span class="sd">        3             0              1</span>
+<span class="sd">        4            𝜏2              1</span>
+<span class="sd">    ========= ================== ===========</span>
+
+<span class="sd">    Parameters </span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    tau1 : float scalar</span>
+<span class="sd">        1st static interpulse delay. </span>
+<span class="sd">   </span>
+<span class="sd">    tau2 : float scalar</span>
+<span class="sd">        2nd static interpulse delay. </span>
+
+<span class="sd">    pathways :  array_like, optional </span>
+<span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
+<span class="sd">        By default, all 4 pathways are included in the order given in the table above.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    experiment : ``ExperimentInfo`` object</span>
+<span class="sd">        Experiment object. Can be passed to ``dipolarmodel`` to introduce better</span>
+<span class="sd">        constraints into the model.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Theoretical refocusing pathways</span>
+    <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau1</span><span class="o">+</span><span class="n">tau2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tau2</span><span class="p">]</span>
+    <span class="c1"># Theoretical dipolar harmonics</span>
+    <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Sort according to pathways order</span>
+    <span class="k">if</span> <span class="n">pathways</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_checkpathways</span><span class="p">(</span><span class="n">pathways</span><span class="p">,</span><span class="n">Nmax</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">reftimes</span><span class="p">))</span>
+        <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
+        <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span> 
+
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;4-pulse DEER&#39;</span><span class="p">,</span> <span class="n">reftimes</span><span class="p">,</span> <span class="n">harmonics</span><span class="p">)</span></div>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="ex_rev5pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_rev5pdeer.html#deerlab.ex_rev5pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_rev5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a reverse 5-pulse DEER dipolar experiment model. </span>
+<span class="sd">    </span>
+<span class="sd">    .. image:: ../images/sequence_5pdeer_reverse.svg</span>
+<span class="sd">        :width: 450px</span>
+
+<span class="sd">    This experiment model has the following modulated dipolar pathways. The </span>
+<span class="sd">    theoretical refocusing times of the individual pathways are calculated </span>
+<span class="sd">    from the input pulse sequence delays:</span>
+
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">     Pathway    Refocusing time    Harmonic</span>
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">        1            𝜏3              1</span>
+<span class="sd">        2            𝜏2              1</span>
+<span class="sd">        3           𝜏2-𝜏3            1</span>
+<span class="sd">        4           𝜏1+𝜏3            1</span>
+<span class="sd">        5          𝜏1+𝜏2-𝜏3          1</span>
+<span class="sd">        6             0              1</span>
+<span class="sd">        7           𝜏1+𝜏2            1</span>
+<span class="sd">        8            𝜏1              1</span>
+<span class="sd">    ========= ================== ===========</span>
+
+<span class="sd">    Parameters </span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    tau1 : float scalar</span>
+<span class="sd">        1st static interpulse delay. </span>
+<span class="sd">   </span>
+<span class="sd">    tau2 : float scalar</span>
+<span class="sd">        2nd static interpulse delay. </span>
+
+<span class="sd">    tau3 : float scalar</span>
+<span class="sd">        3rd static interpulse delay. </span>
+
+<span class="sd">    pathways :  array_like, optional </span>
+<span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
+<span class="sd">        By default, all 8 pathways are included in the order given in the table above.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    experiment : ``ExperimentInfo`` object</span>
+<span class="sd">        Experiment object. Can be passed to ``dipolarmodel`` to introduce better</span>
+<span class="sd">        constraints into the model.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Theoretical refocusing pathways</span>
+    <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau2</span><span class="o">-</span><span class="n">tau3</span><span class="p">,</span> <span class="n">tau1</span><span class="o">+</span><span class="n">tau3</span><span class="p">,</span> <span class="n">tau1</span><span class="o">+</span><span class="n">tau2</span><span class="o">-</span><span class="n">tau3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tau1</span><span class="o">+</span><span class="n">tau2</span><span class="p">,</span> <span class="n">tau1</span><span class="p">]</span>
+    <span class="c1"># Theoretical dipolar harmonics</span>
+    <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    
+    <span class="c1"># Sort according to pathways order</span>
+    <span class="k">if</span> <span class="n">pathways</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_checkpathways</span><span class="p">(</span><span class="n">pathways</span><span class="p">,</span><span class="n">Nmax</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">reftimes</span><span class="p">))</span>
+        <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
+        <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;Reverse 5-pulse DEER&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">)</span></div>
+<span class="c1">#===============================================================================</span>
+
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="ex_fwd5pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_fwd5pdeer.html#deerlab.ex_fwd5pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_fwd5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a forward 5-pulse DEER dipolar experiment model. </span>
+<span class="sd">    </span>
+<span class="sd">    .. image:: ../images/sequence_5pdeer_forward.svg</span>
+<span class="sd">        :width: 450px</span>
+
+<span class="sd">    This experiment model has the following modulated dipolar pathways. The </span>
+<span class="sd">    theoretical refocusing times of the individual pathways are calculated </span>
+<span class="sd">    from the input pulse sequence delays:    </span>
+
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">     Pathway    Refocusing time    Harmonic</span>
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">        1            𝜏3              1</span>
+<span class="sd">        2            𝜏1              1</span>
+<span class="sd">        3           𝜏1-𝜏3            1</span>
+<span class="sd">        4           𝜏2+𝜏3            1</span>
+<span class="sd">        5          𝜏1+𝜏2-𝜏3          1</span>
+<span class="sd">        6             0              1</span>
+<span class="sd">        7           𝜏1+𝜏2            1</span>
+<span class="sd">        8            𝜏2              1</span>
+<span class="sd">    ========= ================== ===========</span>
+
+<span class="sd">    Parameters </span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    tau1 : float scalar</span>
+<span class="sd">        1st static interpulse delay. </span>
+<span class="sd">   </span>
+<span class="sd">    tau2 : float scalar</span>
+<span class="sd">        2nd static interpulse delay. </span>
+
+<span class="sd">    tau3 : float scalar</span>
+<span class="sd">        3rd static interpulse delay. </span>
+
+<span class="sd">    pathways :  array_like, optional </span>
+<span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
+<span class="sd">        By default, all pathways are included in the order given in the table above.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    experiment : ``ExperimentInfo`` object</span>
+<span class="sd">        Experiment object. Can be passed to ``dipolarmodel`` to introduce better</span>
+<span class="sd">        constraints into the model.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Theoretical refocusing pathways</span>
+    <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">tau3</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau1</span><span class="o">-</span><span class="n">tau3</span><span class="p">,</span> <span class="n">tau2</span><span class="o">+</span><span class="n">tau3</span><span class="p">,</span> <span class="n">tau1</span><span class="o">+</span><span class="n">tau2</span><span class="o">-</span><span class="n">tau3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tau1</span><span class="o">+</span><span class="n">tau2</span><span class="p">,</span> <span class="n">tau2</span><span class="p">]</span>
+    <span class="c1"># Theoretical dipolar harmonics</span>
+    <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Sort according to pathways order</span>
+    <span class="k">if</span> <span class="n">pathways</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_checkpathways</span><span class="p">(</span><span class="n">pathways</span><span class="p">,</span><span class="n">Nmax</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">reftimes</span><span class="p">))</span>
+        <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
+        <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span> 
+
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;Forward 5-pulse DEER&#39;</span><span class="p">,</span> <span class="n">reftimes</span><span class="p">,</span> <span class="n">harmonics</span><span class="p">)</span></div>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="ex_sifter"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_sifter.html#deerlab.ex_sifter">[docs]</a><span class="k">def</span> <span class="nf">ex_sifter</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a SIFTER dipolar experiment model. </span>
+
+<span class="sd">    .. image:: ../images/sequence_sifter.svg</span>
+<span class="sd">        :width: 450px</span>
+
+<span class="sd">    This experiment model has the following modulated dipolar pathways. The </span>
+<span class="sd">    theoretical refocusing times of the individual pathways are calculated </span>
+<span class="sd">    from the input pulse sequence delays:    </span>
+
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">     Pathway    Refocusing time    Harmonic</span>
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">        1            𝜏2-𝜏1            1</span>
+<span class="sd">        2             2𝜏2            1/2</span>
+<span class="sd">        3            -2𝜏1            1/2</span>
+<span class="sd">    ========= ================== ===========</span>
+
+<span class="sd">    Parameters </span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    tau1 : float scalar</span>
+<span class="sd">        1st static interpulse delay. </span>
+
+<span class="sd">    tau2 : float scalar</span>
+<span class="sd">        2nd static interpulse delay. </span>
+
+<span class="sd">    pathways :  array_like, optional </span>
+<span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
+<span class="sd">        By default, all 3 pathways are included and ordered as given in the table above.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    experiment : ``ExperimentInfo`` object</span>
+<span class="sd">        Experiment object. Can be passed to ``dipolarmodel`` to introduce better</span>
+<span class="sd">        constraints into the model.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Theoretical refocusing times</span>
+    <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span> <span class="n">tau2</span><span class="o">-</span><span class="n">tau1</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">tau2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">tau1</span><span class="p">]</span>
+    <span class="c1"># Theoretical dipolar harmonics</span>
+    <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="c1"># Sort according to pathways order</span>
+    <span class="k">if</span> <span class="n">pathways</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_checkpathways</span><span class="p">(</span><span class="n">pathways</span><span class="p">,</span><span class="n">Nmax</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">reftimes</span><span class="p">))</span>
+        <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
+        <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;SIFTER&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">)</span></div>
+<span class="c1">#===============================================================================</span>
+
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="ex_ridme"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_ridme.html#deerlab.ex_ridme">[docs]</a><span class="k">def</span> <span class="nf">ex_ridme</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a RIDME dipolar experiment model. </span>
+
+<span class="sd">    .. image:: ../images/sequence_ridme.svg</span>
+<span class="sd">        :width: 450px</span>
+
+<span class="sd">    This experiment model has the following modulated dipolar pathways. The </span>
+<span class="sd">    theoretical refocusing times of the individual pathways are calculated </span>
+<span class="sd">    from the input pulse sequence delays:</span>
+
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">     Pathway    Refocusing time    Harmonic</span>
+<span class="sd">    ========= ================== ===========</span>
+<span class="sd">        1             0               1</span>
+<span class="sd">        2             𝜏2              1</span>
+<span class="sd">        3            -𝜏1              1</span>
+<span class="sd">        4            𝜏2-𝜏1            1</span>
+<span class="sd">    ========= ================== ===========</span>
+
+<span class="sd">    Parameters </span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    tau1 : float scalar</span>
+<span class="sd">        1st static interpulse delay. </span>
+
+<span class="sd">    tau2 : float scalar</span>
+<span class="sd">        2nd static interpulse delay.  </span>
+
+<span class="sd">    pathways :  array_like, optional </span>
+<span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
+<span class="sd">        By default, all 4 pathways are included in the order given in the table above.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    experiment : ``ExperimentInfo`` object</span>
+<span class="sd">        Experiment object. Can be passed to ``dipolarmodel`` to introduce better</span>
+<span class="sd">        constraints into the model.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Theoretical refocusing times</span>
+    <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="o">-</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="o">-</span><span class="n">tau1</span><span class="p">]</span>
+    <span class="c1"># Theoretical dipolar harmonics</span>
+    <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Sort according to pathways order</span>
+    <span class="k">if</span> <span class="n">pathways</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_checkpathways</span><span class="p">(</span><span class="n">pathways</span><span class="p">,</span><span class="n">Nmax</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">reftimes</span><span class="p">))</span>
+        <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
+        <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span> 
+
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;RIDME&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">)</span></div>
+<span class="c1">#===============================================================================</span>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

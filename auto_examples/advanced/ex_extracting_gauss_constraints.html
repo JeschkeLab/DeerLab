@@ -1,380 +1,353 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Fitting Gaussians to a non-parametric distance distribution &mdash; DeerLab</title>
-  
 
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-rendered-html.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  
+    <title>Fitting Gaussians to a non-parametric distance distribution fit &#8212; DeerLab</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Fitting a custom dipolar kernel model with a parameter-free distribution" href="ex_fitting_custom_kernel_with_snlls.html" />
-    <link rel="prev" title="Manipulating DeerLab plots" href="ex_manipulating_graphics.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="next" title="Multi-Gaussian analysis of a dipolar signal" href="ex_multigauss_fitting_4pdeer.html" />
+    <link rel="prev" title="Simulating orientation selection effects in dipolar signals" href="ex_simulating_orisel.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
 
-          
-            <a href="../../index.html">
-          
-
-          
-            
-            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                v0.13.2
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Examples</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Others</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
-</ul>
-
-            
-          
-        </div>
-        
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">DeerLab</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
+    <!-- Google Analytics -->
     
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../examples.html">Examples</a> &raquo;</li>
-        
-      <li>Fitting Gaussians to a non-parametric distance distribution</li>
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
     
     
-      <li class="wy-breadcrumbs-aside">
-        
-          
-        
-      </li>
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs.svg" class="logo" alt="logo">
+</a>
+
+
     
-  </ul>
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
   
-  <hr/>
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+
+    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="sk-nav-link nav-link" href="../../reference.html">Reference</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../license.html">License</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
             
+            <div class="col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-11 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
   <div class="sphx-glr-download-link-note admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Click <a class="reference internal" href="#sphx-glr-download-auto-examples-advanced-ex-extracting-gauss-constraints-py"><span class="std std-ref">here</span></a>
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-advanced-ex-extracting-gauss-constraints-py"><span class="std std-ref">here</span></a>
 to download the full example code</p>
 </div>
-<div class="sphx-glr-example-title section" id="fitting-gaussians-to-a-non-parametric-distance-distribution">
-<span id="sphx-glr-auto-examples-advanced-ex-extracting-gauss-constraints-py"></span><h1>Fitting Gaussians to a non-parametric distance distribution<a class="headerlink" href="#fitting-gaussians-to-a-non-parametric-distance-distribution" title="Permalink to this headline">¶</a></h1>
-<p>This example shows how to fit Gaussians to a non-parametric distance
-distribution obtained via Tikhonov regularization and how to calculate
-the corresponding uncertainty.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<section class="sphx-glr-example-title" id="fitting-gaussians-to-a-non-parametric-distance-distribution-fit">
+<span id="sphx-glr-auto-examples-advanced-ex-extracting-gauss-constraints-py"></span><h1>Fitting Gaussians to a non-parametric distance distribution fit<a class="headerlink" href="#fitting-gaussians-to-a-non-parametric-distance-distribution-fit" title="Permalink to this headline">#</a></h1>
+<p>This example shows how to fit multi-Gaussian model to a non-parametric distance
+distribution calculated from Tikhonov regularization.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import the required libraries</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simulate a 4pDEER signal</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># File location</span>
+<span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;../data/&#39;</span>
+<span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;example_4pdeer_1.DTA&#39;</span>
 
-<span class="k">def</span> <span class="nf">simulatedata</span><span class="p">():</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>   <span class="c1"># distance axis, nm</span>
-    <span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss3</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>  <span class="c1"># distance distribution</span>
-    <span class="n">lam</span> <span class="o">=</span> <span class="mf">0.3</span>                  <span class="c1"># modulation depth</span>
-    <span class="n">conc</span> <span class="o">=</span> <span class="mi">80</span>                  <span class="c1"># spin concentration, µM</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">250</span><span class="p">)</span>   <span class="c1"># time axis, µs</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam</span><span class="p">)</span>                   <span class="c1"># background</span>
-    <span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">mod</span><span class="o">=</span><span class="n">lam</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="n">B</span><span class="p">)</span>        <span class="c1"># kernel matrix</span>
-    <span class="n">V</span> <span class="o">=</span> <span class="n">K</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>   <span class="c1"># DEER trace, with added noise</span>
-    <span class="k">return</span> <span class="n">t</span><span class="p">,</span> <span class="n">V</span>
+<span class="c1"># Experimental parameters</span>
+<span class="n">tau1</span> <span class="o">=</span> <span class="mf">0.3</span>      <span class="c1"># First inter-pulse delay, μs</span>
+<span class="n">tau2</span> <span class="o">=</span> <span class="mf">4.0</span>      <span class="c1"># Second inter-pulse delay, μs</span>
+<span class="n">deadtime</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># Acquisition deadtime, μs</span>
 
-<span class="n">t</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">simulatedata</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="section" id="fit-the-dipolar-signal">
-<h2>Fit the dipolar signal<a class="headerlink" href="#fit-the-dipolar-signal" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>First, we fit the non-parametric distance distribution using <code class="docutils literal notranslate"><span class="pre">fitmodel()</span></code>
-%%</div></blockquote>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_exp</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">)</span>
-<span class="n">fit</span><span class="o">.</span><span class="nf">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<img alt="ex extracting gauss constraints" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_extracting_gauss_constraints_001.png" />
-</div>
-<div class="section" id="fit-gaussians-to-the-distance-distribution">
-<h2>Fit Gaussians to the distance distribution<a class="headerlink" href="#fit-gaussians-to-the-distance-distribution" title="Permalink to this headline">¶</a></h2>
-<p>Next, we fit a multi-Gauss distribution to the fitted non-parametric
-distribution. We can do this by using the <code class="docutils literal notranslate"><span class="pre">fitparamodel()</span></code> function (in
-this example, fitting a two-Gauss model).</p>
-<p>However, in order to get the correct uncertainty quantification, we need
-to specify the covariance matrix of the fitted distribution.
-<code class="docutils literal notranslate"><span class="pre">fitparamodel()</span></code> can then use that information to propagate the error in
-<code class="docutils literal notranslate"><span class="pre">Pfit</span></code> to the Gauss constraints that we then fit.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># From the fit results, extract the distribution and the covariance matrix</span>
-<span class="n">Pfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">P</span>
-<span class="n">Pfit_uq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">Puncert</span>
-<span class="n">Pfit_covmat</span> <span class="o">=</span> <span class="n">Pfit_uq</span><span class="o">.</span><span class="n">covmat</span>
-</pre></div>
-</div>
-<p>Fit a 2-Gauss model to the fitted parameter-free distribution:</p>
-<blockquote>
-<div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">parfit`</span></code>: will contain the Gaussian constraints</li>
-<li><code class="docutils literal notranslate"><span class="pre">PGauss`</span></code>: the corresponding distribution</li>
-<li><code class="docutils literal notranslate"><span class="pre">paruq`</span></code>: the uncertainty quantification of our constraints</li>
-</ul>
-</div></blockquote>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Pmodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">)</span>
+<span class="c1"># Load the experimental data</span>
+<span class="n">t</span><span class="p">,</span><span class="n">Vexp</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">deerload</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">file</span><span class="p">)</span>
 
-<span class="c1"># Get information on the model</span>
-<span class="n">par0</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="o">.</span><span class="n">start</span>
-<span class="n">lb</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="o">.</span><span class="n">lower</span>
-<span class="n">ub</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="o">.</span><span class="n">upper</span>
+<span class="c1"># Pre-processing</span>
+<span class="n">Vexp</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">correctphase</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span> <span class="c1"># Phase correction</span>
+<span class="n">Vexp</span> <span class="o">=</span> <span class="n">Vexp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>     <span class="c1"># Rescaling (aesthetic)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">deadtime</span>             <span class="c1"># Account for deadtime</span>
 
-<span class="c1"># Fit the Gaussians</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitparamodel</span><span class="p">(</span><span class="n">Pfit</span><span class="p">,</span><span class="n">Pmodel</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">covmatrix</span><span class="o">=</span><span class="n">Pfit_covmat</span><span class="p">,</span><span class="n">fitscale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># Construct the dipolar signal model</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mf">0.02</span><span class="p">)</span>
+<span class="n">Vmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span> <span class="n">experiment</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">ex_4pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span><span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+<span class="c1"># Fit the model to the data</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">Vexp</span><span class="p">)</span>
+<span class="n">results</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time $t$ (μs)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># From the fit results, extract the distribution and the covariance matrix</span>
+<span class="n">Pfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">P</span>
+<span class="n">Pci50</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">PUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">Pci95</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">PUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+
+<span class="c1"># Select a bimodal Gaussian model for the distance distribution</span>
+<span class="n">Pmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss2</span>
+<span class="n">Pmodel</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">par0</span><span class="o">=</span><span class="mf">3.5</span>
+<span class="n">Pmodel</span><span class="o">.</span><span class="n">mean2</span><span class="o">.</span><span class="n">par0</span><span class="o">=</span><span class="mf">4.0</span>
+
+<span class="c1"># Fit the Gaussian model to the non-parametric distance distribution</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Pmodel</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
 
 <span class="c1"># Extract the fit results</span>
-<span class="n">parfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">param</span>
-<span class="n">paruq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">paramUncert</span>
-<span class="n">PGauss</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">parfit</span><span class="p">)</span>
+<span class="n">PGauss</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">model</span>
+<span class="n">PGauss_ci50</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">modelUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">PGauss_ci95</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">modelUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
 
-<span class="c1"># Extract the 95%-confidence intervals...</span>
-<span class="n">par95</span> <span class="o">=</span> <span class="n">paruq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
-<span class="c1"># ... and print the results</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Gaussian components:&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parfit</span><span class="p">)):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  parfit[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">] = </span><span class="si">{</span><span class="n">parfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">par95</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">par95</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">) </span><span class="si">{</span><span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-<span class="c1"># Now propagate the error of the Gaussian parameters to the distribution</span>
-<span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="c1"># non-negativity constraint</span>
-<span class="n">PGauss_uq</span> <span class="o">=</span> <span class="n">paruq</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">par</span><span class="p">),</span><span class="n">lb</span><span class="p">)</span>
-<span class="n">PGauss95</span> <span class="o">=</span> <span class="n">PGauss_uq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+<span class="c1"># Print the parameters nicely</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Gaussian components with (95%-confidence intervals):&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;       mean1 = </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">mean1</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">mean1Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">mean1Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">) nm&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;       mean2 = </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">mean2</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">mean2Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">mean2Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">) nm&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;        std1 = </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">std1</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">std1Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">std1Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">) nm&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;        std2 = </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">std2</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">std2Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">std2Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">) nm&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  amplitude1 = </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">amp1</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">amp1Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">amp1Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  amplitude2 = </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">amp2</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">amp2Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">amp2Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Gaussian components:
-  parfit[0] = 3.17 (2.85, 3.49) Mean of 1st Gaussian
-  parfit[1] = 0.48 (0.18, 0.78) Standard deviation of 1st Gaussian
-  parfit[2] = 0.47 (0.20, 0.73) Amplitude of 1st Gaussian
-  parfit[3] = 4.38 (4.24, 4.51) Mean of 2nd Gaussian
-  parfit[4] = 0.39 (0.30, 0.49) Standard deviation of 2nd Gaussian
-  parfit[5] = 0.71 (0.53, 0.88) Amplitude of 2nd Gaussian
+<img src="../../_images/sphx_glr_ex_extracting_gauss_constraints_001.png" srcset="../../_images/sphx_glr_ex_extracting_gauss_constraints_001.png" alt="ex extracting gauss constraints" class = "sphx-glr-single-img"/><p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Gaussian components with (95%-confidence intervals):
+       mean1 = 3.44 (3.43-3.46) nm
+       mean2 = 4.01 (4.00-4.01) nm
+        std1 = 0.23 (0.22-0.25) nm
+        std2 = 0.12 (0.12-0.13) nm
+  amplitude1 = 0.69 (0.66-0.72)
+  amplitude2 = 1.28 (1.27-1.30)
 </pre></div>
 </div>
-<p>sphinx_gallery_thumbnail_number = 2</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the fitted constraints model on top of the non-parametric case</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;non-param. fit&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit_uq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">Pfit_uq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;95</span><span class="si">% c</span><span class="s1">onfidence intervals&#39;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">PGauss</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;2-Gauss fit to nonparam. fit&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">PGauss95</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">PGauss95</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;95</span><span class="si">% c</span><span class="s1">onfidence interval&#39;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;Distance (nm)&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;P (nm⁻¹)&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+<span class="n">violet</span> <span class="o">=</span> <span class="s1">&#39;#4550e6&#39;</span>
+<span class="n">red</span> <span class="o">=</span> <span class="s1">&#39;tab:red&#39;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Non-param. fit&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pci50</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pci50</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pci95</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pci95</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">PGauss</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;2-Gauss fit to non-param. fit&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">red</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">PGauss_ci95</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">PGauss_ci95</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">red</span><span class="p">)</span>
+<span class="c1"># Formatting settings</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Distance (nm)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;P (nm$^{-1}$)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="ex extracting gauss constraints" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_extracting_gauss_constraints_002.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  5.264 seconds)</p>
+<img src="../../_images/sphx_glr_ex_extracting_gauss_constraints_002.png" srcset="../../_images/sphx_glr_ex_extracting_gauss_constraints_002.png" alt="ex extracting gauss constraints" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  6.706 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-extracting-gauss-constraints-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
-<a class="reference download internal" download="" href="../../_downloads/aee0717c05a3c292e17add00fe73e3f5/ex_extracting_gauss_constraints.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_extracting_gauss_constraints.py</span></code></a></div>
+<p><a class="reference download internal" download="" href="../../_downloads/31af3fee58de24498b285c1b36da8322/ex_extracting_gauss_constraints.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_extracting_gauss_constraints.py</span></code></a></p>
+</div>
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
-<a class="reference download internal" download="" href="../../_downloads/0a90ad2ee7acb7794c2696d9bfaf7c9d/ex_extracting_gauss_constraints.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_extracting_gauss_constraints.ipynb</span></code></a></div>
+<p><a class="reference download internal" download="" href="../../_downloads/44b3ae9befcc210df496e0c03d41d3fc/ex_extracting_gauss_constraints.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_extracting_gauss_constraints.ipynb</span></code></a></p>
+</div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
-</div>
-</div>
+</section>
 
 
-           </div>
-           
-          </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="ex_fitting_custom_kernel_with_snlls.html" class="btn btn-neutral float-right" title="Fitting a custom dipolar kernel model with a parameter-free distribution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ex_manipulating_graphics.html" class="btn btn-neutral float-left" title="Manipulating DeerLab plots" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
-
-    </p>
-  </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="ex_simulating_orisel.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Simulating orientation selection effects in dipolar signals</p>
         </div>
+    </a>
+    <a class='right-next' id="next-link" href="ex_multigauss_fitting_4pdeer.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Multi-Gaussian analysis of a dipolar signal</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
       </div>
-
-    </section>
-
-  </div>
+    </div>
   
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(false);
-      });
-  </script>
-
-  
-  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
     
-   
-
-</body>
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
 </html>

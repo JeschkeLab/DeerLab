@@ -1,498 +1,492 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Models &mdash; DeerLab</title>
-  
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="_static/table_util.css" type="text/css" />
-  <link rel="stylesheet" href="_static/table_main.css" type="text/css" />
-  <link rel="stylesheet" href="_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery-rendered-html.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  
+    <title>Models &#8212; DeerLab</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="_static/theme_override.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="dd_circle" href="models/dd_circle.html" />
-    <link rel="prev" title="time2dist" href="functions/time2dist.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="next" title="deerlab.dd_gauss" href="_autosummary/deerlab.dd_gauss.html" />
+    <link rel="prev" title="Global analysis of 5-pulse DEER on a liquid-droplet protein system" href="auto_examples/advanced/ex_droplets_model.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
 
-          
-            <a href="index.html">
-          
-
-          
-            
-            <img src="_static/logo.png" class="logo" alt="Logo"/>
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                v0.13.2
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="beginners_guide.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Others</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Release Notes</a></li>
-</ul>
-
-            
-          
-        </div>
-        
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">DeerLab</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
+    <!-- Google Analytics -->
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>Models</li>
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
     
     
-      <li class="wy-breadcrumbs-aside">
-        
-          
-        
-      </li>
+
+<a class="navbar-brand" href="index.html">
+  <img src="_static/logo_docs.svg" class="logo" alt="logo">
+</a>
+
+
     
-  </ul>
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
   
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
-  <div class="section" id="models">
-<span id="modelsref"></span><h1>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="distribution-models">
-<span id="modelsref-dd"></span><h2>Distribution models<a class="headerlink" href="#distribution-models" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="basis-functions">
-<h3>Basis functions<a class="headerlink" href="#basis-functions" title="Permalink to this headline">¶</a></h3>
-<p>This group of distribution models is based on functions that can serve as basis functions for modeling more general distributions.</p>
-<table border="1" class="func-list docutils">
-<colgroup>
-<col width="28%" />
-<col width="72%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Model function</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="models/dd_rice.html#dd-rice"><span class="std std-ref">dd_rice</span></a></td>
-<td>3D-Rice distribution</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/dd_rice2.html#dd-rice2"><span class="std std-ref">dd_rice2</span></a></td>
-<td>Two 3D-Rice distributions</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/dd_rice3.html#dd-rice3"><span class="std std-ref">dd_rice3</span></a></td>
-<td>Three 3D-Rice distributions</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/dd_gauss.html#dd-gauss"><span class="std std-ref">dd_gauss</span></a></td>
-<td>Gaussian distribution</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/dd_gauss2.html#dd-gauss2"><span class="std std-ref">dd_gauss2</span></a></td>
-<td>Two Gaussian distributions</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/dd_gauss3.html#dd-gauss3"><span class="std std-ref">dd_gauss3</span></a></td>
-<td>Three Gaussian distributions</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/dd_gengauss.html#dd-gengauss"><span class="std std-ref">dd_gengauss</span></a></td>
-<td>Generalized Gaussian distribution</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/dd_skewgauss.html#dd-skewgauss"><span class="std std-ref">dd_skewgauss</span></a></td>
-<td>Skew Gaussian distribution</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/dd_cos.html#dd-cos"><span class="std std-ref">dd_cos</span></a></td>
-<td>Raised-cosine distribution</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="disordered-physical-models">
-<h3>Disordered physical models<a class="headerlink" href="#disordered-physical-models" title="Permalink to this headline">¶</a></h3>
-<p>This group of distribution models represents spin labels attached to disordered macromolecular structures.</p>
-<table border="1" class="func-list docutils">
-<colgroup>
-<col width="28%" />
-<col width="72%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Model function</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="models/dd_wormchain.html#dd-wormchain"><span class="std std-ref">dd_wormchain</span></a></td>
-<td>Worm-like chain</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/dd_wormgauss.html#dd-wormgauss"><span class="std std-ref">dd_wormgauss</span></a></td>
-<td>Worm-like chain with Gaussian convolution</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/dd_randcoil.html#dd-randcoil"><span class="std std-ref">dd_randcoil</span></a></td>
-<td>Random coil</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="sphere-shell-models">
-<h3>Sphere/shell models<a class="headerlink" href="#sphere-shell-models" title="Permalink to this headline">¶</a></h3>
-<p>This group of distribution models represents spin labels in simple partitions of 3D space.</p>
-<table border="1" class="func-list docutils">
-<colgroup>
-<col width="28%" />
-<col width="72%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Model function</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="models/dd_sphere.html#dd-sphere"><span class="std std-ref">dd_sphere</span></a></td>
-<td>Labels distributed in a sphere</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/dd_spheresurf.html#dd-spheresurf"><span class="std std-ref">dd_spheresurf</span></a></td>
-<td>Labels distributed on a sphere’s surface</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/dd_spherepoint.html#dd-spherepoint"><span class="std std-ref">dd_spherepoint</span></a></td>
-<td>One label fixed, other label distributed in a sphere</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/dd_shell.html#dd-shell"><span class="std std-ref">dd_shell</span></a></td>
-<td>Labels distributed on a spherical shell</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/dd_shellsphere.html#dd-shellsphere"><span class="std std-ref">dd_shellsphere</span></a></td>
-<td>Labels distributed on a sphere inside a spherical shell</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/dd_shellshell.html#dd-shellshell"><span class="std std-ref">dd_shellshell</span></a></td>
-<td>Labels distributed on a spherical shell inside another spherical shell</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/dd_shellvoidshell.html#dd-shellvoidshell"><span class="std std-ref">dd_shellvoidshell</span></a></td>
-<td>Labels distributed on two spherical shells separated by a void</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/dd_shellvoidsphere.html#dd-shellvoidsphere"><span class="std std-ref">dd_shellvoidsphere</span></a></td>
-<td>Labels distributed on a sphere inside a spherical shell separated by a void</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="toy-models">
-<h3>Toy models<a class="headerlink" href="#toy-models" title="Permalink to this headline">¶</a></h3>
-<p>This group contains distribution models that have absolutely no physical relevance. They are useful for testing numerical algorithms.</p>
-<table border="1" class="func-list docutils">
-<colgroup>
-<col width="28%" />
-<col width="72%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Model function</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="models/dd_circle.html#dd-circle"><span class="std std-ref">dd_circle</span></a></td>
-<td>Semi-circle distribution</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/dd_triangle.html#dd-triangle"><span class="std std-ref">dd_triangle</span></a></td>
-<td>Triangle distribution</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/dd_uniform.html#dd-uniform"><span class="std std-ref">dd_uniform</span></a></td>
-<td>Uniform distribution</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="background-models">
-<span id="modelsref-bg"></span><h2>Background models<a class="headerlink" href="#background-models" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="physical-models">
-<h3>Physical models<a class="headerlink" href="#physical-models" title="Permalink to this headline">¶</a></h3>
-<p>This category involves models that describe particular distributions of spin labels in space. These models depend on physical parameters such as spin concentration, exclusion distances, and dimensionality.</p>
-<table border="1" class="func-list docutils">
-<colgroup>
-<col width="28%" />
-<col width="72%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Model function</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="models/bg_hom3d.html#bg-hom3d"><span class="std std-ref">bg_hom3d</span></a></td>
-<td>Homogeneous distribution in 3D</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/bg_hom3dex.html#bg-hom3dex"><span class="std std-ref">bg_hom3dex</span></a></td>
-<td>Homogeneous distribution in 3D with hard-shell excluded volume</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/bg_homfractal.html#bg-homfractal"><span class="std std-ref">bg_homfractal</span></a></td>
-<td>Homogeneous distribution in fractal dimensions</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="phenomenological-models">
-<h3>Phenomenological models<a class="headerlink" href="#phenomenological-models" title="Permalink to this headline">¶</a></h3>
-<p>This category comprises phenomenological models that represent various mathematical functions that are intended to mimick the background decay, without reference to a particular spatial distribution of spins. The parameters of these models do no have direct physical meaning.</p>
-<table border="1" class="func-list docutils">
-<colgroup>
-<col width="28%" />
-<col width="72%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Model function</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="models/bg_exp.html#bg-exp"><span class="std std-ref">bg_exp</span></a></td>
-<td>Exponential decay</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/bg_strexp.html#bg-strexp"><span class="std std-ref">bg_strexp</span></a></td>
-<td>Stretched exponential decay</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/bg_sumstrexp.html#bg-sumstrexp"><span class="std std-ref">bg_sumstrexp</span></a></td>
-<td>Sum of two stretched exponential decays</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/bg_prodstrexp.html#bg-prodstrexp"><span class="std std-ref">bg_prodstrexp</span></a></td>
-<td>Product of two stretched exponential decays</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/bg_poly1.html#bg-poly1"><span class="std std-ref">bg_poly1</span></a></td>
-<td>Linear polynomial</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/bg_poly2.html#bg-poly2"><span class="std std-ref">bg_poly2</span></a></td>
-<td>Quadratic polynomial</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/bg_poly3.html#bg-poly3"><span class="std std-ref">bg_poly3</span></a></td>
-<td>Cubic polynomial</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="experiment-models">
-<span id="modelsref-ex"></span><h2>Experiment models<a class="headerlink" href="#experiment-models" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="func-list docutils">
-<colgroup>
-<col width="28%" />
-<col width="72%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Model function</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="models/ex_4pdeer.html#ex-4pdeer"><span class="std std-ref">ex_4pdeer</span></a></td>
-<td>4-pulse DEER, 3-pulse DEER (single modulated pathway)</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/ex_ovl4pdeer.html#ex-ovl4pdeer"><span class="std std-ref">ex_ovl4pdeer</span></a></td>
-<td>4-pulse DEER (including 2+1 pathway)</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/ex_5pdeer.html#ex-5pdeer"><span class="std std-ref">ex_5pdeer</span></a></td>
-<td>5-pulse DEER</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/ex_7pdeer.html#ex-7pdeer"><span class="std std-ref">ex_7pdeer</span></a></td>
-<td>7-pulse DEER</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/ex_ridme1.html#ex-ridme1"><span class="std std-ref">ex_ridme1</span></a></td>
-<td>RIDME with one harmonic pathway (spin S=1/2)</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/ex_ridme3.html#ex-ridme3"><span class="std std-ref">ex_ridme3</span></a></td>
-<td>RIDME with three harmonic pathways (spin S=3/2)</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="models/ex_ridme5.html#ex-ridme5"><span class="std std-ref">ex_ridme5</span></a></td>
-<td>RIDME with five harmonic pathways (spin S=5/2)</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="models/ex_ridme7.html#ex-ridme7"><span class="std std-ref">ex_ridme7</span></a></td>
-<td>RIDME with seven harmonic pathways (spin S=7/2)</td>
-</tr>
-</tbody>
-</table>
-<div class="toctree-wrapper compound">
-</div>
-</div>
-</div>
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
 
+    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="installation.html">Installation</a>
+        </li>
 
-           </div>
-           
+        <li class="dropdown">
+          <a class="dropbtn" href="user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="models/dd_circle.html" class="btn btn-neutral float-right" title="dd_circle" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="functions/time2dist.html" class="btn btn-neutral float-left" title="time2dist" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="sk-nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="#">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="sk-nav-link nav-link" href="reference.html">Reference</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="license.html">License</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
     </div>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
-
-    </p>
-  </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-        </div>
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
       </div>
-
-    </section>
-
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
   </div>
-  
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(false);
-      });
-  </script>
-
-  
-  
+</div>
+    </nav>
     
-   
 
-</body>
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <div class="col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#distance-distribution-models">
+   Distance distribution models
+  </a>
+  <ul class="nav section-nav flex-column">
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#background-models">
+   Background models
+  </a>
+  <ul class="nav section-nav flex-column">
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#experiment-models">
+   Experiment models
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-11 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="models">
+<span id="modelsref"></span><h1>Models<a class="headerlink" href="#models" title="Permalink to this headline">#</a></h1>
+<p>DeerLab provides a wide selection of built-in models. These are instances of the <a class="reference internal" href="_autosummary/deerlab.Model.html#model"><span class="std std-ref">deerlab.Model</span></a> object class
+and can be manipulated and expanded as described in the <a class="reference internal" href="modelling_guide.html#modelling-guide"><span class="std std-ref">Modelling guide</span></a>.</p>
+<p id="modelsref-dd">These are models particularly oriented towards the modelling of dipolar EPR spectroscopy data.</p>
+<section id="distance-distribution-models">
+<h2>Distance distribution models<a class="headerlink" href="#distance-distribution-models" title="Permalink to this headline">#</a></h2>
+<p>These models provide parametrizations of the interspin distance distributions.</p>
+<p class="rubric">Basis functions</p>
+<p>This group of distribution models is based on functions that can serve as basis functions for modeling more general distributions.</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_gauss.html#deerlab.dd_gauss" title="deerlab.dd_gauss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_gauss</span></code></a></p></td>
+<td><p>Gaussian distribution model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_gauss2.html#deerlab.dd_gauss2" title="deerlab.dd_gauss2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_gauss2</span></code></a></p></td>
+<td><p>Sum of two Gaussian distributions model</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_gauss3.html#deerlab.dd_gauss3" title="deerlab.dd_gauss3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_gauss3</span></code></a></p></td>
+<td><p>Sum of three Gaussian distributions model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_rice.html#deerlab.dd_rice" title="deerlab.dd_rice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_rice</span></code></a></p></td>
+<td><p>3D-Rice distribution model</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_rice2.html#deerlab.dd_rice2" title="deerlab.dd_rice2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_rice2</span></code></a></p></td>
+<td><p>Sum of two 3D-Rice distributions model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_rice3.html#deerlab.dd_rice3" title="deerlab.dd_rice3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_rice3</span></code></a></p></td>
+<td><p>Sum of two 3D-Rice distributions model</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_gengauss.html#deerlab.dd_gengauss" title="deerlab.dd_gengauss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_gengauss</span></code></a></p></td>
+<td><p>Generalized Gaussian distribution model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_skewgauss.html#deerlab.dd_skewgauss" title="deerlab.dd_skewgauss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_skewgauss</span></code></a></p></td>
+<td><p>Skew Gaussian distribution model</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_cos.html#deerlab.dd_cos" title="deerlab.dd_cos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_cos</span></code></a></p></td>
+<td><p>Raised-cosine parametric model</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Disordered physical models</p>
+<p>This group of distribution models represents spin labels attached to disordered macromolecular structures.</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_wormchain.html#deerlab.dd_wormchain" title="deerlab.dd_wormchain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_wormchain</span></code></a></p></td>
+<td><p>Worm-like chain model near the rigid limit.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_wormgauss.html#deerlab.dd_wormgauss" title="deerlab.dd_wormgauss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_wormgauss</span></code></a></p></td>
+<td><p>Worm-like chain model near the rigid limit with Gaussian convolution.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_randcoil.html#deerlab.dd_randcoil" title="deerlab.dd_randcoil"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_randcoil</span></code></a></p></td>
+<td><p>Random-coil model for an unfolded peptide/protein</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Sphere/shell models</p>
+<p>This group of distribution models represents spin labels in simple partitions of 3D space.</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_sphere.html#deerlab.dd_sphere" title="deerlab.dd_sphere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_sphere</span></code></a></p></td>
+<td><p>Particles uniformly distributed on a sphere.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_spheresurf.html#deerlab.dd_spheresurf" title="deerlab.dd_spheresurf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_spheresurf</span></code></a></p></td>
+<td><p>Particles uniformly distributed on a sphere's surface.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_spherepoint.html#deerlab.dd_spherepoint" title="deerlab.dd_spherepoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_spherepoint</span></code></a></p></td>
+<td><p>One particle distanced from particles uniformly distributed on a sphere</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_shell.html#deerlab.dd_shell" title="deerlab.dd_shell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_shell</span></code></a></p></td>
+<td><p>Uniform distribution of particles on a spherical shell</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_shellshell.html#deerlab.dd_shellshell" title="deerlab.dd_shellshell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_shellshell</span></code></a></p></td>
+<td><p>Particles uniformly distributed on a spherical shell and on another concentric spherical shell.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_shellsphere.html#deerlab.dd_shellsphere" title="deerlab.dd_shellsphere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_shellsphere</span></code></a></p></td>
+<td><p>Particles uniformly distributed on a sphere and on an outer spherical shell.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_shellvoidshell.html#deerlab.dd_shellvoidshell" title="deerlab.dd_shellvoidshell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_shellvoidshell</span></code></a></p></td>
+<td><p>Particles uniformly distributed on a spherical shell and on another concentric spherical shell separated by a void.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_shellvoidsphere.html#deerlab.dd_shellvoidsphere" title="deerlab.dd_shellvoidsphere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_shellvoidsphere</span></code></a></p></td>
+<td><p>Particles uniformly distributed on a sphere and on a concentric outer spherical shell separated by a void.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Toy models</p>
+<p>This group contains distribution models that have absolutely no physical relevance. They are useful for testing numerical algorithms.</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_circle.html#deerlab.dd_circle" title="deerlab.dd_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_circle</span></code></a></p></td>
+<td><p>Semicircle distribution model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_triangle.html#deerlab.dd_triangle" title="deerlab.dd_triangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_triangle</span></code></a></p></td>
+<td><p>Triangular distribution model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.dd_uniform.html#deerlab.dd_uniform" title="deerlab.dd_uniform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dd_uniform</span></code></a></p></td>
+<td><p>Uniform distribution model.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="background-models">
+<span id="modelsref-bg"></span><h2>Background models<a class="headerlink" href="#background-models" title="Permalink to this headline">#</a></h2>
+<p>These models provide parametrizations of the signal contribution arising from intermolecular dipolar interactions.</p>
+<p class="rubric">Physical models</p>
+<p>This category involves models that describe particular distributions of spin labels in space. These models depend on physical parameters such as spin concentration, exclusion distances, and dimensionality.</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_hom3d.html#deerlab.bg_hom3d" title="deerlab.bg_hom3d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_hom3d</span></code></a></p></td>
+<td><p>Background from a homogeneous distribution of spins in a 3D medium</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_hom3dex.html#deerlab.bg_hom3dex" title="deerlab.bg_hom3dex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_hom3dex</span></code></a></p></td>
+<td><p>Background from a homogeneous distribution of spins with excluded volume</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_homfractal.html#deerlab.bg_homfractal" title="deerlab.bg_homfractal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_homfractal</span></code></a></p></td>
+<td><p>Background from homogeneous spin distribution in a space of fractal dimension</p></td>
+</tr>
+</tbody>
+</table>
+<p>Additionally, the following models describe the time-dependent phase-shifts arising from these particular distributions of spin labels in space.</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_hom3d_phase.html#deerlab.bg_hom3d_phase" title="deerlab.bg_hom3d_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_hom3d_phase</span></code></a></p></td>
+<td><p>Phase shift from a homogeneous distribution of spins in a 3D medium</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_hom3dex_phase.html#deerlab.bg_hom3dex_phase" title="deerlab.bg_hom3dex_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_hom3dex_phase</span></code></a></p></td>
+<td><p>Phase shift from a homogeneous distribution of spins with excluded volume</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_homfractal_phase.html#deerlab.bg_homfractal_phase" title="deerlab.bg_homfractal_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_homfractal_phase</span></code></a></p></td>
+<td><p>Phase shift from a homogeneous distribution of spins in a fractal medium</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Phenomenological models</p>
+<p>This category comprises phenomenological models that represent various mathematical functions that are intended to mimic the background decay, without reference to a particular spatial distribution of spins. The parameters of these models do no have direct physical meaning.</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_exp.html#deerlab.bg_exp" title="deerlab.bg_exp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_exp</span></code></a></p></td>
+<td><p>Exponential background model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_strexp.html#deerlab.bg_strexp" title="deerlab.bg_strexp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_strexp</span></code></a></p></td>
+<td><p>Stretched exponential background model</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_sumstrexp.html#deerlab.bg_sumstrexp" title="deerlab.bg_sumstrexp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_sumstrexp</span></code></a></p></td>
+<td><p>Sum of two stretched exponentials background model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_prodstrexp.html#deerlab.bg_prodstrexp" title="deerlab.bg_prodstrexp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_prodstrexp</span></code></a></p></td>
+<td><p>Product of two stretched exponentials background model</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_poly1.html#deerlab.bg_poly1" title="deerlab.bg_poly1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_poly1</span></code></a></p></td>
+<td><p>Polynomial 1st-order background model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_poly2.html#deerlab.bg_poly2" title="deerlab.bg_poly2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_poly2</span></code></a></p></td>
+<td><p>Polynomial 2nd-order background model</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.bg_poly3.html#deerlab.bg_poly3" title="deerlab.bg_poly3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bg_poly3</span></code></a></p></td>
+<td><p>Polynomial 3rd-order background model</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="experiment-models">
+<span id="modelsref-ex"></span><h2>Experiment models<a class="headerlink" href="#experiment-models" title="Permalink to this headline">#</a></h2>
+<p>These generator functions model different dipolar EPR experiments, and provide the means
+to refine the dipolar signal models by introducing experimental information.</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_3pdeer.html#deerlab.ex_3pdeer" title="deerlab.ex_3pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_3pdeer</span></code></a></p></td>
+<td><p>Generate a 3-pulse DEER dipolar experiment model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_4pdeer.html#deerlab.ex_4pdeer" title="deerlab.ex_4pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_4pdeer</span></code></a></p></td>
+<td><p>Generate a 4-pulse DEER dipolar experiment model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_rev5pdeer.html#deerlab.ex_rev5pdeer" title="deerlab.ex_rev5pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_rev5pdeer</span></code></a></p></td>
+<td><p>Generate a reverse 5-pulse DEER dipolar experiment model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_fwd5pdeer.html#deerlab.ex_fwd5pdeer" title="deerlab.ex_fwd5pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_fwd5pdeer</span></code></a></p></td>
+<td><p>Generate a forward 5-pulse DEER dipolar experiment model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_sifter.html#deerlab.ex_sifter" title="deerlab.ex_sifter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_sifter</span></code></a></p></td>
+<td><p>Generate a SIFTER dipolar experiment model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_ridme.html#deerlab.ex_ridme" title="deerlab.ex_ridme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_ridme</span></code></a></p></td>
+<td><p>Generate a RIDME dipolar experiment model.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="auto_examples/advanced/ex_droplets_model.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Global analysis of 5-pulse DEER on a liquid-droplet protein system</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="_autosummary/deerlab.dd_gauss.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">deerlab.dd_gauss</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
 </html>

@@ -1,553 +1,742 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Release Notes &mdash; DeerLab</title>
-  
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="_static/table_util.css" type="text/css" />
-  <link rel="stylesheet" href="_static/table_main.css" type="text/css" />
-  <link rel="stylesheet" href="_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery-rendered-html.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  
+    <title>Release Notes &#8212; DeerLab</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="_static/theme_override.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Funding" href="funding.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="prev" title="Contributing" href="contributing.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
 
-          
-            <a href="index.html">
-          
-
-          
-            
-            <img src="_static/logo.png" class="logo" alt="Logo"/>
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                v0.13.2
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="beginners_guide.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modelsref.html">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Others</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a></li>
-</ul>
-
-            
-          
-        </div>
-        
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">DeerLab</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
+    <!-- Google Analytics -->
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>Release Notes</li>
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
     
     
-      <li class="wy-breadcrumbs-aside">
-        
-          
-        
-      </li>
+
+<a class="navbar-brand" href="index.html">
+  <img src="_static/logo_docs.svg" class="logo" alt="logo">
+</a>
+
+
     
-  </ul>
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
   
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
-  <div class="section" id="release-notes">
-<span id="changelog"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="release-v0-13-2-july-2021">
-<h2>Release v0.13.2 - July 2021<a class="headerlink" href="#release-v0-13-2-july-2021" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="overall-changes">
-<h3>Overall changes<a class="headerlink" href="#overall-changes" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Fixed an error appearing during installation in Windows systems. If during installation a  <code class="docutils literal notranslate"><span class="pre">python</span></code> executable alias was not created, the call to the <code class="docutils literal notranslate"><span class="pre">pipwin</span></code> manager returned an error and the installation failed to download and install Numpy, SciPy and cvxopt. (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/187">#187</a>).</li>
-<li>Fixed the rendering of certain code-blocks in the documentation examples which were appearing as plain text (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/179">#179</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/184">#184</a>).</li>
-<li>Fixed the execution and rendering of the model examples in the documentation (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/189">#189</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/190">#190</a>).</li>
-<li>Fixed a bug in <code class="docutils literal notranslate"><span class="pre">snlls</span></code> where one of the linear least-squares solvers can return results that violate the boundary conditions due to float-point round-off errors (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/177">#177</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/188">#188</a>).</li>
-</ul>
-</div>
-</div>
-<div class="section" id="release-v0-13-1-may-2021">
-<h2>Release v0.13.1 - May 2021<a class="headerlink" href="#release-v0-13-1-may-2021" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id8">
-<h3>Overall changes<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Fixed the behaviour of global weights throughout DeerLab fit functions. The keyword argument <code class="docutils literal notranslate"><span class="pre">weights</span></code> was not having any or the expected effect in the results in some fit functions. Also fixes the behaviour of built-in plots for global fits (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/168">#168</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/171">#171</a>).</li>
-<li>Optimize default weights in global fitting according to the datasets noise levels (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/169">#169</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/174">#174</a>).</li>
-<li>Fixed a bug in <code class="docutils literal notranslate"><span class="pre">snlls</span></code> that was causing the confidence intervals in <code class="docutils literal notranslate"><span class="pre">snlls</span></code>, <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> and <code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code> to vanish for large signal scales (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/165">#165</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/166">#166</a>).</li>
-</ul>
-</div>
-<div class="section" id="specific-changes">
-<h3>Specific changes<a class="headerlink" href="#specific-changes" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">deerload</span></code>: Corrected a bug that happened in certain BES3T Bruker spectrometer files, when there are entries under the <code class="docutils literal notranslate"><span class="pre">MANIPULATION</span> <span class="pre">HISTORY</span> <span class="pre">LAYER</span></code> section at the end of the descriptor file. Also fixed the reading of <code class="docutils literal notranslate"><span class="pre">.XGF</span></code> partner files (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/164">#164</a>).</li>
-<li><code class="docutils literal notranslate"><span class="pre">snlls</span></code>: The keyword argument <code class="docutils literal notranslate"><span class="pre">extrapenalty</span></code> now requires a function that takes both non-linear and linear parameters. Corrected the name of the keyword in the documentation (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/175">#175</a>).</li>
-<li><code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code>: Fixed the scaling of the output <code class="docutils literal notranslate"><span class="pre">FitResult.model</span></code> and <code class="docutils literal notranslate"><span class="pre">FitResult.modelUncert</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/173">#173</a>).</li>
-<li><code class="docutils literal notranslate"><span class="pre">ex_pseudotitration_parameter_free</span></code>: Removed <code class="docutils literal notranslate"><span class="pre">Ctot</span></code> from second order term in the <code class="docutils literal notranslate"><span class="pre">chemicalequalibrium</span></code> polynomial (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/163">#163</a>).</li>
-</ul>
-</div>
-</div>
-<hr class="docutils" />
-<div class="section" id="release-v0-13-0-april-2021">
-<h2>Release v0.13.0 - April 2021<a class="headerlink" href="#release-v0-13-0-april-2021" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="new-features">
-<h3>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>DeerLab is now distributed via the Anaconda repository and can be installed with the <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/12">#12</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/157">#157</a>). The installation instructions have been expanded to describe the Anaconda installation (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/155">#155</a>).</li>
-<li>DeerLab now supports Python 3.9.</li>
-<li>The function <code class="docutils literal notranslate"><span class="pre">fitsignal</span></code> has been re-named to <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> for correctness and consistency with other functions (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/102">#102</a>).</li>
-<li>Added new experiment models for RIDME on systems with one to seven harmonic pathways (S=1/2 to S=7/2) to include all higher harmonics (overtones) (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/79">#79</a>).</li>
-<li>Bootstrapping is now embedded into <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> to automatically bootstrap all output quantities without the need to write additional script lines (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/55">#55</a>). In <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> a new option <code class="docutils literal notranslate"><span class="pre">uq</span></code> allows to switch between covariance or bootstrapping uncertainty quantification (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/88">#88</a>).</li>
-<li>The function <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> now returns <code class="docutils literal notranslate"><span class="pre">Vmod</span></code> and <code class="docutils literal notranslate"><span class="pre">Vunmod</span></code>, the modulated and unmodulated contributionsto the fitted dipolar signal, respectively, along their uncertainties as additional outputs (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/78">#78</a>).</li>
-<li>Implemented several initialization strategies in <code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code> for multi-model components (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/67">#67</a>). Three different new strategies <code class="docutils literal notranslate"><span class="pre">'spread'</span></code>, <code class="docutils literal notranslate"><span class="pre">'split'</span></code> and <code class="docutils literal notranslate"><span class="pre">'merge'</span></code> will initialize the parameter values of the N-component fit based on the results of the N-1/N+1 component fit to improve quality of results and speed.</li>
-<li>Added contribution guidelines to the documentation and automated list of DeerLab contributors.</li>
-<li>The function <code class="docutils literal notranslate"><span class="pre">snlls</span></code> now accepts additional custom penalties to include in the optimization (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/76">#76</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/112">#108</a>).</li>
-<li>All fit functions now return the fit of the data along its uncertainty automatically as part of the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/130">#130</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/134">#134</a>).</li>
-<li>Implemented a new method <code class="docutils literal notranslate"><span class="pre">UQResult.join()</span></code> to merge multiple uncertainty quantification objects (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/154">#154</a>). This permits error propagation from multiple uncertainty sources to a common function.</li>
-</ul>
-</div>
-<div class="section" id="id33">
-<h3>Overall changes<a class="headerlink" href="#id33" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>The performance of all fit functions has been considerably accelerated by removing call overheads in built-in DeerLab models (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/100">#100</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/101">#101</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/143">#143</a>).</li>
-<li>Improved robustness of the installation from PyPI (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/65">#65</a>):<ul>
-<li>The installer no longer assumes the alias <code class="docutils literal notranslate"><span class="pre">pip</span></code> to be setup on the system.</li>
-<li>The installation will now handle cases when system-wide privileges are not available (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/52">#52</a>).</li>
-<li>Improved robustness of the installation in Windows systems to avoid missing DLL errors (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/64">#64</a>).</li>
-<li>The installer will now get the latest Numpy/Scipy releases in Windows systems available at the <a class="reference external" href="https://www.lfd.uci.edu/~gohlke/pythonlibs/">Gohlke repository</a>.</li>
-</ul>
-</li>
-<li>Adapted piece of code leading to a <code class="docutils literal notranslate"><span class="pre">VisibleDeprecationWarning</span></code> visible during execution of certain DeerLab functions.</li>
-<li>Improved interface of built-in plots in <code class="docutils literal notranslate"><span class="pre">FitResult.plot()</span></code>. The method now returns a Matplotlib figure object (<code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code>) instead of an axes object (<code class="docutils literal notranslate"><span class="pre">matplotlib.axes._subplots.AxesSubplot</span></code>) which can be modified more freely to adjust graphical elements (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/85">#85</a>). The method now takes an optional keyword <code class="docutils literal notranslate"><span class="pre">FitResult.plot(show=True\False)</span></code> to enable/disable rendering of the graphics upon calling the method (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/87">#87</a>).</li>
-<li>The fit objective values returned in <code class="docutils literal notranslate"><span class="pre">FitResult.cost</span></code> are now correct (previous versions had an erroneous 1/2 factor) (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/80">#80</a>). The value is now returned as a scalar value instead of a single-element list (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/81">#81</a>).</li>
-<li>Removed the re-normalization conventions <code class="docutils literal notranslate"><span class="pre">K(t=0,r)=1</span></code> and <code class="docutils literal notranslate"><span class="pre">B(t=0)=1</span></code> and associated options <code class="docutils literal notranslate"><span class="pre">renormalize</span></code> and <code class="docutils literal notranslate"><span class="pre">renormpaths</span></code> in the <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> and <code class="docutils literal notranslate"><span class="pre">dipolarbackground</span></code> functions (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/99">#99</a>) to avoid identifiability issues between dipolar pathway amplitudes and signal scales during fitting (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/76">#76</a>).</li>
-<li>The fit convergence criteria <code class="docutils literal notranslate"><span class="pre">tol</span></code> (objective function tolerance) and <code class="docutils literal notranslate"><span class="pre">maxiter</span></code> (iteration limit) are now exposed as keyword argument in all fit functions (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/111">#111</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/112">#112</a>).</li>
-<li>Multiple improvements and corrections to the documentation (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/95">#95</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/96">#96</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/104">#104</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/106">#106</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/107">#107</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/115">#115</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/122">#122</a>)</li>
-<li>Corrections in the metadata of multiple <code class="docutils literal notranslate"><span class="pre">dd_models</span></code>. The key <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> of some models contained the wrong names.</li>
-<li>The metadata of the built-in models is now accessible and manipulable via function attributes (e.g. <code class="docutils literal notranslate"><span class="pre">dd_gauss.parameters</span></code>) rather than trought a returned dictionary (e.g. <code class="docutils literal notranslate"><span class="pre">dd_gauss()['Parameters']</span></code>) (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/143">#143</a>).</li>
-<li>The keyword argument to request uncertainty quantification has been unified across all fitting functions. It is now <code class="docutils literal notranslate"><span class="pre">uq</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/120">#120</a>).</li>
-<li>The <code class="docutils literal notranslate"><span class="pre">UncertQuant</span></code> class has been renamed into <code class="docutils literal notranslate"><span class="pre">UQResult</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/123">#123</a>).</li>
-<li>Uncertainty quantification is now tested numerically against an external package (<code class="docutils literal notranslate"><span class="pre">lmfit</span></code>) to ensue quality and accuracy (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/121">#121</a>).</li>
-<li>Expanded the collection of examples in the documentation, and improved existing ones (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/144">#144</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/148">#148</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/153">#153</a>).</li>
-</ul>
-</div>
-<div class="section" id="id62">
-<h3>Specific changes<a class="headerlink" href="#id62" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">deerload</span></code>:<ul>
-<li>Fixed behaviour of the function when loading certain 2D-datasets in the BES3T format (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/82">#82</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/83">#83</a>).</li>
-<li>In 2D-datasets, the abscissas are now returned as a list of abscissas instead of a single 2D-matrix (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/83">#83</a>)).</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">fitmodel</span></code>:<ul>
-<li>Corrected the scaling behaviour of all outputs related to components of the dipolar signal to match the scaling of the original experimental data (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/78">#78</a>).</li>
-<li>The built-in plot method <code class="docutils literal notranslate"><span class="pre">FitResult.plot()</span></code> now plots the unmodulated component fit as well with its uncertainty (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/78">#78</a>).</li>
-<li>When plotting bootstrapped results with <code class="docutils literal notranslate"><span class="pre">FitResult.plot()</span></code>, the fit is substituted with the median of the bootstrapped distribution (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/148">#148</a>).</li>
-<li>Extended information included in the verbose summary (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/78">#78</a>).</li>
-<li>Simplified the interface for defining initial values and boundaries of parameters in <code class="docutils literal notranslate"><span class="pre">fitsignal</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/71">#71</a>). Now instead of defining, e.g., <code class="docutils literal notranslate"><span class="pre">fitsignal(...,</span> <span class="pre">lb</span> <span class="pre">=</span> <span class="pre">[[],[50],[0.2,</span> <span class="pre">0.5]])</span></code> one can define the individual vales/boundaries <code class="docutils literal notranslate"><span class="pre">fitsignal(...,</span> <span class="pre">bg_lb</span> <span class="pre">=</span> <span class="pre">50,</span> <span class="pre">ex_lb</span> <span class="pre">=</span> <span class="pre">[0.2,0.5])</span></code> by using the new keywords.</li>
-<li>Removed the keyword argument <code class="docutils literal notranslate"><span class="pre">uqanalysis=True/False</span></code>. The uncertainty quantification can now be disabled via the new keyword <code class="docutils literal notranslate"><span class="pre">uq=None</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/98">#98</a>).</li>
-<li>Corrected the behaviour of built-in start values when manually specifying boundaries (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/73">#73</a>). If the built-in start values are outside of the user-specified boundaries the program will now automatically set the start values in the middle of the boundaries to avoid errors (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/72">#72</a>).</li>
-<li>Implemented the constraint <code class="docutils literal notranslate"><span class="pre">Lam0+sum(lam)&lt;=1</span></code> to ensure the structural-identifiability of <code class="docutils literal notranslate"><span class="pre">Lam0</span></code> and <code class="docutils literal notranslate"><span class="pre">V0</span></code> during SNLLS optimization of experiment models with more than one modulated dipolar pathway (i.e. does not affect <code class="docutils literal notranslate"><span class="pre">ex_4pdeer</span></code>) (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/76">#76</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/108">#108</a>).</li>
-<li>The function now accepts any sequence input (lists, arrays, tuples, etc.) instead of just lists (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/152">#152</a>).</li>
-<li>Removed the optional keyword argument <code class="docutils literal notranslate"><span class="pre">regtype</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/137">#137</a>).</li>
-<li>Fixed a bug in the scaling of the distance distribution uncertainty quantification (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/148">#148</a>).</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">fitregmodel</span></code>:<ul>
-<li>Corrected the behaviour of the uncertainty quantification when disabling the non-negativity constraint (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/121">#121</a>).</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code>:<ul>
-<li>Made <code class="docutils literal notranslate"><span class="pre">par0</span></code> a positional argument instead of an optional keyword (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/70">#70</a>). to avoid errors when not defined (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/69">#69</a>).</li>
-<li>Keyword argument <code class="docutils literal notranslate"><span class="pre">rescale</span></code> has been renamed to <code class="docutils literal notranslate"><span class="pre">fitscale</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/128">#128</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/129">#129</a>).</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">snlls</span></code>:<ul>
-<li>Corrected bug that was leading to the smoothness penalty being accounted for twice in the least-squares residual during optimization (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/103">#103</a>).</li>
-<li>Now returns the uncertainty quantification of linear and nonlinear parts as separate objects <code class="docutils literal notranslate"><span class="pre">nonlinUncert</span></code> and <code class="docutils literal notranslate"><span class="pre">linUncert</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/108">#108</a>).</li>
-<li>Improved the covariance-based uncertainty analysis by including correlations between linear and non-linear parameters (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/108">#108</a>).</li>
-<li>Improved the behavior of signal scale determination (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/108">#108</a>).</li>
-<li>Enabled prescaling of the data to avoid scaling issues during uncertainty quantification (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issue/132">#132</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/133">#133</a>).</li>
-<li>Corrected the behaviour of the uncertainty quantification when disabling the regularization penalty (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/121">#121</a>).</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">diststats</span></code>:<ul>
-<li>Now compatible with non-uniformly defined distance distributions (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/92">#92</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/94">#94</a>).</li>
-<li>Added internal validation step to avoid non-sensical results when confounding the syntax (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/91">#91</a>).</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code>:<ul>
-<li>Now allows defining pathways without unmodulated components.</li>
-<li>All optional keyword arguments can only be passed as named and not positional arguments (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/138">#138</a>).</li>
-<li>The keyword <code class="docutils literal notranslate"><span class="pre">pathways</span></code> now only takes lists of pathways and not modulation depth parameters. A new separate keyword <code class="docutils literal notranslate"><span class="pre">mod</span></code> takes the modulation depth parameter for the simplified 4-pulse DEER kernel (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/118">#118</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/138">#138</a>).</li>
-<li>Renmaed the background argument keyword <code class="docutils literal notranslate"><span class="pre">B</span></code> into <code class="docutils literal notranslate"><span class="pre">bg</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/138">#138</a>).</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">regparamrange</span></code>:<ul>
-<li>Implemented new CSD algorithm to avoid LAPACK library crashes encountered when using multiple DeerLab functions calling <code class="docutils literal notranslate"><span class="pre">regparamrange</span></code> internally (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/68">#68</a>).</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">correctphase</span></code>:<ul>
-<li>Implement new keyword <code class="docutils literal notranslate"><span class="pre">phase</span></code> to select the criterion for optimizing the phase for correction (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/114">#114</a>, <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull0/131">#131</a>).</li>
-<li>Deprecated imaginary offset fitting (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull0/131">#131</a>).</li>
-<li>Deprecated manual phase correction. Manual correction can be done by the user and is now described in the beginner’s guide (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull0/131">#131</a>).</li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<hr class="docutils" />
-<div class="section" id="release-v0-12-2-october-2020">
-<h2>Release v0.12.2 - October 2020<a class="headerlink" href="#release-v0-12-2-october-2020" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="hotfix">
-<h3>Hotfix<a class="headerlink" href="#hotfix" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">regparamrange</span></code>: The exception handling introduced in the previous release was still too specific. The function kept crashing due to SVD non-convergence errors during the GSVD. This has been fixed and the error will not lead to a crash. (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/42">#42</a>).</li>
-</ul>
-</div>
-<div class="section" id="id104">
-<h3>Overall changes<a class="headerlink" href="#id104" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Fit functions using the <code class="docutils literal notranslate"><span class="pre">multistart</span></code> option are now fully deterministic. The functions was using now a random generator to define the different start points, this is now deterministic.</li>
-<li>Documentation UI has been re-designed for a more confortable reading. Minor errors and outdated information have been corrected throughout. Expanded reference documentation of several functions for better understanding.</li>
-</ul>
-</div>
-<div class="section" id="id105">
-<h3>Specific changes<a class="headerlink" href="#id105" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">dd_skewgauss</span></code>: corrected an error in the implementation that was leading to wrong distributions (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/61">#61</a>).</li>
-<li><code class="docutils literal notranslate"><span class="pre">dd_models</span></code>, <code class="docutils literal notranslate"><span class="pre">ex_models</span></code>: Adapted numerical boundaries and start values of some built-in models to reflect better the physical reality. Afected models: <code class="docutils literal notranslate"><span class="pre">dd_skewgauss</span></code>, <code class="docutils literal notranslate"><span class="pre">dd_triangle</span></code>, <code class="docutils literal notranslate"><span class="pre">dd_gengauss</span></code>, <code class="docutils literal notranslate"><span class="pre">ex_5pdeer</span></code>, <code class="docutils literal notranslate"><span class="pre">ex_ovl4pdeer</span></code>.</li>
-</ul>
-</div>
-</div>
-<hr class="docutils" />
-<div class="section" id="release-v0-12-1-october-2020">
-<h2>Release v0.12.1 - October 2020<a class="headerlink" href="#release-v0-12-1-october-2020" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id107">
-<h3>Overall changes<a class="headerlink" href="#id107" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>The calculation of the Jacobian for covariance-based uncertainty analysis has been simplified providing a significant boost in performance for all fit functions (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/55">#55</a>).</li>
-<li>The Jacobian computation is more robust, now taking into consideration parameter boundaries (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/58">#58</a>). This solves errors such as the ones reported in <a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/50">#50</a>.</li>
-<li>Broken examples in the documentation have been corrected (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/57">#57</a>).</li>
-<li>When requesting attributes or method of a UncertQuant object under disabled uncertainty analysis (<code class="docutils literal notranslate"><span class="pre">uqanalysis=False</span></code>) now it will prompt an explanatory error instead of just crashing (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/56">#56</a>).</li>
-</ul>
-</div>
-<div class="section" id="id113">
-<h3>Specific changes<a class="headerlink" href="#id113" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">fitsignal</span></code>: corected the behaviour of the scaling output (<code class="docutils literal notranslate"><span class="pre">fit.scale</span></code>). Now all fitted dipolar signals (<code class="docutils literal notranslate"><span class="pre">fit.V</span></code>) have the same scaling as the input signal (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/53">#53</a>).</li>
-<li><code class="docutils literal notranslate"><span class="pre">regparamrange</span></code>: relaxed the exception handling to catch errors occuring under certain conditions. The function seems to crash due to LAPACK or SVD non-convergence errors during the GSVD, now these are catched and the alpha-range is estimated using simple SVD as an approximation. This function might be deprecated in a future release (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/issues/42">#42</a>).</li>
-</ul>
-</div>
-</div>
-<hr class="docutils" />
-<div class="section" id="release-v0-12-0-october-2020">
-<h2>Release v0.12.0 - October 2020<a class="headerlink" href="#release-v0-12-0-october-2020" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id116">
-<h3>Overall changes<a class="headerlink" href="#id116" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>The regularization operator matrices <code class="docutils literal notranslate"><span class="pre">regoperator</span></code> now include the edges of the distribution (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/38">#38</a>). Now the smoothness penalty is imposed on the distribution edges avoiding the accumulation of distribution mass at the edges of <code class="docutils literal notranslate"><span class="pre">r</span></code>.</li>
-<li>The interface for defining dipolar pathways has been simplified (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/41">#41</a>). For example, a signal with two dipolar pathways had to be defined as <code class="docutils literal notranslate"><span class="pre">pathways</span> <span class="pre">=</span> <span class="pre">[[Lam0,np.nan],</span> <span class="pre">[lam1,T0]]</span></code>. Now the unmodulated pathway must be defined by its amplitude and does not accept the use of <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">pathways</span> <span class="pre">=</span> <span class="pre">[Lam0,</span> <span class="pre">[lam1,T0]]</span></code>.</li>
-<li>The project version control has been switched from the Git-flow to the GitHub-flow design. The default branch has been switched from <code class="docutils literal notranslate"><span class="pre">master</span></code> to <code class="docutils literal notranslate"><span class="pre">main</span></code>, which is now always production-ready. All new contributions are merged into <code class="docutils literal notranslate"><span class="pre">main</span></code> exclusively by pull requests.</li>
-<li>The dependency on the <code class="docutils literal notranslate"><span class="pre">lambda</span></code> parameter has been removed from all phenomenological background models, and kept only for physical models (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/43">#43</a>). Their interface with <code class="docutils literal notranslate"><span class="pre">dipolarbackground</span></code> and <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> have been updated accordingly.</li>
-</ul>
-</div>
-<div class="section" id="id120">
-<h3>New features:<a class="headerlink" href="#id120" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">diststats</span></code>: New function to calculate different statistical quantities of the distance distribution and their corresponding uncertainties (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/37">#37</a>).</li>
-<li><code class="docutils literal notranslate"><span class="pre">bootan</span></code>: Introduced the option <code class="docutils literal notranslate"><span class="pre">cores</span></code> to parallelize the bootstrapping using multiple CPUs (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/35">#35</a>).</li>
-</ul>
-</div>
-<div class="section" id="id123">
-<h3>Specific changes<a class="headerlink" href="#id123" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">bg_homfractal</span></code>:<ul>
-<li>Corrected behavior of the model. For <code class="docutils literal notranslate"><span class="pre">d=3</span></code> the model returned wrong values, and for <code class="docutils literal notranslate"><span class="pre">d~=3</span></code> the model resulted in an error.</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">UncertQuant</span></code>:<ul>
-<li>Fixed bug when propagating uncertainty to scalar functions.</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">deerload</span></code>:<ul>
-<li>Fixed UTF-8 error when loading certain spectrometer files in MacOS (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/30">#30</a>)</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">fitsignal</span></code>:<ul>
-<li>The fitted scale of the signal is now properly calculated when fitting fully parametric signals.</li>
-<li>Fixed error occuring when fitting a dipolar evolution function with a non-parametric distribution.</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">selregparam</span></code>:<ul>
-<li>Fixed bug occuring when requesting the <code class="docutils literal notranslate"><span class="pre">lc</span></code> or <code class="docutils literal notranslate"><span class="pre">lr</span></code> selection methods.</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">regparamange</span></code>:<ul>
-<li>An error occuring at the BLAS/LAPLACK error ocurring under certain conditions in MacOS and Ubuntu is now handled to avoid a crash.</li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<hr class="docutils" />
-<div class="section" id="release-v0-11-0-september-2020">
-<h2>Release v0.11.0 - September 2020<a class="headerlink" href="#release-v0-11-0-september-2020" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id125">
-<h3>Overall changes<a class="headerlink" href="#id125" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>All Gauss models (<code class="docutils literal notranslate"><span class="pre">dd_gauss</span></code>,etc.) now use the standard deviation <code class="docutils literal notranslate"><span class="pre">sigma</span></code> instead of the FWHM as the width parameter for consistency with other method such as Rice distributions (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/19">#19</a>).</li>
-<li>All hard-wired random seeds have been removed.</li>
-<li>A new method <code class="docutils literal notranslate"><span class="pre">plot()</span></code> has been added to the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> class returned by all fit functions. This will create a basic plot of the fit results (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/7">#7</a>).</li>
-</ul>
-</div>
-<div class="section" id="id128">
-<h3>Specific changes<a class="headerlink" href="#id128" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">snlls</span></code>:<ul>
-<li>Renamed option <code class="docutils literal notranslate"><span class="pre">penalty</span></code> as <code class="docutils literal notranslate"><span class="pre">reg</span></code> and improved its interface (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/13">#13</a>).</li>
-<li>The regularization parameter of the optimal solution is returned now (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/20">#20</a>).</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">whitegaussnoise</span></code>: Added a <code class="docutils literal notranslate"><span class="pre">seed</span></code> option to select static noise realizations.</li>
-<li><code class="docutils literal notranslate"><span class="pre">correctzerotime</span></code>:<ul>
-<li>Fixed bug when zero-time is at start/end of array (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/24">#24</a>).</li>
-<li>Function no longer rescales the experimental data passed on to the function.</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">fitsignal</span></code>:<ul>
-<li>The regularization parameter of the optimal solution is returned now (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/20">#20</a>).</li>
-<li>Bug fixed when fitting dipolar evolution functions (no background and no experiment models) with a parametric distance distribution.</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code>: Start points are now spread over constrained parameter space grid instead of being randomble initiated (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/22">#22</a>).</li>
-<li><code class="docutils literal notranslate"><span class="pre">deerload</span></code>:<ul>
-<li>Now returns the time axis in microseconds instead of nanoseconds (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/21">#21</a>).</li>
-<li>The bug appearing when loading certain BES3T files has been fixed (<a class="reference external" href="https://github.com/JeschkeLab/DeerLab/pull/14">#14</a>).</li>
-</ul>
-</li>
-<li><code class="docutils literal notranslate"><span class="pre">fitregmodel</span></code>: Now returns the fitted dipolar signal in the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> output</li>
-<li><code class="docutils literal notranslate"><span class="pre">correctscale</span></code>: The parameter fit ranges have been adjusted.</li>
-</ul>
-</div>
-</div>
-<hr class="docutils" />
-<div class="section" id="release-v0-10-0-august-2020">
-<h2>Release v0.10.0 - August 2020<a class="headerlink" href="#release-v0-10-0-august-2020" title="Permalink to this headline">¶</a></h2>
-<p>As of this version, DeerLab is based on Python in contrast to older versions based on MATLAB found <a class="reference external" href="https://github.com/JeschkeLab/DeerLab-Matlab">here</a>.</p>
-<div class="section" id="deprecated-functions">
-<h3>Deprecated functions<a class="headerlink" href="#deprecated-functions" title="Permalink to this headline">¶</a></h3>
-<p>The following functions have been deprecated due to limited usability or due to functionality overlap with other DeerLab functions: <code class="docutils literal notranslate"><span class="pre">aptkernel</span></code>, <code class="docutils literal notranslate"><span class="pre">backgroundstart</span></code>, <code class="docutils literal notranslate"><span class="pre">fitbackground</span></code>, <code class="docutils literal notranslate"><span class="pre">paramodel</span></code>, and <code class="docutils literal notranslate"><span class="pre">time2freq</span></code>.</p>
-</div>
-<div class="section" id="id136">
-<h3>Overall changes<a class="headerlink" href="#id136" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>All fit functions now return a single <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> output which will contain all results.</li>
-<li>All functions are now compatible with non-uniformly increasing distance axes.</li>
-<li>All fit functions are completely agnostic with respect of the abolute values of the signal amplitude. This is automatically fitted by all function and return as part of the results.</li>
-<li>Uncertainty quantification for all fit functions is returned as a <code class="docutils literal notranslate"><span class="pre">UncertQuant</span></code> object from which confidence intervals, parameter distributions, etc. can be generated generalizing the uncertainty interface for all DeerLab. Uncertainty can now be propagated to arbitrary functions.</li>
-</ul>
-</div>
-<div class="section" id="id137">
-<h3>Specific changes<a class="headerlink" href="#id137" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code>: the functionality has been streamlined. Function now fits arbitrary parametric models using non-linear leas-squares without consideration of whether it is a time-domain or distance-domain model. The models no longer need to take two inputs (axis+parameters) and now only tk the parameters as input.</li>
-<li><code class="docutils literal notranslate"><span class="pre">fitregmodel</span></code>: goodness-of-fit estimators are now computed using the proper estimation the degrees of freedom.</li>
-<li><code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code>: added internal measures to avoid situations where one or several components are suppressed by fitting zero-amplitudes making the method more stable.</li>
-<li><code class="docutils literal notranslate"><span class="pre">uqst</span></code>: the uncertainty distributions of the parameters are now returned as properly normalized probability density functions.</li>
-<li><code class="docutils literal notranslate"><span class="pre">fftspec</span></code>: frequency axis construction has been corrected.</li>
-<li><code class="docutils literal notranslate"><span class="pre">regoperator</span></code>: now calculates the numerically exact finite-difference matrix using Fornberg’s method.</li>
-<li><code class="docutils literal notranslate"><span class="pre">correctphase</span></code>: now can handle 2D-datasets.</li>
-</ul>
-</div>
-</div>
-</div>
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
 
+    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="installation.html">Installation</a>
+        </li>
 
-           </div>
-           
+        <li class="dropdown">
+          <a class="dropbtn" href="user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="funding.html" class="btn btn-neutral float-left" title="Funding" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="sk-nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="sk-nav-link nav-link" href="reference.html">Reference</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="#">Release Notes</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="license.html">License</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
     </div>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
-
-    </p>
-  </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-        </div>
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
       </div>
-
-    </section>
-
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
   </div>
-  
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(false);
-      });
-  </script>
-
-  
-  
+</div>
+    </nav>
     
-   
 
-</body>
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-14-0-april-2022">
+   Release v0.14.0 - April 2022
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-13-2-july-2021">
+   Release v0.13.2 - July 2021
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-13-1-may-2021">
+   Release v0.13.1 - May 2021
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-13-0-april-2021">
+   Release v0.13.0 - April 2021
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-12-2-october-2020">
+   Release v0.12.2 - October 2020
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-12-1-october-2020">
+   Release v0.12.1 - October 2020
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-12-0-october-2020">
+   Release v0.12.0 - October 2020
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-11-0-september-2020">
+   Release v0.11.0 - September 2020
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-10-0-august-2020">
+   Release v0.10.0 - August 2020
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="release-notes">
+<span id="changelog"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">#</a></h1>
+<p class="rubric">Legend</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> : Features something new which could not be done before</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_efficiency">Efficiency</span></span> : A change which improves the performance or memory usage.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> : An improvement to a previously existing feature.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> : Something which was not working as expected or leading to errors has been fixed.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> : This will require changes in your scripts or code.</p></li>
+</ul>
+<section id="release-v0-14-0-april-2022">
+<h2>Release v0.14.0 - April 2022<a class="headerlink" href="#release-v0-14-0-april-2022" title="Permalink to this headline">#</a></h2>
+<p class="rubric">Overall changes</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> <span class="raw-html"><span class="badge changelog_api">API Change</span></span> Complete overhaul of the DeerLab modelling and fitting interface. Check the new documentation for help and details. (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/218">#218</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/223">#223</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/228">#228</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/237">#237</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/225">#225</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/243">#243</a>).</p>
+<ul>
+<li><p>A new modelling system has been introduced. DeerLab main interface runs on a new <code class="docutils literal notranslate"><span class="pre">Model</span></code> object class. Models implement and provide the distinction between linear and non-linear parameters.</p></li>
+<li><p>Model parameters are no longer (solely) identified by their indexing inside a parameter vector, but are referenced by name. This avoids the need for a user to recall the ordering of the parameters. This is now all handled internally. For example, before <code class="docutils literal notranslate"><span class="pre">paramA</span> <span class="pre">=</span> <span class="pre">parameters[idxA]</span></code> is now <code class="docutils literal notranslate"><span class="pre">model.paramA</span></code>.</p></li>
+<li><p>Any model parameter is accessible from the model object and its boundaries, start values and other properties can be easily modified. For example, to change the lower boundary of a parameter: <code class="docutils literal notranslate"><span class="pre">model.paramA.lb</span> <span class="pre">=</span> <span class="pre">0</span></code>.</p></li>
+<li><p>A new general <code class="docutils literal notranslate"><span class="pre">fit</span></code> function that fits arbitrary <code class="docutils literal notranslate"><span class="pre">Model</span></code> objects to single or multiple datasets has been implemented. The function automatically handles the selection of solvers to optimally fit the data to the model.</p></li>
+<li><p>Implemented a new function <code class="docutils literal notranslate"><span class="pre">link</span></code> to link model parameters (setting equality constraints in models).</p></li>
+<li><p>Implemented a new function <code class="docutils literal notranslate"><span class="pre">merge</span></code> to create a model returning more than one response (allowing the creation of global models).</p></li>
+<li><p>Implemented a new function <code class="docutils literal notranslate"><span class="pre">relate</span></code> to define functional relationships between model parameters.</p></li>
+<li><p>Implemented a new function <code class="docutils literal notranslate"><span class="pre">lincombine</span></code> to create a model whose response is a linear combination of the inputs’ model responses.</p></li>
+<li><p>Model parameters can now be frozen (set to a constant value and ignored during optimization) in the <code class="docutils literal notranslate"><span class="pre">Model</span></code> object and on the back-end <code class="docutils literal notranslate"><span class="pre">snlls</span></code> solver. For examples, to fix a parameter to a certain value: <code class="docutils literal notranslate"><span class="pre">model.paramA.freeze(0.5)</span></code>.</p></li>
+<li><p>Arbitrary normalization conditions can be imposed to the linear parameters.</p></li>
+<li><p>Bootstrapping can now be requested directly from the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function via the <code class="docutils literal notranslate"><span class="pre">bootstrap</span></code> keyword argument. The function will then return the bootstrap uncertainty quantification of all model parameters and of the model’s response instead of the covariance-based uncertainty.</p></li>
+<li><p>Implemented a new function <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code>, which generates models based on the dipolar EPR multi-pathway theoretical model.</p></li>
+<li><p>Added new examples, adapted existing ones, and removed unneeded examples.</p></li>
+<li><p>Add many new tests and removed tests related to deprecated functionality.</p></li>
+<li><p>All the built-in parametric models are now pre-compiled <code class="docutils literal notranslate"><span class="pre">Model</span></code> objects instead of just functions.</p></li>
+<li><p>The function <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> has been deprecated and removed. The original has been substituted (and greatly expanded) by the new    <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> and <code class="docutils literal notranslate"><span class="pre">fit</span></code> functions.</p></li>
+<li><p>The function <code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code> has been deprecated and removed. The original functionality can be easily scripted with the new modelling system. An example of has been added, describing how to script the same functionality.</p></li>
+</ul>
+</li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Introduced the profile-likelihood methodology both for uncertainty quantification based on likelihood-confidence intervals, and for identifiability analysis (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/222">#222</a>).</p>
+<ul>
+<li><p>Added a new function <code class="docutils literal notranslate"><span class="pre">profile_analysis</span></code> to calculate the objective function profiles from model object parameters.</p></li>
+<li><p>Implemented a new uncertainty quantification <code class="docutils literal notranslate"><span class="pre">UQResult</span></code> object type <code class="docutils literal notranslate"><span class="pre">'profile'</span></code> for results obtained from profile_analysis.</p></li>
+</ul>
+</li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Implemented a system to specify arbitrary penalty functions to be included in the non-linear part of the objective function during optimization. The penalties can be custom-defined and constructed into a <code class="docutils literal notranslate"><span class="pre">Penalty</span></code> object that can be passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function. Outer optimization of the penalty weights can also be included based on certain information-based criteria (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/197">#197</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/218">#218</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/225">#225</a>).</p>
+<ul>
+<li><p>Implemented a new object <code class="docutils literal notranslate"><span class="pre">Penalty</span></code> that includes the penalty function, weight parameter (and its boundaries), and the selection functional for optimization.</p></li>
+<li><p>Adds new outer optimization options for the penalty weights, based on hard-coded model selection functionals. For now, the ICC, AIC, AICc, and BIC functionals are available.</p></li>
+<li><p>Implemented a new function <code class="docutils literal notranslate"><span class="pre">dipolarpenalty</span></code> that generates dipolar-EPR-specific penalties, e.g. to induce compactness and/or smoothness.</p></li>
+</ul>
+</li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Implemented masking of datasets during optimization (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/250">#250</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Added a <code class="docutils literal notranslate"><span class="pre">verbose</span></code> option to display progress of the fit routines (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/250">#250</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Added support for analyzing and fitting complex-valued models and data (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/127">#127</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/218">#218</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Orientation selection in dipolar signals can now be simulated for arbitrary orientation weights distributions via the <code class="docutils literal notranslate"><span class="pre">orisel</span></code> keyword argument in the new <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> or the <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> functions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/183">#183</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/203">#203</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Re-purposed the <code class="docutils literal notranslate"><span class="pre">ex_</span></code> models. Each of these function represents a specific dipolar EPR experiment. These now take the experimental time delays as input, and return a new <code class="docutils literal notranslate"><span class="pre">ExperimentInfo</span></code> object. This can be passed to <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> via the optional keyword argument <code class="docutils literal notranslate"><span class="pre">experiment</span></code> to refine the boundaries and start values of the dipolar pathway refocusing times and amplitudes based on the experimental setup (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/225">#225</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Implemented masking of datasets during optimization (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/250">#250</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Overhaul of the DeerLab documentation website (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/235">#235</a>).</p>
+<ul>
+<li><p>Full HTML/CSS overhaul. The new web design based on the PyData theme has a clearer design, with more readable pages and code blocks.</p></li>
+<li><p>Deprecates the use of the RTD theme. This removes the hard constraint of using Sphinx 1.8.0. Now the documentation builds with the latest Sphinx release.</p></li>
+<li><p>Add a user-guide for the new modelling and fitting system.</p></li>
+<li><p>Re-organize all of the website content.</p></li>
+<li><p>Improved the dipolar EPR starting guide, and adapted it to the new system.</p></li>
+<li><p>Fixed some minor errors in the examples.</p></li>
+<li><p>Redesigned all examples towards the use of actual experimental data files in BES3T format. Examples can now be taken and easily adapted by users to their experiment data files (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/304">#304</a>).</p></li>
+</ul>
+</li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Added the functionality to print a <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object to display a summary of the fit goodness-of-fit statistics and a table of all estimated parameters and their uncertainties (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/234">#234</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Added a new keyword argument <code class="docutils literal notranslate"><span class="pre">regparamrange</span></code> to <code class="docutils literal notranslate"><span class="pre">snlls</span></code> and <code class="docutils literal notranslate"><span class="pre">fit</span></code> to specify the search range of the optimal regularization parameter (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/225">#225</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Noise levels of the datasets can be optionally specified in all functions taking datasets (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/213">#213</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Added the option to include or exclude the edges of vector in <code class="docutils literal notranslate"><span class="pre">regoperator</span></code> via a new keyword argument <code class="docutils literal notranslate"><span class="pre">includeedges</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/204">#204</a>). The default for all functions in DeerLab has been set to <code class="docutils literal notranslate"><span class="pre">includeedges=False</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/205">#205</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/230">#230</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Generalized the regularization operator. Related functions no longer take <code class="docutils literal notranslate"><span class="pre">regorder</span></code> (regularization operator order) as an argument. Instead they now take <code class="docutils literal notranslate"><span class="pre">regop</span></code> (the full regularization operator) as an argument (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/216">#216</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Generalized the regularized linear least-squares functionality. Now it can handle arbitrary bounds on linear parameters and adapts the linear LSQ solver back end accordingly (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/216">#216</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_efficiency">Efficiency</span></span> Improved performance of post-optimization model evaluation/propagation for large datasets (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/200">#200</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/238">#238</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_efficiency">Efficiency</span></span> Implemented (adaptable) memory limits for potentially memory-intense functions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/201">#201</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/239">#239</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> The function <code class="docutils literal notranslate"><span class="pre">correctscale</span></code> has been deprecated (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/293">#293</a>). Its limited functionality is included in the now broader functionality provided by the new modelling and fitting system.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> The functions <code class="docutils literal notranslate"><span class="pre">fitregmodel</span></code> and <code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code> have been deprecated and their core functionality merged into <code class="docutils literal notranslate"><span class="pre">snlls</span></code>. The <code class="docutils literal notranslate"><span class="pre">snlls</span></code> function now handles any kind of least-squares problem and automatically employs optimal combinations of solvers to find the solution to the problems (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/218">#218</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Renamed the function <code class="docutils literal notranslate"><span class="pre">bootan</span></code> to <code class="docutils literal notranslate"><span class="pre">bootstrap_analysis</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/227">#227</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Deprecated TV and Huber regularization. Accordingly the keyword arguments <code class="docutils literal notranslate"><span class="pre">regtype</span></code>, <code class="docutils literal notranslate"><span class="pre">huberparameter</span></code> have been removed throughout (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/216">#216</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Deprecated the <code class="docutils literal notranslate"><span class="pre">nnlsbpp</span></code> NNLS solver (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/231">#231</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Deprecated the <code class="docutils literal notranslate"><span class="pre">regparamrange</span></code> function (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/232">#232</a>). It depended on home-written code for the GSVD, which (as shown in previous issues) was prone to LAPACK backend problems and other bugs. This function was still a derelict from DeerAnalysis methodology.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> The function <code class="docutils literal notranslate"><span class="pre">time2dist</span></code> has been renamed to <code class="docutils literal notranslate"><span class="pre">distancerange</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/273">#273</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/274">#274</a>).- <span class="raw-html"><span class="badge changelog_api">API Change</span></span> The function <code class="docutils literal notranslate"><span class="pre">time2dist</span></code> has been renamed to <code class="docutils literal notranslate"><span class="pre">distancerange</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/273">#273</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/274">#274</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> The convergence control arguments of the fit functions have now been renamed for consistency with the <code class="docutils literal notranslate"><span class="pre">least_squares</span></code> function of the SciPy package (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/296">#296</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Changed the name of the parameter <code class="docutils literal notranslate"><span class="pre">width</span></code> to <code class="docutils literal notranslate"><span class="pre">std</span></code> in the <code class="docutils literal notranslate"><span class="pre">dd_gauss</span></code>, <code class="docutils literal notranslate"><span class="pre">dd_gauss2</span></code>, <code class="docutils literal notranslate"><span class="pre">dd_gauss3</span></code>, and <a href="#id1"><span class="problematic" id="id2">``</span></a>dd_skewgauss``models (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/278">#278</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/280">#280</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> When using the <code class="docutils literal notranslate"><span class="pre">multistart</span></code> keyword argument, no longer includes the parameter boundaries in the set of multiple start values (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/218">#218</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed error (manifesting as <code class="docutils literal notranslate"><span class="pre">nan</span></code> values in the confidence intervals) caused by a division-by-zero in the covariance matrix estimation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/218">#218</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fix encoding error during installation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/252">#252</a>). This error could disrupt the installation in OS with default encoding different from CP-1252.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Implement a new function to ensure that estimated Jacobians are positive semi-definite matrices. This fixes the appearance of warnings and bugs when calculating confidence intervals (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/216">#216</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected the scale invariance behavior of the covariance-based uncertainty estimates (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/218">#218</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed multiple <code class="docutils literal notranslate"><span class="pre">numpy.VisibleDeprecationWarning</span></code> and <code class="docutils literal notranslate"><span class="pre">RunTime</span></code> warnings (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/207">#207</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/212">#212</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected the math in the documentation of some distance distribution models (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/215">#215</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected the behavior of dataset weights. These are no longer normalized at runtime and kept as specified by the users (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/248">#248</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/250">#250</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> While testing, now skips a unit test if an error with the Tk backend of Matplotlib occurs (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/211">#211</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fix multiple bugs and errors related to the new modelling and fitting system (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/226">#226</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/233">#233</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/235">#235</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/241">#241</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/242">#242</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/244">#244</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/245">#245</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/246">#246</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/249">#249</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Correct behavior of multistart optimization for one-sided parameter boundaries (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/252">#252</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fix bug when globally fitting multiple datasets. The global weights were not being manipulated correctly in the estimation of the linear parameters leading to incorrect results (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/302">#302</a>)</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">bootstrap_analysis</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_efficiency">Efficiency</span></span> Added a new keyword argument <code class="docutils literal notranslate"><span class="pre">memorylimit</span></code> to specify the maximal memory used by the bootstrap analysis (by default 8GB). If the total analysis is expected to exceed the memory limit, the function will abort the execution (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/200">#200</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/238">#238</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Added a new option <img class="math" src="_images/math/b79feafea5b1e8b59374964e6bf0d988b6034f85.svg" alt="complex"/> to request the complex-valued dipolar kernel to simulate the out-of-phase contributions to the dipolar signals (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/258">#258</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_efficiency">Efficiency</span></span> Added a new keyword argument <code class="docutils literal notranslate"><span class="pre">memorylimit</span></code> to specify the maximal memory used by the dipolar kernel (by default 8GB). If the dipolar kernel is expected to exceed the memory limit, the function will abort the execution (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/200">#200</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/238">#238</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Prompts error if wrong method is selected when specifying a limited excitation bandwidth (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/181">#181</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/183">#183</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">bg_models</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Implemented the time-dependent phase shifts for all the built-in physical background models, namely <img class="math" src="_images/math/b6f0e90e437f082b03edb2a94a2e90e642ac7a55.svg" alt="bg_hon3d_phase"/>, <img class="math" src="_images/math/7a6d7d3d3f78cbce68ded8bf03dc3973d5e972db.svg" alt="bg_hom3dex_phase"/>, and <img class="math" src="_images/math/7fc105424cece42ba454bcbbace4da8d8ee42304.svg" alt="bg_homfractal_phase"/> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/258">#258</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Changed the implementation of <img class="math" src="_images/math/3a7df7bd360659381c0a85b7065156c70b18f262.svg" alt="bg_hom3dex"/> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/258">#258</a>). This avoids the use of tabulated pre-calculated values. Accordingly the utility functions <img class="math" src="_images/math/07720a0b7c0fe480ccb7af8fbdc15a937b975762.svg" alt="calculate_exvolume_redfactor"/> and <img class="math" src="_images/math/ec2d3bc69851a7aea4abf5b05e46f985a2dc65a4.svg" alt="load_exvolume_redfactor"/> have been removed.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Improved the implementation and behavior of the <img class="math" src="_images/math/5ee301fa210c691dc02004a1cfb00747d8d35635.svg" alt="bg_homfractal"/> model (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/258">#258</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">diststats</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed the behavior when dealing with distributions with arbitrary integral values</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">selregparam</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Implemented a general LSQ solver as backend to adapt to different regularized optimization problem structures.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Generalized the linear least-squares solver. (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/216">#216</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> In the <code class="docutils literal notranslate"><span class="pre">brent</span></code> mode, the search range is no longer selected from the min/max of <code class="docutils literal notranslate"><span class="pre">regparamrange</span></code> output, but from a new keyword argument <code class="docutils literal notranslate"><span class="pre">searchrange</span></code> set by default to <code class="docutils literal notranslate"><span class="pre">[1e-8,1e2]</span></code>. The default values were chosen as the statistical means of Monte-Carlo simulations of the min/max values of <code class="docutils literal notranslate"><span class="pre">regparamrange</span></code>’s output for typical 4-pulse DEER kernels (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/232">#232</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span>  In the <code class="docutils literal notranslate"><span class="pre">grid</span></code> mode, the grid-values are passed by the pre-existing keyword argument <code class="docutils literal notranslate"><span class="pre">candidates</span></code>. By default, if not specified, a grid will be generated from the <code class="docutils literal notranslate"><span class="pre">searchrange</span></code> argument (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/232">#232</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">UQResult</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Ensures non-negativity of estimated parameter uncertainty probability density functions.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Improve the behavior of <code class="docutils literal notranslate"><span class="pre">UQresult.propagate()</span></code> for bootstrapped uncertainty results. Now, instead of propagating bootstrapped uncertainty via the estimated covariance matrix, the uncertainty is propagated by bootstrapping from the bootstrapped uncertainty distributions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/218">#218</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fix behavior of the bootstrap median (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/254">#254</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Suppress multiple <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> warnings during uncertainty calculations (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/255">#255</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fix error prompt when requesting private methods such as <code class="docutils literal notranslate"><span class="pre">__deepcopy__</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/301">#301</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/303">#303</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">correctphase</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Implement a fully vectorized analytical solution, resulting in a 30-150x speedup (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/256">#256</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/279">#279</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Eliminate the <code class="docutils literal notranslate"><span class="pre">phase='posrealint'</span></code> and <code class="docutils literal notranslate"><span class="pre">phase='negrealint'</span></code> options (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/279">#279</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">deerload</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Raise warning instead of exception when parsing lines without key-value pairs (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/256">#256</a>). This avoid errors when trying to load BES3T files with PulseSPEL scripts edited in different OS systems.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">whitegaussnoise</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Renamed the argument <code class="docutils literal notranslate"><span class="pre">level</span></code> to <code class="docutils literal notranslate"><span class="pre">std</span></code> for clarity (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/276">#276</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Make the argument <code class="docutils literal notranslate"><span class="pre">std</span></code> a required positional argument and no longer provide a default value (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/276">#276</a>).</p></li>
+</ul>
+</section>
+<section id="release-v0-13-2-july-2021">
+<h2>Release v0.13.2 - July 2021<a class="headerlink" href="#release-v0-13-2-july-2021" title="Permalink to this headline">#</a></h2>
+<p class="rubric">Overall changes</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed an error appearing during installation in Windows systems. If during installation a  <code class="docutils literal notranslate"><span class="pre">python</span></code> executable alias was not created, the call to the <code class="docutils literal notranslate"><span class="pre">pipwin</span></code> manager returned an error and the installation failed to download and install Numpy, SciPy and CVXOpt (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/187">#187</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed the rendering of certain code-blocks in the documentation examples which were appearing as plain text (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/179">#179</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/184">#184</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed the execution and rendering of the model examples in the documentation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/189">#189</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/190">#190</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed a bug in <code class="docutils literal notranslate"><span class="pre">snlls</span></code> where one of the linear least-squares solvers can return results that violate the boundary conditions due to float-point round-off errors (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/177">#177</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/188">#188</a>).</p></li>
+</ul>
+</section>
+<section id="release-v0-13-1-may-2021">
+<h2>Release v0.13.1 - May 2021<a class="headerlink" href="#release-v0-13-1-may-2021" title="Permalink to this headline">#</a></h2>
+<p class="rubric">Overall changes</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed the behavior of global weights throughout DeerLab fit functions. The keyword argument <code class="docutils literal notranslate"><span class="pre">weights</span></code> was not having any or the expected effect in the results in some fit functions. Also fixes the behavior of built-in plots for global fits (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/168">#168</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/171">#171</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Optimize default weights in global fitting according to the datasets noise levels (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/169">#169</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/174">#174</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed a bug in <code class="docutils literal notranslate"><span class="pre">snlls</span></code> that was causing the confidence intervals in <code class="docutils literal notranslate"><span class="pre">snlls</span></code>, <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> and <code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code> to vanish for large signal scales (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/165">#165</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/166">#166</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">deerload</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected a bug that happened in certain BES3T Bruker spectrometer files, when there are entries under the <code class="docutils literal notranslate"><span class="pre">MANIPULATION</span> <span class="pre">HISTORY</span> <span class="pre">LAYER</span></code> section at the end of the descriptor file. Also fixed the reading of <code class="docutils literal notranslate"><span class="pre">.XGF</span></code> partner files (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/164">#164</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">snlls</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The keyword argument <code class="docutils literal notranslate"><span class="pre">extrapenalty</span></code> now requires a function that takes both non-linear and linear parameters. Corrected the name of the keyword in the documentation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/175">#175</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed the scaling of the output <code class="docutils literal notranslate"><span class="pre">FitResult.model</span></code> and <code class="docutils literal notranslate"><span class="pre">FitResult.modelUncert</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/173">#173</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">ex_pseudotitration_parameter_free</span></code>:</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Removed <code class="docutils literal notranslate"><span class="pre">Ctot</span></code> from second order term in the <code class="docutils literal notranslate"><span class="pre">chemicalequalibrium</span></code> polynomial (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/163">#163</a>).</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="release-v0-13-0-april-2021">
+<h2>Release v0.13.0 - April 2021<a class="headerlink" href="#release-v0-13-0-april-2021" title="Permalink to this headline">#</a></h2>
+<p class="rubric">Overall changes</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> DeerLab is now distributed via the Anaconda repository and can be installed with the <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/12">#12</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/157">#157</a>). The installation instructions have been expanded to describe the Anaconda installation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/155">#155</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> DeerLab now supports Python 3.9.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The function <code class="docutils literal notranslate"><span class="pre">fitsignal</span></code> has been re-named to <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> for correctness and consistency with other functions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/102">#102</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Added new experiment models for RIDME on systems with one to seven harmonic pathways (S=1/2 to S=7/2) to include all higher harmonics (overtones) (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/79">#79</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Bootstrapping is now embedded into <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> to automatically bootstrap all output quantities without the need to write additional script lines (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/55">#55</a>). In <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> a new option <code class="docutils literal notranslate"><span class="pre">uq</span></code> allows to switch between covariance or bootstrapping uncertainty quantification (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/88">#88</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> The function <code class="docutils literal notranslate"><span class="pre">fitmodel</span></code> now returns <code class="docutils literal notranslate"><span class="pre">Vmod</span></code> and <code class="docutils literal notranslate"><span class="pre">Vunmod</span></code>, the modulated and unmodulated contributions to the fitted dipolar signal, respectively, along their uncertainties as additional outputs (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/78">#78</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Implemented several initialization strategies in <code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code> for multi-model components (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/67">#67</a>). Three different new strategies <code class="docutils literal notranslate"><span class="pre">'spread'</span></code>, <code class="docutils literal notranslate"><span class="pre">'split'</span></code> and <code class="docutils literal notranslate"><span class="pre">'merge'</span></code> will initialize the parameter values of the N-component fit based on the results of the N-1/N+1 component fit to improve quality of results and speed.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Added contribution guidelines to the documentation and automated list of DeerLab contributors.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> The function <code class="docutils literal notranslate"><span class="pre">snlls</span></code> now accepts additional custom penalties to include in the optimization (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/76">#76</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/112">#112</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> All fit functions now return the fit of the data along its uncertainty automatically as part of the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object(<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/130">#130</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/134">#134</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Implemented a new method <code class="docutils literal notranslate"><span class="pre">UQResult.join()</span></code> to merge multiple uncertainty quantification objects (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/154">#154</a>). This permits error propagation from multiple uncertainty sources to a common function.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_efficiency">Efficiency</span></span> The performance of all fit functions has been considerably accelerated by removing call overheads in built-in DeerLab models (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/100">#100</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/101">#101</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/143">#143</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Improved robustness of the installation from PyPI (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/65">#65</a>):</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> The installer no longer assumes the alias <code class="docutils literal notranslate"><span class="pre">pip</span></code> to be setup on the system.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> The installation will now handle cases when system-wide privileges are not available (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/52">#52</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Improved robustness of the installation in Windows systems to avoid missing DLL errors (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/64">#64</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> The installer will now get the latest Numpy/Scipy releases in Windows systems available at the [Gohlke repository](<a class="reference external" href="https://www.lfd.uci.edu/~gohlke/pythonlibs/">https://www.lfd.uci.edu/~gohlke/pythonlibs/</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Adapted piece of code leading to a <code class="docutils literal notranslate"><span class="pre">VisibleDeprecationWarning</span></code> visible during execution of certain DeerLab functions.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Improved interface of built-in plots in <code class="docutils literal notranslate"><span class="pre">FitResult.plot()</span></code>. The method now returns a Matplotlib figure object (<code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code>) instead of an axes object (<code class="docutils literal notranslate"><span class="pre">matplotlib.axes._subplots.AxesSubplot</span></code>) which can be modified more freely to adjust graphical elements (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/85">#85</a>). The method now takes an optional keyword <code class="docutils literal notranslate"><span class="pre">FitResult.plot(show=True\False)</span></code> to enable/disable rendering of the graphics upon calling the method (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/87">#87</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> The fit objective values returned in <code class="docutils literal notranslate"><span class="pre">FitResult.cost</span></code> are now correct (previous versions had an erroneous 1/2 factor) (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/80">#80</a>). The value is now returned as a scalar value instead of a single-element list (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/81">#81</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Removed the re-normalization conventions <code class="docutils literal notranslate"><span class="pre">K(t=0,r)=1</span></code> and <code class="docutils literal notranslate"><span class="pre">B(t=0)=1</span></code> and associated options <code class="docutils literal notranslate"><span class="pre">renormalize</span></code> and <code class="docutils literal notranslate"><span class="pre">renormpaths</span></code> in the <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> and <code class="docutils literal notranslate"><span class="pre">dipolarbackground</span></code> functions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/99">#99</a>) to avoid identifiability issues between dipolar pathway amplitudes and signal scales during fitting (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/76">#76</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The fit convergence criteria <code class="docutils literal notranslate"><span class="pre">tol</span></code> (objective function tolerance) and <code class="docutils literal notranslate"><span class="pre">maxiter</span></code> (iteration limit) are now exposed as keyword argument in all fit functions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/111">#111</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/112">#112</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Multiple improvements and corrections to the documentation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/95">#95</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/96">#96</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/104">#104</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/106">#106</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/107">#107</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/115">#115</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/122">#122</a>)</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrections in the metadata of multiple <code class="docutils literal notranslate"><span class="pre">dd_models</span></code>. The key <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> of some models contained the wrong names.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The metadata of the built-in models is now accessible and manipulable via function attributes (e.g. <code class="docutils literal notranslate"><span class="pre">dd_gauss.parameters</span></code>) rather than trought a returned dictionary (e.g. <code class="docutils literal notranslate"><span class="pre">dd_gauss()['Parameters']</span></code>) (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/143">#143</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The keyword argument to request uncertainty quantification has been unified across all fitting functions. It is now <code class="docutils literal notranslate"><span class="pre">uq</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/120">#120</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> The <code class="docutils literal notranslate"><span class="pre">UncertQuant</span></code> class has been renamed into <code class="docutils literal notranslate"><span class="pre">UQResult</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/123">#123</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Uncertainty quantification is now tested numerically against an external package (<code class="docutils literal notranslate"><span class="pre">lmfit</span></code>) to ensue quality and accuracy(<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/121">#121</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Expanded the collection of examples in the documentation, and improved existing ones (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/144">#144</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/148">#148</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/153">#153</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">deerload</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed behavior of the function when loading certain 2D-datasets in the BES3T format (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/82">#82</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/83">#83</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> In 2D-datasets, the abscissas are now returned as a list of abscissas instead of a single 2D-matrix (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/83">#83</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitmodel</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected the scaling behaviour of all outputs related to components of the dipolar signal to match the scaling of the original experimental data (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/78">#78</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The built-in plot method <code class="docutils literal notranslate"><span class="pre">FitResult.plot()</span></code> now plots the unmodulated component fit as well with its uncertainty (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/78">#78</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> When plotting bootstrapped results with <code class="docutils literal notranslate"><span class="pre">FitResult.plot()</span></code>, the fit is substituted with the median of the bootstrapped distribution (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/148">#148</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Extended information included in the verbose summary (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/78">#78</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Simplified the interface for defining initial values and boundaries of parameters in <code class="docutils literal notranslate"><span class="pre">fitsignal</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/71">#71</a>). Now instead of defining, e.g., <code class="docutils literal notranslate"><span class="pre">fitsignal(...,</span> <span class="pre">lb</span> <span class="pre">=</span> <span class="pre">[[],[50],[0.2,</span> <span class="pre">0.5]])</span></code> one can define the individual vales/boundaries <code class="docutils literal notranslate"><span class="pre">fitsignal(...,</span> <span class="pre">bg_lb</span> <span class="pre">=</span> <span class="pre">50,</span> <span class="pre">ex_lb</span> <span class="pre">=</span> <span class="pre">[0.2,0.5])</span></code> by using the new keywords.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Removed the keyword argument <code class="docutils literal notranslate"><span class="pre">uqanalysis=True/False</span></code>. The uncertainty quantification can now be disabled via the new keyword <code class="docutils literal notranslate"><span class="pre">uq=None</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/98">#98</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected the behaviour of built-in start values when manually specifying boundaries (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/73">#73</a>). If the built-in start values are outside of the user-specified boundaries the program will now automatically set the start values in the middle of the boundaries to avoid errors (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/72">#72</a>)).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Implemented the constraint <code class="docutils literal notranslate"><span class="pre">Lam0+sum(lam)&lt;=1</span></code> to ensure the structural-identifiability of <code class="docutils literal notranslate"><span class="pre">Lam0</span></code> and <code class="docutils literal notranslate"><span class="pre">V0</span></code> during SNLLS optimization of experiment models with more than one modulated dipolar pathway (i.e. does not affect <code class="docutils literal notranslate"><span class="pre">ex_4pdeer</span></code>) (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/76">#76</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/108">#108</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The function now accepts any sequence input (lists, arrays, tuples, etc.) instead of just lists (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/152">#152</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Removed the optional keyword argument <code class="docutils literal notranslate"><span class="pre">regtype</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/137">#137</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed a bug in the scaling of the distance distribution uncertainty quantification (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/148">#148</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitregmodel</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected the behaviour of the uncertainty quantification when disabling the non-negativity constraint (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/121">#121</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Made <code class="docutils literal notranslate"><span class="pre">par0</span></code> a positional argument instead of an optional keyword (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/70">#70</a>). to avoid errors when not defined (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/69">#69</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Keyword argument <code class="docutils literal notranslate"><span class="pre">rescale</span></code> has been renamed to <code class="docutils literal notranslate"><span class="pre">fitscale</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/128">#128</a>, pr:<img class="math" src="_images/math/1baf4f390e263e5f006b39bd7b20e47449f51835.svg" alt="129"/>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">snlls</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected bug that was leading to the smoothness penalty being accounted for twice in the least-squares residual during optimization (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/103">#103</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Now returns the uncertainty quantification of linear and nonlinear parts as separate objects <code class="docutils literal notranslate"><span class="pre">nonlinUncert</span></code> and <code class="docutils literal notranslate"><span class="pre">linUncert</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/108">#108</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Improved the covariance-based uncertainty analysis by including correlations between linear and non-linear parameters(<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/108">#108</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Improved the behavior of signal scale determination (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/108">#108</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Enabled prescaling of the data to avoid scaling issues during uncertainty quantification (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/132">#132</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/133">#133</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected the behaviour of the uncertainty quantification when disabling the regularization penalty (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/121">#121</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">diststats</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Now compatible with non-uniformly defined distance distributions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/92">#92</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/94">#94</a>)).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Added internal validation step to avoid non-sensical results when confounding the syntax (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/91">#91</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Now allows defining pathways without unmodulated components.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> All optional keyword arguments can only be passed as named and not positional arguments (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/138">#138</a>)).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> The keyword <code class="docutils literal notranslate"><span class="pre">pathways</span></code> now only takes lists of pathways and not modulation depth parameters. A new separate keyword <code class="docutils literal notranslate"><span class="pre">mod</span></code> takes the modulation depth parameter for the simplified 4-pulse DEER kernel (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/118">#118</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/138">#138</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Renamed the background argument keyword <code class="docutils literal notranslate"><span class="pre">B</span></code> into <code class="docutils literal notranslate"><span class="pre">bg</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/138">#138</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">regparamrange</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Implemented new CSD algorithm to avoid LAPACK library crashes encountered when using multiple DeerLab functions calling <code class="docutils literal notranslate"><span class="pre">regparamrange</span></code> internally (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/68">#68</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">correctphase</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Implement new keyword <code class="docutils literal notranslate"><span class="pre">phase</span></code> to select the criterion for optimizing the phase for correction (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/114">#114</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/131">#131</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Deprecated imaginary offset fitting (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/131">#131</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Deprecated manual phase correction. Manual correction can be done by the user and is now described in the beginner’s guide (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/131">#131</a>).</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="release-v0-12-2-october-2020">
+<h2>Release v0.12.2 - October 2020<a class="headerlink" href="#release-v0-12-2-october-2020" title="Permalink to this headline">#</a></h2>
+<p class="rubric">Overall changes</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fit functions using the <code class="docutils literal notranslate"><span class="pre">multistart</span></code> option are now fully deterministic. The functions was using now a random generator to define the different start points, this is now deterministic.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Documentation UI has been re-designed for a more confortable reading. Minor errors and outdated information have been corrected throughout. Expanded reference documentation of several functions for better understanding.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">regparamrange</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> The exception handling introduced in the previous release was still too specific. The function kept crashing due to SVD non-convergence errors during the GSVD. This has been fixed and the error will not lead to a crash. (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/42">#42</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">dd_skewgauss</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected an error in the implementation that was leading to wrong distributions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/61">#61</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">dd_models</span></code>, <code class="docutils literal notranslate"><span class="pre">ex_models</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Adapted numerical boundaries and start values of some built-in models to reflect better the physical reality. Afected models: <code class="docutils literal notranslate"><span class="pre">dd_skewgauss</span></code>, <code class="docutils literal notranslate"><span class="pre">dd_triangle</span></code>, <code class="docutils literal notranslate"><span class="pre">dd_gengauss</span></code>, <code class="docutils literal notranslate"><span class="pre">ex_5pdeer</span></code>, <code class="docutils literal notranslate"><span class="pre">ex_ovl4pdeer</span></code>.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="release-v0-12-1-october-2020">
+<h2>Release v0.12.1 - October 2020<a class="headerlink" href="#release-v0-12-1-october-2020" title="Permalink to this headline">#</a></h2>
+<p class="rubric">Overall changes</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_efficiency">Efficiency</span></span> The calculation of the Jacobian for covariance-based uncertainty analysis has been simplified providing a significant boost in performance for all fit functions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/55">#55</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> The Jacobian computation is more robust, now taking into consideration parameter boundaries (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/58">#58</a>). This solves errors such as the ones reported in (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/50">#50</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Broken examples in the documentation have been corrected (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/57">#57</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> When requesting attributes or method of a UncertQuant object under disabled uncertainty analysis (<code class="docutils literal notranslate"><span class="pre">uqanalysis=False</span></code>) now it will prompt an explanatory error instead of just crashing (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/56">#56</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitsignal</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected the behaviour of the scaling output (<code class="docutils literal notranslate"><span class="pre">fit.scale</span></code>). Now all fitted dipolar signals (<code class="docutils literal notranslate"><span class="pre">fit.V</span></code>) have the same scaling as the input signal (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/53">#53</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">regparamrange</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Relaxed the exception handling to catch errors occuring under certain conditions. The function seems to crash due to LAPACK or SVD non-convergence errors during the GSVD, now these are catched and the alpha-range is estimated using simple SVD as an approximation. This function might be deprecated in a future release (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/42">#42</a>).</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="release-v0-12-0-october-2020">
+<h2>Release v0.12.0 - October 2020<a class="headerlink" href="#release-v0-12-0-october-2020" title="Permalink to this headline">#</a></h2>
+<p class="rubric">Overall changes</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Added new function <code class="docutils literal notranslate"><span class="pre">diststats</span></code> to calculate different statistical quantities of the distance distribution and their corresponding uncertainties (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/37">#37</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Introduced the option <code class="docutils literal notranslate"><span class="pre">cores</span></code> to <code class="docutils literal notranslate"><span class="pre">bootan</span></code> parallelize the bootstrapping using multiple CPUs (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/35">#35</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The regularization operator matrices <code class="docutils literal notranslate"><span class="pre">regoperator</span></code> now include the edges of the distribution (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/38">#38</a>). Now the smoothness penalty is imposed on the distribution edges avoiding the accumulation of distribution mass at the edges of <code class="docutils literal notranslate"><span class="pre">r</span></code>.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The interface for defining dipolar pathways has been simplified (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/41">#41</a>). For example, a signal with two dipolar pathways had to be defined as <code class="docutils literal notranslate"><span class="pre">pathways</span> <span class="pre">=</span> <span class="pre">[[Lam0,np.nan],</span> <span class="pre">[lam1,T0]]</span></code>. Now the unmodulated pathway must be defined by its amplitude and does not accept the use of <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">pathways</span> <span class="pre">=</span> <span class="pre">[Lam0,</span> <span class="pre">[lam1,T0]]</span></code>.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> The project version control has been switched from the Git-flow to the GitHub-flow design. The default branch has been switched from <code class="docutils literal notranslate"><span class="pre">master</span></code> to <code class="docutils literal notranslate"><span class="pre">main</span></code>, which is now always production-ready. All new contributions are merged into <code class="docutils literal notranslate"><span class="pre">main</span></code> exclusively by pull requests.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The dependency on the <code class="docutils literal notranslate"><span class="pre">lambda</span></code> parameter has been removed from all phenomenological background models, and kept only for physical models (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/43">#43</a>). Their interface with <code class="docutils literal notranslate"><span class="pre">dipolarbackground</span></code> and <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> have been updated accordingly.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">bg_homfractal</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected behavior of the model. For <code class="docutils literal notranslate"><span class="pre">d=3</span></code> the model returned wrong values, and for <code class="docutils literal notranslate"><span class="pre">d~=3</span></code> the model resulted in an error.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">UncertQuant</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed bug when propagating uncertainty to scalar functions.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">deerload</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed UTF-8 error when loading certain spectrometer files in MacOS (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/30">#30</a>)</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitsignal</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> The fitted scale of the signal is now properly calculated when fitting fully parametric signals.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed error occuring when fitting a dipolar evolution function with a non-parametric distribution.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">selregparam</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed bug occuring when requesting the <code class="docutils literal notranslate"><span class="pre">lc</span></code> or <code class="docutils literal notranslate"><span class="pre">lr</span></code> selection methods.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">regparamange</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> An error occuring at the BLAS/LAPLACK error ocurring under certain conditions in MacOS and Ubuntu is now handled to avoid a crash.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="release-v0-11-0-september-2020">
+<h2>Release v0.11.0 - September 2020<a class="headerlink" href="#release-v0-11-0-september-2020" title="Permalink to this headline">#</a></h2>
+<p class="rubric">Overall changes</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> All Gauss models (<code class="docutils literal notranslate"><span class="pre">dd_gauss</span></code>,etc.) now use the standard deviation <code class="docutils literal notranslate"><span class="pre">sigma</span></code> instead of the FWHM as the width parameter for consistency with other method such as Rice distributions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/19">#19</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> All hard-wired random seeds have been removed.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> A new method <code class="docutils literal notranslate"><span class="pre">plot()</span></code> has been added to the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> class returned by all fit functions. This will create a basic plot of the fit results (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/7">#7</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">snlls</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Renamed option <code class="docutils literal notranslate"><span class="pre">penalty</span></code> as <code class="docutils literal notranslate"><span class="pre">reg</span></code> and improved its interface (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/13">#13</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The regularization parameter of the optimal solution is returned now (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/20">#20</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">whitegaussnoise</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Added a <code class="docutils literal notranslate"><span class="pre">seed</span></code> option to select static noise realizations.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">correctzerotime</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed bug when zero-time is at start/end of array (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/24">#24</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Function no longer rescales the experimental data passed on to the function.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitsignal</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The regularization parameter of the optimal solution is returned now (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/20">#20</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Bug fixed when fitting dipolar evolution functions (no background and no experiment models) with a parametric distance distribution.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Start points are now spread over constrained parameter space grid instead of being randomble initiated(<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/22">#22</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">deerload</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Now returns the time axis in microseconds instead of nanoseconds (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/21">#21</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> The bug appearing when loading certain BES3T files has been fixed (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/14">#14</a>).</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitregmodel</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Now returns the fitted dipolar signal in the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> output</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">correctscale</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> The parameter fit ranges have been adjusted.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="release-v0-10-0-august-2020">
+<h2>Release v0.10.0 - August 2020<a class="headerlink" href="#release-v0-10-0-august-2020" title="Permalink to this headline">#</a></h2>
+<p>As of this version, DeerLab is based on Python in contrast to older versions based on MATLAB found [here](<a class="reference external" href="https://github.com/JeschkeLab/DeerLab-Matlab">https://github.com/JeschkeLab/DeerLab-Matlab</a>).</p>
+<p class="rubric">Overall changes</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> The following functions have been deprecated due to limited usability or due to functionality overlap with other DeerLab functions: <code class="docutils literal notranslate"><span class="pre">aptkernel</span></code>, <code class="docutils literal notranslate"><span class="pre">backgroundstart</span></code>, <code class="docutils literal notranslate"><span class="pre">fitbackground</span></code>, <code class="docutils literal notranslate"><span class="pre">paramodel</span></code>, and <code class="docutils literal notranslate"><span class="pre">time2freq</span></code>.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> All fit functions now return a single <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> output which will contain all results.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> All functions are now compatible with non-uniformly increasing distance axes.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> All fit functions are completely agnostic with respect of the abolute values of the signal amplitude. This is automatically fitted by all function and return as part of the results.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Uncertainty quantification for all fit functions is returned as a <code class="docutils literal notranslate"><span class="pre">UncertQuant</span></code> object from which confidence intervals, parameter distributions, etc. can be generated generalizing the uncertainty interface for all DeerLab. Uncertainty can now be propagated to arbitrary functions.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitparamodel</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> The functionality has been streamlined. Function now fits arbitrary parametric models using non-linear leas-squares without consideration of whether it is a time-domain or distance-domain model. The models no longer need to take two inputs (axis+parameters) and now only tk the parameters as input.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitregmodel</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Goodness-of-fit estimators are now computed using the proper estimation the degrees of freedom.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fitmultimodel</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Added internal measures to avoid situations where one or several components are suppressed by fitting zero-amplitudes making the method more stable.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">uqst</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> The uncertainty distributions of the parameters are now returned as properly normalized probability density functions.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fftspec</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Frequency axis construction has been corrected.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">regoperator</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Now calculates the numerically exact finite-difference matrix using Fornberg’s method.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">correctphase</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Now can handle 2D-datasets.</p></li>
+</ul>
+</section>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="contributing.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Contributing</p>
+        </div>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
 </html>

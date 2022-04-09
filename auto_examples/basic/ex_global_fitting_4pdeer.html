@@ -1,346 +1,353 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Global fitting of multiple 4-pulse DEER signals, non-parametric distribution &mdash; DeerLab</title>
-  
 
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-rendered-html.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  
+    <title>Global fitting of multiple 4-pulse DEER signals, non-parametric distribution &#8212; DeerLab</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Basic fitting of a 4-pulse DEER signal, with 2+1 contribution" href="ex_fitting_4pdeer_2p1.html" />
-    <link rel="prev" title="Basic fitting of a 5-pulse DEER signal, non-parametric distribution" href="ex_fitting_5pdeer.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="next" title="Analysis of a 5-pulse DEER signal with multiple dipolar pathays" href="ex_fitting_5pdeer_pathways.html" />
+    <link rel="prev" title="Analysis of a 4-pulse DEER signal with multiple dipolar pathays" href="ex_fitting_4pdeer_pathways.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
 
-          
-            <a href="../../index.html">
-          
-
-          
-            
-            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                v0.13.2
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Examples</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Others</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
-</ul>
-
-            
-          
-        </div>
-        
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">DeerLab</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
+    <!-- Google Analytics -->
     
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../examples.html">Examples</a> &raquo;</li>
-        
-      <li>Global fitting of multiple 4-pulse DEER signals, non-parametric distribution</li>
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
     
     
-      <li class="wy-breadcrumbs-aside">
-        
-          
-        
-      </li>
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs.svg" class="logo" alt="logo">
+</a>
+
+
     
-  </ul>
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
   
-  <hr/>
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+
+    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="sk-nav-link nav-link" href="../../reference.html">Reference</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../license.html">License</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
             
+            <div class="col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-11 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
   <div class="sphx-glr-download-link-note admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Click <a class="reference internal" href="#sphx-glr-download-auto-examples-basic-ex-global-fitting-4pdeer-py"><span class="std std-ref">here</span></a>
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-basic-ex-global-fitting-4pdeer-py"><span class="std std-ref">here</span></a>
 to download the full example code</p>
 </div>
-<div class="sphx-glr-example-title section" id="global-fitting-of-multiple-4-pulse-deer-signals-non-parametric-distribution">
-<span id="sphx-glr-auto-examples-basic-ex-global-fitting-4pdeer-py"></span><h1>Global fitting of multiple 4-pulse DEER signals, non-parametric distribution<a class="headerlink" href="#global-fitting-of-multiple-4-pulse-deer-signals-non-parametric-distribution" title="Permalink to this headline">¶</a></h1>
+<section class="sphx-glr-example-title" id="global-fitting-of-multiple-4-pulse-deer-signals-non-parametric-distribution">
+<span id="sphx-glr-auto-examples-basic-ex-global-fitting-4pdeer-py"></span><h1>Global fitting of multiple 4-pulse DEER signals, non-parametric distribution<a class="headerlink" href="#global-fitting-of-multiple-4-pulse-deer-signals-non-parametric-distribution" title="Permalink to this headline">#</a></h1>
 <p>How to fit multiple 4-pulse DEER signals to a model with a non-parametric
-distribution and a homogeneous background, using Tikhonov regularization.</p>
+distribution and a homogeneous background.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="load-and-pre-process-data">
-<h1>Load and pre-process data<a class="headerlink" href="#load-and-pre-process-data" title="Permalink to this headline">¶</a></h1>
-<p>Uncomment and use the following lines if you have experimental data:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">datasets</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;file1.DTA&#39;</span><span class="p">,</span><span class="s1">&#39;file2.DTA&#39;</span><span class="p">,</span><span class="s1">&#39;file3.DTA&#39;</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="nf">deerload</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">]</span>
-<span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
-<span class="n">V</span> <span class="o">=</span> <span class="p">[</span><span class="n">_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># File location</span>
+<span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;../data/&#39;</span>
+<span class="n">files</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;example_4pdeer_3.DTA&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;example_4pdeer_4.DTA&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+<span class="c1"># Experimental parameters</span>
+<span class="n">tau1s</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>      <span class="c1"># First inter-pulse delay, μs</span>
+<span class="n">tau2s</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]</span>      <span class="c1"># Second inter-pulse delay, μs</span>
+<span class="n">deadtimes</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span>  <span class="c1"># Acquisition deadtime, μs</span>
+
+<span class="n">Vmodels</span><span class="p">,</span><span class="n">ts</span><span class="p">,</span><span class="n">Vs</span> <span class="o">=</span> <span class="p">[],[],[]</span>
+<span class="k">for</span> <span class="n">file</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">deadtime</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">tau1s</span><span class="p">,</span> <span class="n">tau2s</span><span class="p">,</span> <span class="n">deadtimes</span><span class="p">):</span>
+
+    <span class="c1"># Load the experimental data</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">Vexp</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">deerload</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">file</span><span class="p">)</span>
+
+    <span class="c1"># Pre-processing</span>
+    <span class="n">Vexp</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">correctphase</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span> <span class="c1"># Phase correction</span>
+    <span class="n">Vexp</span> <span class="o">=</span> <span class="n">Vexp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>     <span class="c1"># Rescaling (aesthetic)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">deadtime</span>             <span class="c1"># Account for deadtime</span>
+
+    <span class="c1"># Distance vector</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span> <span class="c1"># nm</span>
+
+    <span class="c1"># Put the datasets into lists</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">Vs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>
+
+    <span class="c1"># Construct the dipolar models for the individual signals</span>
+    <span class="n">Vmodels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">dipolarmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span> <span class="n">experiment</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="n">ex_4pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span><span class="n">tau2</span><span class="p">,</span><span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="p">)</span>
+
+<span class="c1"># Make the global model by joining the individual models</span>
+<span class="n">globalmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="o">*</span><span class="n">Vmodels</span><span class="p">)</span>
+
+<span class="c1"># Link the distance distribution into a global parameter</span>
+<span class="n">globalmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">globalmodel</span><span class="p">,</span><span class="n">P</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;P_1&#39;</span><span class="p">,</span><span class="s1">&#39;P_2&#39;</span><span class="p">])</span>
+
+<span class="c1"># Compactness criterion for the global distance distribution</span>
+<span class="n">compactness</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarpenalty</span><span class="p">(</span><span class="n">Pmodel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;compactness&#39;</span><span class="p">)</span>
+
+<span class="c1"># Fit the model to the data</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">globalmodel</span><span class="p">,</span><span class="n">Vs</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="n">penalties</span><span class="o">=</span><span class="n">compactness</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="simulate-data">
-<h1>Simulate data<a class="headerlink" href="#simulate-data" title="Permalink to this headline">¶</a></h1>
-<p>In this example we will use three simulated 4-pulse DEER signals instead:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define a function that generates synthetic data</span>
-<span class="k">def</span> <span class="nf">generatedata</span><span class="p">():</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>                <span class="c1"># distance axis, nm</span>
-    <span class="n">param</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">]</span>   <span class="c1"># parameters for three-Gaussian model</span>
-    <span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">param</span><span class="p">)</span>               <span class="c1"># model distance distribution</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
+<span class="n">violet</span> <span class="o">=</span> <span class="s1">&#39;#4550e6&#39;</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">model</span><span class="p">)):</span>
 
-    <span class="n">t1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">250</span><span class="p">)</span>             <span class="c1"># time axis 1, µs</span>
-    <span class="n">t2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>             <span class="c1"># time axis 2, µs</span>
-    <span class="n">t3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">500</span><span class="p">)</span>             <span class="c1"># time axis 3, µs</span>
+    <span class="c1"># Extract fitted dipolar signal</span>
+    <span class="n">Vfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+    <span class="n">Vci</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">modelUncert</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
 
-    <span class="n">K1</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">mod</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="mi">150</span><span class="p">,</span><span class="mf">0.3</span><span class="p">))</span>  <span class="c1"># dipolar kernel 1</span>
-    <span class="n">K2</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">mod</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span><span class="mf">0.4</span><span class="p">))</span>   <span class="c1"># dipolar kernel 2</span>
-    <span class="n">K3</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">mod</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mf">0.4</span><span class="p">))</span>   <span class="c1"># dipolar kernel 3</span>
+    <span class="c1"># Extract fitted distance distribution</span>
+    <span class="n">Pfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">P</span>
+    <span class="n">Pci95</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">PUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+    <span class="n">Pci50</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">PUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
 
-    <span class="n">V1</span> <span class="o">=</span> <span class="n">K1</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># simulated signal 1</span>
-    <span class="n">V2</span> <span class="o">=</span> <span class="n">K2</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="mf">0.02</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># simulated signal 2</span>
-    <span class="n">V3</span> <span class="o">=</span> <span class="n">K3</span><span class="nd">@P</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># simulated signal 3</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Plot experimental data</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">n</span><span class="p">],</span><span class="n">Vs</span><span class="p">[</span><span class="n">n</span><span class="p">],</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+    <span class="c1"># Plot the fitted signal</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">n</span><span class="p">],</span><span class="n">Vfit</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fit&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">n</span><span class="p">],</span><span class="n">Vci</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Vci</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time $t$ (μs)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$V(t)$ (arb.u.)&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">[</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">t3</span><span class="p">],</span> <span class="p">[</span><span class="n">V1</span><span class="p">,</span><span class="n">V2</span><span class="p">,</span><span class="n">V3</span><span class="p">]</span>
-
-<span class="n">t</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">generatedata</span><span class="p">()</span>
+<span class="c1"># Plot the distance distribution</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fit&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pci95</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pci95</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;95%-Conf. Inter.&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pci50</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pci50</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;50%-Conf. Inter.&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Distance $r$ (nm)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$P(r)$ (nm$^{-1}$)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>When doing global fitting, you must specify a list of the signals as well as a list of the corresponding time axes.
-Then, a model type for the global distance distribution model and finally a list of models for the background and experiment.
-In this case we assume that both signals can be modelled as 3D-homogenous distributions of spins and that they are simple 4-pulse
-DEER experiments.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run fit</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,[</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">bg_hom3d</span><span class="p">],[</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">,</span><span class="n">dl</span><span class="o">.</span><span class="nf">ex_4pdeer</span><span class="p">],</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">fit</span><span class="o">.</span><span class="nf">plot</span><span class="p">();</span>
-</pre></div>
-</div>
-<img alt="ex global fitting 4pdeer" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_global_fitting_4pdeer_001.png" />
-<p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/numpy/core/shape_base.py:65: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify &#39;dtype=object&#39; when creating the ndarray.
-  ary = asanyarray(ary)
-----------------------------------------------------------------------------
-Goodness of fit
-  Vexp[0]: 𝛘2 = 1.387974  RMSD  = 9.505332e-03
-  Vexp[1]: 𝛘2 = 0.952114  RMSD  = 2.155610e-02
-  Vexp[2]: 𝛘2 = 1.162963  RMSD  = 1.023742e-02
-----------------------------------------------------------------------------
-Fitted parameters and 95%-confidence intervals
-Vfit[0]:
-  V0:  1.00  Signal scale (arb.u.)
-  bgparam[0]:   149.4925694  (141.1935494, 157.7915894)  Concentration of pumped spins (μM)
-  exparam[0]:   0.2999117  (0.2934722, 0.3063513)  Modulation depth ()
-Vfit[1]:
-  V0:  1.00  Signal scale (arb.u.)
-  bgparam[0]:   67.8704342  (48.1239919, 87.6168765)  Concentration of pumped spins (μM)
-  exparam[0]:   0.4014910  (0.3897400, 0.4132419)  Modulation depth ()
-Vfit[2]:
-  V0:  1.00  Signal scale (arb.u.)
-  bgparam[0]:   14.3237100  (0.0100000, 28.9241049)  Concentration of pumped spins (μM)
-  exparam[0]:   0.3999140  (0.3948946, 0.4049335)  Modulation depth ()
-----------------------------------------------------------------------------
-
-&lt;Figure size 700x1200 with 4 Axes&gt;
-</pre></div>
-</div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  21.462 seconds)</p>
+<img src="../../_images/sphx_glr_ex_global_fitting_4pdeer_001.png" srcset="../../_images/sphx_glr_ex_global_fitting_4pdeer_001.png" alt="ex global fitting 4pdeer" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 1 minutes  50.338 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-global-fitting-4pdeer-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
-<a class="reference download internal" download="" href="../../_downloads/6075d20e63b9434ec4d302128b8e75f0/ex_global_fitting_4pdeer.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_global_fitting_4pdeer.py</span></code></a></div>
+<p><a class="reference download internal" download="" href="../../_downloads/36af36770c886ac258e3b6606125a15f/ex_global_fitting_4pdeer.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_global_fitting_4pdeer.py</span></code></a></p>
+</div>
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
-<a class="reference download internal" download="" href="../../_downloads/060fe428cb634e2b84255bf57466714c/ex_global_fitting_4pdeer.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_global_fitting_4pdeer.ipynb</span></code></a></div>
+<p><a class="reference download internal" download="" href="../../_downloads/f7f0a51f8021a29d7dea6b918b2f74e9/ex_global_fitting_4pdeer.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_global_fitting_4pdeer.ipynb</span></code></a></p>
+</div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
-</div>
+</section>
 
 
-           </div>
-           
-          </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="ex_fitting_4pdeer_2p1.html" class="btn btn-neutral float-right" title="Basic fitting of a 4-pulse DEER signal, with 2+1 contribution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ex_fitting_5pdeer.html" class="btn btn-neutral float-left" title="Basic fitting of a 5-pulse DEER signal, non-parametric distribution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
-
-    </p>
-  </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="ex_fitting_4pdeer_pathways.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Analysis of a 4-pulse DEER signal with multiple dipolar pathays</p>
         </div>
+    </a>
+    <a class='right-next' id="next-link" href="ex_fitting_5pdeer_pathways.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Analysis of a 5-pulse DEER signal with multiple dipolar pathays</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
       </div>
-
-    </section>
-
-  </div>
+    </div>
   
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(false);
-      });
-  </script>
-
-  
-  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
     
-   
-
-</body>
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
 </html>

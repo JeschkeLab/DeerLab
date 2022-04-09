@@ -1,0 +1,419 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Global analysis of 5-pulse DEER on a liquid-droplet protein system &#8212; DeerLab</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Models" href="../../modelsref.html" />
+    <link rel="prev" title="Analyzing pseudo-titration (dose-response) curves with non-parametric distributions" href="ex_pseudotitration_parameter_free.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs.svg" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+
+    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="sk-nav-link nav-link" href="../../reference.html">Reference</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../license.html">License</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <div class="col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-11 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-advanced-ex-droplets-model-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="global-analysis-of-5-pulse-deer-on-a-liquid-droplet-protein-system">
+<span id="sphx-glr-auto-examples-advanced-ex-droplets-model-py"></span><h1>Global analysis of 5-pulse DEER on a liquid-droplet protein system<a class="headerlink" href="#global-analysis-of-5-pulse-deer-on-a-liquid-droplet-protein-system" title="Permalink to this headline">#</a></h1>
+<p>Certain protein systems can form fractions of protein either in a liquid-droplet
+or dispersed states. Each of these fractions gives rise to a different dipolar signal
+which are combined into a detected signal. Due to the differences in local concentration
+the intermolecular contributions for each fraction are completely different and can be
+modelled in a global manner.</p>
+<p>As in the publication referenced below, this example will take two 5-pulse DEER signals acquired
+on the same sample with slightly different pulse sequence delays and fit it globally to the
+droplet signal model.</p>
+<p>For the original model and more information on these systems please refer to:
+Emmanouilidis, L., Esteban-Hofer, L., Damberger, F.F. et al.
+NMR and EPR reveal a compaction of the RNA-binding protein FUS upon droplet formation. Nat Chem Biol 17, 608–614 (2021).
+<a class="reference external" href="https://doi.org/10.1038/s41589-021-00752-3">https://doi.org/10.1038/s41589-021-00752-3</a></p>
+<img src="../../_images/sphx_glr_ex_droplets_model_001.png" srcset="../../_images/sphx_glr_ex_droplets_model_001.png" alt="ex droplets model" class = "sphx-glr-single-img"/><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+
+<span class="c1"># Load experimental data</span>
+<span class="n">t1</span><span class="p">,</span><span class="n">Vexp1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;../data/example_droplets_data_1.npy&#39;</span><span class="p">)</span>
+<span class="n">t2</span><span class="p">,</span><span class="n">Vexp2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;../data/example_droplets_data_2.npy&#39;</span><span class="p">)</span>
+
+<span class="c1"># Put all datasets into lists</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="p">[</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">]</span>
+<span class="n">Vs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vexp1</span><span class="p">,</span><span class="n">Vexp2</span><span class="p">]</span>
+
+<span class="c1"># Distance vector</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="c1"># Model of a dipolar signal in arising from a dispersed and liquid-droplet states</span>
+<span class="c1">#----------------------------------------------------------------------------------</span>
+<span class="k">def</span> <span class="nf">dropletmodel</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="c1"># Dispersed-state component model</span>
+    <span class="n">Vdis_model</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span> <span class="n">Pmodel</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">,</span> <span class="n">Bmodel</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_exp</span><span class="p">,</span> <span class="n">npathways</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># Liquid-droplet-state component model</span>
+    <span class="n">Vld_model</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span> <span class="n">Pmodel</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">,</span> <span class="n">Bmodel</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_strexp</span><span class="p">,</span> <span class="n">npathways</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># Create a dipolar signal model that is a linear combination of both components</span>
+    <span class="n">Vmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">lincombine</span><span class="p">(</span><span class="n">Vdis_model</span><span class="p">,</span><span class="n">Vld_model</span><span class="p">,</span> <span class="n">addweights</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">Vmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">,</span>
+                    <span class="n">reftime1</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;reftime1_1&#39;</span><span class="p">,</span><span class="s1">&#39;reftime1_2&#39;</span><span class="p">],</span>
+                    <span class="n">reftime2</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;reftime2_1&#39;</span><span class="p">,</span><span class="s1">&#39;reftime2_2&#39;</span><span class="p">],</span>
+                    <span class="n">lam1</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;lam1_1&#39;</span><span class="p">,</span><span class="s1">&#39;lam1_2&#39;</span><span class="p">],</span>
+                    <span class="n">lam2</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;lam2_1&#39;</span><span class="p">,</span><span class="s1">&#39;lam2_2&#39;</span><span class="p">])</span>
+    <span class="n">Vmodel</span><span class="o">.</span><span class="n">scale_1</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">Vmodel</span><span class="o">.</span><span class="n">scale_2</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Make the second weight dependent on the first one</span>
+    <span class="n">Vmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">relate</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">weight_2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">weight_1</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">weight_1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Vmodel</span><span class="p">,</span><span class="n">Vdis_model</span><span class="p">,</span><span class="n">Vld_model</span>
+<span class="c1">#----------------------------------------------------------------------------------</span>
+
+<span class="c1"># Generate the models</span>
+<span class="n">Vmodel1</span><span class="p">,</span><span class="n">Vdismodel1</span><span class="p">,</span><span class="n">Vldmodel1</span> <span class="o">=</span> <span class="n">dropletmodel</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">Vmodel2</span><span class="p">,</span><span class="n">Vdismodel2</span><span class="p">,</span><span class="n">Vldmodel2</span> <span class="o">=</span> <span class="n">dropletmodel</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># Create the global model</span>
+<span class="n">globalModel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">Vmodel1</span><span class="p">,</span><span class="n">Vmodel2</span><span class="p">)</span>
+<span class="c1"># Link global parameters toghether with new names</span>
+<span class="n">globalModel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">globalModel</span><span class="p">,</span>
+                <span class="n">eta</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;weight_1_1&#39;</span><span class="p">,</span><span class="s1">&#39;weight_1_2&#39;</span><span class="p">],</span>
+                <span class="n">kdis</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;decay_1_1&#39;</span><span class="p">,</span><span class="s1">&#39;decay_1_2&#39;</span><span class="p">],</span>
+                <span class="n">kld</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;decay_2_1&#39;</span><span class="p">,</span><span class="s1">&#39;decay_2_2&#39;</span><span class="p">],</span>
+                <span class="n">Dld</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;stretch_2_1&#39;</span><span class="p">,</span><span class="s1">&#39;stretch_2_2&#39;</span><span class="p">],</span>
+                <span class="n">rmean_dis</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mean_1_1&#39;</span><span class="p">,</span><span class="s1">&#39;mean_1_2&#39;</span><span class="p">],</span>
+                <span class="n">rmean_ld</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mean_2_1&#39;</span><span class="p">,</span><span class="s1">&#39;mean_2_2&#39;</span><span class="p">],</span>
+                <span class="n">std_dis</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;std_1_1&#39;</span><span class="p">,</span><span class="s1">&#39;std_1_2&#39;</span><span class="p">],</span>
+                <span class="n">std_ld</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;std_2_1&#39;</span><span class="p">,</span><span class="s1">&#39;std_2_2&#39;</span><span class="p">],</span>
+                <span class="n">lam1</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lam1_1&#39;</span><span class="p">,</span><span class="s1">&#39;lam1_2&#39;</span><span class="p">],</span>
+                <span class="n">lam2</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lam2_1&#39;</span><span class="p">,</span><span class="s1">&#39;lam2_2&#39;</span><span class="p">],</span>
+                <span class="n">reftime1</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;reftime1_1&#39;</span><span class="p">,</span><span class="s1">&#39;reftime1_2&#39;</span><span class="p">])</span>
+
+<span class="c1"># Specify parameter boundaries and initial conditions</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">eta</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>       <span class="n">lb</span><span class="o">=</span><span class="mf">0.468</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mf">0.57</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="mf">0.520</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">kdis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>      <span class="n">lb</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>   <span class="n">ub</span><span class="o">=</span><span class="mf">0.09</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">kld</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>       <span class="n">lb</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>   <span class="n">ub</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>    <span class="n">par0</span><span class="o">=</span><span class="mf">0.12</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">Dld</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>       <span class="n">lb</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>     <span class="n">ub</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>    <span class="n">par0</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">rmean_dis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span> <span class="n">lb</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>     <span class="n">ub</span><span class="o">=</span><span class="mf">6.35</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="mf">3.7</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">rmean_ld</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>  <span class="n">lb</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>     <span class="n">ub</span><span class="o">=</span><span class="mf">4.35</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="mf">2.6</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">std_dis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>   <span class="n">lb</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>  <span class="n">ub</span><span class="o">=</span><span class="mf">0.74</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="mf">0.44</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">std_ld</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>    <span class="n">lb</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>   <span class="n">ub</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>    <span class="n">par0</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">lam1</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>      <span class="n">lb</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>   <span class="n">ub</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>  <span class="n">par0</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">lam2</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>      <span class="n">lb</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>   <span class="n">ub</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>  <span class="n">par0</span><span class="o">=</span><span class="mf">0.08</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">reftime1</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>  <span class="n">lb</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>   <span class="n">ub</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>  <span class="n">par0</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">reftime2_1</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mf">3.2</span><span class="p">,</span>   <span class="n">ub</span><span class="o">=</span><span class="mf">3.8</span><span class="p">,</span>  <span class="n">par0</span><span class="o">=</span><span class="mf">3.4</span><span class="p">)</span>
+<span class="n">globalModel</span><span class="o">.</span><span class="n">reftime2_2</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>   <span class="n">ub</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>  <span class="n">par0</span><span class="o">=</span><span class="mf">2.2</span><span class="p">)</span>
+
+<span class="c1"># Fit the model to the data</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">globalModel</span><span class="p">,</span><span class="n">Vs</span><span class="p">)</span>
+
+<span class="c1"># Plot the results</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span>
+<span class="n">violet</span> <span class="o">=</span> <span class="s1">&#39;#4550e6&#39;</span>
+<span class="n">orange</span> <span class="o">=</span> <span class="s1">&#39;tab:orange&#39;</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">Vs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">fit</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fit&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">fit</span><span class="o">.</span><span class="n">modelUncert</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">fit</span><span class="o">.</span><span class="n">modelUncert</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time t (μs)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Dataset #1 V(t)&#39;</span><span class="p">)</span>
+
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">Vdis_fit</span> <span class="o">=</span> <span class="n">Vdismodel1</span><span class="p">(</span><span class="n">decay</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">kdis</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">rmean_dis</span><span class="p">,</span><span class="n">std</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">std_dis</span><span class="p">,</span><span class="n">reftime1</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">reftime1</span><span class="p">,</span><span class="n">reftime2</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">reftime2_1</span><span class="p">,</span><span class="n">lam1</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">lam1</span><span class="p">,</span><span class="n">lam2</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">lam2</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Vld_fit</span> <span class="o">=</span> <span class="n">Vldmodel1</span><span class="p">(</span><span class="n">decay</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">kld</span><span class="p">,</span><span class="n">stretch</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">Dld</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">rmean_ld</span><span class="p">,</span><span class="n">std</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">std_ld</span><span class="p">,</span><span class="n">reftime1</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">reftime1</span><span class="p">,</span><span class="n">reftime2</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">reftime2_1</span><span class="p">,</span><span class="n">lam1</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">lam1</span><span class="p">,</span><span class="n">lam2</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">lam2</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">Vdis_fit</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Dispersed fraction </span><span class="si">{</span><span class="n">fit</span><span class="o">.</span><span class="n">eta</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">Vld_fit</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">orange</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Liquid-droplet fraction </span><span class="si">{</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">fit</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time t (μs)&#39;</span><span class="p">)</span>
+
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">Vs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">fit</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fit&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">fit</span><span class="o">.</span><span class="n">modelUncert</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">fit</span><span class="o">.</span><span class="n">modelUncert</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time t (μs)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Dataset #2 V(t)&#39;</span><span class="p">)</span>
+
+<span class="n">ax4</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">Vdis_fit</span> <span class="o">=</span> <span class="n">Vdismodel2</span><span class="p">(</span><span class="n">decay</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">kdis</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">rmean_dis</span><span class="p">,</span><span class="n">std</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">std_dis</span><span class="p">,</span><span class="n">reftime1</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">reftime1</span><span class="p">,</span><span class="n">reftime2</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">reftime2_2</span><span class="p">,</span><span class="n">lam1</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">lam1</span><span class="p">,</span><span class="n">lam2</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">lam2</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Vld_fit</span> <span class="o">=</span> <span class="n">Vldmodel2</span><span class="p">(</span><span class="n">decay</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">kld</span><span class="p">,</span><span class="n">stretch</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">Dld</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">rmean_ld</span><span class="p">,</span><span class="n">std</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">std_ld</span><span class="p">,</span><span class="n">reftime1</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">reftime1</span><span class="p">,</span><span class="n">reftime2</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">reftime2_2</span><span class="p">,</span><span class="n">lam1</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">lam1</span><span class="p">,</span><span class="n">lam2</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">lam2</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">ax4</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">Vdis_fit</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Dispersed fraction </span><span class="si">{</span><span class="n">fit</span><span class="o">.</span><span class="n">eta</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">)</span>
+<span class="n">ax4</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">Vld_fit</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">orange</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Liquid-droplet fraction </span><span class="si">{</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">fit</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">)</span>
+<span class="n">ax4</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
+<span class="n">ax4</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">ax4</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time t (μs)&#39;</span><span class="p">)</span>
+<span class="n">ax4</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">Pdis_fcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">rmean_dis</span><span class="p">,</span><span class="n">std_dis</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">rmean_dis</span><span class="p">,</span><span class="n">std_dis</span><span class="p">)</span>
+<span class="n">Pld_fcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">rmean_ld</span><span class="p">,</span><span class="n">std_ld</span><span class="p">:</span> <span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">rmean_ld</span><span class="p">,</span><span class="n">std_ld</span><span class="p">)</span>
+
+<span class="n">Pdis_uq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">Pdis_fcn</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+<span class="n">Pld_uq</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">Pld_fcn</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pdis_fcn</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">rmean_dis</span><span class="p">,</span><span class="n">fit</span><span class="o">.</span><span class="n">std_dis</span><span class="p">),</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Dispersed fraction </span><span class="si">{</span><span class="n">fit</span><span class="o">.</span><span class="n">eta</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pdis_uq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pdis_uq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pld_fcn</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">rmean_ld</span><span class="p">,</span><span class="n">fit</span><span class="o">.</span><span class="n">std_ld</span><span class="p">),</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Liquid-droplet fraction </span><span class="si">{</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">fit</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">orange</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pld_uq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pld_uq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">orange</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Distance r (nm)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;P(r) (nm$^{-1}$)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 1 minutes  1.058 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-droplets-model-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/ea629dc80eae0b8cbc7723b31d506b02/ex_droplets_model.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_droplets_model.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/ea5ad5a670978ad01f3e6572a2b17728/ex_droplets_model.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_droplets_model.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="ex_pseudotitration_parameter_free.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Analyzing pseudo-titration (dose-response) curves with non-parametric distributions</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../../modelsref.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Models</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

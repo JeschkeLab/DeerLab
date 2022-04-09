@@ -1,402 +1,384 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Global fitting of a two-state model to a series of DEER traces &mdash; DeerLab</title>
-  
 
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/table_util.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/table_main.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-binder.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-dataframe.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/gallery-rendered-html.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  
+    <title>Global fitting of a two-state model to a series of DEER traces &#8212; DeerLab</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Analyzing pseudo-titration (dose-response) curves with non-parametric distributions" href="ex_pseudotitration_parameter_free.html" />
-    <link rel="prev" title="Multi-Gauss fit of a 4-pulse DEER signal" href="ex_multigauss_fitting_4pdeer.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="next" title="Dipolar pathways model selection" href="ex_dipolarpathways_selection.html" />
+    <link rel="prev" title="Multi-Gaussian analysis of a dipolar signal" href="ex_multigauss_fitting_4pdeer.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
 
-          
-            <a href="../../index.html">
-          
-
-          
-            
-            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                v0.13.2
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../beginners_guide.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../uncertainty.html">Uncertainty</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Examples</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modelsref.html">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Others</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
-</ul>
-
-            
-          
-        </div>
-        
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">DeerLab</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
+    <!-- Google Analytics -->
     
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../examples.html">Examples</a> &raquo;</li>
-        
-      <li>Global fitting of a two-state model to a series of DEER traces</li>
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
     
     
-      <li class="wy-breadcrumbs-aside">
-        
-          
-        
-      </li>
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs.svg" class="logo" alt="logo">
+</a>
+
+
     
-  </ul>
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
   
-  <hr/>
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+
+    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="sk-nav-link nav-link" href="../../reference.html">Reference</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../license.html">License</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
             
+            <div class="col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-11 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
   <div class="sphx-glr-download-link-note admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Click <a class="reference internal" href="#sphx-glr-download-auto-examples-advanced-ex-global-twostates-parametric-py"><span class="std std-ref">here</span></a>
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-advanced-ex-global-twostates-parametric-py"><span class="std std-ref">here</span></a>
 to download the full example code</p>
 </div>
-<div class="sphx-glr-example-title section" id="global-fitting-of-a-two-state-model-to-a-series-of-deer-traces">
-<span id="sphx-glr-auto-examples-advanced-ex-global-twostates-parametric-py"></span><h1>Global fitting of a two-state model to a series of DEER traces<a class="headerlink" href="#global-fitting-of-a-two-state-model-to-a-series-of-deer-traces" title="Permalink to this headline">¶</a></h1>
+<section class="sphx-glr-example-title" id="global-fitting-of-a-two-state-model-to-a-series-of-deer-traces">
+<span id="sphx-glr-auto-examples-advanced-ex-global-twostates-parametric-py"></span><h1>Global fitting of a two-state model to a series of DEER traces<a class="headerlink" href="#global-fitting-of-a-two-state-model-to-a-series-of-deer-traces" title="Permalink to this headline">#</a></h1>
 <p>This example shows how to fit a two-state model to a series DEER traces. Each of the
 two states, A and B, has a one-Gauss distance distribution, and each DEER trace comes
 from a sample with different fractional populations of the two states. This could be
 the consequence of a chemical or conformational equilibrium. The model contains global
 parameters needed for all samples traces (the distribution parameters) and local
 parameters needed for individual samples traces (the fractional populations).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<img src="../../_images/sphx_glr_ex_global_twostates_parametric_001.png" srcset="../../_images/sphx_glr_ex_global_twostates_parametric_001.png" alt="ex global twostates parametric" class = "sphx-glr-single-img"/><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
+
+<span class="n">green</span> <span class="o">=</span> <span class="s2">&quot;#3cb4c6&quot;</span>
+<span class="n">red</span> <span class="o">=</span> <span class="s2">&quot;#f84862&quot;</span>
+<span class="n">violet</span> <span class="o">=</span> <span class="s2">&quot;#4550e6&quot;</span>
+
+<span class="c1"># File location</span>
+<span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;../data/&quot;</span>
+<span class="n">files</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;example_twostate_data_1.DTA&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;example_twostate_data_2.DTA&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;example_twostate_data_3.DTA&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1"># Experimental parameters</span>
+<span class="n">tau1</span> <span class="o">=</span> <span class="mf">0.4</span>  <span class="c1"># First inter-pulse delay, μs</span>
+<span class="n">tau2</span> <span class="o">=</span> <span class="mf">4.5</span>  <span class="c1"># Second inter-pulse delay, μs</span>
+<span class="n">deadtime</span> <span class="o">=</span> <span class="mf">0.2</span>  <span class="c1"># Acquisition deadtime, μs</span>
+
+<span class="n">Vmodels</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">Vexps</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+
+    <span class="c1"># Load the experimental data</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">Vexp</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">deerload</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">file</span><span class="p">)</span>
+
+    <span class="c1"># Pre-processing</span>
+    <span class="n">Vexp</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">correctphase</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>  <span class="c1"># Phase correction</span>
+    <span class="n">Vexp</span> <span class="o">=</span> <span class="n">Vexp</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>  <span class="c1"># Rescaling (aesthetic)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">deadtime</span>  <span class="c1"># Account for deadtime</span>
+
+    <span class="c1"># Put the datasets into lists</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">Vexps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>
+
+<span class="c1"># Define the distance vector</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+
+<span class="c1"># Define a custom distance distribution model function</span>
+<span class="k">def</span> <span class="nf">Ptwostates</span><span class="p">(</span><span class="n">meanA</span><span class="p">,</span> <span class="n">meanB</span><span class="p">,</span> <span class="n">stdA</span><span class="p">,</span> <span class="n">stdB</span><span class="p">,</span> <span class="n">fracA</span><span class="p">):</span>
+    <span class="n">PA</span> <span class="o">=</span> <span class="n">fracA</span> <span class="o">*</span> <span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">meanA</span><span class="p">,</span> <span class="n">stdA</span><span class="p">)</span>
+    <span class="n">PB</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">fracA</span><span class="p">)</span> <span class="o">*</span> <span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">meanB</span><span class="p">,</span> <span class="n">stdB</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">PA</span> <span class="o">+</span> <span class="n">PB</span>
+    <span class="n">P</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">P</span>
+
+
+<span class="c1"># Construct the model object</span>
+<span class="n">Pmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">Ptwostates</span><span class="p">)</span>
+<span class="c1"># Set the parameter boundaries and start values</span>
+<span class="n">Pmodel</span><span class="o">.</span><span class="n">meanA</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">Pmodel</span><span class="o">.</span><span class="n">meanB</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Pmodel</span><span class="o">.</span><span class="n">stdA</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">Pmodel</span><span class="o">.</span><span class="n">stdB</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">Pmodel</span><span class="o">.</span><span class="n">fracA</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># Generate the individual dipolar signal models</span>
+<span class="n">Nsignals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Vexps</span><span class="p">)</span>
+<span class="n">Vmodels</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nsignals</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nsignals</span><span class="p">):</span>
+    <span class="n">Vmodels</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarmodel</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">r</span><span class="p">,</span> <span class="n">Pmodel</span><span class="p">)</span>
+    <span class="n">Vmodels</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">reftime</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="c1"># Combine the individual signal models into a single global models</span>
+<span class="n">globalmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="o">*</span><span class="n">Vmodels</span><span class="p">)</span>
+<span class="c1"># Link the global parameters toghether</span>
+<span class="n">globalmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">link</span><span class="p">(</span>
+    <span class="n">globalmodel</span><span class="p">,</span>
+    <span class="n">meanA</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;meanA_1&quot;</span><span class="p">,</span> <span class="s2">&quot;meanA_2&quot;</span><span class="p">,</span> <span class="s2">&quot;meanA_3&quot;</span><span class="p">],</span>
+    <span class="n">meanB</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;meanB_1&quot;</span><span class="p">,</span> <span class="s2">&quot;meanB_2&quot;</span><span class="p">,</span> <span class="s2">&quot;meanB_3&quot;</span><span class="p">],</span>
+    <span class="n">stdA</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;stdA_1&quot;</span><span class="p">,</span> <span class="s2">&quot;stdA_2&quot;</span><span class="p">,</span> <span class="s2">&quot;stdA_3&quot;</span><span class="p">],</span>
+    <span class="n">stdB</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;stdB_1&quot;</span><span class="p">,</span> <span class="s2">&quot;stdB_2&quot;</span><span class="p">,</span> <span class="s2">&quot;stdB_3&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="c1"># Fit the datasets to the model globally</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">globalmodel</span><span class="p">,</span> <span class="n">Vexps</span><span class="p">)</span>
+
+<span class="c1"># Extract the fitted fractions</span>
+<span class="n">fracAfit</span> <span class="o">=</span> <span class="p">[</span><span class="n">fit</span><span class="o">.</span><span class="n">fracA_1</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">fracA_2</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">fracA_3</span><span class="p">]</span>
+<span class="n">fracBfit</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">fit</span><span class="o">.</span><span class="n">fracA_1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">fit</span><span class="o">.</span><span class="n">fracA_2</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">fit</span><span class="o">.</span><span class="n">fracA_3</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nsignals</span><span class="p">):</span>
+
+    <span class="c1"># Get the fitted signals and confidence bands</span>
+    <span class="n">Vfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">Vfit_ci</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">modelUncert</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+
+    <span class="c1"># Get the fitted distributions of the two states</span>
+    <span class="n">PAfit</span> <span class="o">=</span> <span class="n">fracAfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">meanA</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">stdA</span><span class="p">)</span>
+    <span class="n">PBfit</span> <span class="o">=</span> <span class="n">fracBfit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">meanB</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">stdB</span><span class="p">)</span>
+
+    <span class="c1"># Plot</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">Nsignals</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Vexps</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Vfit</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Vfit_ci</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">Vfit_ci</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time t (µs)&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;V$_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">$(t) (arb.u)&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;Data&quot;</span><span class="p">,</span> <span class="s2">&quot;Fit&quot;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">Nsignals</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">PAfit</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">green</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">PBfit</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">red</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Distance r (nm)&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;P(r) (nm$^{-1}$)&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;State A&quot;</span><span class="p">,</span> <span class="s2">&quot;State B&quot;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="section" id="generate-datasets">
-<h2>Generate datasets<a class="headerlink" href="#generate-datasets" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>For this example, we generate synthetic data.</div></blockquote>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parameters for the distance distibutions for states A and B</span>
-<span class="n">rmeanA</span> <span class="o">=</span> <span class="mf">3.45</span>  <span class="c1"># mean distance state A, in nm</span>
-<span class="n">rmeanB</span> <span class="o">=</span> <span class="mf">5.05</span>  <span class="c1"># mean distance state B, in nm</span>
-<span class="n">sigmaA</span> <span class="o">=</span> <span class="mf">0.3</span>   <span class="c1"># standard deviation state A, in nm</span>
-<span class="n">sigmaB</span> <span class="o">=</span> <span class="mf">0.2</span>   <span class="c1"># standard deviation state B, in nm</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>  <span class="c1"># distance axis, in nm</span>
-
-<span class="n">fracA</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span> <span class="c1"># molar fraction of state A for each sample</span>
-
-<span class="c1"># Model parameters</span>
-<span class="n">par0</span> <span class="o">=</span> <span class="p">[</span><span class="n">rmeanA</span><span class="p">,</span> <span class="n">rmeanB</span><span class="p">,</span> <span class="n">sigmaA</span><span class="p">,</span> <span class="n">sigmaB</span><span class="p">]</span> <span class="o">+</span> <span class="n">fracA</span>
-
-<span class="c1"># Generate list of time axes</span>
-<span class="n">tmin</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">]</span>   <span class="c1"># start times, in µs</span>
-<span class="n">tmax</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>            <span class="c1"># end times, in µs</span>
-<span class="n">nt</span> <span class="o">=</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span>        <span class="c1"># number of time-domain points</span>
-<span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmin</span><span class="p">)</span>               <span class="c1"># number of DEER traces</span>
-<span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="nf">linspace</span><span class="p">(</span><span class="n">tmin</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">tmax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">nt</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-
-<span class="c1"># Generate the corresponding dipolar kernels</span>
-<span class="c1"># (for the sake of simplicity, no background and 100% modulation depth are assumed)</span>
-<span class="n">K</span> <span class="o">=</span> <span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="nf">dipolarkernel</span><span class="p">(</span><span class="n">t_</span><span class="p">,</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
-
-<span class="c1"># Model functions for V and P (needs K and r)</span>
-<span class="k">def</span> <span class="nf">ABmodel</span><span class="p">(</span><span class="n">par</span><span class="p">):</span>
-
-    <span class="c1"># Unpack parameters</span>
-    <span class="n">rmeanA</span><span class="p">,</span> <span class="n">rmeanB</span><span class="p">,</span> <span class="n">sigmaA</span><span class="p">,</span> <span class="n">sigmaB</span><span class="p">,</span> <span class="o">*</span><span class="n">fracA</span> <span class="o">=</span> <span class="n">par</span>
-
-    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fracA</span><span class="p">)</span> <span class="c1"># number of traces</span>
-
-    <span class="c1"># Generate the state distributions</span>
-    <span class="n">PA</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">rmeanA</span><span class="p">,</span> <span class="n">sigmaA</span><span class="p">])</span>
-    <span class="n">PB</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">dd_gauss</span><span class="p">(</span><span class="n">r</span><span class="p">,[</span><span class="n">rmeanB</span><span class="p">,</span> <span class="n">sigmaB</span><span class="p">])</span>
-
-    <span class="c1"># Generate distributions and signals for each sample</span>
-    <span class="n">P</span> <span class="o">=</span> <span class="p">[</span><span class="n">fA</span><span class="o">*</span><span class="n">PA</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">fA</span><span class="p">)</span><span class="o">*</span><span class="n">PB</span> <span class="k">for</span> <span class="n">fA</span> <span class="ow">in</span> <span class="n">fracA</span><span class="p">]</span>
-    <span class="n">V</span> <span class="o">=</span> <span class="p">[</span><span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="nd">@P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-
-    <span class="k">return</span> <span class="n">V</span><span class="p">,</span> <span class="n">P</span>
-
-<span class="c1"># Generate noise-free synthetic traces and distributions</span>
-<span class="n">V0</span><span class="p">,</span> <span class="n">P0</span> <span class="o">=</span> <span class="n">ABmodel</span><span class="p">(</span><span class="n">par0</span><span class="p">)</span>
-
-<span class="c1"># Add noise</span>
-<span class="nf">noiselevel</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
-<span class="n">Vexp</span> <span class="o">=</span> <span class="p">[</span><span class="n">V0</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="nf">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="nf">noiselevel</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="global-fit">
-<h2>Global fit<a class="headerlink" href="#global-fit" title="Permalink to this headline">¶</a></h2>
-<p>We now want to fit the model to the generated data. The fit parameters are
-the distribution parameters for the two states (rmeanA, rmeanB, sigmaA, sigmaB)
-and the fractional population of state A in each sample (fracA)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set starting values and bounds of fit parameters</span>
-<span class="c1">#        [rmeanA rmeanB sigmaA sigmaB fracA1 fracA2 fracA3]</span>
-<span class="n">par0</span> <span class="o">=</span>   <span class="p">[</span><span class="mi">2</span><span class="p">,</span>       <span class="mi">2</span><span class="p">,</span>     <span class="mf">0.3</span><span class="p">,</span>   <span class="mf">0.3</span><span class="p">,</span>   <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">]</span>
-<span class="n">lower</span> <span class="o">=</span>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span>       <span class="mi">1</span><span class="p">,</span>     <span class="mf">0.05</span><span class="p">,</span>  <span class="mf">0.05</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">]</span>
-<span class="n">upper</span> <span class="o">=</span>  <span class="p">[</span><span class="mi">10</span><span class="p">,</span>     <span class="mi">10</span><span class="p">,</span>     <span class="mf">0.6</span><span class="p">,</span>   <span class="mf">0.6</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>    <span class="mi">1</span><span class="p">,</span>     <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-</div>
-<p>Out model function <code class="docutils literal notranslate"><span class="pre">ABmodel</span></code> returns multiple outputs, V and P.
-This is useful for later obtaining boht V and P, but the fit function requires
-just one model output. Therefore, we  create a small wrapper function that just
-takes the first ouput argument of <code class="docutils literal notranslate"><span class="pre">ABmodel</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">par</span><span class="p">:</span> <span class="n">ABmodel</span><span class="p">(</span><span class="n">par</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># call ABmodel and take the first output (V)</span>
-
-<span class="c1"># Fit the model to all traces simultaneously (global fit)</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="nf">fitparamodel</span><span class="p">(</span><span class="n">Vexp</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">par0</span><span class="p">,</span><span class="n">lower</span><span class="p">,</span><span class="n">upper</span><span class="p">,</span><span class="n">multistart</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
-<span class="c1"># The use of the option &#39;multistart&#39; helps the solver to find the</span>
-<span class="c1"># global minimum and not to get stuck in a local minimum.</span>
-
-<span class="c1"># Display fitted parameters and their uncertainties (standard deviations)</span>
-<span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">param</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">paramUncert</span><span class="o">.</span><span class="nf">std</span><span class="p">))</span>
-</pre></div>
-</div>
-<p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[(3.458502115370329, 0.02912130170075063), (4.998901284514491, 0.021917721343984797), (0.31664686458198066, 0.03160668784944606), (0.18631356770227128, 0.02972646031213246), (0.794103003733901, 0.01757572202791587), (0.49105489782631095, 0.04737328645385991), (0.0856881389853357, 0.04451438417172)]
-</pre></div>
-</div>
-<p>Get the fitted model traces and distributions</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Vfit</span><span class="p">,</span> <span class="n">Pfit</span> <span class="o">=</span> <span class="n">ABmodel</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">param</span><span class="p">)</span>
-
-<span class="c1"># Get 95% confidence intervals of the fitted traces</span>
-<span class="n">Vfit_ci</span> <span class="o">=</span> <span class="p">[</span><span class="n">fit</span><span class="o">.</span><span class="n">modelUncert</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-
-<span class="c1"># Propagate parameter uncertainty to the distribution models, accounting for non-negativity</span>
-<span class="n">Pfit_uq</span> <span class="o">=</span> <span class="p">[</span><span class="n">fit</span><span class="o">.</span><span class="n">paramUncert</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">param</span><span class="p">:</span> <span class="n">ABmodel</span><span class="p">(</span><span class="n">param</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">lbm</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">r</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-
-<span class="c1"># Get their 95% confidence intervals</span>
-<span class="n">Pfit_ci</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pfit_uq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="plot-results">
-<h2>Plot results<a class="headerlink" href="#plot-results" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">V0</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">Vfit</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s1">&#39;tab:red&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">Vfit_ci</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Vfit_ci</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;tab:red&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;t (µs)&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trace </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="nf">subplot</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">P0</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s1">&#39;tab:red&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Pfit_ci</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Pfit_ci</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;tab:red&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">&#39;r (nm)&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">&#39;P (nm⁻¹)&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="nf">legend</span><span class="p">([</span><span class="s1">&#39;truth&#39;</span><span class="p">,</span><span class="s1">&#39;fit&#39;</span><span class="p">])</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="nf">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
- <span class="c1"># %%</span>
-</pre></div>
-</div>
-<img alt="Trace 1, Trace 2, Trace 3" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_global_twostates_parametric_001.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  3.483 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  16.201 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-global-twostates-parametric-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
-<a class="reference download internal" download="" href="../../_downloads/f69a8601f9f9aaa332179d0088b1f952/ex_global_twostates_parametric.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_global_twostates_parametric.py</span></code></a></div>
+<p><a class="reference download internal" download="" href="../../_downloads/5f01e7db27a6ab759bf15046ea8d3ed6/ex_global_twostates_parametric.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_global_twostates_parametric.py</span></code></a></p>
+</div>
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
-<a class="reference download internal" download="" href="../../_downloads/7450311aa3a7f574a2bb51e2afbf8f8c/ex_global_twostates_parametric.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_global_twostates_parametric.ipynb</span></code></a></div>
+<p><a class="reference download internal" download="" href="../../_downloads/4e0e2c68d5678784e991593aed9bcab7/ex_global_twostates_parametric.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_global_twostates_parametric.ipynb</span></code></a></p>
+</div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
-</div>
-</div>
+</section>
 
 
-           </div>
-           
-          </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="ex_pseudotitration_parameter_free.html" class="btn btn-neutral float-right" title="Analyzing pseudo-titration (dose-response) curves with non-parametric distributions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ex_multigauss_fitting_4pdeer.html" class="btn btn-neutral float-left" title="Multi-Gauss fit of a 4-pulse DEER signal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
-
-    </p>
-  </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="ex_multigauss_fitting_4pdeer.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Multi-Gaussian analysis of a dipolar signal</p>
         </div>
+    </a>
+    <a class='right-next' id="next-link" href="ex_dipolarpathways_selection.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Dipolar pathways model selection</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
       </div>
-
-    </section>
-
-  </div>
+    </div>
   
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(false);
-      });
-  </script>
-
-  
-  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
     
-   
-
-</body>
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
 </html>

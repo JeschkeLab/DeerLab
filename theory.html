@@ -1,297 +1,384 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Theory &mdash; DeerLab</title>
-  
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="/source/_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  <link rel="stylesheet" href="_static/table_util.css" type="text/css" />
-  <link rel="stylesheet" href="_static/table_main.css" type="text/css" />
-  <link rel="stylesheet" href="_static/theme_override.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
-  <link rel="stylesheet" href="_static/gallery-rendered-html.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  
+    <title>Theory &#8212; DeerLab</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="_static/theme_override.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Contributing" href="contributing.html" />
-    <link rel="prev" title="ex_ridme7" href="models/ex_ridme7.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="next" title="Advanced" href="advanced_guide.html" />
+    <link rel="prev" title="Fitting" href="dipolar_guide_fitting.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
 
-          
-            <a href="index.html">
-          
-
-          
-            
-            <img src="_static/logo.png" class="logo" alt="Logo"/>
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                v0.13.2
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="beginners_guide.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modelsref.html">Models</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Theory</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Others</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Release Notes</a></li>
-</ul>
-
-            
-          
-        </div>
-        
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">DeerLab</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
+    <!-- Google Analytics -->
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>Theory</li>
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
     
     
-      <li class="wy-breadcrumbs-aside">
-        
-          
-        
-      </li>
+
+<a class="navbar-brand" href="index.html">
+  <img src="_static/logo_docs.svg" class="logo" alt="logo">
+</a>
+
+
     
-  </ul>
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
   
-  <hr/>
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+
+    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="#">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="sk-nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
+                <a class="sk-nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="sk-nav-link nav-link" href="reference.html">Reference</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="license.html">License</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
             
-  <div class="section" id="theory">
-<span id="id1"></span><h1>Theory<a class="headerlink" href="#theory" title="Permalink to this headline">¶</a></h1>
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="basics.html">
+   Basics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="getting_started.html">
+   Getting Started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="dipolar_guide_modelling.html">
+   Modelling
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="dipolar_guide_fitting.html">
+   Fitting
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Theory
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#assumptions">
+   Assumptions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#distance-distributions">
+   Distance distributions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dipolar-signals-and-kernels">
+   Dipolar signals and kernels
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#discretization">
+   Discretization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#least-squares-fitting">
+   Least-squares fitting
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parametric-distribution">
+     Parametric distribution
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#non-parametric-distribution">
+     Non-parametric distribution
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="theory">
+<span id="id1"></span><h1>Theory<a class="headerlink" href="#theory" title="Permalink to this headline">#</a></h1>
 <p>This section summarizes key aspects of the theory implemented in DeerLab.</p>
-<div class="section" id="assumptions">
-<h2>Assumptions<a class="headerlink" href="#assumptions" title="Permalink to this headline">¶</a></h2>
+<section id="assumptions">
+<h2>Assumptions<a class="headerlink" href="#assumptions" title="Permalink to this headline">#</a></h2>
 <p>The theory underlying DeerLab is not fully general and makes a series of assumptions about the sample and the experiment. The important ones are:</p>
-<ol class="arabic simple">
-<li>All spin labels are spin-1/2 or can be treated as such. High-spin systems are not handled by DeerLab.</li>
-<li>There are no more than two spin labels on a protein (or other cluster). Multi-spin effects are not handled by DeerLab.</li>
-<li>The unpaired electron spin density on the spin labels can be treated as localized in a single point. Delocalized spin systems are not handled by DeerLab.</li>
-<li>All spins have essentially isotropic g values close to 2.00232. Spins with large g shifts and anisotropic g tensors are not handled by DeerLab.</li>
-<li>There is no exchange coupling between any spins. The only interaction is through-space dipolar coupling. Exchange coupling is not handled by DeerLab.</li>
-<li>The dipolar coupling between spins is in the weak-coupling regime, i.e. it is weaker than the difference between their resonance frequencies. Intermediate- and strong-coupling regimes are not handled by DeerLab.</li>
-<li>All spins relax with the same phase memory time. Systems with rotamer-specific relaxation rates are not handled by DeerLab.</li>
-<li>The signal is free of modulations due to hyperfine couplings (ESEEM).</li>
-<li>There is no orientation selection in the experiment. Orientation-selective DEER is not handled by DeerLab.</li>
-</ol>
+<p class="rubric">Spins-1/2</p>
+<p>All spin labels are spin-1/2 or can be treated as such. High-spin systems are not handled by DeerLab.</p>
+<p class="rubric">No multi-spin effects</p>
+<p>There are no more than two spin labels on a protein (or other cluster). Multi-spin effects are not handled by DeerLab.</p>
+<p class="rubric">No delocalization</p>
+<p>The unpaired electron spin density on the spin labels can be treated as localized in a single point. Delocalized spin systems are not handled by DeerLab.</p>
+<p class="rubric">Isotropic g-values</p>
+<p>All spins have essentially isotropic g values close to 2.00232. Spins with large g shifts and anisotropic g tensors are not handled by DeerLab.</p>
+<p class="rubric">No exchange coupling</p>
+<p>There is no exchange coupling between any spins. The only interaction is through-space dipolar coupling. Exchange coupling is not handled by DeerLab.</p>
+<p class="rubric">Weak-coupling</p>
+<p>The dipolar coupling between spins is in the weak-coupling regime, i.e. it is weaker than the difference between their resonance frequencies. Intermediate- and strong-coupling regimes are not handled by DeerLab.</p>
+<p class="rubric">Relaxation times</p>
+<p>All spins relax with the same phase memory time. Systems with rotamer-specific relaxation rates are not handled by DeerLab.</p>
+<p class="rubric">No ESEEM modulation</p>
+<p>The signal is free of modulations due to hyperfine couplings (ESEEM).</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">If your sample and experiment do not satisfy all these assumptions, DeerLab will give incorrect results.</p>
+<p class="admonition-title">Warning</p>
+<p>If your sample and experiment do not satisfy all these assumptions, DeerLab will give incorrect results.</p>
 </div>
-</div>
-<div class="section" id="distance-distributions">
-<h2>Distance distributions<a class="headerlink" href="#distance-distributions" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="distance-distributions">
+<h2>Distance distributions<a class="headerlink" href="#distance-distributions" title="Permalink to this headline">#</a></h2>
 <p>In DeerLab, distance distributions are assumed to be normalized</p>
 <div class="math">
-<p><img src="_images/math/fb01c37b3220ac31474d4f59965ef7f7e7ddeba6.svg" alt="\int_0^\infty P(r)\mr{d}r = 1"/></p>
-</div></div>
-<div class="section" id="dipolar-signals-and-kernels">
-<h2>Dipolar signals and kernels<a class="headerlink" href="#dipolar-signals-and-kernels" title="Permalink to this headline">¶</a></h2>
-<p>A dipolar signal <img class="math" src="_images/math/963ea147e7d9131e587b022ae43bd92cd9341079.svg" alt="V(t)"/> is calculated from a distance distribution <img class="math" src="_images/math/6cebf32760d986ec00c67495c4b6c78491a36dd3.svg" alt="P(r)"/> with the Fredholm integral of the first kind:</p>
+<p><img src="_images/math/1bdd543aa69ed33f75dfde774ee814b2a58b31ea.svg" alt="\int_0^\infty P(r)\mr{d}r = 1"/></p>
+</div></section>
+<section id="dipolar-signals-and-kernels">
+<h2>Dipolar signals and kernels<a class="headerlink" href="#dipolar-signals-and-kernels" title="Permalink to this headline">#</a></h2>
+<p>A dipolar signal <img class="math" src="_images/math/e9886a754ebbf28585ca0662d3e5cb23e7b6ecc1.svg" alt="V(t)"/> is calculated from a distance distribution <img class="math" src="_images/math/865be106fc6ff8e698763f3b1bfb8777c311e175.svg" alt="P(r)"/> with the Fredholm integral of the first kind:</p>
 <div class="math">
-<p><img src="_images/math/d44c02e1a823d1c6546e41839e899da3c6e931b2.svg" alt="V(t) = \int_0^\infty K(t,r)P(r)\mathrm{d}r"/></p>
-</div><p>In this equation, <img class="math" src="_images/math/b95b71282e37e5adb0046f88c209f879efdc8169.svg" alt="K(t,r)"/> is the experiment-specific kernel representing how the signal is obtained from the distance distribution. Dipolar EPR experiments differ in the number and type of pulses, resulting in different number of dipolar pathways with different modulation amplitudes and refocusing times. In DeerLab, the signal from a general dipolar EPR experiment is modeled by the general kernel</p>
+<p><img src="_images/math/9fd92f62158e9747850dc10774de7fc2cf4ffab4.svg" alt="V(t) = \int_0^\infty K(t,r)P(r)\mathrm{d}r"/></p>
+</div><p>In this equation, <img class="math" src="_images/math/fe793936ba0e61f4fc14bc8096e9562a681a7596.svg" alt="K(t,r)"/> is the experiment-specific kernel representing how the signal is obtained from the distance distribution. Dipolar EPR experiments differ in the number and type of pulses, resulting in different number of dipolar pathways with different modulation amplitudes and refocusing times. In DeerLab, the signal from a general dipolar EPR experiment is modeled by the general kernel</p>
 <div class="math">
-<p><img src="_images/math/088743547f249e8698bcd21f52fbf4f46ccce129.svg" alt="K(t,r) = \left[\varLambda_0 + \sum_{p=1}^N \lambda_p K_0(n_p(t-T_p),r)\right]\cdot\prod_{p=1}^N B(n_p(t-T_p),\lambda_p)"/></p>
-</div><p>Here, <img class="math" src="_images/math/87856a075a7935a09bc4a7e280e3936742cced0b.svg" alt="\varLambda_0"/> is the total amplitude of all unmodulated pathways, <img class="math" src="_images/math/d3c87c1c6de86df66ec20ee7bd2c97b5ca1b5975.svg" alt="N"/> is the number of modulated pathways, <img class="math" src="_images/math/0780ed2097dbadfda611b929c539ecc1534b7d59.svg" alt="\lambda_p"/> is the amplitude of the <img class="math" src="_images/math/3c6ef920c5ac243327402d5f5e968f4e344652a1.svg" alt="p"/>th modulated pathway, <img class="math" src="_images/math/23c3e755d75cefee18459676131a9c38dc8fc426.svg" alt="T_p"/> is the refocusing time of the <img class="math" src="_images/math/3c6ef920c5ac243327402d5f5e968f4e344652a1.svg" alt="p"/>th modulated pathway, and <img class="math" src="_images/math/3454290cef7bd720c9f519ec9642fbb23098ea88.svg" alt="n_p"/> is the harmonic of the <img class="math" src="_images/math/3c6ef920c5ac243327402d5f5e968f4e344652a1.svg" alt="p"/>th pathway (most often, <img class="math" src="_images/math/9d7e332292416c8d144754ef4352e4eac0abf393.svg" alt="n=1"/>). <img class="math" src="_images/math/3d19b04b8edef0b69cd79137873532891f95d75c.svg" alt="B"/> is the background decay function.</p>
-<p><img class="math" src="_images/math/205ddee07c3adefd818c137c876ba0ad36e2a526.svg" alt="K_0"/> is the elementary kernel for a single dipolar pathway with 100% modulation amplitude and unlimited excitation bandwidth. It is given by</p>
+<p><img src="_images/math/7391bc04adc075b317205896c2238924d86a8e57.svg" alt="K(t,r) = \left[\varLambda_0 + \sum_{p=1}^N \lambda_p K_0(n_p(t-T_p),r)\right]\cdot\prod_{p=1}^N B(n_p(t-T_p),\lambda_p)"/></p>
+</div><p>Here, <img class="math" src="_images/math/cd3bdacef1f00f2a13c81b263d17ce67181f6176.svg" alt="\varLambda_0"/> is the total amplitude of all unmodulated pathways, <img class="math" src="_images/math/3c01db19d2bea9adb52e8e0b68b2983f852ba49a.svg" alt="N"/> is the number of modulated pathways, <img class="math" src="_images/math/7ccf960138aa970dde7e300ed80acb0ba8d6a92a.svg" alt="\lambda_p"/> is the amplitude of the <img class="math" src="_images/math/f34dbc6d5a7967f7cd44c892e8334bf194639367.svg" alt="p"/>th modulated pathway, <img class="math" src="_images/math/9f6e72e2ad90bae7dfdc2606d68eb394fd425009.svg" alt="T_p"/> is the refocusing time of the <img class="math" src="_images/math/f34dbc6d5a7967f7cd44c892e8334bf194639367.svg" alt="p"/>th modulated pathway, and <img class="math" src="_images/math/c99d0eac5bee31193f4a34aa4b1eb1356c7e5ab6.svg" alt="n_p"/> is the harmonic of the <img class="math" src="_images/math/f34dbc6d5a7967f7cd44c892e8334bf194639367.svg" alt="p"/>th pathway (most often, <img class="math" src="_images/math/ef8359e1b3ba0d4cc7834f68f2e00874e143107a.svg" alt="n=1"/>). <img class="math" src="_images/math/cd6c335e3ac72b5dc7aabd3deb98985161e2b8d7.svg" alt="B"/> is the background decay function.</p>
+<p><img class="math" src="_images/math/afebfbb0ce8fe3050006799c90d7a133eb3bb76d.svg" alt="K_0"/> is the elementary kernel for a single dipolar pathway with 100% modulation amplitude and unlimited excitation bandwidth. It is given by</p>
 <div class="math">
-<p><img src="_images/math/181855daba09d98a7669935bdaeffa4d1c95bf4b.svg" alt="K_0(t,r) =
+<p><img src="_images/math/6c03b7a758ae52415deec5e79be64734b460b416.svg" alt="K_0(t,r) =
 \int_0^1
 \cos\left((1-3\cos^2\theta) D r^{-3} t\right)
 \mathrm{d}\cos\theta"/></p>
 </div><p>with the dipolar constant</p>
 <div class="math">
-<p><img src="_images/math/fffdb25f336ec452545d131c8774afff3af3a696.svg" alt="D =
+<p><img src="_images/math/e552b64cbdc0fa8311d84aa74f2c451db261c748.svg" alt="D =
 \frac{\mu_0}{4\pi}
 \frac{(\mu_\mathrm{B}g_\mathrm{e})^2}{\hbar}
 \approx
 2\pi\cdot 52\,\mathrm{MHz\,nm^3}"/></p>
-</div><p>The closed-form expression for <img class="math" src="_images/math/205ddee07c3adefd818c137c876ba0ad36e2a526.svg" alt="K_0"/> is</p>
+</div><p>The closed-form expression for <img class="math" src="_images/math/afebfbb0ce8fe3050006799c90d7a133eb3bb76d.svg" alt="K_0"/> is</p>
 <div class="math">
-<p><img src="_images/math/611cd22ad8610167e7c1eb6e003fdb5c2e4113a3.svg" alt="K_0(t,r) = \frac{C(\xi)}{\xi}\cos(\omega_\perp t) + \frac{S(\xi)}{\xi} \sin(\omega_\perp t)"/></p>
-</div><p>with <img class="math" src="_images/math/506b8457f4e5faed1e6c358d6641776d1e6a7b42.svg" alt="\xi = \sqrt{6\omega_\perp t/\pi}"/> and the Fresnel cosine and sine integral functions</p>
+<p><img src="_images/math/7f9f870c46682dc46f96c889961fe632f1c018d5.svg" alt="K_0(t,r) = \frac{C(\xi)}{\xi}\cos(\omega_\perp t) + \frac{S(\xi)}{\xi} \sin(\omega_\perp t)"/></p>
+</div><p>with <img class="math" src="_images/math/33b92ceaea45cdf1b51718e137cf35853eaa36fe.svg" alt="\xi = \sqrt{6\omega_\perp t/\pi}"/> and the Fresnel cosine and sine integral functions</p>
 <div class="math">
-<p><img src="_images/math/a9737b7c1095cb9ce7ea95ba2fdb36cdd3a15bc0.svg" alt="C(\xi) = \int_0^\xi \cos\left(\frac{\pi}{2}x^2\right)\mathrm{d}x
+<p><img src="_images/math/dd01ee244d9de18b26f95c9325060a45cd52208f.svg" alt="C(\xi) = \int_0^\xi \cos\left(\frac{\pi}{2}x^2\right)\mathrm{d}x
 \qquad
 S(\xi) = \int_0^\xi \sin\left(\frac{\pi}{2}x^2\right)\mathrm{d}x"/></p>
 </div><p>For the common model used to analyze 4-pulse DEER data, the kernel is</p>
 <div class="math">
-<p><img src="_images/math/ce6dd4d49582f277f9dc795f9557a5fd454640f7.svg" alt="K(t,r) = \left[(1-\lambda) + \lambda K_0(t,r)\right]\cdot B(t,\lambda)"/></p>
-</div><p>This is a special case of the general kernel, with <img class="math" src="_images/math/9f224b7d775612159c7871f3cb68634eb5f0d040.svg" alt="\varLambda_0 = 1-\lambda"/>, <img class="math" src="_images/math/d40121559ed93957245f4603e25d803f38b31922.svg" alt="N=1"/>, <img class="math" src="_images/math/3311946b7d3826eedb49159687eeb5f73602d921.svg" alt="\lambda_1=\lambda"/>, <img class="math" src="_images/math/ee6b5e9cdec0f411b5f67fac578befb64dd3dfa7.svg" alt="T_1 = 0"/>, and <img class="math" src="_images/math/2b19b394479cf62f76c3720fcea6f53ef22a2503.svg" alt="n_1=1"/>.</p>
-</div>
-<div class="section" id="discretization">
-<h2>Discretization<a class="headerlink" href="#discretization" title="Permalink to this headline">¶</a></h2>
-<p>In DeerLab, all signals <img class="math" src="_images/math/aa36e9a7897037ba9bf774ef2c0b994cabae0676.svg" alt="V"/> and distributions <img class="math" src="_images/math/e8eb5584929df943469e22854d0e832b812e6a30.svg" alt="P"/> are represented as discretized vectors <img class="math" src="_images/math/8d5be6ec124c7b71ca0168fd34a49494705614c5.svg" alt="\vc{V}"/> and <img class="math" src="_images/math/a82035d7602d0044b85b18dca335af1d4b4d5bc5.svg" alt="\vc{P}"/> over discretized time domain <img class="math" src="_images/math/1a0c42828f6c0a75b9b3b5d561843eceff263a20.svg" alt="\vc{t}"/> and distance domain <img class="math" src="_images/math/7bf1a7528a64cf62dba29ce9f5a16ac7b5872138.svg" alt="\vc{r}"/>. Their elements are</p>
+<p><img src="_images/math/c5ce8c63423e2592e2fdc67704248177bf5d6a95.svg" alt="K(t,r) = \left[(1-\lambda) + \lambda K_0(t,r)\right]\cdot B(t,\lambda)"/></p>
+</div><p>This is a special case of the general kernel, with <img class="math" src="_images/math/5bbedca28089e3c4c4f83f98e640e59bb72bad64.svg" alt="\varLambda_0 = 1-\lambda"/>, <img class="math" src="_images/math/b6f034b77e2d36ea862267e803b5783ffc9267e9.svg" alt="N=1"/>, <img class="math" src="_images/math/d0ffc479efaf553296877fa7a5869b719535ba52.svg" alt="\lambda_1=\lambda"/>, <img class="math" src="_images/math/dc66645ff067246cff0bf8082215ffc7b4b902a6.svg" alt="T_1 = 0"/>, and <img class="math" src="_images/math/c214d0f478c01b4d3a359b8af0e5c96c12efd35e.svg" alt="n_1=1"/>.</p>
+</section>
+<section id="discretization">
+<h2>Discretization<a class="headerlink" href="#discretization" title="Permalink to this headline">#</a></h2>
+<p>In DeerLab, all signals <img class="math" src="_images/math/e269044f54fca5c90aea1119f12f325298f87254.svg" alt="V"/> and distributions <img class="math" src="_images/math/1465ca4878ed850cd1ad005602dd15610d20ef09.svg" alt="P"/> are represented as discretized vectors <img class="math" src="_images/math/3a6b910dd18d99a2378ecf363034109bef19d147.svg" alt="\vc{V}"/> and <img class="math" src="_images/math/00405087ce346a8bda8e91eeb0e4adc2ad89ad7e.svg" alt="\vc{P}"/> over discretized time domain <img class="math" src="_images/math/1c7125f3a41b7beaaf34031cca3e6857605c1e6b.svg" alt="\vc{t}"/> and distance domain <img class="math" src="_images/math/2a697e2fdb4c3b23ef1b3679cffb856965380d8c.svg" alt="\vc{r}"/>. Their elements are</p>
 <div class="math">
-<p><img src="_images/math/8c792c75fecf3b51d8d86e8f0ab48fa2746a223d.svg" alt="V_i = V(t_i)
+<p><img src="_images/math/0afed0bb878255d5a2e4e65c189b499265018208.svg" alt="V_i = V(t_i)
 \qquad
 P_j = P(r_j)"/></p>
 </div><p>Distance distribution vectors must have non-negative elements and are assumed to be normalized such that</p>
 <div class="math">
-<p><img src="_images/math/d4b2a0ce73b5180400b5d2bca8b1015fe1d49f62.svg" alt="\sum_j P_j \Delta r  = 1"/></p>
-</div><p><img class="math" src="_images/math/a23c49817f47563aba88f51b566743391be34a7c.svg" alt="\Delta r"/> is the constant increment along the distance domain. DeerLab does not support non-linear distance vectors with non-constant increments.</p>
-<p>All kernels <img class="math" src="_images/math/470a45f89fddfb7f621be3fa29615dc17b7434f3.svg" alt="K"/> are discretized accordingly to give kernel matrices <img class="math" src="_images/math/12f126e891944f52bda77689626ce5bb8bcc3c06.svg" alt="\mx{K}"/> with elements</p>
+<p><img src="_images/math/bd2f9d13b1e6b33c3370055b3d982c048e43aa5d.svg" alt="\sum_j P_j \Delta r  = 1"/></p>
+</div><p><img class="math" src="_images/math/cc84710c9e803b6576d54fa9de22deeb10d0d718.svg" alt="\Delta r"/> is the constant increment along the distance domain. DeerLab does not support non-linear distance vectors with non-constant increments.</p>
+<p>All kernels <img class="math" src="_images/math/aaeec87210b30e4651e6a2da06ffb44ef88f92c7.svg" alt="K"/> are discretized accordingly to give kernel matrices <img class="math" src="_images/math/f5eb4e2cf4ed4021ba1cc99246ee955e161a1acd.svg" alt="\mx{K}"/> with elements</p>
 <div class="math">
-<p><img src="_images/math/a3b90dbe261a42e26b1c301f53490f918d169242.svg" alt="K_{ij} = K(t_i,r_j) \Delta r"/></p>
+<p><img src="_images/math/83d710dbb5fb74697302d6d4cc8bcebfdbe0c224.svg" alt="K_{ij} = K(t_i,r_j) \Delta r"/></p>
 </div><p>With this, a signal is obtained from a distance distribution via</p>
 <div class="math">
-<p><img src="_images/math/73be9cfd938521c728ce4f1d39d48386e1b233b7.svg" alt="\vc{V} = \mx{K}\vc{P}"/></p>
-</div></div>
-<div class="section" id="least-squares-fitting">
-<h2>Least-squares fitting<a class="headerlink" href="#least-squares-fitting" title="Permalink to this headline">¶</a></h2>
+<p><img src="_images/math/e85480f095c6c3edd69114d76d0678eafd28f2bd.svg" alt="\vc{V} = \mx{K}\vc{P}"/></p>
+</div></section>
+<section id="least-squares-fitting">
+<h2>Least-squares fitting<a class="headerlink" href="#least-squares-fitting" title="Permalink to this headline">#</a></h2>
 <p>DeerLab uses dedicated least-squares solvers to fit models to data. The objective function and the solver depend on whether the distance distribution is parametric or non-parametric, and on whether there are background and experiment parameters to fit alongside the distance distribution.</p>
-<div class="section" id="parametric-distribution">
-<h3>Parametric distribution<a class="headerlink" href="#parametric-distribution" title="Permalink to this headline">¶</a></h3>
+<section id="parametric-distribution">
+<h3>Parametric distribution<a class="headerlink" href="#parametric-distribution" title="Permalink to this headline">#</a></h3>
 <p>To fit a model with a parametric distance distribution to an experimental signal, DeerLab solves</p>
 <div class="math">
-<p><img src="_images/math/c00562eaad6c98b99a9be190e139ceda9e17dc99.svg" alt="\vc{\theta}_\mathrm{fit} =
+<p><img src="_images/math/246bb3b6af41b51af54b3bc91e834808ab5d591a.svg" alt="\vc{\theta}_\mathrm{fit} =
 \argmin_{\vc{\theta}}
 \|\vc{V}_\mr{exp}-\mx{K}[\vc{\theta}]\vc{P}[\vc{\theta}]\|^2"/></p>
-</div><p>where <img class="math" src="_images/math/5920a4f5a34d2aae7a28200aec40c48096125f21.svg" alt="\vc{V}_\mr{exp}"/> indicates the experimental data and <img class="math" src="_images/math/1b4931116dfcc855ea66608f89b33f8a917f291a.svg" alt="\vc{\theta}"/> is a vector of all parameters (distribution parameters, background parameters, experiment parameters). Various constrained least-squares solvers are implemented.</p>
-</div>
-<div class="section" id="non-parametric-distribution">
-<h3>Non-parametric distribution<a class="headerlink" href="#non-parametric-distribution" title="Permalink to this headline">¶</a></h3>
+</div><p>where <img class="math" src="_images/math/4deb715aac28284fcf9b9914d7445bcda29849e2.svg" alt="\vc{V}_\mr{exp}"/> indicates the experimental data and <img class="math" src="_images/math/03267abad3188d4c36554870de0f16f22ca859f9.svg" alt="\vc{\theta}"/> is a vector of all parameters (distribution parameters, background parameters, experiment parameters). Various constrained least-squares solvers are implemented.</p>
+</section>
+<section id="non-parametric-distribution">
+<h3>Non-parametric distribution<a class="headerlink" href="#non-parametric-distribution" title="Permalink to this headline">#</a></h3>
 <p>To fit a model with a non-parametric distribution and no additional fitting parameters to an experimental signal, DeerLab implements several regularization approaches. The most common one is Tikhonov regularization. For this, the minimization problem is</p>
 <div class="math">
-<p><img src="_images/math/4b2032c5f41539183baf665d14f906c4e89fec96.svg" alt="\vc{P}_\mathrm{fit} =
+<p><img src="_images/math/3e6535b199c732a55047261e35bcb80f140645d2.svg" alt="\vc{P}_\mathrm{fit} =
 \argmin_{\vc{P}\ge0}
 \left(
 \|\vc{V}_\mr{exp}-\mx{K}\vc{P}\|^2
@@ -299,10 +386,10 @@ P_j = P(r_j)"/></p>
 \alpha^2
 \|\mx{L}\vc{P}\|^2
 \right)"/></p>
-</div><p><img class="math" src="_images/math/4dce32165f8f19cca59299293bc01e93d85675a5.svg" alt="\alpha"/> is the regularization parameter, and <img class="math" src="_images/math/6f7a9a69e2ec127cd6b58b300501e929e3c0022f.svg" alt="\mx{L}"/> is the regularization operator matrix. DeerLab implements the linear non-negative least-squares solver FNNLS, as well as a few others. The <img class="math" src="_images/math/4dce32165f8f19cca59299293bc01e93d85675a5.svg" alt="\alpha"/> parameter can be optimized using a range of criteria, including L-curve, Akaike information criterion (AIC), and generalized cross validation (GCV).</p>
+</div><p><img class="math" src="_images/math/f36a3f8dbda6bea20079ecea63562c7932d00b1b.svg" alt="\alpha"/> is the regularization parameter, and <img class="math" src="_images/math/2c17ba4408158db9dd83e9a59d7361eb32e61e3b.svg" alt="\mx{L}"/> is the regularization operator matrix. DeerLab implements the linear non-negative least-squares solver FNNLS, as well as a few others. The <img class="math" src="_images/math/f36a3f8dbda6bea20079ecea63562c7932d00b1b.svg" alt="\alpha"/> parameter can be optimized using a range of criteria, including L-curve, Akaike information criterion (AIC), and generalized cross validation (GCV).</p>
 <p>To fit a  model with a non-parametric distance distribution and other parameters to an experimental signal, DeerLab solves</p>
 <div class="math">
-<p><img src="_images/math/baf54afd446395f6d441103c3c180b033a6f8d0a.svg" alt="(\vc{\theta}_\mathrm{fit},\vc{P}_\mr{fit})
+<p><img src="_images/math/f030a30038346543fde03a0bd206cb118574cd2e.svg" alt="(\vc{\theta}_\mathrm{fit},\vc{P}_\mr{fit})
 =
 \argmin_{\vc{\theta},\vc{P}\ge0}
 \left(
@@ -311,57 +398,57 @@ P_j = P(r_j)"/></p>
 \alpha^2
 \|\mx{L}\vc{P}\|^2
 \right)"/></p>
-</div><p>This problem is solved directly, i.e. both <img class="math" src="_images/math/1b4931116dfcc855ea66608f89b33f8a917f291a.svg" alt="\vc{\theta}"/> ad <img class="math" src="_images/math/a82035d7602d0044b85b18dca335af1d4b4d5bc5.svg" alt="\vc{P}"/> are fitted simultaneously. To achieve this, DeerLab implements a nested optimization approach that includes regularization.</p>
-</div>
-</div>
-</div>
+</div><p>This problem is solved directly, i.e. both <img class="math" src="_images/math/03267abad3188d4c36554870de0f16f22ca859f9.svg" alt="\vc{\theta}"/> ad <img class="math" src="_images/math/00405087ce346a8bda8e91eeb0e4adc2ad89ad7e.svg" alt="\vc{P}"/> are fitted simultaneously. To achieve this, DeerLab implements a nested optimization approach that includes regularization.</p>
+</section>
+</section>
+</section>
 
 
-           </div>
-           
-          </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="models/ex_ridme7.html" class="btn btn-neutral float-left" title="ex_ridme7" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019-2021, Luis Fábregas Ibáñez, Stefan Stoll, and others.
-
-    </p>
-  </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="dipolar_guide_fitting.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Fitting</p>
         </div>
+    </a>
+    <a class='right-next' id="next-link" href="advanced_guide.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Advanced</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
       </div>
-
-    </section>
-
-  </div>
+    </div>
   
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(false);
-      });
-  </script>
-
-  
-  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
     
-   
-
-</body>
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
 </html>
