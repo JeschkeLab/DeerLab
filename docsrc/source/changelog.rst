@@ -14,14 +14,131 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
+Release v0.14.0 - April 2022
+---------------------------------
 
+.. rubric:: Overall changes
+
+- |feature| |api| Complete overhaul of the DeerLab modelling and fitting interface. Check the new documentation for help and details. (:pr:`218`, :pr:`223`, :pr:`228`, :pr:`237`, :pr:`225`, :pr:`243`). 
+  
+  * A new modelling system has been introduced. DeerLab main interface runs on a new ``Model`` object class. Models implement and provide the distinction between linear and non-linear parameters.
+  * Model parameters are no longer (solely) identified by their indexing inside a parameter vector, but are referenced by name. This avoids the need for a user to recall the ordering of the parameters. This is now all handled internally. For example, before ``paramA = parameters[idxA]`` is now ``model.paramA``.   
+  * Any model parameter is accessible from the model object and its boundaries, start values and other properties can be easily modified. For example, to change the lower boundary of a parameter: ``model.paramA.lb = 0``.  
+  * A new general ``fit`` function that fits arbitrary ``Model`` objects to single or multiple datasets has been implemented. The function automatically handles the selection of solvers to optimally fit the data to the model. 
+  * Implemented a new function ``link`` to link model parameters (setting equality constraints in models). 
+  * Implemented a new function ``merge`` to create a model returning more than one response (allowing the creation of global models). 
+  * Implemented a new function ``relate`` to define functional relationships between model parameters.
+  * Implemented a new function ``lincombine`` to create a model whose response is a linear combination of the inputs' model responses. 
+  * Model parameters can now be frozen (set to a constant value and ignored during optimization) in the ``Model`` object and on the back-end ``snlls`` solver. For examples, to fix a parameter to a certain value: ``model.paramA.freeze(0.5)``.
+  * Arbitrary normalization conditions can be imposed to the linear parameters.
+  * Bootstrapping can now be requested directly from the ``fit`` function via the ``bootstrap`` keyword argument. The function will then return the bootstrap uncertainty quantification of all model parameters and of the model's response instead of the covariance-based uncertainty.
+  * Implemented a new function ``dipolarmodel``, which generates models based on the dipolar EPR multi-pathway theoretical model. 
+  * Added new examples, adapted existing ones, and removed unneeded examples. 
+  * Add many new tests and removed tests related to deprecated functionality. 
+  * All the built-in parametric models are now pre-compiled ``Model`` objects instead of just functions.
+  * The function ``fitmodel`` has been deprecated and removed. The original has been substituted (and greatly expanded) by the new    ``dipolarmodel`` and ``fit`` functions. 
+  * The function ``fitmultimodel`` has been deprecated and removed. The original functionality can be easily scripted with the new modelling system. An example of has been added, describing how to script the same functionality. 
+
+- |feature| Introduced the profile-likelihood methodology both for uncertainty quantification based on likelihood-confidence intervals, and for identifiability analysis (:pr:`222`).
+
+  * Added a new function ``profile_analysis`` to calculate the objective function profiles from model object parameters.
+  * Implemented a new uncertainty quantification ``UQResult`` object type ``'profile'`` for results obtained from profile_analysis.
+- |feature| Implemented a system to specify arbitrary penalty functions to be included in the non-linear part of the objective function during optimization. The penalties can be custom-defined and constructed into a ``Penalty`` object that can be passed to the ``fit`` function. Outer optimization of the penalty weights can also be included based on certain information-based criteria (:pr:`197`, :pr:`218`, :pr:`225`). 
+
+  * Implemented a new object ``Penalty`` that includes the penalty function, weight parameter (and its boundaries), and the selection functional for optimization.
+  * Adds new outer optimization options for the penalty weights, based on hard-coded model selection functionals. For now, the ICC, AIC, AICc, and BIC functionals are available.
+  * Implemented a new function ``dipolarpenalty`` that generates dipolar-EPR-specific penalties, e.g. to induce compactness and/or smoothness.
+- |feature| Implemented masking of datasets during optimization (:pr:`250`).
+- |feature| Added a ``verbose`` option to display progress of the fit routines (:pr:`250`).
+- |feature| Added support for analyzing and fitting complex-valued models and data (:issue:`127`, :pr:`218`).
+- |feature| Orientation selection in dipolar signals can now be simulated for arbitrary orientation weights distributions via the ``orisel`` keyword argument in the new ``dipolarmodel`` or the ``dipolarkernel`` functions (:pr:`183`, :pr:`203`). 
+- |feature| Re-purposed the ``ex_`` models. Each of these function represents a specific dipolar EPR experiment. These now take the experimental time delays as input, and return a new ``ExperimentInfo`` object. This can be passed to ``dipolarmodel`` via the optional keyword argument ``experiment`` to refine the boundaries and start values of the dipolar pathway refocusing times and amplitudes based on the experimental setup (:pr:`225`). 
+- |feature| Implemented masking of datasets during optimization (:pr:`250`).
+- |enhancement| Overhaul of the DeerLab documentation website (:pr:`235`).
+
+  * Full HTML/CSS overhaul. The new web design based on the PyData theme has a clearer design, with more readable pages and code blocks.
+  * Deprecates the use of the RTD theme. This removes the hard constraint of using Sphinx 1.8.0. Now the documentation builds with the latest Sphinx release.
+  * Add a user-guide for the new modelling and fitting system.
+  * Re-organize all of the website content.
+  * Improved the dipolar EPR starting guide, and adapted it to the new system.
+  * Fixed some minor errors in the examples.
+  * Redesigned all examples towards the use of actual experimental data files in BES3T format. Examples can now be taken and easily adapted by users to their experiment data files (:pr:`304`).
+- |enhancement| Added the functionality to print a ``FitResult`` object to display a summary of the fit goodness-of-fit statistics and a table of all estimated parameters and their uncertainties (:pr:`234`). 
+- |enhancement| Added a new keyword argument ``regparamrange`` to ``snlls`` and ``fit`` to specify the search range of the optimal regularization parameter (:pr:`225`).
+- |enhancement| Noise levels of the datasets can be optionally specified in all functions taking datasets (:pr:`213`).
+- |enhancement| Added the option to include or exclude the edges of vector in ``regoperator`` via a new keyword argument ``includeedges`` (:pr:`204`). The default for all functions in DeerLab has been set to ``includeedges=False`` (:issue:`205`, :pr:`230`).  
+- |enhancement| Generalized the regularization operator. Related functions no longer take ``regorder`` (regularization operator order) as an argument. Instead they now take ``regop`` (the full regularization operator) as an argument (:pr:`216`).
+- |enhancement| Generalized the regularized linear least-squares functionality. Now it can handle arbitrary bounds on linear parameters and adapts the linear LSQ solver back end accordingly (:pr:`216`).
+- |efficiency| Improved performance of post-optimization model evaluation/propagation for large datasets (:issue:`200`, :pr:`238`).  
+- |efficiency| Implemented (adaptable) memory limits for potentially memory-intense functions (:issue:`201`, :pr:`239`). 
+- |api| The function ``correctscale`` has been deprecated (:pr:`293`). Its limited functionality is included in the now broader functionality provided by the new modelling and fitting system.
+- |api| The functions ``fitregmodel`` and ``fitparamodel`` have been deprecated and their core functionality merged into ``snlls``. The ``snlls`` function now handles any kind of least-squares problem and automatically employs optimal combinations of solvers to find the solution to the problems (:pr:`218`). 
+- |api| Renamed the function ``bootan`` to ``bootstrap_analysis`` (:pr:`227`).
+- |api| Deprecated TV and Huber regularization. Accordingly the keyword arguments ``regtype``, ``huberparameter`` have been removed throughout (:pr:`216`).
+- |api| Deprecated the ``nnlsbpp`` NNLS solver (:pr:`231`).
+- |api| Deprecated the ``regparamrange`` function (:pr:`232`). It depended on home-written code for the GSVD, which (as shown in previous issues) was prone to LAPACK backend problems and other bugs. This function was still a derelict from DeerAnalysis methodology.
+- |api| The function ``time2dist`` has been renamed to ``distancerange`` (:issue:`273`, :pr:`274`).- |api| The function ``time2dist`` has been renamed to ``distancerange`` (:issue:`273`, :pr:`274`).
+- |api| The convergence control arguments of the fit functions have now been renamed for consistency with the ``least_squares`` function of the SciPy package (:pr:`296`).
+- |api| Changed the name of the parameter ``width`` to ``std`` in the ``dd_gauss``, ``dd_gauss2``, ``dd_gauss3``, and ``dd_skewgauss``models (:issue:`278`, :pr:`280`).
+- |fix| When using the ``multistart`` keyword argument, no longer includes the parameter boundaries in the set of multiple start values (:pr:`218`). 
+- |fix| Fixed error (manifesting as ``nan`` values in the confidence intervals) caused by a division-by-zero in the covariance matrix estimation (:pr:`218`).
+- |fix| Fix encoding error during installation (:pr:`252`). This error could disrupt the installation in OS with default encoding different from CP-1252.
+- |fix| Implement a new function to ensure that estimated Jacobians are positive semi-definite matrices. This fixes the appearance of warnings and bugs when calculating confidence intervals (:pr:`216`).
+- |fix| Corrected the scale invariance behavior of the covariance-based uncertainty estimates (:pr:`218`).
+- |fix| Fixed multiple ``numpy.VisibleDeprecationWarning`` and ``RunTime`` warnings (:issue:`207`, :pr:`212`).
+- |fix| Corrected the math in the documentation of some distance distribution models (:pr:`215`).
+- |fix| Corrected the behavior of dataset weights. These are no longer normalized at runtime and kept as specified by the users (:issue:`248`, :pr:`250`).
+- |fix| While testing, now skips a unit test if an error with the Tk backend of Matplotlib occurs (:pr:`211`).
+- |fix| Fix multiple bugs and errors related to the new modelling and fitting system (:pr:`226`, :issue:`233`, :pr:`235`, :issue:`241`, :pr:`242`, :issue:`244`, :pr:`245`, :pr:`246`, :pr:`249`).
+- |fix| Correct behavior of multistart optimization for one-sided parameter boundaries (:pr:`252`).
+- |fix| Fix bug when globally fitting multiple datasets. The global weights were not being manipulated correctly in the estimation of the linear parameters leading to incorrect results (:pr:`302`)
+
+.. rubric:: ``bootstrap_analysis``
+- |efficiency| Added a new keyword argument ``memorylimit`` to specify the maximal memory used by the bootstrap analysis (by default 8GB). If the total analysis is expected to exceed the memory limit, the function will abort the execution (:issue:`200`, :pr:`238`).
+
+.. rubric:: ``dipolarkernel``
+- |feature| Added a new option `complex` to request the complex-valued dipolar kernel to simulate the out-of-phase contributions to the dipolar signals (:pr:`258`).
+- |efficiency| Added a new keyword argument ``memorylimit`` to specify the maximal memory used by the dipolar kernel (by default 8GB). If the dipolar kernel is expected to exceed the memory limit, the function will abort the execution (:issue:`200`, :pr:`238`).
+- |fix| Prompts error if wrong method is selected when specifying a limited excitation bandwidth (:issue:`181`, :pr:`183`). 
+
+.. rubric:: ``bg_models``
+- |feature| Implemented the time-dependent phase shifts for all the built-in physical background models, namely `bg_hon3d_phase`, `bg_hom3dex_phase`, and `bg_homfractal_phase` (:pr:`258`).   
+- |enhancement| Changed the implementation of `bg_hom3dex` (:pr:`258`). This avoids the use of tabulated pre-calculated values. Accordingly the utility functions `calculate_exvolume_redfactor` and `load_exvolume_redfactor` have been removed.
+- |fix| Improved the implementation and behavior of the `bg_homfractal` model (:pr:`258`).
+
+.. rubric:: ``diststats``
+- |fix| Fixed the behavior when dealing with distributions with arbitrary integral values
+
+.. rubric:: ``selregparam``
+- |enhancement| Implemented a general LSQ solver as backend to adapt to different regularized optimization problem structures.
+- |enhancement| Generalized the linear least-squares solver. (:pr:`216`).
+- |enhancement| In the ``brent`` mode, the search range is no longer selected from the min/max of ``regparamrange`` output, but from a new keyword argument ``searchrange`` set by default to ``[1e-8,1e2]``. The default values were chosen as the statistical means of Monte-Carlo simulations of the min/max values of ``regparamrange``'s output for typical 4-pulse DEER kernels (:pr:`232`).
+- |enhancement|  In the ``grid`` mode, the grid-values are passed by the pre-existing keyword argument ``candidates``. By default, if not specified, a grid will be generated from the ``searchrange`` argument (:pr:`232`).
+
+.. rubric:: ``UQResult``
+- |fix| Ensures non-negativity of estimated parameter uncertainty probability density functions.
+- |enhancement| Improve the behavior of ``UQresult.propagate()`` for bootstrapped uncertainty results. Now, instead of propagating bootstrapped uncertainty via the estimated covariance matrix, the uncertainty is propagated by bootstrapping from the bootstrapped uncertainty distributions (:pr:`218`). 
+- |fix| Fix behavior of the bootstrap median (:pr:`254`).
+- |fix| Suppress multiple ``DeprecationWarning`` warnings during uncertainty calculations (:pr:`255`).
+- |fix| Fix error prompt when requesting private methods such as ``__deepcopy__`` (:issue:`301`, :pr:`303`).
+
+.. rubric:: ``correctphase``
+- |fix| Implement a fully vectorized analytical solution, resulting in a 30-150x speedup (:pr:`256`, :pr:`279`). 
+- |api| Eliminate the ``phase='posrealint'`` and ``phase='negrealint'`` options (:pr:`279`).
+
+.. rubric:: ``deerload``
+- |fix| Raise warning instead of exception when parsing lines without key-value pairs (:pr:`256`). This avoid errors when trying to load BES3T files with PulseSPEL scripts edited in different OS systems.
+
+.. rubric:: ``whitegaussnoise``
+- |api| Renamed the argument ``level`` to ``std`` for clarity (:pr:`276`).
+- |api| Make the argument ``std`` a required positional argument and no longer provide a default value (:pr:`276`).
 
 Release v0.13.2 - July 2021
 ---------------------------------
 
 .. rubric:: Overall changes
 
-- |fix| Fixed an error appearing during installation in Windows systems. If during installation a  ``python`` executable alias was not created, the call to the ``pipwin`` manager returned an error and the installation failed to download and install Numpy, SciPy and cvxopt (:pr:`187`).
+- |fix| Fixed an error appearing during installation in Windows systems. If during installation a  ``python`` executable alias was not created, the call to the ``pipwin`` manager returned an error and the installation failed to download and install Numpy, SciPy and CVXOpt (:pr:`187`).
 - |fix| Fixed the rendering of certain code-blocks in the documentation examples which were appearing as plain text (:issue:`179`, :pr:`184`). 
 - |fix| Fixed the execution and rendering of the model examples in the documentation (:issue:`189`, :pr:`190`). 
 - |fix| Fixed a bug in ``snlls`` where one of the linear least-squares solvers can return results that violate the boundary conditions due to float-point round-off errors (:issue:`177`, :pr:`188`).
@@ -32,7 +149,7 @@ Release v0.13.1 - May 2021
 
 .. rubric:: Overall changes
 
-- |fix| Fixed the behaviour of global weights throughout DeerLab fit functions. The keyword argument ``weights`` was not having any or the expected effect in the results in some fit functions. Also fixes the behaviour of built-in plots for global fits (:issue:`168`, :pr:`171`). 
+- |fix| Fixed the behavior of global weights throughout DeerLab fit functions. The keyword argument ``weights`` was not having any or the expected effect in the results in some fit functions. Also fixes the behavior of built-in plots for global fits (:issue:`168`, :pr:`171`). 
 - |enhancement| Optimize default weights in global fitting according to the datasets noise levels (:issue:`169`, :pr:`174`).
 - |fix| Fixed a bug in ``snlls`` that was causing the confidence intervals in ``snlls``, ``fitmodel`` and ``fitmultimodel`` to vanish for large signal scales (:issue:`165`, :pr:`166`). 
 
@@ -59,12 +176,12 @@ Release v0.13.0 - April 2021
 
 .. rubric:: Overall changes
 
-- |feature| DeerLab is now distributed via the Anaconda repository and can be installed with the ``conda`` package manager (:issue:`12`,:pr:`157`). The installation instructions have been expanded to describe the Anaconda installation (:pr:`155`).
+- |feature| DeerLab is now distributed via the Anaconda repository and can be installed with the ``conda`` package manager (:issue:`12`, :pr:`157`). The installation instructions have been expanded to describe the Anaconda installation (:pr:`155`).
 - |feature| DeerLab now supports Python 3.9.
 - |enhancement| The function ``fitsignal`` has been re-named to ``fitmodel`` for correctness and consistency with other functions (:pr:`102`).
 - |feature| Added new experiment models for RIDME on systems with one to seven harmonic pathways (S=1/2 to S=7/2) to include all higher harmonics (overtones) (:pr:`79`). 
 - |enhancement| Bootstrapping is now embedded into ``fitmodel`` to automatically bootstrap all output quantities without the need to write additional script lines (:issue:`55`). In ``fitmodel`` a new option ``uq`` allows to switch between covariance or bootstrapping uncertainty quantification (:pr:`88`). 
-- |feature| The function ``fitmodel`` now returns ``Vmod`` and ``Vunmod``, the modulated and unmodulated contributionsto the fitted dipolar signal, respectively, along their uncertainties as additional outputs (:pr:`78`).
+- |feature| The function ``fitmodel`` now returns ``Vmod`` and ``Vunmod``, the modulated and unmodulated contributions to the fitted dipolar signal, respectively, along their uncertainties as additional outputs (:pr:`78`).
 - |feature| Implemented several initialization strategies in ``fitmultimodel`` for multi-model components (:pr:`67`). Three different new strategies ``'spread'``, ``'split'`` and ``'merge'`` will initialize the parameter values of the N-component fit based on the results of the N-1/N+1 component fit to improve quality of results and speed.  
 - |feature| Added contribution guidelines to the documentation and automated list of DeerLab contributors. 
 - |feature| The function ``snlls`` now accepts additional custom penalties to include in the optimization (:issue:`76`, :pr:`112`).
@@ -91,7 +208,7 @@ Release v0.13.0 - April 2021
 
 .. rubric:: ``deerload`` 
 
-- |fix| Fixed behaviour of the function when loading certain 2D-datasets in the BES3T format (:issue:`82`, :pr:`83`).
+- |fix| Fixed behavior of the function when loading certain 2D-datasets in the BES3T format (:issue:`82`, :pr:`83`).
 - |fix| In 2D-datasets, the abscissas are now returned as a list of abscissas instead of a single 2D-matrix (:pr:`83`). 
 
 .. rubric:: ``fitmodel``
