@@ -14,7 +14,7 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
-Release v0.14.0 - December 2021
+Release v0.14.0 - April 2022
 ---------------------------------
 
 .. rubric:: Overall changes
