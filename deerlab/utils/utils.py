@@ -659,7 +659,17 @@ import dill as pickle
 
 # --------------------------------------------------------------------------------------
 def save(obj, filename):
-    """ Pickle object into a file. """
+    """
+    Save/export an object to a ``.pkl`` file serialized as bytes.
+    
+    Parameters
+    ----------
+    obj : object 
+        Python object to be saved/exported. 
+
+    filename : string 
+        Name (and path) of the file to save the pickled object to. The object is saved as a ``.pkl`` file. 
+    """   
     if '.pkl' not in filename:
         filename = filename + '.pkl'
     with open(filename, 'wb') as outp:  # Overwrites any existing file.
@@ -668,7 +678,14 @@ def save(obj, filename):
 
 # --------------------------------------------------------------------------------------
 def load(filename):
-    """ Deserialize a file of pickled objects. """
+    """
+    Load a pickled object file ``.pkl`` and deserialize the bytes into a Python object.
+    
+    Parameters
+    ----------
+    filename : string 
+        Name (and path) of the ``.pkl`` file to load.
+    """ 
     if '.pkl' not in filename:
         filename = filename + '.pkl'
     with open(filename, "rb") as f:
