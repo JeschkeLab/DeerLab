@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 import scipy as scp
 import scipy.optimize as opt
-from types import FunctionType 
+from types import FunctionType, LambdaType
 from functools import wraps
 import pickle
 
@@ -655,15 +655,18 @@ try:
 
 except: pass
 
+import dill as pickle
 
-
+# --------------------------------------------------------------------------------------
 def save(obj, filename):
     """ Pickle object into a file. """
     if '.pkl' not in filename:
         filename = filename + '.pkl'
     with open(filename, 'wb') as outp:  # Overwrites any existing file.
         pickle.dump(obj, outp, pickle.HIGHEST_PROTOCOL)
+# --------------------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------------------
 def load(filename):
     """ Deserialize a file of pickled objects. """
     if '.pkl' not in filename:
@@ -674,3 +677,4 @@ def load(filename):
                 return pickle.load(f)
             except EOFError:
                 break
+# --------------------------------------------------------------------------------------

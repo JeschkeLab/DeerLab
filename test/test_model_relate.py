@@ -1,7 +1,10 @@
 import numpy as np
 import deerlab as dl 
 from deerlab.model import Model,fit,relate
+from deerlab.utils import save, load 
 from copy import deepcopy
+import os 
+
 # ======================================================================
 def test_type(): 
     "Check that the function returns a valid model type"
@@ -170,5 +173,26 @@ def test_relate_conflict_order():
     response2 = conflictmodel(r=x,mean1=4,mean2=5,amp1=1,amp2=1)
 
     assert np.allclose(response1,ref) and np.allclose(response2,ref)
+# ======================================================================
+
+
+def test_pickle_linked_model():
+# ======================================================================
+    "Check that the model object can be pickled"
+    model = dl.dd_gauss
+    x = np.linspace(0,10,400)
+    ref = model(x,4,0.2)
+    newmodel = relate(model, std = lambda mean: mean/20)
+
+    save(newmodel,'pickled_model')
+    try:
+        pickled_model = load('pickled_model')
+        result = fit(pickled_model,ref,x)
+
+        os.remove("pickled_model.pkl") 
+        assert np.allclose(result.model,ref)
+    except Exception as exception:
+        os.remove("pickled_model.pkl") 
+        raise exception
 # ======================================================================
 

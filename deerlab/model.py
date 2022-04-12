@@ -8,7 +8,6 @@ from scipy.sparse import block_diag
 from scipy.optimize import fminbound
 from deerlab.solvers import snlls
 from deerlab.classes import FitResult, UQResult
-from deerlab.noiselevel import noiselevel
 from deerlab.bootstrap_analysis import bootstrap_analysis
 from deerlab.utils import formatted_table, parse_multidatasets
 import inspect 
@@ -1198,6 +1197,7 @@ def _aresame(obj1,obj2):
 # ---------------------------------------------------------------------
 def _linked_model_with_constants(nonlinfcn,Nconstants,mapping,constantsInfo,linear_reduce_idx,*inputargs):
     # Redistribute the input parameter vector according to the mapping vector
+    Nconstants = len(constantsInfo)
     constants = inputargs[:Nconstants]
     θ = inputargs[Nconstants:]
     θ = np.atleast_1d(θ)[mapping]
@@ -1334,10 +1334,9 @@ def link(model,**links):
         # Monkey-patch the evaluation function         
         nonlinfcn = model.nonlinmodel
         linear_reduce_idx = [np.where(mapping_linear==n)[0].tolist() for n in np.unique(mapping_linear) ]
-        Nconstants = len(model._constantsInfo)
 
         # Redefine the non-linear part of the model function
-        model.nonlinmodel = partial(_linked_model_with_constants,nonlinfcn,Nconstants,mapping,model._constantsInfo,linear_reduce_idx)
+        model.nonlinmodel = partial(_linked_model_with_constants,nonlinfcn,mapping,model._constantsInfo,linear_reduce_idx)
 
         # Return the updated model with the linked parameters
         return model
@@ -1608,6 +1607,20 @@ def lincombine(*inputmodels,addweights=False):
     return _combinemodels('lincombine',*inputmodels,addweights=addweights)
 #==============================================================================================
 
+# ---------------------------------------------------------------------
+def _dependency_model_with_constants(function,nonlinfcn,constantsInfo,arguments_idx,dependent_idx,*inputargs):
+    # Redistribute the input parameter vector according to the mapping vector
+    Nconstants = len(constantsInfo)
+    constants = inputargs[:Nconstants]
+    θ = np.atleast_1d(inputargs[Nconstants:]).astype(float)
+    θ = np.insert(θ,dependent_idx,function(*θ[arguments_idx]))  
+    args = list(θ)
+    if constantsInfo is not None:
+        for info,constant in zip(constantsInfo,constants):
+            args.insert(info['argidx'],constant)                
+    A = nonlinfcn(*args)
+    return A
+# ---------------------------------------------------------------------
 
 #==============================================================================================
 def relate(model,**functions):
@@ -1638,7 +1651,7 @@ def relate(model,**functions):
     """
     def _relate(model,function,dependent_name):
     # ---------------------------------------------------------------------  
-        
+
         # Get a list of parameter names in the model
         model_parameters =np.array(model._parameter_list(order='vector'))
 
@@ -1686,24 +1699,12 @@ def relate(model,**functions):
 
         # Monkey-patch the evaluation function         
         nonlinfcn = model.nonlinmodel
-        Nconstants = len(model._constantsInfo)
         nonlinparams = np.array([param for param in model._parameter_list('vector') if not np.all(getattr(model,param).linear)])
         arguments_idx = np.concatenate([np.where(nonlinparams==name)[0] for name in arguments_names])
         dependent_idx = dependent_idx[0]
-        # ---------------------------------------------------------------------
-        def dependency_model_with_constants(*inputargs):
-            # Redistribute the input parameter vector according to the mapping vector
-            constants = inputargs[:Nconstants]
-            θ = np.atleast_1d(inputargs[Nconstants:]).astype(float)
-            θ = np.insert(θ,dependent_idx,function(*θ[arguments_idx]))  
-            args = list(θ)
-            if model._constantsInfo is not None:
-                for info,constant in zip(model._constantsInfo,constants):
-                    args.insert(info['argidx'],constant)                
-            A = nonlinfcn(*args)
-            return A
-        # ---------------------------------------------------------------------
-        model.nonlinmodel = dependency_model_with_constants
+        
+        # Redefine the non-linear part of the model function
+        model.nonlinmodel = partial(_dependency_model_with_constants,function,nonlinfcn,model._constantsInfo,arguments_idx,dependent_idx)
 
         # Return the updated model with the linked parameters
         return model
