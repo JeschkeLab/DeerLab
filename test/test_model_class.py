@@ -1106,8 +1106,11 @@ def test_pickle_fitresult():
 
     fitResult = fit(mymodel,y)
     save(fitResult,'pickled_results')
-    pickled_fitResult = load('pickled_results')
-    os.remove("pickled_results.pkl") 
-
-    assert np.allclose(pickled_fitResult.model.real,y.real) and np.allclose(pickled_fitResult.model.imag,y.imag)
+    try:
+        pickled_fitResult = load('pickled_results')
+        os.remove("pickled_results.pkl") 
+        assert np.allclose(pickled_fitResult.model.real,y.real) and np.allclose(pickled_fitResult.model.imag,y.imag)
+    except Exception as exception:
+        os.remove("pickled_results.pkl") 
+        raise exception
 # ======================================================================
