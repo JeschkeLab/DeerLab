@@ -13,7 +13,7 @@ from deerlab.bootstrap_analysis import bootstrap_analysis
 from deerlab.utils import formatted_table, parse_multidatasets
 import inspect 
 from copy import copy,deepcopy
-from types import ModuleType
+from functools import partial
 import difflib
 
 #===================================================================================
@@ -794,6 +794,88 @@ def _outerOptimization(fitfcn,penalty_objects,y,sigma):
     return fitfcn_
 #--------------------------------------------------------------------------
 
+def _propagate(fitresults,params,_paramlist,paramidx,model,*constants,lb=None,ub=None):
+# ----------------------------------------------------------------------------
+    """
+    Propagate the uncertainty in the fit results to a model's response.
+
+    Parameters
+    ----------
+
+    model : :ref:`Model` or callable
+        Model object or callable function to be evaluated. All the parameters in the model or in the callable definition
+        must match their corresponding parameter names in the ``FitResult`` object.   
+    constants : array_like 
+        Model constants. 
+    lb : array_like, optional 
+        Lower bounds of the model response.
+    ub : array_like, optional 
+        Upper bounds of the model response.   
+
+    Returns
+    -------
+
+    responseUncert : :ref:`UQResult`
+        Uncertainty quantification of the model's response.
+    """
+    # Get the parameter names of the input model
+    if isinstance(model,Model):
+        modelparam = model._parameter_list('vector')
+    elif callable(model):
+        modelparam = inspect.getfullargspec(model).args
+    else: 
+        raise TypeError('The input must be a deerlab.Model object or a callable.')
+
+    # Check that all parameters are in the fit object
+    for param in modelparam:
+        if not param in params: 
+            raise KeyError(f'The fit object does not contain the {param} parameter.')
+    # Determine the indices of the subset of parameters the model depends on
+    subset = [paramidx[np.where(np.asarray(_paramlist)==param)[0][0]] for param in modelparam]
+    # Propagate the uncertainty from that subset to the model
+    modeluq = fitresults.paramUncert.propagate(lambda param: model(*constants,*[param[s] for s in subset]),lb,ub)
+    return modeluq
+# ----------------------------------------------------------------------------
+
+def _evaluate(params,model,*constants):
+# ----------------------------------------------------------------------------
+    """
+    Evaluate a model at the fitted parameter values. 
+
+    Parameters
+    ----------
+
+    model : :ref:`Model` or callable
+        Model object or callable function to be evaluated. All the parameters in the model or in the callable definition
+        must match their corresponding parameter names in the ``FitResult`` object.   
+    constants : array_like 
+        Any model constants present required by the model.  
+    
+    Returns
+    -------
+
+    response : array_like 
+        Model response at the fitted parameter values. 
+    """
+    if isinstance(model,Model):
+        modelparam = model._parameter_list('vector')
+    elif callable(model):
+        modelparam = inspect.getfullargspec(model).args
+    else: 
+        raise TypeError('The input must be a deerlab.Model object or a callable.')
+
+    # Check that all parameters are in the fit object
+    for param in modelparam:
+        if not param in params: 
+            raise KeyError(f'The fit object does not contain the {param} parameter.')
+    # Determine the indices of the subset of parameters the model depends on
+    parameters = {param: params[param] for param in modelparam}
+    # Evaluate the input model
+    response = model(*constants,**parameters)
+    return response
+# ----------------------------------------------------------------------------
+
+
 #--------------------------------------------------------------------------
 def _print_fitresults(fitresult,model):
     """Construct summary table of fit results to print"""
@@ -1060,88 +1142,11 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
     FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','modelUncert','cost','plot','residuals','stats','regparam']}
-
     _paramlist = model._parameter_list('vector')
-    def propagate(model,*constants,lb=None,ub=None):
-    # ----------------------------------------------------------------------------
-        """
-        Propagate the uncertainty in the fit results to a model's response.
 
-        Parameters
-        ----------
-
-        model : :ref:`Model` or callable
-            Model object or callable function to be evaluated. All the parameters in the model or in the callable definition
-            must match their corresponding parameter names in the ``FitResult`` object.   
-        constants : array_like 
-            Model constants. 
-        lb : array_like, optional 
-            Lower bounds of the model response.
-        ub : array_like, optional 
-            Upper bounds of the model response.   
-
-        Returns
-        -------
-
-        responseUncert : :ref:`UQResult`
-            Uncertainty quantification of the model's response.
-        """
-        # Get the parameter names of the input model
-        if isinstance(model,Model):
-            modelparam = model._parameter_list('vector')
-        elif callable(model):
-            modelparam = inspect.getfullargspec(model).args
-        else: 
-            raise TypeError('The input must be a deerlab.Model object or a callable.')
-
-        # Check that all parameters are in the fit object
-        for param in modelparam:
-            if not param in FitResult_param: 
-                raise KeyError(f'The fit object does not contain the {param} parameter.')
-        # Determine the indices of the subset of parameters the model depends on
-        subset = [param_idx[np.where(np.asarray(_paramlist)==param)[0][0]] for param in modelparam]
-        # Propagate the uncertainty from that subset to the model
-        modeluq = fitresults.paramUncert.propagate(lambda param: model(*constants,*[param[s] for s in subset]),lb,ub)
-        return modeluq
-    # ----------------------------------------------------------------------------
-
-    def evaluate(model,*constants):
-    # ----------------------------------------------------------------------------
-        """
-        Evaluate a model at the fitted parameter values. 
-
-        Parameters
-        ----------
-
-        model : :ref:`Model` or callable
-            Model object or callable function to be evaluated. All the parameters in the model or in the callable definition
-            must match their corresponding parameter names in the ``FitResult`` object.   
-        constants : array_like 
-            Any model constants present required by the model.  
-        
-        Returns
-        -------
-
-        response : array_like 
-            Model response at the fitted parameter values. 
-        """
-        if isinstance(model,Model):
-            modelparam = model._parameter_list('vector')
-        elif callable(model):
-            modelparam = inspect.getfullargspec(model).args
-        else: 
-            raise TypeError('The input must be a deerlab.Model object or a callable.')
-
-        # Check that all parameters are in the fit object
-        for param in modelparam:
-            if not param in FitResult_param: 
-                raise KeyError(f'The fit object does not contain the {param} parameter.')
-        # Determine the indices of the subset of parameters the model depends on
-        parameters = {param: FitResult_param[param] for param in modelparam}
-        # Evaluate the input model
-        response = model(*constants,**parameters)
-        return response
-    # ----------------------------------------------------------------------------
+    # Prepare the propagate() and evaluate() methods
+    propagate = partial(_propagate,fitresults,FitResult_param,_paramlist,param_idx)
+    evaluate =  partial(_evaluate,FitResult_param)
 
     # Enforce normalization of the linear parameters (if needed) for the final output
     FitResult_param_,FitResult_paramuq_ = FitResult_param.copy(),FitResult_paramuq.copy()
