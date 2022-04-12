@@ -20,10 +20,9 @@ jobs:
           python -m pip install setuptools --user
           python -m pip install build --user
           python -m pip install twine --user
-    - name: PyPI - Build and publish
+    - name: Build distribution
       run: |
           python setup.py sdist
-          python -m twine upload dist/*
     - name: Publish distribution to PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
