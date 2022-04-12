@@ -1365,6 +1365,58 @@ def _unique_ordered(vec):
 # ---------------------------------------------------------------------
 
 
+#---------------------------------------------------------------------
+def _combined_nonlinmodel(mode,nonlinfcns,Nlins,Nconst,arelinear,const_subsets,subsets_nonlin,*inputargs):
+    """Evaluates the nonlinear functions of the submodels and 
+    concatenates them into a single design matrix"""
+
+    constants = inputargs[:Nconst]
+    param = inputargs[Nconst:]
+
+    param = np.atleast_1d(param)
+    constants = np.atleast_2d(constants)
+    # Loop over the submodels in the model
+    Amatrices = []
+    for n,nonlinfcn in enumerate(nonlinfcns):
+        # Evaluate the submodel
+        Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
+        if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
+        Amatrices.append(Amatrix)
+    if mode=='merge':
+        Anonlin_full = block_diag(Amatrices).toarray()
+        if not any(arelinear):
+            Anonlin_full = np.sum(Anonlin_full,1)
+
+    elif mode=='lincombine':
+        Anonlin_full = np.hstack(Amatrices)
+
+    return Anonlin_full
+#---------------------------------------------------------------------
+
+#---------------------------------------------------------------------
+def _split_output(nonlinfcns,Nlins,Nconst,const_subsets,subsets_nonlin,y,*inputargs):
+    
+    constants = inputargs[:Nconst]
+    param = inputargs[Nconst:]
+    param = np.atleast_1d(param)
+    constants = np.atleast_2d(constants)
+    # Loop over the submodels in the model
+    ysizes = []
+    for n,nonlinfcn in enumerate(nonlinfcns):
+        # Evaluate the submodel
+        Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
+        if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
+        ysizes.append(Amatrix.shape[0])
+    
+    nprev = 0
+    ysubsets = []
+    for x in ysizes:
+        ysubsets.append(np.arange(nprev,nprev+x))
+        nprev = nprev+x
+    return [y[ysubsets[n]] for n in range(len(ysizes))]
+#---------------------------------------------------------------------
+
+
 #==============================================================================================
 def _combinemodels(mode,*inputmodels,addweights=False): 
 
@@ -1459,59 +1511,16 @@ def _combinemodels(mode,*inputmodels,addweights=False):
     Nconst = len(constants)
     nonlinfcns = [model.nonlinmodel for model in models]
     Nlins = [model.Nlin for model in models]
-    ysizes = [[] for _ in models]
-
-    #---------------------------------------------------------------------
-    def _combined_nonlinmodel(*inputargs):
-        """Evaluates the nonlinear functions of the submodels and 
-        concatenates them into a single design matrix"""
-
-        nonlocal ysizes
-
-        constants = inputargs[:Nconst]
-        param = inputargs[Nconst:]
-
-        param = np.atleast_1d(param)
-        constants = np.atleast_2d(constants)
-        # Loop over the submodels in the model
-        Amatrices = []
-        for n,nonlinfcn in enumerate(nonlinfcns):
-            # Evaluate the submodel
-            Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
-            if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
-            Amatrices.append(Amatrix)
-        if mode=='merge':
-            ysizes = [A.shape[0] for A in Amatrices]
-            Anonlin_full = block_diag(Amatrices).toarray()
-            if not any(arelinear):
-                Anonlin_full = np.sum(Anonlin_full,1)
-
-        elif mode=='lincombine':
-            Anonlin_full = np.hstack(Amatrices)
-
-        return Anonlin_full
-    #---------------------------------------------------------------------
-    
-    #---------------------------------------------------------------------
-    def _split_output(y,*inputargs):
-        nonlocal ysizes
-        nprev = 0
-        ysubsets = []
-        for x in ysizes:
-            ysubsets.append(np.arange(nprev,nprev+x))
-            nprev = nprev+x
-        return [y[ysubsets[n]] for n in range(len(ysizes))]
-    #---------------------------------------------------------------------
 
     # Create the model object
-    combinedModel = Model(_combined_nonlinmodel,constants=constants,signature=signature)
+    combinedModel = Model(partial(_combined_nonlinmodel,mode,nonlinfcns,Nlins,Nconst,arelinear,const_subsets,subsets_nonlin),constants=constants,signature=signature)
 
     # Add parent models 
     combinedModel.parents = models
 
     if mode=='merge':
         # Add post-evalution function for splitting of the call outputs
-        setattr(combinedModel,'_posteval_fcn',_split_output) 
+        setattr(combinedModel,'_posteval_fcn',partial(_split_output,nonlinfcns,Nlins,Nconst,const_subsets,subsets_nonlin)) 
 
     # Add the linear parameters from the subset models   
     lin_param_set = []
