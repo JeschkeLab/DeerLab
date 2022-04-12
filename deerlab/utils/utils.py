@@ -558,6 +558,9 @@ def nearest_psd(A):
        How can I calculate the nearest positive semi-definite matrix? 
        StackOverflow, https://stackoverflow.com/a/63131250/16396391
     """ 
+    # If matrix is empty, return it empty (scipy.linalg.eigh cannot deal with empty matrix)
+    if A.size==0: 
+        return A
     # Symmetrize the matrix
     Asym = (A + A.T)/2
     # Construct positive semi-definite matrix via eigenvalue decomposition
