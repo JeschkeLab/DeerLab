@@ -1182,6 +1182,7 @@ def _importparameter(parameter):
         'value' : parameter.value,
     }
 
+# ---------------------------------------------------------------------
 def _aresame(obj1,obj2):
     a = obj1.__dict__
     a = {key:val for key, val in a.items() if key not in ['_parent','idx']}
@@ -1192,6 +1193,24 @@ def _aresame(obj1,obj2):
         return True
     except Exception:
         return False
+# ---------------------------------------------------------------------
+
+# ---------------------------------------------------------------------
+def _linked_model_with_constants(nonlinfcn,Nconstants,mapping,constantsInfo,linear_reduce_idx,*inputargs):
+    # Redistribute the input parameter vector according to the mapping vector
+    constants = inputargs[:Nconstants]
+    θ = inputargs[Nconstants:]
+    θ = np.atleast_1d(θ)[mapping]
+    args = list(θ)
+    if constantsInfo is not None:
+        for info,constant in zip(constantsInfo,constants):
+            args.insert(info['argidx'],constant)                
+    A = nonlinfcn(*args)
+    if len(A.shape)<2: A = np.expand_dims(A,1)
+    Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
+    return Amapped
+# ---------------------------------------------------------------------
+
 # ==============================================================================
 def link(model,**links):
     """
@@ -1246,8 +1265,6 @@ def link(model,**links):
         
         for n,name in enumerate(model_parameters):
             if name==linked_name: link_param_idx = n
-
-        
 
         # Get the vector index of the parameter to be linked to
         link_indices = np.atleast_1d(link_indices[0])
@@ -1318,22 +1335,9 @@ def link(model,**links):
         nonlinfcn = model.nonlinmodel
         linear_reduce_idx = [np.where(mapping_linear==n)[0].tolist() for n in np.unique(mapping_linear) ]
         Nconstants = len(model._constantsInfo)
-        # ---------------------------------------------------------------------
-        def linked_model_with_constants(*inputargs):
-            # Redistribute the input parameter vector according to the mapping vector
-            constants = inputargs[:Nconstants]
-            θ = inputargs[Nconstants:]
-            θ = np.atleast_1d(θ)[mapping]
-            args = list(θ)
-            if model._constantsInfo is not None:
-                for info,constant in zip(model._constantsInfo,constants):
-                    args.insert(info['argidx'],constant)                
-            A = nonlinfcn(*args)
-            if len(A.shape)<2: A = np.expand_dims(A,1)
-            Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
-            return Amapped
-        # ---------------------------------------------------------------------
-        model.nonlinmodel = linked_model_with_constants
+
+        # Redefine the non-linear part of the model function
+        model.nonlinmodel = partial(_linked_model_with_constants,nonlinfcn,Nconstants,mapping,model._constantsInfo,linear_reduce_idx)
 
         # Return the updated model with the linked parameters
         return model

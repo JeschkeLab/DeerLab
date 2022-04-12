@@ -1,6 +1,8 @@
 import numpy as np
 import deerlab as dl 
 from deerlab.model import fit,link,Model
+from deerlab.utils import save, load 
+import os  
 
 # ======================================================================
 def test_link_name(): 
@@ -184,3 +186,25 @@ def test_vec_link_fit():
     assert np.allclose(result.model,ref,atol=1e-2)
 # ======================================================================
 
+def test_pickle_linked_model():
+# ======================================================================
+    "Check that the model object can be pickled"
+    model = dl.dd_gauss2
+    x = np.linspace(0,10,400)
+    ref = model(x,3,0.5,3,0.5,1,1)
+    linkedmodel = link(model,
+                mean=['mean1','mean2'],
+                std=['std1','std2'])
+    linkedmodel.mean.par0 = 3
+    linkedmodel.std.par0 = 0.5
+    save(linkedmodel,'pickled_model')
+    try:
+        pickled_model = load('pickled_model')
+        result = fit(pickled_model,ref,x, reg=False)
+
+        os.remove("pickled_model.pkl") 
+        assert np.allclose(result.model,ref,atol=1e-5)
+    except Exception as exception:
+        os.remove("pickled_model.pkl") 
+        raise exception
+# ======================================================================
