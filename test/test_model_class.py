@@ -3,6 +3,8 @@ from deerlab.whitegaussnoise import whitegaussnoise
 from deerlab.model import Model, fit
 import numpy as np 
 import pytest
+import os 
+from deerlab.utils import load,save
 
 # Simple non-linear function for testing
 x = np.linspace(0,5,100)
@@ -1097,3 +1099,15 @@ def test_fit_propagate_callable_bootstrapped():
 
     assert_cis(modeluq)
 #================================================================
+
+def test_pickle_fitresult():
+# ======================================================================
+    "Check that the fit results object can be pickled"
+
+    fitResult = fit(mymodel,y)
+    save(fitResult,'pickled_results')
+    pickled_fitResult = load('pickled_results')
+    os.remove("pickled_results.pkl") 
+
+    assert np.allclose(pickled_fitResult.model.real,y.real) and np.allclose(pickled_fitResult.model.imag,y.imag)
+# ======================================================================

@@ -19,3 +19,4 @@ from .distancerange import distancerange
 from .classes import FitResult, UQResult
 from .diststats import diststats
 from .profile_analysis import profile_analysis
+from .utils import save, load

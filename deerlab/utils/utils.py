@@ -5,7 +5,7 @@ import scipy as scp
 import scipy.optimize as opt
 from types import FunctionType 
 from functools import wraps
-
+import pickle
 
 def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None, subsets=None):
 #===============================================================================
@@ -654,3 +654,23 @@ try:
 
 
 except: pass
+
+
+
+def save(obj, filename):
+    """ Pickle object into a file. """
+    if '.pkl' not in filename:
+        filename = filename + '.pkl'
+    with open(filename, 'wb') as outp:  # Overwrites any existing file.
+        pickle.dump(obj, outp, pickle.HIGHEST_PROTOCOL)
+
+def load(filename):
+    """ Deserialize a file of pickled objects. """
+    if '.pkl' not in filename:
+        filename = filename + '.pkl'
+    with open(filename, "rb") as f:
+        while True:
+            try:
+                return pickle.load(f)
+            except EOFError:
+                break
