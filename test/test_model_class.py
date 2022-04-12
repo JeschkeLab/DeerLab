@@ -1114,3 +1114,18 @@ def test_pickle_fitresult():
         os.remove("pickled_results.pkl") 
         raise exception
 # ======================================================================
+
+def test_pickle_model():
+# ======================================================================
+    "Check that the model object can be pickled"
+
+    save(mymodel,'pickled_model')
+    try:
+        pickled_model = load('pickled_model')
+        fitResult = fit(pickled_model,y)
+        os.remove("pickled_model.pkl") 
+        assert np.allclose(fitResult.model.real,y.real) and np.allclose(fitResult.model.imag,y.imag)
+    except Exception as exception:
+        os.remove("pickled_model.pkl") 
+        raise exception
+# ======================================================================

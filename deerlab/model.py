@@ -178,7 +178,20 @@ class Model():
     #=======================================================================================
     #                                         Constructor
     #=======================================================================================
-
+    
+    # Use a wrapper function to facilitate internal arguments manipulation        
+    #-----------------------------------
+    def _model_with_constants(self,nonlinfcn,constantsInfo,*inputargs):
+        Nconstants = len(constantsInfo)
+        constants = inputargs[:Nconstants]
+        θ = inputargs[Nconstants:]
+        args = list(θ)
+        if constantsInfo is not None:
+            for info,constant in zip(constantsInfo,constants):
+                args.insert(info['argidx'],constant)
+        return nonlinfcn(*args)
+    #----------------------------------- 
+    
     #---------------------------------------------------------------------------------------
     def __init__(self,nonlinfcn,constants=None,signature=None): 
         """
@@ -234,21 +247,8 @@ class Model():
                 for n,par in enumerate(parameters): 
                     if par==argname: 
                         parameters.remove(argname)
-        Nconstants = len(self._constantsInfo)
-
-
-        # Use a wrapper function to facilitate internal arguments manipulation        
-        #-----------------------------------
-        def model_with_constants(*inputargs):
-            constants = inputargs[:Nconstants]
-            θ = inputargs[Nconstants:]
-            args = list(θ)
-            if self._constantsInfo is not None:
-                for info,constant in zip(self._constantsInfo,constants):
-                    args.insert(info['argidx'],constant)
-            return nonlinfcn(*args)
-        #-----------------------------------    
-        self.nonlinmodel = model_with_constants
+  
+        self.nonlinmodel = partial(self._model_with_constants,nonlinfcn,self._constantsInfo)
 
         # Update the number of parameters in the model
         self.Nparam = len(parameters)
