@@ -1195,7 +1195,7 @@ def _aresame(obj1,obj2):
 # ---------------------------------------------------------------------
 
 # ---------------------------------------------------------------------
-def _linked_model_with_constants(nonlinfcn,Nconstants,mapping,constantsInfo,linear_reduce_idx,*inputargs):
+def _linked_model_with_constants(nonlinfcn,mapping,constantsInfo,linear_reduce_idx,*inputargs):
     # Redistribute the input parameter vector according to the mapping vector
     Nconstants = len(constantsInfo)
     constants = inputargs[:Nconstants]
