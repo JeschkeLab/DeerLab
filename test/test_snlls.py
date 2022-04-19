@@ -430,7 +430,7 @@ def test_plot():
     lbl = np.zeros(len(r))
     # Separable LSQ fit
     fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),par0=0.2,lb=0,ub=1,lbl=lbl, uq=False)
-    fig = fit.plot(show=False)
+    fig = fit.plot()
     
     assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
 # ======================================================================

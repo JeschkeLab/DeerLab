@@ -45,7 +45,9 @@ API Reference
     snlls 
     fnnls
     cvxnnls
-
+    save
+    load 
+    
 .. rubric:: Dipolar EPR functions
 
 .. autosummary::

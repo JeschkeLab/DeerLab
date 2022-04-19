@@ -189,7 +189,7 @@ def test_plot():
     model = lambda p: K@dd_gauss(r,*p)
     fit = snlls(V,model,par0,lb,ub)
     
-    fig = fit.plot(show=False)
+    fig = fit.plot()
     assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
 # ======================================================================
 

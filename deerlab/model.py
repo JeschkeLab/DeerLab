@@ -8,12 +8,11 @@ from scipy.sparse import block_diag
 from scipy.optimize import fminbound
 from deerlab.solvers import snlls
 from deerlab.classes import FitResult, UQResult
-from deerlab.noiselevel import noiselevel
 from deerlab.bootstrap_analysis import bootstrap_analysis
 from deerlab.utils import formatted_table, parse_multidatasets
 import inspect 
 from copy import copy,deepcopy
-from types import ModuleType
+from functools import partial
 import difflib
 
 #===================================================================================
@@ -178,7 +177,20 @@ class Model():
     #=======================================================================================
     #                                         Constructor
     #=======================================================================================
-
+    
+    # Use a wrapper function to facilitate internal arguments manipulation        
+    #-----------------------------------
+    def _model_with_constants(self,nonlinfcn,constantsInfo,*inputargs):
+        Nconstants = len(constantsInfo)
+        constants = inputargs[:Nconstants]
+        θ = inputargs[Nconstants:]
+        args = list(θ)
+        if constantsInfo is not None:
+            for info,constant in zip(constantsInfo,constants):
+                args.insert(info['argidx'],constant)
+        return nonlinfcn(*args)
+    #----------------------------------- 
+    
     #---------------------------------------------------------------------------------------
     def __init__(self,nonlinfcn,constants=None,signature=None): 
         """
@@ -234,21 +246,8 @@ class Model():
                 for n,par in enumerate(parameters): 
                     if par==argname: 
                         parameters.remove(argname)
-        Nconstants = len(self._constantsInfo)
-
-
-        # Use a wrapper function to facilitate internal arguments manipulation        
-        #-----------------------------------
-        def model_with_constants(*inputargs):
-            constants = inputargs[:Nconstants]
-            θ = inputargs[Nconstants:]
-            args = list(θ)
-            if self._constantsInfo is not None:
-                for info,constant in zip(self._constantsInfo,constants):
-                    args.insert(info['argidx'],constant)
-            return nonlinfcn(*args)
-        #-----------------------------------    
-        self.nonlinmodel = model_with_constants
+  
+        self.nonlinmodel = partial(self._model_with_constants,nonlinfcn,self._constantsInfo)
 
         # Update the number of parameters in the model
         self.Nparam = len(parameters)
@@ -794,6 +793,88 @@ def _outerOptimization(fitfcn,penalty_objects,y,sigma):
     return fitfcn_
 #--------------------------------------------------------------------------
 
+def _propagate(fitresults,params,_paramlist,paramidx,model,*constants,lb=None,ub=None):
+# ----------------------------------------------------------------------------
+    """
+    Propagate the uncertainty in the fit results to a model's response.
+
+    Parameters
+    ----------
+
+    model : :ref:`Model` or callable
+        Model object or callable function to be evaluated. All the parameters in the model or in the callable definition
+        must match their corresponding parameter names in the ``FitResult`` object.   
+    constants : array_like 
+        Model constants. 
+    lb : array_like, optional 
+        Lower bounds of the model response.
+    ub : array_like, optional 
+        Upper bounds of the model response.   
+
+    Returns
+    -------
+
+    responseUncert : :ref:`UQResult`
+        Uncertainty quantification of the model's response.
+    """
+    # Get the parameter names of the input model
+    if isinstance(model,Model):
+        modelparam = model._parameter_list('vector')
+    elif callable(model):
+        modelparam = inspect.getfullargspec(model).args
+    else: 
+        raise TypeError('The input must be a deerlab.Model object or a callable.')
+
+    # Check that all parameters are in the fit object
+    for param in modelparam:
+        if not param in params: 
+            raise KeyError(f'The fit object does not contain the {param} parameter.')
+    # Determine the indices of the subset of parameters the model depends on
+    subset = [paramidx[np.where(np.asarray(_paramlist)==param)[0][0]] for param in modelparam]
+    # Propagate the uncertainty from that subset to the model
+    modeluq = fitresults.paramUncert.propagate(lambda param: model(*constants,*[param[s] for s in subset]),lb,ub)
+    return modeluq
+# ----------------------------------------------------------------------------
+
+def _evaluate(params,model,*constants):
+# ----------------------------------------------------------------------------
+    """
+    Evaluate a model at the fitted parameter values. 
+
+    Parameters
+    ----------
+
+    model : :ref:`Model` or callable
+        Model object or callable function to be evaluated. All the parameters in the model or in the callable definition
+        must match their corresponding parameter names in the ``FitResult`` object.   
+    constants : array_like 
+        Any model constants present required by the model.  
+    
+    Returns
+    -------
+
+    response : array_like 
+        Model response at the fitted parameter values. 
+    """
+    if isinstance(model,Model):
+        modelparam = model._parameter_list('vector')
+    elif callable(model):
+        modelparam = inspect.getfullargspec(model).args
+    else: 
+        raise TypeError('The input must be a deerlab.Model object or a callable.')
+
+    # Check that all parameters are in the fit object
+    for param in modelparam:
+        if not param in params: 
+            raise KeyError(f'The fit object does not contain the {param} parameter.')
+    # Determine the indices of the subset of parameters the model depends on
+    parameters = {param: params[param] for param in modelparam}
+    # Evaluate the input model
+    response = model(*constants,**parameters)
+    return response
+# ----------------------------------------------------------------------------
+
+
 #--------------------------------------------------------------------------
 def _print_fitresults(fitresult,model):
     """Construct summary table of fit results to print"""
@@ -1060,88 +1141,11 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
     FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','modelUncert','cost','plot','residuals','stats','regparam']}
-
     _paramlist = model._parameter_list('vector')
-    def propagate(model,*constants,lb=None,ub=None):
-    # ----------------------------------------------------------------------------
-        """
-        Propagate the uncertainty in the fit results to a model's response.
 
-        Parameters
-        ----------
-
-        model : :ref:`Model` or callable
-            Model object or callable function to be evaluated. All the parameters in the model or in the callable definition
-            must match their corresponding parameter names in the ``FitResult`` object.   
-        constants : array_like 
-            Model constants. 
-        lb : array_like, optional 
-            Lower bounds of the model response.
-        ub : array_like, optional 
-            Upper bounds of the model response.   
-
-        Returns
-        -------
-
-        responseUncert : :ref:`UQResult`
-            Uncertainty quantification of the model's response.
-        """
-        # Get the parameter names of the input model
-        if isinstance(model,Model):
-            modelparam = model._parameter_list('vector')
-        elif callable(model):
-            modelparam = inspect.getfullargspec(model).args
-        else: 
-            raise TypeError('The input must be a deerlab.Model object or a callable.')
-
-        # Check that all parameters are in the fit object
-        for param in modelparam:
-            if not param in FitResult_param: 
-                raise KeyError(f'The fit object does not contain the {param} parameter.')
-        # Determine the indices of the subset of parameters the model depends on
-        subset = [param_idx[np.where(np.asarray(_paramlist)==param)[0][0]] for param in modelparam]
-        # Propagate the uncertainty from that subset to the model
-        modeluq = fitresults.paramUncert.propagate(lambda param: model(*constants,*[param[s] for s in subset]),lb,ub)
-        return modeluq
-    # ----------------------------------------------------------------------------
-
-    def evaluate(model,*constants):
-    # ----------------------------------------------------------------------------
-        """
-        Evaluate a model at the fitted parameter values. 
-
-        Parameters
-        ----------
-
-        model : :ref:`Model` or callable
-            Model object or callable function to be evaluated. All the parameters in the model or in the callable definition
-            must match their corresponding parameter names in the ``FitResult`` object.   
-        constants : array_like 
-            Any model constants present required by the model.  
-        
-        Returns
-        -------
-
-        response : array_like 
-            Model response at the fitted parameter values. 
-        """
-        if isinstance(model,Model):
-            modelparam = model._parameter_list('vector')
-        elif callable(model):
-            modelparam = inspect.getfullargspec(model).args
-        else: 
-            raise TypeError('The input must be a deerlab.Model object or a callable.')
-
-        # Check that all parameters are in the fit object
-        for param in modelparam:
-            if not param in FitResult_param: 
-                raise KeyError(f'The fit object does not contain the {param} parameter.')
-        # Determine the indices of the subset of parameters the model depends on
-        parameters = {param: FitResult_param[param] for param in modelparam}
-        # Evaluate the input model
-        response = model(*constants,**parameters)
-        return response
-    # ----------------------------------------------------------------------------
+    # Prepare the propagate() and evaluate() methods
+    propagate = partial(_propagate,fitresults,FitResult_param,_paramlist,param_idx)
+    evaluate =  partial(_evaluate,FitResult_param)
 
     # Enforce normalization of the linear parameters (if needed) for the final output
     FitResult_param_,FitResult_paramuq_ = FitResult_param.copy(),FitResult_paramuq.copy()
@@ -1177,6 +1181,7 @@ def _importparameter(parameter):
         'value' : parameter.value,
     }
 
+# ---------------------------------------------------------------------
 def _aresame(obj1,obj2):
     a = obj1.__dict__
     a = {key:val for key, val in a.items() if key not in ['_parent','idx']}
@@ -1187,6 +1192,25 @@ def _aresame(obj1,obj2):
         return True
     except Exception:
         return False
+# ---------------------------------------------------------------------
+
+# ---------------------------------------------------------------------
+def _linked_model_with_constants(nonlinfcn,mapping,constantsInfo,linear_reduce_idx,*inputargs):
+    # Redistribute the input parameter vector according to the mapping vector
+    Nconstants = len(constantsInfo)
+    constants = inputargs[:Nconstants]
+    θ = inputargs[Nconstants:]
+    θ = np.atleast_1d(θ)[mapping]
+    args = list(θ)
+    if constantsInfo is not None:
+        for info,constant in zip(constantsInfo,constants):
+            args.insert(info['argidx'],constant)                
+    A = nonlinfcn(*args)
+    if len(A.shape)<2: A = np.expand_dims(A,1)
+    Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
+    return Amapped
+# ---------------------------------------------------------------------
+
 # ==============================================================================
 def link(model,**links):
     """
@@ -1241,8 +1265,6 @@ def link(model,**links):
         
         for n,name in enumerate(model_parameters):
             if name==linked_name: link_param_idx = n
-
-        
 
         # Get the vector index of the parameter to be linked to
         link_indices = np.atleast_1d(link_indices[0])
@@ -1312,23 +1334,9 @@ def link(model,**links):
         # Monkey-patch the evaluation function         
         nonlinfcn = model.nonlinmodel
         linear_reduce_idx = [np.where(mapping_linear==n)[0].tolist() for n in np.unique(mapping_linear) ]
-        Nconstants = len(model._constantsInfo)
-        # ---------------------------------------------------------------------
-        def linked_model_with_constants(*inputargs):
-            # Redistribute the input parameter vector according to the mapping vector
-            constants = inputargs[:Nconstants]
-            θ = inputargs[Nconstants:]
-            θ = np.atleast_1d(θ)[mapping]
-            args = list(θ)
-            if model._constantsInfo is not None:
-                for info,constant in zip(model._constantsInfo,constants):
-                    args.insert(info['argidx'],constant)                
-            A = nonlinfcn(*args)
-            if len(A.shape)<2: A = np.expand_dims(A,1)
-            Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
-            return Amapped
-        # ---------------------------------------------------------------------
-        model.nonlinmodel = linked_model_with_constants
+
+        # Redefine the non-linear part of the model function
+        model.nonlinmodel = partial(_linked_model_with_constants,nonlinfcn,mapping,model._constantsInfo,linear_reduce_idx)
 
         # Return the updated model with the linked parameters
         return model
@@ -1358,6 +1366,58 @@ def _unique_ordered(vec):
             uniques.append(v)
     return uniques
 # ---------------------------------------------------------------------
+
+
+#---------------------------------------------------------------------
+def _combined_nonlinmodel(mode,nonlinfcns,Nlins,Nconst,arelinear,const_subsets,subsets_nonlin,*inputargs):
+    """Evaluates the nonlinear functions of the submodels and 
+    concatenates them into a single design matrix"""
+
+    constants = inputargs[:Nconst]
+    param = inputargs[Nconst:]
+
+    param = np.atleast_1d(param)
+    constants = np.atleast_2d(constants)
+    # Loop over the submodels in the model
+    Amatrices = []
+    for n,nonlinfcn in enumerate(nonlinfcns):
+        # Evaluate the submodel
+        Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
+        if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
+        Amatrices.append(Amatrix)
+    if mode=='merge':
+        Anonlin_full = block_diag(Amatrices).toarray()
+        if not any(arelinear):
+            Anonlin_full = np.sum(Anonlin_full,1)
+
+    elif mode=='lincombine':
+        Anonlin_full = np.hstack(Amatrices)
+
+    return Anonlin_full
+#---------------------------------------------------------------------
+
+#---------------------------------------------------------------------
+def _split_output(nonlinfcns,Nlins,Nconst,const_subsets,subsets_nonlin,y,*inputargs):
+    
+    constants = inputargs[:Nconst]
+    param = inputargs[Nconst:]
+    param = np.atleast_1d(param)
+    constants = np.atleast_2d(constants)
+    # Loop over the submodels in the model
+    ysizes = []
+    for n,nonlinfcn in enumerate(nonlinfcns):
+        # Evaluate the submodel
+        Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
+        if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
+        ysizes.append(Amatrix.shape[0])
+    
+    nprev = 0
+    ysubsets = []
+    for x in ysizes:
+        ysubsets.append(np.arange(nprev,nprev+x))
+        nprev = nprev+x
+    return [y[ysubsets[n]] for n in range(len(ysizes))]
+#---------------------------------------------------------------------
 
 
 #==============================================================================================
@@ -1454,59 +1514,16 @@ def _combinemodels(mode,*inputmodels,addweights=False):
     Nconst = len(constants)
     nonlinfcns = [model.nonlinmodel for model in models]
     Nlins = [model.Nlin for model in models]
-    ysizes = [[] for _ in models]
-
-    #---------------------------------------------------------------------
-    def _combined_nonlinmodel(*inputargs):
-        """Evaluates the nonlinear functions of the submodels and 
-        concatenates them into a single design matrix"""
-
-        nonlocal ysizes
-
-        constants = inputargs[:Nconst]
-        param = inputargs[Nconst:]
-
-        param = np.atleast_1d(param)
-        constants = np.atleast_2d(constants)
-        # Loop over the submodels in the model
-        Amatrices = []
-        for n,nonlinfcn in enumerate(nonlinfcns):
-            # Evaluate the submodel
-            Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
-            if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
-            Amatrices.append(Amatrix)
-        if mode=='merge':
-            ysizes = [A.shape[0] for A in Amatrices]
-            Anonlin_full = block_diag(Amatrices).toarray()
-            if not any(arelinear):
-                Anonlin_full = np.sum(Anonlin_full,1)
-
-        elif mode=='lincombine':
-            Anonlin_full = np.hstack(Amatrices)
-
-        return Anonlin_full
-    #---------------------------------------------------------------------
-    
-    #---------------------------------------------------------------------
-    def _split_output(y,*inputargs):
-        nonlocal ysizes
-        nprev = 0
-        ysubsets = []
-        for x in ysizes:
-            ysubsets.append(np.arange(nprev,nprev+x))
-            nprev = nprev+x
-        return [y[ysubsets[n]] for n in range(len(ysizes))]
-    #---------------------------------------------------------------------
 
     # Create the model object
-    combinedModel = Model(_combined_nonlinmodel,constants=constants,signature=signature)
+    combinedModel = Model(partial(_combined_nonlinmodel,mode,nonlinfcns,Nlins,Nconst,arelinear,const_subsets,subsets_nonlin),constants=constants,signature=signature)
 
     # Add parent models 
     combinedModel.parents = models
 
     if mode=='merge':
         # Add post-evalution function for splitting of the call outputs
-        setattr(combinedModel,'_posteval_fcn',_split_output) 
+        setattr(combinedModel,'_posteval_fcn',partial(_split_output,nonlinfcns,Nlins,Nconst,const_subsets,subsets_nonlin)) 
 
     # Add the linear parameters from the subset models   
     lin_param_set = []
@@ -1590,6 +1607,20 @@ def lincombine(*inputmodels,addweights=False):
     return _combinemodels('lincombine',*inputmodels,addweights=addweights)
 #==============================================================================================
 
+# ---------------------------------------------------------------------
+def _dependency_model_with_constants(function,nonlinfcn,constantsInfo,arguments_idx,dependent_idx,*inputargs):
+    # Redistribute the input parameter vector according to the mapping vector
+    Nconstants = len(constantsInfo)
+    constants = inputargs[:Nconstants]
+    θ = np.atleast_1d(inputargs[Nconstants:]).astype(float)
+    θ = np.insert(θ,dependent_idx,function(*θ[arguments_idx]))  
+    args = list(θ)
+    if constantsInfo is not None:
+        for info,constant in zip(constantsInfo,constants):
+            args.insert(info['argidx'],constant)                
+    A = nonlinfcn(*args)
+    return A
+# ---------------------------------------------------------------------
 
 #==============================================================================================
 def relate(model,**functions):
@@ -1620,7 +1651,7 @@ def relate(model,**functions):
     """
     def _relate(model,function,dependent_name):
     # ---------------------------------------------------------------------  
-        
+
         # Get a list of parameter names in the model
         model_parameters =np.array(model._parameter_list(order='vector'))
 
@@ -1668,24 +1699,12 @@ def relate(model,**functions):
 
         # Monkey-patch the evaluation function         
         nonlinfcn = model.nonlinmodel
-        Nconstants = len(model._constantsInfo)
         nonlinparams = np.array([param for param in model._parameter_list('vector') if not np.all(getattr(model,param).linear)])
         arguments_idx = np.concatenate([np.where(nonlinparams==name)[0] for name in arguments_names])
         dependent_idx = dependent_idx[0]
-        # ---------------------------------------------------------------------
-        def dependency_model_with_constants(*inputargs):
-            # Redistribute the input parameter vector according to the mapping vector
-            constants = inputargs[:Nconstants]
-            θ = np.atleast_1d(inputargs[Nconstants:]).astype(float)
-            θ = np.insert(θ,dependent_idx,function(*θ[arguments_idx]))  
-            args = list(θ)
-            if model._constantsInfo is not None:
-                for info,constant in zip(model._constantsInfo,constants):
-                    args.insert(info['argidx'],constant)                
-            A = nonlinfcn(*args)
-            return A
-        # ---------------------------------------------------------------------
-        model.nonlinmodel = dependency_model_with_constants
+        
+        # Redefine the non-linear part of the model function
+        model.nonlinmodel = partial(_dependency_model_with_constants,function,nonlinfcn,model._constantsInfo,arguments_idx,dependent_idx)
 
         # Return the updated model with the linked parameters
         return model

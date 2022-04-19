@@ -13,6 +13,7 @@ import deerlab as dl
 from deerlab.classes import UQResult, FitResult
 from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian, isempty
 import time 
+from functools import partial
 
 def timestamp():
 # ===========================================================================================
@@ -917,9 +918,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     stats = _goodness_of_fit_stats(ys,yfits,noiselvl,Ndof)
 
     # Display function
-    def plotfcn(show=False,axis=None,xlabel=None):
-        fig = _plot(ys,yfits,yuq,axis,xlabel)
-        return fig
+    plotfcn = partial(_plot,ys,yfits,yuq)
 
     if len(stats) == 1: 
         stats = stats[0]

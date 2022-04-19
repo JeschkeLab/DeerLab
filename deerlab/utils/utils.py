@@ -3,9 +3,9 @@ import warnings
 import numpy as np
 import scipy as scp
 import scipy.optimize as opt
-from types import FunctionType 
+from types import FunctionType
 from functools import wraps
-
+import pickle
 
 def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None, subsets=None):
 #===============================================================================
@@ -657,3 +657,48 @@ try:
 
 
 except: pass
+
+import dill as pickle
+
+# --------------------------------------------------------------------------------------
+def store_pickle(obj, filename):
+    """
+    Save/export an object to a ``.pkl`` file serialized as bytes.
+    
+    Parameters
+    ----------
+    obj : object 
+        Python object to be saved/exported. 
+
+    filename : string 
+        Name (and path) of the file to save the pickled object to. The object is saved as a ``.pkl`` file. 
+    """   
+    if '.pkl' not in filename:
+        filename = filename + '.pkl'
+    with open(filename, 'wb') as outp:  # Overwrites any existing file.
+        pickle.dump(obj, outp, pickle.HIGHEST_PROTOCOL)
+# --------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------
+def read_pickle(filename):
+    """
+    Load a pickled object file ``.pkl`` and deserialize the bytes into a Python object.
+    
+    Parameters
+    ----------
+    filename : string 
+        Path to the ``.pkl`` file to load.
+
+
+    .. warning:: Loading pickled data received from untrusted sources can be unsafe. See `here<https://docs.python.org/3/library/pickle.html>`_.
+
+    """ 
+    if '.pkl' not in filename:
+        filename = filename + '.pkl'
+    with open(filename, "rb") as f:
+        while True:
+            try:
+                return pickle.load(f)
+            except EOFError:
+                break
+# --------------------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 import numpy as np
 import deerlab as dl 
 from deerlab.model import Model,fit,merge
+from deerlab.utils import store_pickle, read_pickle
+import os 
 
 # ======================================================================
 def test_type(): 
@@ -411,4 +413,23 @@ def test_twomodels_equal_global():
     assert np.allclose(result.model,truth,globalresult.model) and np.allclose(result.mean,globalresult.mean_1)
 # ======================================================================
 
+def test_pickle_merged_model():
+# ======================================================================
+    "Check that the model object can be pickled"
+    model1 = dl.dd_gauss
+    model2 = dl.dd_rice
+    x = np.linspace(0,10,100)
+    truth = [model1(x,3,0.2),
+            model2(x,4,0.5)]
+    model = merge(model1,model2)
+    store_pickle(model,'pickled_model')
+    try:
+        pickled_model =read_pickle('pickled_model')
+        result = fit(pickled_model,truth,x,x,weights=[1,1])
 
+        os.remove("pickled_model.pkl") 
+        assert np.allclose(result.model[0],truth[0]) and np.allclose(result.model[1],truth[1])
+    except Exception as exception:
+        os.remove("pickled_model.pkl") 
+        raise exception
+# ======================================================================
