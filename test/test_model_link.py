@@ -197,9 +197,9 @@ def test_pickle_linked_model():
                 std=['std1','std2'])
     linkedmodel.mean.par0 = 3
     linkedmodel.std.par0 = 0.5
-    save(linkedmodel,'pickled_model')
+    store_pickle(linkedmodel,'pickled_model')
     try:
-        pickled_model = load('pickled_model')
+        pickled_model =read_pickle('pickled_model')
         result = fit(pickled_model,ref,x, reg=False)
 
         os.remove("pickled_model.pkl") 

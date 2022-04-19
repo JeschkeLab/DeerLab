@@ -184,9 +184,9 @@ def test_pickle_linked_model():
     ref = model(x,4,0.2)
     newmodel = relate(model, std = lambda mean: mean/20)
 
-    save(newmodel,'pickled_model')
+    store_pickle(newmodel,'pickled_model')
     try:
-        pickled_model = load('pickled_model')
+        pickled_model =read_pickle('pickled_model')
         result = fit(pickled_model,ref,x)
 
         os.remove("pickled_model.pkl") 

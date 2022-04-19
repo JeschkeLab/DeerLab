@@ -427,9 +427,9 @@ def test_pickle_lincombined_model():
     model = lincombine(model1,model2)
     model.mean_1.par0=3
     model.location_2.par0=4
-    save(model,'pickled_model')
+    store_pickle(model,'pickled_model')
     try:
-        pickled_model = load('pickled_model')
+        pickled_model =read_pickle('pickled_model')
         result = fit(pickled_model,truth,x,x)
 
         os.remove("pickled_model.pkl") 

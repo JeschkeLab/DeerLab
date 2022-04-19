@@ -422,9 +422,9 @@ def test_pickle_merged_model():
     truth = [model1(x,3,0.2),
             model2(x,4,0.5)]
     model = merge(model1,model2)
-    save(model,'pickled_model')
+    store_pickle(model,'pickled_model')
     try:
-        pickled_model = load('pickled_model')
+        pickled_model =read_pickle('pickled_model')
         result = fit(pickled_model,truth,x,x,weights=[1,1])
 
         os.remove("pickled_model.pkl") 

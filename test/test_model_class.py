@@ -1105,9 +1105,9 @@ def test_pickle_fitresult():
     "Check that the fit results object can be pickled"
 
     fitResult = fit(mymodel,y)
-    save(fitResult,'pickled_results')
+    store_pickle(fitResult,'pickled_results')
     try:
-        pickled_fitResult = load('pickled_results')
+        pickled_fitResult =read_pickle('pickled_results')
         os.remove("pickled_results.pkl") 
         assert np.allclose(pickled_fitResult.model.real,y.real) and np.allclose(pickled_fitResult.model.imag,y.imag)
     except Exception as exception:
@@ -1119,9 +1119,9 @@ def test_pickle_model():
 # ======================================================================
     "Check that the model object can be pickled"
 
-    save(mymodel,'pickled_model')
+    store_pickle(mymodel,'pickled_model')
     try:
-        pickled_model = load('pickled_model')
+        pickled_model =read_pickle('pickled_model')
         fitResult = fit(pickled_model,y)
         os.remove("pickled_model.pkl") 
         assert np.allclose(fitResult.model.real,y.real) and np.allclose(fitResult.model.imag,y.imag)

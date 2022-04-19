@@ -661,7 +661,7 @@ except: pass
 import dill as pickle
 
 # --------------------------------------------------------------------------------------
-def save(obj, filename):
+def store_pickle(obj, filename):
     """
     Save/export an object to a ``.pkl`` file serialized as bytes.
     
@@ -680,14 +680,18 @@ def save(obj, filename):
 # --------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------
-def load(filename):
+def read_pickle(filename):
     """
     Load a pickled object file ``.pkl`` and deserialize the bytes into a Python object.
     
     Parameters
     ----------
     filename : string 
-        Name (and path) of the ``.pkl`` file to load.
+        Path to the ``.pkl`` file to load.
+
+
+    .. warning:: Loading pickled data received from untrusted sources can be unsafe. See `here<https://docs.python.org/3/library/pickle.html>`_.
+
     """ 
     if '.pkl' not in filename:
         filename = filename + '.pkl'
