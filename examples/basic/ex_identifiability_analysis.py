@@ -46,8 +46,8 @@ Vmodel_truncated = dl.dipolarmodel(t_truncated,r)
 
 # Compute uncertainty with the likelihood profile method for the spin concentration and modulation depth parameters
 grids = {
-    'conc': np.linspace(10,600,15),
-    'mod': np.linspace(0.4,0.7,15),
+    'conc': np.linspace(1,400,15),
+    'mod': np.linspace(0.25,0.4,15),
 }
 
 profile_long = dl.profile_analysis(Vmodel,Vexp,samples=10, parameters=['conc','mod'], grids=grids) 
