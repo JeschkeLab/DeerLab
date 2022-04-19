@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 import scipy as scp
 import scipy.optimize as opt
-from types import FunctionType, LambdaType
+from types import FunctionType
 from functools import wraps
 import pickle
 
