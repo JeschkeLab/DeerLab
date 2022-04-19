@@ -4,7 +4,7 @@ from deerlab.model import Model, fit
 import numpy as np 
 import pytest
 import os 
-from deerlab.utils import load,save
+from deerlab.utils import store_pickle, read_pickle
 
 # Simple non-linear function for testing
 x = np.linspace(0,5,100)
