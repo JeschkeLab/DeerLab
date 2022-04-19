@@ -1,7 +1,7 @@
 import numpy as np
 import deerlab as dl 
 from deerlab.model import Model,fit,lincombine
-from deerlab.utils import save, load  
+from deerlab.utils import store_pickle, read_pickle  
 import os 
 
 # ======================================================================
