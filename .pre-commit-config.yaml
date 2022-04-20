@@ -20,7 +20,8 @@ repos:
         additional_dependencies:
           - black~=21.8b0
           - isort~=5.9
-  -   repo: https://github.com/pycqa/flake8
-    rev: '4.0.1'
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 4.0.1
     hooks:
     -   id: flake8
