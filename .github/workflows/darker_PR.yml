@@ -14,6 +14,5 @@ jobs:
         with:
           options: "--check --diff --isort"
           revision: "main..."
-          src: "./src"
-          version: "1.4.2"
+          src: "./deerlab"
           lint: "flake8,pylint==2.13.1"

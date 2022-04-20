@@ -1,6 +1,6 @@
 [tool.darker]
 src = [
-    "src/deerlab",
+    "./deerlab",
 ]
 revision = "main"
 diff = true
