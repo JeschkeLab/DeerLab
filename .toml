@@ -4,6 +4,7 @@ src = [
 ]
 revision = "origin/main"
 isort = true
+diff = true
 lint = [
     "flake8",
 ]
