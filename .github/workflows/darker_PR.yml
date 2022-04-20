@@ -13,6 +13,5 @@ jobs:
       - uses: akaihola/darker@1.4.2
         with:
           options: "--check --diff --isort"
-          revision: "main..."
           src: "./deerlab"
           lint: "flake8,pylint==2.13.1"

@@ -2,7 +2,7 @@
 src = [
     "./deerlab",
 ]
-revision = "main"
+revision = "origin/main"
 diff = true
 check = true
 isort = true
