@@ -14,4 +14,3 @@ jobs:
         with:
           options: "-v --isort --diff"
           src: "./deerlab"
-          lint: "flake8"

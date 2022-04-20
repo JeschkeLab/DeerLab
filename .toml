@@ -5,7 +5,4 @@ src = [
 revision = "origin/main"
 isort = true
 diff = true
-lint = [
-    "flake8",
-]
 log_level = "INFO"
