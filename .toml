@@ -1,18 +1,12 @@
-[tool.black]
-line-length = 100
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.vscode
-  | \.github
-  | \.pytest_cache
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
+[tool.darker]
+src = [
+    "src/deerlab",
+]
+revision = "main"
+diff = true
+check = true
+isort = true
+lint = [
+    "flake8",
+]
+log_level = "INFO"

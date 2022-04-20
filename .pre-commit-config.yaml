@@ -1,9 +1,11 @@
 repos:
--   repo: https://github.com/psf/black
-    rev: stable
+-   repo: https://github.com/akaihola/darker
+    rev: 1.4.2
     hooks:
-    - id: black
-      language_version: python3
+    -   id: darker
+        args: [--isort]
+        additional_dependencies:
+        -   isort~=5.9
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v1.2.3
     hooks:
