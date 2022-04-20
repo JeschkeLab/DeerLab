@@ -16,7 +16,7 @@ repos:
     hooks:
       - id: darker
         verbose: true
-        args: [--isort, -v, -r :PRE-COMMIT:]
+        args: [--isort, -v, -r ":PRE-COMMIT:"]
         additional_dependencies:
           - black~=21.8b0
           - isort~=5.9
