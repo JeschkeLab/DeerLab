@@ -11,9 +11,6 @@ ci:
     submodules: false
 
 repos:
-  - repo: meta
-    hooks:
-    -   id: identity
   - repo: https://github.com/akaihola/darker
     rev: 1.4.2
     hooks:

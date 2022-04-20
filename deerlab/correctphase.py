@@ -67,8 +67,8 @@ def correctphase(V, full_output=False):
     A=np.sum(Vr**2, axis=0)/2
     B=np.sum(Vi**2, axis=0)/2
     C=np.sum(Vr*Vi, axis=0)
-    phi0 = np.arctan2(C, B-A)
-    phimin = phi0/2 + np.pi/2  # one of the two minimizers
+    phi0= np.arctan2(C, B-A)
+    phimin= phi0/2 + np.pi/2  # one of the two minimizers
     
     # Apply phase rotation
     V_2d *= np.exp(1j*phimin)[None,:]
