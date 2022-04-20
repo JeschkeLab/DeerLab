@@ -1,8 +1,11 @@
 [tool.darker]
 src = [
-    "./deerlab",
+    "deerlab",
 ]
-revision = "origin/main"
+revision = "origin/main..."
 isort = true
 diff = true
 log_level = "INFO"
+
+[tool.isort]
+profile = "black"
