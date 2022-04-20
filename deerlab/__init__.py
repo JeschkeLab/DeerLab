@@ -6,7 +6,17 @@ from .deerload import deerload
 from .selregparam import selregparam
 from .dipolarkernel import dipolarkernel
 from .dipolarbackground import dipolarbackground
-from .dipolarmodel import dipolarmodel,ExperimentInfo, dipolarpenalty, ex_4pdeer,ex_3pdeer,ex_rev5pdeer,ex_fwd5pdeer,ex_ridme,ex_sifter
+from .dipolarmodel import (
+    dipolarmodel,
+    ExperimentInfo,
+    dipolarpenalty,
+    ex_4pdeer,
+    ex_3pdeer,
+    ex_rev5pdeer,
+    ex_fwd5pdeer,
+    ex_ridme,
+    ex_sifter,
+)
 from .solvers import snlls, fnnls, cvxnnls
 from .regoperator import regoperator
 from .correctphase import correctphase

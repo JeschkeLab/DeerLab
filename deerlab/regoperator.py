@@ -1,4 +1,3 @@
-
 # regoperator.py - Regularization Operators
 # --------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
@@ -6,8 +5,9 @@
 
 import numpy as np
 
-def regoperator(r,d=2,includeedges=False):
-    r""" Computes the discrete approximation to the derivative operators used as regularization operators.
+
+def regoperator(r, d=2, includeedges=False):
+    r"""Computes the discrete approximation to the derivative operators used as regularization operators.
 
     Parameters
     ----------
@@ -23,12 +23,12 @@ def regoperator(r,d=2,includeedges=False):
     -------
     L : ndarray with shape(n-2,n)
         Regularization operator (or finite-difference derivative operator).
-        
+
     Notes
     -----
-    All finite-difference matrix elements are computed via Fornberg's method [1]_. Therefore, the 
-    resulting operator is agnostic with respect to the increments in the distance vector, allowing 
-    uniformly as well as non-uniformly spaced distance vectors. 
+    All finite-difference matrix elements are computed via Fornberg's method [1]_. Therefore, the
+    resulting operator is agnostic with respect to the increments in the distance vector, allowing
+    uniformly as well as non-uniformly spaced distance vectors.
 
     References
     ----------
@@ -40,24 +40,24 @@ def regoperator(r,d=2,includeedges=False):
     n = len(r)
 
     # Construct finite difference matrix
-    L = np.zeros((n-d,n))
+    L = np.zeros((n - d, n))
 
     # Compute non-zero finite forward difference coefficients via Fornberg's method
-    for i in range(n-d):
-        cols = np.arange(i,i+d+1,1)
-        L[i,cols] = _fdcoeffF(d,r[i],r[cols])
+    for i in range(n - d):
+        cols = np.arange(i, i + d + 1, 1)
+        L[i, cols] = _fdcoeffF(d, r[i], r[cols])
 
     # Introduce missing rows to account for edges of axis
     if includeedges:
-        for __ in range(int(np.ceil(d/2))):
-            L = np.concatenate([np.atleast_2d(np.append(L[0,1:],0)), L])
-        for __ in range(int(np.floor(d/2))):
-            L = np.concatenate([L, np.atleast_2d(np.insert(L[-1,:-1],0,0))])
+        for __ in range(int(np.ceil(d / 2))):
+            L = np.concatenate([np.atleast_2d(np.append(L[0, 1:], 0)), L])
+        for __ in range(int(np.floor(d / 2))):
+            L = np.concatenate([L, np.atleast_2d(np.insert(L[-1, :-1], 0, 0))])
 
     return L
 
 
-def _fdcoeffF(k,xbar,x):
+def _fdcoeffF(k, xbar, x):
     """
     Compute coefficients for finite difference approximation for the
     derivative of order k at xbar based on grid values at points in x.
@@ -101,34 +101,33 @@ def _fdcoeffF(k,xbar,x):
 
     n = len(x)
     if k >= n:
-        raise TypeError('Numer of elements in x must be larger than k')
-
+        raise TypeError("Numer of elements in x must be larger than k")
 
     m = k
     c1 = 1
     c4 = x[0] - xbar
-    C = np.zeros((n,m+1))
-    C[0,0] = 1
-    for i in range(n-1):
-        i1 = i+1
-        mn = min(i,m)
+    C = np.zeros((n, m + 1))
+    C[0, 0] = 1
+    for i in range(n - 1):
+        i1 = i + 1
+        mn = min(i, m)
         c2 = 1
         c5 = c4
         c4 = x[i1] - xbar
-        for j in range(i+1):
+        for j in range(i + 1):
             j1 = j
             c3 = x[i1] - x[j1]
-            c2 = c2*c3
-            if j==i:
-                for s in range(mn+1,0,-1):
+            c2 = c2 * c3
+            if j == i:
+                for s in range(mn + 1, 0, -1):
                     s1 = s
-                    C[i1,s1] = c1*(s*C[i1-1,s1-1] - c5*C[i1-1,s1])/c2
-                C[i1,0] = -c1*c5*C[i1-1,0]/c2
-            for s in range(mn+1,0,-1):
+                    C[i1, s1] = c1 * (s * C[i1 - 1, s1 - 1] - c5 * C[i1 - 1, s1]) / c2
+                C[i1, 0] = -c1 * c5 * C[i1 - 1, 0] / c2
+            for s in range(mn + 1, 0, -1):
                 s1 = s
-                C[j1,s1] = (c4*C[j1,s1] - s*C[j1,s1-1])/c3
-            C[j1,0] = c4*C[j1,0]/c3
+                C[j1, s1] = (c4 * C[j1, s1] - s * C[j1, s1 - 1]) / c3
+            C[j1, 0] = c4 * C[j1, 0] / c3
         c1 = c2
     # Last column of c gives desired row vector
-    c = C[:,-1]           
+    c = C[:, -1]
     return c
