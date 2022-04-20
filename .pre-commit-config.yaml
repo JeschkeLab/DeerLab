@@ -3,7 +3,7 @@ repos:
     rev: master
     hooks:
       - id: darker
-        args: [., --isort, -v]
+        args: [deerlab, -i, -v, -r origin/main...]
         additional_dependencies:
           - black~=21.8b0
           - isort~=5.9

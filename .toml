@@ -4,7 +4,6 @@ src = [
 ]
 revision = "origin/main..."
 isort = true
-diff = true
 log_level = "INFO"
 
 [tool.isort]
