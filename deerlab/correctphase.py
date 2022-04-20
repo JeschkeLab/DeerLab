@@ -82,8 +82,8 @@ def correctphase(V, full_output=False):
     # Assemble output
     if data1d:
         V_2d = np.squeeze(V_2d, axis=1)
-    Vreal=np.real(V_2d)
-    Vimag=np.imag(V_2d)
+    Vreal = np.real(V_2d)
+    Vimag = np.imag(V_2d)
     if full_output:
         return Vreal, Vimag, phimin
     else:
