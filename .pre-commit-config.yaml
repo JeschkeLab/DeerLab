@@ -3,7 +3,7 @@ repos:
     rev: 1.4.2
     hooks:
     -   id: darker
-        args: [--isort]
+        args: [--isort -v]
         additional_dependencies:
         -   isort~=5.9
 -   repo: https://github.com/pre-commit/pre-commit-hooks
