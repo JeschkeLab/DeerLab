@@ -458,7 +458,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         If set to ``None``, the termination by this condition is disabled.
 
     ftol : float scalar, optional
-        Tolerance for termination by the change of the cost function. Default is 1e-8. The optimization process is stopped when ``dF < ftol*F``, and there was an adequate agreement between a local quadratic model and the true model in the last step.
+        Tolerance for termination by the change of the cost function. The default is 1e-8. The optimization process is stopped when ``dF < ftol*F``, and there was an adequate agreement between a local quadratic model and the true model in the last step.
         If set to ``None``, the termination by this condition is disabled.
         
     max_nfev : integer scalar, optional
