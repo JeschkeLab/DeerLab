@@ -20,7 +20,7 @@ repos:
     hooks:
       - id: darker
         verbose: true
-        args: [--isort, -v, -r=main]
+        args: [--isort, -v, -r main]
         additional_dependencies:
           - black~=21.8b0
           - isort~=5.9
