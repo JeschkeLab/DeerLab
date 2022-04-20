@@ -3,8 +3,6 @@ src = [
     "./deerlab",
 ]
 revision = "origin/main"
-diff = true
-check = true
 isort = true
 lint = [
     "flake8",

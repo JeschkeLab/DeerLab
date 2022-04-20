@@ -10,8 +10,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v2
-      - uses: akaihola/darker@1.4.2
+      - uses: akaihola/darker@1.5.0
         with:
-          options: "--isort"
+          options: "-v --isort"
           src: "./deerlab"
-          lint: "flake8,pylint==2.13.1"
+          lint: "flake8"
