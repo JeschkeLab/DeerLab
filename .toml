@@ -6,6 +6,9 @@ revision = "origin/main..."
 isort = true
 log_level = "INFO"
 verbose=true 
+lint = [
+    "flake8",
+]
 
 [tool.isort]
 profile = "black"
