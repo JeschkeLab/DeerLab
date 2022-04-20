@@ -3,7 +3,7 @@ name: PEP8 Formatting and Linting
 on: [pull_request]
 
 jobs:
-  Darker reformatter:
+  darker_reformatter:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
