@@ -16,6 +16,9 @@ General
     - Avoid the use of object-oriented programming (i.e. classes) unless strictly necessary. DeerLab is mainly based on functional programming.
     - Avoid introducing new dependencies to DeerLab (e.g. in the form of new Python packages). 
     - When using a third-party open-source software make sure it is compatible with DeerLab's MIT license.  
+    - New code contributions must follow the `PEP8 guidelines <https://peps.python.org/pep-0008/>`_ for code style and formatting. Upon pushing the code will be automatically reformatted
+      and reviewed using the ``darker`` and ``flake8`` tools. It is recommended the integration of the `darker <https://github.com/akaihola/darker>`_ and `flake8 <https://flake8.pycqa.org/en/latest/>`_ packages into 
+      developer's IDE.
 
 Testing
     - New features must be accompanied by unit tests. Changes to existing functionality must pass through the old tests.  
@@ -53,8 +56,8 @@ Here is how to set up DeerLab in a development environent and the basic workflow
 6. (Optional) Before proposing new changes run ``pytest`` again to make sure your functionality passes the original tests (and the new ones you have added).
 
 7. Push you changes to your forked repository and open a new PR on GitHub. Your changes will be again automatically
-   tested, and if all tests pass then it will require the approval of DeerLab's core development team to finally merge
-   your contribution into the source code.
+   tested. Additionally your code contribution will be refactored automatically vis the ``darker`` package into compliance with the PEP8 guidelines and linted with ``flake8``. 
+   If all tests pass, and the code passes the quality checks, then it will require the approval of DeerLab's core development team to finally merge your contribution into the source code.
 
 Contributors
 -------------
