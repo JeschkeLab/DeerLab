@@ -62,8 +62,8 @@ def correctphase(V, full_output=False):
     #    phi = phi0/2 + pi/2   and   phi = phi0/2 + 3*pi/2
     
     # Calculate phase that minimizes cost function
-    Vr = np.real(V_2d)
-    Vi = np.imag(V_2d)
+    Vr=np.real(V_2d)
+    Vi=np.imag(V_2d)
     A = np.sum(Vr**2, axis=0)/2
     B = np.sum(Vi**2, axis=0)/2
     C = np.sum(Vr*Vi, axis=0)
