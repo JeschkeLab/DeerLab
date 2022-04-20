@@ -1016,6 +1016,19 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         * ``stats['bic']`` - Bayesian information criterion
     cost : float
         Value of the cost function at the solution.
+
+    evaluate(model, constants) : callable
+        Function to evaluate a model at the fitted parameter values. Takes a model object or callable function ``model`` to be evaluated.
+        All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.   
+        Any model constants present required by the model must be specified as a second argument ``constants``.  
+        It returns the model's response at the fitted parameter values as an ndarray. 
+
+    propagate(model,constants,lb,ub) : callable
+        Function to propagate the uncertainty in the fit results to a model's response. Takes a model object or callable function ``model`` to be evaluated.
+        All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.  
+        Any model constants present required by the model must be specified as a second argument ``constants``. The lower bounds ``lb`` and upper bounds ``ub``
+        of the model's response can be specified as a third and fourth argument respectively.  
+        It returns the model's response uncertainty quantification as a ``UQResult`` object.
     """
 
     if not isinstance(model_,Model):
