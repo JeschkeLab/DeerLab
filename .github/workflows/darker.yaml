@@ -17,3 +17,15 @@ jobs:
           src: "./deerlab"
           version: "1.4.2"
           lint: "flake8"
+      
+      - name: Check for modified files
+        id: git-check
+        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
+      - name: Push changes
+        if: steps.git-check.outputs.modified == 'true'
+        run: |
+          git config --global user.name 'Luis Fabregas'
+          git config --global user.email 'luis.fabregas@phys.chem.ethz.ch'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Automated changes"
+          git push
