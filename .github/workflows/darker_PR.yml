@@ -1,6 +1,6 @@
 name: Lint
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   lint:
@@ -10,7 +10,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v2
-      - uses: akaihola/darker@1.5.0
+      - uses: akaihola/darker@master
         with:
           options: "-v --isort"
           src: "./deerlab"
