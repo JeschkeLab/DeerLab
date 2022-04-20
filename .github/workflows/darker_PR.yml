@@ -12,6 +12,6 @@ jobs:
       - uses: actions/setup-python@v2
       - uses: akaihola/darker@master
         with:
-          options: "-v --isort"
+          options: "-v --isort --diff"
           src: "./deerlab"
           lint: "flake8"
