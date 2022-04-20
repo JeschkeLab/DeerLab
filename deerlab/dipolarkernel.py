@@ -110,13 +110,13 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         lam = 0.4  # modulation depth main signal
         pathways = [[1-lam], [lam, 0]]
         
-        K = dl.dipolarkernel(t,r,pathways=pathways)
+        K = dl.dipolarkernel(t, r, pathways=pathways)
 
 
     A shorthand input syntax equivalent to this input::
 
         lam = 0.4
-        K = dl.dipolarkernel(t,r,mod=lam)
+        K = dl.dipolarkernel(t, r, mod=lam)
 
 
 	To specify a more complete 4-pulse DEER model that, e.g includes the 2+1 contribution, use::
@@ -131,7 +131,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         path1 = [lam2, tau2]  # 2+1 dipolar pathway, refocusing at time tau2
         pathways = [path0, path1, path2]  
         
-        K = dl.dipolarkernel(t,r,pathways=pathways)
+        K = dl.dipolarkernel(t, r, pathways=pathways)
 
 
     References
