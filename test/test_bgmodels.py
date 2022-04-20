@@ -77,7 +77,7 @@ def test_bg_homfractal3d_value():
     lam = 0.423
     t = 0.1
     B = dl.bg_homfractal(t, conc, dim, lam)
-    Bref = 0.99578995
+    Bref = 0.99578995 
     assert abs(B - Bref) < 1e-6
 
 
@@ -132,8 +132,8 @@ def test_bg_sumstrexp():
     xi1 = 2.7
     xi2 = 2.4
     B = dl.bg_sumstrexp(t, k1, xi1, w, k2, xi2)
-    Bref = w * np.exp(-k1 * abs(t) ** xi1) + (1 - w) * np.exp(-k2 * abs(t) ** xi2)
-    assert abs(B - Bref) < 1e-10
+    Bref = w*np.exp(-k1 * abs(t) ** xi1) + (1-w)*np.exp(-k2 * abs(t) ** xi2)
+    assert abs(B-Bref) <  1e-10
 
 
 def test_bg_poly1_value():

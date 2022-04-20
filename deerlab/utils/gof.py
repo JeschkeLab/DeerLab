@@ -7,9 +7,8 @@ import numpy as np
 import deerlab as dl
 import warnings
 
-
-def goodness_of_fit(x, xfit, Ndof, noiselvl):
-    r"""
+def goodness_of_fit(x,xfit,Ndof,noiselvl):
+    r""" 
     Goodness of Fit statistics
     ==========================
 
@@ -19,7 +18,7 @@ def goodness_of_fit(x, xfit, Ndof, noiselvl):
     ------
         stats = goodness_of_fit(x,xfit,Ndof)
 
-    Arguments:
+    Arguments: 
     ----------
     x (N-element array)
         Original data
@@ -43,39 +42,32 @@ def goodness_of_fit(x, xfit, Ndof, noiselvl):
 
     """
     sigma = noiselvl
-    Ndof = np.maximum(Ndof, 1)
-
+    Ndof = np.maximum(Ndof,1)
+    
     # Get number of xariables
     N = len(x)
     # Extrapolate number of parameters
     Q = Ndof - N
 
     # Reduced Chi-squared test
-    chi2red = 1 / Ndof * np.linalg.norm(x - xfit) ** 2 / sigma**2
+    chi2red = 1/Ndof*np.linalg.norm(x - xfit)**2/sigma**2
 
     # R-squared test
-    R2 = 1 - np.sum((x - xfit) ** 2) / np.sum((xfit - np.mean(xfit)) ** 2)
+    R2 = 1 - np.sum((x-xfit)**2)/np.sum((xfit-np.mean(xfit))**2)
 
     # Root-mean square dexiation
-    rmsd = np.sqrt(np.sum((x - xfit) ** 2) / N)
+    rmsd = np.sqrt(np.sum((x-xfit)**2)/N)
 
     # Log-likelihood
-    loglike = N * np.log(np.sum((x - xfit) ** 2))
+    loglike = N*np.log(np.sum((x - xfit)**2))
 
     # Akaike information criterion
-    aic = loglike + 2 * Q
+    aic =  loglike + 2*Q
 
     # Corrected Akaike information criterion
-    aicc = loglike + 2 * Q + 2 * Q * (Q + 1) / (N - Q - 1)
+    aicc = loglike + 2*Q + 2*Q*(Q+1)/(N-Q-1)
 
     # Bayesian information criterion
-    bic = loglike + Q * np.log(N)
+    bic =  loglike + Q*np.log(N)
 
-    return {
-        "chi2red": chi2red,
-        "R2": R2,
-        "rmsd": rmsd,
-        "aic": aic,
-        "aicc": aicc,
-        "bic": bic,
-    }
+    return {'chi2red':chi2red,'R2':R2,'rmsd':rmsd,'aic':aic,'aicc':aicc,'bic':bic}

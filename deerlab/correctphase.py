@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def correctphase(V, full_output=False):
     r"""
     Phase correction of complex-valued data.
@@ -8,10 +7,10 @@ def correctphase(V, full_output=False):
     Rotates the phase of complex-valued data ``V`` to minimize the imaginary component.
     Among the two phases that minimize the imaginary part, the one that gives a real
     part with a positive average is used.
-
+    
     For two-dimensional datasets ``V2D``, e.g. from measurements with multiple scans,
     each slice ``V2D[:,i]`` is phase-rotated independently.
-
+    
 
     Parameters
     ----------
@@ -33,11 +32,11 @@ def correctphase(V, full_output=False):
         Fitted phase, or list of phases for 2D data, used for correction, in radians.
 
     """
-
+    
     if not np.iscomplexobj(V):
         raise ValueError("Data set must be complex-valued.")
 
-    data1d = V.ndim == 1
+    data1d = V.ndim==1
 
     V_2d = V.copy()
     if data1d:
@@ -61,24 +60,24 @@ def correctphase(V, full_output=False):
     #
     # The cost function has two minima:
     #    phi = phi0/2 + pi/2   and   phi = phi0/2 + 3*pi/2
-
+    
     # Calculate phase that minimizes cost function
-    Vr = np.real(V_2d)
-    Vi = np.imag(V_2d)
-    A = np.sum(Vr**2, axis=0) / 2
-    B = np.sum(Vi**2, axis=0) / 2
-    C = np.sum(Vr * Vi, axis=0)
-    phi0 = np.arctan2(C, B - A)
-    phimin = phi0 / 2 + np.pi / 2  # one of the two minimizers
-
+    Vr=np.real(V_2d)
+    Vi=np.imag(V_2d)
+    A=np.sum(Vr**2, axis=0)/2
+    B=np.sum(Vi**2, axis=0)/2
+    C=np.sum(Vr*Vi, axis=0)
+    phi0= np.arctan2(C, B-A)
+    phimin= phi0/2 + np.pi/2  # one of the two minimizers
+    
     # Apply phase rotation
-    V_2d *= np.exp(1j * phimin)[None, :]
-
+    V_2d *= np.exp(1j*phimin)[None,:]
+    
     # Pick minimizer that yields positive average of real part
     reAvg = np.average(V_2d, axis=0)
     idx = reAvg < 0
     phimin[idx] += np.pi
-    V_2d[:, idx] = -V_2d[:, idx]
+    V_2d[:,idx] = -V_2d[:,idx]
 
     # Assemble output
     if data1d:
