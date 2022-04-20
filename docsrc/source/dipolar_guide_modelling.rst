@@ -51,6 +51,7 @@ When using experimental time delays and the ``experiment`` argument, the model a
     deadtime = 0.4 # Experimental deadtime of 400ns, in μs
     t = t - deadtime # Shift the time axis to account for the deadtime 
 
+If the time vector ``t`` does not have any deadtime, this step can be skipped. Otherwise, an incorrectly defined time vector will results in wrong results.
 
 Constructing the dipolar model 
 *******************************
