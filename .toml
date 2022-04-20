@@ -1,0 +1,10 @@
+[tool.darker]
+src = [
+    "deerlab",
+]
+revision = "origin/main..."
+isort = true
+log_level = "INFO"
+
+[tool.isort]
+profile = "black"
