@@ -11,15 +11,12 @@ ci:
     submodules: false
 
 repos:
-  - repo: https://github.com/akaihola/darker
-    rev: 1.4.2
+repos:
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
     hooks:
-      - id: darker
-        verbose: true
-        args: [--isort, -v, -r main]
-        additional_dependencies:
-          - black~=21.8b0
-          - isort~=5.9
+      - id: black
+        language_version: python3.10
 
   - repo: https://github.com/pycqa/flake8
     rev: 4.0.1
