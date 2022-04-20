@@ -5,6 +5,7 @@ src = [
 revision = "origin/main..."
 isort = true
 log_level = "INFO"
+verbose=true 
 
 [tool.isort]
 profile = "black"
