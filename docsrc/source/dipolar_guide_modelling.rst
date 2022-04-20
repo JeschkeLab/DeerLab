@@ -39,13 +39,18 @@ Choosing the number of dipolar pathways
 
 This decision should be based on the experiment you used to acquire the data and the type of pulses you used. In the case of 4-pulse DEER data, when analyzing a standard 4-pulse DEER signal without 2+1 component at the end a single pathway suffices. If the 2+1 component (appearing at the right edge of the time trace) is present, then it should be fitted as well, including its counterpart appearing at negative times, making a total of three dipolar pathways. Experiments such as 5-pulse DEER typically require at least two dipolar pathways to be properly modelled. 
 
-
 Using experimental pulse delays
 ******************************** 
 
-The dipolar pathways of a newly constructed dipolar model are initialized at arbitrary refocusing times and fully unconstrained. The refocusing times can be strongly constrained by knowing the experimental pulse sequence delays used to acquire the data. If the experiment used to acquire the data is known, as well as its pulse delays, then it is strongly recommended do so.  
+The dipolar pathways of a newly constructed dipolar model are initialized at arbitrary refocusing times and fully unconstrained. The refocusing times can be strongly constrained by knowing the experimental pulse sequence delays used to acquire the data. If the experiment used to acquire the data is known, as well as its pulse delays, then it is strongly recommended do so. 
  
 DeerLab provides a selection of experimental information generators for some of the most widely employed experimental methods (see the of :ref:`list of available experiments <modelsref_ex>`). These are functions that take the pulse sequence delays, and return an ``ExperimentInfo`` object. This can be passed to the ``dipolarmodel`` function via the ``experiment`` keyword argument, to incorporate the experiment information on the model and constrain some of its parameters. 
+
+When using experimental time delays and the ``experiment`` argument, the model assumes that the experimental time axis ``t`` has its zero time at the beginning of the interpulse delay (see the illustrations of the individual experiment models for details). However, experimentally it is common not to record the first few hundred nanoseconds of signal. This results in a so-called deadtime, which many commercial spectrometers (such as Bruker) do not account for when storing the time-vector. It is very important to account for that deadtime in the model via :: 
+
+    deadtime = 0.4 # Experimental deadtime of 400ns, in μs
+    t = t - deadtime # Shift the time axis to account for the deadtime 
+
 
 Constructing the dipolar model 
 *******************************
