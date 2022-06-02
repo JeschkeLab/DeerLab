@@ -273,6 +273,9 @@ class UQResult:
             # Get bw using silverman's rule (1D only)
             samplen = self.samples[:, n].real
 
+            # Take limited precision into account to avoid round-off errors
+            samplen = np.round(samplen,200)
+
             if np.all(samplen == samplen[0]):
                 # Dirac's delta distribution 
                 x = np.array([0.9*samplen[0],samplen[0],1.1*samplen[0]])
