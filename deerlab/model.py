@@ -913,7 +913,9 @@ def _print_fitresults(fitresult,model):
             if np.any(getattr(model,param).frozen): 
                 # If parameter is frozen, print just the value
                 value = getattr(model,param).value
-                if hasattr(value,'__len__'): value = value[0]
+                try:
+                    if isinstance(value, (list, tuple, np.ndarray)): value = value[0]
+                except: pass
                 value = f'{value:.3f}' if value<1e4 else f'{value:.3g}'
                 ci = '(frozen)'
             else:
