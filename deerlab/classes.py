@@ -209,25 +209,34 @@ class UQResult:
             Joined uncertainty quantification object with a total of ``M + N1 + N2 + ... + Nn`` parameters. 
             The parameter vectors are concatenated on the order they are passed. 
         """
-        # Original metadata
-        mean = self.mean
-        covmat = self.covmat
-        lbm = self.__lb
-        ubm = self.__ub
-
+        newargs = []
+        if self.type=='covariance':
+            # Original metadata
+            newargs.append(self.mean)
+            newargs.append(self.covmat)
+            newargs.append(self.__lb)
+            newargs.append(self.__ub)
+        elif self.type=='bootstrap':
+            newargs.append(self.samples)
+            
         for uq in args:
             if not isinstance(uq, UQResult):
                 raise TypeError('Only UQResult objects can be joined.')
+            if uq.type!=self.type:
+                raise TypeError(f'A UQResult of type ({uq.type}) and another of type ({self.type}) cannot be joined.')
             if uq.type=='void':
                 raise TypeError('Void UQResults cannot be joined.')
             # Concatenate metadata of external UQResult objects
-            mean = np.concatenate([mean, uq.mean])
-            covmat = block_diag(covmat, uq.covmat)
-            lbm = np.concatenate([lbm, uq.__lb])
-            ubm = np.concatenate([ubm, uq.__ub])
-
+            if self.type=='covariance':
+                newargs[0] = np.concatenate([newargs[0], uq.mean])
+                newargs[1] = block_diag(newargs[1], uq.covmat)
+                newargs[2] = np.concatenate([newargs[2], uq.__lb])
+                newargs[3] = np.concatenate([newargs[3], uq.__ub])
+            elif self.type=='bootstrap':
+                newargs[0] = np.concatenate([newargs[0],uq.samples],axis=1) 
+                
         # Return new UQResult object with combined information    
-        return UQResult('covariance',mean,covmat,lbm,ubm) 
+        return UQResult(self.type,*newargs) 
     #--------------------------------------------------------------------------------
 
 
@@ -263,6 +272,9 @@ class UQResult:
         if self.type == 'bootstrap':
             # Get bw using silverman's rule (1D only)
             samplen = self.samples[:, n].real
+
+            # Take limited precision into account to avoid round-off errors
+            samplen = np.round(samplen,200)
 
             if np.all(samplen == samplen[0]):
                 # Dirac's delta distribution 
