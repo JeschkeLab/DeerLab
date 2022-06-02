@@ -3710,7 +3710,8 @@
    }
    .navbar-brand:focus,
    .navbar-brand:hover {
-    text-decoration:none
+    text-decoration:none;
+    background-color:#fff0;
    }
    .navbar-nav {
     display:flex;
@@ -9592,9 +9593,11 @@ dt:target, span.highlighted {
     color: #fff;
     }
 .btn-quick:hover {
-    text-decoration:none;
-    background-color:#3c55c8;
-    border-color:#3c55c8
+    text-decoration: none;
+    background-color: #4550e6;
+    border-color: #4550e6;
+    color: white;
+    border-radius: 6px;
     }
 
 
@@ -10029,4 +10032,19 @@ h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, h4:ho
 
 .sphx-glr-timing {
 margin-top: 50px;
+}
+
+@font-face {
+font-family: 'Berlin Sans FB';
+font-style: normal;
+font-weight: normal;
+src: local('Berlin Sans FB'), url('BRLNSR.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Berlin Sans FB Bold';
+font-style: normal;
+font-weight: normal;
+src: local('Berlin Sans FB Bold'), url('BRLNSB.woff') format('woff');
 }
