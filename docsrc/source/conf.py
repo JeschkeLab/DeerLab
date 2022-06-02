@@ -169,7 +169,7 @@ default_role = 'math'  # with this, :math:`\psi` can be written simply as `\psi`
 html_title = 'DeerLab'
 highlight_language = 'python'
 primary_domain = 'py'
-html_logo = '_static/logo_docs.svg'
+html_logo = '_static/logo_docs_paths.svg'
 
 
 # Patch Code highlighting
