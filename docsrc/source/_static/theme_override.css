@@ -10030,3 +10030,18 @@ h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, h4:ho
 .sphx-glr-timing {
 margin-top: 50px;
 }
+
+@font-face {
+font-family: 'Berlin Sans FB';
+font-style: normal;
+font-weight: normal;
+src: local('Berlin Sans FB'), url('BRLNSR.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Berlin Sans FB Bold';
+font-style: normal;
+font-weight: normal;
+src: local('Berlin Sans FB Bold'), url('BRLNSB.woff') format('woff');
+}
