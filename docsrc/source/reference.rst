@@ -76,7 +76,7 @@ Stable functionality is not guaranteed.
     :nosignatures:
 
     store_pickle
-    load_pickle
+    read_pickle
     hccm
     Jacobian
     nearest_psd
