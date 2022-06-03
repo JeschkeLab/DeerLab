@@ -9,10 +9,22 @@ Release Notes
 .. rubric:: Legend
 
 - |feature| : Features something new which could not be done before
-- |efficiency| : A change which improves the performance or memory usage.
+- |efficiency| : A change which affects the performance or memory usage.
 - |enhancement| : An improvement to a previously existing feature.
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
+
+Release v0.14.1 - June 2022
+---------------------------------
+
+.. rubric:: Overall changes
+
+- |fix| Use Scipy's `eigh` instead of Numpy's to avoid convergence error ``numpy.linalg.LinAlgError: Eigenvalues did not converge`` during model uncertainty propagation (:issue:`310`, :pr:`311`).
+- |fix| Refactored the code to avoid the use of ``lambda`` and nested functions. This enables pickling DeerLab's objects with Python's ``pickle`` module without errors (:pr:`312`).
+- |feature| Added two new utility functions ``store_pickle`` and ``read_pickle`` that implement pickling with the ``dill`` package to be more robust against potential ``lambda`` functions defined by the users in scripts (:pr:`312`).
+- |fix| Fixed minor bug when printing fit results with many model parameters being frozen. The print command would return an error message (:pr:`329`).
+- |fix| Fixed bug when propagating bootstrapped uncertainty in presence of round-off errors (:pr:`325`).
+- |fix| |enhancement| Multiple minor improvements and corrections in the documentation.
 
 Release v0.14.0 - April 2022
 ---------------------------------
@@ -102,9 +114,9 @@ Release v0.14.0 - April 2022
 - |fix| Prompts error if wrong method is selected when specifying a limited excitation bandwidth (:issue:`181`, :pr:`183`). 
 
 .. rubric:: ``bg_models``
-- |feature| Implemented the time-dependent phase shifts for all the built-in physical background models, namely `bg_hon3d_phase`, `bg_hom3dex_phase`, and `bg_homfractal_phase` (:pr:`258`).   
-- |enhancement| Changed the implementation of `bg_hom3dex` (:pr:`258`). This avoids the use of tabulated pre-calculated values. Accordingly the utility functions `calculate_exvolume_redfactor` and `load_exvolume_redfactor` have been removed.
-- |fix| Improved the implementation and behavior of the `bg_homfractal` model (:pr:`258`).
+- |feature| Implemented the time-dependent phase shifts for all the built-in physical background models, namely ``bg_hon3d_phase``, ``bg_hom3dex_phase``, and ``bg_homfractal_phase`` (:pr:`258`).   
+- |enhancement| Changed the implementation of ``bg_hom3dex`` (:pr:`258`). This avoids the use of tabulated pre-calculated values. Accordingly the utility functions ``calculate_exvolume_redfactor`` and ``load_exvolume_redfactor`` have been removed.
+- |fix| Improved the implementation and behavior of the ``bg_homfractal`` model (:pr:`258`).
 
 .. rubric:: ``diststats``
 - |fix| Fixed the behavior when dealing with distributions with arbitrary integral values

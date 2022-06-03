@@ -44,6 +44,7 @@ DeerLab installs the following packages:
 * `scipy <https://www.scipy.org/>`_ - Fundamental library for scientific computing
 * `joblib <https://joblib.readthedocs.io/en/latest/>`_ - Library lightweight pipelining and parallelization.
 * `tqdm <https://github.com/tqdm/tqdm>`_ - A lightweight package for smart progress meters.
+* `dill <https://github.com/uqfoundation/dill>`_ - An extension of Python's pickle module for serializing and de-serializing python objects.
 
 The installed numerical computing packages (numpy, scipy, cvxopt) are linked against different BLAS libraries depending on the OS:
 

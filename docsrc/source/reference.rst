@@ -45,7 +45,9 @@ API Reference
     snlls 
     fnnls
     cvxnnls
-
+    save
+    load 
+    
 .. rubric:: Dipolar EPR functions
 
 .. autosummary::
@@ -73,6 +75,8 @@ Stable functionality is not guaranteed.
     :template: custom_function_template.rst
     :nosignatures:
 
+    store_pickle
+    read_pickle
     hccm
     Jacobian
     nearest_psd

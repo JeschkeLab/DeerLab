@@ -123,6 +123,9 @@ html_sidebars = {
     "_autosummary/**": [],
     "examples": [],
     "auto_examples/**": [],
+    "auto_examples/**": [],
+    "**": ["sidebar-nav-bs", "sidebar-ethical-ads"],
+    "page_sidebar_items": ["page-toc", "edit-this-page"],
 }
 
 html_copy_source = False
@@ -169,7 +172,7 @@ default_role = 'math'  # with this, :math:`\psi` can be written simply as `\psi`
 html_title = 'DeerLab'
 highlight_language = 'python'
 primary_domain = 'py'
-html_logo = '_static/logo_docs.svg'
+html_logo = '_static/logo_docs_paths.svg'
 
 
 # Patch Code highlighting

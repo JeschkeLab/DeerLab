@@ -3,9 +3,9 @@ import warnings
 import numpy as np
 import scipy as scp
 import scipy.optimize as opt
-from types import FunctionType 
+from types import FunctionType
 from functools import wraps
-
+import pickle
 
 def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None, subsets=None):
 #===============================================================================
@@ -558,10 +558,13 @@ def nearest_psd(A):
        How can I calculate the nearest positive semi-definite matrix? 
        StackOverflow, https://stackoverflow.com/a/63131250/16396391
     """ 
+    # If matrix is empty, return it empty (scipy.linalg.eigh cannot deal with empty matrix)
+    if A.size==0: 
+        return A
     # Symmetrize the matrix
     Asym = (A + A.T)/2
     # Construct positive semi-definite matrix via eigenvalue decomposition
-    eigval, eigvec = np.linalg.eigh(Asym)
+    eigval, eigvec = scp.linalg.eigh(Asym)
     eigval[eigval < 0] = 0
     Cpsd = np.real(eigvec.dot(np.diag(eigval)).dot(eigvec.T))
     # Avoid round-off errors
@@ -654,3 +657,47 @@ try:
 
 
 except: pass
+
+import dill as pickle
+
+# --------------------------------------------------------------------------------------
+def store_pickle(obj, filename):
+    """
+    Save/export an object to a ``.pkl`` file serialized as bytes.
+    
+    Parameters
+    ----------
+    obj : object 
+        Python object to be saved/exported. 
+
+    filename : string 
+        Name (and path) of the file to save the pickled object to. The object is saved as a ``.pkl`` file. 
+    """   
+    if '.pkl' not in filename:
+        filename = filename + '.pkl'
+    with open(filename, 'wb') as outp:  # Overwrites any existing file.
+        pickle.dump(obj, outp, pickle.HIGHEST_PROTOCOL)
+# --------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------
+def read_pickle(filename):
+    """
+    Load a pickled object file ``.pkl`` and deserialize the bytes into a Python object.
+    
+    Parameters
+    ----------
+    filename : string 
+        Path to the ``.pkl`` file to load.
+
+        .. warning:: It is possible to construct malicious pickle data which will execute arbitrary code during unpickling. Never unpickle data that could have come from an untrusted source, or that could have been tampered with. See `here <https://docs.python.org/3/library/pickle.html>`_ for more information.
+
+    """ 
+    if '.pkl' not in filename:
+        filename = filename + '.pkl'
+    with open(filename, "rb") as f:
+        while True:
+            try:
+                return pickle.load(f)
+            except EOFError:
+                break
+# --------------------------------------------------------------------------------------
