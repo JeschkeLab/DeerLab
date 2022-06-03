@@ -13,6 +13,28 @@ and can be manipulated and expanded as described in the :ref:`Modelling guide <m
 
 These are models particularly oriented towards the modelling of dipolar EPR spectroscopy data. 
 
+
+.. _modelsref_ex:
+
+
+Experiment models
+*******************
+
+These generator functions model different dipolar EPR experiments, and provide the means
+to refine the dipolar signal models by introducing experimental information. 
+
+.. autosummary:: 
+  :toctree: _autosummary
+  :template: custom_function_template.rst
+  :nosignatures:
+
+  ex_3pdeer
+  ex_4pdeer
+  ex_rev5pdeer
+  ex_fwd5pdeer
+  ex_sifter
+  ex_ridme
+
 Distance distribution models 
 ****************************
 
@@ -136,25 +158,3 @@ This category comprises phenomenological models that represent various mathemati
   bg_poly1
   bg_poly2
   bg_poly3
-
-
-.. _modelsref_ex:
-
-
-Experiment models
-*******************
-
-These generator functions model different dipolar EPR experiments, and provide the means
-to refine the dipolar signal models by introducing experimental information. 
-
-.. autosummary:: 
-  :toctree: _autosummary
-  :template: custom_function_template.rst
-  :nosignatures:
-
-  ex_3pdeer
-  ex_4pdeer
-  ex_rev5pdeer
-  ex_fwd5pdeer
-  ex_sifter
-  ex_ridme

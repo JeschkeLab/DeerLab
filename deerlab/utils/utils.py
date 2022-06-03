@@ -689,8 +689,7 @@ def read_pickle(filename):
     filename : string 
         Path to the ``.pkl`` file to load.
 
-
-    .. warning:: Loading pickled data received from untrusted sources can be unsafe. See `here<https://docs.python.org/3/library/pickle.html>`_.
+        .. warning:: It is possible to construct malicious pickle data which will execute arbitrary code during unpickling. Never unpickle data that could have come from an untrusted source, or that could have been tampered with. See `here <https://docs.python.org/3/library/pickle.html>`_ for more information.
 
     """ 
     if '.pkl' not in filename:
