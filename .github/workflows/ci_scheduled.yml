@@ -25,7 +25,6 @@ jobs:
         if: startsWith(runner.os, 'Windows')
         with:
           path: |
-            ~\pipwin
             ~\AppData\Local\pip\Cache
           key: ${{ runner.os }}-${{ hashFiles('**/setup.py') }}
           restore-keys: |
