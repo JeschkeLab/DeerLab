@@ -24,9 +24,8 @@ jobs:
         if: startsWith(runner.os, 'Windows')
         with:
           path: |
-            ~\pipwin
             ~\AppData\Local\pip\Cache
-          key: ${{ runner.os }}-${{ hashFiles('**/setup.py') }}
+          key: cache-${{ runner.os }}-${{ hashFiles('**/setup.py') }}
           restore-keys: |
             {{ runner.os }}-pip-
 
@@ -35,7 +34,7 @@ jobs:
         with:
           path: |
             ~/Library/Caches/pip
-          key: ${{ runner.os }}-${{ hashFiles('**/setup.py') }}
+          key: cache-${{ runner.os }}-${{ hashFiles('**/setup.py') }}
           restore-keys: |
             {{ runner.os }}-pip-
 
@@ -44,7 +43,7 @@ jobs:
         with:
           path: |
             ~/.cache/pip
-          key: ${{ runner.os }}-${{ hashFiles('**/setup.py') }}
+          key: cache-${{ runner.os }}-${{ hashFiles('**/setup.py') }}
           restore-keys: |
             {{ runner.os }}-pip-
 
