@@ -561,10 +561,10 @@ def nearest_psd(A):
     # If matrix is empty, return it empty (scipy.linalg.eigh cannot deal with empty matrix)
     if A.size==0: 
         return A
+    A = np.nan_to_num(A)
     # Symmetrize the matrix
     Asym = (A + A.T)/2
     # Construct positive semi-definite matrix via eigenvalue decomposition
-    Asym = np.nan_to_num(Asym)
     eigval, eigvec = scp.linalg.eigh(Asym)
     eigval[eigval < 0] = 0
     Cpsd = np.real(eigvec.dot(np.diag(eigval)).dot(eigvec.T))
