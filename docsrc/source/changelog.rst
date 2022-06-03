@@ -19,14 +19,6 @@ Release v0.14.1 - June 2022
 
 .. rubric:: Overall changes
 
-- Changed the installation routine of DeerLab in Windows systems (:pr:`330`). Does not affect Linux or MacOS systems.
-
-  * |enhancement| Upon installation, DeerLab will no longer enforce the MKL-linked versions of Numpy, Scipy, and CVXOpt downloaded from the Gohlke repository (:issue:`322`).
-  * |fix| Fixes the error ``git is not recognized as an internal or external command, operable program or batch file`` appearing during the installation of DeerLab on Windows systems (:issue:`326`).  
-  * |efficiency| As a consequence, by default, Windows systems with freshly installed DeerLab versions might experience a downgrade in performance in comparison to older versions. 
-  * |feature| To install the MKL-linked package versions and improve the performance, a new script ``upgrade_mkl.py`` is provided which will automatically install the MKL-linked packages (:pr:`330`). 
-  * |fix| Due to the standardization of DeerLab's installation routine, wheels will now work with DeerLab.
-
 - |fix| Use Scipy's `eigh` instead of Numpy's to avoid convergence error ``numpy.linalg.LinAlgError: Eigenvalues did not converge`` during model uncertainty propagation (:issue:`310`, :pr:`311`).
 - |fix| Refactored the code to avoid the use of ``lambda`` and nested functions. This enables pickling DeerLab's objects with Python's ``pickle`` module without errors (:pr:`312`).
 - |feature| Added two new utility functions ``store_pickle`` and ``read_pickle`` that implement pickling with the ``dill`` package to be more robust against potential ``lambda`` functions defined by the users in scripts (:pr:`312`).
