@@ -51,7 +51,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'false'
         run: |
           python -m pip install --upgrade pip
-          python setup.py install --user
+          python -m setup.py install
   
       - name: Test with pytest
         run: pytest
