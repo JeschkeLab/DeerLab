@@ -123,6 +123,9 @@ html_sidebars = {
     "_autosummary/**": [],
     "examples": [],
     "auto_examples/**": [],
+    "auto_examples/**": [],
+    "**": ["sidebar-nav-bs", "sidebar-ethical-ads"],
+    "page_sidebar_items": ["page-toc", "edit-this-page"],
 }
 
 html_copy_source = False
