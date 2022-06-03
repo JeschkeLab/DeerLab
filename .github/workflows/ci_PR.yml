@@ -20,33 +20,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/cache@v2
-        if: startsWith(runner.os, 'Windows')
-        with:
-          path: |
-            ~\AppData\Local\pip\Cache
-          key: cache-${{ runner.os }}-${{ hashFiles('**/setup.py') }}
-          restore-keys: |
-            {{ runner.os }}-pip-
-
-      - uses: actions/cache@v2
-        if: startsWith(runner.os, 'macOS')
-        with:
-          path: |
-            ~/Library/Caches/pip
-          key: cache-${{ runner.os }}-${{ hashFiles('**/setup.py') }}
-          restore-keys: |
-            {{ runner.os }}-pip-
-
-      - uses: actions/cache@v2
-        if: startsWith(runner.os, 'Linux')
-        with:
-          path: |
-            ~/.cache/pip
-          key: cache-${{ runner.os }}-${{ hashFiles('**/setup.py') }}
-          restore-keys: |
-            {{ runner.os }}-pip-
-
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'false'
         run: |
