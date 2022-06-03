@@ -1,6 +1,8 @@
 import numpy as np
 import deerlab as dl 
 from deerlab.model import Model,fit,lincombine
+from deerlab.utils import store_pickle, read_pickle  
+import os 
 
 # ======================================================================
 def test_type(): 
@@ -413,4 +415,26 @@ def test_vec_twomodels_normalization_values():
     results = fit(model,ref,x,x)
 
     assert np.isclose(results.Pvec_2_scale,scale2)
+# ======================================================================
+
+def test_pickle_lincombined_model():
+# ======================================================================
+    "Check that the model object can be pickled"
+    model1 = dl.dd_gauss
+    model2 = dl.dd_rice
+    x = np.linspace(0,10,100)
+    truth = model1(x,3,0.2)+model2(x,4,0.5)
+    model = lincombine(model1,model2)
+    model.mean_1.par0=3
+    model.location_2.par0=4
+    store_pickle(model,'pickled_model')
+    try:
+        pickled_model =read_pickle('pickled_model')
+        result = fit(pickled_model,truth,x,x)
+
+        os.remove("pickled_model.pkl") 
+        assert np.allclose(result.model,truth)
+    except Exception as exception:
+        os.remove("pickled_model.pkl") 
+        raise exception
 # ======================================================================

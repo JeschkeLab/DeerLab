@@ -102,9 +102,9 @@ Release v0.14.0 - April 2022
 - |fix| Prompts error if wrong method is selected when specifying a limited excitation bandwidth (:issue:`181`, :pr:`183`). 
 
 .. rubric:: ``bg_models``
-- |feature| Implemented the time-dependent phase shifts for all the built-in physical background models, namely `bg_hon3d_phase`, `bg_hom3dex_phase`, and `bg_homfractal_phase` (:pr:`258`).   
-- |enhancement| Changed the implementation of `bg_hom3dex` (:pr:`258`). This avoids the use of tabulated pre-calculated values. Accordingly the utility functions `calculate_exvolume_redfactor` and `load_exvolume_redfactor` have been removed.
-- |fix| Improved the implementation and behavior of the `bg_homfractal` model (:pr:`258`).
+- |feature| Implemented the time-dependent phase shifts for all the built-in physical background models, namely ``bg_hon3d_phase``, ``bg_hom3dex_phase``, and ``bg_homfractal_phase`` (:pr:`258`).   
+- |enhancement| Changed the implementation of ``bg_hom3dex`` (:pr:`258`). This avoids the use of tabulated pre-calculated values. Accordingly the utility functions ``calculate_exvolume_redfactor`` and ``load_exvolume_redfactor`` have been removed.
+- |fix| Improved the implementation and behavior of the ``bg_homfractal`` model (:pr:`258`).
 
 .. rubric:: ``diststats``
 - |fix| Fixed the behavior when dealing with distributions with arbitrary integral values

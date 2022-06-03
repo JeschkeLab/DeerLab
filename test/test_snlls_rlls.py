@@ -238,7 +238,7 @@ def test_plot():
     V = K@P
 
     fit = snlls(V,K,lbl=np.zeros_like(r))
-    fig = fit.plot(show=False)
+    fig = fit.plot()
     assert str(fig.__class__)=="<class 'matplotlib.figure.Figure'>"
 #============================================================
 
