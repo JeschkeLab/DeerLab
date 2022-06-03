@@ -62,7 +62,7 @@
     
 
 <a class="navbar-brand" href="../../index.html">
-  <img src="../../_static/logo_docs.svg" class="logo" alt="logo">
+  <img src="../../_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
 
 
@@ -124,7 +124,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="sk-nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="../../funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="../../license.html">License</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
@@ -241,8 +241,8 @@ are identifiable (unique) for a given experimental signal.</p>
 
 <span class="c1"># Compute uncertainty with the likelihood profile method for the spin concentration and modulation depth parameters</span>
 <span class="n">grids</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;conc&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">600</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span>
-    <span class="s1">&#39;mod&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span>
+    <span class="s1">&#39;conc&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">400</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span>
+    <span class="s1">&#39;mod&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span><span class="mf">0.4</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span>
 <span class="p">}</span>
 
 <span class="n">profile_long</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">profile_analysis</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">samples</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;conc&#39;</span><span class="p">,</span><span class="s1">&#39;mod&#39;</span><span class="p">],</span> <span class="n">grids</span><span class="o">=</span><span class="n">grids</span><span class="p">)</span>
@@ -267,7 +267,7 @@ are identifiable (unique) for a given experimental signal.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../../_images/sphx_glr_ex_identifiability_analysis_001.png" srcset="../../_images/sphx_glr_ex_identifiability_analysis_001.png" alt="ex identifiability analysis" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 4 minutes  15.465 seconds)</p>
+<img src="../../_images/sphx_glr_ex_identifiability_analysis_001.png" srcset="../../_images/sphx_glr_ex_identifiability_analysis_001.png" alt="ex identifiability analysis" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 2 minutes  36.422 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-identifiability-analysis-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/19763dd2ba96ca2260a5551c517f6d29/ex_identifiability_analysis.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_identifiability_analysis.py</span></code></a></p>

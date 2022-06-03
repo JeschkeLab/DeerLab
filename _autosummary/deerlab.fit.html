@@ -62,7 +62,7 @@
     
 
 <a class="navbar-brand" href="../index.html">
-  <img src="../_static/logo_docs.svg" class="logo" alt="logo">
+  <img src="../_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
 
 
@@ -124,7 +124,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="sk-nav-dropdown-item dropdown-item" href="../changelog.html">Release Notes</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="../contributing.html">Contributing</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="../funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../support.html">Support</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="../license.html">License</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
@@ -282,6 +282,17 @@ be specified by calling <code class="docutils literal notranslate"><span class="
 </ul>
 </dd>
 <dt><strong>cost</strong><span class="classifier">float</span></dt><dd><p>Value of the cost function at the solution.</p>
+</dd>
+<dt><strong>evaluate(model, constants)</strong><span class="classifier">callable</span></dt><dd><p>Function to evaluate a model at the fitted parameter values. Takes a model object or callable function <code class="docutils literal notranslate"><span class="pre">model</span></code> to be evaluated.
+All the parameters in the model or in the callable definition must match their corresponding parameter names in the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object.   
+Any model constants present required by the model must be specified as a second argument <code class="docutils literal notranslate"><span class="pre">constants</span></code>.  
+It returns the model’s response at the fitted parameter values as an ndarray.</p>
+</dd>
+<dt><strong>propagate(model,constants,lb,ub)</strong><span class="classifier">callable</span></dt><dd><p>Function to propagate the uncertainty in the fit results to a model’s response. Takes a model object or callable function <code class="docutils literal notranslate"><span class="pre">model</span></code> to be evaluated.
+All the parameters in the model or in the callable definition must match their corresponding parameter names in the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object.  
+Any model constants present required by the model must be specified as a second argument <code class="docutils literal notranslate"><span class="pre">constants</span></code>. The lower bounds <code class="docutils literal notranslate"><span class="pre">lb</span></code> and upper bounds <code class="docutils literal notranslate"><span class="pre">ub</span></code>
+of the model’s response can be specified as a third and fourth argument respectively.  
+It returns the model’s response uncertainty quantification as a <code class="docutils literal notranslate"><span class="pre">UQResult</span></code> object.</p>
 </dd>
 </dl>
 </dd>

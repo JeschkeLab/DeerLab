@@ -41,7 +41,7 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="deerlab.dd_gauss" href="_autosummary/deerlab.dd_gauss.html" />
+    <link rel="next" title="deerlab.ex_3pdeer" href="_autosummary/deerlab.ex_3pdeer.html" />
     <link rel="prev" title="Global analysis of 5-pulse DEER on a liquid-droplet protein system" href="auto_examples/advanced/ex_droplets_model.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -62,7 +62,7 @@
     
 
 <a class="navbar-brand" href="index.html">
-  <img src="_static/logo_docs.svg" class="logo" alt="logo">
+  <img src="_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
 
 
@@ -124,7 +124,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="sk-nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="support.html">Support</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="license.html">License</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
@@ -179,6 +179,11 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#experiment-models">
+   Experiment models
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#distance-distribution-models">
    Distance distribution models
   </a>
@@ -191,11 +196,6 @@
   </a>
   <ul class="nav section-nav flex-column">
   </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#experiment-models">
-   Experiment models
-  </a>
  </li>
 </ul>
 
@@ -223,6 +223,37 @@
 <p>DeerLab provides a wide selection of built-in models. These are instances of the <a class="reference internal" href="_autosummary/deerlab.Model.html#model"><span class="std std-ref">deerlab.Model</span></a> object class
 and can be manipulated and expanded as described in the <a class="reference internal" href="modelling_guide.html#modelling-guide"><span class="std std-ref">Modelling guide</span></a>.</p>
 <p id="modelsref-dd">These are models particularly oriented towards the modelling of dipolar EPR spectroscopy data.</p>
+<section id="experiment-models">
+<span id="modelsref-ex"></span><h2>Experiment models<a class="headerlink" href="#experiment-models" title="Permalink to this headline">#</a></h2>
+<p>These generator functions model different dipolar EPR experiments, and provide the means
+to refine the dipolar signal models by introducing experimental information.</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_3pdeer.html#deerlab.ex_3pdeer" title="deerlab.ex_3pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_3pdeer</span></code></a></p></td>
+<td><p>Generate a 3-pulse DEER dipolar experiment model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_4pdeer.html#deerlab.ex_4pdeer" title="deerlab.ex_4pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_4pdeer</span></code></a></p></td>
+<td><p>Generate a 4-pulse DEER dipolar experiment model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_rev5pdeer.html#deerlab.ex_rev5pdeer" title="deerlab.ex_rev5pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_rev5pdeer</span></code></a></p></td>
+<td><p>Generate a reverse 5-pulse DEER dipolar experiment model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_fwd5pdeer.html#deerlab.ex_fwd5pdeer" title="deerlab.ex_fwd5pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_fwd5pdeer</span></code></a></p></td>
+<td><p>Generate a forward 5-pulse DEER dipolar experiment model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_sifter.html#deerlab.ex_sifter" title="deerlab.ex_sifter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_sifter</span></code></a></p></td>
+<td><p>Generate a SIFTER dipolar experiment model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_ridme.html#deerlab.ex_ridme" title="deerlab.ex_ridme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_ridme</span></code></a></p></td>
+<td><p>Generate a RIDME dipolar experiment model.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="distance-distribution-models">
 <h2>Distance distribution models<a class="headerlink" href="#distance-distribution-models" title="Permalink to this headline">#</a></h2>
 <p>These models provide parametrizations of the interspin distance distributions.</p>
@@ -408,37 +439,6 @@ and can be manipulated and expanded as described in the <a class="reference inte
 </tbody>
 </table>
 </section>
-<section id="experiment-models">
-<span id="modelsref-ex"></span><h2>Experiment models<a class="headerlink" href="#experiment-models" title="Permalink to this headline">#</a></h2>
-<p>These generator functions model different dipolar EPR experiments, and provide the means
-to refine the dipolar signal models by introducing experimental information.</p>
-<table class="autosummary longtable table autosummary">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_3pdeer.html#deerlab.ex_3pdeer" title="deerlab.ex_3pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_3pdeer</span></code></a></p></td>
-<td><p>Generate a 3-pulse DEER dipolar experiment model.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_4pdeer.html#deerlab.ex_4pdeer" title="deerlab.ex_4pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_4pdeer</span></code></a></p></td>
-<td><p>Generate a 4-pulse DEER dipolar experiment model.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_rev5pdeer.html#deerlab.ex_rev5pdeer" title="deerlab.ex_rev5pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_rev5pdeer</span></code></a></p></td>
-<td><p>Generate a reverse 5-pulse DEER dipolar experiment model.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_fwd5pdeer.html#deerlab.ex_fwd5pdeer" title="deerlab.ex_fwd5pdeer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_fwd5pdeer</span></code></a></p></td>
-<td><p>Generate a forward 5-pulse DEER dipolar experiment model.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_sifter.html#deerlab.ex_sifter" title="deerlab.ex_sifter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_sifter</span></code></a></p></td>
-<td><p>Generate a SIFTER dipolar experiment model.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_ridme.html#deerlab.ex_ridme" title="deerlab.ex_ridme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_ridme</span></code></a></p></td>
-<td><p>Generate a RIDME dipolar experiment model.</p></td>
-</tr>
-</tbody>
-</table>
-</section>
 </section>
 
 
@@ -454,10 +454,10 @@ to refine the dipolar signal models by introducing experimental information.</p>
             <p class="prev-next-title">Global analysis of 5-pulse DEER on a liquid-droplet protein system</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="_autosummary/deerlab.dd_gauss.html" title="next page">
+    <a class='right-next' id="next-link" href="_autosummary/deerlab.ex_3pdeer.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">deerlab.dd_gauss</p>
+        <p class="prev-next-title">deerlab.ex_3pdeer</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

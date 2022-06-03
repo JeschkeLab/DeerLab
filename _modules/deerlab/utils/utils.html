@@ -59,7 +59,7 @@
     
 
 <a class="navbar-brand" href="../../../index.html">
-  <img src="../../../_static/logo_docs.svg" class="logo" alt="logo">
+  <img src="../../../_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
 
 
@@ -121,7 +121,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="sk-nav-dropdown-item dropdown-item" href="../../../changelog.html">Release Notes</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="../../../contributing.html">Contributing</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="../../../funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../../support.html">Support</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="../../../license.html">License</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
@@ -161,10 +161,7 @@
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+              <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     
   </div>
@@ -196,9 +193,9 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">scp</span>
 <span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="k">as</span> <span class="nn">opt</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span> 
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
-
+<span class="kn">import</span> <span class="nn">pickle</span>
 
 <span class="k">def</span> <span class="nf">parse_multidatasets</span><span class="p">(</span><span class="n">V_</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">noiselvl</span><span class="p">,</span> <span class="n">precondition</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subsets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="c1">#===============================================================================</span>
@@ -751,10 +748,13 @@
 <span class="sd">       How can I calculate the nearest positive semi-definite matrix? </span>
 <span class="sd">       StackOverflow, https://stackoverflow.com/a/63131250/16396391</span>
 <span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="c1"># If matrix is empty, return it empty (scipy.linalg.eigh cannot deal with empty matrix)</span>
+    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">size</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> 
+        <span class="k">return</span> <span class="n">A</span>
     <span class="c1"># Symmetrize the matrix</span>
     <span class="n">Asym</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="o">+</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
     <span class="c1"># Construct positive semi-definite matrix via eigenvalue decomposition</span>
-    <span class="n">eigval</span><span class="p">,</span> <span class="n">eigvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">Asym</span><span class="p">)</span>
+    <span class="n">eigval</span><span class="p">,</span> <span class="n">eigvec</span> <span class="o">=</span> <span class="n">scp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">Asym</span><span class="p">)</span>
     <span class="n">eigval</span><span class="p">[</span><span class="n">eigval</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">Cpsd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">eigvec</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">eigval</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">eigvec</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
     <span class="c1"># Avoid round-off errors</span>
@@ -847,6 +847,50 @@
 
 
 <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+
+<span class="kn">import</span> <span class="nn">dill</span> <span class="k">as</span> <span class="nn">pickle</span>
+
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="store_pickle"><a class="viewcode-back" href="../../../_autosummary/deerlab.utils.store_pickle.html#deerlab.utils.store_pickle">[docs]</a><span class="k">def</span> <span class="nf">store_pickle</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save/export an object to a ``.pkl`` file serialized as bytes.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj : object </span>
+<span class="sd">        Python object to be saved/exported. </span>
+
+<span class="sd">    filename : string </span>
+<span class="sd">        Name (and path) of the file to save the pickled object to. The object is saved as a ``.pkl`` file. </span>
+<span class="sd">    &quot;&quot;&quot;</span>   
+    <span class="k">if</span> <span class="s1">&#39;.pkl&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outp</span><span class="p">:</span>  <span class="c1"># Overwrites any existing file.</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">outp</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span></div>
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="read_pickle"><a class="viewcode-back" href="../../../_autosummary/deerlab.utils.read_pickle.html#deerlab.utils.read_pickle">[docs]</a><span class="k">def</span> <span class="nf">read_pickle</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load a pickled object file ``.pkl`` and deserialize the bytes into a Python object.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : string </span>
+<span class="sd">        Path to the ``.pkl`` file to load.</span>
+
+<span class="sd">        .. warning:: It is possible to construct malicious pickle data which will execute arbitrary code during unpickling. Never unpickle data that could have come from an untrusted source, or that could have been tampered with. See `here &lt;https://docs.python.org/3/library/pickle.html&gt;`_ for more information.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">if</span> <span class="s1">&#39;.pkl&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
+                <span class="k">break</span></div>
+<span class="c1"># --------------------------------------------------------------------------------------</span>
 </pre></div>
 
               </div>

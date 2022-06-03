@@ -61,7 +61,7 @@
     
 
 <a class="navbar-brand" href="index.html">
-  <img src="_static/logo_docs.svg" class="logo" alt="logo">
+  <img src="_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
 
 
@@ -123,7 +123,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="sk-nav-dropdown-item dropdown-item" href="#">Release Notes</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="support.html">Support</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="license.html">License</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
@@ -163,10 +163,7 @@
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+              <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     
   </div>
@@ -190,6 +187,11 @@
 
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-14-1-june-2022">
+   Release v0.14.1 - June 2022
+  </a>
+ </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#release-v0-14-0-april-2022">
    Release v0.14.0 - April 2022
@@ -261,11 +263,23 @@
 <p class="rubric">Legend</p>
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> : Features something new which could not be done before</p></li>
-<li><p><span class="raw-html"><span class="badge changelog_efficiency">Efficiency</span></span> : A change which improves the performance or memory usage.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_efficiency">Efficiency</span></span> : A change which affects the performance or memory usage.</p></li>
 <li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> : An improvement to a previously existing feature.</p></li>
 <li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> : Something which was not working as expected or leading to errors has been fixed.</p></li>
 <li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> : This will require changes in your scripts or code.</p></li>
 </ul>
+<section id="release-v0-14-1-june-2022">
+<h2>Release v0.14.1 - June 2022<a class="headerlink" href="#release-v0-14-1-june-2022" title="Permalink to this headline">#</a></h2>
+<p class="rubric">Overall changes</p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Use Scipy’s <img class="math" src="_images/math/93a816595ceff2f083c6ba984b6dedbf88fba3f1.svg" alt="eigh"/> instead of Numpy’s to avoid convergence error <code class="docutils literal notranslate"><span class="pre">numpy.linalg.LinAlgError:</span> <span class="pre">Eigenvalues</span> <span class="pre">did</span> <span class="pre">not</span> <span class="pre">converge</span></code> during model uncertainty propagation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/310">#310</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/311">#311</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Refactored the code to avoid the use of <code class="docutils literal notranslate"><span class="pre">lambda</span></code> and nested functions. This enables pickling DeerLab’s objects with Python’s <code class="docutils literal notranslate"><span class="pre">pickle</span></code> module without errors (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/312">#312</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Added two new utility functions <code class="docutils literal notranslate"><span class="pre">store_pickle</span></code> and <code class="docutils literal notranslate"><span class="pre">read_pickle</span></code> that implement pickling with the <code class="docutils literal notranslate"><span class="pre">dill</span></code> package to be more robust against potential <code class="docutils literal notranslate"><span class="pre">lambda</span></code> functions defined by the users in scripts (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/312">#312</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed minor bug when printing fit results with many model parameters being frozen. The print command would return an error message (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/329">#329</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed bug when propagating bootstrapped uncertainty in presence of round-off errors (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/325">#325</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> <span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Multiple minor improvements and corrections in the documentation.</p></li>
+</ul>
+</section>
 <section id="release-v0-14-0-april-2022">
 <h2>Release v0.14.0 - April 2022<a class="headerlink" href="#release-v0-14-0-april-2022" title="Permalink to this headline">#</a></h2>
 <p class="rubric">Overall changes</p>
@@ -363,9 +377,9 @@
 </ul>
 <p class="rubric"><code class="docutils literal notranslate"><span class="pre">bg_models</span></code></p>
 <ul class="simple">
-<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Implemented the time-dependent phase shifts for all the built-in physical background models, namely <img class="math" src="_images/math/b6f0e90e437f082b03edb2a94a2e90e642ac7a55.svg" alt="bg_hon3d_phase"/>, <img class="math" src="_images/math/7a6d7d3d3f78cbce68ded8bf03dc3973d5e972db.svg" alt="bg_hom3dex_phase"/>, and <img class="math" src="_images/math/7fc105424cece42ba454bcbbace4da8d8ee42304.svg" alt="bg_homfractal_phase"/> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/258">#258</a>).</p></li>
-<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Changed the implementation of <img class="math" src="_images/math/3a7df7bd360659381c0a85b7065156c70b18f262.svg" alt="bg_hom3dex"/> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/258">#258</a>). This avoids the use of tabulated pre-calculated values. Accordingly the utility functions <img class="math" src="_images/math/07720a0b7c0fe480ccb7af8fbdc15a937b975762.svg" alt="calculate_exvolume_redfactor"/> and <img class="math" src="_images/math/ec2d3bc69851a7aea4abf5b05e46f985a2dc65a4.svg" alt="load_exvolume_redfactor"/> have been removed.</p></li>
-<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Improved the implementation and behavior of the <img class="math" src="_images/math/5ee301fa210c691dc02004a1cfb00747d8d35635.svg" alt="bg_homfractal"/> model (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/258">#258</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Implemented the time-dependent phase shifts for all the built-in physical background models, namely <code class="docutils literal notranslate"><span class="pre">bg_hon3d_phase</span></code>, <code class="docutils literal notranslate"><span class="pre">bg_hom3dex_phase</span></code>, and <code class="docutils literal notranslate"><span class="pre">bg_homfractal_phase</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/258">#258</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> Changed the implementation of <code class="docutils literal notranslate"><span class="pre">bg_hom3dex</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/258">#258</a>). This avoids the use of tabulated pre-calculated values. Accordingly the utility functions <code class="docutils literal notranslate"><span class="pre">calculate_exvolume_redfactor</span></code> and <code class="docutils literal notranslate"><span class="pre">load_exvolume_redfactor</span></code> have been removed.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Improved the implementation and behavior of the <code class="docutils literal notranslate"><span class="pre">bg_homfractal</span></code> model (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/258">#258</a>).</p></li>
 </ul>
 <p class="rubric"><code class="docutils literal notranslate"><span class="pre">diststats</span></code></p>
 <ul class="simple">

@@ -59,7 +59,7 @@
     
 
 <a class="navbar-brand" href="../../index.html">
-  <img src="../../_static/logo_docs.svg" class="logo" alt="logo">
+  <img src="../../_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
 
 
@@ -121,7 +121,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="sk-nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="../../funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="../../license.html">License</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
@@ -161,10 +161,7 @@
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+              <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     
   </div>
@@ -402,25 +399,34 @@
 <span class="sd">            Joined uncertainty quantification object with a total of ``M + N1 + N2 + ... + Nn`` parameters. </span>
 <span class="sd">            The parameter vectors are concatenated on the order they are passed. </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Original metadata</span>
-        <span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
-        <span class="n">covmat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covmat</span>
-        <span class="n">lbm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__lb</span>
-        <span class="n">ubm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ub</span>
-
+        <span class="n">newargs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+            <span class="c1"># Original metadata</span>
+            <span class="n">newargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+            <span class="n">newargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covmat</span><span class="p">)</span>
+            <span class="n">newargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__lb</span><span class="p">)</span>
+            <span class="n">newargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ub</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span>
+            <span class="n">newargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">)</span>
+            
         <span class="k">for</span> <span class="n">uq</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">uq</span><span class="p">,</span> <span class="n">UQResult</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Only UQResult objects can be joined.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">uq</span><span class="o">.</span><span class="n">type</span><span class="o">!=</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;A UQResult of type (</span><span class="si">{</span><span class="n">uq</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1">) and another of type (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1">) cannot be joined.&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">uq</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;void&#39;</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Void UQResults cannot be joined.&#39;</span><span class="p">)</span>
             <span class="c1"># Concatenate metadata of external UQResult objects</span>
-            <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">mean</span><span class="p">,</span> <span class="n">uq</span><span class="o">.</span><span class="n">mean</span><span class="p">])</span>
-            <span class="n">covmat</span> <span class="o">=</span> <span class="n">block_diag</span><span class="p">(</span><span class="n">covmat</span><span class="p">,</span> <span class="n">uq</span><span class="o">.</span><span class="n">covmat</span><span class="p">)</span>
-            <span class="n">lbm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">lbm</span><span class="p">,</span> <span class="n">uq</span><span class="o">.</span><span class="n">__lb</span><span class="p">])</span>
-            <span class="n">ubm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">ubm</span><span class="p">,</span> <span class="n">uq</span><span class="o">.</span><span class="n">__ub</span><span class="p">])</span>
-
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+                <span class="n">newargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">newargs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">uq</span><span class="o">.</span><span class="n">mean</span><span class="p">])</span>
+                <span class="n">newargs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">block_diag</span><span class="p">(</span><span class="n">newargs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">uq</span><span class="o">.</span><span class="n">covmat</span><span class="p">)</span>
+                <span class="n">newargs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">newargs</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">uq</span><span class="o">.</span><span class="n">__lb</span><span class="p">])</span>
+                <span class="n">newargs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">newargs</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">uq</span><span class="o">.</span><span class="n">__ub</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span>
+                <span class="n">newargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">newargs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">uq</span><span class="o">.</span><span class="n">samples</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> 
+                
         <span class="c1"># Return new UQResult object with combined information    </span>
-        <span class="k">return</span> <span class="n">UQResult</span><span class="p">(</span><span class="s1">&#39;covariance&#39;</span><span class="p">,</span><span class="n">mean</span><span class="p">,</span><span class="n">covmat</span><span class="p">,</span><span class="n">lbm</span><span class="p">,</span><span class="n">ubm</span><span class="p">)</span> </div>
+        <span class="k">return</span> <span class="n">UQResult</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span><span class="o">*</span><span class="n">newargs</span><span class="p">)</span> </div>
     <span class="c1">#--------------------------------------------------------------------------------</span>
 
 
@@ -456,6 +462,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span>
             <span class="c1"># Get bw using silverman&#39;s rule (1D only)</span>
             <span class="n">samplen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
+
+            <span class="c1"># Take limited precision into account to avoid round-off errors</span>
+            <span class="n">samplen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">samplen</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">samplen</span> <span class="o">==</span> <span class="n">samplen</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                 <span class="c1"># Dirac&#39;s delta distribution </span>

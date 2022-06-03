@@ -62,7 +62,7 @@
     
 
 <a class="navbar-brand" href="index.html">
-  <img src="_static/logo_docs.svg" class="logo" alt="logo">
+  <img src="_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
 
 
@@ -124,7 +124,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="sk-nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="funding.html">Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="support.html">Support</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="license.html">License</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
               <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
@@ -164,10 +164,7 @@
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+              <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
@@ -319,6 +316,12 @@
 <h2>Using experimental pulse delays<a class="headerlink" href="#using-experimental-pulse-delays" title="Permalink to this headline">#</a></h2>
 <p>The dipolar pathways of a newly constructed dipolar model are initialized at arbitrary refocusing times and fully unconstrained. The refocusing times can be strongly constrained by knowing the experimental pulse sequence delays used to acquire the data. If the experiment used to acquire the data is known, as well as its pulse delays, then it is strongly recommended do so.</p>
 <p>DeerLab provides a selection of experimental information generators for some of the most widely employed experimental methods (see the of <a class="reference internal" href="modelsref.html#modelsref-ex"><span class="std std-ref">list of available experiments</span></a>). These are functions that take the pulse sequence delays, and return an <code class="docutils literal notranslate"><span class="pre">ExperimentInfo</span></code> object. This can be passed to the <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> function via the <code class="docutils literal notranslate"><span class="pre">experiment</span></code> keyword argument, to incorporate the experiment information on the model and constrain some of its parameters.</p>
+<p>When using experimental time delays and the <code class="docutils literal notranslate"><span class="pre">experiment</span></code> argument, the model assumes that the experimental time axis <code class="docutils literal notranslate"><span class="pre">t</span></code> has its zero time at the beginning of the interpulse delay (see the illustrations of the individual experiment models for details). However, experimentally it is common not to record the first few hundred nanoseconds of signal. This results in a so-called deadtime, which many commercial spectrometers (such as Bruker) do not account for when storing the time-vector. It is very important to account for that deadtime in the model via</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">deadtime</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="c1"># Experimental deadtime of 400ns, in μs</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">deadtime</span> <span class="c1"># Shift the time axis to account for the deadtime</span>
+</pre></div>
+</div>
+<p>If the time vector <code class="docutils literal notranslate"><span class="pre">t</span></code> does not have any deadtime, this step can be skipped. Otherwise, an incorrectly defined time vector will results in wrong results.</p>
 </section>
 <section id="constructing-the-dipolar-model">
 <h2>Constructing the dipolar model<a class="headerlink" href="#constructing-the-dipolar-model" title="Permalink to this headline">#</a></h2>
