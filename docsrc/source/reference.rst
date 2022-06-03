@@ -75,6 +75,8 @@ Stable functionality is not guaranteed.
     :template: custom_function_template.rst
     :nosignatures:
 
+    store_pickle
+    load_pickle
     hccm
     Jacobian
     nearest_psd
