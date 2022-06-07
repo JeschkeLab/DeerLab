@@ -1,70 +1,4 @@
 from setuptools import setup
-from setuptools.command.install import install
-from setuptools.command.develop import develop
-from sys import executable
-import platform
-import subprocess
-
-# Custom OS-specific installation script
-def install_dependencies(develop_mode=False):
-#-----------------------------------------------------------------------
-
-    # At the moment the dependencies must be handled manually this way due to 
-    # the dependency of Windows systems on the external Gohlke binaries. This
-    # also means that the package must be distributed as a source tarball instead
-    # of the commonly used wheels. 
-    # As soon as Numpy, Scipy and CVXOpt start distributing their own binaries for 
-    # Windows systems this will no longer be necessary and all dependencies will be 
-    # able to be handled by pip automatically. 
-
-    # DeerLab dependencies on the PyPI
-    dependencies = ["memoization","matplotlib","tqdm","joblib","dill"] 
-
-    if platform.system() == 'Windows':
-        # Use own forked pipwin repo for self-patched fixes 
-        dependencies += ["git+https://github.com/luisfabib/pipwin"]
-    else:
-        dependencies += ["numpy","scipy","cvxopt"]
-    if develop_mode:
-        dependencies += ["pytest"]
-        
-    # Commands for pip installation of dependencies
-    pipinstall = [executable,'-m','pip','install']
-    userlevel = ['--user']
-
-    # Easier to Ask Forgiveness than Permission Principle: 
-    # try to install dependencies system-wide, if fails then at user-level
-    for dependency in dependencies:
-        try:
-            subprocess.run(pipinstall+[dependency],check=True)
-        except:
-            subprocess.run(pipinstall+userlevel+[dependency],check=False)
-
-    # Download and install pre-compiled binaries for Windows-systems
-    if platform.system() == 'Windows':  
-        # Refresh the pipwin cache to get the latest repo status
-        subprocess.run([executable,'-m','pipwin','refresh'],check=False)
-        # Install Numpy,SciPy, CVXopt linked to MKL from Gohlken's repository
-        subprocess.run([executable,'-m','pipwin','install','numpy','--filter=mkl'],check=False)
-        subprocess.run([executable,'-m','pipwin','install','scipy'],check=False)
-        subprocess.run([executable,'-m','pipwin','install','cvxopt'],check=False)
-#-----------------------------------------------------------------------    
-
-class install_routine(install):
-#-----------------------------------------------------------------------
-    """Customized setuptools install command"""
-    def run(self):
-        install.run(self)
-        install_dependencies()
-#-----------------------------------------------------------------------
-
-class develop_routine(develop):
-#-----------------------------------------------------------------------
-    """Customized setuptools install command"""
-    def run(self):
-        develop.run(self)
-        install_dependencies(develop_mode=True)
-#-----------------------------------------------------------------------
 
 setup(
     name='DeerLab',
@@ -81,14 +15,22 @@ setup(
     python_requires='>=3.6',
     license='LICENSE.txt',
     include_package_data = True,
-    keywords='data analysis EPR spectroscopy DEER PELDOR'.split(),
+    keywords='data analysis modelling least-squares EPR spectroscopy DEER PELDOR'.split(),
     description='Comprehensive package for data analysis of dipolar EPR spectroscopy',
     long_description=open('README.md', encoding='utf-8').read(),
     long_description_content_type="text/markdown",
-    cmdclass={
-        'install': install_routine,
-        'develop': develop_routine
-    },
+    install_requires = [
+                        'numpy>=1.21.0',
+                        'cvxopt>=1.0.0',
+                        'scipy>=1.6.3',
+                        'joblib>-1.0.0',
+                        'dill>=0.3.0',
+                        'tqdm>=4.51.0',
+                        'matplotlib>=3.3.4',
+                        'memoization>=0.3.1',
+                        'pytest>=6.2.2',
+                        'setuptools>=53.0.0',
+                        ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
