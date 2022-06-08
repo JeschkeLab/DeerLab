@@ -9,9 +9,9 @@ def install_MKL_dependencies():
     if platform.system() != 'Windows':
         raise SystemError('MKL dependencies are only available on Windows systems.')
 
-    subprocess.run([executable,'-m','pip','uninstall','numpy'],check=False)
-    subprocess.run([executable,'-m','pip','uninstall','scipy'],check=False)
-    subprocess.run([executable,'-m','pip','uninstall','cvxopt'],check=False)
+    subprocess.run([executable,'-m','pip','uninstall','numpy','-y'],check=False)
+    subprocess.run([executable,'-m','pip','uninstall','scipy','-y'],check=False)
+    subprocess.run([executable,'-m','pip','uninstall','cvxopt','-y'],check=False)
 
     # At the moment the dependencies must be handled manually this way
     subprocess.run([executable,'-m','pip','install','git+https://github.com/luisfabib/pipwin'],check=False)
