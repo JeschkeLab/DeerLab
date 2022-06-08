@@ -20,7 +20,7 @@ setup(
     long_description=open('README.md', encoding='utf-8').read(),
     long_description_content_type="text/markdown",
     install_requires = [
-                        'numpy>=1.21.0',
+                        'numpy<=1.22.4',
                         'cvxopt>=1.0.0',
                         'scipy>=1.6.3',
                         'joblib>-1.0.0',
