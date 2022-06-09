@@ -292,7 +292,7 @@ def test_ex_3pdeer_fit():
 
     assert np.allclose(V3pdeer,result.model,atol=1e-1) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
-test_ex_3pdeer_fit()
+
 # ======================================================================
 def test_ex_4pdeer_type(): 
     "Check the 4-pulse DEER experimental model."
