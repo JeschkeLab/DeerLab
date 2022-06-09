@@ -4,55 +4,51 @@ from deerlab import dipolarkernel, whitegaussnoise, bootstrap_analysis, snlls
 from deerlab.dd_models import dd_gauss
 from deerlab.utils import assert_docstring
 
+x = np.linspace(0,5,200)
+sigma = 0.01
+phaseshift = np.exp(1j*np.pi/2)
+model = lambda par: par[0] + par[1]*x
+model_global = lambda par: [model([par[0],par[1]]), model([par[2],par[3]])]
+model_complex = lambda par: model(par)*phaseshift
+yexp = model([1,3]) + whitegaussnoise(x,sigma)
+yglobal1 = model([1,3]) + whitegaussnoise(x,sigma)
+yglobal2 = model([2,4]) + whitegaussnoise(x,sigma)
+yexp_complex = model_complex([1,3]) + whitegaussnoise(x,sigma)
+
+def fitfcn(yexp):
+    fit = snlls(yexp,model,[1,3],uq=False)
+    return fit.nonlin*fit.lin
+
+def fitfcn_global(ys):
+    fit = snlls(ys,model_global,[1,3,2,4],uq=False)
+    return fit.nonlin*fit.lin
+
+def fitfcn_multiout(yexp):
+    fit = snlls(yexp,model,[1,3],uq=False)
+    return fit.nonlin*fit.lin, fit.model 
+
+def fitfcn_complex(yexp):
+    fit = snlls(yexp,model,[1,3],uq=False)
+    return fit.nonlin*fit.lin
+
+
 def test_basics():
 # ======================================================================
     "Check the basic functionality of the bootstrapping"
 
-    t = np.linspace(0,5,200)
-    r = np.linspace(2,6,300)
-    P = dd_gauss(r,4, 0.8)
-    K = dipolarkernel(t,r)
-    Vexp = K@P + whitegaussnoise(t,0.01,seed=1)
+    parfit = fitfcn(yexp)
+    paruq = bootstrap_analysis(fitfcn,yexp,model(parfit),10)
 
-    par0 = [3, 0.5]
-    Vmodel = lambda par: K@dd_gauss(r,*par)
-    fit = snlls(Vexp,Vmodel,par0)
-    Vfit = fit.model
-
-
-    def bootfcn(V):
-        fit = snlls(V,Vmodel,par0)
-        return fit.nonlin
-
-    paruq = bootstrap_analysis(bootfcn,Vexp,Vfit,10)
-
-    assert all(abs(paruq.mean - fit.nonlin) < 1.5e-2)
+    assert all(abs(paruq.mean - parfit) < 1.5e-2)
 # ======================================================================
-
 
 def test_resampling():
 # ======================================================================
     "Check that both bootstrap resampling method yield similar results"
 
-    t = np.linspace(0,5,200)
-    r = np.linspace(2,6,300)
-    P = dd_gauss(r,4, 0.8)
-    K = dipolarkernel(t,r)
-    Vexp = K@P + whitegaussnoise(t,0.01,seed=1)
-
-    par0 = [3, 0.5]
-    Vmodel = lambda par: K@dd_gauss(r,*par)
-    fit = snlls(Vexp,Vmodel,par0)
-    Vfit = fit.model
-
-
-    def bootfcn(V):
-        fit = snlls(V,Vmodel,par0)
-        return fit.nonlin
-
-    paruq1 = bootstrap_analysis(bootfcn,Vexp,Vfit,5,resampling='residual')
-    paruq2 = bootstrap_analysis(bootfcn,Vexp,Vfit,5,resampling='gaussian')
-
+    parfit = fitfcn(yexp)
+    paruq1 = bootstrap_analysis(fitfcn,yexp,model(parfit),10,resampling='residual')
+    paruq2 = bootstrap_analysis(fitfcn,yexp,model(parfit),10,resampling='gaussian')
 
     assert all(abs(paruq1.mean - paruq2.mean) < 1.6e-2)
 # ======================================================================
@@ -62,83 +58,30 @@ def test_multiple_ouputs():
 # ======================================================================
     "Check that both bootstrap handles the correct number outputs"
 
-    t = np.linspace(0,5,200)
-    r = np.linspace(2,6,300)
-    P = dd_gauss(r,4, 0.8)
-    K = dipolarkernel(t,r)
-    Vexp = K@P + whitegaussnoise(t,0.01,seed=1)
+    parfit,yfit = fitfcn_multiout(yexp)
+    paruq = bootstrap_analysis(fitfcn_multiout,yexp,model(parfit),10)
 
-    par0 = [3, 0.5]
-    Vmodel = lambda par: K@dd_gauss(r,*par)
-    fit = snlls(Vexp,Vmodel,par0)
-    Vfit = fit.model
-
-
-    def bootfcn(V):
-        fit = snlls(V,Vmodel,par0)
-        Pfit = dd_gauss(r,*fit.nonlin)
-        return fit.nonlin, Pfit
-
-    paruq1 = bootstrap_analysis(bootfcn,Vexp,Vfit,4)
-
-
-    assert len(paruq1)==2
+    assert len(paruq)==2 and all(abs(paruq[0].mean - parfit)) and all(abs(paruq[1].mean - yfit))
 # ======================================================================
 
 def test_multiple_datasets():
 # ======================================================================
     "Check bootstrapping when using multiple input datasets"
 
-    t1 = np.linspace(0,5,200)
-    t2 = np.linspace(-0.5,3,300)
-    r = np.linspace(2,6,300)
-    P = dd_gauss(r,4, 0.8)
-    K1 = dipolarkernel(t1,r)
-    K2 = dipolarkernel(t2,r)
+    parfit = fitfcn_global([yglobal1,yglobal2])
+    paruq = bootstrap_analysis(fitfcn_global,[yglobal1,yglobal2],[model([1,3]),model([2,4])],5)
 
-    Vexp1 = K1@P + whitegaussnoise(t1,0.01,seed=1)
-    Vexp2 = K2@P + whitegaussnoise(t2,0.02,seed=2)
-
-    def Vmodel(par):
-        V1 = K1@dd_gauss(r,*par)
-        V2 = K2@dd_gauss(r,*par)
-        return [V1,V2]
-
-    par0 = [3, 0.5]
-    fit = snlls([Vexp1,Vexp2],Vmodel,par0)
-    Vfit1,Vfit2 = fit.model
-
-    def bootfcn(V):
-        fit = snlls(V,Vmodel,par0)
-        return fit.nonlin
-
-    paruq = bootstrap_analysis(bootfcn,[Vexp1,Vexp2],[Vfit1,Vfit2],5)
-
-    assert all(abs(paruq.mean - fit.nonlin) < 1.5e-2)
+    assert all(abs(paruq.mean - parfit) < 1.5e-2)
 # ======================================================================
 
 def test_parallelization():
 # ======================================================================
     "Check that bootstrap_analysis can run with multiple cores"
 
-    t = np.linspace(0,5,200)
-    r = np.linspace(2,6,300)
-    P = dd_gauss(r,4, 0.8)
-    K = dipolarkernel(t,r)
-    Vexp = K@P + whitegaussnoise(t,0.01)
+    parfit = fitfcn(yexp)
+    paruq = bootstrap_analysis(fitfcn,yexp,model(parfit),10,cores=-1)
 
-    par0 = [3, 0.5]
-    Vmodel = lambda par: K@dd_gauss(r,*par)
-    fit = snlls(Vexp,Vmodel,par0)
-    Vfit = fit.model
-
-    def bootfcn(V):
-        fit = snlls(V,Vmodel,par0)
-        return fit.nonlin
-
-    paruq = bootstrap_analysis(bootfcn,Vexp,Vfit,10,cores=-1)
-
-    assert all(abs(paruq.mean - fit.nonlin) < 1.5e-2)
+    assert all(abs(paruq.mean - parfit) < 1.5e-2)
 # ======================================================================
 
 # ======================================================================
@@ -151,24 +94,10 @@ def test_complex_values():
 # ======================================================================
     "Check the functionality of the bootstrapping with complex-valued outputs"
 
-    t = np.linspace(0,5,200)
-    r = np.linspace(2,6,300)
-    P = dd_gauss(r,4, 0.8)
-    K = dipolarkernel(t,r)
-    Vexp = K@P + whitegaussnoise(t,0.01,seed=1) 
-    Vexp = Vexp + 1j*whitegaussnoise(t,0.01,seed=1) 
-    par0 = [3, 0.5]
-    Vmodel = lambda par: K@dd_gauss(r,*par) + 1j*np.zeros_like(t) 
-    fit = snlls(Vexp,Vmodel,par0)
-    Vfit = fit.model
+    parfit = fitfcn_complex(yexp_complex)
+    paruq = bootstrap_analysis(fitfcn_complex,yexp_complex,model_complex(parfit),3)
 
-    def bootfcn(V):
-        fit = snlls(V,Vmodel,par0)
-        return fit.nonlin
-
-    paruq = bootstrap_analysis(bootfcn,Vexp,Vfit,3)
-
-    assert all(abs(paruq.mean - fit.nonlin) < 1.5e-2)
+    assert all(abs(paruq.mean - parfit) < 1.5e-2)
 # ======================================================================
 
 import pytest
@@ -182,4 +111,14 @@ def test_memory_limit():
         return y
     with pytest.raises(MemoryError):
         paruq = bootstrap_analysis(bootfcn,yexp,yfit,1e6)
+# ======================================================================
+
+def test_noiselvl():
+# ======================================================================
+    "Check that noise levels can be specified"
+
+    parfit = fitfcn(yexp)
+    paruq = bootstrap_analysis(fitfcn,yexp,model(parfit),10, noiselvl=sigma)
+
+    assert all(abs(paruq.mean - parfit) < 1.5e-2)
 # ======================================================================
