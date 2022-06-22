@@ -151,23 +151,23 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
         
         # L-curve minimum-radius method (LR)
         if method == 'lr':
-            Eta = np.log(penalties)
-            Rho = np.log(residuals)
+            Eta = np.log(np.asarray(penalties)+1e-20)
+            Rho = np.log(np.asarray(residuals)+1e-20)
             dd = lambda x: (x-np.min(x))/(np.max(x)-np.min(x))
             functional = dd(Rho)**2 + dd(Eta)**2         
+            functional = functional # Maximize instead of minimize 
 
         # L-curve maximum-curvature method (LC)
         elif method == 'lc': 
-            d1Residual = np.gradient(np.log(residuals))
+            d1Residual = np.gradient(np.log(np.asarray(residuals)+1e-20))
             d2Residual = np.gradient(d1Residual)
-            d1Penalty = np.gradient(np.log(penalties))
+            d1Penalty = np.gradient(np.log(np.asarray(penalties)+1e-20))
             d2Penalty = np.gradient(d1Penalty)
             functional = (d1Residual*d2Penalty - d2Residual*d1Penalty)/(d1Residual**2 + d1Penalty**2)**(3/2)
             functional = -functional # Maximize instead of minimize 
 
         # Find minimum of the selection functional              
         alphaOpt = alphaCandidates[np.argmin(functional)]
-
     else: 
         raise KeyError("Search method not found. Must be either 'brent' or 'grid'.")
 
