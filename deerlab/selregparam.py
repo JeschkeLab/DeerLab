@@ -163,6 +163,7 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
             d1Penalty = np.gradient(np.log(penalties))
             d2Penalty = np.gradient(d1Penalty)
             functional = (d1Residual*d2Penalty - d2Residual*d1Penalty)/(d1Residual**2 + d1Penalty**2)**(3/2)
+            functional = -functional # Maximize instead of minimize 
 
         # Find minimum of the selection functional              
         alphaOpt = alphaCandidates[np.argmin(functional)]
