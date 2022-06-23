@@ -155,8 +155,7 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
             Rho = np.log(np.asarray(residuals)+1e-20)
             dd = lambda x: (x-np.min(x))/(np.max(x)-np.min(x))
             functional = dd(Rho)**2 + dd(Eta)**2         
-            functional = functional # Maximize instead of minimize 
-
+            
         # L-curve maximum-curvature method (LC)
         elif method == 'lc': 
             d1Residual = np.gradient(np.log(np.asarray(residuals)+1e-20))
