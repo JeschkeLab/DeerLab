@@ -244,7 +244,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
     # Set other dipolar model specific attributes
     DipolarSignal.description = 'Dipolar signal model'
     DipolarSignal.Pmodel = Pmodel
-    DipolarSignal.Bmodel = Pmodel
+    DipolarSignal.Bmodel = Bmodel
     DipolarSignal.Npathways = npathways
 
     return DipolarSignal
