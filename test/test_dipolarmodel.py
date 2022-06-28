@@ -418,6 +418,6 @@ def test_excitationbandwidth():
     Vref = Vmodel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
     Vorisel = Vmodelorisel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
 
-    assert np.allclose(Vref,Vorisel,rtol=1e-6)
+    assert np.allclose(Vref,Vorisel,rtol=1e-4)
 # ======================================================================
 
