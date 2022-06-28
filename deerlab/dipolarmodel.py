@@ -178,7 +178,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
                 if param in model._parameter_list(order='vector'):
                     subset[getattr(model,param).idx] = idx
 
-    kernelmethod = 'fresnel' if orisel is None else 'grid' 
+    kernelmethod = 'fresnel' if orisel is None and np.isinf(excbandwidth) else 'grid' 
 
     #------------------------------------------------------------------------
     def Vnonlinear_fcn(*nonlin):
@@ -243,9 +243,6 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
 
     # Set other dipolar model specific attributes
     DipolarSignal.description = 'Dipolar signal model'
-    DipolarSignal.Pmodel = Pmodel
-    DipolarSignal.Bmodel = Pmodel
-    DipolarSignal.Npathways = npathways
 
     return DipolarSignal
 #===============================================================================
@@ -293,7 +290,8 @@ def dipolarpenalty(Pmodel, r, type, selection=None):
         # Define the compactness penalty function
         def compactness_penalty(*args): 
             P = Pmodel(*[r]*Nconstants,*args)
-            P = P/np.trapz(P,r)
+            if not np.all(P==0):
+                P = P/np.trapz(P,r)
             return np.sqrt(P*(r - np.trapz(P*r,r))**2*np.mean(np.diff(r)))
         # Add the penalty to the Pmodel
         penalty = Penalty(compactness_penalty,selection,

@@ -1,3 +1,4 @@
+
 {%- set userguide_dropdown_navigation = [
     ('Basics', pathto('basics')),
     ('Getting Started', pathto('getting_started')),
@@ -5,7 +6,6 @@
     ('Fitting', pathto('dipolar_guide_fitting')),
     ('Theory', pathto('theory')),]
   -%}
-  
 
 {%- set advancedguide_dropdown_navigation = [
 ('Modelling Guide', pathto('modelling_guide')),
@@ -23,18 +23,18 @@
 -%}
 
   <div class="container-fluid {{ top_container_cls }} px-0">
-
-    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+  
+    <div class="navbar-collapse collapse navbar-collapse" id="navbar-collapsible">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="sk-nav-link nav-link" href="{{ pathto('installation') }}">Installation</a>
+          <a class="nav-link nav-link" href="{{ pathto('installation') }}">Installation</a>
         </li>
 
         <li class="dropdown">
           <a class="dropbtn" href="{{ pathto('user_guide') }}" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
             {%- for title, link in userguide_dropdown_navigation %}
-              <a class="sk-nav-dropdown-item dropdown-item" href="{{ link }}">{{ title}}</a>
+              <a class="nav-dropdown-item dropdown-item" href="{{ link }}">{{ title}}</a>
             {%- endfor %}
           </div>
         </li>
@@ -43,36 +43,36 @@
             <a class="dropbtn" href="{{ pathto('advanced_guide') }}" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
               {%- for title, link in advancedguide_dropdown_navigation %}
-                <a class="sk-nav-dropdown-item dropdown-item" href="{{ link }}">{{ title}}</a>
+                <a class="nav-dropdown-item dropdown-item" href="{{ link }}">{{ title}}</a>
               {%- endfor %}
             </div>
           </li>
 
         <li class="nav-item">
-          <a class="sk-nav-link nav-link" href="{{ pathto('examples') }}">Examples</a>
+          <a class="nav-link nav-link" href="{{ pathto('examples') }}">Examples</a>
         </li>
 
         <li class="nav-item">
-          <a class="sk-nav-link nav-link" href="{{ pathto('modelsref') }}">Models</a>
+          <a class="nav-link nav-link" href="{{ pathto('modelsref') }}">Models</a>
         </li>
 
         
         <li class="nav-item">
-            <a class="sk-nav-link nav-link" href="{{ pathto('reference') }}">Reference</a>
+            <a class="nav-link nav-link" href="{{ pathto('reference') }}">Reference</a>
           </li>
 
         {%- for title, link in drop_down_navigation %}
         <li class="nav-item">
-          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="{{ link }}">{{ title }}</a>
+          <a class="nav-link nav-link nav-more-item-mobile-items" href="{{ link }}">{{ title }}</a>
         </li>
 
         {%- endfor %}
 
         <li class="dropdown">
-          <a class="dropbtn" href="{{ pathto('more') }}" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <a class="dropbtn nav-link dropdown-toggle" href="{{ pathto('more') }}" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
             {%- for title, link in more_dropdown_navigation %}
-              <a class="sk-nav-dropdown-item dropdown-item" href="{{ link }}">{{ title}}</a>
+              <a class="nav-dropdown-item dropdown-item" href="{{ link }}">{{ title}}</a>
             {%- endfor %}
           </div>
         </li>

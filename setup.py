@@ -1,9 +1,4 @@
 from setuptools import setup
-from setuptools.command.install import install
-from setuptools.command.develop import develop
-from sys import executable
-import platform
-import subprocess
 
 # Custom OS-specific installation script
 def install_dependencies(develop_mode=False):
@@ -81,14 +76,22 @@ setup(
     python_requires='>=3.6',
     license='LICENSE.txt',
     include_package_data = True,
-    keywords='data analysis EPR spectroscopy DEER PELDOR'.split(),
+    keywords='data analysis modelling least-squares EPR spectroscopy DEER PELDOR'.split(),
     description='Comprehensive package for data analysis of dipolar EPR spectroscopy',
     long_description=open('README.md', encoding='utf-8').read(),
     long_description_content_type="text/markdown",
-    cmdclass={
-        'install': install_routine,
-        'develop': develop_routine
-    },
+    install_requires = [
+                        'numpy<=1.22.4',
+                        'cvxopt>=1.0.0',
+                        'scipy>=1.6.3',
+                        'joblib>-1.0.0',
+                        'dill>=0.3.0',
+                        'tqdm>=4.51.0',
+                        'matplotlib>=3.3.4',
+                        'memoization>=0.3.1',
+                        'pytest>=6.2.2',
+                        'setuptools>=53.0.0',
+                        ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',

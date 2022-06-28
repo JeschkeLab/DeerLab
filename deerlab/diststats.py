@@ -95,7 +95,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
 
     # Auxiliary functions
     # -------------------
-    int = np.trapz(P,r)
+    int = np.trapz(P,r) if not np.all(P==0) else 1
     def normalize(P): 
         return P/int
     # Percentile function

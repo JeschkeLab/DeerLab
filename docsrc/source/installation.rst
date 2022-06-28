@@ -46,12 +46,6 @@ DeerLab installs the following packages:
 * `tqdm <https://github.com/tqdm/tqdm>`_ - A lightweight package for smart progress meters.
 * `dill <https://github.com/uqfoundation/dill>`_ - An extension of Python's pickle module for serializing and de-serializing python objects.
 
-The installed numerical computing packages (numpy, scipy, cvxopt) are linked against different BLAS libraries depending on the OS:
-
-* Windows: linked against the Intel Matrix Kernel Library (MKL)
-* Linux: linked against OpenBLAS
-* Mac: linked against BLAS/LAPACK from the Accelerate framework
-
 Installing from Anaconda
 *************************
 
@@ -124,6 +118,21 @@ In order to install DeerLab but be able to edit the code or update frequently wi
 		python -m setup.py develop
 
 Any changes made to the source code will then immediate effect.
+
+
+Linking against BLAS libraries
+*******************************
+
+The installed numerical computing packages (numpy, scipy, cvxopt) are automatically linked against different BLAS libraries depending on the OS:
+
+* Linux: OpenBLAS
+* Mac: BLAS/LAPACK from the Accelerate framework
+
+In Windows systems, these packages can be linked against the Intel MKL libraries. To do so, DeerLab provides a script ``mkl_link.py`` that can be used to link against the Intel MKL libraries automatically::
+
+        python mkl_link.py
+
+The script will download the binaries from the Gohlke repository and override any currently installed version of the mentioned packages. 
 
 Installation failed 
 --------------------
