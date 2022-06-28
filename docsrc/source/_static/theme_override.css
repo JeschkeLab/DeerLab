@@ -9373,6 +9373,7 @@ font-weight: 600;
 color: var(--main-color);
 background-color: transparent;
 border-left: 2px solid var(--main-color);
+border-radius: 0px;
 }
 .toc-h2 {
 font-size:.85rem
