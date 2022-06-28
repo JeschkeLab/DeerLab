@@ -407,3 +407,17 @@ def test_orisel():
     assert np.allclose(Vref,Vorisel,rtol=1e-4)
 # ======================================================================
 
+
+# ======================================================================
+def test_excitationbandwidth(): 
+    "Check that dipolar models with limited excitation bandwidth work"
+
+    Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
+    Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,excbandwidth=1e8)
+
+    Vref = Vmodel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
+    Vorisel = Vmodelorisel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
+
+    assert np.allclose(Vref,Vorisel,rtol=1e-6)
+# ======================================================================
+
