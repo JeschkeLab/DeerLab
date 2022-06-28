@@ -114,7 +114,7 @@ html_context = {
 html_theme_options = {
     "navbar_start": ["navbar-logo"],
     "navbar_center": ["nav"],
-    "navbar_end": ["search-field","navbar-icon-links"],
+    "navbar_end": ["search-field"],
 }
 html_sidebars = {
     "index": [],
@@ -124,8 +124,8 @@ html_sidebars = {
     "examples": [],
     "auto_examples/**": [],
     "auto_examples/**": [],
-    "**": ["sidebar-nav-bs", "sidebar-ethical-ads"],
-    "page_sidebar_items": ["page-toc", "edit-this-page"],
+    "**": ["sidebar-nav-bs"],
+    "page_sidebar_items": ["page-toc"],
 }
 
 html_copy_source = False
