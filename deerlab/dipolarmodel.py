@@ -178,7 +178,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
                 if param in model._parameter_list(order='vector'):
                     subset[getattr(model,param).idx] = idx
 
-    kernelmethod = 'fresnel' if orisel is None else 'grid' 
+    kernelmethod = 'fresnel' if orisel is None and np.isinf(excbandwidth) else 'grid' 
 
     #------------------------------------------------------------------------
     def Vnonlinear_fcn(*nonlin):
