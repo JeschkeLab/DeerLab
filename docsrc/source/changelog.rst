@@ -14,16 +14,31 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
+Release v0.14.2 - June 2022
+---------------------------------
+
+- |feature| |efficiency| (Windows-systems only) Removed the unorthodox default installation procedure of DeerLab based on the installation of Numpy and related packages linked against MKL via the Gohlke repository (:issue:`322`, :pr:`330`).
+
+  * As a result the default performance of DeerLab can be affected in some Windows systems. To link the Numpy and related packages against MKL as in previous versions, an automated script ``upgrade_mkl.py`` is provided with the package.
+  * Fixes the error appearing during installation if the ``git`` command was not installed or available in the system (:issue:`326`). 
+  * Allows the distribution of DeerLab as wheels. 
+
+- |feature| Implemented better options for automated and user-supplied noise estimates to improve bootstrapping approaches (:pr:`334`, :pr:`343`).
+- |fix| Avoid the installation of (potentially unstable) pre-release versions of Numpy in systems with fresh Python installations (:pr:`336`).
+- |fix| Improved the robustness of several function against non-numerical values due to division-by-zero errors (:pr:`335`).
+- |fix| Corrected the behavior of regularization parameter selection with L-curve methods (:pr:`340`). Fixes the ``lc`` method in ``selgregparam`` which was seeking the optimal regularization parameter by minimizing curvature rather than by maximizing it. Prevents failure of the L-curve methods due to the appearance of non-numeric values when evaluating too large regularization parameter values.
+- |fix| Fixes the error when specifying a limited excitation bandwidth in ``dipolarmodel`` via the ``excbandwidth`` argument (:pr:`342`). 
+- |fix| Fixes the navigation menu on the documentation that appeared empty on mobile phones or for partially minimized windows on computers, impeding navigation through the documentation (:pr:`346`).
+- |fix| Minor corrections to the documentation and examples.    
+
 Release v0.14.1 - June 2022
 ---------------------------------
 
-.. rubric:: Overall changes
-
-- |fix| Use Scipy's `eigh` instead of Numpy's to avoid convergence error ``numpy.linalg.LinAlgError: Eigenvalues did not converge`` during model uncertainty propagation (:issue:`310`, :pr:`311`).
+- |fix| Use Scipy's ``eigh`` instead of Numpy's to avoid convergence error ``numpy.linalg.LinAlgError: Eigenvalues did not converge`` during model uncertainty propagation (:issue:`310`, :pr:`311`).
 - |fix| Refactored the code to avoid the use of ``lambda`` and nested functions. This enables pickling DeerLab's objects with Python's ``pickle`` module without errors (:pr:`312`).
 - |feature| Added two new utility functions ``store_pickle`` and ``read_pickle`` that implement pickling with the ``dill`` package to be more robust against potential ``lambda`` functions defined by the users in scripts (:pr:`312`).
 - |fix| Fixed minor bug when printing fit results with many model parameters being frozen. The print command would return an error message (:pr:`329`).
-- |fix| Fixed bug when propagating bootstrapped uncertainty in presence of round-off errors (:pr:`325`).
+- |fix| Fixed bug when propagating bootstrapped uncertainty in presence of round-off errors (:pr:`325`). 
 - |fix| |enhancement| Multiple minor improvements and corrections in the documentation.
 
 Release v0.14.0 - April 2022

@@ -292,7 +292,7 @@ def test_ex_3pdeer_fit():
 
     assert np.allclose(V3pdeer,result.model,atol=1e-1) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
-test_ex_3pdeer_fit()
+
 # ======================================================================
 def test_ex_4pdeer_type(): 
     "Check the 4-pulse DEER experimental model."
@@ -400,6 +400,20 @@ def test_orisel():
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
     Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,orisel=lambda theta: np.ones_like(theta))
+
+    Vref = Vmodel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
+    Vorisel = Vmodelorisel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
+
+    assert np.allclose(Vref,Vorisel,rtol=1e-4)
+# ======================================================================
+
+
+# ======================================================================
+def test_excitationbandwidth(): 
+    "Check that dipolar models with limited excitation bandwidth work"
+
+    Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
+    Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,excbandwidth=1e8)
 
     Vref = Vmodel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
     Vorisel = Vmodelorisel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)

@@ -9,8 +9,9 @@ from tqdm.auto import tqdm
 from joblib import Parallel, delayed
 from deerlab.classes import UQResult
 from deerlab.utils import isnumeric
+from deerlab.noiselevel import noiselevel
 
-def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbose = False, cores=1, memorylimit=8):
+def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, noiselvl=None, resampling='gaussian', verbose = False, cores=1, memorylimit=8):
     r""" 
     Bootstrap analysis for uncertainty quantification
 
@@ -32,6 +33,11 @@ def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbo
         Number of bootstrap samples to analyze. The quality of bootstrapping 
         results improve with the number of boostrap samples evaluated, the 
         default is 1000.
+
+    noiselvl : scalar or list thereof
+        Noise level of the input dataset(s), specified as standard deviations.
+        If not specified, these are automatically estimated from the experimental
+        dataset(s). 
 
     resampling : string, optional
         Specifies the method employed for re-sampling new bootstrap samples.
@@ -94,10 +100,11 @@ def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbo
         raise KeyError('The 1st argument must be a callable function accepting dataset(s) as input.')
 
     # Get residuals and estimate standard deviation
-    residuals,sigma = ([],[])
     for i in range(nSignals):
-        residuals.append(Vfit[i] - Vexp[i])
-        sigma.append(np.std(residuals[i]))
+        residuals = [Vfit[i] - Vexp[i] for i  in range(nSignals)]
+    if noiselvl is None:
+        noiselvl = [noiselevel(Vexp[i]) for i in range(nSignals)]
+    noiselvl = np.atleast_1d(noiselvl)
 
     # Prepare bootstrap sampler (reduced I/O-stream when parallelized) 
     def sample():
@@ -106,7 +113,7 @@ def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, resampling='gaussian', verbo
             #Determine requested re-sampling method
             if resampling == 'gaussian':
                 # Resample from a Gaussian distribution with variance estimated from the residuals
-                Vsample[i] = Vfit[i] + np.random.normal(0, sigma[i], len(Vfit[i]))
+                Vsample[i] = Vfit[i] + np.random.normal(0, noiselvl[i], len(Vfit[i]))
             elif resampling == 'residual':
                 # Resample from the residual directly
                 Vsample[i] =  Vfit[i] + residuals[i][np.random.permutation(len(Vfit[i]))]
